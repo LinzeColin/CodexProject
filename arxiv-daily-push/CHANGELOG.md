@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-30 09:48:07 Australia/Sydney - S2PLT02 real scheduler proof input validator
+
+- Added `validate-s2plt02-real-scheduler-proof`, a no-write validator for the future real launchd scheduler proof manifest consumed by the S2PLT02 terminal proof draft builder.
+- Sample fixture output validates with `scheduler_proof_ready=true`, `artifact_written=false`, `scheduler_install_enabled=false`, `daily_operation_enabled=false`, and state hash `5e1157dc9c710501cb2bf2e5dcdd3cc09afb40ee68164ff32d844e993843fb80`.
+- No current runtime scheduler proof, live terminal proof artifact, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-30 09:19:10 Australia/Sydney - S2PLT02 terminal delivery proof artifact draft builder
 
 - Added `build-s2plt02-terminal-delivery-proof-artifact-draft`, a stdout-only builder for future `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` candidates.

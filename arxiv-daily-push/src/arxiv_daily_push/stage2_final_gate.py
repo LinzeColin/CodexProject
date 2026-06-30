@@ -2680,6 +2680,111 @@ def build_s2plt02_terminal_delivery_proof_hash(payload: Mapping[str, Any]) -> st
     return _stable_hash({key: value for key, value in payload.items() if key != "acceptance_hash"})
 
 
+def validate_s2plt02_real_scheduler_proof_manifest(payload: Mapping[str, Any] | None) -> list[str]:
+    """Validate the scheduler proof input consumed by the S2PLT02 terminal proof draft builder."""
+
+    if payload is None:
+        return ["scheduler_proof is required"]
+    errors: list[str] = []
+    if not isinstance(payload.get("proof_ref"), str) or not payload.get("proof_ref"):
+        errors.append("scheduler_proof.proof_ref is required")
+    if payload.get("status") != "pass":
+        errors.append("scheduler_proof.status must be pass")
+    if payload.get("real_scheduler_proven") is not True:
+        errors.append("scheduler_proof.real_scheduler_proven must be true")
+    if payload.get("scheduler_evidence_present") is not True:
+        errors.append("scheduler_proof.scheduler_evidence_present must be true")
+    for flag in S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS:
+        if payload.get(flag) is not False:
+            errors.append(f"scheduler_proof.{flag} must be false")
+    return errors
+
+
+def build_s2plt02_real_scheduler_proof_validation_state(
+    *,
+    scheduler_proof: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Build a no-write validation state for a real scheduler proof input."""
+
+    validation_errors = validate_s2plt02_real_scheduler_proof_manifest(scheduler_proof)
+    scheduler_proof_ready = not validation_errors
+    state: dict[str, Any] = {
+        "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-REAL-SCHEDULER-PROOF-VALIDATION",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "status": "pass" if scheduler_proof_ready else "blocked",
+        "scope": "real_scheduler_proof_input_validation_no_scheduler_enablement",
+        "scheduler_proof_ready": scheduler_proof_ready,
+        "proof_ref": str(scheduler_proof.get("proof_ref") or "") if scheduler_proof is not None else "",
+        "validation_errors": validation_errors,
+        "blocking_reasons": [] if scheduler_proof_ready else ["real_scheduler_proof_not_valid"],
+        "artifact_written": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_real_scheduler_proof_validation_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate a no-write scheduler proof input validation state."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID:
+        errors.append("S2PLT02 real scheduler proof validation model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 real scheduler proof validation schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-REAL-SCHEDULER-PROOF-VALIDATION":
+        errors.append("S2PLT02 real scheduler proof validation task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 real scheduler proof validation acceptance_id is invalid")
+    if state.get("scope") != "real_scheduler_proof_input_validation_no_scheduler_enablement":
+        errors.append("S2PLT02 real scheduler proof validation scope is invalid")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 real scheduler proof validation status must be pass or blocked")
+    ready = state.get("scheduler_proof_ready") is True
+    if state.get("status") == "pass" and not ready:
+        errors.append("pass status requires scheduler_proof_ready")
+    if ready and state.get("validation_errors"):
+        errors.append("scheduler_proof_ready requires no validation_errors")
+    if not ready and "real_scheduler_proof_not_valid" not in state.get("blocking_reasons", []):
+        errors.append("blocked scheduler proof state must include real_scheduler_proof_not_valid")
+    if state.get("artifact_written") is not False:
+        errors.append("artifact_written must be false")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+        "current_pointer_changed",
+        "v7_1_baseline_changed",
+        "v7_2_contract_files_changed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 real scheduler proof validation state_hash does not match state content")
+    return errors
+
+
 def build_s2plt02_terminal_delivery_proof_artifact_draft_state(
     *,
     generated_at: str,
@@ -2696,16 +2801,12 @@ def build_s2plt02_terminal_delivery_proof_artifact_draft_state(
         str(service_date): [str(product) for product in products]
         for service_date, products in _mapping(ledger.get("products_by_service_date")).items()
     }
-    scheduler_ref = str(scheduler_proof.get("proof_ref") or "")
-    scheduler_valid = (
-        scheduler_proof.get("status") == "pass"
-        and scheduler_proof.get("real_scheduler_proven") is True
-        and scheduler_proof.get("scheduler_evidence_present") is True
-        and bool(scheduler_ref)
-    )
+    scheduler_validation = build_s2plt02_real_scheduler_proof_validation_state(scheduler_proof=scheduler_proof)
+    scheduler_ref = str(scheduler_validation.get("proof_ref") or "")
+    scheduler_valid = scheduler_validation.get("scheduler_proof_ready") is True
 
     blocking_reasons: list[str] = []
-    validation_errors = list(ledger.get("validation_errors") or [])
+    validation_errors = [str(error) for error in ledger.get("validation_errors") or []]
     if len(service_dates) < S2PLT02_REQUIRED_NATURAL_DAYS or not _s2plt02_terminal_delivery_proof_consecutive_dates(service_dates):
         blocking_reasons.append("two_consecutive_real_days_not_proven")
     if int(ledger.get("observed_email_count") or 0) < S2PLT02_REQUIRED_EMAIL_COUNT:
@@ -2716,9 +2817,7 @@ def build_s2plt02_terminal_delivery_proof_artifact_draft_state(
         blocking_reasons.append("real_smtp_not_proven")
     if scheduler_valid is not True:
         blocking_reasons.append("real_scheduler_proof_not_valid")
-    for flag in S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS:
-        if scheduler_proof.get(flag) is not False:
-            validation_errors.append(f"scheduler_proof.{flag} must be false")
+    validation_errors.extend(str(error) for error in scheduler_validation.get("validation_errors", []))
 
     state: dict[str, Any] = {
         "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
@@ -2730,6 +2829,7 @@ def build_s2plt02_terminal_delivery_proof_artifact_draft_state(
         "scope": "terminal_delivery_proof_candidate_builder_no_write_no_production_acceptance",
         "artifact_written": False,
         "delivery_evidence_ledger": ledger,
+        "scheduler_proof_validation": scheduler_validation,
         "scheduler_proof_ref": scheduler_ref,
         "blocking_reasons": blocking_reasons,
         "validation_errors": validation_errors,

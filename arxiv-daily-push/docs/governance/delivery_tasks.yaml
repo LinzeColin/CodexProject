@@ -5196,3 +5196,27 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR"
+    title: "S2PLT02 real scheduler proof input validator"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T09:48:07+10:00"
+    objective: "Add a no-write validator for the future real launchd scheduler proof manifest consumed by S2PLT02 terminal delivery proof assembly."
+    scope: "Final-gate scheduler proof validator, CLI command, terminal draft-builder reuse, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center status, and three base notes."
+    non_scope: "No current runtime scheduler proof, no live terminal delivery proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", "S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md", "governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_scheduler_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_real_scheduler_proof_validation_passes_without_writing_or_enabling_production arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_real_scheduler_proof_validation_blocks_production_side_effect_flags arxiv-daily-push/tests/test_cli.py::CliTests::test_validate_s2plt02_real_scheduler_proof_json_command", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_scheduler_target PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -k 'real_scheduler_proof or terminal_delivery_proof_artifact_draft'"]
+    test_results: ["TDD red failed before build_s2plt02_real_scheduler_proof_validation_state existed and before validate-s2plt02-real-scheduler-proof was recognized by the CLI", "focused scheduler validator and terminal draft-builder regression group: 4 passed"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "s2plt02_real_scheduler_proof_input_validator_ready_no_write_no_production"
+    risk: "A passing scheduler proof fixture can be misread as current runtime scheduler proof; the validator may only consume future real scheduler proof manifests under the validated live authorization."
+    rollback: "Revert the scheduler proof validator, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

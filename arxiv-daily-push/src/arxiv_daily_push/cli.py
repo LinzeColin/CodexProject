@@ -136,6 +136,7 @@ from .stage2_final_gate import (
     build_s2plt02_real_proof_capture_authorization_owner_packet_state,
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
+    build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt02_terminal_readiness_audit_state,
@@ -150,6 +151,7 @@ from .stage2_final_gate import (
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_real_proof_capture_readiness_state,
+    validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
     validate_s2plt04_completion_evidence_audit_state,
@@ -1329,6 +1331,21 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON draft wrapper. The command never writes the live authorization artifact.",
+    )
+
+    s2plt02_real_scheduler_proof = subparsers.add_parser(
+        "validate-s2plt02-real-scheduler-proof",
+        help="Validate a real scheduler proof input without enabling scheduler or accepting production.",
+    )
+    s2plt02_real_scheduler_proof.add_argument(
+        "--scheduler-proof",
+        required=True,
+        help="Real launchd scheduler proof manifest JSON to validate as S2PLT02 input.",
+    )
+    s2plt02_real_scheduler_proof.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON scheduler proof validation state.",
     )
 
     s2plt02_terminal_delivery_proof = subparsers.add_parser(
@@ -3911,6 +3928,26 @@ def main(argv: list[str] | None = None) -> int:
             for error in report.get("validation_errors", []):
                 print(f"- error: {error}")
         return 0 if report["status"] == "pass" else 2
+    if args.command == "validate-s2plt02-real-scheduler-proof":
+        report = build_s2plt02_real_scheduler_proof_validation_state(
+            scheduler_proof=load_json_mapping(args.scheduler_proof)
+        )
+        state_errors = validate_s2plt02_real_scheduler_proof_validation_state(report)
+        if state_errors:
+            report = {**report, "state_validation_errors": state_errors}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- scheduler_proof_ready: {report.get('scheduler_proof_ready')}")
+            print(f"- proof_ref: {report.get('proof_ref')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+            for error in state_errors:
+                print(f"- state_error: {error}")
+        return 0 if report["status"] == "pass" and not state_errors else 2
     if args.command == "build-s2plt02-terminal-delivery-proof-artifact-draft":
         report = build_s2plt02_terminal_delivery_proof_artifact_draft_state(
             generated_at=args.generated_at,

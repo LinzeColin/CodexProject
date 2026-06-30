@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260630-ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER"
+as_of_event_id: "EVENT-20260630-ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR"
 source_snapshot_hash: "sha256:5d1e25e69f353a9b13a3f9d463b25d2f9ed93fb69d2ee3f860bedf4ac199fb98"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER_READY_NO_WRITE_NO_PRODUCTION"
+  release_gate: "S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR_READY_NO_WRITE_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -84,7 +84,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
   status: "blocked"
-  reason: "S2PLT01 terminal acceptance, P0/P1 zero-proof, live S2PLT02 real-proof capture authorization, and S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER are validated inputs, but S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT shows 2026-06-29/2026-06-30 are dry-run only, ADP_ALLOW_SMTP_SEND=false, launchd labels remain disabled, and S2PLT02 still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real launchd scheduler proof, and reviewed terminal delivery proof artifact."
+  reason: "S2PLT01 terminal acceptance, P0/P1 zero-proof, live S2PLT02 real-proof capture authorization, S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER, and S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR are validated inputs, but S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT shows 2026-06-29/2026-06-30 are dry-run only, ADP_ALLOW_SMTP_SEND=false, launchd labels remain disabled, and S2PLT02 still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real launchd scheduler proof, and reviewed terminal delivery proof artifact."
   acceptance_ids:
     - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"

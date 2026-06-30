@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 283
+- task_count: 284
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 09:48:07 Australia/Sydney - S2PLT02 Real Scheduler Proof Input Validator
+
+- `S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR` adds a no-write validator for the future real launchd scheduler proof manifest used by S2PLT02 terminal delivery proof assembly.
+- The validator checks explicit scheduler proof input, no-production flags, and stable state hash while keeping `artifact_written=false`.
+- Sample fixture result: `status=pass`, `scheduler_proof_ready=true`, `artifact_written=false`, state hash `5e1157dc9c710501cb2bf2e5dcdd3cc09afb40ee68164ff32d844e993843fb80`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not prove current scheduler runtime, write terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 09:19:10 Australia/Sydney - S2PLT02 Terminal Delivery Proof Artifact Draft Builder
 

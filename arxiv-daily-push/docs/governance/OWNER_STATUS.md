@@ -8,7 +8,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
-最新补丁新增 `S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER`：它可以在未来收到两个真实 M1-M4 delivery manifest 和真实 scheduler proof manifest 后生成 stdout-only terminal proof 候选 artifact，并自校验 sample candidate；当前 `artifact_written=false`。此前 live authorization 仍有效，但 `S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT` 显示 `2026-06-29` 与 `2026-06-30` 的 M1-M4 运行仍是 dry-run，`ADP_ALLOW_SMTP_SEND=false`，ADP launchd labels 仍被 disabled override 阻断；这不是 S2PLT02 terminal proof、S2PLT03 proof、S2PLT04 completion、final bundle 或生产验收。
+最新补丁新增 `S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR`：它单独校验未来真实 launchd scheduler proof manifest，然后该 manifest 才能进入 terminal proof 候选生成器；当前 `artifact_written=false`、`scheduler_install_enabled=false`，且不证明本机 runtime scheduler。此前 live authorization 和 terminal proof draft builder 仍有效，但 `S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT` 显示 `2026-06-29` 与 `2026-06-30` 的 M1-M4 运行仍是 dry-run，`ADP_ALLOW_SMTP_SEND=false`，ADP launchd labels 仍被 disabled override 阻断；这不是 S2PLT02 terminal proof、S2PLT03 proof、S2PLT04 completion、final bundle 或生产验收。
 
 ## 3. 为什么重要
 
@@ -37,7 +37,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
 - acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW`
 - unblock_condition: Use the validated live authorization for real SMTP/scheduler proof capture only to collect a second consecutive real M1-M4 SMTP service day, real launchd scheduler proof, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json before any S2PLT04 or final bundle closure claim.
-- latest_traceability_sync: `S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER` / `PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md` is now linked from the user center and traceability matrix; it records a no-write stdout candidate builder, while `S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT` remains the current dry-run/scheduler-disabled blocker evidence, not terminal delivery proof.
+- latest_traceability_sync: `S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR` / `PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md` is now linked from the user center and traceability matrix; it records a no-write scheduler proof input validator, while `S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT` remains the current dry-run/scheduler-disabled blocker evidence, not terminal delivery proof.
 
 ## 8. 九层 Assurance 状态
 
@@ -81,7 +81,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER_READY_NO_WRITE_NO_PRODUCTION`
+- release_gate: `S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR_READY_NO_WRITE_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -104,9 +104,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-29T23:21:34+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER_READY_NO_WRITE_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR_READY_NO_WRITE_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PLT02-TERMINAL-DELIVERY-PROOF`
-- reason: Live authorization is validated and a stdout-only terminal proof draft builder is ready, but the current capture window is still dry-run/scheduler-disabled: 2026-06-29 and 2026-06-30 provide no terminal delivery credit, so second real SMTP day, 8 real emails, real scheduler proof, and reviewed terminal delivery proof artifact are still missing before S2PLT02 can be accepted.
+- reason: Live authorization, stdout-only terminal proof draft builder, and scheduler proof input validator are ready, but the current capture window is still dry-run/scheduler-disabled: 2026-06-29 and 2026-06-30 provide no terminal delivery credit, so second real SMTP day, 8 real emails, real scheduler proof, and reviewed terminal delivery proof artifact are still missing before S2PLT02 can be accepted.
