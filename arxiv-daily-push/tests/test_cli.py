@@ -1372,6 +1372,15 @@ class CliTests(unittest.TestCase):
         self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(capture_summary["authorization_artifact_status"], "pass")
         self.assertFalse(capture_summary["runtime_capture_ready"])
+        self.assertEqual(capture_summary["observed_real_delivery_days"], 1)
+        self.assertEqual(capture_summary["observed_real_email_count"], 4)
+        self.assertEqual(capture_summary["required_real_delivery_days"], 2)
+        self.assertEqual(capture_summary["required_real_email_count"], 8)
+        self.assertEqual(capture_summary["remaining_runtime_actions"], [
+            "capture_second_consecutive_real_m1_m4_smtp_day",
+            "capture_real_launchd_scheduler_proof",
+            "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
+        ])
         self.assertIn("real_launchd_scheduler_proof_missing", capture_summary["runtime_capture_blockers"])
         self.assertEqual(payload["next_executable_command"], "")
         self.assertEqual(payload["next_executable_command_args"], {})
@@ -1776,6 +1785,20 @@ class CliTests(unittest.TestCase):
             payload["final_bundle_prerequisite_plan"]["s2plt02_terminal_delivery_capture_plan_summary"],
         )
         self.assertFalse(payload["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
+        self.assertEqual(payload["s2plt02_runtime_readiness_summary"]["status"], "blocked")
+        self.assertTrue(payload["s2plt02_runtime_readiness_summary"]["real_proof_capture_authorized"])
+        self.assertEqual(
+            payload["s2plt02_runtime_readiness_summary"]["remaining_next_actions"],
+            [
+                "capture_second_consecutive_real_m1_m4_smtp_day",
+                "capture_real_launchd_scheduler_proof",
+                "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
+            ],
+        )
+        self.assertEqual(
+            payload["s2plt02_runtime_readiness_summary"],
+            payload["final_bundle_prerequisite_plan"]["s2plt02_runtime_readiness_summary"],
+        )
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])

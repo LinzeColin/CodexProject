@@ -3975,6 +3975,11 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         }
     ]
     runtime_capture_ready = authorization_valid and not runtime_capture_blockers
+    remaining_runtime_actions = [
+        action
+        for action in S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS
+        if not (authorization_valid and action == "obtain_explicit_owner_authorization_for_real_smtp_scheduler")
+    ]
     capture_steps = [
         {
             "step_id": "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY",
@@ -4079,6 +4084,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "real_proof_capture_authorized": authorization_valid,
         "runtime_capture_ready": runtime_capture_ready,
         "runtime_capture_blockers": runtime_capture_blockers,
+        "remaining_runtime_actions": remaining_runtime_actions,
         "ready_inputs": list(inventory.get("ready_inputs", [])),
         "blocked_by_missing_inputs": missing_inputs,
         "blocking_reasons": blocking_reasons,
@@ -4153,6 +4159,12 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         errors.append("S2PLT02 terminal delivery proof capture plan evidence inventory hash is required")
     if not isinstance(state.get("runtime_capture_blockers"), list):
         errors.append("S2PLT02 terminal delivery proof capture plan runtime blockers must be a list")
+    if not isinstance(state.get("remaining_runtime_actions"), list):
+        errors.append("S2PLT02 terminal delivery proof capture plan remaining runtime actions must be a list")
+    elif state.get("real_proof_capture_authorized") is True and (
+        "obtain_explicit_owner_authorization_for_real_smtp_scheduler" in state.get("remaining_runtime_actions", [])
+    ):
+        errors.append("authorized S2PLT02 capture plan must not keep owner authorization as a remaining action")
     authorization_valid = (
         state.get("authorization_artifact_status") == "pass"
         and state.get("authorization_validation_errors") == []
@@ -8507,6 +8519,34 @@ def build_final_bundle_prerequisite_plan_state(
             ),
             "runtime_capture_ready": s2plt02_capture_plan.get("runtime_capture_ready"),
             "runtime_capture_blockers": list(s2plt02_capture_plan.get("runtime_capture_blockers", [])),
+            "remaining_runtime_actions": list(s2plt02_capture_plan.get("remaining_runtime_actions", [])),
+            "blocked_by_missing_inputs": list(s2plt02_capture_plan.get("blocked_by_missing_inputs", [])),
+            "observed_real_delivery_days": s2plt02_capture_plan.get("observed_real_delivery_days"),
+            "required_real_delivery_days": s2plt02_capture_plan.get("required_real_delivery_days"),
+            "observed_real_email_count": s2plt02_capture_plan.get("observed_real_email_count"),
+            "required_real_email_count": s2plt02_capture_plan.get("required_real_email_count"),
+        }
+        if s2plt04_blocked_by_upstream_evidence
+        else {}
+    )
+    s2plt02_runtime_readiness_summary = (
+        {
+            "status": s2plt02_capture_plan.get("status"),
+            "state_hash": s2plt02_capture_plan.get("state_hash"),
+            "authorization_artifact_status": s2plt02_capture_plan.get("authorization_artifact_status"),
+            "authorization_validation_state_hash": s2plt02_capture_plan.get(
+                "authorization_validation_state_hash"
+            ),
+            "real_proof_capture_authorized": s2plt02_capture_plan.get("real_proof_capture_authorized"),
+            "runtime_capture_ready": s2plt02_capture_plan.get("runtime_capture_ready"),
+            "runtime_capture_blockers": list(s2plt02_capture_plan.get("runtime_capture_blockers", [])),
+            "remaining_next_actions": list(s2plt02_capture_plan.get("remaining_runtime_actions", [])),
+            "blocked_by_missing_inputs": list(s2plt02_capture_plan.get("blocked_by_missing_inputs", [])),
+            "observed_real_delivery_days": s2plt02_capture_plan.get("observed_real_delivery_days"),
+            "required_real_delivery_days": s2plt02_capture_plan.get("required_real_delivery_days"),
+            "observed_real_email_count": s2plt02_capture_plan.get("observed_real_email_count"),
+            "required_real_email_count": s2plt02_capture_plan.get("required_real_email_count"),
+            "next_executable_step": s2plt02_capture_plan.get("next_executable_step"),
         }
         if s2plt04_blocked_by_upstream_evidence
         else {}
@@ -8570,6 +8610,7 @@ def build_final_bundle_prerequisite_plan_state(
             else ""
         ),
         "s2plt02_terminal_delivery_capture_plan_summary": s2plt02_capture_plan_summary,
+        "s2plt02_runtime_readiness_summary": s2plt02_runtime_readiness_summary,
         "next_executable_command": (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_COMMAND
             if next_executable_is_s2plt02_auth
@@ -8767,6 +8808,18 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             errors.append("S2PLT02 capture plan summary runtime_capture_ready must be boolean")
         if not isinstance(capture_plan_summary.get("runtime_capture_blockers"), list):
             errors.append("S2PLT02 capture plan summary runtime_capture_blockers must be a list")
+        if not isinstance(capture_plan_summary.get("remaining_runtime_actions"), list):
+            errors.append("S2PLT02 capture plan summary remaining_runtime_actions must be a list")
+        if not isinstance(capture_plan_summary.get("blocked_by_missing_inputs"), list):
+            errors.append("S2PLT02 capture plan summary blocked_by_missing_inputs must be a list")
+        for numeric_field in (
+            "observed_real_delivery_days",
+            "required_real_delivery_days",
+            "observed_real_email_count",
+            "required_real_email_count",
+        ):
+            if not isinstance(capture_plan_summary.get(numeric_field), int):
+                errors.append(f"S2PLT02 capture plan summary {numeric_field} must be an integer")
         if (
             expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
             and capture_plan_summary.get("next_executable_step")
@@ -8774,8 +8827,19 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             and capture_plan_summary.get("runtime_capture_blockers")
         ):
             errors.append("S2PLT02 runtime blockers must prevent direct SMTP/scheduler capture routing")
+        runtime_summary = _mapping(state.get("s2plt02_runtime_readiness_summary"))
+        if runtime_summary.get("state_hash") != capture_plan_summary.get("state_hash"):
+            errors.append("S2PLT02 runtime readiness summary hash must match capture plan summary")
+        if runtime_summary.get("remaining_next_actions") != capture_plan_summary.get("remaining_runtime_actions"):
+            errors.append("S2PLT02 runtime readiness summary actions must match capture plan summary")
+        if runtime_summary.get("runtime_capture_blockers") != capture_plan_summary.get("runtime_capture_blockers"):
+            errors.append("S2PLT02 runtime readiness summary blockers must match capture plan summary")
+        if runtime_summary.get("runtime_capture_ready") != capture_plan_summary.get("runtime_capture_ready"):
+            errors.append("S2PLT02 runtime readiness summary readiness flag must match capture plan summary")
     elif capture_plan_summary:
         errors.append("S2PLT02 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
+    elif state.get("s2plt02_runtime_readiness_summary"):
+        errors.append("S2PLT02 runtime readiness summary must be empty when S2PLT04 is not upstream-blocked")
     expected_next_executable_runtime_step = (
         str(capture_plan_summary.get("next_executable_step") or "")
         if expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
@@ -9480,6 +9544,9 @@ def build_final_acceptance_bundle_readiness_state(
         "s2plt02_terminal_delivery_capture_plan_summary": dict(
             final_bundle_prerequisite_plan.get("s2plt02_terminal_delivery_capture_plan_summary", {})
         ),
+        "s2plt02_runtime_readiness_summary": dict(
+            final_bundle_prerequisite_plan.get("s2plt02_runtime_readiness_summary", {})
+        ),
         "final_bundle_prerequisite_plan": final_bundle_prerequisite_plan,
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_assembly": p0_p1_zero_proof_assembly,
@@ -9644,6 +9711,12 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     ):
         errors.append(
             "final acceptance bundle readiness S2PLT02 capture-plan summary must match nested prerequisite plan"
+        )
+    if state.get("s2plt02_runtime_readiness_summary") != final_bundle_prerequisite_plan.get(
+        "s2plt02_runtime_readiness_summary"
+    ):
+        errors.append(
+            "final acceptance bundle readiness S2PLT02 runtime readiness summary must match nested prerequisite plan"
         )
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):

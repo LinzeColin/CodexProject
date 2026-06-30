@@ -5429,6 +5429,21 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(capture_summary["authorization_artifact_status"], "pass")
         self.assertFalse(capture_summary["runtime_capture_ready"])
+        self.assertEqual(capture_summary["observed_real_delivery_days"], 1)
+        self.assertEqual(capture_summary["observed_real_email_count"], 4)
+        self.assertEqual(capture_summary["required_real_delivery_days"], 2)
+        self.assertEqual(capture_summary["required_real_email_count"], 8)
+        self.assertEqual(capture_summary["blocked_by_missing_inputs"], [
+            "SECOND_REAL_DELIVERY_DAY",
+            "EIGHT_REAL_EMAILS",
+            "REAL_SCHEDULER_PROOF",
+            "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+        ])
+        self.assertEqual(capture_summary["remaining_runtime_actions"], [
+            "capture_second_consecutive_real_m1_m4_smtp_day",
+            "capture_real_launchd_scheduler_proof",
+            "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
+        ])
         self.assertIn("adp_allow_smtp_send_false", capture_summary["runtime_capture_blockers"])
         self.assertIn("blocked_candidate_inputs_present", capture_summary["runtime_capture_blockers"])
         self.assertEqual(plan["next_executable_command"], "")
@@ -5738,9 +5753,23 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2",
+            "dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee",
         )
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
+        self.assertEqual(state["s2plt02_runtime_readiness_summary"]["status"], "blocked")
+        self.assertTrue(state["s2plt02_runtime_readiness_summary"]["real_proof_capture_authorized"])
+        self.assertEqual(
+            state["s2plt02_runtime_readiness_summary"]["remaining_next_actions"],
+            [
+                "capture_second_consecutive_real_m1_m4_smtp_day",
+                "capture_real_launchd_scheduler_proof",
+                "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
+            ],
+        )
+        self.assertEqual(
+            state["s2plt02_runtime_readiness_summary"],
+            prerequisite_plan["s2plt02_runtime_readiness_summary"],
+        )
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION"])
         self.assertNotIn("final_acceptance_bundle_directory_missing", directory_validation["blocking_reasons"])
         self.assertNotIn("no_production_side_effect_attestation_missing", directory_validation["blocking_reasons"])

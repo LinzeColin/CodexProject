@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 303
+- task_count: 304
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 19:35:53 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Runtime Readiness Summary
+
+- `S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY` makes `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle` expose a dedicated S2PLT02 runtime readiness summary at top level.
+- Current live CLIs remain blocked / exit 2: final validator `state_hash=a386b1848f2abcdc29e104759f3873173576572d8433af0a2448235d107daa92`, prerequisite plan `state_hash=ccdc7b1d95af5a88943e8631e34523bbb8705360fd688aa02152339d04404fee`, S2PLT02 runtime readiness `state_hash=dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee`, `next_required_step=S2PLT04_COMPLETION_REPORT`, `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF`, and `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`.
+- Remaining runtime actions are `capture_second_consecutive_real_m1_m4_smtp_day`, `capture_real_launchd_scheduler_proof`, and `write_and_validate_s2plt02_terminal_delivery_proof_artifact`; missing inputs remain `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_RUNTIME_READINESS_SUMMARY.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT03 terminal proof, write S2PLT04 completion report, create final-bundle manifest/handoff/signoff/final-command proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 19:00:51 Australia/Sydney - S2PMT07 Final Bundle Validator Runtime Step Summary
 
