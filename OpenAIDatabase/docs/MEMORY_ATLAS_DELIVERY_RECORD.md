@@ -122,6 +122,8 @@ Writeback：
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.2 首页预览组件；首页新增轻量 `Mini Starfield`、近期主题变化 `River Pulse` 和 `Inspector Deep Link`，点击前同步当前焦点再进入 Galaxy、Timeline 或详情检索；Stage 3 整体复审通过，仍未替换 Galaxy/Timeline、未直接写回长期记忆、未读取 raw/private 数据。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 4.1 Galaxy Rendering Integration；`memory-starfield` 成为 Galaxy 默认生产 renderer，`legacy` 可通过 feature flag 回滚；生产 Galaxy 增加 Flow Field 动态、轨迹线、语义信号标记、quality selector 和低质量 fallback，仍未进入 Stage 4.2 数据映射或 Stage 4.3 交互扩展。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 4.2 Data Mapping；生产 Galaxy 的 cluster mass、粒子大小/亮度/颜色、轨迹强度和 Memory Terrain 映射改为读取 `config/visualization/model_parameters.memory_starfield.yaml`；Presentation 保持轻提示，Analysis panel 可解释 ridge、shoreline、valley、basin、fault-line 地形；仍未进入 Stage 4.3 交互扩展、Timeline 替换、写回或 Cloudflare 部署。
+- 2026-07-01：完成 Memory Atlas v1.1.5 Stage 4.3 Starfield Interaction；生产 Galaxy 保留 hover preview 和 capped click focus，新增 Freeze / Resume Flow，新增 Presentation / Analysis mode selector；Analysis 显示公式摘要、terrain legend 和当前 Inspector 上下文；Stage 5 Timeline 替换、写回、Cloudflare 部署和 raw/private data 仍未进入。
+- 2026-07-01：完成 Memory Atlas v1.1.5 Stage 4 整体复审；复审确认 visual roadmap `记忆星系生产集成` 的 4.1/4.2/4.3 均通过，本地 contract、build、visual acceptance、release acceptance、preview HTTP 和 4177 清理通过；真实浏览器 screenshot/canvas-pixel/FPS 证据仍因本机 Playwright/浏览器控制不可用而保留为后续验证 caveat。
 
 近期提交参考：
 

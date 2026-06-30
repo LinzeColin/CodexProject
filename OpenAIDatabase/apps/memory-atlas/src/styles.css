@@ -1467,7 +1467,8 @@ h3 {
 }
 
 .galaxy-renderer-toggle,
-.galaxy-quality-tabs {
+.galaxy-quality-tabs,
+.galaxy-mode-tabs {
   display: inline-flex;
   align-items: center;
   gap: 3px;
@@ -1479,7 +1480,8 @@ h3 {
 }
 
 .galaxy-renderer-toggle button,
-.galaxy-quality-tabs button {
+.galaxy-quality-tabs button,
+.galaxy-mode-tabs button {
   min-height: 24px;
   border: 0;
   border-radius: 6px;
@@ -1490,7 +1492,8 @@ h3 {
 }
 
 .galaxy-renderer-toggle button[aria-pressed="true"],
-.galaxy-quality-tabs button[aria-pressed="true"] {
+.galaxy-quality-tabs button[aria-pressed="true"],
+.galaxy-mode-tabs button[aria-pressed="true"] {
   background: rgba(126, 224, 248, 0.18);
   color: #f4f1e8;
 }
@@ -1618,12 +1621,20 @@ h3 {
   cursor: pointer;
 }
 
-.galaxy-quality-tabs button {
+.galaxy-quality-tabs button,
+.galaxy-mode-tabs button {
   width: auto;
   height: 24px;
   min-width: 34px;
   padding: 0 7px;
+}
+
+.galaxy-quality-tabs button {
   text-transform: uppercase;
+}
+
+.galaxy-mode-tabs button {
+  min-width: 58px;
 }
 
 .galaxy-flow-control {
@@ -1683,6 +1694,9 @@ h3 {
 }
 
 .terrain-panel-heading strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: #f4f1e8;
   font-size: 13px;
 }
@@ -1763,6 +1777,42 @@ h3 {
   grid-column: 1 / -1;
   color: #8fd3ff;
   font-size: 10px;
+}
+
+.terrain-formula-grid,
+.terrain-inspector-strip {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(244, 241, 232, 0.09);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.035);
+  padding: 8px;
+}
+
+.terrain-formula-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.terrain-formula-grid div,
+.terrain-inspector-strip {
+  min-width: 0;
+}
+
+.terrain-formula-grid b,
+.terrain-inspector-strip b {
+  display: block;
+  color: #f4f1e8;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.terrain-formula-grid span,
+.terrain-inspector-strip span {
+  display: block;
+  color: #b6b1a6;
+  font-size: 10px;
+  line-height: 1.32;
+  overflow-wrap: anywhere;
 }
 
 .galaxy-hover-preview {
@@ -4149,6 +4199,10 @@ h3 {
     max-height: min(42%, 320px);
   }
 
+  .terrain-formula-grid {
+    grid-template-columns: 1fr;
+  }
+
   .semantic-panel {
     min-height: 260px;
   }
@@ -4793,6 +4847,10 @@ h3 {
     left: 10px;
     width: auto;
     max-height: 36%;
+  }
+
+  .terrain-formula-grid {
+    grid-template-columns: 1fr;
   }
 
   .galaxy-flow-control {

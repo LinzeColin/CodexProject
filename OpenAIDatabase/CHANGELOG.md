@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 4.3 Starfield Interaction
+
+- Added Memory Starfield `Freeze Flow Field` / `Resume Flow Field` control so
+  users can pause motion for reading and resume the same flow without leaving
+  the Galaxy board.
+- Promoted the terrain explanation toggle into a formal Presentation /
+  Analysis mode selector. Presentation stays clean; Analysis shows formula
+  summary, terrain legend and selected-node Inspector context.
+- Preserved transient hover preview and capped click-focus behavior while
+  adding deterministic interaction contract validation and visual acceptance
+  coverage for Stage 4.3.
+- Completed the Stage 4 whole-stage review for visual roadmap `记忆星系生产集成`
+  and recorded the remaining browser-automation evidence caveat.
+
+No Timeline replacement, ingestion, raw/private data access, direct writeback,
+Cloudflare live deploy, or external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 4.2 Data Mapping
 
 - Added a parameter-backed Memory Starfield mapping module that reads
