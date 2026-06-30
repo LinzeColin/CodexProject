@@ -1,0 +1,35 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 5",
+  "phase_id": "V023-S5-P5.3",
+  "phase_name": "去 AI 痕迹",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "no_forbidden_financial_data": true,
+  "github_main_upload": false,
+  "stage5_whole_stage_review": false,
+  "stage6_started": false,
+  "scope": [
+    "home developer terminology cleanup",
+    "home settings feedback isolation",
+    "home report and settings routing policy",
+    "home forbidden visible text tests"
+  ],
+  "evidence_files": [
+    "PFI/reports/pfi_v023/stage_5/phase_5_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_5/phase_5_3/home_surface_policy.json",
+    "PFI/reports/pfi_v023/stage_5/phase_5_3/terminal.log",
+    "PFI/reports/pfi_v023/stage_5/phase_5_3/changed_files.txt"
+  ],
+  "validation_commands": [
+    "node --check PFI/web/app/pages/home.js",
+    "node --check PFI/web/app/shell.js",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q"
+  ],
+  "notes": [
+    "This phase only changes the home product surface and its tests.",
+    "Whole-stage review and upload remain pending."
+  ]
+}

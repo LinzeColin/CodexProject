@@ -2420,8 +2420,11 @@ function applyStage5Phase51Home() {
   const api = stage5HomeExperience || window.PFI_V023_STAGE5_HOME;
   if (!api || typeof api.buildStage5HomeViewModel !== "function") return;
   const view = api.buildStage5HomeViewModel({});
-  WORKSPACES.home.conclusion = "先看我现在有多少钱、钱在哪里、数据健康和最近变化，再进入具体页面处理。";
-  WORKSPACES.home.runtime = "首页信息架构：财务状态、钱在哪里、数据健康、最近变化";
+  WORKSPACES.home.conclusion = ownerVisibleText(
+    view.home_conclusion,
+    "先看财务状态、数据健康、下一步动作、最近变化，再进入报告。",
+  );
+  WORKSPACES.home.runtime = ownerVisibleText(view.home_runtime_label, "财务状态与下一步动作");
   if (Array.isArray(view.home_cards) && view.home_cards.length) {
     WORKSPACES.home.cards = view.home_cards;
   }
@@ -2444,10 +2447,26 @@ function applyStage5Phase51Home() {
   }
   WORKSPACES.home.evidence = evidence(
     "首页说明",
-    "Stage 5 Phase 5.1 首页信息架构",
-    "Stage 2 数据状态机",
-    "首页只展示财务状态摘要、钱在哪里、数据健康和最近变化；下一步动作生成留到 Phase 5.2。",
+    "首页信息架构",
+    "数据状态",
+    "首页只展示财务状态摘要、数据健康、下一步动作、最近变化和报告入口。",
   );
+}
+
+function applyStage5Phase53HomeSurfacePolicy(workspaceId) {
+  const isHome = workspaceId === "home";
+  document.querySelectorAll("[data-evidence-toggle]").forEach((button) => {
+    button.hidden = isHome;
+    button.setAttribute("aria-hidden", isHome ? "true" : "false");
+    button.tabIndex = isHome ? -1 : 0;
+  });
+  if (!isHome) return;
+  const drawer = document.querySelector("[data-evidence-drawer]");
+  if (drawer) {
+    drawer.classList.remove("is-open");
+    drawer.setAttribute("aria-expanded", "false");
+  }
+  hideFunctionDetail();
 }
 
 function applyStage3Dashboard(dashboard) {
@@ -3712,6 +3731,7 @@ function renderWorkspace(workspaceId, options = {}) {
   main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none";
   const settingsConsole = document.querySelector("[data-settings-feedback-console]");
   if (settingsConsole) settingsConsole.hidden = workspaceId !== "settings";
+  applyStage5Phase53HomeSurfacePolicy(workspaceId);
   shell.dataset.state = "ready";
 
   renderCards(workspace.cards);
