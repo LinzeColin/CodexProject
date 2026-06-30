@@ -1,0 +1,156 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 4",
+  "stage_name": "二级页面差异化重建",
+  "review_id": "PFI-V023-STAGE4-REVIEW",
+  "review_name": "Stage 4 closeout review",
+  "created_at": "2026-06-30T11:11:59+10:00",
+  "status": "pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_stage_only": true,
+  "max_one_stage_per_run": true,
+  "review_scope": [
+    "Stage 4 Phase 4.1 accounts/ledger/investment subpages",
+    "Stage 4 Phase 4.2 consumption/sync/insights subpages",
+    "Stage 4 Phase 4.3 market/settings/recommendations subpages",
+    "Stage 4 whole-stage subpage coverage and upload readiness"
+  ],
+  "phase_statuses": [
+    {
+      "phase_id": "V023-S4-P4.1",
+      "status": "candidate_pass",
+      "evidence": "PFI/reports/pfi_v023/stage_4/phase_4_1/evidence.json"
+    },
+    {
+      "phase_id": "V023-S4-P4.2",
+      "status": "candidate_pass",
+      "evidence": "PFI/reports/pfi_v023/stage_4/phase_4_2/evidence.json"
+    },
+    {
+      "phase_id": "V023-S4-P4.3",
+      "status": "candidate_pass",
+      "evidence": "PFI/reports/pfi_v023/stage_4/phase_4_3/evidence.json"
+    }
+  ],
+  "stage4_contract": {
+    "official_primary_entries_count_is_10": true,
+    "all_10_primary_entries_have_3_to_5_subpages": true,
+    "subpage_count": 45,
+    "subpages_have_independent_layouts": true,
+    "subpages_have_independent_primary_objects": true,
+    "subpages_have_independent_primary_actions": true,
+    "subpages_have_empty_and_error_states": true,
+    "url_state_breadcrumb_title_change": true,
+    "no_template_clone": true,
+    "screenshots_show_differences": true,
+    "review_findings_fixed": [
+      "home_subpages_missing_from_stage4_catalog"
+    ]
+  },
+  "browser_review": {
+    "path": "PFI/reports/pfi_v023/stage_4/stage4_review/browser_review.json",
+    "all_10_primary_entries_have_subpages": true,
+    "home_subpages_differentiated": true,
+    "all_workspaces_differentiated": true,
+    "url_state_breadcrumb_title_changed": true,
+    "empty_and_error_states_present": true,
+    "screenshots_show_differences": true,
+    "console_errors": []
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+      "exit_code": 1,
+      "summary": "RED review regression: 3 failed because home subpages were missing from Stage 4 catalog and stage4_review evidence was missing"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "Stage 4 pages catalog and shell syntax checks passed after home subpage fix"
+    },
+    {
+      "command": "Google Chrome headless via playwright on PFI/web/index.html",
+      "exit_code": 0,
+      "summary": "Stage 4 whole-stage browser review checked 45 subpages across 10 primary entries; screenshots captured"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+      "exit_code": 0,
+      "summary": "Stage 4 closeout target test: 17 passed, 64 subtests passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "v0.2.3 regression suite: 76 passed, 64 subtests passed"
+    },
+    {
+      "command": "PFI/.venv/bin/python -m json.tool Stage 4 Phase 4.1/4.2/4.3 and stage4_review evidence/browser JSON files",
+      "exit_code": 0,
+      "summary": "Stage 4 phase and review JSON evidence files are valid"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage4_subpage_differentiation.py",
+      "exit_code": 0,
+      "summary": "Stage 4 subpage differentiation test compiles"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js",
+      "exit_code": 0,
+      "summary": "Stage 4 pages, shell, and routes syntax checks passed"
+    },
+    {
+      "command": "rg -n -i \"\\b(mock|sample|synthetic|fixture|demo|fake)\\b\" PFI/web/app/pages/stage4Subpages.js PFI/web/app/shell.js PFI/tests/test_v023_stage4_subpage_differentiation.py PFI/docs/pfi_v023/STAGE4_SUBPAGES.md",
+      "exit_code": 1,
+      "summary": "No forbidden fake-data terms found in Stage 4 source, test, or docs files"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "No whitespace errors in Stage 4 closeout diff"
+    },
+    {
+      "command": "git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main && git rev-list --left-right --count HEAD...origin/main",
+      "exit_code": 0,
+      "summary": "origin/main remained a5caba74; local branch ahead 3 and behind 0 before Stage 4 review commit"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE4_SUBPAGES.md",
+    "PFI/reports/pfi_v023/stage_4/stage4_review/browser_review.json",
+    "PFI/reports/pfi_v023/stage_4/stage4_review/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_4/stage4_review/evidence.json",
+    "PFI/reports/pfi_v023/stage_4/stage4_review/screenshots/stage4_review_all_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/stage4_review/screenshots/stage4_review_home_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/stage4_review/terminal.log",
+    "PFI/tests/test_v023_stage4_subpage_differentiation.py",
+    "PFI/web/app/pages/stage4Subpages.js",
+    "PFI/web/app/shell.js"
+  ],
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/stage4_review/screenshots/stage4_review_all_subpages.png",
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/stage4_review/screenshots/stage4_review_home_subpages.png"
+  ],
+  "github_upload": {
+    "required_after_stage_review": true,
+    "status_at_evidence_write": "pending_post_commit_push",
+    "verification_surface": "post-push git ls-remote terminal proof"
+  },
+  "review_findings": [
+    {
+      "id": "home_subpages_missing_from_stage4_catalog",
+      "severity": "important",
+      "status": "fixed",
+      "description": "Stage 4 Task Pack requires every formal primary entry to have 3-5 secondary pages. Phase 4.1-4.3 covered 9 primary entries; home was missing from Stage 4 catalog.",
+      "fix": "Added four home Stage 4 review subpages: financial status, todo, quick actions, and recent reports."
+    }
+  ],
+  "explicitly_not_done": [
+    "Stage 5 homepage human task flow rebuild",
+    "Stage 6 and later work",
+    "PFI.app bundle rebuild",
+    "localhost app-runtime acceptance"
+  ],
+  "requires_user_acceptance": true
+}

@@ -108,6 +108,26 @@ PHASE43_LEGACY_ALIAS_TARGETS = {
     "/settings/data": "/settings?tab=data-system",
 }
 
+STAGE4_REVIEW_WORKSPACES = {
+    "home": {
+        "label": "首页总览",
+        "routes": [
+            "/home?tab=status",
+            "/home?tab=todo",
+            "/home?tab=actions",
+            "/home?tab=reports",
+        ],
+        "required_objects": {"财务状态", "待办事项", "快捷操作", "最近报告"},
+    },
+}
+
+STAGE4_ALL_WORKSPACES = {
+    **STAGE4_REVIEW_WORKSPACES,
+    **PHASE41_WORKSPACES,
+    **PHASE42_WORKSPACES,
+    **PHASE43_WORKSPACES,
+}
+
 REQUIRED_PAGE_FIELDS = {
     "routeAlias",
     "title",
@@ -127,6 +147,28 @@ def load_stage4_pages() -> dict[str, object]:
     script = """
 const pages = require('./PFI/web/app/pages/stage4Subpages.js');
 console.log(JSON.stringify(pages));
+"""
+    completed = subprocess.run(
+        [NODE, "-e", script],
+        cwd=ROOT.parent,
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+    return json.loads(completed.stdout)
+
+
+def combined_stage4_catalog(payload: dict[str, object]) -> dict[str, object]:
+    catalog = {}
+    for key in ("stage4ReviewSubpages", "phase41Subpages", "phase42Subpages", "phase43Subpages"):
+        catalog.update(payload.get(key, {}))
+    return catalog
+
+
+def load_stage3_primary_workspaces() -> list[str]:
+    script = """
+const routes = require('./PFI/web/app/routes.js');
+console.log(JSON.stringify(routes.officialPrimaryEntries.map((entry) => entry.workspace)));
 """
     completed = subprocess.run(
         [NODE, "-e", script],
@@ -354,6 +396,49 @@ class TestV023Stage4SubpageDifferentiation(unittest.TestCase):
             self.assertIn(public_route, catalog_text)
             self.assertIn(resolved_route, catalog_text)
 
+    def test_stage4_review_catalog_covers_all_10_primary_entries(self) -> None:
+        payload = load_stage4_pages()
+        catalog = combined_stage4_catalog(payload)
+
+        self.assertEqual(payload["version"], "v0.2.3")
+        self.assertEqual(payload["stage"], "Stage 4")
+        self.assertEqual(set(load_stage3_primary_workspaces()), set(catalog))
+        self.assertEqual(set(catalog), set(STAGE4_ALL_WORKSPACES))
+
+        for workspace_id, expected in STAGE4_ALL_WORKSPACES.items():
+            with self.subTest(workspace=workspace_id):
+                pages = catalog[workspace_id]
+                self.assertGreaterEqual(len(pages), 3)
+                self.assertLessEqual(len(pages), 5)
+                self.assertEqual([page["routeAlias"] for page in pages], expected["routes"])
+                self.assertEqual({page["primaryObject"] for page in pages}, expected["required_objects"])
+
+    def test_stage4_review_home_subpages_have_independent_object_action_states_and_source(self) -> None:
+        catalog = load_stage4_pages()["stage4ReviewSubpages"]
+
+        for workspace_id, pages in catalog.items():
+            signatures = set()
+            for page in pages:
+                with self.subTest(workspace=workspace_id, route=page.get("routeAlias")):
+                    self.assertTrue(REQUIRED_PAGE_FIELDS <= set(page))
+                    self.assertEqual(page["workspace"], workspace_id)
+                    self.assertIn(STAGE4_REVIEW_WORKSPACES[workspace_id]["label"], page["breadcrumb"])
+                    self.assertGreaterEqual(len(page["breadcrumb"]), 2)
+                    self.assertNotEqual(page["primaryObject"], page["primaryAction"])
+                    self.assertNotEqual(page["emptyState"], page["errorState"])
+                    self.assertIn("真实", page["emptyState"])
+                    self.assertTrue(page["errorState"].startswith("无法"))
+                    self.assertTrue(page["dataSource"])
+                    self.assertGreaterEqual(len(page["sections"]), 3)
+                    signature = (
+                        page["layoutKind"],
+                        page["primaryObject"],
+                        page["primaryAction"],
+                        tuple(section["kind"] for section in page["sections"]),
+                    )
+                    signatures.add(signature)
+            self.assertEqual(len(signatures), len(pages))
+
     def test_phase41_evidence_exists_before_later_stage4_phases_or_upload(self) -> None:
         evidence_root = ROOT / "reports" / "pfi_v023" / "stage_4" / "phase_4_1"
         evidence_path = evidence_root / "evidence.json"
@@ -498,6 +583,52 @@ class TestV023Stage4SubpageDifferentiation(unittest.TestCase):
         self.assertEqual(browser_validation["console_errors"], [])
         self.assertIn("Stage 4 whole-stage review and fixes", evidence["explicitly_not_done"])
         self.assertIn("GitHub main upload before Stage 4 review", evidence["explicitly_not_done"])
+
+    def test_stage4_review_evidence_exists_before_github_upload(self) -> None:
+        evidence_root = ROOT / "reports" / "pfi_v023" / "stage_4" / "stage4_review"
+        evidence_path = evidence_root / "evidence.json"
+        changed_files_path = evidence_root / "changed_files.txt"
+        terminal_log_path = evidence_root / "terminal.log"
+        browser_review_path = evidence_root / "browser_review.json"
+        screenshot_paths = [
+            evidence_root / "screenshots" / "stage4_review_all_subpages.png",
+            evidence_root / "screenshots" / "stage4_review_home_subpages.png",
+        ]
+
+        self.assertTrue(evidence_path.exists())
+        self.assertTrue(changed_files_path.exists())
+        self.assertTrue(terminal_log_path.exists())
+        self.assertTrue(browser_review_path.exists())
+        for screenshot_path in screenshot_paths:
+            self.assertTrue(screenshot_path.exists())
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser_review = json.loads(browser_review_path.read_text(encoding="utf-8"))
+        changed_files = [
+            line.strip()
+            for line in changed_files_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 4")
+        self.assertEqual(evidence["review_id"], "PFI-V023-STAGE4-REVIEW")
+        self.assertEqual(evidence["status"], "pass")
+        self.assertTrue(evidence["current_stage_only"])
+        self.assertTrue(evidence["max_one_stage_per_run"])
+        self.assertTrue(evidence["allowed_files_obeyed"])
+        self.assertTrue(evidence["no_mock_financial_data"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(evidence["stage4_contract"]["official_primary_entries_count_is_10"], True)
+        self.assertEqual(evidence["stage4_contract"]["all_10_primary_entries_have_3_to_5_subpages"], True)
+        self.assertEqual(evidence["stage4_contract"]["subpage_count"], 45)
+        self.assertEqual(evidence["stage4_contract"]["review_findings_fixed"], ["home_subpages_missing_from_stage4_catalog"])
+        self.assertTrue(browser_review["all_10_primary_entries_have_subpages"])
+        self.assertTrue(browser_review["home_subpages_differentiated"])
+        self.assertTrue(browser_review["url_state_breadcrumb_title_changed"])
+        self.assertTrue(browser_review["screenshots_show_differences"])
+        self.assertEqual(browser_review["console_errors"], [])
+        self.assertEqual(evidence["github_upload"]["status_at_evidence_write"], "pending_post_commit_push")
 
 
 if __name__ == "__main__":
