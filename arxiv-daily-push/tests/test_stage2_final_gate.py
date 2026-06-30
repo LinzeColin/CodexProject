@@ -1274,6 +1274,10 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . "
                 f"--generated-at {plan['generated_at']} --json"
             ),
+            (
+                "adp audit-s2plt02-real-scheduler-proof-capture "
+                f"--generated-at {plan['generated_at']} --json"
+            ),
             "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
         ])
         self.assertEqual(wait_guard["forbidden_until_terminal_dependencies_pass"], [
@@ -6335,7 +6339,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "d3c91a27dafa8cbde065d04cd53780b64fc2d792305b8c1309af7f93c47de58c",
+            "b3ae182f992b17b25e9d12a118aed3600f0f9851b8f64def5bf215fa6bb9a255",
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
@@ -6347,7 +6351,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
             wait_guard["current_wait_state"],
         )
-        self.assertEqual(wait_guard["state_hash"], "7c932f9cb8c515ab640f7879200aa2687542368551415203c11909f3022cac24")
+        self.assertEqual(wait_guard["state_hash"], "6dbbbcf3536f97f872ab7107a365bfc45a105a9e5b1ce59d7f478da973d2439f")
         self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(
             wait_guard["allowed_readonly_commands"][0],
@@ -6357,6 +6361,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(
             wait_guard["allowed_readonly_commands"][2],
             "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . "
+            "--generated-at 2026-06-30T18:03:24+10:00 --json",
+        )
+        self.assertEqual(
+            wait_guard["allowed_readonly_commands"][3],
+            "adp audit-s2plt02-real-scheduler-proof-capture "
             "--generated-at 2026-06-30T18:03:24+10:00 --json",
         )
         self.assertIn(
