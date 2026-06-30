@@ -3,7 +3,7 @@ project_name: "KMFA 经营分析系统"
 version: "0.1.0-s05p2-private-backfill-partial"
 current_stage: "S05"
 current_phase: "S05-P2"
-current_phase_status: "s05p2_owner_decision_application_preview_blocked_expected"
+current_phase_status: "s05p2_completed_validated_local_only_owner_downgrade"
 current_stage_status: "in_progress_local_only"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
@@ -29,6 +29,7 @@ machine_plane:
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
   - "stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
   - "stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
+  - "stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md"
   - "stage_artifacts/S05_P2_a0_golden_fixture/machine/no_owner_decision_application_preview.json"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
@@ -57,5 +58,5 @@ upload_policy:
   stage5_review_required_before_upload: true
   stage5_review_passed: false
   stage5_uploaded_to_github_main: false
-  stage5_blocker: "S05-P2 Excel fields pending owner/authorized decision; S05-P3 not started"
+  stage5_blocker: "S05-P3 not started"
   upload_surface: "project_level_kmfa_worktree_stage5_local_only_no_upload"

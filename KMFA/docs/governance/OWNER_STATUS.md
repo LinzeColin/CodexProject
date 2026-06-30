@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload 和 `S05-P1｜A0 文件登记`。当前 `S05-P2｜字段级黄金基准` 已生成 public-safe 字段合同和 45 条 A0 golden fixture 候选，并对 8 个 PDF 候选完成 40 条 hash-only 私有回填；1 个 Excel 候选的 5 条字段已机器复核并有 owner 决策 intake validator、三种决策模板、application preview 和 completion gate blocked-as-expected 证据，但仍 pending，全部保持 Q3，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、`S05-P1｜A0 文件登记` 和 `S05-P2｜字段级黄金基准` 本地验证。S05-P2 已生成 public-safe 字段合同和 45 条 A0 golden fixture 候选，并对 8 个 PDF 候选完成 40 条 hash-only 私有回填；剩余 Excel candidate 经私有 `销售绩效考核.zip`、`财务.zip` 只读复核后已由 owner/授权降级决策处理为 cross-source support only，不进入 Q4/Q5。项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -33,13 +33,13 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S05-P1 A0 文件登记已存在，登记了 `销售绩效考核.zip` 的 source package hash、8 个 PDF、1 个 Excel、A0 项目候选和 Q3/Q4 状态。
 - S05-P2 public-safe 字段合同已存在，覆盖合同额、支出合计、毛利、毛利率、成本分类。
 - S05-P2 A0 golden fixture 候选已存在，共 45 条；其中 40 条 PDF 字段候选已保存 hash/source anchor，5 条 Excel 字段候选仍 pending。公开仓库只保存 private refs、hash/status 和 source anchor 状态，不保存真实字段值。
-- Excel 候选已有机器复核记录、owner 决策包、专门 validator、owner 决策 intake validator、三种 public-safe 决策模板、application preview 和 completion gate：当前 workbook 证据只能作为交叉来源支持，不能机器合成为单一 A0 项目基准；需要 owner 或授权私有映射决策。intake validator、模板和 application preview 只检查/辅助/预演未来决策记录格式和公开安全边界，不代表 owner 已决策；completion gate 当前按预期阻断 S05-P2 完成。
+- Excel 候选已有机器复核记录、owner 决策包、专门 validator、owner 决策 intake validator、三种 public-safe 决策模板、application preview、active owner/授权降级决策和 completion gate ready 证据：当前 workbook 只能作为交叉来源支持，不能机器合成为单一 A0 项目基准，已被排除出 Q4/Q5 A0 baseline。
 
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经实现。
 - 不能认为真实业务源解析、事实层或报告已经实现。
-- 不能认为 S05-P2 已经完整抽取并锁定真实合同额、支出合计、毛利、毛利率或成本分类；当前只是 40/45 hash-only 部分回填、Excel 待决策记录、owner 决策 intake validator、非决策模板、application preview 和 completion gate 阻断证据。
+- 不能认为 S05-P2 已经 Q4/Q5 锁定真实合同额、支出合计、毛利、毛利率或成本分类；当前只是 S05-P2 本地完成，Excel candidate 已降级为 cross-source support only。
 - 不能认为 A0 golden fixture 已经 Q4 人工确认或 Q5 可用于计算。
 - 不能认为 zero-delta 或 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
@@ -49,4 +49,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步仍只执行 `S05-P2｜字段级黄金基准` 的 Excel 私有字段回填或 owner/授权人工豁免、不适用、降级决策；不扩大到 S05-P3、Stage 5 复审、UI、报告、事实层、zero-delta 或自动接口。
+下一步只执行 `S05-P3｜权威基准锁定`；不扩大到 Stage 5 复审、UI、报告、事实层、zero-delta 或自动接口。

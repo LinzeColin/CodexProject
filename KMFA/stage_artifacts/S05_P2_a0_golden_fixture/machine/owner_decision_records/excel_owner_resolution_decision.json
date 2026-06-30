@@ -1,0 +1,30 @@
+{
+  "actor_ref": "codex_delegate_owner_instruction_20260630_private_zip_review",
+  "actor_role": "authorized_delegate",
+  "business_plaintext_committed": false,
+  "candidate_id": "A0-CAND-70023EFC7305",
+  "candidate_role": "cross_source_support_only",
+  "cross_source_support_scope": "Sales performance workbook and finance package may support cross-source review, but the workbook aggregates multiple projects and is not a standalone A0 project cost baseline.",
+  "current_gate": "KMFA-S05-P2-EXCEL-RESOLUTION-GATE",
+  "decision_code": "downgrade_to_cross_source_support",
+  "decision_time": "2026-06-30T11:10:00+10:00",
+  "field_keys": [
+    "contract_amount",
+    "total_expense",
+    "gross_profit",
+    "gross_margin",
+    "cost_category"
+  ],
+  "file_id": "A0-FILE-BAE6D90834C5",
+  "phase_id": "S05-P2",
+  "private_csv_committed": false,
+  "project_id": "KMFA",
+  "q4_confirmation_claimed": false,
+  "q5_baseline_claimed": false,
+  "q5_exclusion_confirmed": true,
+  "raw_source_committed": false,
+  "record_type": "s05_p2_excel_owner_resolution_decision",
+  "schema_version": "kmfa.s05_p2_excel_owner_resolution_decision.v1",
+  "source_layer_write_allowed": false,
+  "stage_id": "S05"
+}
