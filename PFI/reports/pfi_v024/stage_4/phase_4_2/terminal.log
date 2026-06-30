@@ -1,0 +1,35 @@
+Phase 4.2 RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_phase42_read_model_link.py -q
+result=expected red, 6 failed: missing read_model_status module, frontend/runtime wiring, and evidence pack
+
+GREEN:
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data_state.js
+result=pass
+
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_os/application/read_model_status.py PFI/src/pfi_v02/stage_v021_runtime_api.py PFI/src/pfi_os/app/streamlit_app.py PFI/tests/test_v024_stage4_phase42_read_model_link.py
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase41_data_state_contract.py PFI/tests/test_v024_stage4_no_mock_financial_data.py -q
+result=pass, 17 passed in 0.85s
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_2/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_2/read_model_status.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_2/page_metric_states.json
+result=pass
+
+git diff --check -- PFI
+result=pass
+
+FINAL FETCH:
+origin/main=2092de5c4d08f3b75de2015f1866600cc2b0c061
+status=local ahead 1, behind 6 before Phase 4.2 commit
+PFI path changes on origin/main since merge base=false
+
+POST-REBASE:
+git rebase origin/main
+result=pass
+origin/main=2092de5c4d08f3b75de2015f1866600cc2b0c061
+status=local ahead 2, behind 0 after rebase

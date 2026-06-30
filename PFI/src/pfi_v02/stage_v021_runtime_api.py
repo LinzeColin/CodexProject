@@ -316,6 +316,11 @@ def _handler_factory(db_path: Path | str | None):
                 if path == "/api/read-model":
                     self._send_json(build_v021_holdings_sync_read_model(db_path=db_path))
                     return
+                if path == "/api/read-model-status":
+                    from pfi_os.application.read_model_status import build_v024_read_model_status
+
+                    self._send_json(build_v024_read_model_status())
+                    return
                 if path == "/api/reports/holdings":
                     self._send_json(build_v021_holdings_report(db_path=db_path))
                     return

@@ -1,16 +1,23 @@
 # PFI v0.2.4 Stage 4 Data State Machine
 
-本轮只执行：`Stage 4 / Phase 4.1 - 状态机定义`。
-不执行 Phase 4.2 read model 挂链、不修改首页核心卡片、不上传 GitHub main。
+当前已完成：`Stage 4 / Phase 4.2 - read model 挂链`。
+不执行 Phase 4.3 验收、不执行 Stage 4 whole-stage review、不上传 GitHub main。
 
 ## Scope
 
-Phase 4.1 只冻结真实数据状态机合同：
+Phase 4.1 冻结真实数据状态机合同：
 
 - 核心状态枚举。
 - 指标状态 schema。
 - 中文阻断原因。
 - 禁止假零规则。
+
+Phase 4.2 把该合同挂到共享 read model status：
+
+- `/api/read-model-status` 输出当前本机真实数据状态。
+- `#pfi-read-model-status` 为 app bundle 提供嵌入式兜底。
+- `data_state.js` 生成 home/accounts/investment/consumption/insights 的同源 surface view model。
+- `shell.js` 使用同一状态对象覆盖核心卡片，不再让缺失状态落到 `CNY 0.00`。
 
 ## Status Values
 
@@ -34,10 +41,21 @@ Phase 4.1 只冻结真实数据状态机合同：
 `metric_id`、`value`、`currency`、`status`、`source_id`、`record_count`、
 `as_of`、`formula_id`、`confidence`、`blocking_reason_zh`、`calculation_state`。
 
-## Non Goals
+## Phase 4.2 Current Read Model Status
 
-- 不读取本机真实数据路径。
-- 不挂接 `read_model_status.py`。
-- 不改首页、账户、投资、消费、报告页面的显示逻辑。
+| metric_id | status | value policy | source |
+| --- | --- | --- | --- |
+| `net_worth_cny` | `source_missing` | 不显示财务 0 | 等待账户余额与持仓 read model |
+| `cash_balance_cny` | `source_missing` | 不显示财务 0 | 等待账户余额 read model |
+| `investment_market_value_cny` | `source_missing` | 不显示财务 0 | 等待持仓市值 read model |
+| `consumption_outflow_cny` | `ready` | 显示真实流水消费总流出 | `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` |
+| `report_summary_status` | `ready` | 显示状态，不当作财务金额 | `MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json` |
+
+当前 source summary：`MetaDatabase/PFI` ready，`8815` 条记录，`4` 个原始文件，as of `2026-06-03`。
+
+## Remaining Non Goals
+
+- 不执行 Phase 4.3 截图/浏览器验收。
+- 不执行 Stage 4 整阶段复审。
 - 不重装 app bundle。
 - 不上传 GitHub main。

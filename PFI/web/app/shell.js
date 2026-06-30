@@ -604,6 +604,7 @@ let stage4PagesCatalog = typeof window !== "undefined" ? window.PFI_V023_STAGE4_
 let stage5HomeExperience = typeof window !== "undefined" ? window.PFI_V023_STAGE5_HOME || null : null;
 let runtimeReadModelState = null;
 let runtimeStage4SyncState = null;
+let runtimeReadModelStatusState = null;
 
 const FUNCTION_VIEWS = {
   single: functionView(
@@ -1604,7 +1605,7 @@ function installStage2PageSkeletons() {
       ["现金余额", "暂无真实数据", "账户流水接入后显示"],
       ["投资市值", "暂无真实数据", "持仓接入后显示"],
       ["本月支出", "暂无真实数据", "真实流水导入后显示"],
-      ["待复核交易", "0", "导入流水后显示"],
+      ["待复核交易", "未读取状态", "read model 返回后显示"],
       ["数据源状态", "等待上传", "进入数据源与上传处理"],
     ],
     features: [
@@ -2034,6 +2035,20 @@ function readRuntimeConfig() {
   }
 }
 
+function readEmbeddedReadModelStatus() {
+  try {
+    const node = document.querySelector("#pfi-read-model-status");
+    const parsed = JSON.parse(node?.textContent || "{}");
+    return parsed && typeof parsed === "object" && Array.isArray(parsed.core_metric_states) ? parsed : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function v024DataStateApi() {
+  return typeof window !== "undefined" ? window.PFI_V024_STAGE4_DATA_STATE || null : null;
+}
+
 function runtimeApiUrl(path) {
   const cleanPath = String(path || "/").startsWith("/") ? String(path || "/") : `/${path}`;
   return `${PFI_RUNTIME_API_BASE_URL}${cleanPath}`;
@@ -2063,7 +2078,13 @@ async function refreshRuntimeTrends(options = {}) {
     } catch (_syncError) {
       runtimeStage4SyncState = null;
     }
+    try {
+      runtimeReadModelStatusState = await runtimeApiJson("/api/read-model-status");
+    } catch (_statusError) {
+      runtimeReadModelStatusState = readEmbeddedReadModelStatus();
+    }
     applyOperationalReadModel(runtimeReadModelState);
+    applyV024ReadModelStatusToSurfaces(runtimeReadModelStatusState);
     if (options.rerender) {
       const current = document.querySelector("#main-workspace")?.dataset.activeWorkspace || currentContext().workspace || "home";
       drawTrendChart(resolveWorkspaceTrend(WORKSPACES[current] || WORKSPACES.home));
@@ -2072,6 +2093,8 @@ async function refreshRuntimeTrends(options = {}) {
   } catch (_error) {
     runtimeTrendState = null;
     runtimeStage4SyncState = null;
+    runtimeReadModelStatusState = readEmbeddedReadModelStatus();
+    applyV024ReadModelStatusToSurfaces(runtimeReadModelStatusState);
   }
 }
 
@@ -2136,10 +2159,154 @@ function applyOperationalReadModel(model) {
       ["现金余额", hasAccounts ? formatCnyAmount(accounts.cash_cny) : "暂无真实数据", hasAccounts ? "账户现金汇总" : "账户流水接入后显示"],
       ["投资市值", hasInvestment ? formatCnyAmount(investment.market_value_cny) : "暂无真实数据", hasInvestment ? "持仓读模型" : "持仓接入后显示"],
       ["本月支出", hasConsumption ? formatCnyAmount(consumption.month_spend_cny) : "暂无真实数据", hasConsumption ? "MetaDatabase 真实支付宝流水" : "真实流水导入后显示"],
-      ["待复核交易", hasConsumption ? String(consumption.review_count || 0) : "0", hasConsumption ? `${consumption.transaction_count || 0} 条真实流水` : "导入流水后显示"],
+      ["待复核交易", hasConsumption ? String(consumption.review_count || 0) : "未读取状态", hasConsumption ? `${consumption.transaction_count || 0} 条真实流水` : "read model 返回后显示"],
       ["数据源状态", hasConsumption ? "已导入" : "等待上传", hasConsumption ? "真实流水可读取" : "进入数据源与上传处理"],
     ];
   }
+}
+
+function applyV024ReadModelStatusToSurfaces(statusPayload) {
+  if (!statusPayload || typeof statusPayload !== "object") return;
+  const api = v024DataStateApi();
+  const surfaceViews = api?.buildSurfaceMetricViews
+    ? api.buildSurfaceMetricViews(statusPayload)
+    : buildFallbackV024SurfaceMetricViews(statusPayload);
+  const surfaces = surfaceViews?.surfaces || {};
+  const home = metricMapForSurface(surfaces.home);
+  const accounts = metricMapForSurface(surfaces.accounts);
+  const investment = metricMapForSurface(surfaces.investment);
+  const consumption = metricMapForSurface(surfaces.consumption);
+  const insights = metricMapForSurface(surfaces.insights);
+
+  if (WORKSPACES.home) {
+    WORKSPACES.home.cards = [
+      cardFromMetric(home.net_worth_cny),
+      cardFromMetric(home.cash_balance_cny),
+      cardFromMetric(home.investment_market_value_cny),
+      cardFromMetric(home.consumption_outflow_cny, "消费总流出"),
+      cardFromMetric(home.report_summary_status, "数据记录"),
+      ["数据源状态", sourceStatusLabel(statusPayload), sourceStatusDetail(statusPayload)],
+    ];
+  }
+  if (WORKSPACES.accounts) {
+    WORKSPACES.accounts.cards = [
+      cardFromMetric(accounts.net_worth_cny),
+      cardFromMetric(accounts.cash_balance_cny),
+      cardFromMetric(accounts.report_summary_status, "数据记录"),
+      ["状态同步", "同一 read model", shortReadModelHash(statusPayload.read_model_hash)],
+    ];
+  }
+  if (WORKSPACES.investment) {
+    WORKSPACES.investment.cards = [
+      cardFromMetric(investment.investment_market_value_cny),
+      cardFromMetric(investment.net_worth_cny),
+      cardFromMetric(investment.report_summary_status, "数据记录"),
+      ["状态同步", "同一 read model", shortReadModelHash(statusPayload.read_model_hash)],
+    ];
+  }
+  if (WORKSPACES.consumption) {
+    WORKSPACES.consumption.cards = [
+      cardFromMetric(consumption.consumption_outflow_cny, "消费总流出"),
+      cardFromMetric(consumption.report_summary_status, "数据记录"),
+      ["数据源状态", sourceStatusLabel(statusPayload), sourceStatusDetail(statusPayload)],
+      ["状态同步", "同一 read model", shortReadModelHash(statusPayload.read_model_hash)],
+    ];
+  }
+  if (WORKSPACES.insights) {
+    WORKSPACES.insights.cards = [
+      cardFromMetric(insights.net_worth_cny, "净资产报告"),
+      cardFromMetric(insights.cash_balance_cny, "现金余额报告"),
+      cardFromMetric(insights.investment_market_value_cny, "投资市值报告"),
+      cardFromMetric(insights.consumption_outflow_cny, "消费结构报告"),
+      cardFromMetric(insights.report_summary_status, "数据质量报告"),
+    ];
+  }
+}
+
+function buildFallbackV024SurfaceMetricViews(statusPayload) {
+  const metrics = Array.isArray(statusPayload?.core_metric_states) ? statusPayload.core_metric_states : [];
+  const surfaces = {};
+  ["home", "accounts", "investment", "consumption", "insights"].forEach((surface) => {
+    surfaces[surface] = {
+      surface,
+      read_model_hash: statusPayload?.read_model_hash || null,
+      as_of: statusPayload?.as_of || null,
+      metrics: metrics.map((metric) => ({
+        ...metric,
+        display_value: fallbackV024MetricDisplay(metric),
+        display_detail: fallbackV024MetricDetail(metric),
+      })),
+    };
+  });
+  return { schema: "PFIV024Stage4SurfaceStateViewsV1", surfaces };
+}
+
+function metricMapForSurface(surface) {
+  const map = {};
+  (surface?.metrics || []).forEach((metric) => {
+    map[metric.metric_id] = metric;
+  });
+  return map;
+}
+
+function cardFromMetric(metric, labelOverride = "") {
+  const label = labelOverride || metricLabel(metric?.metric_id);
+  if (!metric) return [label, "未加载真实数据", "read model 状态缺失"];
+  return [
+    label,
+    metric.display_value || fallbackV024MetricDisplay(metric),
+    metric.display_detail || fallbackV024MetricDetail(metric),
+  ];
+}
+
+function metricLabel(metricId) {
+  const labels = {
+    net_worth_cny: "净资产",
+    cash_balance_cny: "现金余额",
+    investment_market_value_cny: "投资市值",
+    consumption_outflow_cny: "消费总流出",
+    report_summary_status: "数据记录",
+  };
+  return labels[metricId] || "指标";
+}
+
+function fallbackV024MetricDisplay(metric) {
+  const api = v024DataStateApi();
+  if (api?.renderMetricValueZh) return api.renderMetricValueZh(metric);
+  if (metric?.status === "ready" || metric?.status === "confirmed_zero") {
+    if (metric.value !== null && metric.value !== undefined) return formatCnyAmount(metric.value);
+  }
+  return metric?.blocking_reason_zh || "未加载真实数据";
+}
+
+function fallbackV024MetricDetail(metric) {
+  const parts = [];
+  if (metric?.source_id) parts.push(metric.source_id);
+  if (Number.isFinite(Number(metric?.record_count))) parts.push(`${Number(metric.record_count).toLocaleString("zh-CN")} 条记录`);
+  if (metric?.as_of) parts.push(`截至 ${metric.as_of}`);
+  if (metric?.formula_id) parts.push(metric.formula_id);
+  return parts.join(" · ") || metric?.calculation_state || "状态待确认";
+}
+
+function sourceStatusLabel(statusPayload) {
+  const sourceStatus = statusPayload?.source?.status || "not_loaded";
+  if (sourceStatus === "ready") return "真实数据已加载";
+  return statusPayload?.source?.blocking_reason_zh || "未加载真实数据";
+}
+
+function sourceStatusDetail(statusPayload) {
+  const source = statusPayload?.source || {};
+  const parts = [];
+  if (Number.isFinite(Number(source.record_count))) parts.push(`${Number(source.record_count).toLocaleString("zh-CN")} 条记录`);
+  if (Number.isFinite(Number(source.raw_file_count))) parts.push(`${Number(source.raw_file_count).toLocaleString("zh-CN")} 个原始文件`);
+  if (source.as_of) parts.push(`截至 ${source.as_of}`);
+  return parts.join(" · ") || source.blocking_reason_zh || "等待 read model 状态";
+}
+
+function shortReadModelHash(hash) {
+  const text = String(hash || "");
+  if (!text) return "hash 未生成";
+  return text.length > 24 ? `${text.slice(0, 18)}…${text.slice(-6)}` : text;
 }
 
 function trendHasRealPoints(trend) {
@@ -5613,6 +5780,8 @@ function bootPFIShell() {
   restoreContext();
   bindEvents();
   applyHomeSummary(readHomeSummary());
+  runtimeReadModelStatusState = readEmbeddedReadModelStatus();
+  applyV024ReadModelStatusToSurfaces(runtimeReadModelStatusState);
   const params = initialSearchParams();
   const requestedFeature = params.get("view") || readContext().feature_view || "";
   if (applyRouteFromLocation()) {

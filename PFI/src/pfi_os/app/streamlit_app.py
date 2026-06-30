@@ -955,6 +955,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     except Exception:
         runtime_api_base_url = "http://127.0.0.1:8766"
     from pfi_v02.stage_v024_stage2_entry_consistency import build_v024_stage2_entry_runtime_metadata
+    from pfi_os.application.read_model_status import build_v024_read_model_status
 
     shell_path = ROOT / "web" / "index.html"
     css_path = ROOT / "web" / "styles" / "tokens.css"
@@ -963,6 +964,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     entry_audit_path = ROOT / "web" / "app" / "entry_audit.js"
     navigation_path = ROOT / "web" / "app" / "navigation.js"
     routes_path = ROOT / "web" / "app" / "routes.js"
+    data_state_path = ROOT / "web" / "app" / "data_state.js"
     stage4_pages_path = ROOT / "web" / "app" / "pages" / "stage4Subpages.js"
     home_page_path = ROOT / "web" / "app" / "pages" / "home.js"
     js_path = ROOT / "web" / "app" / "shell.js"
@@ -973,11 +975,14 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     entry_audit_js = entry_audit_path.read_text(encoding="utf-8")
     navigation_js = navigation_path.read_text(encoding="utf-8")
     routes_js = routes_path.read_text(encoding="utf-8")
+    data_state_js = data_state_path.read_text(encoding="utf-8")
     stage4_pages_js = stage4_pages_path.read_text(encoding="utf-8")
     home_page_js = home_page_path.read_text(encoding="utf-8")
     js = js_path.read_text(encoding="utf-8")
     summary_payload = home_summary if isinstance(home_summary, dict) else empty_homepage_summary()
     summary_json = json.dumps(summary_payload, ensure_ascii=False).replace("</", "<\\/")
+    read_model_status_payload = build_v024_read_model_status(ROOT)
+    read_model_status_json = json.dumps(read_model_status_payload, ensure_ascii=False).replace("</", "<\\/")
     runtime_payload = {
         "apiBaseUrl": runtime_api_base_url,
         "projectRoot": str(ROOT),
@@ -995,6 +1000,12 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     shell_html = re.sub(
         r'<script type="application/json" id="pfi-home-summary">.*?</script>',
         f'<script type="application/json" id="pfi-home-summary">{summary_json}</script>',
+        shell_html,
+        flags=re.DOTALL,
+    )
+    shell_html = re.sub(
+        r'<script type="application/json" id="pfi-read-model-status">.*?</script>',
+        f'<script type="application/json" id="pfi-read-model-status">{read_model_status_json}</script>',
         shell_html,
         flags=re.DOTALL,
     )
@@ -1019,6 +1030,10 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
                 f"<script>{home_page_js}</script>",
             )
         ),
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/data_state.js"></script>',
+        f"<script>{data_state_js}</script>",
     )
     shell_html = shell_html.replace('<script src="./app/shell.js"></script>', f"<script>{js}</script>")
     return shell_html

@@ -1,0 +1,106 @@
+{
+  "schema": "PFIV024Stage4ReadModelStatusV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 4",
+  "phase_id": "4.2",
+  "contract_version": "PFI-V024-STAGE4-PHASE42-READ-MODEL-STATUS",
+  "source": {
+    "type": "metadatabase_pfi",
+    "status": "ready",
+    "data_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI",
+    "transactions_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+    "manifest_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+    "record_count": 8815,
+    "raw_file_count": 4,
+    "date_range": {
+      "start": "2022-06-06",
+      "end": "2026-06-03"
+    },
+    "as_of": "2026-06-03",
+    "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a",
+    "blocking_reason_zh": "真实 MetaDatabase/PFI 数据已加载"
+  },
+  "as_of": "2026-06-03",
+  "read_model_hash": "sha256:89c3bac811ce9e38d78dae3fdb646a12e17d9eadb86ac2c2cc52b3a3642add2a",
+  "core_metric_states": [
+    {
+      "metric_id": "net_worth_cny",
+      "value": null,
+      "currency": "CNY",
+      "status": "source_missing",
+      "source_id": "read_model:accounts_holdings",
+      "record_count": null,
+      "as_of": null,
+      "formula_id": "net_worth_v1",
+      "confidence": null,
+      "blocking_reason_zh": "未挂链账户余额与持仓 read model，无法计算净资产",
+      "calculation_state": "blocked_by_missing_source"
+    },
+    {
+      "metric_id": "cash_balance_cny",
+      "value": null,
+      "currency": "CNY",
+      "status": "source_missing",
+      "source_id": "read_model:accounts",
+      "record_count": null,
+      "as_of": null,
+      "formula_id": "cash_balance_v1",
+      "confidence": null,
+      "blocking_reason_zh": "未挂链账户余额 read model，无法计算现金余额",
+      "calculation_state": "blocked_by_missing_source"
+    },
+    {
+      "metric_id": "investment_market_value_cny",
+      "value": null,
+      "currency": "CNY",
+      "status": "source_missing",
+      "source_id": "read_model:holdings",
+      "record_count": null,
+      "as_of": null,
+      "formula_id": "investment_market_value_v1",
+      "confidence": null,
+      "blocking_reason_zh": "未挂链持仓市值 read model，无法计算投资市值",
+      "calculation_state": "blocked_by_missing_source"
+    },
+    {
+      "metric_id": "consumption_outflow_cny",
+      "value": 1727278.37,
+      "currency": "CNY",
+      "status": "ready",
+      "source_id": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+      "record_count": 8815,
+      "as_of": "2026-06-03",
+      "formula_id": "total_consumption_outflow_v1",
+      "confidence": 0.98,
+      "blocking_reason_zh": "真实流水消费总流出已加载",
+      "calculation_state": "calculated"
+    },
+    {
+      "metric_id": "report_summary_status",
+      "value": null,
+      "currency": null,
+      "status": "ready",
+      "source_id": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+      "record_count": 8815,
+      "as_of": "2026-06-03",
+      "formula_id": "report_summary_status_v1",
+      "confidence": 0.9,
+      "blocking_reason_zh": "真实数据源已加载，仍有 3 个核心指标等待 read model 挂链",
+      "calculation_state": "partially_ready"
+    }
+  ],
+  "blocked_metric_ids": [
+    "net_worth_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny"
+  ],
+  "surface_ids": [
+    "home",
+    "accounts",
+    "investment",
+    "consumption",
+    "insights"
+  ],
+  "generated_at_utc": "2026-06-30T23:10:28Z"
+}

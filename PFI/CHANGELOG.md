@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 4 Phase 4.2 - 2026-07-01
+
+- 完成 `Stage 4 / Phase 4.2 - read model 挂链`：新增 shared read model status，把 Phase 4.1 数据状态机接入首页、账户、投资、消费和报告卡片状态。
+- 新增 `PFI/src/pfi_os/application/read_model_status.py`，输出 `data_source_scan`、`read_model_status`、`core_metric_states` 和五个 surface 的共享状态。
+- `PFI/src/pfi_v02/stage_v021_runtime_api.py` 新增 `/api/read-model-status`；`PFI/src/pfi_os/app/streamlit_app.py` 同步嵌入 `#pfi-read-model-status`。
+- `PFI/web/app/data_state.js` 新增 shared surface view model；`PFI/web/app/shell.js` 读取 `/api/read-model-status` 并覆盖首页/账户/投资/消费/报告核心卡片，缺失状态不显示 `CNY 0.00`。
+- 当前真实数据状态：`MetaDatabase/PFI` ready，`8815` 条记录、`4` 个原始文件、as of `2026-06-03`；净资产、现金余额和投资市值仍为 `source_missing`，消费总流出为 `ready`。
+- 本轮不执行 Phase 4.3 验收、Stage 4 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 4 Phase 4.1 - 2026-07-01
 
 - 完成 `Stage 4 / Phase 4.1 - 状态机定义`：冻结核心财务指标数据状态枚举、指标状态 schema、中文阻断原因和禁止假零规则。
