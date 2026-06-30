@@ -121,6 +121,7 @@ from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
     S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS,
     S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+    S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS,
     _stable_hash,
     build_final_acceptance_bundle_readiness_state,
     build_final_acceptance_bundle_manifest_validation_state,
@@ -4092,6 +4093,10 @@ def main(argv: list[str] | None = None) -> int:
             launchctl_print_outputs=launchctl_print_outputs,
             adp_allow_smtp_send=str(os.environ.get("ADP_ALLOW_SMTP_SEND", "false")).strip().lower()
             in {"true", "1", "yes", "on"},
+            smtp_secret_env_presence={
+                key: bool(os.environ.get(key))
+                for key in S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS
+            },
         )
         validation_errors = validate_s2plt02_terminal_capture_window_audit_state(report)
         if validation_errors:
@@ -4307,6 +4312,10 @@ def main(argv: list[str] | None = None) -> int:
             launchctl_disabled_text=launchctl_disabled_text,
             adp_allow_smtp_send=str(os.environ.get("ADP_ALLOW_SMTP_SEND", "false")).strip().lower()
             in {"true", "1", "yes", "on"},
+            smtp_secret_env_presence={
+                key: bool(os.environ.get(key))
+                for key in S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS
+            },
         )
         if launchctl_disabled_file_status == "missing":
             report = {

@@ -1,10 +1,11 @@
 # ADP 用户中心
 
-## 2026-06-30 19:35:53 Australia/Sydney - Final bundle S2PLT02 runtime readiness 顶层同步
+## 2026-06-30 20:27:55 Australia/Sydney - Final bundle S2PLT02 runtime readiness 顶层同步
 
 - `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在顶层显示同一份 S2PLT02 runtime readiness summary。
-- 当前仍 blocked：final validator `state_hash=a386b1848f2abcdc29e104759f3873173576572d8433af0a2448235d107daa92`，prerequisite plan `state_hash=ccdc7b1d95af5a88943e8631e34523bbb8705360fd688aa02152339d04404fee`，runtime readiness `state_hash=dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee`。
+- 当前仍 blocked：final validator `state_hash=b70e0ae4ab942c46018d87e28c09b9d8e839f4ab10682cbf4fde8e993a15194e`，prerequisite plan `state_hash=8878509d00a04899d9b4a647d98146dea5aa88e39f41a07d25f39b9848cb8878`，runtime readiness `state_hash=48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`。
 - 剩余动作：采集第二个连续真实 M1-M4 SMTP 日、采集真实 launchd scheduler proof、写入并验证 reviewed S2PLT02 terminal delivery proof artifact。当前仍是 `1/2` 真实日、`4/8` 真实邮件。
+- SMTP secret env 名称级缺口：`ADP_SMTP_HOST;ADP_SMTP_PORT;ADP_SMTP_USERNAME;ADP_SMTP_PASSWORD`；`smtp_secret_env_ready=false`；`smtp_secret_values_logged=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_RUNTIME_READINESS_SUMMARY.md)。这不是 S2PLT02/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 19:00:51 Australia/Sydney - Final bundle validator runtime step 顶层同步
@@ -69,7 +70,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-06-30 19:46:50 Australia/Sydney
+更新时间：2026-06-30 20:36:51 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -82,7 +83,7 @@
 | 截至今日总候选池 | [299 条总候选记录](./截至今日候选池.md)；候选队列前20精选已列分数 | 总候选池来源是 `docs/owner/CONTENT_LEDGER.csv`，前20精选是按公开评分抽取的阅读入口 |
 | 各板块数据源 | [5 个板块 / 6 个数据源](./数据源与板块健康.md)；当前生产启用 1 个来源 | 公开每个板块对应来源、启用状态、影子测试/规划状态和证据链接 |
 | 复习、行动、收益 | [复习行动与收益](./复习行动与收益.md) 已显示字段、证据链和 2026-06-28 今日快照数字 | 今日数字已由当日运行快照写入；后续每日必须继续由真实运行报告同步 |
-| Stage 2 是否正式生产通过 | 没有；最终门仍阻断；final-bundle prerequisite plan 与 final bundle validator 已把 S2PLT02 runtime readiness summary 暴露到顶层；当前 runtime readiness hash 为 `dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee`，仍缺第二真实日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact；S2PLT03 capture plan 仍等待 S2PLT02 terminal acceptance | 不能宣称正式生产通过、每日生产运行已验收、S2PLT02/S2PLT03 accepted 或 M1-M4 全量自动发送已通过 |
+| Stage 2 是否正式生产通过 | 没有；最终门仍阻断；final-bundle prerequisite plan 与 final bundle validator 已把 S2PLT02 runtime readiness summary 暴露到顶层；当前 runtime readiness hash 为 `48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`，仍缺第二真实日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact；S2PLT03 capture plan 仍等待 S2PLT02 terminal acceptance | 不能宣称正式生产通过、每日生产运行已验收、S2PLT02/S2PLT03 accepted 或 M1-M4 全量自动发送已通过 |
 
 ## 一看三查
 
