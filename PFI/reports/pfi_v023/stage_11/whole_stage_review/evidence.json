@@ -3,16 +3,16 @@
   "version": "v0.2.3",
   "stage": "Stage 11",
   "review_id": "V023-S11-WHOLE-STAGE-REVIEW",
-  "status": "review_pass",
-  "generated_at": "2026-06-30T07:50:52Z",
+  "status": "closeout_pass",
+  "generated_at": "2026-06-30T08:17:46Z",
   "current_stage_only": true,
   "source_contract": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt#Stage 11",
   "git": {
-    "head_at_evidence_write": "b5709cc3353fe2de941599501524ce82c1874043",
-    "origin_main_at_evidence_write": "946f5c41c8db1ec4eb5e289ae35696ccb6d42f47",
+    "head_at_evidence_write": "66a1a4faa3970e3ba53eb7c91335525a89f2de45",
+    "origin_main_at_evidence_write": "66a1a4faa3970e3ba53eb7c91335525a89f2de45",
     "head_semantics": "Committed evidence cannot self-contain the final post-push remote HEAD; GitHub upload is verified by terminal after push.",
-    "head_at_last_verification": "b5709cc3353fe2de941599501524ce82c1874043",
-    "origin_main_at_last_verification": "946f5c41c8db1ec4eb5e289ae35696ccb6d42f47"
+    "head_at_last_verification": "66a1a4faa3970e3ba53eb7c91335525a89f2de45",
+    "origin_main_at_last_verification": "66a1a4faa3970e3ba53eb7c91335525a89f2de45"
   },
   "completed_phases": [
     "V023-S11-P11.1",
@@ -24,16 +24,25 @@
     "phase_11_2_doc_freeze_done": true,
     "phase_11_3_final_candidate_delivery_done": true,
     "stage_11_whole_review_done": true,
+    "user_acceptance_done": true,
+    "stage_11_closeout_done": true,
     "github_main_upload_gate": "terminal_verified_after_push"
   },
-  "human_acceptance_claimed": false,
-  "user_acceptance_required_before_closeout": true,
+  "human_acceptance_claimed": true,
+  "user_acceptance_required_before_closeout": false,
+  "user_acceptance": {
+    "accepted": true,
+    "accepted_at": "2026-06-30T08:17:46Z",
+    "source": "current Codex thread user reply",
+    "acceptance_text": "接受"
+  },
   "acceptance_checks": {
     "regression_tests": true,
     "final_evidence_pack": true,
     "final_screenshots": true,
     "current_status_docs": true,
-    "human_acceptance_gate_open": true
+    "user_acceptance_recorded": true,
+    "closeout_status_recorded": true
   },
   "browser_validation": "PFI/reports/pfi_v023/stage_11/whole_stage_review/browser_validation.json",
   "review_audit": "PFI/reports/pfi_v023/stage_11/whole_stage_review/review_audit.json",
@@ -51,24 +60,22 @@
     "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q",
     "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
     "PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js",
+    "PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json",
     "git diff --check -- PFI",
+    "targeted stale-status scan",
+    "targeted forbidden finance data word scan",
     "git push origin HEAD:main"
   ],
   "changed_files": [
     "PFI/README.md",
     "PFI/docs/pfi_v023/STAGE11_CLOSEOUT.md",
     "PFI/tests/test_v023_regression.py",
-    "PFI/reports/pfi_v023/stage_11/phase_11_3/evidence.json",
-    "PFI/reports/pfi_v023/stage_11/phase_11_3/terminal.log",
-    "PFI/reports/pfi_v023/stage_11/whole_stage_review/browser_validation.json",
     "PFI/reports/pfi_v023/stage_11/whole_stage_review/changed_files.txt",
     "PFI/reports/pfi_v023/stage_11/whole_stage_review/evidence.json",
     "PFI/reports/pfi_v023/stage_11/whole_stage_review/review_audit.json",
-    "PFI/reports/pfi_v023/stage_11/whole_stage_review/terminal.log",
-    "PFI/reports/pfi_v023/stage_11/whole_stage_review/screenshots/desktop_review.png",
-    "PFI/reports/pfi_v023/stage_11/whole_stage_review/screenshots/mobile_review.png"
+    "PFI/reports/pfi_v023/stage_11/whole_stage_review/terminal.log"
   ],
-  "last_verified_at": "2026-06-30T07:52:43Z",
+  "last_verified_at": "2026-06-30T08:20:47Z",
   "validation_results": {
     "stage11_regression_pytest": {
       "status": "pass",
@@ -76,7 +83,7 @@
     },
     "all_v023_pytest": {
       "status": "pass",
-      "result": "187 passed in 2.39s"
+      "result": "187 passed in 2.34s"
     },
     "node_check": {
       "status": "pass",
@@ -85,6 +92,10 @@
     "json_and_diff": {
       "status": "pass",
       "result": "json-and-diff-ok"
+    },
+    "macos_app_acceptance_lite": {
+      "status": "pass",
+      "result": "29 pass / 0 fail / 2 info"
     },
     "app_health": {
       "status": "pass",
@@ -98,11 +109,11 @@
     },
     "forbidden_scan": {
       "status": "pass",
-      "result": "forbidden-scan-ok"
+      "result": "forbidden-finance-data-word-scan-ok"
     },
     "stale_status_scan": {
       "status": "pass",
-      "result": "no stale Stage 11 current-status strings in README, closeout doc, or whole-stage review evidence"
+      "result": "stale-status-scan-ok"
     }
   }
 }

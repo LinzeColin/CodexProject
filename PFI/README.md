@@ -7,23 +7,26 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.3 Candidate Status
+## v0.2.3 Closeout Status
 
-PFI v0.2.3 当前处于 Stage 11 whole-stage review candidate pass。
+PFI v0.2.3 当前处于 v0.2.3 user-accepted closeout complete。
 Stage 0-10 已按阶段完成并上传到 GitHub main；Stage 11 Phase 11.1
-回归测试、Phase 11.2 文档冻结、Phase 11.3 最终候选交付和 Stage 11
-whole-stage review 已完成本地候选验证。
+回归测试、Phase 11.2 文档冻结、Phase 11.3 最终候选交付、Stage 11
+whole-stage review 和 Stage 11 user acceptance 已完成。
 
-- user_acceptance_claimed=false
+- user_acceptance_claimed=true
+- user_acceptance_source=当前 Codex thread 用户明确回复“接受”
 - Stage 11 Phase 11.3 已完成
 - Stage 11 whole-stage review 已完成
+- Stage 11 user acceptance 已完成
 - Stage 11 GitHub main upload 由本轮 terminal gate 验证
-- 当前状态只能写候选通过，不能写最终完成、人工验收已发生或 closeout 完成
+- v0.2.3 closeout complete
 
 v0.2.3 后续开发必须遵守 `docs/pfi_v023/STAGE11_DOC_FREEZE.md` 和
 `docs/pfi_v023/STAGE11_CLOSEOUT.md`：
 固定 10 个一级入口，`市场与研究` 是正式一级入口，历史 9 入口约束作废，
-禁止虚构财务数据，每次 run work 最多只解决一个 phase，用户明确验收前不能 closeout。
+禁止虚构财务数据，每次 run work 最多只解决一个 phase，后续新阶段必须重新建立
+scope、run contract、evidence 和验收 gate。
 
 ## v0.2.1.1 Product UI Recovery Stage 0
 

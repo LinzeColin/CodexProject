@@ -394,30 +394,33 @@ class TestV023Stage11Phase113FinalCandidateDelivery(unittest.TestCase):
 
 
 class TestV023Stage11WholeStageReview(unittest.TestCase):
-    def test_stage11_current_readme_status_reflects_whole_stage_candidate_without_user_acceptance_claim(self) -> None:
+    def test_stage11_current_readme_status_reflects_user_accepted_closeout(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
-        self.assertIn("## v0.2.3 Candidate Status", readme)
-        self.assertIn("Stage 11 whole-stage review candidate pass", readme)
-        self.assertIn("user_acceptance_claimed=false", readme)
+        self.assertIn("## v0.2.3 Closeout Status", readme)
+        self.assertIn("v0.2.3 user-accepted closeout complete", readme)
+        self.assertIn("user_acceptance_claimed=true", readme)
+        self.assertIn("Stage 11 user acceptance 已完成", readme)
+        self.assertIn("v0.2.3 closeout complete", readme)
         self.assertIn("Stage 11 Phase 11.3 已完成", readme)
         self.assertIn("Stage 11 whole-stage review 已完成", readme)
         self.assertNotIn("Stage 11 Phase 11.3 未执行", readme)
         self.assertNotIn("Stage 11 whole-stage review 未执行", readme)
-        self.assertNotIn("v0.2.3 用户已验收", readme)
-        self.assertNotIn("v0.2.3 closeout complete", readme)
+        self.assertNotIn("user_acceptance_claimed=false", readme)
+        self.assertNotIn("当前状态只能写候选通过", readme)
 
-    def test_stage11_closeout_doc_records_review_scope_and_remaining_human_acceptance_gate(self) -> None:
+    def test_stage11_closeout_doc_records_user_acceptance_and_closed_gate(self) -> None:
         doc = (ROOT / "docs" / "pfi_v023" / "STAGE11_CLOSEOUT.md").read_text(encoding="utf-8")
 
-        self.assertIn("Stage 11 whole-stage review candidate pass", doc)
-        self.assertIn("用户明确验收前不能 closeout", doc)
+        self.assertIn("Stage 11 user-accepted closeout complete", doc)
+        self.assertIn("user_acceptance_claimed=true", doc)
+        self.assertIn("用户明确回复“接受”", doc)
         self.assertIn("Stage 11 GitHub main upload terminal gate", doc)
         self.assertIn("PFI/reports/pfi_v023/stage_11/whole_stage_review/evidence.json", doc)
-        self.assertNotIn("用户已验收", doc)
-        self.assertNotIn("closeout complete", doc)
+        self.assertNotIn("user_acceptance_claimed=false", doc)
+        self.assertNotIn("当前只能写 candidate pass", doc)
 
-    def test_stage11_whole_stage_review_evidence_exists_and_is_candidate_only(self) -> None:
+    def test_stage11_whole_stage_review_evidence_exists_and_records_final_acceptance(self) -> None:
         review_dir = ROOT / "reports" / "pfi_v023" / "stage_11" / "whole_stage_review"
         expected_files = [
             review_dir / "evidence.json",
@@ -436,26 +439,39 @@ class TestV023Stage11WholeStageReview(unittest.TestCase):
         self.assertEqual(evidence["version"], "v0.2.3")
         self.assertEqual(evidence["stage"], "Stage 11")
         self.assertEqual(evidence["review_id"], "V023-S11-WHOLE-STAGE-REVIEW")
-        self.assertEqual(evidence["status"], "review_pass")
+        self.assertEqual(evidence["status"], "closeout_pass")
         self.assertTrue(evidence["current_stage_only"])
         self.assertTrue(evidence["stage_contract"]["phase_11_1_regression_tests_done"])
         self.assertTrue(evidence["stage_contract"]["phase_11_2_doc_freeze_done"])
         self.assertTrue(evidence["stage_contract"]["phase_11_3_final_candidate_delivery_done"])
         self.assertTrue(evidence["stage_contract"]["stage_11_whole_review_done"])
+        self.assertTrue(evidence["stage_contract"]["user_acceptance_done"])
+        self.assertTrue(evidence["stage_contract"]["stage_11_closeout_done"])
         self.assertEqual(evidence["stage_contract"]["github_main_upload_gate"], "terminal_verified_after_push")
-        self.assertFalse(evidence["human_acceptance_claimed"])
-        self.assertTrue(evidence["user_acceptance_required_before_closeout"])
+        self.assertTrue(evidence["human_acceptance_claimed"])
+        self.assertFalse(evidence["user_acceptance_required_before_closeout"])
+        self.assertTrue(evidence["user_acceptance"]["accepted"])
+        self.assertEqual(evidence["user_acceptance"]["acceptance_text"], "接受")
         self.assertEqual(evidence["changed_files"], changed_files)
-        for key in ("regression_tests", "final_evidence_pack", "final_screenshots", "current_status_docs", "human_acceptance_gate_open"):
+        for key in (
+            "regression_tests",
+            "final_evidence_pack",
+            "final_screenshots",
+            "current_status_docs",
+            "user_acceptance_recorded",
+            "closeout_status_recorded",
+        ):
             self.assertTrue(evidence["acceptance_checks"][key], key)
+        self.assertNotIn("human_acceptance_gate_open", evidence["acceptance_checks"])
 
     def test_stage11_whole_stage_review_audit_covers_final_dod_and_boundaries(self) -> None:
         audit = read_json("reports/pfi_v023/stage_11/whole_stage_review/review_audit.json")
 
         self.assertEqual(audit["schema"], "PFIV023Stage11WholeStageReviewAuditV1")
         self.assertEqual(audit["review_id"], "V023-S11-WHOLE-STAGE-REVIEW")
-        self.assertFalse(audit["human_acceptance_claimed"])
+        self.assertTrue(audit["human_acceptance_claimed"])
         self.assertEqual(audit["blocker_count"], 0)
+        self.assertFalse([item for item in audit["remaining_items"] if item["status"] == "open"])
         checks = {item["id"]: item for item in audit["checks"]}
         for check_id in (
             "ten_primary_entries_stable",
@@ -463,7 +479,8 @@ class TestV023Stage11WholeStageReview(unittest.TestCase):
             "old_nine_entry_constraint_deprecated",
             "forbidden_finance_data_absent",
             "final_evidence_pack_complete",
-            "user_acceptance_gate_open",
+            "user_acceptance_recorded",
+            "closeout_status_recorded",
         ):
             self.assertEqual(checks[check_id]["status"], "pass", check_id)
 
