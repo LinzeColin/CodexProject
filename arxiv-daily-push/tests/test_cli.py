@@ -1387,6 +1387,23 @@ class CliTests(unittest.TestCase):
         self.assertEqual(capture_summary["observed_real_email_count"], 4)
         self.assertEqual(capture_summary["required_real_delivery_days"], 2)
         self.assertEqual(capture_summary["required_real_email_count"], 8)
+        self.assertEqual(capture_summary["terminal_artifact_validation_status"], "blocked")
+        self.assertIsInstance(capture_summary["terminal_artifact_validation_state_hash"], str)
+        self.assertTrue(capture_summary["terminal_artifact_validation_state_hash"])
+        self.assertEqual(
+            capture_summary["terminal_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+        )
+        self.assertFalse(capture_summary["terminal_artifact_present"])
+        self.assertFalse(capture_summary["terminal_artifact_ready"])
+        self.assertIn(
+            "s2plt02_terminal_delivery_proof_artifact_missing",
+            capture_summary["terminal_artifact_validation_errors"],
+        )
+        self.assertIn(
+            "s2plt02_terminal_delivery_proof_artifact_missing",
+            capture_summary["terminal_artifact_blocking_reasons"],
+        )
         self.assertEqual(capture_summary["remaining_runtime_actions"], [
             "capture_second_consecutive_real_m1_m4_smtp_day",
             "capture_real_launchd_scheduler_proof",

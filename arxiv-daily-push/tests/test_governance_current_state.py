@@ -35,6 +35,23 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_S2PLT02_ARTIFACT_VALIDATION_SUMMARY_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY", current_state)
+        self.assertIn("terminal_artifact_validation_status", current_state)
+        self.assertIn("084c08ec36f925dedb7ecb3488874a23d82090e124b0a791ecd34a998691e54c", current_state)
+        self.assertIn("8b7dc7003c7f60c9065448b2c86d7e1089aedc022b56a84a36487899aa604fa9", current_state)
+        self.assertIn("797c920987dcb0f38a1af8c8dc2ed80633c412cf9bb5f91686a7c29bfeaa68f8", current_state)
+        self.assertIn("3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db", current_state)
+        self.assertIn("terminal_artifact_ref=FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", current_state)
+        self.assertIn("terminal_artifact_present=false", current_state)
+        self.assertIn("terminal_artifact_ready=false", current_state)
+        self.assertIn("terminal_artifact_validation_errors=s2plt02_terminal_delivery_proof_artifact_missing", current_state)
+        self.assertIn("terminal_artifact_blocking_reasons=s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_ARTIFACT_VALIDATION_SUMMARY.md", ledger)
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_S2PLT03_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )

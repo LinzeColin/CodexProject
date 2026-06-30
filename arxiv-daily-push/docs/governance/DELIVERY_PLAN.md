@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 306
+- task_count: 307
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 22:10:33 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Artifact Validation Summary
+
+- `S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY` makes `plan-final-bundle-prerequisites`, `validate-final-acceptance-bundle`, and `plan-s2plt02-terminal-delivery-proof-capture` expose the S2PLT02 terminal delivery proof artifact validation summary while S2PLT04 remains upstream-blocked.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=084c08ec36f925dedb7ecb3488874a23d82090e124b0a791ecd34a998691e54c`, final validator `state_hash=8b7dc7003c7f60c9065448b2c86d7e1089aedc022b56a84a36487899aa604fa9`, S2PLT02 capture plan `state_hash=797c920987dcb0f38a1af8c8dc2ed80633c412cf9bb5f91686a7c29bfeaa68f8`, and terminal artifact validation `state_hash=3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`.
+- Artifact summary fields keep `terminal_artifact_ref=FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`, `terminal_artifact_present=false`, `terminal_artifact_ready=false`, `terminal_artifact_validation_errors=s2plt02_terminal_delivery_proof_artifact_missing`, and `terminal_artifact_blocking_reasons=s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_ARTIFACT_VALIDATION_SUMMARY.md`; `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT03 terminal proof, write S2PLT04 completion report, create final-bundle manifest/handoff/signoff/final-command proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 21:38:54 Australia/Sydney - S2PMT07 Final Bundle S2PLT03 Summary Sync
 
