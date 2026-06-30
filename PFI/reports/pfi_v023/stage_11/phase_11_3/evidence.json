@@ -14,7 +14,10 @@
   "current_phase_only": true,
   "max_one_phase_per_run": true,
   "task_ids": [
-    "T11.3.1"
+    "T11.3.1",
+    "T11.3.2",
+    "T11.3.3",
+    "T11.3.4"
   ],
   "stage_contract": {
     "phase_11_1_regression_tests_done": true,
@@ -51,5 +54,13 @@
     "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshot_capture_meta.json",
     "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshots/final_desktop.png",
     "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshots/final_mobile.png"
+  ],
+  "review_corrections": [
+    {
+      "review_id": "V023-S11-WHOLE-STAGE-REVIEW",
+      "corrected_at": "2026-06-30T07:50:52Z",
+      "field": "task_ids",
+      "reason": "Stage 11 roadmap Phase 11.3 includes final Evidence Pack, final screenshot index, final test output, and waiting for user acceptance."
+    }
   ]
 }

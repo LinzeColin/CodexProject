@@ -1,0 +1,88 @@
+{
+  "schema": "PFIV023Stage11WholeStageBrowserValidationV1",
+  "version": "v0.2.3",
+  "stage": "Stage 11",
+  "review_id": "V023-S11-WHOLE-STAGE-REVIEW",
+  "generated_at": "2026-06-30T07:49:33.151Z",
+  "localhost": {
+    "url": "http://127.0.0.1:8501",
+    "health": "ok",
+    "api_health": {
+      "status": "ok",
+      "schema": "PFIV021RuntimeAPIV1"
+    }
+  },
+  "nav": {
+    "count": 10,
+    "labels": [
+      "首页总览",
+      "账户与资产",
+      "账本流水",
+      "投资管理",
+      "消费管理",
+      "数据源与上传",
+      "建议与复盘",
+      "报告与洞察",
+      "市场与研究",
+      "设置"
+    ],
+    "expected_labels": [
+      "首页总览",
+      "账户与资产",
+      "账本流水",
+      "投资管理",
+      "消费管理",
+      "数据源与上传",
+      "建议与复盘",
+      "报告与洞察",
+      "市场与研究",
+      "设置"
+    ],
+    "market_research_is_primary_entry": true
+  },
+  "checks": {
+    "desktop_home_visible": true,
+    "desktop_market_research_visible": true,
+    "desktop_report_visible": true,
+    "mobile_home_visible": true,
+    "no_console_errors": true,
+    "no_page_errors": true,
+    "no_response_errors": true
+  },
+  "screenshots": [
+    {
+      "screenshot_id": "desktop_review",
+      "path": "reports/pfi_v023/stage_11/whole_stage_review/screenshots/desktop_review.png",
+      "bytes": 269727,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "frame_url": "about:srcdoc#/home",
+      "body_has_home": true,
+      "body_has_market_research": true,
+      "body_has_report": true,
+      "console_error_count": 0,
+      "page_error_count": 0,
+      "response_error_count": 0,
+      "response_errors": []
+    },
+    {
+      "screenshot_id": "mobile_review",
+      "path": "reports/pfi_v023/stage_11/whole_stage_review/screenshots/mobile_review.png",
+      "bytes": 70774,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "frame_url": "about:srcdoc#/home",
+      "body_has_home": true,
+      "body_has_market_research": true,
+      "body_has_report": true,
+      "console_error_count": 0,
+      "page_error_count": 0,
+      "response_error_count": 0,
+      "response_errors": []
+    }
+  ]
+}
