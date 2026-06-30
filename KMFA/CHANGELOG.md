@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s08-stage-review - 2026-06-30
+
+- 完成 Stage 8 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
+- 新增 `KMFA/stage_artifacts/S08_STAGE_REVIEW/` 复审证据包，覆盖 S08-P1/P2/P3 validators、全量 KMFA tests、治理 validator、raw/secret scan、YAML/JSON/JSONL/CSV parse checks 和 evidence consistency check。
+- 复审确认 S08-P1 项目组合键、S08-P2 业务实体模型和 S08-P3 匹配质量测试均保持 public-safe 边界，不提交 raw business data、字段明文、zip、Excel、PDF 或私有 CSV。
+- 修复 Stage 8 review 证据和治理状态缺口，并将 initial evidence consistency 临时检查改为按 S08-P1/P2/P3 manifest schema 执行。
+- 保持 S09 事实层、lineage 完整检查、正式报告、UI、外部接口和 GitHub upload 为未完成。
+
 ## 0.1.0-s08p3-entity-matching-quality - 2026-06-30
 
 - 完成 `S08-P3｜匹配质量测试` 本地验证，不上传 GitHub。

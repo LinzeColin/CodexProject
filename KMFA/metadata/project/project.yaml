@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s08p3-entity-matching-quality"
+version: "0.1.0-s08-stage-review"
 current_stage: "S08"
-current_phase: "S08-STAGE-REVIEW"
+current_phase: "S08-FINAL-GITHUB-UPLOAD"
 current_phase_status: "not_started"
-current_stage_status: "s08p3_completed_validated_local_only_stage8_review_next"
+current_stage_status: "stage8_review_passed_upload_ready_local_only"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -107,6 +107,9 @@ machine_plane:
   - "metadata/quality/entity_matching_quality_manifest.json"
   - "metadata/quality/entity_matching_quality_cases.jsonl"
   - "metadata/quality/entity_matching_review_queue.jsonl"
+  - "stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md"
+  - "stage_artifacts/S08_STAGE_REVIEW/human/test_results.md"
+  - "stage_artifacts/S08_STAGE_REVIEW/machine/stage8_review_manifest.json"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false
@@ -159,8 +162,10 @@ upload_policy:
   stage8_s08p2_completed_validated_local_only: true
   stage8_s08p3_completed_validated_local_only: true
   stage8_review_required_before_upload: true
-  stage8_review_passed: false
+  stage8_review_passed: true
+  stage8_review_evidence: "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md"
+  stage8_upload_ready_local_only: true
   stage8_uploaded_to_github_main: false
-  stage8_blocker: "Stage 8 review not started"
+  stage8_blocker: "Stage 8 final GitHub upload not started"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_s08p3_local_only"
+  upload_surface: "project_level_kmfa_worktree_s08_review_local_only"
