@@ -1,0 +1,83 @@
+{
+  "schema": "PFIV023Stage7CoreReportsPageViewModelV1",
+  "version": "v0.2.3",
+  "stage": "Stage 7",
+  "phase_id": "V023-S7-P7.2",
+  "page": "reports",
+  "title": "核心报告",
+  "subtitle_zh": "核心报告只使用 Stage 6 真实 read model；未挂载输入保持阻断，消费报告显示部分真实结论。",
+  "report_count": 4,
+  "blocked_count": 3,
+  "partial_count": 1,
+  "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+  "as_of": "2026-06-03",
+  "reports": [
+    {
+      "report_id": "net_worth_report",
+      "title": "净资产报告",
+      "status": "blocked",
+      "status_zh": "已阻断",
+      "conclusion_zh": "净资产报告被阻断：未挂载账户余额与持仓 read model，不能生成完整结论。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 1 项：净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。",
+      "parameter_summary_zh": "参数 3 项：净资产币种=CNY；资产范围=现金余额、投资市值、其他已确认资产；负债范围=可确认负债",
+      "gap_summary_zh": "缺口：净资产：未挂载账户余额与持仓 read model，无法计算净资产",
+      "next_actions": [
+        "挂载账户余额 read model",
+        "挂载持仓市值 read model"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    },
+    {
+      "report_id": "cash_balance_report",
+      "title": "现金余额报告",
+      "status": "blocked",
+      "status_zh": "已阻断",
+      "conclusion_zh": "现金余额报告被阻断：未挂载账户余额 read model，不能生成完整结论。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 1 项：现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。",
+      "parameter_summary_zh": "参数 2 项：现金币种=CNY；现金账户范围=真实账户余额 read model",
+      "gap_summary_zh": "缺口：现金余额：未挂载账户余额 read model，无法计算现金余额",
+      "next_actions": [
+        "挂载账户余额 read model"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    },
+    {
+      "report_id": "investment_market_value_report",
+      "title": "投资市值报告",
+      "status": "blocked",
+      "status_zh": "已阻断",
+      "conclusion_zh": "投资市值报告被阻断：未挂载持仓市值 read model，不能生成完整结论。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 1 项：投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。",
+      "parameter_summary_zh": "参数 3 项：投资市值币种=CNY；价格口径=最新可确认价格；汇率口径=对应 CNY 汇率",
+      "gap_summary_zh": "缺口：投资市值：未挂载持仓市值 read model，无法计算投资市值",
+      "next_actions": [
+        "挂载持仓市值 read model"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    },
+    {
+      "report_id": "consumption_structure_report",
+      "title": "消费结构报告",
+      "status": "partial",
+      "status_zh": "部分可用",
+      "conclusion_zh": "消费结构报告已有真实 Alipay 输入：生活消费 CNY 1,545,600.44，消费总流出 CNY 1,727,278.37。当前缺少分类结构、商户、预算和异常消费明细，因此报告状态为 partial。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 2 项：生活消费 = 真实 Alipay 交易中的生活消费流出减退款。；消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。",
+      "parameter_summary_zh": "参数 6 项：生活消费事件类型=CASH；退款抵消=REFUND 抵消；生活消费事件类型=CASH；基金申购事件类型=FUND；资产买入事件类型=BUY_ASSET；退款抵消=REFUND 抵消",
+      "gap_summary_zh": "缺口：缺少消费分类结构、商户、预算和异常消费明细，当前只能生成 partial 结论。",
+      "next_actions": [
+        "接入消费分类结构 read model",
+        "接入商户与预算视图"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    }
+  ],
+  "summary_zh": "核心报告 4 个，其中 3 个阻断，1 个部分可用。"
+}
