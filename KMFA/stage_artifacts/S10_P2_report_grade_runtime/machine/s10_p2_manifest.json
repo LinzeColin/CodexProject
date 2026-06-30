@@ -1,0 +1,67 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S10_P2_report_grade_runtime/human/s10_p2_completion_record.md",
+    "report_grade_runtime_manifest": "KMFA/metadata/reports/report_grade_runtime_manifest.json",
+    "report_grade_runtime_records": "KMFA/metadata/reports/report_grade_runtime_records.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S10_P2_report_grade_runtime/machine/s10_p2_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S10_P2_report_grade_runtime/human/test_results.md",
+    "validator": "KMFA/tools/check_s10_p2_report_grade_runtime.py"
+  },
+  "content_hash": "sha256:2e934d53adfb2e7bdab9bcdb89fdddf61812b7414dd7291e8648aabb51e2902c",
+  "generated_at": "2026-06-30T23:59:50+10:00",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "csv_excel_export_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "html_export_allowed": false,
+    "pdf_export_allowed": false,
+    "pending_reconciliation_count": 12,
+    "phase_completion_upload_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "unclosed_scope_reconciliations_and_missing_full_trust_evidence",
+    "report_grade_runtime_completed": true,
+    "s10_p2_report_grade_runtime_allowed": true,
+    "s10_p3_export_allowed": false,
+    "stage10_review_allowed": false
+  },
+  "record_type": "s10_p2_report_grade_runtime_stage_manifest",
+  "schema_version": "kmfa.s10_p2_stage_manifest.v1",
+  "stage_phase": "S10-P2",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "full_trusted_report_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "report_grade_runtime_scope_included": true,
+    "s10_p1_report_template_scope_included": false,
+    "s10_p2_report_grade_scope_included": true,
+    "s10_p3_export_scope_included": false,
+    "stage10_review_scope_included": false,
+    "ui_scope_included": false
+  },
+  "status": "completed_validated_local_only",
+  "summary": {
+    "confirmed_resolution_count": 0,
+    "export_artifact_count": 0,
+    "formal_report_count": 0,
+    "full_trusted_report_allowed_count": 0,
+    "grade_distribution": {
+      "D": 2
+    },
+    "pending_reconciliation_count": 12,
+    "report_grade_record_count": 2,
+    "source_quality_grade": "Q4",
+    "template_count": 2,
+    "zero_delta_passed": false
+  }
+}

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s10p2-report-grade-runtime - 2026-06-30
+
+- 完成 `S10-P2｜报告可信等级` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/report_grade_runtime.py`、`KMFA/tools/check_s10_p2_report_grade_runtime.py` 和 `KMFA/tests/test_report_grade_runtime.py`。
+- 生成 2 条 public-safe 报告可信等级记录，均因 zero-delta 失败、12 条 pending reconciliation、缺少完整 lineage 和缺少人工确认而锁定为 `D`。
+- 每条报告等级记录绑定 report record version、template version/content hash、formula version、mapping version、field mapping version、grade policy version 和 release gate version。
+- 保持 `complete_trusted_report_display_allowed=false`、`formal_report_allowed=false`、`business_decision_basis_allowed=false`、`s10_p3_scope=false`、`export_artifact_count=0`。
+- 后续只能执行 `S10-P3｜导出`，作为独立 phase；不得执行 Stage 10 整体复审或 GitHub upload。
+
 ## 0.1.0-s10p1-report-templates - 2026-06-30
 
 - 完成 `S10-P1｜报告模板` 本地验证，不上传 GitHub。

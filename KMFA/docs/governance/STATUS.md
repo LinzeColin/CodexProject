@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s10p1-report-templates`
+- version: `0.1.0-s10p2-report-grade-runtime`
 - current_stage: `S10`
-- current_phase: `S10-P2｜报告可信等级 待开始`
-- status: `s10_p1_completed_validated_local_only`
+- current_phase: `S10-P3｜导出 待开始`
+- status: `s10_p2_completed_validated_local_only`
 - production_ready: `false`
 - github_upload_ready: `false_until_next_stage_review`
 
@@ -78,14 +78,16 @@
 - Stage 9 final GitHub upload 已完成：`KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json` 记录 rebase binding、validator、raw/secret scan、dry-run push、push 和 post-push parity 证据。
 - S10-P1 报告模板已完成本地验证：`KMFA/tools/report_templates.py` 生成 2 个 public-safe 报告模板和 11 个管理可读章节；`KMFA/tools/check_s10_p1_report_templates.py` 验证模板覆盖、HTML 样板引用、scope gate 和 public-safe 边界。
 - S10-P1 证据位于 `KMFA/stage_artifacts/S10_P1_report_templates/`；当前中间 Phase 未执行 Stage 10 整体复审或 GitHub upload。
+- S10-P2 报告可信等级已完成本地验证：`KMFA/tools/report_grade_runtime.py` 基于 S10-P1 模板、S02-P3 质量门禁、S06-P3 zero-delta/data quality 和 S09-P3 reconciliation 状态生成 2 条 public-safe 报告等级记录，均锁定为 `D` 并阻断完整可信报告显示。
+- S10-P2 证据位于 `KMFA/stage_artifacts/S10_P2_report_grade_runtime/`；当前中间 Phase 未执行 S10-P3、Stage 10 整体复审或 GitHub upload。
 
 ## 未完成
 
-- S10-P2 报告可信等级运行时、S10-P3 导出、lineage 完整检查、UI 和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
+- S10-P3 导出、lineage 完整检查、UI 和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload 和 S10-P1 report templates 已完成；下一步只能执行 S10-P2 报告可信等级，不能跳到 S10-P3、UI、lineage full check 或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates 和 S10-P2 report grade runtime 已完成；下一步只能执行 S10-P3 导出，不能跳到 Stage 10 review、UI、lineage full check 或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
