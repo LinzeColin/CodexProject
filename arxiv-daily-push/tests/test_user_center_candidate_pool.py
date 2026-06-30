@@ -132,7 +132,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
-        self.assertGreaterEqual(len(matrix_rows), 400)
+        self.assertGreaterEqual(len(matrix_rows), 401)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -143,6 +143,31 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
+
+        self.assertIn("REQ-ADP-V7-057-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_TERMINAL_COUNT_SPLIT.md", page)
+        self.assertIn("blocked_final_bundle_s2plt02_terminal_count_split_synced_no_production", page)
+        self.assertIn("fb04c0b2582c24bdecf9d6d33658f25139ab8cf656cd6e22c69f01e5a3e1c419", page)
+        self.assertIn("7527930ba22a849c42ff55a0e65ea3c4b242e6c629f51db671468b63a1925a2b", page)
+        self.assertIn("e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1", page)
+        self.assertIn("e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c", page)
+        self.assertIn("ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151", page)
+        self.assertIn("observed_real_counts_source=terminal_delivery_input_inventory_existing_real_smtp_evidence", page)
+        self.assertIn("observed_real_delivery_days=1", page)
+        self.assertIn("observed_real_email_count=4", page)
+        self.assertIn("current_capture_window_real_delivery_days_added=0", page)
+        self.assertIn("current_capture_window_real_email_count_added=0", page)
+        self.assertIn("current_capture_window_dry_run_email_count_rejected=8", page)
+        self.assertIn("terminal_proof_real_delivery_days_after_current_capture_window=1", page)
+        self.assertIn("terminal_proof_real_email_count_after_current_capture_window=4", page)
+        self.assertIn("remaining_real_delivery_days_for_terminal_proof=1", page)
+        self.assertIn("remaining_real_email_count_for_terminal_proof=4", page)
+
         self.assertIn("REQ-ADP-V7-056-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", page)
         self.assertIn(

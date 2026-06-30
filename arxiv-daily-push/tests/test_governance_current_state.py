@@ -34,6 +34,31 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
+
+        self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_S2PLT02_TERMINAL_COUNT_SPLIT_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT", current_state)
+        self.assertIn("S2PLT02 terminal count split", current_state)
+        self.assertIn("fb04c0b2582c24bdecf9d6d33658f25139ab8cf656cd6e22c69f01e5a3e1c419", current_state)
+        self.assertIn("7527930ba22a849c42ff55a0e65ea3c4b242e6c629f51db671468b63a1925a2b", current_state)
+        self.assertIn("e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1", current_state)
+        self.assertIn("e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c", current_state)
+        self.assertIn("ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151", current_state)
+        self.assertIn("observed_real_counts_source=terminal_delivery_input_inventory_existing_real_smtp_evidence", current_state)
+        self.assertIn("observed_real_delivery_days=1", current_state)
+        self.assertIn("observed_real_email_count=4", current_state)
+        self.assertIn("current_capture_window_real_delivery_days_added=0", current_state)
+        self.assertIn("current_capture_window_real_email_count_added=0", current_state)
+        self.assertIn("current_capture_window_dry_run_email_count_rejected=8", current_state)
+        self.assertIn("terminal_proof_real_delivery_days_after_current_capture_window=1", current_state)
+        self.assertIn("terminal_proof_real_email_count_after_current_capture_window=4", current_state)
+        self.assertIn("remaining_real_delivery_days_for_terminal_proof=1", current_state)
+        self.assertIn("remaining_real_email_count_for_terminal_proof=4", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT-20260701.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_TERMINAL_COUNT_SPLIT.md", ledger)
+
         self.assertIn(
             "S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY_BLOCKED_NO_PRODUCTION",
             current_state,
@@ -42,7 +67,6 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("terminal_capture_window_audit_summary", current_state)
         self.assertIn("9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144", current_state)
         self.assertIn("1ab9fa8e6fc25ea35fb5405a26917bbf2d5993b1911704b2d3acb654fdb5c5c5", current_state)
-        self.assertIn("3abd9c06b9490e0023eb4d1db2a2d19a7679041f9f887179304bee0d025f0429", current_state)
         self.assertIn("e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c", current_state)
         self.assertIn("ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151", current_state)
         self.assertIn("dry_run_service_dates=2026-06-29;2026-06-30", current_state)

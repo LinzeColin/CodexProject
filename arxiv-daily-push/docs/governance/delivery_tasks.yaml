@@ -5862,3 +5862,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT"
+    title: "S2PMT07 final bundle S2PLT02 terminal count split"
+    parent_task_id: "S2PMT07-FINAL-BUNDLE-PREREQUISITES"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-07-01T00:13:52+10:00"
+    objective: "Separate existing real SMTP terminal input counts from current capture-window terminal-credit additions inside final-bundle S2PLT02 summaries."
+    scope: "Final-bundle prerequisite plan builder/validator, final bundle readiness validator, S2PLT02 capture plan, focused final-gate regressions, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02/S2PLT03 terminal proof artifact, no S2PLT04 completion report, no final-bundle manifest/handoff/signoff/final-command proof, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", "S2PLT02-TERMINAL-DELIVERY-PROOF", "S2PLT04-COMPLETION-REPORT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_TERMINAL_COUNT_SPLIT.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT-20260701.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_count_green2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_delivery_proof_capture_plan_exposes_blocked_next_steps arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_acceptance_bundle_readiness_embeds_directory_level_artifact_validation", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_count_split_plan PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_count_split_final PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_count_split_capture PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json"]
+    test_results: ["TDD red failed because S2PLT02 summaries lacked observed_real_counts_source and after-current-window terminal proof fields", "focused count-split final-gate tests: 3 OK", "plan-final-bundle-prerequisites live CLI: blocked / exit 2 with state_hash fb04c0b2582c24bdecf9d6d33658f25139ab8cf656cd6e22c69f01e5a3e1c419", "validate-final-acceptance-bundle live CLI: blocked / exit 2 with state_hash 7527930ba22a849c42ff55a0e65ea3c4b242e6c629f51db671468b63a1925a2b", "plan-s2plt02-terminal-delivery-proof-capture live CLI: blocked / exit 2 with state_hash e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_TERMINAL_COUNT_SPLIT.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    result: "blocked_final_bundle_s2plt02_terminal_count_split_synced_no_production"
+    risk: "Future agents can misread the outer observed_real_delivery_days=1 and observed_real_email_count=4 as including the 2026-06-29/2026-06-30 dry-run window."
+    rollback: "Revert the count-split fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
