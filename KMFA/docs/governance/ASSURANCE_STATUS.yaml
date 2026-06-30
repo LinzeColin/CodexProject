@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S05P2-OWNER-DOWNGRADE-DECISION"
+as_of_event_id: "EVENT-KMFA-20260630-S05P3-AUTHORITY-BASELINE-LOCK"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05P2_OWNER_DOWNGRADE_DECISION"
-snapshot_event_time: "2026-06-30T11:10:00+10:00"
-generator_version: "manual-s05p2-owner-downgrade-decision"
-final_commit_binding: "precommit-pending-s05p2-owner-downgrade-decision"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05P3_AUTHORITY_BASELINE_LOCK"
+snapshot_event_time: "2026-06-30T12:00:00+10:00"
+generator_version: "manual-s05p3-authority-baseline-lock"
+final_commit_binding: "precommit-pending-s05p3-authority-baseline-lock"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 30
-    total_active_formulas: 11
+    total_active_parameters: 33
+    total_active_formulas: 12
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -58,6 +58,9 @@ dimensions:
       - "KMFA/tools/preview_s05_p2_owner_decision_application.py"
       - "KMFA/tools/check_s05_p2_completion_gate.py"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+      - "KMFA/tools/a0_authority_baseline_lock.py"
+      - "KMFA/tools/check_a0_authority_baseline_lock.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -82,6 +85,8 @@ dimensions:
       - "KMFA/tools/check_s05_p2_owner_decision_templates.py"
       - "KMFA/tools/preview_s05_p2_owner_decision_application.py"
       - "KMFA/tools/check_s05_p2_completion_gate.py"
+      - "KMFA/tools/a0_authority_baseline_lock.py"
+      - "KMFA/tools/check_a0_authority_baseline_lock.py"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
@@ -120,16 +125,23 @@ dimensions:
       - "KMFA/tools/check_s05_p2_owner_decision_templates.py"
       - "KMFA/tools/preview_s05_p2_owner_decision_application.py"
       - "KMFA/tools/check_s05_p2_completion_gate.py"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/machine/s05_p3_manifest.json"
+      - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
+      - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
+      - "KMFA/tools/a0_authority_baseline_lock.py"
+      - "KMFA/tools/check_a0_authority_baseline_lock.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S05P2_COMPLETED_VALIDATED_LOCAL_ONLY_OWNER_DOWNGRADE"
-  release_gate: "KMFA-S05-P3-AUTHORITY-BASELINE-LOCK-GATE"
+  status: "S05_PHASES_COMPLETED_LOCAL_ONLY_PENDING_STAGE_REVIEW"
+  release_gate: "KMFA-S05-STAGE-REVIEW-GATE"
   blocker_ids:
-    - "S05P2_Q4_HUMAN_CONFIRMATION_NOT_STARTED"
-    - "S05P3_NOT_STARTED"
     - "S05_STAGE_REVIEW_NOT_STARTED"
+    - "S06_ZERO_DELTA_NOT_STARTED"
+    - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S05_GITHUB_UPLOAD_NOT_ALLOWED"

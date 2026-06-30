@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s05p2-private-backfill-partial
+product_version: 0.1.0-s05p3-authority-baseline-lock
 
 ## Delivery Rule
 
@@ -40,15 +40,15 @@ KMFA delivery follows the owner contract:
 | Stage 4 GitHub upload | completed |
 | S05-P1 | completed_validated_local_only |
 | S05-P2 | completed_validated_local_only_owner_downgrade |
-| S05-P3 | not_started |
-| Stage 5 review | not_allowed |
+| S05-P3 | completed_validated_local_only_public_safe_authority_lock |
+| Stage 5 review | not_started |
 | Stage 5 GitHub upload | not_allowed |
 
 ## Upload Scope
 
 Stage 4 GitHub upload is complete on `origin/main`; the reviewed content commit was `25c85dcee55679d0789f8462a7c7875188d0aa9f`.
 
-The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, and 40 of 45 field candidates now have hash-only private values and source anchors from local private input. The remaining Excel candidate was reviewed against the private sales-performance and finance packages and resolved by an active owner/authorized downgrade decision: it is cross-source support only and is excluded from Q4/Q5 A0 baseline. The owner decision intake, application preview, and completion gate validate that S05-P2 may close locally without raw values or Q4/Q5 claims. Stage 5 review and GitHub upload are not allowed until S05-P3 is complete, full Stage 5 review runs, and review fixes are complete.
+The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, recorded hash-only private values and source anchors for 40 PDF field candidates, and resolved the Excel candidate through an active owner/authorized downgrade decision as cross-source support only. S05-P3 has locked those 40 public-safe hash/source-anchor fields into the A0 authority baseline and excluded the 5 Excel fields from Q5 calculation baseline. Stage 5 review has not started, and GitHub upload is not allowed until full Stage 5 review runs and review fixes are complete.
 
 ## Rollback
 

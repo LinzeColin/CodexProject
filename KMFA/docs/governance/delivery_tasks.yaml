@@ -1339,3 +1339,113 @@ tasks:
     rollback: "Remove S05-P2 golden fixture artifacts and restore S05-P2 status to planned."
     target_version: "0.1.0-s05p2-private-backfill-partial"
     completed_version: "0.1.0-s05p2-owner-downgrade"
+  - task_id: "S5PCT01"
+    phase: "S5PC"
+    objective: "人工确认后将 Q4 字段升级为 Q5 计算基准。"
+    scope:
+      - "KMFA/tools/a0_authority_baseline_lock.py"
+      - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
+      - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
+    non_scope:
+      - "raw business value commit"
+      - "formal report generation"
+      - "zero-delta"
+      - "Stage 5 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S5PBT03"
+    required_files:
+      - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
+      - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P3"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_s05_p3_authority_baseline_lock -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/a0_authority_baseline_lock.py --locked-at 2026-06-30T12:00:00+10:00 --locked-by-ref codex_delegate_s05p3_public_safe_lock_20260630 --check-only"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_authority_baseline_lock.py"
+    test_results:
+      - "PASS: 40 hash/source-anchor complete PDF fields are locked as public-safe Q5 calculation baseline"
+      - "PASS: 5 Excel fields are excluded by active owner/authorized downgrade decision"
+      - "PASS: formal_report_allowed=false and no raw/normalized values are public"
+    evidence_refs:
+      - "KMFA/tools/a0_authority_baseline_lock.py"
+      - "KMFA/tools/check_a0_authority_baseline_lock.py"
+      - "KMFA/tests/test_s05_p3_authority_baseline_lock.py"
+      - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
+      - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+    risk: "S05-P3 locks a public-safe hash baseline only; formal reports still require later zero-delta, lineage and release gates."
+    rollback: "Remove S05-P3 authority baseline lock tools, metadata and stage artifacts; restore S5PC status to planned."
+    target_version: "0.1.0-s05p3-authority-baseline-lock"
+    completed_version: "0.1.0-s05p3-authority-baseline-lock"
+  - task_id: "S5PCT02"
+    phase: "S5PC"
+    objective: "锁定版本号、hash、人工确认人、确认时间。"
+    scope:
+      - "baseline_version"
+      - "baseline_content_hash"
+      - "locked_by_role/ref"
+      - "locked_at"
+    non_scope:
+      - "private CSV commit"
+      - "raw source mutation"
+      - "Stage 5 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S5PCT01"
+    required_files:
+      - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P3"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_authority_baseline_lock.py"
+    test_results:
+      - "PASS: baseline_version=KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK"
+      - "PASS: baseline_content_hash=sha256:dbb55ffb4e3608e49dbcf91e97fc0f19395a8269ff7c8f4d5c3f8ca398c03670"
+      - "PASS: locked_by_role=authorized_delegate and locked_at=2026-06-30T12:00:00+10:00"
+    evidence_refs:
+      - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/machine/s05_p3_manifest.json"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
+    risk: "Version/hash lock does not imply GitHub upload or Stage 5 review completion."
+    rollback: "Remove S05-P3 authority baseline manifest and records."
+    target_version: "0.1.0-s05p3-authority-baseline-lock"
+    completed_version: "0.1.0-s05p3-authority-baseline-lock"
+  - task_id: "S5PCT03"
+    phase: "S5PC"
+    objective: "未确认字段不得用于正式报告。"
+    scope:
+      - "excluded_cross_source_support_only records"
+      - "formal_report_allowed=false"
+      - "github_upload_allowed=false"
+    non_scope:
+      - "report generation"
+      - "zero-delta"
+      - "lineage full check"
+      - "frontend/UI"
+    status: "completed"
+    dependencies:
+      - "S5PCT02"
+    required_files:
+      - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_records/excel_owner_resolution_decision.json"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P3"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_s05_p3_authority_baseline_lock -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_authority_baseline_lock.py"
+    test_results:
+      - "PASS: 5 downgraded Excel fields are explicit exclusion records"
+      - "PASS: excluded fields have q5_calculation_baseline_allowed=false"
+      - "PASS: formal_report_allowed=false, stage5_review_completed=false and github_upload_allowed=false"
+    evidence_refs:
+      - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md"
+    risk: "Formal report generation remains blocked until later stages provide zero-delta, lineage and report-release evidence."
+    rollback: "Remove S05-P3 authority baseline records and reset S5PC status to planned."
+    target_version: "0.1.0-s05p3-authority-baseline-lock"
+    completed_version: "0.1.0-s05p3-authority-baseline-lock"

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s05p3-authority-baseline-lock - 2026-06-30
+
+- 完成 `S05-P3｜权威基准锁定` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/a0_authority_baseline_lock.py` 和 `KMFA/tools/check_a0_authority_baseline_lock.py`，生成并验证 public-safe A0 authority baseline manifest/records。
+- 新增 `KMFA/tests/test_s05_p3_authority_baseline_lock.py`，覆盖 40 条 Q5 hash/source-anchor lock、5 条 Excel exclusion、禁止明文字段键和文件输出。
+- 新增 `KMFA/metadata/baseline/a0_authority_baseline_manifest.json`、`KMFA/metadata/baseline/a0_authority_baseline_records.jsonl` 和 `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/` 证据。
+- 保持 Stage 5 整体复审、zero-delta、lineage、事实层、报告、UI 和 GitHub upload 为未完成。
+
 ## 0.1.0-s05p2-private-backfill-partial - 2026-06-30
 
 - 对 `S05-P2｜字段级黄金基准` 执行本地私有 hash-only 部分回填，不上传 GitHub。
