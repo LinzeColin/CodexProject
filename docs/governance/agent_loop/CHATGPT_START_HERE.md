@@ -18,6 +18,11 @@
 ## 生成规则
 
 - Always generate a dual-plane Task Pack.
+- Machine plane must remain strict parseable JSON inside
+  `AGENT_LOOP_METADATA`.
+- Human plane may be Chinese, English, or bilingual, but it must still include
+  every required canonical section from `TASK_PACK_DUAL_PLANE_SPEC.md`.
+- Numbered headings such as `## 1. 人类摘要` are allowed.
 - Always specify `project`.
 - Always specify `allowed_paths`.
 - Always specify `forbidden_paths`.
@@ -31,6 +36,8 @@
 - T1 and T2 both auto-merge only after gates pass.
 - Production deploy remains disabled unless a separate Task Pack explicitly
   authorizes it.
+- Owner does not need to remember exact English section names; ChatGPT should
+  still produce clear `##` headings so the repository validator can map them.
 
 ## 禁止
 

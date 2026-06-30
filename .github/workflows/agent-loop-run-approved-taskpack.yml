@@ -24,6 +24,10 @@ permissions:
   actions: read
   checks: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'issues' && github.event.issue.number || github.run_id }}
+  cancel-in-progress: false
+
 jobs:
   run-approved-taskpack:
     if: >-
@@ -142,7 +146,80 @@ jobs:
           print(f"INGESTION_MODE={mode}")
           PY
 
+      - name: Acquire issue live lock
+        id: preflight
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_NUMBER: ${{ github.event_name == 'issues' && github.event.issue.number || '' }}
+        run: |
+          mkdir -p "$WORK_DIR"
+          if [ "$EVENT_NAME" != "issues" ]; then
+            echo "should_continue=true" >> "$GITHUB_OUTPUT"
+            echo "PRECHECK_STATUS=CONTINUE" > "$WORK_DIR/preflight-summary.md"
+            exit 0
+          fi
+
+          labels_json="$(gh issue view "$ISSUE_NUMBER" --json labels)"
+          export LIVE_ISSUE_LABELS_JSON="$labels_json"
+          python3 - <<'PY' > "$WORK_DIR/live-labels.txt"
+          import json
+          import os
+
+          payload = json.loads(os.environ.get("LIVE_ISSUE_LABELS_JSON") or "{}")
+          labels = payload.get("labels") or []
+          names = sorted(
+              str(item.get("name", ""))
+              for item in labels
+              if isinstance(item, dict) and str(item.get("name", "")).strip()
+          )
+          print("\n".join(names))
+          PY
+
+          blocked_labels="$(grep -E '^(agent:running|agent:done|agent:blocked)$' "$WORK_DIR/live-labels.txt" || true)"
+          if [ -n "$blocked_labels" ]; then
+            {
+              echo "PRECHECK_STATUS=DUPLICATE_IGNORED"
+              echo "Issue #${ISSUE_NUMBER} already has an Agent Loop state label."
+              echo
+              echo "$blocked_labels"
+            } > "$WORK_DIR/preflight-summary.md"
+            echo "should_continue=false" >> "$GITHUB_OUTPUT"
+            cat "$WORK_DIR/preflight-summary.md"
+            exit 0
+          fi
+
+          gh label create "agent:run" --color "5319e7" --description "Agent Loop run" || true
+          gh label create "agent:running" --color "1d76db" --description "Agent Loop is running" || true
+          gh label create "agent:done" --color "0e8a16" --description "Agent Loop completed" || true
+          gh label create "agent:blocked" --color "b60205" --description "Agent Loop blocked" || true
+          gh label create "source:chatgpt-approved" --color "0e8a16" --description "Approved ChatGPT Task Pack" || true
+          gh label create "risk:T1" --color "fbca04" --description "Agent Loop risk tier T1" || true
+          gh label create "risk:T2" --color "fbca04" --description "Agent Loop risk tier T2" || true
+          gh issue edit "$ISSUE_NUMBER" --add-label "source:chatgpt-approved" || true
+          gh issue edit "$ISSUE_NUMBER" --add-label "agent:run" || true
+          gh issue edit "$ISSUE_NUMBER" --add-label "agent:running" || true
+
+          {
+            echo "PRECHECK_STATUS=CONTINUE"
+            echo "Issue #${ISSUE_NUMBER} acquired agent:running live lock."
+          } > "$WORK_DIR/preflight-summary.md"
+          echo "should_continue=true" >> "$GITHUB_OUTPUT"
+          cat "$WORK_DIR/preflight-summary.md"
+
+      - name: Stop duplicate issue trigger
+        if: ${{ steps.preflight.outputs.should_continue == 'false' }}
+        run: |
+          cat "$WORK_DIR/preflight-summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload duplicate trigger artifact
+        if: ${{ steps.preflight.outputs.should_continue == 'false' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-loop-duplicate-${{ github.run_id }}
+          path: agent-loop-work/preflight-summary.md
+
       - name: Prepare Agent Loop labels
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           gh label create "agent:run" --color "5319e7" --description "Agent Loop run" || true
           gh label create "agent:running" --color "1d76db" --description "Agent Loop is running" || true
@@ -153,6 +230,7 @@ jobs:
           gh label create "risk:T2" --color "fbca04" --description "Agent Loop risk tier T2" || true
 
       - name: Resolve audit issue
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         id: audit
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -206,6 +284,7 @@ jobs:
           fi
 
       - name: Autofill Task Pack routing metadata
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           set +e
           python3 scripts/agent_loop/autofill_taskpack_metadata.py \
@@ -223,6 +302,7 @@ jobs:
           fi
 
       - name: Extract Task Pack metadata
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           python3 scripts/agent_loop/extract_taskpack.py \
             --input "$TASKPACK_PATH" \
@@ -233,6 +313,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Validate Task Pack
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           set +e
           python3 scripts/agent_loop/validate_taskpack.py \
@@ -249,12 +330,14 @@ jobs:
           fi
 
       - name: Apply risk label
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           gh label create "risk:T1" --color "fbca04" --description "Agent Loop risk tier T1" || true
           gh label create "risk:T2" --color "fbca04" --description "Agent Loop risk tier T2" || true
           gh issue edit "$AUDIT_ISSUE" --add-label "risk:${RISK_TIER}" || true
 
       - name: Check OPENAI_API_KEY
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         env:
           OPENAI_API_KEY_PRESENT: ${{ secrets.OPENAI_API_KEY != '' }}
         run: |
@@ -264,6 +347,7 @@ jobs:
           fi
 
       - name: Prepare routing and branch
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           python3 - <<'PY'
           import json
@@ -292,10 +376,12 @@ jobs:
           PY
 
       - name: Create working branch
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           git checkout -B "$BRANCH_NAME"
 
       - name: Build Codex plan prompt
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           {
             cat .github/codex/prompts/codex-plan.md
@@ -305,6 +391,7 @@ jobs:
           } > "$WORK_DIR/codex-plan-prompt.md"
 
       - name: Run Codex plan
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         id: codex_plan
         uses: openai/codex-action@v1
         with:
@@ -315,11 +402,13 @@ jobs:
           safety-strategy: drop-sudo
 
       - name: Verify plan made no repository changes
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           git diff --quiet
           git diff --cached --quiet
 
       - name: Validate Codex plan
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           set +e
           python3 scripts/agent_loop/validate_plan.py \
@@ -336,6 +425,7 @@ jobs:
           fi
 
       - name: Comment plan on audit issue
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
           {
             echo "## Codex Plan"
@@ -349,6 +439,7 @@ jobs:
           gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/plan-comment.md"
 
       - name: Upload plan artifact
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: agent-loop-plan-${{ github.run_id }}
@@ -358,13 +449,13 @@ jobs:
             agent-loop-work/plan-validation.txt
 
       - name: Stop after dry run
-        if: ${{ env.DRY_RUN == 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN == 'true' }}
         run: |
           gh issue comment "$AUDIT_ISSUE" --body "Dry run complete. Plan validation passed. No implementation, PR, or merge was attempted."
           exit 0
 
       - name: Build Codex implementation prompt
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           {
             cat .github/codex/prompts/codex-implement.md
@@ -377,7 +468,7 @@ jobs:
           } > "$WORK_DIR/codex-implement-prompt.md"
 
       - name: Run Codex implementation
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         id: codex_implement
         uses: openai/codex-action@v1
         with:
@@ -388,7 +479,7 @@ jobs:
           safety-strategy: drop-sudo
 
       - name: Run Task Pack validation commands
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           python3 - <<'PY'
           import json
@@ -421,7 +512,7 @@ jobs:
           fi
 
       - name: Run changed-files policy
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           {
             git diff --name-only
@@ -445,7 +536,7 @@ jobs:
           fi
 
       - name: Decide initial autofix
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           if [ "$VALIDATION_STATUS" != "PASS" ] || [ "$CHANGED_FILES_STATUS" != "PASS" ]; then
             echo "NEEDS_AUTOFIX=true" >> "$GITHUB_ENV"
@@ -454,7 +545,7 @@ jobs:
           fi
 
       - name: Build Codex autofix prompt
-        if: ${{ env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
         run: |
           {
             cat .github/codex/prompts/codex-autofix.md
@@ -473,7 +564,7 @@ jobs:
           } > "$WORK_DIR/codex-autofix-prompt.md"
 
       - name: Run Codex autofix before PR
-        if: ${{ env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
         id: codex_autofix_pre_pr
         uses: openai/codex-action@v1
         with:
@@ -484,7 +575,7 @@ jobs:
           safety-strategy: drop-sudo
 
       - name: Re-run validation after initial autofix
-        if: ${{ env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
         run: |
           echo "AUTOFIX_LOOPS_USED=1" >> "$GITHUB_ENV"
           set +e
@@ -518,7 +609,7 @@ jobs:
           fi
 
       - name: Commit and push implementation branch
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
             echo "Codex implementation produced no repository changes." >&2
@@ -533,7 +624,7 @@ jobs:
           git push --set-upstream origin "$BRANCH_NAME"
 
       - name: Create pull request
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         id: pr
         run: |
           title="$(cat "$WORK_DIR/title.txt")"
@@ -572,7 +663,7 @@ jobs:
           gh issue comment "$AUDIT_ISSUE" --body "Implementation PR created: ${pr_url}"
 
       - name: Build PR diff and review prompt
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           git diff origin/main...HEAD > "$WORK_DIR/pr.diff"
           {
@@ -592,7 +683,7 @@ jobs:
           } > "$WORK_DIR/codex-review-prompt.md"
 
       - name: Run Codex review
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         id: codex_review
         uses: openai/codex-action@v1
         with:
@@ -603,7 +694,7 @@ jobs:
           safety-strategy: drop-sudo
 
       - name: Run optional Architect Review
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
@@ -615,7 +706,7 @@ jobs:
             --output "$WORK_DIR/architect-review.md"
 
       - name: Decide review autofix
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           python3 - <<'PY'
           import os
@@ -633,7 +724,7 @@ jobs:
           PY
 
       - name: Build review autofix prompt
-        if: ${{ env.DRY_RUN != 'true' && env.REVIEW_NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > fromJSON(env.AUTOFIX_LOOPS_USED) }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.REVIEW_NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > fromJSON(env.AUTOFIX_LOOPS_USED) }}
         run: |
           {
             cat .github/codex/prompts/codex-autofix.md
@@ -655,7 +746,7 @@ jobs:
           } > "$WORK_DIR/codex-autofix-review-prompt.md"
 
       - name: Run Codex autofix after review
-        if: ${{ env.DRY_RUN != 'true' && env.REVIEW_NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > fromJSON(env.AUTOFIX_LOOPS_USED) }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.REVIEW_NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > fromJSON(env.AUTOFIX_LOOPS_USED) }}
         id: codex_autofix_review
         uses: openai/codex-action@v1
         with:
@@ -666,7 +757,7 @@ jobs:
           safety-strategy: drop-sudo
 
       - name: Commit review autofix and revalidate
-        if: ${{ env.DRY_RUN != 'true' && env.REVIEW_NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > fromJSON(env.AUTOFIX_LOOPS_USED) }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.REVIEW_NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > fromJSON(env.AUTOFIX_LOOPS_USED) }}
         run: |
           echo "AUTOFIX_LOOPS_USED=$((AUTOFIX_LOOPS_USED + 1))" >> "$GITHUB_ENV"
           set +e
@@ -697,7 +788,7 @@ jobs:
           fi
 
       - name: Comment review results
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           {
             echo "## Codex Review"
@@ -720,7 +811,7 @@ jobs:
           gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/review-comment.md"
 
       - name: Run merge policy
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           set +e
           python3 scripts/agent_loop/merge_policy.py \
@@ -742,7 +833,7 @@ jobs:
           fi
 
       - name: Squash merge PR
-        if: ${{ env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
           gh pr merge "$PR_NUMBER" --squash --delete-branch
           gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
@@ -751,7 +842,7 @@ jobs:
           gh issue close "$AUDIT_ISSUE" --comment "Agent Loop completed and audit issue closed."
 
       - name: Mark audit issue blocked on failure
-        if: ${{ failure() && env.AUDIT_ISSUE != '' }}
+        if: ${{ failure() && env.AUDIT_ISSUE != '' && steps.preflight.outputs.should_continue != 'false' }}
         run: |
           mkdir -p "$WORK_DIR"
           gh label create "agent:running" --color "1d76db" --description "Agent Loop is running" || true
@@ -788,7 +879,7 @@ jobs:
           gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/failure-summary.md"
 
       - name: Write summary artifact
-        if: ${{ always() }}
+        if: ${{ always() && steps.preflight.outputs.should_continue == 'true' }}
         run: |
           python3 scripts/agent_loop/write_summary.py \
             --taskpack "$TASKPACK_PATH" \
@@ -800,7 +891,7 @@ jobs:
             --output "$WORK_DIR/summary.md" || true
 
       - name: Upload final artifacts
-        if: ${{ always() }}
+        if: ${{ always() && steps.preflight.outputs.should_continue == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: agent-loop-run-${{ github.run_id }}

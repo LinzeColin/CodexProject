@@ -22,17 +22,25 @@ The workflow creates missing labels, adds `source:chatgpt-approved`,
 On failure or routing block it removes `agent:running`, adds `agent:blocked`,
 and comments a failure summary.
 
+The workflow also checks live issue labels through GitHub before expensive
+work. If an `opened` event and a `labeled` event both fire for the same issue,
+one run acquires `agent:running`; the later duplicate run exits successfully as
+`DUPLICATE_IGNORED`.
+
 ## C3: Issue Form / Prefilled Issue
 
 Use `.github/ISSUE_TEMPLATE/codex-task.yml` when the Owner does not want to
-open GitHub Actions. The form has one large textarea for the full Task Pack and
-convenience labels:
+open GitHub Actions. The form has one large textarea for the full Task Pack.
 
-- `source:chatgpt-approved`
-- `agent:run`
+No manual labels are required. The workflow adds missing labels itself after it
+verifies the trusted issue author and the Task Pack metadata source. Avoid
+manual `agent:run` labels on new issues because they can create duplicate
+`opened`/`labeled` events; duplicate runs are safe but waste Actions startup
+time.
 
-These labels are not required for startup. GitHub Issue Form labels may fail to
-apply if labels do not already exist; the workflow adds missing labels itself.
+Human-plane headings may be Chinese, English, or bilingual. The metadata JSON
+remains strict. The validator accepts headings such as `## 1. 人类摘要` and
+`## Human Summary`, but every canonical section is still required.
 
 For browser prefill, run:
 
@@ -107,6 +115,8 @@ implemented in this task and must not be treated as a current dependency.
   `agent:running`, `agent:done`, or `agent:blocked` label.
 - No labels on a newly created issue is not fatal after the C3 opened-trigger
   fix. The workflow bootstraps labels itself.
+- Duplicate issue events should show a successful `DUPLICATE_IGNORED` preflight
+  summary instead of running Codex twice.
 - For old smoke issues, edit the issue body after deploying this fix. Adding a
   comment marker such as `<!-- rerun: after-c3-opened-trigger-fix -->` triggers
   `issues: edited`.

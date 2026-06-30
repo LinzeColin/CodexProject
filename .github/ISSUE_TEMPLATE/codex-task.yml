@@ -1,7 +1,6 @@
 name: Codex Task Pack
 description: Create an approved dual-plane Task Pack issue for Agent Loop.
 title: "[Agent Loop] "
-labels: ["agent:run", "source:chatgpt-approved"]
 body:
   - type: markdown
     attributes:
@@ -13,7 +12,8 @@ body:
         - ChatGPT should include `project`, `risk_tier`, `allowed_paths`, `forbidden_paths`, and `validation_commands`.
         - If routing fields are incomplete, Agent Loop will autofill only when the project is unambiguous; otherwise it blocks safely.
         - Do not choose project or risk manually in this form; workflow routing reads the Task Pack and routing matrix.
-        - Labels are convenience only. If GitHub does not apply them, the workflow still starts for trusted issue authors and adds missing labels itself.
+        - No manual labels are required. The workflow starts for trusted issue authors and adds missing labels itself.
+        - Do not add `agent:run` manually unless you are deliberately rerunning an older issue.
   - type: textarea
     id: taskpack
     attributes:
