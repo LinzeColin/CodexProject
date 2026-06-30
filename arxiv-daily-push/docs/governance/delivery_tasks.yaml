@@ -5562,3 +5562,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN"
+    title: "S2PLT03 terminal resilience proof capture plan"
+    parent_task_id: "S2PLT03"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T17:00:08+10:00"
+    objective: "Expose a no-write ordered capture plan for the future S2PLT03 terminal resilience proof and block it until S2PLT02 terminal acceptance is proven."
+    scope: "S2PLT03 terminal resilience proof capture-plan builder, CLI command, focused final-gate and CLI tests, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT03 terminal proof artifact, no S2PLT04 completion report, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-TERMINAL-DELIVERY-PROOF", "S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC", "S2PLT03-LOCAL-RESILIENCE-DRILL"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md", "governance/run_manifests/ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT03-RESILIENCE", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_plan_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_plan_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_plan_green2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_plan_live_now PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-s2plt03-terminal-resilience-proof-capture --repo-root . --generated-at 2026-06-30T17:00:08+10:00 --json"]
+    test_results: ["TDD red failed because build_s2plt03_terminal_resilience_proof_capture_plan_state did not exist", "TDD red failed because argparse rejected plan-s2plt03-terminal-resilience-proof-capture", "focused final-gate and CLI tests: 156 OK", "live CLI: blocked / exit 2 with state_hash bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5 and next_executable_step WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt03_capture_plan_waiting_for_s2plt02_terminal_acceptance_no_production"
+    risk: "S2PLT03 local resilience and precheck evidence can be misread as terminal proof. This plan keeps S2PLT03 blocked until S2PLT02 terminal acceptance and a reviewed S2PLT03 terminal proof artifact are both validated."
+    rollback: "Revert the S2PLT03 capture-plan builder, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

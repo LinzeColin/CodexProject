@@ -226,6 +226,24 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("b43760c8150155bb0f40e627cdec97443451bfad63e1257b08d1fd572dccda39", page)
         self.assertIn("d2f12b5f3fbe439fdd0b2d420706700f5a0aa6b3d9ba691da67f2ffe4758d117", page)
         self.assertIn(
+            "REQ-ADP-V7-042-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN",
+            page,
+        )
+        self.assertIn("S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN", page)
+        self.assertIn(
+            "ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md", page)
+        self.assertIn("WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE", page)
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", page)
+        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", page)
+        self.assertIn("bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5", page)
+        self.assertIn(
+            "blocked_s2plt03_capture_plan_waiting_for_s2plt02_terminal_acceptance_no_production",
+            page,
+        )
+        self.assertIn(
             "REQ-ADP-V7-041-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC",
             page,
         )

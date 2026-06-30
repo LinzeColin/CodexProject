@@ -1,0 +1,101 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "project_id": "arxiv-daily-push",
+  "run_id": "ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630",
+  "event_id": "EVENT-20260630-ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN",
+  "event_type": "stage2_s2plt03_terminal_resilience_proof_capture_plan",
+  "task_id": "S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN",
+  "task_ids": [
+    "S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN",
+    "S2PLT03",
+    "S2PMT07",
+    "ACC-S2PLT03-RESILIENCE",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "acceptance_ids": [
+    "ACC-S2PLT03-RESILIENCE",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "iteration_id": "ITER-20260630-ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN",
+  "generated_at": "2026-06-30T17:00:08+10:00",
+  "fact_level": "EXTRACTED",
+  "status": "blocked",
+  "result": "blocked_s2plt03_capture_plan_waiting_for_s2plt02_terminal_acceptance_no_production",
+  "binding_status": "blocked_s2plt03_capture_plan_waiting_for_s2plt02_terminal_acceptance_no_production",
+  "binding_rationale": "The S2PLT03 terminal resilience proof capture plan is intentionally no-write and blocks until S2PLT02 terminal delivery proof is accepted.",
+  "state_hash": "bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5",
+  "next_executable_step": "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE",
+  "completed_inputs": {
+    "LOCAL_RESILIENCE_DRILL": true,
+    "P0_P1_ZERO_PROOF": true,
+    "RESILIENCE_PRECHECK": true,
+    "S2PLT02_TERMINAL_DELIVERY_PROOF": false,
+    "S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT": false
+  },
+  "missing_terminal_inputs": [
+    "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+    "S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT"
+  ],
+  "blocking_reasons": [
+    "s2plt03_terminal_resilience_proof_artifact_missing",
+    "s2plt02_not_accepted"
+  ],
+  "planned_steps": [
+    "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE",
+    "REVALIDATE_S2PLT03_PRECHECK",
+    "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+    "RUN_VALIDATE_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+    "FEED_S2PLT04_COMPLETION_EVIDENCE"
+  ],
+  "artifact_written": false,
+  "s2plt03_accepted": false,
+  "s2plt03_resilience_drill_completed": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "mail_production_code_changed": false,
+  "smtp_changed": false,
+  "scheduler_changed": false,
+  "release_changed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md"
+  ],
+  "validation_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_plan_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_plan_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_plan_green2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_plan_live_now PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-s2plt03-terminal-resilience-proof-capture --repo-root . --generated-at 2026-06-30T17:00:08+10:00 --json"
+  ],
+  "validation_results": [
+    "TDD red: final-gate import failed before build_s2plt03_terminal_resilience_proof_capture_plan_state existed",
+    "TDD red: CLI argparse rejected plan-s2plt03-terminal-resilience-proof-capture before the command existed",
+    "Focused green: final-gate and CLI suites passed, 156 OK",
+    "Live CLI: blocked / exit 2 with state_hash bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5, next_executable_step WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE"
+  ],
+  "risk": "S2PLT03 precheck and local drill evidence can be misread as terminal resilience proof. This no-write plan keeps S2PLT03 blocked until S2PLT02 terminal proof is accepted and a reviewed S2PLT03 proof artifact is written and validated.",
+  "rollback": "Revert the S2PLT03 capture-plan builder, CLI command, focused tests, phase record, manifest, governance/user-center notes, and delivery/event records; no runtime production state was changed."
+}

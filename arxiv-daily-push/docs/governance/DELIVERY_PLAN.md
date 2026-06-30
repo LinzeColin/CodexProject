@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 298
+- task_count: 299
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 17:00:08 Australia/Sydney - S2PLT03 Terminal Resilience Proof Capture Plan
+
+- `S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN` adds a no-write order gate for the future S2PLT03 terminal resilience proof.
+- Current plan is blocked / exit 2 with `state_hash=bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5`, `next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`, and missing terminal inputs `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT` plus `S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT`.
+- Already available inputs are `LOCAL_RESILIENCE_DRILL`, `RESILIENCE_PRECHECK`, and `P0_P1_ZERO_PROOF`; they do not satisfy terminal S2PLT03 proof.
+- Evidence: `governance/run_manifests/ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT03 terminal proof, write S2PLT04 completion report, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 16:36:09 Australia/Sydney - S2PLT02 Terminal Proof Evidence Inventory Input Hardening
 
