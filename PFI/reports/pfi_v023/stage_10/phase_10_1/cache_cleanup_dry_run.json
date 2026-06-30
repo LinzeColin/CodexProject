@@ -1,0 +1,213 @@
+{
+  "schema": "PFICacheCleanupReportV1",
+  "mode": "dry_run",
+  "root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+  "candidate_count": 28,
+  "candidate_file_count": 216,
+  "candidate_dir_count": 29,
+  "candidate_bytes": 3568026,
+  "candidate_kb": 3484.4,
+  "removed_count": 0,
+  "removed_paths": [],
+  "failed_count": 0,
+  "failed": [],
+  "candidates": [
+    {
+      "path": ".pytest_cache",
+      "kind": "cache_dir",
+      "bytes": 24660,
+      "files": 6,
+      "dirs": 3
+    },
+    {
+      "path": "tests/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 661343,
+      "files": 29,
+      "dirs": 1
+    },
+    {
+      "path": "scripts/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 11994,
+      "files": 1,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 9471,
+      "files": 3,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/research/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 149259,
+      "files": 8,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/analysis/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 139817,
+      "files": 8,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/app/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 83365,
+      "files": 2,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/consumption/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 53171,
+      "files": 3,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/strategies/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 110392,
+      "files": 5,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/strategies/momentum/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 2980,
+      "files": 2,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/strategies/trend/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 5091,
+      "files": 3,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/strategies/behavioral/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 20836,
+      "files": 2,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/strategies/mean_reversion/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 5482,
+      "files": 3,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/indicators/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 4025,
+      "files": 2,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/business/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 50145,
+      "files": 3,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/backtest/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 26621,
+      "files": 4,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/integrations/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 404510,
+      "files": 12,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/system/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 230620,
+      "files": 14,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/application/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 611627,
+      "files": 31,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/approvals/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 9832,
+      "files": 2,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/data/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 99792,
+      "files": 14,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/data/providers/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 35006,
+      "files": 11,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/risk/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 26282,
+      "files": 4,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/policy/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 49179,
+      "files": 3,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/reports/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 56204,
+      "files": 3,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_os/executive/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 62839,
+      "files": 3,
+      "dirs": 1
+    },
+    {
+      "path": "src/pfi_v02/__pycache__",
+      "kind": "cache_dir",
+      "bytes": 623295,
+      "files": 34,
+      "dirs": 1
+    },
+    {
+      "path": "data/cache/pfi_streamlit.log",
+      "kind": "runtime_cache_file",
+      "bytes": 188,
+      "files": 1,
+      "dirs": 0
+    }
+  ],
+  "safety_boundary": "Only disposable local runtime artifacts are eligible: Python bytecode, test/tool cache directories, .DS_Store files, and root-level data/cache runtime logs. Reports, holdings, imports, source files, SQLite databases, and market bar caches are not deleted."
+}

@@ -1,0 +1,53 @@
+PFI v0.2.3 Stage 10 Phase 10.1 terminal evidence
+Generated at: 2026-06-30T06:27:36Z
+Repo: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+HEAD: 259ec1d5c71044340b0da0961780c0d78299032e
+Remote: git@github.com:LinzeColin/CodexProject.git
+
+Service health:
+- curl http://127.0.0.1:8501/_stcore/health => ok
+
+App dry run:
+- PFI_APP_LAUNCH_DRY_RUN=1 /Users/linzezhang/Downloads/PFI.app/Contents/MacOS/PFI
+PFI_APP_LAUNCH: project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI command=./StartPFI.command command_path=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/StartPFI.command mode=spawn-command
+
+Browser evidence:
+- app entry HTTP 200, nav 10/10, screenshot bytes 241258, console errors 0, page errors 0, HTTP errors 0
+- localhost HTTP 200, nav 10/10, screenshot bytes 241258, console errors 0, page errors 0, HTTP errors 0
+
+Build/hash:
+- runtime webBundleHash == disk web_bundle_hash => True
+
+Cache cleanup dry-run:
+- mode=dry_run candidate_count=28 removed_count=0 failed_count=0
+
+Validation results:
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/shell.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/routes.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/pages/stage4Subpages.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/pages/home.js
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_os/app/streamlit_app.py PFI/src/pfi_os/system/cache_cleanup.py PFI/tests/test_v023_stage10_e2e_acceptance.py
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py -q => 5 passed in 0.02s
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q => 162 passed in 2.39s
+- pass: git diff --check -- PFI
+- pass: Stage 10 Phase 10.1 docs/tests/reports placeholder-term scan
+
+Final verification rerun:
+- pass: JS syntax checks for shell/routes/stage4/home
+- pass: py_compile streamlit_app/cache_cleanup/stage10 test
+- pass: Stage 10 target pytest => 5 passed in 0.02s
+- pass: v0.2.3 pytest group => 162 passed in 2.34s
+- pass: JSON validation for Stage 10 Phase 10.1 evidence files
+- pass: git diff --check -- PFI
+- pass: 8766 /health => 200 {"status": "ok", "schema": "PFIV021RuntimeAPIV1"}
+
+Post-merge metadata sync:
+- branch=codex/pfi
+- head=e0b10b383b34417105b4c7c7db77c5767ccd6d1f
+- remote=git@github.com:LinzeColin/CodexProject.git
+
+Post-rebase metadata sync:
+- branch=codex/pfi
+- head=b461aade21d9612634e2555c1d3fd695754bd6cd
+- remote=git@github.com:LinzeColin/CodexProject.git

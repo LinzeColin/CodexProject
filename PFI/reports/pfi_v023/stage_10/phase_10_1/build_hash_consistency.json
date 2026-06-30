@@ -1,0 +1,52 @@
+{
+  "schema": "PFIV023Stage10Phase101BuildHashConsistencyV1",
+  "version": "v0.2.3",
+  "stage": "Stage 10",
+  "phase_id": "V023-S10-P10.1",
+  "generated_at": "2026-06-30T06:27:36Z",
+  "runtime_metadata": {
+    "schema": "PFIV023Stage1RuntimeMetadataV1",
+    "pfiVersion": "v0.2.3",
+    "appVersion": "0.2.3",
+    "buildId": "20260629-stage1",
+    "bundleVersion": "20260629.1",
+    "uiContractVersion": "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+    "stage": "Stage 1",
+    "stageName": "App 入口与前端版本一致性",
+    "webBundleHash": "af69e4ecf188c4a5a6804cc148b897d667ec5ff5cb8b9975762bede2d3b46c1f",
+    "webIndexSha256": "1b679c884ad0330b98da68f91cae4ad443340973ec7779be9ef63e3c82777a77",
+    "shellJsSha256": "c154fee60aceca2dd5bee31f425fa4ef1bbf347d82f718b1ccf795b60d09c960",
+    "frontendBundleFiles": [
+      "web/index.html",
+      "web/styles/tokens.css",
+      "web/app/shell.js"
+    ]
+  },
+  "disk_manifest": {
+    "schema": "PFIV023Stage1WebBundleManifestV1",
+    "web_bundle_hash": "af69e4ecf188c4a5a6804cc148b897d667ec5ff5cb8b9975762bede2d3b46c1f",
+    "files": {
+      "web/index.html": "1b679c884ad0330b98da68f91cae4ad443340973ec7779be9ef63e3c82777a77",
+      "web/styles/tokens.css": "32c1c9bbbbb4f695b99ec761413dba91c8ed3cc74cda67fae996eeb914e3f919",
+      "web/app/shell.js": "c154fee60aceca2dd5bee31f425fa4ef1bbf347d82f718b1ccf795b60d09c960"
+    },
+    "raw_files": [
+      {
+        "path": "PFI/web/index.html",
+        "sha256": "1b679c884ad0330b98da68f91cae4ad443340973ec7779be9ef63e3c82777a77",
+        "bytes": 41513
+      },
+      {
+        "path": "PFI/web/styles/tokens.css",
+        "sha256": "32c1c9bbbbb4f695b99ec761413dba91c8ed3cc74cda67fae996eeb914e3f919",
+        "bytes": 43725
+      },
+      {
+        "path": "PFI/web/app/shell.js",
+        "sha256": "c154fee60aceca2dd5bee31f425fa4ef1bbf347d82f718b1ccf795b60d09c960",
+        "bytes": 266064
+      }
+    ]
+  },
+  "all_hashes_match": true
+}
