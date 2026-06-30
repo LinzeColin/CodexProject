@@ -1,0 +1,43 @@
+{
+  "schema": "PFIV023Stage6ReadModelAuditV1",
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "phase_id": "V023-S6-P6.1",
+  "status": "ready",
+  "source_type": "metadatabase_pfi",
+  "data_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI",
+  "transactions_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+  "manifest_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+  "raw_file_count": 4,
+  "transaction_count": 8815,
+  "date_range": {
+    "start": "2022-06-06",
+    "end": "2026-06-03"
+  },
+  "event_counts": {
+    "BUY_ASSET": 12,
+    "CASH": 4139,
+    "FUND": 3154,
+    "REFUND": 250,
+    "TRANSFER": 1260
+  },
+  "review_count": 406,
+  "columns": [
+    "transaction_id",
+    "batch_id",
+    "source_id",
+    "raw_id",
+    "account_id",
+    "event_type",
+    "amount",
+    "currency",
+    "occurred_at",
+    "description",
+    "confidence",
+    "review_state"
+  ],
+  "as_of": "2026-06-03",
+  "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a",
+  "message_zh": "真实 MetaDatabase/PFI 数据已加载",
+  "generated_at_utc": "2026-06-30T02:47:13Z"
+}
