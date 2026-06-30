@@ -1,0 +1,73 @@
+PFI v0.2.3 Stage 3 closeout review
+Timestamp: 2026-06-30T10:17:08+10:00
+Repo: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+Remote main before closeout: 2f5685dde50e33210161071e43670e0df67b3bbe
+
+Initial state:
+$ git status --short --branch
+## codex/pfi...origin/main [ahead 3]
+
+Review commands:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+............                                                             [100%]
+12 passed in 0.13s
+
+$ Google Chrome headless via playwright-core on PFI/web/index.html
+pass: true
+console_errors: 0
+network_resource_errors: 2
+browser_review: PFI/reports/pfi_v023/stage_3/stage3_review/browser_review.json
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+..........................................................               [100%]
+58 passed in 0.38s
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js
+exit 0
+
+$ PFI/.venv/bin/python -m json.tool <stage3 evidence json files>
+stage3 json valid
+
+$ rg -n -i "\b(mock|sample|synthetic|fixture|demo|fake)\b" PFI/web/index.html PFI/web/app/routes.js PFI/web/app/shell.js PFI/web/styles.css PFI/tests/test_v023_stage3_navigation_routes.py PFI/docs/pfi_v023/STAGE3_NAVIGATION_ROUTES.md
+exit 1
+No forbidden fake financial data terms found in Stage 3 source, test, or docs files.
+
+$ git diff --check origin/main...HEAD -- PFI
+exit 0
+
+Closeout note:
+The final post-patch validation and GitHub main upload are intentionally proven by terminal commands after this evidence file is staged and committed.
+
+Post-patch validation:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+.............                                                            [100%]
+13 passed in 0.14s
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+...........................................................              [100%]
+59 passed in 0.36s
+
+$ PFI/.venv/bin/python -m json.tool <stage3 evidence json files>
+stage3 json valid
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage3_navigation_routes.py
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js
+exit 0
+
+$ git diff --check origin/main...HEAD -- PFI
+exit 0

@@ -1,0 +1,446 @@
+{
+  "stage_id": "PFI-V023-STAGE3-REVIEW",
+  "index_url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "browser": "Google Chrome headless via playwright-core",
+  "screenshot_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/stage3_review/screenshots/stage3_review.png",
+  "no_js_screenshot_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/stage3_review/screenshots/stage3_review_no_js.png",
+  "route_snapshots": {
+    "initial": {
+      "hash": "#/home",
+      "pathname": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+      "search": "",
+      "workspace": "home",
+      "routeAlias": "/home",
+      "title": "首页总览",
+      "scrollY": 0,
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "primaryRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "activePrimary": [
+        "首页总览"
+      ],
+      "mobileLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "mobileRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ]
+    },
+    "afterAccounts": {
+      "hash": "#/accounts",
+      "pathname": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+      "search": "",
+      "workspace": "accounts",
+      "routeAlias": "/accounts",
+      "title": "账户与资产",
+      "scrollY": 0,
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "primaryRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "activePrimary": [
+        "账户与资产"
+      ],
+      "mobileLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "mobileRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ]
+    },
+    "afterMarket": {
+      "hash": "#/market-research",
+      "pathname": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+      "search": "",
+      "workspace": "market_research",
+      "routeAlias": "/market-research",
+      "title": "市场与研究",
+      "scrollY": 0,
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "primaryRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "activePrimary": [
+        "市场与研究"
+      ],
+      "mobileLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "mobileRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ]
+    },
+    "afterBack": {
+      "hash": "#/accounts",
+      "pathname": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+      "search": "",
+      "workspace": "accounts",
+      "routeAlias": "/accounts",
+      "title": "账户与资产",
+      "scrollY": 0,
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "primaryRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "activePrimary": [
+        "账户与资产"
+      ],
+      "mobileLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "mobileRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ]
+    },
+    "afterForward": {
+      "hash": "#/market-research",
+      "pathname": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+      "search": "",
+      "workspace": "market_research",
+      "routeAlias": "/market-research",
+      "title": "市场与研究",
+      "scrollY": 0,
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "primaryRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "activePrimary": [
+        "市场与研究"
+      ],
+      "mobileLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "mobileRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ]
+    },
+    "directHash": {
+      "hash": "#/investment",
+      "pathname": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+      "search": "",
+      "workspace": "investment",
+      "routeAlias": "/investment",
+      "title": "投资管理",
+      "scrollY": 0,
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "primaryRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "activePrimary": [
+        "投资管理"
+      ],
+      "mobileLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "mobileRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ]
+    },
+    "directQueryAlias": {
+      "hash": "#/market-research?tab=market",
+      "pathname": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+      "search": "?route=%2Fmarket%2Fwatch",
+      "workspace": "market_research",
+      "routeAlias": "/market-research?tab=market",
+      "title": "市场与研究",
+      "scrollY": 0,
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "primaryRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ],
+      "activePrimary": [
+        "市场与研究"
+      ],
+      "mobileLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "mobileRoutes": [
+        "/home",
+        "/accounts",
+        "/ledger",
+        "/investment",
+        "/consumption",
+        "/sources-upload",
+        "/review",
+        "/reports",
+        "/market-research",
+        "/settings"
+      ]
+    }
+  },
+  "desktop_primary_count_is_10": true,
+  "desktop_labels_match_taskpack": true,
+  "mobile_primary_count_is_10": true,
+  "mobile_labels_match_taskpack": true,
+  "primary_routes_match_taskpack": true,
+  "market_research_is_primary": true,
+  "legacy_labels_not_primary": true,
+  "pushstate_hash_state_changes": true,
+  "popstate_back_forward_ok": true,
+  "direct_url_open_ok": true,
+  "no_js_fallback_has_10_routes": true,
+  "page_not_anchor_scroll_only": true,
+  "console_errors": [],
+  "network_resource_errors": [
+    "http://127.0.0.1:8766/api/trends net::ERR_CONNECTION_REFUSED",
+    "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  ]
+}

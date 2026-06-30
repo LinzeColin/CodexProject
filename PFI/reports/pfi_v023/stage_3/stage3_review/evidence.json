@@ -1,0 +1,161 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 3",
+  "stage_name": "10 个一级入口与真实路由系统",
+  "review_id": "PFI-V023-STAGE3-REVIEW",
+  "review_name": "Stage 3 closeout review",
+  "created_at": "2026-06-30T10:17:08+10:00",
+  "status": "pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_stage_only": true,
+  "max_one_stage_per_run": true,
+  "review_scope": [
+    "Stage 3 Phase 3.1 primary navigation",
+    "Stage 3 Phase 3.2 legacy alias routes",
+    "Stage 3 Phase 3.3 browser routing behavior",
+    "Stage 3 closeout evidence and upload readiness"
+  ],
+  "phase_statuses": [
+    {
+      "phase_id": "V023-S3-P3.1",
+      "status": "candidate_pass",
+      "evidence": "PFI/reports/pfi_v023/stage_3/phase_3_1/evidence.json"
+    },
+    {
+      "phase_id": "V023-S3-P3.2",
+      "status": "candidate_pass",
+      "evidence": "PFI/reports/pfi_v023/stage_3/phase_3_2/evidence.json"
+    },
+    {
+      "phase_id": "V023-S3-P3.3",
+      "status": "candidate_pass",
+      "evidence": "PFI/reports/pfi_v023/stage_3/phase_3_3/evidence.json"
+    }
+  ],
+  "stage3_contract": {
+    "official_primary_entries_count_is_10": true,
+    "market_research_is_formal_primary": true,
+    "legacy_9_entry_constraint_is_obsolete": true,
+    "historical_16_same_level_entries_absent": true,
+    "v01_entries_are_not_primary": true,
+    "v01_entries_are_compatibility_routes_or_secondary_commands": true,
+    "click_updates_url_and_state": true,
+    "browser_back_forward_ok": true,
+    "direct_url_open_ok": true,
+    "page_not_anchor_scroll_only": true,
+    "no_js_fallback_has_10_routes": true
+  },
+  "browser_review": {
+    "path": "PFI/reports/pfi_v023/stage_3/stage3_review/browser_review.json",
+    "desktop_primary_count_is_10": true,
+    "mobile_primary_count_is_10": true,
+    "market_research_is_primary": true,
+    "legacy_labels_not_primary": true,
+    "pushstate_hash_state_changes": true,
+    "popstate_back_forward_ok": true,
+    "direct_url_open_ok": true,
+    "no_js_fallback_has_10_routes": true,
+    "console_errors": []
+  },
+  "commands": [
+    {
+      "command": "git ls-remote https://github.com/LinzeColin/CodexProject.git refs/heads/main",
+      "exit_code": 0,
+      "summary": "GitHub main before closeout review: 2f5685dde50e33210161071e43670e0df67b3bbe"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q",
+      "exit_code": 0,
+      "summary": "Stage 3 navigation and closeout evidence tests pass"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "v0.2.3 regression suite passes"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js",
+      "exit_code": 0,
+      "summary": "routes.js syntax check passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "shell.js syntax check passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js",
+      "exit_code": 0,
+      "summary": "dataStatus.js syntax check passed"
+    },
+    {
+      "command": "Google Chrome headless via playwright-core on PFI/web/index.html",
+      "exit_code": 0,
+      "summary": "Stage 3 closeout browser review passed; screenshots captured"
+    },
+    {
+      "command": "PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/*/*.json",
+      "exit_code": 0,
+      "summary": "Stage 3 evidence and browser review JSON files are valid"
+    },
+    {
+      "command": "rg -n -i \"\\b(mock|sample|synthetic|fixture|demo|fake)\\b\" PFI/web/index.html PFI/web/app/routes.js PFI/web/app/shell.js PFI/web/styles.css PFI/tests/test_v023_stage3_navigation_routes.py PFI/docs/pfi_v023/STAGE3_NAVIGATION_ROUTES.md",
+      "exit_code": 1,
+      "summary": "No forbidden fake financial data terms found in Stage 3 source, test, or docs files"
+    },
+    {
+      "command": "git diff --check origin/main...HEAD -- PFI",
+      "exit_code": 0,
+      "summary": "No whitespace errors in Stage 3 local diff against origin/main"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE3_NAVIGATION_ROUTES.md",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/screenshots/primary_nav.png",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/terminal.log",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/screenshots/alias_routes.png",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/terminal.log",
+    "PFI/reports/pfi_v023/stage_3/phase_3_3/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_3/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_3/phase_3_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_3/screenshots/browser_history.png",
+    "PFI/reports/pfi_v023/stage_3/phase_3_3/screenshots/no_js_fallback.png",
+    "PFI/reports/pfi_v023/stage_3/phase_3_3/terminal.log",
+    "PFI/reports/pfi_v023/stage_3/stage3_review/browser_review.json",
+    "PFI/reports/pfi_v023/stage_3/stage3_review/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_3/stage3_review/evidence.json",
+    "PFI/reports/pfi_v023/stage_3/stage3_review/screenshots/stage3_review.png",
+    "PFI/reports/pfi_v023/stage_3/stage3_review/screenshots/stage3_review_no_js.png",
+    "PFI/reports/pfi_v023/stage_3/stage3_review/terminal.log",
+    "PFI/tests/test_v023_stage3_navigation_routes.py",
+    "PFI/web/app/routes.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/web/styles.css"
+  ],
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/stage3_review/screenshots/stage3_review.png",
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/stage3_review/screenshots/stage3_review_no_js.png"
+  ],
+  "github_upload": {
+    "required_after_stage_review": true,
+    "status_at_evidence_write": "pending_post_commit_push",
+    "verification_surface": "post-push git ls-remote terminal proof"
+  },
+  "review_findings": [],
+  "explicitly_not_done": [
+    "Stage 4 subpage differentiation",
+    "Stage 5 and later work",
+    "PFI.app bundle rebuild",
+    "localhost app-runtime acceptance"
+  ],
+  "requires_user_acceptance": true
+}
