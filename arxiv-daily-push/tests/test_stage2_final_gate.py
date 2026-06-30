@@ -1077,6 +1077,17 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("EIGHT_REAL_EMAILS", plan["blocked_by_missing_inputs"])
         self.assertIn("REAL_SCHEDULER_PROOF", plan["blocked_by_missing_inputs"])
         self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", plan["blocked_by_missing_inputs"])
+        self.assertEqual(plan["authorization_artifact_status"], "pass")
+        self.assertTrue(plan["real_proof_capture_authorized"])
+        self.assertEqual(plan["authorization_validation_errors"], [])
+        self.assertIsInstance(plan["authorization_validation_state_hash"], str)
+        self.assertTrue(plan["authorization_validation_state_hash"])
+        self.assertIsInstance(plan["terminal_evidence_inventory_state_hash"], str)
+        self.assertTrue(plan["terminal_evidence_inventory_state_hash"])
+        self.assertFalse(plan["runtime_capture_ready"])
+        self.assertIn("adp_allow_smtp_send_false", plan["runtime_capture_blockers"])
+        self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", plan["runtime_capture_blockers"])
+        self.assertEqual(plan["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(
             [step["step_id"] for step in plan["capture_steps"]],
             [
@@ -1101,6 +1112,41 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["scheduler_install_enabled"])
         self.assertFalse(plan["daily_operation_enabled"])
         self.assertFalse(plan["production_acceptance_claimed"])
+        self.assertEqual(validate_s2plt02_terminal_delivery_proof_capture_plan_state(plan), [])
+
+    def test_s2plt02_terminal_delivery_capture_plan_blocks_invalid_authorization(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            bundle_dir = tmp_root / "FINAL_ACCEPTANCE_BUNDLE"
+            bundle_dir.mkdir(parents=True)
+            source_authorization = REPO_ROOT / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+            authorization = json.loads(source_authorization.read_text(encoding="utf-8"))
+            authorization["readiness_state_hash"] = "stale-readiness-state"
+            authorization["authorization_hash"] = build_s2plt02_real_proof_capture_authorization_hash(
+                authorization
+            )
+            (bundle_dir / "s2plt02_real_proof_capture_authorization.json").write_text(
+                json.dumps(authorization, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            plan = build_s2plt02_terminal_delivery_proof_capture_plan_state(
+                generated_at="2026-06-30T18:08:01+10:00",
+                repo_root=tmp_root,
+            )
+
+        self.assertEqual(plan["status"], "blocked")
+        self.assertEqual(plan["authorization_artifact_status"], "blocked")
+        self.assertFalse(plan["real_proof_capture_authorized"])
+        self.assertIn(
+            "readiness_state_hash does not match current readiness state",
+            plan["authorization_validation_errors"],
+        )
+        self.assertIn("real_proof_capture_authorization_invalid", plan["blocking_reasons"])
+        self.assertEqual(
+            plan["next_executable_step"],
+            "VALIDATE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION",
+        )
         self.assertEqual(validate_s2plt02_terminal_delivery_proof_capture_plan_state(plan), [])
 
     def test_s2plt02_terminal_delivery_proof_artifact_validation_accepts_valid_no_production_artifact(self) -> None:

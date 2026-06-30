@@ -979,6 +979,15 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["artifact_written"])
         self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["blocked_by_missing_inputs"])
         self.assertIn("REAL_SCHEDULER_PROOF", payload["blocked_by_missing_inputs"])
+        self.assertEqual(payload["authorization_artifact_status"], "pass")
+        self.assertTrue(payload["real_proof_capture_authorized"])
+        self.assertEqual(payload["authorization_validation_errors"], [])
+        self.assertTrue(payload["authorization_validation_state_hash"])
+        self.assertTrue(payload["terminal_evidence_inventory_state_hash"])
+        self.assertFalse(payload["runtime_capture_ready"])
+        self.assertIn("adp_allow_smtp_send_false", payload["runtime_capture_blockers"])
+        self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", payload["runtime_capture_blockers"])
+        self.assertEqual(payload["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(payload["capture_steps"][0]["step_id"], "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY")
         self.assertEqual(
             payload["capture_steps"][-1]["command"],

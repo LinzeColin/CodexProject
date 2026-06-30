@@ -3933,12 +3933,45 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
 ) -> dict[str, Any]:
     """Build the safe S2PLT02 terminal proof capture plan without executing capture."""
 
+    root = Path(repo_root)
     inventory = build_s2plt02_terminal_delivery_input_inventory_state(
         generated_at=generated_at,
-        repo_root=repo_root,
+        repo_root=root,
+    )
+    evidence_inventory = build_s2plt02_terminal_proof_evidence_inventory_state(
+        generated_at=generated_at,
+        repo_root=root,
+    )
+    authorization_artifact = _load_json_mapping_artifact(
+        root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+    )
+    authorization_validation = build_s2plt02_real_proof_capture_authorization_validation_state(
+        authorization_artifact,
+        expected_readiness_state_hash=(
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_READINESS_STATE_HASH
+        ),
     )
     missing_inputs = [str(item) for item in inventory.get("missing_inputs", [])]
     terminal_delivery_proof_ready = inventory.get("terminal_delivery_proof_ready") is True
+    authorization_valid = (
+        authorization_artifact is not None
+        and authorization_validation.get("status") == "pass"
+        and not authorization_validation.get("validation_errors")
+    )
+    runtime_capture_blockers = [
+        str(reason)
+        for reason in evidence_inventory.get("blocking_reasons", [])
+        if reason
+        in {
+            "second_consecutive_real_m1_m4_smtp_day_missing",
+            "real_launchd_scheduler_proof_missing",
+            "adp_allow_smtp_send_false",
+            "adp_launchagents_disabled_by_user_domain_override",
+            "daily_run_succeeded_but_smtp_dry_run_not_terminal",
+            "blocked_candidate_inputs_present",
+        }
+    ]
+    runtime_capture_ready = authorization_valid and not runtime_capture_blockers
     capture_steps = [
         {
             "step_id": "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY",
@@ -4012,6 +4045,19 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         ),
         "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT",
     )
+    if not authorization_valid:
+        next_step = "VALIDATE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION"
+    elif runtime_capture_blockers and next_step in {
+        "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY",
+        "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF",
+    }:
+        next_step = "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW"
+    blocking_reasons = list(inventory.get("blocking_reasons", []))
+    if not authorization_valid and "real_proof_capture_authorization_invalid" not in blocking_reasons:
+        blocking_reasons.append("real_proof_capture_authorization_invalid")
+    for reason in runtime_capture_blockers:
+        if reason not in blocking_reasons:
+            blocking_reasons.append(reason)
     state = {
         "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
         "schema_version": S2PLT02_SCHEMA_VERSION,
@@ -4022,9 +4068,17 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "status": "pass" if terminal_delivery_proof_ready and not missing_inputs else "blocked",
         "scope": "s2plt02_terminal_delivery_proof_capture_plan_no_write_no_production",
         "input_inventory_state_hash": inventory.get("state_hash"),
+        "terminal_evidence_inventory_state_hash": evidence_inventory.get("state_hash"),
+        "authorization_artifact_path": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+        "authorization_artifact_status": authorization_validation.get("status"),
+        "authorization_validation_errors": list(authorization_validation.get("validation_errors", [])),
+        "authorization_validation_state_hash": authorization_validation.get("state_hash"),
+        "real_proof_capture_authorized": authorization_valid,
+        "runtime_capture_ready": runtime_capture_ready,
+        "runtime_capture_blockers": runtime_capture_blockers,
         "ready_inputs": list(inventory.get("ready_inputs", [])),
         "blocked_by_missing_inputs": missing_inputs,
-        "blocking_reasons": list(inventory.get("blocking_reasons", [])),
+        "blocking_reasons": blocking_reasons,
         "observed_real_delivery_days": inventory.get("observed_real_delivery_days"),
         "required_real_delivery_days": S2PLT02_REQUIRED_NATURAL_DAYS,
         "observed_real_email_count": inventory.get("observed_real_email_count"),
@@ -4080,6 +4134,41 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         errors.append("S2PLT02 terminal delivery proof capture plan required_mail_products must be M1-M4")
     if state.get("terminal_delivery_proof_artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
         errors.append("S2PLT02 terminal delivery proof capture plan artifact ref is invalid")
+    if state.get("authorization_artifact_path") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH:
+        errors.append("S2PLT02 terminal delivery proof capture plan authorization artifact path is invalid")
+    if state.get("authorization_artifact_status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal delivery proof capture plan authorization status is invalid")
+    if not isinstance(state.get("authorization_validation_errors"), list):
+        errors.append("S2PLT02 terminal delivery proof capture plan authorization errors must be a list")
+    if not isinstance(state.get("authorization_validation_state_hash"), str) or not state.get(
+        "authorization_validation_state_hash"
+    ):
+        errors.append("S2PLT02 terminal delivery proof capture plan authorization validation hash is required")
+    if not isinstance(state.get("terminal_evidence_inventory_state_hash"), str) or not state.get(
+        "terminal_evidence_inventory_state_hash"
+    ):
+        errors.append("S2PLT02 terminal delivery proof capture plan evidence inventory hash is required")
+    if not isinstance(state.get("runtime_capture_blockers"), list):
+        errors.append("S2PLT02 terminal delivery proof capture plan runtime blockers must be a list")
+    authorization_valid = (
+        state.get("authorization_artifact_status") == "pass"
+        and state.get("authorization_validation_errors") == []
+        and state.get("real_proof_capture_authorized") is True
+    )
+    if not authorization_valid:
+        if state.get("real_proof_capture_authorized") is not False:
+            errors.append("invalid authorization must set real_proof_capture_authorized false")
+        if "real_proof_capture_authorization_invalid" not in state.get("blocking_reasons", []):
+            errors.append("invalid authorization must block capture plan")
+        if state.get("next_executable_step") != "VALIDATE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION":
+            errors.append("invalid authorization must require authorization validation before capture")
+    if state.get("runtime_capture_blockers") and state.get("runtime_capture_ready") is not False:
+        errors.append("runtime_capture_ready must be false while runtime capture blockers are present")
+    if (
+        state.get("runtime_capture_blockers")
+        and state.get("next_executable_step") in {"CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY", "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF"}
+    ):
+        errors.append("runtime blockers must prevent direct real SMTP/scheduler capture as next step")
     if state.get("status") == "pass" and state.get("terminal_delivery_proof_ready") is not True:
         errors.append("pass status requires terminal_delivery_proof_ready")
     if state.get("terminal_delivery_proof_ready") is True and state.get("blocked_by_missing_inputs"):

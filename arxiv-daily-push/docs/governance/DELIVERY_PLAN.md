@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 300
+- task_count: 301
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 18:11:03 Australia/Sydney - S2PLT02 Terminal Capture Plan Runtime Auth Gate
+
+- `S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE` hardens `plan-s2plt02-terminal-delivery-proof-capture` so it validates the live authorization artifact and terminal evidence inventory before exposing a next executable step.
+- Current live CLI remains blocked / exit 2: `state_hash=6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2`, `authorization_artifact_status=pass`, `authorization_validation_errors=[]`, `terminal_evidence_inventory_state_hash=e8942077e2a2448ab8c354c1680e9d634872b4bea8f9e0f9006efac1cbd91336`, `runtime_capture_ready=false`, and `next_executable_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`.
+- Runtime blockers are `second_consecutive_real_m1_m4_smtp_day_missing;real_launchd_scheduler_proof_missing;adp_allow_smtp_send_false;daily_run_succeeded_but_smtp_dry_run_not_terminal;blocked_candidate_inputs_present`; missing terminal inputs remain `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT04 completion report, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 17:34:32 Australia/Sydney - S2PLT02 Authorization Readiness Hash Gate
 
@@ -137,7 +145,7 @@ machine_summary:
 ## 2026-06-30 10:41:36 Australia/Sydney - S2PLT02 Terminal Delivery Proof Capture Plan
 
 - `S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN` adds a no-write CLI plan for the ordered S2PLT02 terminal delivery proof capture/review sequence.
-- Current plan is blocked / exit 2: `next_executable_step=CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY`; missing inputs are `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Historical plan record was blocked / exit 2 with `next_executable_step=CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY`; current runtime/auth gate now returns `next_executable_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`; missing inputs are `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
 - Capture steps are second real M1-M4 SMTP day capture, real launchd scheduler proof collection, stdout-only terminal proof draft build, independent review, reviewed artifact write, and artifact validation. `artifact_written=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, `daily_operation_enabled=false`, state hash `81d89c0b03458d4b5cc569ae1d994b7d02ef36dfa89377516f7968619d03e878`.
 - Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
 - This does not write terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PMT07/integrated production acceptance.
