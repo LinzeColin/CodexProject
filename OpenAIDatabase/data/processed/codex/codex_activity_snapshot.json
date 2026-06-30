@@ -1,45 +1,49 @@
 {
   "abort_count": 68,
+  "activity_range_end": "2026-06-30",
+  "activity_range_start": "2026-06-03",
   "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
   "day_count": 28,
   "error_event_count": 0,
-  "generated_at": "2026-06-30T07:08:15Z",
-  "message_count": 137854,
+  "generated_at": "2026-06-30T07:11:00Z",
+  "message_count": 137865,
   "range_end": "2026-06-30",
   "range_start": "2026-06-03",
   "recommendation_counts": {
     "memory_added": 0,
     "memory_current": 5,
     "memory_deleted": 0,
-    "memory_modified": 5,
+    "memory_modified": 0,
     "meta_added": 0,
     "meta_current": 2,
     "meta_deleted": 0,
-    "meta_modified": 2
+    "meta_modified": 0
   },
   "schema_version": "codex_activity_snapshot.v1",
   "session_count": 408,
+  "session_started_range_end": "2026-06-24",
+  "session_started_range_start": "2026-06-14",
   "source": "real_codex_local_data",
-  "tool_call_count": 457564,
+  "tool_call_count": 457606,
   "top_tools": [
     {
-      "count": 201979,
+      "count": 201993,
       "name": "function_call_output"
     },
     {
-      "count": 169813,
+      "count": 169825,
       "name": "exec_command"
     },
     {
-      "count": 25793,
+      "count": 25800,
       "name": "apply_patch"
     },
     {
-      "count": 25792,
+      "count": 25799,
       "name": "custom_tool_call_output"
     },
     {
-      "count": 16850,
+      "count": 16852,
       "name": "write_stdin"
     },
     {
