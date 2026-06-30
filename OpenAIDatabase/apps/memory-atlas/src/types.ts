@@ -1,4 +1,5 @@
 export type ViewKey =
+  | "home"
   | "galaxy"
   | "notion"
   | "roi"

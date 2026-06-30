@@ -9,6 +9,7 @@ import {
   Download,
   FilterX,
   GitBranch,
+  Home,
   LayoutDashboard,
   Network,
   Orbit,
@@ -41,6 +42,7 @@ const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) 
 const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene").then((module) => ({ default: module.ObsidianGraphScene })));
 
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
+  { key: "home", label: "记忆总览", icon: Home },
   { key: "galaxy", label: "银河星云", icon: Orbit },
   { key: "notion", label: "数据导图", icon: Blocks },
   { key: "roi", label: "ROI 仪表盘", icon: LayoutDashboard },
@@ -52,7 +54,7 @@ const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: n
   { key: "summary", label: "总结与迭代", icon: RefreshCw },
 ];
 
-const visualFocusViews: ViewKey[] = ["galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"];
+const visualFocusViews: ViewKey[] = ["home", "galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"];
 
 const defaultFilters: AtlasFilters = {
   query: "",
@@ -151,6 +153,23 @@ interface HumanOverview {
   actionItems: string[];
   opportunityItems: string[];
   riskItems: string[];
+}
+
+interface HomeSignalCard {
+  id: string;
+  title: string;
+  value: string;
+  note: string;
+  tone: "weather" | "dominant" | "rising" | "declining" | "black-hole" | "proto-star";
+}
+
+interface HomeAction {
+  id: string;
+  title: string;
+  reason: string;
+  priority: string;
+  targetView: ViewKey;
+  node: AtlasNode | null;
 }
 
 interface SemanticInsight {
@@ -312,7 +331,7 @@ async function clearTransientBrowserState(): Promise<void> {
 }
 
 export function App() {
-  const [activeView, setActiveView] = useState<ViewKey>("galaxy");
+  const [activeView, setActiveView] = useState<ViewKey>("home");
   const [filters, setFilters] = useState<AtlasFilters>(defaultFilters);
   const [atlas, setAtlas] = useState<MemoryAtlas>(emptyAtlas);
   const [selectedNode, setSelectedNode] = useState<AtlasNode | null>(null);
@@ -649,6 +668,7 @@ export function App() {
               loadState={loadState}
               onSelectNode={handleSelectNode}
               onSelectContributionPeriod={handleSelectContributionPeriod}
+              onSwitchView={switchView}
             />
           </section>
           {showSideInspector ? (
@@ -674,6 +694,7 @@ function ViewRouter({
   loadState,
   onSelectNode,
   onSelectContributionPeriod,
+  onSwitchView,
 }: {
   activeView: ViewKey;
   atlas: MemoryAtlas;
@@ -684,9 +705,21 @@ function ViewRouter({
   loadState: "loading" | "ready" | "error";
   onSelectNode: (node: AtlasNode) => void;
   onSelectContributionPeriod: (detail: ContributionPeriodDetail) => void;
+  onSwitchView: (view: ViewKey) => void;
 }) {
   if (loadState === "loading") {
     return <div className="galaxy-loading">正在载入记忆星图...</div>;
+  }
+  if (activeView === "home") {
+    return (
+      <HomeOverviewView
+        nodes={slice.memoryNodes}
+        graphEdges={slice.graphEdges}
+        deltaStats={slice.deltaStats}
+        onSelectNode={onSelectNode}
+        onSwitchView={onSwitchView}
+      />
+    );
   }
   if (activeView === "galaxy") {
     return (
@@ -730,6 +763,84 @@ function ViewRouter({
     return <SummaryIterationView atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} />;
   }
   return <SearchReview atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
+}
+
+function HomeOverviewView({
+  nodes,
+  graphEdges,
+  deltaStats,
+  onSelectNode,
+  onSwitchView,
+}: {
+  nodes: AtlasNode[];
+  graphEdges: AtlasEdge[];
+  deltaStats: DeltaStats;
+  onSelectNode: (node: AtlasNode) => void;
+  onSwitchView: (view: ViewKey) => void;
+}) {
+  const model = useMemo(
+    () => buildHomeOverviewModel(nodes, graphEdges, deltaStats),
+    [deltaStats, graphEdges, nodes],
+  );
+
+  function runAction(action: HomeAction) {
+    if (action.node) onSelectNode(action.node);
+    onSwitchView(action.targetView);
+  }
+
+  return (
+    <div className="home-overview-view visual-workspace">
+      <div className="surface-heading compact">
+        <div>
+          <p className="eyebrow">记忆总览 / Universe State / 下一步行动</p>
+          <h2>打开后先判断当前认知天气、主题趋势、机会、风险和建议动作</h2>
+        </div>
+        <span>{nodes.length.toLocaleString()} 条筛选记忆 · 默认入口</span>
+      </div>
+      <section className="home-primary-band" aria-label="当前认知状态">
+        <article className={`home-weather-panel ${model.weatherTone}`}>
+          <span>Memory Weather</span>
+          <strong>{model.weatherLabel}</strong>
+          <p>{model.weatherNote}</p>
+        </article>
+        <div className="home-weather-metrics">
+          <Metric label="主导主题" value={model.topicRows[0]?.count ?? 0} />
+          <Metric label="上升机会" value={model.protoStarCount} />
+          <Metric label="风险循环" value={model.blackHoleCount} />
+          <Metric label="近期增量" value={deltaStats.recentCount} />
+        </div>
+      </section>
+      <section className="home-status-grid" aria-label="Universe State 状态卡片">
+        {model.signals.map((signal) => (
+          <article className={`home-status-card ${signal.tone}`} key={signal.id}>
+            <span>{signal.title}</span>
+            <strong>{signal.value}</strong>
+            <p>{signal.note}</p>
+          </article>
+        ))}
+      </section>
+      <section className="home-action-panel" aria-label="下一步行动建议">
+        <div className="panel-title-row">
+          <h3>Next Best Actions</h3>
+          <span>proposal-only，不直接写长期记忆</span>
+        </div>
+        <div className="home-action-list">
+          {model.actions.map((action) => (
+            <button key={action.id} onClick={() => runAction(action)} type="button">
+              <span>{action.priority}</span>
+              <strong>{action.title}</strong>
+              <small>{action.reason}</small>
+            </button>
+          ))}
+        </div>
+      </section>
+      <section className="home-topic-strip" aria-label="主导主题趋势">
+        <MiniBarList title="主导主题" rows={model.topicRows} />
+        <MiniBarList title="记忆层级" rows={model.tierRows} />
+        <MiniBarList title="语义分类" rows={model.categoryRows} />
+      </section>
+    </div>
+  );
 }
 
 function GalaxyView({
@@ -2910,6 +3021,210 @@ function buildHumanOverview(nodes: AtlasNode[], deltaStats: DeltaStats): HumanOv
         : "当前筛选决策较少，后续应把重要选择明确写入决策日志。",
       `近 30 天较前 30 天 ${formatSigned(deltaStats.deltaCount)} 条，增量变化需要和实际任务成果一起复盘。`,
     ],
+  };
+}
+
+function buildHomeOverviewModel(
+  nodes: AtlasNode[],
+  graphEdges: AtlasEdge[],
+  deltaStats: DeltaStats,
+): {
+  weatherLabel: string;
+  weatherNote: string;
+  weatherTone: HomeSignalCard["tone"];
+  topicRows: Array<{ label: string; count: number }>;
+  tierRows: Array<{ label: string; count: number }>;
+  categoryRows: Array<{ label: string; count: number }>;
+  protoStarCount: number;
+  blackHoleCount: number;
+  signals: HomeSignalCard[];
+  actions: HomeAction[];
+} {
+  const memoryNodes = nodes.filter((node) => node.kind === "memory");
+  const topicRows = topRows(countBy(memoryNodes, (node) => compactThemeLabel(humanThemeLabel(node)) || "未归类主题"), 6);
+  const tierRows = topRows(countBy(memoryNodes, (node) => normalizeMemoryTier(node.memory_tier)), 4);
+  const categoryRows = topRows(countBy(memoryNodes, (node) => humanCategoryLabel(node.category)), 6);
+  const latest = parseDay(deltaStats.latestDate) ?? maxNodeDate(memoryNodes) ?? new Date();
+  const recentStart = addDays(latest, -29);
+  const previousStart = addDays(latest, -89);
+  const recentNodes = memoryNodes.filter((node) => isNodeBetween(node, recentStart, latest));
+  const olderComparableNodes = memoryNodes.filter((node) => isNodeBetween(node, previousStart, addDays(recentStart, -1)));
+  const staleNodes = memoryNodes.filter((node) => isBlackHoleCandidate(node));
+  const protoStarNodes = memoryNodes.filter((node) => isProtoStarCandidate(node, recentStart, latest));
+  const decliningRows = findDecliningTopicRows(recentNodes, olderComparableNodes);
+  const weather = homeWeatherFor(deltaStats, staleNodes.length, protoStarNodes.length);
+  const topTopic = topicRows[0] ?? { label: "暂无主题", count: 0 };
+  const risingTopic = topRows(countBy(recentNodes, (node) => compactThemeLabel(humanThemeLabel(node)) || "近期主题"), 1)[0] ?? {
+    label: "暂无近期增量",
+    count: 0,
+  };
+  const decliningTopic = decliningRows[0] ?? { label: "暂无明显冷却", count: 0 };
+  const blackHoleNode = selectRepresentativeNode(staleNodes);
+  const protoStarNode = selectRepresentativeNode(protoStarNodes);
+  const highLeverageNode = selectRepresentativeNode(memoryNodes);
+  const decisionCount = memoryNodes.filter((node) => node.category === "decision").length;
+  const coreCount = memoryNodes.filter((node) => normalizeMemoryTier(node.memory_tier) === "核心画像").length;
+
+  return {
+    weatherLabel: weather.label,
+    weatherNote: weather.note,
+    weatherTone: weather.tone,
+    topicRows,
+    tierRows,
+    categoryRows,
+    protoStarCount: protoStarNodes.length,
+    blackHoleCount: staleNodes.length,
+    signals: [
+      {
+        id: "weather",
+        title: "认知天气",
+        value: weather.label,
+        note: weather.note,
+        tone: weather.tone,
+      },
+      {
+        id: "dominant",
+        title: "主导主题",
+        value: topTopic.label,
+        note: `${topTopic.count.toLocaleString()} 条记忆集中在这个主题，可作为本轮复盘入口。`,
+        tone: "dominant",
+      },
+      {
+        id: "rising",
+        title: "上升机会",
+        value: risingTopic.label,
+        note: `${risingTopic.count.toLocaleString()} 条近期记录；优先检查是否可以转成项目、技能或行动。`,
+        tone: "rising",
+      },
+      {
+        id: "declining",
+        title: "冷却轨道",
+        value: decliningTopic.label,
+        note: decliningTopic.count
+          ? `近 30 天降温 ${decliningTopic.count.toLocaleString()} 条；适合压缩、降权或补充新证据。`
+          : "当前没有明显降温主题；继续观察低频但重要的长期资产。",
+        tone: "declining",
+      },
+      {
+        id: "black-hole",
+        title: "Black Hole 风险",
+        value: staleNodes.length.toLocaleString(),
+        note: blackHoleNode
+          ? `${humanNodeDisplayTitle(blackHoleNode)}：${recommendedActionForNode(blackHoleNode)}`
+          : "未发现明显低价值循环；仍需保持 proposal-only 写回边界。",
+        tone: "black-hole",
+      },
+      {
+        id: "proto-star",
+        title: "Proto-Star 机会",
+        value: protoStarNodes.length.toLocaleString(),
+        note: protoStarNode
+          ? `${humanNodeDisplayTitle(protoStarNode)}：ROI ${formatScore(protoStarNode.metrics?.roi?.leverage_score)}`
+          : "近期机会信号不足；先从主导主题中寻找可执行切口。",
+        tone: "proto-star",
+      },
+    ],
+    actions: [
+      {
+        id: "inspect-roi",
+        title: "查看最高杠杆记忆",
+        priority: "P1",
+        reason: highLeverageNode
+          ? `${humanNodeDisplayTitle(highLeverageNode)} · ${edgeCountFor(highLeverageNode.id, graphEdges).toLocaleString()} 个连接`
+          : "当前筛选下暂无可选记忆，先放宽筛选条件。",
+        targetView: "roi",
+        node: highLeverageNode,
+      },
+      {
+        id: "review-core",
+        title: "同步核心画像与规则",
+        priority: "P1",
+        reason: `${coreCount.toLocaleString()} 条核心画像、${decisionCount.toLocaleString()} 条决策适合进入 Summary & Iteration 复核。`,
+        targetView: "summary",
+        node: null,
+      },
+      {
+        id: "compress-black-hole",
+        title: "压缩低价值循环",
+        priority: staleNodes.length ? "P2" : "P3",
+        reason: staleNodes.length
+          ? `${staleNodes.length.toLocaleString()} 条历史、临时或过时信号需要降权或补证。`
+          : "当前没有明显 Black Hole；保留这一步作为定期检查。",
+        targetView: "search",
+        node: blackHoleNode,
+      },
+      {
+        id: "read-time-river",
+        title: "按时间复盘增量",
+        priority: deltaStats.deltaCount >= 0 ? "P2" : "P1",
+        reason: `近 30 天 ${deltaStats.recentCount.toLocaleString()} 条，较前 30 天 ${formatSigned(deltaStats.deltaCount)} 条。`,
+        targetView: "timeline",
+        node: protoStarNode ?? highLeverageNode,
+      },
+    ],
+  };
+}
+
+function isBlackHoleCandidate(node: AtlasNode): boolean {
+  const stale = node.metrics?.roi?.staleness_status ?? "";
+  return (
+    stale.includes("stale") ||
+    stale === "needs_review" ||
+    node.category === "deprecated_info" ||
+    node.category === "temporary_or_sensitive" ||
+    normalizeMemoryTier(node.memory_tier) === "临时"
+  );
+}
+
+function isProtoStarCandidate(node: AtlasNode, recentStart: Date, latest: Date): boolean {
+  const leverage = node.metrics?.roi?.leverage_score ?? 0;
+  const recent = isNodeBetween(node, recentStart, latest);
+  return recent && (leverage >= 0.54 || node.category === "decision" || node.category === "project_context" || node.importance === "高");
+}
+
+function findDecliningTopicRows(
+  recentNodes: AtlasNode[],
+  olderComparableNodes: AtlasNode[],
+): Array<{ label: string; count: number }> {
+  const recentCounts = countBy(recentNodes, (node) => compactThemeLabel(humanThemeLabel(node)) || "未归类主题");
+  const olderCounts = countBy(olderComparableNodes, (node) => compactThemeLabel(humanThemeLabel(node)) || "未归类主题");
+  return Object.entries(olderCounts)
+    .map(([label, count]) => ({ label, count: Math.max(0, count - (recentCounts[label] ?? 0)) }))
+    .filter((row) => row.count > 0)
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, "zh-CN"))
+    .slice(0, 4);
+}
+
+function homeWeatherFor(
+  deltaStats: DeltaStats,
+  blackHoleCount: number,
+  protoStarCount: number,
+): { label: string; note: string; tone: HomeSignalCard["tone"] } {
+  if (blackHoleCount > Math.max(12, protoStarCount * 2) && deltaStats.deltaCount < 0) {
+    return {
+      label: "风暴",
+      note: "过时或临时信号偏多，且近期增量下降；先做压缩、降权和证据复核。",
+      tone: "black-hole",
+    };
+  }
+  if (protoStarCount >= 6 && deltaStats.deltaCount >= 0) {
+    return {
+      label: "新生云团",
+      note: "近期机会和高杠杆记忆正在增加，适合转成项目、Skill 或下一步执行清单。",
+      tone: "proto-star",
+    };
+  }
+  if (deltaStats.deltaCount < 0) {
+    return {
+      label: "低温",
+      note: "近期记忆增量低于上一周期，适合复盘停滞主题并清理不再有效的信息。",
+      tone: "declining",
+    };
+  }
+  return {
+    label: "晴朗",
+    note: "当前主题和增量相对稳定，可以从主导主题进入 ROI、时间线或 Summary 复核。",
+    tone: "weather",
   };
 }
 
