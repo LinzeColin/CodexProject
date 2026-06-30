@@ -1,0 +1,157 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S11_P3_project_cost_page/human/s11_p3_completion_record.md",
+    "html_export": "KMFA/stage_artifacts/S11_P3_project_cost_page/exports/html/kmfa_project_cost_page.html",
+    "project_cost_page_manifest": "KMFA/metadata/reports/project_cost_page_manifest.json",
+    "project_cost_page_projects": "KMFA/metadata/reports/project_cost_page_projects.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S11_P3_project_cost_page/machine/s11_p3_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S11_P3_project_cost_page/human/test_results.md",
+    "validator": "KMFA/tools/check_s11_p3_project_cost_page.py"
+  },
+  "brand_mark": "KM",
+  "brand_mark_is_single_k": false,
+  "content_hash": "sha256:a80f55bb60818ed1f0f9cf606cacc943a77d1f680bb36652e3a9d0670ca5ff7a",
+  "generated_at": "2026-07-01T11:00:00+10:00",
+  "interaction": {
+    "detail_panel_fields": [
+      "来源证据",
+      "待处理事项",
+      "报告预览"
+    ],
+    "project_detail_click_enabled": true,
+    "raw_layer_write_allowed": false,
+    "write_back_allowed": false
+  },
+  "interaction_version": "INTERACTION-KMFA-S11P3-PROJECT-DETAIL-001",
+  "limitations": [
+    "S11-P3 只生成项目成本页面，不执行 Stage 11 整体复审或 GitHub upload。",
+    "项目列表只展示公开安全项目分组和状态，不展示真实金额、真实项目名、客户、合同、账号或字段明文。",
+    "报告预览可直接查看，但报告等级 D 和质量门禁不可绕过。",
+    "待处理差异、完整追溯和人工确认完成前，不允许正式报告或经营决策依据。",
+    "本 phase 不接外部接口，不写 raw layer。"
+  ],
+  "project_cost_page_version": "UI-KMFA-S11P3-PROJECT-COST-PAGE-001",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_file_committed": false,
+    "private_ref_committed_in_s11p3_outputs": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "real_account_number_committed": false
+  },
+  "public_safety_version": "SAFE-KMFA-S11P3-PUBLIC-001",
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "pending_reconciliation_count": 12,
+    "phase_completion_upload_allowed": false,
+    "project_cost_page_export_allowed": true,
+    "quality_grade_bypass_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "report_grade_d_zero_delta_failed_pending_reconciliation",
+    "report_grade_bypass_allowed": false,
+    "report_grade_visible": "D",
+    "report_preview_direct_view_allowed": true,
+    "stage11_review_allowed": false
+  },
+  "record_type": "project_cost_page_manifest",
+  "required_cost_categories": [
+    "labor",
+    "material",
+    "machinery",
+    "subcontract",
+    "transport",
+    "travel",
+    "tax",
+    "management_fee",
+    "interest"
+  ],
+  "required_margin_metrics": [
+    "authority_gross_profit",
+    "system_recomputed_gross_profit",
+    "cash_gross_profit",
+    "gross_margin_rate"
+  ],
+  "required_project_table_columns": [
+    "项目分组",
+    "毛利状态",
+    "成本结构",
+    "回款状态",
+    "差异状态",
+    "报告预览",
+    "下一步"
+  ],
+  "required_sections": [
+    "项目列表",
+    "项目详情",
+    "来源证据",
+    "待处理事项",
+    "报告预览"
+  ],
+  "runtime_status": "public_safe_project_cost_page_generated_local_only",
+  "schema_version": "kmfa.project_cost_page_manifest.v1",
+  "source_taskpack_refs": {
+    "frontend_report_rules": "KMFA/taskpack/v1_2/01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md:11",
+    "project_cost_html_sample": "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_项目成本专题报告预览_v0_6_blue_zero_delta.html",
+    "roadmap_s11_p3": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S11-P3",
+    "upstream_fact_layer": "KMFA/metadata/reports/project_cost_fact_layer_manifest.json",
+    "upstream_margin_layer": "KMFA/metadata/reports/project_margin_cash_margin_manifest.json",
+    "upstream_report_grade": "KMFA/metadata/reports/report_grade_runtime_manifest.json",
+    "upstream_scope_reconciliation": "KMFA/metadata/reports/project_scope_reconciliation_manifest.json"
+  },
+  "stage_phase": "S11-P3",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s11_p3_project_cost_page_scope_included": true,
+    "s12_manual_workbench_scope_included": false,
+    "stage11_review_scope_included": false
+  },
+  "style_gate": {
+    "blue_business_style": true,
+    "large_yellow_surface_count": 0,
+    "responsive_table_and_detail": true,
+    "status_badges_only": true
+  },
+  "style_version": "STYLE-KMFA-S11P3-BLUE-BUSINESS-001",
+  "summary": {
+    "business_decision_basis_count": 0,
+    "cost_category_count": 9,
+    "evidence_panel_count": 1,
+    "formal_report_count": 0,
+    "html_export_count": 1,
+    "margin_metric_count": 4,
+    "margin_record_count": 4,
+    "pending_action_panel_count": 1,
+    "pending_reconciliation_count": 12,
+    "private_ref_count": 0,
+    "project_detail_panel_count": 3,
+    "project_list_column_count": 7,
+    "project_list_columns_covered": true,
+    "project_row_count": 4,
+    "quality_grade_bypass_allowed": false,
+    "raw_business_value_count": 0,
+    "report_grade_visible": "D",
+    "report_preview_direct_view_allowed": true,
+    "report_preview_panel_count": 1
+  },
+  "system_name": "KMFA 经营分析系统",
+  "upstream_summary": {
+    "margin_record_count": 4,
+    "project_cost_fact_record_count": 4,
+    "report_export_record_count": 2,
+    "report_grade_distribution": {
+      "D": 2
+    },
+    "report_grade_record_count": 2,
+    "scope_reconciliation_record_count": 12
+  }
+}

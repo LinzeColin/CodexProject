@@ -1,4 +1,4 @@
-version: "0.1.0-s11p2-source-check-board"
+version: "0.1.0-s11p3-project-cost-page"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -33,6 +33,7 @@ active_formula_ids:
   - "FORM-KMFA-REPORT-EXPORT-001"
   - "FORM-KMFA-HOME-NAVIGATION-001"
   - "FORM-KMFA-SOURCE-CHECK-BOARD-001"
+  - "FORM-KMFA-PROJECT-COST-PAGE-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

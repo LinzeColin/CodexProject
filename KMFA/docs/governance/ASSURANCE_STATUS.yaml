@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S11P2-SOURCE-CHECK-BOARD"
+as_of_event_id: "EVENT-KMFA-20260701-S11P3-PROJECT-COST-PAGE"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "6b6e599100e59cfdd0c404b28f58821b396b3267"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S10_STAGE_REVIEW_LOCAL_COMMIT"
-snapshot_event_time: "2026-07-01T10:00:00+10:00"
-generator_version: "manual-s11p2-source-check-board"
+source_base_commit: "f1d6084a1ba7664276f67cb0f29ee17830db2515"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S11P3_LOCAL_COMMIT"
+snapshot_event_time: "2026-07-01T11:00:00+10:00"
+generator_version: "manual-s11p3-project-cost-page"
 final_commit_binding: "post_amend_hash_recorded_by_git_parity_check"
 dimensions:
   structural_completeness:
@@ -16,7 +16,7 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     total_active_parameters: 116
-    total_active_formulas: 29
+    total_active_formulas: 30
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -111,6 +111,7 @@ dimensions:
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S11_P1_home_navigation/human/test_results.md"
       - "KMFA/stage_artifacts/S11_P2_source_check_board/human/test_results.md"
+      - "KMFA/stage_artifacts/S11_P3_project_cost_page/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -174,6 +175,8 @@ dimensions:
       - "KMFA/tools/check_s11_p1_home_navigation.py"
       - "KMFA/tools/source_check_board_runtime.py"
       - "KMFA/tools/check_s11_p2_source_check_board.py"
+      - "KMFA/tools/project_cost_page_runtime.py"
+      - "KMFA/tools/check_s11_p3_project_cost_page.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -313,16 +316,20 @@ dimensions:
       - "KMFA/stage_artifacts/S11_P2_source_check_board/machine/s11_p2_manifest.json"
       - "KMFA/metadata/reports/source_check_board_manifest.json"
       - "KMFA/metadata/reports/source_check_board_rows.jsonl"
+      - "KMFA/stage_artifacts/S11_P3_project_cost_page/human/s11_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S11_P3_project_cost_page/human/test_results.md"
+      - "KMFA/stage_artifacts/S11_P3_project_cost_page/machine/s11_p3_manifest.json"
+      - "KMFA/metadata/reports/project_cost_page_manifest.json"
+      - "KMFA/metadata/reports/project_cost_page_projects.jsonl"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S11_P2_COMPLETED_VALIDATED_LOCAL_ONLY_S11_P3_PENDING"
-  release_gate: "KMFA-S11-P3-GATE"
+  status: "S11_P3_COMPLETED_VALIDATED_LOCAL_ONLY_STAGE11_REVIEW_PENDING"
+  release_gate: "KMFA-S11-STAGE-REVIEW-GATE"
   blocker_ids:
-    - "S11_P3_NOT_STARTED"
     - "STAGE11_REVIEW_NOT_STARTED"
     - "STAGE11_GITHUB_UPLOAD_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

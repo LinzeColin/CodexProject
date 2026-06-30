@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s11p2-source-check-board"
+version: "0.1.0-s11p3-project-cost-page"
 current_stage: "S11"
-current_phase: "S11-P2"
+current_phase: "S11-P3"
 current_phase_status: "completed_validated_local_only"
-current_stage_status: "s11_p2_completed_validated_local_only_s11_p3_pending"
+current_stage_status: "s11_p3_completed_validated_local_only_stage11_review_pending"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -35,6 +35,8 @@ machine_plane:
   - "metadata/reports/home_navigation_modules.jsonl"
   - "metadata/reports/source_check_board_manifest.json"
   - "metadata/reports/source_check_board_rows.jsonl"
+  - "metadata/reports/project_cost_page_manifest.json"
+  - "metadata/reports/project_cost_page_projects.jsonl"
   - "stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md"
   - "stage_artifacts/S10_P1_report_templates/human/test_results.md"
   - "stage_artifacts/S10_P1_report_templates/machine/s10_p1_manifest.json"
@@ -52,6 +54,10 @@ machine_plane:
   - "stage_artifacts/S11_P2_source_check_board/human/test_results.md"
   - "stage_artifacts/S11_P2_source_check_board/machine/s11_p2_manifest.json"
   - "stage_artifacts/S11_P2_source_check_board/exports/html/kmfa_source_check_board.html"
+  - "stage_artifacts/S11_P3_project_cost_page/human/s11_p3_completion_record.md"
+  - "stage_artifacts/S11_P3_project_cost_page/human/test_results.md"
+  - "stage_artifacts/S11_P3_project_cost_page/machine/s11_p3_manifest.json"
+  - "stage_artifacts/S11_P3_project_cost_page/exports/html/kmfa_project_cost_page.html"
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
@@ -248,11 +254,11 @@ upload_policy:
   stage11_phase_completion_upload_allowed: false
   stage11_s11p1_completed_validated_local_only: true
   stage11_s11p2_completed_validated_local_only: true
-  stage11_s11p3_completed_validated_local_only: false
+  stage11_s11p3_completed_validated_local_only: true
   stage11_review_required_before_upload: true
   stage11_review_passed: false
   stage11_upload_ready_local_only: false
   stage11_uploaded_to_github_main: false
-  stage11_blocker: "s11_p3_pending"
+  stage11_blocker: "stage11_review_pending"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_s11_p3_next"
+  upload_surface: "project_level_kmfa_worktree_stage11_review_next"

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s11p3-project-cost-page - 2026-07-01
+
+- 完成 `S11-P3｜项目成本页面` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/project_cost_page_runtime.py`、`KMFA/tools/check_s11_p3_project_cost_page.py` 和 `KMFA/tests/test_project_cost_page_runtime.py`。
+- 生成 public-safe 项目成本页面 manifest、4 条项目页面记录和 1 个蓝色商务风 HTML 项目成本页面，覆盖项目列表、毛利状态、成本结构、回款状态、差异状态、项目详情、来源证据、待处理事项和报告预览。
+- 报告预览允许直接查看，但继续显示 `D` 级；`quality_grade_bypass_allowed=false`、`formal_report_allowed=false`、`complete_trusted_report_display_allowed=false`、`business_decision_basis_allowed=false`。
+- 保持 `stage11_review_allowed=false`、`github_upload_allowed=false`、S09-P3 12 条 pending reconciliation 未关闭。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额或 credentials。
+- S11 三个 phase 已本地验证完成；下一轮只能执行 Stage 11 整体复审，不得做 GitHub upload、S12、lineage full check、正式报告或外部接口。
+
 ## 0.1.0-s11p2-source-check-board - 2026-07-01
 
 - 完成 `S11-P2｜数据源检查板` 本地验证，不上传 GitHub。
