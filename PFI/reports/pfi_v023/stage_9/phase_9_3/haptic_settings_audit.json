@@ -1,0 +1,28 @@
+{
+  "schema": "PFIV023Stage9Phase93HapticSettingsAuditV1",
+  "version": "v0.2.3",
+  "stage": "Stage 9",
+  "phase_id": "V023-S9-P9.3",
+  "phase_name": "触感与设置隔离",
+  "generated_at_utc": "2026-06-30T05:46:49Z",
+  "capability_detection": {
+    "uses_navigator_vibrate_detection": true,
+    "does_not_trigger_on_module_load": true,
+    "degrade_to": "visual_feedback"
+  },
+  "haptic_levels": [
+    "select",
+    "confirm",
+    "warning",
+    "blocked"
+  ],
+  "settings_toggles": [
+    "haptic",
+    "sound",
+    "motion"
+  ],
+  "settings_route": "/settings?tab=feedback",
+  "business_pages_show_feedback_console": false,
+  "stage_9_whole_review_done": false,
+  "github_main_upload_done": false
+}

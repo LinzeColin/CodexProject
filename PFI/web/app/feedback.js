@@ -8,7 +8,8 @@
   }
 })(typeof window !== "undefined" ? window : globalThis, function buildPFIStage9Feedback() {
   const VERSION = "v0.2.3";
-  const PHASE_ID = "V023-S9-P9.2";
+  const PHASE92_ID = "V023-S9-P9.2";
+  const PHASE93_ID = "V023-S9-P9.3";
 
   const FEEDBACK_STATES = Object.freeze([
     Object.freeze({
@@ -41,11 +42,38 @@
     }),
   ]);
 
+  const HAPTIC_LEVELS = Object.freeze([
+    Object.freeze({
+      level_id: "select",
+      label_zh: "选择反馈",
+      intent_zh: "切换标签、打开二级入口或选中轻量控件。",
+      pattern_ms: Object.freeze([12]),
+    }),
+    Object.freeze({
+      level_id: "confirm",
+      label_zh: "确认反馈",
+      intent_zh: "保存设置、完成导入检查或生成可复核结果。",
+      pattern_ms: Object.freeze([24, 20, 24]),
+    }),
+    Object.freeze({
+      level_id: "warning",
+      label_zh: "警示反馈",
+      intent_zh: "数据过期、字段缺失或需要复核。",
+      pattern_ms: Object.freeze([36, 18, 36]),
+    }),
+    Object.freeze({
+      level_id: "blocked",
+      label_zh: "阻断反馈",
+      intent_zh: "真实数据缺失、路径不可读或操作被阻断。",
+      pattern_ms: Object.freeze([60, 30, 60]),
+    }),
+  ]);
+
   function buildStage9Phase92Contract() {
     return Object.freeze({
       version: VERSION,
       stage: "Stage 9",
-      phase_id: PHASE_ID,
+      phase_id: PHASE92_ID,
       phase_name: "动效反馈",
       current_phase_only: true,
       max_one_phase_per_run: true,
@@ -86,7 +114,7 @@
       schema: "PFIV023Stage9Phase92FeedbackModelV1",
       version: VERSION,
       stage: "Stage 9",
-      phase_id: PHASE_ID,
+      phase_id: PHASE92_ID,
       phase_name: "动效反馈",
       page_transition: Object.freeze({
         duration_ms: 180,
@@ -163,10 +191,90 @@
     });
   }
 
+  function buildStage9Phase93Contract() {
+    return Object.freeze({
+      version: VERSION,
+      stage: "Stage 9",
+      phase_id: PHASE93_ID,
+      phase_name: "触感与设置隔离",
+      current_phase_only: true,
+      max_one_phase_per_run: true,
+      task_ids: Object.freeze(["T9.3.1", "T9.3.2", "T9.3.3", "T9.3.4"]),
+      allowed_files: Object.freeze([
+        "PFI/web/styles.css",
+        "PFI/web/app/theme.js",
+        "PFI/web/app/feedback.js",
+        "PFI/web/app/pages/settings.js",
+        "PFI/tests/test_v023_stage9_visual_feedback.py",
+        "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+        "PFI/reports/pfi_v023/stage_9/*",
+      ]),
+      changed_in_this_phase: Object.freeze([
+        "PFI/web/app/feedback.js",
+        "PFI/web/app/pages/settings.js",
+        "PFI/tests/test_v023_stage9_visual_feedback.py",
+        "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+        "PFI/reports/pfi_v023/stage_9/phase_9_3/*",
+      ]),
+      stage_contract: Object.freeze({
+        phase_9_1_design_system_done: true,
+        phase_9_2_motion_feedback_done: true,
+        phase_9_3_haptics_settings_done: true,
+        stage_9_whole_review_done: false,
+        github_main_upload_done: false,
+      }),
+      explicitly_not_done: Object.freeze([
+        "Stage 9 whole-stage review",
+        "GitHub main upload for intermediate phase",
+        "Stage 10 end-to-end app and browser acceptance",
+      ]),
+    });
+  }
+
+  function detectHapticCapability(environment = {}) {
+    const nav =
+      environment.navigator ||
+      (typeof navigator !== "undefined" && typeof navigator === "object" ? navigator : null);
+    const canVibrate = Boolean(nav && typeof nav.vibrate === "function");
+    return Object.freeze({
+      source: "navigator.vibrate",
+      can_vibrate: canVibrate,
+      reason_zh: canVibrate ? "当前浏览器支持触感震动能力。" : "当前浏览器不支持触感震动，自动降级为视觉反馈。",
+    });
+  }
+
+  function buildHapticFeedbackModel(environment = {}) {
+    return Object.freeze({
+      schema: "PFIV023Stage9Phase93HapticModelV1",
+      version: VERSION,
+      stage: "Stage 9",
+      phase_id: PHASE93_ID,
+      phase_name: "触感与设置隔离",
+      capability: detectHapticCapability(environment),
+      levels: HAPTIC_LEVELS,
+      preferences: Object.freeze({
+        can_disable: true,
+        default_enabled: true,
+        stored_in: "settings_feedback_preferences",
+        setting_route: "/settings?tab=feedback",
+        off_state_zh: "关闭后保留视觉状态与文字反馈。",
+      }),
+      degrade_to: "visual_feedback",
+      settings_isolation: Object.freeze({
+        visible_on_workspaces: Object.freeze(["settings"]),
+        business_pages_show_feedback_console: false,
+        settings_route: "/settings?tab=feedback",
+      }),
+    });
+  }
+
   return Object.freeze({
     buildStage9Phase92Contract,
     buildStage9Phase92FeedbackModel,
+    buildStage9Phase93Contract,
+    buildHapticFeedbackModel,
     buildReportProgressViewModel,
     buildFeedbackComponentState,
+    detectHapticCapability,
   });
 });

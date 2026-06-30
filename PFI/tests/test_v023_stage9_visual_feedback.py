@@ -44,8 +44,11 @@ class TestV023Stage9VisualFeedback(unittest.TestCase):
         self.html = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
         self.styles = (ROOT / "web" / "styles.css").read_text(encoding="utf-8")
         self.tokens = (ROOT / "web" / "styles" / "tokens.css").read_text(encoding="utf-8")
+        self.shell_js = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
         feedback_path = ROOT / "web" / "app" / "feedback.js"
         self.feedback_js = feedback_path.read_text(encoding="utf-8") if feedback_path.exists() else ""
+        settings_path = ROOT / "web" / "app" / "pages" / "settings.js"
+        self.settings_js = settings_path.read_text(encoding="utf-8") if settings_path.exists() else ""
         self.css = "\n".join((self.tokens, self.styles))
 
     def test_phase91_scope_is_limited_to_design_system_css(self) -> None:
@@ -292,7 +295,166 @@ console.log(JSON.stringify(feedback.buildStage9Phase92FeedbackModel()));
         self.assertIn("loading/success/error/blocked", doc_text)
         self.assertIn("报告生成进度", doc_text)
         self.assertIn("减少动画模式", doc_text)
-        self.assertIn("Phase 9.3 未执行", doc_text)
+        self.assertIn("Stage 9 Phase 9.3 触感与设置隔离", doc_text)
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("PFI/tests/test_v023_stage9_visual_feedback.py -q", terminal_log)
+
+    def test_phase93_contract_is_limited_to_haptics_and_settings_isolation(self) -> None:
+        self.assertIn("buildStage9Phase93Contract", self.feedback_js)
+        self.assertTrue((ROOT / "web" / "app" / "pages" / "settings.js").exists())
+        script = """
+const feedback = require('./PFI/web/app/feedback.js');
+console.log(JSON.stringify(feedback.buildStage9Phase93Contract()));
+"""
+        contract = node_json(script)
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 9")
+        self.assertEqual(contract["phase_id"], "V023-S9-P9.3")
+        self.assertEqual(contract["phase_name"], "触感与设置隔离")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertEqual(contract["task_ids"], ["T9.3.1", "T9.3.2", "T9.3.3", "T9.3.4"])
+        self.assertIn("PFI/web/app/feedback.js", contract["changed_in_this_phase"])
+        self.assertIn("PFI/web/app/pages/settings.js", contract["changed_in_this_phase"])
+        self.assertNotIn("PFI/web/index.html", contract["changed_in_this_phase"])
+        self.assertNotIn("PFI/web/app/shell.js", contract["changed_in_this_phase"])
+        self.assertTrue(contract["stage_contract"]["phase_9_1_design_system_done"])
+        self.assertTrue(contract["stage_contract"]["phase_9_2_motion_feedback_done"])
+        self.assertTrue(contract["stage_contract"]["phase_9_3_haptics_settings_done"])
+        self.assertFalse(contract["stage_contract"]["stage_9_whole_review_done"])
+        self.assertFalse(contract["stage_contract"]["github_main_upload_done"])
+        self.assertIn("Stage 9 whole-stage review", contract["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
+
+    def test_phase93_haptic_model_detects_vibrate_and_defines_levels(self) -> None:
+        self.assertIn("detectHapticCapability", self.feedback_js)
+        self.assertIn("buildHapticFeedbackModel", self.feedback_js)
+        script = """
+const feedback = require('./PFI/web/app/feedback.js');
+const capable = feedback.buildHapticFeedbackModel({ navigator: { vibrate: function () { return true; } } });
+const unavailable = feedback.buildHapticFeedbackModel({ navigator: {} });
+console.log(JSON.stringify({ capable, unavailable }));
+"""
+        result = node_json(script)
+        capable = result["capable"]
+        unavailable = result["unavailable"]
+
+        self.assertEqual(capable["schema"], "PFIV023Stage9Phase93HapticModelV1")
+        self.assertEqual(capable["phase_id"], "V023-S9-P9.3")
+        self.assertTrue(capable["capability"]["can_vibrate"])
+        levels = {item["level_id"]: item for item in capable["levels"]}
+        self.assertEqual(set(levels), {"select", "confirm", "warning", "blocked"})
+        for level_id, item in levels.items():
+            self.assertRegex(item["label_zh"], r"[\u4e00-\u9fff]")
+            self.assertLessEqual(max(item["pattern_ms"]), 80, level_id)
+            self.assertNotEqual(item["pattern_ms"], levels["confirm"]["pattern_ms"] if level_id == "blocked" else [])
+        self.assertTrue(capable["preferences"]["can_disable"])
+        self.assertEqual(capable["degrade_to"], "visual_feedback")
+        self.assertFalse(unavailable["capability"]["can_vibrate"])
+        self.assertRegex(unavailable["capability"]["reason_zh"], r"[\u4e00-\u9fff]")
+
+    def test_phase93_settings_page_preference_model_keeps_toggles_in_settings_only(self) -> None:
+        self.assertIn("buildStage9Phase93FeedbackSettingsViewModel", self.settings_js)
+        script = """
+const settings = require('./PFI/web/app/pages/settings.js');
+console.log(JSON.stringify(settings.buildStage9Phase93FeedbackSettingsViewModel()));
+"""
+        model = node_json(script)
+
+        self.assertEqual(model["schema"], "PFIV023Stage9Phase93FeedbackSettingsViewModelV1")
+        self.assertEqual(model["phase_id"], "V023-S9-P9.3")
+        self.assertEqual(model["page"], "settings")
+        self.assertEqual(model["route_alias"], "/settings?tab=feedback")
+        self.assertEqual(set(model["toggle_ids"]), {"haptic", "sound", "motion"})
+        self.assertEqual(model["visible_on_workspaces"], ["settings"])
+        self.assertFalse(model["business_pages_show_feedback_console"])
+        self.assertTrue(model["toggles"]["haptic"]["default_enabled"])
+        self.assertFalse(model["toggles"]["sound"]["default_enabled"])
+        self.assertTrue(model["toggles"]["motion"]["default_enabled"])
+        for toggle in model["toggles"].values():
+            self.assertRegex(toggle["label_zh"], r"[\u4e00-\u9fff]")
+            self.assertRegex(toggle["off_state_zh"], r"[\u4e00-\u9fff]")
+
+    def test_phase93_business_pages_do_not_expose_feedback_console(self) -> None:
+        business_workspaces = [
+            "home",
+            "accounts",
+            "ledger",
+            "investment",
+            "consumption",
+            "upload",
+            "review",
+            "reports",
+            "market-research",
+        ]
+        self.assertIn("data-settings-feedback-console hidden", self.html)
+        self.assertIn('main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none"', self.shell_js)
+        self.assertIn('settingsConsole.hidden = workspaceId !== "settings"', self.shell_js)
+        self.assertNotIn("data-settings-feedback-console", self.settings_js)
+        for workspace in business_workspaces:
+            self.assertNotRegex(
+                self.settings_js,
+                rf'"{workspace}"\s*[,\\]]',
+                f"{workspace} must not host the feedback settings console",
+            )
+
+    def test_phase93_doc_and_evidence_exist_before_candidate_pass(self) -> None:
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_9" / "phase_9_3"
+        evidence_path = phase_dir / "evidence.json"
+        haptic_audit_path = phase_dir / "haptic_settings_audit.json"
+        scan_path = phase_dir / "no_source_term_scan.json"
+        changed_files_path = phase_dir / "changed_files.txt"
+        terminal_log_path = phase_dir / "terminal.log"
+        doc_path = ROOT / "docs" / "pfi_v023" / "STAGE9_VISUAL_FEEDBACK.md"
+
+        for path in (evidence_path, haptic_audit_path, scan_path, changed_files_path, terminal_log_path, doc_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        audit = json.loads(haptic_audit_path.read_text(encoding="utf-8"))
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 9")
+        self.assertEqual(evidence["phase_id"], "V023-S9-P9.3")
+        self.assertEqual(evidence["phase_name"], "触感与设置隔离")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertTrue(evidence["stage_contract"]["phase_9_1_design_system_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_9_2_motion_feedback_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_9_3_haptics_settings_done"])
+        self.assertFalse(evidence["stage_contract"]["stage_9_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        for key in (
+            "navigator_vibrate_capability_detection",
+            "haptic_levels",
+            "settings_page_toggles",
+            "business_pages_without_feedback_console",
+            "no_forbidden_financial_data_terms",
+        ):
+            self.assertTrue(evidence["acceptance_checks"][key], key)
+
+        self.assertEqual(audit["schema"], "PFIV023Stage9Phase93HapticSettingsAuditV1")
+        self.assertEqual(audit["phase_id"], "V023-S9-P9.3")
+        self.assertTrue(audit["capability_detection"]["uses_navigator_vibrate_detection"])
+        self.assertEqual(set(audit["haptic_levels"]), {"select", "confirm", "warning", "blocked"})
+        self.assertEqual(set(audit["settings_toggles"]), {"haptic", "sound", "motion"})
+        self.assertFalse(audit["business_pages_show_feedback_console"])
+        self.assertFalse(audit["stage_9_whole_review_done"])
+        self.assertEqual(scan["violations"], [])
+
+        doc_text = doc_path.read_text(encoding="utf-8")
+        self.assertIn("Stage 9 Phase 9.3", doc_text)
+        self.assertIn("navigator.vibrate 能力检测", doc_text)
+        self.assertIn("触感层级", doc_text)
+        self.assertIn("设置页开关", doc_text)
+        self.assertIn("主业务页无反馈控制台", doc_text)
+        self.assertIn("Stage 9 whole-stage review 未执行", doc_text)
 
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("PFI/tests/test_v023_stage9_visual_feedback.py -q", terminal_log)
@@ -302,6 +464,7 @@ console.log(JSON.stringify(feedback.buildStage9Phase92FeedbackModel()));
         paths = [
             ROOT / "web" / "styles.css",
             ROOT / "web" / "app" / "feedback.js",
+            ROOT / "web" / "app" / "pages" / "settings.js",
             ROOT / "tests" / "test_v023_stage9_visual_feedback.py",
             ROOT / "docs" / "pfi_v023" / "STAGE9_VISUAL_FEEDBACK.md",
         ]
