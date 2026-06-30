@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload，以及 Stage 10 全部 Phase/复审/upload。S11-P1 首页与导航、S11-P2 数据源检查板、S11-P3 项目成本页面和 Stage 11 整体复审已本地验证通过，证据在 `KMFA/stage_artifacts/S11_STAGE_REVIEW/`。但 Stage 11 final GitHub upload、lineage、正式报告运行时仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload，以及 Stage 11 全部 Phase/复审/upload。S11-P1 首页与导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 整体复审和 final GitHub upload 证据在 `KMFA/stage_artifacts/S11_STAGE_REVIEW/`。但 S12、lineage、正式报告运行时仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -60,6 +60,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S11-P2 数据源检查板已本地验证完成：`KMFA/tools/source_check_board_runtime.py`、`KMFA/tools/check_s11_p2_source_check_board.py`、`KMFA/tests/test_source_check_board_runtime.py`、`KMFA/metadata/reports/source_check_board_manifest.json`、`KMFA/metadata/reports/source_check_board_rows.jsonl` 和 `KMFA/stage_artifacts/S11_P2_source_check_board/` 已生成；检查板覆盖固定 11 列、5 种状态、状态点击详情和低干扰蓝灰样式，保持正式报告和经营决策依据阻断。
 - S11-P3 项目成本页面已本地验证完成：`KMFA/tools/project_cost_page_runtime.py`、`KMFA/tools/check_s11_p3_project_cost_page.py`、`KMFA/tests/test_project_cost_page_runtime.py`、`KMFA/metadata/reports/project_cost_page_manifest.json`、`KMFA/metadata/reports/project_cost_page_projects.jsonl` 和 `KMFA/stage_artifacts/S11_P3_project_cost_page/` 已生成；页面覆盖 4 条项目页面记录、9 类成本结构、12 条 pending reconciliation、来源证据、待处理事项和 D 级报告预览。
 - Stage 11 整体复审已本地通过：`KMFA/tools/check_s11_stage_review.py`、`KMFA/tests/test_s11_stage_review.py` 和 `KMFA/stage_artifacts/S11_STAGE_REVIEW/` 已生成；复审复跑 S11-P1/P2/P3 validators、全量 132 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks，未执行 GitHub upload、S12、lineage full check、正式报告或外部接口。
+- Stage 11 final GitHub upload 已完成：`KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json` 记录 rebase、validators、raw/secret scan、dry-run push、push 和 post-push parity。
 
 ## 你现在不能信任什么
 
@@ -68,7 +69,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、Stage 8 upload、Stage 9 upload 或 Stage 10 upload 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
-- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面或 Stage 11 review 等于完整业务系统；Stage 11 final GitHub upload、lineage full check 和正式报告仍未完成。
+- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面或 Stage 11 upload 等于完整业务系统；S12、lineage full check 和正式报告仍未完成。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -77,4 +78,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `Stage 11 final GitHub upload gate`；不得扩大到 S12、lineage full check、正式报告或自动接口。upload gate 必须先对齐最新 `origin/main`，复跑 S11 validators、治理 validator、raw/secret scan、parse checks、dry-run push、push 和 post-push parity。
+下一步只执行 `S12-P1｜人工处理工作台与重跑机制`；不得扩大到 S12-P2/P3、lineage full check、正式报告或自动接口。

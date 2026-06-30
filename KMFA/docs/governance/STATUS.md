@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s11-stage-review`
-- current_stage: `S11`
-- current_phase: `S11_STAGE_REVIEW｜整体复审｜本地通过`
-- status: `s11_review_passed_upload_ready_local_only`
+- version: `0.1.0-s11-github-upload`
+- current_stage: `S12`
+- current_phase: `S12-P1｜待开始`
+- status: `s11_uploaded_to_github_main_s12_p1_pending`
 - production_ready: `false`
-- github_upload_ready: `true_local_only_final_upload_gate_required`
+- github_upload_ready: `false_next_stage_requires_review_after_three_phases`
 
 ## 已完成
 
@@ -88,14 +88,15 @@
 - S11-P2 数据源检查板已完成本地验证：`KMFA/tools/source_check_board_runtime.py` 生成 13 行 public-safe 来源状态矩阵、固定 11 列、5 种状态、1 个蓝灰商务风 HTML 检查板样张、manifest 和 rows；`KMFA/tools/check_s11_p2_source_check_board.py` 验证状态详情点击、低干扰徽标、S11-P3 scope false、正式报告阻断和 GitHub upload false。
 - S11-P3 项目成本页面已完成本地验证：`KMFA/tools/project_cost_page_runtime.py` 生成 4 条 public-safe 项目页面记录、项目列表、项目详情、来源证据、待处理事项、D 级报告预览、1 个蓝色商务风 HTML 页面、manifest 和 records；`KMFA/tools/check_s11_p3_project_cost_page.py` 验证报告预览可直接查看但不可绕过质量等级，Stage 11 review 和 GitHub upload 仍为 false。
 - Stage 11 整体复审已本地通过：`KMFA/stage_artifacts/S11_STAGE_REVIEW/` 记录 S11-P1/P2/P3 validators、`KMFA/tools/check_s11_stage_review.py`、全量 132 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 public-safe 证据一致性；复审未执行 GitHub upload、S12、lineage full check、正式报告或外部接口。
+- Stage 11 final GitHub upload 已完成：`KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json` 记录 rebase、validators、raw/secret scan、dry-run push、push 和 post-push parity。
 
 ## 未完成
 
-- Stage 11 final GitHub upload、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
+- S12 人工处理工作台、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page 和 Stage 11 review 已完成；下一步只能执行 Stage 11 final GitHub upload gate，不能做 S12、lineage full check、正式报告或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page、Stage 11 review/upload 已完成；下一步只能执行 S12-P1，不能做 S12-P2/P3、lineage full check、正式报告或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

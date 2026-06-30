@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s11-github-upload - 2026-07-01
+
+- 完成 Stage 11 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `e694e0ba54b0a36393b42f3fae2d2d9499c3aa42` rebase Stage 11 栈，并复跑 S11-P1/P2/P3 validators、Stage 11 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。
+- 新增 `KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json`。
+- 上传范围只包含 public-safe S11 首页与导航、数据源检查板、项目成本页面、Stage 11 review 和 upload proof；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额或 credentials。
+- Stage 11 upload 不实现 S12、lineage full check、正式报告、外部 connector、差异关闭或派生指标重跑。
+- 下一轮只能执行 `S12-P1｜人工处理工作台与重跑机制`，作为独立 phase。
+
 ## 0.1.0-s11-stage-review - 2026-07-01
 
 - 完成 Stage 11 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
