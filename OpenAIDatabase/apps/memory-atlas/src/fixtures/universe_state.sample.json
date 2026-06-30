@@ -1,0 +1,387 @@
+{
+  "schema_version": "universe_state_snapshot.v1",
+  "generated_at": "2026-06-30T00:00:00Z",
+  "source_snapshot": {
+    "schema_version": "memory_atlas_universe_state_fixture.v1",
+    "generated_at": "2026-06-30T00:00:00Z",
+    "source_scope": "all",
+    "time_range": {
+      "start": "2026-01-01",
+      "end": "2026-06-30"
+    },
+    "redaction_mode": "public_redacted_read_only_visualization"
+  },
+  "state": {
+    "memory_weather": {
+      "label": "black_hole_warning",
+      "summary": "A repeated low-value loop is visible and should be reduced or bounded.",
+      "drivers": [
+        "black-hole-scope-drift",
+        "proto-universe-state",
+        "conflict-scope-vs-speed"
+      ],
+      "confidence": 0.8242,
+      "coverage": {
+        "source_scope": "all",
+        "time_range": {
+          "start": "2026-01-01",
+          "end": "2026-06-30"
+        }
+      }
+    },
+    "dominant_clusters": [
+      {
+        "cluster_id": "cluster-memory-continuity",
+        "label": "长期记忆连续性",
+        "theme_id": "theme-memory-atlas",
+        "mass_score": 0.92,
+        "evidence_count": 128,
+        "source_scope": "all",
+        "recommended_action": "continue bounded Memory Atlas v1.1.5 implementation"
+      },
+      {
+        "cluster_id": "cluster-codex-workflow",
+        "label": "Codex 工作流",
+        "theme_id": "theme-delivery-system",
+        "mass_score": 0.86,
+        "evidence_count": 112,
+        "source_scope": "codex",
+        "recommended_action": "keep single-phase run contracts and validation evidence"
+      },
+      {
+        "cluster_id": "cluster-visual-ux",
+        "label": "可视化体验升级",
+        "theme_id": "theme-visual-system",
+        "mass_score": 0.72,
+        "evidence_count": 68,
+        "source_scope": "all",
+        "recommended_action": "validate isolated starfield, river and state generator spikes"
+      }
+    ],
+    "rising_clusters": [
+      {
+        "cluster_id": "cluster-visual-ux",
+        "growth_score": 0.82,
+        "recent_signal_count": 21,
+        "related_proto_star_ids": [
+          "proto-universe-state",
+          "proto-river-pulse"
+        ],
+        "explanation": "可视化体验升级 has recent redacted growth signals and 68 evidence items."
+      },
+      {
+        "cluster_id": "cluster-memory-continuity",
+        "growth_score": 0.64,
+        "recent_signal_count": 34,
+        "related_proto_star_ids": [
+          "proto-universe-state"
+        ],
+        "explanation": "长期记忆连续性 has recent redacted growth signals and 128 evidence items."
+      },
+      {
+        "cluster_id": "cluster-codex-workflow",
+        "growth_score": 0.58,
+        "recent_signal_count": 28,
+        "related_proto_star_ids": [
+          "proto-river-pulse"
+        ],
+        "explanation": "Codex 工作流 has recent redacted growth signals and 112 evidence items."
+      }
+    ],
+    "declining_clusters": [
+      {
+        "cluster_id": "cluster-import-hygiene",
+        "decline_score": 0.68,
+        "inactive_days": 96,
+        "stale_orbit_id": "stale-cluster-import-hygiene",
+        "recommended_action": "review_for_archive"
+      }
+    ],
+    "conflict_zones": [
+      {
+        "zone_id": "conflict-scope-vs-speed",
+        "related_cluster_ids": [
+          "cluster-memory-continuity",
+          "cluster-agent-governance"
+        ],
+        "conflict_score": 0.58,
+        "evidence_count": 22,
+        "inspector_summary": "Fast iteration pressure conflicts with single-phase scope discipline."
+      }
+    ],
+    "black_holes": [
+      {
+        "black_hole_id": "black-hole-scope-drift",
+        "score": 0.7085,
+        "severity": "critical",
+        "related_cluster_ids": [
+          "cluster-agent-governance",
+          "cluster-import-hygiene"
+        ],
+        "time_band": {
+          "start": "2026-03-18",
+          "end": "2026-04-08"
+        },
+        "recommended_reduction_action": "keep taskpack boundaries explicit and defer production integration",
+        "evidence_count": 17
+      }
+    ],
+    "proto_stars": [
+      {
+        "proto_star_id": "proto-universe-state",
+        "score": 0.753,
+        "status": "proto_star",
+        "uncertainty": 0.28,
+        "related_cluster_ids": [
+          "cluster-memory-continuity",
+          "cluster-visual-ux"
+        ],
+        "first_seen_date": "2026-05-21",
+        "validation_action": "generate sample state and validate shared consumer mapping",
+        "evidence_count": 23
+      },
+      {
+        "proto_star_id": "proto-river-pulse",
+        "score": 0.601,
+        "status": "proto_star",
+        "uncertainty": 0.38,
+        "related_cluster_ids": [
+          "cluster-visual-ux",
+          "cluster-codex-workflow"
+        ],
+        "first_seen_date": "2026-06-12",
+        "validation_action": "connect river pulse preview only after isolated spike review",
+        "evidence_count": 11
+      }
+    ],
+    "stale_orbits": [
+      {
+        "stale_orbit_id": "stale-cluster-import-hygiene",
+        "cluster_id": "cluster-import-hygiene",
+        "stale_score": 0.5353,
+        "status": "watch",
+        "inactive_days": 96,
+        "recommended_action": "review_or_archive"
+      }
+    ],
+    "memory_terrain": [
+      {
+        "terrain_id": "terrain-ridge-cluster-memory-continuity",
+        "terrain_type": "ridge",
+        "related_cluster_ids": [
+          "cluster-memory-continuity"
+        ],
+        "strength": 0.92,
+        "presentation_hint": "stable ridge",
+        "analysis_explanation": "长期记忆连续性 has dominant mass and repeated redacted evidence."
+      },
+      {
+        "terrain_id": "terrain-ridge-cluster-codex-workflow",
+        "terrain_type": "ridge",
+        "related_cluster_ids": [
+          "cluster-codex-workflow"
+        ],
+        "strength": 0.86,
+        "presentation_hint": "stable ridge",
+        "analysis_explanation": "Codex 工作流 has dominant mass and repeated redacted evidence."
+      },
+      {
+        "terrain_id": "terrain-ridge-cluster-visual-ux",
+        "terrain_type": "ridge",
+        "related_cluster_ids": [
+          "cluster-visual-ux"
+        ],
+        "strength": 0.72,
+        "presentation_hint": "stable ridge",
+        "analysis_explanation": "可视化体验升级 has dominant mass and repeated redacted evidence."
+      },
+      {
+        "terrain_id": "terrain-fault-conflict-scope-vs-speed",
+        "terrain_type": "fault_line",
+        "related_cluster_ids": [
+          "cluster-memory-continuity",
+          "cluster-agent-governance"
+        ],
+        "strength": 0.58,
+        "presentation_hint": "subtle fault line",
+        "analysis_explanation": "Fast iteration pressure conflicts with single-phase scope discipline."
+      },
+      {
+        "terrain_id": "terrain-basin-black-hole-scope-drift",
+        "terrain_type": "basin",
+        "related_cluster_ids": [
+          "cluster-agent-governance",
+          "cluster-import-hygiene"
+        ],
+        "strength": 0.7085,
+        "presentation_hint": "dark basin",
+        "analysis_explanation": "Black Hole score marks a repeated low-value loop or scope sink."
+      },
+      {
+        "terrain_id": "terrain-shoreline-proto-universe-state",
+        "terrain_type": "shoreline",
+        "related_cluster_ids": [
+          "cluster-memory-continuity",
+          "cluster-visual-ux"
+        ],
+        "strength": 0.753,
+        "presentation_hint": "bright shoreline",
+        "analysis_explanation": "Proto-Star score marks an emerging opportunity near mature clusters."
+      },
+      {
+        "terrain_id": "terrain-shoreline-proto-river-pulse",
+        "terrain_type": "shoreline",
+        "related_cluster_ids": [
+          "cluster-visual-ux",
+          "cluster-codex-workflow"
+        ],
+        "strength": 0.601,
+        "presentation_hint": "bright shoreline",
+        "analysis_explanation": "Proto-Star score marks an emerging opportunity near mature clusters."
+      }
+    ],
+    "river_pulse": {
+      "recent_window_days": 45,
+      "activity_density": 0.76,
+      "dominant_lane_ids": [
+        "cluster-memory-continuity",
+        "cluster-codex-workflow",
+        "cluster-visual-ux"
+      ],
+      "black_hole_band_ids": [
+        "black-hole-scope-drift"
+      ],
+      "proto_star_marker_ids": [
+        "proto-universe-state",
+        "proto-river-pulse"
+      ],
+      "summary": "42 redacted events in the recent window; 2 opportunities and 1 risk bands are visible."
+    },
+    "mini_starfield": {
+      "preview_cluster_ids": [
+        "cluster-memory-continuity",
+        "cluster-codex-workflow",
+        "cluster-visual-ux"
+      ],
+      "black_hole_ids": [
+        "black-hole-scope-drift"
+      ],
+      "proto_star_ids": [
+        "proto-universe-state",
+        "proto-river-pulse"
+      ],
+      "density_hint": 0.76,
+      "target_view": "memory_starfield"
+    },
+    "recommended_next_actions": [
+      {
+        "action_id": "action-reduce-black-hole-scope-drift",
+        "action_type": "review",
+        "label": "Review top Black Hole risk",
+        "reason": "keep taskpack boundaries explicit and defer production integration",
+        "linked_state_ids": [
+          "black-hole-scope-drift"
+        ],
+        "proposal_only": true
+      },
+      {
+        "action_id": "action-explore-proto-universe-state",
+        "action_type": "explore",
+        "label": "Validate strongest Proto-Star",
+        "reason": "generate sample state and validate shared consumer mapping",
+        "linked_state_ids": [
+          "proto-universe-state"
+        ],
+        "proposal_only": true
+      },
+      {
+        "action_id": "action-refresh-stale-cluster-import-hygiene",
+        "action_type": "defer",
+        "label": "Refresh or lower stale orbit",
+        "reason": "review_or_archive",
+        "linked_state_ids": [
+          "stale-cluster-import-hygiene"
+        ],
+        "proposal_only": true
+      },
+      {
+        "action_id": "action-continue-cluster-memory-continuity",
+        "action_type": "continue",
+        "label": "Continue strongest dominant cluster",
+        "reason": "continue bounded Memory Atlas v1.1.5 implementation",
+        "linked_state_ids": [
+          "cluster-memory-continuity"
+        ],
+        "proposal_only": true
+      }
+    ]
+  },
+  "consumer_map": {
+    "memory_overview": [
+      "memory_weather",
+      "dominant_clusters",
+      "proto_stars",
+      "black_holes",
+      "river_pulse",
+      "recommended_next_actions"
+    ],
+    "memory_starfield": [
+      "dominant_clusters",
+      "rising_clusters",
+      "declining_clusters",
+      "black_holes",
+      "proto_stars",
+      "stale_orbits",
+      "memory_terrain"
+    ],
+    "memory_river": [
+      "river_pulse",
+      "dominant_clusters",
+      "black_holes",
+      "proto_stars",
+      "conflict_zones",
+      "stale_orbits"
+    ],
+    "inspector": [
+      "memory_weather",
+      "conflict_zones",
+      "black_holes",
+      "proto_stars",
+      "stale_orbits",
+      "memory_terrain"
+    ],
+    "roi_dashboard": [
+      "dominant_clusters",
+      "rising_clusters",
+      "declining_clusters",
+      "black_holes",
+      "recommended_next_actions"
+    ]
+  },
+  "diagnostics": {
+    "lifecycle_state": "draft_generated",
+    "privacy_status": {
+      "raw_private_data_included": false,
+      "plaintext_secrets_included": false,
+      "local_absolute_paths_included": false,
+      "writeback_allowed": false
+    },
+    "parameter_source": "OpenAIDatabase/config/visualization/model_parameters.universe_state.yaml",
+    "formula_version": "universe_state_params.v1",
+    "missing_inputs": [],
+    "score_weight_sums": [
+      {
+        "name": "black_hole",
+        "sum": 1
+      },
+      {
+        "name": "proto_star",
+        "sum": 1
+      },
+      {
+        "name": "stale",
+        "sum": 1
+      }
+    ]
+  }
+}
