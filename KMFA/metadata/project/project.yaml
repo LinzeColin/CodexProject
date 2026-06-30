@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s10p3-report-export"
+version: "0.1.0-s10-stage-review"
 current_stage: "S10"
-current_phase: "S10-STAGE-REVIEW"
+current_phase: "S10-GITHUB-UPLOAD"
 current_phase_status: "not_started"
-current_stage_status: "s10_all_phases_completed_local_only_pending_stage_review"
+current_stage_status: "s10_stage_review_passed_local_only_pending_github_upload"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -128,6 +128,30 @@ machine_plane:
   - "stage_artifacts/S08_STAGE_REVIEW/machine/stage8_review_manifest.json"
   - "stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md"
   - "stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json"
+  - "stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md"
+  - "stage_artifacts/S09_STAGE_REVIEW/human/test_results.md"
+  - "stage_artifacts/S09_STAGE_REVIEW/machine/stage9_review_manifest.json"
+  - "stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md"
+  - "stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json"
+  - "metadata/reports/report_template_manifest.json"
+  - "metadata/reports/report_templates.jsonl"
+  - "metadata/reports/report_template_sections.jsonl"
+  - "metadata/reports/report_grade_runtime_manifest.json"
+  - "metadata/reports/report_grade_runtime_records.jsonl"
+  - "metadata/reports/report_export_manifest.json"
+  - "metadata/reports/report_export_records.jsonl"
+  - "stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md"
+  - "stage_artifacts/S10_P1_report_templates/human/test_results.md"
+  - "stage_artifacts/S10_P1_report_templates/machine/s10_p1_manifest.json"
+  - "stage_artifacts/S10_P2_report_grade_runtime/human/s10_p2_completion_record.md"
+  - "stage_artifacts/S10_P2_report_grade_runtime/human/test_results.md"
+  - "stage_artifacts/S10_P2_report_grade_runtime/machine/s10_p2_manifest.json"
+  - "stage_artifacts/S10_P3_report_export/human/s10_p3_completion_record.md"
+  - "stage_artifacts/S10_P3_report_export/human/test_results.md"
+  - "stage_artifacts/S10_P3_report_export/machine/s10_p3_manifest.json"
+  - "stage_artifacts/S10_STAGE_REVIEW/human/stage10_review_report.md"
+  - "stage_artifacts/S10_STAGE_REVIEW/human/test_results.md"
+  - "stage_artifacts/S10_STAGE_REVIEW/machine/stage10_review_manifest.json"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false
@@ -187,5 +211,23 @@ upload_policy:
   stage8_upload_evidence: "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md"
   stage8_upload_manifest: "KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json"
   stage8_blocker: "none"
+  stage9_phase_completion_upload_allowed: false
+  stage9_review_required_before_upload: true
+  stage9_review_passed: true
+  stage9_upload_ready_local_only: false
+  stage9_uploaded_to_github_main: true
+  stage9_upload_evidence: "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md"
+  stage9_upload_manifest: "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json"
+  stage9_blocker: "none"
+  stage10_phase_completion_upload_allowed: false
+  stage10_s10p1_completed_validated_local_only: true
+  stage10_s10p2_completed_validated_local_only: true
+  stage10_s10p3_completed_validated_local_only: true
+  stage10_review_required_before_upload: true
+  stage10_review_passed: true
+  stage10_review_evidence: "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/stage10_review_report.md"
+  stage10_upload_ready_local_only: true
+  stage10_uploaded_to_github_main: false
+  stage10_blocker: "final_github_upload_not_performed"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_s08_uploaded_s09p1_next"
+  upload_surface: "project_level_kmfa_worktree_s10_reviewed_upload_next"

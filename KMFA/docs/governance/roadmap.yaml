@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S10"
-current_phase_id: "S10_STAGE_REVIEW"
-current_task_id: "KMFA-S10-STAGE-REVIEW-20260630"
-next_gate_id: "KMFA-S10-STAGE-REVIEW-GATE"
+current_phase_id: "S10_GITHUB_UPLOAD"
+current_task_id: "KMFA-S10-GITHUB-UPLOAD-20260630"
+next_gate_id: "KMFA-S10-FINAL-GITHUB-UPLOAD-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -673,10 +673,10 @@ stages:
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json"
   - stage_id: "S10"
     name: "报告可信等级与经营报告生成"
-    status: "completed_local_only_pending_stage_review"
+    status: "review_passed_upload_ready_local_only"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S10-P1 报告模板、S10-P2 报告可信等级和 S10-P3 public-safe 导出已完成本地验证：2 个 public-safe 模板、11 个管理可读章节、2 条报告等级记录和 2 条导出记录均已生成；当前等级均为 D，完整可信报告、正式报告和经营决策依据继续阻断；Stage 10 review、GitHub upload、UI、lineage full check 和外部接口未执行。"
+    current_result: "S10-P1 报告模板、S10-P2 报告可信等级、S10-P3 public-safe 导出和 Stage 10 整体复审已完成本地验证：2 个 public-safe 模板、11 个管理可读章节、2 条报告等级记录、2 条导出记录、2 个 HTML 导出和 2 个 CSV appendix 均已生成并复审；当前等级均为 D，完整可信报告、正式报告和经营决策依据继续阻断；GitHub upload、S11、UI、lineage full check 和外部接口未执行。"
     evidence_refs:
       - "KMFA/stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md"
       - "KMFA/stage_artifacts/S10_P1_report_templates/human/test_results.md"
@@ -694,6 +694,9 @@ stages:
       - "KMFA/stage_artifacts/S10_P3_report_export/machine/s10_p3_manifest.json"
       - "KMFA/metadata/reports/report_export_manifest.json"
       - "KMFA/metadata/reports/report_export_records.jsonl"
+      - "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/stage10_review_report.md"
+      - "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S10_STAGE_REVIEW/machine/stage10_review_manifest.json"
   - stage_id: "S11"
     name: "前端基础界面与数据源检查板"
     status: "planned"
