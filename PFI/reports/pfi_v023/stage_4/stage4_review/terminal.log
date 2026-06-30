@@ -1,0 +1,76 @@
+PFI v0.2.3 Stage 4 closeout review
+Timestamp: 2026-06-30T11:11:59+10:00
+Repo: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+
+Initial state:
+$ git status --short --branch
+## codex/pfi...origin/main [ahead 3]
+
+Review finding:
+home_subpages_missing_from_stage4_catalog
+Stage 4 Task Pack requires every formal primary entry to have 3-5 secondary pages. Phase 4.1-4.3 covered accounts, ledger, investment, consumption, sync, insights, market_research, settings, and recommendations. Stage 4 catalog did not cover home before review.
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q
+RED review regression: 3 failed because home subpages were missing from Stage 4 catalog and stage4_review evidence was missing.
+
+Fix:
+Added Stage 4 review home subpages for financial status, todo, quick actions, and recent reports. This is a Stage 4 subpage differentiation fix only; Stage 5 homepage task-flow rebuild remains out of scope.
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+Exit code: 0
+
+$ Google Chrome headless via playwright on PFI/web/index.html
+subpage_count: 45
+workspaces: 10
+all_10_primary_entries_have_subpages: true
+all_workspaces_differentiated: true
+home_subpages_differentiated: true
+url_state_breadcrumb_title_changed: true
+empty_and_error_states_present: true
+console_errors: 0
+page_errors: 0
+network_resource_errors: 4 for local 8766 APIs unavailable during file-based browser check
+
+Closeout note:
+The final post-patch validation and GitHub main upload are intentionally proven by terminal commands after this evidence file is staged and committed.
+
+Post-patch validation:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q
+17 passed, 64 subtests passed in 0.57s
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+76 passed, 64 subtests passed in 0.91s
+
+$ PFI/.venv/bin/python -m json.tool <stage4 evidence json files>
+Stage 4 JSON valid
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage4_subpage_differentiation.py
+Exit code: 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js
+Exit code: 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+Exit code: 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js
+Exit code: 0
+
+$ rg -n -i "\b(mock|sample|synthetic|fixture|demo|fake)\b" PFI/web/app/pages/stage4Subpages.js PFI/web/app/shell.js PFI/tests/test_v023_stage4_subpage_differentiation.py PFI/docs/pfi_v023/STAGE4_SUBPAGES.md
+Exit code: 1, no matches
+
+$ git diff --check -- PFI
+Exit code: 0
+
+$ git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main
+Exit code: 0
+
+$ git rev-parse HEAD
+fef7655bf02668e0d81fc8de27075b5ad192c925
+
+$ git rev-parse origin/main
+a5caba7421addb441d9a6f6bd57869c83e090417
+
+$ git rev-list --left-right --count HEAD...origin/main
+3 0

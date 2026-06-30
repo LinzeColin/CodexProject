@@ -7,6 +7,31 @@
     root.PFI_V023_STAGE4_PAGES = api;
   }
 })(typeof window !== "undefined" ? window : globalThis, function buildPFIStage4Pages() {
+  const stage4ReviewSubpages = Object.freeze({
+    home: Object.freeze([
+      page("home", "/home?tab=status", "首页总览 · 财务状态", ["首页总览", "财务状态"], "home-financial-status", "财务状态", "检查财务状态", "未加载真实首页状态时，只显示财务状态空态和数据缺口。", "无法读取财务状态，请检查账户、账本、投资和消费 read-model。", "home read-model / data status registry", [
+        section("summary", "状态摘要", "展示净资产、现金、投资、消费和数据健康的状态来源。"),
+        section("freshness", "数据新鲜度", "标记未加载、过期、路径错误和待复核状态。"),
+        section("action", "状态动作", "进入数据源、账户或账本修复缺口。"),
+      ]),
+      page("home", "/home?tab=todo", "首页总览 · 待办事项", ["首页总览", "待办事项"], "home-action-queue", "待办事项", "处理首页待办", "未加载真实待办时，只显示待办空态和触发条件。", "无法读取待办事项，请检查数据门禁、建议队列和复核记录。", "task queue / review queue", [
+        section("queue", "待办队列", "按数据缺口、复核、建议和报告任务分组。"),
+        section("priority", "优先级", "展示阻断程度、影响范围和下一步入口。"),
+        section("action", "待办动作", "打开复核、补齐数据或生成报告。"),
+      ]),
+      page("home", "/home?tab=actions", "首页总览 · 快捷操作", ["首页总览", "快捷操作"], "home-quick-actions", "快捷操作", "执行快捷操作", "未加载真实可执行动作时，只显示快捷操作空态。", "无法读取快捷操作，请检查入口配置、权限和当前数据状态。", "action registry / route catalog", [
+        section("shortcut", "操作入口", "展示导入、复核、查看建议和生成报告等常用动作。"),
+        section("guard", "操作前置条件", "显示每个动作所需数据、权限和阻断原因。"),
+        section("action", "快捷动作", "打开目标页面、保留 route state 和上下文。"),
+      ]),
+      page("home", "/home?tab=reports", "首页总览 · 最近报告", ["首页总览", "最近报告"], "home-recent-reports", "最近报告", "打开最近报告", "未加载真实报告记录时，只显示最近报告空态。", "无法读取最近报告，请检查报告草稿、导出目录和证据链。", "report registry / export manifest", [
+        section("recent", "报告清单", "展示月报、季报、年报、自定义报告和导出状态。"),
+        section("evidence", "报告证据", "显示报告数据范围、生成时间和证据文件。"),
+        section("action", "报告动作", "打开报告、导出文件或补齐数据。"),
+      ]),
+    ]),
+  });
+
   const phase41Subpages = Object.freeze({
     accounts: Object.freeze([
       page("accounts", "/accounts?tab=overview", "账户与资产 · 账户地图", ["账户与资产", "账户地图"], "account-map", "账户地图", "核对账户来源", "未加载真实账户快照时，只显示账户地图空态和下一步导入入口。", "无法读取账户快照，请检查本机 PFI 数据目录和来源权限。", "本机账户资料 / read-model", [
@@ -264,6 +289,7 @@
     phaseId: "V023-S4-P4.3",
     phaseIds: Object.freeze(["V023-S4-P4.1", "V023-S4-P4.2", "V023-S4-P4.3"]),
     phaseName: "资产/账本/投资 + 消费/数据/报告 + 市场/设置/建议二级页",
+    stage4ReviewSubpages,
     phase41Subpages,
     phase42Subpages,
     phase43Subpages,

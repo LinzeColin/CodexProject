@@ -1,0 +1,286 @@
+{
+  "stage_id": "PFI-V023-STAGE4-REVIEW",
+  "index_url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "browser": "Google Chrome headless via playwright",
+  "screenshot_paths": {
+    "all_subpages": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/stage4_review/screenshots/stage4_review_all_subpages.png",
+    "home_subpages": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/stage4_review/screenshots/stage4_review_home_subpages.png"
+  },
+  "official_primary_workspaces": [
+    "home",
+    "accounts",
+    "ledger",
+    "investment",
+    "consumption",
+    "sync",
+    "recommendations",
+    "insights",
+    "market_research",
+    "settings"
+  ],
+  "subpage_count": 45,
+  "workspace_matrix": {
+    "home": {
+      "subpage_count": 4,
+      "differentiated": true,
+      "routes": [
+        "/home?tab=status",
+        "/home?tab=todo",
+        "/home?tab=actions",
+        "/home?tab=reports"
+      ],
+      "primary_objects": [
+        "财务状态",
+        "待办事项",
+        "快捷操作",
+        "最近报告"
+      ],
+      "layout_kinds": [
+        "home-financial-status",
+        "home-action-queue",
+        "home-quick-actions",
+        "home-recent-reports"
+      ]
+    },
+    "accounts": {
+      "subpage_count": 4,
+      "differentiated": true,
+      "routes": [
+        "/accounts?tab=overview",
+        "/accounts?tab=list",
+        "/accounts?tab=trend",
+        "/accounts?tab=reconcile"
+      ],
+      "primary_objects": [
+        "账户地图",
+        "账户清单",
+        "资产趋势",
+        "账户对账"
+      ],
+      "layout_kinds": [
+        "account-map",
+        "account-list",
+        "asset-trend",
+        "account-reconcile"
+      ]
+    },
+    "ledger": {
+      "subpage_count": 4,
+      "differentiated": true,
+      "routes": [
+        "/ledger?tab=list",
+        "/ledger?tab=filter",
+        "/ledger?tab=review",
+        "/ledger?tab=export"
+      ],
+      "primary_objects": [
+        "流水列表",
+        "筛选搜索",
+        "分类复核",
+        "导出流水"
+      ],
+      "layout_kinds": [
+        "ledger-table",
+        "ledger-filter",
+        "ledger-review",
+        "ledger-export"
+      ]
+    },
+    "investment": {
+      "subpage_count": 4,
+      "differentiated": true,
+      "routes": [
+        "/investment?tab=overview",
+        "/investment?tab=holdings",
+        "/investment?tab=trades",
+        "/investment?tab=returns"
+      ],
+      "primary_objects": [
+        "投资总览",
+        "持仓",
+        "交易记录",
+        "收益分析"
+      ],
+      "layout_kinds": [
+        "investment-overview",
+        "investment-holdings",
+        "investment-trades",
+        "investment-returns"
+      ]
+    },
+    "consumption": {
+      "subpage_count": 5,
+      "differentiated": true,
+      "routes": [
+        "/consumption?tab=overview",
+        "/consumption?tab=category",
+        "/consumption?tab=budget",
+        "/consumption?tab=subscription",
+        "/consumption?tab=anomaly"
+      ],
+      "primary_objects": [
+        "消费总览",
+        "分类分析",
+        "预算",
+        "订阅",
+        "异常消费"
+      ],
+      "layout_kinds": [
+        "spend-overview",
+        "category-analysis",
+        "budget-control",
+        "subscription-tracker",
+        "spend-anomaly"
+      ]
+    },
+    "sync": {
+      "subpage_count": 5,
+      "differentiated": true,
+      "routes": [
+        "/sources-upload?tab=upload",
+        "/sources-upload?tab=import",
+        "/sources-upload?tab=sources",
+        "/sources-upload?tab=review",
+        "/sources-upload?tab=history"
+      ],
+      "primary_objects": [
+        "上传中心",
+        "导入中心",
+        "数据源管理",
+        "待复核",
+        "导入历史"
+      ],
+      "layout_kinds": [
+        "upload-center",
+        "import-center",
+        "source-management",
+        "import-review",
+        "import-history"
+      ]
+    },
+    "recommendations": {
+      "subpage_count": 4,
+      "differentiated": true,
+      "routes": [
+        "/review?tab=list",
+        "/review?tab=detail",
+        "/review?tab=decision",
+        "/review?tab=history"
+      ],
+      "primary_objects": [
+        "建议列表",
+        "建议详情",
+        "决策记录",
+        "复盘记录"
+      ],
+      "layout_kinds": [
+        "recommendation-list",
+        "recommendation-detail",
+        "decision-record",
+        "review-history"
+      ]
+    },
+    "insights": {
+      "subpage_count": 5,
+      "differentiated": true,
+      "routes": [
+        "/reports?tab=monthly",
+        "/reports?tab=quarterly",
+        "/reports?tab=yearly",
+        "/reports?tab=custom",
+        "/reports?tab=export"
+      ],
+      "primary_objects": [
+        "月报",
+        "季报",
+        "年报",
+        "自定义报告",
+        "导出"
+      ],
+      "layout_kinds": [
+        "monthly-report",
+        "quarterly-report",
+        "yearly-report",
+        "custom-report",
+        "report-export"
+      ]
+    },
+    "market_research": {
+      "subpage_count": 5,
+      "differentiated": true,
+      "routes": [
+        "/market-research?tab=market",
+        "/market-research?tab=research",
+        "/market-research?tab=company",
+        "/market-research?tab=fund",
+        "/market-research/strategy-lab"
+      ],
+      "primary_objects": [
+        "市场观察",
+        "研究笔记",
+        "公司研究",
+        "基金研究",
+        "策略实验室"
+      ],
+      "layout_kinds": [
+        "market-watch",
+        "research-notes",
+        "company-research",
+        "fund-research",
+        "strategy-lab"
+      ]
+    },
+    "settings": {
+      "subpage_count": 5,
+      "differentiated": true,
+      "routes": [
+        "/settings?tab=account",
+        "/settings?tab=data-system",
+        "/settings?tab=privacy",
+        "/settings?tab=feedback",
+        "/settings?tab=backup"
+      ],
+      "primary_objects": [
+        "账户偏好",
+        "数据与系统",
+        "隐私与本地存储",
+        "反馈偏好",
+        "备份恢复"
+      ],
+      "layout_kinds": [
+        "account-preferences",
+        "data-system-settings",
+        "privacy-storage",
+        "feedback-preferences",
+        "backup-restore"
+      ]
+    }
+  },
+  "all_10_primary_entries_have_subpages": true,
+  "home_subpages_differentiated": true,
+  "all_workspaces_differentiated": true,
+  "url_state_breadcrumb_title_changed": true,
+  "empty_and_error_states_present": true,
+  "screenshots_show_differences": true,
+  "console_errors": [],
+  "page_errors": [],
+  "network_resource_errors": [
+    {
+      "url": "http://127.0.0.1:8766/api/trends",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "url": "http://127.0.0.1:8766/api/holdings",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "url": "http://127.0.0.1:8766/api/holdings",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "url": "http://127.0.0.1:8766/api/holdings",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "generated_at": "2026-06-30T01:11:46.210Z"
+}

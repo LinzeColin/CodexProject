@@ -3759,14 +3759,15 @@ function resolveStage4Subpage(workspaceId, routeAlias) {
   }) || pages[0] || null;
 }
 
-  function stage4SubpageCatalog() {
-    stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES || null;
-    return {
-      ...(stage4PagesCatalog?.phase41Subpages || {}),
-      ...(stage4PagesCatalog?.phase42Subpages || {}),
-      ...(stage4PagesCatalog?.phase43Subpages || {}),
-    };
-  }
+function stage4SubpageCatalog() {
+  stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES || null;
+  return {
+    ...(stage4PagesCatalog?.stage4ReviewSubpages || {}),
+    ...(stage4PagesCatalog?.phase41Subpages || {}),
+    ...(stage4PagesCatalog?.phase42Subpages || {}),
+    ...(stage4PagesCatalog?.phase43Subpages || {}),
+  };
+}
 
 function renderStage4SubpageSurface(page, workspaceId, routeForState) {
   const surface = ensureStage4SubpageSurface();
