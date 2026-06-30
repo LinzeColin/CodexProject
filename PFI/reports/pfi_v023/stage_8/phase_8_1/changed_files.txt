@@ -1,0 +1,13 @@
+PFI/src/pfi_v02/stage_v023_data_sources.py
+PFI/web/app/pages/upload.js
+PFI/tests/test_v023_stage8_data_source_gate.py
+PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md
+PFI/reports/pfi_v023/stage_8/phase_8_1/evidence.json
+PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate.json
+PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate_page_model.json
+PFI/reports/pfi_v023/stage_8/phase_8_1/error_reason_catalog.json
+PFI/reports/pfi_v023/stage_8/phase_8_1/no_source_term_scan.json
+PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate_snapshot.html
+PFI/reports/pfi_v023/stage_8/phase_8_1/screenshots/data_source_gate.png
+PFI/reports/pfi_v023/stage_8/phase_8_1/terminal.log
+PFI/reports/pfi_v023/stage_8/phase_8_1/changed_files.txt

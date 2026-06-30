@@ -1,0 +1,111 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "stage_name": "数据源检查板与上传/挂链诊断",
+  "phase_id": "V023-S8-P8.1",
+  "phase_name": "数据源模型",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_forbidden_financial_data": true,
+  "source_core_metrics": {
+    "path": "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03"
+  },
+  "data_source_gate": "PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate.json",
+  "data_source_gate_page_model": "PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate_page_model.json",
+  "error_reason_catalog": "PFI/reports/pfi_v023/stage_8/phase_8_1/error_reason_catalog.json",
+  "html_snapshot": "PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate_snapshot.html",
+  "screenshots": [
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/screenshots/data_source_gate.png"
+  ],
+  "screenshot_size": {
+    "pixel_width": 1440,
+    "pixel_height": 1300
+  },
+  "data_status_summary": {
+    "ready_count": 1,
+    "blocked_count": 2,
+    "total_sources": 3,
+    "blocked_metric_ids": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ],
+    "auto_import_enabled": false
+  },
+  "stage_contract": {
+    "phase_8_1_data_source_model_done": true,
+    "phase_8_2_dashboard_ui_done": false,
+    "phase_8_3_no_fallback_done": false,
+    "stage_8_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q",
+      "exit_code": 0,
+      "summary": "6 passed in 0.12s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "129 passed, 100 subtests passed in 1.96s"
+    },
+    {
+      "command": "node --check PFI/web/app/pages/upload.js",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_data_sources.py PFI/tests/test_v023_stage8_data_source_gate.py",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "json.tool Phase 8.1 evidence/gate/page-model/catalog/scan files",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_8/phase_8_1/screenshots/data_source_gate.png",
+      "exit_code": 0,
+      "summary": "1440x1300"
+    },
+    {
+      "command": "blocked source term scan over Stage 8 Phase 8.1 files",
+      "exit_code": 0,
+      "summary": "no matches after ignoring sample_size contract field"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/src/pfi_v02/stage_v023_data_sources.py",
+    "PFI/web/app/pages/upload.js",
+    "PFI/tests/test_v023_stage8_data_source_gate.py",
+    "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate_page_model.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/error_reason_catalog.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate_snapshot.html",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/screenshots/data_source_gate.png",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/terminal.log",
+    "PFI/reports/pfi_v023/stage_8/phase_8_1/changed_files.txt"
+  ],
+  "explicitly_not_done": [
+    "Phase 8.2 检查板 UI",
+    "Phase 8.3 禁止假数据回退",
+    "Stage 8 whole-stage review",
+    "GitHub main upload for intermediate phase"
+  ],
+  "requires_user_acceptance": true
+}

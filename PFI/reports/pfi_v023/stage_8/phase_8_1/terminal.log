@@ -1,0 +1,63 @@
+Stage 8 Phase 8.1 validation log
+
+Scope:
+V023-S8-P8.1 only. Phase 8.2, Phase 8.3, Stage 8 whole-stage review, and GitHub upload are not executed.
+
+RED:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q
+Result: 6 failed
+Reason: Stage 8 Phase 8.1 module, upload page model, docs, and evidence did not exist.
+
+After implementation before evidence:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q
+Result: 2 failed, 4 passed
+Reason: Phase 8.1 evidence files did not exist.
+
+Generated artifacts:
+- data_source_gate.json
+- data_source_gate_page_model.json
+- error_reason_catalog.json
+- data_source_gate_snapshot.html
+- no_source_term_scan.json
+- screenshots/data_source_gate.png
+
+Validation commands to run:
+node --check PFI/web/app/pages/upload.js
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+git diff --check -- PFI
+
+GREEN verification:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q
+Result: 6 passed in 0.11s
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 129 passed, 100 subtests passed in 1.95s
+
+node --check PFI/web/app/pages/upload.js
+Result: pass
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_data_sources.py PFI/tests/test_v023_stage8_data_source_gate.py
+Result: pass
+
+json.tool Phase 8.1 evidence/gate/page-model/catalog/scan files
+Result: pass
+
+sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_8/phase_8_1/screenshots/data_source_gate.png
+Result: 1440x1300
+
+Blocked source term scan over Stage 8 Phase 8.1 files
+Result: no matches after ignoring the report contract field sample_size
+
+git diff --check -- PFI
+Result: pass
+
+Final pre-commit verification after formatting cleanup:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q
+Result: 6 passed in 0.12s
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 129 passed, 100 subtests passed in 1.96s
+
+node --check PFI/web/app/pages/upload.js && git diff --cached --check -- PFI
+Result: pass
