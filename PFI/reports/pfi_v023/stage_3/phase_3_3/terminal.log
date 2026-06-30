@@ -1,0 +1,81 @@
+# PFI v0.2.3 Stage 3 Phase 3.3 terminal summary
+phase_id=V023-S3-P3.3
+phase_name=浏览器行为
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+current_phase_only=true
+
+$ pwd -P
+/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+
+$ git status --short --branch
+## codex/pfi...origin/main [ahead 3]
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+red_exit_code=1
+red_summary=2 failed, 10 passed because no-JS fallback and Phase 3.3 evidence were missing
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+red_exit_code=1
+red_summary=1 failed, 11 passed because Phase 3.3 evidence was missing
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js
+exit_code=0
+passed
+
+$ Google Chrome headless via playwright-core
+target=PFI/web/index.html
+browser_validation=PFI/reports/pfi_v023/stage_3/phase_3_3/browser_validation.json
+screenshot=PFI/reports/pfi_v023/stage_3/phase_3_3/screenshots/browser_history.png
+no_js_screenshot=PFI/reports/pfi_v023/stage_3/phase_3_3/screenshots/no_js_fallback.png
+pushstate_hash_state_changes=true
+popstate_back_forward_ok=true
+direct_url_open_ok=true
+no_js_fallback_has_10_routes=true
+console_errors=[]
+network_resource_errors=2
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+exit_code=0
+summary=12 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+exit_code=0
+summary=58 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage3_navigation_routes.py
+exit_code=0
+passed
+
+$ PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_3/evidence.json
+exit_code=0
+passed
+
+$ PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_3/browser_validation.json
+exit_code=0
+passed
+
+$ git diff --check -- PFI
+exit_code=0
+passed
+
+$ git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main
+exit_code=0
+summary=origin/main advanced to 2f5685dd with non-PFI ADP changes
+
+$ git rebase origin/main
+exit_code=0
+summary=local Phase 3.1, Phase 3.2, and Phase 3.3 commits rebased onto origin/main 2f5685dd
+
+$ git diff --check origin/main...HEAD -- PFI
+exit_code=0
+passed
+
+$ explicitly_not_done
+Stage 3 review not run
+Stage 4 subpage differentiation
+GitHub main upload for intermediate phase

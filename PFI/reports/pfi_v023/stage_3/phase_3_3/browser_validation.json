@@ -1,0 +1,175 @@
+{
+  "phase_id": "V023-S3-P3.3",
+  "index_url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "screenshot_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/phase_3_3/screenshots/browser_history.png",
+  "no_js_screenshot_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/phase_3_3/screenshots/no_js_fallback.png",
+  "browser": "Google Chrome headless via playwright-core",
+  "route_snapshots": {
+    "initial": {
+      "hash": "#/home",
+      "workspace": "home",
+      "routeAlias": "/home",
+      "title": "首页总览",
+      "activePrimary": [
+        "首页总览"
+      ],
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "historyLength": 2
+    },
+    "afterAccounts": {
+      "hash": "#/accounts",
+      "workspace": "accounts",
+      "routeAlias": "/accounts",
+      "title": "账户与资产",
+      "activePrimary": [
+        "账户与资产"
+      ],
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "historyLength": 3
+    },
+    "afterMarket": {
+      "hash": "#/market-research",
+      "workspace": "market_research",
+      "routeAlias": "/market-research",
+      "title": "市场与研究",
+      "activePrimary": [
+        "市场与研究"
+      ],
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "historyLength": 4
+    },
+    "afterBack": {
+      "hash": "#/accounts",
+      "workspace": "accounts",
+      "routeAlias": "/accounts",
+      "title": "账户与资产",
+      "activePrimary": [
+        "账户与资产"
+      ],
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "historyLength": 4
+    },
+    "afterForward": {
+      "hash": "#/market-research",
+      "workspace": "market_research",
+      "routeAlias": "/market-research",
+      "title": "市场与研究",
+      "activePrimary": [
+        "市场与研究"
+      ],
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "historyLength": 4
+    },
+    "directHash": {
+      "hash": "#/investment",
+      "workspace": "investment",
+      "routeAlias": "/investment",
+      "title": "投资管理",
+      "activePrimary": [
+        "投资管理"
+      ],
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "historyLength": 5
+    },
+    "directQueryAlias": {
+      "hash": "#/market-research?tab=market",
+      "workspace": "market_research",
+      "routeAlias": "/market-research?tab=market",
+      "title": "市场与研究",
+      "activePrimary": [
+        "市场与研究"
+      ],
+      "primaryLabels": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "historyLength": 6
+    }
+  },
+  "pushstate_hash_state_changes": true,
+  "popstate_back_forward_ok": true,
+  "direct_url_open_ok": true,
+  "no_js_fallback_has_10_routes": true,
+  "desktop_primary_count_is_10": true,
+  "desktop_labels_match_taskpack": true,
+  "page_not_anchor_scroll_only": true,
+  "console_errors": [],
+  "network_resource_errors": [
+    "http://127.0.0.1:8766/api/trends net::ERR_CONNECTION_REFUSED",
+    "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  ]
+}
