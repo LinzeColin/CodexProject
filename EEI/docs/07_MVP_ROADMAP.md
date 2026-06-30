@@ -6,6 +6,8 @@ MVP 由 acceptance gates 定义，不由页面数量或日历定义。推荐 15 
 
 ## 2. Pursuing Goal Execution Roadmap
 
+This section is a pursuing-goal reference for future bounded Run Contracts, not a standalone canonical task plan. Concrete execution must still bind to the governed task records, `acceptance_traceability`, validation commands, rollback, stop conditions, and current-result evidence before development starts.
+
 ### Stage 1 - Runtime, Data, API, and Core MVP Implementation
 
 目标：补齐 EEI MVP 真实运行能力。
