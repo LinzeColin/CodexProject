@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 5 Whole-Stage Review
+
+- Completed the Stage 5 whole-stage review across Memory River rendering,
+  interaction, and evidence layers.
+- Added `validate:memory-river-stage5` to keep phase review documents,
+  package validators, visual acceptance hooks, model parameters, changelog and
+  delivery-record status aligned.
+- Confirmed the reviewed Stage 5 state keeps the `memory-river` default,
+  `legacy` rollback, UTC scale, Pan/Brush interaction, redacted event card,
+  safe feedback defaults, black-hole lifecycle bands, proto-star growth paths
+  and stale/deprecated fade layer.
+
+No ingestion, raw/private data access, direct writeback, Cloudflare live
+deploy, or external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 5.3 Evidence Layers
 
 - Added Stage 5.3 Memory River evidence layers:
