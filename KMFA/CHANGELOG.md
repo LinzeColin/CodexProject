@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s11-stage-review - 2026-07-01
+
+- 完成 Stage 11 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
+- 新增 `KMFA/tools/check_s11_stage_review.py`、`KMFA/tests/test_s11_stage_review.py` 和 `KMFA/stage_artifacts/S11_STAGE_REVIEW/` 复审证据包。
+- 复跑并锁定 S11-P1/P2/P3 validator 证据：8 个首页模块、13 行数据源检查板、4 条项目成本页面记录、3 个 public-safe HTML 页面、9 类成本结构和 12 条 pending reconciliation 均保持 public-safe。
+- 复审确认正式报告、完整可信报告、经营决策依据、S12、lineage full check、外部 connector 和 GitHub upload 仍未执行。
+- 全量 KMFA 单测当前为 132 tests；公开仓库未提交 raw business data、zip、Excel workbook、PDF、sqlite/db、private CSV、字段明文、真实账号、真实金额或 credentials。
+- 当前分支在 fetch 后相对 `origin/main` behind 1；下一步只能执行 Stage 11 final GitHub upload gate，先对齐最新 `origin/main`，复跑 validators 和安全检查，并留下 push proof。
+
 ## 0.1.0-s11p3-project-cost-page - 2026-07-01
 
 - 完成 `S11-P3｜项目成本页面` 本地验证，不上传 GitHub。
