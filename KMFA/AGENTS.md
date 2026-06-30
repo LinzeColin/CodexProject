@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `S11｜前端基础界面与数据源检查板`
-- 当前 Phase: `S11-P2｜数据源检查板｜本地验证完成`
+- 当前 Phase: `S11-P3｜项目成本页面｜本地验证完成`
 
 ## Execution Rules
 
@@ -38,10 +38,10 @@
 
 ## Current Non-Goals
 
-- 不扩展 S11-P2 以外的 UI；S11-P2 只允许 public-safe 数据源检查板。
+- 不扩展 S11-P3 以外的 UI；S11-P3 只允许 public-safe 项目成本页面。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
-- 不在 S11-P2 完成后跳过 `S11-P3｜项目成本页面` 直接进入 Stage 11 review、S12 或正式报告。
+- 不在 S11-P3 完成后跳过 Stage 11 整体复审直接进入 GitHub upload、S12 或正式报告。
 - 不在未读取 v1.2 HTML/UIUX 样板前实现 S11 前端。
 - 不接红圈、金蝶、WPS、银行、税务自动接口。
 - 不做付款、报税、开票、工资或奖金审批执行。

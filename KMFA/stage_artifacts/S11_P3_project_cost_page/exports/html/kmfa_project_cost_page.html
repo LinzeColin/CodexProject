@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 项目成本页面</title>
+  <style>
+    :root {
+      --navy:#0b1f3a;
+      --blue:#1d4ed8;
+      --sky:#eaf3ff;
+      --line:#d8e4f5;
+      --text:#152033;
+      --muted:#64748b;
+      --bg:#f6f9fe;
+      --card:#ffffff;
+      --review:#5b21b6;
+      --blocked:#b91c1c;
+      --partial:#1e3a8a;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+    .header { background:linear-gradient(135deg,var(--navy),#123a70 55%,#2563eb); color:#fff; padding:30px 40px; }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .logo { width:52px; height:52px; border:1px solid rgba(255,255,255,.45); border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:800; background:rgba(255,255,255,.10); }
+    h1 { margin:0; font-size:28px; letter-spacing:0; }
+    .sub { margin-top:8px; color:#d6e7ff; line-height:1.65; }
+    .wrap { max-width:1220px; margin:0 auto; padding:24px; }
+    .cards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; box-shadow:0 12px 28px rgba(17,45,88,.06); }
+    .card span { display:block; color:var(--muted); font-size:13px; }
+    .card b { display:block; color:#0b2b59; font-size:26px; margin:6px 0; }
+    .card small { color:#475569; }
+    .toolbar { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:14px; }
+    .note { color:#475569; line-height:1.7; max-width:760px; }
+    .grade { border:1px solid #bfdbfe; background:#fff; color:var(--blue); border-radius:999px; padding:7px 12px; font-size:12px; font-weight:800; white-space:nowrap; }
+    .table-wrap { overflow:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
+    table { width:100%; min-width:1120px; border-collapse:separate; border-spacing:0; }
+    th { background:#0f2f5f; color:#fff; text-align:left; font-size:13px; padding:12px; border-bottom:1px solid #244d86; }
+    td { padding:12px; font-size:13px; line-height:1.55; border-bottom:1px solid #edf2f7; vertical-align:top; }
+    tr:hover td { background:#f8fbff; }
+    .badge { border:1px solid transparent; border-radius:999px; padding:5px 10px; font-size:12px; font-weight:800; cursor:pointer; white-space:nowrap; }
+    .blocked { color:#991b1b; background:#fee2e2; }
+    .review { color:#5b21b6; background:#f3e8ff; }
+    .partial { color:#1d4ed8; background:#eff6ff; border-color:#bfdbfe; }
+    .detail { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:16px; }
+    .panel { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; min-height:132px; }
+    .panel h2 { margin:0 0 10px; color:#0b2b59; font-size:18px; }
+    .panel p { margin:0; color:#475569; line-height:1.7; }
+    .preview { margin-top:16px; background:var(--sky); border:1px solid var(--line); border-radius:8px; padding:16px; color:#1e3a5f; line-height:1.75; }
+    .footer { margin-top:14px; color:#64748b; font-size:12px; line-height:1.6; }
+    @media(max-width:980px) { .cards,.detail { grid-template-columns:1fr 1fr; } .toolbar { display:block; } .grade { display:inline-flex; margin-top:10px; } }
+    @media(max-width:640px) { .cards,.detail { grid-template-columns:1fr; } .wrap { padding:16px; } .header { padding:24px; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand"><div class="logo">KM</div><div><h1>KMFA 项目成本页面</h1><div class="sub">项目列表、毛利、成本结构、回款、差异状态、来源证据、待处理事项和报告预览。报告预览可直接查看，但不可绕过质量等级。</div></div></div>
+  </header>
+  <main class="wrap">
+    <section class="cards" aria-label="项目成本摘要"><div class="card"><span>项目分组</span><b>4</b><small>公开安全列表</small></div><div class="card"><span>成本结构</span><b>9</b><small>分类已登记</small></div><div class="card"><span>毛利记录</span><b>4</b><small>等待复核</small></div><div class="card"><span>差异状态</span><b>12</b><small>待处理事项</small></div></section>
+    <section class="toolbar">
+      <div class="note">本页面只展示公开安全的项目分组和状态，不展示真实金额、客户名称、合同明细、账号或原始文件。所有正式报告和经营决策依据继续受质量等级门禁约束。</div>
+      <span class="grade">报告等级 D</span>
+    </section>
+    <section class="table-wrap" aria-label="项目列表">
+      <table>
+        <thead><tr><th>项目分组</th><th>毛利状态</th><th>成本结构</th><th>回款状态</th><th>差异状态</th><th>报告预览</th><th>下一步</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>项目分组 001</td>
+            <td>毛利指标已记录，正式结论阻断</td>
+            <td>人工、材料、机械、外协、运输、差旅、税费、管理费、利息</td>
+            <td>回款口径已登记，现金毛利待授权复核</td>
+            <td><button type="button" class="badge blocked" data-evidence="事实层、毛利层、差异核对和报告等级证据已绑定" data-pending="复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级" data-preview="可查看报告预览，报告等级 D，不可作为经营决策依据">3 项差异待复核</button></td>
+            <td>可查看报告预览，报告等级 D，不可作为经营决策依据</td>
+            <td>完成差异复核、完整追溯和人工确认后才允许进入后续报告门禁</td>
+          </tr>
+          <tr>
+            <td>项目分组 002</td>
+            <td>毛利指标已记录，正式结论阻断</td>
+            <td>人工、材料、机械、外协、运输、差旅、税费、管理费、利息</td>
+            <td>回款口径已登记，现金毛利待授权复核</td>
+            <td><button type="button" class="badge blocked" data-evidence="事实层、毛利层、差异核对和报告等级证据已绑定" data-pending="复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级" data-preview="可查看报告预览，报告等级 D，不可作为经营决策依据">3 项差异待复核</button></td>
+            <td>可查看报告预览，报告等级 D，不可作为经营决策依据</td>
+            <td>完成差异复核、完整追溯和人工确认后才允许进入后续报告门禁</td>
+          </tr>
+          <tr>
+            <td>项目分组 003</td>
+            <td>毛利指标已记录，正式结论阻断</td>
+            <td>人工、材料、机械、外协、运输、差旅、税费、管理费、利息</td>
+            <td>回款口径已登记，现金毛利待授权复核</td>
+            <td><button type="button" class="badge blocked" data-evidence="事实层、毛利层、差异核对和报告等级证据已绑定" data-pending="复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级" data-preview="可查看报告预览，报告等级 D，不可作为经营决策依据">3 项差异待复核</button></td>
+            <td>可查看报告预览，报告等级 D，不可作为经营决策依据</td>
+            <td>完成差异复核、完整追溯和人工确认后才允许进入后续报告门禁</td>
+          </tr>
+          <tr>
+            <td>项目分组 004</td>
+            <td>毛利指标已记录，正式结论阻断</td>
+            <td>人工、材料、机械、外协、运输、差旅、税费、管理费、利息</td>
+            <td>回款口径已登记，现金毛利待授权复核</td>
+            <td><button type="button" class="badge blocked" data-evidence="事实层、毛利层、差异核对和报告等级证据已绑定" data-pending="复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级" data-preview="可查看报告预览，报告等级 D，不可作为经营决策依据">3 项差异待复核</button></td>
+            <td>可查看报告预览，报告等级 D，不可作为经营决策依据</td>
+            <td>完成差异复核、完整追溯和人工确认后才允许进入后续报告门禁</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="detail" aria-label="项目详情">
+      <div class="panel"><h2>项目详情</h2><p>当前选择展示公开安全项目分组，金额槽位只保留状态，不展示数值。</p></div>
+      <div class="panel"><h2>来源证据</h2><p id="evidenceText">事实层、毛利层、差异核对和报告等级证据已绑定</p></div>
+      <div class="panel"><h2>待处理事项</h2><p id="pendingText">复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级</p></div>
+    </section>
+    <section class="preview" aria-label="报告预览">
+      <strong>报告预览：</strong><span id="previewText">可查看报告预览，报告等级 D，不可作为经营决策依据</span>。当前预览不可绕过质量等级，不代表正式报告、完整可信报告或经营决策依据。
+    </section>
+    <div class="footer">KMFA 经营分析系统 · S11-P3 项目成本页面 · 本页面不执行第十一阶段复审、上传、完整追溯检查或外部接口。</div>
+  </main>
+  <script>
+    const detail = {
+      evidence: document.getElementById("evidenceText"),
+      pending: document.getElementById("pendingText"),
+      preview: document.getElementById("previewText")
+    };
+    document.querySelectorAll(".badge").forEach((button) => {
+      button.addEventListener("click", () => {
+        detail.evidence.textContent = button.dataset.evidence;
+        detail.pending.textContent = button.dataset.pending;
+        detail.preview.textContent = button.dataset.preview;
+      });
+    });
+  </script>
+</body>
+</html>
