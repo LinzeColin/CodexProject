@@ -67,7 +67,7 @@ Phase 8.2 证据：
 
 ## Stage 8 Phase 8.3 禁止假数据回退
 
-Phase 8.3 只实现数据源检查板的禁止假数据回退策略、失败状态截图、过期状态截图和真为 0 状态证明；不执行 Stage 8 whole-stage review，不上传 GitHub main，不推进 Stage 9。
+Phase 8.3 只实现数据源检查板的禁止假数据回退策略、失败状态截图、过期状态截图和真为 0 状态证明，并保持不推进 Stage 9 的阶段边界。
 
 本 phase 覆盖：
 
@@ -85,5 +85,26 @@ Phase 8.3 证据：
 - `PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png`
 - `PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png`
 
-Stage 8 whole-stage review 未执行。
-GitHub main upload 未执行。
+## Stage 8 Whole-stage Review
+
+整阶段 review 结论：`candidate_pass`。
+
+Review 覆盖：
+
+- Phase 8.1、Phase 8.2、Phase 8.3 evidence 均为 `candidate_pass`。
+- 数据源检查板覆盖 3 个数据源：1 个 `ready`，2 个 `not_mounted`。
+- `MetaDatabase/PFI Alipay 日流水` 使用真实 read model：8815 条规范化流水，4 个原始文件，数据范围 `2022-06-06` 至 `2026-06-03`。
+- 账户余额与持仓市值 read model 未挂链时，`net_worth_cny`、`cash_balance_cny`、`investment_market_value_cny` 保持阻断。
+- `/reports`、`/ledger/review`、`/accounts/reconcile`、`/investment/holdings` 均有可定位处理入口。
+- `path_error`、`parse_error`、`outdated` 和 `confirmed_zero` 状态均有截图或证据链说明。
+- 禁止假数据回退策略保持生效：缺失、失败、过期或未挂链状态不得自动生成财务值。
+- Stage 9 未启动。
+
+Review 证据：
+
+- `PFI/reports/pfi_v023/stage_8/stage8_review/evidence.json`
+- `PFI/reports/pfi_v023/stage_8/stage8_review/review_audit.json`
+- `PFI/reports/pfi_v023/stage_8/stage8_review/no_source_term_scan.json`
+- `PFI/reports/pfi_v023/stage_8/stage8_review/terminal.log`
+
+GitHub main upload 不写成提交内自引用事实；上传由 closeout commit 后的 `git push` 与远端 HEAD 校验证明。

@@ -1,0 +1,7 @@
+PFI/tests/test_v023_stage8_data_source_gate.py
+PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md
+PFI/reports/pfi_v023/stage_8/stage8_review/evidence.json
+PFI/reports/pfi_v023/stage_8/stage8_review/review_audit.json
+PFI/reports/pfi_v023/stage_8/stage8_review/no_source_term_scan.json
+PFI/reports/pfi_v023/stage_8/stage8_review/terminal.log
+PFI/reports/pfi_v023/stage_8/stage8_review/changed_files.txt

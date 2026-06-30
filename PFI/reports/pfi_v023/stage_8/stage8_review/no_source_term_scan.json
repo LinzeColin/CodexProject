@@ -1,0 +1,18 @@
+{
+  "schema": "PFIV023Stage8WholeStageReviewSourceTermScanV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "review_id": "V023-S8-REVIEW",
+  "generated_at_utc": "2026-06-30T05:17:35Z",
+  "scanned_files": [
+    "PFI/src/pfi_v02/stage_v023_data_sources.py",
+    "PFI/web/app/pages/upload.js",
+    "PFI/tests/test_v023_stage8_data_source_gate.py",
+    "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md"
+  ],
+  "blocked_term_count": 6,
+  "ignored_contract_fields": [
+    "sample_size"
+  ],
+  "violations": []
+}

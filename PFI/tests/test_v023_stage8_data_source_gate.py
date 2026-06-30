@@ -445,8 +445,9 @@ console.log(JSON.stringify(uploadPage.buildStage8Phase83NoFallbackViewModel(poli
         self.assertIn("解析预览", doc_text)
         self.assertIn("字段映射", doc_text)
         self.assertIn("Stage 8 Phase 8.3", doc_text)
-        self.assertIn("Stage 8 whole-stage review 未执行", doc_text)
-        self.assertIn("GitHub main upload 未执行", doc_text)
+        self.assertIn("Stage 8 Whole-stage Review", doc_text)
+        self.assertNotIn("Stage 8 whole-stage review 未执行", doc_text)
+        self.assertNotIn("GitHub main upload 未执行", doc_text)
 
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("PFI/tests/test_v023_stage8_data_source_gate.py -q", terminal_log)
@@ -508,10 +509,105 @@ console.log(JSON.stringify(uploadPage.buildStage8Phase83NoFallbackViewModel(poli
         self.assertIn("失败状态截图", doc_text)
         self.assertIn("过期状态截图", doc_text)
         self.assertIn("真为 0 状态证明", doc_text)
-        self.assertIn("Stage 8 whole-stage review 未执行", doc_text)
-        self.assertIn("GitHub main upload 未执行", doc_text)
+        self.assertIn("Stage 8 Whole-stage Review", doc_text)
+        self.assertNotIn("Stage 8 whole-stage review 未执行", doc_text)
+        self.assertNotIn("GitHub main upload 未执行", doc_text)
 
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("PFI/tests/test_v023_stage8_data_source_gate.py -q", terminal_log)
+
+    def test_stage8_review_evidence_exists_before_stage_upload(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "stage_8" / "stage8_review"
+        evidence_path = review_dir / "evidence.json"
+        audit_path = review_dir / "review_audit.json"
+        scan_path = review_dir / "no_source_term_scan.json"
+        terminal_log_path = review_dir / "terminal.log"
+        changed_files_path = review_dir / "changed_files.txt"
+
+        for path in (evidence_path, audit_path, scan_path, terminal_log_path, changed_files_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 8")
+        self.assertEqual(evidence["review_id"], "V023-S8-REVIEW")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["stage8_whole_stage_review"])
+        self.assertTrue(evidence["findings_fixed"])
+        self.assertFalse(evidence["stage9_started"])
+        self.assertFalse(evidence["github_main_uploaded_before_review"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(
+            set(evidence["phase_evidence"]),
+            {"phase_8_1", "phase_8_2", "phase_8_3"},
+        )
+        for key in (
+            "data_source_dashboard_exists",
+            "source_matrix_has_status_records_range_updated_blockers",
+            "upload_failure_reasons_actionable",
+            "no_auto_test_data_import",
+            "routes_to_reports_and_review",
+            "failure_outdated_zero_evidence_exists",
+            "no_forbidden_financial_data_terms",
+        ):
+            self.assertTrue(evidence["acceptance_checks"][key], key)
+        for key in (
+            "no_waiting_upload_generic_state",
+            "no_unlocatable_failure_reason",
+            "no_auto_fallback_financial_data",
+            "no_transient_notice_only_upload_feedback",
+        ):
+            self.assertTrue(evidence["stop_condition_checks"][key], key)
+
+        self.assertEqual(audit["schema"], "PFIV023Stage8WholeStageReviewAuditV1")
+        self.assertEqual(audit["review_id"], "V023-S8-REVIEW")
+        self.assertEqual(
+            audit["phase_status"],
+            {
+                "phase_8_1": "candidate_pass",
+                "phase_8_2": "candidate_pass",
+                "phase_8_3": "candidate_pass",
+            },
+        )
+        summary = audit["data_source_summary"]
+        self.assertEqual(summary["total_sources"], 3)
+        self.assertEqual(summary["ready_count"], 1)
+        self.assertEqual(summary["blocked_count"], 2)
+        self.assertEqual(summary["alipay"]["normalized_record_count"], 8815)
+        self.assertEqual(summary["alipay"]["raw_file_count"], 4)
+        self.assertEqual(summary["alipay"]["date_range"], {"start": "2022-06-06", "end": "2026-06-03"})
+        self.assertEqual(
+            set(summary["blocked_metric_ids"]),
+            {"net_worth_cny", "cash_balance_cny", "investment_market_value_cny"},
+        )
+        route_targets = set(audit["dashboard_route_targets"])
+        for route in ("/reports", "/ledger/review", "/accounts/reconcile", "/investment/holdings"):
+            self.assertIn(route, route_targets)
+        self.assertEqual(
+            set(audit["state_case_statuses"]),
+            {"path_error", "parse_error", "outdated", "confirmed_zero"},
+        )
+        self.assertFalse(audit["no_fallback_policy"]["fallback_financial_data_allowed"])
+        self.assertFalse(audit["no_fallback_policy"]["auto_import_test_data_allowed"])
+        self.assertFalse(audit["no_fallback_policy"]["missing_data_renders_financial_zero"])
+        self.assertEqual(audit["review_findings"], [])
+        self.assertFalse(audit["stage9_started"])
+        self.assertFalse(audit["github_main_uploaded_before_review"])
+        self.assertEqual(scan["violations"], [])
+
+        doc_text = (ROOT / "docs" / "pfi_v023" / "STAGE8_DATA_SOURCE_GATE.md").read_text(encoding="utf-8")
+        self.assertIn("Stage 8 Whole-stage Review", doc_text)
+        self.assertIn("PFI/reports/pfi_v023/stage_8/stage8_review/evidence.json", doc_text)
+        self.assertIn("PFI/reports/pfi_v023/stage_8/stage8_review/review_audit.json", doc_text)
+        self.assertNotIn("Stage 8 whole-stage review 未执行", doc_text)
+        self.assertNotIn("GitHub main upload 未执行", doc_text)
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("Stage 8 whole-stage review", terminal_log)
         self.assertIn("PFI/tests/test_v023_stage8_data_source_gate.py -q", terminal_log)
 
     def test_phase81_files_do_not_contain_blocked_placeholder_terms(self) -> None:

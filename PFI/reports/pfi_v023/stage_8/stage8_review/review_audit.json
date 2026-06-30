@@ -1,0 +1,55 @@
+{
+  "schema": "PFIV023Stage8WholeStageReviewAuditV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "review_id": "V023-S8-REVIEW",
+  "generated_at_utc": "2026-06-30T05:17:35Z",
+  "phase_status": {
+    "phase_8_1": "candidate_pass",
+    "phase_8_2": "candidate_pass",
+    "phase_8_3": "candidate_pass"
+  },
+  "data_source_summary": {
+    "total_sources": 3,
+    "ready_count": 1,
+    "blocked_count": 2,
+    "alipay": {
+      "status": "ready",
+      "normalized_record_count": 8815,
+      "raw_file_count": 4,
+      "date_range": {
+        "start": "2022-06-06",
+        "end": "2026-06-03"
+      },
+      "last_updated": "2026-06-03",
+      "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+      "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a"
+    },
+    "blocked_metric_ids": [
+      "cash_balance_cny",
+      "investment_market_value_cny",
+      "net_worth_cny"
+    ]
+  },
+  "dashboard_route_targets": [
+    "/accounts/reconcile",
+    "/investment/holdings",
+    "/ledger/review",
+    "/reports"
+  ],
+  "state_case_statuses": [
+    "path_error",
+    "parse_error",
+    "outdated",
+    "confirmed_zero"
+  ],
+  "no_fallback_policy": {
+    "fallback_financial_data_allowed": false,
+    "auto_import_test_data_allowed": false,
+    "missing_data_renders_financial_zero": false,
+    "transient_notice_only_upload_feedback_allowed": false
+  },
+  "review_findings": [],
+  "stage9_started": false,
+  "github_main_uploaded_before_review": false
+}
