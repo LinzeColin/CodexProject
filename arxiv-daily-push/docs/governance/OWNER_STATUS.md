@@ -7,6 +7,9 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 ## 2. 本次运行改变了什么
 
 
+Owner 视图当前同步 S2PLT02 terminal scheduler blocker：第二真实发送日与 8 封真实邮件已经是 ready inputs，`observed_real_delivery_days=2/2`、`observed_real_email_count=8/8`。当前仍缺 `REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，对应剩余动作 `capture_real_launchd_scheduler_proof;write_and_validate_s2plt02_terminal_delivery_proof_artifact`。绑定证据为 terminal input inventory `state_hash=c5f9f4678c564d87cd0a4086ca9b059a18ed1122b82bcacc7b7460214476648b`、capture plan `state_hash=09fcf0817f968ae73c43bb834cf73b04b01b22cdc03b8918f4268626f14632cb`、wait guard `state_hash=908415095aca6b4919799233563610daa98439ca294633f32868a6bca2ba0536`、artifact validation `state_hash=d694f129dcfdf5b6c695072ae5c88a6d48c1be6c3ff53350c2b437ed8d7049ae`、final validator `state_hash=59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea`。这不是 scheduler proof、不是 S2PLT02 accepted，也不是 Stage2/S3 production accepted；本同步没有发送 SMTP、没有启用 scheduler、没有写 terminal/final artifacts。
+
+
 Owner 视图现在记录一次受控前台真实 SMTP 第二日捕获：服务日期 `2026-06-29`，生成时间 `2026-06-30T21:43:35Z`，M1/M2/M3/M4 四封均已发送，S2PLT02 可用真实发送证据达到 `observed_real_delivery_days=2/2`、`observed_real_email_count=8/8`。绑定证据为 raw manifest `fb0283655054027872f51a4828f93926d4c829cae1f295fc50d4c7adfdfe103a`、M4 watermark proof `3791678d163e245b95d5ddf76b40a67fe17a369ad2a4f825545e7a9a6a48ea30`、capture plan `05e8d88e9a09ec66acd59b03a8e77537e972e830eef9e1d3cca3edd9d3e1f3f7`、final-bundle S2PLT02 summary `1de287b38fe4aafb862df33afefd6f2ea453c4f63d76dd3e40b10c4e8cd7bf0a`、wait guard `ca017acbdc5e84a9ff7f8d6f91bf2023831e5c25893306b389f8652a757851f3`、prerequisite plan `2663c6934972958d51f84f07f6ff4434ccbd00afa3cfe154db0453cdb724f7f5`、final validator `59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea`。The validated independent reviewer assignment remains a final-bundle input only. 当前仍缺 `REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，`write_terminal_artifact_allowed=false`，`scheduler_enable_allowed_by_this_plan=false`，`production_acceptance_allowed=false`。本轮结束后持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled 且不运行，无后台 ADP 进程。这不是 scheduler proof、不是 S2PLT02 accepted，也不是 Stage2/S3 production accepted。
 
 Owner 视图现在把 S2PLT02 wait guard 的只读命令收口为可执行命令集合：`allowed_readonly_commands` 中的 terminal proof evidence inventory 命令已带 `--generated-at 2026-07-01T05:42:34+10:00`，CLI regression 会逐条执行只读命令并确认返回 blocked JSON。当前 direct capture plan `state_hash=aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1`，wait guard `state_hash=502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe`，inventory command `state_hash=26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c`，prerequisite plan `state_hash=94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9`，final validator `state_hash=6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f`。当前仍缺 `SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，`current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，`write_terminal_artifact_allowed=false`，`scheduler_enable_allowed_by_this_plan=false`，`production_acceptance_allowed=false`。这不是 S2PLT02 terminal proof，不是 SMTP/scheduler 授权，也不是 Stage2/S3 production accepted。
@@ -101,7 +104,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_CONTROLLED_REAL_SECOND_DAY_CAPTURE_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 

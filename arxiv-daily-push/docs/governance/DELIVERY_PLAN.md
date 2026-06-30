@@ -21,10 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 326
+- task_count: 327
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+
+## 2026-07-01 08:37:20 Australia/Sydney - S2PLT02 terminal scheduler blocker sync
+
+- Task: `S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC`
+- Result: `blocked_scheduler_proof_and_terminal_artifact_only_no_production`
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC.md`.
+- Current proof counts: `observed_real_delivery_days=2/2`; `observed_real_email_count=8/8`; ready inputs now include `SECOND_REAL_DELIVERY_DAY` and `EIGHT_REAL_EMAILS`.
+- Current blockers: `REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Current hashes: terminal input inventory `c5f9f4678c564d87cd0a4086ca9b059a18ed1122b82bcacc7b7460214476648b`; capture plan `09fcf0817f968ae73c43bb834cf73b04b01b22cdc03b8918f4268626f14632cb`; wait guard `908415095aca6b4919799233563610daa98439ca294633f32868a6bca2ba0536`; terminal artifact validation `d694f129dcfdf5b6c695072ae5c88a6d48c1be6c3ff53350c2b437ed8d7049ae`; final readiness `59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea`.
+- Production boundary: No scheduler proof was collected, no terminal proof artifact was written, no SMTP was sent in this sync, no scheduler/Release/restore/DAILY_OPERATION was enabled, and no Stage2/S3/integrated production acceptance is claimed.
 
 
 ## 2026-07-01 07:43:35 Australia/Sydney - S2PLT02 controlled real second-day capture
@@ -42,7 +53,7 @@ machine_summary:
 - Result: `blocked_s2plt02_terminal_capture_readonly_commands_executable_no_production`
 - Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC.md`.
 - Current hashes: capture plan `aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1`; wait guard `502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe`; inventory command `26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c`; prerequisite plan `94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9`; final readiness `6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f`.
-- Remaining blockers: second real M1-M4 SMTP day, eight real emails, real scheduler proof, S2PLT02 terminal proof artifact, S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command, and production acceptance.
+- Historical blockers at that entry time included second real M1-M4 SMTP day and eight real emails; current blockers are real scheduler proof, S2PLT02 terminal proof artifact, S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command, and production acceptance.
 - Production boundary: No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 05:17:15 Australia/Sydney - S2PLT02 terminal capture inventory summary sync
@@ -51,7 +62,7 @@ machine_summary:
 - Result: `blocked_s2plt02_terminal_capture_inventory_summary_synced_no_production`
 - Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC.md`.
 - Current hashes: capture plan `cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4`; input summary `4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`; artifact summary `3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`; prerequisite plan `bcb40505ad7244626589c24991dcf05fe775268ce44b5eab3b68444f38cded6e`; final readiness `23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c`.
-- Remaining blockers: second real M1-M4 SMTP day, eight real emails, real scheduler proof, S2PLT02 terminal proof artifact, S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command, and production acceptance.
+- Historical blockers at that entry time included second real M1-M4 SMTP day and eight real emails; current blockers are real scheduler proof, S2PLT02 terminal proof artifact, S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command, and production acceptance.
 - Production boundary: No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 04:57:53 Australia/Sydney - S2PMT07 final bundle zero-proof request consumption sync

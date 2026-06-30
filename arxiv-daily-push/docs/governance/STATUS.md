@@ -5,7 +5,7 @@
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
 - source_snapshot_hash: `sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01`
-- snapshot_event_time: `2026-07-01T07:43:35+10:00`
+- snapshot_event_time: `2026-07-01T08:37:20+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / S2PLT02_CONTROLLED_REAL_SECOND_DAY_CAPTURE_BLOCKED_NO_PRODUCTION`
+- Phase/Gate: `S2PL / S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC_BLOCKED_NO_PRODUCTION`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PLT02_CONTROLLED_REAL_SECOND_DAY_CAPTURE_BLOCKED_NO_PRODUCTION`
+- Release gate: `S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC_BLOCKED_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
