@@ -36,6 +36,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
 
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_LIVE_WRITE_READY_TOP_LEVEL_SYNC_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC", current_state)
+        self.assertIn("ready_to_write_live_artifacts=false", current_state)
+        self.assertIn("current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", current_state)
+        self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", current_state)
+        self.assertIn("256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320", current_state)
+        self.assertIn("494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67", current_state)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC-20260701.json",
+            current_state,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_LIVE_WRITE_READY_TOP_LEVEL_SYNC.md", ledger)
+
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_TOP_LEVEL_WAIT_STATE_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )

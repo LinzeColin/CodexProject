@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 318
+- task_count: 319
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 03:21:16 Australia/Sydney - S2PMT07 Final Bundle Live Write Ready Top-Level Sync
+
+- `S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC` makes `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle` expose outermost top-level `ready_to_write_live_artifacts=false`, matching `live_artifact_write_guard.live_artifact_write_allowed`.
+- Current live CLIs remain blocked / exit 2: S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`, wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`, prerequisite plan `state_hash=256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320`, final validator `state_hash=494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67`.
+- Current wait state remains `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`; next executable task remains `S2PLT02_TERMINAL_DELIVERY_PROOF`; `ready_to_write_live_artifacts=false`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_LIVE_WRITE_READY_TOP_LEVEL_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 02:59:33 Australia/Sydney - S2PMT07 Final Bundle Top-Level Wait State Sync
 

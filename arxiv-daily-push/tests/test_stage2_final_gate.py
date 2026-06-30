@@ -5519,6 +5519,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(plan["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(plan["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(plan["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertFalse(plan["ready_to_write_live_artifacts"])
         capture_summary = plan["s2plt02_terminal_delivery_capture_plan_summary"]
         self.assertEqual(plan["current_wait_state"], capture_summary["current_wait_state"])
         self.assertEqual(capture_summary["status"], "blocked")
@@ -5873,6 +5874,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             "final_bundle_live_artifact_write_guard_no_production_acceptance",
         )
         self.assertFalse(guard["live_artifact_write_allowed"])
+        self.assertIs(plan["ready_to_write_live_artifacts"], guard["live_artifact_write_allowed"])
         self.assertEqual(guard["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertIn(
             "HANDOFF/00_下一Agent先读.md",
@@ -6077,6 +6079,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(state["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(state["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(state["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertFalse(state["ready_to_write_live_artifacts"])
+        self.assertIs(state["ready_to_write_live_artifacts"], prerequisite_plan["ready_to_write_live_artifacts"])
         self.assertEqual(state["final_bundle_prerequisite_plan_state_hash"], prerequisite_plan["state_hash"])
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"],

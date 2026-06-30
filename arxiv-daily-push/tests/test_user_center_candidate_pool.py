@@ -144,6 +144,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
 
+        self.assertIn("REQ-ADP-V7-065-S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_LIVE_WRITE_READY_TOP_LEVEL_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_live_write_ready_top_level_synced_no_production", page)
+        self.assertIn("ready_to_write_live_artifacts=false", page)
+        self.assertIn("current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", page)
+        self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", page)
+        self.assertIn("256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320", page)
+        self.assertIn("494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67", page)
+
         self.assertIn("REQ-ADP-V7-064-S2PMT07-FINAL-BUNDLE-TOP-LEVEL-WAIT-STATE-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-TOP-LEVEL-WAIT-STATE-SYNC", page)
         self.assertIn(
@@ -169,7 +183,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", page)
         self.assertIn("0b6753d007633aaeca00368eb29ebe54cc677846085051988a60854713c93b42", page)
         self.assertIn("4f1e0e311ea68a5cc320e1c0a5d11985b2a256acbeb06217a57e86d6fa217d65", page)
-        self.assertIn("408 条可点击链路", readme)
+        self.assertIn("409 条可点击链路", readme)
 
         self.assertIn("REQ-ADP-V7-061-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", page)

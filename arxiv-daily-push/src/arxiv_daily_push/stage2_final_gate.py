@@ -9324,6 +9324,7 @@ def build_final_bundle_prerequisite_plan_state(
             if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
             else ""
         ),
+        "ready_to_write_live_artifacts": live_artifact_write_allowed,
         "current_wait_state": (
             s2plt02_capture_plan_summary.get("current_wait_state", "")
             if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
@@ -9591,6 +9592,8 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     )
     if live_artifact_write_guard.get("live_artifact_write_allowed") is not expected_live_artifact_write_allowed:
         errors.append("final bundle live artifact write guard allowed flag is invalid")
+    if state.get("ready_to_write_live_artifacts") is not live_artifact_write_guard.get("live_artifact_write_allowed"):
+        errors.append("final bundle prerequisite plan ready_to_write_live_artifacts must match live artifact write guard")
     expected_guard_status = "pass" if expected_live_artifact_write_allowed else "blocked"
     if live_artifact_write_guard.get("status") != expected_guard_status:
         errors.append("final bundle live artifact write guard status is invalid")
@@ -10791,6 +10794,7 @@ def build_final_acceptance_bundle_readiness_state(
         "next_required_step": final_bundle_prerequisite_plan.get("next_required_step"),
         "next_executable_task": final_bundle_prerequisite_plan.get("next_executable_task"),
         "next_executable_runtime_step": final_bundle_prerequisite_plan.get("next_executable_runtime_step"),
+        "ready_to_write_live_artifacts": final_bundle_prerequisite_plan.get("ready_to_write_live_artifacts"),
         "current_wait_state": final_bundle_prerequisite_plan.get("current_wait_state"),
         "s2plt02_terminal_delivery_capture_plan_summary": dict(
             final_bundle_prerequisite_plan.get("s2plt02_terminal_delivery_capture_plan_summary", {})
@@ -10964,7 +10968,13 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness final-bundle prerequisite plan is invalid")
     if state.get("final_bundle_prerequisite_plan_state_hash") != final_bundle_prerequisite_plan.get("state_hash"):
         errors.append("final acceptance bundle readiness prerequisite plan hash must match nested plan")
-    for field in ("next_required_step", "next_executable_task", "next_executable_runtime_step", "current_wait_state"):
+    for field in (
+        "next_required_step",
+        "next_executable_task",
+        "next_executable_runtime_step",
+        "ready_to_write_live_artifacts",
+        "current_wait_state",
+    ):
         if state.get(field) != final_bundle_prerequisite_plan.get(field):
             errors.append(f"final acceptance bundle readiness {field} must match nested prerequisite plan")
     if state.get("s2plt02_terminal_delivery_capture_plan_summary") != final_bundle_prerequisite_plan.get(
