@@ -132,7 +132,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
-        self.assertGreaterEqual(len(matrix_rows), 398)
+        self.assertGreaterEqual(len(matrix_rows), 400)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -143,6 +143,28 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
+        self.assertIn("REQ-ADP-V7-056-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY.md", page)
+        self.assertIn("blocked_final_bundle_s2plt02_capture_window_summary_synced_no_production", page)
+        self.assertIn("9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144", page)
+        self.assertIn("1ab9fa8e6fc25ea35fb5405a26917bbf2d5993b1911704b2d3acb654fdb5c5c5", page)
+        self.assertIn("3abd9c06b9490e0023eb4d1db2a2d19a7679041f9f887179304bee0d025f0429", page)
+        self.assertIn("e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c", page)
+        self.assertIn("ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151", page)
+        self.assertIn("dry_run_service_dates=2026-06-29;2026-06-30", page)
+        self.assertIn("nonterminal_succeeded_dry_run_service_dates=2026-06-29;2026-06-30", page)
+        self.assertIn("dry_run_email_count=8", page)
+        self.assertIn("real_sent_candidate_email_count=0", page)
+        self.assertIn("observed_terminal_email_count_credit=4", page)
+        self.assertIn("terminal_delivery_credit=false", page)
+        self.assertIn("counts_toward_s2plt02_terminal_proof=false", page)
+        self.assertIn("launchagent_runtime_state_unknown", page)
+        self.assertIn("launchagents_loaded_but_disabled_not_terminal_scheduler_proof", page)
         self.assertIn("REQ-ADP-V7-055-S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY", page)
         self.assertIn(

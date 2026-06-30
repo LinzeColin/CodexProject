@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-30 23:50:28 Australia/Sydney - S2PMT07 final bundle S2PLT02 capture-window summary
+
+- Added `terminal_capture_window_audit_summary` to S2PLT02 capture-plan summaries exposed by `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle`.
+- The summary records 2026-06-29/2026-06-30 as dry-run service dates only: `dry_run_email_count=8`, `real_sent_candidate_email_count=0`, `terminal_delivery_credit=false`, and `counts_toward_s2plt02_terminal_proof=false`.
+- Live capture-window audit remains blocked with `state_hash=ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151` and scheduler status `launchagents_loaded_but_disabled_not_terminal_scheduler_proof`.
+- No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-30 22:46:02 Australia/Sydney - S2PMT07 final bundle P0/P1 zero-proof status summary
 
 - Added top-level `s2plt04_completion_evidence_audit_summary` to `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle` while keeping S2PLT04 completion report blocked and unwritten.

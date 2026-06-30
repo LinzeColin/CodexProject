@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 309
+- task_count: 310
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 23:50:28 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Capture Window Summary
+
+- `S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY` makes `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle` expose `terminal_capture_window_audit_summary` inside `s2plt02_terminal_delivery_capture_plan_summary`.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144`, final validator `state_hash=1ab9fa8e6fc25ea35fb5405a26917bbf2d5993b1911704b2d3acb654fdb5c5c5`, S2PLT02 capture plan `state_hash=3abd9c06b9490e0023eb4d1db2a2d19a7679041f9f887179304bee0d025f0429`, capture-window summary `state_hash=e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c`, and standalone capture-window audit `state_hash=ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151`.
+- Summary fields keep `candidate_service_dates=2026-06-29;2026-06-30`, `dry_run_service_dates=2026-06-29;2026-06-30`, `nonterminal_succeeded_dry_run_service_dates=2026-06-29;2026-06-30`, `dry_run_email_count=8`, `real_sent_candidate_email_count=0`, `observed_terminal_email_count_credit=4`, `terminal_delivery_credit=false`, and `counts_toward_s2plt02_terminal_proof=false`.
+- Scheduler proof remains nonterminal: final-bundle summary uses `launchagent_runtime_state_unknown` when no launchctl runtime input is supplied; live capture-window CLI reports `launchagents_loaded_but_disabled_not_terminal_scheduler_proof`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY.md`; `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- This does not mutate V7.1/V7.2 contract baseline counts, write S2PLT02 terminal proof, write S2PLT03 terminal proof, write S2PLT04 completion report, create final-bundle manifest/handoff/signoff/final-command proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 23:18:23 Australia/Sydney - S2PMT07 Final Bundle S2PLT04 Completion Evidence Summary
 

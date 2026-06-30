@@ -3879,10 +3879,12 @@ def build_s2plt02_terminal_proof_evidence_inventory_state(
         "blocked_candidate_inputs": blocked_candidate_inputs,
         "blocked_candidate_service_dates": blocked_candidate_service_dates,
         "daily_run_succeeded_service_dates": list(capture_window.get("daily_run_succeeded_service_dates", [])),
+        "dry_run_service_dates": list(capture_window.get("dry_run_service_dates", [])),
         "nonterminal_succeeded_dry_run_service_dates": list(
             capture_window.get("nonterminal_succeeded_dry_run_service_dates", [])
         ),
         "nonterminal_succeeded_dry_run_count": int(capture_window.get("nonterminal_succeeded_dry_run_count") or 0),
+        "scheduler_runtime_evidence_status": str(capture_window.get("scheduler_runtime_evidence_status") or ""),
         "safe_to_build_terminal_artifact": safe_to_build_terminal_artifact,
         "terminal_delivery_credit": False,
         "counts_toward_s2plt02_terminal_proof": False,
@@ -3893,6 +3895,9 @@ def build_s2plt02_terminal_proof_evidence_inventory_state(
         "observed_real_email_count": int(input_inventory.get("observed_real_email_count") or 0),
         "observed_candidate_dry_run_email_count": int(capture_window.get("dry_run_email_count") or 0),
         "observed_candidate_real_sent_email_count": int(capture_window.get("real_sent_candidate_email_count") or 0),
+        "observed_terminal_email_count_credit": int(
+            capture_window.get("observed_terminal_email_count_credit") or 0
+        ),
         "required_smtp_secret_env_names": list(capture_window.get("required_smtp_secret_env_names", [])),
         "smtp_secret_env_name_presence": dict(capture_window.get("smtp_secret_env_name_presence", {})),
         "missing_smtp_secret_env_names": list(capture_window.get("missing_smtp_secret_env_names", [])),
@@ -4041,6 +4046,33 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
     )
     missing_inputs = [str(item) for item in inventory.get("missing_inputs", [])]
     terminal_delivery_proof_ready = inventory.get("terminal_delivery_proof_ready") is True
+    terminal_capture_window_audit_summary = {
+        "status": "blocked" if evidence_inventory.get("safe_to_build_terminal_artifact") is not True else "pass",
+        "state_hash": evidence_inventory.get("capture_window_state_hash"),
+        "candidate_service_dates": list(evidence_inventory.get("candidate_service_dates", [])),
+        "dry_run_service_dates": list(evidence_inventory.get("dry_run_service_dates", [])),
+        "daily_run_succeeded_service_dates": list(
+            evidence_inventory.get("daily_run_succeeded_service_dates", [])
+        ),
+        "nonterminal_succeeded_dry_run_service_dates": list(
+            evidence_inventory.get("nonterminal_succeeded_dry_run_service_dates", [])
+        ),
+        "nonterminal_succeeded_dry_run_count": int(
+            evidence_inventory.get("nonterminal_succeeded_dry_run_count") or 0
+        ),
+        "dry_run_email_count": int(evidence_inventory.get("observed_candidate_dry_run_email_count") or 0),
+        "real_sent_candidate_email_count": int(
+            evidence_inventory.get("observed_candidate_real_sent_email_count") or 0
+        ),
+        "observed_terminal_email_count_credit": int(
+            evidence_inventory.get("observed_terminal_email_count_credit") or 0
+        ),
+        "terminal_delivery_credit": evidence_inventory.get("terminal_delivery_credit") is True,
+        "counts_toward_s2plt02_terminal_proof": (
+            evidence_inventory.get("counts_toward_s2plt02_terminal_proof") is True
+        ),
+        "scheduler_runtime_evidence_status": evidence_inventory.get("scheduler_runtime_evidence_status"),
+    }
     authorization_valid = (
         authorization_artifact is not None
         and authorization_validation.get("status") == "pass"
@@ -4163,6 +4195,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "scope": "s2plt02_terminal_delivery_proof_capture_plan_no_write_no_production",
         "input_inventory_state_hash": inventory.get("state_hash"),
         "terminal_evidence_inventory_state_hash": evidence_inventory.get("state_hash"),
+        "terminal_capture_window_audit_summary": terminal_capture_window_audit_summary,
         "authorization_artifact_path": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
         "authorization_artifact_status": authorization_validation.get("status"),
         "authorization_validation_errors": list(authorization_validation.get("validation_errors", [])),
@@ -4284,6 +4317,39 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         "terminal_evidence_inventory_state_hash"
     ):
         errors.append("S2PLT02 terminal delivery proof capture plan evidence inventory hash is required")
+    capture_window_summary = _mapping(state.get("terminal_capture_window_audit_summary"))
+    if capture_window_summary.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal delivery proof capture plan capture-window summary status is invalid")
+    if not isinstance(capture_window_summary.get("state_hash"), str) or not capture_window_summary.get("state_hash"):
+        errors.append("S2PLT02 terminal delivery proof capture plan capture-window hash is required")
+    for field in (
+        "candidate_service_dates",
+        "dry_run_service_dates",
+        "daily_run_succeeded_service_dates",
+        "nonterminal_succeeded_dry_run_service_dates",
+    ):
+        if not isinstance(capture_window_summary.get(field), list):
+            errors.append(f"S2PLT02 terminal delivery proof capture plan capture-window {field} must be a list")
+    for field in (
+        "nonterminal_succeeded_dry_run_count",
+        "dry_run_email_count",
+        "real_sent_candidate_email_count",
+        "observed_terminal_email_count_credit",
+    ):
+        if not isinstance(capture_window_summary.get(field), int):
+            errors.append(f"S2PLT02 terminal delivery proof capture plan capture-window {field} must be an integer")
+    if capture_window_summary.get("nonterminal_succeeded_dry_run_count") != len(
+        capture_window_summary.get("nonterminal_succeeded_dry_run_service_dates", [])
+    ):
+        errors.append("S2PLT02 terminal delivery proof capture plan capture-window dry-run count mismatch")
+    if capture_window_summary.get("terminal_delivery_credit") is not False:
+        errors.append("S2PLT02 terminal delivery proof capture plan capture-window must not grant delivery credit")
+    if capture_window_summary.get("counts_toward_s2plt02_terminal_proof") is not False:
+        errors.append("S2PLT02 terminal delivery proof capture plan capture-window must not count toward proof")
+    if not isinstance(capture_window_summary.get("scheduler_runtime_evidence_status"), str) or not capture_window_summary.get(
+        "scheduler_runtime_evidence_status"
+    ):
+        errors.append("S2PLT02 terminal delivery proof capture plan capture-window scheduler status is required")
     if not isinstance(state.get("runtime_capture_blockers"), list):
         errors.append("S2PLT02 terminal delivery proof capture plan runtime blockers must be a list")
     if not isinstance(state.get("remaining_runtime_actions"), list):
@@ -8685,6 +8751,9 @@ def build_final_bundle_prerequisite_plan_state(
             "terminal_evidence_inventory_state_hash": s2plt02_capture_plan.get(
                 "terminal_evidence_inventory_state_hash"
             ),
+            "terminal_capture_window_audit_summary": dict(
+                _mapping(s2plt02_capture_plan.get("terminal_capture_window_audit_summary"))
+            ),
             "terminal_artifact_validation_status": s2plt02_capture_plan.get(
                 "terminal_artifact_validation_status"
             ),
@@ -9103,6 +9172,31 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         ):
             if not isinstance(capture_plan_summary.get(field), str) or not capture_plan_summary.get(field):
                 errors.append(f"S2PLT02 capture plan summary {field} is required")
+        capture_window_summary = _mapping(capture_plan_summary.get("terminal_capture_window_audit_summary"))
+        if capture_window_summary.get("status") not in {"pass", "blocked"}:
+            errors.append("S2PLT02 capture plan summary capture-window status is invalid")
+        if not isinstance(capture_window_summary.get("state_hash"), str) or not capture_window_summary.get("state_hash"):
+            errors.append("S2PLT02 capture plan summary capture-window state_hash is required")
+        for field in (
+            "candidate_service_dates",
+            "dry_run_service_dates",
+            "daily_run_succeeded_service_dates",
+            "nonterminal_succeeded_dry_run_service_dates",
+        ):
+            if not isinstance(capture_window_summary.get(field), list):
+                errors.append(f"S2PLT02 capture plan summary capture-window {field} must be a list")
+        for field in (
+            "nonterminal_succeeded_dry_run_count",
+            "dry_run_email_count",
+            "real_sent_candidate_email_count",
+            "observed_terminal_email_count_credit",
+        ):
+            if not isinstance(capture_window_summary.get(field), int):
+                errors.append(f"S2PLT02 capture plan summary capture-window {field} must be an integer")
+        if capture_window_summary.get("terminal_delivery_credit") is not False:
+            errors.append("S2PLT02 capture plan summary capture-window must not grant delivery credit")
+        if capture_window_summary.get("counts_toward_s2plt02_terminal_proof") is not False:
+            errors.append("S2PLT02 capture plan summary capture-window must not count toward terminal proof")
         if capture_plan_summary.get("terminal_artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
             errors.append("S2PLT02 capture plan summary terminal artifact ref is invalid")
         if not isinstance(capture_plan_summary.get("terminal_artifact_present"), bool):
