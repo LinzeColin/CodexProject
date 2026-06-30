@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S7"
-current_phase_id: "S7PA"
-current_task_id: "KMFA-S07-P1-GATE"
-next_gate_id: "KMFA-S07-P1-GATE"
+current_phase_id: "S7PB"
+current_task_id: "KMFA-S07-P2-GATE"
+next_gate_id: "KMFA-S07-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -619,9 +619,9 @@ stages:
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json"
   - stage_id: "S7"
     name: "文件型源适配与字段映射"
-    status: "planned"
+    status: "in_progress_s07p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33
   - stage_id: "S8"
     name: "业务实体与项目身份匹配"
     status: "planned"

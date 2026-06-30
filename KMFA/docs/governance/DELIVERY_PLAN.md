@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s06-github-upload
+product_version: 0.1.0-s07p1-finance-file-adapter
 
 ## Delivery Rule
 
@@ -48,13 +48,14 @@ KMFA delivery follows the owner contract:
 | S06-P3 | completed_validated_local_only |
 | Stage 6 review | passed |
 | Stage 6 GitHub upload | completed |
-| S07-P1 | not_started |
+| S07-P1 | completed_validated_local_only |
+| S07-P2 | not_started |
 
 ## Upload Scope
 
-Stage 5 and Stage 6 GitHub uploads are complete on `origin/main`. Stage 6 upload reconciled with latest `origin/main`, reran validation, and recorded push proof under `KMFA/stage_artifacts/S06_STAGE_REVIEW/`.
+Stage 5 and Stage 6 GitHub uploads are complete on `origin/main`. Stage 6 upload reconciled with latest `origin/main`, reran validation, and recorded push proof under `KMFA/stage_artifacts/S06_STAGE_REVIEW/`. S07-P1 is complete local-only and has not been uploaded as a standalone phase.
 
-The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, recorded hash-only private values and source anchors for 40 PDF field candidates, and resolved the Excel candidate through an active owner/authorized downgrade decision as cross-source support only. S05-P3 has locked those 40 public-safe hash/source-anchor fields into the A0 authority baseline and excluded the 5 Excel fields from Q5 calculation baseline. Stage 5 review/upload and Stage 6 review/upload are complete. S07-P1 financial file adaptation has not started.
+The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, recorded hash-only private values and source anchors for 40 PDF field candidates, and resolved the Excel candidate through an active owner/authorized downgrade decision as cross-source support only. S05-P3 has locked those 40 public-safe hash/source-anchor fields into the A0 authority baseline and excluded the 5 Excel fields from Q5 calculation baseline. Stage 5 review/upload and Stage 6 review/upload are complete. S07-P1 financial file adaptation is complete local-only with 9 finance categories, 45 field candidates, and 9 read-only field reports. S07-P2 WPS file adaptation has not started.
 
 ## Rollback
 

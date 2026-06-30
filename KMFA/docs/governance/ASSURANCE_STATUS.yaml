@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S06-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260630-S07P1-FINANCE-FILE-ADAPTER"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "fd14057e7427d7f275fdb62a33619936618d0d35"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_UPLOAD"
-snapshot_event_time: "2026-06-30T15:40:00+10:00"
-generator_version: "manual-s06-github-upload"
-final_commit_binding: "precommit-pending-s06-upload"
+snapshot_event_time: "2026-06-30T16:00:00+10:00"
+generator_version: "manual-s07p1-finance-file-adapter"
+final_commit_binding: "precommit-pending-s07p1"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 44
-    total_active_formulas: 15
+    total_active_parameters: 48
+    total_active_formulas: 16
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -73,6 +73,9 @@ dimensions:
       - "KMFA/tools/check_s06_p3_validation_evidence.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
+      - "KMFA/tools/finance_file_adapter.py"
+      - "KMFA/tools/check_s07_p1_finance_file_adapter.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -170,14 +173,22 @@ dimensions:
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json"
+      - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
+      - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/machine/s07_p1_manifest.json"
+      - "KMFA/metadata/imports/finance_support_source_registry.json"
+      - "KMFA/metadata/schema_maps/finance_file_adapter_manifest.json"
+      - "KMFA/metadata/schema_maps/finance_field_candidates.jsonl"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S06_UPLOADED_TO_GITHUB_MAIN_S07_P1_NOT_STARTED"
-  release_gate: "KMFA-S07-P1-GATE"
+  status: "S07P1_COMPLETED_VALIDATED_LOCAL_ONLY_S07P2_NOT_STARTED"
+  release_gate: "KMFA-S07-P2-GATE"
   blocker_ids:
-    - "S07_P1_NOT_STARTED"
+    - "S07_P2_NOT_STARTED"
+    - "S07_P3_NOT_STARTED"
+    - "STAGE7_REVIEW_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

@@ -1,0 +1,123 @@
+{
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "normalized_business_values_committed": false,
+    "private_csv_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "source_header_plaintext_committed": false
+  },
+  "record_type": "finance_support_source_registry",
+  "schema_version": "kmfa.finance_support_source_registry.v1",
+  "sources": [
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:e630a3e6a8d2828b6b974e22e864644c527a843abc7435139ae86d59879c70f2",
+      "finance_category": "operating_analysis",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-OPERATING-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-OPERATING-001"
+    },
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:3ba518bd5b87399d304cd3548c14f5ebe979ed6e34986febddf10ca9cc84b70e",
+      "finance_category": "journal",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-JOURNAL-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-JOURNAL-001"
+    },
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:d5ee99ba17541109e757ae5dcc6c9f4a37c85a5c41fb3d7328b3da92240466e0",
+      "finance_category": "customer_aging",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-AGING-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-AGING-001"
+    },
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:36ef78db7749c762284d4ac005446ce1c891583fed758fb5d11784ac3028adad",
+      "finance_category": "cash",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-CASH-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-CASH-001"
+    },
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:587cc61b991e513f5c94c2ed1a0434f57a4caa8365b2f710068009d55dcbb4e4",
+      "finance_category": "tax",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-TAX-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-TAX-001"
+    },
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:a7bfbb34cb42d6863c209409b4dc628d7a488fd9dadb54cc2874f553eb1e2763",
+      "finance_category": "invoice",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-INVOICE-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-INVOICE-001"
+    },
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:608e9ba07a08ef4a13a8ad1ca1ab4af51137b082c12c847400b465db33eb118b",
+      "finance_category": "account",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-ACCOUNT-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-ACCOUNT-001"
+    },
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:5637505ea3bc9e0015971aa36f3409468da13f615f7926a87b42042357263fb1",
+      "finance_category": "loan",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-LOAN-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-LOAN-001"
+    },
+    {
+      "file_format": "xlsx",
+      "file_hash": "sha256:772fddbfbff738ba3b75611230cdaffd6e1886975779d2a4821df2d86b5e1578",
+      "finance_category": "r_and_d_expense",
+      "parse_status": "parsed_structure_from_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P1/source/SRC-FIN-RD-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-FIN-RD-001"
+    }
+  ],
+  "stage_phase": "S07-P1"
+}

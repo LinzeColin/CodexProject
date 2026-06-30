@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload，以及 Stage 6 全部 Phase/复审/upload。S06-P3 已把 public-safe zero-delta summary、sanitized mismatch index、project validation status 和差异队列状态写入 `metadata/quality`。Stage 6 final GitHub upload 证据已记录；S07-P1、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload，以及 S07-P1 财务文件适配本地验证。S07-P1 已生成 9 类财务支撑源登记、45 条 hash-only 字段候选和 9 条只读字段报告；S07-P2、S07-P3、Stage 7 review、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -41,6 +41,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S06-P2 跨源差异队列已存在：`KMFA/tools/cross_source_difference_queue.py` 使用 public-safe PDF/Excel synthetic fixture，1 分冲突进入人工队列；`KMFA/tools/check_s06_p2_difference_queue.py` 验证未关闭差异阻断 A 级报告。
 - S06-P3 校验证据输出已存在：`KMFA/tools/validation_evidence_output.py` 输出 stage evidence 并写入 `metadata/quality`；`KMFA/tools/check_s06_p3_validation_evidence.py` 验证输出不新增字段明文或原始金额值。
 - Stage 6 整体复审和 final GitHub upload 已完成：`KMFA/stage_artifacts/S06_STAGE_REVIEW/` 记录 S06-P1/P2/P3 复跑、治理 validator、raw/secret scan、evidence consistency check、dry-run push、push 和 post-push parity。
+- S07-P1 财务文件适配已本地验证完成：`KMFA/tools/finance_file_adapter.py` 支持只读 `.xlsx` 结构解析并只输出 hash/private refs；`KMFA/tools/check_s07_p1_finance_file_adapter.py` 验证 9 类财务源、45 条字段候选、9 条字段报告、无来源表头明文、无 raw business values、WPS/红圈 scope 均为 false。
 
 ## 你现在不能信任什么
 
@@ -48,7 +49,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为真实业务源解析、事实层或报告已经实现。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
-- 不能认为 Stage 6 upload 代表正式经营报告、事实层、lineage 或差异关闭能力已经实现。
+- 不能认为 Stage 6 upload 或 S07-P1 finance adapter 代表正式经营报告、事实层、lineage 或差异关闭能力已经实现。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -57,4 +58,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S07-P1｜财务文件适配`；不得扩大到 WPS、红圈、UI、正式报告、事实层或自动接口。
+下一步只执行 `S07-P2｜WPS 文件适配`；不得扩大到红圈、Stage 7 review、UI、正式报告、事实层或自动接口。

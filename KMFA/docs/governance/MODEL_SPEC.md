@@ -1,6 +1,6 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s06-github-upload
+product_version: 0.1.0-s07p1-finance-file-adapter
 
 ## Scope
 

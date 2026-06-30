@@ -1,0 +1,45 @@
+{
+  "evidence_refs": {
+    "completion_record": "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md",
+    "field_candidates": "KMFA/metadata/schema_maps/finance_field_candidates.jsonl",
+    "field_report": "KMFA/stage_artifacts/S07_P1_finance_file_adapter/machine/finance_readonly_field_report.jsonl",
+    "phase_manifest": "KMFA/metadata/schema_maps/finance_file_adapter_manifest.json",
+    "source_registry": "KMFA/metadata/imports/finance_support_source_registry.json",
+    "test_results": "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
+  },
+  "generated_at": "2026-06-30T16:00:00+10:00",
+  "github_upload_allowed": false,
+  "next_phase": "S07-P2 WPS file adapter",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "source_header_plaintext_committed": false,
+    "xlsx_committed": false,
+    "zip_committed": false
+  },
+  "record_type": "s07_p1_phase_manifest",
+  "schema_version": "kmfa.stage_phase_manifest.v1",
+  "stage_phase": "S07-P1",
+  "stage_scope": {
+    "external_connector_included": false,
+    "facts_layer_write_included": false,
+    "finance_file_adapter": true,
+    "formal_report_generation_included": false,
+    "redcircle_scope_included": false,
+    "stage7_review_included": false,
+    "wps_scope_included": false
+  },
+  "summary": {
+    "field_candidate_count": 45,
+    "field_report_count": 9,
+    "source_category_count": 9,
+    "source_header_hash_count": 45,
+    "source_registry_count": 9
+  },
+  "validation_status": "phase_validator_passed_local_only"
+}

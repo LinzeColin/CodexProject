@@ -1,4 +1,4 @@
-version: "0.1.0-s06-github-upload"
+version: "0.1.0-s07p1-finance-file-adapter"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -19,6 +19,7 @@ active_formula_ids:
   - "FORM-KMFA-ZERO-DELTA-VALIDATOR-001"
   - "FORM-KMFA-CROSS-SOURCE-DIFF-QUEUE-001"
   - "FORM-KMFA-VALIDATION-EVIDENCE-OUTPUT-001"
+  - "FORM-KMFA-FINANCE-FILE-ADAPTER-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"
