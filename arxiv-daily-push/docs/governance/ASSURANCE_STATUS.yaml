@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC"
+as_of_event_id: "EVENT-20260630-ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE"
 source_snapshot_hash: "sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-07-01T00:41:25+10:00"
+snapshot_event_time: "2026-07-01T07:43:35+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PLT02_CONTROLLED_REAL_SECOND_DAY_CAPTURE_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -84,10 +84,10 @@ delivery_readiness:
   p0_p1_zero_proof_current_p1_findings: 0
   p0_p1_zero_proof_boundary: "V7.1 inherited baseline P0=8/P1=37 remains a historical contract baseline; current zero-proof artifact P0=0/P1=0 and validated independent final reviewer assignment are usable final-bundle inputs only and do not equal independent closure signoff, S2PLT04, or Stage2 production acceptance."
   s2plt04_completion_evidence_summary_status: "blocked"
-  s2plt04_completion_evidence_summary_state_hash: "ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f"
+  s2plt04_completion_evidence_summary_state_hash: "060cb7d5b3bcb73f484586de5733b4438e19d761621a59d581e0b1f22f1c4fba"
   s2plt04_completion_report_ready: false
   s2plt04_completion_report_written: false
-  s2plt04_completion_evidence_summary_blocking_reasons: "s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing"
+  s2plt04_completion_evidence_summary_blocking_reasons: "s2plt02_real_scheduler_proof_missing;s2plt02_terminal_delivery_proof_artifact_missing;s2plt03_resilience_terminal_proof_missing"
   s2plt02_capture_window_summary_status: "blocked"
   s2plt02_capture_window_summary_state_hash: "e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c"
   s2plt02_capture_window_cli_state_hash: "ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151"
@@ -106,7 +106,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
   status: "blocked"
-  reason: "The S2PLT02 capture wait guard now lists only parser-executable readonly commands, including generated-at terminal proof evidence inventory. Direct capture plan state_hash=aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1, wait guard state_hash=502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe, inventory command state_hash=26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c, final-bundle prerequisite state_hash=94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9, final readiness state_hash=6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f. S2PLT02 terminal delivery proof still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real scheduler proof, and reviewed terminal proof artifact."
+  reason: "S2PLT02 controlled foreground real SMTP catch-up captured the second real M1-M4 service day and eight real emails, with capture plan state_hash=05e8d88e9a09ec66acd59b03a8e77537e972e830eef9e1d3cca3edd9d3e1f3f7, final-bundle S2PLT02 summary state_hash=1de287b38fe4aafb862df33afefd6f2ea453c4f63d76dd3e40b10c4e8cd7bf0a, prerequisite state_hash=2663c6934972958d51f84f07f6ff4434ccbd00afa3cfe154db0453cdb724f7f5, final readiness state_hash=59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea. S2PLT02 still lacks real scheduler proof and reviewed terminal delivery proof artifact."
   acceptance_ids:
     - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"

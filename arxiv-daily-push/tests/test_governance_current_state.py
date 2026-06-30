@@ -34,6 +34,18 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
+        self.assertIn("S2PLT02_CONTROLLED_REAL_SECOND_DAY_CAPTURE_BLOCKED_NO_PRODUCTION", current_state)
+        self.assertIn("S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE", current_state)
+        self.assertIn("observed_real_delivery_days=2/2", current_state)
+        self.assertIn("observed_real_email_count=8/8", current_state)
+        self.assertIn("REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
+        self.assertIn("fb0283655054027872f51a4828f93926d4c829cae1f295fc50d4c7adfdfe103a", current_state)
+        self.assertIn("3791678d163e245b95d5ddf76b40a67fe17a369ad2a4f825545e7a9a6a48ea30", current_state)
+        self.assertIn("05e8d88e9a09ec66acd59b03a8e77537e972e830eef9e1d3cca3edd9d3e1f3f7", current_state)
+        self.assertIn("59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea", current_state)
+        self.assertIn("ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE-20260630.json", current_state)
+        self.assertIn("PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md", ledger)
+
         self.assertIn(
             "S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,

@@ -886,6 +886,32 @@ S2PLT02_PARTIAL_REAL_DELIVERY_REFS = {
     "M3": "smtp://message/smtp-delivery:590b7230463ff9f7",
     "M4": "smtp://message/smtp-delivery:7f815186af789297",
 }
+S2PLT02_CONTROLLED_REAL_DELIVERY_SERVICE_DATE = "2026-06-29"
+S2PLT02_CONTROLLED_REAL_DELIVERY_GENERATED_AT = "2026-06-30T21:43:35Z"
+S2PLT02_CONTROLLED_REAL_DELIVERY_RAW_MANIFEST_REF = (
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json"
+)
+S2PLT02_CONTROLLED_REAL_DELIVERY_NORMALIZED_MANIFEST_REF = (
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json"
+)
+S2PLT02_CONTROLLED_REAL_DELIVERY_RAW_MANIFEST_HASH = (
+    "fb0283655054027872f51a4828f93926d4c829cae1f295fc50d4c7adfdfe103a"
+)
+S2PLT02_CONTROLLED_REAL_DELIVERY_NORMALIZED_AT = "2026-06-30T21:43:35Z"
+S2PLT02_CONTROLLED_REAL_DELIVERY_EVIDENCE_REFS = (
+    S2PLT02_CONTROLLED_REAL_DELIVERY_RAW_MANIFEST_REF,
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
+)
+S2PLT02_CONTROLLED_REAL_DELIVERY_PRODUCTS = ("M1", "M2", "M3", "M4")
+S2PLT02_CONTROLLED_REAL_DELIVERY_HISTORICAL_PRODUCTS: tuple[str, ...] = ()
+S2PLT02_CONTROLLED_REAL_DELIVERY_NEWLY_SENT_PRODUCTS = ("M1", "M2", "M3", "M4")
+S2PLT02_CONTROLLED_REAL_DELIVERY_REFS = {
+    "M1": "smtp://message/smtp-delivery:1cfa77333913a286",
+    "M2": "smtp://message/smtp-delivery:6777a0c9d0de28d0",
+    "M3": "smtp://message/smtp-delivery:82d3f482dfc09666",
+    "M4": "smtp://message/smtp-delivery:831f734db653200e",
+}
 S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID = "adp-s2plt02-delivery-evidence-ledger-v1"
 S2PLT02_DELIVERY_EVIDENCE_LEDGER_SCOPE = "delivery_manifest_ledger_no_s2plt02_acceptance"
 S2PLT02_REAL_DELIVERY_MANIFEST_VALIDATION_SCOPE = (
@@ -919,6 +945,16 @@ S2PLT02_M4_WATERMARK_PROOF_RECORD_REF = (
 )
 S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT = "2026-06-28T01:26:41Z"
 S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID = "2026-06-28"
+S2PLT02_M4_WATERMARK_PROOF_RECORD_REF_20260629 = (
+    "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629.json"
+)
+S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT_20260629 = "2026-06-30T21:43:35Z"
+S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID_20260629 = "2026-06-29"
+S2PLT02_M4_WATERMARK_MESSAGE_IDS_20260629 = {
+    "M1": "<adp-1cc5a06a68316977de0b8145@arxiv-daily-push.local>",
+    "M2": "<adp-b5b2123371ea81d73bfb7265@arxiv-daily-push.local>",
+    "M3": "<adp-bb5ec3aba912d314620155d0@arxiv-daily-push.local>",
+}
 S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS = ("M1", "M2", "M3")
 S2PLT02_TERMINAL_READINESS_AUDIT_SCOPE = "s2plt02_terminal_readiness_audit_only_no_acceptance_claim"
 S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH = "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json"
@@ -1471,6 +1507,48 @@ def _default_s2plt02_delivery_manifest_records() -> list[dict[str, Any]]:
                 (S2PLT02_NORMALIZED_REAL_DELIVERY_MANIFEST_REF,)
                 + S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS
             ),
+        },
+        {
+            "manifest_ref": S2PLT02_CONTROLLED_REAL_DELIVERY_NORMALIZED_MANIFEST_REF,
+            "schema_version": 1,
+            "project_id": "arxiv-daily-push",
+            "task_id": "LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629",
+            "status": "pass",
+            "generated_at": S2PLT02_CONTROLLED_REAL_DELIVERY_GENERATED_AT,
+            "service_date": S2PLT02_CONTROLLED_REAL_DELIVERY_SERVICE_DATE,
+            "normalized_at": S2PLT02_CONTROLLED_REAL_DELIVERY_NORMALIZED_AT,
+            "normalization_task_id": "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION",
+            "normalization_scope": S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_SCOPE,
+            "normalized_from_manifest_ref": S2PLT02_CONTROLLED_REAL_DELIVERY_RAW_MANIFEST_REF,
+            "normalized_from_manifest_hash": S2PLT02_CONTROLLED_REAL_DELIVERY_RAW_MANIFEST_HASH,
+            "mail_delivery_summary": {
+                "planned_send_total": len(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+                "sent_mail_count": len(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+                "sent_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+                "historical_sent_mail_products": list(S2PLT02_CONTROLLED_REAL_DELIVERY_HISTORICAL_PRODUCTS),
+                "newly_sent_mail_products": list(S2PLT02_CONTROLLED_REAL_DELIVERY_NEWLY_SENT_PRODUCTS),
+                "delivery_ref_by_product": dict(S2PLT02_CONTROLLED_REAL_DELIVERY_REFS),
+            },
+            "real_smtp_sent": True,
+            "real_smtp_send_enabled": True,
+            "stage2_integrated_production_accepted": False,
+            "integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "scheduler_enabled": False,
+            "release_uploaded": False,
+            "production_restore_executed": False,
+            "production_queue_mutated": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+            "evidence_refs": list(
+                (S2PLT02_CONTROLLED_REAL_DELIVERY_NORMALIZED_MANIFEST_REF,)
+                + S2PLT02_CONTROLLED_REAL_DELIVERY_EVIDENCE_REFS
+            ),
         }
     ]
 
@@ -1949,11 +2027,15 @@ def build_s2plt02_real_proof_capture_readiness_state(
         blocking_reasons.append("s2plt02_terminal_delivery_proof_artifact_missing")
     if not real_scheduler_proven:
         blocking_reasons.append("real_scheduler_not_proven")
-    completed_next_actions = (
-        ["obtain_explicit_owner_authorization_for_real_smtp_scheduler"]
-        if real_proof_capture_authorized
-        else []
-    )
+    completed_next_actions: list[str] = []
+    if real_proof_capture_authorized:
+        completed_next_actions.append("obtain_explicit_owner_authorization_for_real_smtp_scheduler")
+    if second_real_delivery_day_present:
+        completed_next_actions.append("capture_second_consecutive_real_m1_m4_smtp_day")
+    if real_scheduler_proven:
+        completed_next_actions.append("capture_real_launchd_scheduler_proof")
+    if terminal_delivery_proof_artifact_present:
+        completed_next_actions.append("write_and_validate_s2plt02_terminal_delivery_proof_artifact")
     remaining_next_actions = [
         action
         for action in S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS
@@ -2060,8 +2142,8 @@ def validate_s2plt02_real_proof_capture_readiness_state(state: Mapping[str, Any]
     if state.get("real_proof_capture_authorized") is True:
         if "obtain_explicit_owner_authorization_for_real_smtp_scheduler" not in completed_next_actions:
             errors.append("authorized readiness must mark authorization action completed")
-    elif completed_next_actions:
-        errors.append("unauthorized readiness must not have completed next actions")
+    elif "obtain_explicit_owner_authorization_for_real_smtp_scheduler" in completed_next_actions:
+        errors.append("unauthorized readiness must not mark authorization action completed")
     expected_remaining = tuple(
         action
         for action in S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS
@@ -2069,8 +2151,12 @@ def validate_s2plt02_real_proof_capture_readiness_state(state: Mapping[str, Any]
     )
     if remaining_next_actions != expected_remaining:
         errors.append("remaining_next_actions must match required minus completed actions")
+    if state.get("second_real_delivery_day_present") is not True:
+        if "second_real_delivery_day_missing" not in state.get("blocking_reasons", []):
+            errors.append("second_real_delivery_day_missing blocker is required")
+    elif "second_real_delivery_day_missing" in state.get("blocking_reasons", []):
+        errors.append("second_real_delivery_day_present must not keep second-day missing blocker")
     for reason in (
-        "second_real_delivery_day_missing",
         "s2plt02_terminal_delivery_proof_artifact_missing",
         "real_scheduler_not_proven",
     ):
@@ -2738,43 +2824,34 @@ def validate_s2plt02_real_proof_capture_authorization_owner_packet_state(
 def _default_s2plt02_m4_watermark_proof_records() -> list[dict[str, Any]]:
     """Return committed non-secret M4 watermark proof records for the current ledger."""
 
-    refs = dict(S2PLT02_PARTIAL_REAL_DELIVERY_REFS)
-    generated_at = S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT
-    cycle_id = S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID
-    return [
-        {
-            "proof_ref": S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
+    def record(
+        *,
+        proof_ref: str,
+        service_date: str,
+        cycle_id: str,
+        generated_at: str,
+        refs: Mapping[str, str],
+        message_ids: Mapping[str, str],
+        source_evidence_refs: list[str],
+    ) -> dict[str, Any]:
+        return {
+            "proof_ref": proof_ref,
             "status": "pass",
-            "service_date": S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE,
+            "service_date": service_date,
             "cycle_id": cycle_id,
             "generated_at": generated_at,
             "mail_product_id": "M4",
             "m4_delivery_ref": refs["M4"],
             "terminal_mail_records": [
                 {
-                    "product_id": "M1",
+                    "product_id": product_id,
                     "cycle_id": cycle_id,
                     "status": "SENT",
                     "observed_at": generated_at,
-                    "delivery_ref": refs["M1"],
-                    "message_id": "<adp-419c5f9177debf426f5813dd@arxiv-daily-push.local>",
-                },
-                {
-                    "product_id": "M2",
-                    "cycle_id": cycle_id,
-                    "status": "SENT",
-                    "observed_at": generated_at,
-                    "delivery_ref": refs["M2"],
-                    "message_id": "<adp-f081f502a9706f56ffbf0830@arxiv-daily-push.local>",
-                },
-                {
-                    "product_id": "M3",
-                    "cycle_id": cycle_id,
-                    "status": "SENT",
-                    "observed_at": generated_at,
-                    "delivery_ref": refs["M3"],
-                    "message_id": "<adp-f90d3056a41a9ab3c9ba196f@arxiv-daily-push.local>",
-                },
+                    "delivery_ref": refs[product_id],
+                    "message_id": message_ids[product_id],
+                }
+                for product_id in S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS
             ],
             "watermark": {
                 "cycle_id": cycle_id,
@@ -2783,10 +2860,7 @@ def _default_s2plt02_m4_watermark_proof_records() -> list[dict[str, Any]]:
                 "m4_cycle_watermark": True,
                 "watermark_finalized_at": generated_at,
             },
-            "source_evidence_refs": [
-                "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
-                "governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json",
-            ],
+            "source_evidence_refs": source_evidence_refs,
             "integrated_production_accepted": False,
             "stage2_integrated_production_accepted": False,
             "daily_operation_enabled": False,
@@ -2802,6 +2876,36 @@ def _default_s2plt02_m4_watermark_proof_records() -> list[dict[str, Any]]:
             "v7_1_baseline_changed": False,
             "v7_2_contract_files_changed": False,
         }
+
+    return [
+        record(
+            proof_ref=S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
+            service_date=S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE,
+            cycle_id=S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID,
+            generated_at=S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT,
+            refs=S2PLT02_PARTIAL_REAL_DELIVERY_REFS,
+            message_ids={
+                "M1": "<adp-419c5f9177debf426f5813dd@arxiv-daily-push.local>",
+                "M2": "<adp-f081f502a9706f56ffbf0830@arxiv-daily-push.local>",
+                "M3": "<adp-f90d3056a41a9ab3c9ba196f@arxiv-daily-push.local>",
+            },
+            source_evidence_refs=[
+                "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+                "governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json",
+            ],
+        ),
+        record(
+            proof_ref=S2PLT02_M4_WATERMARK_PROOF_RECORD_REF_20260629,
+            service_date=S2PLT02_CONTROLLED_REAL_DELIVERY_SERVICE_DATE,
+            cycle_id=S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID_20260629,
+            generated_at=S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT_20260629,
+            refs=S2PLT02_CONTROLLED_REAL_DELIVERY_REFS,
+            message_ids=S2PLT02_M4_WATERMARK_MESSAGE_IDS_20260629,
+            source_evidence_refs=[
+                S2PLT02_CONTROLLED_REAL_DELIVERY_RAW_MANIFEST_REF,
+                S2PLT02_CONTROLLED_REAL_DELIVERY_NORMALIZED_MANIFEST_REF,
+            ],
+        ),
     ]
 
 
@@ -3364,11 +3468,11 @@ def build_s2plt02_partial_real_delivery_state() -> dict[str, Any]:
     state = {
         "status": "partial",
         "scope": S2PLT02_PARTIAL_REAL_DELIVERY_SCOPE,
-        "service_dates": list(ledger["service_dates"]),
+        "service_dates": [current_service_date],
         "generated_at": S2PLT02_PARTIAL_REAL_DELIVERY_GENERATED_AT,
         "planned_send_total": len(current_products),
-        "observed_natural_days": ledger["observed_natural_days"],
-        "observed_email_count": ledger["observed_email_count"],
+        "observed_natural_days": 1,
+        "observed_email_count": len(current_products),
         "sent_mail_products": list(current_products),
         "historical_sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_HISTORICAL_PRODUCTS),
         "newly_sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS),
@@ -4156,10 +4260,19 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         }
     ]
     runtime_capture_ready = authorization_valid and not runtime_capture_blockers
+    completed_runtime_actions: set[str] = set()
+    if authorization_valid:
+        completed_runtime_actions.add("obtain_explicit_owner_authorization_for_real_smtp_scheduler")
+    if "SECOND_REAL_DELIVERY_DAY" not in missing_inputs and "EIGHT_REAL_EMAILS" not in missing_inputs:
+        completed_runtime_actions.add("capture_second_consecutive_real_m1_m4_smtp_day")
+    if "REAL_SCHEDULER_PROOF" not in missing_inputs:
+        completed_runtime_actions.add("capture_real_launchd_scheduler_proof")
+    if "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT" not in missing_inputs:
+        completed_runtime_actions.add("write_and_validate_s2plt02_terminal_delivery_proof_artifact")
     remaining_runtime_actions = [
         action
         for action in S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS
-        if not (authorization_valid and action == "obtain_explicit_owner_authorization_for_real_smtp_scheduler")
+        if action not in completed_runtime_actions
     ]
     capture_steps = [
         {
@@ -8302,14 +8415,12 @@ def build_s2plt04_completion_evidence_audit_state(
             "terminal_readiness_audit_state_hash": s2plt02_terminal_audit["state_hash"],
             "terminal_readiness_precheck_report_hash": s2plt02_terminal_audit["precheck_report_hash"],
             "terminal_dependency_state": dict(s2plt02_terminal_audit["terminal_dependency_state"]),
-            "observed_natural_days": 1,
+            "observed_natural_days": int(s2plt02_terminal_audit.get("observed_natural_days") or 0),
             "required_natural_days": 2,
-            "observed_email_count": 4,
+            "observed_email_count": int(s2plt02_terminal_audit.get("observed_email_count") or 0),
             "required_email_count": 8,
-            "m4_watermark_correct": True,
-            "m4_watermark_proof_ref": (
-                "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
-            ),
+            "m4_watermark_correct": s2plt02_terminal_audit.get("m4_watermark_correct") is True,
+            "m4_watermark_proof_ref": str(s2plt02_terminal_audit.get("m4_watermark_proof_ref") or ""),
             "remaining_terminal_blockers": s2plt02_remaining_blockers,
         },
         "S2PLT03_RESILIENCE_PROOF": {

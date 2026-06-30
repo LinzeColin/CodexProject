@@ -241,15 +241,15 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
-        self.assertEqual(payload["observed_natural_days"], 1)
-        self.assertEqual(payload["observed_email_count"], 4)
+        self.assertEqual(payload["observed_natural_days"], 2)
+        self.assertEqual(payload["observed_email_count"], 8)
         self.assertTrue(payload["m4_watermark_correct"])
         self.assertEqual(
             payload["m4_watermark_proof_ref"],
             "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json",
         )
-        self.assertIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
-        self.assertIn("eight_real_emails_not_proven", payload["blocking_reasons"])
+        self.assertNotIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
+        self.assertNotIn("eight_real_emails_not_proven", payload["blocking_reasons"])
         self.assertIn("real_scheduler_not_proven", payload["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", payload["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", payload["blocking_reasons"])
@@ -532,7 +532,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "blocked")
         self.assertFalse(payload["terminal_delivery_credit"])
         self.assertFalse(payload["counts_toward_s2plt02_terminal_proof"])
-        self.assertFalse(payload["real_smtp_proven_for_terminal_pair"])
+        self.assertTrue(payload["real_smtp_proven_for_terminal_pair"])
         self.assertFalse(payload["real_scheduler_proven"])
         self.assertTrue(payload["all_required_launchagents_disabled"])
         self.assertTrue(payload["all_required_launchagents_loaded"])
@@ -546,10 +546,10 @@ class CliTests(unittest.TestCase):
             payload["scheduler_runtime_evidence_status"],
             "launchagents_loaded_but_disabled_not_terminal_scheduler_proof",
         )
-        self.assertEqual(payload["observed_terminal_email_count_credit"], 4)
+        self.assertEqual(payload["observed_terminal_email_count_credit"], 8)
         self.assertEqual(payload["required_email_count"], 8)
         self.assertIn("adp_launchagents_disabled_by_user_domain_override", payload["blocking_reasons"])
-        self.assertIn("second_consecutive_real_m1_m4_smtp_day_missing", payload["blocking_reasons"])
+        self.assertNotIn("second_consecutive_real_m1_m4_smtp_day_missing", payload["blocking_reasons"])
         self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", payload["blocking_reasons"])
 
     def test_validate_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self):
@@ -796,8 +796,8 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["s2plt02_accepted_by_artifact"])
         self.assertFalse(payload["terminal_delivery_proof_ready"])
         self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", payload["validation_errors"])
-        self.assertIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
-        self.assertIn("eight_real_emails_not_proven", payload["blocking_reasons"])
+        self.assertNotIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
+        self.assertNotIn("eight_real_emails_not_proven", payload["blocking_reasons"])
         self.assertIn("real_scheduler_not_proven", payload["blocking_reasons"])
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
@@ -824,8 +824,10 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["task_id"], "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY")
         self.assertFalse(payload["terminal_delivery_proof_ready"])
         self.assertFalse(payload["artifact_written"])
-        self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["missing_inputs"])
-        self.assertIn("EIGHT_REAL_EMAILS", payload["missing_inputs"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["ready_inputs"])
+        self.assertIn("EIGHT_REAL_EMAILS", payload["ready_inputs"])
+        self.assertNotIn("SECOND_REAL_DELIVERY_DAY", payload["missing_inputs"])
+        self.assertNotIn("EIGHT_REAL_EMAILS", payload["missing_inputs"])
         self.assertIn("REAL_SCHEDULER_PROOF", payload["missing_inputs"])
         self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", payload["missing_inputs"])
         self.assertFalse(payload["real_smtp_send_enabled"])
@@ -911,7 +913,10 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["safe_to_build_terminal_artifact"])
         self.assertFalse(payload["artifact_written"])
         self.assertIn("FIRST_REAL_DELIVERY_DAY", payload["ready_inputs"])
-        self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["missing_terminal_inputs"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["ready_inputs"])
+        self.assertIn("EIGHT_REAL_EMAILS", payload["ready_inputs"])
+        self.assertNotIn("SECOND_REAL_DELIVERY_DAY", payload["missing_terminal_inputs"])
+        self.assertNotIn("EIGHT_REAL_EMAILS", payload["missing_terminal_inputs"])
         self.assertEqual(payload["blocked_candidate_service_dates"], ["2026-06-29"])
         self.assertEqual(payload["daily_run_succeeded_service_dates"], ["2026-06-29"])
         self.assertEqual(payload["nonterminal_succeeded_dry_run_service_dates"], ["2026-06-29"])
@@ -978,7 +983,8 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["task_id"], "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN")
         self.assertFalse(payload["terminal_delivery_proof_ready"])
         self.assertFalse(payload["artifact_written"])
-        self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["blocked_by_missing_inputs"])
+        self.assertNotIn("SECOND_REAL_DELIVERY_DAY", payload["blocked_by_missing_inputs"])
+        self.assertNotIn("EIGHT_REAL_EMAILS", payload["blocked_by_missing_inputs"])
         self.assertIn("REAL_SCHEDULER_PROOF", payload["blocked_by_missing_inputs"])
         self.assertEqual(payload["authorization_artifact_status"], "pass")
         self.assertTrue(payload["real_proof_capture_authorized"])
@@ -989,8 +995,8 @@ class CliTests(unittest.TestCase):
         self.assertEqual(input_inventory_summary["status"], "blocked")
         self.assertEqual(input_inventory_summary["state_hash"], payload["input_inventory_state_hash"])
         self.assertEqual(input_inventory_summary["missing_inputs"], payload["blocked_by_missing_inputs"])
-        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 1)
-        self.assertEqual(input_inventory_summary["observed_real_email_count"], 4)
+        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 2)
+        self.assertEqual(input_inventory_summary["observed_real_email_count"], 8)
         self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
         artifact_validation_summary = payload["terminal_delivery_artifact_validation_summary"]
         self.assertEqual(artifact_validation_summary["status"], "blocked")
@@ -1478,8 +1484,8 @@ class CliTests(unittest.TestCase):
         )
         self.assertEqual(capture_summary["authorization_artifact_status"], "pass")
         self.assertFalse(capture_summary["runtime_capture_ready"])
-        self.assertEqual(capture_summary["observed_real_delivery_days"], 1)
-        self.assertEqual(capture_summary["observed_real_email_count"], 4)
+        self.assertEqual(capture_summary["observed_real_delivery_days"], 2)
+        self.assertEqual(capture_summary["observed_real_email_count"], 8)
         self.assertEqual(capture_summary["required_real_delivery_days"], 2)
         self.assertEqual(capture_summary["required_real_email_count"], 8)
         self.assertEqual(capture_summary["terminal_artifact_validation_status"], "blocked")
@@ -1500,7 +1506,6 @@ class CliTests(unittest.TestCase):
             capture_summary["terminal_artifact_blocking_reasons"],
         )
         self.assertEqual(capture_summary["remaining_runtime_actions"], [
-            "capture_second_consecutive_real_m1_m4_smtp_day",
             "capture_real_launchd_scheduler_proof",
             "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
         ])
@@ -1644,17 +1649,17 @@ class CliTests(unittest.TestCase):
             "s2plt02_real_proof_capture_authorization_missing",
             s2plt02_evidence["remaining_terminal_blockers"],
         )
-        self.assertEqual(s2plt02_evidence["observed_natural_days"], 1)
+        self.assertEqual(s2plt02_evidence["observed_natural_days"], 2)
         self.assertEqual(s2plt02_evidence["required_natural_days"], 2)
-        self.assertEqual(s2plt02_evidence["observed_email_count"], 4)
+        self.assertEqual(s2plt02_evidence["observed_email_count"], 8)
         self.assertEqual(s2plt02_evidence["required_email_count"], 8)
         self.assertTrue(s2plt02_evidence["m4_watermark_correct"])
         self.assertEqual(
             s2plt02_evidence["m4_watermark_proof_ref"],
             "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json",
         )
-        self.assertIn("two_consecutive_real_days_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
-        self.assertIn("eight_real_emails_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
+        self.assertNotIn("two_consecutive_real_days_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
+        self.assertNotIn("eight_real_emails_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertIn("real_scheduler_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
@@ -2049,7 +2054,6 @@ class CliTests(unittest.TestCase):
         self.assertEqual(
             payload["s2plt02_runtime_readiness_summary"]["remaining_next_actions"],
             [
-                "capture_second_consecutive_real_m1_m4_smtp_day",
                 "capture_real_launchd_scheduler_proof",
                 "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
             ],

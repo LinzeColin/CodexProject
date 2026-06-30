@@ -21,10 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 325
+- task_count: 326
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+
+## 2026-07-01 07:43:35 Australia/Sydney - S2PLT02 controlled real second-day capture
+
+- Task: `S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE`
+- Result: `blocked_after_evidence_capture_no_production`
+- Evidence: `governance/run_manifests/ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE-20260630.json`; `governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json`; `governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json`; `governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md`.
+- Current hashes: raw manifest `fb0283655054027872f51a4828f93926d4c829cae1f295fc50d4c7adfdfe103a`; M4 watermark proof `3791678d163e245b95d5ddf76b40a67fe17a369ad2a4f825545e7a9a6a48ea30`; capture plan `05e8d88e9a09ec66acd59b03a8e77537e972e830eef9e1d3cca3edd9d3e1f3f7`; final-bundle S2PLT02 summary `1de287b38fe4aafb862df33afefd6f2ea453c4f63d76dd3e40b10c4e8cd7bf0a`; wait guard `ca017acbdc5e84a9ff7f8d6f91bf2023831e5c25893306b389f8652a757851f3`; prerequisite plan `2663c6934972958d51f84f07f6ff4434ccbd00afa3cfe154db0453cdb724f7f5`; final readiness `59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea`; S2PLT04 audit `060cb7d5b3bcb73f484586de5733b4438e19d761621a59d581e0b1f22f1c4fba`.
+- Current proof counts: `observed_real_delivery_days=2/2`; `observed_real_email_count=8/8`; sent products `M1,M2,M3,M4`; remaining S2PLT02 blockers are real scheduler proof and reviewed terminal proof artifact.
+- Production boundary: No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 05:42:34 Australia/Sydney - S2PLT02 terminal capture readonly command executability sync
 

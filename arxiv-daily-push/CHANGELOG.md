@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-01 07:43:35 Australia/Sydney - S2PLT02 controlled real second-day capture
+
+- Recorded one owner-authorized foreground real SMTP catch-up for service date `2026-06-29` without launchd kickstart.
+- M1/M2/M3/M4 sent once; S2PLT02 observed real evidence is now `2/2` real delivery days and `8/8` real emails.
+- Remaining blockers are `REAL_SCHEDULER_PROOF` and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`; no scheduler, Release, restore, DAILY_OPERATION, or production acceptance was enabled.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE-20260630.json`, `governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json`, `governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json`, `governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629.json`, and `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md`.
+
+
 ## 2026-07-01 05:42:34 Australia/Sydney - S2PLT02 terminal capture readonly command executability sync
 
 - Updated `capture_wait_state_guard.allowed_readonly_commands` so every listed readonly command is parser-executable and returns blocked JSON.

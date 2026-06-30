@@ -1,0 +1,135 @@
+{
+  "schema_version": 2,
+  "project_id": "arxiv-daily-push",
+  "event_id": "EVENT-20260630-ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629",
+  "iteration_id": "ITER-20260630-ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629",
+  "task_id": "S2PLT02-M4-WATERMARK-PROOF-RECORD",
+  "task_ids": [
+    "S2PLT02-M4-WATERMARK-PROOF-RECORD",
+    "S2PLT02",
+    "ACC-S2PLT02-2D"
+  ],
+  "acceptance_ids": [
+    "ACC-S2PLT02-2D"
+  ],
+  "phase": "S2PL",
+  "generated_at": "2026-06-30T21:43:35Z",
+  "timestamp": "2026-06-30T21:43:35Z",
+  "fact_level": "EXTRACTED",
+  "status": "ready_m4_proof_s2plt02_blocked",
+  "result": "ready_m4_watermark_proof_second_day_s2plt02_blocked_no_acceptance",
+  "summary": "S2PLT02 M4 watermark proof record covers service date 2026-06-29 by binding M4 to same-cycle M1/M2/M3 terminal mail records. S2PLT02 remains blocked by real scheduler proof and terminal delivery proof artifact.",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "binding_rationale": "The proof record covers the second delivery-ledger service date and supports two-day/eight-email/M4 sub-gates, but it does not prove scheduler execution, does not write the terminal delivery proof artifact, and does not claim Stage 2 production acceptance.",
+  "proof_record": {
+    "proof_ref": "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629.json",
+    "status": "pass",
+    "service_date": "2026-06-29",
+    "cycle_id": "2026-06-29",
+    "generated_at": "2026-06-30T21:43:35Z",
+    "mail_product_id": "M4",
+    "m4_delivery_ref": "smtp://message/smtp-delivery:831f734db653200e",
+    "terminal_mail_records": [
+      {
+        "product_id": "M1",
+        "cycle_id": "2026-06-29",
+        "status": "SENT",
+        "observed_at": "2026-06-30T21:43:35Z",
+        "delivery_ref": "smtp://message/smtp-delivery:1cfa77333913a286",
+        "message_id": "<adp-1cc5a06a68316977de0b8145@arxiv-daily-push.local>"
+      },
+      {
+        "product_id": "M2",
+        "cycle_id": "2026-06-29",
+        "status": "SENT",
+        "observed_at": "2026-06-30T21:43:35Z",
+        "delivery_ref": "smtp://message/smtp-delivery:6777a0c9d0de28d0",
+        "message_id": "<adp-b5b2123371ea81d73bfb7265@arxiv-daily-push.local>"
+      },
+      {
+        "product_id": "M3",
+        "cycle_id": "2026-06-29",
+        "status": "SENT",
+        "observed_at": "2026-06-30T21:43:35Z",
+        "delivery_ref": "smtp://message/smtp-delivery:82d3f482dfc09666",
+        "message_id": "<adp-bb5ec3aba912d314620155d0@arxiv-daily-push.local>"
+      }
+    ],
+    "watermark": {
+      "cycle_id": "2026-06-29",
+      "status": "ready",
+      "m4_ready": true,
+      "m4_cycle_watermark": true,
+      "watermark_finalized_at": "2026-06-30T21:43:35Z"
+    },
+    "source_evidence_refs": [
+      "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json",
+      "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json"
+    ],
+    "integrated_production_accepted": false,
+    "stage2_integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "scheduler_enabled": false,
+    "release_uploaded": false,
+    "production_restore_executed": false,
+    "production_queue_mutated": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "proof_hash": "3791678d163e245b95d5ddf76b40a67fe17a369ad2a4f825545e7a9a6a48ea30",
+  "proof_ref_count": 2,
+  "proof_refs": [
+    "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json",
+    "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629.json"
+  ],
+  "covered_service_dates": [
+    "2026-06-28",
+    "2026-06-29"
+  ],
+  "missing_service_dates": [],
+  "m4_watermark_correct": true,
+  "observed_natural_days": 2,
+  "required_natural_days": 2,
+  "observed_email_count": 8,
+  "required_email_count": 8,
+  "real_smtp_evidence_present": true,
+  "scheduler_evidence_present": false,
+  "s2plt02_accepted": false,
+  "production_acceptance_claimed": false,
+  "stage2_integrated_production_accepted": false,
+  "integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent_by_this_task": false,
+  "real_smtp_send_enabled_by_this_task": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "production_queue_mutated": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "source_or_board_changed": false,
+  "mail_production_code_changed": false,
+  "runtime_behavior_changed": true,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629.json",
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json",
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "validation_errors": [],
+  "next_task": "CONTINUE_S2PLT02_WITH_REAL_SCHEDULER_PROOF_AND_TERMINAL_DELIVERY_PROOF_ARTIFACT"
+}

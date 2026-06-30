@@ -18,6 +18,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS,
     S2PLT02_M4_WATERMARK_PROOF_MODEL_ID,
     S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
+    S2PLT02_M4_WATERMARK_PROOF_RECORD_REF_20260629,
     S2PLT02_M4_WATERMARK_PROOF_SCOPE,
     S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS,
     S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
@@ -318,18 +319,19 @@ class Stage2FinalGateTests(unittest.TestCase):
     def test_s2plt02_delivery_evidence_ledger_tracks_current_real_manifest_without_acceptance(self) -> None:
         ledger = build_s2plt02_delivery_evidence_ledger_state()
 
-        self.assertEqual(ledger["status"], "partial")
+        self.assertEqual(ledger["status"], "ready")
         self.assertEqual(ledger["scope"], "delivery_manifest_ledger_no_s2plt02_acceptance")
         self.assertEqual(ledger["required_natural_days"], S2PLT02_REQUIRED_NATURAL_DAYS)
-        self.assertEqual(ledger["observed_natural_days"], 1)
+        self.assertEqual(ledger["observed_natural_days"], 2)
         self.assertEqual(ledger["required_email_count"], S2PLT02_REQUIRED_EMAIL_COUNT)
-        self.assertEqual(ledger["observed_email_count"], 4)
-        self.assertEqual(ledger["service_dates"], ["2026-06-28"])
+        self.assertEqual(ledger["observed_email_count"], 8)
+        self.assertEqual(ledger["service_dates"], ["2026-06-28", "2026-06-29"])
         self.assertEqual(ledger["products_by_service_date"]["2026-06-28"], list(S2PLT02_REQUIRED_MAIL_PRODUCTS))
+        self.assertEqual(ledger["products_by_service_date"]["2026-06-29"], list(S2PLT02_REQUIRED_MAIL_PRODUCTS))
         self.assertEqual(ledger["duplicate_email_count"], 0)
         self.assertEqual(ledger["duplicate_service_date_count"], 0)
         self.assertTrue(ledger["real_smtp_evidence_present"])
-        self.assertFalse(ledger["two_day_delivery_evidence_present"])
+        self.assertTrue(ledger["two_day_delivery_evidence_present"])
         self.assertFalse(ledger["s2plt02_accepted"])
         self.assertEqual(validate_s2plt02_delivery_evidence_ledger_state(ledger), [])
 
@@ -476,6 +478,21 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["terminal_delivery_proof_written"])
         self.assertFalse(state["daily_operation_enabled"])
 
+    def test_s2plt02_delivery_ledger_consumes_controlled_real_second_day(self) -> None:
+        ledger = build_s2plt02_delivery_evidence_ledger_state()
+
+        self.assertEqual(ledger["status"], "ready")
+        self.assertEqual(ledger["observed_natural_days"], 2)
+        self.assertEqual(ledger["observed_email_count"], 8)
+        self.assertTrue(ledger["two_day_delivery_evidence_present"])
+        self.assertEqual(ledger["service_dates"], ["2026-06-28", "2026-06-29"])
+        self.assertEqual(ledger["products_by_service_date"]["2026-06-29"], ["M1", "M2", "M3", "M4"])
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json",
+            ledger["evidence_refs"],
+        )
+        self.assertEqual(validate_s2plt02_delivery_evidence_ledger_state(ledger), [])
+
     def test_s2plt02_second_day_dry_run_audit_does_not_count_as_terminal_delivery(self) -> None:
         with TemporaryDirectory() as tmp_dir:
             state_dir = Path(tmp_dir)
@@ -545,17 +562,18 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(readiness["safe_to_collect_terminal_proof"])
         self.assertFalse(readiness["real_proof_capture_authorized"])
         self.assertTrue(readiness["all_required_launchagents_disabled"])
-        self.assertFalse(readiness["second_real_delivery_day_present"])
+        self.assertTrue(readiness["second_real_delivery_day_present"])
         self.assertFalse(readiness["terminal_delivery_proof_artifact_present"])
         self.assertEqual(readiness["dry_run_second_day_audit"]["dry_run_mail_count"], 4)
         self.assertEqual(readiness["dry_run_second_day_audit"]["real_sent_mail_count"], 0)
         self.assertIn("real_proof_capture_authorization_missing", readiness["blocking_reasons"])
         self.assertIn("required_launchagents_disabled", readiness["blocking_reasons"])
-        self.assertIn("second_real_delivery_day_missing", readiness["blocking_reasons"])
+        self.assertNotIn("second_real_delivery_day_missing", readiness["blocking_reasons"])
         self.assertIn("dry_run_second_day_not_terminal", readiness["blocking_reasons"])
         self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", readiness["blocking_reasons"])
         self.assertIn("real_scheduler_not_proven", readiness["blocking_reasons"])
         self.assertIn("obtain_explicit_owner_authorization_for_real_smtp_scheduler", readiness["required_next_actions"])
+        self.assertIn("capture_second_consecutive_real_m1_m4_smtp_day", readiness["completed_next_actions"])
         self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
 
     def test_s2plt02_real_proof_capture_readiness_consumes_live_authorization_artifact(self) -> None:
@@ -618,8 +636,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("real_proof_capture_authorization_missing", readiness["blocking_reasons"])
         self.assertIn("obtain_explicit_owner_authorization_for_real_smtp_scheduler", readiness["completed_next_actions"])
         self.assertNotIn("obtain_explicit_owner_authorization_for_real_smtp_scheduler", readiness["remaining_next_actions"])
-        self.assertIn("second_real_delivery_day_missing", readiness["blocking_reasons"])
+        self.assertNotIn("second_real_delivery_day_missing", readiness["blocking_reasons"])
         self.assertIn("real_scheduler_not_proven", readiness["blocking_reasons"])
+        self.assertIn("capture_second_consecutive_real_m1_m4_smtp_day", readiness["completed_next_actions"])
+        self.assertNotIn("capture_second_consecutive_real_m1_m4_smtp_day", readiness["remaining_next_actions"])
         self.assertFalse(readiness["safe_to_collect_terminal_proof"])
         self.assertFalse(readiness["real_smtp_send_enabled"])
         self.assertFalse(readiness["scheduler_install_enabled"])
@@ -960,8 +980,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(report["s2plt02_accepted_by_artifact"])
         self.assertFalse(report["terminal_delivery_proof_ready"])
         self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", report["validation_errors"])
-        self.assertIn("two_consecutive_real_days_not_proven", report["blocking_reasons"])
-        self.assertIn("eight_real_emails_not_proven", report["blocking_reasons"])
+        self.assertNotIn("two_consecutive_real_days_not_proven", report["blocking_reasons"])
+        self.assertNotIn("eight_real_emails_not_proven", report["blocking_reasons"])
         self.assertIn("real_scheduler_not_proven", report["blocking_reasons"])
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["integrated_production_accepted"])
@@ -978,8 +998,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(report["terminal_gates"]["real_smtp_proven"])
         self.assertTrue(report["terminal_gates"]["p0_zero"])
         self.assertTrue(report["terminal_gates"]["p1_zero"])
-        self.assertFalse(report["terminal_gates"]["two_consecutive_real_days"])
-        self.assertFalse(report["terminal_gates"]["eight_real_emails_sent"])
+        self.assertTrue(report["terminal_gates"]["two_consecutive_real_days"])
+        self.assertTrue(report["terminal_gates"]["eight_real_emails_sent"])
         self.assertFalse(report["terminal_gates"]["real_scheduler_proven"])
         self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
         self.assertNotIn("m4_watermark_not_proven", report["blocking_reasons"])
@@ -997,13 +1017,15 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(inventory["task_id"], "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY")
         self.assertFalse(inventory["terminal_delivery_proof_ready"])
         self.assertFalse(inventory["artifact_written"])
-        self.assertEqual(inventory["observed_real_delivery_days"], 1)
-        self.assertEqual(inventory["observed_real_email_count"], 4)
+        self.assertEqual(inventory["observed_real_delivery_days"], 2)
+        self.assertEqual(inventory["observed_real_email_count"], 8)
         self.assertIn("S2PLT01_TERMINAL_ACCEPTANCE", inventory["ready_inputs"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", inventory["ready_inputs"])
+        self.assertIn("EIGHT_REAL_EMAILS", inventory["ready_inputs"])
         self.assertIn("P0_P1_ZERO_PROOF", inventory["ready_inputs"])
         self.assertIn("M4_WATERMARK_PROOF", inventory["ready_inputs"])
-        self.assertIn("SECOND_REAL_DELIVERY_DAY", inventory["missing_inputs"])
-        self.assertIn("EIGHT_REAL_EMAILS", inventory["missing_inputs"])
+        self.assertNotIn("SECOND_REAL_DELIVERY_DAY", inventory["missing_inputs"])
+        self.assertNotIn("EIGHT_REAL_EMAILS", inventory["missing_inputs"])
         self.assertIn("REAL_SCHEDULER_PROOF", inventory["missing_inputs"])
         self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["missing_inputs"])
         self.assertEqual(
@@ -1037,9 +1059,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(inventory["artifact_written"])
         self.assertIn("S2PLT01_TERMINAL_ACCEPTANCE", inventory["ready_inputs"])
         self.assertIn("FIRST_REAL_DELIVERY_DAY", inventory["ready_inputs"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", inventory["ready_inputs"])
+        self.assertIn("EIGHT_REAL_EMAILS", inventory["ready_inputs"])
         self.assertIn("P0_P1_ZERO_PROOF", inventory["ready_inputs"])
-        self.assertIn("SECOND_REAL_DELIVERY_DAY", inventory["missing_terminal_inputs"])
-        self.assertIn("EIGHT_REAL_EMAILS", inventory["missing_terminal_inputs"])
+        self.assertNotIn("SECOND_REAL_DELIVERY_DAY", inventory["missing_terminal_inputs"])
+        self.assertNotIn("EIGHT_REAL_EMAILS", inventory["missing_terminal_inputs"])
         self.assertIn("REAL_SCHEDULER_PROOF", inventory["missing_terminal_inputs"])
         self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["missing_terminal_inputs"])
         self.assertEqual(inventory["usable_terminal_inputs"][0]["role"], "s2plt01_terminal_acceptance")
@@ -1071,10 +1095,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(plan["task_id"], "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN")
         self.assertFalse(plan["terminal_delivery_proof_ready"])
         self.assertFalse(plan["artifact_written"])
-        self.assertEqual(plan["observed_real_delivery_days"], 1)
-        self.assertEqual(plan["observed_real_email_count"], 4)
-        self.assertIn("SECOND_REAL_DELIVERY_DAY", plan["blocked_by_missing_inputs"])
-        self.assertIn("EIGHT_REAL_EMAILS", plan["blocked_by_missing_inputs"])
+        self.assertEqual(plan["observed_real_delivery_days"], 2)
+        self.assertEqual(plan["observed_real_email_count"], 8)
+        self.assertNotIn("SECOND_REAL_DELIVERY_DAY", plan["blocked_by_missing_inputs"])
+        self.assertNotIn("EIGHT_REAL_EMAILS", plan["blocked_by_missing_inputs"])
         self.assertIn("REAL_SCHEDULER_PROOF", plan["blocked_by_missing_inputs"])
         self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", plan["blocked_by_missing_inputs"])
         self.assertEqual(plan["authorization_artifact_status"], "pass")
@@ -1089,9 +1113,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(input_inventory_summary["state_hash"], plan["input_inventory_state_hash"])
         self.assertEqual(input_inventory_summary["ready_inputs"], plan["ready_inputs"])
         self.assertEqual(input_inventory_summary["missing_inputs"], plan["blocked_by_missing_inputs"])
-        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 1)
+        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 2)
         self.assertEqual(input_inventory_summary["required_real_delivery_days"], 2)
-        self.assertEqual(input_inventory_summary["observed_real_email_count"], 4)
+        self.assertEqual(input_inventory_summary["observed_real_email_count"], 8)
         self.assertEqual(input_inventory_summary["required_real_email_count"], 8)
         self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
         self.assertEqual(plan["terminal_artifact_validation_status"], "blocked")
@@ -1145,15 +1169,15 @@ class Stage2FinalGateTests(unittest.TestCase):
         capture_window_summary = plan["terminal_capture_window_audit_summary"]
         self.assertEqual(capture_window_summary["status"], "blocked")
         self.assertEqual(capture_window_summary["candidate_service_dates"], ["2026-06-29", "2026-06-30"])
-        self.assertEqual(capture_window_summary["dry_run_service_dates"], ["2026-06-29", "2026-06-30"])
+        self.assertEqual(capture_window_summary["dry_run_service_dates"], ["2026-06-30"])
         self.assertEqual(
             capture_window_summary["nonterminal_succeeded_dry_run_service_dates"],
-            ["2026-06-29", "2026-06-30"],
+            ["2026-06-30"],
         )
-        self.assertEqual(capture_window_summary["nonterminal_succeeded_dry_run_count"], 2)
-        self.assertEqual(capture_window_summary["dry_run_email_count"], 8)
-        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 0)
-        self.assertEqual(capture_window_summary["observed_terminal_email_count_credit"], 4)
+        self.assertEqual(capture_window_summary["nonterminal_succeeded_dry_run_count"], 1)
+        self.assertEqual(capture_window_summary["dry_run_email_count"], 4)
+        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 4)
+        self.assertEqual(capture_window_summary["observed_terminal_email_count_credit"], 8)
         self.assertFalse(capture_window_summary["terminal_delivery_credit"])
         self.assertFalse(capture_window_summary["counts_toward_s2plt02_terminal_proof"])
         self.assertEqual(
@@ -1162,11 +1186,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(plan["current_capture_window_real_delivery_days_added"], 0)
         self.assertEqual(plan["current_capture_window_real_email_count_added"], 0)
-        self.assertEqual(plan["current_capture_window_dry_run_email_count_rejected"], 8)
-        self.assertEqual(plan["terminal_proof_real_delivery_days_after_current_capture_window"], 1)
-        self.assertEqual(plan["terminal_proof_real_email_count_after_current_capture_window"], 4)
-        self.assertEqual(plan["remaining_real_delivery_days_for_terminal_proof"], 1)
-        self.assertEqual(plan["remaining_real_email_count_for_terminal_proof"], 4)
+        self.assertEqual(plan["current_capture_window_dry_run_email_count_rejected"], 4)
+        self.assertEqual(plan["terminal_proof_real_delivery_days_after_current_capture_window"], 2)
+        self.assertEqual(plan["terminal_proof_real_email_count_after_current_capture_window"], 8)
+        self.assertEqual(plan["remaining_real_delivery_days_for_terminal_proof"], 0)
+        self.assertEqual(plan["remaining_real_email_count_for_terminal_proof"], 0)
         self.assertEqual(
             capture_window_summary["scheduler_runtime_evidence_status"],
             "launchagent_runtime_state_unknown",
@@ -1613,10 +1637,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(proof["status"], "blocked")
         self.assertEqual(proof["scope"], S2PLT02_M4_WATERMARK_PROOF_SCOPE)
         self.assertEqual(tuple(proof["required_terminal_mail_products"]), S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS)
-        self.assertEqual(proof["required_service_dates"], ["2026-06-28"])
+        self.assertEqual(proof["required_service_dates"], ["2026-06-28", "2026-06-29"])
         self.assertEqual(proof["covered_service_dates"], [])
         self.assertFalse(proof["m4_watermark_correct"])
         self.assertIn("M4 watermark proof record is missing for 2026-06-28", proof["blocking_reasons"])
+        self.assertIn("M4 watermark proof record is missing for 2026-06-29", proof["blocking_reasons"])
         self.assertFalse(proof["s2plt02_accepted"])
         self.assertFalse(proof["production_acceptance_claimed"])
         self.assertEqual(validate_s2plt02_m4_watermark_proof_state(proof), [])
@@ -1626,8 +1651,14 @@ class Stage2FinalGateTests(unittest.TestCase):
 
         self.assertEqual(proof["model_id"], S2PLT02_M4_WATERMARK_PROOF_MODEL_ID)
         self.assertEqual(proof["status"], "ready")
-        self.assertEqual(proof["proof_refs"], [S2PLT02_M4_WATERMARK_PROOF_RECORD_REF])
-        self.assertEqual(proof["covered_service_dates"], ["2026-06-28"])
+        self.assertEqual(
+            proof["proof_refs"],
+            [
+                S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
+                S2PLT02_M4_WATERMARK_PROOF_RECORD_REF_20260629,
+            ],
+        )
+        self.assertEqual(proof["covered_service_dates"], ["2026-06-28", "2026-06-29"])
         self.assertEqual(proof["missing_service_dates"], [])
         self.assertTrue(proof["m4_watermark_correct"])
         self.assertFalse(proof["s2plt02_accepted"])
@@ -1639,9 +1670,16 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(ready["proof_ref"], S2PLT02_M4_WATERMARK_PROOF_RECORD_REF)
         self.assertEqual(ready["m4_delivery_ref"], "smtp://message/smtp-delivery:7f815186af789297")
         self.assertEqual(ready["terminal_mail_products"], ["M1", "M2", "M3"])
+        ready_day2 = proof["ready_proofs_by_service_date"]["2026-06-29"]
+        self.assertEqual(ready_day2["proof_ref"], S2PLT02_M4_WATERMARK_PROOF_RECORD_REF_20260629)
+        self.assertEqual(ready_day2["m4_delivery_ref"], "smtp://message/smtp-delivery:831f734db653200e")
+        self.assertEqual(ready_day2["terminal_mail_products"], ["M1", "M2", "M3"])
 
     def test_s2plt02_m4_watermark_proof_accepts_explicit_same_day_proof_without_acceptance(self) -> None:
-        ledger = build_s2plt02_delivery_evidence_ledger_state()
+        full_ledger = build_s2plt02_delivery_evidence_ledger_state()
+        ledger = build_s2plt02_delivery_evidence_ledger_state(
+            delivery_manifests=[full_ledger["source_manifests"][0]]
+        )
         cycle_id = "adp:2026-06-28:EMAIL_LEARNING_V1:M1-M4"
         refs = ledger["delivery_ref_by_service_date"]["2026-06-28"]
         proof_record = {
@@ -1679,7 +1717,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             "v7_2_contract_files_changed": False,
         }
 
-        proof = build_s2plt02_m4_watermark_proof_state(watermark_proofs=[proof_record])
+        proof = build_s2plt02_m4_watermark_proof_state(
+            watermark_proofs=[proof_record],
+            delivery_ledger=ledger,
+        )
 
         self.assertEqual(proof["status"], "ready")
         self.assertEqual(proof["covered_service_dates"], ["2026-06-28"])
@@ -1721,14 +1762,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(state["status"], "blocked")
         self.assertEqual(tuple(state["required_evidence"]), S2PLT02_REQUIRED_EVIDENCE)
         self.assertEqual(state["required_natural_days"], S2PLT02_REQUIRED_NATURAL_DAYS)
-        self.assertEqual(state["observed_natural_days"], 1)
+        self.assertEqual(state["observed_natural_days"], 2)
         self.assertEqual(state["required_email_count"], S2PLT02_REQUIRED_EMAIL_COUNT)
-        self.assertEqual(state["observed_email_count"], 4)
+        self.assertEqual(state["observed_email_count"], 8)
         self.assertEqual(tuple(state["required_mail_products"]), S2PLT02_REQUIRED_MAIL_PRODUCTS)
         self.assertEqual(tuple(state["observed_mail_products"]), S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS)
         self.assertFalse(state["available_evidence"]["S2PLT01_ACCEPTED"])
-        self.assertFalse(state["available_evidence"]["TWO_CONSECUTIVE_REAL_NATURAL_DAYS"])
-        self.assertFalse(state["available_evidence"]["EIGHT_REAL_EMAILS_SENT"])
+        self.assertTrue(state["available_evidence"]["TWO_CONSECUTIVE_REAL_NATURAL_DAYS"])
+        self.assertTrue(state["available_evidence"]["EIGHT_REAL_EMAILS_SENT"])
         self.assertTrue(state["available_evidence"]["NO_DUPLICATE_EMAILS"])
         self.assertFalse(state["available_evidence"]["REAL_SCHEDULER_PROVEN"])
         self.assertTrue(state["available_evidence"]["REAL_SMTP_PROVEN"])
@@ -1736,8 +1777,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["available_evidence"]["M4_WATERMARK_CORRECT"])
         self.assertEqual(state["m4_watermark_proof"]["status"], "ready")
         self.assertEqual(state["partial_real_delivery_evidence"]["status"], "partial")
-        self.assertEqual(state["delivery_evidence_ledger"]["status"], "partial")
-        self.assertFalse(state["delivery_evidence_ledger"]["two_day_delivery_evidence_present"])
+        self.assertEqual(state["delivery_evidence_ledger"]["status"], "ready")
+        self.assertTrue(state["delivery_evidence_ledger"]["two_day_delivery_evidence_present"])
 
     def test_s2plt02_live_2d_precheck_consumes_committed_zero_proof_without_acceptance(self) -> None:
         report = build_s2plt02_live_2d_precheck_report(generated_at="2026-06-26T19:00:00+10:00")
@@ -1748,11 +1789,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
         for flag in S2PLT02_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
-        for reason in (
-            "two_consecutive_real_days_not_proven",
-            "eight_real_emails_not_proven",
-            "real_scheduler_not_proven",
-        ):
+        for reason in ("real_scheduler_not_proven",):
             self.assertIn(reason, report["blocking_reasons"])
         self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
@@ -1760,12 +1797,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("m4_watermark_not_proven", report["blocking_reasons"])
         self.assertNotIn("real_smtp_not_proven", report["blocking_reasons"])
         self.assertTrue(report["gates"]["s2plt01_accepted"])
+        self.assertTrue(report["gates"]["two_consecutive_real_days"])
+        self.assertTrue(report["gates"]["eight_real_emails_sent"])
         self.assertFalse(report["gates"]["real_scheduler_proven"])
         self.assertTrue(report["gates"]["real_smtp_proven"])
         self.assertTrue(report["gates"]["p0_zero"])
         self.assertTrue(report["gates"]["p1_zero"])
-        self.assertEqual(report["evidence"]["observed_natural_days"], 1)
-        self.assertEqual(report["evidence"]["observed_email_count"], 4)
+        self.assertEqual(report["evidence"]["observed_natural_days"], 2)
+        self.assertEqual(report["evidence"]["observed_email_count"], 8)
         self.assertEqual(validate_s2plt02_live_2d_precheck_report(report), [])
 
         tampered = dict(report)
@@ -5007,7 +5046,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(s2plt02["terminal_readiness_audit_status"], "blocked")
         self.assertEqual(
             s2plt02["terminal_readiness_audit_state_hash"],
-            "a54814e6df000eb20fc8c0caf5b680c8b71bbb59721ea6bf41644afd6af1665b",
+            "80057f8d0985940275feb2f3cd868f60f664dadba3f2ded152456b5d0f5670a9",
         )
         self.assertTrue(s2plt02["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
         self.assertTrue(s2plt02["terminal_dependency_state"]["P0_ZERO"])
@@ -5668,8 +5707,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(capture_summary["authorization_artifact_status"], "pass")
         self.assertFalse(capture_summary["runtime_capture_ready"])
-        self.assertEqual(capture_summary["observed_real_delivery_days"], 1)
-        self.assertEqual(capture_summary["observed_real_email_count"], 4)
+        self.assertEqual(capture_summary["observed_real_delivery_days"], 2)
+        self.assertEqual(capture_summary["observed_real_email_count"], 8)
         self.assertEqual(capture_summary["required_real_delivery_days"], 2)
         self.assertEqual(capture_summary["required_real_email_count"], 8)
         self.assertEqual(capture_summary["terminal_artifact_validation_status"], "blocked")
@@ -5687,13 +5726,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             capture_summary["terminal_artifact_blocking_reasons"],
         )
         self.assertEqual(capture_summary["blocked_by_missing_inputs"], [
-            "SECOND_REAL_DELIVERY_DAY",
-            "EIGHT_REAL_EMAILS",
             "REAL_SCHEDULER_PROOF",
             "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT",
         ])
         self.assertEqual(capture_summary["remaining_runtime_actions"], [
-            "capture_second_consecutive_real_m1_m4_smtp_day",
             "capture_real_launchd_scheduler_proof",
             "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
         ])
@@ -5702,14 +5738,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("blocked_candidate_inputs_present", capture_summary["runtime_capture_blockers"])
         capture_window_summary = capture_summary["terminal_capture_window_audit_summary"]
         self.assertEqual(capture_window_summary["status"], "blocked")
-        self.assertEqual(capture_window_summary["dry_run_service_dates"], ["2026-06-29", "2026-06-30"])
+        self.assertEqual(capture_window_summary["dry_run_service_dates"], ["2026-06-30"])
         self.assertEqual(
             capture_window_summary["nonterminal_succeeded_dry_run_service_dates"],
-            ["2026-06-29", "2026-06-30"],
+            ["2026-06-30"],
         )
-        self.assertEqual(capture_window_summary["dry_run_email_count"], 8)
-        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 0)
-        self.assertEqual(capture_window_summary["observed_terminal_email_count_credit"], 4)
+        self.assertEqual(capture_window_summary["dry_run_email_count"], 4)
+        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 4)
+        self.assertEqual(capture_window_summary["observed_terminal_email_count_credit"], 8)
         self.assertFalse(capture_window_summary["terminal_delivery_credit"])
         self.assertFalse(capture_window_summary["counts_toward_s2plt02_terminal_proof"])
         self.assertEqual(
@@ -5718,11 +5754,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(capture_summary["current_capture_window_real_delivery_days_added"], 0)
         self.assertEqual(capture_summary["current_capture_window_real_email_count_added"], 0)
-        self.assertEqual(capture_summary["current_capture_window_dry_run_email_count_rejected"], 8)
-        self.assertEqual(capture_summary["terminal_proof_real_delivery_days_after_current_capture_window"], 1)
-        self.assertEqual(capture_summary["terminal_proof_real_email_count_after_current_capture_window"], 4)
-        self.assertEqual(capture_summary["remaining_real_delivery_days_for_terminal_proof"], 1)
-        self.assertEqual(capture_summary["remaining_real_email_count_for_terminal_proof"], 4)
+        self.assertEqual(capture_summary["current_capture_window_dry_run_email_count_rejected"], 4)
+        self.assertEqual(capture_summary["terminal_proof_real_delivery_days_after_current_capture_window"], 2)
+        self.assertEqual(capture_summary["terminal_proof_real_email_count_after_current_capture_window"], 8)
+        self.assertEqual(capture_summary["remaining_real_delivery_days_for_terminal_proof"], 0)
+        self.assertEqual(capture_summary["remaining_real_email_count_for_terminal_proof"], 0)
         self.assertEqual(
             capture_summary["required_smtp_secret_env_names"],
             ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
@@ -6240,7 +6276,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "bb901dfd9fdb65683c0d76ca413ba1d9df853169bc63e7c9d37ef1ebc343a723",
+            "1de287b38fe4aafb862df33afefd6f2ea453c4f63d76dd3e40b10c4e8cd7bf0a",
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
@@ -6252,7 +6288,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
             wait_guard["current_wait_state"],
         )
-        self.assertEqual(wait_guard["state_hash"], "a6f7e782a8e62a223087ee08ffebbf444c46909ef096e878849af079400abc47")
+        self.assertEqual(wait_guard["state_hash"], "ca017acbdc5e84a9ff7f8d6f91bf2023831e5c25893306b389f8652a757851f3")
         self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(
             wait_guard["allowed_readonly_commands"][0],
@@ -6303,8 +6339,8 @@ class Stage2FinalGateTests(unittest.TestCase):
             input_inventory_summary["missing_inputs"],
             state["s2plt02_terminal_delivery_capture_plan_summary"]["blocked_by_missing_inputs"],
         )
-        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 1)
-        self.assertEqual(input_inventory_summary["observed_real_email_count"], 4)
+        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 2)
+        self.assertEqual(input_inventory_summary["observed_real_email_count"], 8)
         self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
         artifact_validation_summary = state["s2plt02_terminal_delivery_capture_plan_summary"][
             "terminal_delivery_artifact_validation_summary"
@@ -6336,37 +6372,37 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_terminal_delivery_capture_plan_summary"]["terminal_capture_window_audit_summary"][
                 "nonterminal_succeeded_dry_run_service_dates"
             ],
-            ["2026-06-29", "2026-06-30"],
+            ["2026-06-30"],
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["terminal_capture_window_audit_summary"][
                 "dry_run_email_count"
             ],
-            8,
+            4,
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"][
                 "terminal_proof_real_delivery_days_after_current_capture_window"
             ],
-            1,
+            2,
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"][
                 "terminal_proof_real_email_count_after_current_capture_window"
             ],
-            4,
+            8,
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"][
                 "remaining_real_delivery_days_for_terminal_proof"
             ],
-            1,
+            0,
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"][
                 "remaining_real_email_count_for_terminal_proof"
             ],
-            4,
+            0,
         )
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_env_ready"])
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_values_logged"])
@@ -6385,7 +6421,6 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(
             state["s2plt02_runtime_readiness_summary"]["remaining_next_actions"],
             [
-                "capture_second_consecutive_real_m1_m4_smtp_day",
                 "capture_real_launchd_scheduler_proof",
                 "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
             ],

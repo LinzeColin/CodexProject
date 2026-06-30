@@ -144,6 +144,14 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
 
+        self.assertIn("REQ-ADP-V7-072-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE", page)
+        self.assertIn("S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE", page)
+        self.assertIn("ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE-20260630.json", page)
+        self.assertIn("PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md", page)
+        self.assertIn("blocked_after_evidence_capture_no_production", page)
+        self.assertIn("observed_real_delivery_days=2/2", page)
+        self.assertIn("observed_real_email_count=8/8", page)
+
         self.assertIn("REQ-ADP-V7-071-S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC", page)
         self.assertIn(
