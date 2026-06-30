@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S8"
-current_phase_id: "S8PC"
-current_task_id: "S8PCT01"
-next_gate_id: "KMFA-S08-P3-GATE"
+current_phase_id: "S8REV"
+current_task_id: "KMFA-S08-STAGE-REVIEW-20260630"
+next_gate_id: "KMFA-S08-STAGE-REVIEW-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -631,10 +631,10 @@ stages:
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_upload_manifest.json"
   - stage_id: "S8"
     name: "业务实体与项目身份匹配"
-    status: "in_progress_local_only_s08p2_completed"
+    status: "completed_local_only_pending_stage_review"
     estimated_hours: 3
-    estimated_pct: 66.67
-    current_result: "S08-P1 项目组合键和 S08-P2 业务实体模型已本地验证完成；下一门禁仅为 S08-P3 匹配质量测试。"
+    estimated_pct: 100
+    current_result: "S08-P1 项目组合键、S08-P2 业务实体模型和 S08-P3 匹配质量测试已本地验证完成；下一门禁仅为 Stage 8 整体复审。"
     evidence_refs:
       - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md"
       - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
@@ -642,6 +642,9 @@ stages:
       - "KMFA/stage_artifacts/S08_P2_business_entity_model/human/s08_p2_completion_record.md"
       - "KMFA/stage_artifacts/S08_P2_business_entity_model/human/test_results.md"
       - "KMFA/stage_artifacts/S08_P2_business_entity_model/machine/s08_p2_manifest.json"
+      - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/s08_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/test_results.md"
+      - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/machine/s08_p3_manifest.json"
   - stage_id: "S9"
     name: "项目成本计算引擎"
     status: "planned"
