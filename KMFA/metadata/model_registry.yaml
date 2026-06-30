@@ -1,4 +1,4 @@
-version: "0.1.0-s12p2-impact-preview"
+version: "0.1.0-s12p3-rerun-mechanism"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -36,6 +36,7 @@ active_formula_ids:
   - "FORM-KMFA-PROJECT-COST-PAGE-001"
   - "FORM-KMFA-MANUAL-RESOLUTION-EVENT-001"
   - "FORM-KMFA-MANUAL-IMPACT-PREVIEW-001"
+  - "FORM-KMFA-MANUAL-RERUN-MECHANISM-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

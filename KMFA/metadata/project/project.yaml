@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s12p2-impact-preview"
+version: "0.1.0-s12p3-rerun-mechanism"
 current_stage: "S12"
-current_phase: "S12-P3"
+current_phase: "S12-STAGE-REVIEW"
 current_phase_status: "pending"
-current_stage_status: "s12p2_completed_validated_local_only_s12_p3_pending"
+current_stage_status: "s12p3_completed_validated_local_only_stage12_review_pending"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -75,6 +75,14 @@ machine_plane:
   - "stage_artifacts/S12_P2_manual_impact_preview/human/test_results.md"
   - "stage_artifacts/S12_P2_manual_impact_preview/machine/s12_p2_manifest.json"
   - "stage_artifacts/S12_P2_manual_impact_preview/exports/html/kmfa_manual_impact_preview.html"
+  - "metadata/lineage/manual_rerun_manifest.json"
+  - "metadata/lineage/manual_rerun_cache_invalidations.jsonl"
+  - "metadata/lineage/manual_rerun_steps.jsonl"
+  - "metadata/lineage/manual_rerun_consistency_checks.jsonl"
+  - "stage_artifacts/S12_P3_manual_rerun_mechanism/human/s12_p3_completion_record.md"
+  - "stage_artifacts/S12_P3_manual_rerun_mechanism/human/test_results.md"
+  - "stage_artifacts/S12_P3_manual_rerun_mechanism/machine/s12_p3_manifest.json"
+  - "stage_artifacts/S12_P3_manual_rerun_mechanism/exports/html/kmfa_manual_rerun_mechanism.html"
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
@@ -283,9 +291,11 @@ upload_policy:
   stage11_blocker: "none"
   stage12_phase_completion_upload_allowed: false
   stage12_s12p1_completed_validated_local_only: true
+  stage12_s12p2_completed_validated_local_only: true
+  stage12_s12p3_completed_validated_local_only: true
   stage12_review_required_before_upload: true
   stage12_review_passed: false
   stage12_uploaded_to_github_main: false
-  stage12_blocker: "S12-P2 and S12-P3 not started; Stage 12 review not performed"
+  stage12_blocker: "Stage 12 review and GitHub upload not performed"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_s12_p2_next"
+  upload_surface: "project_level_kmfa_worktree_stage12_review_next"
