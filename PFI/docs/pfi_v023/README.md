@@ -59,13 +59,19 @@ v0.1 习惯入口不得再作为同层一级入口堆叠，只能作为兼容路
 
 Stage 0 候选通过后，仍需用户确认本合同。未确认前不得进入 Stage 1。Stage 1 才处理 app/localhost/frontend bundle 一致性。
 
-## Stage 2 Phase 1 状态
+## Stage 1-3 Group Review 状态
 
-Stage 2 每次 run work 最多只解决一个 phase。当前 Phase 1 只完成任务包恢复与防幻觉门：
+当前本机 Downloads 中已存在 v0.2.3 roadmap 和 taskpack：
 
-- 真实检查当前 GitHub main 和新电脑本机输入路径。
-- 未找到 Stage 0 记录的 `PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt` 和 `PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip`。
-- 不得把 v0.2.1.1、v0.2.2 或旧 PFI V0.2 的 Stage 2 当作 v0.2.3 Stage 2 任务包。
-- 缺少真实 v0.2.3 Stage 2 任务包时，不做页面重建、路由修改、数据计算、报告生成或 app 重装。
+- `/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt`
+- `/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip`
+- `/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html`
 
-记录文件：`STAGE2_PHASE1_TASKPACK_RECOVERY.md`。
+第二阶段第一组整体复审对标 `pfi_v023_phase1_human_product_experience_preview.html`，
+覆盖 Stage 1、Stage 2、Stage 3：
+
+- Stage 1：当前 localhost app 入口加载当前 checkout 的 PFI shell，并暴露 Stage 1 metadata。
+- Stage 2：缺少账户、现金、持仓真实 read model 时，首页不显示 `CNY 0.00`；只显示真实缺失状态。
+- Stage 3：正式一级入口为 10 个，包含 `市场与研究`，旧入口只保留兼容 route/命令入口。
+
+记录文件：`STAGE1_3_GROUP_REVIEW.md`。

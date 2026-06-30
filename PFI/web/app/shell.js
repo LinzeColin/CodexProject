@@ -1952,8 +1952,8 @@ function applyOperationalReadModel(model) {
   const investment = model.investment || {};
   const accounts = model.accounts || {};
   const consumption = model.consumption || {};
-  const hasInvestment = Number.isFinite(Number(investment.market_value_cny));
-  const hasAccounts = Number.isFinite(Number(accounts.net_worth_cny));
+  const hasInvestment = hasRealInvestmentReadModel(investment);
+  const hasAccounts = hasRealAccountsReadModel(accounts);
   const hasConsumption = consumption.has_real_transactions === true;
   if (hasInvestment && WORKSPACES.investment) {
     WORKSPACES.investment.cards = [
@@ -1999,6 +1999,28 @@ function applyOperationalReadModel(model) {
       ["数据源状态", hasConsumption ? "已导入" : "等待上传", hasConsumption ? "真实流水可读取" : "进入数据源与上传处理"],
     ];
   }
+}
+
+function trendHasRealPoints(trend) {
+  const periods = Array.isArray(trend?.periods) ? trend.periods : [];
+  const series = Array.isArray(trend?.series) ? trend.series : [];
+  return (
+    periods.length > 0 &&
+    series.some((item) => Array.isArray(item.values) && item.values.some((value) => Number.isFinite(Number(value))))
+  );
+}
+
+function hasRealAccountsReadModel(accounts) {
+  if (trendHasRealPoints(runtimeTrendState?.accounts)) return true;
+  const snapshotCount = Number(runtimeStage4SyncState?.sqlite?.snapshot_count || 0);
+  return snapshotCount > 0 && Number.isFinite(Number(accounts?.net_worth_cny));
+}
+
+function hasRealInvestmentReadModel(investment) {
+  if (trendHasRealPoints(runtimeTrendState?.investment)) return true;
+  const holdingCount = Number(investment?.holding_count || 0);
+  const snapshotCount = Number(runtimeStage4SyncState?.sqlite?.snapshot_count || 0);
+  return (holdingCount > 0 || snapshotCount > 0) && Number.isFinite(Number(investment?.market_value_cny));
 }
 
 function currentContext() {
@@ -5095,15 +5117,17 @@ function localizeStatus(status) {
 }
 
 function toCnyAmount(value, sourceCurrency = "CNY") {
-  const numeric = Number(value || 0);
-  if (!Number.isFinite(numeric)) return 0;
+  if (value === null || value === undefined || value === "") return null;
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return null;
   const rate = FX_TO_CNY[String(sourceCurrency || "CNY").trim().toUpperCase()] || 1;
   return numeric * rate;
 }
 
 function formatCnyAmount(value) {
-  const numeric = Number(value || 0);
-  if (!Number.isFinite(numeric)) return "CNY 0.00";
+  if (value === null || value === undefined || value === "") return "暂无真实数据";
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return "暂无真实数据";
   return `CNY ${numeric.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 

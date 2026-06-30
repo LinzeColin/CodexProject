@@ -393,6 +393,17 @@ console.log(JSON.stringify({
         self.assertIn("未挂载真实个人财务数据源", payload["html"])
         self.assertNotIn("CNY 0.00", payload["html"])
 
+    def test_web_shell_runtime_read_model_does_not_turn_missing_accounts_or_holdings_into_zero(self) -> None:
+        shell = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
+
+        self.assertIn("function trendHasRealPoints", shell)
+        self.assertIn("function hasRealAccountsReadModel", shell)
+        self.assertIn("function hasRealInvestmentReadModel", shell)
+        self.assertNotIn("const hasAccounts = Number.isFinite(Number(accounts.net_worth_cny));", shell)
+        self.assertNotIn("const hasInvestment = Number.isFinite(Number(investment.market_value_cny));", shell)
+        self.assertNotIn("const numeric = Number(value || 0);", shell)
+        self.assertIn('return "暂无真实数据";', shell)
+
     def test_javascript_page_gate_renders_outdated_snapshot_date_without_zero_fallback(self) -> None:
         node = node_executable()
         if not node:

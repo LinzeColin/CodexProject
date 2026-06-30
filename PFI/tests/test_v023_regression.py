@@ -208,6 +208,51 @@ class TestV023Stage11Phase111Regression(unittest.TestCase):
             self.assertTrue(evidence["acceptance_checks"][key], key)
 
 
+class TestV023Stage1To3GroupReview(unittest.TestCase):
+    def test_stage1_to_3_group_review_evidence_benchmarks_against_phase1_preview(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "group_reviews" / "stage_1_3"
+        evidence_path = review_dir / "evidence.json"
+        benchmark_path = review_dir / "preview_benchmark" / "comparison_raw.json"
+        changed_files_path = review_dir / "changed_files.txt"
+
+        for path in (evidence_path, benchmark_path, changed_files_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage1To3GroupReviewEvidenceV1")
+        self.assertEqual(evidence["review_id"], "V023-S1-S3-GROUP-REVIEW")
+        self.assertEqual(evidence["status"], "review_pass")
+        self.assertEqual(evidence["review_scope"], ["Stage 1", "Stage 2", "Stage 3"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(benchmark["schema"], "PFIV023Stage1To3PreviewBenchmarkV1")
+
+        preview = benchmark["targets"]["preview_desktop"]
+        current_static = benchmark["targets"]["current_static_desktop"]
+        localhost_frame = next(frame for frame in benchmark["targets"]["localhost_desktop"]["frames"] if frame.get("has_pfi_shell"))
+
+        self.assertEqual(preview["nav_count"], 10)
+        self.assertEqual(current_static["primary_count"], 10)
+        self.assertEqual(localhost_frame["primary_count"], 10)
+        self.assertEqual(localhost_frame["primary"], EXPECTED_PRIMARY_NAV)
+        self.assertTrue(localhost_frame["has_stage1_metadata"])
+
+        metrics = {item["label"]: item for item in localhost_frame["metrics"]}
+        for label in ("净资产", "现金余额", "投资市值"):
+            self.assertEqual(metrics[label]["value"], "暂无真实数据", label)
+            self.assertNotEqual(metrics[label]["value"], "CNY 0.00", label)
+        self.assertEqual(metrics["本月支出"]["value"], "CNY 7,153.98")
+        self.assertEqual(metrics["待复核交易"]["value"], "406")
+
+        self.assertTrue(evidence["acceptance_checks"]["preview_nav_count_matches"])
+        self.assertTrue(evidence["acceptance_checks"]["current_app_nav_count_matches"])
+        self.assertTrue(evidence["acceptance_checks"]["stage2_no_fake_zero_fix_verified"])
+        self.assertTrue(evidence["acceptance_checks"]["stage1_current_worktree_binding_verified"])
+        self.assertTrue(evidence["known_historical_stage1_path_is_reference_only"])
+
+
 class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
     def test_t1121_phase112_evidence_records_readme_candidate_boundary(self) -> None:
         evidence = read_json("reports/pfi_v023/stage_11/phase_11_2/evidence.json")

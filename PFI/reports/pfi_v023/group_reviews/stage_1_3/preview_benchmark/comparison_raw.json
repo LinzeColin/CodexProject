@@ -1,0 +1,742 @@
+{
+  "schema": "PFIV023Stage1To3PreviewBenchmarkV1",
+  "generated_at": "2026-06-30T08:33:32.624Z",
+  "preview_path": "/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html",
+  "current_static_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "targets": {
+    "preview_desktop": {
+      "title": "PFI v0.2.3｜人类产品体验恢复 · Phase 1 验收原型",
+      "nav_count": 10,
+      "nav": [
+        {
+          "index": 1,
+          "text": "⌂首页总览现在发生了什么›",
+          "page": "home"
+        },
+        {
+          "index": 2,
+          "text": "◫账户与资产钱在哪›",
+          "page": "accounts"
+        },
+        {
+          "index": 3,
+          "text": "≋账本流水每笔钱的证据›",
+          "page": "ledger"
+        },
+        {
+          "index": 4,
+          "text": "↗投资管理持仓与收益›",
+          "page": "investment"
+        },
+        {
+          "index": 5,
+          "text": "◌消费管理支出与预算›",
+          "page": "consumption"
+        },
+        {
+          "index": 6,
+          "text": "⇄数据源与上传真实数据入口›",
+          "page": "data"
+        },
+        {
+          "index": 7,
+          "text": "✦建议与复盘行动与回看›",
+          "page": "review"
+        },
+        {
+          "index": 8,
+          "text": "▣报告与洞察结论与公式›",
+          "page": "reports"
+        },
+        {
+          "index": 9,
+          "text": "◇市场与研究兼容 v0.1›",
+          "page": "market"
+        },
+        {
+          "index": 10,
+          "text": "⚙设置偏好与系统›",
+          "page": "settings"
+        }
+      ],
+      "bottom_count": 5,
+      "bottom": [
+        {
+          "index": 1,
+          "text": "⌂首页总览",
+          "page": "home"
+        },
+        {
+          "index": 2,
+          "text": "◫账户资产",
+          "page": "accounts"
+        },
+        {
+          "index": 3,
+          "text": "↗投资管理",
+          "page": "investment"
+        },
+        {
+          "index": 4,
+          "text": "⇄数据源上传",
+          "page": "data"
+        },
+        {
+          "index": 5,
+          "text": "▣报告洞察",
+          "page": "reports"
+        }
+      ],
+      "gate_items_count": 3,
+      "gate_items": [
+        "1数据挂链真实账户、流水、持仓快照必须至少一个可读待真实数据",
+        "2假零拦截无数据时显示原因，不显示 CNY 0.00通过设计",
+        "3分析门禁未通过数据质量检查则阻断报告结论需实现"
+      ],
+      "metrics": [
+        "¥净资产待接入真实数据无真实数据时不显示 0；必须显示加载状态",
+        "≈现金余额待接入真实数据现金来自账户/流水/快照，不允许假零",
+        "↗投资市值待接入真实数据必须来自持仓与价格快照",
+        "◌本月生活消费待接入真实数据与投资入金分离"
+      ],
+      "has_drawer": true,
+      "has_command_palette": true,
+      "body_text": "PFI\nPersonal Financial Intelligence\n\nv0.2.3 · 人类产品体验恢复\n\nPhase 1 验收原型\n\n亮色系 · 10 个一级入口 · 二级页面独立路由 · 不展示虚拟财务数值。\n\n⌂\n首页总览\n现在发生了什么\n›\n◫\n账户与资产\n钱在哪\n›\n≋\n账本流水\n每笔钱的证据\n›\n↗\n投资管理\n持仓与收益\n›\n◌\n消费管理\n支出与预算\n›\n⇄\n数据源与上传\n真实数据入口\n›\n✦\n建议与复盘\n行动与回看\n›\n▣\n报告与洞察\n结论与公式\n›\n◇\n市场与研究\n兼容 v0.1\n›\n⚙\n设置\n偏好与系统\n›\n真实数据门禁\n\n未挂链真实数据：页面只展示结构、状态和接入要求，不生成净资产、现金余额、投资市值。\n\nPFI / 首页总览 / 今日状态\n首页总览 · 今日状态\n⌕\n⌘K\n命令\n验收设置\n接入真实数据\nPFI V0.2.3 · 现在发生了什么\n首页总览\n\n首页不再堆全部模块，只回答：现在财务状态是否可信、哪些数据还没挂上、下一步该做什么。无真实数据时不显示零，不画假线。\n\n检查真实数据\n查看分析结论\n测试触感反馈\n当前页面门禁\n等待真实数据\n1\n数据挂链\n真实账户、流水、持仓快照必须至少一个可读\n待真实数据\n2\n假零拦截\n无数据时显示原因，不显示 CNY 0.00\n通过设计\n3\n分析门禁\n未通过数据质量检查则阻断报告结论\n需实现\n今日状态\n下一步动作\n数据健康\n最近变化\n¥\n净资产\n待接入真实数据\n无真实数据时不显示 0；必须显示加载状态\n≈\n现金余额\n待接入真实数据\n现金来自账户/流水/快照，不允许假零\n↗\n投资市值\n待接入真实数据\n必须来自持仓与价格快照\n◌\n本月生活消费\n待接入真实数据\n与投资入金分离\n真实数据可视化槽位\n\n默认空状态；粘贴真实快照后才绘图。\n\n接入真实快照\n净资产趋势\n等待真实数据\n净资产趋势不画假线\n需要 trends.netWorth 的真实点位。接入真实 JSON 后才渲染。\n现金流压力趋势\n等待真实数据\n现金流压力趋势不画假线\n需要 trends.cashflow 的真实点位。接入真实 JSON 后才渲染。\n本页不是功能堆叠\n\n首页只展示判断、动作和真实数据门禁，详情进入独立页面。\n\n未加载 ≠ 0\n\n如果真实数据路径没挂上，财务卡片显示“待接入真实数据”，不显示 CNY 0.00。\n\n过期 ≠ 0\n\n如果快照过期，显示快照日期和过期原因，允许用户刷新或重新导入。\n\n真为零才是 0\n\n只有真实数据计算结果明确为零，才允许显示 0，并保留证据链。\n\n验收设置\n\n用于检查触感、动画、数据状态和入口一致性。\n\n关闭\n触感反馈\n支持设备会调用 navigator.vibrate。\n \n页面动效\n入口和二级页切换时启用柔和转场。\n \n禁止假数据提示\n当无真实数据时，所有财务卡片保持“待接入”。\n验收重点\n1\n10 个一级入口\n包含市场与研究，不再沿用 9 入口旧约束。\n锁定\n2\n二级页不是模板克隆\n不同页面有不同布局、动作和数据对象。\n锁定\n3\n真实数据不假零\n未加载/过期/计算失败必须区分。\n锁定",
+      "console_errors": [],
+      "page_errors": [],
+      "screenshot": "screenshots/preview_desktop.png"
+    },
+    "preview_mobile": {
+      "title": "PFI v0.2.3｜人类产品体验恢复 · Phase 1 验收原型",
+      "nav_count": 10,
+      "nav": [
+        {
+          "index": 1,
+          "text": "⌂首页总览现在发生了什么›",
+          "page": "home"
+        },
+        {
+          "index": 2,
+          "text": "◫账户与资产钱在哪›",
+          "page": "accounts"
+        },
+        {
+          "index": 3,
+          "text": "≋账本流水每笔钱的证据›",
+          "page": "ledger"
+        },
+        {
+          "index": 4,
+          "text": "↗投资管理持仓与收益›",
+          "page": "investment"
+        },
+        {
+          "index": 5,
+          "text": "◌消费管理支出与预算›",
+          "page": "consumption"
+        },
+        {
+          "index": 6,
+          "text": "⇄数据源与上传真实数据入口›",
+          "page": "data"
+        },
+        {
+          "index": 7,
+          "text": "✦建议与复盘行动与回看›",
+          "page": "review"
+        },
+        {
+          "index": 8,
+          "text": "▣报告与洞察结论与公式›",
+          "page": "reports"
+        },
+        {
+          "index": 9,
+          "text": "◇市场与研究兼容 v0.1›",
+          "page": "market"
+        },
+        {
+          "index": 10,
+          "text": "⚙设置偏好与系统›",
+          "page": "settings"
+        }
+      ],
+      "bottom_count": 5,
+      "bottom": [
+        {
+          "index": 1,
+          "text": "⌂首页总览",
+          "page": "home"
+        },
+        {
+          "index": 2,
+          "text": "◫账户资产",
+          "page": "accounts"
+        },
+        {
+          "index": 3,
+          "text": "↗投资管理",
+          "page": "investment"
+        },
+        {
+          "index": 4,
+          "text": "⇄数据源上传",
+          "page": "data"
+        },
+        {
+          "index": 5,
+          "text": "▣报告洞察",
+          "page": "reports"
+        }
+      ],
+      "gate_items_count": 3,
+      "gate_items": [
+        "1数据挂链真实账户、流水、持仓快照必须至少一个可读待真实数据",
+        "2假零拦截无数据时显示原因，不显示 CNY 0.00通过设计",
+        "3分析门禁未通过数据质量检查则阻断报告结论需实现"
+      ],
+      "metrics": [
+        "¥净资产待接入真实数据无真实数据时不显示 0；必须显示加载状态",
+        "≈现金余额待接入真实数据现金来自账户/流水/快照，不允许假零",
+        "↗投资市值待接入真实数据必须来自持仓与价格快照",
+        "◌本月生活消费待接入真实数据与投资入金分离"
+      ],
+      "has_drawer": true,
+      "has_command_palette": true,
+      "body_text": "PFI\nPersonal Financial Intelligence\n\nv0.2.3 · 人类产品体验恢复\n\nPhase 1 验收原型\n\n亮色系 · 10 个一级入口 · 二级页面独立路由 · 不展示虚拟财务数值。\n\n⌂\n首页总览\n现在发生了什么\n›\n◫\n账户与资产\n钱在哪\n›\n≋\n账本流水\n每笔钱的证据\n›\n↗\n投资管理\n持仓与收益\n›\n◌\n消费管理\n支出与预算\n›\n⇄\n数据源与上传\n真实数据入口\n›\n✦\n建议与复盘\n行动与回看\n›\n▣\n报告与洞察\n结论与公式\n›\n◇\n市场与研究\n兼容 v0.1\n›\n⚙\n设置\n偏好与系统\n›\n真实数据门禁\n\n未挂链真实数据：页面只展示结构、状态和接入要求，不生成净资产、现金余额、投资市值。\n\n☰\nPFI / 首页总览 / 今日状态\n首页总览 · 今日状态\n⌕\n⌘K\n命令\n验收设置\n接入真实数据\nPFI V0.2.3 · 现在发生了什么\n首页总览\n\n首页不再堆全部模块，只回答：现在财务状态是否可信、哪些数据还没挂上、下一步该做什么。无真实数据时不显示零，不画假线。\n\n检查真实数据\n查看分析结论\n测试触感反馈\n当前页面门禁\n等待真实数据\n1\n数据挂链\n真实账户、流水、持仓快照必须至少一个可读\n待真实数据\n2\n假零拦截\n无数据时显示原因，不显示 CNY 0.00\n通过设计\n3\n分析门禁\n未通过数据质量检查则阻断报告结论\n需实现\n今日状态\n下一步动作\n数据健康\n最近变化\n¥\n净资产\n待接入真实数据\n无真实数据时不显示 0；必须显示加载状态\n≈\n现金余额\n待接入真实数据\n现金来自账户/流水/快照，不允许假零\n↗\n投资市值\n待接入真实数据\n必须来自持仓与价格快照\n◌\n本月生活消费\n待接入真实数据\n与投资入金分离\n真实数据可视化槽位\n\n默认空状态；粘贴真实快照后才绘图。\n\n接入真实快照\n净资产趋势\n等待真实数据\n净资产趋势不画假线\n需要 trends.netWorth 的真实点位。接入真实 JSON 后才渲染。\n现金流压力趋势\n等待真实数据\n现金流压力趋势不画假线\n需要 trends.cashflow 的真实点位。接入真实 JSON 后才渲染。\n本页不是功能堆叠\n\n首页只展示判断、动作和真实数据门禁，详情进入独立页面。\n\n未加载 ≠ 0\n\n如果真实数据路径没挂上，财务卡片显示“待接入真实数据”，不显示 CNY 0.00。\n\n过期 ≠ 0\n\n如果快照过期，显示快照日期和过期原因，允许用户刷新或重新导入。\n\n真为零才是 0\n\n只有真实数据计算结果明确为零，才允许显示 0，并保留证据链。\n\n⌂\n首页总览\n◫\n账户资产\n↗\n投资管理\n⇄\n数据源上传\n▣\n报告洞察\n验收设置\n\n用于检查触感、动画、数据状态和入口一致性。\n\n关闭\n触感反馈\n支持设备会调用 navigator.vibrate。\n \n页面动效\n入口和二级页切换时启用柔和转场。\n \n禁止假数据提示\n当无真实数据时，所有财务卡片保持“待接入”。\n验收重点\n1\n10 个一级入口\n包含市场与研究，不再沿用 9 入口旧约束。\n锁定\n2\n二级页不是模板克隆\n不同页面有不同布局、动作和数据对象。\n锁定\n3\n真实数据不假零\n未加载/过期/计算失败必须区分。\n锁定",
+      "console_errors": [],
+      "page_errors": [],
+      "screenshot": "screenshots/preview_mobile.png"
+    },
+    "current_static_desktop": {
+      "title": "PFI",
+      "primary_count": 10,
+      "primary": [
+        {
+          "index": 1,
+          "text": "首页总览",
+          "workspace": "home",
+          "route": "/home",
+          "hint": "净资产 · 现金流 · 数据健康"
+        },
+        {
+          "index": 2,
+          "text": "账户与资产",
+          "workspace": "accounts",
+          "route": "/accounts",
+          "hint": "账户地图 · 对账 · 跨币种"
+        },
+        {
+          "index": 3,
+          "text": "账本流水",
+          "workspace": "ledger",
+          "route": "/ledger",
+          "hint": "标准流水 · A/B/C/D 复核"
+        },
+        {
+          "index": 4,
+          "text": "投资管理",
+          "workspace": "investment",
+          "route": "/investment",
+          "hint": "持仓 · 归因 · 策略回测"
+        },
+        {
+          "index": 5,
+          "text": "消费管理",
+          "workspace": "consumption",
+          "route": "/consumption",
+          "hint": "预算 · 分类 · 异常 · 订阅"
+        },
+        {
+          "index": 6,
+          "text": "数据源与上传",
+          "workspace": "sync",
+          "route": "/sources-upload",
+          "hint": "上传 · 解析 · 对账 · 队列"
+        },
+        {
+          "index": 7,
+          "text": "建议与复盘",
+          "workspace": "recommendations",
+          "route": "/review",
+          "hint": "证据 · 决策 · 生命周期"
+        },
+        {
+          "index": 8,
+          "text": "报告与洞察",
+          "workspace": "insights",
+          "route": "/reports",
+          "hint": "月报 · 导出 · 本机快照"
+        },
+        {
+          "index": 9,
+          "text": "市场与研究",
+          "workspace": "market_research",
+          "route": "/market-research",
+          "hint": "市场 · 研究 · 策略实验室"
+        },
+        {
+          "index": 10,
+          "text": "设置",
+          "workspace": "settings",
+          "route": "/settings",
+          "hint": "反馈 · 参数 · 数据管理"
+        }
+      ],
+      "mobile_count": 10,
+      "mobile": [
+        {
+          "index": 1,
+          "text": "⌂首页总览",
+          "workspace": "home",
+          "route": "/home"
+        },
+        {
+          "index": 2,
+          "text": "◫账户与资产",
+          "workspace": "accounts",
+          "route": "/accounts"
+        },
+        {
+          "index": 3,
+          "text": "≋账本流水",
+          "workspace": "ledger",
+          "route": "/ledger"
+        },
+        {
+          "index": 4,
+          "text": "↗投资管理",
+          "workspace": "investment",
+          "route": "/investment"
+        },
+        {
+          "index": 5,
+          "text": "◌消费管理",
+          "workspace": "consumption",
+          "route": "/consumption"
+        },
+        {
+          "index": 6,
+          "text": "⇄数据源与上传",
+          "workspace": "sync",
+          "route": "/sources-upload"
+        },
+        {
+          "index": 7,
+          "text": "✦建议与复盘",
+          "workspace": "recommendations",
+          "route": "/review"
+        },
+        {
+          "index": 8,
+          "text": "▣报告与洞察",
+          "workspace": "insights",
+          "route": "/reports"
+        },
+        {
+          "index": 9,
+          "text": "⌁市场与研究",
+          "workspace": "market_research",
+          "route": "/market-research"
+        },
+        {
+          "index": 10,
+          "text": "⚙设置",
+          "workspace": "settings",
+          "route": "/settings"
+        }
+      ],
+      "command_count": 16,
+      "workflow_cards_count": 6,
+      "metrics": [
+        {
+          "label": "净资产",
+          "value": "暂无真实数据",
+          "detail": "账户和持仓接入后显示"
+        },
+        {
+          "label": "现金余额",
+          "value": "暂无真实数据",
+          "detail": "账户流水接入后显示"
+        },
+        {
+          "label": "投资市值",
+          "value": "暂无真实数据",
+          "detail": "持仓接入后显示"
+        },
+        {
+          "label": "本月支出",
+          "value": "CNY 7,153.98",
+          "detail": "MetaDatabase 真实支付宝流水"
+        },
+        {
+          "label": "待复核交易",
+          "value": "406",
+          "detail": "8815 条真实流水"
+        },
+        {
+          "label": "数据源状态",
+          "value": "已导入",
+          "detail": "真实流水可读取"
+        }
+      ],
+      "has_evidence_drawer": true,
+      "has_command_palette": true,
+      "body_text": "跳到内容\nPFI\nPFI\n全局搜索\n数据源\n支付宝\n微信\nCBA\nMoomoo\n账户\n视图\n个人财务\n投资复盘\n消费复盘\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n⚙\n设置\n首页总览\n账户与资产\n账本流水\n投资管理\n消费管理\n数据源与上传\n建议与复盘\n报告与洞察\n市场与研究\n设置\n\n财务状态\n\n首页总览 · 财务状态\n\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n\n本机数据可用\n本机状态\n净资产\n暂无真实数据\n账户和持仓接入后显示\n现金余额\n暂无真实数据\n账户流水接入后显示\n投资市值\n暂无真实数据\n持仓接入后显示\n本月支出\nCNY 7,153.98\nMetaDatabase 真实支付宝流水\n待复核交易\n406\n8815 条真实流水\n数据源状态\n已导入\n真实流水可读取\n\n二级入口\n\n页面导航\n财务状态\n待办事项\n快捷操作\n最近报告\n首页总览\n/\n财务状态\n\n财务状态\n\n首页总览 · 财务状态\n\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n\n检查财务状态\n主对象\n财务状态\n数据来源\n待补\n空状态\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n错误状态\n无法读取财务状态，请检查账户、账本、投资和消费 read-model。\n状态摘要\n\n展示净资产、现金、投资、消费和数据健康的状态来源。\n\n数据新鲜度\n\n标记未加载、过期、路径错误和待复核状态。\n\n状态动作\n\n进入数据源、账户或账本修复缺口。\n\n快捷操作\n\n常用任务\n财务状态与下一步动作\n下一步动作\n处理动作\n财务状态摘要\n查看状态\n钱在哪里\n查看账户\n数据健康\n查看数据\n最近变化\n查看变化\n报告入口\n打开报告与洞察\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n首页总览 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\n1\t财务状态摘要\t可显示 0 项\t4 项显示中文状态\t复核\n2\t钱在哪里\t账户、现金、投资\t按真实来源和状态拆分，不补写金额。\t可查看\n3\t数据健康\t数据状态\t优先处理阻断状态。\t有阻断\n4\t最近变化\t最近变化\t未读取到真实变化记录；不会编写虚构变化。\t暂无记录\n5\t报告入口\t报告与洞察\t查看结论、数据范围、公式和报告状态。\t可查看\n\n待办清单\n\n当前待处理\n×\n补齐净资产数据\n净资产：未加载真实数据。先进入上传中心补齐真实文件。\n补齐现金余额数据\n现金余额：未加载真实数据。先进入上传中心补齐真实文件。\n补齐投资市值数据\n投资市值：未加载真实数据。先进入上传中心补齐真实文件。\n财务状态摘要\n可显示 0 项，中文状态 4 项\n钱在哪里\n账户、现金和投资只按真实来源展示。\n最近变化\n未读取到真实变化记录；不会编写虚构变化。",
+      "console_errors": [],
+      "page_errors": [],
+      "screenshot": "screenshots/current_static_desktop.png"
+    },
+    "current_static_mobile": {
+      "title": "PFI",
+      "primary_count": 10,
+      "primary": [
+        {
+          "index": 1,
+          "text": "首页总览",
+          "workspace": "home",
+          "route": "/home",
+          "hint": "净资产 · 现金流 · 数据健康"
+        },
+        {
+          "index": 2,
+          "text": "账户与资产",
+          "workspace": "accounts",
+          "route": "/accounts",
+          "hint": "账户地图 · 对账 · 跨币种"
+        },
+        {
+          "index": 3,
+          "text": "账本流水",
+          "workspace": "ledger",
+          "route": "/ledger",
+          "hint": "标准流水 · A/B/C/D 复核"
+        },
+        {
+          "index": 4,
+          "text": "投资管理",
+          "workspace": "investment",
+          "route": "/investment",
+          "hint": "持仓 · 归因 · 策略回测"
+        },
+        {
+          "index": 5,
+          "text": "消费管理",
+          "workspace": "consumption",
+          "route": "/consumption",
+          "hint": "预算 · 分类 · 异常 · 订阅"
+        },
+        {
+          "index": 6,
+          "text": "数据源与上传",
+          "workspace": "sync",
+          "route": "/sources-upload",
+          "hint": "上传 · 解析 · 对账 · 队列"
+        },
+        {
+          "index": 7,
+          "text": "建议与复盘",
+          "workspace": "recommendations",
+          "route": "/review",
+          "hint": "证据 · 决策 · 生命周期"
+        },
+        {
+          "index": 8,
+          "text": "报告与洞察",
+          "workspace": "insights",
+          "route": "/reports",
+          "hint": "月报 · 导出 · 本机快照"
+        },
+        {
+          "index": 9,
+          "text": "市场与研究",
+          "workspace": "market_research",
+          "route": "/market-research",
+          "hint": "市场 · 研究 · 策略实验室"
+        },
+        {
+          "index": 10,
+          "text": "设置",
+          "workspace": "settings",
+          "route": "/settings",
+          "hint": "反馈 · 参数 · 数据管理"
+        }
+      ],
+      "mobile_count": 10,
+      "mobile": [
+        {
+          "index": 1,
+          "text": "⌂首页总览",
+          "workspace": "home",
+          "route": "/home"
+        },
+        {
+          "index": 2,
+          "text": "◫账户与资产",
+          "workspace": "accounts",
+          "route": "/accounts"
+        },
+        {
+          "index": 3,
+          "text": "≋账本流水",
+          "workspace": "ledger",
+          "route": "/ledger"
+        },
+        {
+          "index": 4,
+          "text": "↗投资管理",
+          "workspace": "investment",
+          "route": "/investment"
+        },
+        {
+          "index": 5,
+          "text": "◌消费管理",
+          "workspace": "consumption",
+          "route": "/consumption"
+        },
+        {
+          "index": 6,
+          "text": "⇄数据源与上传",
+          "workspace": "sync",
+          "route": "/sources-upload"
+        },
+        {
+          "index": 7,
+          "text": "✦建议与复盘",
+          "workspace": "recommendations",
+          "route": "/review"
+        },
+        {
+          "index": 8,
+          "text": "▣报告与洞察",
+          "workspace": "insights",
+          "route": "/reports"
+        },
+        {
+          "index": 9,
+          "text": "⌁市场与研究",
+          "workspace": "market_research",
+          "route": "/market-research"
+        },
+        {
+          "index": 10,
+          "text": "⚙设置",
+          "workspace": "settings",
+          "route": "/settings"
+        }
+      ],
+      "command_count": 16,
+      "workflow_cards_count": 6,
+      "metrics": [
+        {
+          "label": "净资产",
+          "value": "暂无真实数据",
+          "detail": "账户和持仓接入后显示"
+        },
+        {
+          "label": "现金余额",
+          "value": "暂无真实数据",
+          "detail": "账户流水接入后显示"
+        },
+        {
+          "label": "投资市值",
+          "value": "暂无真实数据",
+          "detail": "持仓接入后显示"
+        },
+        {
+          "label": "本月支出",
+          "value": "CNY 7,153.98",
+          "detail": "MetaDatabase 真实支付宝流水"
+        },
+        {
+          "label": "待复核交易",
+          "value": "406",
+          "detail": "8815 条真实流水"
+        },
+        {
+          "label": "数据源状态",
+          "value": "已导入",
+          "detail": "真实流水可读取"
+        }
+      ],
+      "has_evidence_drawer": true,
+      "has_command_palette": true,
+      "body_text": "跳到内容\nPFI\nPFI\n全局搜索\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n⚙\n设置\n\n财务状态\n\n首页总览 · 财务状态\n\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n\n本机数据可用\n本机状态\n净资产\n暂无真实数据\n账户和持仓接入后显示\n现金余额\n暂无真实数据\n账户流水接入后显示\n投资市值\n暂无真实数据\n持仓接入后显示\n本月支出\nCNY 7,153.98\nMetaDatabase 真实支付宝流水\n待复核交易\n406\n8815 条真实流水\n数据源状态\n已导入\n真实流水可读取\n\n二级入口\n\n页面导航\n财务状态\n待办事项\n快捷操作\n最近报告\n首页总览\n/\n财务状态\n\n财务状态\n\n首页总览 · 财务状态\n\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n\n检查财务状态\n主对象\n财务状态\n数据来源\n待补\n空状态\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n错误状态\n无法读取财务状态，请检查账户、账本、投资和消费 read-model。\n状态摘要\n\n展示净资产、现金、投资、消费和数据健康的状态来源。\n\n数据新鲜度\n\n标记未加载、过期、路径错误和待复核状态。\n\n状态动作\n\n进入数据源、账户或账本修复缺口。\n\n快捷操作\n\n常用任务\n财务状态与下一步动作\n下一步动作\n处理动作\n财务状态摘要\n查看状态\n钱在哪里\n查看账户\n数据健康\n查看数据\n最近变化\n查看变化\n报告入口\n打开报告与洞察\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n首页总览 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\n1\t财务状态摘要\t可显示 0 项\t4 项显示中文状态\t复核\n2\t钱在哪里\t账户、现金、投资\t按真实来源和状态拆分，不补写金额。\t可查看\n3\t数据健康\t数据状态\t优先处理阻断状态。\t有阻断\n4\t最近变化\t最近变化\t未读取到真实变化记录；不会编写虚构变化。\t暂无记录\n5\t报告入口\t报告与洞察\t查看结论、数据范围、公式和报告状态。\t可查看\n\n待办清单\n\n当前待处理\n×\n补齐净资产数据\n净资产：未加载真实数据。先进入上传中心补齐真实文件。\n补齐现金余额数据\n现金余额：未加载真实数据。先进入上传中心补齐真实文件。\n补齐投资市值数据\n投资市值：未加载真实数据。先进入上传中心补齐真实文件。\n财务状态摘要\n可显示 0 项，中文状态 4 项\n钱在哪里\n账户、现金和投资只按真实来源展示。\n最近变化\n未读取到真实变化记录；不会编写虚构变化。\n⌂\n首页总览\n◫\n账户与资产\n≋\n账本流水\n↗\n投资管理\n◌\n消费管理\n⇄\n数据源与上传\n✦\n建议与复盘\n▣\n报告与洞察\n⌁\n市场与研究\n⚙\n设置",
+      "console_errors": [],
+      "page_errors": [],
+      "screenshot": "screenshots/current_static_mobile.png"
+    },
+    "localhost_desktop": {
+      "url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY&benchmark=1782808419011",
+      "frame_count": 2,
+      "frames": [
+        {
+          "url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY&benchmark=1782808419011",
+          "title": "PFI",
+          "primary_count": 0,
+          "primary": [],
+          "mobile_count": 0,
+          "mobile": [],
+          "metrics": [],
+          "has_pfi_shell": false,
+          "has_stage1_metadata": false,
+          "body_text": ""
+        },
+        {
+          "url": "about:srcdoc#/home",
+          "title": "PFI",
+          "primary_count": 10,
+          "primary": [
+            "首页总览",
+            "账户与资产",
+            "账本流水",
+            "投资管理",
+            "消费管理",
+            "数据源与上传",
+            "建议与复盘",
+            "报告与洞察",
+            "市场与研究",
+            "设置"
+          ],
+          "mobile_count": 10,
+          "mobile": [
+            "⌂首页总览",
+            "◫账户与资产",
+            "≋账本流水",
+            "↗投资管理",
+            "◌消费管理",
+            "⇄数据源与上传",
+            "✦建议与复盘",
+            "▣报告与洞察",
+            "⌁市场与研究",
+            "⚙设置"
+          ],
+          "metrics": [
+            {
+              "label": "净资产",
+              "value": "暂无真实数据",
+              "detail": "账户和持仓接入后显示"
+            },
+            {
+              "label": "现金余额",
+              "value": "暂无真实数据",
+              "detail": "账户流水接入后显示"
+            },
+            {
+              "label": "投资市值",
+              "value": "暂无真实数据",
+              "detail": "持仓接入后显示"
+            },
+            {
+              "label": "本月支出",
+              "value": "CNY 7,153.98",
+              "detail": "MetaDatabase 真实支付宝流水"
+            },
+            {
+              "label": "待复核交易",
+              "value": "406",
+              "detail": "8815 条真实流水"
+            },
+            {
+              "label": "数据源状态",
+              "value": "已导入",
+              "detail": "真实流水可读取"
+            }
+          ],
+          "has_pfi_shell": true,
+          "has_stage1_metadata": true,
+          "body_text": "跳到内容\nPFI\nPFI\n全局搜索\n数据源\n支付宝\n微信\nCBA\nMoomoo\n账户\n视图\n个人财务\n投资复盘\n消费复盘\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n⚙\n设置\n首页总览\n账户与资产\n账本流水\n投资管理\n消费管理\n数据源与上传\n建议与复盘\n报告与洞察\n市场与研究\n设置\n\n财务状态\n\n首页总览 · 财务状态\n\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n\n本机数据可用\n本机状态\n净资产\n暂无真实数据\n账户和持仓接入后显示\n现金余额\n暂无真实数据\n账户流水接入后显示\n投资市值\n暂无真实数据\n持仓接入后显示\n本月支出\nCNY 7,153.98\nMetaDatabase 真实支付宝流水\n待复核交易\n406\n8815 条真实流水\n数据源状态\n已导入\n真实流水可读取\n\n二级入口\n\n页面导航\n财务状态\n待办事项\n快捷操作\n最近报告\n首页总览\n/\n财务状态\n\n财务状态\n\n首页总览 · 财务状态\n\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n\n检查财务状态\n主对象\n财务状态\n数据来源\n待补\n空状态\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n错误状态\n无法读取财务状态，请检查账户、账本、投资和消费 read-model。\n状态摘要\n\n展示净资产、现金、投资、消费和数据健康的状态来源。\n\n数据新鲜度\n\n标记未加载、过期、路径错误和待复核状态。\n\n状态动作\n\n进入数据源、账户或账本修复缺口。\n\n快捷操作\n\n常用任务\n财务状态与下一步动作\n下一步动作\n处理动作\n财务状态摘要\n查看状态\n钱在哪里\n查看账户\n数据健康\n查看数据\n最近变化\n查看变化\n报告入口\n打开报告与洞察\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n首页总览 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\n1\t财务状态摘要\t可显示 0 项\t4 项显示中文状态\t复核\n2\t钱在哪里\t账户、现金、投资\t按真实来源和状态拆分，不补写金额。\t可查看\n3\t数据健康\t数据状态\t优先处理阻断状态。\t有阻断\n4\t最近变化\t最近变化\t未读取到真实变化记录；不会编写虚构变化。\t暂无记录\n5\t报告入口\t报告与洞察\t查看结论、数据范围、公式和报告状态。\t可查看\n\n待办清单\n\n当前待处理\n×\n补齐净资产数据\n净资产：未加载真实数据。先进入上传中心补齐真实文件。\n补齐现金余额数据\n现金余额：未加载真实数据。先进入上传中心补齐真实文件。\n补齐投资市值数据\n投资市值：未加载真实数据。先进入上传中心补齐真实文件。\n财务状态摘要\n可显示 0 项，中文状态 4 项\n钱在哪里\n账户、现金和投资只按真实来源展示。\n最近变化\n未读取到真实变化记录；不会编写虚构变化。"
+        }
+      ],
+      "console_errors": [],
+      "page_errors": [],
+      "screenshot": "screenshots/localhost_desktop.png"
+    },
+    "localhost_mobile": {
+      "url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY&benchmark=1782808422464",
+      "frame_count": 2,
+      "frames": [
+        {
+          "url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY&benchmark=1782808422464",
+          "title": "PFI",
+          "primary_count": 0,
+          "primary": [],
+          "mobile_count": 0,
+          "mobile": [],
+          "metrics": [],
+          "has_pfi_shell": false,
+          "has_stage1_metadata": false,
+          "body_text": ""
+        },
+        {
+          "url": "about:srcdoc#/home",
+          "title": "PFI",
+          "primary_count": 10,
+          "primary": [
+            "首页总览",
+            "账户与资产",
+            "账本流水",
+            "投资管理",
+            "消费管理",
+            "数据源与上传",
+            "建议与复盘",
+            "报告与洞察",
+            "市场与研究",
+            "设置"
+          ],
+          "mobile_count": 10,
+          "mobile": [
+            "⌂首页总览",
+            "◫账户与资产",
+            "≋账本流水",
+            "↗投资管理",
+            "◌消费管理",
+            "⇄数据源与上传",
+            "✦建议与复盘",
+            "▣报告与洞察",
+            "⌁市场与研究",
+            "⚙设置"
+          ],
+          "metrics": [
+            {
+              "label": "净资产",
+              "value": "暂无真实数据",
+              "detail": "账户和持仓接入后显示"
+            },
+            {
+              "label": "现金余额",
+              "value": "暂无真实数据",
+              "detail": "账户流水接入后显示"
+            },
+            {
+              "label": "投资市值",
+              "value": "暂无真实数据",
+              "detail": "持仓接入后显示"
+            },
+            {
+              "label": "本月支出",
+              "value": "CNY 7,153.98",
+              "detail": "MetaDatabase 真实支付宝流水"
+            },
+            {
+              "label": "待复核交易",
+              "value": "406",
+              "detail": "8815 条真实流水"
+            },
+            {
+              "label": "数据源状态",
+              "value": "已导入",
+              "detail": "真实流水可读取"
+            }
+          ],
+          "has_pfi_shell": true,
+          "has_stage1_metadata": true,
+          "body_text": "跳到内容\nPFI\nPFI\n全局搜索\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n⚙\n设置\n\n财务状态\n\n首页总览 · 财务状态\n\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n\n本机数据可用\n本机状态\n净资产\n暂无真实数据\n账户和持仓接入后显示\n现金余额\n暂无真实数据\n账户流水接入后显示\n投资市值\n暂无真实数据\n持仓接入后显示\n本月支出\nCNY 7,153.98\nMetaDatabase 真实支付宝流水\n待复核交易\n406\n8815 条真实流水\n数据源状态\n已导入\n真实流水可读取\n\n二级入口\n\n页面导航\n财务状态\n待办事项\n快捷操作\n最近报告\n首页总览\n/\n财务状态\n\n财务状态\n\n首页总览 · 财务状态\n\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n\n检查财务状态\n主对象\n财务状态\n数据来源\n待补\n空状态\n未加载真实首页状态时，只显示财务状态空态和数据缺口。\n错误状态\n无法读取财务状态，请检查账户、账本、投资和消费 read-model。\n状态摘要\n\n展示净资产、现金、投资、消费和数据健康的状态来源。\n\n数据新鲜度\n\n标记未加载、过期、路径错误和待复核状态。\n\n状态动作\n\n进入数据源、账户或账本修复缺口。\n\n快捷操作\n\n常用任务\n财务状态与下一步动作\n下一步动作\n处理动作\n财务状态摘要\n查看状态\n钱在哪里\n查看账户\n数据健康\n查看数据\n最近变化\n查看变化\n报告入口\n打开报告与洞察\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n首页总览 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\n1\t财务状态摘要\t可显示 0 项\t4 项显示中文状态\t复核\n2\t钱在哪里\t账户、现金、投资\t按真实来源和状态拆分，不补写金额。\t可查看\n3\t数据健康\t数据状态\t优先处理阻断状态。\t有阻断\n4\t最近变化\t最近变化\t未读取到真实变化记录；不会编写虚构变化。\t暂无记录\n5\t报告入口\t报告与洞察\t查看结论、数据范围、公式和报告状态。\t可查看\n\n待办清单\n\n当前待处理\n×\n补齐净资产数据\n净资产：未加载真实数据。先进入上传中心补齐真实文件。\n补齐现金余额数据\n现金余额：未加载真实数据。先进入上传中心补齐真实文件。\n补齐投资市值数据\n投资市值：未加载真实数据。先进入上传中心补齐真实文件。\n财务状态摘要\n可显示 0 项，中文状态 4 项\n钱在哪里\n账户、现金和投资只按真实来源展示。\n最近变化\n未读取到真实变化记录；不会编写虚构变化。\n⌂\n首页总览\n◫\n账户与资产\n≋\n账本流水\n↗\n投资管理\n◌\n消费管理\n⇄\n数据源与上传\n✦\n建议与复盘\n▣\n报告与洞察\n⌁\n市场与研究\n⚙\n设置"
+        }
+      ],
+      "console_errors": [],
+      "page_errors": [],
+      "screenshot": "screenshots/localhost_mobile.png"
+    }
+  }
+}

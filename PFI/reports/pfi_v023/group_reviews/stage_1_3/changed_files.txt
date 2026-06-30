@@ -1,0 +1,16 @@
+PFI/docs/pfi_v023/README.md
+PFI/docs/pfi_v023/STAGE1_3_GROUP_REVIEW.md
+PFI/reports/pfi_v023/group_reviews/stage_1_3/changed_files.txt
+PFI/reports/pfi_v023/group_reviews/stage_1_3/evidence.json
+PFI/reports/pfi_v023/group_reviews/stage_1_3/review_audit.json
+PFI/reports/pfi_v023/group_reviews/stage_1_3/terminal.log
+PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/comparison_raw.json
+PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/current_static_desktop.png
+PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/current_static_mobile.png
+PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/localhost_desktop.png
+PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/localhost_mobile.png
+PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/preview_desktop.png
+PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/preview_mobile.png
+PFI/tests/test_v023_regression.py
+PFI/tests/test_v023_stage2_data_state_machine.py
+PFI/web/app/shell.js
