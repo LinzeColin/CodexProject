@@ -32,13 +32,15 @@ Records:
 
 ## v0.2.4 Stage 0 Status
 
-Current run unit: `Stage 0 / Phase 0.3 - Stage 0 测试与证据`.
+Current run unit: `Stage 0 whole-stage review - 复审并解决暴露问题`.
 
 - Phase 0.1: candidate pass.
 - Phase 0.2: candidate pass.
 - Phase 0.3: candidate pass.
 - Stage 0 candidate: complete.
-- Stage 0 whole-stage review: not executed.
+- Stage 0 whole-stage review: pass.
+- Stage 0 complete: yes.
+- Stage 1: not started; requires user acceptance or explicit instruction.
 - Business UI changes: none.
 - Data logic changes: none.
 
@@ -59,6 +61,12 @@ Phase 0.3 records:
 
 - `tests/test_v024_stage0_phase03_contract.py`
 - `reports/pfi_v024/stage_0/phase_0_3/evidence.json`
+
+Whole-stage review records:
+
+- `docs/pfi_v024/STAGE0_WHOLE_STAGE_REVIEW.md`
+- `tests/test_v024_stage0_whole_review_contract.py`
+- `reports/pfi_v024/stage_0/whole_stage_review/evidence.json`
 
 ## v0.2.3 Closeout Status
 
