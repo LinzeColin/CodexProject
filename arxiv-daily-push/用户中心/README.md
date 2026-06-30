@@ -1,5 +1,13 @@
 # ADP 用户中心
 
+## 2026-06-30 23:50:28 Australia/Sydney - Final bundle 已公开 S2PLT02 capture-window dry-run 摘要
+
+- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在 S2PLT02 capture-plan summary 里公开 `terminal_capture_window_audit_summary`。
+- 2026-06-29 和 2026-06-30 的 daily run 是 succeeded，但 SMTP product reports 是 dry-run：`dry_run_email_count=8`，`real_sent_candidate_email_count=0`，`terminal_delivery_credit=false`，`counts_toward_s2plt02_terminal_proof=false`。
+- 当前仍 blocked：prerequisite plan `state_hash=9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144`，final validator `state_hash=1ab9fa8e6fc25ea35fb5405a26917bbf2d5993b1911704b2d3acb654fdb5c5c5`，capture-window summary `state_hash=e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c`，capture-window CLI `state_hash=ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151`。
+- Scheduler proof 仍非终态：final-bundle summary 为 `launchagent_runtime_state_unknown`；实际 capture-window CLI 为 `launchagents_loaded_but_disabled_not_terminal_scheduler_proof`。
+- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY.md)。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
+
 ## 2026-06-30 23:18:23 Australia/Sydney - Final bundle 已公开 S2PLT04 completion evidence 阻断摘要
 
 - `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在 final bundle 顶层公开 `s2plt04_completion_evidence_audit_summary`。
@@ -109,7 +117,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-06-30 23:30:48 Australia/Sydney
+更新时间：2026-06-30 23:56:04 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -122,7 +130,7 @@
 | 截至今日总候选池 | [299 条总候选记录](./截至今日候选池.md)；候选队列前20精选已列分数 | 总候选池来源是 `docs/owner/CONTENT_LEDGER.csv`，前20精选是按公开评分抽取的阅读入口 |
 | 各板块数据源 | [5 个板块 / 6 个数据源](./数据源与板块健康.md)；当前生产启用 1 个来源 | 公开每个板块对应来源、启用状态、影子测试/规划状态和证据链接 |
 | 复习、行动、收益 | [复习行动与收益](./复习行动与收益.md) 已显示字段、证据链和 2026-06-28 今日快照数字 | 今日数字已由当日运行快照写入；后续每日必须继续由真实运行报告同步 |
-| Stage 2 是否正式生产通过 | 没有；最终门仍阻断；final-bundle prerequisite plan 与 final bundle validator 已把 S2PLT03 capture plan summary 暴露到顶层，当前 S2PLT03 仍 `WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`；S2PLT02 runtime readiness hash 为 `48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`，仍缺第二真实日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact | 不能宣称正式生产通过、每日生产运行已验收、S2PLT02/S2PLT03 accepted 或 M1-M4 全量自动发送已通过 |
+| Stage 2 是否正式生产通过 | 没有；最终门仍阻断；final-bundle prerequisite plan 与 final bundle validator 已把 S2PLT02 capture-window dry-run summary 暴露到顶层；2026-06-29/2026-06-30 是 dry-run，`dry_run_email_count=8`，`real_sent_candidate_email_count=0`，`terminal_delivery_credit=false`，仍缺第二真实日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact | 不能宣称正式生产通过、每日生产运行已验收、S2PLT02/S2PLT03 accepted 或 M1-M4 全量自动发送已通过 |
 
 ## 一看三查
 
@@ -135,7 +143,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 399 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 400 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |

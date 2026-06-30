@@ -5837,3 +5837,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY"
+    title: "S2PMT07 final bundle S2PLT02 capture-window summary"
+    parent_task_id: "S2PMT07-FINAL-BUNDLE-PREREQUISITES"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T23:50:28+10:00"
+    objective: "Make final bundle prerequisite planning and validation expose the S2PLT02 terminal capture-window dry-run summary without writing terminal proof."
+    scope: "Final-bundle prerequisite plan builder/validator, final bundle readiness validator, focused final-gate regressions, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no S2PLT03 terminal proof artifact, no S2PLT04 completion report, no final-bundle manifest/handoff/signoff/final-command proof, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", "S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY", "S2PLT02-TERMINAL-DELIVERY-PROOF"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY-20260630.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_window_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_delivery_proof_capture_plan_exposes_blocked_next_steps arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_acceptance_bundle_readiness_embeds_directory_level_artifact_validation", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_window_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_delivery_proof_capture_plan_exposes_blocked_next_steps arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_acceptance_bundle_readiness_embeds_directory_level_artifact_validation", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_live_plan_now PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_live_final_now PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_live_capture_now PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-terminal-capture-window --repo-root . --json"]
+    test_results: ["TDD red failed because terminal_capture_window_audit_summary was missing", "focused capture-window summary tests: 3 OK", "plan-final-bundle-prerequisites live CLI: blocked / exit 2 with state_hash 9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144 and capture-window summary hash e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c", "validate-final-acceptance-bundle live CLI: blocked / exit 2 with state_hash 1ab9fa8e6fc25ea35fb5405a26917bbf2d5993b1911704b2d3acb654fdb5c5c5", "audit-s2plt02-terminal-capture-window live CLI: blocked / exit 2 with state_hash ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151 and scheduler status launchagents_loaded_but_disabled_not_terminal_scheduler_proof"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    result: "blocked_final_bundle_s2plt02_capture_window_summary_synced_no_production"
+    risk: "A final bundle reviewer can mistake 2026-06-29/2026-06-30 dry-run daily successes for terminal S2PLT02 real delivery proof if capture-window details are only visible in standalone audit output."
+    rollback: "Revert the capture-window summary fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

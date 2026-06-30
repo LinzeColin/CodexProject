@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在明确区分：`plan-final-bundle-prerequisites` 与 `validate-final-acceptance-bundle` 已公开 S2PLT04 completion evidence audit 摘要，同时保持 S2PLT04 completion report 未写入。当前 prerequisite plan blocked / exit 2，`state_hash=b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4`；final validator blocked / exit 2，`state_hash=5e0d1a81d1f8f8de49721844d8b96f376a74a11ee69170e30685c915032ed8e2`；S2PLT04 audit blocked / exit 2，`state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f`，`completion_report_ready=false`，`s2plt04_completion_report_written=false`。当前阻断仍是 `s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing`。P0/P1 zero-proof artifact 仍为可用输入，但不等于 S2PLT04 或生产验收；不发送 SMTP、不启用 scheduler、不写 S2PLT02/S2PLT03 terminal proof；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断。
+Owner 视图现在明确区分：`plan-final-bundle-prerequisites` 与 `validate-final-acceptance-bundle` 已公开 S2PLT04 completion evidence audit 摘要，同时保持 S2PLT04 completion report 未写入。当前 prerequisite plan blocked / exit 2，`state_hash=9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144`；final validator blocked / exit 2，`state_hash=1ab9fa8e6fc25ea35fb5405a26917bbf2d5993b1911704b2d3acb654fdb5c5c5`；capture-window summary `state_hash=e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c`，capture-window CLI blocked / exit 2，`state_hash=ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151`，`dry_run_email_count=8`，`real_sent_candidate_email_count=0`，`terminal_delivery_credit=false`，`counts_toward_s2plt02_terminal_proof=false`，scheduler runtime 仍为 `launchagents_loaded_but_disabled_not_terminal_scheduler_proof`。P0/P1 zero-proof artifact 仍为可用输入，但不等于 S2PLT04 或生产验收；不发送 SMTP、不启用 scheduler、不写 S2PLT02/S2PLT03 terminal proof；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断。
 
 ## 3. 为什么重要
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
