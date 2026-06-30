@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 321
+- task_count: 322
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 04:34:08 Australia/Sydney - S2PMT07 final reviewer assignment consumption sync
+
+- Task: `S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC`
+- Result: `blocked_final_bundle_reviewer_assignment_consumed_no_production`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC.md`.
+- Current hashes: assignment validation `b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2`; assignment request `7f59ff864ad3a43f24e3b105f13a5aed8802729e8c18482483db8ed78c2921ad`; closure decision request `246a736255b77c3a40f74fbdc4431f52367e3d474d4d13156a19ec9b6e7feddf`; final readiness `be9cd3bb14da9d57dcaee0168bae396ed95049bf6c261515a5d39959cf3ad461`.
+- Remaining blockers: independent final closure decision, S2PLT02/S2PLT03 terminal proofs, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command, and production acceptance.
+- Production boundary: No P0/P1 closure, S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 04:05:59 Australia/Sydney - S2PMT07 Final Bundle No-Write Flags Outermost Sync
 

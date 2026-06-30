@@ -144,20 +144,18 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
 
-        self.assertIn("REQ-ADP-V7-067-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC", page)
-        self.assertIn("S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC", page)
+        self.assertIn("REQ-ADP-V7-068-S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC", page)
         self.assertIn(
-            "ADP-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC-20260701.json",
+            "ADP-S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC-20260701.json",
             page,
         )
-        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_NO_WRITE_FLAGS_OUTERMOST_SYNC.md", page)
-        self.assertIn("blocked_final_bundle_no_write_flags_outermost_synced_no_production", page)
-        self.assertIn("write_terminal_artifact_allowed=false", page)
-        self.assertIn("scheduler_enable_allowed_by_this_plan=false", page)
-        self.assertIn("production_acceptance_allowed=false", page)
-        self.assertIn("12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa", page)
-        self.assertIn("67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232", page)
-        self.assertIn("cfcd3d70c0cca7f0a5a8bc3804f599001e585a65dc80fed0cecc75996c6798ee", page)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_reviewer_assignment_consumed_no_production", page)
+        self.assertIn("assignment_validation_state_hash=b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", page)
+        self.assertIn("assignment_request_state_hash=7f59ff864ad3a43f24e3b105f13a5aed8802729e8c18482483db8ed78c2921ad", page)
+        self.assertIn("closure_decision_request_state_hash=246a736255b77c3a40f74fbdc4431f52367e3d474d4d13156a19ec9b6e7feddf", page)
+        self.assertIn("be9cd3bb14da9d57dcaee0168bae396ed95049bf6c261515a5d39959cf3ad461", page)
 
         self.assertIn("REQ-ADP-V7-066-S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", page)
