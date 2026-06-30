@@ -1,7 +1,7 @@
 {
   "schema_version": "kmfa.source_mapping_versions.v1",
   "project_id": "KMFA",
-  "registry_status": "field_standardization_policy_registered_no_business_rows",
+  "registry_status": "field_standardization_and_file_adapter_policies_registered_no_business_rows",
   "mapping_version_policy_ref": "KMFA/metadata/protocol/metadata_protocol.yaml#/identifiers/mapping_version",
   "formula_version_policy_ref": "KMFA/metadata/protocol/metadata_protocol.yaml#/identifiers/formula_version",
   "allowed_fields": [
@@ -135,6 +135,37 @@
       "field_skipped_silently_allowed": false,
       "native_wps_parse_status": "requires_conversion_to_xlsx_or_csv",
       "evidence_ref": "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"
+    },
+    {
+      "mapping_version": "MAP-SRC-kmfa-redcircle-postponement-s07p3-v0.1.0",
+      "stage_phase": "S07-P3",
+      "status": "completed_validated_local_only_template_reserved_postponed",
+      "source_id": "SRC-kmfa-redcircle-postponement-s07p3",
+      "scope": "Redcircle operating, contract, collection, and finance export templates reserved for future read-only/hash/rollback controlled ingestion",
+      "reserved_export_types": [
+        "operating",
+        "contract",
+        "collection",
+        "finance"
+      ],
+      "canonical_fields": [],
+      "template_records_ref": "KMFA/metadata/schema_maps/redcircle_reserved_export_templates.jsonl",
+      "connector_policy_ref": "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/machine/redcircle_connector_postponement_policy.json",
+      "rollback_plan_ref": "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/machine/redcircle_future_rollback_plan.jsonl",
+      "automatic_connector_allowed": false,
+      "d15_file_mvp_automatic_connector_allowed": false,
+      "manual_export_file_allowed": true,
+      "read_only_required": true,
+      "hash_retention_required": true,
+      "rollback_plan_required": true,
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "public_repo_business_rows_committed": false,
+      "source_header_plaintext_committed": false,
+      "field_skipped_silently_allowed": false,
+      "formal_report_allowed": false,
+      "evidence_ref": "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"
     }
-  ]
+  ],
+  "redcircle_postponement_policy_ref": "KMFA/metadata/schema_maps/redcircle_postponement_policy.yaml"
 }

@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s07p2-wps-file-adapter"
+    model_version: "0.1.0-s07p3-redcircle-postponement"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -132,6 +132,7 @@ models:
       - "FORM-KMFA-VALIDATION-EVIDENCE-OUTPUT-001"
       - "FORM-KMFA-FINANCE-FILE-ADAPTER-001"
       - "FORM-KMFA-WPS-FILE-ADAPTER-001"
+      - "FORM-KMFA-REDCIRCLE-POSTPONEMENT-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -168,6 +169,11 @@ models:
       - "PARAM-KMFA-426"
       - "PARAM-KMFA-427"
       - "PARAM-KMFA-428"
+      - "PARAM-KMFA-429"
+      - "PARAM-KMFA-430"
+      - "PARAM-KMFA-431"
+      - "PARAM-KMFA-432"
+      - "PARAM-KMFA-433"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -195,7 +201,9 @@ models:
       - "KMFA/tools/check_s07_p1_finance_file_adapter.py"
       - "KMFA/tools/wps_file_adapter.py"
       - "KMFA/tools/check_s07_p2_wps_file_adapter.py"
-      - "remaining_cost_model_not_implemented_until_S07_S10"
+      - "KMFA/tools/redcircle_postponement_policy.py"
+      - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
+      - "remaining_cost_model_not_implemented_until_S08_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
@@ -217,6 +225,8 @@ models:
       - "python3 KMFA/tools/check_s07_p1_finance_file_adapter.py"
       - "python3 -m unittest KMFA.tests.test_wps_file_adapter -q"
       - "python3 KMFA/tools/check_s07_p2_wps_file_adapter.py"
+      - "python3 -m unittest KMFA.tests.test_redcircle_postponement_policy -q"
+      - "python3 KMFA/tools/check_s07_p3_redcircle_postponement.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
@@ -230,6 +240,7 @@ models:
       - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"
       - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

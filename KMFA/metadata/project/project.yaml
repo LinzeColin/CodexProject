@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s07p2-wps-file-adapter"
+version: "0.1.0-s07p3-redcircle-postponement"
 current_stage: "S07"
-current_phase: "S07-P3"
+current_phase: "S07-STAGE-REVIEW"
 current_phase_status: "not_started"
-current_stage_status: "s07p2_completed_validated_local_only_s07p3_not_started"
+current_stage_status: "s07p3_completed_validated_local_only_stage7_review_not_started"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -71,6 +71,15 @@ machine_plane:
   - "metadata/schema_maps/wps_file_adapter_manifest.json"
   - "metadata/schema_maps/wps_field_mappings.jsonl"
   - "metadata/schema_maps/wps_mapping_rule_versions.json"
+  - "stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"
+  - "stage_artifacts/S07_P3_redcircle_postponement_policy/human/test_results.md"
+  - "stage_artifacts/S07_P3_redcircle_postponement_policy/machine/s07_p3_manifest.json"
+  - "stage_artifacts/S07_P3_redcircle_postponement_policy/machine/redcircle_connector_postponement_policy.json"
+  - "stage_artifacts/S07_P3_redcircle_postponement_policy/machine/redcircle_future_rollback_plan.jsonl"
+  - "metadata/imports/redcircle_export_source_registry.json"
+  - "metadata/schema_maps/redcircle_postponement_manifest.json"
+  - "metadata/schema_maps/redcircle_reserved_export_templates.jsonl"
+  - "metadata/schema_maps/redcircle_postponement_policy.yaml"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false
@@ -109,5 +118,12 @@ upload_policy:
   stage6_upload_evidence: "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
   stage6_upload_manifest: "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json"
   stage6_blocker: "none"
+  stage7_phase_completion_upload_allowed: false
+  stage7_review_required_before_upload: true
+  stage7_review_passed: false
+  stage7_upload_ready_local_only: false
+  stage7_uploaded_to_github_main: false
+  stage7_upload_evidence: null
+  stage7_blocker: "STAGE7_REVIEW_NOT_STARTED"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_stage6_uploaded"
+  upload_surface: "project_level_kmfa_worktree_s07p3_local_only"
