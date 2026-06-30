@@ -497,7 +497,7 @@
         <section class="settings-feedback-console" data-settings-feedback-console hidden aria-labelledby="settings-feedback-title">
           <div class="rail-card-head">
             <div>
-              <p class="panel-kicker">设置页反馈控制</p>
+              <p class="panel-kicker">设置页反馈控制台</p>
               <h2 id="settings-feedback-title">反馈偏好</h2>
             </div>
             <span class="status-pill status-ready">可配置</span>
@@ -527,9 +527,14 @@
                 <span><strong>声音反馈</strong><small>默认静音，设置页开启</small></span>
                 <span class="feedback-meter" data-feedback-meter="sound"><i></i></span>
               </button>
+              <button class="feedback-lane" type="button" data-feedback-lane="notification" data-feedback-kind="confirm">
+                <span class="feedback-lane-icon" aria-hidden="true">!</span>
+                <span><strong>通知反馈</strong><small>后台任务、失败和待复核提醒</small></span>
+                <span class="feedback-meter" data-feedback-meter="notification"><i></i></span>
+              </button>
             </div>
             <ol class="feedback-event-log" data-feedback-event-log aria-live="polite" aria-label="反馈事件">
-              <li><span>刚刚</span><strong>界面就绪</strong><small>视觉、触感、声音反馈已接入设置页。</small></li>
+              <li><span>刚刚</span><strong>界面就绪</strong><small>视觉、触感、声音和通知反馈已接入设置页。</small></li>
             </ol>
           </section>
           <div class="feedback-wave" aria-hidden="true"></div>

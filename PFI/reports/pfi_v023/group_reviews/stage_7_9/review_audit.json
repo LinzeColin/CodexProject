@@ -1,0 +1,68 @@
+{
+  "schema": "PFIV023Stage7To9GroupReviewAuditV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S7-S9-GROUP-REVIEW",
+  "status": "review_pass",
+  "generated_at": "2026-06-30T09:17:22Z",
+  "current_group_only": true,
+  "external_taskpack_status": "missing_from_downloads",
+  "findings_before_fix": [
+    "stage7_reports_overclaims_project_review_gate",
+    "stage7_blocked_report_state_not_visible",
+    "stage9_feedback_settings_not_visible"
+  ],
+  "findings_after_fix": [],
+  "phase_review_statuses": [
+    {
+      "stage": "Stage 7",
+      "evidence": "PFI/reports/pfi_v023/stage_7/stage7_review/evidence.json",
+      "status": "candidate_pass",
+      "review_id": "V023-S7-REVIEW",
+      "current_binding_reverified_in_group_review": true
+    },
+    {
+      "stage": "Stage 8",
+      "evidence": "PFI/reports/pfi_v023/stage_8/stage8_review/evidence.json",
+      "status": "candidate_pass",
+      "review_id": "V023-S8-REVIEW",
+      "current_binding_reverified_in_group_review": true
+    },
+    {
+      "stage": "Stage 9",
+      "evidence": "PFI/reports/pfi_v023/stage_9/stage9_review/evidence.json",
+      "status": "candidate_pass",
+      "review_id": "V023-S9-REVIEW",
+      "current_binding_reverified_in_group_review": true
+    }
+  ],
+  "acceptance_checks": {
+    "stage7_report_blockers_visible": true,
+    "stage7_reports_no_fake_zero": true,
+    "stage8_source_gate_visible": true,
+    "stage8_sync_no_fake_zero": true,
+    "stage9_feedback_settings_visible": true,
+    "business_pages_without_feedback_console": true,
+    "no_project_closeout_overclaim": true,
+    "browser_console_clean": true,
+    "current_group_only": true
+  },
+  "residual_risks": [
+    "External roadmap/taskpack files were not present in Downloads during this group review; repo contracts and real browser evidence were used instead.",
+    "Stage 10-11 group review has not been run in this iteration.",
+    "Overall v0.2.3 project review, GitHub upload, backup, and local cleanup remain out of scope for this group run."
+  ],
+  "last_verified_at": "2026-06-30T09:18:21Z",
+  "validation_results": {
+    "stage7_8_9_target_tests": "50 passed in 0.70s",
+    "regression": "22 passed in 0.04s",
+    "all_v023_tests": "192 passed in 2.33s",
+    "node_check_shell_js": "pass",
+    "json_and_git_diff_check": "pass",
+    "browser_audit": "findings=0; console_errors=0; page_errors=0; http_errors=0; reports_cny_zero_count=0",
+    "macos_app_acceptance_lite": "29 pass / 0 fail / 2 info",
+    "localhost_health": {
+      "8501": "ok",
+      "8766": "{\"status\": \"ok\", \"schema\": \"PFIV021RuntimeAPIV1\"}"
+    }
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "PFIV023Stage7To9GroupReviewEvidenceV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S7-S9-GROUP-REVIEW",
+  "review_name": "Stage 7-9 human product experience group review",
+  "status": "review_pass",
+  "generated_at": "2026-06-30T09:17:22Z",
+  "current_group_only": true,
+  "review_scope": [
+    "Stage 7",
+    "Stage 8",
+    "Stage 9"
+  ],
+  "external_taskpack_status": "missing_from_downloads",
+  "external_taskpack_paths_checked": {
+    "roadmap": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+    "taskpack": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+    "preview": "/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html"
+  },
+  "external_taskpack_missing_paths": [
+    "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+    "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+    "/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html"
+  ],
+  "source_basis": [
+    "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+    "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md",
+    "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+    "PFI/reports/pfi_v023/stage_7",
+    "PFI/reports/pfi_v023/stage_8",
+    "PFI/reports/pfi_v023/stage_9",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/browser_audit.json"
+  ],
+  "git": {
+    "head_at_evidence_write": "4e736e46a26b99f356ba2263cf988c2ceba6a29b",
+    "origin_main_at_evidence_write": "87e2abf7278b3792c22c77cd9316d1d5ba09a054",
+    "head_semantics": "Group-review evidence is written before the local group-review commit; final Git state is verified by terminal output for this run.",
+    "head_at_final_validation": "4e736e46a26b99f356ba2263cf988c2ceba6a29b",
+    "origin_main_at_final_validation": "87e2abf7278b3792c22c77cd9316d1d5ba09a054"
+  },
+  "stage_statuses": [
+    {
+      "stage": "Stage 7",
+      "evidence": "PFI/reports/pfi_v023/stage_7/stage7_review/evidence.json",
+      "status": "candidate_pass",
+      "review_id": "V023-S7-REVIEW",
+      "current_binding_reverified_in_group_review": true
+    },
+    {
+      "stage": "Stage 8",
+      "evidence": "PFI/reports/pfi_v023/stage_8/stage8_review/evidence.json",
+      "status": "candidate_pass",
+      "review_id": "V023-S8-REVIEW",
+      "current_binding_reverified_in_group_review": true
+    },
+    {
+      "stage": "Stage 9",
+      "evidence": "PFI/reports/pfi_v023/stage_9/stage9_review/evidence.json",
+      "status": "candidate_pass",
+      "review_id": "V023-S9-REVIEW",
+      "current_binding_reverified_in_group_review": true
+    }
+  ],
+  "stage7_report_contract": {
+    "blocked_reports_visible": true,
+    "no_project_closeout_overclaim": true,
+    "reports_cny_zero_count": 0,
+    "blocked_report_labels": [
+      "净资产报告",
+      "现金余额报告",
+      "投资市值报告"
+    ],
+    "partial_report_labels": [
+      "消费结构报告",
+      "数据质量报告"
+    ]
+  },
+  "stage8_data_source_gate": {
+    "source_gate_visible": true,
+    "sync_cny_zero_count": 0,
+    "real_alipay_transaction_count": 8815,
+    "real_alipay_raw_file_count": 4,
+    "date_range": "2022-06-06 to 2026-06-03"
+  },
+  "stage9_visual_feedback": {
+    "settings_feedback_visible_desktop": true,
+    "settings_feedback_visible_mobile": true,
+    "feedback_console_hidden_on_business_pages": true,
+    "feedback_lanes": [
+      "触感反馈",
+      "声音反馈",
+      "视觉反馈",
+      "通知反馈"
+    ]
+  },
+  "browser_audit": {
+    "path": "PFI/reports/pfi_v023/group_reviews/stage_7_9/browser_audit.json",
+    "findings": [],
+    "desktop_primary_count": 10,
+    "mobile_primary_count": 10,
+    "console_errors": 0,
+    "page_errors": 0,
+    "http_errors": 0,
+    "screenshots": {
+      "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/consumption_desktop.png": 281201,
+      "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/home_desktop.png": 275468,
+      "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/investment_desktop.png": 272911,
+      "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/reports_desktop.png": 255486,
+      "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/reports_mobile.png": 169840,
+      "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/settings_desktop.png": 274531,
+      "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/settings_mobile.png": 161535,
+      "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/sync_desktop.png": 270336
+    }
+  },
+  "fixes": [
+    {
+      "id": "S7-9-FIX-1",
+      "title": "报告与洞察页面提前展示项目级复审和总验收门禁",
+      "source": "Stage 7 browser audit over current localhost reports workspace",
+      "resolution": "shell.js now reapplies the Stage 7 report center contract after legacy dashboard data so blocked/partial report states are visible and closeout gate copy is not shown."
+    },
+    {
+      "id": "S7-9-FIX-2",
+      "title": "设置页反馈控制台未把通知反馈作为可见通道",
+      "source": "Stage 9 browser audit over current localhost settings workspace",
+      "resolution": "index.html now includes a notification feedback lane and shell.js recognizes notification as a feedback hub lane."
+    }
+  ],
+  "acceptance_checks": {
+    "stage7_report_blockers_visible": true,
+    "stage7_reports_no_fake_zero": true,
+    "stage8_source_gate_visible": true,
+    "stage8_sync_no_fake_zero": true,
+    "stage9_feedback_settings_visible": true,
+    "business_pages_without_feedback_console": true,
+    "no_project_closeout_overclaim": true,
+    "browser_console_clean": true,
+    "current_group_only": true
+  },
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage7_reports.py PFI/tests/test_v023_stage8_data_source_gate.py PFI/tests/test_v023_stage9_visual_feedback.py PFI/tests/test_v023_stage9_review.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+    "python3 -m json.tool PFI/reports/pfi_v023/group_reviews/stage_7_9/evidence.json >/dev/null and git diff --check -- PFI",
+    "PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json",
+    "http://127.0.0.1:8501/_stcore/health and http://127.0.0.1:8766/health"
+  ],
+  "validation_results": {
+    "stage7_8_9_target_tests": "50 passed in 0.70s",
+    "regression": "22 passed in 0.04s",
+    "all_v023_tests": "192 passed in 2.33s",
+    "node_check_shell_js": "pass",
+    "json_and_git_diff_check": "pass",
+    "browser_audit": "findings=0; console_errors=0; page_errors=0; http_errors=0; reports_cny_zero_count=0",
+    "macos_app_acceptance_lite": "29 pass / 0 fail / 2 info",
+    "localhost_health": {
+      "8501": "ok",
+      "8766": "{\"status\": \"ok\", \"schema\": \"PFIV021RuntimeAPIV1\"}"
+    }
+  },
+  "changed_files": [
+    "PFI/docs/pfi_v023/README.md",
+    "PFI/docs/pfi_v023/STAGE7_9_GROUP_REVIEW.md",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/browser_audit.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/changed_files.txt",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/evidence.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/review_audit.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/home_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/consumption_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/investment_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/reports_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/reports_mobile.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/settings_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/settings_mobile.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/screenshots/sync_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_7_9/terminal.log",
+    "PFI/tests/test_v023_regression.py",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html"
+  ],
+  "remaining_groups": [
+    "Stage 10-11 group review",
+    "v0.2.3 overall project review and cleanup"
+  ],
+  "last_verified_at": "2026-06-30T09:18:21Z"
+}

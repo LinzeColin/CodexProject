@@ -290,6 +290,62 @@ class TestV023Stage4To6GroupReview(unittest.TestCase):
         self.assertNotIn("固定支出 · CNY 0", browser["routes"]["consumption"]["trend_text"])
 
 
+class TestV023Stage7To9GroupReview(unittest.TestCase):
+    def test_stage7_to_9_group_review_evidence_keeps_reports_sources_and_feedback_honest(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "group_reviews" / "stage_7_9"
+        evidence_path = review_dir / "evidence.json"
+        browser_path = review_dir / "browser_audit.json"
+        changed_files_path = review_dir / "changed_files.txt"
+
+        for path in (evidence_path, browser_path, changed_files_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser = json.loads(browser_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage7To9GroupReviewEvidenceV1")
+        self.assertEqual(evidence["review_id"], "V023-S7-S9-GROUP-REVIEW")
+        self.assertEqual(evidence["status"], "review_pass")
+        self.assertEqual(evidence["review_scope"], ["Stage 7", "Stage 8", "Stage 9"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(evidence["external_taskpack_status"], "missing_from_downloads")
+
+        self.assertEqual(browser["findings"], [])
+        self.assertEqual(browser["desktop"]["primary_count"], 10)
+        self.assertEqual(browser["desktop"]["primary"], EXPECTED_PRIMARY_NAV)
+        self.assertEqual(browser["mobile"]["primary_count"], 10)
+        self.assertEqual(browser["mobile"]["primary"], EXPECTED_PRIMARY_NAV)
+        self.assertEqual(browser["desktop"]["console_errors"], [])
+        self.assertEqual(browser["desktop"]["page_errors"], [])
+        self.assertEqual(browser["desktop"]["http_errors"], [])
+        self.assertEqual(browser["mobile"]["console_errors"], [])
+        self.assertEqual(browser["mobile"]["page_errors"], [])
+        self.assertEqual(browser["mobile"]["http_errors"], [])
+
+        reports = browser["desktop"]["route_audits"]["insights"]
+        self.assertEqual(reports["cny_zero_count"], 0)
+        self.assertFalse(reports["has_project_review_gate_copy"])
+        self.assertTrue(reports["has_stage7_blocked_copy"])
+        self.assertNotIn("20/20 个门禁通过", reports["first_1200_chars"])
+        self.assertNotIn("总验收门禁", reports["first_1200_chars"])
+
+        sync = browser["desktop"]["route_audits"]["sync"]
+        self.assertEqual(sync["cny_zero_count"], 0)
+        self.assertTrue(sync["has_stage8_source_copy"])
+
+        settings = browser["desktop"]["route_audits"]["settings"]
+        self.assertTrue(settings["has_stage9_feedback_settings"])
+        self.assertTrue(browser["mobile"]["settings"]["has_stage9_feedback_settings"])
+        for workspace in ("home", "consumption", "investment"):
+            self.assertFalse(browser["desktop"]["route_audits"][workspace]["has_feedback_console"], workspace)
+
+        self.assertTrue(evidence["acceptance_checks"]["stage7_report_blockers_visible"])
+        self.assertTrue(evidence["acceptance_checks"]["stage8_source_gate_visible"])
+        self.assertTrue(evidence["acceptance_checks"]["stage9_feedback_settings_visible"])
+        self.assertTrue(evidence["acceptance_checks"]["no_project_closeout_overclaim"])
+
+
 class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
     def test_t1121_phase112_evidence_records_readme_candidate_boundary(self) -> None:
         evidence = read_json("reports/pfi_v023/stage_11/phase_11_2/evidence.json")
