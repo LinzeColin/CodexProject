@@ -5,7 +5,7 @@
   "raw_business_data_used": false,
   "review_id": "KMFA-S05-STAGE-REVIEW-20260630",
   "review_time": "2026-06-30T13:00:00+10:00",
-  "reviewed_head": "5f9504726f60e13ab558d18d7650db0671ebb27e",
+  "reviewed_head": "c3314e47ce11cfb8bf56e44d4a38a77904584495",
   "scope": [
     "S05-P1",
     "S05-P2",
@@ -67,6 +67,12 @@
       "severity": "P3",
       "status": "accepted_next_step",
       "summary": "GitHub upload remains a separate final upload step with required push proof."
+    },
+    {
+      "finding_id": "KMFA-S05-UPLOAD-F01",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "After rebasing on latest origin/main, reviewed_head was updated to the current rebased S05-P3 commit."
     }
   ],
   "evidence_refs": [
@@ -77,7 +83,7 @@
     "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md",
     "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
   ],
-  "next_gate": "KMFA-S05-FINAL-GITHUB-UPLOAD-GATE",
+  "next_gate": "KMFA-S06-P1-GATE",
   "upload_allowed_after_review": true,
-  "upload_performed": false
+  "upload_performed": true
 }

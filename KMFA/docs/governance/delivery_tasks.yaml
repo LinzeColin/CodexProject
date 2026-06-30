@@ -1498,3 +1498,43 @@ tasks:
     rollback: "Remove S05_STAGE_REVIEW artifacts and restore Stage 5 status to review pending."
     target_version: "0.1.0-s05-stage-review"
     completed_version: "0.1.0-s05-stage-review"
+  - task_id: "KMFA-S05-GITHUB-UPLOAD-20260630"
+    phase: "S5UPLOAD"
+    objective: "将完成复审并修复 findings 的 Stage 5 栈基于最新 origin/main 上传到 GitHub main，并留下 upload evidence。"
+    scope:
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json"
+      - "Stage 5 governance upload status"
+    non_scope:
+      - "S06 zero-delta validation"
+      - "fact layer"
+      - "lineage full check"
+      - "management report generation"
+      - "UI"
+      - "external connector"
+    status: "completed"
+    dependencies:
+      - "KMFA-S05-STAGE-REVIEW-20260630"
+    required_files:
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json"
+    acceptance_ids:
+      - "ACC-KMFA-S05-GITHUB-UPLOAD"
+    test_commands:
+      - "git rebase origin/main"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_golden_fixture KMFA.tests.test_s05_p2_excel_owner_decision KMFA.tests.test_s05_p2_owner_decision_intake KMFA.tests.test_s05_p2_owner_decision_templates KMFA.tests.test_s05_p2_owner_decision_application KMFA.tests.test_s05_p2_completion_gate KMFA.tests.test_s05_p3_authority_baseline_lock KMFA.tests.test_a0_file_register KMFA.tests.test_file_import_register KMFA.tests.test_source_check_matrix KMFA.tests.test_source_priority KMFA.tests.test_amount_tools KMFA.tests.test_field_standardization KMFA.tests.test_basic_tool_boundaries -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 scripts/lean_governance.py validate --project KMFA"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_project_governance.py --project KMFA"
+      - "git diff --check -- README.md governance/projects.yaml KMFA"
+    test_results:
+      - "PASS: Stage 5 stack rebased on origin/main 495bcd977a587b7fd8b1923bfd74f5138f12263e without conflicts."
+      - "PASS: S05-P1/P2/P3 validators, combined 53 tests, no-omission, governance validators, raw scan, secret scan and JSONL parse checks passed."
+      - "PASS_WITH_POLICY_TEXT_MATCHES_ONLY: secret/raw scan matched policy text only."
+    evidence_refs:
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json"
+    risk: "Stage 5 upload does not implement S06 zero-delta, fact layer, lineage full check, reports, UI or external connectors."
+    rollback: "Revert the Stage 5 upload evidence/status commit before push, or create a corrective commit if already pushed."
+    target_version: "0.1.0-s05-github-upload"
+    completed_version: "0.1.0-s05-github-upload"

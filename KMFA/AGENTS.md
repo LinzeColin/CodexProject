@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `S05｜A0 权威项目成本黄金基准`
-- 当前 Phase: `S05-STAGE-REVIEW｜Stage 5 整体复审本地通过，下一步 Stage 5 final GitHub upload`
+- 当前 Stage: `S06｜零差异校验与差异处理队列`
+- 当前 Phase: `S06-P1｜零差异校验器待开始`
 
 ## Execution Rules
 

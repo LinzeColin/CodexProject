@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s05-stage-review
+product_version: 0.1.0-s05-github-upload
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S05`
-- current_phase: `S05-STAGE-REVIEW 本地通过，下一步 Stage 5 final GitHub upload`
-- current_tasks: `KMFA-S05-STAGE-REVIEW-20260630`
-- status: `s05_stage_review_passed_local_only_no_upload`
+- current_stage: `S06`
+- current_phase: `S06-P1 零差异校验器待开始`
+- current_tasks: `S6PAT01-S6PAT03`
+- status: `s05_uploaded_to_github_main_s06_not_started`
 - risk_tier: `T3`
 
 ## Completed
@@ -49,17 +49,18 @@ product_version: 0.1.0-s05-stage-review
 | `S5PBT01-S5PBT03` | S05-P2 public-safe 字段合同、45 条 A0 golden fixture 候选、40 条 PDF 字段 hash/source anchor 和 Excel owner/授权降级决策完成本地验证 | `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md` |
 | `S5PCT01-S5PCT03` | S05-P3 A0 authority baseline lock 完成本地验证：40 条 PDF 字段锁定为 Q5 calculation baseline，5 条 Excel 字段排除为 cross-source support only | `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md` |
 | `KMFA-S05-STAGE-REVIEW-20260630` | Stage 5 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
+| `KMFA-S05-GITHUB-UPLOAD-20260630` | Stage 5 final GitHub upload 已完成 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S05-FINAL-GITHUB-UPLOAD` | Stage 5 final GitHub upload 尚未开始；必须先复跑 validators 并留下 push 证据 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
+| `S6PAT01-S6PAT03` | S06-P1 零差异校验器尚未开始 | `KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `S05 GitHub upload` | Stage 5 review 已本地通过，但尚未上传 GitHub | 下一轮只执行 Stage 5 final upload gate |
+| `S06-P1` zero-delta validator | 后续 Stage/Phase，尚未开始 | 下一轮只执行 S06-P1，不上传中间 Phase |
 | `S06` zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

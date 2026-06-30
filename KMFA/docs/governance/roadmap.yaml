@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
-completed_estimated_hours: 39
-current_stage_id: "S5"
-current_phase_id: "S5PB"
-current_task_id: "S5PBT01-S5PBT03"
-next_gate_id: "KMFA-S05-P2-PRIVATE-VALUE-BACKFILL-GATE"
+completed_estimated_hours: 42
+current_stage_id: "S6"
+current_phase_id: "S6PA"
+current_task_id: "S6PAT01-S6PAT03"
+next_gate_id: "KMFA-S06-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -576,10 +576,10 @@ stages:
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
   - stage_id: "S5"
     name: "A0权威项目成本黄金基准"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S05-P1 A0 文件登记、S05-P2 public-safe 字段候选、S05-P3 权威基准锁定和 Stage 5 整体复审均已完成本地验证；40 条 PDF 字段已锁定为 public-safe Q5 calculation baseline，5 条 Excel 字段已按 owner/授权降级决策排除。GitHub upload 未开始。"
+    current_result: "S05-P1 A0 文件登记、S05-P2 public-safe 字段候选、S05-P3 权威基准锁定、Stage 5 整体复审和 final GitHub upload 均已完成；40 条 PDF 字段已锁定为 public-safe Q5 calculation baseline，5 条 Excel 字段已按 owner/授权降级决策排除。"
     evidence_refs:
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md"
@@ -595,6 +595,8 @@ stages:
       - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md"
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json"
   - stage_id: "S6"
     name: "零差异校验与差异处理队列"
     status: "planned"

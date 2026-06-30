@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload，以及 Stage 5 的 `S05-P1｜A0 文件登记`、`S05-P2｜字段级黄金基准`、`S05-P3｜权威基准锁定` 和 Stage 5 整体复审本地验证。S05-P3 已锁定 40 条 PDF 字段 hash/source-anchor 记录为 public-safe Q5 calculation baseline，并将 5 条 Excel 字段按 owner/授权降级决策排除为 cross-source support only。Stage 5 GitHub upload 尚未执行，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload，以及 Stage 5 的 `S05-P1｜A0 文件登记`、`S05-P2｜字段级黄金基准`、`S05-P3｜权威基准锁定`、Stage 5 整体复审和 final GitHub upload。S05-P3 已锁定 40 条 PDF 字段 hash/source-anchor 记录为 public-safe Q5 calculation baseline，并将 5 条 Excel 字段按 owner/授权降级决策排除为 cross-source support only。S06 尚未开始，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -36,6 +36,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - Excel 候选已有机器复核记录、owner 决策包、专门 validator、owner 决策 intake validator、三种 public-safe 决策模板、application preview、active owner/授权降级决策和 completion gate ready 证据：当前 workbook 只能作为交叉来源支持，不能机器合成为单一 A0 项目基准，已被排除出 Q4/Q5 A0 baseline。
 - S05-P3 A0 authority baseline lock 已存在：40 条 PDF 字段 hash/source-anchor 记录被锁定，5 条 Excel 字段被排除；baseline version、content hash、锁定角色、锁定时间和 validator 均已记录。
 - Stage 5 整体复审已本地通过：`KMFA/stage_artifacts/S05_STAGE_REVIEW/` 记录 review report、test results 和 machine manifest；raw/secret scan 未发现可提交 raw 文件或 secret。
+- Stage 5 final GitHub upload 已完成并留下 upload record/manifest：`KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md`、`KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json`。
 
 ## 你现在不能信任什么
 
@@ -43,7 +44,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为真实业务源解析、事实层或报告已经实现。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；zero-delta、lineage 和报告发布门禁尚未完成。
-- 不能认为 Stage 5 已经上传 GitHub main；当前仅为 local-only review passed。
+- 不能认为 S06 zero-delta 已经实现；下一步才进入 S06-P1。
 - 不能认为 zero-delta 或 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -52,4 +53,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 Stage 5 final GitHub upload gate；先对齐最新 `origin/main`，复跑 validators、治理 validator、raw/secret scan，生成 upload record/manifest 后再 push。不得扩大到 UI、报告、事实层、zero-delta 或自动接口。
+下一步只执行 `S06-P1｜零差异校验器`；不得扩大到 UI、正式报告、事实层或自动接口。

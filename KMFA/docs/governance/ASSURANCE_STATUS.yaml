@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S05-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260630-S05-GITHUB-UPLOAD"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05_STAGE_REVIEW"
-snapshot_event_time: "2026-06-30T13:00:00+10:00"
-generator_version: "manual-s05-stage-review"
-final_commit_binding: "precommit-pending-s05-stage-review"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05_GITHUB_UPLOAD"
+snapshot_event_time: "2026-06-30T13:13:10+10:00"
+generator_version: "manual-s05-github-upload"
+final_commit_binding: "precommit-pending-s05-github-upload"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -60,6 +60,7 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md"
       - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/tools/a0_authority_baseline_lock.py"
       - "KMFA/tools/check_a0_authority_baseline_lock.py"
   operational_validation:
@@ -132,6 +133,8 @@ dimensions:
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md"
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_review_manifest.json"
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json"
       - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
       - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
       - "KMFA/tools/a0_authority_baseline_lock.py"
@@ -142,9 +145,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S05_STAGE_REVIEW_PASSED_LOCAL_ONLY_PENDING_GITHUB_UPLOAD"
-  release_gate: "KMFA-S05-FINAL-GITHUB-UPLOAD-GATE"
+  status: "S05_UPLOADED_TO_GITHUB_MAIN_S06_NOT_STARTED"
+  release_gate: "KMFA-S06-P1-GATE"
   blocker_ids:
-    - "S05_GITHUB_UPLOAD_NOT_STARTED"
     - "S06_ZERO_DELTA_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

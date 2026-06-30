@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s05-stage-review`
-- current_stage: `S05`
-- current_phase: `S05-STAGE-REVIEW 本地通过，下一步 Stage 5 final GitHub upload`
-- status: `s05_stage_review_passed_local_only_no_upload`
+- version: `0.1.0-s05-github-upload`
+- current_stage: `S06`
+- current_phase: `S06-P1 零差异校验器待开始`
+- status: `s05_uploaded_to_github_main_s06_not_started`
 - production_ready: `false`
-- github_upload_ready: `true_local_only_requires_final_upload_gate_rerun`
+- github_upload_ready: `false_until_s06_stage_completion_and_review`
 
 ## 已完成
 
@@ -46,15 +46,16 @@
 - S05-P3 已完成 A0 权威基准锁定：40 条 PDF 字段 hash/source-anchor 记录进入 public-safe Q5 calculation baseline，5 条 Excel 字段依据 active owner/授权降级决策排除为 cross-source support only。
 - S05-P3 已生成 `KMFA/metadata/baseline/a0_authority_baseline_manifest.json`、`KMFA/metadata/baseline/a0_authority_baseline_records.jsonl`、`KMFA/tools/a0_authority_baseline_lock.py`、`KMFA/tools/check_a0_authority_baseline_lock.py` 和 `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/`。
 - Stage 5 整体复审已本地通过：`KMFA/stage_artifacts/S05_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；复审修复了 Stage 5 review 证据和治理状态缺口。
+- Stage 5 final GitHub upload 已生成证据：`KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json`。
 
 ## 未完成
 
-- Stage 5 final GitHub upload 尚未完成。
+- S06-P1 zero-delta validator 尚未开始。
 - zero-delta、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock 不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review 已本地通过；下一步只能执行 Stage 5 final GitHub upload gate，不能跳到 UI、报告、事实层或 zero-delta。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload 已完成；下一步只能执行 S06-P1，不能跳到 UI、报告、事实层或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
