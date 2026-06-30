@@ -468,6 +468,7 @@ let settingsOperationState = {
 const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
 let runtimeTrendState = null;
+let stage4PagesCatalog = typeof window !== "undefined" ? window.PFI_V023_STAGE4_PAGES || null : null;
 let runtimeReadModelState = null;
 let runtimeStage4SyncState = null;
 
@@ -3652,6 +3653,7 @@ function renderWorkspace(workspaceId, options = {}) {
   const previousContext = currentContext();
   const activeRoute = Object.prototype.hasOwnProperty.call(options, "routeAlias") ? normalizeRouteAlias(options.routeAlias) : "";
   const routeForState = normalizeRouteAlias(activeRoute || defaultRouteAliasForWorkspace(workspaceId));
+  const stage4Subpage = resolveStage4Subpage(workspaceId, routeForState);
 
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     const isAlias = button.dataset.entryType === "v01_alias" || button.hasAttribute("data-feature-view");
@@ -3665,13 +3667,14 @@ function renderWorkspace(workspaceId, options = {}) {
   });
   syncMobileTabs(workspaceId);
 
-  title.textContent = ownerVisibleText(workspace.label, "首页总览");
-  kicker.textContent = ownerVisibleText(workspace.kicker, "今日总览");
-  conclusion.textContent = ownerVisibleText(workspace.conclusion, "");
+  title.textContent = ownerVisibleText(stage4Subpage?.title || workspace.label, "首页总览");
+  kicker.textContent = ownerVisibleText(stage4Subpage?.primaryObject || workspace.kicker, "今日总览");
+  conclusion.textContent = ownerVisibleText(stage4Subpage?.emptyState || workspace.conclusion, "");
   if (freshness) freshness.textContent = ownerVisibleText(workspace.freshness, "本机数据");
   if (runtimeTarget) runtimeTarget.textContent = ownerVisibleText(workspace.runtime);
   main.dataset.activeWorkspace = workspaceId;
   main.dataset.routeAlias = routeForState;
+  main.dataset.stage4SubpageRoute = stage4Subpage?.routeAlias || "";
   main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none";
   const settingsConsole = document.querySelector("[data-settings-feedback-console]");
   if (settingsConsole) settingsConsole.hidden = workspaceId !== "settings";
@@ -3679,6 +3682,7 @@ function renderWorkspace(workspaceId, options = {}) {
 
   renderCards(workspace.cards);
   renderSecondaryTabs(workspace.secondaryTabs || [], workspaceId, routeForState);
+  renderStage4SubpageSurface(stage4Subpage, workspaceId, routeForState);
   renderFeatureCards(workspace.features);
   renderDecisionRows(workspace.rows);
   renderTasks(workspace.tasks);
@@ -3744,6 +3748,132 @@ function renderSecondaryTabs(tabs, workspaceId, routeForState) {
     button.setAttribute("aria-current", button.classList.contains("is-active") ? "page" : "false");
     container.appendChild(button);
   });
+}
+
+function resolveStage4Subpage(workspaceId, routeAlias) {
+  const catalog = stage4Phase41Catalog();
+  const pages = catalog[workspaceId] || [];
+  if (!pages.length) return null;
+  const cleanRoute = normalizeRouteAlias(routeAlias || defaultRouteAliasForWorkspace(workspaceId));
+  return pages.find((page) => normalizeRouteAlias(page.routeAlias) === cleanRoute) || pages[0] || null;
+}
+
+function stage4Phase41Catalog() {
+  stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES || null;
+  return stage4PagesCatalog?.phase41Subpages || {};
+}
+
+function renderStage4SubpageSurface(page, workspaceId, routeForState) {
+  const surface = ensureStage4SubpageSurface();
+  if (!surface) return;
+  if (!page) {
+    surface.hidden = true;
+    surface.replaceChildren();
+    surface.dataset.stage4Workspace = "";
+    surface.dataset.stage4Route = "";
+    return;
+  }
+
+  surface.hidden = false;
+  surface.dataset.stage4Workspace = workspaceId;
+  surface.dataset.stage4Route = normalizeRouteAlias(routeForState || page.routeAlias);
+  surface.replaceChildren();
+
+  const article = document.createElement("article");
+  article.className = `stage4-subpage stage4-layout-${page.layoutKind}`;
+  article.setAttribute("data-stage4-layout-kind", page.layoutKind);
+  article.setAttribute("data-stage4-primary-object", page.primaryObject);
+  article.setAttribute("data-stage4-primary-action", page.primaryAction);
+  article.setAttribute("data-stage4-empty-state", page.emptyState);
+  article.setAttribute("data-stage4-error-state", page.errorState);
+  article.setAttribute("data-stage4-data-source", page.dataSource);
+
+  const breadcrumb = document.createElement("nav");
+  breadcrumb.className = "stage4-breadcrumb";
+  breadcrumb.setAttribute("aria-label", "二级页面路径");
+  breadcrumb.dataset.stage4Breadcrumb = "";
+  (page.breadcrumb || []).forEach((item, index) => {
+    const crumb = document.createElement("span");
+    crumb.textContent = ownerVisibleText(item, "页面");
+    breadcrumb.appendChild(crumb);
+    if (index < page.breadcrumb.length - 1) {
+      const divider = document.createElement("i");
+      divider.setAttribute("aria-hidden", "true");
+      divider.textContent = "/";
+      breadcrumb.appendChild(divider);
+    }
+  });
+
+  const header = document.createElement("div");
+  header.className = "stage4-subpage-head";
+  const headingWrap = document.createElement("div");
+  const kicker = document.createElement("p");
+  kicker.className = "panel-kicker";
+  kicker.textContent = ownerVisibleText(page.primaryObject, "二级页面");
+  const heading = document.createElement("h2");
+  heading.textContent = ownerVisibleText(page.title, "二级页面");
+  const summary = document.createElement("p");
+  summary.textContent = ownerVisibleText(page.emptyState, "等待真实数据");
+  headingWrap.append(kicker, heading, summary);
+  const action = document.createElement("button");
+  action.type = "button";
+  action.className = "primary-action stage4-primary-action";
+  action.textContent = ownerVisibleText(page.primaryAction, "打开");
+  action.dataset.stage4PrimaryActionButton = "";
+  header.append(headingWrap, action);
+
+  const stateGrid = document.createElement("dl");
+  stateGrid.className = "stage4-state-grid";
+  appendStage4State(stateGrid, "主对象", page.primaryObject);
+  appendStage4State(stateGrid, "数据来源", page.dataSource);
+  appendStage4State(stateGrid, "空状态", page.emptyState);
+  appendStage4State(stateGrid, "错误状态", page.errorState);
+
+  const sectionGrid = document.createElement("div");
+  sectionGrid.className = "stage4-section-grid";
+  (page.sections || []).forEach((section) => {
+    const card = document.createElement("section");
+    card.className = `stage4-section stage4-section-${section.kind}`;
+    card.dataset.stage4SectionKind = section.kind;
+    const title = document.createElement("h3");
+    title.textContent = ownerVisibleText(section.title, "页面区域");
+    const detail = document.createElement("p");
+    detail.textContent = ownerVisibleText(section.detail, "等待真实数据");
+    card.append(title, detail);
+    sectionGrid.appendChild(card);
+  });
+
+  article.append(breadcrumb, header, stateGrid, sectionGrid);
+  surface.appendChild(article);
+}
+
+function ensureStage4SubpageSurface() {
+  const existing = document.querySelector("[data-stage4-subpage-surface]");
+  if (existing) return existing;
+  const main = document.querySelector("#main-workspace");
+  if (!main) return null;
+  const surface = document.createElement("section");
+  surface.className = "stage4-subpage-surface";
+  surface.dataset.stage4SubpageSurface = "";
+  surface.hidden = true;
+  surface.setAttribute("aria-label", "二级页面差异化内容");
+  const pageTabs = document.querySelector(".page-tabs-panel");
+  if (pageTabs?.parentNode) {
+    pageTabs.insertAdjacentElement("afterend", surface);
+  } else {
+    main.prepend(surface);
+  }
+  return surface;
+}
+
+function appendStage4State(list, label, value) {
+  const item = document.createElement("div");
+  const term = document.createElement("dt");
+  term.textContent = label;
+  const description = document.createElement("dd");
+  description.textContent = ownerVisibleText(value, "待补");
+  item.append(term, description);
+  list.appendChild(item);
 }
 
 function renderFeatureCards(cards) {
@@ -5140,7 +5270,25 @@ window.PFI_STAGE7_CLICK_SAFE = {
   feedbackStates: FEEDBACK_STATE_ORDER,
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+function loadStage4PagesCatalog() {
+  if (stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES) {
+    stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES;
+    return Promise.resolve(stage4PagesCatalog);
+  }
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "./app/pages/stage4Subpages.js";
+    script.dataset.stage4PagesLoader = "true";
+    script.onload = () => {
+      stage4PagesCatalog = window.PFI_V023_STAGE4_PAGES || null;
+      resolve(stage4PagesCatalog);
+    };
+    script.onerror = () => resolve(null);
+    document.head.appendChild(script);
+  });
+}
+
+function bootPFIShell() {
   restoreContext();
   bindEvents();
   applyHomeSummary(readHomeSummary());
@@ -5158,6 +5306,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const requestedWorkspace = readContext().workspace || "home";
   renderWorkspace(WORKSPACES[requestedWorkspace] ? requestedWorkspace : "home", { silent: true, preserveFocus: true, replaceRoute: true });
   void refreshRuntimeTrends({ rerender: true });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadStage4PagesCatalog().then(bootPFIShell);
 });
 
 window.addEventListener("hashchange", () => {

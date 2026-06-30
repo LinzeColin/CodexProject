@@ -1,0 +1,149 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 4",
+  "stage_name": "二级页面差异化重建",
+  "phase_id": "V023-S4-P4.1",
+  "phase_name": "资产/账本/投资二级页",
+  "created_at": "2026-06-30T10:32:09+10:00",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "phase41_summary": {
+    "workspaces": [
+      "accounts",
+      "ledger",
+      "investment"
+    ],
+    "subpage_count": 12,
+    "accounts_subpages": [
+      "/accounts?tab=overview",
+      "/accounts?tab=list",
+      "/accounts?tab=trend",
+      "/accounts?tab=reconcile"
+    ],
+    "ledger_subpages": [
+      "/ledger?tab=list",
+      "/ledger?tab=filter",
+      "/ledger?tab=review",
+      "/ledger?tab=export"
+    ],
+    "investment_subpages": [
+      "/investment?tab=overview",
+      "/investment?tab=holdings",
+      "/investment?tab=trades",
+      "/investment?tab=returns"
+    ]
+  },
+  "acceptance_summary": {
+    "three_to_five_subpages_per_phase41_workspace": true,
+    "subpages_have_independent_layouts": true,
+    "subpages_have_independent_primary_objects": true,
+    "subpages_have_independent_primary_actions": true,
+    "subpages_have_empty_and_error_states": true,
+    "url_state_breadcrumb_title_change": true,
+    "no_template_clone": true,
+    "screenshots_show_differences": true
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+      "exit_code": 1,
+      "summary": "RED before implementation: 6 failed because Stage 4 pages module, shell renderer, and Phase 4.1 evidence were missing"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js",
+      "exit_code": 0,
+      "summary": "stage4Subpages.js syntax check passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "shell.js syntax check passed"
+    },
+    {
+      "command": "Google Chrome headless via playwright-core on PFI/web/index.html",
+      "exit_code": 0,
+      "summary": "12 Phase 4.1 subpages passed URL/state/breadcrumb/title and differentiation checks; screenshots captured"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+      "exit_code": 0,
+      "summary": "GREEN after implementation and evidence: 6 passed, 15 subtests passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "v0.2.3 regression suite: 65 passed, 15 subtests passed"
+    },
+    {
+      "command": "PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_4/phase_4_1/evidence.json PFI/reports/pfi_v023/stage_4/phase_4_1/browser_validation.json",
+      "exit_code": 0,
+      "summary": "Stage 4 Phase 4.1 JSON evidence files are valid"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage4_subpage_differentiation.py",
+      "exit_code": 0,
+      "summary": "Stage 4 Phase 4.1 test compiles"
+    },
+    {
+      "command": "rg -n -i \"\\b(mock|sample|synthetic|fixture|demo|fake)\\b\" PFI/web/app/pages/stage4Subpages.js PFI/web/app/shell.js PFI/web/styles.css PFI/tests/test_v023_stage4_subpage_differentiation.py PFI/docs/pfi_v023/STAGE4_SUBPAGES.md",
+      "exit_code": 1,
+      "summary": "No forbidden fake financial data terms found in Phase 4.1 source, test, or docs files"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "No whitespace errors in Phase 4.1 diff"
+    },
+    {
+      "command": "git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main",
+      "exit_code": 0,
+      "summary": "origin/main advanced from a2008390 to 30c3c8da before local Phase 4.1 closeout"
+    },
+    {
+      "command": "git rebase origin/main",
+      "exit_code": 0,
+      "summary": "Phase 4.1 commit rebased cleanly onto origin/main 30c3c8da"
+    },
+    {
+      "command": "post-rebase validation set",
+      "exit_code": 0,
+      "summary": "Stage 4 target: 6 passed, 15 subtests passed; v0.2.3 regression: 65 passed, 15 subtests passed; JSON, node checks, diff check, and forbidden fake-data term scan passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE4_SUBPAGES.md",
+    "PFI/reports/pfi_v023/stage_4/phase_4_1/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_4/phase_4_1/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_4/phase_4_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/accounts_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/investment_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/ledger_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_1/terminal.log",
+    "PFI/tests/test_v023_stage4_subpage_differentiation.py",
+    "PFI/web/app/pages/stage4Subpages.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/styles.css"
+  ],
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/accounts_subpages.png",
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/ledger_subpages.png",
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/investment_subpages.png"
+  ],
+  "data_status_summary": {
+    "data_changes_made": false,
+    "financial_values_fabricated": false,
+    "real_empty_states_used": true
+  },
+  "explicitly_not_done": [
+    "Stage 4 Phase 4.2 consumption/data/reports subpages",
+    "Stage 4 Phase 4.3 market/settings/recommendations subpages",
+    "Stage 4 review not run",
+    "Stage 5 and later work",
+    "GitHub main upload for intermediate phase"
+  ],
+  "requires_user_acceptance": true
+}
