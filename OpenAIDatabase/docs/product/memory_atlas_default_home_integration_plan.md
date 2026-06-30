@@ -123,7 +123,7 @@ Rollback:
 
 ## Validation Plan
 
-Run from the repository root unless noted:
+Run from the CodexProject worktree root unless noted:
 
 ```bash
 PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin:$PATH" \
@@ -132,7 +132,7 @@ PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$H
 PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin:$PATH" \
   pnpm --dir OpenAIDatabase/apps/memory-atlas build
 
-python3 scripts/audit_memory_atlas_acceptance.py --publish-dir apps/memory-atlas/dist
+python3 OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py --publish-dir OpenAIDatabase/apps/memory-atlas/dist
 ```
 
 Browser smoke after Stage 3.1 implementation:

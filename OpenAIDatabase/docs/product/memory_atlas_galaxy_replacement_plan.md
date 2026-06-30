@@ -186,7 +186,7 @@ degrade visual intensity rather than inventing data.
 
 ## Validation Plan
 
-Run after each future implementation commit:
+Run from the CodexProject worktree root after each future implementation commit:
 
 ```bash
 PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin:$PATH" \
@@ -195,8 +195,8 @@ PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$H
 PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin:$PATH" \
   pnpm --dir OpenAIDatabase/apps/memory-atlas build
 
-python3 scripts/audit_memory_atlas_visual_acceptance.py --publish-dir apps/memory-atlas/dist
-python3 scripts/audit_memory_atlas_acceptance.py --publish-dir apps/memory-atlas/dist
+python3 OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py --repo-root OpenAIDatabase
+python3 OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py --publish-dir OpenAIDatabase/apps/memory-atlas/dist
 ```
 
 Browser comparison for the feature flag stage:
