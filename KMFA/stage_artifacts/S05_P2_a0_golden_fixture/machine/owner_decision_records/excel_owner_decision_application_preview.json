@@ -1,0 +1,35 @@
+{
+  "application_status": "ready",
+  "business_plaintext_committed": false,
+  "candidate_application": {
+    "candidate_role": "cross_source_support_only",
+    "cross_source_support_scope": "Sales performance workbook and finance package may support cross-source review, but the workbook aggregates multiple projects and is not a standalone A0 project cost baseline.",
+    "field_actions": [
+      "contract_amount",
+      "total_expense",
+      "gross_profit",
+      "gross_margin",
+      "cost_category"
+    ],
+    "pending_field_count": 5,
+    "q5_exclusion_confirmed": true
+  },
+  "candidate_id": "A0-CAND-70023EFC7305",
+  "completion_gate_effect": "resolves_excel_candidate_without_q4_q5",
+  "decision_code": "downgrade_to_cross_source_support",
+  "file_id": "A0-FILE-BAE6D90834C5",
+  "phase_id": "S05-P2",
+  "private_csv_committed": false,
+  "project_id": "KMFA",
+  "public_safety": {
+    "github_upload_allowed_by_preview": false,
+    "raw_or_plaintext_values_included": false,
+    "source_layer_write_allowed": false
+  },
+  "q4_confirmation_claimed": false,
+  "q5_baseline_claimed": false,
+  "raw_source_committed": false,
+  "record_type": "s05_p2_owner_decision_application_preview",
+  "schema_version": "kmfa.s05_p2_owner_decision_application_preview.v1",
+  "stage_id": "S05"
+}

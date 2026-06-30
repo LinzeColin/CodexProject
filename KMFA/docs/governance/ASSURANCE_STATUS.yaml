@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S05P2-OWNER-DECISION-APPLICATION-PREVIEW"
+as_of_event_id: "EVENT-KMFA-20260630-S05P2-OWNER-DOWNGRADE-DECISION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05P2_OWNER_DECISION_APPLICATION_PREVIEW"
-snapshot_event_time: "2026-06-30T11:00:00+10:00"
-generator_version: "manual-s05p2-owner-decision-application-preview"
-final_commit_binding: "precommit-pending-s05p2-owner-decision-application-preview"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05P2_OWNER_DOWNGRADE_DECISION"
+snapshot_event_time: "2026-06-30T11:10:00+10:00"
+generator_version: "manual-s05p2-owner-downgrade-decision"
+final_commit_binding: "precommit-pending-s05p2-owner-downgrade-decision"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -57,6 +57,7 @@ dimensions:
       - "KMFA/tools/check_s05_p2_owner_decision_templates.py"
       - "KMFA/tools/preview_s05_p2_owner_decision_application.py"
       - "KMFA/tools/check_s05_p2_completion_gate.py"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -112,6 +113,8 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_intake_contract.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_templates"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/no_owner_decision_application_preview.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_records/excel_owner_resolution_decision.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_records/excel_owner_decision_application_preview.json"
       - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
       - "KMFA/tools/check_s05_p2_owner_decision_intake.py"
       - "KMFA/tools/check_s05_p2_owner_decision_templates.py"
@@ -123,14 +126,9 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S05P2_APPLICATION_PREVIEW_AND_COMPLETION_GATE_BLOCKED_EXPECTED"
-  release_gate: "KMFA-S05-P2-EXCEL-PRIVATE-VALUE-RESOLUTION-GATE"
+  status: "S05P2_COMPLETED_VALIDATED_LOCAL_ONLY_OWNER_DOWNGRADE"
+  release_gate: "KMFA-S05-P3-AUTHORITY-BASELINE-LOCK-GATE"
   blocker_ids:
-    - "S05P2_EXCEL_PRIVATE_VALUES_PENDING"
-    - "S05P2_EXCEL_SOURCE_ANCHORS_PENDING"
-    - "S05P2_EXCEL_OWNER_DECISION_PENDING"
-    - "S05P2_OWNER_DECISION_APPLICATION_PREVIEW_BLOCKED"
-    - "S05P2_COMPLETION_GATE_BLOCKED"
     - "S05P2_Q4_HUMAN_CONFIRMATION_NOT_STARTED"
     - "S05P3_NOT_STARTED"
     - "S05_STAGE_REVIEW_NOT_STARTED"
