@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload，以及 Stage 7 的 S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、整体复审和 final GitHub upload。S07-P3 已预留红圈经营、合同、回款、财务 4 类导出模板，明确 D15 文件型 MVP 不接自动接口，并建立后续只读、留 hash、可回滚控制；S08-P1 项目组合键、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 的 S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、整体复审和 final GitHub upload，以及 S08-P1 项目组合键本地验证。S08-P1 已建立 hash-only 项目身份 profile、匹配候选和人工复核队列；S08-P2、S08-P3、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -45,6 +45,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S07-P2 WPS 文件适配已本地验证完成：`KMFA/tools/wps_file_adapter.py` 支持 WPS 导出转换后的 `.xlsx` 只读结构解析、原生 WPS 转换提示和版本化字段映射；`KMFA/tools/check_s07_p2_wps_file_adapter.py` 验证 4 类 WPS 导出、20 条字段映射、4 条转换提示、1 个 active mapping rule version、无来源表头明文、无 raw business values、财务/红圈 scope 边界。
 - S07-P3 红圈导出后置策略已本地验证完成：`KMFA/tools/redcircle_postponement_policy.py` 只生成 public-safe 预留模板、source registry、connector postponement policy 和 rollback plan；`KMFA/tools/check_s07_p3_redcircle_postponement.py` 验证 4 类红圈模板、D15 自动接口禁止、只读/hash/rollback/manual approval 控制、无接口凭证、无字段明文、无 raw business values。
 - Stage 7 整体复审和 final GitHub upload 已完成：`KMFA/stage_artifacts/S07_STAGE_REVIEW/` 记录 S07-P1/P2/P3 复跑、治理 validator、raw/secret scan、evidence consistency check、dry-run push、push 和 post-push parity。
+- S08-P1 项目组合键已本地验证完成：合同编号、项目名称、对手方、主体、时间、金额签名、责任人、来源 hash 八个组件只保存 hash/private refs；强匹配阈值为 8500 bps，人工复核阈值为 7000 bps，低于强匹配阈值进入人工复核且不自动合并。
 
 ## 你现在不能信任什么
 
@@ -52,7 +53,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为真实业务源解析、事实层或报告已经实现。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
-- 不能认为 Stage 6 upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle policy 或 Stage 7 review 代表正式经营报告、事实层、lineage、自动接口或差异关闭能力已经实现。
+- 不能认为 Stage 6 upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle policy、Stage 7 review 或 S08-P1 project composite key 代表正式经营报告、事实层、lineage、自动接口或差异关闭能力已经实现。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -61,4 +62,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S08-P1｜项目组合键`；不得扩大到 S08-P2、UI、正式报告、事实层、lineage 或自动接口。S08-P1 必须只建立 public-safe matching metadata、tests 和 validator，不提交 raw business data。
+下一步只执行 `S08-P2｜业务实体模型`；不得扩大到 S08-P3、Stage 8 review、UI、正式报告、事实层、lineage 或自动接口。S08-P2 必须继续只使用 public-safe metadata、tests 和 validator，不提交 raw business data。

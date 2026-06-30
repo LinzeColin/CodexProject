@@ -114,11 +114,11 @@ models:
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"
-    purpose: "后续支持 A0 权威基准、字段标准化、金额标准化、零差异校验、差异队列和项目成本报告。"
+    purpose: "后续支持 A0 权威基准、字段标准化、金额标准化、零差异校验、差异队列、项目身份匹配和项目成本报告。"
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s07-github-upload"
+    model_version: "0.1.0-s08p1-project-composite-key"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -133,6 +133,7 @@ models:
       - "FORM-KMFA-FINANCE-FILE-ADAPTER-001"
       - "FORM-KMFA-WPS-FILE-ADAPTER-001"
       - "FORM-KMFA-REDCIRCLE-POSTPONEMENT-001"
+      - "FORM-KMFA-PROJECT-COMPOSITE-KEY-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -174,6 +175,12 @@ models:
       - "PARAM-KMFA-431"
       - "PARAM-KMFA-432"
       - "PARAM-KMFA-433"
+      - "PARAM-KMFA-434"
+      - "PARAM-KMFA-435"
+      - "PARAM-KMFA-436"
+      - "PARAM-KMFA-437"
+      - "PARAM-KMFA-438"
+      - "PARAM-KMFA-439"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -203,7 +210,9 @@ models:
       - "KMFA/tools/check_s07_p2_wps_file_adapter.py"
       - "KMFA/tools/redcircle_postponement_policy.py"
       - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
-      - "remaining_cost_model_not_implemented_until_S08_S10"
+      - "KMFA/tools/project_composite_key.py"
+      - "KMFA/tools/check_s08_p1_project_composite_key.py"
+      - "remaining_cost_model_not_implemented_until_S08P2_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
@@ -227,6 +236,8 @@ models:
       - "python3 KMFA/tools/check_s07_p2_wps_file_adapter.py"
       - "python3 -m unittest KMFA.tests.test_redcircle_postponement_policy -q"
       - "python3 KMFA/tools/check_s07_p3_redcircle_postponement.py"
+      - "python3 -m unittest KMFA.tests.test_project_composite_key -q"
+      - "python3 KMFA/tools/check_s08_p1_project_composite_key.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
@@ -242,6 +253,7 @@ models:
       - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"
       - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md"
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

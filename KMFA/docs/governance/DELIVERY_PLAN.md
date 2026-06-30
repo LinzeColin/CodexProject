@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s07-github-upload
+product_version: 0.1.0-s08p1-project-composite-key
 
 ## Delivery Rule
 
@@ -53,13 +53,14 @@ KMFA delivery follows the owner contract:
 | S07-P3 | completed_validated_local_only |
 | Stage 7 review | passed_upload_ready_local_only |
 | Stage 7 GitHub upload | completed |
-| S08-P1 | not_started |
+| S08-P1 | completed_validated_local_only |
+| S08-P2 | not_started |
 
 ## Upload Scope
 
-Stage 5 and Stage 6 GitHub uploads are complete on `origin/main`. Stage 6 upload reconciled with latest `origin/main`, reran validation, and recorded push proof under `KMFA/stage_artifacts/S06_STAGE_REVIEW/`. S07-P1, S07-P2, S07-P3 and Stage 7 review are complete local-only and have not been uploaded as standalone phases.
+Stage 5, Stage 6 and Stage 7 GitHub uploads are complete on `origin/main`. Stage 7 upload reconciled with latest `origin/main`, reran validation, and recorded push proof under `KMFA/stage_artifacts/S07_STAGE_REVIEW/`. S08-P1 is complete local-only and has not been uploaded as a standalone phase.
 
-The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, recorded hash-only private values and source anchors for 40 PDF field candidates, and resolved the Excel candidate through an active owner/authorized downgrade decision as cross-source support only. S05-P3 has locked those 40 public-safe hash/source-anchor fields into the A0 authority baseline and excluded the 5 Excel fields from Q5 calculation baseline. Stage 5 review/upload, Stage 6 review/upload and Stage 7 review/upload are complete. S07-P1 financial file adaptation is complete with 9 finance categories, 45 field candidates, and 9 read-only field reports. S07-P2 WPS file adaptation is complete with 4 WPS export types, 20 field mappings, 4 conversion guidance records, 4 read-only field reports, and 1 mapping rule version. S07-P3 redcircle postponement policy is complete with 4 reserved export templates, automatic connector blocked for D15 file MVP, and future read-only/hash/rollback/manual approval controls. Next scope is S08-P1 project composite key only.
+The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, recorded hash-only private values and source anchors for 40 PDF field candidates, and resolved the Excel candidate through an active owner/authorized downgrade decision as cross-source support only. S05-P3 has locked those 40 public-safe hash/source-anchor fields into the A0 authority baseline and excluded the 5 Excel fields from Q5 calculation baseline. Stage 5 review/upload, Stage 6 review/upload and Stage 7 review/upload are complete. S07-P1 financial file adaptation is complete with 9 finance categories, 45 field candidates, and 9 read-only field reports. S07-P2 WPS file adaptation is complete with 4 WPS export types, 20 field mappings, 4 conversion guidance records, 4 read-only field reports, and 1 mapping rule version. S07-P3 redcircle postponement policy is complete with 4 reserved export templates, automatic connector blocked for D15 file MVP, and future read-only/hash/rollback/manual approval controls. S08-P1 project composite key is complete local-only with 4 public-safe profiles, 3 match records, 2 manual-review queue records, integer weights and no raw business values. Next scope is S08-P2 business entity model only; GitHub upload remains blocked until all Stage 8 phases finish, Stage 8 review passes, and findings are fixed.
 
 ## Rollback
 
