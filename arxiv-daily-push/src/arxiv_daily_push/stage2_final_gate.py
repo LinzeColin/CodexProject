@@ -6779,15 +6779,34 @@ def _reviewer_assignment_validated(
     )
 
 
+def _zero_proof_artifact_validated(
+    p0_p1_zero_proof_artifact_validation_state: Mapping[str, Any] | None,
+) -> bool:
+    """Return true only when a committed zero-proof artifact validates both P0 and P1 as zero."""
+
+    return (
+        p0_p1_zero_proof_artifact_validation_state is not None
+        and p0_p1_zero_proof_artifact_validation_state.get("status") == "pass"
+        and p0_p1_zero_proof_artifact_validation_state.get("artifact_present") is True
+        and p0_p1_zero_proof_artifact_validation_state.get("p0_zero_proven_by_payload") is True
+        and p0_p1_zero_proof_artifact_validation_state.get("p1_zero_proven_by_payload") is True
+        and p0_p1_zero_proof_artifact_validation_state.get("validation_errors") == []
+    )
+
+
 def build_independent_final_reviewer_assignment_request_state(
     *,
     assignment_validation_state: Mapping[str, Any] | None = None,
+    p0_p1_zero_proof_artifact_validation_state: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build the fail-closed request package for assigning an independent final reviewer."""
 
     assembly_state = build_p0_p1_zero_proof_assembly_state()
     readiness_state = build_p0_p1_zero_proof_readiness_state()
     assignment_validated = _reviewer_assignment_validated(assignment_validation_state)
+    zero_proof_validated = _zero_proof_artifact_validated(
+        p0_p1_zero_proof_artifact_validation_state
+    )
     all_candidate_inputs_ready = (
         not validate_p0_p1_zero_proof_assembly_state(assembly_state)
         and assembly_state["all_candidate_reviews_available"] is True
@@ -6807,6 +6826,12 @@ def build_independent_final_reviewer_assignment_request_state(
             for reason in blocking_reasons
             if reason != "independent_final_reviewer_assignment_missing"
         ]
+    if zero_proof_validated:
+        blocking_reasons = [
+            reason
+            for reason in blocking_reasons
+            if reason != "p0_p1_zero_proof_artifact_missing"
+        ]
     state = {
         "status": (
             "blocked_reviewer_assignment_validated_waiting_closure_decision"
@@ -6825,6 +6850,11 @@ def build_independent_final_reviewer_assignment_request_state(
         "assignment_validation_state_hash": (
             assignment_validation_state.get("state_hash") if assignment_validated else None
         ),
+        "p0_p1_zero_proof_artifact_validation_state_hash": (
+            p0_p1_zero_proof_artifact_validation_state.get("state_hash")
+            if zero_proof_validated
+            else None
+        ),
         "required_reviewer_role": "independent_final_reviewer",
         "required_reviewer_independence": S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
         "p0_candidate_findings": list(assembly_state["p0_candidate_findings"]),
@@ -6839,9 +6869,9 @@ def build_independent_final_reviewer_assignment_request_state(
         "assignment_request_ready": all_candidate_inputs_ready,
         "independent_final_reviewer_assigned": assignment_validated,
         "independent_final_closure_decision_present": False,
-        "zero_proof_artifact_present": False,
-        "p0_zero_proven": False,
-        "p1_zero_proven": False,
+        "zero_proof_artifact_present": zero_proof_validated,
+        "p0_zero_proven": zero_proof_validated,
+        "p1_zero_proven": zero_proof_validated,
         "closure_claimed": False,
         "observed_open_p0_findings": S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
         "observed_open_p1_findings": S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
@@ -6864,6 +6894,11 @@ def validate_independent_final_reviewer_assignment_request_state(state: Mapping[
     errors: list[str] = []
     assignment_validated = (
         state.get("status") == "blocked_reviewer_assignment_validated_waiting_closure_decision"
+    )
+    zero_proof_validated = (
+        state.get("zero_proof_artifact_present") is True
+        and state.get("p0_zero_proven") is True
+        and state.get("p1_zero_proven") is True
     )
     if state.get("status") not in {
         "blocked_reviewer_assignment_request_ready_no_assignment",
@@ -6897,6 +6932,21 @@ def validate_independent_final_reviewer_assignment_request_state(state: Mapping[
             errors.append("validated reviewer assignment request must include assignment validation state hash")
     elif state.get("assignment_validation_state_hash") is not None:
         errors.append("unassigned reviewer assignment request must not include assignment validation state hash")
+    if zero_proof_validated:
+        if not isinstance(state.get("p0_p1_zero_proof_artifact_validation_state_hash"), str):
+            errors.append("zero-proof reviewer assignment request must include zero-proof validation state hash")
+    else:
+        for flag in (
+            "zero_proof_artifact_present",
+            "p0_zero_proven",
+            "p1_zero_proven",
+        ):
+            if state.get(flag) is not False:
+                errors.append(f"{flag} must be false unless zero-proof artifact validates")
+        if state.get("p0_p1_zero_proof_artifact_validation_state_hash") is not None:
+            errors.append(
+                "reviewer assignment request without zero-proof validation must not include zero-proof hash"
+            )
     if state.get("required_reviewer_role") != "independent_final_reviewer":
         errors.append("independent final reviewer assignment request reviewer role is invalid")
     if state.get("required_reviewer_independence") != S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE:
@@ -6934,9 +6984,6 @@ def validate_independent_final_reviewer_assignment_request_state(state: Mapping[
         errors.append("independent_final_reviewer_assigned must match assignment artifact validation")
     for flag in (
         "independent_final_closure_decision_present",
-        "zero_proof_artifact_present",
-        "p0_zero_proven",
-        "p1_zero_proven",
         "closure_claimed",
     ):
         if state.get(flag) is not False:
@@ -6961,6 +7008,14 @@ def validate_independent_final_reviewer_assignment_request_state(state: Mapping[
         ]
         if "independent_final_reviewer_assignment_missing" in state.get("blocking_reasons", []):
             errors.append("validated reviewer assignment request must not include assignment missing blocker")
+    if zero_proof_validated:
+        expected_blockers = [
+            reason
+            for reason in expected_blockers
+            if reason != "p0_p1_zero_proof_artifact_missing"
+        ]
+        if "p0_p1_zero_proof_artifact_missing" in state.get("blocking_reasons", []):
+            errors.append("zero-proof reviewer assignment request must not include zero-proof missing blocker")
     for reason in expected_blockers:
         if reason not in state.get("blocking_reasons", []):
             errors.append(f"independent final reviewer assignment request must include blocker {reason}")
@@ -7309,14 +7364,19 @@ def build_independent_final_reviewer_assignment_validation_state(
 def build_independent_final_closure_decision_request_state(
     *,
     assignment_validation_state: Mapping[str, Any] | None = None,
+    p0_p1_zero_proof_artifact_validation_state: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build the reviewer input request for the future final P0/P1 closure decision."""
 
     assembly_state = build_p0_p1_zero_proof_assembly_state()
     readiness_state = build_p0_p1_zero_proof_readiness_state()
     assignment_validated = _reviewer_assignment_validated(assignment_validation_state)
+    zero_proof_validated = _zero_proof_artifact_validated(
+        p0_p1_zero_proof_artifact_validation_state
+    )
     reviewer_assignment_request = build_independent_final_reviewer_assignment_request_state(
-        assignment_validation_state=assignment_validation_state
+        assignment_validation_state=assignment_validation_state,
+        p0_p1_zero_proof_artifact_validation_state=p0_p1_zero_proof_artifact_validation_state,
     )
     all_candidate_inputs_ready = (
         not validate_p0_p1_zero_proof_assembly_state(assembly_state)
@@ -7333,6 +7393,12 @@ def build_independent_final_closure_decision_request_state(
             reason
             for reason in blocking_reasons
             if reason != "independent_final_reviewer_assignment_missing"
+        ]
+    if zero_proof_validated:
+        blocking_reasons = [
+            reason
+            for reason in blocking_reasons
+            if reason != "p0_p1_zero_proof_artifact_missing"
         ]
     state = {
         "status": "blocked_decision_request_ready_no_closure",
@@ -7358,11 +7424,16 @@ def build_independent_final_closure_decision_request_state(
         "assignment_validation_state_hash": (
             assignment_validation_state.get("state_hash") if assignment_validated else None
         ),
+        "p0_p1_zero_proof_artifact_validation_state_hash": (
+            p0_p1_zero_proof_artifact_validation_state.get("state_hash")
+            if zero_proof_validated
+            else None
+        ),
         "independent_final_reviewer_assigned": assignment_validated,
         "independent_final_closure_decision_present": False,
-        "zero_proof_artifact_present": False,
-        "p0_zero_proven": False,
-        "p1_zero_proven": False,
+        "zero_proof_artifact_present": zero_proof_validated,
+        "p0_zero_proven": zero_proof_validated,
+        "p1_zero_proven": zero_proof_validated,
         "closure_claimed": False,
         "observed_open_p0_findings": S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
         "observed_open_p1_findings": S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
@@ -7435,18 +7506,35 @@ def validate_independent_final_closure_decision_request_state(state: Mapping[str
         reviewer_assignment_request.get("status")
         == "blocked_reviewer_assignment_validated_waiting_closure_decision"
     )
+    zero_proof_validated = (
+        state.get("zero_proof_artifact_present") is True
+        and state.get("p0_zero_proven") is True
+        and state.get("p1_zero_proven") is True
+    )
     if assignment_validated:
         if not isinstance(state.get("assignment_validation_state_hash"), str):
             errors.append("validated closure decision request must include assignment validation state hash")
     elif state.get("assignment_validation_state_hash") is not None:
         errors.append("unassigned closure decision request must not include assignment validation state hash")
+    if zero_proof_validated:
+        if not isinstance(state.get("p0_p1_zero_proof_artifact_validation_state_hash"), str):
+            errors.append("zero-proof closure decision request must include zero-proof validation state hash")
+    else:
+        for flag in (
+            "zero_proof_artifact_present",
+            "p0_zero_proven",
+            "p1_zero_proven",
+        ):
+            if state.get(flag) is not False:
+                errors.append(f"{flag} must be false unless zero-proof artifact validates")
+        if state.get("p0_p1_zero_proof_artifact_validation_state_hash") is not None:
+            errors.append(
+                "closure decision request without zero-proof validation must not include zero-proof hash"
+            )
     if state.get("independent_final_reviewer_assigned") is not assignment_validated:
         errors.append("independent_final_reviewer_assigned must match assignment artifact validation")
     for flag in (
         "independent_final_closure_decision_present",
-        "zero_proof_artifact_present",
-        "p0_zero_proven",
-        "p1_zero_proven",
         "closure_claimed",
     ):
         if state.get(flag) is not False:
@@ -7469,6 +7557,14 @@ def validate_independent_final_closure_decision_request_state(state: Mapping[str
         ]
         if "independent_final_reviewer_assignment_missing" in state.get("blocking_reasons", []):
             errors.append("validated closure decision request must not include assignment missing blocker")
+    if zero_proof_validated:
+        expected_blockers = [
+            reason
+            for reason in expected_blockers
+            if reason != "p0_p1_zero_proof_artifact_missing"
+        ]
+        if "p0_p1_zero_proof_artifact_missing" in state.get("blocking_reasons", []):
+            errors.append("zero-proof closure decision request must not include zero-proof missing blocker")
     for reason in expected_blockers:
         if reason not in state.get("blocking_reasons", []):
             errors.append(f"independent final closure decision request must include blocker {reason}")
@@ -10839,9 +10935,14 @@ def build_final_acceptance_bundle_readiness_state(
     independent_final_reviewer_assignment_validation = (
         build_independent_final_reviewer_assignment_validation_state(independent_final_reviewer_assignment)
     )
+    p0_p1_zero_proof_readiness = build_p0_p1_zero_proof_readiness_state(p0_p1_zero_proof)
+    p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(
+        p0_p1_zero_proof
+    )
     independent_final_reviewer_assignment_request = (
         build_independent_final_reviewer_assignment_request_state(
-            assignment_validation_state=independent_final_reviewer_assignment_validation
+            assignment_validation_state=independent_final_reviewer_assignment_validation,
+            p0_p1_zero_proof_artifact_validation_state=p0_p1_zero_proof_artifact_validation,
         )
     )
     independent_final_reviewer_assignment_owner_packet = (
@@ -10849,15 +10950,12 @@ def build_final_acceptance_bundle_readiness_state(
     )
     independent_final_closure_decision_request = (
         build_independent_final_closure_decision_request_state(
-            assignment_validation_state=independent_final_reviewer_assignment_validation
+            assignment_validation_state=independent_final_reviewer_assignment_validation,
+            p0_p1_zero_proof_artifact_validation_state=p0_p1_zero_proof_artifact_validation,
         )
     )
     independent_final_closure_decision_owner_packet = (
         build_independent_final_closure_decision_owner_packet_state()
-    )
-    p0_p1_zero_proof_readiness = build_p0_p1_zero_proof_readiness_state(p0_p1_zero_proof)
-    p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(
-        p0_p1_zero_proof
     )
     final_acceptance_bundle_manifest_validation = build_final_acceptance_bundle_manifest_validation_state(
         manifest

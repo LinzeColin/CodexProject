@@ -6,6 +6,8 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
+Owner 视图现在把已验证的 P0/P1 zero-proof artifact 接入 final bundle request 状态：`FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` 已由 validator 读取，zero-proof artifact validation `state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`，assignment request `state_hash=8a4596dbb16f55932e36b256fc22852e1f8ca52da22bdd85d6d1c79d23b61c1b`，closure decision request `state_hash=afc1155fafad8c460db5e09eb9890e7408a1e28dd0bf155121bf1a0308529e34`，final validator `state_hash=cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094`。validated request 不再保留 `p0_p1_zero_proof_artifact_missing`，但 `independent_final_closure_decision_present=false`，S2PLT02/S2PLT03 terminal proof、S2PLT04 completion report、final bundle manifest、handoff、signoff、final command 和 production acceptance 仍全部 blocked。这不是 P0/P1 closure，也不是 SMTP/scheduler 授权。
+
 Owner 视图现在把已验证的独立最终复审人分配文件接入 final bundle readiness：`FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` 已由 validator 读取，assignment validation `state_hash=b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2`，assignment request `state_hash=7f59ff864ad3a43f24e3b105f13a5aed8802729e8c18482483db8ed78c2921ad`，closure decision request `state_hash=246a736255b77c3a40f74fbdc4431f52367e3d474d4d13156a19ec9b6e7feddf`，final validator `state_hash=be9cd3bb14da9d57dcaee0168bae396ed95049bf6c261515a5d39959cf3ad461`。validated request 不再保留 `independent_final_reviewer_assignment_missing`，但 `independent_final_closure_decision_present=false`，S2PLT02/S2PLT03 terminal proof、S2PLT04 completion report、final bundle manifest、handoff、signoff、final command 和 production acceptance 仍全部 blocked。这不是 P0/P1 closure，也不是 SMTP/scheduler 授权。
 
 Owner 视图现在在 final bundle 最外层直接显示 `ready_to_write_live_artifacts=false`：S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320`，final validator `state_hash=494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67`。`ready_to_write_live_artifacts` 必须等于 `live_artifact_write_guard.live_artifact_write_allowed`；当前 `current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。这不是 SMTP/scheduler 授权，也不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 或生产验收。
@@ -92,7 +94,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 

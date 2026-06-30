@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC"
+as_of_event_id: "EVENT-20260701-ADP-S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC"
 source_snapshot_hash: "sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -61,12 +61,12 @@ dimensions:
     tree_bound_events: 1
     commit_bound_events: 4
     legacy_unbound_events: 289
-    precommit_pending_events: 46
+    precommit_pending_events: 47
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -106,7 +106,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
   status: "blocked"
-  reason: "The final bundle readiness now exposes final_bundle_missing_artifact_inventory with five blocked live artifact refs while S2PLT02/S2PLT03/S2PLT04 remain blocked. S2PLT04 audit state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f, completion_report_ready=false, s2plt04_completion_report_written=false, and blockers=s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing. S2PLT02 terminal delivery proof still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real scheduler proof, and reviewed terminal proof artifact."
+  reason: "The final bundle readiness now consumes the validated P0/P1 zero-proof artifact in reviewer assignment and closure decision request states while S2PLT02/S2PLT03/S2PLT04 remain blocked. S2PLT04 audit state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f, completion_report_ready=false, s2plt04_completion_report_written=false, and blockers=s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing. S2PLT02 terminal delivery proof still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real scheduler proof, and reviewed terminal proof artifact."
   acceptance_ids:
     - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"

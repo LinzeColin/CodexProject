@@ -35,22 +35,24 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION",
+            "S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC", current_state)
-        self.assertIn("assignment_validation_state_hash=b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", current_state)
-        self.assertIn("assignment_request_state_hash=7f59ff864ad3a43f24e3b105f13a5aed8802729e8c18482483db8ed78c2921ad", current_state)
-        self.assertIn("closure_decision_request_state_hash=246a736255b77c3a40f74fbdc4431f52367e3d474d4d13156a19ec9b6e7feddf", current_state)
-        self.assertIn("b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", current_state)
-        self.assertIn("7f59ff864ad3a43f24e3b105f13a5aed8802729e8c18482483db8ed78c2921ad", current_state)
-        self.assertIn("67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232", current_state)
-        self.assertIn("be9cd3bb14da9d57dcaee0168bae396ed95049bf6c261515a5d39959cf3ad461", current_state)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC", current_state)
+        self.assertIn("zero_proof_artifact_validation_state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786", current_state)
+        self.assertIn("assignment_request_state_hash=8a4596dbb16f55932e36b256fc22852e1f8ca52da22bdd85d6d1c79d23b61c1b", current_state)
+        self.assertIn("closure_decision_request_state_hash=afc1155fafad8c460db5e09eb9890e7408a1e28dd0bf155121bf1a0308529e34", current_state)
+        self.assertIn("bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786", current_state)
+        self.assertIn("8a4596dbb16f55932e36b256fc22852e1f8ca52da22bdd85d6d1c79d23b61c1b", current_state)
+        self.assertIn("afc1155fafad8c460db5e09eb9890e7408a1e28dd0bf155121bf1a0308529e34", current_state)
+        self.assertIn("cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094", current_state)
         self.assertIn(
-            "ADP-S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC-20260701.json",
+            "ADP-S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC-20260701.json",
             current_state,
         )
-        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC.md", ledger)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC.md", ledger)
+        self.assertIn("Previous reviewer assignment consumption sync remains visible", current_state)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC", current_state)
 
         self.assertIn(
             "S2PMT07_FINAL_BUNDLE_LIVE_WRITE_READY_TOP_LEVEL_SYNC_BLOCKED_NO_PRODUCTION",
