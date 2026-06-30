@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 1 Whole-Stage Review - 2026-06-30
+
+- 完成 `Stage 1 whole-stage review - 复审并解决暴露问题`，复审 Phase 1.1、Phase 1.2、Phase 1.3 的合同、证据、测试和状态文件。
+- 修复复审发现的两个 Stage 1 范围问题：缺少整体复审合同/evidence，以及顶层 run/status 文件仍停留在 Phase 1.3。
+- 新增 `docs/pfi_v024/STAGE1_WHOLE_STAGE_REVIEW.md`、`tests/test_v024_stage1_whole_review_contract.py` 和 `reports/pfi_v024/stage_1/whole_stage_review/evidence.json`。
+- Stage 1 已本地整体复审完成；Stage 2 和 GitHub main upload 尚未执行。
+- 本轮未修改业务 UI、app bundle、launcher 或真实指标计算。
+
 ## v0.2.4 Repair Pack Stage 1 Phase 1.3 - 2026-06-30
 
 - 完成 `Stage 1 / Phase 1.3 - 验证`：记录 `node --check`、pytest 合同测试和 changed files audit。
