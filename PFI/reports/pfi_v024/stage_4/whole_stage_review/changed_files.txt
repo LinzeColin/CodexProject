@@ -1,0 +1,14 @@
+PFI/CHANGELOG.md
+PFI/HANDOFF.md
+PFI/README.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+PFI/docs/pfi_v024/STAGE4_DATA_STATE_MACHINE.md
+PFI/docs/pfi_v024/STAGE4_WHOLE_STAGE_REVIEW.md
+PFI/reports/pfi_v024/stage_4/whole_stage_review/changed_files.txt
+PFI/reports/pfi_v024/stage_4/whole_stage_review/evidence.json
+PFI/reports/pfi_v024/stage_4/whole_stage_review/risk_and_rollback.md
+PFI/reports/pfi_v024/stage_4/whole_stage_review/terminal.log
+PFI/tests/test_v024_stage4_whole_review_contract.py
+PFI/功能清单.md
+PFI/开发记录.md
+PFI/模型参数文件.md

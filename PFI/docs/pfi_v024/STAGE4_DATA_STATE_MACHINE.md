@@ -1,7 +1,7 @@
 # PFI v0.2.4 Stage 4 Data State Machine
 
-当前已完成：`Stage 4 / Phase 4.3 - 验收`。
-不执行 Stage 4 whole-stage review、不上传 GitHub main。
+当前已完成：`Stage 4 whole-stage review - 复审并解决暴露问题`。
+GitHub main upload 尚未执行。
 
 ## Scope
 
@@ -24,6 +24,14 @@ Phase 4.3 验收该合同：
 - `tests/test_v024_stage4_phase43_acceptance.py` 覆盖缺失指标不显示财务 0、`confirmed_zero` 必须有证据链。
 - `validate_v024_stage4_phase43_chrome.py` 生成 Chrome headless 截图和 browser validation。
 - `data_state.js` 和 `shell.js` 保持 null `record_count` / `confidence` 为未知，避免误显示 `0 条记录`。
+
+Stage 4 whole-stage review 复审该合同：
+
+- Phase 4.1、Phase 4.2、Phase 4.3 均为 candidate pass。
+- 每个核心指标都有 `status`、`source_id`、`as_of`、`record_count` 和 `calculation_state`。
+- 首页、账户、投资、消费和报告共享同一 `read_model_hash`。
+- Phase 4.3 browser validation 和两张截图纳入整阶段验收。
+- 复审发现 3 项均已 fixed；GitHub main upload 仍为未执行。
 
 ## Status Values
 
@@ -72,6 +80,6 @@ Phase 4.3 验收该合同：
 
 ## Remaining Non Goals
 
-- 不执行 Stage 4 整阶段复审。
 - 不重装 app bundle。
 - 不上传 GitHub main。
+- 不进入 Stage 5。

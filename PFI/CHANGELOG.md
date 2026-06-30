@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 4 Whole-Stage Review - 2026-07-01
+
+- 完成 `Stage 4 whole-stage review - 复审并解决暴露问题`，复审 Phase 4.1 状态机、Phase 4.2 read model 挂链、Phase 4.3 非假零验收。
+- 新增 `PFI/docs/pfi_v024/STAGE4_WHOLE_STAGE_REVIEW.md`、`PFI/tests/test_v024_stage4_whole_review_contract.py` 和 `PFI/reports/pfi_v024/stage_4/whole_stage_review/evidence.json`。
+- 复审发现 3 项均已 fixed：缺少 whole-stage review gate、顶层状态仍停在 Phase 4.3、Phase 4.3 浏览器证据需纳入整阶段验收。
+- 重新验证 Stage 4 四个测试文件，`21 passed`；JS check、JSON evidence check 和截图 size 证据通过。
+- 本轮不执行 GitHub main upload，不重装 app bundle，不修改真实财务数据源，不进入 Stage 5。
+
 ## v0.2.4 Repair Pack Stage 4 Phase 4.3 - 2026-07-01
 
 - 完成 `Stage 4 / Phase 4.3 - 验收`：用测试和 Chrome headless 截图验证缺失数据不显示财务 0、真零必须携带证据链。

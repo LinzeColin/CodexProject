@@ -1,0 +1,176 @@
+{
+  "schema": "PFIV024Stage4WholeReviewEvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 4",
+  "current_run_unit": "Stage 4 whole-stage review",
+  "current_run_only": true,
+  "review_status": "pass",
+  "stage_4_whole_review_complete": true,
+  "github_main_uploaded": false,
+  "generated_at": "2026-06-30T23:46:21Z",
+  "final_validated_at": "2026-06-30T23:53:11Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_before_review": "2080cd3beba5f2edb48cdbecf31cde63f85154ce",
+    "origin_main_before_review": "faba66e0f082bc84c8163d5fc8759811c56f4cc3",
+    "local_ahead_origin_main_before_review": 3,
+    "local_behind_origin_main_before_review": 0
+  },
+  "review_inputs": {
+    "phase_4_1": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v024/stage_4/phase_4_1/evidence.json",
+    "phase_4_2": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v024/stage_4/phase_4_2/evidence.json",
+    "phase_4_3": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v024/stage_4/phase_4_3/evidence.json",
+    "read_model_status": "PFI/reports/pfi_v024/stage_4/phase_4_2/read_model_status.json",
+    "page_metric_states": "PFI/reports/pfi_v024/stage_4/phase_4_2/page_metric_states.json",
+    "browser_validation": "PFI/reports/pfi_v024/stage_4/phase_4_3/browser_validation.json"
+  },
+  "phase_statuses": {
+    "phase_4_1": "candidate_pass",
+    "phase_4_2": "candidate_pass",
+    "phase_4_3": "candidate_pass"
+  },
+  "acceptance_review": {
+    "core_metric_fields_complete": {
+      "result": "pass",
+      "evidence": "phase_4_2/read_model_status.json: all core metrics carry required fields including status/source_id/as_of/record_count/calculation_state"
+    },
+    "missing_real_data_no_cny_zero": {
+      "result": "pass",
+      "evidence": "phase_4_3/browser_validation.json and screenshots/data_missing_state.png"
+    },
+    "confirmed_zero_requires_source_time_sample_formula": {
+      "result": "pass",
+      "evidence": "phase_4_3 confirmed_zero gate test and screenshots/confirmed_zero_gate.png"
+    },
+    "shared_read_model_across_surfaces": {
+      "result": "pass",
+      "evidence": "phase_4_2/page_metric_states.json: home/accounts/investment/consumption/insights share read_model_hash"
+    },
+    "no_mock_fixture_demo_financial_fallback": {
+      "result": "pass",
+      "evidence": "test_v024_stage4_no_mock_financial_data.py and Stage 4 regression run"
+    }
+  },
+  "core_metric_ids": [
+    "net_worth_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny",
+    "consumption_outflow_cny",
+    "report_summary_status"
+  ],
+  "source_summary": {
+    "status": "ready",
+    "record_count": 8815,
+    "raw_file_count": 4,
+    "as_of": "2026-06-03"
+  },
+  "read_model": {
+    "shared_surfaces": [
+      "home",
+      "accounts",
+      "investment",
+      "consumption",
+      "insights"
+    ],
+    "read_model_hash": "sha256:89c3bac811ce9e38d78dae3fdb646a12e17d9eadb86ac2c2cc52b3a3642add2a",
+    "blocked_metric_ids": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ],
+    "real_confirmed_zero_metric_count": 0
+  },
+  "browser_validation": {
+    "status": "pass",
+    "no_financial_zero_when_data_missing": true,
+    "confirmed_zero_gate_visible": true,
+    "console_errors": [],
+    "screenshots": {
+      "data_missing_state": {
+        "path": "PFI/reports/pfi_v024/stage_4/phase_4_3/screenshots/data_missing_state.png",
+        "bytes": 131111
+      },
+      "confirmed_zero_gate": {
+        "path": "PFI/reports/pfi_v024/stage_4/phase_4_3/screenshots/confirmed_zero_gate.png",
+        "bytes": 265472
+      }
+    }
+  },
+  "findings": [
+    {
+      "id": "S4-REVIEW-F1",
+      "severity": "P1",
+      "status": "fixed",
+      "finding": "Stage 4 had no whole-stage review gate or evidence after Phase 4.1/4.2/4.3 candidate pass.",
+      "fix": "Added STAGE4_WHOLE_STAGE_REVIEW.md, whole_stage_review evidence pack, risk/rollback, terminal log, and contract test.",
+      "verification": "test_v024_stage4_whole_review_contract.py covers artifacts, acceptance, phase consistency, and findings."
+    },
+    {
+      "id": "S4-REVIEW-F2",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Top-level status files still described Phase 4.3 as the current run instead of the whole-stage review result.",
+      "fix": "Updated README, HANDOFF, RUN_CONTRACT, CHANGELOG, 功能清单, 开发记录, and 模型参数文件.",
+      "verification": "Status files now state Stage 4 whole-stage review pass and GitHub main upload remains unexecuted."
+    },
+    {
+      "id": "S4-REVIEW-F3",
+      "severity": "P3",
+      "status": "fixed",
+      "finding": "Phase 4.3 browser evidence needed review-time inclusion in the Stage 4 acceptance surface.",
+      "fix": "Whole-stage review evidence references browser_validation.json and both current screenshots with byte sizes.",
+      "verification": "Stage 4 regression, JSON validation, and screenshot size checks passed."
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "pytest stage4 whole review red run",
+      "status": "expected_fail",
+      "detail": "4 failed: missing STAGE4_WHOLE_STAGE_REVIEW.md and whole_stage_review evidence"
+    },
+    {
+      "cmd": "pytest stage4 phase43/phase42/phase41/no-mock regression",
+      "status": "pass",
+      "detail": "21 passed in 0.94s"
+    },
+    {
+      "cmd": "node --check PFI/web/app/data_state.js && node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -m json.tool Stage 4 phase evidence/read-model/browser inputs",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/tests/test_v024_stage4_whole_review_contract.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_whole_review_contract.py PFI/tests/test_v024_stage4_phase43_acceptance.py PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase41_data_state_contract.py PFI/tests/test_v024_stage4_no_mock_financial_data.py -q",
+      "status": "pass",
+      "detail": "25 passed in 0.89s"
+    },
+    {
+      "cmd": "python3 -m json.tool PFI/reports/pfi_v024/stage_4/whole_stage_review/evidence.json && python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_3/browser_validation.json",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "remaining_gates": [
+    "GitHub main upload"
+  ],
+  "explicitly_not_done": [
+    "GitHub main upload",
+    "app bundle reinstall",
+    "financial data mutation or synthesis",
+    "Stage 5"
+  ],
+  "requires_user_acceptance": true,
+  "no_auto_next_stage": true
+}

@@ -1,0 +1,43 @@
+Stage 4 whole-stage review RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_whole_review_contract.py -q
+result=expected red, 4 failed: missing STAGE4_WHOLE_STAGE_REVIEW.md and whole_stage_review evidence
+
+PRE-REVIEW VALIDATION:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_phase43_acceptance.py PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase41_data_state_contract.py PFI/tests/test_v024_stage4_no_mock_financial_data.py -q
+result=pass, 21 passed in 0.94s
+
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data_state.js
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+result=pass
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_1/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_2/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_3/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_2/read_model_status.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_3/browser_validation.json
+result=pass
+
+REVIEW FINDINGS:
+S4-REVIEW-F1 fixed: added whole-stage review gate and evidence.
+S4-REVIEW-F2 fixed: updated status files from Phase 4.3 to whole-stage review pass.
+S4-REVIEW-F3 fixed: included current Phase 4.3 browser evidence in whole-stage review.
+
+FINAL VERIFICATION 2026-06-30T23:53:11Z:
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data_state.js
+result=pass
+
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/tests/test_v024_stage4_whole_review_contract.py
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_whole_review_contract.py PFI/tests/test_v024_stage4_phase43_acceptance.py PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase41_data_state_contract.py PFI/tests/test_v024_stage4_no_mock_financial_data.py -q
+result=pass, 25 passed in 0.89s
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/whole_stage_review/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_3/browser_validation.json
+result=pass
+
+git diff --check -- PFI
+result=pass

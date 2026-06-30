@@ -72,13 +72,13 @@ Stage 1 records:
 
 ## v0.2.4 Stage 4 Status
 
-Current run unit: `Stage 4 / Phase 4.3 - 验收`.
+Current run unit: `Stage 4 whole-stage review - 复审并解决暴露问题`.
 
 - Stage 3 GitHub main upload: complete before this run.
 - Phase 4.1: candidate pass.
 - Phase 4.2 read model 挂链: candidate pass.
 - Phase 4.3 验收: candidate pass.
-- Stage 4 whole-stage review: not executed.
+- Stage 4 whole-stage review: pass.
 - GitHub main upload: not executed in this run.
 - Current data state contract: `PFI-V024-STAGE4-PHASE41-DATA-STATE`.
 - Current read model status contract: `PFI-V024-STAGE4-PHASE42-READ-MODEL-STATUS`.
@@ -88,11 +88,12 @@ Current run unit: `Stage 4 / Phase 4.3 - 验收`.
 - `confirmed_zero` may render `CNY 0.00` only with source, as-of time, record count, formula, and confidence evidence.
 - Phase 4.2 wires the shared read model status into `/api/read-model-status`, Streamlit embedded JSON, `data_state.js`, and the Home/accounts/investment/consumption/insights card surfaces.
 - Phase 4.3 validates no false financial zero, confirms `confirmed_zero` evidence requirements, fixes null `record_count`/`confidence` frontend rendering, and captures Chrome headless screenshots.
+- Whole-stage review fixes three exposed issues: missing Stage 4 review gate/evidence, top-level status files still describing Phase 4.3, and Phase 4.3 browser evidence not being included in the review acceptance surface.
 - Current real source summary: `MetaDatabase/PFI` ready, `8815` records, `4` raw files, as of `2026-06-03`; net worth/cash/investment remain `source_missing` until their real account/holding read models are mounted.
 - Current real production `confirmed_zero` metric count: `0`; Phase 4.3 only proves the display gate with a non-production zero-proof page.
 - Business financial source data changes: none.
 - App bundle changes: none.
-- Next gate: Stage 4 whole-stage review only after explicit user instruction.
+- Next gate: Stage 4 GitHub main upload only after explicit user instruction.
 
 Stage 4 Phase 4.1 records:
 
@@ -130,6 +131,15 @@ Stage 4 Phase 4.3 records:
 - `reports/pfi_v024/stage_4/phase_4_3/browser_validation.json`
 - `reports/pfi_v024/stage_4/phase_4_3/screenshots/data_missing_state.png`
 - `reports/pfi_v024/stage_4/phase_4_3/screenshots/confirmed_zero_gate.png`
+
+Stage 4 whole-stage review records:
+
+- `docs/pfi_v024/STAGE4_WHOLE_STAGE_REVIEW.md`
+- `tests/test_v024_stage4_whole_review_contract.py`
+- `reports/pfi_v024/stage_4/whole_stage_review/evidence.json`
+- `reports/pfi_v024/stage_4/whole_stage_review/terminal.log`
+- `reports/pfi_v024/stage_4/whole_stage_review/changed_files.txt`
+- `reports/pfi_v024/stage_4/whole_stage_review/risk_and_rollback.md`
 
 ## v0.2.4 Stage 3 Status
 
