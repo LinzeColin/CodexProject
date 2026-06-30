@@ -80,6 +80,38 @@
     });
   }
 
+  function buildStage8Phase83NoFallbackViewModel(policy = {}, cases = {}) {
+    const stateCases = Array.isArray(cases.state_cases) ? cases.state_cases.map(buildNoFallbackCase) : [];
+    const failureCases = stateCases.filter((item) => item.status === "path_error" || item.status === "parse_error");
+    const outdatedCases = stateCases.filter((item) => item.status === "outdated");
+    const zeroCases = stateCases.filter((item) => item.status === "confirmed_zero");
+    const sections = [
+      buildSection("no-fallback-policy", "禁止假数据回退", [
+        `fallback financial data allowed: ${Boolean(policy.fallback_financial_data_allowed)}`,
+        `auto import test data allowed: ${Boolean(policy.auto_import_test_data_allowed)}`,
+        `missing data renders financial zero: ${Boolean(policy.missing_data_renders_financial_zero)}`,
+      ]),
+      buildSection("failure-state", "失败状态截图", failureCases.map((item) => `${item.status}: ${item.display_text_zh}`)),
+      buildSection("outdated-state", "过期状态截图", outdatedCases.map((item) => `${item.status}: ${item.display_text_zh}`)),
+      buildSection("zero-proof", "真为 0 状态证明", zeroCases.map((item) => `${item.status}: ${item.display_text_zh} · 证据链 ${item.required_evidence_fields.join(", ")}`)),
+    ];
+    return Object.freeze({
+      schema: "PFIV023Stage8NoFallbackPageViewModelV1",
+      version: VERSION,
+      stage: "Stage 8",
+      phase_id: "V023-S8-P8.3",
+      page: "upload",
+      title: "禁止假数据回退",
+      fallback_financial_data_allowed: Boolean(policy.fallback_financial_data_allowed),
+      auto_import_test_data_allowed: Boolean(policy.auto_import_test_data_allowed),
+      missing_data_renders_financial_zero: Boolean(policy.missing_data_renders_financial_zero),
+      state_case_count: stateCases.length,
+      sections,
+      state_cases: stateCases,
+      summary_zh: "失败、过期、未挂链和缺失状态必须展示中文原因；零值只允许由完整证据链确认。",
+    });
+  }
+
   function buildDataSourceCard(source = {}) {
     const blockedMetrics = Array.isArray(source.blocked_metric_ids) ? source.blocked_metric_ids : [];
     return Object.freeze({
@@ -174,8 +206,26 @@
     });
   }
 
+  function buildNoFallbackCase(item = {}) {
+    return Object.freeze({
+      case_id: item.case_id || "",
+      status: item.status || "review_required",
+      title_zh: item.title_zh || "状态证明",
+      reason_zh: item.reason_zh || "需要人工复核。",
+      failure_detail_zh: item.failure_detail_zh || "",
+      display_text_zh: item.display_text_zh || item.reason_zh || "需要人工复核。",
+      next_action_zh: item.next_action_zh || "进入复核入口。",
+      can_display_financial_value: Boolean(item.can_display_financial_value),
+      requires_evidence_chain: Boolean(item.requires_evidence_chain),
+      required_evidence_fields: Array.isArray(item.required_evidence_fields) ? item.required_evidence_fields : [],
+      current_confirmed_zero_metric_count: Number(item.current_confirmed_zero_metric_count || 0),
+      current_personal_financial_zero_rendered: Boolean(item.current_personal_financial_zero_rendered),
+    });
+  }
+
   return Object.freeze({
     buildStage8Phase81DataSourceGateViewModel,
     buildStage8Phase82DashboardViewModel,
+    buildStage8Phase83NoFallbackViewModel,
   });
 });

@@ -1,0 +1,13 @@
+Stage 8 Phase 8.3 terminal log
+RED: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q -> 5 failed, 10 passed before implementation
+GREEN pre-evidence: py_compile and node --check passed; target test -> 2 failed, 13 passed because phase_8_3 evidence was not generated yet
+Generated no_fallback_policy.json, state_evidence_cases.json, no_fallback_page_model.json, screenshots, changed_files.txt, evidence.json
+Final verification:
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q -> 15 passed in 0.22s
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q -> 138 passed, 100 subtests passed in 2.10s
+- /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/upload.js -> syntax check passed
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_data_sources.py PFI/tests/test_v023_stage8_data_source_gate.py -> syntax check passed
+- python3 -m json.tool phase_8_3 evidence/policy/cases/page_model/scan -> all JSON files parse
+- sips -g pixelWidth -g pixelHeight phase_8_3 screenshots -> failure/outdated/zero screenshots are 1280x900
+- Stage 8.3 source placeholder term scan -> blocked placeholder term scan passed for Stage 8.3 source files
+- git diff --check -- PFI -> no whitespace errors
