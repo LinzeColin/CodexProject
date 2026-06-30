@@ -4178,6 +4178,40 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF",
     }:
         next_step = "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW"
+    observed_real_delivery_days = int(inventory.get("observed_real_delivery_days") or 0)
+    observed_real_email_count = int(inventory.get("observed_real_email_count") or 0)
+    current_window_counts = (
+        terminal_capture_window_audit_summary.get("counts_toward_s2plt02_terminal_proof") is True
+    )
+    current_capture_window_real_delivery_days_added = (
+        len(terminal_capture_window_audit_summary.get("candidate_service_dates", [])) if current_window_counts else 0
+    )
+    current_capture_window_real_email_count_added = (
+        int(terminal_capture_window_audit_summary.get("real_sent_candidate_email_count") or 0)
+        if current_window_counts
+        else 0
+    )
+    current_capture_window_dry_run_email_count_rejected = (
+        int(terminal_capture_window_audit_summary.get("dry_run_email_count") or 0)
+        if not current_window_counts
+        else 0
+    )
+    terminal_proof_real_delivery_days_after_current_capture_window = min(
+        S2PLT02_REQUIRED_NATURAL_DAYS,
+        observed_real_delivery_days + current_capture_window_real_delivery_days_added,
+    )
+    terminal_proof_real_email_count_after_current_capture_window = min(
+        S2PLT02_REQUIRED_EMAIL_COUNT,
+        observed_real_email_count + current_capture_window_real_email_count_added,
+    )
+    remaining_real_delivery_days_for_terminal_proof = max(
+        S2PLT02_REQUIRED_NATURAL_DAYS - terminal_proof_real_delivery_days_after_current_capture_window,
+        0,
+    )
+    remaining_real_email_count_for_terminal_proof = max(
+        S2PLT02_REQUIRED_EMAIL_COUNT - terminal_proof_real_email_count_after_current_capture_window,
+        0,
+    )
     blocking_reasons = list(inventory.get("blocking_reasons", []))
     if not authorization_valid and "real_proof_capture_authorization_invalid" not in blocking_reasons:
         blocking_reasons.append("real_proof_capture_authorization_invalid")
@@ -4218,10 +4252,22 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "ready_inputs": list(inventory.get("ready_inputs", [])),
         "blocked_by_missing_inputs": missing_inputs,
         "blocking_reasons": blocking_reasons,
-        "observed_real_delivery_days": inventory.get("observed_real_delivery_days"),
+        "observed_real_counts_source": "terminal_delivery_input_inventory_existing_real_smtp_evidence",
+        "observed_real_delivery_days": observed_real_delivery_days,
         "required_real_delivery_days": S2PLT02_REQUIRED_NATURAL_DAYS,
-        "observed_real_email_count": inventory.get("observed_real_email_count"),
+        "observed_real_email_count": observed_real_email_count,
         "required_real_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "current_capture_window_real_delivery_days_added": current_capture_window_real_delivery_days_added,
+        "current_capture_window_real_email_count_added": current_capture_window_real_email_count_added,
+        "current_capture_window_dry_run_email_count_rejected": current_capture_window_dry_run_email_count_rejected,
+        "terminal_proof_real_delivery_days_after_current_capture_window": (
+            terminal_proof_real_delivery_days_after_current_capture_window
+        ),
+        "terminal_proof_real_email_count_after_current_capture_window": (
+            terminal_proof_real_email_count_after_current_capture_window
+        ),
+        "remaining_real_delivery_days_for_terminal_proof": remaining_real_delivery_days_for_terminal_proof,
+        "remaining_real_email_count_for_terminal_proof": remaining_real_email_count_for_terminal_proof,
         "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
         "terminal_delivery_proof_ready": terminal_delivery_proof_ready,
         "terminal_delivery_proof_artifact_ref": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
@@ -4350,6 +4396,56 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         "scheduler_runtime_evidence_status"
     ):
         errors.append("S2PLT02 terminal delivery proof capture plan capture-window scheduler status is required")
+    if state.get("observed_real_counts_source") != "terminal_delivery_input_inventory_existing_real_smtp_evidence":
+        errors.append("S2PLT02 terminal delivery proof capture plan observed real counts source is invalid")
+    for field in (
+        "observed_real_delivery_days",
+        "required_real_delivery_days",
+        "observed_real_email_count",
+        "required_real_email_count",
+        "current_capture_window_real_delivery_days_added",
+        "current_capture_window_real_email_count_added",
+        "current_capture_window_dry_run_email_count_rejected",
+        "terminal_proof_real_delivery_days_after_current_capture_window",
+        "terminal_proof_real_email_count_after_current_capture_window",
+        "remaining_real_delivery_days_for_terminal_proof",
+        "remaining_real_email_count_for_terminal_proof",
+    ):
+        if not isinstance(state.get(field), int):
+            errors.append(f"S2PLT02 terminal delivery proof capture plan {field} must be an integer")
+    if capture_window_summary.get("counts_toward_s2plt02_terminal_proof") is False:
+        if state.get("current_capture_window_real_delivery_days_added") != 0:
+            errors.append("nonterminal capture-window must add zero real delivery days")
+        if state.get("current_capture_window_real_email_count_added") != 0:
+            errors.append("nonterminal capture-window must add zero real email count")
+        if state.get("current_capture_window_dry_run_email_count_rejected") != capture_window_summary.get(
+            "dry_run_email_count"
+        ):
+            errors.append("nonterminal capture-window rejected dry-run count must match capture-window dry-run count")
+    expected_terminal_days = min(
+        int(state.get("required_real_delivery_days") or 0),
+        int(state.get("observed_real_delivery_days") or 0)
+        + int(state.get("current_capture_window_real_delivery_days_added") or 0),
+    )
+    expected_terminal_email_count = min(
+        int(state.get("required_real_email_count") or 0),
+        int(state.get("observed_real_email_count") or 0)
+        + int(state.get("current_capture_window_real_email_count_added") or 0),
+    )
+    if state.get("terminal_proof_real_delivery_days_after_current_capture_window") != expected_terminal_days:
+        errors.append("terminal proof real delivery days after current capture-window are inconsistent")
+    if state.get("terminal_proof_real_email_count_after_current_capture_window") != expected_terminal_email_count:
+        errors.append("terminal proof real email count after current capture-window is inconsistent")
+    if state.get("remaining_real_delivery_days_for_terminal_proof") != max(
+        int(state.get("required_real_delivery_days") or 0) - expected_terminal_days,
+        0,
+    ):
+        errors.append("remaining real delivery days for terminal proof are inconsistent")
+    if state.get("remaining_real_email_count_for_terminal_proof") != max(
+        int(state.get("required_real_email_count") or 0) - expected_terminal_email_count,
+        0,
+    ):
+        errors.append("remaining real email count for terminal proof is inconsistent")
     if not isinstance(state.get("runtime_capture_blockers"), list):
         errors.append("S2PLT02 terminal delivery proof capture plan runtime blockers must be a list")
     if not isinstance(state.get("remaining_runtime_actions"), list):
@@ -8781,10 +8877,32 @@ def build_final_bundle_prerequisite_plan_state(
             "smtp_secret_env_ready": s2plt02_capture_plan.get("smtp_secret_env_ready"),
             "smtp_secret_values_logged": s2plt02_capture_plan.get("smtp_secret_values_logged"),
             "blocked_by_missing_inputs": list(s2plt02_capture_plan.get("blocked_by_missing_inputs", [])),
+            "observed_real_counts_source": s2plt02_capture_plan.get("observed_real_counts_source"),
             "observed_real_delivery_days": s2plt02_capture_plan.get("observed_real_delivery_days"),
             "required_real_delivery_days": s2plt02_capture_plan.get("required_real_delivery_days"),
             "observed_real_email_count": s2plt02_capture_plan.get("observed_real_email_count"),
             "required_real_email_count": s2plt02_capture_plan.get("required_real_email_count"),
+            "current_capture_window_real_delivery_days_added": s2plt02_capture_plan.get(
+                "current_capture_window_real_delivery_days_added"
+            ),
+            "current_capture_window_real_email_count_added": s2plt02_capture_plan.get(
+                "current_capture_window_real_email_count_added"
+            ),
+            "current_capture_window_dry_run_email_count_rejected": s2plt02_capture_plan.get(
+                "current_capture_window_dry_run_email_count_rejected"
+            ),
+            "terminal_proof_real_delivery_days_after_current_capture_window": s2plt02_capture_plan.get(
+                "terminal_proof_real_delivery_days_after_current_capture_window"
+            ),
+            "terminal_proof_real_email_count_after_current_capture_window": s2plt02_capture_plan.get(
+                "terminal_proof_real_email_count_after_current_capture_window"
+            ),
+            "remaining_real_delivery_days_for_terminal_proof": s2plt02_capture_plan.get(
+                "remaining_real_delivery_days_for_terminal_proof"
+            ),
+            "remaining_real_email_count_for_terminal_proof": s2plt02_capture_plan.get(
+                "remaining_real_email_count_for_terminal_proof"
+            ),
         }
         if s2plt04_blocked_by_upstream_evidence
         else {}
@@ -8810,10 +8928,32 @@ def build_final_bundle_prerequisite_plan_state(
             "smtp_secret_env_ready": s2plt02_capture_plan.get("smtp_secret_env_ready"),
             "smtp_secret_values_logged": s2plt02_capture_plan.get("smtp_secret_values_logged"),
             "blocked_by_missing_inputs": list(s2plt02_capture_plan.get("blocked_by_missing_inputs", [])),
+            "observed_real_counts_source": s2plt02_capture_plan.get("observed_real_counts_source"),
             "observed_real_delivery_days": s2plt02_capture_plan.get("observed_real_delivery_days"),
             "required_real_delivery_days": s2plt02_capture_plan.get("required_real_delivery_days"),
             "observed_real_email_count": s2plt02_capture_plan.get("observed_real_email_count"),
             "required_real_email_count": s2plt02_capture_plan.get("required_real_email_count"),
+            "current_capture_window_real_delivery_days_added": s2plt02_capture_plan.get(
+                "current_capture_window_real_delivery_days_added"
+            ),
+            "current_capture_window_real_email_count_added": s2plt02_capture_plan.get(
+                "current_capture_window_real_email_count_added"
+            ),
+            "current_capture_window_dry_run_email_count_rejected": s2plt02_capture_plan.get(
+                "current_capture_window_dry_run_email_count_rejected"
+            ),
+            "terminal_proof_real_delivery_days_after_current_capture_window": s2plt02_capture_plan.get(
+                "terminal_proof_real_delivery_days_after_current_capture_window"
+            ),
+            "terminal_proof_real_email_count_after_current_capture_window": s2plt02_capture_plan.get(
+                "terminal_proof_real_email_count_after_current_capture_window"
+            ),
+            "remaining_real_delivery_days_for_terminal_proof": s2plt02_capture_plan.get(
+                "remaining_real_delivery_days_for_terminal_proof"
+            ),
+            "remaining_real_email_count_for_terminal_proof": s2plt02_capture_plan.get(
+                "remaining_real_email_count_for_terminal_proof"
+            ),
             "next_executable_step": s2plt02_capture_plan.get("next_executable_step"),
         }
         if s2plt04_blocked_by_upstream_evidence
@@ -9214,6 +9354,10 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
                 errors.append("S2PLT02 capture plan summary must expose missing terminal artifact blocker")
             if capture_plan_summary.get("terminal_artifact_ready") is not False:
                 errors.append("S2PLT02 capture plan summary missing terminal artifact must not be ready")
+        if capture_plan_summary.get("observed_real_counts_source") != (
+            "terminal_delivery_input_inventory_existing_real_smtp_evidence"
+        ):
+            errors.append("S2PLT02 capture plan summary observed real counts source is invalid")
         if not isinstance(capture_plan_summary.get("runtime_capture_ready"), bool):
             errors.append("S2PLT02 capture plan summary runtime_capture_ready must be boolean")
         if not isinstance(capture_plan_summary.get("runtime_capture_blockers"), list):
@@ -9227,9 +9371,53 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             "required_real_delivery_days",
             "observed_real_email_count",
             "required_real_email_count",
+            "current_capture_window_real_delivery_days_added",
+            "current_capture_window_real_email_count_added",
+            "current_capture_window_dry_run_email_count_rejected",
+            "terminal_proof_real_delivery_days_after_current_capture_window",
+            "terminal_proof_real_email_count_after_current_capture_window",
+            "remaining_real_delivery_days_for_terminal_proof",
+            "remaining_real_email_count_for_terminal_proof",
         ):
             if not isinstance(capture_plan_summary.get(numeric_field), int):
                 errors.append(f"S2PLT02 capture plan summary {numeric_field} must be an integer")
+        if capture_window_summary.get("counts_toward_s2plt02_terminal_proof") is False:
+            if capture_plan_summary.get("current_capture_window_real_delivery_days_added") != 0:
+                errors.append("S2PLT02 capture plan summary nonterminal window must add zero real days")
+            if capture_plan_summary.get("current_capture_window_real_email_count_added") != 0:
+                errors.append("S2PLT02 capture plan summary nonterminal window must add zero real emails")
+            if capture_plan_summary.get("current_capture_window_dry_run_email_count_rejected") != (
+                capture_window_summary.get("dry_run_email_count")
+            ):
+                errors.append("S2PLT02 capture plan summary rejected dry-run count must match capture-window")
+        expected_terminal_days = min(
+            int(capture_plan_summary.get("required_real_delivery_days") or 0),
+            int(capture_plan_summary.get("observed_real_delivery_days") or 0)
+            + int(capture_plan_summary.get("current_capture_window_real_delivery_days_added") or 0),
+        )
+        expected_terminal_email_count = min(
+            int(capture_plan_summary.get("required_real_email_count") or 0),
+            int(capture_plan_summary.get("observed_real_email_count") or 0)
+            + int(capture_plan_summary.get("current_capture_window_real_email_count_added") or 0),
+        )
+        if capture_plan_summary.get(
+            "terminal_proof_real_delivery_days_after_current_capture_window"
+        ) != expected_terminal_days:
+            errors.append("S2PLT02 capture plan summary terminal days after current window are inconsistent")
+        if capture_plan_summary.get(
+            "terminal_proof_real_email_count_after_current_capture_window"
+        ) != expected_terminal_email_count:
+            errors.append("S2PLT02 capture plan summary terminal email count after current window is inconsistent")
+        if capture_plan_summary.get("remaining_real_delivery_days_for_terminal_proof") != max(
+            int(capture_plan_summary.get("required_real_delivery_days") or 0) - expected_terminal_days,
+            0,
+        ):
+            errors.append("S2PLT02 capture plan summary remaining real days are inconsistent")
+        if capture_plan_summary.get("remaining_real_email_count_for_terminal_proof") != max(
+            int(capture_plan_summary.get("required_real_email_count") or 0) - expected_terminal_email_count,
+            0,
+        ):
+            errors.append("S2PLT02 capture plan summary remaining real email count is inconsistent")
         if (
             expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
             and capture_plan_summary.get("next_executable_step")
@@ -9246,6 +9434,22 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             errors.append("S2PLT02 runtime readiness summary blockers must match capture plan summary")
         if runtime_summary.get("runtime_capture_ready") != capture_plan_summary.get("runtime_capture_ready"):
             errors.append("S2PLT02 runtime readiness summary readiness flag must match capture plan summary")
+        for field in (
+            "observed_real_counts_source",
+            "observed_real_delivery_days",
+            "required_real_delivery_days",
+            "observed_real_email_count",
+            "required_real_email_count",
+            "current_capture_window_real_delivery_days_added",
+            "current_capture_window_real_email_count_added",
+            "current_capture_window_dry_run_email_count_rejected",
+            "terminal_proof_real_delivery_days_after_current_capture_window",
+            "terminal_proof_real_email_count_after_current_capture_window",
+            "remaining_real_delivery_days_for_terminal_proof",
+            "remaining_real_email_count_for_terminal_proof",
+        ):
+            if runtime_summary.get(field) != capture_plan_summary.get(field):
+                errors.append(f"S2PLT02 runtime readiness summary {field} must match capture plan summary")
         expected_secret_names = list(S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS)
         if capture_plan_summary.get("required_smtp_secret_env_names") != expected_secret_names:
             errors.append("S2PLT02 capture plan summary required SMTP secret env names are invalid")

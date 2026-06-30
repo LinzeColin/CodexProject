@@ -1130,6 +1130,17 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(capture_window_summary["terminal_delivery_credit"])
         self.assertFalse(capture_window_summary["counts_toward_s2plt02_terminal_proof"])
         self.assertEqual(
+            plan["observed_real_counts_source"],
+            "terminal_delivery_input_inventory_existing_real_smtp_evidence",
+        )
+        self.assertEqual(plan["current_capture_window_real_delivery_days_added"], 0)
+        self.assertEqual(plan["current_capture_window_real_email_count_added"], 0)
+        self.assertEqual(plan["current_capture_window_dry_run_email_count_rejected"], 8)
+        self.assertEqual(plan["terminal_proof_real_delivery_days_after_current_capture_window"], 1)
+        self.assertEqual(plan["terminal_proof_real_email_count_after_current_capture_window"], 4)
+        self.assertEqual(plan["remaining_real_delivery_days_for_terminal_proof"], 1)
+        self.assertEqual(plan["remaining_real_email_count_for_terminal_proof"], 4)
+        self.assertEqual(
             capture_window_summary["scheduler_runtime_evidence_status"],
             "launchagent_runtime_state_unknown",
         )
@@ -5525,6 +5536,17 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(capture_window_summary["terminal_delivery_credit"])
         self.assertFalse(capture_window_summary["counts_toward_s2plt02_terminal_proof"])
         self.assertEqual(
+            capture_summary["observed_real_counts_source"],
+            "terminal_delivery_input_inventory_existing_real_smtp_evidence",
+        )
+        self.assertEqual(capture_summary["current_capture_window_real_delivery_days_added"], 0)
+        self.assertEqual(capture_summary["current_capture_window_real_email_count_added"], 0)
+        self.assertEqual(capture_summary["current_capture_window_dry_run_email_count_rejected"], 8)
+        self.assertEqual(capture_summary["terminal_proof_real_delivery_days_after_current_capture_window"], 1)
+        self.assertEqual(capture_summary["terminal_proof_real_email_count_after_current_capture_window"], 4)
+        self.assertEqual(capture_summary["remaining_real_delivery_days_for_terminal_proof"], 1)
+        self.assertEqual(capture_summary["remaining_real_email_count_for_terminal_proof"], 4)
+        self.assertEqual(
             capture_summary["required_smtp_secret_env_names"],
             ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
         )
@@ -5877,7 +5899,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "3abd9c06b9490e0023eb4d1db2a2d19a7679041f9f887179304bee0d025f0429",
+            "e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1",
         )
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
         self.assertIn(
@@ -5905,6 +5927,30 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "dry_run_email_count"
             ],
             8,
+        )
+        self.assertEqual(
+            state["s2plt02_terminal_delivery_capture_plan_summary"][
+                "terminal_proof_real_delivery_days_after_current_capture_window"
+            ],
+            1,
+        )
+        self.assertEqual(
+            state["s2plt02_terminal_delivery_capture_plan_summary"][
+                "terminal_proof_real_email_count_after_current_capture_window"
+            ],
+            4,
+        )
+        self.assertEqual(
+            state["s2plt02_terminal_delivery_capture_plan_summary"][
+                "remaining_real_delivery_days_for_terminal_proof"
+            ],
+            1,
+        )
+        self.assertEqual(
+            state["s2plt02_terminal_delivery_capture_plan_summary"][
+                "remaining_real_email_count_for_terminal_proof"
+            ],
+            4,
         )
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_env_ready"])
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_values_logged"])

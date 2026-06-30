@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-01 00:13:52 Australia/Sydney - S2PMT07 final bundle S2PLT02 terminal count split
+
+- Added explicit S2PLT02 count-split fields so final-bundle summaries distinguish existing real SMTP evidence from current capture-window additions.
+- Current terminal proof count remains `1/2` real delivery days and `4/8` real emails; the 2026-06-29/2026-06-30 capture window adds `0` real days and `0` real emails, with `8` dry-run emails rejected for terminal proof.
+- Live prerequisite, final validator, and capture-plan CLIs remain blocked with hashes `fb04c0b2582c24bdecf9d6d33658f25139ab8cf656cd6e22c69f01e5a3e1c419`, `7527930ba22a849c42ff55a0e65ea3c4b242e6c629f51db671468b63a1925a2b`, and `e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
+
 ## 2026-06-30 23:50:28 Australia/Sydney - S2PMT07 final bundle S2PLT02 capture-window summary
 
 - Added `terminal_capture_window_audit_summary` to S2PLT02 capture-plan summaries exposed by `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle`.

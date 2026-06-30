@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 310
+- task_count: 311
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 00:13:52 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Terminal Count Split
+
+- `S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT` separates existing real SMTP terminal input counts from current capture-window terminal-credit additions in `plan-final-bundle-prerequisites`, `validate-final-acceptance-bundle`, and `plan-s2plt02-terminal-delivery-proof-capture`.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=fb04c0b2582c24bdecf9d6d33658f25139ab8cf656cd6e22c69f01e5a3e1c419`, final validator `state_hash=7527930ba22a849c42ff55a0e65ea3c4b242e6c629f51db671468b63a1925a2b`, and S2PLT02 capture plan `state_hash=e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1`.
+- Count split: `observed_real_delivery_days=1`, `observed_real_email_count=4`, `current_capture_window_real_delivery_days_added=0`, `current_capture_window_real_email_count_added=0`, `current_capture_window_dry_run_email_count_rejected=8`, `terminal_proof_real_delivery_days_after_current_capture_window=1`, `terminal_proof_real_email_count_after_current_capture_window=4`, `remaining_real_delivery_days_for_terminal_proof=1`, and `remaining_real_email_count_for_terminal_proof=4`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_TERMINAL_COUNT_SPLIT.md`; `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-06-30 23:50:28 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Capture Window Summary
 
