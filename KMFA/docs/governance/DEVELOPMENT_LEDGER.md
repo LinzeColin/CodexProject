@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s12-github-upload
+product_version: 0.1.0-s13p1-financial-operating-report
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S13`
-- current_phase: `S13-P1｜待开始`
+- current_phase: `S13-P2｜待开始`
 - current_tasks: `S13PAT01-S13PAT03`
-- status: `uploaded_to_github_main`
+- status: `s13p1_completed_validated_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -85,16 +85,18 @@ product_version: 0.1.0-s12-github-upload
 | `S12PCT01-S12PCT03` | S12-P3 重跑机制完成本地验证：2 条 preview passed/publish-allowed 事件失效派生缓存，重跑字段映射、事实层、指标和报告引用，2 条同源一致性校验通过；3 条高风险 pending preview 不进入重跑；不执行 Stage 12 review 或 GitHub upload | `KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/human/s12_p3_completion_record.md` |
 | `KMFA-S12-STAGE-REVIEW-20260701` | Stage 12 整体复审本地通过；复跑 S12-P1/P2/P3 validators、`check_s12_stage_review.py`、全量 152 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency；修复 HANDOFF stale next-step finding；复审步骤未执行 GitHub upload、S13、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md` |
 | `KMFA-S12-GITHUB-UPLOAD-20260701` | Stage 12 final GitHub upload 完成；基于最新 origin/main rebase Stage 12 栈，复跑 S12 validators、Stage 12 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、dry-run push、push 和 post-push parity | `KMFA/stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md` |
+| `S13PAT01-S13PAT03` | S13-P1 财务经营报表完成本地验证：生成 4 条 public-safe 财务经营 source lane、2 条经营周报/月报初稿、2 个 HTML draft、manifest 和 validator；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告和经营决策依据；不执行 S13-P2/S13-P3、Stage 13 review 或 GitHub upload | `KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S13PAT01-S13PAT03` | S13-P1 财务经营报表待开始；下一轮必须重新确认 git root、branch、remote、HEAD、status，并读取 v1.2 task pack / roadmap；不得直接进入 S13-P2/S13-P3、lineage full check、正式报告或外部接口 | `KMFA/docs/governance/roadmap.yaml` |
+| `S13PBT01-S13PBT03` | S13-P2 回款应收账龄待开始；下一轮必须重新确认 git root、branch、remote、HEAD、status，并读取 v1.2 task pack / roadmap；不得直接进入 S13-P3、Stage 13 review、lineage full check、正式报告或外部接口 | `KMFA/docs/governance/roadmap.yaml` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S13-P1 财务经营报表 | 尚未开始；Stage 12 upload 只完成 public-safe S12 栈上传，不代表 S13 报表、lineage 或正式报告已实现 | 下一轮只执行 S13-P1 |
+| S13-P2 回款应收账龄 | 尚未开始；S13-P1 只完成 public-safe 财务经营报表初稿，不代表回款应收、跨表复核、lineage 或正式报告已实现 | 下一轮只执行 S13-P2 |
+| S13-P3 跨表复核 | 尚未开始；必须等待 S13-P2 完成并本地验证 | S13-P2 后执行 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

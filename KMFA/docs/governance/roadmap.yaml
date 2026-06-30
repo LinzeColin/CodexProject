@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S13"
-current_phase_id: "S13PA"
-current_task_id: "S13PAT01"
-next_gate_id: "KMFA-S13-P1-GATE"
+current_phase_id: "S13PB"
+current_task_id: "S13PBT01"
+next_gate_id: "KMFA-S13-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -748,9 +748,55 @@ stages:
       - "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
   - stage_id: "S13"
     name: "财务经营报表与回款应收扩展"
-    status: "planned"
+    status: "in_progress_s13p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33
+    current_result: "S13-P1 财务经营报表已本地完成并验证；生成 4 条 public-safe source lane、2 条经营周报/月报初稿和 2 个 HTML draft，报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告和经营决策依据。"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_P1_financial_operating_report/machine/s13_p1_manifest.json"
+      - "KMFA/tools/check_s13_p1_financial_operating_report.py"
+    phases:
+      - phase_id: "S13PA"
+        name: "财务经营报表"
+        status: "completed_validated_local_only"
+        estimated_hours: 1
+        estimated_pct: 100
+        current_result: "已接入经营情况、费用税金资产、现金情况、贷款明细四类 source lane，并生成经营周报/月报初稿。"
+        evidence_refs:
+          - "KMFA/metadata/reports/financial_operating_report_manifest.json"
+          - "KMFA/metadata/reports/financial_operating_report_source_lanes.jsonl"
+          - "KMFA/metadata/reports/financial_operating_report_drafts.jsonl"
+          - "KMFA/stage_artifacts/S13_P1_financial_operating_report/exports/html/financial_operating_weekly_draft.html"
+          - "KMFA/stage_artifacts/S13_P1_financial_operating_report/exports/html/financial_operating_monthly_draft.html"
+        tasks:
+          - task_id: "S13PAT01"
+            name: "接入经营情况、费用税金资产、现金情况、贷款明细。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/financial_operating_report_source_lanes.jsonl"
+          - task_id: "S13PAT02"
+            name: "生成经营周报/月报初稿。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/financial_operating_report_drafts.jsonl"
+          - task_id: "S13PAT03"
+            name: "经营报告显示数据状态和限制。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/tools/check_s13_p1_financial_operating_report.py"
+              - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
+      - phase_id: "S13PB"
+        name: "回款应收账龄"
+        status: "planned_next"
+        estimated_hours: 1
+        estimated_pct: 0
+      - phase_id: "S13PC"
+        name: "跨表复核"
+        status: "planned"
+        estimated_hours: 1
+        estimated_pct: 0
   - stage_id: "S14"
     name: "资金、开票、纳税与政策证据模块"
     status: "planned"

@@ -1,0 +1,121 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md",
+    "financial_operating_report_drafts": "KMFA/metadata/reports/financial_operating_report_drafts.jsonl",
+    "financial_operating_report_manifest": "KMFA/metadata/reports/financial_operating_report_manifest.json",
+    "financial_operating_report_source_lanes": "KMFA/metadata/reports/financial_operating_report_source_lanes.jsonl",
+    "monthly_html_draft": "KMFA/stage_artifacts/S13_P1_financial_operating_report/exports/html/financial_operating_monthly_draft.html",
+    "stage_manifest": "KMFA/stage_artifacts/S13_P1_financial_operating_report/machine/s13_p1_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md",
+    "validator": "KMFA/tools/check_s13_p1_financial_operating_report.py",
+    "weekly_html_draft": "KMFA/stage_artifacts/S13_P1_financial_operating_report/exports/html/financial_operating_weekly_draft.html"
+  },
+  "content_hash": "sha256:53c27cbaad8fad399f49e44885418352693b63c88ddbfd12060383d5f75ce35c",
+  "formula_version": "FORM-KMFA-S13P1-DRAFT-STATUS-001",
+  "generated_at": "2026-07-01T17:00:00+10:00",
+  "html_template_version": "HTML-KMFA-S13P1-BLUE-DRAFT-v1",
+  "limitations": [
+    "S13-P1 只生成财务经营周报/月报初稿，不生成正式可信经营报告。",
+    "S13-P2 回款应收账龄、S13-P3 跨表复核、lineage full check 和外部接口均未执行。",
+    "存在 12 条 pending owner 或授权复核差异时，报告等级显示为 D，经营决策依据继续阻断。"
+  ],
+  "mapping_version": "MAP-KMFA-S13P1-PUBLIC-SAFE-v1",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "pdf_file_committed": false,
+    "private_ref_committed_in_s13p1_outputs": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "real_account_number_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "cash_forecast_decision_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "derived_amount_calculation_allowed": false,
+    "draft_report_allowed": true,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "loan_management_action_allowed": false,
+    "monthly_draft_allowed": true,
+    "payment_or_bank_operation_allowed": false,
+    "pending_reconciliation_count": 12,
+    "phase_completion_upload_allowed": false,
+    "quality_grade_bypass_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "draft_only_pending_s13p2_s13p3_lineage_and_unclosed_reconciliation",
+    "report_grade_bypass_allowed": false,
+    "report_grade_visible": "D",
+    "s13_p2_allowed": false,
+    "s13_p3_allowed": false,
+    "stage13_review_allowed": false,
+    "weekly_draft_allowed": true
+  },
+  "record_type": "financial_operating_report_manifest",
+  "report_version": "RPT-KMFA-S13P1-FINANCIAL-OPERATING-DRAFT-001",
+  "required_draft_ids": [
+    "financial_operating_weekly_draft",
+    "financial_operating_monthly_draft"
+  ],
+  "required_section_titles": [
+    "经营摘要",
+    "经营情况",
+    "费用税金资产",
+    "现金情况",
+    "贷款明细",
+    "数据状态与限制",
+    "下一步复核事项"
+  ],
+  "required_source_lanes": [
+    "operating_situation",
+    "expense_tax_asset",
+    "cash_situation",
+    "loan_detail"
+  ],
+  "runtime_status": "public_safe_financial_operating_drafts_created_formal_report_blocked",
+  "schema_version": "kmfa.financial_operating_report_manifest.v1",
+  "source_taskpack_refs": {
+    "business_overview_html_sample": "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_经营分析报告预览_v3_blue.html",
+    "human_readable_report_spec": "KMFA/taskpack/v1_2/09_KMFA_前端交互与人类可读报告规范_v1_1.md",
+    "roadmap_s13_p1": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S13-P1"
+  },
+  "stage_phase": "S13-P1",
+  "stage_scope": {
+    "complete_trusted_report_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "payment_or_bank_operation_scope_included": false,
+    "s13_p1_financial_operating_report_scope_included": true,
+    "s13_p2_collection_receivable_aging_scope_included": false,
+    "s13_p3_cross_table_review_scope_included": false,
+    "stage13_review_scope_included": false,
+    "tax_filing_scope_included": false
+  },
+  "summary": {
+    "business_decision_basis_count": 0,
+    "draft_report_count": 2,
+    "field_mapping_count": 39,
+    "formal_report_count": 0,
+    "html_draft_count": 2,
+    "pending_reconciliation_count": 12,
+    "report_grade_visible": "D",
+    "source_count": 8,
+    "source_lane_count": 4
+  },
+  "upstream_metadata_refs": {
+    "finance_field_candidates": "source_ref://KMFA/S07-P1/finance_field_candidates",
+    "finance_support_source_registry": "source_ref://KMFA/S07-P1/finance_support_source_registry",
+    "project_cost_fact_layer": "source_ref://KMFA/S09-P1/project_cost_fact_layer",
+    "project_margin_cash_margin": "source_ref://KMFA/S09-P2/project_margin_cash_margin",
+    "report_export_runtime": "source_ref://KMFA/S10-P3/report_export_runtime",
+    "report_grade_runtime": "source_ref://KMFA/S10-P2/report_grade_runtime",
+    "scope_reconciliation": "source_ref://KMFA/S09-P3/scope_reconciliation"
+  }
+}
