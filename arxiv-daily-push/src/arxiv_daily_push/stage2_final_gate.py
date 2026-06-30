@@ -987,6 +987,12 @@ S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS = (
+    "ADP_SMTP_HOST",
+    "ADP_SMTP_PORT",
+    "ADP_SMTP_USERNAME",
+    "ADP_SMTP_PASSWORD",
+)
 S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH = (
     "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"
 )
@@ -2077,6 +2083,7 @@ def build_s2plt02_terminal_capture_window_audit_state(
     launchctl_disabled_text: str = "",
     launchctl_print_outputs: Mapping[str, str] | None = None,
     adp_allow_smtp_send: bool = False,
+    smtp_secret_env_presence: Mapping[str, bool] | None = None,
 ) -> dict[str, Any]:
     """Audit the current terminal capture window without granting S2PLT02 credit."""
 
@@ -2106,6 +2113,15 @@ def build_s2plt02_terminal_capture_window_audit_state(
     )
     all_required_launchagents_have_calendar_triggers = all(launchagent_calendar_triggers_present.values())
     launchagents_loaded_but_disabled = all_required_launchagents_disabled and all_required_launchagents_loaded
+    smtp_secret_env_presence = smtp_secret_env_presence or {}
+    smtp_secret_env_name_presence = {
+        key: bool(smtp_secret_env_presence.get(key))
+        for key in S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS
+    }
+    missing_smtp_secret_env_names = [
+        key for key, present in smtp_secret_env_name_presence.items() if present is not True
+    ]
+    smtp_secret_env_ready = not missing_smtp_secret_env_names
     scheduler_runtime_evidence_status = (
         "launchagents_loaded_but_disabled_not_terminal_scheduler_proof"
         if launchagents_loaded_but_disabled
@@ -2160,6 +2176,8 @@ def build_s2plt02_terminal_capture_window_audit_state(
         blocking_reasons.append("real_launchd_scheduler_proof_missing")
     if not adp_allow_smtp_send:
         blocking_reasons.append("adp_allow_smtp_send_false")
+    if not smtp_secret_env_ready:
+        blocking_reasons.append("real_smtp_secret_env_missing")
     if all_required_launchagents_disabled:
         blocking_reasons.append("adp_launchagents_disabled_by_user_domain_override")
     else:
@@ -2202,6 +2220,11 @@ def build_s2plt02_terminal_capture_window_audit_state(
         "launchagents_loaded_but_disabled": launchagents_loaded_but_disabled,
         "scheduler_runtime_evidence_status": scheduler_runtime_evidence_status,
         "adp_allow_smtp_send": adp_allow_smtp_send,
+        "required_smtp_secret_env_names": list(S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS),
+        "smtp_secret_env_name_presence": smtp_secret_env_name_presence,
+        "missing_smtp_secret_env_names": missing_smtp_secret_env_names,
+        "smtp_secret_env_ready": smtp_secret_env_ready,
+        "smtp_secret_values_logged": False,
         "dry_run_audits": dry_run_audits,
         "delivery_evidence_ledger": delivery_ledger,
         "terminal_delivery_proof_validation": terminal_proof,
@@ -2299,6 +2322,22 @@ def validate_s2plt02_terminal_capture_window_audit_state(state: Mapping[str, Any
         errors.append("real_launchd_scheduler_proof_missing blocker is required")
     if state.get("adp_allow_smtp_send") is False and "adp_allow_smtp_send_false" not in state.get("blocking_reasons", []):
         errors.append("adp_allow_smtp_send_false blocker is required")
+    if tuple(state.get("required_smtp_secret_env_names", [])) != S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS:
+        errors.append("required_smtp_secret_env_names must match S2PLT02 real SMTP env keys")
+    secret_presence = _mapping(state.get("smtp_secret_env_name_presence"))
+    if tuple(secret_presence.keys()) != S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS:
+        errors.append("smtp_secret_env_name_presence must cover all S2PLT02 real SMTP env keys")
+    expected_missing_secret_names = [
+        key for key in S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS if secret_presence.get(key) is not True
+    ]
+    if state.get("missing_smtp_secret_env_names") != expected_missing_secret_names:
+        errors.append("missing_smtp_secret_env_names must match absent S2PLT02 real SMTP env keys")
+    if state.get("smtp_secret_env_ready") is not (not expected_missing_secret_names):
+        errors.append("smtp_secret_env_ready must match missing_smtp_secret_env_names")
+    if state.get("smtp_secret_values_logged") is not False:
+        errors.append("smtp_secret_values_logged must be false")
+    if expected_missing_secret_names and "real_smtp_secret_env_missing" not in state.get("blocking_reasons", []):
+        errors.append("real_smtp_secret_env_missing blocker is required")
     nonterminal_dates = [str(item) for item in state.get("nonterminal_succeeded_dry_run_service_dates", [])]
     if state.get("nonterminal_succeeded_dry_run_count") != len(nonterminal_dates):
         errors.append("nonterminal_succeeded_dry_run_count must match nonterminal date count")
@@ -3671,6 +3710,7 @@ def build_s2plt02_terminal_proof_evidence_inventory_state(
     candidate_service_dates: tuple[str, ...] = S2PLT02_TERMINAL_CAPTURE_WINDOW_DEFAULT_CANDIDATE_DATES,
     launchctl_disabled_text: str = "",
     adp_allow_smtp_send: bool = False,
+    smtp_secret_env_presence: Mapping[str, bool] | None = None,
 ) -> dict[str, Any]:
     """Classify current terminal-proof evidence inputs without writing the terminal proof artifact."""
 
@@ -3684,6 +3724,7 @@ def build_s2plt02_terminal_proof_evidence_inventory_state(
         candidate_service_dates=candidate_service_dates,
         launchctl_disabled_text=launchctl_disabled_text,
         adp_allow_smtp_send=adp_allow_smtp_send,
+        smtp_secret_env_presence=smtp_secret_env_presence,
     )
     terminal_validation = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
         repo_root=repo_root,
@@ -3832,6 +3873,11 @@ def build_s2plt02_terminal_proof_evidence_inventory_state(
         "observed_real_email_count": int(input_inventory.get("observed_real_email_count") or 0),
         "observed_candidate_dry_run_email_count": int(capture_window.get("dry_run_email_count") or 0),
         "observed_candidate_real_sent_email_count": int(capture_window.get("real_sent_candidate_email_count") or 0),
+        "required_smtp_secret_env_names": list(capture_window.get("required_smtp_secret_env_names", [])),
+        "smtp_secret_env_name_presence": dict(capture_window.get("smtp_secret_env_name_presence", {})),
+        "missing_smtp_secret_env_names": list(capture_window.get("missing_smtp_secret_env_names", [])),
+        "smtp_secret_env_ready": capture_window.get("smtp_secret_env_ready") is True,
+        "smtp_secret_values_logged": False,
         "input_inventory_state_hash": str(input_inventory.get("state_hash") or ""),
         "capture_window_state_hash": str(capture_window.get("state_hash") or ""),
         "terminal_validation_state_hash": str(terminal_validation.get("state_hash") or ""),
@@ -3907,6 +3953,22 @@ def validate_s2plt02_terminal_proof_evidence_inventory_state(state: Mapping[str,
         errors.append("next_allowed_builder_unblocked must be false while terminal inputs are missing")
     if state.get("artifact_written") is not False:
         errors.append("artifact_written must be false")
+    if tuple(state.get("required_smtp_secret_env_names", [])) != S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS:
+        errors.append("required_smtp_secret_env_names must match S2PLT02 real SMTP env keys")
+    secret_presence = _mapping(state.get("smtp_secret_env_name_presence"))
+    if tuple(secret_presence.keys()) != S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS:
+        errors.append("smtp_secret_env_name_presence must cover all S2PLT02 real SMTP env keys")
+    expected_missing_secret_names = [
+        key for key in S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS if secret_presence.get(key) is not True
+    ]
+    if state.get("missing_smtp_secret_env_names") != expected_missing_secret_names:
+        errors.append("missing_smtp_secret_env_names must match absent S2PLT02 real SMTP env keys")
+    if state.get("smtp_secret_env_ready") is not (not expected_missing_secret_names):
+        errors.append("smtp_secret_env_ready must match missing_smtp_secret_env_names")
+    if state.get("smtp_secret_values_logged") is not False:
+        errors.append("smtp_secret_values_logged must be false")
+    if expected_missing_secret_names and "real_smtp_secret_env_missing" not in state.get("blocking_reasons", []):
+        errors.append("real_smtp_secret_env_missing blocker is required")
     for flag in (
         "production_acceptance_claimed",
         "integrated_production_accepted",
@@ -3969,6 +4031,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
             "second_consecutive_real_m1_m4_smtp_day_missing",
             "real_launchd_scheduler_proof_missing",
             "adp_allow_smtp_send_false",
+            "real_smtp_secret_env_missing",
             "adp_launchagents_disabled_by_user_domain_override",
             "daily_run_succeeded_but_smtp_dry_run_not_terminal",
             "blocked_candidate_inputs_present",
@@ -4085,6 +4148,17 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "runtime_capture_ready": runtime_capture_ready,
         "runtime_capture_blockers": runtime_capture_blockers,
         "remaining_runtime_actions": remaining_runtime_actions,
+        "required_smtp_secret_env_names": list(
+            evidence_inventory.get("required_smtp_secret_env_names", [])
+        ),
+        "smtp_secret_env_name_presence": dict(
+            evidence_inventory.get("smtp_secret_env_name_presence", {})
+        ),
+        "missing_smtp_secret_env_names": list(
+            evidence_inventory.get("missing_smtp_secret_env_names", [])
+        ),
+        "smtp_secret_env_ready": evidence_inventory.get("smtp_secret_env_ready") is True,
+        "smtp_secret_values_logged": False,
         "ready_inputs": list(inventory.get("ready_inputs", [])),
         "blocked_by_missing_inputs": missing_inputs,
         "blocking_reasons": blocking_reasons,
@@ -4184,6 +4258,22 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         and state.get("next_executable_step") in {"CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY", "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF"}
     ):
         errors.append("runtime blockers must prevent direct real SMTP/scheduler capture as next step")
+    if tuple(state.get("required_smtp_secret_env_names", [])) != S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS:
+        errors.append("required_smtp_secret_env_names must match S2PLT02 real SMTP env keys")
+    secret_presence = _mapping(state.get("smtp_secret_env_name_presence"))
+    if tuple(secret_presence.keys()) != S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS:
+        errors.append("smtp_secret_env_name_presence must cover all S2PLT02 real SMTP env keys")
+    expected_missing_secret_names = [
+        key for key in S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS if secret_presence.get(key) is not True
+    ]
+    if state.get("missing_smtp_secret_env_names") != expected_missing_secret_names:
+        errors.append("missing_smtp_secret_env_names must match absent S2PLT02 real SMTP env keys")
+    if state.get("smtp_secret_env_ready") is not (not expected_missing_secret_names):
+        errors.append("smtp_secret_env_ready must match missing_smtp_secret_env_names")
+    if state.get("smtp_secret_values_logged") is not False:
+        errors.append("smtp_secret_values_logged must be false")
+    if expected_missing_secret_names and "real_smtp_secret_env_missing" not in state.get("runtime_capture_blockers", []):
+        errors.append("real_smtp_secret_env_missing blocker is required")
     if state.get("status") == "pass" and state.get("terminal_delivery_proof_ready") is not True:
         errors.append("pass status requires terminal_delivery_proof_ready")
     if state.get("terminal_delivery_proof_ready") is True and state.get("blocked_by_missing_inputs"):
@@ -8520,6 +8610,14 @@ def build_final_bundle_prerequisite_plan_state(
             "runtime_capture_ready": s2plt02_capture_plan.get("runtime_capture_ready"),
             "runtime_capture_blockers": list(s2plt02_capture_plan.get("runtime_capture_blockers", [])),
             "remaining_runtime_actions": list(s2plt02_capture_plan.get("remaining_runtime_actions", [])),
+            "required_smtp_secret_env_names": list(
+                s2plt02_capture_plan.get("required_smtp_secret_env_names", [])
+            ),
+            "missing_smtp_secret_env_names": list(
+                s2plt02_capture_plan.get("missing_smtp_secret_env_names", [])
+            ),
+            "smtp_secret_env_ready": s2plt02_capture_plan.get("smtp_secret_env_ready"),
+            "smtp_secret_values_logged": s2plt02_capture_plan.get("smtp_secret_values_logged"),
             "blocked_by_missing_inputs": list(s2plt02_capture_plan.get("blocked_by_missing_inputs", [])),
             "observed_real_delivery_days": s2plt02_capture_plan.get("observed_real_delivery_days"),
             "required_real_delivery_days": s2plt02_capture_plan.get("required_real_delivery_days"),
@@ -8541,6 +8639,14 @@ def build_final_bundle_prerequisite_plan_state(
             "runtime_capture_ready": s2plt02_capture_plan.get("runtime_capture_ready"),
             "runtime_capture_blockers": list(s2plt02_capture_plan.get("runtime_capture_blockers", [])),
             "remaining_next_actions": list(s2plt02_capture_plan.get("remaining_runtime_actions", [])),
+            "required_smtp_secret_env_names": list(
+                s2plt02_capture_plan.get("required_smtp_secret_env_names", [])
+            ),
+            "missing_smtp_secret_env_names": list(
+                s2plt02_capture_plan.get("missing_smtp_secret_env_names", [])
+            ),
+            "smtp_secret_env_ready": s2plt02_capture_plan.get("smtp_secret_env_ready"),
+            "smtp_secret_values_logged": s2plt02_capture_plan.get("smtp_secret_values_logged"),
             "blocked_by_missing_inputs": list(s2plt02_capture_plan.get("blocked_by_missing_inputs", [])),
             "observed_real_delivery_days": s2plt02_capture_plan.get("observed_real_delivery_days"),
             "required_real_delivery_days": s2plt02_capture_plan.get("required_real_delivery_days"),
@@ -8836,6 +8942,26 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             errors.append("S2PLT02 runtime readiness summary blockers must match capture plan summary")
         if runtime_summary.get("runtime_capture_ready") != capture_plan_summary.get("runtime_capture_ready"):
             errors.append("S2PLT02 runtime readiness summary readiness flag must match capture plan summary")
+        expected_secret_names = list(S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS)
+        if capture_plan_summary.get("required_smtp_secret_env_names") != expected_secret_names:
+            errors.append("S2PLT02 capture plan summary required SMTP secret env names are invalid")
+        if runtime_summary.get("required_smtp_secret_env_names") != expected_secret_names:
+            errors.append("S2PLT02 runtime readiness summary required SMTP secret env names are invalid")
+        if runtime_summary.get("missing_smtp_secret_env_names") != capture_plan_summary.get(
+            "missing_smtp_secret_env_names"
+        ):
+            errors.append("S2PLT02 runtime readiness summary missing SMTP secret env names must match capture plan")
+        if runtime_summary.get("smtp_secret_env_ready") != capture_plan_summary.get("smtp_secret_env_ready"):
+            errors.append("S2PLT02 runtime readiness summary SMTP secret readiness must match capture plan")
+        if runtime_summary.get("smtp_secret_values_logged") is not False:
+            errors.append("S2PLT02 runtime readiness summary must not log SMTP secret values")
+        if capture_plan_summary.get("smtp_secret_values_logged") is not False:
+            errors.append("S2PLT02 capture plan summary must not log SMTP secret values")
+        if (
+            capture_plan_summary.get("missing_smtp_secret_env_names")
+            and "real_smtp_secret_env_missing" not in capture_plan_summary.get("runtime_capture_blockers", [])
+        ):
+            errors.append("S2PLT02 capture plan summary must block on missing real SMTP secret env names")
     elif capture_plan_summary:
         errors.append("S2PLT02 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
     elif state.get("s2plt02_runtime_readiness_summary"):

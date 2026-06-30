@@ -15,17 +15,17 @@
     "ACC-S2PMT07-FINAL-REVIEW"
   ],
   "phase": "S2PL",
-  "generated_at": "2026-06-30T19:35:53+10:00",
+  "generated_at": "2026-06-30T20:27:55+10:00",
   "status": "blocked",
   "result": "blocked_final_bundle_s2plt02_runtime_readiness_summary_synced_no_production",
-  "summary": "Final bundle prerequisite planning and final bundle validation now expose a dedicated S2PLT02 runtime readiness summary with remaining runtime actions, missing terminal inputs, and observed versus required real delivery counts.",
-  "state_hash": "a386b1848f2abcdc29e104759f3873173576572d8433af0a2448235d107daa92",
-  "final_bundle_prerequisite_plan_state_hash": "ccdc7b1d95af5a88943e8631e34523bbb8705360fd688aa02152339d04404fee",
-  "s2plt02_runtime_readiness_summary_state_hash": "dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee",
-  "s2plt02_capture_plan_state_hash": "dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee",
+  "summary": "Final bundle prerequisite planning and final bundle validation now expose a dedicated S2PLT02 runtime readiness summary with remaining runtime actions, missing terminal inputs, missing real SMTP secret env names, and observed versus required real delivery counts.",
+  "state_hash": "b70e0ae4ab942c46018d87e28c09b9d8e839f4ab10682cbf4fde8e993a15194e",
+  "final_bundle_prerequisite_plan_state_hash": "8878509d00a04899d9b4a647d98146dea5aa88e39f41a07d25f39b9848cb8878",
+  "s2plt02_runtime_readiness_summary_state_hash": "48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9",
+  "s2plt02_capture_plan_state_hash": "48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9",
   "authorization_artifact_status": "pass",
   "authorization_validation_state_hash": "68cb9b1f0ae26262a42aa703567a9bf6409fe4e0fbdca12233f553f63879f3c1",
-  "terminal_evidence_inventory_state_hash": "e8942077e2a2448ab8c354c1680e9d634872b4bea8f9e0f9006efac1cbd91336",
+  "terminal_evidence_inventory_state_hash": "01921f133de411eed12662818911e76e67c880d878394c7e39e8fd66f78c1e65",
   "next_required_step": "S2PLT04_COMPLETION_REPORT",
   "next_executable_task": "S2PLT02_TERMINAL_DELIVERY_PROOF",
   "next_executable_runtime_step": "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW",
@@ -43,6 +43,7 @@
     "second_consecutive_real_m1_m4_smtp_day_missing",
     "real_launchd_scheduler_proof_missing",
     "adp_allow_smtp_send_false",
+    "real_smtp_secret_env_missing",
     "daily_run_succeeded_but_smtp_dry_run_not_terminal",
     "blocked_candidate_inputs_present"
   ],
@@ -63,12 +64,16 @@
     "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
     "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
     "arxiv-daily-push/tests/test_stage2_final_gate.py",
-    "arxiv-daily-push/tests/test_cli.py"
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_governance_current_state.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
   ],
   "test_results": [
     "focused final-gate + CLI tests: 159 OK",
-    "plan-final-bundle-prerequisites CLI: blocked / exit 2 with state_hash ccdc7b1d95af5a88943e8631e34523bbb8705360fd688aa02152339d04404fee and S2PLT02 runtime readiness hash dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee",
-    "validate-final-acceptance-bundle CLI: blocked / exit 2 with state_hash a386b1848f2abcdc29e104759f3873173576572d8433af0a2448235d107daa92 and S2PLT02 runtime readiness hash dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee",
+    "plan-final-bundle-prerequisites CLI: blocked / exit 2 with state_hash 8878509d00a04899d9b4a647d98146dea5aa88e39f41a07d25f39b9848cb8878 and S2PLT02 runtime readiness hash 48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9",
+    "validate-final-acceptance-bundle CLI: blocked / exit 2 with state_hash b70e0ae4ab942c46018d87e28c09b9d8e839f4ab10682cbf4fde8e993a15194e and S2PLT02 runtime readiness hash 48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9",
+    "S2PLT02 runtime readiness exposes missing SMTP secret env names and smtp_secret_values_logged=false",
     "target final-gate/CLI/current-state/user-center tests: 182 OK",
     "full ADP unittest: 755 OK",
     "user-center timestamp check: 18 pages valid",
@@ -101,5 +106,24 @@
   "ranking_algorithm_changed": false,
   "current_pointer_changed": false,
   "v7_1_baseline_changed": false,
-  "v7_2_contract_files_changed": false
+  "v7_2_contract_files_changed": false,
+  "required_smtp_secret_env_names": [
+    "ADP_SMTP_HOST",
+    "ADP_SMTP_PORT",
+    "ADP_SMTP_USERNAME",
+    "ADP_SMTP_PASSWORD"
+  ],
+  "missing_smtp_secret_env_names": [
+    "ADP_SMTP_HOST",
+    "ADP_SMTP_PORT",
+    "ADP_SMTP_USERNAME",
+    "ADP_SMTP_PASSWORD"
+  ],
+  "smtp_secret_env_ready": false,
+  "smtp_secret_values_logged": false,
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_governance_current_state.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+  ]
 }

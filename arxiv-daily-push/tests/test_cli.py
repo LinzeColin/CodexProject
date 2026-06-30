@@ -986,7 +986,18 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["terminal_evidence_inventory_state_hash"])
         self.assertFalse(payload["runtime_capture_ready"])
         self.assertIn("adp_allow_smtp_send_false", payload["runtime_capture_blockers"])
+        self.assertIn("real_smtp_secret_env_missing", payload["runtime_capture_blockers"])
         self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", payload["runtime_capture_blockers"])
+        self.assertEqual(
+            payload["required_smtp_secret_env_names"],
+            ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
+        )
+        self.assertEqual(
+            payload["missing_smtp_secret_env_names"],
+            ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
+        )
+        self.assertFalse(payload["smtp_secret_env_ready"])
+        self.assertFalse(payload["smtp_secret_values_logged"])
         self.assertEqual(payload["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(payload["capture_steps"][0]["step_id"], "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY")
         self.assertEqual(
@@ -1382,6 +1393,13 @@ class CliTests(unittest.TestCase):
             "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
         ])
         self.assertIn("real_launchd_scheduler_proof_missing", capture_summary["runtime_capture_blockers"])
+        self.assertIn("real_smtp_secret_env_missing", capture_summary["runtime_capture_blockers"])
+        self.assertEqual(
+            capture_summary["missing_smtp_secret_env_names"],
+            ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
+        )
+        self.assertFalse(capture_summary["smtp_secret_env_ready"])
+        self.assertFalse(capture_summary["smtp_secret_values_logged"])
         self.assertEqual(payload["next_executable_command"], "")
         self.assertEqual(payload["next_executable_command_args"], {})
         self.assertFalse(payload["next_executable_command_writes_artifact"])
@@ -1785,8 +1803,28 @@ class CliTests(unittest.TestCase):
             payload["final_bundle_prerequisite_plan"]["s2plt02_terminal_delivery_capture_plan_summary"],
         )
         self.assertFalse(payload["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
+        self.assertIn(
+            "real_smtp_secret_env_missing",
+            payload["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_blockers"],
+        )
+        self.assertEqual(
+            payload["s2plt02_terminal_delivery_capture_plan_summary"]["missing_smtp_secret_env_names"],
+            ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
+        )
+        self.assertFalse(payload["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_env_ready"])
+        self.assertFalse(payload["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_values_logged"])
         self.assertEqual(payload["s2plt02_runtime_readiness_summary"]["status"], "blocked")
         self.assertTrue(payload["s2plt02_runtime_readiness_summary"]["real_proof_capture_authorized"])
+        self.assertIn(
+            "real_smtp_secret_env_missing",
+            payload["s2plt02_runtime_readiness_summary"]["runtime_capture_blockers"],
+        )
+        self.assertEqual(
+            payload["s2plt02_runtime_readiness_summary"]["missing_smtp_secret_env_names"],
+            ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
+        )
+        self.assertFalse(payload["s2plt02_runtime_readiness_summary"]["smtp_secret_env_ready"])
+        self.assertFalse(payload["s2plt02_runtime_readiness_summary"]["smtp_secret_values_logged"])
         self.assertEqual(
             payload["s2plt02_runtime_readiness_summary"]["remaining_next_actions"],
             [
