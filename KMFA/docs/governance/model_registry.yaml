@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s07p3-redcircle-postponement"
+    model_version: "0.1.0-s07-stage-review"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -241,6 +241,7 @@ models:
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"
       - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"
       - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

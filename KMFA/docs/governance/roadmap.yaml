@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S7"
-current_phase_id: "S7_STAGE_REVIEW"
-current_task_id: "KMFA-S07-STAGE-REVIEW-GATE"
-next_gate_id: "KMFA-S07-STAGE-REVIEW-GATE"
+current_phase_id: "S7_FINAL_GITHUB_UPLOAD"
+current_task_id: "KMFA-S07-FINAL-GITHUB-UPLOAD-GATE"
+next_gate_id: "KMFA-S07-FINAL-GITHUB-UPLOAD-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -619,9 +619,14 @@ stages:
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json"
   - stage_id: "S7"
     name: "文件型源适配与字段映射"
-    status: "completed_local_only_pending_stage_review"
+    status: "review_passed_upload_ready_local_only"
     estimated_hours: 3
     estimated_pct: 100
+    current_result: "S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略和 Stage 7 整体复审已本地通过；下一门禁仅为 Stage 7 final GitHub upload。"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_review_manifest.json"
   - stage_id: "S8"
     name: "业务实体与项目身份匹配"
     status: "planned"

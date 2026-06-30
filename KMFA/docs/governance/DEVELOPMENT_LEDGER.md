@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s07p3-redcircle-postponement
+product_version: 0.1.0-s07-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S07`
-- current_phase: `Stage 7 整体复审 待开始`
-- current_tasks: `KMFA-S07-STAGE-REVIEW-GATE`
-- status: `s07p3_completed_validated_local_only_stage7_review_not_started`
+- current_phase: `Stage 7 final GitHub upload 待开始`
+- current_tasks: `KMFA-S07-FINAL-GITHUB-UPLOAD-GATE`
+- status: `stage7_review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -58,16 +58,17 @@ product_version: 0.1.0-s07p3-redcircle-postponement
 | `S7PAT01-S7PAT03` | S07-P1 财务文件适配完成本地验证：9 类财务支撑源登记、45 条 hash-only 字段候选和 9 条只读字段报告已生成 | `KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md` |
 | `S7PBT01-S7PBT03` | S07-P2 WPS 文件适配完成本地验证：4 类 WPS 导出、20 条 hash-only 字段映射、4 条转换提示、4 条只读字段报告和 1 个映射规则版本已生成 | `KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md` |
 | `S7PCT01-S7PCT03` | S07-P3 红圈导出后置策略完成本地验证：4 类红圈导出模板已预留，D15 自动接口已阻断，后续只读/hash/rollback/manual approval 控制已建立 | `KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md` |
+| `KMFA-S07-STAGE-REVIEW-20260630` | Stage 7 整体复审本地通过，复审步骤未执行 GitHub upload | `KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S07-STAGE-REVIEW-GATE` | Stage 7 整体复审尚未开始；S07-P1/P2/P3 均已本地验证完成 | `KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md` |
+| `KMFA-S07-FINAL-GITHUB-UPLOAD-GATE` | Stage 7 final GitHub upload 尚未开始；S07-P1/P2/P3 与 Stage 7 review 均已本地验证完成 | `KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `Stage 7 review` 整体复审 | S07-P1/S07-P2/S07-P3 已完成本地验证；尚未复跑全阶段 validators、治理 validator 和 raw/secret scan | 下一轮只执行 Stage 7 整体复审，修复 review findings 后才允许 Stage 7 upload |
+| `Stage 7 upload` final GitHub upload | Stage 7 review 已本地通过；尚未对齐最新 origin/main、复跑 validators 并 push | 下一轮只执行 Stage 7 final GitHub upload |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

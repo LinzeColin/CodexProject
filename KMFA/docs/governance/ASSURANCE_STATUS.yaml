@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S07P3-REDCIRCLE-POSTPONEMENT"
+as_of_event_id: "EVENT-KMFA-20260630-S07-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "fd14057e7427d7f275fdb62a33619936618d0d35"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S07P3_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T18:00:00+10:00"
-generator_version: "manual-s07p3-redcircle-postponement"
-final_commit_binding: "precommit-pending-s07p3"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S07_REVIEW_LOCAL_COMMIT"
+snapshot_event_time: "2026-06-30T19:10:00+10:00"
+generator_version: "manual-s07-stage-review"
+final_commit_binding: "precommit-pending-s07-review"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -82,6 +82,7 @@ dimensions:
       - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/test_results.md"
       - "KMFA/tools/redcircle_postponement_policy.py"
       - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -114,6 +115,7 @@ dimensions:
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
       - "KMFA/tools/redcircle_postponement_policy.py"
       - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -205,15 +207,17 @@ dimensions:
       - "KMFA/metadata/schema_maps/redcircle_postponement_manifest.json"
       - "KMFA/metadata/schema_maps/redcircle_reserved_export_templates.jsonl"
       - "KMFA/metadata/schema_maps/redcircle_postponement_policy.yaml"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_review_manifest.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S07P3_COMPLETED_VALIDATED_LOCAL_ONLY_STAGE7_REVIEW_NOT_STARTED"
-  release_gate: "KMFA-S07-STAGE-REVIEW-GATE"
+  status: "S07_REVIEW_PASS_UPLOAD_READY_LOCAL_ONLY"
+  release_gate: "KMFA-S07-FINAL-GITHUB-UPLOAD-GATE"
   blocker_ids:
-    - "STAGE7_REVIEW_NOT_STARTED"
     - "STAGE7_GITHUB_UPLOAD_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
