@@ -144,6 +144,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
 
+        self.assertIn("REQ-ADP-V7-060-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD", page)
+        self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD", page)
+        self.assertIn(
+            "ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_GUARD.md", page)
+        self.assertIn("blocked_s2plt02_terminal_capture_wait_state_guard_synced_no_production", page)
+        self.assertIn("capture_wait_state_guard", page)
+        self.assertIn("2b82aea9755bc7d3d2f316cc48dcbc89a0cd1f9c324f687e385dc780a24d3997", page)
+        self.assertIn("693c4a0f9c57a2a3c7f1a7bfeb6683fda661a9456a5010ee773cbd00f487fdcf", page)
+        self.assertIn("b22c4110a1fa85ec1ddd004a8c52962f9daa61f16fb83cbfdb2f796ea84198ed", page)
+        self.assertIn("f1fab7374737527ffb5278b4d9a476e27d708d61b88e0dbe57a60e56085f39bd", page)
+
         self.assertIn("REQ-ADP-V7-059-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY", page)
         self.assertIn(

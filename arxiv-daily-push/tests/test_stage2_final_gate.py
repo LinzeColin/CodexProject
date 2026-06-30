@@ -1145,6 +1145,33 @@ class Stage2FinalGateTests(unittest.TestCase):
             "launchagent_runtime_state_unknown",
         )
         self.assertEqual(plan["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        wait_guard = plan["capture_wait_state_guard"]
+        self.assertEqual(wait_guard["status"], "blocked")
+        self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(wait_guard["next_safe_runtime_action"], "wait_for_real_smtp_scheduler_capture_window")
+        self.assertEqual(wait_guard["runtime_capture_blockers"], plan["runtime_capture_blockers"])
+        self.assertEqual(wait_guard["blocked_by_missing_inputs"], plan["blocked_by_missing_inputs"])
+        self.assertEqual(wait_guard["remaining_runtime_actions"], plan["remaining_runtime_actions"])
+        self.assertEqual(wait_guard["allowed_readonly_commands"], [
+            "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --json",
+            "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
+            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
+            "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+        ])
+        self.assertEqual(wait_guard["forbidden_until_terminal_dependencies_pass"], [
+            S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json",
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+            "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+            "HANDOFF/00_下一Agent先读.md",
+        ])
+        self.assertFalse(wait_guard["write_terminal_artifact_allowed"])
+        self.assertFalse(wait_guard["smtp_send_allowed_by_this_plan"])
+        self.assertFalse(wait_guard["scheduler_enable_allowed_by_this_plan"])
+        self.assertFalse(wait_guard["production_acceptance_allowed"])
+        self.assertTrue(wait_guard["no_production_side_effects"])
+        self.assertIsInstance(wait_guard["state_hash"], str)
+        self.assertTrue(wait_guard["state_hash"])
         self.assertEqual(
             [step["step_id"] for step in plan["capture_steps"]],
             [
@@ -6021,9 +6048,23 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1",
+            "2b82aea9755bc7d3d2f316cc48dcbc89a0cd1f9c324f687e385dc780a24d3997",
         )
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
+        wait_guard = state["s2plt02_terminal_delivery_capture_plan_summary"]["capture_wait_state_guard"]
+        self.assertEqual(wait_guard["state_hash"], "693c4a0f9c57a2a3c7f1a7bfeb6683fda661a9456a5010ee773cbd00f487fdcf")
+        self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertIn(
+            S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+            wait_guard["forbidden_until_terminal_dependencies_pass"],
+        )
+        self.assertIn(
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+            wait_guard["forbidden_until_terminal_dependencies_pass"],
+        )
+        self.assertFalse(wait_guard["write_terminal_artifact_allowed"])
+        self.assertFalse(wait_guard["scheduler_enable_allowed_by_this_plan"])
+        self.assertFalse(wait_guard["production_acceptance_allowed"])
         self.assertIn(
             "real_smtp_secret_env_missing",
             state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_blockers"],

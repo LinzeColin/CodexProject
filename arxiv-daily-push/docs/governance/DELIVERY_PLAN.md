@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 313
+- task_count: 314
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 01:32:33 Australia/Sydney - S2PLT02 Terminal Capture Wait-State Guard
+
+- `S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD` adds `capture_wait_state_guard` to `plan-s2plt02-terminal-delivery-proof-capture` and the final-bundle S2PLT02 capture summary.
+- Current live CLIs remain blocked / exit 2: S2PLT02 capture plan `state_hash=2b82aea9755bc7d3d2f316cc48dcbc89a0cd1f9c324f687e385dc780a24d3997`, wait guard `state_hash=693c4a0f9c57a2a3c7f1a7bfeb6683fda661a9456a5010ee773cbd00f487fdcf`, prerequisite plan `state_hash=b22c4110a1fa85ec1ddd004a8c52962f9daa61f16fb83cbfdb2f796ea84198ed`, final validator `state_hash=f1fab7374737527ffb5278b4d9a476e27d708d61b88e0dbe57a60e56085f39bd`.
+- Guard fields: `current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`, `next_safe_runtime_action=wait_for_real_smtp_scheduler_capture_window`, allowed readonly commands `adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --json;adp audit-s2plt02-terminal-capture-window --repo-root . --json;adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json;adp validate-s2plt02-terminal-delivery-proof --repo-root . --json`, forbidden refs `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json;FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/manifest.json;HANDOFF/00_下一Agent先读.md`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_GUARD.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 01:13:56 Australia/Sydney - S2PMT07 Final Bundle Missing Artifact Inventory
 
