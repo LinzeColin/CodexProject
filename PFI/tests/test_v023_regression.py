@@ -209,16 +209,16 @@ class TestV023Stage11Phase111Regression(unittest.TestCase):
 
 
 class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
-    def test_t1121_readme_is_candidate_status_without_user_acceptance_claim(self) -> None:
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    def test_t1121_phase112_evidence_records_readme_candidate_boundary(self) -> None:
+        evidence = read_json("reports/pfi_v023/stage_11/phase_11_2/evidence.json")
 
-        self.assertIn("## v0.2.3 Candidate Status", readme)
-        self.assertIn("Stage 11 Phase 11.2 文档冻结候选", readme)
-        self.assertIn("user_acceptance_claimed=false", readme)
-        self.assertIn("Stage 11 Phase 11.3 未执行", readme)
-        self.assertIn("Stage 11 whole-stage review 未执行", readme)
-        self.assertNotIn("v0.2.3 用户已验收", readme)
-        self.assertNotIn("v0.2.3 closeout complete", readme)
+        self.assertEqual(evidence["phase_id"], "V023-S11-P11.2")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertFalse(evidence["human_acceptance_claimed"])
+        self.assertTrue(evidence["acceptance_checks"]["readme_candidate_status"])
+        self.assertFalse(evidence["stage_contract"]["phase_11_3_final_candidate_delivery_done"])
+        self.assertFalse(evidence["stage_contract"]["stage_11_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
 
     def test_t1122_future_development_constraints_are_documented_and_machine_checkable(self) -> None:
         doc_path = ROOT / "docs" / "pfi_v023" / "STAGE11_DOC_FREEZE.md"
@@ -237,7 +237,6 @@ class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
         for clause in required_clauses:
             self.assertIn(clause, text)
         self.assertIn("Phase 11.2", text)
-        self.assertNotIn("Phase 11.3 已完成", text)
 
     def test_t1123_history_deprecation_policy_is_frozen_against_old_constraints(self) -> None:
         policy = (ROOT / "docs" / "pfi_v023" / "HISTORY_DEPRECATION_POLICY.md").read_text(encoding="utf-8")
@@ -253,13 +252,13 @@ class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
     def test_t1124_residual_risks_are_explicit_and_do_not_claim_closeout(self) -> None:
         doc = (ROOT / "docs" / "pfi_v023" / "STAGE11_DOC_FREEZE.md").read_text(encoding="utf-8")
 
-        required_risks = [
+        phase112_risks = [
             "用户手动验收未完成",
             "Stage 11 Phase 11.3 最终候选交付未执行",
             "Stage 11 whole-stage review 未执行",
             "Stage 11 GitHub main upload 未执行",
         ]
-        for risk in required_risks:
+        for risk in phase112_risks:
             self.assertIn(risk, doc)
         self.assertIn("阻塞项数量：0", doc)
         self.assertNotIn("最终 closeout 已完成", doc)
@@ -323,7 +322,7 @@ class TestV023Stage11Phase113FinalCandidateDelivery(unittest.TestCase):
         self.assertEqual(evidence["status"], "candidate_pass")
         self.assertTrue(evidence["current_phase_only"])
         self.assertTrue(evidence["max_one_phase_per_run"])
-        self.assertEqual(evidence["task_ids"], ["T11.3.1"])
+        self.assertEqual(evidence["task_ids"], ["T11.3.1", "T11.3.2", "T11.3.3", "T11.3.4"])
         self.assertTrue(evidence["stage_contract"]["phase_11_1_regression_tests_done"])
         self.assertTrue(evidence["stage_contract"]["phase_11_2_doc_freeze_done"])
         self.assertTrue(evidence["stage_contract"]["phase_11_3_final_candidate_delivery_done"])
@@ -392,6 +391,96 @@ class TestV023Stage11Phase113FinalCandidateDelivery(unittest.TestCase):
         self.assertIn("用户明确验收", remaining_titles)
         self.assertIn("Stage 11 whole-stage review", remaining_titles)
         self.assertIn("Stage 11 GitHub main upload", remaining_titles)
+
+
+class TestV023Stage11WholeStageReview(unittest.TestCase):
+    def test_stage11_current_readme_status_reflects_whole_stage_candidate_without_user_acceptance_claim(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn("## v0.2.3 Candidate Status", readme)
+        self.assertIn("Stage 11 whole-stage review candidate pass", readme)
+        self.assertIn("user_acceptance_claimed=false", readme)
+        self.assertIn("Stage 11 Phase 11.3 已完成", readme)
+        self.assertIn("Stage 11 whole-stage review 已完成", readme)
+        self.assertNotIn("Stage 11 Phase 11.3 未执行", readme)
+        self.assertNotIn("Stage 11 whole-stage review 未执行", readme)
+        self.assertNotIn("v0.2.3 用户已验收", readme)
+        self.assertNotIn("v0.2.3 closeout complete", readme)
+
+    def test_stage11_closeout_doc_records_review_scope_and_remaining_human_acceptance_gate(self) -> None:
+        doc = (ROOT / "docs" / "pfi_v023" / "STAGE11_CLOSEOUT.md").read_text(encoding="utf-8")
+
+        self.assertIn("Stage 11 whole-stage review candidate pass", doc)
+        self.assertIn("用户明确验收前不能 closeout", doc)
+        self.assertIn("Stage 11 GitHub main upload terminal gate", doc)
+        self.assertIn("PFI/reports/pfi_v023/stage_11/whole_stage_review/evidence.json", doc)
+        self.assertNotIn("用户已验收", doc)
+        self.assertNotIn("closeout complete", doc)
+
+    def test_stage11_whole_stage_review_evidence_exists_and_is_candidate_only(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "stage_11" / "whole_stage_review"
+        expected_files = [
+            review_dir / "evidence.json",
+            review_dir / "review_audit.json",
+            review_dir / "browser_validation.json",
+            review_dir / "changed_files.txt",
+            review_dir / "terminal.log",
+        ]
+        for path in expected_files:
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads((review_dir / "evidence.json").read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in (review_dir / "changed_files.txt").read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage11WholeStageReviewEvidenceV1")
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 11")
+        self.assertEqual(evidence["review_id"], "V023-S11-WHOLE-STAGE-REVIEW")
+        self.assertEqual(evidence["status"], "review_pass")
+        self.assertTrue(evidence["current_stage_only"])
+        self.assertTrue(evidence["stage_contract"]["phase_11_1_regression_tests_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_11_2_doc_freeze_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_11_3_final_candidate_delivery_done"])
+        self.assertTrue(evidence["stage_contract"]["stage_11_whole_review_done"])
+        self.assertEqual(evidence["stage_contract"]["github_main_upload_gate"], "terminal_verified_after_push")
+        self.assertFalse(evidence["human_acceptance_claimed"])
+        self.assertTrue(evidence["user_acceptance_required_before_closeout"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        for key in ("regression_tests", "final_evidence_pack", "final_screenshots", "current_status_docs", "human_acceptance_gate_open"):
+            self.assertTrue(evidence["acceptance_checks"][key], key)
+
+    def test_stage11_whole_stage_review_audit_covers_final_dod_and_boundaries(self) -> None:
+        audit = read_json("reports/pfi_v023/stage_11/whole_stage_review/review_audit.json")
+
+        self.assertEqual(audit["schema"], "PFIV023Stage11WholeStageReviewAuditV1")
+        self.assertEqual(audit["review_id"], "V023-S11-WHOLE-STAGE-REVIEW")
+        self.assertFalse(audit["human_acceptance_claimed"])
+        self.assertEqual(audit["blocker_count"], 0)
+        checks = {item["id"]: item for item in audit["checks"]}
+        for check_id in (
+            "ten_primary_entries_stable",
+            "market_research_is_primary_entry",
+            "old_nine_entry_constraint_deprecated",
+            "forbidden_finance_data_absent",
+            "final_evidence_pack_complete",
+            "user_acceptance_gate_open",
+        ):
+            self.assertEqual(checks[check_id]["status"], "pass", check_id)
+
+    def test_stage11_whole_stage_browser_validation_and_screenshots_are_present(self) -> None:
+        browser = read_json("reports/pfi_v023/stage_11/whole_stage_review/browser_validation.json")
+
+        self.assertEqual(browser["schema"], "PFIV023Stage11WholeStageBrowserValidationV1")
+        self.assertEqual(browser["review_id"], "V023-S11-WHOLE-STAGE-REVIEW")
+        self.assertEqual(browser["localhost"]["health"], "ok")
+        self.assertEqual(browser["localhost"]["api_health"]["status"], "ok")
+        self.assertEqual(browser["nav"]["count"], 10)
+        self.assertIn("市场与研究", browser["nav"]["labels"])
+        for item in browser["screenshots"]:
+            path = ROOT / item["path"]
+            self.assertTrue(path.exists(), item["path"])
+            self.assertGreater(item["bytes"], 20000, item["screenshot_id"])
+            self.assertEqual(path.stat().st_size, item["bytes"], item["screenshot_id"])
 
 
 if __name__ == "__main__":
