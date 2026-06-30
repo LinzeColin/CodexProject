@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s05-github-upload`
+- version: `0.1.0-s06-p1-zero-delta-validator`
 - current_stage: `S06`
-- current_phase: `S06-P1 零差异校验器待开始`
-- status: `s05_uploaded_to_github_main_s06_not_started`
+- current_phase: `S06-P2 跨源差异队列待开始`
+- status: `s06_p1_completed_validated_local_only`
 - production_ready: `false`
 - github_upload_ready: `false_until_s06_stage_completion_and_review`
 
@@ -47,15 +47,16 @@
 - S05-P3 已生成 `KMFA/metadata/baseline/a0_authority_baseline_manifest.json`、`KMFA/metadata/baseline/a0_authority_baseline_records.jsonl`、`KMFA/tools/a0_authority_baseline_lock.py`、`KMFA/tools/check_a0_authority_baseline_lock.py` 和 `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/`。
 - Stage 5 整体复审已本地通过：`KMFA/stage_artifacts/S05_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；复审修复了 Stage 5 review 证据和治理状态缺口。
 - Stage 5 final GitHub upload 已生成证据：`KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json`。
+- S06-P1 零差异校验器已完成本地验证：`KMFA/tools/zero_delta_validator.py` 对 public-safe 已结构化整数分逐字段比较，任意 1 分差异失败并输出 mismatch report。
 
 ## 未完成
 
-- S06-P1 zero-delta validator 尚未开始。
-- zero-delta、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock 不代表正式报告可发布。
+- S06-P2 跨源差异队列尚未开始。
+- S06-P3 metadata/quality 运行时证据输出、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock 和 S06-P1 validator 不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload 已完成；下一步只能执行 S06-P1，不能跳到 UI、报告、事实层或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload 和 S06-P1 已完成；下一步只能执行 S06-P2，不能跳到 UI、报告、事实层或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

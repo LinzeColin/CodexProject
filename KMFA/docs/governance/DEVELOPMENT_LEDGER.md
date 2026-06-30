@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s05-github-upload
+product_version: 0.1.0-s06-p1-zero-delta-validator
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S06`
-- current_phase: `S06-P1 零差异校验器待开始`
-- current_tasks: `S6PAT01-S6PAT03`
-- status: `s05_uploaded_to_github_main_s06_not_started`
+- current_phase: `S06-P2 跨源差异队列待开始`
+- current_tasks: `S6PBT01-S6PBT03`
+- status: `s06_p1_completed_validated_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -50,17 +50,19 @@ product_version: 0.1.0-s05-github-upload
 | `S5PCT01-S5PCT03` | S05-P3 A0 authority baseline lock 完成本地验证：40 条 PDF 字段锁定为 Q5 calculation baseline，5 条 Excel 字段排除为 cross-source support only | `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md` |
 | `KMFA-S05-STAGE-REVIEW-20260630` | Stage 5 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
 | `KMFA-S05-GITHUB-UPLOAD-20260630` | Stage 5 final GitHub upload 已完成 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` |
+| `S6PAT01-S6PAT03` | S06-P1 零差异校验器完成本地验证：逐字段比较整数分，任意 1 分差异失败并生成 public-safe mismatch report | `KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S6PAT01-S6PAT03` | S06-P1 零差异校验器尚未开始 | `KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
+| `S6PBT01-S6PBT03` | S06-P2 跨源差异队列尚未开始 | `KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `S06-P1` zero-delta validator | 后续 Stage/Phase，尚未开始 | 下一轮只执行 S06-P1，不上传中间 Phase |
-| `S06` zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
+| `S06-P2` cross-source mismatch queue | 后续 Phase，尚未开始 | 下一轮只执行 S06-P2，不上传中间 Phase |
+| `S06-P3` validation evidence output | 后续 Phase，尚未开始 | S06-P2 完成后再进入 |
+| `S06` zero-delta implementation | S06-P1 已完成，Stage 尚未完成 | 按 Roadmap 单 Phase 推进 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

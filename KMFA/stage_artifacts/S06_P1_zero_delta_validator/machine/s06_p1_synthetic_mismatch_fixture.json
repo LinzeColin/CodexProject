@@ -1,0 +1,23 @@
+{
+  "amount_fields": [
+    "contract_amount_cents"
+  ],
+  "authoritative_records": [
+    {
+      "contract_amount_cents": 10000,
+      "record_id": "SYN-PROJECT-S06P1-001",
+      "source": "A0_Q5_SYNTHETIC_BASELINE"
+    }
+  ],
+  "key_fields": [
+    "record_id"
+  ],
+  "public_safe_fixture_only": true,
+  "system_records": [
+    {
+      "contract_amount_cents": 9999,
+      "record_id": "SYN-PROJECT-S06P1-001",
+      "source": "SYSTEM_RECOMPUTE_SYNTHETIC"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+record_id,source,field,authoritative_value_cents,system_value_cents,difference_cents
+SYN-PROJECT-S06P1-001,A0_Q5_SYNTHETIC_BASELINE=>SYSTEM_RECOMPUTE_SYNTHETIC,contract_amount_cents,10000,9999,1

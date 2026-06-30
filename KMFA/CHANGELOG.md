@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s06-p1-zero-delta-validator - 2026-06-30
+
+- 完成 `S06-P1｜零差异校验器` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/zero_delta_validator.py` 和 `KMFA/tests/test_zero_delta_validator.py`，逐字段比较 public-safe 已结构化整数分。
+- 任意 1 分差异返回失败，并输出包含来源、字段、权威值、系统值和差额的 mismatch report。
+- 新增 `KMFA/stage_artifacts/S06_P1_zero_delta_validator/` 证据包，使用 synthetic fixture，不读取或提交真实业务文件。
+- 保持 S06-P2 差异队列、S06-P3 metadata/quality 运行时证据输出、lineage、事实层、报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s05-github-upload - 2026-06-30
 
 - 完成 Stage 5 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
