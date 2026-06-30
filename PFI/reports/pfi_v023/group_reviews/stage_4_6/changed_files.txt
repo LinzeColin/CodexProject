@@ -1,0 +1,14 @@
+PFI/docs/pfi_v023/README.md
+PFI/docs/pfi_v023/STAGE4_6_GROUP_REVIEW.md
+PFI/reports/pfi_v023/group_reviews/stage_4_6/browser_audit.json
+PFI/reports/pfi_v023/group_reviews/stage_4_6/changed_files.txt
+PFI/reports/pfi_v023/group_reviews/stage_4_6/evidence.json
+PFI/reports/pfi_v023/group_reviews/stage_4_6/review_audit.json
+PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/consumption_desktop.png
+PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/home_desktop.png
+PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/home_mobile.png
+PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/investment_desktop.png
+PFI/reports/pfi_v023/group_reviews/stage_4_6/terminal.log
+PFI/tests/test_v023_regression.py
+PFI/tests/test_v023_stage6_core_metrics.py
+PFI/web/app/shell.js
