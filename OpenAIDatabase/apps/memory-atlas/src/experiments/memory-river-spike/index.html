@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory River Spike</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #03060a;
+        color: #eef6ff;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 32% 22%, rgba(69, 159, 255, 0.18), transparent 34%),
+          radial-gradient(circle at 82% 62%, rgba(255, 207, 107, 0.12), transparent 30%),
+          linear-gradient(180deg, #07111c 0%, #03060a 100%);
+      }
+
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+
+      .panel,
+      .hover-card,
+      .controls {
+        border: 1px solid rgba(155, 209, 255, 0.22);
+        background: rgba(4, 9, 18, 0.76);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.34);
+        backdrop-filter: blur(14px);
+      }
+
+      .panel {
+        position: fixed;
+        left: 18px;
+        top: 18px;
+        z-index: 4;
+        width: min(430px, calc(100vw - 36px));
+        padding: 13px 15px;
+      }
+
+      .eyebrow {
+        margin: 0 0 4px;
+        color: #8fd3ff;
+        font-size: 11px;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 19px;
+        line-height: 1.2;
+        letter-spacing: 0;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 11px;
+      }
+
+      .metric {
+        min-width: 0;
+        padding: 7px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .metric span {
+        display: block;
+        color: #9fb2c9;
+        font-size: 10px;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 2px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+      }
+
+      .controls {
+        position: fixed;
+        right: 18px;
+        top: 18px;
+        z-index: 4;
+        display: grid;
+        gap: 8px;
+        width: min(310px, calc(100vw - 36px));
+        padding: 12px;
+      }
+
+      .controls label {
+        display: grid;
+        gap: 5px;
+        color: #dcecff;
+        font-size: 12px;
+      }
+
+      .controls button,
+      .controls select,
+      .controls input {
+        accent-color: #8fd3ff;
+      }
+
+      .controls button {
+        height: 32px;
+        border: 1px solid rgba(143, 211, 255, 0.35);
+        background: rgba(143, 211, 255, 0.12);
+        color: #eef6ff;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .hover-card {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 5;
+        width: min(430px, calc(100vw - 36px));
+        min-height: 128px;
+        padding: 14px;
+      }
+
+      .hover-card[data-empty="true"] {
+        opacity: 0.62;
+      }
+
+      .hover-card h2 {
+        margin: 0 0 6px;
+        font-size: 15px;
+        letter-spacing: 0;
+      }
+
+      .hover-card p {
+        margin: 0;
+        color: #c4d6e8;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .status-line {
+        margin-top: 9px;
+        color: #c4d6e8;
+        font-size: 12px;
+      }
+
+      .river-svg {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .lane-label {
+        fill: #dcecff;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .lane-level {
+        fill: #8fa6bd;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+
+      .river-current {
+        animation: river-flow 7s linear infinite;
+      }
+
+      .feedback-pulse {
+        animation: feedback-pulse 700ms ease-out 1;
+      }
+
+      [data-reduced-motion="true"] .river-current,
+      [data-reduced-motion="true"] .feedback-pulse {
+        animation: none;
+      }
+
+      @keyframes river-flow {
+        to {
+          stroke-dashoffset: -72;
+        }
+      }
+
+      @keyframes feedback-pulse {
+        0% {
+          filter: drop-shadow(0 0 0 rgba(255, 239, 154, 0));
+        }
+        55% {
+          filter: drop-shadow(0 0 22px rgba(255, 239, 154, 0.58));
+        }
+        100% {
+          filter: drop-shadow(0 0 0 rgba(255, 239, 154, 0));
+        }
+      }
+
+      @media (max-width: 860px) {
+        .panel {
+          width: min(360px, calc(100vw - 36px));
+        }
+
+        .controls {
+          left: 18px;
+          right: auto;
+          top: auto;
+          bottom: 18px;
+        }
+
+        .hover-card {
+          display: none;
+        }
+
+        .metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body data-reduced-motion="false">
+    <main id="app" aria-label="Memory River Spike"></main>
+    <section class="panel" aria-label="Memory River status">
+      <p class="eyebrow">Memory Atlas v1.1.5 · isolated C3 spike</p>
+      <h1>记忆时间河 D3 交互原型</h1>
+      <div class="metrics">
+        <div class="metric"><span>Lanes</span><strong id="laneCount">0</strong></div>
+        <div class="metric"><span>Events</span><strong id="eventCount">0</strong></div>
+        <div class="metric"><span>Zoom</span><strong id="zoomReadout">1.00x</strong></div>
+        <div class="metric"><span>Brush</span><strong id="brushReadout">none</strong></div>
+      </div>
+      <div class="status-line" id="statusLine">滚轮或触控板缩放；拖动河道下方选择时间段。</div>
+    </section>
+    <section class="controls" aria-label="River controls">
+      <label>
+        View mode
+        <select id="modeControl">
+          <option value="presentation" selected>Presentation</option>
+          <option value="analysis">Analysis</option>
+        </select>
+      </label>
+      <label>
+        Reduced motion
+        <input id="reducedMotionControl" type="checkbox" />
+      </label>
+      <button id="resetButton" type="button">Reset zoom / brush</button>
+    </section>
+    <aside class="hover-card" id="hoverCard" data-empty="true" aria-live="polite">
+      <h2>Hover river element</h2>
+      <p>悬停 event pulse、theme lane、Black Hole band 或 Proto-Star marker，可查看 redacted 摘要与 evidence count。</p>
+    </aside>
+    <pre id="smokeStatus" hidden>{}</pre>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
