@@ -1,0 +1,22 @@
+{
+  "schema": "PFIV023Stage10Phase103ErrorStatePathsV1",
+  "phase_id": "V023-S10-P10.3",
+  "generated_at": "2026-06-30T06:52:13Z",
+  "workspace": "market_research",
+  "route_alias": "/market-research?tab=market",
+  "title": "市场与研究 · 市场观察",
+  "selected_secondary": {
+    "label": "市场观察",
+    "route_alias": "/market-research?tab=market"
+  },
+  "conclusion": "未加载真实市场观察资料时，只显示市场观察空态和来源说明。",
+  "has_explanatory_empty_state": true,
+  "has_next_action": true,
+  "evidence_text": "跳到内容\nPFI\nPFI\n全局搜索\n数据源\n支付宝\n微信\nCBA\nMoomoo\n账户\n视图\n个人财务\n投资复盘\n消费复盘\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n◫\n说明\n⚙\n设置\n首页总览\n账户与资产\n账本流水\n投资管理\n消费管理\n数据源与上传\n建议与复盘\n报告与洞察\n市场与研究\n设置\n\n市场观察\n\n市场与研究 · 市场观察\n\n未加载真实市场观察资料时，只显示市场观察空态和来源说明。\n\n本机数据可用\n等待市场资料\n市场观察\n可用\n指数、ETF、主题和自选\n公司研究\n可用\n公司资料和反方条件\n基金研究\n可用\n基金持仓、费率和风格\n策略实验室\n唯一入口\n回测、参数扫描和盘感训练\n\n二级入口\n\n页面导航\n市场观察\n研究笔记\n公司研究\n基金研究\n策略实验室\n市场与研究\n/\n市场观察\n\n市场观察\n\n市场与研究 · 市场观察\n\n未加载真实市场观察资料时，只显示市场观察空态和来源说明。\n\n打开观察清单\n主对象\n市场观察\n数据来源\n待补\n空状态\n未加载真实市场观察资料时，只显示市场观察空态和来源说明。\n错误状态\n无法读取市场观察，请检查市场资料来源、更新时间和本机缓存。\n观察清单\n\n按指数、ETF、主题和自选对象组织观察对象。\n\n状态信号\n\n展示价格、事件、来源时间和待复核状态。\n\n兼容入口\n\nv0.1 市场入口 /market/watch 进入本页面。\n\n观察动作\n\n打开对象、保存观察视图或跳转研究笔记。\n\n快捷操作\n\n常用任务\n当前页面：市场观察、研究和策略实验室\n市场观察\n打开市场\n查看说明\n公司研究\n打开公司\n查看说明\n基金研究\n打开基金\n查看说明\n政策研究\n打开政策\n查看说明\n策略实验室\n打开策略\n查看说明\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n市场与研究 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\n1\t市场观察\t等待市场资料\t查看市场\t可用\n2\t研究材料\t等待材料\t查看研究\t可用\n3\t策略实验室\t唯一入口\t打开策略\t可用\n\n待办清单\n\n当前待处理\n×\n市场观察\n查看市场和自选\n公司/基金研究\n整理研究材料\n策略实验室\n统一进入回测和盘感训练\n成功\n已切换到市场与研究",
+  "screenshot": {
+    "path": "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/error_state_path.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 256488
+  }
+}

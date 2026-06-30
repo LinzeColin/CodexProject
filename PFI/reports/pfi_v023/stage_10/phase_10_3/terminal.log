@@ -1,0 +1,35 @@
+PFI v0.2.3 Stage 10 Phase 10.3 terminal evidence
+Generated at: 2026-06-30T06:52:13Z
+Repo: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+HEAD: 0e9f1a011c0bbf2fbd9b58eee74004d448608748
+Remote: git@github.com:LinzeColin/CodexProject.git
+
+Service health:
+- 8501 /_stcore/health => ok
+- 8766 /health => {"status": "ok", "schema": "PFIV021RuntimeAPIV1"}
+
+Browser evidence:
+- core metrics screenshot bytes: 243529
+- data check board screenshot bytes: 264507
+- report center screenshot bytes: 243177
+- error state path screenshot bytes: 256488
+- monthly spending: CNY 7,153.98 (MetaDatabase 真实支付宝流水)
+- pending review: 406 (8815 条真实流水)
+- zero values explained: True
+- console errors: 0
+- page errors: 0
+- HTTP errors: 0
+
+Validation results:
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/shell.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/routes.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/pages/stage4Subpages.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/pages/home.js
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage10_e2e_acceptance.py
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py -q => 9 passed in 0.02s
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q => 166 passed in 2.27s
+- pass: python3 -m json.tool stage_10 phase_10_1/phase_10_2/phase_10_3 evidence files
+- pass: git diff --check -- PFI
+- pass: Stage 10 docs/tests/reports placeholder-term scan
+- pass: curl 8501 /_stcore/health and 8766 /health

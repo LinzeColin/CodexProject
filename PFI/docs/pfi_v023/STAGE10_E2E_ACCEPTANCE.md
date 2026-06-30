@@ -39,9 +39,27 @@ Stage 10 Phase 10.2 导航和页面 E2E 已完成候选验收，覆盖：
 - `screenshots/secondary/*.png`
 - `screenshots/mobile_basic.png`
 
-## Scope Guard
+## Stage 10 Phase 10.3
 
-Phase 10.3 未执行。
+Stage 10 Phase 10.3 数据和报告 E2E 已完成候选验收，覆盖：
+
+- 核心指标状态：确认首页指标显示真实数据来源、真实非零流水金额和待复核数量；0 值必须有可见解释。
+- 数据检查板：打开数据源与上传路径，确认数据源状态和待复核队列可解释。
+- 报告中心：打开报告与洞察月报路径，确认报告结论或阻断原因可见。
+- 错误状态路径：打开市场与研究市场观察路径，确认空态说明、阻断原因和下一步可见。
+
+证据包位置：`PFI/reports/pfi_v023/stage_10/phase_10_3/`
+
+已记录：
+
+- `browser_validation.json`
+- `core_metrics_state.json`
+- `data_check_board.json`
+- `report_center.json`
+- `error_state_paths.json`
+- `screenshots/*.png`
+
+## Scope Guard
 
 Stage 10 whole-stage review 未执行。
 

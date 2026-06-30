@@ -1,0 +1,102 @@
+{
+  "schema": "PFIV023Stage10Phase103CoreMetricsStateV1",
+  "phase_id": "V023-S10-P10.3",
+  "generated_at": "2026-06-30T06:52:13Z",
+  "metrics": [
+    {
+      "label": "净资产",
+      "value_text": "CNY 0.00",
+      "source_note": "账户和持仓汇总",
+      "text": "净资产 CNY 0.00 账户和持仓汇总"
+    },
+    {
+      "label": "现金余额",
+      "value_text": "CNY 0.00",
+      "source_note": "账户现金汇总",
+      "text": "现金余额 CNY 0.00 账户现金汇总"
+    },
+    {
+      "label": "投资市值",
+      "value_text": "CNY 0.00",
+      "source_note": "持仓读模型",
+      "text": "投资市值 CNY 0.00 持仓读模型"
+    },
+    {
+      "label": "本月支出",
+      "value_text": "CNY 7,153.98",
+      "source_note": "MetaDatabase 真实支付宝流水",
+      "text": "本月支出 CNY 7,153.98 MetaDatabase 真实支付宝流水"
+    },
+    {
+      "label": "待复核交易",
+      "value_text": "406",
+      "source_note": "8815 条真实流水",
+      "text": "待复核交易 406 8815 条真实流水"
+    },
+    {
+      "label": "数据源状态",
+      "value_text": "已导入",
+      "source_note": "真实流水可读取",
+      "text": "数据源状态 已导入 真实流水可读取"
+    }
+  ],
+  "monthly_spending": {
+    "label": "本月支出",
+    "value_text": "CNY 7,153.98",
+    "source_note": "MetaDatabase 真实支付宝流水",
+    "text": "本月支出 CNY 7,153.98 MetaDatabase 真实支付宝流水"
+  },
+  "pending_review": {
+    "label": "待复核交易",
+    "value_text": "406",
+    "source_note": "8815 条真实流水",
+    "text": "待复核交易 406 8815 条真实流水"
+  },
+  "data_source_status": {
+    "label": "数据源状态",
+    "value_text": "已导入",
+    "source_note": "真实流水可读取",
+    "text": "数据源状态 已导入 真实流水可读取"
+  },
+  "zero_value_metrics": [
+    {
+      "label": "净资产",
+      "value_text": "CNY 0.00",
+      "source_note": "账户和持仓汇总",
+      "text": "净资产 CNY 0.00 账户和持仓汇总",
+      "zero_explanation_present": true
+    },
+    {
+      "label": "现金余额",
+      "value_text": "CNY 0.00",
+      "source_note": "账户现金汇总",
+      "text": "现金余额 CNY 0.00 账户现金汇总",
+      "zero_explanation_present": true
+    },
+    {
+      "label": "投资市值",
+      "value_text": "CNY 0.00",
+      "source_note": "持仓读模型",
+      "text": "投资市值 CNY 0.00 持仓读模型",
+      "zero_explanation_present": true
+    }
+  ],
+  "all_zero_values_explained": true,
+  "state": {
+    "frame_url": "about:srcdoc#/home",
+    "workspace": "home",
+    "route_alias": "/home",
+    "stage4_subpage_route": "/home?tab=status",
+    "title": "首页总览 · 财务状态",
+    "kicker": "财务状态",
+    "conclusion": "未加载真实首页状态时，只显示财务状态空态和数据缺口。",
+    "body_text_length": 1203
+  },
+  "screenshot": {
+    "path": "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/core_metrics.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 243529
+  },
+  "policy": "Zero values are accepted only with visible source/status explanation; non-zero imported spending and review counts must show real local-data lineage."
+}

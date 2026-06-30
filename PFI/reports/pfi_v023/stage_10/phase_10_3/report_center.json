@@ -1,0 +1,48 @@
+{
+  "schema": "PFIV023Stage10Phase103ReportCenterV1",
+  "phase_id": "V023-S10-P10.3",
+  "generated_at": "2026-06-30T06:52:13Z",
+  "workspace": "insights",
+  "route_alias": "/reports?tab=monthly",
+  "title": "报告与洞察 · 月报",
+  "selected_secondary": {
+    "label": "月报",
+    "route_alias": "/reports?tab=monthly"
+  },
+  "conclusion": "未加载真实月度账本时，只显示月报空态和缺口说明。",
+  "cards": [
+    {
+      "label": "月报",
+      "value_text": "CNY 0.00",
+      "source_note": "净资产、现金流、消费、投资",
+      "text": "月报 CNY 0.00 净资产、现金流、消费、投资"
+    },
+    {
+      "label": "投资报告",
+      "value_text": "CNY 0.00",
+      "source_note": "0 条持仓，读取 SQLite",
+      "text": "投资报告 CNY 0.00 0 条持仓，读取 SQLite"
+    },
+    {
+      "label": "收益复核",
+      "value_text": "CNY 0.00",
+      "source_note": "由持仓成本和现价派生",
+      "text": "收益复核 CNY 0.00 由持仓成本和现价派生"
+    },
+    {
+      "label": "导出",
+      "value_text": "可用",
+      "source_note": "待补充",
+      "text": "导出 可用 待补充"
+    }
+  ],
+  "has_conclusion": true,
+  "has_blocker_or_waiting_state": true,
+  "evidence_text": "跳到内容\nPFI\nPFI\n全局搜索\n数据源\n支付宝\n微信\nCBA\nMoomoo\n账户\n视图\n个人财务\n投资复盘\n消费复盘\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n◫\n说明\n⚙\n设置\n首页总览\n账户与资产\n账本流水\n投资管理\n消费管理\n数据源与上传\n建议与复盘\n报告与洞察\n市场与研究\n设置\n\n月报\n\n报告与洞察 · 月报\n\n未加载真实月度账本时，只显示月报空态和缺口说明。\n\n本机数据可用\n等待报告数据\n月报\nCNY 0.00\n净资产、现金流、消费、投资\n投资报告\nCNY 0.00\n0 条持仓，读取 SQLite\n收益复核\nCNY 0.00\n由持仓成本和现价派生\n导出\n可用\n待补充\n\n二级入口\n\n页面导航\n月报\n季报\n年报\n自定义报告\n导出\n报告与洞察\n/\n月报\n\n月报\n\n报告与洞察 · 月报\n\n未加载真实月度账本时，只显示月报空态和缺口说明。\n\n生成月报草稿\n主对象\n月报\n数据来源\n待补\n空状态\n未加载真实月度账本时，只显示月报空态和缺口说明。\n错误状态\n无法生成月报，请检查月度流水、账户快照和分类覆盖。\n报告期间\n\n显示月份、数据覆盖天数和缺失来源。\n\n月度发现\n\n只呈现已通过门禁的数据项和待复核项。\n\n数据门禁\n\n关键数据未齐时阻断报告结论生成。\n\n月报动作\n\n生成草稿、补齐数据或导出证据。\n\n快捷操作\n\n常用任务\n当前页面：报告列表与导出\n项目级复审\n打开入口\n查看说明\n真实数据闭环\n打开设置\n查看说明\n回归治理\n打开入口\n查看说明\n交付与回滚\n打开入口\n查看说明\n回滚计划\n打开入口\n查看说明\n后续任务清单\n打开设置\n查看说明\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n报告与洞察 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\nP0\t项目级复审\t总验收门禁\t20/20 个门禁通过。\t通过\nP0\t真实数据闭环\t验收记录\t0 个核心源；首页状态 通过。\t通过\nP1\t回归治理\t治理脚本\t运行变更范围治理。\t通过\nP1\t交付与回滚\t交付回滚\t8 步回滚 · 5 项后续任务。\t通过\n\n待办清单\n\n当前待处理\n×\n用户文档\n3 个用户文档已覆盖\n分类闭环\n9 个账本分类检查\n建议闭环\n8 条建议 · 生命周期 8\n回归命令\n冒烟检查 / 聚焦测试 / 治理已记录\n成功\n已切换到报告与洞察",
+  "screenshot": {
+    "path": "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/report_center.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 243177
+  }
+}
