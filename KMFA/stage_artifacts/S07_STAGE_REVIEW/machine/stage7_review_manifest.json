@@ -1,0 +1,86 @@
+{
+  "acceptance_gate": "KMFA-S07-STAGE-REVIEW-GATE",
+  "branch": "codex/kmfa",
+  "github_upload_status": "not_pushed",
+  "raw_business_data_used": false,
+  "review_id": "KMFA-S07-STAGE-REVIEW-20260630",
+  "review_time": "2026-06-30T19:10:00+10:00",
+  "reviewed_head": "b6bafb95b4d0",
+  "scope": [
+    "S07-P1",
+    "S07-P2",
+    "S07-P3",
+    "Stage 7 owner-readable entries",
+    "Stage 7 governance status",
+    "public repository safety boundary"
+  ],
+  "stage": "S07",
+  "status": "pass_upload_ready_local_only",
+  "stage_phase_status": {
+    "S07-P1": "completed_validated_local_only_finance_file_adapter",
+    "S07-P2": "completed_validated_local_only_wps_file_adapter",
+    "S07-P3": "completed_validated_local_only_redcircle_postponement_policy"
+  },
+  "review_counts": {
+    "finance_source_categories": 9,
+    "finance_field_candidates": 45,
+    "finance_readonly_field_reports": 9,
+    "wps_export_types": 4,
+    "wps_field_mappings": 20,
+    "wps_conversion_guidance": 4,
+    "wps_mapping_rule_versions": 1,
+    "redcircle_reserved_templates": 4,
+    "redcircle_rollback_plans": 4,
+    "d15_redcircle_automatic_connector_allowed": false,
+    "full_kmfa_unit_tests": 77
+  },
+  "findings": [
+    {
+      "finding_id": "KMFA-S07-REV-F01",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "Stage 7 review evidence and governance status were missing before this review; both were fixed."
+    },
+    {
+      "finding_id": "KMFA-S07-REV-F02",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S07-P1 keeps finance file adaptation public-safe with source_header_hash/private refs only."
+    },
+    {
+      "finding_id": "KMFA-S07-REV-F03",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S07-P2 keeps WPS mappings versioned, conversion-aware, and public-safe."
+    },
+    {
+      "finding_id": "KMFA-S07-REV-F04",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S07-P3 blocks Redcircle automatic connectors for D15 and requires read-only/hash/rollback controls for future ingestion."
+    },
+    {
+      "finding_id": "KMFA-S07-REV-F05",
+      "severity": "P3",
+      "status": "fixed",
+      "summary": "S07 evidence consistency was checked with phase-specific manifest schemas."
+    },
+    {
+      "finding_id": "KMFA-S07-REV-F06",
+      "severity": "P3",
+      "status": "accepted_next_step",
+      "summary": "GitHub upload remains a separate final upload step with required push proof."
+    }
+  ],
+  "evidence_refs": [
+    "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md",
+    "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_review_manifest.json",
+    "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md",
+    "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/test_results.md",
+    "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/test_results.md"
+  ],
+  "next_gate": "KMFA-S07-FINAL-GITHUB-UPLOAD-GATE",
+  "upload_allowed_after_review": true,
+  "upload_performed": false
+}

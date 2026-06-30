@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 5 和 Stage 6 final GitHub upload；S05-P1 A0 文件登记、S05-P2 字段级黄金基准、S05-P3 权威基准锁定和 Stage 5 整体复审均已完成，40 条 PDF 字段已锁定为 public-safe Q5 calculation baseline，5 条 Excel 字段已 owner/授权降级并排除；S06-P1 零差异校验器、S06-P2 跨源差异队列、S06-P3 校验证据输出、Stage 6 整体复审和 upload 均已完成；S07-P1 财务文件适配、S07-P2 WPS 文件适配和 S07-P3 红圈导出后置策略已完成本地验证；Stage 7 review、正式报告和外部接口仍未完成。"
-version: "0.1.0-s07p3-redcircle-postponement"
+summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 5 和 Stage 6 final GitHub upload；S05-P1 A0 文件登记、S05-P2 字段级黄金基准、S05-P3 权威基准锁定和 Stage 5 整体复审均已完成，40 条 PDF 字段已锁定为 public-safe Q5 calculation baseline，5 条 Excel 字段已 owner/授权降级并排除；S06-P1 零差异校验器、S06-P2 跨源差异队列、S06-P3 校验证据输出、Stage 6 整体复审和 upload 均已完成；S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略和 Stage 7 整体复审已完成本地验证；Stage 7 GitHub upload、正式报告和外部接口仍未完成。"
+version: "0.1.0-s07-stage-review"
 fact_level: "EXTRACTED"
 owner_role: "owner"
-current_status: "s07p3_completed_validated_local_only_stage7_review_not_started"
+current_status: "stage7_review_passed_upload_ready_local_only"
 features:
   - feature_id: "FEAT-KMFA-001"
     name: "项目治理骨架"
@@ -291,6 +291,14 @@ features:
       - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"
       - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/test_results.md"
       - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/machine/s07_p3_manifest.json"
+  - feature_id: "FEAT-KMFA-032"
+    name: "S07 Stage Review"
+    status: "review_passed_upload_ready_local_only"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_review_manifest.json"
 limitations:
   - statement: "S02-P1/P2/P3 已完成、Stage 2 复审通过并已上传 GitHub main。"
     fact_level: "EXTRACTED"
@@ -343,6 +351,13 @@ limitations:
       - "KMFA/tools/validation_evidence_output.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
+  - statement: "S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略和 Stage 7 整体复审已完成本地验证；Stage 7 GitHub upload 尚未执行。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md"
   - statement: "原始敏感经营数据、银行流水、合同、工资和税务申报明文不得进入公开仓库。"
     fact_level: "EXTRACTED"
     evidence_refs:

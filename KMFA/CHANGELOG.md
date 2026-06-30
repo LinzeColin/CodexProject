@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s07-stage-review - 2026-06-30
+
+- 完成 Stage 7 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
+- 新增 `KMFA/stage_artifacts/S07_STAGE_REVIEW/` 复审证据包，覆盖 S07-P1/P2/P3 validators、治理 validator、raw/secret scan、JSON/JSONL/CSV/YAML parse checks 和 evidence consistency check。
+- 复审确认 S07-P1 财务文件适配、S07-P2 WPS 文件适配和 S07-P3 红圈导出后置策略均保持 public-safe 边界。
+- 修复 Stage 7 review 证据和治理状态缺口，同步 owner-readable、stage_status、events 和 project governance。
+- 保持 S08、lineage 完整检查、事实层、正式报告、UI、外部接口和 GitHub upload 为未完成。
+
 ## 0.1.0-s07p3-redcircle-postponement - 2026-06-30
 
 - 完成 `S07-P3｜红圈导出后置策略` 本地验证，不上传 GitHub。
