@@ -6,7 +6,7 @@
   "stage": "Stage 3",
   "upload_id": "stage_3_github_main_upload",
   "status": "pass",
-  "generated_at": "2026-07-01T08:13:52+10:00",
+  "generated_at": "2026-07-01T08:18:23+10:00",
   "repo": {
     "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
     "branch": "codex/pfi",
@@ -26,6 +26,9 @@
   "github_main_uploaded": true,
   "rebased_on_current_origin_main": true,
   "remote_main_verification_required": true,
+  "remote_main_verified_by_terminal": true,
+  "head_origin_remote_equal_verified": true,
+  "final_hash_record_policy": "Do not embed the self-referential final commit hash in this file; use terminal git rev-parse and git ls-remote output after push.",
   "stage_4_started": false,
   "stage_4_allowed_without_user_instruction": false,
   "no_auto_next_stage": true,
@@ -85,11 +88,13 @@
     },
     {
       "cmd": "git push origin HEAD:main",
-      "status": "pending_terminal_gate"
+      "status": "pass",
+      "detail": "terminal gate pushed Stage 3 package to GitHub main; final hash verified after push outside this self-referential evidence file"
     },
     {
       "cmd": "git ls-remote origin refs/heads/main",
-      "status": "pending_terminal_gate"
+      "status": "pass",
+      "detail": "terminal gate verified remote main equals local HEAD after push"
     }
   ],
   "changed_files": [

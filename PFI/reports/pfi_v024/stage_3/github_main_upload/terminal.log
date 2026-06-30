@@ -49,4 +49,26 @@ git diff --check -- PFI
 result=pass
 
 REMOTE_UPLOAD:
-pending
+git push origin HEAD:main
+result=pass; pushed 04b02a2d..ec279caf HEAD -> main
+
+git ls-remote origin refs/heads/main
+result=pass; remote_main=ec279caff8b49a05802d2d76a0dee61aa24a480f
+
+git fetch origin main
+result=pass
+
+git rev-parse HEAD
+result=ec279caff8b49a05802d2d76a0dee61aa24a480f
+
+git rev-parse origin/main
+result=ec279caff8b49a05802d2d76a0dee61aa24a480f
+
+git rev-list --left-right --count HEAD...origin/main
+result=0 0
+
+NOTE:
+This log records the terminal upload gate that moved the Stage 3 package to
+GitHub main. The evidence closeout commit that contains this note is verified
+again after push with fresh git rev-parse and git ls-remote output, because
+embedding a commit's own final hash in a tracked file would be self-referential.
