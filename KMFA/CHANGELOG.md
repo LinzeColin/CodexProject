@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s06-stage-review - 2026-06-30
+
+- 完成 Stage 6 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
+- 新增 `KMFA/stage_artifacts/S06_STAGE_REVIEW/` 复审证据包，覆盖 S06-P1/P2/P3 validators、治理 validator、raw/secret scan、JSON/JSONL parse checks 和 evidence consistency check。
+- 复审确认 S06-P1 对 1 分差异保持 expected failure，S06-P2 未关闭差异继续阻断 A 级报告，S06-P3 metadata/quality 输出保持 public-safe hash/ref/status/evidence。
+- 修复 Stage 6 review 证据和治理状态缺口，同步 owner-readable、stage_status、events 和 project governance。
+- 保持 lineage 完整检查、事实层、正式报告、UI、外部接口和 GitHub upload 为未完成。
+
 ## 0.1.0-s06-p3-validation-evidence-output - 2026-06-30
 
 - 完成 `S06-P3｜校验证据输出` 本地验证，不上传 GitHub。

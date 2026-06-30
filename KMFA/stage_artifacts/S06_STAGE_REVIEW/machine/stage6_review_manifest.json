@@ -1,0 +1,76 @@
+{
+  "acceptance_gate": "KMFA-S06-STAGE-REVIEW-GATE",
+  "branch": "codex/kmfa",
+  "github_upload_status": "not_pushed",
+  "raw_business_data_used": false,
+  "review_id": "KMFA-S06-STAGE-REVIEW-20260630",
+  "review_time": "2026-06-30T15:10:00+10:00",
+  "reviewed_head": "cadb1e814bb06f8b65dd5ca84befb973b465bce6",
+  "scope": [
+    "S06-P1",
+    "S06-P2",
+    "S06-P3",
+    "Stage 6 owner-readable entries",
+    "Stage 6 governance status",
+    "public repository safety boundary"
+  ],
+  "stage": "S06",
+  "status": "pass_upload_ready_local_only",
+  "stage_phase_status": {
+    "S06-P1": "completed_validated_local_only_zero_delta_validator",
+    "S06-P2": "completed_validated_local_only_cross_source_difference_queue",
+    "S06-P3": "completed_validated_local_only_validation_evidence_output"
+  },
+  "review_counts": {
+    "zero_delta_mismatches": 1,
+    "difference_queue_items": 1,
+    "project_validation_statuses": 2,
+    "metadata_quality_records_written_by_s06p3": 4,
+    "q5_allowed_projects": 0,
+    "report_grade_a_allowed": false,
+    "full_kmfa_unit_tests": 69
+  },
+  "findings": [
+    {
+      "finding_id": "KMFA-S06-REV-F01",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "Stage 6 review evidence and governance status were missing before this review; both were fixed."
+    },
+    {
+      "finding_id": "KMFA-S06-REV-F02",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S06-P1 keeps the 1-cent mismatch as a validation failure with zero_delta_passed=false."
+    },
+    {
+      "finding_id": "KMFA-S06-REV-F03",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S06-P2 keeps unresolved source differences in manual review and blocks report grade A."
+    },
+    {
+      "finding_id": "KMFA-S06-REV-F04",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S06-P3 writes public-safe metadata/quality evidence without field plaintext or raw amount values."
+    },
+    {
+      "finding_id": "KMFA-S06-REV-F05",
+      "severity": "P3",
+      "status": "accepted_next_step",
+      "summary": "GitHub upload remains a separate final upload step with required push proof."
+    }
+  ],
+  "evidence_refs": [
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md",
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_review_manifest.json",
+    "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/test_results.md",
+    "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/test_results.md",
+    "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/test_results.md"
+  ],
+  "next_gate": "KMFA-S06-FINAL-GITHUB-UPLOAD-GATE",
+  "upload_allowed_after_review": true,
+  "upload_performed": false
+}
