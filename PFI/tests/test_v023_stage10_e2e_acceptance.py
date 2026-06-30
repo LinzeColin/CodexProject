@@ -130,7 +130,7 @@ class TestV023Stage10E2EAcceptance(unittest.TestCase):
         self.assertIn("build/hash 一致验证", doc)
         self.assertIn("清缓存验证", doc)
         self.assertIn("Stage 10 Phase 10.2", doc)
-        self.assertIn("Phase 10.3 未执行", doc)
+        self.assertIn("Stage 10 Phase 10.3", doc)
         self.assertIn("GitHub main upload 未执行", doc)
 
         terms = ["mo" + "ck", "sam" + "ple", "synthe" + "tic", "fix" + "ture", "de" + "mo", "fa" + "ke"]
@@ -224,6 +224,104 @@ class TestV023Stage10E2EAcceptance(unittest.TestCase):
         self.assertEqual(payload["console_errors"], [])
         self.assertEqual(payload["page_errors"], [])
         self.assertEqual(payload["http_errors"], [])
+
+    def test_phase103_data_report_evidence_pack_exists_and_is_limited_to_data_report_e2e(self) -> None:
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_10" / "phase_10_3"
+        evidence_path = phase_dir / "evidence.json"
+        browser_validation_path = phase_dir / "browser_validation.json"
+        core_metrics_path = phase_dir / "core_metrics_state.json"
+        data_check_path = phase_dir / "data_check_board.json"
+        report_center_path = phase_dir / "report_center.json"
+        error_state_path = phase_dir / "error_state_paths.json"
+        changed_files_path = phase_dir / "changed_files.txt"
+        terminal_log_path = phase_dir / "terminal.log"
+        screenshots = [
+            phase_dir / "screenshots" / "core_metrics.png",
+            phase_dir / "screenshots" / "data_check_board.png",
+            phase_dir / "screenshots" / "report_center.png",
+            phase_dir / "screenshots" / "error_state_path.png",
+        ]
+
+        for path in (
+            evidence_path,
+            browser_validation_path,
+            core_metrics_path,
+            data_check_path,
+            report_center_path,
+            error_state_path,
+            changed_files_path,
+            terminal_log_path,
+            *screenshots,
+        ):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage10Phase103EvidenceV1")
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 10")
+        self.assertEqual(evidence["phase_id"], "V023-S10-P10.3")
+        self.assertEqual(evidence["phase_name"], "数据和报告 E2E")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertEqual(evidence["task_ids"], ["T10.3.1", "T10.3.2", "T10.3.3", "T10.3.4"])
+        self.assertTrue(evidence["stage_contract"]["phase_10_1_entry_e2e_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_10_2_navigation_e2e_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_10_3_data_report_e2e_done"])
+        self.assertFalse(evidence["stage_contract"]["stage_10_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        for key in (
+            "core_metrics_not_masked_by_zero",
+            "data_check_board_visible",
+            "report_center_conclusion_or_blocker_visible",
+            "error_state_path_explains_blocker",
+            "no_browser_page_errors",
+        ):
+            self.assertTrue(evidence["acceptance_checks"][key], key)
+
+    def test_phase103_browser_validation_proves_data_report_and_error_states(self) -> None:
+        payload = json.loads(
+            (ROOT / "reports" / "pfi_v023" / "stage_10" / "phase_10_3" / "browser_validation.json").read_text(
+                encoding="utf-8"
+            )
+        )
+
+        self.assertEqual(payload["schema"], "PFIV023Stage10Phase103BrowserValidationV1")
+        self.assertEqual(payload["phase_id"], "V023-S10-P10.3")
+        self.assertEqual(payload["localhost"]["url"], "http://127.0.0.1:8501")
+        self.assertEqual(payload["localhost"]["health"], "ok")
+        self.assertGreater(payload["screenshots"]["core_metrics"]["bytes"], 20000)
+        self.assertGreater(payload["screenshots"]["data_check_board"]["bytes"], 20000)
+        self.assertGreater(payload["screenshots"]["report_center"]["bytes"], 20000)
+        self.assertGreater(payload["screenshots"]["error_state_path"]["bytes"], 20000)
+        self.assertEqual(payload["console_errors"], [])
+        self.assertEqual(payload["page_errors"], [])
+        self.assertEqual(payload["http_errors"], [])
+
+        metric_labels = {row["label"] for row in payload["core_metrics"]["metrics"]}
+        self.assertTrue({"净资产", "现金余额", "投资市值", "本月支出", "待复核交易", "数据源状态"}.issubset(metric_labels))
+        self.assertEqual(payload["core_metrics"]["monthly_spending"]["value_text"], "CNY 7,153.98")
+        self.assertIn("MetaDatabase 真实支付宝流水", payload["core_metrics"]["monthly_spending"]["source_note"])
+        self.assertEqual(payload["core_metrics"]["pending_review"]["value_text"], "406")
+        self.assertIn("8815 条真实流水", payload["core_metrics"]["pending_review"]["source_note"])
+        self.assertTrue(all(row["zero_explanation_present"] for row in payload["core_metrics"]["zero_value_metrics"]))
+
+        self.assertEqual(payload["data_check_board"]["workspace"], "sync")
+        self.assertTrue(payload["data_check_board"]["contains_data_source_status"])
+        self.assertTrue(payload["data_check_board"]["contains_review_queue"])
+        self.assertIn("真实", payload["data_check_board"]["evidence_text"])
+
+        self.assertEqual(payload["report_center"]["workspace"], "insights")
+        self.assertTrue(payload["report_center"]["has_conclusion"])
+        self.assertTrue(payload["report_center"]["has_blocker_or_waiting_state"])
+        self.assertIn("真实数据", payload["report_center"]["evidence_text"])
+
+        self.assertEqual(payload["error_state_path"]["workspace"], "market_research")
+        self.assertTrue(payload["error_state_path"]["has_explanatory_empty_state"])
+        self.assertTrue(payload["error_state_path"]["has_next_action"])
 
 
 if __name__ == "__main__":

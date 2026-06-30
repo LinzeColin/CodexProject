@@ -1,0 +1,116 @@
+{
+  "schema": "PFIV023Stage10Phase103EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 10",
+  "phase_id": "V023-S10-P10.3",
+  "phase_name": "数据和报告 E2E",
+  "generated_at": "2026-06-30T06:52:13Z",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T10.3.1",
+    "T10.3.2",
+    "T10.3.3",
+    "T10.3.4"
+  ],
+  "repo": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+  "git": {
+    "branch": "codex/pfi",
+    "head": "0e9f1a011c0bbf2fbd9b58eee74004d448608748",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_semantics": "base_head_at_generation_before_phase_commit"
+  },
+  "stage_contract": {
+    "phase_10_1_entry_e2e_done": true,
+    "phase_10_2_navigation_e2e_done": true,
+    "phase_10_3_data_report_e2e_done": true,
+    "stage_10_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "acceptance_checks": {
+    "core_metrics_not_masked_by_zero": true,
+    "data_check_board_visible": true,
+    "report_center_conclusion_or_blocker_visible": true,
+    "error_state_path_explains_blocker": true,
+    "no_browser_page_errors": true
+  },
+  "evidence_files": {
+    "browser_validation": "PFI/reports/pfi_v023/stage_10/phase_10_3/browser_validation.json",
+    "core_metrics_state": "PFI/reports/pfi_v023/stage_10/phase_10_3/core_metrics_state.json",
+    "data_check_board": "PFI/reports/pfi_v023/stage_10/phase_10_3/data_check_board.json",
+    "report_center": "PFI/reports/pfi_v023/stage_10/phase_10_3/report_center.json",
+    "error_state_paths": "PFI/reports/pfi_v023/stage_10/phase_10_3/error_state_paths.json",
+    "screenshots": "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots"
+  },
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE10_E2E_ACCEPTANCE.md",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/browser_probe_raw.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/core_metrics_state.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/data_check_board.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/report_center.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/error_state_paths.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/terminal.log",
+    "PFI/tests/test_v023_stage10_e2e_acceptance.py",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/core_metrics.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/data_check_board.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/error_state_path.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/report_center.png"
+  ],
+  "validation_commands": [
+    {
+      "command": "PATH=\"$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "command": "PATH=\"$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/routes.js",
+      "status": "pass"
+    },
+    {
+      "command": "PATH=\"$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/pages/stage4Subpages.js",
+      "status": "pass"
+    },
+    {
+      "command": "PATH=\"$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/pages/home.js",
+      "status": "pass"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage10_e2e_acceptance.py",
+      "status": "pass"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py -q",
+      "status": "pass",
+      "summary": "9 passed in 0.02s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "status": "pass",
+      "summary": "166 passed in 2.27s"
+    },
+    {
+      "command": "python3 -m json.tool stage_10 phase_10_1/phase_10_2/phase_10_3 evidence files",
+      "status": "pass"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "status": "pass"
+    },
+    {
+      "command": "Stage 10 docs/tests/reports placeholder-term scan",
+      "status": "pass"
+    },
+    {
+      "command": "curl 8501 /_stcore/health and 8766 /health",
+      "status": "pass"
+    }
+  ],
+  "not_done": [
+    "Stage 10 whole-stage review",
+    "GitHub main upload",
+    "User manual acceptance"
+  ]
+}
