@@ -1,0 +1,46 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "project_id": "arxiv-daily-push",
+  "run_id": "ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE-20260630",
+  "task_id": "S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE",
+  "task_ids": [
+    "S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE",
+    "S2PLT02",
+    "ACC-S2PLT02-2D"
+  ],
+  "generated_at": "2026-06-30T21:43:35Z",
+  "status": "blocked_after_evidence_capture",
+  "summary": "Captured one controlled foreground real SMTP catch-up for service date 2026-06-29, producing the second real M1-M4 service date for S2PLT02 evidence while keeping scheduler, Release, restore, and production acceptance disabled.",
+  "evidence_refs": [
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json",
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json",
+    "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md"
+  ],
+  "observed_natural_days_after_capture": 2,
+  "observed_email_count_after_capture": 8,
+  "real_smtp_evidence_present": true,
+  "m4_watermark_correct_after_capture": true,
+  "real_scheduler_proven": false,
+  "terminal_delivery_proof_artifact_present": false,
+  "s2plt02_accepted": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "remaining_blockers": [
+    "real_scheduler_not_proven",
+    "s2plt02_terminal_delivery_proof_artifact_missing"
+  ]
+}

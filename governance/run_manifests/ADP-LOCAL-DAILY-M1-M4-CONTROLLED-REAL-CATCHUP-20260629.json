@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP",
+  "task_ids": [
+    "LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP",
+    "S2PLT02",
+    "EMAIL_LEARNING_V1"
+  ],
+  "generated_at": "2026-06-30T21:43:35Z",
+  "service_date": "2026-06-29",
+  "summary": "2026-06-29 M1-M4 受控前台真实 SMTP catch-up 发送完成；用于补齐 S2PLT02 第二真实日证据，不启用后台调度或生产验收。",
+  "status": "pass",
+  "daily_input_source": "existing_report",
+  "daily_input_report_path": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629_before_controlled_real_send_20260630T214335Z/adp-daily-input-report.json",
+  "mail_delivery_summary": {
+    "planned_send_total": 4,
+    "sent_mail_count": 4,
+    "sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "historical_sent_mail_products": [],
+    "newly_sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "delivery_ref_by_product": {
+      "M1": "smtp://message/smtp-delivery:1cfa77333913a286",
+      "M2": "smtp://message/smtp-delivery:6777a0c9d0de28d0",
+      "M3": "smtp://message/smtp-delivery:82d3f482dfc09666",
+      "M4": "smtp://message/smtp-delivery:831f734db653200e"
+    },
+    "message_id_by_product": {
+      "M1": "<adp-1cc5a06a68316977de0b8145@arxiv-daily-push.local>",
+      "M2": "<adp-b5b2123371ea81d73bfb7265@arxiv-daily-push.local>",
+      "M3": "<adp-bb5ec3aba912d314620155d0@arxiv-daily-push.local>",
+      "M4": "<adp-d05e5b5258d4324277f9127f@arxiv-daily-push.local>"
+    }
+  },
+  "controlled_run_details": {
+    "execution_mode": "foreground_one_shot_no_launchagent_kickstart",
+    "command_output_ref": "/tmp/adp_controlled_real_send_20260629_20260630T214335Z.json",
+    "previous_run_backup": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629_before_controlled_real_send_20260630T214335Z",
+    "post_run_persistent_allow_smtp_send": false,
+    "post_run_launchagents_disabled": true,
+    "post_run_launchagents_not_running": true,
+    "post_run_background_adp_process_found": false
+  },
+  "evidence_refs": [
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md"
+  ],
+  "real_smtp_sent": true,
+  "real_smtp_send_enabled": true,
+  "stage2_integrated_production_accepted": false,
+  "integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "production_restore_executed": false,
+  "production_queue_mutated": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "ranking_algorithm_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "rollback": "This is real-send evidence and cannot be undone by deleting the record. If the record is wrong, append a corrective evidence record and update the user-center history."
+}

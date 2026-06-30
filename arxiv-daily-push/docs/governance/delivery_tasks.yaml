@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE"
+    phase: "S2PL"
+    objective: "Record one owner-authorized foreground real SMTP catch-up for service date 2026-06-29 as the second S2PLT02 real M1-M4 service day while keeping terminal proof, scheduler, and production acceptance blocked."
+    scope: "local runner foreground evidence, normalized manifest, M4 watermark proof, stage2_final_gate default evidence ledger, focused tests, governance records, user-center traceability, and no-production run manifest."
+    non_scope: "No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced."
+    status: "blocked"
+    dependencies: ["S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"]
+    required_files: ["src/arxiv_daily_push/stage2_final_gate.py", "tests/test_stage2_final_gate.py", "tests/test_cli.py"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_related_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q"]
+    test_results: ["pending in this commit until verification run"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE-20260630.json", "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json", "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json", "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md"]
+    risk: "Second real day evidence could be misread as scheduler proof or production acceptance; gates keep REAL_SCHEDULER_PROOF and S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT blocking."
+    rollback: "Real email delivery cannot be undone; if the evidence record is wrong, append a corrective manifest and revert only code/governance references."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC"
     phase: "S2PL"
     objective: "Make capture_wait_state_guard allowed readonly commands parser-executable through the real CLI while keeping S2PLT02 terminal proof blocked and no-production."

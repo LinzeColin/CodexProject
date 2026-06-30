@@ -6,6 +6,9 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
+
+Owner 视图现在记录一次受控前台真实 SMTP 第二日捕获：服务日期 `2026-06-29`，生成时间 `2026-06-30T21:43:35Z`，M1/M2/M3/M4 四封均已发送，S2PLT02 可用真实发送证据达到 `observed_real_delivery_days=2/2`、`observed_real_email_count=8/8`。绑定证据为 raw manifest `fb0283655054027872f51a4828f93926d4c829cae1f295fc50d4c7adfdfe103a`、M4 watermark proof `3791678d163e245b95d5ddf76b40a67fe17a369ad2a4f825545e7a9a6a48ea30`、capture plan `05e8d88e9a09ec66acd59b03a8e77537e972e830eef9e1d3cca3edd9d3e1f3f7`、final-bundle S2PLT02 summary `1de287b38fe4aafb862df33afefd6f2ea453c4f63d76dd3e40b10c4e8cd7bf0a`、wait guard `ca017acbdc5e84a9ff7f8d6f91bf2023831e5c25893306b389f8652a757851f3`、prerequisite plan `2663c6934972958d51f84f07f6ff4434ccbd00afa3cfe154db0453cdb724f7f5`、final validator `59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea`。The validated independent reviewer assignment remains a final-bundle input only. 当前仍缺 `REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，`write_terminal_artifact_allowed=false`，`scheduler_enable_allowed_by_this_plan=false`，`production_acceptance_allowed=false`。本轮结束后持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled 且不运行，无后台 ADP 进程。这不是 scheduler proof、不是 S2PLT02 accepted，也不是 Stage2/S3 production accepted。
+
 Owner 视图现在把 S2PLT02 wait guard 的只读命令收口为可执行命令集合：`allowed_readonly_commands` 中的 terminal proof evidence inventory 命令已带 `--generated-at 2026-07-01T05:42:34+10:00`，CLI regression 会逐条执行只读命令并确认返回 blocked JSON。当前 direct capture plan `state_hash=aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1`，wait guard `state_hash=502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe`，inventory command `state_hash=26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c`，prerequisite plan `state_hash=94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9`，final validator `state_hash=6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f`。当前仍缺 `SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，`current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，`write_terminal_artifact_allowed=false`，`scheduler_enable_allowed_by_this_plan=false`，`production_acceptance_allowed=false`。这不是 S2PLT02 terminal proof，不是 SMTP/scheduler 授权，也不是 Stage2/S3 production accepted。
 
 Owner 视图现在把 S2PLT02 终态捕获计划的输入清单和 artifact 校验摘要公开到 final bundle readiness：`terminal_delivery_input_inventory_summary.state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`，`terminal_delivery_artifact_validation_summary.state_hash=3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`，capture plan `state_hash=cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4`，prerequisite plan `state_hash=bcb40505ad7244626589c24991dcf05fe775268ce44b5eab3b68444f38cded6e`，final validator `state_hash=23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c`。当前仍缺 `SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，`current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，`write_terminal_artifact_allowed=false`，`scheduler_enable_allowed_by_this_plan=false`，`production_acceptance_allowed=false`。这不是 S2PLT02 terminal proof，不是 SMTP/scheduler 授权，也不是 Stage2/S3 production accepted。
@@ -41,7 +44,7 @@ Owner 视图现在在 final bundle 最外层直接显示 `write_terminal_artifac
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, treat the S2PLT02 input inventory and artifact validation summaries as blocked visibility inputs only, keep final_bundle_missing_artifact_inventory as the current blocked final-bundle artifact inventory, keep V7.1 read-only, treat the validated independent reviewer assignment and P0/P1 zero-proof artifact as final-bundle inputs only, keep V7.1 inherited baseline counts separate from the current zero-proof artifact, keep `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` missing/not ready until two consecutive real M1-M4 SMTP days, eight real emails, real scheduler proof, reviewed artifact write, and artifact validation are all present, do not write S2PLT03 terminal proof or S2PLT04 completion proof before S2PLT02 terminal delivery proof validates, keep live authorization hash-bound and stale hashes fail-closed, and continue only through no-write evidence gates until the terminal capture window is actually satisfied.
+- current_recommendation: A: treat the controlled foreground second real M1-M4 SMTP day as captured S2PLT02 input evidence only; keep S2PLT02 terminal proof blocked until REAL_SCHEDULER_PROOF and FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json are both present, reviewed, and validated; do not write S2PLT03/S2PLT04/final bundle artifacts or claim production acceptance before that chain passes.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -76,14 +79,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 10. Current Blockers
 
-1. S2PLT01 terminal acceptance, S2PLT02 two-day/eight-email/scheduler terminal proof, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence
+1. S2PLT02 real scheduler proof, reviewed S2PLT02 terminal delivery proof artifact, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence
 2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: S2PLT01 terminal acceptance, S2PLT02 two-day/eight-email/scheduler terminal proof, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 validate-final-command-execution CLI validator、P0/P1 zero-proof artifact validation、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除
+- evidence_required: S2PLT02 real scheduler proof, reviewed S2PLT02 terminal delivery proof artifact, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence
+- principal_risks: 将第二真实日/8封真实邮件捕获误读为真实 scheduler proof、S2PLT02 accepted、S2PLT04 完成、final bundle 通过或生产 stop gate 解除；当前只消除了 SECOND_REAL_DELIVERY_DAY 与 EIGHT_REAL_EMAILS 两个输入缺口，仍不得启用 scheduler/Release/restore 或声明 production accepted
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
@@ -98,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PLT02_CONTROLLED_REAL_SECOND_DAY_CAPTURE_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -121,9 +124,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_CONTROLLED_REAL_SECOND_DAY_CAPTURE_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PLT02-TERMINAL-DELIVERY-PROOF`
-- reason: The live S2PLT02 real-proof capture authorization artifact is validated, but S2PLT02 still lacks a second consecutive real M1-M4 SMTP service day, eight real emails, real launchd scheduler proof, and terminal delivery proof artifact.
+- reason: S2PLT02 now has two real M1-M4 SMTP days and eight real emails, but still lacks real launchd scheduler proof and reviewed terminal delivery proof artifact.
