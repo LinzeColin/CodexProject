@@ -558,6 +558,24 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS = (
     "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
     "NEXT_AGENT_HANDOFF",
 )
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_REFS = {
+    "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
+        S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH
+    ),
+    "P0_P1_ZERO_PROOF_ARTIFACT": S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+    "S2PLT04_COMPLETION_REPORT": "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+    "INDEPENDENT_REVIEW_SIGNOFF": "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_COMMAND_EXECUTION": "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_ARTIFACT_PATH,
+    "NEXT_AGENT_HANDOFF": "HANDOFF/00_下一Agent先读.md",
+}
+S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_SCOPE = (
+    "final_bundle_missing_artifact_inventory_no_production_acceptance"
+)
+S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_NEXT_SAFE_ACTION = (
+    "continue_no_write_s2plt02_terminal_delivery_proof_capture_until_terminal_dependencies_pass"
+)
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ITEM_BLOCKING_REASONS = {
     "FINAL_ACCEPTANCE_BUNDLE/manifest.json": "final_acceptance_bundle_manifest_missing",
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH: (
@@ -10233,6 +10251,71 @@ def validate_final_acceptance_bundle_artifact_validation_state(state: Mapping[st
     return errors
 
 
+def _build_final_bundle_missing_artifact_inventory_state(
+    final_acceptance_bundle_artifact_validation: Mapping[str, Any],
+    final_bundle_prerequisite_plan: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Project final bundle artifact validation into a reviewer-facing missing artifact inventory."""
+
+    available_items = dict(_mapping(final_acceptance_bundle_artifact_validation.get("available_items")))
+    missing_items = list(final_acceptance_bundle_artifact_validation.get("missing_items", []))
+    artifact_validations = _mapping(final_acceptance_bundle_artifact_validation.get("artifact_validations"))
+    validation_blocked_refs: dict[str, dict[str, Any]] = {}
+    for validation_key in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS:
+        validation = _mapping(artifact_validations.get(validation_key))
+        if validation.get("status") == "pass":
+            continue
+        artifact_ref = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_REFS[validation_key]
+        validation_blocked_refs[artifact_ref] = {
+            "validation_key": validation_key,
+            "status": validation.get("status", "blocked"),
+            "blocking_reason": f"{validation_key.lower()}_validation_blocked",
+            "validation_errors": list(validation.get("validation_errors", [])),
+            "validation_state_hash": validation.get("state_hash"),
+        }
+
+    state = {
+        "status": (
+            "pass"
+            if (
+                final_acceptance_bundle_artifact_validation.get("bundle_directory_present") is True
+                and not missing_items
+                and not validation_blocked_refs
+            )
+            else "blocked"
+        ),
+        "scope": S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_SCOPE,
+        "bundle_directory_present": final_acceptance_bundle_artifact_validation.get(
+            "bundle_directory_present"
+        )
+        is True,
+        "required_items": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+        "available_items": available_items,
+        "all_required_items_present": (
+            final_acceptance_bundle_artifact_validation.get("all_required_items_present") is True
+        ),
+        "missing_items": missing_items,
+        "missing_item_count": len(missing_items),
+        "missing_live_artifact_refs": list(missing_items),
+        "validation_blocked_refs": validation_blocked_refs,
+        "validation_blocked_ref_count": len(validation_blocked_refs),
+        "ready_to_write_live_artifacts": False,
+        "next_safe_action": S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_NEXT_SAFE_ACTION,
+        "next_executable_task": final_bundle_prerequisite_plan.get("next_executable_task"),
+        "next_executable_runtime_step": final_bundle_prerequisite_plan.get("next_executable_runtime_step"),
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
 def _repo_root_from_source_tree() -> Path:
     """Return the repository root for source-tree validation runs."""
 
@@ -10394,6 +10477,10 @@ def build_final_acceptance_bundle_readiness_state(
     )
     available_items = final_acceptance_bundle_artifact_validation["available_items"]
     missing_items = final_acceptance_bundle_artifact_validation["missing_items"]
+    final_bundle_missing_artifact_inventory = _build_final_bundle_missing_artifact_inventory_state(
+        final_acceptance_bundle_artifact_validation,
+        final_bundle_prerequisite_plan,
+    )
     assignment_validation_passed = independent_final_reviewer_assignment_validation["status"] == "pass"
     blocking_reasons = list(final_acceptance_bundle_artifact_validation["blocking_reasons"])
     if not assignment_validation_passed:
@@ -10480,6 +10567,7 @@ def build_final_acceptance_bundle_readiness_state(
         "p0_p1_zero_proof_status_summary": dict(
             final_bundle_prerequisite_plan.get("p0_p1_zero_proof_status_summary", {})
         ),
+        "final_bundle_missing_artifact_inventory": final_bundle_missing_artifact_inventory,
         "final_bundle_prerequisite_plan": final_bundle_prerequisite_plan,
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_assembly": p0_p1_zero_proof_assembly,
@@ -10669,6 +10757,13 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append(
             "final acceptance bundle readiness P0/P1 zero-proof summary must match nested prerequisite plan"
         )
+    missing_artifact_inventory = _mapping(state.get("final_bundle_missing_artifact_inventory"))
+    expected_missing_artifact_inventory = _build_final_bundle_missing_artifact_inventory_state(
+        artifact_validation,
+        final_bundle_prerequisite_plan,
+    )
+    if missing_artifact_inventory != expected_missing_artifact_inventory:
+        errors.append("final acceptance bundle readiness missing artifact inventory must match artifact validation")
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):
         errors.append("final acceptance bundle readiness P0/P1 technical candidate state is invalid")

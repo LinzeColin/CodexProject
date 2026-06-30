@@ -5845,6 +5845,83 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
+    def test_final_acceptance_bundle_readiness_exposes_missing_artifact_inventory(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        inventory = state["final_bundle_missing_artifact_inventory"]
+
+        expected_missing = [
+            "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+            "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+            "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+            "HANDOFF/00_下一Agent先读.md",
+        ]
+
+        self.assertEqual(inventory["status"], "blocked")
+        self.assertEqual(
+            inventory["scope"],
+            "final_bundle_missing_artifact_inventory_no_production_acceptance",
+        )
+        self.assertTrue(inventory["bundle_directory_present"])
+        self.assertFalse(inventory["all_required_items_present"])
+        self.assertEqual(inventory["missing_items"], state["missing_items"])
+        self.assertEqual(inventory["missing_live_artifact_refs"], expected_missing)
+        self.assertEqual(inventory["missing_item_count"], len(expected_missing))
+        self.assertNotIn(
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+            inventory["missing_live_artifact_refs"],
+        )
+        self.assertNotIn(
+            "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+            inventory["missing_live_artifact_refs"],
+        )
+        self.assertNotIn(
+            "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+            inventory["missing_live_artifact_refs"],
+        )
+        blocked_refs = inventory["validation_blocked_refs"]
+        expected_blocked_validation_refs = {
+            "FINAL_ACCEPTANCE_BUNDLE/manifest.json": (
+                "FINAL_ACCEPTANCE_BUNDLE_MANIFEST",
+                "final_acceptance_bundle_manifest_validation_blocked",
+            ),
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": (
+                "S2PLT04_COMPLETION_REPORT",
+                "s2plt04_completion_report_validation_blocked",
+            ),
+            "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": (
+                "INDEPENDENT_REVIEW_SIGNOFF",
+                "independent_review_signoff_validation_blocked",
+            ),
+            "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json": (
+                "FINAL_COMMAND_EXECUTION",
+                "final_command_execution_validation_blocked",
+            ),
+            "HANDOFF/00_下一Agent先读.md": (
+                "NEXT_AGENT_HANDOFF",
+                "next_agent_handoff_validation_blocked",
+            ),
+        }
+        for artifact_ref, (validation_key, blocking_reason) in expected_blocked_validation_refs.items():
+            self.assertIn(artifact_ref, blocked_refs)
+            self.assertEqual(blocked_refs[artifact_ref]["validation_key"], validation_key)
+            self.assertEqual(blocked_refs[artifact_ref]["blocking_reason"], blocking_reason)
+            self.assertEqual(blocked_refs[artifact_ref]["status"], "blocked")
+        self.assertNotIn(
+            "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+            blocked_refs,
+        )
+        self.assertFalse(inventory["ready_to_write_live_artifacts"])
+        self.assertEqual(
+            inventory["next_safe_action"],
+            "continue_no_write_s2plt02_terminal_delivery_proof_capture_until_terminal_dependencies_pass",
+        )
+        self.assertFalse(inventory["production_acceptance_claimed"])
+        self.assertFalse(inventory["integrated_production_accepted"])
+        self.assertFalse(inventory["real_smtp_send_enabled"])
+        self.assertFalse(inventory["scheduler_install_enabled"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
     def test_final_acceptance_bundle_artifact_validation_blocks_incomplete_bundle_directory(self) -> None:
         state = build_final_acceptance_bundle_artifact_validation_state(bundle_directory_present=True)
 
