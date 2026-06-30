@@ -1,0 +1,130 @@
+{
+  "schema": "PFIV023Stage9Phase91EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 9",
+  "stage_name": "明亮视觉系统、动效与触感反馈",
+  "phase_id": "V023-S9-P9.1",
+  "phase_name": "设计系统",
+  "status": "candidate_pass",
+  "generated_at_utc": "2026-06-30T05:27:26Z",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T9.1.1",
+    "T9.1.2",
+    "T9.1.3",
+    "T9.1.4"
+  ],
+  "stage_contract": {
+    "phase_9_1_design_system_done": true,
+    "phase_9_2_motion_feedback_done": false,
+    "phase_9_3_haptics_settings_done": false,
+    "stage_9_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "outputs": {
+    "styles": "PFI/web/styles.css",
+    "doc": "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+    "design_system_audit": "PFI/reports/pfi_v023/stage_9/phase_9_1/design_system_audit.json",
+    "no_source_term_scan": "PFI/reports/pfi_v023/stage_9/phase_9_1/no_source_term_scan.json"
+  },
+  "acceptance_checks": {
+    "light_tokens": true,
+    "cards_tables_buttons": true,
+    "chart_empty_states": true,
+    "mobile_adaptation": true,
+    "no_forbidden_financial_data_terms": true
+  },
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/shell.js",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage9_visual_feedback.py",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_1/evidence.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_1/design_system_audit.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_1/no_source_term_scan.json",
+    "git diff --check -- PFI"
+  ],
+  "changed_files": [
+    "PFI/web/styles.css",
+    "PFI/tests/test_v023_stage9_visual_feedback.py",
+    "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+    "PFI/reports/pfi_v023/stage_9/phase_9_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_1/design_system_audit.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_1/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_1/terminal.log",
+    "PFI/reports/pfi_v023/stage_9/phase_9_1/changed_files.txt"
+  ],
+  "explicitly_not_done": [
+    "Phase 9.2 动效反馈",
+    "Phase 9.3 触感与设置隔离",
+    "Stage 9 whole-stage review",
+    "GitHub main upload for intermediate phase"
+  ],
+  "validated_at_utc": "2026-06-30T05:29:51Z",
+  "render_evidence": {
+    "method": "Google Chrome headless file render",
+    "desktop_screenshot": {
+      "path": "/tmp/pfi_v023_stage9_phase91_desktop.png",
+      "bytes": 274053,
+      "pixel_width": 1440,
+      "pixel_height": 1100
+    },
+    "mobile_screenshot": {
+      "path": "/tmp/pfi_v023_stage9_phase91_mobile.png",
+      "bytes": 80256,
+      "pixel_width": 390,
+      "pixel_height": 844
+    },
+    "dom_dump_checked_terms": [
+      "data-pfi-version",
+      "app-shell",
+      "mobile-bottom-nav",
+      "首页总览",
+      "市场与研究"
+    ],
+    "chrome_noise_note": "Chrome emitted macOS/Google web app integration noise but exited 0 and wrote screenshots."
+  },
+  "validation_results": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q",
+      "exit_code": 0,
+      "result": "5 passed in 0.02s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "result": "144 passed, 100 subtests passed in 2.12s"
+    },
+    {
+      "command": "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage9_visual_feedback.py",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "python3 -m json.tool stage_9 phase_9_1 evidence/audit/scan",
+      "exit_code": 0,
+      "result": "all JSON files parse"
+    },
+    {
+      "command": "Stage 9 Phase 9.1 source term scan",
+      "exit_code": 0,
+      "result": "no violations after ignoring sample_size contract field"
+    },
+    {
+      "command": "Google Chrome headless desktop/mobile screenshots",
+      "exit_code": 0,
+      "result": "desktop 1440x1100, mobile 390x844 screenshots written under /tmp"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    }
+  ]
+}
