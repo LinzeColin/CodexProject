@@ -377,6 +377,16 @@ class TestV023Stage5HomeExperience(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertNotIn(term, home_block)
 
+    def test_stage5_review_home_workflow_cards_do_not_open_evidence_drawer(self) -> None:
+        shell_text = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
+        start = shell_text.index("function renderFeatureCards(cards)")
+        end = shell_text.index("function featureTarget", start)
+        render_block = shell_text[start:end]
+
+        self.assertIn("const activeWorkspace", render_block)
+        self.assertIn("dataset.workflowEvidence", render_block)
+        self.assertIn('activeWorkspace !== "home"', render_block)
+
     def test_phase51_home_surface_does_not_show_forbidden_home_artifacts(self) -> None:
         payload = load_stage5_home()
         visible_text = json.dumps(payload["view"], ensure_ascii=False)
@@ -432,3 +442,31 @@ class TestV023Stage5HomeExperience(unittest.TestCase):
         self.assertTrue(evidence["max_one_phase_per_run"])
         self.assertTrue(evidence["no_forbidden_financial_data"])
         self.assertEqual(tuple(policy["home_visible_sections"]), STAGE5_PHASE53_HOME_VISIBLE_SECTIONS)
+
+    def test_stage5_review_evidence_exists_before_stage_upload(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "stage_5" / "stage5_review"
+        evidence_path = review_dir / "evidence.json"
+        browser_path = review_dir / "browser_review.json"
+        terminal_log_path = review_dir / "terminal.log"
+        changed_files_path = review_dir / "changed_files.txt"
+        screenshot_path = review_dir / "home_stage5_review.png"
+
+        self.assertTrue(evidence_path.exists(), "Stage 5 whole-stage review evidence is required before upload")
+        self.assertTrue(browser_path.exists(), "Stage 5 whole-stage browser review is required before upload")
+        self.assertTrue(terminal_log_path.exists(), "Stage 5 whole-stage review terminal log is required")
+        self.assertTrue(changed_files_path.exists(), "Stage 5 whole-stage review changed files record is required")
+        self.assertTrue(screenshot_path.exists(), "Stage 5 whole-stage review screenshot is required")
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser = json.loads(browser_path.read_text(encoding="utf-8"))
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 5")
+        self.assertEqual(evidence["review_id"], "V023-S5-REVIEW")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["stage5_whole_stage_review"])
+        self.assertTrue(evidence["findings_fixed"])
+        self.assertFalse(evidence["stage6_started"])
+        self.assertFalse(evidence["github_main_uploaded_before_review"])
+        self.assertEqual(browser["workflow_evidence_buttons"], 0)
+        self.assertEqual(browser["visible_text_view_explanation"], 0)
+        self.assertFalse(browser["evidence_drawer_is_open"])

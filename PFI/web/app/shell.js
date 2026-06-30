@@ -3941,6 +3941,7 @@ function appendStage4State(list, label, value) {
 function renderFeatureCards(cards) {
   const grid = document.querySelector("[data-workflow-cards]");
   if (!grid) return;
+  const activeWorkspace = document.querySelector("#main-workspace")?.dataset.activeWorkspace || "";
   grid.replaceChildren();
   cards.forEach((card, index) => {
     const item = document.createElement("article");
@@ -3959,14 +3960,15 @@ function renderFeatureCards(cards) {
     actions.className = "workflow-actions";
 
     const openAction = featureOpenControl(card);
-    const evidenceButton = document.createElement("button");
-    evidenceButton.type = "button";
-    evidenceButton.dataset.workflowEvidence = String(index);
-    evidenceButton.textContent = "查看说明";
-    evidenceButton.addEventListener("click", () => showWorkflowEvidence(card));
-
     actions.appendChild(openAction);
-    actions.appendChild(evidenceButton);
+    if (activeWorkspace !== "home") {
+      const evidenceButton = document.createElement("button");
+      evidenceButton.type = "button";
+      evidenceButton.dataset.workflowEvidence = String(index);
+      evidenceButton.textContent = "查看说明";
+      evidenceButton.addEventListener("click", () => showWorkflowEvidence(card));
+      actions.appendChild(evidenceButton);
+    }
 
     item.appendChild(head);
     item.appendChild(actions);

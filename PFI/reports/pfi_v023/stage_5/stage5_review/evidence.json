@@ -1,0 +1,38 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 5",
+  "stage_name": "首页人类任务流重建",
+  "review_id": "V023-S5-REVIEW",
+  "status": "candidate_pass",
+  "stage5_whole_stage_review": true,
+  "findings_fixed": true,
+  "stage6_started": false,
+  "github_main_uploaded_before_review": false,
+  "requires_user_acceptance_before_stage6": true,
+  "review_findings": [
+    {
+      "id": "S5-REVIEW-F1",
+      "severity": "important",
+      "status": "fixed",
+      "finding": "Home workflow cards still rendered a page explanation button that could open the explanation drawer.",
+      "risk": "Stage 5 acceptance requires the home page not to expose the evidence drawer pattern.",
+      "fix": "PFI/web/app/shell.js now skips workflow evidence buttons while the active workspace is home."
+    }
+  ],
+  "acceptance_checks": {
+    "home_key_financial_state": true,
+    "home_data_health": true,
+    "home_next_actions": true,
+    "home_recent_changes": true,
+    "home_report_entry": true,
+    "home_no_task_pack_or_run_boundary": true,
+    "home_no_ai_console_feedback_console_or_evidence_drawer": true,
+    "uses_stage2_data_state_machine": true,
+    "next_actions_from_data_status_or_review_tasks": true,
+    "no_forbidden_financial_data_terms": true
+  },
+  "browser_review": "PFI/reports/pfi_v023/stage_5/stage5_review/browser_review.json",
+  "screenshot": "PFI/reports/pfi_v023/stage_5/stage5_review/home_stage5_review.png",
+  "changed_files": "PFI/reports/pfi_v023/stage_5/stage5_review/changed_files.txt",
+  "terminal_log": "PFI/reports/pfi_v023/stage_5/stage5_review/terminal.log"
+}

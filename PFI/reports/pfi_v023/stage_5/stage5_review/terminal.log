@@ -1,0 +1,68 @@
+Review scope:
+V023-S5-REVIEW reviews Stage 5 only. Stage 6 is not started.
+
+RED finding:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+Result: 1 failed, 13 passed, 36 subtests passed
+Failure: home workflow cards still lacked a home-workspace guard for workflow evidence buttons.
+
+Fix:
+PFI/web/app/shell.js renderFeatureCards() now appends data-workflow-evidence buttons only when activeWorkspace !== "home".
+
+GREEN target:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+Result before evidence gate: 14 passed, 36 subtests passed
+
+Browser review:
+Google Chrome headless screenshot generated PFI/reports/pfi_v023/stage_5/stage5_review/home_stage5_review.png.
+DOM checks: workflow_evidence_buttons=0, visible_text_view_explanation=0, evidence_drawer_is_open=false, report_entry=true.
+
+Final verification commands to rerun:
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/pages/home.js
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+git diff --check
+
+Final verification:
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/pages/home.js
+Result: pass
+
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
+Result: pass
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+Result: 15 passed, 36 subtests passed
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 91 passed, 100 subtests passed
+
+git diff --check
+Result: pass
+
+Forbidden finance-data term scan over Stage 5 source, tests, docs, and evidence
+Result: no matches
+
+Post-rebase verification:
+Rebased local Stage 5 commits onto origin/main 5d77b76b72ce after unrelated arxiv-daily-push main update.
+
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/pages/home.js
+Result: pass
+
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
+Result: pass
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+Result: 15 passed, 36 subtests passed
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 91 passed, 100 subtests passed
+
+git diff --check
+Result: pass
+
+Forbidden finance-data term scan over Stage 5 source, tests, docs, and evidence
+Result: no matches
+
+Screenshot check:
+PFI/reports/pfi_v023/stage_5/stage5_review/home_stage5_review.png is 1440x1100 and 552605 bytes.

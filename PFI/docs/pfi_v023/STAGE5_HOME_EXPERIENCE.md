@@ -81,6 +81,14 @@ Phase 5.3 只解决四件事：
 - Stage 6 核心财务指标 read model 接入。
 - 中间 phase GitHub main 上传。
 
+## Stage 5 Whole-stage Review
+
+`V023-S5-REVIEW` 只复审 Stage 5，不进入 Stage 6。复审发现首页 workflow 卡仍会渲染“查看说明”按钮，点击后可打开页面说明抽屉；这与 Stage 5 “首页不展示证据抽屉 / 证据收纳到报告或详情”的验收方向冲突。
+
+修复后，首页 workflow 卡只保留打开或跳转动作；非首页工作区仍可显示“查看说明”。真实 Chrome headless 复核的首页 DOM 中 `data-workflow-evidence = 0`、`查看说明 = 0`、说明抽屉未打开，截图为 `PFI/reports/pfi_v023/stage_5/stage5_review/home_stage5_review.png`。
+
+Stage 5 review 不声明用户已人工验收，不进入 Stage 6。
+
 ## 验收方式
 
 - `PFI/tests/test_v023_stage5_home_experience.py`
