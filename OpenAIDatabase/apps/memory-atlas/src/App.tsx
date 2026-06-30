@@ -171,9 +171,45 @@ interface MemoryRiverMarker {
   radius: number;
 }
 
+type MemoryRiverEvidenceKind = "black-hole-lifecycle" | "proto-star-lifecycle" | "stale-deprecated";
+
+interface MemoryRiverEvidencePoint {
+  id: string;
+  x: number;
+  y: number;
+  radius: number;
+  label: string;
+}
+
+interface MemoryRiverEvidenceSegment {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+  strength: number;
+}
+
+interface MemoryRiverEvidenceLayer {
+  id: string;
+  kind: MemoryRiverEvidenceKind;
+  label: string;
+  detail: string;
+  startX: number;
+  endX: number;
+  labelX: number;
+  labelY: number;
+  count: number;
+  path?: string;
+  points: MemoryRiverEvidencePoint[];
+  segments: MemoryRiverEvidenceSegment[];
+}
+
 interface MemoryRiverLayout {
   levels: MemoryRiverLevelBand[];
   lanes: MemoryRiverLane[];
+  evidenceLayers: MemoryRiverEvidenceLayer[];
   markers: MemoryRiverMarker[];
   levelCounts: Record<MemoryRiverLevel, number>;
 }
@@ -1581,6 +1617,7 @@ function TimelineView({
           data-interaction-mode={interactionMode}
           data-selected-time-range={selectedTimelineRange ? "true" : "false"}
           data-feedback-reduced-motion={feedbackSettings.reducedMotion ? "true" : "false"}
+          data-evidence-layers="black-hole-lifecycle proto-star-lifecycle stale-deprecated"
           viewBox="0 0 1000 640"
           role="img"
           aria-label="记忆时间河 Macro Meso Micro UTC 河道"
@@ -1628,6 +1665,31 @@ function TimelineView({
               <path className="memory-river-lane-shadow" d={lane.path} strokeWidth={lane.strokeWidth + 10} />
               <path className="memory-river-lane-flow" d={lane.path} stroke={`url(#${lane.gradientId})`} strokeWidth={lane.strokeWidth} />
               <text x={lane.labelX} y={lane.labelY} className="memory-river-lane-label">{lane.label}</text>
+            </g>
+          ))}
+          {riverDisplay.evidenceLayers.map((layer) => (
+            <g className={`memory-river-evidence-layer ${layer.kind}`} data-evidence-layer={layer.kind} key={layer.id}>
+              <title>{`${layer.label} · ${layer.count} 个 redacted derived signals · ${layer.detail}`}</title>
+              {layer.segments.map((segment) => (
+                <rect
+                  data-evidence-segment={layer.kind}
+                  height={segment.height}
+                  key={segment.id}
+                  rx="8"
+                  width={segment.width}
+                  x={segment.x}
+                  y={segment.y}
+                >
+                  <title>{segment.label}</title>
+                </rect>
+              ))}
+              {layer.path ? <path d={layer.path} /> : null}
+              {layer.points.map((point) => (
+                <circle cx={point.x} cy={point.y} key={point.id} r={point.radius}>
+                  <title>{point.label}</title>
+                </circle>
+              ))}
+              <text x={layer.labelX} y={layer.labelY}>{layer.label}</text>
             </g>
           ))}
           {selectedRangeOverlay ? (
@@ -4984,13 +5046,195 @@ function buildMemoryRiverLayout(events: TimelineDisplayEvent[], cursorX: number)
       radius: kind === "black-hole" ? Math.max(6, event.radius + 2) : kind === "proto-star" ? Math.max(5, event.radius + 1) : event.radius,
     };
   });
+  const visibleLanes = lanes.length ? lanes : buildEmptyMemoryRiverLanes(levelSpecs, cursorX);
+  const evidenceLayers = buildMemoryRiverEvidenceLayers(events, laneLookup, visibleLanes);
 
   return {
     levels: levelSpecs.map(({ level, note, y }) => ({ level, note, y })),
-    lanes: lanes.length ? lanes : buildEmptyMemoryRiverLanes(levelSpecs, cursorX),
+    lanes: visibleLanes,
+    evidenceLayers,
     markers,
     levelCounts,
   };
+}
+
+function buildMemoryRiverEvidenceLayers(
+  events: TimelineDisplayEvent[],
+  laneLookup: Map<string, MemoryRiverLane>,
+  lanes: MemoryRiverLane[],
+): MemoryRiverEvidenceLayer[] {
+  if (!events.length) return [];
+  const latest = events.reduce((max, event) => Math.max(max, timelineUtcMs(event.day)), 0);
+  const latestDay = latest > 0 ? new Date(latest) : new Date();
+  const recentStart = addDays(latestDay, -29);
+  const blackHoleEvents = events.filter(isMemoryRiverBlackHoleEvent);
+  const protoStarEvents = events.filter((event) => isMemoryRiverProtoStarEvent(event, recentStart, latestDay));
+  const staleEvents = events.filter(isMemoryRiverStaleDeprecatedEvent);
+  return [
+    buildBlackHoleLifecycleLayer(blackHoleEvents, laneLookup, lanes),
+    buildProtoStarLifecycleLayer(protoStarEvents, laneLookup, lanes),
+    buildStaleDeprecatedLayer(staleEvents),
+  ].filter((layer): layer is MemoryRiverEvidenceLayer => Boolean(layer));
+}
+
+function buildBlackHoleLifecycleLayer(
+  events: TimelineDisplayEvent[],
+  laneLookup: Map<string, MemoryRiverLane>,
+  lanes: MemoryRiverLane[],
+): MemoryRiverEvidenceLayer | null {
+  const sorted = [...events].sort((a, b) => a.x - b.x);
+  if (!sorted.length) return null;
+  const range = memoryRiverEvidenceRange(sorted, 46);
+  const y = 500;
+  const width = Math.max(44, range.endX - range.startX);
+  const peak = sorted[Math.max(0, sorted.length - 1)];
+  const microLane = laneForMemoryRiverEvent(peak, "Micro", laneLookup, lanes);
+  return {
+    id: "memory-river-black-hole-lifecycle",
+    kind: "black-hole-lifecycle",
+    label: `黑洞生命周期 · ${sorted.length}`,
+    detail: "与首页风险循环一致：stale / needs_review / deprecated / 临时低权重信号",
+    startX: range.startX,
+    endX: range.endX,
+    labelX: Math.min(900, range.startX + width / 2),
+    labelY: y - 12,
+    count: sorted.length,
+    path: `M ${range.startX} ${y + 28} C ${range.startX + width * 0.28} ${y + 6}, ${range.endX - width * 0.24} ${y + 50}, ${range.endX} ${y + 22}`,
+    points: sorted.slice(-6).map((event, index) => ({
+      id: `black-hole-point-${event.id}`,
+      x: Math.max(MEMORY_RIVER_MIN_X, Math.min(MEMORY_RIVER_MAX_X, event.x)),
+      y: (microLane?.y ?? y) + (index % 2 ? 18 : -10),
+      radius: Math.max(4.5, Math.min(9, event.radius + 1.5)),
+      label: `${event.utcDate} UTC · 黑洞增强 · ${event.source.label}`,
+    })),
+    segments: [
+      {
+        id: "black-hole-band",
+        x: range.startX,
+        y,
+        width,
+        height: 42,
+        label: `低价值循环从 ${sorted[0].utcDate} 到 ${sorted[sorted.length - 1].utcDate} 可见增强`,
+        strength: Math.min(1, sorted.length / 8),
+      },
+    ],
+  };
+}
+
+function buildProtoStarLifecycleLayer(
+  events: TimelineDisplayEvent[],
+  laneLookup: Map<string, MemoryRiverLane>,
+  lanes: MemoryRiverLane[],
+): MemoryRiverEvidenceLayer | null {
+  const sorted = [...events].sort((a, b) => a.x - b.x).slice(-10);
+  if (!sorted.length) return null;
+  const points = sorted.map((event, index) => {
+    const lane = laneForMemoryRiverEvent(event, "Meso", laneLookup, lanes);
+    return {
+      id: `proto-star-point-${event.id}`,
+      x: Math.max(MEMORY_RIVER_MIN_X, Math.min(MEMORY_RIVER_MAX_X, event.x)),
+      y: (lane?.y ?? 294) + (index % 2 ? -22 : 20),
+      radius: Math.max(4.5, Math.min(8.5, event.radius + 1)),
+      label: `${event.utcDate} UTC · 机会成长 · ${event.source.label}`,
+    };
+  });
+  const range = memoryRiverEvidenceRange(sorted, 34);
+  return {
+    id: "memory-river-proto-star-lifecycle",
+    kind: "proto-star-lifecycle",
+    label: `机会生命周期 · ${sorted.length}`,
+    detail: "decision / project_context / high-leverage / 高重要信号形成增长路径",
+    startX: range.startX,
+    endX: range.endX,
+    labelX: Math.min(900, range.startX + Math.max(48, range.endX - range.startX) / 2),
+    labelY: 224,
+    count: sorted.length,
+    path: memoryRiverEvidencePath(points),
+    points,
+    segments: [],
+  };
+}
+
+function buildStaleDeprecatedLayer(events: TimelineDisplayEvent[]): MemoryRiverEvidenceLayer | null {
+  const sorted = [...events].sort((a, b) => a.x - b.x).slice(-18);
+  if (!sorted.length) return null;
+  const range = memoryRiverEvidenceRange(sorted, 38);
+  const segments = sorted.map((event, index) => ({
+    id: `stale-fade-${event.id}`,
+    x: Math.max(MEMORY_RIVER_MIN_X, Math.min(MEMORY_RIVER_MAX_X - 18, event.x - 9)),
+    y: 405 + (index % 3) * 16,
+    width: 24 + Math.min(34, event.radius * 3),
+    height: 86 - (index % 3) * 10,
+    label: `${event.utcDate} UTC · 冷却/废弃 · ${event.source.label}`,
+    strength: Math.min(1, 0.35 + index / Math.max(1, sorted.length)),
+  }));
+  return {
+    id: "memory-river-stale-deprecated-layer",
+    kind: "stale-deprecated",
+    label: `冷却/废弃层 · ${sorted.length}`,
+    detail: "stale_short_term / deprecated_info / temporary_or_sensitive 仅作为可读冷却状态显示",
+    startX: range.startX,
+    endX: range.endX,
+    labelX: Math.min(900, range.startX + Math.max(48, range.endX - range.startX) / 2),
+    labelY: 392,
+    count: sorted.length,
+    points: [],
+    segments,
+  };
+}
+
+function laneForMemoryRiverEvent(
+  event: TimelineDisplayEvent,
+  level: MemoryRiverLevel,
+  laneLookup: Map<string, MemoryRiverLane>,
+  lanes: MemoryRiverLane[],
+): MemoryRiverLane | undefined {
+  const group = memoryRiverGroup(event, level);
+  return laneLookup.get(`${level}:${group.key}`) ?? lanes.find((lane) => lane.level === level);
+}
+
+function memoryRiverEvidenceRange(events: TimelineDisplayEvent[], minWidth: number): { startX: number; endX: number } {
+  const xs = events.map((event) => Math.max(MEMORY_RIVER_MIN_X, Math.min(MEMORY_RIVER_MAX_X, event.x))).sort((a, b) => a - b);
+  const left = xs[0] ?? MEMORY_RIVER_MIN_X;
+  const right = xs[xs.length - 1] ?? left;
+  const midpoint = (left + right) / 2;
+  const half = Math.max(minWidth / 2, (right - left) / 2);
+  return {
+    startX: Math.max(MEMORY_RIVER_MIN_X, midpoint - half),
+    endX: Math.min(MEMORY_RIVER_MAX_X, midpoint + half),
+  };
+}
+
+function memoryRiverEvidencePath(points: MemoryRiverEvidencePoint[]): string | undefined {
+  if (!points.length) return undefined;
+  if (points.length === 1) return `M ${points[0].x - 14} ${points[0].y} C ${points[0].x - 4} ${points[0].y - 18}, ${points[0].x + 10} ${points[0].y + 18}, ${points[0].x + 26} ${points[0].y}`;
+  let path = `M ${points[0].x} ${points[0].y}`;
+  for (let index = 1; index < points.length; index += 1) {
+    const previous = points[index - 1];
+    const current = points[index];
+    const midX = previous.x + (current.x - previous.x) / 2;
+    path += ` C ${midX} ${previous.y}, ${midX} ${current.y}, ${current.x} ${current.y}`;
+  }
+  return path;
+}
+
+function isMemoryRiverBlackHoleEvent(event: TimelineDisplayEvent): boolean {
+  return memoryRiverMarkerKind(event) === "black-hole" || Boolean(event.node && isBlackHoleCandidate(event.node));
+}
+
+function isMemoryRiverProtoStarEvent(event: TimelineDisplayEvent, recentStart: Date, latest: Date): boolean {
+  return memoryRiverMarkerKind(event) === "proto-star" || Boolean(event.node && isProtoStarCandidate(event.node, recentStart, latest));
+}
+
+function isMemoryRiverStaleDeprecatedEvent(event: TimelineDisplayEvent): boolean {
+  const stale = event.node?.metrics?.roi?.staleness_status ?? "";
+  return (
+    stale.includes("stale") ||
+    stale === "needs_review" ||
+    event.source.category === "deprecated_info" ||
+    event.source.category === "temporary_or_sensitive" ||
+    normalizeMemoryTier(event.source.memory_tier) === "临时"
+  );
 }
 
 function buildEmptyMemoryRiverLanes(levels: Array<MemoryRiverLevelBand & { maxLanes: number }>, cursorX: number): MemoryRiverLane[] {

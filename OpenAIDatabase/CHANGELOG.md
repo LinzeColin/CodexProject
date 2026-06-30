@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 5.3 Evidence Layers
+
+- Added Stage 5.3 Memory River evidence layers:
+  `black-hole-lifecycle`, `proto-star-lifecycle`, and `stale-deprecated`.
+- The black-hole lifecycle band uses the same redacted derived stale /
+  needs-review / deprecated / temporary candidate logic as Home Overview risk
+  loops, so Timeline and Home stay semantically aligned.
+- The proto-star lifecycle layer connects recent opportunity, decision,
+  project-context, high-importance and high-leverage signals into a visible
+  growth path rather than isolated event dots.
+- The stale/deprecated fade layer keeps cooling and deprecated states readable
+  without exposing raw transcript data or mutating memory.
+- Updated Memory River model parameters, visual acceptance and deterministic
+  validators for Stage 5.3.
+
+No Stage 5 whole-stage review, ingestion, raw/private data access, direct
+writeback, Cloudflare live deploy, or external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 5.2 Memory River Interaction
 
 - Added Memory River interaction modes: `Pan` for horizontal pointer panning

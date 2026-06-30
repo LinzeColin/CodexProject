@@ -273,7 +273,9 @@ Current visualization modes:
   Inspector。Timeline is a dynamic interactive workspace, not a table/list or
   static dot chart: it has a 动态窗口, zoom controls, replay 播放游标, wheel zoom,
   density track, density backdrops, safe feedback settings, and click-to-sync
-  Inspector. Stage 5.3 的 evidence layers 仍是后续阶段。
+  Inspector. Stage 5.3 adds evidence layers for black-hole lifecycle bands,
+  proto-star growth paths, and stale/deprecated cooling fades, all from the
+  redacted derived snapshot only.
 - Contribution Grid: daily/weekly/monthly/yearly interaction and memory
   increment proxy. 贡献网格一屏优先：日/周显示全年 365/366 格，月/年显示
   连续两年 24 列；尺度按钮和增量指标合并，主网格必须优先保留全景空间，

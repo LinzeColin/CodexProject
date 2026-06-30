@@ -135,8 +135,8 @@ requireCheck(
   packageSource.includes('"validate:memory-river-interaction": "node scripts/validate_memory_river_interaction.mjs"')
     && visualAudit.includes("timeline_stage5_2_river_interaction_ready")
     && hasAll(modelParams, [
-      'stage: "5.2"',
-      'task: "5.2 Memory River Interaction"',
+      'stage: "5.3"',
+      'task: "5.3 Evidence Layers"',
       "pan_enabled: true",
       "brush_enabled: true",
       "click_event_card_enabled: true",
