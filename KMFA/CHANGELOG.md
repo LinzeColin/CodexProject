@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s12p2-impact-preview - 2026-07-01
+
+- 完成 `S12-P2｜影响预览` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/manual_impact_preview.py`、`KMFA/tools/check_s12_p2_manual_impact_preview.py` 和 `KMFA/tests/test_manual_impact_preview.py`。
+- 基于 S12-P1 5 条人工处理事件生成 5 条 public-safe impact preview records、manifest、stage manifest 和 1 个蓝色商务风 HTML 影响预览样张。
+- 预览提交前展示受影响项目、指标、报告；高风险预览需要二次确认，二次确认 pending 时控制事件发布被阻断。
+- 锁定 `未通过影响预览不得发布`，并保持 `derived_rerun_allowed=false`、`formal_report_allowed=false`、`stage12_review_scope_included=false`、`github_upload_scope_included=false`。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额或 credentials。
+- 下一轮只能执行 `S12-P3｜重跑机制`；不得做 Stage 12 整体复审、GitHub upload、lineage full check、正式报告或外部接口。
+
 ## 0.1.0-s12p1-manual-resolution-events - 2026-07-01
 
 - 完成 `S12-P1｜人工处理事件` 本地验证，不上传 GitHub。

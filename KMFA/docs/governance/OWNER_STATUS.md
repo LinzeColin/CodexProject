@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload，以及 S12-P1 人工处理事件本地验证。S12-P1 证据在 `KMFA/stage_artifacts/S12_P1_manual_resolution_events/`。但 S12-P2/P3、Stage 12 复审/upload、lineage、正式报告运行时仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload，以及 S12-P1 人工处理事件和 S12-P2 影响预览本地验证。S12-P2 证据在 `KMFA/stage_artifacts/S12_P2_manual_impact_preview/`。但 S12-P3、Stage 12 复审/upload、lineage、正式报告运行时仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -62,6 +62,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - Stage 11 整体复审已本地通过：`KMFA/tools/check_s11_stage_review.py`、`KMFA/tests/test_s11_stage_review.py` 和 `KMFA/stage_artifacts/S11_STAGE_REVIEW/` 已生成；复审复跑 S11-P1/P2/P3 validators、全量 132 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks，未执行 GitHub upload、S12、lineage full check、正式报告或外部接口。
 - Stage 11 final GitHub upload 已完成：`KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json` 记录 rebase、validators、raw/secret scan、dry-run push、push 和 post-push parity。
 - S12-P1 人工处理事件已本地验证完成：`KMFA/tools/manual_resolution_events.py`、`KMFA/tools/check_s12_p1_manual_resolution_events.py`、`KMFA/tests/test_manual_resolution_events.py`、`KMFA/metadata/approvals/manual_resolution_event_manifest.json`、`KMFA/metadata/approvals/manual_resolution_events.jsonl` 和 `KMFA/stage_artifacts/S12_P1_manual_resolution_events/` 已生成；覆盖字段映射、项目匹配、差异处理、备注、处理人/时间/原因/影响范围/版本，以及已批准事件只能追加反向事件。
+- S12-P2 影响预览已本地验证完成：`KMFA/tools/manual_impact_preview.py`、`KMFA/tools/check_s12_p2_manual_impact_preview.py`、`KMFA/tests/test_manual_impact_preview.py`、`KMFA/metadata/approvals/manual_impact_preview_manifest.json`、`KMFA/metadata/approvals/manual_impact_previews.jsonl` 和 `KMFA/stage_artifacts/S12_P2_manual_impact_preview/` 已生成；覆盖受影响项目、指标、报告、高风险二次确认、未通过预览不得发布和 S12-P3/review/upload 阻断。
 
 ## 你现在不能信任什么
 
@@ -70,7 +71,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、Stage 8 upload、Stage 9 upload 或 Stage 10 upload 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
-- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload 或 S12-P1 人工处理事件等于完整业务系统；S12-P2/P3、lineage full check 和正式报告仍未完成。
+- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件或 S12-P2 影响预览等于完整业务系统；S12-P3、lineage full check 和正式报告仍未完成。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -79,4 +80,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S12-P2｜影响预览`；不得扩大到 S12-P3、Stage 12 review/upload、lineage full check、正式报告或自动接口。
+下一步只执行 `S12-P3｜重跑机制`；不得扩大到 Stage 12 review/upload、lineage full check、正式报告或自动接口。
