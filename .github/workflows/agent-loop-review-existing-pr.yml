@@ -1,0 +1,101 @@
+name: Agent Loop - Review Existing PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to review
+        required: true
+        type: string
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  actions: read
+  checks: read
+
+jobs:
+  review-existing-pr:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || inputs.pr_number }}
+
+    steps:
+      - name: Check OPENAI_API_KEY
+        env:
+          OPENAI_API_KEY_PRESENT: ${{ secrets.OPENAI_API_KEY != '' }}
+        run: |
+          if [ "$OPENAI_API_KEY_PRESENT" != "true" ]; then
+            echo "OPENAI_API_KEY is required as a GitHub Actions secret." >&2
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Collect PR context
+        run: |
+          mkdir -p agent-loop-review
+          gh pr view "$PR_NUMBER" --json title,body,headRefName,baseRefName,url \
+            > agent-loop-review/pr.json
+          base="$(python3 - <<'PY'
+          import json
+          print(json.load(open("agent-loop-review/pr.json"))["baseRefName"])
+          PY
+          )"
+          git fetch origin "$base"
+          gh pr diff "$PR_NUMBER" > agent-loop-review/pr.diff
+          {
+            cat .github/codex/prompts/codex-review.md
+            echo
+            echo "# PR Metadata"
+            cat agent-loop-review/pr.json
+            echo
+            echo "# PR Diff"
+            cat agent-loop-review/pr.diff
+          } > agent-loop-review/codex-review-prompt.md
+
+      - name: Run Codex review
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: agent-loop-review/codex-review-prompt.md
+          output-file: agent-loop-review/codex-review.md
+          sandbox: read-only
+          safety-strategy: drop-sudo
+
+      - name: Run optional Architect Review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python3 scripts/agent_loop/architect_review.py \
+            --taskpack agent-loop-review/pr.json \
+            --diff agent-loop-review/pr.diff \
+            --validation agent-loop-review/codex-review.md \
+            --codex-review agent-loop-review/codex-review.md \
+            --output agent-loop-review/architect-review.md
+
+      - name: Comment review
+        run: |
+          {
+            echo "## Agent Loop Review"
+            echo
+            cat agent-loop-review/codex-review.md
+            echo
+            echo "## Architect Review"
+            echo
+            cat agent-loop-review/architect-review.md
+          } > agent-loop-review/review-comment.md
+          gh pr comment "$PR_NUMBER" --body-file agent-loop-review/review-comment.md
+
+      - name: Upload review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-loop-review-pr-${{ env.PR_NUMBER }}
+          path: agent-loop-review/

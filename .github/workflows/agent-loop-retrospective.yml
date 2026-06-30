@@ -1,0 +1,84 @@
+name: Agent Loop - Retrospective
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Optional PR number to summarize
+        required: false
+        type: string
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  retrospective:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || inputs.pr_number }}
+      OPENAI_API_KEY_PRESENT: ${{ secrets.OPENAI_API_KEY != '' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Collect retrospective context
+        run: |
+          mkdir -p agent-loop-retrospective
+          if [ -n "$PR_NUMBER" ]; then
+            gh pr view "$PR_NUMBER" --json title,body,state,merged,url,comments \
+              > agent-loop-retrospective/pr.json
+            gh pr diff "$PR_NUMBER" > agent-loop-retrospective/pr.diff || true
+          else
+            echo '{}' > agent-loop-retrospective/pr.json
+            : > agent-loop-retrospective/pr.diff
+          fi
+          {
+            cat .github/codex/prompts/codex-retrospective.md
+            echo
+            echo "# PR Metadata"
+            cat agent-loop-retrospective/pr.json
+            echo
+            echo "# PR Diff"
+            cat agent-loop-retrospective/pr.diff
+          } > agent-loop-retrospective/codex-retrospective-prompt.md
+
+      - name: Generate retrospective with Codex when available
+        if: ${{ env.OPENAI_API_KEY_PRESENT == 'true' }}
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: agent-loop-retrospective/codex-retrospective-prompt.md
+          output-file: agent-loop-retrospective/retrospective.md
+          sandbox: read-only
+          safety-strategy: drop-sudo
+
+      - name: Write N/A retrospective when Codex is unavailable
+        if: ${{ env.OPENAI_API_KEY_PRESENT != 'true' }}
+        run: |
+          cat > agent-loop-retrospective/retrospective.md <<'EOF'
+          # Agent Loop Retrospective
+
+          RETROSPECTIVE=N/A
+
+          Reason: OPENAI_API_KEY is not available.
+          EOF
+
+      - name: Comment retrospective
+        if: ${{ env.PR_NUMBER != '' }}
+        run: |
+          gh pr comment "$PR_NUMBER" --body-file agent-loop-retrospective/retrospective.md
+
+      - name: Upload retrospective artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-loop-retrospective-${{ github.run_id }}
+          path: agent-loop-retrospective/

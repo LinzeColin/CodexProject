@@ -1,0 +1,41 @@
+name: Codex Task Pack
+description: Record an approved dual-plane Task Pack for Agent Loop traceability.
+title: "[Agent Loop] "
+labels:
+  - agent:run
+  - source:chatgpt-approved
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this issue template for manual traceability only.
+        The default Agent Loop source of truth is the `taskpack` input pasted into
+        the `Agent Loop - Run Approved Task Pack` workflow.
+  - type: textarea
+    id: taskpack
+    attributes:
+      label: Approved dual-plane Task Pack
+      description: Paste the Owner-approved Task Pack.
+      render: markdown
+    validations:
+      required: true
+  - type: dropdown
+    id: risk_tier
+    attributes:
+      label: Risk tier
+      options:
+        - T1
+        - T2
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: The Task Pack source is chatgpt-approved.
+          required: true
+        - label: No production deploy is requested.
+          required: true
+        - label: The Task Pack includes allowed and forbidden paths.
+          required: true
