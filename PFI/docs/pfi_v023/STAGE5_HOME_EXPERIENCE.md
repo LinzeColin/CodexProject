@@ -2,7 +2,7 @@
 
 ## Phase 5.1 范围
 
-本轮只执行 `V023-S5-P5.1 首页信息架构`，不进入 Phase 5.2、Phase 5.3、Stage 6 或后续 Stage。
+`V023-S5-P5.1 首页信息架构` 只建立首页四个信息区，不进入下一步动作生成、Phase 5.3、Stage 6 或后续 Stage。
 
 Phase 5.1 只解决首页先回答四个问题：
 
@@ -25,8 +25,33 @@ Stage 5 allowed files 原本列出 `PFI/web/app/pages/home.js`，但当前 v0.2.
 
 ## 明确未完成
 
-- Phase 5.2 下一步动作生成。
 - Phase 5.3 首页残留术语全量清理。
+- Stage 5 whole-stage review。
+- Stage 6 核心财务指标 read model 接入。
+- 中间 phase GitHub main 上传。
+
+## Phase 5.2 范围
+
+本轮只执行 `V023-S5-P5.2 下一步动作`，不进入 Phase 5.3、Stage 6 或后续 Stage。
+
+Phase 5.2 只解决四件事：
+
+1. 由数据状态生成动作。
+2. 由待复核任务生成动作。
+3. 动作可跳转到真实页面 route。
+4. 阻断动作有中文解释。
+
+## Phase 5.2 交付内容
+
+- `PFI/web/app/pages/home.js` 新增 `buildStage5Phase52Contract()`。
+- 首页 view model 新增 `next_actions`。
+- 数据状态动作只从 Stage 2 metric status 派生，例如未挂链、解析失败、权限失败、过期、待复核。
+- 待复核动作只从输入的 review task 派生，并保留 `task_id`、证据数量、跳转 route 和中文原因。
+- 首页卡片和任务区使用 `next_actions` 的首批动作，不写固定动作清单。
+
+## Phase 5.2 明确未完成
+
+- Phase 5.3 去 AI 痕迹全量清理。
 - Stage 5 whole-stage review。
 - Stage 6 核心财务指标 read model 接入。
 - 中间 phase GitHub main 上传。

@@ -1,0 +1,9 @@
+PFI/docs/pfi_v023/STAGE5_HOME_EXPERIENCE.md
+PFI/reports/pfi_v023/stage_5/phase_5_2/action_sources.json
+PFI/reports/pfi_v023/stage_5/phase_5_2/browser_validation.json
+PFI/reports/pfi_v023/stage_5/phase_5_2/changed_files.txt
+PFI/reports/pfi_v023/stage_5/phase_5_2/evidence.json
+PFI/reports/pfi_v023/stage_5/phase_5_2/home_phase52_actions.png
+PFI/reports/pfi_v023/stage_5/phase_5_2/terminal.log
+PFI/tests/test_v023_stage5_home_experience.py
+PFI/web/app/pages/home.js
