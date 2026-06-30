@@ -1,0 +1,52 @@
+2026-07-01T08:07:52+10:00 current context:
+pwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git_root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_after_rebase_before_upload_gate_commit=4405939020d25f35723052122d5f4eeafaee56c9
+origin_main=04b02a2da7b91c637b7ef7c3b5b8246e606e1a4f
+status=## codex/pfi...origin/main [ahead 4]
+remote_delta_touches_pfi=false
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage3_github_upload_contract.py -q
+result=expected red, 3 failed: missing build_v024_stage3_github_upload_contract and missing github_main_upload evidence pack
+
+REBASE:
+git rebase origin/main
+result=pass; rebased 4 Stage 3 commits onto origin/main 04b02a2da7b91c637b7ef7c3b5b8246e606e1a4f
+
+FINAL_VALIDATION:
+NODE_PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.61.0/node_modules /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node PFI/scripts/validate_v024_stage3_phase33_browser.js
+result=pass; desktop_primary_count=10; mobile_primary_count=10; legacy_alias_count=6
+
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/navigation.js
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/scripts/validate_v024_stage3_phase33_browser.js
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage3_navigation.py PFI/tests/test_v024_stage3_whole_review_contract.py PFI/tests/test_v024_stage3_github_upload_contract.py
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage3_github_upload_contract.py -q
+result=3 passed in 0.07s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage3_whole_review_contract.py -q
+result=5 passed in 0.07s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_pre_stage0_contract.py PFI/tests/test_v024_stage0_phase01_contract.py PFI/tests/test_v024_stage0_phase02_contract.py PFI/tests/test_v024_stage0_phase03_contract.py PFI/tests/test_v024_stage0_whole_review_contract.py PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py PFI/tests/test_v024_stage1_phase12_shell_repair.py PFI/tests/test_v024_stage1_phase13_validation_closeout.py PFI/tests/test_v024_stage1_whole_review_contract.py PFI/tests/test_v024_stage2_phase21_entry_mapping.py PFI/tests/test_v024_stage2_phase22_version_link.py PFI/tests/test_v024_stage2_phase23_real_entry_validation.py PFI/tests/test_v024_stage2_whole_review_contract.py PFI/tests/test_v024_stage3_phase31_navigation_contract.py PFI/tests/test_v024_stage3_phase32_route_implementation.py PFI/tests/test_v024_stage3_phase33_navigation_acceptance.py PFI/tests/test_v024_stage3_whole_review_contract.py PFI/tests/test_v024_stage3_github_upload_contract.py -q
+result=78 passed in 0.48s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_stage3_navigation_routes.py -q
+result=13 passed in 0.14s
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_3/github_main_upload/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_3/whole_stage_review/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_3/phase_3_3/browser_validation.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_3/phase_3_3/legacy_routes_validation.json
+git diff --check -- PFI
+result=pass
+
+REMOTE_UPLOAD:
+pending

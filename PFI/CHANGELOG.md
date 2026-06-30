@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 3 GitHub Main Upload - 2026-07-01
+
+- 完成 `Stage 3 GitHub main upload gate`：将 Stage 3 Phase 3.1、Phase 3.2、Phase 3.3 和 whole-stage review package rebase 到当前 `origin/main` 后上传。
+- 新增 `PFI/docs/pfi_v024/STAGE3_GITHUB_MAIN_UPLOAD.md`、`PFI/tests/test_v024_stage3_github_upload_contract.py` 和 `PFI/reports/pfi_v024/stage_3/github_main_upload/evidence.json`。
+- 上传 gate 重新验证 Stage 3 浏览器导航、v0.2.4 回归、v0.2.3 Stage 3 兼容、JSON 和 diff。
+- 本轮不执行 Stage 4、不重装 app bundle、不修改 launcher C/Info.plist、不修改真实数据逻辑。
+
 ## v0.2.4 Repair Pack Stage 3 Whole-Stage Review - 2026-07-01
 
 - 完成 `Stage 3 whole-stage review - 复审并解决暴露问题`，复审 Phase 3.1、Phase 3.2 和 Phase 3.3 的合同、route、DOM、browser history 和 evidence。

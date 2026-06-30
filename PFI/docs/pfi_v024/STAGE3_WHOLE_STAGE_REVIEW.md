@@ -41,10 +41,12 @@
 - App bundle reinstall: not executed.
 - Launcher C / Info.plist changes: not executed.
 - Financial data logic changes: none.
-- GitHub main upload: not executed.
+- GitHub main upload: not executed in the whole-stage review run; handled by
+  the later `Stage 3 GitHub main upload gate`.
 
 ## Stage Boundary
 
 Stage 3 is complete at local whole-review level. The next gate is Stage 3
-GitHub main upload after explicit instruction. Stage 4 remains blocked until
-Stage 3 upload is complete and the user explicitly instructs the next stage.
+GitHub main upload is handled by the separate
+`Stage 3 GitHub main upload gate`. Stage 4 remains blocked until Stage 3 upload
+is complete and the user explicitly instructs the next stage.

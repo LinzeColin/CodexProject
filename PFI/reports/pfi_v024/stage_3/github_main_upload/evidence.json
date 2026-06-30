@@ -1,0 +1,124 @@
+{
+  "schema": "PFIV024Stage3GithubMainUploadEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 3",
+  "upload_id": "stage_3_github_main_upload",
+  "status": "pass",
+  "generated_at": "2026-07-01T08:13:52+10:00",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "origin_main_before_rebase": "04b02a2da7b91c637b7ef7c3b5b8246e606e1a4f",
+    "head_after_rebase_before_upload_gate_commit": "4405939020d25f35723052122d5f4eeafaee56c9",
+    "local_ahead_origin_main_after_rebase": 4,
+    "local_behind_origin_main_after_rebase": 0,
+    "origin_main_delta_touches_pfi": false,
+    "push_refspec": "HEAD:main"
+  },
+  "completed_gate": "Stage 3 GitHub main upload",
+  "reviewed_phase_ids": ["3.1", "3.2", "3.3"],
+  "stage_3_candidate_complete": true,
+  "stage_3_review_complete": true,
+  "stage_3_complete": true,
+  "github_main_uploaded": true,
+  "rebased_on_current_origin_main": true,
+  "remote_main_verification_required": true,
+  "stage_4_started": false,
+  "stage_4_allowed_without_user_instruction": false,
+  "no_auto_next_stage": true,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "acceptance_checks": {
+    "stage_3_whole_review_present": true,
+    "official_primary_entries_are_10": true,
+    "market_research_is_primary_index_9": true,
+    "legacy_alias_routes_resolve": true,
+    "browser_back_forward_passed": true,
+    "v024_regression_passed": true,
+    "v023_stage3_compatibility_passed": true,
+    "remote_main_verification_required_after_push": true
+  },
+  "commands": [
+    {
+      "cmd": "pytest stage3 github upload contract red run",
+      "status": "expected_fail",
+      "detail": "missing github upload contract and evidence pack before implementation"
+    },
+    {
+      "cmd": "git rebase origin/main",
+      "status": "pass",
+      "detail": "rebased 4 local Stage 3 commits onto origin/main 04b02a2da7b91c637b7ef7c3b5b8246e606e1a4f"
+    },
+    {
+      "cmd": "node playwright stage3 phase33 browser validation",
+      "status": "pass",
+      "detail": "desktop_primary_count=10; mobile_primary_count=10; legacy_alias_count=6"
+    },
+    {
+      "cmd": "node --check stage3 navigation/routes/shell/browser script",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage3 github upload contract",
+      "status": "pass",
+      "detail": "3 passed"
+    },
+    {
+      "cmd": "pytest v024 regression through stage3 github upload",
+      "status": "pass",
+      "detail": "78 passed"
+    },
+    {
+      "cmd": "pytest v023 stage3 navigation compatibility",
+      "status": "pass",
+      "detail": "13 passed"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    },
+    {
+      "cmd": "git push origin HEAD:main",
+      "status": "pending_terminal_gate"
+    },
+    {
+      "cmd": "git ls-remote origin refs/heads/main",
+      "status": "pending_terminal_gate"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE3_GITHUB_MAIN_UPLOAD.md",
+    "PFI/docs/pfi_v024/STAGE3_NAVIGATION_ROUTING.md",
+    "PFI/docs/pfi_v024/STAGE3_WHOLE_STAGE_REVIEW.md",
+    "PFI/reports/pfi_v024/stage_3/github_main_upload/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_3/github_main_upload/evidence.json",
+    "PFI/reports/pfi_v024/stage_3/github_main_upload/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_3/github_main_upload/terminal.log",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/browser_validation.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/legacy_routes_validation.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/screenshots/browser_back_after_forward.png",
+    "PFI/reports/pfi_v024/stage_3/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v024/stage_3/whole_stage_review/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage3_navigation.py",
+    "PFI/tests/test_v024_stage3_github_upload_contract.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 4",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}
