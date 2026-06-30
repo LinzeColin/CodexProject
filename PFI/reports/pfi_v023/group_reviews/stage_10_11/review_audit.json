@@ -1,0 +1,52 @@
+{
+  "schema": "PFIV023Stage10To11GroupReviewAuditV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S10-S11-GROUP-REVIEW",
+  "status": "review_pass",
+  "generated_at": "2026-06-30T09:27:50Z",
+  "current_group_only": true,
+  "current_three_phase_goal_complete": false,
+  "external_taskpack_status": "missing_from_downloads",
+  "findings_before_fix": [],
+  "findings_after_review": [],
+  "stage_statuses": [
+    {
+      "stage": "Stage 10",
+      "source_evidence": "PFI/reports/pfi_v023/stage_10/whole_stage_review/evidence.json",
+      "status": "review_pass"
+    },
+    {
+      "stage": "Stage 11",
+      "source_evidence": "PFI/reports/pfi_v023/stage_11/whole_stage_review/evidence.json",
+      "status": "closeout_pass"
+    }
+  ],
+  "acceptance_checks": {
+    "stage10_entry_navigation_data_report_e2e": true,
+    "stage10_no_browser_errors": true,
+    "stage10_reports_no_fake_zero": true,
+    "stage11_closeout_evidence_present": true,
+    "stage11_browser_validation_present": true,
+    "current_goal_boundary_not_overclaimed": true,
+    "current_group_only": true
+  },
+  "residual_risks": [
+    "External roadmap/taskpack files were not present in Downloads during this group review; repo contracts and real browser evidence were used instead.",
+    "This group review does not verify GitHub main upload for the current local three-phase recovery commits.",
+    "Overall v0.2.3 project review, backup, and local cleanup remain out of scope for this group run."
+  ],
+  "last_verified_at": "2026-06-30T09:28:47Z",
+  "validation_results": {
+    "stage10_11_target_tests": "33 passed in 0.06s",
+    "regression": "23 passed in 0.05s",
+    "all_v023_tests": "193 passed in 2.38s",
+    "node_check_shell_js": "pass",
+    "json_and_git_diff_check": "pass",
+    "browser_audit": "findings=0; console_errors=0; page_errors=0; http_errors=0",
+    "macos_app_acceptance_lite": "29 pass / 0 fail / 2 info",
+    "localhost_health": {
+      "8501": "ok",
+      "8766": "{\"status\": \"ok\", \"schema\": \"PFIV021RuntimeAPIV1\"}"
+    }
+  }
+}

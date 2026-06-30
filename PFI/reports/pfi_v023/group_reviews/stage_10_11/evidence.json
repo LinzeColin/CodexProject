@@ -1,0 +1,156 @@
+{
+  "schema": "PFIV023Stage10To11GroupReviewEvidenceV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S10-S11-GROUP-REVIEW",
+  "review_name": "Stage 10-11 human product experience group review",
+  "status": "review_pass",
+  "generated_at": "2026-06-30T09:27:50Z",
+  "current_group_only": true,
+  "current_three_phase_goal_complete": false,
+  "github_main_uploaded_in_this_group_run": false,
+  "review_scope": [
+    "Stage 10",
+    "Stage 11"
+  ],
+  "external_taskpack_status": "missing_from_downloads",
+  "external_taskpack_paths_checked": {
+    "roadmap": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+    "taskpack": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+    "preview": "/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html"
+  },
+  "external_taskpack_missing_paths": [
+    "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+    "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+    "/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html"
+  ],
+  "source_basis": [
+    "PFI/docs/pfi_v023/STAGE10_E2E_ACCEPTANCE.md",
+    "PFI/docs/pfi_v023/STAGE11_DOC_FREEZE.md",
+    "PFI/docs/pfi_v023/STAGE11_CLOSEOUT.md",
+    "PFI/reports/pfi_v023/stage_10",
+    "PFI/reports/pfi_v023/stage_11",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/browser_audit.json"
+  ],
+  "git": {
+    "head_at_evidence_write": "705a489c488c814cd974ece194ae4b69d6ec62c0",
+    "origin_main_at_evidence_write": "ce2881204c49a56da463893db5314ff180c7812d",
+    "head_semantics": "Group-review evidence is written before the local group-review commit; this run does not push to GitHub main.",
+    "head_at_final_validation": "705a489c488c814cd974ece194ae4b69d6ec62c0",
+    "origin_main_at_final_validation": "ce2881204c49a56da463893db5314ff180c7812d"
+  },
+  "stage10_e2e_contract": {
+    "source_evidence": "PFI/reports/pfi_v023/stage_10/whole_stage_review/evidence.json",
+    "source_status": "review_pass",
+    "source_acceptance_checks": {
+      "app_opens_new_ui": true,
+      "localhost_same_ui": true,
+      "ten_first_level_entries_clickable": true,
+      "secondary_paths_clickable": true,
+      "core_metrics_not_masked_zero": true,
+      "report_center_conclusion_or_blocker_visible": true,
+      "browser_back_forward_works": true,
+      "screenshots_and_json_present": true
+    },
+    "current_browser_e2e_passed": true,
+    "current_browser_findings": [],
+    "home_real_metrics_visible": true,
+    "source_gate_visible": true,
+    "report_blocker_visible": true,
+    "reports_cny_zero_count": 0
+  },
+  "stage11_closeout_contract": {
+    "source_evidence": "PFI/reports/pfi_v023/stage_11/whole_stage_review/evidence.json",
+    "source_status": "closeout_pass",
+    "stage_11_whole_review_done": true,
+    "human_acceptance_claimed": true,
+    "user_acceptance_text": "接受",
+    "blocker_count": 0,
+    "final_pack_status": "candidate_pass",
+    "github_main_upload_gate": "terminal_verified_after_push",
+    "current_group_does_not_verify_remote_upload": true
+  },
+  "browser_audit": {
+    "path": "PFI/reports/pfi_v023/group_reviews/stage_10_11/browser_audit.json",
+    "findings": [],
+    "desktop_primary_count": 10,
+    "mobile_primary_count": 10,
+    "console_errors": 0,
+    "page_errors": 0,
+    "http_errors": 0,
+    "screenshots": {
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/accounts_stage10.png": 278552,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/consumption_stage10.png": 284024,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/home_stage10.png": 278146,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/investment_stage10.png": 275200,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/ledger_stage10.png": 282049,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/market_stage10.png": 268613,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/mobile_home_stage10_11.png": 170716,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/mobile_reports_stage10_11.png": 169840,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/recommendations_stage10.png": 285867,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/reports_stage10.png": 257923,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/settings_stage11.png": 277995,
+      "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/sync_stage10.png": 273237
+    }
+  },
+  "fixes": [],
+  "acceptance_checks": {
+    "stage10_entry_navigation_data_report_e2e": true,
+    "stage10_no_browser_errors": true,
+    "stage10_reports_no_fake_zero": true,
+    "stage11_closeout_evidence_present": true,
+    "stage11_browser_validation_present": true,
+    "current_goal_boundary_not_overclaimed": true,
+    "current_group_only": true
+  },
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py PFI/tests/test_v023_regression.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+    "python3 -m json.tool PFI/reports/pfi_v023/group_reviews/stage_10_11/evidence.json >/dev/null and git diff --check -- PFI",
+    "PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json",
+    "http://127.0.0.1:8501/_stcore/health and http://127.0.0.1:8766/health"
+  ],
+  "validation_results": {
+    "stage10_11_target_tests": "33 passed in 0.06s",
+    "regression": "23 passed in 0.05s",
+    "all_v023_tests": "193 passed in 2.38s",
+    "node_check_shell_js": "pass",
+    "json_and_git_diff_check": "pass",
+    "browser_audit": "findings=0; console_errors=0; page_errors=0; http_errors=0",
+    "macos_app_acceptance_lite": "29 pass / 0 fail / 2 info",
+    "localhost_health": {
+      "8501": "ok",
+      "8766": "{\"status\": \"ok\", \"schema\": \"PFIV021RuntimeAPIV1\"}"
+    }
+  },
+  "changed_files": [
+    "PFI/README.md",
+    "PFI/docs/pfi_v023/README.md",
+    "PFI/docs/pfi_v023/STAGE10_11_GROUP_REVIEW.md",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/browser_audit.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/changed_files.txt",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/evidence.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/review_audit.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/accounts_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/consumption_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/home_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/investment_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/ledger_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/market_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/mobile_home_stage10_11.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/mobile_reports_stage10_11.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/recommendations_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/reports_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/settings_stage11.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/screenshots/sync_stage10.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_10_11/terminal.log",
+    "PFI/tests/test_v023_regression.py"
+  ],
+  "remaining_after_group_review": [
+    "v0.2.3 overall project review",
+    "GitHub main synchronization and backup",
+    "local nonessential file cleanup"
+  ],
+  "last_verified_at": "2026-06-30T09:28:47Z"
+}
