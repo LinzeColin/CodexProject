@@ -10,6 +10,10 @@ Owner 一个默认起点；最终以 Owner 批准的 Task Pack 为准。
 `scripts/agent_loop/autofill_taskpack_metadata.py` 只读取下面的 JSON block 作为
 路由事实源。更新人工表格时必须同步更新这个 block。
 
+Owner 不需要记住 project/path 规则；agent 必须使用 routing matrix。Metadata
+只允许在 routing unambiguous 时自动补全；ambiguous project 必须 `BLOCKED`；
+multi-project work 默认必须 `SPLIT_REQUIRED`；Codex 不得猜 project scope。
+
 <!-- AGENT_LOOP_ROUTING_MATRIX_JSON
 {
   "version": "1.0",
