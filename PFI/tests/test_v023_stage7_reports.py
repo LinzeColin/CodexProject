@@ -224,8 +224,8 @@ console.log(JSON.stringify(reportsPage.buildStage7Phase71ReportsViewModel(report
         self.assertIn("Stage 7 Phase 7.1", doc_text)
         self.assertIn("报告合同", doc_text)
         self.assertIn("Stage 7 Phase 7.2", doc_text)
-        self.assertIn("Stage 7 whole-stage review 未执行", doc_text)
-        self.assertIn("GitHub main upload 未执行", doc_text)
+        self.assertIn("Stage 7 Whole-stage Review", doc_text)
+        self.assertIn("GitHub main 上传不写成提交内自引用事实", doc_text)
 
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("PFI/tests/test_v023_stage7_reports.py -q", terminal_log)
@@ -354,7 +354,7 @@ console.log(JSON.stringify(reportsPage.buildStage7Phase72CoreReportsViewModel(pa
         self.assertIn("Stage 7 Phase 7.2", doc_text)
         self.assertIn("核心报告", doc_text)
         self.assertIn("Stage 7 Phase 7.3", doc_text)
-        self.assertIn("Stage 7 whole-stage review 未执行", doc_text)
+        self.assertIn("Stage 7 Whole-stage Review", doc_text)
 
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("PFI/tests/test_v023_stage7_reports.py -q", terminal_log)
@@ -476,9 +476,61 @@ console.log(JSON.stringify(reportsPage.buildStage7Phase73QualityTuningViewModel(
         doc_text = (ROOT / "docs" / "pfi_v023" / "STAGE7_REPORTS.md").read_text(encoding="utf-8")
         self.assertIn("Stage 7 Phase 7.3", doc_text)
         self.assertIn("数据质量与调参", doc_text)
-        self.assertIn("Stage 7 whole-stage review 未执行", doc_text)
+        self.assertIn("Stage 7 Whole-stage Review", doc_text)
 
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("PFI/tests/test_v023_stage7_reports.py -q", terminal_log)
+
+    def test_stage7_review_evidence_exists_before_stage_upload(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "stage_7" / "stage7_review"
+        evidence_path = review_dir / "evidence.json"
+        audit_path = review_dir / "review_audit.json"
+        scan_path = review_dir / "no_source_term_scan.json"
+        terminal_log_path = review_dir / "terminal.log"
+        changed_files_path = review_dir / "changed_files.txt"
+
+        self.assertTrue(evidence_path.exists(), "Stage 7 whole-stage review evidence is required before upload")
+        self.assertTrue(audit_path.exists(), "Stage 7 whole-stage review audit is required before upload")
+        self.assertTrue(scan_path.exists(), "Stage 7 whole-stage no-source-term scan is required")
+        self.assertTrue(terminal_log_path.exists(), "Stage 7 whole-stage review terminal log is required")
+        self.assertTrue(changed_files_path.exists(), "Stage 7 whole-stage review changed files record is required")
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 7")
+        self.assertEqual(evidence["review_id"], "V023-S7-REVIEW")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["stage7_whole_stage_review"])
+        self.assertTrue(evidence["findings_fixed"])
+        self.assertFalse(evidence["stage8_started"])
+        self.assertFalse(evidence["github_main_uploaded_before_review"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(audit["review_id"], "V023-S7-REVIEW")
+        self.assertEqual(audit["phase_status"], {"phase_7_1": "candidate_pass", "phase_7_2": "candidate_pass", "phase_7_3": "candidate_pass"})
+        self.assertEqual(audit["review_findings"], [])
+        self.assertEqual(scan["violations"], [])
+        self.assertEqual(audit["report_status"]["blocked"], 3)
+        self.assertEqual(audit["report_status"]["partial"], 2)
+        self.assertEqual(audit["core_report_status"]["blocked"], 3)
+        self.assertEqual(audit["core_report_status"]["partial"], 1)
+        self.assertEqual(audit["quality_tuning"]["blocked_metric_count"], 3)
+        self.assertEqual(audit["quality_tuning"]["section_count"], 4)
+        self.assertTrue(audit["acceptance_checks"]["reports_have_formula_parameter_range_record_scope_gap"])
+        self.assertTrue(audit["acceptance_checks"]["missing_data_stays_partial_or_blocked"])
+        self.assertTrue(audit["acceptance_checks"]["export_or_unimplemented_scope_recorded"])
+        self.assertTrue(audit["stop_condition_checks"]["no_cny_zero_for_blocked_metrics"])
+        self.assertTrue(audit["stop_condition_checks"]["no_complete_conclusion_when_inputs_missing"])
+
+        doc_text = (ROOT / "docs" / "pfi_v023" / "STAGE7_REPORTS.md").read_text(encoding="utf-8")
+        self.assertIn("Stage 7 Whole-stage Review", doc_text)
+        self.assertNotIn("Stage 7 whole-stage review 未执行", doc_text)
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("Stage 7 whole-stage review", terminal_log)
         self.assertIn("PFI/tests/test_v023_stage7_reports.py -q", terminal_log)
 
 

@@ -1,0 +1,85 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 7",
+  "stage_name": "分析结论、公式与报告中心",
+  "review_id": "V023-S7-REVIEW",
+  "status": "candidate_pass",
+  "stage7_whole_stage_review": true,
+  "findings_fixed": true,
+  "stage8_started": false,
+  "github_main_uploaded_before_review": false,
+  "requires_user_acceptance_before_stage8": true,
+  "phase_evidence": {
+    "phase_7_1": "PFI/reports/pfi_v023/stage_7/phase_7_1/evidence.json",
+    "phase_7_2": "PFI/reports/pfi_v023/stage_7/phase_7_2/evidence.json",
+    "phase_7_3": "PFI/reports/pfi_v023/stage_7/phase_7_3/evidence.json"
+  },
+  "review_audit": "PFI/reports/pfi_v023/stage_7/stage7_review/review_audit.json",
+  "source_term_scan": "PFI/reports/pfi_v023/stage_7/stage7_review/no_source_term_scan.json",
+  "review_findings": [],
+  "acceptance_checks": {
+    "report_center_has_required_reports": true,
+    "reports_have_required_fields": true,
+    "reports_have_formula_parameter_range_record_scope_gap": true,
+    "missing_data_stays_partial_or_blocked": true,
+    "data_quality_report_explains_blockers": true,
+    "formula_explanations_saved": true,
+    "parameter_impact_preview_saved": true,
+    "export_or_unimplemented_scope_recorded": true
+  },
+  "stop_condition_checks": {
+    "no_chart_only_report": true,
+    "no_ai_only_summary": true,
+    "no_missing_data_range_or_record_scope": true,
+    "no_cny_zero_for_blocked_metrics": true,
+    "no_complete_conclusion_when_inputs_missing": true
+  },
+  "changed_files": [
+    "PFI/tests/test_v023_stage7_reports.py",
+    "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+    "PFI/reports/pfi_v023/stage_7/stage7_review/evidence.json",
+    "PFI/reports/pfi_v023/stage_7/stage7_review/review_audit.json",
+    "PFI/reports/pfi_v023/stage_7/stage7_review/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_7/stage7_review/terminal.log",
+    "PFI/reports/pfi_v023/stage_7/stage7_review/changed_files.txt"
+  ],
+  "terminal_log": "PFI/reports/pfi_v023/stage_7/stage7_review/terminal.log",
+  "github_main_upload_proof": "not embedded in commit; prove by git push and remote HEAD after closeout commit",
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage7_reports.py -q",
+      "exit_code": 0,
+      "summary": "16 passed in 0.23s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "123 passed, 100 subtests passed in 1.84s"
+    },
+    {
+      "command": "node --check PFI/web/app/pages/reports.js",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_reports.py PFI/src/pfi_v02/stage_v023_formula_registry.py PFI/tests/test_v023_stage7_reports.py",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "json.tool Stage 7 review evidence/audit/scan files",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "blocked source term scan over Stage 7 files",
+      "exit_code": 0,
+      "summary": "no matches after ignoring sample_size contract field"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "pass"
+    }
+  ]
+}

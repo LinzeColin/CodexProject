@@ -1,0 +1,54 @@
+{
+  "schema": "PFIV023Stage7WholeStageReviewAuditV1",
+  "version": "v0.2.3",
+  "stage": "Stage 7",
+  "review_id": "V023-S7-REVIEW",
+  "status": "candidate_pass",
+  "phase_status": {
+    "phase_7_1": "candidate_pass",
+    "phase_7_2": "candidate_pass",
+    "phase_7_3": "candidate_pass"
+  },
+  "source_core_metrics": {
+    "path": "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03"
+  },
+  "report_status": {
+    "blocked": 3,
+    "partial": 2,
+    "complete": 0
+  },
+  "core_report_status": {
+    "blocked": 3,
+    "partial": 1,
+    "complete": 0
+  },
+  "quality_tuning": {
+    "blocked_metric_count": 3,
+    "formula_count": 6,
+    "parameter_preview_count": 14,
+    "section_count": 4,
+    "export_or_unimplemented_scope_recorded": true
+  },
+  "acceptance_checks": {
+    "report_center_has_required_reports": true,
+    "reports_have_required_fields": true,
+    "reports_have_formula_parameter_range_record_scope_gap": true,
+    "missing_data_stays_partial_or_blocked": true,
+    "data_quality_report_explains_blockers": true,
+    "formula_explanations_saved": true,
+    "parameter_impact_preview_saved": true,
+    "export_or_unimplemented_scope_recorded": true
+  },
+  "stop_condition_checks": {
+    "no_chart_only_report": true,
+    "no_ai_only_summary": true,
+    "no_missing_data_range_or_record_scope": true,
+    "no_cny_zero_for_blocked_metrics": true,
+    "no_complete_conclusion_when_inputs_missing": true
+  },
+  "review_findings": [],
+  "stage8_started": false,
+  "github_main_uploaded_before_review": false
+}

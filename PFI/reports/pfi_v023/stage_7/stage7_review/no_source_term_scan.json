@@ -1,0 +1,11 @@
+{
+  "schema": "PFIV023Stage7ReviewSourceTermScanV1",
+  "version": "v0.2.3",
+  "stage": "Stage 7",
+  "review_id": "V023-S7-REVIEW",
+  "scanned_file_count": 31,
+  "ignored_contract_fields": [
+    "sample_size"
+  ],
+  "violations": []
+}

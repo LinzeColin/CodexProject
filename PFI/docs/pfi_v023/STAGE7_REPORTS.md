@@ -116,5 +116,25 @@ Phase 7.3 证据：
 - `PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_page_model.json`
 - `PFI/reports/pfi_v023/stage_7/phase_7_3/screenshots/quality_tuning.png`
 
-Stage 7 whole-stage review 未执行。
-GitHub main upload 未执行。
+## Stage 7 Whole-stage Review
+
+`V023-S7-REVIEW` 只复审 Stage 7，不进入 Stage 8。
+
+复审结论：
+
+- Phase 7.1、7.2、7.3 证据状态均为 `candidate_pass`。
+- 报告中心覆盖净资产、现金余额、投资市值、消费结构和数据质量报告。
+- 每个报告保留结论、公式、参数、数据范围、样本量、缺口、数据来源和 evidence hash。
+- 净资产、现金余额、投资市值因账户余额或持仓 read model 未挂载而保持 `blocked`。
+- 消费结构和数据质量报告保持 `partial`，不生成完整财务结论。
+- 公式解释、参数影响预览和导出/保存策略已在 Phase 7.3 保存为证据。
+- PDF/CSV 导出明确记录为 Phase 7.3 未实现范围。
+- Stage 7 源码、测试、文档与证据的禁用财务数据源词扫描 violations 为 0。
+
+复审证据：
+
+- `PFI/reports/pfi_v023/stage_7/stage7_review/evidence.json`
+- `PFI/reports/pfi_v023/stage_7/stage7_review/review_audit.json`
+- `PFI/reports/pfi_v023/stage_7/stage7_review/no_source_term_scan.json`
+
+GitHub main 上传不写成提交内自引用事实；上传由 closeout commit 后的 `git push` 与远端 HEAD 校验证明。
