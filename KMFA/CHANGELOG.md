@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s10p3-report-export - 2026-06-30
+
+- 完成 `S10-P3｜导出` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/report_export_runtime.py`、`KMFA/tools/check_s10_p3_report_export.py` 和 `KMFA/tests/test_report_export_runtime.py`。
+- 生成 2 个 public-safe HTML 报告、2 个 public-safe CSV 附表、2 个 Excel 兼容 CSV 下载记录，以及 PDF private-runtime-only 策略。
+- 保持 2 条报告导出记录均为 `D` 级，`formal_report_allowed=false`、`business_decision_basis_allowed=false`、`stage10_review_allowed=false`、`github_upload_allowed=false`。
+- 公开仓库未提交 `.xlsx`、`.pdf`、zip、sqlite/db、raw business data、字段明文或私有 CSV。
+- S10 三个 phase 已完成本地实现；下一步只能执行 Stage 10 整体复审，修复复审问题后才允许整体上传 GitHub。
+
 ## 0.1.0-s10p2-report-grade-runtime - 2026-06-30
 
 - 完成 `S10-P2｜报告可信等级` 本地验证，不上传 GitHub。

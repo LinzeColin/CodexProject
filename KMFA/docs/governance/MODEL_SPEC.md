@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s10p2-report-grade-runtime
+product_version: 0.1.0-s10p3-report-export
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板，以及 S10-P2 public-safe 报告可信等级运行时。不声明 S10-P3 导出、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时，以及 S10-P3 public-safe 报告导出。不声明 Stage 10 整体复审、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -181,22 +181,31 @@ product_version: 0.1.0-s10p2-report-grade-runtime
 - purpose: 基于数据质量、zero-delta、pending reconciliation、lineage、人工确认和时效状态判定 A/B/C/D 报告可信等级，并在证据不足时阻断完整可信报告显示。
 - fact_level: EXTRACTED
 - evidence: `KMFA/tools/report_grade_runtime.py`, `KMFA/tools/check_s10_p2_report_grade_runtime.py`, `KMFA/metadata/reports/report_grade_runtime_manifest.json`, `KMFA/metadata/reports/report_grade_runtime_records.jsonl`, `KMFA/stage_artifacts/S10_P2_report_grade_runtime/human/s10_p2_completion_record.md`
-- limitation: 当前 2 条报告等级记录均为 D；只保存等级、版本绑定、hash/ref、scope gate 和 evidence metadata；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV，不生成 HTML/CSV/Excel/PDF 导出，不执行 Stage 10 review、lineage 完整检查、UI、外部接口或 GitHub upload。
+- limitation: 当前 2 条报告等级记录均为 D；只保存等级、版本绑定、hash/ref、scope gate 和 evidence metadata；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV；HTML/CSV 导出由 `FORM-KMFA-REPORT-EXPORT-001` 单独约束；不执行 Stage 10 review、lineage 完整检查、UI、外部接口或 GitHub upload。
+
+### FORM-KMFA-REPORT-EXPORT-001
+
+- status: active
+- type: deterministic public-safe report export runtime
+- purpose: 基于 S10-P1 模板和 S10-P2 D 级阻断记录生成 public-safe HTML 预览、CSV/Excel-compatible 附表和 PDF private runtime policy。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/report_export_runtime.py`, `KMFA/tools/check_s10_p3_report_export.py`, `KMFA/metadata/reports/report_export_manifest.json`, `KMFA/metadata/reports/report_export_records.jsonl`, `KMFA/stage_artifacts/S10_P3_report_export/human/s10_p3_completion_record.md`
+- limitation: 只提交 HTML/CSV/manifest/records/evidence metadata；不提交 raw business values、字段明文、Excel workbook、PDF、zip、sqlite 或 private CSV；2 条报告仍为 D 级阻断，不能作为正式经营决策依据；不执行 Stage 10 review、lineage 完整检查、UI、外部接口或 GitHub upload。
 
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, Stage 9 review/upload, S10-P1 report templates, and S10-P2 report grade runtime active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, Stage 9 review/upload, S10-P1 report templates, S10-P2 report grade runtime, and S10-P3 report export active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
-- current limitation: S10-P3 export, lineage full check, official report generation, UI, and Redcircle automatic connector are not implemented; S10-P2 currently locks required reports to grade D.
+- current limitation: Stage 10 review, lineage full check, official report generation, UI, and Redcircle automatic connector are not implemented; S10-P3 exports remain D-grade public-safe previews and are not decision-grade reports.
 
 ## Counts
 
 - active models: 7
-- active formulas: 26
-- active parameters: 109
+- active formulas: 27
+- active parameters: 116
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 1

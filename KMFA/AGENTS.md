@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `S10｜报告可信等级与经营报告生成`
-- 当前 Phase: `S10-P3｜导出 待开始`
+- 当前 Phase: `S10-STAGE-REVIEW｜待开始`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 - 不写 UI。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
-- 不在 S10-P3 明确开始前实现 HTML/CSV/Excel/PDF 导出。
-- 不执行 Stage 10 整体复审或 GitHub upload，除非 S10 全部 Phase 完成并完成复审修复。
+- 不在 Stage 10 整体复审前进入 S11。
+- 不执行 GitHub upload，除非 S10 整体复审完成且复审 findings 已修复。
 - 不接红圈、金蝶、WPS、银行、税务自动接口。
 - 不做付款、报税、开票、工资或奖金审批执行。

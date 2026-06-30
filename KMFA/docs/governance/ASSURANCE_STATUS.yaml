@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S10P2-REPORT-GRADE-RUNTIME"
+as_of_event_id: "EVENT-KMFA-20260630-S10P3-REPORT-EXPORT"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "e2ba650ba79446453fd276f453785d9b695608ec"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S09_UPLOAD_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T23:59:50+10:00"
-generator_version: "manual-s10p2-report-grade-runtime"
-final_commit_binding: "precommit-pending-s10p2-local"
+snapshot_event_time: "2026-06-30T23:59:55+10:00"
+generator_version: "manual-s10p3-report-export"
+final_commit_binding: "precommit-pending-s10p3-local"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 109
-    total_active_formulas: 26
+    total_active_parameters: 116
+    total_active_formulas: 27
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -106,6 +106,7 @@ dimensions:
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S10_P1_report_templates/human/test_results.md"
       - "KMFA/stage_artifacts/S10_P2_report_grade_runtime/human/test_results.md"
+      - "KMFA/stage_artifacts/S10_P3_report_export/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
