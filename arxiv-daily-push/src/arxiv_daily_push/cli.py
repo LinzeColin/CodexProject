@@ -1278,6 +1278,14 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional sanitized launchctl print-disabled text file for deterministic validation.",
     )
+    s2plt02_real_proof_capture_readiness.add_argument(
+        "--expected-authorization-readiness-state-hash",
+        default=None,
+        help=(
+            "Optional readiness state hash that the live owner authorization artifact "
+            "must bind before it can count as current authorization."
+        ),
+    )
     s2plt02_real_proof_capture_readiness.add_argument("--json", action="store_true", help="Print JSON real-proof capture readiness state.")
 
     s2plt02_terminal_capture_window = subparsers.add_parser(
@@ -4019,6 +4027,9 @@ def main(argv: list[str] | None = None) -> int:
             service_date=args.service_date,
             launchctl_disabled_text=launchctl_disabled_text,
             launchctl_print_outputs=launchctl_print_outputs,
+            expected_authorization_readiness_state_hash=(
+                args.expected_authorization_readiness_state_hash
+            ),
         )
         validation_errors = validate_s2plt02_real_proof_capture_readiness_state(report)
         if validation_errors:

@@ -625,6 +625,74 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(readiness["scheduler_install_enabled"])
         self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
 
+    def test_s2plt02_real_proof_capture_readiness_rejects_stale_authorization_hash(self) -> None:
+        launchctl_disabled_text = """
+            "com.linze.adp.local.daily" => disabled
+            "com.linze.adp.local.health" => disabled
+            "com.linze.adp.local.watchdog" => disabled
+        """
+        artifact = {
+            "schema_version": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-30T07:41:53+10:00",
+            "authorization_decision": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION,
+            "authorized_by": {
+                "owner_id": "owner_or_coordinator",
+                "owner_role": "owner",
+                "authorization_source": "explicit_owner_instruction",
+            },
+            "authorization_scope": "S2PLT02_REAL_SMTP_SCHEDULER_PROOF_CAPTURE_ONLY",
+            "authorized_actions": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS),
+            "authorization_constraints": {
+                key: True for key in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS
+            },
+            "readiness_state_hash": "old-readiness-hash",
+            "evidence_refs": [
+                "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md",
+                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json",
+            ],
+            "no_production_side_effects": {
+                flag: False for flag in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS
+            },
+            "authorization_hash": "",
+        }
+        artifact["authorization_hash"] = build_s2plt02_real_proof_capture_authorization_hash(artifact)
+
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            self._write_s2plt02_second_day_dry_run_reports(state_dir)
+            artifact_path = tmp_root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+            artifact_path.parent.mkdir(parents=True)
+            artifact_path.write_text(json.dumps(artifact, ensure_ascii=False), encoding="utf-8")
+
+            readiness = build_s2plt02_real_proof_capture_readiness_state(
+                repo_root=tmp_root,
+                state_dir=state_dir,
+                service_date="2026-06-29",
+                launchctl_disabled_text=launchctl_disabled_text,
+                expected_authorization_readiness_state_hash="current-readiness-hash",
+            )
+
+        self.assertEqual(readiness["status"], "blocked")
+        self.assertFalse(readiness["real_proof_capture_authorized"])
+        self.assertEqual(readiness["authorization_artifact_status"], "blocked")
+        self.assertIn(
+            "readiness_state_hash does not match current readiness state",
+            readiness["authorization_validation_errors"],
+        )
+        self.assertIn("real_proof_capture_authorization_invalid", readiness["blocking_reasons"])
+        self.assertNotIn(
+            "obtain_explicit_owner_authorization_for_real_smtp_scheduler",
+            readiness["completed_next_actions"],
+        )
+        self.assertIn(
+            "obtain_explicit_owner_authorization_for_real_smtp_scheduler",
+            readiness["remaining_next_actions"],
+        )
+        self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
+
     def test_s2plt02_real_proof_capture_readiness_requires_known_launchagent_states(self) -> None:
         launchctl_disabled_text = '"com.linze.adp.local.daily" => disabled'
         with TemporaryDirectory() as tmp_dir:

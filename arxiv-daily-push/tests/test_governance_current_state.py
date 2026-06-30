@@ -35,6 +35,19 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PLT02_AUTHORIZATION_READINESS_HASH_GATE_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", current_state)
+        self.assertIn("--expected-authorization-readiness-state-hash", current_state)
+        self.assertIn("readiness_state_hash does not match current readiness state", current_state)
+        self.assertIn("authorization_artifact_status=blocked", current_state)
+        self.assertIn("real_proof_capture_authorized=false", current_state)
+        self.assertIn("218cfe1712e9020e02cea37b4f1982c4c959bca29462d6b73e8aec7308e8444c", current_state)
+        self.assertIn("76b9533077ad56d270a70a12b53af80936875795728d7399a48c6af976e37fa2", current_state)
+        self.assertIn("ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json", current_state)
+        self.assertIn("PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md", ledger)
+        self.assertIn(
             "S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_BLOCKED_NO_PRODUCTION",
             current_state,
         )

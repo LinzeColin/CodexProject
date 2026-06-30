@@ -1777,6 +1777,7 @@ def build_s2plt02_real_proof_capture_readiness_state(
     service_date: str = S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SERVICE_DATE,
     launchctl_disabled_text: str = "",
     launchctl_print_outputs: Mapping[str, str] | None = None,
+    expected_authorization_readiness_state_hash: str | None = None,
 ) -> dict[str, Any]:
     """Build the no-production gate before any real S2PLT02 proof capture can be accepted."""
 
@@ -1833,7 +1834,8 @@ def build_s2plt02_real_proof_capture_readiness_state(
         root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
     )
     authorization_validation = build_s2plt02_real_proof_capture_authorization_validation_state(
-        authorization_artifact
+        authorization_artifact,
+        expected_readiness_state_hash=expected_authorization_readiness_state_hash,
     )
     authorization_validation_errors = [
         str(error)

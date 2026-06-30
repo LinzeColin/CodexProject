@@ -5587,3 +5587,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-AUTHORIZATION-READINESS-HASH-GATE"
+    title: "S2PLT02 authorization readiness hash gate"
+    parent_task_id: "S2PLT02-REAL-PROOF-CAPTURE-READINESS"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T17:34:32+10:00"
+    objective: "Bind the live S2PLT02 real-proof capture authorization artifact to the expected current readiness hash before it can count as current authorization."
+    scope: "S2PLT02 readiness builder, CLI flag, focused final-gate and CLI regressions, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no S2PLT03 terminal proof artifact, no S2PLT04 completion report, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE", "S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC", "S2PLT02-TERMINAL-DELIVERY-PROOF"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md", "governance/run_manifests/ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_stale_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_stale_green2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_hash_ok_fields PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-real-proof-capture-readiness --repo-root . --expected-authorization-readiness-state-hash 79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_hash_bad_fields PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-real-proof-capture-readiness --repo-root . --expected-authorization-readiness-state-hash stale-or-wrong-readiness-hash --json"]
+    test_results: ["TDD red failed because readiness builder did not accept expected_authorization_readiness_state_hash and CLI rejected --expected-authorization-readiness-state-hash", "focused final-gate and CLI green tests: 158 OK", "matching expected hash CLI: blocked / exit 2 with authorization_artifact_status pass and state_hash 218cfe1712e9020e02cea37b4f1982c4c959bca29462d6b73e8aec7308e8444c", "stale expected hash CLI: blocked / exit 2 with authorization_artifact_status blocked, readiness_state_hash mismatch, and state_hash 76b9533077ad56d270a70a12b53af80936875795728d7399a48c6af976e37fa2"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt02_authorization_stale_readiness_hash_fail_closed_no_production"
+    risk: "A previously valid authorization artifact can become stale when readiness inputs change; without the expected-hash gate, stale authorization could still count as current proof-capture authorization."
+    rollback: "Revert the readiness builder hash binding, CLI flag, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

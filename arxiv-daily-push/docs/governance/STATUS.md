@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_BLOCKED_NO_PRODUCTION`
+- Phase/Gate: `S2PL / S2PLT02_AUTHORIZATION_READINESS_HASH_GATE_BLOCKED_NO_PRODUCTION`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_BLOCKED_NO_PRODUCTION`
+- Release gate: `S2PLT02_AUTHORIZATION_READINESS_HASH_GATE_BLOCKED_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
