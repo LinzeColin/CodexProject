@@ -962,6 +962,27 @@ S2PLT02_REAL_PROOF_CAPTURE_READINESS_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_MODEL_ID = "adp-s2plt02-terminal-capture-window-audit-v1"
+S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_SCOPE = (
+    "terminal_capture_window_runtime_audit_no_smtp_send_no_scheduler_enablement"
+)
+S2PLT02_TERMINAL_CAPTURE_WINDOW_DEFAULT_CANDIDATE_DATES = (
+    "2026-06-29",
+    "2026-06-30",
+)
+S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_send_enabled",
+    "scheduler_install_enabled",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH = (
     "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"
 )
@@ -1919,6 +1940,161 @@ def validate_s2plt02_real_proof_capture_readiness_state(state: Mapping[str, Any]
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("S2PLT02 real-proof capture readiness state_hash does not match state content")
+    return errors
+
+
+def build_s2plt02_terminal_capture_window_audit_state(
+    *,
+    repo_root: str | Path = ".",
+    state_dir: str | Path | None = None,
+    candidate_service_dates: tuple[str, ...] = S2PLT02_TERMINAL_CAPTURE_WINDOW_DEFAULT_CANDIDATE_DATES,
+    launchctl_disabled_text: str = "",
+    adp_allow_smtp_send: bool = False,
+) -> dict[str, Any]:
+    """Audit the current terminal capture window without granting S2PLT02 credit."""
+
+    disabled_states = _parse_launchd_disabled_states(launchctl_disabled_text)
+    required_labels = S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    launchagent_disabled_states = {
+        label: disabled_states.get(label, "missing")
+        for label in required_labels
+    }
+    all_required_launchagents_disabled = all(
+        state == "disabled" for state in launchagent_disabled_states.values()
+    )
+    dry_run_audits = [
+        build_s2plt02_dry_run_second_day_audit_state(
+            state_dir=state_dir,
+            service_date=service_date,
+        )
+        for service_date in candidate_service_dates
+    ]
+    dry_run_service_dates = [
+        str(audit.get("service_date"))
+        for audit in dry_run_audits
+        if audit.get("dry_run_evidence_present") is True
+    ]
+    dry_run_email_count = sum(int(audit.get("dry_run_mail_count") or 0) for audit in dry_run_audits)
+    real_sent_candidate_email_count = sum(int(audit.get("real_sent_mail_count") or 0) for audit in dry_run_audits)
+    delivery_ledger = build_s2plt02_delivery_evidence_ledger_state()
+    terminal_proof = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=repo_root)
+    terminal_gates = _mapping(terminal_proof.get("terminal_gates"))
+    observed_terminal_email_count_credit = int(delivery_ledger.get("observed_email_count") or 0)
+    two_day_delivery_present = (
+        terminal_gates.get("two_consecutive_real_days") is True
+        and terminal_gates.get("eight_real_emails_sent") is True
+        and delivery_ledger.get("two_day_delivery_evidence_present") is True
+    )
+    real_scheduler_proven = terminal_gates.get("real_scheduler_proven") is True
+    terminal_artifact_present = terminal_proof.get("artifact_present") is True
+
+    blocking_reasons: list[str] = []
+    if not two_day_delivery_present:
+        blocking_reasons.append("second_consecutive_real_m1_m4_smtp_day_missing")
+    if observed_terminal_email_count_credit < S2PLT02_REQUIRED_EMAIL_COUNT:
+        blocking_reasons.append("eight_real_emails_not_proven")
+    if not real_scheduler_proven:
+        blocking_reasons.append("real_launchd_scheduler_proof_missing")
+    if not adp_allow_smtp_send:
+        blocking_reasons.append("adp_allow_smtp_send_false")
+    if all_required_launchagents_disabled:
+        blocking_reasons.append("adp_launchagents_disabled_by_user_domain_override")
+    else:
+        blocking_reasons.append("adp_launchagent_disabled_state_missing_or_enabled")
+    if not terminal_artifact_present:
+        blocking_reasons.append("s2plt02_terminal_delivery_proof_artifact_missing")
+
+    state = {
+        "model_id": S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT",
+        "parent_task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "status": "blocked",
+        "scope": S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_SCOPE,
+        "candidate_service_dates": list(candidate_service_dates),
+        "dry_run_service_dates": dry_run_service_dates,
+        "dry_run_email_count": dry_run_email_count,
+        "real_sent_candidate_email_count": real_sent_candidate_email_count,
+        "required_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "observed_terminal_email_count_credit": observed_terminal_email_count_credit,
+        "terminal_delivery_credit": False,
+        "counts_toward_s2plt02_terminal_proof": False,
+        "real_smtp_proven_for_terminal_pair": two_day_delivery_present,
+        "real_scheduler_proven": real_scheduler_proven,
+        "terminal_delivery_proof_artifact_present": terminal_artifact_present,
+        "launchagent_disabled_states": launchagent_disabled_states,
+        "all_required_launchagents_disabled": all_required_launchagents_disabled,
+        "adp_allow_smtp_send": adp_allow_smtp_send,
+        "dry_run_audits": dry_run_audits,
+        "delivery_evidence_ledger": delivery_ledger,
+        "terminal_delivery_proof_validation": terminal_proof,
+        "blocking_reasons": blocking_reasons,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_terminal_capture_window_audit_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate a terminal capture-window audit without accepting S2PLT02."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_MODEL_ID:
+        errors.append("S2PLT02 terminal capture window audit model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 terminal capture window audit schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT":
+        errors.append("S2PLT02 terminal capture window audit task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 terminal capture window audit acceptance_id is invalid")
+    if state.get("status") != "blocked":
+        errors.append("S2PLT02 terminal capture window audit must stay blocked")
+    if state.get("scope") != S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_SCOPE:
+        errors.append("S2PLT02 terminal capture window audit scope is invalid")
+    if tuple(state.get("candidate_service_dates", [])) == ():
+        errors.append("candidate_service_dates must not be empty")
+    if tuple(_mapping(state.get("launchagent_disabled_states")).keys()) != S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
+        errors.append("launchagent_disabled_states must cover all ADP local LaunchAgents")
+    for field in (
+        "terminal_delivery_credit",
+        "counts_toward_s2plt02_terminal_proof",
+    ):
+        if state.get(field) is not False:
+            errors.append(f"{field} must be false")
+    if state.get("observed_terminal_email_count_credit", 0) < S2PLT02_REQUIRED_EMAIL_COUNT:
+        for reason in (
+            "second_consecutive_real_m1_m4_smtp_day_missing",
+            "eight_real_emails_not_proven",
+        ):
+            if reason not in state.get("blocking_reasons", []):
+                errors.append(f"{reason} blocker is required")
+    if state.get("real_scheduler_proven") is not True and "real_launchd_scheduler_proof_missing" not in state.get("blocking_reasons", []):
+        errors.append("real_launchd_scheduler_proof_missing blocker is required")
+    if state.get("adp_allow_smtp_send") is False and "adp_allow_smtp_send_false" not in state.get("blocking_reasons", []):
+        errors.append("adp_allow_smtp_send_false blocker is required")
+    if (
+        state.get("all_required_launchagents_disabled") is True
+        and "adp_launchagents_disabled_by_user_domain_override" not in state.get("blocking_reasons", [])
+    ):
+        errors.append("adp_launchagents_disabled_by_user_domain_override blocker is required")
+    for flag in S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_NO_PRODUCTION_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 terminal capture window audit state_hash does not match state content")
     return errors
 
 

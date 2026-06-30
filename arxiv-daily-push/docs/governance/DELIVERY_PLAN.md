@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 288
+- task_count: 289
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 12:09:41 Australia/Sydney - S2PLT02 Terminal Capture Window Audit CLI
+
+- `S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI` adds `audit-s2plt02-terminal-capture-window` as a no-production CLI that reproduces the current post-authorization capture-window audit.
+- Actual CLI result is blocked / exit 2 with `state_hash=6ad683a0590f9d43c808cf7812edc7c7f93feabec52d365ddb2a8abbbf42b4bf`, `dry_run_service_dates=2026-06-29,2026-06-30`, `dry_run_email_count=8`, `real_sent_candidate_email_count=0`, `observed_terminal_email_count_credit=4/8`, `terminal_delivery_credit=false`, and `counts_toward_s2plt02_terminal_proof=false`.
+- The CLI confirms `ADP_ALLOW_SMTP_SEND=false` and all required ADP LaunchAgents disabled by user-domain override; this is not real scheduler proof.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 11:45:16 Australia/Sydney - S2PLT02 Real Delivery Manifest Normalization
 

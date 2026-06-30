@@ -5317,3 +5317,27 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI"
+    title: "S2PLT02 terminal capture-window audit CLI"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T12:09:41+10:00"
+    objective: "Make the post-authorization S2PLT02 terminal capture-window audit reproducible as a no-production CLI."
+    scope: "Final-gate audit builder, CLI command, focused CLI test, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE", "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_capture_window_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt02_terminal_capture_window_json_blocks_dry_runs_and_disabled_scheduler", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_capture_window_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt02_terminal_capture_window_json_blocks_dry_runs_and_disabled_scheduler", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_capture_window_actual2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-terminal-capture-window --repo-root . --state-dir /Users/linzezhang/.adp/arxiv-daily-push --candidate-service-dates 2026-06-29,2026-06-30 --json"]
+    test_results: ["TDD red failed before audit-s2plt02-terminal-capture-window was registered", "focused CLI capture-window audit test: 1 passed", "actual CLI audit: blocked / exit 2 with state_hash 6ad683a0590f9d43c808cf7812edc7c7f93feabec52d365ddb2a8abbbf42b4bf"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt02_terminal_capture_window_audit_cli_reproducible_dry_run_scheduler_disabled_no_production"
+    risk: "A reproducible blocked audit can be misread as terminal proof; this CLI only proves dry-run/scheduler-disabled evidence cannot count."
+    rollback: "Revert the audit builder, CLI command, focused test, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

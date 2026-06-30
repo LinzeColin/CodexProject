@@ -252,16 +252,16 @@ parameter_profile_versions:
   adp-s2plt02-real-proof-capture-authorization: "adp-s2plt02-real-proof-capture-authorization-v1"
   adp-s2plt02-real-proof-capture-authorization-parameters: "adp-s2plt02-real-proof-capture-authorization-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260630-ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION"
+current_iteration: "ITER-20260630-ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI"
 current_phase: "S2PL"
-current_gate: "S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_READY_NO_WRITE_NO_PRODUCTION"
+current_gate: "S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION records that the historical 2026-06-28 first real M1-M4 delivery manifest has been normalized into an explicit no-production S2PLT02 terminal proof input. The immutable raw manifest hash is bound, normalized_manifest_ready=true, strict normalized manifest validation passes, and direct raw strict validation remains blocked_missing_explicit_no_production_flags. Second real SMTP day, 8 real emails, real scheduler proof, S2PLT02 terminal proof, S2PLT03 terminal proof, S2PLT04 completion, live final manifest, final commands, handoff, signoff, DAILY_OPERATION, and integrated production acceptance remain blocked."
+current_v7_legacy_alias: "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI makes the post-authorization capture-window audit reproducible from current runtime evidence. The CLI returns blocked / exit 2 with state_hash=6ad683a0590f9d43c808cf7812edc7c7f93feabec52d365ddb2a8abbbf42b4bf, 2026-06-29 and 2026-06-30 M1-M4 reports are dry-run only, dry_run_email_count=8, real_sent_candidate_email_count=0, observed_terminal_email_count_credit=4/8, ADP_ALLOW_SMTP_SEND=false, and ADP launchd labels disabled by user-domain override. It preserves the normalized 2026-06-28 first-day manifest as input but still blocks the second real SMTP day, 8 real emails, real scheduler proof, S2PLT02 terminal proof, S2PLT03 terminal proof, S2PLT04 completion, live final manifest, final commands, handoff, signoff, DAILY_OPERATION, and integrated production acceptance."
 s2pmt07_final_bundle_manifest_template_iteration: "ITER-20260629-ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE"
 s2pmt07_final_bundle_manifest_template_gate: "S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE_READY_FINAL_BUNDLE_STILL_BLOCKED_NO_PRODUCTION"
 s2pmt07_final_bundle_manifest_template_status: "final_bundle_manifest_template_ready_live_manifest_missing_no_production"
@@ -310,6 +310,20 @@ s2plt02_terminal_capture_window_audit_state_hash: "1f5abf4e3def35129bc6a360722b1
 s2plt02_terminal_capture_window_audit_terminal_delivery_credit: false
 s2plt02_terminal_capture_window_audit_adp_allow_smtp_send: false
 s2plt02_terminal_capture_window_audit_launchagents_disabled: true
+s2plt02_terminal_capture_window_audit_cli_iteration: "ITER-20260630-ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI"
+s2plt02_terminal_capture_window_audit_cli_gate: "S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION"
+s2plt02_terminal_capture_window_audit_cli_status: "blocked_s2plt02_terminal_capture_window_audit_cli_reproducible_dry_run_scheduler_disabled_no_production"
+s2plt02_terminal_capture_window_audit_cli_manifest: "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json"
+s2plt02_terminal_capture_window_audit_cli_state_hash: "6ad683a0590f9d43c808cf7812edc7c7f93feabec52d365ddb2a8abbbf42b4bf"
+s2plt02_terminal_capture_window_audit_cli_dry_run_service_dates: "2026-06-29,2026-06-30"
+s2plt02_terminal_capture_window_audit_cli_dry_run_email_count: 8
+s2plt02_terminal_capture_window_audit_cli_real_sent_candidate_email_count: 0
+s2plt02_terminal_capture_window_audit_cli_observed_terminal_email_count_credit: 4
+s2plt02_terminal_capture_window_audit_cli_required_email_count: 8
+s2plt02_terminal_capture_window_audit_cli_terminal_delivery_credit: false
+s2plt02_terminal_capture_window_audit_cli_counts_toward_s2plt02_terminal_proof: false
+s2plt02_terminal_capture_window_audit_cli_all_required_launchagents_disabled: true
+s2plt02_terminal_capture_window_audit_cli_adp_allow_smtp_send: false
 s2plt02_terminal_delivery_proof_artifact_draft_builder_iteration: "ITER-20260630-ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER"
 s2plt02_terminal_delivery_proof_artifact_draft_builder_gate: "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER_READY_NO_WRITE_NO_PRODUCTION"
 s2plt02_terminal_delivery_proof_artifact_draft_builder_status: "s2plt02_terminal_delivery_proof_artifact_draft_builder_ready_no_write_no_production"

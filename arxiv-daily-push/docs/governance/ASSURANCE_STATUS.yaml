@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260630-ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION"
-source_snapshot_hash: "sha256:f78b3e7a37fafc46d8ede764c9e96083a8e7c268aa736f5c9531dadff7050443"
+as_of_event_id: "EVENT-20260630-ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI"
+source_snapshot_hash: "sha256:eb82efe54eb516c49be1829c51022e018decdf046f7f8b19b429a0a26f9e5785"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-06-30T11:45:16+10:00"
+snapshot_event_time: "2026-06-30T12:09:41+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 1
     commit_bound_events: 4
-    legacy_unbound_events: 283
+    legacy_unbound_events: 284
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_READY_NO_WRITE_NO_PRODUCTION"
+  release_gate: "S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -104,7 +104,7 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, P0/P1 zero-proof artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate, S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate, and only current explicit no-production real-delivery manifest inputs as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from complete real delivery/scheduler manifests in a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff."
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, P0/P1 zero-proof artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate, S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI reproducible dry-run blocker CLI, and only current explicit no-production real-delivery manifest inputs as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from complete real delivery/scheduler manifests in a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff."
   option_a: "继续 S2PMT07 / S2PLT04 前置证据链：先补 S2PLT01 终态验收、第二真实自然日、8 封真实邮件、真实 scheduler proof 和 S2PLT03 终态韧性 proof，保持 S2PLT04/final bundle/production gate 阻断。"
   option_b: "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
   option_c: "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"

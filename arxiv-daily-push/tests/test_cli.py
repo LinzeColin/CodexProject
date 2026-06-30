@@ -403,6 +403,89 @@ class CliTests(unittest.TestCase):
         self.assertIn("required_launchagents_disabled", payload["blocking_reasons"])
         self.assertIn("dry_run_second_day_not_terminal", payload["blocking_reasons"])
 
+    def test_audit_s2plt02_terminal_capture_window_json_blocks_dry_runs_and_disabled_scheduler(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            products = ["M1", "M2", "M3", "M4"]
+            for service_date in ("2026-06-29", "2026-06-30"):
+                run_dir = state_dir / "runs" / service_date.replace("-", "")
+                run_dir.mkdir(parents=True)
+                for product in products:
+                    (run_dir / f"adp-smtp-delivery-report-{product}.json").write_text(
+                        json.dumps(
+                            {
+                                "status": "dry_run",
+                                "product_id": product,
+                                "dry_run": True,
+                                "allow_send": False,
+                                "real_send_attempted": False,
+                                "real_smtp_send_enabled": False,
+                            }
+                        ),
+                        encoding="utf-8",
+                    )
+                (run_dir / "adp-local-runner-report.json").write_text(
+                    json.dumps(
+                        {
+                            "status": "pass",
+                            "date": service_date,
+                            "production_evidence_ready": False,
+                            "real_smtp_sent": False,
+                            "mail_delivery_summary": {
+                                "planned_send_total": 4,
+                                "planned_mail_products": products,
+                                "dry_run_mail_products": products,
+                                "sent_mail_products": [],
+                                "sent_mail_count": 0,
+                                "status_by_product": {product: "dry_run" for product in products},
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            launchctl_file = tmp_root / "launchctl-disabled.txt"
+            launchctl_file.write_text(
+                "\n".join(
+                    [
+                        '"com.linze.adp.local.daily" => disabled',
+                        '"com.linze.adp.local.health" => disabled',
+                        '"com.linze.adp.local.watchdog" => disabled',
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "audit-s2plt02-terminal-capture-window",
+                        "--repo-root",
+                        str(tmp_root),
+                        "--state-dir",
+                        str(state_dir),
+                        "--candidate-service-dates",
+                        "2026-06-29,2026-06-30",
+                        "--launchctl-disabled-file",
+                        str(launchctl_file),
+                        "--json",
+                    ]
+                )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["task_id"], "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT")
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["terminal_delivery_credit"])
+        self.assertFalse(payload["counts_toward_s2plt02_terminal_proof"])
+        self.assertFalse(payload["real_smtp_proven_for_terminal_pair"])
+        self.assertFalse(payload["real_scheduler_proven"])
+        self.assertTrue(payload["all_required_launchagents_disabled"])
+        self.assertEqual(payload["observed_terminal_email_count_credit"], 4)
+        self.assertEqual(payload["required_email_count"], 8)
+        self.assertIn("adp_launchagents_disabled_by_user_domain_override", payload["blocking_reasons"])
+        self.assertIn("second_consecutive_real_m1_m4_smtp_day_missing", payload["blocking_reasons"])
+
     def test_validate_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             path = Path(tmp_dir) / "s2plt02_real_proof_capture_authorization.json"
