@@ -1,0 +1,133 @@
+{
+  "schema": "PFIV023Stage8Phase82EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.2",
+  "phase_name": "检查板 UI",
+  "status": "candidate_pass",
+  "generated_at_utc": "2026-06-30T04:55:19Z",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T8.2.1",
+    "T8.2.2",
+    "T8.2.3",
+    "T8.2.4"
+  ],
+  "stage_contract": {
+    "phase_8_2_dashboard_ui_done": true,
+    "phase_8_3_no_fallback_done": false,
+    "stage_8_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "inputs": {
+    "core_metrics_read_model": "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+    "data_source_gate_phase_8_1": "PFI/reports/pfi_v023/stage_8/phase_8_1/data_source_gate.json"
+  },
+  "outputs": {
+    "dashboard_ui": "PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_ui.json",
+    "dashboard_page_model": "PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_page_model.json",
+    "dashboard_snapshot": "PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_snapshot.html",
+    "screenshot": "PFI/reports/pfi_v023/stage_8/phase_8_2/screenshots/data_source_dashboard.png",
+    "no_source_term_scan": "PFI/reports/pfi_v023/stage_8/phase_8_2/no_source_term_scan.json"
+  },
+  "summary": {
+    "source_count": 3,
+    "ready_count": 1,
+    "blocked_count": 2,
+    "auto_import_enabled": false,
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03"
+  },
+  "page_model_summary": {
+    "schema": "PFIV023Stage8DashboardPageViewModelV1",
+    "source_count": 3,
+    "ready_count": 1,
+    "blocked_count": 2,
+    "action_count": 4
+  },
+  "screenshot": {
+    "path": "PFI/reports/pfi_v023/stage_8/phase_8_2/screenshots/data_source_dashboard.png",
+    "bytes": 211397,
+    "pixel_width": 1440,
+    "pixel_height": 1300
+  },
+  "scan": {
+    "schema": "PFIV023Stage8NoSourceTermScanV1",
+    "violations": []
+  },
+  "changed_files": [
+    "PFI/src/pfi_v02/stage_v023_data_sources.py",
+    "PFI/web/app/pages/upload.js",
+    "PFI/tests/test_v023_stage8_data_source_gate.py",
+    "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md",
+    "PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_ui.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_page_model.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_snapshot.html",
+    "PFI/reports/pfi_v023/stage_8/phase_8_2/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_2/screenshots/data_source_dashboard.png",
+    "PFI/reports/pfi_v023/stage_8/phase_8_2/terminal.log",
+    "PFI/reports/pfi_v023/stage_8/phase_8_2/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_8/phase_8_2/evidence.json"
+  ],
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/upload.js",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_data_sources.py PFI/tests/test_v023_stage8_data_source_gate.py",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_2/evidence.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_ui.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_page_model.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_2/no_source_term_scan.json",
+    "sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_8/phase_8_2/screenshots/data_source_dashboard.png",
+    "git diff --check -- PFI"
+  ],
+  "explicitly_not_done": [
+    "Phase 8.3 禁止假数据回退",
+    "Stage 8 whole-stage review",
+    "GitHub main upload for intermediate phase"
+  ],
+  "validated_at_utc": "2026-06-30T04:57:36Z",
+  "validation_results": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q",
+      "exit_code": 0,
+      "result": "10 passed in 0.17s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "result": "133 passed, 100 subtests passed in 2.00s"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/upload.js",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_data_sources.py PFI/tests/test_v023_stage8_data_source_gate.py",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "python3 -m json.tool phase_8_2 evidence/dashboard/page_model/scan",
+      "exit_code": 0,
+      "result": "all JSON files parse"
+    },
+    {
+      "command": "sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_8/phase_8_2/screenshots/data_source_dashboard.png",
+      "exit_code": 0,
+      "result": "pixelWidth 1440, pixelHeight 1300"
+    },
+    {
+      "command": "Stage 8.2 source placeholder term scan",
+      "exit_code": 0,
+      "result": "blocked placeholder term scan passed for Stage 8.2 source files"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    }
+  ]
+}

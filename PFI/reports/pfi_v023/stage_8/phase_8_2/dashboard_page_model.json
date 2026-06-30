@@ -1,0 +1,157 @@
+{
+  "schema": "PFIV023Stage8DashboardPageViewModelV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.2",
+  "page": "upload",
+  "title": "数据源检查板",
+  "subtitle_zh": "检查真实数据挂链、上传/导入状态、解析预览、字段映射入口与复核跳转。",
+  "source_count": 3,
+  "ready_count": 1,
+  "blocked_count": 2,
+  "action_count": 4,
+  "auto_import_enabled": false,
+  "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+  "as_of": "2026-06-03",
+  "rows": [
+    {
+      "data_source_id": "metadatabase_pfi_alipay_daily",
+      "label": "MetaDatabase/PFI Alipay 日流水",
+      "status": "ready",
+      "status_zh": "真实数据已挂链",
+      "records_label": "records: 记录数：8,815 条规范化流水，4 个原始文件",
+      "date_range_label": "date range: 2022-06-06 至 2026-06-03",
+      "last_updated_label": "last updated: 2026-06-03",
+      "blocked_metrics_label": "blocked metrics: 无",
+      "matrix_label": "MetaDatabase/PFI Alipay 日流水 · status: ready · records: 记录数：8,815 条规范化流水，4 个原始文件 · date range: 2022-06-06 至 2026-06-03 · last updated: 2026-06-03 · blocked metrics: 无",
+      "reason_zh": "真实 Alipay 日流水已读取，可支撑消费与数据健康报告。",
+      "route_targets": [
+        "/ledger/review",
+        "/reports"
+      ],
+      "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a"
+    },
+    {
+      "data_source_id": "account_balance_read_model",
+      "label": "账户余额 read model",
+      "status": "not_mounted",
+      "status_zh": "数据源未挂链",
+      "records_label": "records: 记录数：数据源未挂链",
+      "date_range_label": "date range: 未挂链",
+      "last_updated_label": "last updated: 未挂链",
+      "blocked_metrics_label": "blocked metrics: net_worth_cny、cash_balance_cny",
+      "matrix_label": "账户余额 read model · status: not_mounted · records: 记录数：数据源未挂链 · date range: 未挂链 · last updated: 未挂链 · blocked metrics: net_worth_cny、cash_balance_cny",
+      "reason_zh": "账户余额 read model 未挂链，净资产和现金余额保持阻断。",
+      "route_targets": [
+        "/accounts/reconcile",
+        "/reports"
+      ],
+      "evidence_hash": null
+    },
+    {
+      "data_source_id": "holding_market_value_read_model",
+      "label": "持仓市值 read model",
+      "status": "not_mounted",
+      "status_zh": "数据源未挂链",
+      "records_label": "records: 记录数：数据源未挂链",
+      "date_range_label": "date range: 未挂链",
+      "last_updated_label": "last updated: 未挂链",
+      "blocked_metrics_label": "blocked metrics: net_worth_cny、investment_market_value_cny",
+      "matrix_label": "持仓市值 read model · status: not_mounted · records: 记录数：数据源未挂链 · date range: 未挂链 · last updated: 未挂链 · blocked metrics: net_worth_cny、investment_market_value_cny",
+      "reason_zh": "持仓市值 read model 未挂链，净资产和投资市值保持阻断。",
+      "route_targets": [
+        "/investment/holdings",
+        "/reports"
+      ],
+      "evidence_hash": null
+    }
+  ],
+  "route_actions": [
+    {
+      "action_id": "reports",
+      "label_zh": "查看报告与洞察",
+      "type": "route",
+      "route": "/reports",
+      "reason_zh": "查看受阻报告和数据健康说明。"
+    },
+    {
+      "action_id": "ledger-review",
+      "label_zh": "复核账本流水",
+      "type": "route",
+      "route": "/ledger/review",
+      "reason_zh": "复核已挂链的真实 Alipay 流水。"
+    },
+    {
+      "action_id": "accounts-reconcile",
+      "label_zh": "复核账户余额",
+      "type": "route",
+      "route": "/accounts/reconcile",
+      "reason_zh": "处理账户余额 read model 未挂链。"
+    },
+    {
+      "action_id": "investment-holdings",
+      "label_zh": "复核投资持仓",
+      "type": "route",
+      "route": "/investment/holdings",
+      "reason_zh": "处理持仓市值 read model 未挂链。"
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "data-source-matrix",
+      "title_zh": "数据源矩阵",
+      "lines": [
+        "MetaDatabase/PFI Alipay 日流水 · status: ready · records: 记录数：8,815 条规范化流水，4 个原始文件 · date range: 2022-06-06 至 2026-06-03 · last updated: 2026-06-03 · blocked metrics: 无",
+        "账户余额 read model · status: not_mounted · records: 记录数：数据源未挂链 · date range: 未挂链 · last updated: 未挂链 · blocked metrics: net_worth_cny、cash_balance_cny",
+        "持仓市值 read model · status: not_mounted · records: 记录数：数据源未挂链 · date range: 未挂链 · last updated: 未挂链 · blocked metrics: net_worth_cny、investment_market_value_cny"
+      ]
+    },
+    {
+      "section_id": "import-status",
+      "title_zh": "上传/导入状态",
+      "lines": [
+        "status: read_only_gate",
+        "auto import: disabled",
+        "当前仅展示真实数据挂链状态，不执行自动导入。",
+        "打开账本流水复核: /ledger/review",
+        "打开账户余额复核: /accounts/reconcile",
+        "打开持仓复核: /investment/holdings"
+      ]
+    },
+    {
+      "section_id": "parse-preview",
+      "title_zh": "解析预览",
+      "lines": [
+        "MetaDatabase/PFI Alipay 日流水: 解析预览可用：8,815 条规范化流水，来源为真实 read model。",
+        "账户余额 read model: 数据源未挂链，暂无解析预览。",
+        "持仓市值 read model: 数据源未挂链，暂无解析预览。"
+      ]
+    },
+    {
+      "section_id": "field-mapping",
+      "title_zh": "字段映射",
+      "lines": [
+        "字段映射 · metadatabase_pfi_alipay_daily · available · transaction_id, event_type, amount, occurred_at, review_state · /ledger/review",
+        "字段映射 · account_balance_read_model · blocked · 未挂链 · /accounts/reconcile",
+        "字段映射 · holding_market_value_read_model · blocked · 未挂链 · /investment/holdings"
+      ]
+    },
+    {
+      "section_id": "route-actions",
+      "title_zh": "跳转到报告/复核",
+      "lines": [
+        "查看报告与洞察: /reports",
+        "复核账本流水: /ledger/review",
+        "复核账户余额: /accounts/reconcile",
+        "复核投资持仓: /investment/holdings"
+      ]
+    }
+  ],
+  "stage_contract": {
+    "phase_8_2_dashboard_ui_done": true,
+    "phase_8_3_no_fallback_done": false,
+    "stage_8_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "summary_zh": "数据源 3 个：1 个已挂链，2 个阻断。"
+}

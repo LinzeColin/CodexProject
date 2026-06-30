@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PFI Stage 8.2 数据源检查板</title>
+  <style>
+    :root {
+      --bg: #f6f7f8;
+      --surface: #ffffff;
+      --surface-muted: #eef2f4;
+      --ink: #17202a;
+      --muted: #5d6975;
+      --border: #d9e0e6;
+      --blue: #215f9a;
+      --teal: #0f766e;
+      --amber: #b7791f;
+      --red: #b42318;
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.45; letter-spacing: 0; }
+    main { max-width: 1240px; margin: 0 auto; padding: 28px; }
+    header { display: flex; justify-content: space-between; gap: 18px; align-items: end; margin-bottom: 18px; }
+    h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.15; }
+    p { margin: 0; color: var(--muted); }
+    .summary { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)); gap: 10px; margin: 18px 0; }
+    .metric, .panel, .source-row { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .metric { padding: 13px; }
+    .metric span, dt { display: block; color: var(--muted); font-size: 12px; }
+    .metric strong { display: block; margin-top: 4px; font-size: 20px; }
+    .matrix { display: grid; gap: 10px; }
+    .source-row { display: grid; grid-template-columns: minmax(240px, 0.75fr) minmax(0, 2fr); gap: 16px; padding: 16px; }
+    .source-row h2 { margin: 0 0 6px; font-size: 18px; }
+    .source-row dl { display: grid; grid-template-columns: minmax(70px, 0.65fr) minmax(150px, 1fr) minmax(145px, 0.9fr) minmax(130px, 0.8fr) minmax(230px, 1.35fr); gap: 10px; margin: 0; }
+    .source-row dd { margin: 3px 0 0; font-weight: 650; overflow-wrap: anywhere; }
+    .status-ready { border-color: color-mix(in srgb, var(--teal) 36%, var(--border)); }
+    .status-not_mounted { border-color: color-mix(in srgb, var(--amber) 42%, var(--border)); }
+    .lower { display: grid; grid-template-columns: 1fr 1fr 0.85fr; gap: 12px; margin-top: 12px; }
+    .panel { padding: 15px; }
+    .panel h2 { margin: 0 0 10px; font-size: 17px; }
+    ul { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+    li { display: grid; gap: 2px; padding-top: 9px; border-top: 1px solid var(--border); }
+    li:first-child { padding-top: 0; border-top: 0; }
+    li span { color: var(--muted); }
+    .actions { display: grid; gap: 8px; }
+    .actions a { display: flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius); color: var(--blue); text-decoration: none; background: var(--surface-muted); font-weight: 650; }
+    .actions span { color: var(--muted); font-weight: 500; }
+    @media (max-width: 900px) {
+      main { padding: 18px; }
+      header, .source-row, .lower { grid-template-columns: 1fr; display: grid; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .source-row dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>数据源检查板</h1>
+      <p>Stage 8 Phase 8.2 · 真实数据挂链、上传/导入状态、解析预览、字段映射入口与复核跳转。</p>
+    </div>
+    <p>as_of 2026-06-03</p>
+  </header>
+  <section class="summary" aria-label="summary">
+    <div class="metric"><span>sources</span><strong>3</strong></div>
+    <div class="metric"><span>ready</span><strong>1</strong></div>
+    <div class="metric"><span>blocked</span><strong>2</strong></div>
+    <div class="metric"><span>auto import</span><strong>disabled</strong></div>
+  </section>
+  <section class="matrix" aria-label="data source matrix"><article class="source-row status-ready">
+      <div>
+        <h2>MetaDatabase/PFI Alipay 日流水</h2>
+        <p>真实 Alipay 日流水已读取，可支撑消费与数据健康报告。</p>
+      </div>
+      <dl>
+        <div><dt>status</dt><dd>ready</dd></div>
+        <div><dt>records</dt><dd>记录数：8,815 条规范化流水，4 个原始文件</dd></div>
+        <div><dt>date range</dt><dd>2022-06-06 至 2026-06-03</dd></div>
+        <div><dt>last updated</dt><dd>2026-06-03</dd></div>
+        <div><dt>blocked metrics</dt><dd>无</dd></div>
+      </dl>
+    </article>
+<article class="source-row status-not_mounted">
+      <div>
+        <h2>账户余额 read model</h2>
+        <p>账户余额 read model 未挂链，净资产和现金余额保持阻断。</p>
+      </div>
+      <dl>
+        <div><dt>status</dt><dd>not_mounted</dd></div>
+        <div><dt>records</dt><dd>记录数：数据源未挂链</dd></div>
+        <div><dt>date range</dt><dd>未挂链</dd></div>
+        <div><dt>last updated</dt><dd>未挂链</dd></div>
+        <div><dt>blocked metrics</dt><dd>net_worth_cny、cash_balance_cny</dd></div>
+      </dl>
+    </article>
+<article class="source-row status-not_mounted">
+      <div>
+        <h2>持仓市值 read model</h2>
+        <p>持仓市值 read model 未挂链，净资产和投资市值保持阻断。</p>
+      </div>
+      <dl>
+        <div><dt>status</dt><dd>not_mounted</dd></div>
+        <div><dt>records</dt><dd>记录数：数据源未挂链</dd></div>
+        <div><dt>date range</dt><dd>未挂链</dd></div>
+        <div><dt>last updated</dt><dd>未挂链</dd></div>
+        <div><dt>blocked metrics</dt><dd>net_worth_cny、investment_market_value_cny</dd></div>
+      </dl>
+    </article></section>
+  <section class="lower">
+    <article class="panel"><h2>上传/导入状态</h2><p>当前仅展示真实数据挂链状态，不执行自动导入。</p><div class="actions"><a href="/reports">查看报告与洞察<span>/reports</span></a>
+<a href="/ledger/review">复核账本流水<span>/ledger/review</span></a>
+<a href="/accounts/reconcile">复核账户余额<span>/accounts/reconcile</span></a>
+<a href="/investment/holdings">复核投资持仓<span>/investment/holdings</span></a></div></article>
+    <article class="panel"><h2>解析预览</h2><ul><li><strong>MetaDatabase/PFI Alipay 日流水</strong><span>解析预览可用：8,815 条规范化流水，来源为真实 read model。</span></li>
+<li><strong>账户余额 read model</strong><span>数据源未挂链，暂无解析预览。</span></li>
+<li><strong>持仓市值 read model</strong><span>数据源未挂链，暂无解析预览。</span></li></ul></article>
+    <article class="panel"><h2>字段映射</h2><ul><li><strong>metadatabase_pfi_alipay_daily</strong><span>字段映射入口使用 Stage 6 已审计字段，不在本 phase 导入新文件。</span></li>
+<li><strong>account_balance_read_model</strong><span>账户余额 read model 未挂链，字段映射入口保持阻断。</span></li>
+<li><strong>holding_market_value_read_model</strong><span>持仓市值 read model 未挂链，字段映射入口保持阻断。</span></li></ul></article>
+  </section>
+</main>
+</body>
+</html>

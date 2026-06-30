@@ -42,7 +42,29 @@ Phase 8.1 证据：
 - `PFI/reports/pfi_v023/stage_8/phase_8_1/error_reason_catalog.json`
 - `PFI/reports/pfi_v023/stage_8/phase_8_1/screenshots/data_source_gate.png`
 
-Phase 8.2 检查板 UI 未执行。
+## Stage 8 Phase 8.2 检查板 UI
+
+Phase 8.2 只实现数据源检查板 UI model 和只读证据，不执行上传/导入，不读取新数据，不推进 Phase 8.3。
+
+本 phase 覆盖：
+
+- `T8.2.1` 数据源矩阵：每个数据源展示 status、records、date range、last updated、blocked metrics。
+- `T8.2.2` 上传/导入状态：展示当前只读 gate、auto import disabled 和可跳转处理入口。
+- `T8.2.3` 解析预览/字段映射入口：已挂链 Alipay 流水展示解析预览；账户余额与持仓市值 read model 保持阻断；字段映射入口引用 Stage 6 已审计字段。
+- `T8.2.4` 跳转到报告/复核：提供 `/reports`、`/ledger/review`、`/accounts/reconcile`、`/investment/holdings`。
+
+当前检查板状态：
+
+- `MetaDatabase/PFI Alipay 日流水`：`ready`，8815 条规范化流水，4 个原始文件，数据范围 `2022-06-06` 至 `2026-06-03`，解析预览可用，字段映射入口指向账本复核。
+- `账户余额 read model`：`not_mounted`，阻断 `net_worth_cny` 与 `cash_balance_cny`，解析预览与字段映射入口保持阻断，处理入口为账户余额复核。
+- `持仓市值 read model`：`not_mounted`，阻断 `net_worth_cny` 与 `investment_market_value_cny`，解析预览与字段映射入口保持阻断，处理入口为投资持仓复核。
+
+Phase 8.2 证据：
+
+- `PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_ui.json`
+- `PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_page_model.json`
+- `PFI/reports/pfi_v023/stage_8/phase_8_2/screenshots/data_source_dashboard.png`
+
 Phase 8.3 禁止假数据回退未执行。
 Stage 8 whole-stage review 未执行。
 GitHub main upload 未执行。
