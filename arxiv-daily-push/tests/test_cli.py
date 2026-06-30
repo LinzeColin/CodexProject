@@ -1013,7 +1013,7 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["runtime_capture_ready"])
         self.assertIn("adp_allow_smtp_send_false", payload["runtime_capture_blockers"])
         self.assertIn("real_smtp_secret_env_missing", payload["runtime_capture_blockers"])
-        self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", payload["runtime_capture_blockers"])
+        self.assertNotIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", payload["runtime_capture_blockers"])
         self.assertEqual(
             payload["required_smtp_secret_env_names"],
             ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],

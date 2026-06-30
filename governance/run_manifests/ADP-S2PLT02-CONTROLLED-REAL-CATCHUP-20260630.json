@@ -1,0 +1,54 @@
+{
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260630.json",
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260630.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260630.md"
+  ],
+  "generated_at": "2026-06-30T22:54:57Z",
+  "integrated_production_accepted": false,
+  "local_runner_validation_errors": [],
+  "observed_email_count": 4,
+  "observed_mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "observed_service_date": "2026-06-30",
+  "post_run_background_adp_process_found": false,
+  "post_run_launchagents_disabled": true,
+  "post_run_persistent_allow_smtp_send": false,
+  "production_acceptance_claimed": false,
+  "production_restore_executed": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_scheduler_proven": false,
+  "real_smtp_evidence_present": true,
+  "release_uploaded": false,
+  "remaining_blockers": [
+    "real_scheduler_not_proven",
+    "s2plt02_terminal_delivery_proof_artifact_missing"
+  ],
+  "run_id": "ADP-S2PLT02-CONTROLLED-REAL-CATCHUP-20260630",
+  "s2plt02_accepted": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "blocked_after_evidence_capture",
+  "summary": "Captured one owner-authorized controlled foreground real SMTP catch-up for service date 2026-06-30. It adds real M1-M4 send evidence while keeping scheduler, Release, restore, daily operation, and production acceptance disabled.",
+  "task_id": "S2PLT02-CONTROLLED-REAL-CATCHUP",
+  "task_ids": [
+    "S2PLT02-CONTROLLED-REAL-CATCHUP",
+    "S2PLT02",
+    "ACC-S2PLT02-2D"
+  ],
+  "terminal_delivery_proof_artifact_present": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

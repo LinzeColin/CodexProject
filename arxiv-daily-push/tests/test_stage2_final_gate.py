@@ -1155,7 +1155,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["runtime_capture_ready"])
         self.assertIn("adp_allow_smtp_send_false", plan["runtime_capture_blockers"])
         self.assertIn("real_smtp_secret_env_missing", plan["runtime_capture_blockers"])
-        self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", plan["runtime_capture_blockers"])
+        self.assertNotIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", plan["runtime_capture_blockers"])
         self.assertEqual(
             plan["required_smtp_secret_env_names"],
             ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
@@ -1169,14 +1169,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         capture_window_summary = plan["terminal_capture_window_audit_summary"]
         self.assertEqual(capture_window_summary["status"], "blocked")
         self.assertEqual(capture_window_summary["candidate_service_dates"], ["2026-06-29", "2026-06-30"])
-        self.assertEqual(capture_window_summary["dry_run_service_dates"], ["2026-06-30"])
+        self.assertEqual(capture_window_summary["dry_run_service_dates"], [])
         self.assertEqual(
             capture_window_summary["nonterminal_succeeded_dry_run_service_dates"],
-            ["2026-06-30"],
+            [],
         )
-        self.assertEqual(capture_window_summary["nonterminal_succeeded_dry_run_count"], 1)
-        self.assertEqual(capture_window_summary["dry_run_email_count"], 4)
-        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 4)
+        self.assertEqual(capture_window_summary["nonterminal_succeeded_dry_run_count"], 0)
+        self.assertEqual(capture_window_summary["dry_run_email_count"], 0)
+        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 8)
         self.assertEqual(capture_window_summary["observed_terminal_email_count_credit"], 8)
         self.assertFalse(capture_window_summary["terminal_delivery_credit"])
         self.assertFalse(capture_window_summary["counts_toward_s2plt02_terminal_proof"])
@@ -1186,7 +1186,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(plan["current_capture_window_real_delivery_days_added"], 0)
         self.assertEqual(plan["current_capture_window_real_email_count_added"], 0)
-        self.assertEqual(plan["current_capture_window_dry_run_email_count_rejected"], 4)
+        self.assertEqual(plan["current_capture_window_dry_run_email_count_rejected"], 0)
         self.assertEqual(plan["terminal_proof_real_delivery_days_after_current_capture_window"], 2)
         self.assertEqual(plan["terminal_proof_real_email_count_after_current_capture_window"], 8)
         self.assertEqual(plan["remaining_real_delivery_days_for_terminal_proof"], 0)
@@ -5738,13 +5738,13 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("blocked_candidate_inputs_present", capture_summary["runtime_capture_blockers"])
         capture_window_summary = capture_summary["terminal_capture_window_audit_summary"]
         self.assertEqual(capture_window_summary["status"], "blocked")
-        self.assertEqual(capture_window_summary["dry_run_service_dates"], ["2026-06-30"])
+        self.assertEqual(capture_window_summary["dry_run_service_dates"], [])
         self.assertEqual(
             capture_window_summary["nonterminal_succeeded_dry_run_service_dates"],
-            ["2026-06-30"],
+            [],
         )
-        self.assertEqual(capture_window_summary["dry_run_email_count"], 4)
-        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 4)
+        self.assertEqual(capture_window_summary["dry_run_email_count"], 0)
+        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 8)
         self.assertEqual(capture_window_summary["observed_terminal_email_count_credit"], 8)
         self.assertFalse(capture_window_summary["terminal_delivery_credit"])
         self.assertFalse(capture_window_summary["counts_toward_s2plt02_terminal_proof"])
@@ -5754,7 +5754,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(capture_summary["current_capture_window_real_delivery_days_added"], 0)
         self.assertEqual(capture_summary["current_capture_window_real_email_count_added"], 0)
-        self.assertEqual(capture_summary["current_capture_window_dry_run_email_count_rejected"], 4)
+        self.assertEqual(capture_summary["current_capture_window_dry_run_email_count_rejected"], 0)
         self.assertEqual(capture_summary["terminal_proof_real_delivery_days_after_current_capture_window"], 2)
         self.assertEqual(capture_summary["terminal_proof_real_email_count_after_current_capture_window"], 8)
         self.assertEqual(capture_summary["remaining_real_delivery_days_for_terminal_proof"], 0)
@@ -6276,7 +6276,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "1de287b38fe4aafb862df33afefd6f2ea453c4f63d76dd3e40b10c4e8cd7bf0a",
+            "d3c91a27dafa8cbde065d04cd53780b64fc2d792305b8c1309af7f93c47de58c",
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
@@ -6288,7 +6288,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
             wait_guard["current_wait_state"],
         )
-        self.assertEqual(wait_guard["state_hash"], "ca017acbdc5e84a9ff7f8d6f91bf2023831e5c25893306b389f8652a757851f3")
+        self.assertEqual(wait_guard["state_hash"], "7c932f9cb8c515ab640f7879200aa2687542368551415203c11909f3022cac24")
         self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(
             wait_guard["allowed_readonly_commands"][0],
@@ -6372,13 +6372,13 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_terminal_delivery_capture_plan_summary"]["terminal_capture_window_audit_summary"][
                 "nonterminal_succeeded_dry_run_service_dates"
             ],
-            ["2026-06-30"],
+            [],
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["terminal_capture_window_audit_summary"][
                 "dry_run_email_count"
             ],
-            4,
+            0,
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"][
