@@ -958,9 +958,17 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
 
     shell_path = ROOT / "web" / "index.html"
     css_path = ROOT / "web" / "styles" / "tokens.css"
+    legacy_css_path = ROOT / "web" / "styles.css"
+    routes_path = ROOT / "web" / "app" / "routes.js"
+    stage4_pages_path = ROOT / "web" / "app" / "pages" / "stage4Subpages.js"
+    home_page_path = ROOT / "web" / "app" / "pages" / "home.js"
     js_path = ROOT / "web" / "app" / "shell.js"
     shell_html = shell_path.read_text(encoding="utf-8")
     css = css_path.read_text(encoding="utf-8")
+    legacy_css = legacy_css_path.read_text(encoding="utf-8")
+    routes_js = routes_path.read_text(encoding="utf-8")
+    stage4_pages_js = stage4_pages_path.read_text(encoding="utf-8")
+    home_page_js = home_page_path.read_text(encoding="utf-8")
     js = js_path.read_text(encoding="utf-8")
     summary_payload = home_summary if isinstance(home_summary, dict) else empty_homepage_summary()
     summary_json = json.dumps(summary_payload, ensure_ascii=False).replace("</", "<\\/")
@@ -971,6 +979,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     }
     runtime_json = json.dumps(runtime_payload, ensure_ascii=False).replace("</", "<\\/")
     shell_html = shell_html.replace('<link rel="stylesheet" href="./styles/tokens.css" />', f"<style>{css}</style>")
+    shell_html = shell_html.replace('<link rel="stylesheet" href="./styles.css" />', f"<style>{legacy_css}</style>")
     shell_html = re.sub(
         r'<script type="application/json" id="pfi-runtime-config">.*?</script>',
         f'<script type="application/json" id="pfi-runtime-config">{runtime_json}</script>',
@@ -982,6 +991,16 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
         f'<script type="application/json" id="pfi-home-summary">{summary_json}</script>',
         shell_html,
         flags=re.DOTALL,
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/routes.js"></script>',
+        "\n".join(
+            (
+                f"<script>{routes_js}</script>",
+                f"<script>{stage4_pages_js}</script>",
+                f"<script>{home_page_js}</script>",
+            )
+        ),
     )
     shell_html = shell_html.replace('<script src="./app/shell.js"></script>', f"<script>{js}</script>")
     return shell_html

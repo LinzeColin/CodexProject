@@ -1,0 +1,92 @@
+{
+  "schema": "PFIV023Stage10Phase101BrowserValidationV1",
+  "version": "v0.2.3",
+  "stage": "Stage 10",
+  "phase_id": "V023-S10-P10.1",
+  "phase_name": "入口 E2E",
+  "generated_at": "2026-06-30T06:27:36Z",
+  "repo": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+  "pfi_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+  "git": {
+    "branch": "codex/pfi",
+    "head": "b461aade21d9612634e2555c1d3fd695754bd6cd",
+    "remote": "git@github.com:LinzeColin/CodexProject.git"
+  },
+  "browser": {
+    "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "engine": "playwright.chromium",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "color_scheme": "light"
+  },
+  "app_entry": {
+    "downloads_app_path": "/Users/linzezhang/Downloads/PFI.app",
+    "downloads_app_exists": true,
+    "downloads_app_project_binding": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+    "dry_run_exit_code": 0,
+    "dry_run_output": "PFI_APP_LAUNCH: project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI command=./StartPFI.command command_path=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/StartPFI.command mode=spawn-command",
+    "url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+    "response_status": 200,
+    "shell_ready_ms": 2720
+  },
+  "localhost": {
+    "url": "http://127.0.0.1:8501",
+    "health": "ok",
+    "response_status": 200,
+    "shell_ready_ms": 2759
+  },
+  "screenshots": {
+    "app_entry": {
+      "path": "PFI/reports/pfi_v023/stage_10/phase_10_1/screenshots/app_entry.png",
+      "width": 1440,
+      "height": 1000,
+      "bytes": 241258,
+      "shell_frame_url": "about:srcdoc#/home"
+    },
+    "localhost": {
+      "path": "PFI/reports/pfi_v023/stage_10/phase_10_1/screenshots/localhost.png",
+      "width": 1440,
+      "height": 1000,
+      "bytes": 241258,
+      "shell_frame_url": "about:srcdoc#/home"
+    }
+  },
+  "official_nav_visible": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "official_nav_count": 10,
+  "localhost_official_nav_count": 10,
+  "metric_evidence": {
+    "net_assets_visible": true,
+    "monthly_spending_visible": true,
+    "real_alipay_flow_visible": true,
+    "pending_review_visible": true,
+    "no_placeholder_trend_visible": true
+  },
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": [],
+  "failed_requests": [],
+  "streamlit_embedding_fix": {
+    "inlined_resources": [
+      "web/styles/tokens.css",
+      "web/styles.css",
+      "web/app/routes.js",
+      "web/app/pages/stage4Subpages.js",
+      "web/app/pages/home.js",
+      "web/app/shell.js"
+    ],
+    "resource_http_errors_after_fix": []
+  }
+}

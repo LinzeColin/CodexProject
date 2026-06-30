@@ -1,0 +1,168 @@
+{
+  "generated_at": "2026-06-30T06:24:18.901Z",
+  "browser": {
+    "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "engine": "playwright.chromium",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "color_scheme": "light"
+  },
+  "targets": {
+    "app_entry": {
+      "url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+      "response_status": 200,
+      "shell_frame_url": "about:srcdoc#/home",
+      "shell_ready_ms": 2720,
+      "text_length": 1182,
+      "official_nav_visible": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "official_nav_count": 10,
+      "metric_evidence": {
+        "net_assets_visible": true,
+        "monthly_spending_visible": true,
+        "real_alipay_flow_visible": true,
+        "pending_review_visible": true,
+        "no_placeholder_trend_visible": true
+      },
+      "screenshot": "PFI/reports/pfi_v023/stage_10/phase_10_1/screenshots/app_entry.png",
+      "screenshot_bytes": 241258,
+      "screenshot_width": 1440,
+      "screenshot_height": 1000,
+      "console_messages": [
+        {
+          "type": "log",
+          "text": "Gather usage stats:  false"
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'ambient-light-sensor'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'battery'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'document-domain'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'layout-animations'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'legacy-image-formats'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'oversized-images'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'vr'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'wake-lock'."
+        },
+        {
+          "type": "warning",
+          "text": "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing."
+        }
+      ],
+      "console_errors": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": []
+    },
+    "localhost": {
+      "url": "http://127.0.0.1:8501",
+      "response_status": 200,
+      "shell_frame_url": "about:srcdoc#/home",
+      "shell_ready_ms": 2759,
+      "text_length": 1182,
+      "official_nav_visible": [
+        "首页总览",
+        "账户与资产",
+        "账本流水",
+        "投资管理",
+        "消费管理",
+        "数据源与上传",
+        "建议与复盘",
+        "报告与洞察",
+        "市场与研究",
+        "设置"
+      ],
+      "official_nav_count": 10,
+      "metric_evidence": {
+        "net_assets_visible": true,
+        "monthly_spending_visible": true,
+        "real_alipay_flow_visible": true,
+        "pending_review_visible": true,
+        "no_placeholder_trend_visible": true
+      },
+      "screenshot": "PFI/reports/pfi_v023/stage_10/phase_10_1/screenshots/localhost.png",
+      "screenshot_bytes": 241258,
+      "screenshot_width": 1440,
+      "screenshot_height": 1000,
+      "console_messages": [
+        {
+          "type": "log",
+          "text": "Gather usage stats:  false"
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'ambient-light-sensor'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'battery'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'document-domain'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'layout-animations'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'legacy-image-formats'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'oversized-images'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'vr'."
+        },
+        {
+          "type": "warning",
+          "text": "Unrecognized feature: 'wake-lock'."
+        },
+        {
+          "type": "warning",
+          "text": "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing."
+        }
+      ],
+      "console_errors": [],
+      "page_errors": [],
+      "failed_requests": [],
+      "http_errors": []
+    }
+  }
+}

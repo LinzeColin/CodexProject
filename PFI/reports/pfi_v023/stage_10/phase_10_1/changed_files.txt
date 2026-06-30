@@ -1,0 +1,13 @@
+PFI/src/pfi_os/app/streamlit_app.py
+PFI/src/pfi_os/system/cache_cleanup.py
+PFI/tests/test_v023_stage10_e2e_acceptance.py
+PFI/docs/pfi_v023/STAGE10_E2E_ACCEPTANCE.md
+PFI/reports/pfi_v023/stage_10/phase_10_1/browser_probe_raw.json
+PFI/reports/pfi_v023/stage_10/phase_10_1/browser_validation.json
+PFI/reports/pfi_v023/stage_10/phase_10_1/build_hash_consistency.json
+PFI/reports/pfi_v023/stage_10/phase_10_1/cache_cleanup_dry_run.json
+PFI/reports/pfi_v023/stage_10/phase_10_1/changed_files.txt
+PFI/reports/pfi_v023/stage_10/phase_10_1/evidence.json
+PFI/reports/pfi_v023/stage_10/phase_10_1/terminal.log
+PFI/reports/pfi_v023/stage_10/phase_10_1/screenshots/app_entry.png
+PFI/reports/pfi_v023/stage_10/phase_10_1/screenshots/localhost.png

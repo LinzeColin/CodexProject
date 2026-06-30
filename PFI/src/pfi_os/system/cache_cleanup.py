@@ -66,7 +66,7 @@ def build_cache_cleanup_report(root: Path | None = None, *, dry_run: bool = True
         "safety_boundary": (
             "Only disposable local runtime artifacts are eligible: Python bytecode, test/tool cache "
             "directories, .DS_Store files, and root-level data/cache runtime logs. Reports, holdings, "
-            "imports, source samples, SQLite databases, and market bar caches are not deleted."
+            "imports, source files, SQLite databases, and market bar caches are not deleted."
         ),
     }
 
