@@ -1,0 +1,64 @@
+{
+  "schema": "PFIV023Stage1To3GroupReviewAuditV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S1-S3-GROUP-REVIEW",
+  "generated_at": "2026-06-30T08:35:13Z",
+  "blocker_count": 0,
+  "checks": [
+    {
+      "id": "stage1_app_entry_current_worktree",
+      "status": "pass",
+      "evidence": "localhost_desktop frame has PFI shell and Stage 1 metadata"
+    },
+    {
+      "id": "stage2_no_fake_zero_against_preview",
+      "status": "pass",
+      "evidence": "net/cash/investment values render 暂无真实数据, not CNY 0.00"
+    },
+    {
+      "id": "stage3_ten_primary_entries",
+      "status": "pass",
+      "evidence": "preview/current/localhost all expose 10 primary entries"
+    },
+    {
+      "id": "market_research_primary_entry",
+      "status": "pass",
+      "evidence": "localhost primary labels include 市场与研究"
+    },
+    {
+      "id": "historical_stage1_worktree_not_used_as_current_fact",
+      "status": "pass",
+      "evidence": "group evidence records old pfi-stage1 path as reference-only and revalidates current pfi worktree"
+    }
+  ],
+  "findings_fixed": [
+    {
+      "id": "S1-3-FIX-1",
+      "title": "首页缺少账户/现金/持仓真实 read model 时显示 CNY 0.00",
+      "source": "Preview benchmark and Stage 2 no-fake-zero contract",
+      "resolution": "shell.js now requires real account/holding evidence before showing CNY values; missing values render 暂无真实数据."
+    }
+  ],
+  "remaining_items": [
+    {
+      "id": "S1-3-REMAINING-1",
+      "title": "Stage 4-6 分组整体复审",
+      "status": "pending"
+    },
+    {
+      "id": "S1-3-REMAINING-2",
+      "title": "Stage 7-9 分组整体复审",
+      "status": "pending"
+    },
+    {
+      "id": "S1-3-REMAINING-3",
+      "title": "Stage 10-11 分组整体复审",
+      "status": "pending"
+    },
+    {
+      "id": "S1-3-REMAINING-4",
+      "title": "v0.2.3 项目级整体复审、同步 GitHub、备份和清理",
+      "status": "pending"
+    }
+  ]
+}

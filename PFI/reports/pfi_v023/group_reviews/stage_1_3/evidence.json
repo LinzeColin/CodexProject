@@ -1,0 +1,136 @@
+{
+  "schema": "PFIV023Stage1To3GroupReviewEvidenceV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S1-S3-GROUP-REVIEW",
+  "review_name": "Stage 1-3 preview benchmark group review",
+  "status": "review_pass",
+  "generated_at": "2026-06-30T08:35:13Z",
+  "current_group_only": true,
+  "review_scope": [
+    "Stage 1",
+    "Stage 2",
+    "Stage 3"
+  ],
+  "source_roadmap": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+  "source_taskpack": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+  "source_preview": "/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html",
+  "git": {
+    "head_at_evidence_write": "7d937d0f33a63f5f1ed99f92fc15acfa77563c7d",
+    "origin_main_at_evidence_write": "7d937d0f33a63f5f1ed99f92fc15acfa77563c7d",
+    "head_semantics": "Group-review evidence is written before the local group-review commit; final Git state is verified by terminal output for this run."
+  },
+  "stage_statuses": [
+    {
+      "stage": "Stage 1",
+      "evidence": "PFI/reports/pfi_v023/stage_1/evidence.json",
+      "status": "pass",
+      "current_binding_reverified_in_group_review": true
+    },
+    {
+      "stage": "Stage 2",
+      "evidence": "PFI/reports/pfi_v023/stage_2/evidence.json",
+      "status": "candidate_pass",
+      "group_review_fix": "runtime missing account/holding values no longer render as CNY 0.00"
+    },
+    {
+      "stage": "Stage 3",
+      "evidence": "PFI/reports/pfi_v023/stage_3/stage3_review/evidence.json",
+      "status": "pass",
+      "current_nav_reverified_in_group_review": true
+    }
+  ],
+  "preview_benchmark": {
+    "path": "PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/comparison_raw.json",
+    "preview_nav_count": 10,
+    "current_static_primary_count": 10,
+    "localhost_primary_count": 10,
+    "localhost_has_stage1_metadata": true,
+    "blocked_metric_display_values": {
+      "净资产": "暂无真实数据",
+      "现金余额": "暂无真实数据",
+      "投资市值": "暂无真实数据"
+    },
+    "real_alipay_metric_display_values": {
+      "本月支出": "CNY 7,153.98",
+      "待复核交易": "406",
+      "数据源状态": "已导入"
+    },
+    "screenshots": {
+      "reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/current_static_desktop.png": 565717,
+      "reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/current_static_mobile.png": 480400,
+      "reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/localhost_desktop.png": 243411,
+      "reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/localhost_mobile.png": 76501,
+      "reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/preview_desktop.png": 735893,
+      "reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/preview_mobile.png": 477394
+    }
+  },
+  "fixes": [
+    {
+      "id": "S1-3-FIX-1",
+      "title": "首页缺少账户/现金/持仓真实 read model 时显示 CNY 0.00",
+      "source": "Preview benchmark and Stage 2 no-fake-zero contract",
+      "resolution": "shell.js now requires real account/holding evidence before showing CNY values; missing values render 暂无真实数据."
+    }
+  ],
+  "acceptance_checks": {
+    "preview_nav_count_matches": true,
+    "current_app_nav_count_matches": true,
+    "market_research_is_primary_entry": true,
+    "stage2_no_fake_zero_fix_verified": true,
+    "real_alipay_values_preserved": true,
+    "stage1_current_worktree_binding_verified": true,
+    "no_console_or_page_errors": true
+  },
+  "known_historical_stage1_path_is_reference_only": true,
+  "historical_stage1_path_note": "PFI/reports/pfi_v023/stage_1/evidence.json records the old pfi-stage1 worktree from the original Stage 1 run; this group review revalidated current project-level pfi worktree via localhost iframe metadata and screenshots.",
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_v023_stage3_navigation_routes.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js",
+    "python3 -m json.tool PFI/reports/pfi_v023/group_reviews/stage_1_3/evidence.json >/dev/null and git diff --check -- PFI",
+    "python3 field-level preview benchmark metric assertion for localhost desktop shell",
+    "PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json",
+    "http://127.0.0.1:8501/_stcore/health and http://127.0.0.1:8766/health"
+  ],
+  "last_verified_at": "2026-06-30T08:40:54Z",
+  "validation_results": {
+    "stage2_data_state_machine": "21 passed in 0.19s",
+    "stage1_stage3_contracts": "22 passed in 0.19s",
+    "regression": "20 passed in 0.04s",
+    "all_v023_tests": "189 passed in 2.34s",
+    "node_check_shell_js": "pass",
+    "json_and_git_diff_check": "pass",
+    "preview_metric_fields": "group-preview-metric-fields-ok",
+    "macos_app_acceptance_lite": "29 pass / 0 fail / 2 info",
+    "localhost_health": {
+      "8501": "ok",
+      "8766": "{\"status\": \"ok\", \"schema\": \"PFIV021RuntimeAPIV1\"}"
+    }
+  },
+  "changed_files": [
+    "PFI/docs/pfi_v023/README.md",
+    "PFI/docs/pfi_v023/STAGE1_3_GROUP_REVIEW.md",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/changed_files.txt",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/evidence.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/review_audit.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/terminal.log",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/comparison_raw.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/current_static_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/current_static_mobile.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/localhost_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/localhost_mobile.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/preview_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_1_3/preview_benchmark/screenshots/preview_mobile.png",
+    "PFI/tests/test_v023_regression.py",
+    "PFI/tests/test_v023_stage2_data_state_machine.py",
+    "PFI/web/app/shell.js"
+  ],
+  "remaining_groups": [
+    "Stage 4-6 group review",
+    "Stage 7-9 group review",
+    "Stage 10-11 group review",
+    "v0.2.3 overall project review and cleanup"
+  ]
+}

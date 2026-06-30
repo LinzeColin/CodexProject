@@ -1,0 +1,37 @@
+PFI v0.2.3 Stage 1-3 group review terminal log
+Generated at: 2026-06-30T08:35:13Z
+Worktree: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Scope: second-phase group review for Stage 1, Stage 2, Stage 3 only.
+Preview benchmark: /Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html
+
+TDD RED observed:
+- PFI/tests/test_v023_stage2_data_state_machine.py failed because shell.js still converted missing runtime values to CNY 0.00.
+- PFI/tests/test_v023_regression.py failed because group_reviews/stage_1_3/evidence.json was missing.
+
+Fixes applied:
+- shell.js now checks real account/holding read-model presence before displaying financial CNY values.
+- formatCnyAmount() and toCnyAmount() no longer coerce null/undefined/non-numeric values to 0.
+- Preview benchmark screenshots and DOM comparison generated for preview, current static shell, and localhost app.
+
+Fresh validation output is appended after final commands.
+
+Final validation output:
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+  21 passed in 0.19s
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_v023_stage3_navigation_routes.py -q
+  22 passed in 0.19s
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q
+  20 passed in 0.04s
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+  189 passed in 2.34s
+- PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
+  pass
+- python3 -m json.tool PFI/reports/pfi_v023/group_reviews/stage_1_3/evidence.json >/dev/null and git diff --check -- PFI
+  json-and-diff-ok
+- field-level preview benchmark metric assertion
+  group-preview-metric-fields-ok
+- PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json
+  status=Pass; 29 pass / 0 fail / 2 info
+- health checks
+  8501 ok
+  8766 {"status": "ok", "schema": "PFIV021RuntimeAPIV1"}
