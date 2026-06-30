@@ -1,0 +1,93 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S11_P1_home_navigation/human/s11_p1_completion_record.md",
+    "home_navigation_manifest": "KMFA/metadata/reports/home_navigation_manifest.json",
+    "home_navigation_records": "KMFA/metadata/reports/home_navigation_modules.jsonl",
+    "html_export": "KMFA/stage_artifacts/S11_P1_home_navigation/exports/html/kmfa_home_navigation.html",
+    "stage_manifest": "KMFA/stage_artifacts/S11_P1_home_navigation/machine/s11_p1_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S11_P1_home_navigation/human/test_results.md",
+    "validator": "KMFA/tools/check_s11_p1_home_navigation.py"
+  },
+  "brand_mark": "KM",
+  "brand_mark_is_single_k": false,
+  "brand_mark_version": "BRAND-KMFA-KM-001",
+  "content_hash": "sha256:58ab2d0c26d446a69b2cd9448c808a742c4bfe9d5e6bc84e97f8e1927c5c8136",
+  "generated_at": "2026-07-01T09:00:00+10:00",
+  "home_navigation_version": "UI-KMFA-S11P1-HOME-NAVIGATION-001",
+  "limitations": [
+    "S11-P1 只生成首页与导航，不生成数据源检查矩阵或项目成本详情。",
+    "首页只展示公开安全摘要和入口，不展示真实经营明细或字段明文。",
+    "正式报告、完整可信报告和经营决策依据继续受报告等级阻断。",
+    "本 phase 不执行 Stage 11 整体复审或 GitHub upload。"
+  ],
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_file_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "public_safety_version": "SAFE-KMFA-S11P1-PUBLIC-001",
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "home_navigation_export_allowed": true,
+    "phase_completion_upload_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "s11_p1_navigation_only_reports_remain_blocked",
+    "report_grade_visible": "D",
+    "stage11_review_allowed": false
+  },
+  "record_type": "home_navigation_manifest",
+  "required_navigation_labels": [
+    "经营总览",
+    "项目成本",
+    "回款应收",
+    "财务资金",
+    "开票纳税",
+    "数据源检查",
+    "待处理事项",
+    "报告中心"
+  ],
+  "runtime_status": "public_safe_home_navigation_generated_local_only",
+  "schema_version": "kmfa.home_navigation_manifest.v1",
+  "source_taskpack_refs": {
+    "frontend_report_rules": "KMFA/taskpack/v1_2/01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md:11",
+    "home_html_sample": "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_系统首页预览_v4_blue.html",
+    "roadmap_s11_p1": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S11-P1"
+  },
+  "stage_phase": "S11-P1",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s11_p1_home_navigation_scope_included": true,
+    "s11_p2_source_matrix_scope_included": false,
+    "s11_p3_project_cost_detail_scope_included": false,
+    "stage11_review_scope_included": false
+  },
+  "style_version": "STYLE-KMFA-S11P1-BLUE-BUSINESS-001",
+  "summary": {
+    "all_chinese_visible_copy": true,
+    "blue_business_style": true,
+    "business_decision_basis_count": 0,
+    "formal_report_count": 0,
+    "html_export_count": 1,
+    "km_brand_mark_count": 1,
+    "large_yellow_surface_count": 0,
+    "navigation_module_count": 8,
+    "private_file_reference_count": 0,
+    "raw_business_value_count": 0,
+    "required_label_count": 8,
+    "required_labels_covered": true,
+    "single_k_brand_mark_count": 0,
+    "warning_badge_count": 4
+  },
+  "system_name": "KMFA 经营分析系统"
+}

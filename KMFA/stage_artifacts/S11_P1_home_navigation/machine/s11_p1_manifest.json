@@ -1,0 +1,66 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S11_P1_home_navigation/human/s11_p1_completion_record.md",
+    "home_navigation_manifest": "KMFA/metadata/reports/home_navigation_manifest.json",
+    "home_navigation_records": "KMFA/metadata/reports/home_navigation_modules.jsonl",
+    "html_export": "KMFA/stage_artifacts/S11_P1_home_navigation/exports/html/kmfa_home_navigation.html",
+    "stage_manifest": "KMFA/stage_artifacts/S11_P1_home_navigation/machine/s11_p1_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S11_P1_home_navigation/human/test_results.md",
+    "validator": "KMFA/tools/check_s11_p1_home_navigation.py"
+  },
+  "content_hash": "sha256:58ab2d0c26d446a69b2cd9448c808a742c4bfe9d5e6bc84e97f8e1927c5c8136",
+  "generated_at": "2026-07-01T09:00:00+10:00",
+  "next_gate": "S11_P2_REQUIRED_OR_STAGE11_REVIEW_AFTER_ALL_PHASES",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_file_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "home_navigation_export_allowed": true,
+    "phase_completion_upload_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "s11_p1_navigation_only_reports_remain_blocked",
+    "report_grade_visible": "D",
+    "stage11_review_allowed": false
+  },
+  "record_type": "s11_p1_home_navigation_stage_manifest",
+  "schema_version": "kmfa.s11_p1_stage_manifest.v1",
+  "stage_phase": "S11-P1",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s11_p1_home_navigation_scope_included": true,
+    "s11_p2_source_matrix_scope_included": false,
+    "s11_p3_project_cost_detail_scope_included": false,
+    "stage11_review_scope_included": false
+  },
+  "status": "completed_validated_local_only_stage_review_pending",
+  "summary": {
+    "all_chinese_visible_copy": true,
+    "blue_business_style": true,
+    "business_decision_basis_count": 0,
+    "formal_report_count": 0,
+    "html_export_count": 1,
+    "km_brand_mark_count": 1,
+    "large_yellow_surface_count": 0,
+    "navigation_module_count": 8,
+    "private_file_reference_count": 0,
+    "raw_business_value_count": 0,
+    "required_label_count": 8,
+    "required_labels_covered": true,
+    "single_k_brand_mark_count": 0,
+    "warning_badge_count": 4
+  }
+}

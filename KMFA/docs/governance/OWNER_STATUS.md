@@ -1,10 +1,10 @@
 # KMFA Owner Status
 
-更新时间: 2026-06-30
+更新时间: 2026-07-01
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload，以及 Stage 10 全部 Phase/复审/upload。S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时和 S10-P3 public-safe 报告导出均已进入 GitHub main。但 lineage、正式报告运行时和 S11 前端仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload，以及 Stage 10 全部 Phase/复审/upload。S11-P1 首页与导航已本地验证完成，生成 8 个 public-safe 首页模块和蓝色商务风 HTML 首页样张。但 S11-P2/S11-P3、Stage 11 review/upload、lineage、正式报告运行时仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -56,6 +56,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - Stage 9 整体复审已本地通过：`KMFA/stage_artifacts/S09_STAGE_REVIEW/` 记录 S09-P1/P2/P3 validators、`KMFA/tools/check_s09_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks；复审修复了 `a0_golden_fixture.py` 中 high-signal secret scan 误报的变量命名 finding。
 - Stage 10 整体复审已本地通过：`KMFA/stage_artifacts/S10_STAGE_REVIEW/` 记录 S10-P1/P2/P3 validators、`KMFA/tools/check_s10_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks；复审未执行 GitHub upload、S11、UI、lineage full check、正式报告或外部接口。
 - Stage 10 final GitHub upload 已完成：`KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S10_STAGE_REVIEW/machine/stage10_upload_manifest.json` 记录 validators、raw/secret scan、dry-run push、push 和 post-push parity。
+- S11-P1 首页与导航已本地验证完成：`KMFA/tools/home_navigation_runtime.py`、`KMFA/tools/check_s11_p1_home_navigation.py`、`KMFA/tests/test_home_navigation_runtime.py`、`KMFA/metadata/reports/home_navigation_manifest.json`、`KMFA/metadata/reports/home_navigation_modules.jsonl` 和 `KMFA/stage_artifacts/S11_P1_home_navigation/` 已生成；页面覆盖经营总览、项目成本、回款应收、财务资金、开票纳税、数据源检查、待处理事项、报告中心，保持正式报告和经营决策依据阻断。
 
 ## 你现在不能信任什么
 
@@ -64,6 +65,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、Stage 8 upload、Stage 9 upload 或 Stage 10 upload 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
+- 不能认为 S11-P1 首页导航等于完整前端；数据源检查矩阵、项目成本详情、Stage 11 review/upload 仍未完成。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -72,4 +74,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S11-P1｜首页与导航`；必须先读取 v1.2 Roadmap S11 与 HTML/UIUX 样板，不得扩大到 S11-P2/S11-P3、S12、lineage full check、正式报告或自动接口。
+下一步只执行 `S11-P2｜数据源检查板`；不得扩大到 S11-P3、Stage 11 整体复审、GitHub upload、S12、lineage full check、正式报告或自动接口。

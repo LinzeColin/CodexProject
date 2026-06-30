@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S10-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260701-S11P1-HOME-NAVIGATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "6b6e599100e59cfdd0c404b28f58821b396b3267"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S10_STAGE_REVIEW_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T23:59:59+10:00"
-generator_version: "manual-s10-github-upload"
+snapshot_event_time: "2026-07-01T09:00:00+10:00"
+generator_version: "manual-s11p1-home-navigation"
 final_commit_binding: "post_amend_hash_recorded_by_git_parity_check"
 dimensions:
   structural_completeness:
@@ -109,6 +109,7 @@ dimensions:
       - "KMFA/stage_artifacts/S10_P3_report_export/human/test_results.md"
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S11_P1_home_navigation/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -168,6 +169,8 @@ dimensions:
       - "KMFA/tools/check_s10_stage_review.py"
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/tools/home_navigation_runtime.py"
+      - "KMFA/tools/check_s11_p1_home_navigation.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -299,6 +302,9 @@ dimensions:
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/machine/stage10_review_manifest.json"
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/machine/stage10_upload_manifest.json"
+      - "KMFA/stage_artifacts/S11_P1_home_navigation/human/s11_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S11_P1_home_navigation/human/test_results.md"
+      - "KMFA/stage_artifacts/S11_P1_home_navigation/machine/s11_p1_manifest.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
