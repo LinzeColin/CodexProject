@@ -1,0 +1,44 @@
+{
+  "acceptance_ids": [
+    "ACC-KMFA-S06-P1"
+  ],
+  "completed_task_ids": [
+    "S6PAT01",
+    "S6PAT02",
+    "S6PAT03"
+  ],
+  "evidence_refs": [
+    "KMFA/tools/zero_delta_validator.py",
+    "KMFA/tests/test_zero_delta_validator.py",
+    "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md",
+    "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/test_results.md",
+    "KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_zero_delta_result.json",
+    "KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_mismatch_report.csv"
+  ],
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "minimum_fail_difference_cents": 1,
+  "mismatch_report_required_columns": [
+    "source",
+    "field",
+    "authoritative_value_cents",
+    "system_value_cents",
+    "difference_cents"
+  ],
+  "phase_id": "S6PA",
+  "private_csv_committed": false,
+  "project_id": "KMFA",
+  "public_repo_raw_files_committed": false,
+  "raw_business_data_used": false,
+  "record_type": "stage_phase_manifest",
+  "schema_version": "kmfa.stage_phase_manifest.v1",
+  "stage6_review_completed": false,
+  "stage_id": "S06",
+  "status": "completed_validated_local_only_zero_delta_validator",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_zero_delta_validator -q",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/zero_delta_validator.py --fixture KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_mismatch_fixture.json --result-json KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_zero_delta_result.json --mismatch-report KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_mismatch_report.csv"
+  ],
+  "updated_at": "2026-06-30T13:35:00+10:00",
+  "zero_delta_cents": 0
+}

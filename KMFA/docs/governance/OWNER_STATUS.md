@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload，以及 Stage 5 的 `S05-P1｜A0 文件登记`、`S05-P2｜字段级黄金基准`、`S05-P3｜权威基准锁定`、Stage 5 整体复审和 final GitHub upload。S05-P3 已锁定 40 条 PDF 字段 hash/source-anchor 记录为 public-safe Q5 calculation baseline，并将 5 条 Excel 字段按 owner/授权降级决策排除为 cross-source support only。S06 尚未开始，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload，以及 `S06-P1｜零差异校验器` 本地验证。S06-P1 已建立 public-safe 整数分逐字段校验，任意 1 分差异失败并生成 mismatch report。S06-P2/P3、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -37,15 +37,16 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S05-P3 A0 authority baseline lock 已存在：40 条 PDF 字段 hash/source-anchor 记录被锁定，5 条 Excel 字段被排除；baseline version、content hash、锁定角色、锁定时间和 validator 均已记录。
 - Stage 5 整体复审已本地通过：`KMFA/stage_artifacts/S05_STAGE_REVIEW/` 记录 review report、test results 和 machine manifest；raw/secret scan 未发现可提交 raw 文件或 secret。
 - Stage 5 final GitHub upload 已完成并留下 upload record/manifest：`KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md`、`KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json`。
+- S06-P1 零差异校验器已存在：`KMFA/tools/zero_delta_validator.py` 使用 public-safe 已结构化整数分 fixture，逐字段比较权威值和系统值，1 分差异失败，并生成包含来源、字段、权威值、系统值和差额的 mismatch report。
 
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经实现。
 - 不能认为真实业务源解析、事实层或报告已经实现。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
-- 不能认为 A0 authority baseline 已经可以发布正式经营报告；zero-delta、lineage 和报告发布门禁尚未完成。
-- 不能认为 S06 zero-delta 已经实现；下一步才进入 S06-P1。
-- 不能认为 zero-delta 或 lineage 完整检查已正式实现。
+- 不能认为 A0 authority baseline 已经可以发布正式经营报告；S06-P2/P3、lineage 和报告发布门禁尚未完成。
+- 不能认为 S06 Stage 已经完成；当前只完成 S06-P1，不含跨源差异队列或 metadata/quality 运行时证据输出。
+- 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
 - 不能跳过 v1.2 HTML/报告样板门禁继续做 S10/S11/S12/S18。
@@ -53,4 +54,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S06-P1｜零差异校验器`；不得扩大到 UI、正式报告、事实层或自动接口。
+下一步只执行 `S06-P2｜跨源差异队列`；不得扩大到 UI、正式报告、事实层或自动接口。

@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S05-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260630-S06P1-ZERO-DELTA-VALIDATOR"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05_GITHUB_UPLOAD"
-snapshot_event_time: "2026-06-30T13:13:10+10:00"
-generator_version: "manual-s05-github-upload"
-final_commit_binding: "precommit-pending-s05-github-upload"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_P1"
+snapshot_event_time: "2026-06-30T13:35:00+10:00"
+generator_version: "manual-s06-p1"
+final_commit_binding: "precommit-pending-s06-p1"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 33
-    total_active_formulas: 12
+    total_active_parameters: 36
+    total_active_formulas: 13
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -63,6 +63,8 @@ dimensions:
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/tools/a0_authority_baseline_lock.py"
       - "KMFA/tools/check_a0_authority_baseline_lock.py"
+      - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/test_results.md"
+      - "KMFA/tools/zero_delta_validator.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -89,6 +91,7 @@ dimensions:
       - "KMFA/tools/check_s05_p2_completion_gate.py"
       - "KMFA/tools/a0_authority_baseline_lock.py"
       - "KMFA/tools/check_a0_authority_baseline_lock.py"
+      - "KMFA/tools/zero_delta_validator.py"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
@@ -139,14 +142,21 @@ dimensions:
       - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
       - "KMFA/tools/a0_authority_baseline_lock.py"
       - "KMFA/tools/check_a0_authority_baseline_lock.py"
+      - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/test_results.md"
+      - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_manifest.json"
+      - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_zero_delta_result.json"
+      - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_mismatch_report.csv"
+      - "KMFA/tools/zero_delta_validator.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S05_UPLOADED_TO_GITHUB_MAIN_S06_NOT_STARTED"
-  release_gate: "KMFA-S06-P1-GATE"
+  status: "S06_P1_COMPLETED_VALIDATED_LOCAL_ONLY_S06_P2_NOT_STARTED"
+  release_gate: "KMFA-S06-P2-GATE"
   blocker_ids:
-    - "S06_ZERO_DELTA_NOT_STARTED"
+    - "S06_P2_DIFFERENCE_QUEUE_NOT_STARTED"
+    - "S06_P3_EVIDENCE_OUTPUT_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
