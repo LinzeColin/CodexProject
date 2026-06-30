@@ -30,9 +30,11 @@ scope、run contract、evidence 和验收 gate。
 
 ## v0.2.3 Three-Phase Recovery Review Status
 
-当前本地 `codex/pfi` 分支正在执行 v0.2.3 三阶段恢复复审，不等同于新的整体项目 closeout。
-第二阶段已本地完成 Stage 1-3、Stage 4-6、Stage 7-9、Stage 10-11 四组 group review。
-第三阶段整体项目复审、GitHub main 同步、备份和本地非必要文件清理仍需单独执行。
+当前本地 `codex/pfi` 分支已完成 v0.2.3 三阶段恢复复审的本地整体项目复审。
+第一阶段 Stage 1-11 stage-by-stage review 已完成；第二阶段 Stage 1-3、Stage 4-6、
+Stage 7-9、Stage 10-11 四组 group review 已完成；第三阶段整体项目复审和本地
+非必要缓存清理已完成。GitHub main 同步和最终 bundle 备份由最终 commit 后 terminal gate
+验证，避免在 commit 内自证远端状态。
 
 记录文件：
 
@@ -40,6 +42,7 @@ scope、run contract、evidence 和验收 gate。
 - `docs/pfi_v023/STAGE4_6_GROUP_REVIEW.md`
 - `docs/pfi_v023/STAGE7_9_GROUP_REVIEW.md`
 - `docs/pfi_v023/STAGE10_11_GROUP_REVIEW.md`
+- `docs/pfi_v023/OVERALL_PROJECT_REVIEW.md`
 
 ## v0.2.1.1 Product UI Recovery Stage 0
 

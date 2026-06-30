@@ -1,5 +1,25 @@
 # PFI Handoff
 
+Last updated: 2026-06-30 Australia/Sydney
+
+## Current v0.2.3 Recovery Handoff
+
+PFI v0.2.3 Human Product Experience Recovery 已进入第三阶段整体项目复审 closeout。
+当前事实源为 `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi`，
+GitHub source of truth 为 `git@github.com:LinzeColin/CodexProject.git` / `main`。
+
+当前状态：
+
+- Stage 1-11 stage-by-stage review 已完成。
+- Stage 1-3、Stage 4-6、Stage 7-9、Stage 10-11 group review 已完成并各自有 evidence。
+- Overall project review 本地证据位于 `PFI/reports/pfi_v023/overall_project_review/`。
+- v0.2.3 正式一级入口固定 10 个，`市场与研究` 是正式一级入口，历史 9 入口约束作废。
+- `MetaDatabase/PFI` 存在真实支付宝 raw/processed 数据；缺失外部 Downloads roadmap/taskpack/preview 只记录为缺失，不补造。
+- 本轮清理只允许删除 PFI worktree 内可再生缓存；不得删除 `.venv`、reports、screenshots、app bundle、`MetaDatabase/PFI` 或用户数据。
+- 最终完成 gate：验证测试、push 到 GitHub main、确认 `HEAD == origin/main == remote main`、创建并验证 bundle 备份、确认 worktree clean。
+
+---
+
 Last updated: 2026-06-29 Australia/Sydney
 
 ## Current Goal

@@ -109,3 +109,16 @@ repo 内当前合同、stage evidence、测试和真实 localhost/browser 证据
 - 当前边界：本组不声明三阶段总目标完成，不上传 GitHub main，不执行整体项目复审或本地清理。
 
 记录文件：`STAGE10_11_GROUP_REVIEW.md`。
+
+## Overall Project Review 状态
+
+第三阶段整体项目复审覆盖 Stage 1-11、四组 group review、真实浏览器证据、
+安全清理、GitHub main 同步和备份 terminal gate。
+
+- Phase 1 stage-by-stage review：已完成。
+- Phase 2 group review：Stage 1-3、Stage 4-6、Stage 7-9、Stage 10-11 均已本地复审通过。
+- Phase 3 overall project review：本地整体复审通过，真实浏览器审计 findings 为 0。
+- GitHub main 同步和最终 bundle 备份：由最终 commit 后 terminal gate 验证。
+- 本地清理：只清理 PFI worktree 内可再生缓存，保护 `.venv`、reports、screenshots、app bundle 和 `MetaDatabase/PFI`。
+
+记录文件：`OVERALL_PROJECT_REVIEW.md`。
