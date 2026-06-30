@@ -1,0 +1,47 @@
+{
+  "schema_version": "kmfa.github_upload_manifest.v1",
+  "project_id": "KMFA",
+  "upload_id": "KMFA-S05-GITHUB-UPLOAD-20260630",
+  "stage": "S05",
+  "target": "LinzeColin/CodexProject main",
+  "status": "uploaded_to_github_main",
+  "upload_time": "2026-06-30T13:13:10+10:00",
+  "upload_base_origin_main": "495bcd977a587b7fd8b1923bfd74f5138f12263e",
+  "reviewed_content_commit": "ca6788949c444188b4b93f7db42c94094d90209f",
+  "reviewed_s05p3_commit": "c3314e47ce11cfb8bf56e44d4a38a77904584495",
+  "review_refs": [
+    "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md",
+    "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_review_manifest.json"
+  ],
+  "upload_refs": [
+    "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md",
+    "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json"
+  ],
+  "validation_summary": {
+    "s05_p1": "PASS: files=9, pdf=8, excel=1, member_sha256_pending=9",
+    "s05_p2": "PASS: fixture_candidates=45, private_value_hash_recorded=40, private_value_pending=5, active owner downgrade ready",
+    "s05_p3": "PASS: q5_locked_fields=40, excluded_fields=5, authority_records=45, formal_report_allowed=false",
+    "combined_unit_tests": "PASS: 53 tests",
+    "no_omission": "PASS: requirements=20, P0=9, P1=8, status_records=295, tasks=162, v1.2_html=45+",
+    "governance": "PASS: errors 0 / warnings 0",
+    "sensitive_file_scan": "PASS",
+    "secret_scan": "PASS_WITH_POLICY_TEXT_MATCHES_ONLY",
+    "jsonl_parse": "PASS"
+  },
+  "privacy_boundary": {
+    "raw_sensitive_data_uploaded": false,
+    "raw_business_files_uploaded": false,
+    "business_records_committed": false,
+    "credentials_committed": false,
+    "private_csv_committed": false
+  },
+  "non_scope": [
+    "S06 zero-delta validation",
+    "fact layer",
+    "lineage full check",
+    "management report generation",
+    "UI",
+    "external connectors"
+  ]
+}

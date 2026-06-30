@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s05-github-upload - 2026-06-30
+
+- 完成 Stage 5 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `495bcd977a587b7fd8b1923bfd74f5138f12263e` rebase 完整 Stage 5 栈，并复跑 S05-P1/P2/P3 validators、治理 validator、raw/secret scan 和 JSONL parse check。
+- 修复 upload gate finding：rebase 后 Stage 5 review evidence 的 `reviewed_head` 已更新为当前 rebased S05-P3 commit `c3314e47ce11cfb8bf56e44d4a38a77904584495`。
+- 新增 `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json`。
+- 保持 S06 zero-delta、lineage、事实层、报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s05-stage-review - 2026-06-30
 
 - 完成 Stage 5 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
