@@ -1000,6 +1000,34 @@ S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_MODEL_ID = (
+    "adp-s2plt02-real-scheduler-proof-capture-audit-v1"
+)
+S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_SCOPE = (
+    "real_scheduler_proof_capture_audit_no_scheduler_enablement_no_write"
+)
+S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_NO_PRODUCTION_FLAGS = (
+    "artifact_written",
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_packaging_enabled",
+    "release_uploaded",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_MODEL_ID = "adp-s2plt02-dry-run-second-day-audit-v1"
 S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SCOPE = "second_day_dry_run_trace_no_terminal_delivery_credit"
 S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SERVICE_DATE = "2026-06-29"
@@ -3668,6 +3696,175 @@ def build_s2plt02_real_scheduler_proof_validation_state(
     }
     state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     return state
+
+
+def build_s2plt02_real_scheduler_proof_capture_audit_state(
+    *,
+    generated_at: str,
+    proof_ref: str = "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+    launchctl_disabled_text: str = "",
+    launchctl_print_outputs: Mapping[str, str] | None = None,
+    scheduler_run_manifest: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Audit whether current launchd evidence can produce a real scheduler proof."""
+
+    disabled_states = _parse_launchd_disabled_states(launchctl_disabled_text)
+    launchd_print_outputs = launchctl_print_outputs or {}
+    required_labels = S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    launchagent_disabled_states = {
+        label: disabled_states.get(label, "missing")
+        for label in required_labels
+    }
+    launchagent_runtime_states = {
+        label: _parse_launchd_service_state(str(launchd_print_outputs.get(label, "")))
+        for label in required_labels
+    }
+    launchagent_calendar_triggers_present = {
+        label: _launchd_calendar_trigger_present(str(launchd_print_outputs.get(label, "")))
+        for label in required_labels
+    }
+    all_required_launchagents_disabled = all(
+        state == "disabled" for state in launchagent_disabled_states.values()
+    )
+    all_required_launchagents_loaded = all(
+        state != "missing" for state in launchagent_runtime_states.values()
+    )
+    all_required_launchagents_not_running = all(
+        state == "not running" for state in launchagent_runtime_states.values()
+    )
+    all_required_launchagents_have_calendar_triggers = all(launchagent_calendar_triggers_present.values())
+    launchagents_loaded_but_disabled = all_required_launchagents_disabled and all_required_launchagents_loaded
+    scheduler_runtime_evidence_status = (
+        "launchagents_loaded_but_disabled_not_terminal_scheduler_proof"
+        if launchagents_loaded_but_disabled
+        else "launchagents_disabled_not_terminal_scheduler_proof"
+        if all_required_launchagents_disabled
+        else "launchagent_runtime_state_unknown"
+        if not all_required_launchagents_loaded
+        else "launchagents_not_all_disabled_not_terminal_scheduler_proof"
+    )
+    scheduler_run_manifest_validation_errors = (
+        ["scheduler_run_manifest is required"]
+        if scheduler_run_manifest is None
+        else validate_s2plt02_real_scheduler_proof_manifest(scheduler_run_manifest)
+    )
+    blocking_reasons: list[str] = []
+    if all_required_launchagents_disabled:
+        blocking_reasons.append("launchagents_disabled_not_terminal_scheduler_proof")
+    if not all_required_launchagents_loaded:
+        blocking_reasons.append("launchagent_runtime_state_missing")
+    if not all_required_launchagents_have_calendar_triggers:
+        blocking_reasons.append("launchagent_calendar_trigger_missing")
+    if scheduler_run_manifest is None:
+        blocking_reasons.append("scheduler_run_manifest_missing")
+    elif scheduler_run_manifest_validation_errors:
+        blocking_reasons.append("scheduler_run_manifest_not_valid")
+
+    scheduler_proof_ready = not blocking_reasons and not scheduler_run_manifest_validation_errors
+    state: dict[str, Any] = {
+        "model_id": S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-AUDIT",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if scheduler_proof_ready else "blocked",
+        "scope": S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_SCOPE,
+        "proof_ref": proof_ref,
+        "scheduler_proof_ready": scheduler_proof_ready,
+        "real_scheduler_proven": scheduler_proof_ready,
+        "scheduler_evidence_present": scheduler_proof_ready,
+        "required_launchagent_labels": list(required_labels),
+        "launchagent_disabled_states": launchagent_disabled_states,
+        "launchagent_runtime_states": launchagent_runtime_states,
+        "launchagent_calendar_triggers_present": launchagent_calendar_triggers_present,
+        "all_required_launchagents_disabled": all_required_launchagents_disabled,
+        "all_required_launchagents_loaded": all_required_launchagents_loaded,
+        "all_required_launchagents_not_running": all_required_launchagents_not_running,
+        "all_required_launchagents_have_calendar_triggers": all_required_launchagents_have_calendar_triggers,
+        "launchagents_loaded_but_disabled": launchagents_loaded_but_disabled,
+        "scheduler_runtime_evidence_status": scheduler_runtime_evidence_status,
+        "scheduler_run_manifest_validation_errors": scheduler_run_manifest_validation_errors,
+        "blocking_reasons": blocking_reasons,
+        **{flag: False for flag in S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_NO_PRODUCTION_FLAGS},
+        "state_hash": "",
+    }
+    if scheduler_proof_ready:
+        state["scheduler_proof_candidate"] = {
+            "proof_ref": proof_ref,
+            "status": "pass",
+            "real_scheduler_proven": True,
+            "scheduler_evidence_present": True,
+            **{flag: False for flag in S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS},
+        }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_real_scheduler_proof_capture_audit_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate a no-write scheduler proof capture audit state."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_MODEL_ID:
+        errors.append("S2PLT02 real scheduler proof capture audit model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 real scheduler proof capture audit schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-AUDIT":
+        errors.append("S2PLT02 real scheduler proof capture audit task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 real scheduler proof capture audit acceptance_id is invalid")
+    if state.get("scope") != S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_SCOPE:
+        errors.append("S2PLT02 real scheduler proof capture audit scope is invalid")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 real scheduler proof capture audit status must be pass or blocked")
+    ready = state.get("scheduler_proof_ready") is True
+    if state.get("status") == "pass" and not ready:
+        errors.append("pass status requires scheduler_proof_ready")
+    if ready and state.get("blocking_reasons"):
+        errors.append("scheduler_proof_ready requires no blocking_reasons")
+    if not ready and not state.get("blocking_reasons"):
+        errors.append("blocked scheduler proof capture audit requires blocking_reasons")
+    if ready:
+        candidate = _mapping(state.get("scheduler_proof_candidate"))
+        if not candidate:
+            errors.append("scheduler_proof_ready requires scheduler_proof_candidate")
+        else:
+            errors.extend(validate_s2plt02_real_scheduler_proof_manifest(candidate))
+    elif "scheduler_proof_candidate" in state:
+        errors.append("blocked scheduler proof capture audit must not include scheduler_proof_candidate")
+    disabled_states = _mapping(state.get("launchagent_disabled_states"))
+    runtime_states = _mapping(state.get("launchagent_runtime_states"))
+    calendar_triggers = _mapping(state.get("launchagent_calendar_triggers_present"))
+    if set(disabled_states) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+        errors.append("launchagent_disabled_states must cover all ADP local LaunchAgents")
+    if set(runtime_states) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+        errors.append("launchagent_runtime_states must cover all ADP local LaunchAgents")
+    if set(calendar_triggers) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+        errors.append("launchagent_calendar_triggers_present must cover all ADP local LaunchAgents")
+    expected_disabled = all(
+        disabled_states.get(label) == "disabled"
+        for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    )
+    if state.get("all_required_launchagents_disabled") is not expected_disabled:
+        errors.append("all_required_launchagents_disabled must match disabled states")
+    expected_loaded = all(
+        runtime_states.get(label) != "missing"
+        for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    )
+    if state.get("all_required_launchagents_loaded") is not expected_loaded:
+        errors.append("all_required_launchagents_loaded must match runtime states")
+    expected_calendar = all(
+        calendar_triggers.get(label) is True
+        for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    )
+    if state.get("all_required_launchagents_have_calendar_triggers") is not expected_calendar:
+        errors.append("all_required_launchagents_have_calendar_triggers must match trigger states")
+    for flag in S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_NO_PRODUCTION_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 real scheduler proof capture audit state_hash does not match state content")
+    return errors
 
 
 def validate_s2plt02_real_scheduler_proof_validation_state(state: Mapping[str, Any]) -> list[str]:

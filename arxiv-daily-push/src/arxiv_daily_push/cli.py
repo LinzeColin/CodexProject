@@ -141,6 +141,7 @@ from .stage2_final_gate import (
     build_s2plt02_real_proof_capture_readiness_state,
     build_s2plt02_real_delivery_manifest_validation_state,
     build_s2plt02_normalized_delivery_manifest_state,
+    build_s2plt02_real_scheduler_proof_capture_audit_state,
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_terminal_capture_window_audit_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
@@ -163,6 +164,7 @@ from .stage2_final_gate import (
     validate_s2plt02_real_proof_capture_readiness_state,
     validate_s2plt02_real_delivery_manifest_validation_state,
     validate_s2plt02_normalized_delivery_manifest_state,
+    validate_s2plt02_real_scheduler_proof_capture_audit_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_capture_window_audit_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
@@ -1392,6 +1394,42 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON draft wrapper. The command never writes the live authorization artifact.",
+    )
+
+    s2plt02_real_scheduler_proof_capture = subparsers.add_parser(
+        "audit-s2plt02-real-scheduler-proof-capture",
+        help="Audit current launchd evidence for S2PLT02 real scheduler proof capture without enabling scheduler.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
+        "--generated-at",
+        required=True,
+        help="Audit timestamp to embed in the no-write scheduler proof capture state.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
+        "--proof-ref",
+        default="governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+        help="Future scheduler proof reference to bind when proof capture becomes ready.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
+        "--launchctl-disabled-file",
+        default=None,
+        help="Optional sanitized launchctl print-disabled text file for deterministic validation.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
+        "--launchctl-print-file",
+        action="append",
+        default=[],
+        help="Optional LABEL=PATH sanitized launchctl print output. Repeat for each ADP LaunchAgent.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
+        "--scheduler-run-manifest",
+        default=None,
+        help="Optional future real scheduler proof manifest JSON to validate as an input candidate.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON S2PLT02 real scheduler proof capture audit state.",
     )
 
     s2plt02_real_scheduler_proof = subparsers.add_parser(
@@ -4180,6 +4218,61 @@ def main(argv: list[str] | None = None) -> int:
             for error in report.get("validation_errors", []):
                 print(f"- error: {error}")
         return 0 if report["status"] == "draft" and not report.get("validation_errors") else 2
+    if args.command == "audit-s2plt02-real-scheduler-proof-capture":
+        if args.launchctl_disabled_file:
+            launchctl_disabled_text = Path(args.launchctl_disabled_file).read_text(encoding="utf-8")
+        else:
+            completed = subprocess.run(
+                ["launchctl", "print-disabled", f"gui/{os.getuid()}"],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            launchctl_disabled_text = completed.stdout
+        launchctl_print_outputs: dict[str, str] = {}
+        if args.launchctl_print_file:
+            for item in args.launchctl_print_file:
+                label, separator, file_path = str(item).partition("=")
+                if separator and label:
+                    launchctl_print_outputs[label] = Path(file_path).read_text(encoding="utf-8")
+        else:
+            for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
+                completed = subprocess.run(
+                    ["launchctl", "print", f"gui/{os.getuid()}/{label}"],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                launchctl_print_outputs[label] = completed.stdout
+        scheduler_run_manifest = (
+            load_json_mapping(args.scheduler_run_manifest)
+            if args.scheduler_run_manifest
+            else None
+        )
+        report = build_s2plt02_real_scheduler_proof_capture_audit_state(
+            generated_at=args.generated_at,
+            proof_ref=args.proof_ref,
+            launchctl_disabled_text=launchctl_disabled_text,
+            launchctl_print_outputs=launchctl_print_outputs,
+            scheduler_run_manifest=scheduler_run_manifest,
+        )
+        state_errors = validate_s2plt02_real_scheduler_proof_capture_audit_state(report)
+        if state_errors:
+            report = {**report, "state_validation_errors": state_errors}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- scheduler_proof_ready: {report.get('scheduler_proof_ready')}")
+            print(f"- scheduler_runtime_evidence_status: {report.get('scheduler_runtime_evidence_status')}")
+            print(f"- proof_ref: {report.get('proof_ref')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in report.get("scheduler_run_manifest_validation_errors", []):
+                print(f"- evidence_error: {error}")
+            for error in state_errors:
+                print(f"- state_error: {error}")
+        return 0 if report["status"] == "pass" and not state_errors else 2
     if args.command == "validate-s2plt02-terminal-delivery-proof":
         report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=args.repo_root)
         if args.json:

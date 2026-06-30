@@ -5,6 +5,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
+import arxiv_daily_push.stage2_final_gate as stage2_final_gate_module
 from arxiv_daily_push.stage2_final_gate import (
     S2PLT02_BLOCKING_REASONS,
     S2PLT02_FORBIDDEN_FLAGS,
@@ -787,6 +788,64 @@ class Stage2FinalGateTests(unittest.TestCase):
             },
         )
         self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
+
+    def test_s2plt02_real_scheduler_proof_capture_audit_blocks_disabled_launchagents_without_enabling_scheduler(self) -> None:
+        self.assertTrue(
+            hasattr(stage2_final_gate_module, "build_s2plt02_real_scheduler_proof_capture_audit_state"),
+            "scheduler proof capture audit builder must exist before S2PLT02 can progress",
+        )
+        self.assertTrue(
+            hasattr(stage2_final_gate_module, "validate_s2plt02_real_scheduler_proof_capture_audit_state"),
+            "scheduler proof capture audit validator must exist before S2PLT02 can progress",
+        )
+        launchctl_disabled_text = """
+            "com.linze.adp.local.daily" => disabled
+            "com.linze.adp.local.health" => disabled
+            "com.linze.adp.local.watchdog" => disabled
+        """
+        launchctl_print_outputs = {
+            label: """
+                type = LaunchAgent
+                state = not running
+                event triggers = {
+                    com.linze.adp.local.daily.268435486 => {
+                        stream = com.apple.launchd.calendarinterval
+                    }
+                }
+            """
+            for label in (
+                "com.linze.adp.local.daily",
+                "com.linze.adp.local.health",
+                "com.linze.adp.local.watchdog",
+            )
+        }
+
+        audit = stage2_final_gate_module.build_s2plt02_real_scheduler_proof_capture_audit_state(
+            generated_at="2026-07-01T09:22:00+10:00",
+            launchctl_disabled_text=launchctl_disabled_text,
+            launchctl_print_outputs=launchctl_print_outputs,
+        )
+
+        self.assertEqual(audit["status"], "blocked")
+        self.assertEqual(audit["task_id"], "S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-AUDIT")
+        self.assertFalse(audit["scheduler_proof_ready"])
+        self.assertFalse(audit["real_scheduler_proven"])
+        self.assertFalse(audit["scheduler_evidence_present"])
+        self.assertTrue(audit["all_required_launchagents_disabled"])
+        self.assertTrue(audit["launchagents_loaded_but_disabled"])
+        self.assertEqual(
+            audit["scheduler_runtime_evidence_status"],
+            "launchagents_loaded_but_disabled_not_terminal_scheduler_proof",
+        )
+        self.assertIn("launchagents_disabled_not_terminal_scheduler_proof", audit["blocking_reasons"])
+        self.assertIn("scheduler_run_manifest_missing", audit["blocking_reasons"])
+        self.assertNotIn("scheduler_proof_candidate", audit)
+        for flag in stage2_final_gate_module.S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_NO_PRODUCTION_FLAGS:
+            self.assertFalse(audit[flag])
+        self.assertEqual(
+            stage2_final_gate_module.validate_s2plt02_real_scheduler_proof_capture_audit_state(audit),
+            [],
+        )
 
     def test_s2plt02_terminal_capture_window_reports_loaded_disabled_launchagents_as_nonterminal_scheduler(self) -> None:
         launchctl_disabled_text = """

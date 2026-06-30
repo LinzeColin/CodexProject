@@ -1,0 +1,85 @@
+{
+  "acceptance_id": "ACC-S2PLT02-2D",
+  "all_required_launchagents_disabled": true,
+  "all_required_launchagents_have_calendar_triggers": true,
+  "all_required_launchagents_loaded": true,
+  "all_required_launchagents_not_running": true,
+  "artifact_written": false,
+  "blocking_reasons": [
+    "launchagents_disabled_not_terminal_scheduler_proof",
+    "scheduler_run_manifest_missing"
+  ],
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_scheduler_audit_live PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push audit-s2plt02-real-scheduler-proof-capture --generated-at 2026-07-01T09:19:00+10:00 --json",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT.md"
+  ],
+  "generated_at": "2026-07-01T09:19:00+10:00",
+  "integrated_production_accepted": false,
+  "launchagent_calendar_triggers_present": {
+    "com.linze.adp.local.daily": true,
+    "com.linze.adp.local.health": true,
+    "com.linze.adp.local.watchdog": true
+  },
+  "launchagent_disabled_states": {
+    "com.linze.adp.local.daily": "disabled",
+    "com.linze.adp.local.health": "disabled",
+    "com.linze.adp.local.watchdog": "disabled"
+  },
+  "launchagent_runtime_states": {
+    "com.linze.adp.local.daily": "not running",
+    "com.linze.adp.local.health": "not running",
+    "com.linze.adp.local.watchdog": "not running"
+  },
+  "launchagents_loaded_but_disabled": true,
+  "model_id": "adp-s2plt02-real-scheduler-proof-capture-audit-v1",
+  "production_acceptance_claimed": false,
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "project_id": "arxiv-daily-push",
+  "proof_ref": "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_scheduler_proven": false,
+  "real_smtp_send_enabled": false,
+  "release_packaging_enabled": false,
+  "release_uploaded": false,
+  "required_launchagent_labels": [
+    "com.linze.adp.local.daily",
+    "com.linze.adp.local.health",
+    "com.linze.adp.local.watchdog"
+  ],
+  "run_id": "ADP-S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-AUDIT-20260701",
+  "s2plt02_accepted": false,
+  "scheduler_enabled": false,
+  "scheduler_evidence_present": false,
+  "scheduler_install_enabled": false,
+  "scheduler_proof_ready": false,
+  "scheduler_run_manifest_validation_errors": [
+    "scheduler_run_manifest is required"
+  ],
+  "scheduler_runtime_evidence_status": "launchagents_loaded_but_disabled_not_terminal_scheduler_proof",
+  "schema_version": "codexproject.run_manifest.v1",
+  "scope": "real_scheduler_proof_capture_audit_no_scheduler_enablement_no_write",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "state_hash": "2e2beb55957752acbed0d846e636b65ac23a27f85e9dd869ae765be764725e5f",
+  "status": "blocked_no_write_audit",
+  "summary": "Added and ran a no-write S2PLT02 real scheduler proof capture audit. Current launchd state is loaded but disabled/not running and cannot count as terminal real scheduler proof; a future scheduler run manifest is still required.",
+  "task_id": "S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-AUDIT",
+  "task_ids": [
+    "S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-AUDIT",
+    "S2PLT02",
+    "ACC-S2PLT02-2D"
+  ],
+  "terminal_delivery_proof_artifact_present": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}
