@@ -2021,18 +2021,45 @@ def build_s2plt02_terminal_capture_window_audit_state(
     state_dir: str | Path | None = None,
     candidate_service_dates: tuple[str, ...] = S2PLT02_TERMINAL_CAPTURE_WINDOW_DEFAULT_CANDIDATE_DATES,
     launchctl_disabled_text: str = "",
+    launchctl_print_outputs: Mapping[str, str] | None = None,
     adp_allow_smtp_send: bool = False,
 ) -> dict[str, Any]:
     """Audit the current terminal capture window without granting S2PLT02 credit."""
 
     disabled_states = _parse_launchd_disabled_states(launchctl_disabled_text)
+    launchd_print_outputs = launchctl_print_outputs or {}
     required_labels = S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
     launchagent_disabled_states = {
         label: disabled_states.get(label, "missing")
         for label in required_labels
     }
+    launchagent_runtime_states = {
+        label: _parse_launchd_service_state(str(launchd_print_outputs.get(label, "")))
+        for label in required_labels
+    }
+    launchagent_calendar_triggers_present = {
+        label: _launchd_calendar_trigger_present(str(launchd_print_outputs.get(label, "")))
+        for label in required_labels
+    }
     all_required_launchagents_disabled = all(
         state == "disabled" for state in launchagent_disabled_states.values()
+    )
+    all_required_launchagents_loaded = all(
+        state != "missing" for state in launchagent_runtime_states.values()
+    )
+    all_required_launchagents_not_running = all(
+        state == "not running" for state in launchagent_runtime_states.values()
+    )
+    all_required_launchagents_have_calendar_triggers = all(launchagent_calendar_triggers_present.values())
+    launchagents_loaded_but_disabled = all_required_launchagents_disabled and all_required_launchagents_loaded
+    scheduler_runtime_evidence_status = (
+        "launchagents_loaded_but_disabled_not_terminal_scheduler_proof"
+        if launchagents_loaded_but_disabled
+        else "launchagents_disabled_not_terminal_scheduler_proof"
+        if all_required_launchagents_disabled
+        else "launchagent_runtime_state_unknown"
+        if not all_required_launchagents_loaded
+        else "launchagents_not_all_disabled_not_terminal_scheduler_proof"
     )
     dry_run_audits = [
         build_s2plt02_dry_run_second_day_audit_state(
@@ -2095,8 +2122,16 @@ def build_s2plt02_terminal_capture_window_audit_state(
         "real_smtp_proven_for_terminal_pair": two_day_delivery_present,
         "real_scheduler_proven": real_scheduler_proven,
         "terminal_delivery_proof_artifact_present": terminal_artifact_present,
+        "required_launchagent_labels": list(required_labels),
         "launchagent_disabled_states": launchagent_disabled_states,
+        "launchagent_runtime_states": launchagent_runtime_states,
+        "launchagent_calendar_triggers_present": launchagent_calendar_triggers_present,
         "all_required_launchagents_disabled": all_required_launchagents_disabled,
+        "all_required_launchagents_loaded": all_required_launchagents_loaded,
+        "all_required_launchagents_not_running": all_required_launchagents_not_running,
+        "all_required_launchagents_have_calendar_triggers": all_required_launchagents_have_calendar_triggers,
+        "launchagents_loaded_but_disabled": launchagents_loaded_but_disabled,
+        "scheduler_runtime_evidence_status": scheduler_runtime_evidence_status,
         "adp_allow_smtp_send": adp_allow_smtp_send,
         "dry_run_audits": dry_run_audits,
         "delivery_evidence_ledger": delivery_ledger,
@@ -2139,6 +2174,45 @@ def validate_s2plt02_terminal_capture_window_audit_state(state: Mapping[str, Any
         errors.append("candidate_service_dates must not be empty")
     if tuple(_mapping(state.get("launchagent_disabled_states")).keys()) != S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
         errors.append("launchagent_disabled_states must cover all ADP local LaunchAgents")
+    runtime_states = _mapping(state.get("launchagent_runtime_states"))
+    calendar_triggers = _mapping(state.get("launchagent_calendar_triggers_present"))
+    if set(runtime_states) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+        errors.append("launchagent_runtime_states must cover all ADP local LaunchAgents")
+    if set(calendar_triggers) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+        errors.append("launchagent_calendar_triggers_present must cover all ADP local LaunchAgents")
+    expected_loaded = all(
+        runtime_states.get(label) != "missing" for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    )
+    if state.get("all_required_launchagents_loaded") is not expected_loaded:
+        errors.append("all_required_launchagents_loaded must match runtime states")
+    expected_not_running = all(
+        runtime_states.get(label) == "not running" for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    )
+    if state.get("all_required_launchagents_not_running") is not expected_not_running:
+        errors.append("all_required_launchagents_not_running must match runtime states")
+    expected_calendar = all(
+        calendar_triggers.get(label) is True for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    )
+    if state.get("all_required_launchagents_have_calendar_triggers") is not expected_calendar:
+        errors.append("all_required_launchagents_have_calendar_triggers must match trigger states")
+    disabled_states = _mapping(state.get("launchagent_disabled_states"))
+    expected_loaded_but_disabled = (
+        all(disabled_states.get(label) == "disabled" for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS)
+        and expected_loaded
+    )
+    if state.get("launchagents_loaded_but_disabled") is not expected_loaded_but_disabled:
+        errors.append("launchagents_loaded_but_disabled must match disabled and runtime states")
+    expected_scheduler_runtime_status = (
+        "launchagents_loaded_but_disabled_not_terminal_scheduler_proof"
+        if expected_loaded_but_disabled
+        else "launchagents_disabled_not_terminal_scheduler_proof"
+        if state.get("all_required_launchagents_disabled") is True
+        else "launchagent_runtime_state_unknown"
+        if not expected_loaded
+        else "launchagents_not_all_disabled_not_terminal_scheduler_proof"
+    )
+    if state.get("scheduler_runtime_evidence_status") != expected_scheduler_runtime_status:
+        errors.append("scheduler_runtime_evidence_status must match launchagent state")
     for field in (
         "terminal_delivery_credit",
         "counts_toward_s2plt02_terminal_proof",
@@ -7131,6 +7205,7 @@ def build_s2plt04_completion_evidence_audit_state(
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY-20260630.json",
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json",
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC-20260630.json",
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json",
             "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
             s2plt02_authorization_manifest_ref,

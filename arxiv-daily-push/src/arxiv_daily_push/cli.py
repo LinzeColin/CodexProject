@@ -119,6 +119,7 @@ from .stage2_replay_gate import (
 )
 from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+    S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS,
     S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
     build_final_acceptance_bundle_readiness_state,
     build_final_acceptance_bundle_manifest_validation_state,
@@ -1299,6 +1300,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--launchctl-disabled-file",
         default=None,
         help="Optional sanitized launchctl print-disabled text file for deterministic validation.",
+    )
+    s2plt02_terminal_capture_window.add_argument(
+        "--launchctl-print-file",
+        action="append",
+        default=[],
+        help="Optional LABEL=PATH sanitized launchctl print output. Repeat for each ADP LaunchAgent.",
     )
     s2plt02_terminal_capture_window.add_argument(
         "--json",
@@ -4023,6 +4030,21 @@ def main(argv: list[str] | None = None) -> int:
                 text=True,
             )
             launchctl_disabled_text = completed.stdout
+        launchctl_print_outputs = {}
+        if args.launchctl_print_file:
+            for item in args.launchctl_print_file:
+                label, separator, file_path = str(item).partition("=")
+                if separator and label:
+                    launchctl_print_outputs[label] = Path(file_path).read_text(encoding="utf-8")
+        else:
+            for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
+                completed = subprocess.run(
+                    ["launchctl", "print", f"gui/{os.getuid()}/{label}"],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                launchctl_print_outputs[label] = completed.stdout
         candidate_service_dates = tuple(
             item.strip()
             for item in str(args.candidate_service_dates).split(",")
@@ -4033,6 +4055,7 @@ def main(argv: list[str] | None = None) -> int:
             state_dir=args.state_dir,
             candidate_service_dates=candidate_service_dates,
             launchctl_disabled_text=launchctl_disabled_text,
+            launchctl_print_outputs=launchctl_print_outputs,
             adp_allow_smtp_send=str(os.environ.get("ADP_ALLOW_SMTP_SEND", "false")).strip().lower()
             in {"true", "1", "yes", "on"},
         )

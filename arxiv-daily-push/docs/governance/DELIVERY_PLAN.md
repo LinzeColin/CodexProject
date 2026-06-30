@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 293
+- task_count: 294
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 14:31:47 Australia/Sydney - S2PLT02 Terminal Capture Window Runtime State Sync
+
+- `S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC` updates `audit-s2plt02-terminal-capture-window` so the capture-window audit exposes launchctl runtime state in addition to disabled overrides.
+- Actual CLI remains blocked / exit 2 with `state_hash=cebee97e51f4cc6231a10b787aa65b17eed10c951330dea4328cd18d73ed912a`, `candidate_service_dates=2026-06-28,2026-06-29,2026-06-30`, `dry_run_service_dates=2026-06-29,2026-06-30`, `real_sent_candidate_email_count=4`, `dry_run_email_count=8`, and `observed_terminal_email_count_credit=4/8`.
+- Runtime launchd facts are now explicit: required LaunchAgents are loaded, not running, and have calendar triggers, but user-domain disabled overrides remain active; `scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof`, `real_scheduler_proven=false`, `terminal_delivery_credit=false`, and `counts_toward_s2plt02_terminal_proof=false`.
+- S2PLT04 follow-up audit consumes this as the 14th S2PLT02 nonterminal ref and remains blocked / exit 2 with `state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_RUNTIME_STATE_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT04 completion report, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 14:10:42 Australia/Sydney - S2PMT07 S2PLT04 S2PLT02 Latest Nonterminal Evidence Sync
 

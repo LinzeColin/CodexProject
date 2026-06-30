@@ -455,6 +455,26 @@ class CliTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
+            launchctl_print_files = []
+            for label in (
+                "com.linze.adp.local.daily",
+                "com.linze.adp.local.health",
+                "com.linze.adp.local.watchdog",
+            ):
+                launchctl_print_file = tmp_root / f"{label}.print.txt"
+                launchctl_print_file.write_text(
+                    """
+                    type = LaunchAgent
+                    state = not running
+                    event triggers = {
+                        com.linze.adp.local.daily.268435486 => {
+                            stream = com.apple.launchd.calendarinterval
+                        }
+                    }
+                    """,
+                    encoding="utf-8",
+                )
+                launchctl_print_files.extend(["--launchctl-print-file", f"{label}={launchctl_print_file}"])
             buffer = io.StringIO()
             with redirect_stdout(buffer):
                 result = main(
@@ -468,6 +488,7 @@ class CliTests(unittest.TestCase):
                         "2026-06-29,2026-06-30",
                         "--launchctl-disabled-file",
                         str(launchctl_file),
+                        *launchctl_print_files,
                         "--json",
                     ]
                 )
@@ -481,6 +502,14 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["real_smtp_proven_for_terminal_pair"])
         self.assertFalse(payload["real_scheduler_proven"])
         self.assertTrue(payload["all_required_launchagents_disabled"])
+        self.assertTrue(payload["all_required_launchagents_loaded"])
+        self.assertTrue(payload["all_required_launchagents_not_running"])
+        self.assertTrue(payload["all_required_launchagents_have_calendar_triggers"])
+        self.assertTrue(payload["launchagents_loaded_but_disabled"])
+        self.assertEqual(
+            payload["scheduler_runtime_evidence_status"],
+            "launchagents_loaded_but_disabled_not_terminal_scheduler_proof",
+        )
         self.assertEqual(payload["observed_terminal_email_count_credit"], 4)
         self.assertEqual(payload["required_email_count"], 8)
         self.assertIn("adp_launchagents_disabled_by_user_domain_override", payload["blocking_reasons"])
