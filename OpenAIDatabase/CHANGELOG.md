@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 5.1 Memory River Rendering
+
+- Added the production Timeline renderer flag with `memory-river` as the
+  explicit default and `legacy` as the rollback mode through URL, localStorage,
+  `VITE_MEMORY_ATLAS_TIMELINE_RENDERER`, or the in-app renderer toggle.
+- Replaced the default Timeline canvas with a UTC-based Memory River rendering
+  path that exposes Macro / Meso / Micro levels, grouped river lanes, readable
+  lane labels, density context and UTC cursor/date ticks.
+- Added black-hole, proto-star and event markers for high-signal memories while
+  preserving the existing legacy Timeline path for rollback.
+- Updated the Memory River model parameter file from a Stage 0 template to the
+  real Stage 5.1 production contract and marked brush/event-card/multimodal
+  interaction as deferred to Stage 5.2.
+- Added deterministic `validate:memory-river-rendering` coverage and extended
+  visual acceptance with `timeline_stage5_1_river_rendering_ready`.
+
+No Stage 5.2 brush interaction, hover/click event-card workflow, multimodal
+feedback, ingestion, raw/private data access, direct writeback, Cloudflare live
+deploy, or external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 4.3 Starfield Interaction
 
 - Added Memory Starfield `Freeze Flow Field` / `Resume Flow Field` control so

@@ -61,6 +61,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     visual_flags_source = read_text(repo_root / "apps/memory-atlas/src/config/visualFlags.ts")
     css_source = read_text(repo_root / "apps/memory-atlas/src/styles.css")
     model_params_source = read_text(repo_root / "config/visualization/model_parameters.memory_starfield.yaml")
+    memory_river_params_source = read_text(repo_root / "config/visualization/model_parameters.memory_river.yaml")
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
     readme = read_text(repo_root / "README.md")
@@ -227,6 +228,46 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "timeline_is_dynamic_interactive",
         "Timeline exposes zoom, window center, replay cursor, density track, density backdrops, hover detail strip, and wheel zoom",
         "Timeline is still static or lacks dynamic controls, density layers, replay cursor, or hover/detail interaction",
+    )
+    require(
+        checks,
+        'export type TimelineRendererMode = "memory-river" | "legacy"' in visual_flags_source
+        and 'DEFAULT_TIMELINE_RENDERER_MODE: TimelineRendererMode = "memory-river"' in visual_flags_source
+        and 'TIMELINE_RENDERER_STORAGE_KEY = "memory-atlas.timeline-renderer"' in visual_flags_source
+        and "VITE_MEMORY_ATLAS_TIMELINE_RENDERER" in visual_flags_source
+        and 'params.get("timelineRenderer") ?? params.get("timeline")' in visual_flags_source
+        and "getInitialTimelineRendererMode" in timeline_view
+        and "persistTimelineRendererMode" in timeline_view
+        and 'className="timeline-renderer-toggle"' in timeline_view
+        and "data-timeline-renderer={timelineRendererMode}" in timeline_view
+        and 'className="memory-river-canvas timeline-canvas"' in timeline_view
+        and 'data-utc-time-scale="true"' in timeline_view
+        and "Macro / Meso / Micro" in timeline_view
+        and "function parseTimelineUtcDay" in app_source
+        and "function timelineUtcMs" in app_source
+        and "function buildMemoryRiverLayout" in app_source
+        and "function buildMemoryRiverPath" in app_source
+        and "function memoryRiverMarkerKind" in app_source
+        and "{ level: \"Macro\", note:" in app_source
+        and "{ level: \"Meso\", note:" in app_source
+        and "{ level: \"Micro\", note:" in app_source
+        and ".timeline-renderer-toggle" in css_source
+        and ".memory-river-canvas" in css_source
+        and ".memory-river-level-label" in css_source
+        and ".memory-river-lane-flow" in css_source
+        and ".memory-river-marker" in css_source
+        and 'stage: "5.1"' in memory_river_params_source
+        and "renderer_default: memory-river" in memory_river_params_source
+        and "legacy_renderer: legacy" in memory_river_params_source
+        and "use_utc_scale: true" in memory_river_params_source
+        and "label: Macro" in memory_river_params_source
+        and "label: Meso" in memory_river_params_source
+        and "label: Micro" in memory_river_params_source
+        and "brush_enabled: false" in memory_river_params_source
+        and "click_event_card_enabled: false" in memory_river_params_source,
+        "timeline_stage5_1_river_rendering_ready",
+        "Timeline defaults to Memory River behind a reversible renderer flag, uses explicit UTC scale helpers, and renders Macro/Meso/Micro lane paths with dedicated river markers",
+        "Stage 5.1 Memory River rendering, UTC scale, Macro/Meso/Micro lanes, feature flag, or legacy rollback contract is missing",
     )
     require(
         checks,

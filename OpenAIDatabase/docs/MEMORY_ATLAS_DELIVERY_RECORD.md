@@ -1,6 +1,6 @@
 # Memory Atlas Delivery Record
 
-更新时间：2026-06-19
+更新时间：2026-07-01
 
 本文件记录 Memory Atlas 的功能清单、交付运行方式、验收标准、历史过程记录、待开发清单和下一位 agent 的接手顺序。模型假设、处理方法、公式和阈值不写在这里，见 `docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md`。
 
@@ -63,7 +63,7 @@ Cloudflare 方案：
 - 数据导图：应使用框架导图格式展示来源、画像、项目决策和行动机会，不是普通列表。
 - ROI Dashboard：显示 leverage score、推荐动作、层级、主题、增量信号；用于 ROI 排序和决策。
 - Obsidian Graph：支持 global/local graph、图谱设置折叠、Focus - Connectivity、节点显示名 `层级 · 主题 · 关键词`，并同步 Inspector。
-- Timeline：必须是真实动态可交互 Timeline。支持真实日期轴、动态窗口、缩放、播放游标、密度轨、密度背景、hover 详情、点击同步 Inspector。
+- Timeline：默认使用 Memory River 渲染器，以 UTC 日期尺度展示 Macro / Meso / Micro 河道、主题/项目/分类 lane、密度背景、真实事件日期 tick、播放游标、black-hole / proto-star / event marker；保留 legacy Timeline feature flag 回滚。Stage 5.2 之前，brush、hover/click event card 和专用多模态反馈仍未完成。
 - Contribution Grid：支持日/周/月/年和年份选择。日/周共享 7 行 x 52-54 列全年坐标，周模式以一整列自然周为对象；月/年共享两年 24 列，年视图纵向展示。
 - Word Cloud：Heatmap、Bubble Chart、Word Cloud 三层都可点击并同步右侧详情。
 - Search/Review：搜索与复盘必须输出人能直接用的结论和行动，不只给数据库字段。
@@ -124,6 +124,7 @@ Writeback：
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 4.2 Data Mapping；生产 Galaxy 的 cluster mass、粒子大小/亮度/颜色、轨迹强度和 Memory Terrain 映射改为读取 `config/visualization/model_parameters.memory_starfield.yaml`；Presentation 保持轻提示，Analysis panel 可解释 ridge、shoreline、valley、basin、fault-line 地形；仍未进入 Stage 4.3 交互扩展、Timeline 替换、写回或 Cloudflare 部署。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 4.3 Starfield Interaction；生产 Galaxy 保留 hover preview 和 capped click focus，新增 Freeze / Resume Flow，新增 Presentation / Analysis mode selector；Analysis 显示公式摘要、terrain legend 和当前 Inspector 上下文；Stage 5 Timeline 替换、写回、Cloudflare 部署和 raw/private data 仍未进入。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 4 整体复审；复审确认 visual roadmap `记忆星系生产集成` 的 4.1/4.2/4.3 均通过，本地 contract、build、visual acceptance、release acceptance、preview HTTP 和 4177 清理通过；随后用 Chrome CDP 隔离 profile 补齐桌面/移动 WebGL screenshot、canvas-pixel 和 FPS 证据，并修复 390px 移动端 Galaxy 横向溢出与首屏画布露出不足问题。
+- 2026-07-01：完成 Memory Atlas v1.1.5 Stage 5.1 Memory River Rendering；生产 Timeline 默认进入 `memory-river` renderer，保留 `legacy` 回滚；新增 UTC 日期尺度、Macro/Meso/Micro 河道、主题/项目/分类 lane、black-hole/proto-star/event markers、Stage 5.1 validator、visual acceptance 钩子和 Memory River 参数文件更新；Stage 5.2 brush、hover/click event card、多模态反馈仍未进入。
 
 近期提交参考：
 

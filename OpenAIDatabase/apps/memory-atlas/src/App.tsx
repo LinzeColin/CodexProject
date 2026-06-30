@@ -36,7 +36,14 @@ import {
   uniqueSorted,
   visibleGraphFor,
 } from "./data/atlas";
-import { getInitialGalaxyRendererMode, persistGalaxyRendererMode, type GalaxyRendererMode } from "./config/visualFlags";
+import {
+  getInitialGalaxyRendererMode,
+  getInitialTimelineRendererMode,
+  persistGalaxyRendererMode,
+  persistTimelineRendererMode,
+  type GalaxyRendererMode,
+  type TimelineRendererMode,
+} from "./config/visualFlags";
 import type { ActivityBucket, AtlasEdge, AtlasFilters, AtlasMetric, AtlasNode, MemoryAtlas, ViewKey } from "./types";
 
 const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) => ({ default: module.GalaxyScene })));
@@ -83,6 +90,60 @@ interface TimelineLayoutControls {
   zoom: number;
   center: number;
   cursor: number;
+}
+
+type MemoryRiverLevel = "Macro" | "Meso" | "Micro";
+
+interface TimelineDisplayEvent {
+  id: string;
+  source: TimelineEvent;
+  node: AtlasNode | undefined;
+  day: Date;
+  utcDate: string;
+  x: number;
+  y: number;
+  radius: number;
+  color: string;
+  major: boolean;
+  future: boolean;
+  shortLabel: string;
+}
+
+interface MemoryRiverLevelBand {
+  level: MemoryRiverLevel;
+  note: string;
+  y: number;
+}
+
+interface MemoryRiverLane {
+  id: string;
+  groupKey: string;
+  level: MemoryRiverLevel;
+  label: string;
+  count: number;
+  path: string;
+  color: string;
+  gradientId: string;
+  strokeWidth: number;
+  labelX: number;
+  labelY: number;
+  y: number;
+}
+
+interface MemoryRiverMarker {
+  id: string;
+  kind: "black-hole" | "proto-star" | "memory-event";
+  title: string;
+  x: number;
+  y: number;
+  radius: number;
+}
+
+interface MemoryRiverLayout {
+  levels: MemoryRiverLevelBand[];
+  lanes: MemoryRiverLane[];
+  markers: MemoryRiverMarker[];
+  levelCounts: Record<MemoryRiverLevel, number>;
 }
 
 interface DeltaStats {
@@ -1177,10 +1238,12 @@ function TimelineView({
   const [timelineCursor, setTimelineCursor] = useState(1);
   const [timelinePlaying, setTimelinePlaying] = useState(false);
   const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
+  const [timelineRendererMode, setTimelineRendererMode] = useState<TimelineRendererMode>(() => getInitialTimelineRendererMode());
   const display = useMemo(
     () => buildTimelineLayout(timeline, nodeMap, { zoom: timelineZoom, center: timelineCenter, cursor: timelineCursor }),
     [timeline, nodeMap, timelineCenter, timelineCursor, timelineZoom],
   );
+  const riverDisplay = useMemo(() => buildMemoryRiverLayout(display.events, display.cursorX), [display.cursorX, display.events]);
   const hoveredEvent = useMemo(
     () => display.events.find((event) => event.id === hoveredEventId) ?? display.events.find((event) => event.source.node_id === selectedNode?.id) ?? display.events[display.events.length - 1] ?? null,
     [display.events, hoveredEventId, selectedNode?.id],
@@ -1223,17 +1286,38 @@ function TimelineView({
     setTimelinePlaying(false);
   }
 
+  function updateTimelineRendererMode(mode: TimelineRendererMode) {
+    setTimelineRendererMode(mode);
+    persistTimelineRendererMode(mode);
+  }
+
   return (
-    <div className="visual-workspace timeline-map">
+    <div className="visual-workspace timeline-map" data-timeline-renderer={timelineRendererMode}>
       <div className="surface-heading compact">
         <div>
-          <p className="eyebrow">时间轴 / 动态窗口 / 事件密度</p>
-          <h2>按真实日期播放、缩放和定位记忆、决策、项目事件</h2>
+          <p className="eyebrow">{timelineRendererMode === "memory-river" ? "记忆时间河 / UTC Time Scale / Theme Lanes" : "时间轴 / 动态窗口 / 事件密度"}</p>
+          <h2>{timelineRendererMode === "memory-river" ? "按 Macro / Meso / Micro 河道观察主题、项目和记忆如何增强、衰退和迁移" : "按真实日期播放、缩放和定位记忆、决策、项目事件"}</h2>
         </div>
         <span>{display.visibleCount} / {display.totalCount} 个事件 · {display.rangeLabel}</span>
       </div>
       <DeltaStrip stats={deltaStats} compact />
       <div className="timeline-control-bar" aria-label="时间轴控制">
+        <div className="timeline-renderer-toggle" aria-label="Timeline renderer feature flag">
+          <button
+            aria-pressed={timelineRendererMode === "memory-river"}
+            onClick={() => updateTimelineRendererMode("memory-river")}
+            type="button"
+          >
+            Memory River
+          </button>
+          <button
+            aria-pressed={timelineRendererMode === "legacy"}
+            onClick={() => updateTimelineRendererMode("legacy")}
+            type="button"
+          >
+            Legacy
+          </button>
+        </div>
         <button aria-label={timelinePlaying ? "暂停时间轴播放" : "播放时间轴"} className="icon-control" onClick={() => setTimelinePlaying((value) => !value)} type="button">
           {timelinePlaying ? <Pause size={15} /> : <Play size={15} />}
         </button>
@@ -1259,9 +1343,9 @@ function TimelineView({
       </div>
       <div className="timeline-summary-grid" aria-label="时间轴摘要">
         <div><span>窗口事件</span><strong>{display.visibleCount.toLocaleString()}</strong></div>
-        <div><span>高重要/决策</span><strong>{display.importantCount.toLocaleString()}</strong></div>
-        <div><span>核心画像</span><strong>{display.coreCount.toLocaleString()}</strong></div>
-        <div><span>密度峰值</span><strong>{display.peakDensity.toLocaleString()}</strong></div>
+        <div><span>{timelineRendererMode === "memory-river" ? "Macro 河道" : "高重要/决策"}</span><strong>{timelineRendererMode === "memory-river" ? riverDisplay.levelCounts.Macro.toLocaleString() : display.importantCount.toLocaleString()}</strong></div>
+        <div><span>{timelineRendererMode === "memory-river" ? "Meso 河道" : "核心画像"}</span><strong>{timelineRendererMode === "memory-river" ? riverDisplay.levelCounts.Meso.toLocaleString() : display.coreCount.toLocaleString()}</strong></div>
+        <div><span>{timelineRendererMode === "memory-river" ? "Micro 河道" : "密度峰值"}</span><strong>{timelineRendererMode === "memory-river" ? riverDisplay.levelCounts.Micro.toLocaleString() : display.peakDensity.toLocaleString()}</strong></div>
       </div>
       <div className="timeline-density-track" aria-label="时间密度轨">
         {display.densityBands.map((band) => (
@@ -1276,73 +1360,136 @@ function TimelineView({
           />
         ))}
       </div>
-      <svg className="timeline-canvas" viewBox="0 0 1000 640" role="img" aria-label="动态记忆时间轴" onWheel={handleTimelineWheel}>
-        <defs>
-          <filter id="softGlow">
-            <feGaussianBlur stdDeviation="3.2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        {display.densityBars.map((band) => (
-          <rect className="timeline-density-backdrop" height={band.height} key={band.key} width={band.width} x={band.x} y={band.y} />
-        ))}
-        <line x1="80" x2="960" y1="540" y2="540" stroke="rgba(244,241,232,0.28)" strokeWidth="2" />
-        {display.ticks.map((tick) => (
-          <g key={tick.label}>
-            <line x1={tick.x} x2={tick.x} y1="70" y2="548" stroke="rgba(244,241,232,0.08)" />
-            <text x={tick.x} y="570" textAnchor="middle" className="axis-label">{tick.label}</text>
-          </g>
-        ))}
-        {display.eventTicks.map((tick) => (
-          <g className="event-date-tick" key={tick.date}>
-            <title>{`${tick.date} · ${tick.count} 个真实事件`}</title>
-            <line x1={tick.x} x2={tick.x} y1="528" y2="552" />
-            <text x={tick.x} y={tick.stagger ? 612 : 594} textAnchor="middle" className="event-axis-label">{tick.label}</text>
-          </g>
-        ))}
-        {display.lanes.map((lane) => (
-          <g key={lane.key}>
-            <line x1="80" x2="960" y1={lane.y} y2={lane.y} stroke={lane.color} opacity="0.2" />
-            <text x="28" y={lane.y + 4} className="lane-label">{lane.label}</text>
-          </g>
-        ))}
-        <g className="timeline-cursor">
-          <line x1={display.cursorX} x2={display.cursorX} y1="58" y2="552" />
-          <text x={display.cursorX} y="50" textAnchor="middle">{display.cursorLabel}</text>
-        </g>
-        {display.events.map((event) => {
-          const node = event.node;
-          const selected = event.source.node_id === selectedNode?.id;
-          const hovered = event.id === hoveredEventId;
-          const statusClass = event.future ? "future" : "past";
-          return (
-            <g
-              className={`timeline-event ${statusClass}${selected ? " selected" : ""}${hovered ? " hovered" : ""}`}
-              aria-label={`${event.source.date} · ${normalizeMemoryTier(event.source.memory_tier)} · ${event.source.label}`}
-              key={event.id}
-              role="button"
-              tabIndex={node ? 0 : -1}
-              onClick={() => {
-                if (node) onSelectNode(node);
-              }}
-              onMouseEnter={() => setHoveredEventId(event.id)}
-              onMouseLeave={() => setHoveredEventId(null)}
-              onKeyDown={(keyboardEvent) => {
-                if (node && isActivationKey(keyboardEvent)) onSelectNode(node);
-              }}
-            >
-              <line x1={event.x} x2={event.x} y1={event.y} y2="540" stroke={event.color} opacity="0.28" />
-              <circle cx={event.x} cy={event.y} r={event.radius} fill={event.color} filter="url(#softGlow)" />
-              {(event.major || selected || hovered) ? (
-                <text x={Math.min(930, event.x + 10)} y={event.y - 10} className="timeline-point-label">{event.shortLabel}</text>
-              ) : null}
+      {timelineRendererMode === "memory-river" ? (
+        <svg className="memory-river-canvas timeline-canvas" data-utc-time-scale="true" viewBox="0 0 1000 640" role="img" aria-label="记忆时间河 Macro Meso Micro UTC 河道" onWheel={handleTimelineWheel}>
+          <defs>
+            <filter id="memoryRiverGlow">
+              <feGaussianBlur stdDeviation="4.4" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            {riverDisplay.lanes.map((lane) => (
+              <linearGradient id={lane.gradientId} key={lane.gradientId} x1="0%" x2="100%" y1="0%" y2="0%">
+                <stop offset="0%" stopColor={lane.color} stopOpacity="0.16" />
+                <stop offset="45%" stopColor={lane.color} stopOpacity="0.72" />
+                <stop offset="100%" stopColor={lane.color} stopOpacity="0.28" />
+              </linearGradient>
+            ))}
+          </defs>
+          {display.densityBars.map((band) => (
+            <rect className="timeline-density-backdrop" height={band.height} key={band.key} width={band.width} x={band.x} y={band.y} />
+          ))}
+          {display.ticks.map((tick) => (
+            <g key={tick.label}>
+              <line x1={tick.x} x2={tick.x} y1="58" y2="552" stroke="rgba(244,241,232,0.08)" />
+              <text x={tick.x} y="574" textAnchor="middle" className="axis-label">{tick.label}</text>
             </g>
-          );
-        })}
-      </svg>
+          ))}
+          {riverDisplay.levels.map((level) => (
+            <g className="memory-river-level" key={level.level}>
+              <text x="30" y={level.y - 18} className="memory-river-level-label">{level.level}</text>
+              <text x="30" y={level.y} className="memory-river-level-note">{level.note}</text>
+              <line x1="80" x2="960" y1={level.y + 12} y2={level.y + 12} />
+            </g>
+          ))}
+          {riverDisplay.lanes.map((lane) => (
+            <g className={`memory-river-lane level-${lane.level.toLowerCase()}`} key={lane.id}>
+              <title>{`${lane.level} · ${lane.label} · ${lane.count} 个事件 · UTC scale`}</title>
+              <path className="memory-river-lane-shadow" d={lane.path} strokeWidth={lane.strokeWidth + 10} />
+              <path className="memory-river-lane-flow" d={lane.path} stroke={`url(#${lane.gradientId})`} strokeWidth={lane.strokeWidth} />
+              <text x={lane.labelX} y={lane.labelY} className="memory-river-lane-label">{lane.label}</text>
+            </g>
+          ))}
+          {display.eventTicks.map((tick) => (
+            <g className="event-date-tick memory-river-date-tick" key={tick.date}>
+              <title>{`${tick.date} UTC · ${tick.count} 个真实事件`}</title>
+              <line x1={tick.x} x2={tick.x} y1="528" y2="552" />
+              <text x={tick.x} y={tick.stagger ? 612 : 594} textAnchor="middle" className="event-axis-label">{tick.label}</text>
+            </g>
+          ))}
+          {riverDisplay.markers.map((marker) => (
+            <g className={`memory-river-marker ${marker.kind}`} key={marker.id}>
+              <title>{marker.title}</title>
+              <circle cx={marker.x} cy={marker.y} r={marker.radius + 6} />
+              <circle cx={marker.x} cy={marker.y} r={marker.radius} />
+            </g>
+          ))}
+          <g className="timeline-cursor memory-river-cursor">
+            <line x1={display.cursorX} x2={display.cursorX} y1="58" y2="552" />
+            <text x={display.cursorX} y="50" textAnchor="middle">UTC {display.cursorLabel}</text>
+          </g>
+        </svg>
+      ) : (
+        <svg className="timeline-canvas" viewBox="0 0 1000 640" role="img" aria-label="动态记忆时间轴" onWheel={handleTimelineWheel}>
+          <defs>
+            <filter id="softGlow">
+              <feGaussianBlur stdDeviation="3.2" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          {display.densityBars.map((band) => (
+            <rect className="timeline-density-backdrop" height={band.height} key={band.key} width={band.width} x={band.x} y={band.y} />
+          ))}
+          <line x1="80" x2="960" y1="540" y2="540" stroke="rgba(244,241,232,0.28)" strokeWidth="2" />
+          {display.ticks.map((tick) => (
+            <g key={tick.label}>
+              <line x1={tick.x} x2={tick.x} y1="70" y2="548" stroke="rgba(244,241,232,0.08)" />
+              <text x={tick.x} y="570" textAnchor="middle" className="axis-label">{tick.label}</text>
+            </g>
+          ))}
+          {display.eventTicks.map((tick) => (
+            <g className="event-date-tick" key={tick.date}>
+              <title>{`${tick.date} · ${tick.count} 个真实事件`}</title>
+              <line x1={tick.x} x2={tick.x} y1="528" y2="552" />
+              <text x={tick.x} y={tick.stagger ? 612 : 594} textAnchor="middle" className="event-axis-label">{tick.label}</text>
+            </g>
+          ))}
+          {display.lanes.map((lane) => (
+            <g key={lane.key}>
+              <line x1="80" x2="960" y1={lane.y} y2={lane.y} stroke={lane.color} opacity="0.2" />
+              <text x="28" y={lane.y + 4} className="lane-label">{lane.label}</text>
+            </g>
+          ))}
+          <g className="timeline-cursor">
+            <line x1={display.cursorX} x2={display.cursorX} y1="58" y2="552" />
+            <text x={display.cursorX} y="50" textAnchor="middle">{display.cursorLabel}</text>
+          </g>
+          {display.events.map((event) => {
+            const node = event.node;
+            const selected = event.source.node_id === selectedNode?.id;
+            const hovered = event.id === hoveredEventId;
+            const statusClass = event.future ? "future" : "past";
+            return (
+              <g
+                className={`timeline-event ${statusClass}${selected ? " selected" : ""}${hovered ? " hovered" : ""}`}
+                aria-label={`${event.source.date} · ${normalizeMemoryTier(event.source.memory_tier)} · ${event.source.label}`}
+                key={event.id}
+                role="button"
+                tabIndex={node ? 0 : -1}
+                onClick={() => {
+                  if (node) onSelectNode(node);
+                }}
+                onMouseEnter={() => setHoveredEventId(event.id)}
+                onMouseLeave={() => setHoveredEventId(null)}
+                onKeyDown={(keyboardEvent) => {
+                  if (node && isActivationKey(keyboardEvent)) onSelectNode(node);
+                }}
+              >
+                <line x1={event.x} x2={event.x} y1={event.y} y2="540" stroke={event.color} opacity="0.28" />
+                <circle cx={event.x} cy={event.y} r={event.radius} fill={event.color} filter="url(#softGlow)" />
+                {(event.major || selected || hovered) ? (
+                  <text x={Math.min(930, event.x + 10)} y={event.y - 10} className="timeline-point-label">{event.shortLabel}</text>
+                ) : null}
+              </g>
+            );
+          })}
+        </svg>
+      )}
       <div className="timeline-event-detail-strip" aria-label="时间轴事件详情">
         {hoveredEvent ? (
           <>
@@ -4271,19 +4418,29 @@ function buildObsidianLayout(
   return { nodes: layoutNodes, edges: layoutEdges };
 }
 
+function parseTimelineUtcDay(value: string | undefined): Date | null {
+  return parseDay(value);
+}
+
+function timelineUtcMs(day: Date): number {
+  return Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate());
+}
+
 function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, AtlasNode>, controls: TimelineLayoutControls) {
   const allEvents = timeline
-    .map((event) => ({ source: event, day: parseDay(event.date), node: nodeMap.get(event.node_id) }))
+    .map((event) => ({ source: event, day: parseTimelineUtcDay(event.date), node: nodeMap.get(event.node_id) }))
     .filter((event): event is { source: TimelineEvent; day: Date; node: AtlasNode | undefined } => Boolean(event.day))
-    .sort((a, b) => a.day.getTime() - b.day.getTime());
+    .sort((a, b) => timelineUtcMs(a.day) - timelineUtcMs(b.day));
   const minAllDay = allEvents[0]?.day ?? new Date();
   const maxAllDay = allEvents[allEvents.length - 1]?.day ?? minAllDay;
-  const totalSpan = Math.max(1, maxAllDay.getTime() - minAllDay.getTime());
+  const minAllMs = timelineUtcMs(minAllDay);
+  const maxAllMs = timelineUtcMs(maxAllDay);
+  const totalSpan = Math.max(1, maxAllMs - minAllMs);
   const zoom = Math.min(8, Math.max(1, controls.zoom || 1));
   const visibleSpan = Math.max(1, totalSpan / zoom);
-  const rawCenter = minAllDay.getTime() + totalSpan * Math.min(1, Math.max(0, controls.center));
-  const minWindow = minAllDay.getTime();
-  const maxWindow = maxAllDay.getTime();
+  const rawCenter = minAllMs + totalSpan * Math.min(1, Math.max(0, controls.center));
+  const minWindow = minAllMs;
+  const maxWindow = maxAllMs;
   const unclampedStart = rawCenter - visibleSpan / 2;
   const windowStartMs = Math.max(minWindow, Math.min(Math.max(minWindow, maxWindow - visibleSpan), unclampedStart));
   const windowEndMs = Math.min(maxWindow, windowStartMs + visibleSpan);
@@ -4293,7 +4450,7 @@ function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, Atl
   const cursor = Math.min(1, Math.max(0, controls.cursor));
   const cursorMs = windowStartMs + span * cursor;
   const visibleEvents = allEvents
-    .filter((event) => event.day.getTime() >= windowStartMs && event.day.getTime() <= windowEndMs)
+    .filter((event) => timelineUtcMs(event.day) >= windowStartMs && timelineUtcMs(event.day) <= windowEndMs)
     .slice(-260);
   const laneKeys = uniqueSorted(visibleEvents.map((event) => normalizeMemoryTier(event.source.memory_tier) || event.source.category)).slice(0, 7);
   const lanes = laneKeys.map((key, index) => ({
@@ -4325,22 +4482,178 @@ function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, Atl
     peakDensity: Math.max(0, ...densityBands.map((band) => band.count)),
     events: visibleEvents.map((event, index) => {
       const lane = laneMap.get(normalizeMemoryTier(event.source.memory_tier) || event.source.category) ?? lanes[index % Math.max(lanes.length, 1)];
-      const x = 80 + ((event.day.getTime() - minDay.getTime()) / span) * 880;
+      const eventMs = timelineUtcMs(event.day);
+      const x = 80 + ((eventMs - timelineUtcMs(minDay)) / span) * 880;
       const major = event.source.importance === "高" || event.source.category === "decision" || index % 11 === 0;
       return {
         id: `${event.source.date}-${event.source.node_id}-${event.source.memory_id || index}`,
         source: event.source,
         node: event.node,
+        day: event.day,
+        utcDate: toDayKey(event.day),
         x,
         y: lane?.y ?? 300,
         radius: event.source.importance === "高" ? 9 : event.source.category === "decision" ? 8 : 5,
         color: event.node ? nodeColor(event.node) : lane?.color ?? "#94a3b8",
         major,
-        future: event.day.getTime() > cursorMs,
+        future: eventMs > cursorMs,
         shortLabel: truncate(event.source.label, 18),
       };
     }),
   };
+}
+
+function buildMemoryRiverLayout(events: TimelineDisplayEvent[], cursorX: number): MemoryRiverLayout {
+  const levelSpecs: Array<MemoryRiverLevelBand & { maxLanes: number }> = [
+    { level: "Macro", note: "层级 / 长期记忆气候", y: 118, maxLanes: 3 },
+    { level: "Meso", note: "主题 / 项目迁移", y: 294, maxLanes: 4 },
+    { level: "Micro", note: "分类 / 事件波纹", y: 464, maxLanes: 4 },
+  ];
+  const levelCounts: Record<MemoryRiverLevel, number> = { Macro: 0, Meso: 0, Micro: 0 };
+  const lanes: MemoryRiverLane[] = [];
+  const laneLookup = new Map<string, MemoryRiverLane>();
+
+  for (const spec of levelSpecs) {
+    const buckets = new Map<string, { key: string; label: string; events: TimelineDisplayEvent[]; score: number }>();
+    for (const event of events) {
+      const group = memoryRiverGroup(event, spec.level);
+      const bucket = buckets.get(group.key) ?? { key: group.key, label: group.label, events: [], score: 0 };
+      bucket.events.push(event);
+      bucket.score += memoryRiverEventScore(event);
+      buckets.set(group.key, bucket);
+    }
+    levelCounts[spec.level] = buckets.size;
+    const selected = Array.from(buckets.values())
+      .sort((a, b) => b.events.length - a.events.length || b.score - a.score || a.label.localeCompare(b.label, "zh-CN"))
+      .slice(0, spec.maxLanes);
+    const spacing = selected.length > 1 ? Math.min(42, 98 / Math.max(1, selected.length - 1)) : 0;
+    selected.forEach((bucket, index) => {
+      const y = spec.y + (index - (selected.length - 1) / 2) * spacing;
+      const color = memoryRiverLaneColor(bucket.key, spec.level, index);
+      const strokeWidth = Math.max(8, Math.min(34, 7 + Math.log1p(bucket.events.length) * 9 + bucket.score * 0.03));
+      const lane: MemoryRiverLane = {
+        id: `river-${spec.level.toLowerCase()}-${stableHash(`${spec.level}:${bucket.key}`)}`,
+        groupKey: bucket.key,
+        level: spec.level,
+        label: truncate(bucket.label, spec.level === "Macro" ? 16 : 18),
+        count: bucket.events.length,
+        path: buildMemoryRiverPath(bucket.events, y),
+        color,
+        gradientId: `memory-river-gradient-${spec.level.toLowerCase()}-${index}-${stableHash(bucket.key)}`,
+        strokeWidth,
+        labelX: Math.max(96, Math.min(820, bucket.events[0]?.x ?? 120)),
+        labelY: y - Math.max(14, strokeWidth / 2 + 7),
+        y,
+      };
+      lanes.push(lane);
+      laneLookup.set(`${spec.level}:${bucket.key}`, lane);
+    });
+  }
+
+  const markerEvents = events
+    .filter((event) => event.major || event.source.importance === "高" || ["decision", "deprecated_info", "temporary_or_sensitive"].includes(event.source.category))
+    .sort((a, b) => timelineUtcMs(a.day) - timelineUtcMs(b.day))
+    .slice(-64);
+  const markers = markerEvents.map((event): MemoryRiverMarker => {
+    const level = memoryRiverMarkerLevel(event);
+    const group = memoryRiverGroup(event, level);
+    const lane = laneLookup.get(`${level}:${group.key}`) ?? lanes.find((candidate) => candidate.level === level) ?? lanes[0];
+    const kind = memoryRiverMarkerKind(event);
+    return {
+      id: `river-marker-${event.id}`,
+      kind,
+      title: `${event.utcDate} UTC · ${kind === "black-hole" ? "Black Hole" : kind === "proto-star" ? "Proto-Star" : "Memory Event"} · ${event.source.label}`,
+      x: Math.max(86, Math.min(954, event.x)),
+      y: (lane?.y ?? 300) + (stableUnit(`${event.id}:${level}`, "memory-river-marker-y") - 0.5) * 26,
+      radius: kind === "black-hole" ? Math.max(6, event.radius + 2) : kind === "proto-star" ? Math.max(5, event.radius + 1) : event.radius,
+    };
+  });
+
+  return {
+    levels: levelSpecs.map(({ level, note, y }) => ({ level, note, y })),
+    lanes: lanes.length ? lanes : buildEmptyMemoryRiverLanes(levelSpecs, cursorX),
+    markers,
+    levelCounts,
+  };
+}
+
+function buildEmptyMemoryRiverLanes(levels: Array<MemoryRiverLevelBand & { maxLanes: number }>, cursorX: number): MemoryRiverLane[] {
+  return levels.map((level, index) => ({
+    id: `river-empty-${level.level.toLowerCase()}`,
+    groupKey: "empty",
+    level: level.level,
+    label: "暂无可渲染事件",
+    count: 0,
+    path: `M 80 ${level.y} C ${Math.max(120, cursorX - 90)} ${level.y}, ${Math.min(920, cursorX + 90)} ${level.y}, 960 ${level.y}`,
+    color: memoryRiverLaneColor("empty", level.level, index),
+    gradientId: `memory-river-gradient-empty-${level.level.toLowerCase()}`,
+    strokeWidth: 8,
+    labelX: 110,
+    labelY: level.y - 14,
+    y: level.y,
+  }));
+}
+
+function memoryRiverGroup(event: TimelineDisplayEvent, level: MemoryRiverLevel): { key: string; label: string } {
+  if (level === "Macro") {
+    const tier = normalizeMemoryTier(event.source.memory_tier) || "未分层";
+    return { key: tier, label: translateTierOrKind(tier) };
+  }
+  if (level === "Meso") {
+    const theme = event.node ? compactThemeLabel(humanThemeLabel(event.node)) || event.node.visual?.cluster || "未归类主题" : "未归类主题";
+    return { key: event.node?.visual?.cluster ?? theme, label: theme };
+  }
+  const category = event.source.category || "unknown";
+  return { key: category, label: humanCategoryLabel(category) };
+}
+
+function memoryRiverEventScore(event: TimelineDisplayEvent): number {
+  const tier = normalizeMemoryTier(event.source.memory_tier);
+  return (
+    (event.source.importance === "高" ? 12 : event.source.importance === "中" ? 6 : 2) +
+    (event.source.category === "decision" ? 8 : 0) +
+    (tier === "核心画像" ? 8 : tier === "一般" ? 4 : 0)
+  );
+}
+
+function memoryRiverLaneColor(key: string, level: MemoryRiverLevel, index: number): string {
+  if (level === "Macro") return laneColor(key, index);
+  const mesoColors = ["#8fd3ff", "#7ee8d4", "#f48fb1", "#6ea8ff", "#c7a7ff"];
+  const microColors = ["#f48fb1", "#c7a7ff", "#94a3b8", "#48c7e8", "#7ee8d4"];
+  return (level === "Meso" ? mesoColors : microColors)[(index + Math.floor(stableUnit(key, `river-${level}`) * 10)) % (level === "Meso" ? mesoColors.length : microColors.length)];
+}
+
+function buildMemoryRiverPath(events: TimelineDisplayEvent[], baseY: number): string {
+  const sorted = [...events].sort((a, b) => a.x - b.x);
+  const anchors = [
+    { x: 80, y: baseY },
+    ...sorted.map((event) => ({
+      x: Math.max(80, Math.min(960, event.x)),
+      y: baseY + (stableUnit(event.id, "memory-river-wave") - 0.5) * 38,
+    })),
+    { x: 960, y: baseY },
+  ];
+  let path = `M ${anchors[0].x} ${anchors[0].y}`;
+  for (let index = 1; index < anchors.length; index += 1) {
+    const previous = anchors[index - 1];
+    const current = anchors[index];
+    const midX = previous.x + (current.x - previous.x) / 2;
+    path += ` C ${midX} ${previous.y}, ${midX} ${current.y}, ${current.x} ${current.y}`;
+  }
+  return path;
+}
+
+function memoryRiverMarkerLevel(event: TimelineDisplayEvent): MemoryRiverLevel {
+  if (event.source.category === "deprecated_info" || event.source.category === "temporary_or_sensitive") return "Micro";
+  if (event.source.category === "decision" || event.source.importance === "高") return "Meso";
+  return "Macro";
+}
+
+function memoryRiverMarkerKind(event: TimelineDisplayEvent): MemoryRiverMarker["kind"] {
+  const text = `${event.source.label} ${event.node?.statement ?? ""}`;
+  if (event.source.category === "deprecated_info" || event.source.category === "temporary_or_sensitive") return "black-hole";
+  if (event.source.category === "decision" || event.source.importance === "高" || /机会|增长|突破|下一步|opportunity|next/i.test(text)) return "proto-star";
+  return "memory-event";
 }
 
 function buildTimelineDensityBands(
@@ -4351,7 +4664,9 @@ function buildTimelineDensityBands(
   windowEndMs: number,
 ) {
   const count = 48;
-  const totalSpan = Math.max(1, maxDay.getTime() - minDay.getTime());
+  const minMs = timelineUtcMs(minDay);
+  const maxMs = timelineUtcMs(maxDay);
+  const totalSpan = Math.max(1, maxMs - minMs);
   const bins = Array.from({ length: count }, (_unused, index) => ({
     key: `density-${index}`,
     count: 0,
@@ -4361,7 +4676,7 @@ function buildTimelineDensityBands(
     active: false,
   }));
   for (const event of events) {
-    const ratio = Math.min(0.999, Math.max(0, (event.day.getTime() - minDay.getTime()) / totalSpan));
+    const ratio = Math.min(0.999, Math.max(0, (timelineUtcMs(event.day) - minMs) / totalSpan));
     bins[Math.floor(ratio * count)].count += 1;
   }
   const peak = Math.max(1, ...bins.map((bin) => bin.count));
@@ -4383,10 +4698,11 @@ function buildTimelineDensityBackdrops(
   maxDay: Date,
 ) {
   const count = 36;
-  const span = Math.max(1, maxDay.getTime() - minDay.getTime());
+  const minMs = timelineUtcMs(minDay);
+  const span = Math.max(1, timelineUtcMs(maxDay) - minMs);
   const bins = Array.from({ length: count }, (_unused, index) => ({ key: `timeline-band-${index}`, count: 0 }));
   for (const event of events) {
-    const ratio = Math.min(0.999, Math.max(0, (event.day.getTime() - minDay.getTime()) / span));
+    const ratio = Math.min(0.999, Math.max(0, (timelineUtcMs(event.day) - minMs) / span));
     bins[Math.floor(ratio * count)].count += 1;
   }
   const peak = Math.max(1, ...bins.map((bin) => bin.count));
@@ -4735,10 +5051,11 @@ function buildMonthTicks(minDay: Date, maxDay: Date, minX: number, maxX: number)
   const ticks: Array<{ label: string; x: number }> = [];
   const start = new Date(Date.UTC(minDay.getUTCFullYear(), minDay.getUTCMonth(), 1));
   const end = new Date(Date.UTC(maxDay.getUTCFullYear(), maxDay.getUTCMonth(), 1));
-  const span = Math.max(1, maxDay.getTime() - minDay.getTime());
+  const minMs = timelineUtcMs(minDay);
+  const span = Math.max(1, timelineUtcMs(maxDay) - minMs);
   let cursor = start;
   while (cursor <= end) {
-    const x = minX + ((cursor.getTime() - minDay.getTime()) / span) * (maxX - minX);
+    const x = minX + ((timelineUtcMs(cursor) - minMs) / span) * (maxX - minX);
     ticks.push({ label: `${cursor.getUTCFullYear()}.${cursor.getUTCMonth() + 1}`, x });
     cursor = new Date(Date.UTC(cursor.getUTCFullYear(), cursor.getUTCMonth() + 1, 1));
   }
@@ -4760,13 +5077,14 @@ function buildEventDateTicks(
     current.score += event.source.importance === "高" ? 8 : event.source.category === "decision" ? 6 : 1;
     grouped.set(date, current);
   }
-  const all = Array.from(grouped.values()).sort((a, b) => a.day.getTime() - b.day.getTime());
+  const all = Array.from(grouped.values()).sort((a, b) => timelineUtcMs(a.day) - timelineUtcMs(b.day));
   if (all.length <= 12) return all.map((tick, index) => eventDateTick(tick, index, minDay, maxDay, minX, maxX));
   const selected = new Map<string, (typeof all)[number]>();
   selected.set(all[0].date, all[0]);
   selected.set(all[all.length - 1].date, all[all.length - 1]);
-  const span = Math.max(1, maxDay.getTime() - minDay.getTime());
-  const xFor = (day: Date) => minX + ((day.getTime() - minDay.getTime()) / span) * (maxX - minX);
+  const minMs = timelineUtcMs(minDay);
+  const span = Math.max(1, timelineUtcMs(maxDay) - minMs);
+  const xFor = (day: Date) => minX + ((timelineUtcMs(day) - minMs) / span) * (maxX - minX);
   const ranked = [...all].sort((a, b) => b.count * 3 + b.score - (a.count * 3 + a.score));
   for (const candidate of ranked) {
     if (selected.size >= 12) break;
@@ -4775,7 +5093,7 @@ function buildEventDateTicks(
     if (hasSpace) selected.set(candidate.date, candidate);
   }
   return Array.from(selected.values())
-    .sort((a, b) => a.day.getTime() - b.day.getTime())
+    .sort((a, b) => timelineUtcMs(a.day) - timelineUtcMs(b.day))
     .map((tick, index) => eventDateTick(tick, index, minDay, maxDay, minX, maxX));
 }
 
@@ -4787,11 +5105,12 @@ function eventDateTick(
   minX: number,
   maxX: number,
 ) {
-  const span = Math.max(1, maxDay.getTime() - minDay.getTime());
+  const minMs = timelineUtcMs(minDay);
+  const span = Math.max(1, timelineUtcMs(maxDay) - minMs);
   return {
     date: tick.date,
     label: formatAxisDate(tick.day),
-    x: minX + ((tick.day.getTime() - minDay.getTime()) / span) * (maxX - minX),
+    x: minX + ((timelineUtcMs(tick.day) - minMs) / span) * (maxX - minX),
     count: tick.count,
     stagger: index % 2,
   };
