@@ -15,6 +15,7 @@
   const PHASE52_NAME = "下一步动作";
   const PHASE53_ID = "V023-S5-P5.3";
   const PHASE53_NAME = "去 AI 痕迹";
+  const STAGE62_ID = "V023-S6-P6.2";
 
   const DISPLAY_VALUE_STATUSES = Object.freeze(["ready", "confirmed_zero"]);
   const STATUS_COPY_ZH = Object.freeze({
@@ -101,6 +102,15 @@
     metric("cash_balance_cny", "现金余额", "CNY"),
     metric("investment_market_value_cny", "投资市值", "CNY"),
     metric("month_spend_cny", "本月支出", "CNY"),
+  ]);
+
+  const STAGE62_HOME_METRICS = Object.freeze([
+    "net_worth_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny",
+    "life_consumption_cny",
+    "total_consumption_outflow_cny",
+    "data_health",
   ]);
 
   function buildStage5Phase51Contract() {
@@ -282,6 +292,22 @@
       home_features: buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges, nextActions, reportEntry),
       home_rows: buildHomeRows(financialState, readyCount, blockedCount, recentChanges, reportEntry),
       home_tasks: buildHomeTaskRows(readyCount, blockedCount, recentChanges, nextActions, reportEntry),
+    });
+  }
+
+  function buildStage6Phase62HomeMetricViewModel(readModel = {}) {
+    const cards = stage6CoreMetricsApi().buildMetricCards(readModel, STAGE62_HOME_METRICS);
+    const readyCount = cards.filter((card) => DISPLAY_VALUE_STATUSES.includes(card.status)).length;
+    return Object.freeze({
+      schema: "PFIV023Stage6PageMetricViewModelV1",
+      version: VERSION,
+      stage: "Stage 6",
+      phase_id: STAGE62_ID,
+      page: "home",
+      title: "首页核心指标",
+      cards,
+      shell_cards: cards.map((card) => [card.label, card.display_value, card.detail]),
+      summary_zh: `核心指标 ${readyCount} 项可显示，${cards.length - readyCount} 项保留中文状态。`,
     });
   }
 
@@ -567,11 +593,22 @@
     return route.startsWith("/") ? route : `/${route}`;
   }
 
+  function stage6CoreMetricsApi() {
+    if (typeof globalThis !== "undefined" && globalThis.PFI_STAGE6_CORE_METRICS) {
+      return globalThis.PFI_STAGE6_CORE_METRICS;
+    }
+    if (typeof require === "function") {
+      return require("../data/coreMetrics.js");
+    }
+    throw new Error("PFI_STAGE6_CORE_METRICS is required");
+  }
+
   return Object.freeze({
     buildStage5Phase51Contract,
     buildStage5Phase52Contract,
     buildStage5Phase53Contract,
     buildStage5HomeViewModel,
+    buildStage6Phase62HomeMetricViewModel,
     renderMetricValueZh,
     canDisplayFinancialValue,
   });

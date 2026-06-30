@@ -1,0 +1,14 @@
+PFI/src/pfi_v02/stage_v023_core_metrics.py
+PFI/web/app/data/coreMetrics.js
+PFI/web/app/pages/home.js
+PFI/web/app/pages/accounts.js
+PFI/web/app/pages/investment.js
+PFI/web/app/pages/consumption.js
+PFI/tests/test_v023_stage6_core_metrics.py
+PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md
+PFI/reports/pfi_v023/stage_6/phase_6_2/evidence.json
+PFI/reports/pfi_v023/stage_6/phase_6_2/page_view_models.json
+PFI/reports/pfi_v023/stage_6/phase_6_2/page_snapshot.html
+PFI/reports/pfi_v023/stage_6/phase_6_2/screenshots/page_view_models.png
+PFI/reports/pfi_v023/stage_6/phase_6_2/terminal.log
+PFI/reports/pfi_v023/stage_6/phase_6_2/changed_files.txt

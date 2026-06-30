@@ -1,0 +1,71 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "phase_id": "V023-S6-P6.2",
+  "phase_name": "页面接入",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "real_data_only_financial_metrics": true,
+  "source_core_metrics": {
+    "path": "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03"
+  },
+  "page_models": {
+    "path": "PFI/reports/pfi_v023/stage_6/phase_6_2/page_view_models.json",
+    "html_snapshot": "PFI/reports/pfi_v023/stage_6/phase_6_2/page_snapshot.html",
+    "screenshot": "PFI/reports/pfi_v023/stage_6/phase_6_2/screenshots/page_view_models.png",
+    "screenshot_size": {
+      "pixel_width": 1440,
+      "pixel_height": 1600
+    },
+    "pages": [
+      "home",
+      "accounts",
+      "investment",
+      "consumption"
+    ]
+  },
+  "metric_status": {
+    "ready": [
+      "life_consumption_cny",
+      "total_consumption_outflow_cny",
+      "data_health"
+    ],
+    "blocked": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ]
+  },
+  "stage_contract": {
+    "phase_6_3_consistency_done": false,
+    "stage_6_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "validation_commands": [
+    "node --check PFI/web/app/data/coreMetrics.js",
+    "node --check PFI/web/app/pages/home.js",
+    "node --check PFI/web/app/pages/accounts.js",
+    "node --check PFI/web/app/pages/investment.js",
+    "node --check PFI/web/app/pages/consumption.js",
+    "python3 -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q"
+  ],
+  "changed_files": [
+    "PFI/src/pfi_v02/stage_v023_core_metrics.py",
+    "PFI/web/app/data/coreMetrics.js",
+    "PFI/web/app/pages/home.js",
+    "PFI/web/app/pages/accounts.js",
+    "PFI/web/app/pages/investment.js",
+    "PFI/web/app/pages/consumption.js",
+    "PFI/tests/test_v023_stage6_core_metrics.py",
+    "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+    "PFI/reports/pfi_v023/stage_6/phase_6_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_2/page_view_models.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_2/page_snapshot.html",
+    "PFI/reports/pfi_v023/stage_6/phase_6_2/screenshots/page_view_models.png",
+    "PFI/reports/pfi_v023/stage_6/phase_6_2/terminal.log",
+    "PFI/reports/pfi_v023/stage_6/phase_6_2/changed_files.txt"
+  ]
+}

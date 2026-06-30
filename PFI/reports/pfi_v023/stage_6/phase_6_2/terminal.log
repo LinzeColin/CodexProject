@@ -1,0 +1,47 @@
+Stage 6 Phase 6.2 validation log
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q
+...........                                                              [100%]
+11 passed in 0.28s
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data/coreMetrics.js
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/home.js
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/accounts.js
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/investment.js
+exit 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/consumption.js
+exit 0
+
+$ /Applications/Google Chrome.app/Contents/MacOS/Google Chrome --headless --disable-gpu --hide-scrollbars --window-size=1440,1600 --screenshot=PFI/reports/pfi_v023/stage_6/phase_6_2/screenshots/page_view_models.png file://.../PFI/reports/pfi_v023/stage_6/phase_6_2/page_snapshot.html
+342287 bytes written to file PFI/reports/pfi_v023/stage_6/phase_6_2/screenshots/page_view_models.png
+
+$ sips -g pixelWidth -g pixelHeight -g hasAlpha PFI/reports/pfi_v023/stage_6/phase_6_2/screenshots/page_view_models.png
+pixelWidth: 1440
+pixelHeight: 1600
+hasAlpha: no
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+......................................................................................................               [100%]
+102 passed, 100 subtests passed in 1.62s
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_6/phase_6_2/evidence.json
+exit 0
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_6/phase_6_2/page_view_models.json
+exit 0
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_core_metrics.py PFI/tests/test_v023_stage6_core_metrics.py
+exit 0
+
+$ git diff --check -- PFI
+exit 0
+
+$ blocked source term scan over Stage 6.2 files
+no matches

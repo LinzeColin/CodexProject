@@ -88,13 +88,65 @@
     };
   }
 
+  function metricById(readModel) {
+    const normalized = normalizeReadModel(readModel);
+    return Object.freeze(
+      Object.fromEntries(normalized.core_metrics.map((metric) => [metric.metric_id, Object.freeze(metric)])),
+    );
+  }
+
+  function renderMetricValueZh(metric) {
+    const normalized = normalizeMetric(metric);
+    if (!canDisplayValue(normalized)) {
+      return normalized.message_zh || "需要人工复核";
+    }
+    if (normalized.currency === "records") {
+      return `${Number(normalized.value).toLocaleString("zh-CN")} records`;
+    }
+    const currency = normalized.currency || "CNY";
+    return `${currency} ${Number(normalized.value).toLocaleString("zh-CN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  }
+
+  function buildMetricCard(readModel, metricId, fallback = {}) {
+    const byId = metricById(readModel);
+    const metric = normalizeMetric(byId[metricId] || {
+      metric_id: metricId,
+      label: fallback.label || metricId,
+      value: null,
+      currency: fallback.currency || "CNY",
+      status: "not_loaded",
+      source: null,
+      as_of: null,
+      evidence_hash: null,
+      message_zh: fallback.message_zh || "未加载真实数据",
+    });
+    return Object.freeze({
+      ...metric,
+      display_value: renderMetricValueZh(metric),
+      detail: metric.source
+        ? `${metric.status} · ${metric.source} · as_of ${metric.as_of} · ${metric.evidence_hash}`
+        : `${metric.status} · ${metric.message_zh}`,
+    });
+  }
+
+  function buildMetricCards(readModel, metricIdsForPage) {
+    return Object.freeze(metricIdsForPage.map((metricId) => buildMetricCard(readModel, metricId)));
+  }
+
   return Object.freeze({
     metricIds,
     statuses,
     requiredFields,
     displayStatuses,
     canDisplayValue,
+    buildMetricCard,
+    buildMetricCards,
+    metricById,
     normalizeMetric,
     normalizeReadModel,
+    renderMetricValueZh,
   });
 });
