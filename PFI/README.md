@@ -30,6 +30,24 @@ Records:
 - `docs/pfi_v024/RUN_CONTRACT.md`
 - `reports/pfi_v024/pre_stage_0/evidence.json`
 
+## v0.2.4 Stage 0 Status
+
+Current run unit: `Stage 0 / Phase 0.1 - 需求合同冻结`.
+
+- Phase 0.1: candidate pass.
+- Phase 0.2: not executed.
+- Phase 0.3: not executed.
+- Stage 0 whole-stage review: not executed.
+- Business UI changes: none.
+- Data logic changes: none.
+
+Phase 0.1 records:
+
+- `docs/pfi_v024/REPAIR_SCOPE_LOCK.md`
+- `src/pfi_v02/stage_v024_repair_contract.py`
+- `tests/test_v024_stage0_phase01_contract.py`
+- `reports/pfi_v024/stage_0/phase_0_1/evidence.json`
+
 ## v0.2.3 Closeout Status
 
 PFI v0.2.3 当前处于 v0.2.3 user-accepted closeout complete。

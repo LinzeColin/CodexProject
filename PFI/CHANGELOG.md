@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 0 Phase 0.1 - 2026-06-30
+
+- 完成 `Stage 0 / Phase 0.1 - 需求合同冻结`，记录 v0.2.4 修补包定位、10 个正式一级入口、真实数据禁令和每轮最多一个 phase 的执行规则。
+- 新增 `docs/pfi_v024/REPAIR_SCOPE_LOCK.md`、`src/pfi_v02/stage_v024_repair_contract.py`、`tests/test_v024_stage0_phase01_contract.py` 和 `reports/pfi_v024/stage_0/phase_0_1/evidence.json`。
+- 本轮未执行 Phase 0.2、Phase 0.3 或 Stage 0 whole-stage review，未修改业务 UI、app bundle、launcher 或数据逻辑。
+
 ## v0.2.4 Repair Pack Pre Stage 0 - 2026-06-30
 
 - 建立 `v0.2.4` 修补包 pre stage 0；用户提供的 `v0.2.3-repair` roadmap/taskpack 作为来源输入，但当前 repo artifact 使用 `pfi_v024` 命名空间。
