@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Pre Stage 0 - 2026-06-30
+
+- 建立 `v0.2.4` 修补包 pre stage 0；用户提供的 `v0.2.3-repair` roadmap/taskpack 作为来源输入，但当前 repo artifact 使用 `pfi_v024` 命名空间。
+- 重新核验当前 GitHub main：`PFI/docs/pfi_v023` 和 v0.2.3 tests 已存在，`PFI/web/app/shell.js` 通过 `node --check`，TaskPack 内旧 GitHub audit 对当前 checkout 已过时。
+- 新增 `docs/pfi_v024/PRE_STAGE0_CONTEXT_LOCK.md`、`SOURCE_TASK_PACK_MANIFEST.md`、`RUN_CONTRACT.md`、`src/pfi_v02/stage_v024_pre_stage0_contract.py` 和 `tests/test_v024_pre_stage0_contract.py`。
+- 本轮未执行 Stage 0，未修改业务 UI、app bundle、launcher 或数据逻辑；停止等待用户验收或明确指令进入 Stage 0。
+
 ## v0.2.1.1 Product UI Recovery Stage 5/6 - 2026-06-29
 
 - 完成 `v0.2.1.1 Stage 5` 真实图表与最终验收合同：账户、投资、消费趋势统一读取 `/api/trends`，来源限定为 SQLite operational DB 和 `MetaDatabase/PFI/alipay_daily`。

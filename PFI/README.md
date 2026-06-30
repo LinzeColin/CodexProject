@@ -7,6 +7,29 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
+## v0.2.4 Repair Pack Pre Stage 0
+
+PFI v0.2.4 is the repair package following the completed v0.2.3 closeout.
+The user-provided source package is named `v0.2.3-repair`; this thread maps it
+to target version `v0.2.4`.
+
+Current run status:
+
+- current unit: `Pre Stage 0 / Phase P0.0`
+- Stage 0 executed: no
+- max work per run: one phase
+- business UI changes in this run: no
+- data logic changes in this run: no
+- current-main audit: v0.2.3 docs/tests exist and `PFI/web/app/shell.js` passes `node --check`
+- next gate: user acceptance or explicit instruction to enter v0.2.4 Stage 0
+
+Records:
+
+- `docs/pfi_v024/PRE_STAGE0_CONTEXT_LOCK.md`
+- `docs/pfi_v024/SOURCE_TASK_PACK_MANIFEST.md`
+- `docs/pfi_v024/RUN_CONTRACT.md`
+- `reports/pfi_v024/pre_stage_0/evidence.json`
+
 ## v0.2.3 Closeout Status
 
 PFI v0.2.3 当前处于 v0.2.3 user-accepted closeout complete。

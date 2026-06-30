@@ -1,0 +1,175 @@
+{
+  "schema": "PFIV024PreStage0EvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Pre Stage 0",
+  "phase_id": "P0.0",
+  "phase_name": "context convergence before Stage 0",
+  "status": "candidate_pass",
+  "generated_at": "2026-06-30T10:38:43Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "20681b1c59551798ad2dc6273ea93d9da6a988f6",
+    "origin_main_at_evidence_write": "20681b1c59551798ad2dc6273ea93d9da6a988f6",
+    "head_at_final_validation": "20681b1c59551798ad2dc6273ea93d9da6a988f6",
+    "origin_main_at_final_validation": "20681b1c59551798ad2dc6273ea93d9da6a988f6"
+  },
+  "source_files": {
+    "roadmap": {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Repair_Roadmap.md",
+      "exists": true,
+      "bytes": 28836,
+      "sha256": "04a817a7f90acccc959c1eb537c24648e0061df0e764cdec5d834bbd07047950"
+    },
+    "taskpack_zip": {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Repair_TaskPack.zip",
+      "exists": true,
+      "bytes": 51707,
+      "sha256": "4521fe2ded19104e2dfd8aa368d235b2e724824171b47d336c42a09ee8ca760d",
+      "zip_entry_count": 15,
+      "zip_entries": [
+        {
+          "name": "pfi_v023_repair_taskpack/ROADMAP_COPY.md",
+          "bytes": 28836
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/TASK_PACK.md",
+          "bytes": 8615
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/MANIFEST.json",
+          "bytes": 787
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/docs/GITHUB_CURRENT_AUDIT.md",
+          "bytes": 1151
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/docs/CODEX_EXECUTION_RULES.md",
+          "bytes": 565
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/docs/DATA_STATE_MACHINE_SPEC.md",
+          "bytes": 854
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/docs/UIUX_REPAIR_SPEC.md",
+          "bytes": 674
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/docs/REPORT_ANALYSIS_REPAIR_SPEC.md",
+          "bytes": 420
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/prompts/STAGE0_ONLY_CODEX_PROMPT.md",
+          "bytes": 1353
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/schemas/evidence_pack_schema.json",
+          "bytes": 826
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/schemas/data_state_machine.schema.json",
+          "bytes": 535
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/schemas/nav_contract.json",
+          "bytes": 443
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/checklists/HUMAN_ACCEPTANCE_CHECKLIST.md",
+          "bytes": 978
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/html/pfi_v023_phase1_human_product_experience_preview.html",
+          "bytes": 69207
+        },
+        {
+          "name": "pfi_v023_repair_taskpack/reference/previous_v023_roadmap_reference.md",
+          "bytes": 30642
+        }
+      ]
+    }
+  },
+  "current_main_audit": {
+    "head_at_audit": "20681b1c59551798ad2dc6273ea93d9da6a988f6",
+    "origin_main_at_audit": "20681b1c59551798ad2dc6273ea93d9da6a988f6",
+    "docs_pfi_v023_present": true,
+    "v023_test_file_count": 15,
+    "stage_v023_repair_contract_present": false,
+    "shell_js_node_check": "pass",
+    "taskpack_github_audit_is_stale_for_current_checkout": true
+  },
+  "contract_summary": {
+    "official_nav_count": 10,
+    "market_research_top_level": true,
+    "deprecated_constraints_retained_as_deprecated": true,
+    "no_mock_financial_data": true,
+    "max_phases_per_run": 1
+  },
+  "requires_user_acceptance": true,
+  "no_auto_stage0": true,
+  "no_auto_closeout": true,
+  "stage_0_executed": false,
+  "business_ui_changes_made": false,
+  "data_logic_changes_made": false,
+  "acceptance_checks": {
+    "taskpack_version_mapped_to_v024": true,
+    "source_files_hashed": true,
+    "current_main_reverified_not_assumed_from_taskpack": true,
+    "pre_stage0_only_no_stage0_execution": true,
+    "one_phase_only": true,
+    "no_business_ui_or_data_logic_changes": true
+  },
+  "commands": [
+    {
+      "cmd": "git fetch origin main && git pull --ff-only origin main",
+      "status": "pass"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass",
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "cmd": "python3 -B generated pre-stage evidence",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/开发记录.md",
+    "PFI/docs/pfi_v024/PRE_STAGE0_CONTEXT_LOCK.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/SOURCE_TASK_PACK_MANIFEST.md",
+    "PFI/src/pfi_v02/stage_v024_pre_stage0_contract.py",
+    "PFI/tests/test_v024_pre_stage0_contract.py",
+    "PFI/reports/pfi_v024/pre_stage_0/changed_files.txt",
+    "PFI/reports/pfi_v024/pre_stage_0/current_main_audit.md",
+    "PFI/reports/pfi_v024/pre_stage_0/evidence.json",
+    "PFI/reports/pfi_v024/pre_stage_0/terminal.log"
+  ],
+  "explicitly_not_done": [
+    "v0.2.4 Stage 0 execution",
+    "business UI repair",
+    "app bundle or launcher changes",
+    "data state machine implementation",
+    "GitHub main upload before validation"
+  ],
+  "next_gate": "user acceptance or explicit instruction to enter v0.2.4 Stage 0",
+  "validation_results": {
+    "node_check_shell_js": "pass",
+    "py_compile_contract_and_test": "pass",
+    "pytest_pre_stage0_contract": "3 passed in 0.10s",
+    "json_and_git_diff_check": "pass",
+    "project_cache_after_validation": "0 dirs / 0 files outside PFI/.venv",
+    "post_fast_forward_validation": true
+  },
+  "last_verified_at": "2026-06-30T10:41:07Z",
+  "last_refreshed_after_fast_forward_at": "2026-06-30T10:40:26Z"
+}
