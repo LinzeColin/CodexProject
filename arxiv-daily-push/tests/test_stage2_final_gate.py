@@ -3948,6 +3948,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         state = build_final_acceptance_bundle_readiness_state()
         assembly = state["p0_p1_zero_proof_assembly"]
         zero_proof = state["p0_p1_zero_proof_readiness"]
+        zero_summary = state["p0_p1_zero_proof_status_summary"]
 
         self.assertEqual(assembly["status"], "blocked_candidate_inputs_ready_no_closure")
         self.assertTrue(state["available_prebundle_evidence"]["P0_P1_ZERO_PROOF_ASSEMBLY"])
@@ -3960,6 +3961,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(zero_proof["closure_claimed"])
         self.assertTrue(state["available_prebundle_evidence"]["P0_P1_ZERO_PROOF_READINESS"])
         self.assertEqual(zero_proof["blocking_reasons"], [])
+        self.assertEqual(zero_summary["artifact_status"], "pass")
+        self.assertEqual(zero_summary["current_zero_proof_counts"], {"P0": 0, "P1": 0})
+        self.assertEqual(zero_summary["inherited_v7_1_baseline_counts"], {"P0": 8, "P1": 37})
+        self.assertFalse(zero_summary["production_acceptance_claimed"])
         self.assertEqual(validate_p0_p1_zero_proof_readiness_state(zero_proof), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
@@ -5562,6 +5567,16 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(step_status["INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"], "pass")
         self.assertEqual(step_status["P0_P1_ZERO_PROOF_ARTIFACT"], "pass")
         self.assertEqual(step_status["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"], "pass")
+        zero_summary = plan["p0_p1_zero_proof_status_summary"]
+        self.assertEqual(zero_summary["artifact_status"], "pass")
+        self.assertEqual(zero_summary["artifact_state_hash"], "bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786")
+        self.assertEqual(zero_summary["current_zero_proof_counts"], {"P0": 0, "P1": 0})
+        self.assertEqual(zero_summary["inherited_v7_1_baseline_counts"], {"P0": 8, "P1": 37})
+        self.assertTrue(zero_summary["p0_zero_proven_by_payload"])
+        self.assertTrue(zero_summary["p1_zero_proven_by_payload"])
+        self.assertFalse(zero_summary["production_acceptance_claimed"])
+        self.assertFalse(zero_summary["integrated_production_accepted"])
+        self.assertFalse(zero_summary["baseline_counts_mutated"])
         step_by_id = {step["step_id"]: step for step in plan["ordered_steps"]}
         self.assertTrue(step_by_id["S2PLT04_COMPLETION_REPORT"]["upstream_blocked"])
         self.assertFalse(step_by_id["S2PLT04_COMPLETION_REPORT"]["actionable_now"])

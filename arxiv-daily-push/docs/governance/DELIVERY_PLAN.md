@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 307
+- task_count: 308
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 22:46:02 Australia/Sydney - S2PMT07 Final Bundle P0/P1 Zero-Proof Status Summary
+
+- `S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY` makes `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle` expose `p0_p1_zero_proof_status_summary`.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=6036321e310edadb57834353b45c08a632100caab1f61dfd00fa7c108a57b05f`, final validator `state_hash=b0fc0aefd87ee9ed3c412024d534ec23a6fdf5d32316b6089fee769a3d24d758`, and zero-proof artifact `state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`.
+- Summary fields keep `current_zero_proof_counts=P0=0;P1=0`, `inherited_v7_1_baseline_counts=P0=8;P1=37`, `baseline_counts_mutated=false`, `production_acceptance_claimed=false`, and `integrated_production_accepted=false`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY.md`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- This does not mutate V7.1/V7.2 contract baseline counts, write S2PLT02 terminal proof, write S2PLT03 terminal proof, write S2PLT04 completion report, create final-bundle manifest/handoff/signoff/final-command proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 22:10:33 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Artifact Validation Summary
 
