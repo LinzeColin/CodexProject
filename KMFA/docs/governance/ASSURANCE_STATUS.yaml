@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S11-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260701-S11-GITHUB-UPLOAD"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "8c97474c26d78b2ed61c5d49fba2738026e21bdb"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S11_REVIEW_LOCAL_COMMIT"
-snapshot_event_time: "2026-07-01T11:30:00+10:00"
-generator_version: "manual-s11-stage-review"
-final_commit_binding: "post_amend_hash_recorded_by_git_parity_check"
+source_base_commit: "ab933e10e8b9d6bd13a86ea5e4103c52d86311e8"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S11_UPLOAD_LOCAL_COMMIT"
+snapshot_event_time: "2026-07-01T02:03:17+10:00"
+generator_version: "manual-s11-github-upload"
+final_commit_binding: "post_push_hash_recorded_by_git_parity_check"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -113,6 +113,7 @@ dimensions:
       - "KMFA/stage_artifacts/S11_P2_source_check_board/human/test_results.md"
       - "KMFA/stage_artifacts/S11_P3_project_cost_page/human/test_results.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -179,6 +180,7 @@ dimensions:
       - "KMFA/tools/project_cost_page_runtime.py"
       - "KMFA/tools/check_s11_p3_project_cost_page.py"
       - "KMFA/tools/check_s11_stage_review.py"
+      - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -326,15 +328,16 @@ dimensions:
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
+      - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S11_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
-  release_gate: "KMFA-S11-FINAL-GITHUB-UPLOAD-GATE"
+  status: "S11_UPLOADED_TO_GITHUB_MAIN_S12_P1_PENDING"
+  release_gate: "KMFA-S12-P1-GATE"
   blocker_ids:
-    - "STAGE11_GITHUB_UPLOAD_NOT_STARTED"
-    - "BRANCH_BEHIND_ORIGIN_MAIN_REQUIRES_REBASE_BEFORE_UPLOAD"
+    - "S12_P1_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

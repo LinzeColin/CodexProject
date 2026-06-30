@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s11-stage-review
+product_version: 0.1.0-s11-github-upload
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出、Stage 10 整体复审与 GitHub main 上传、S11-P1 public-safe 首页与导航、S11-P2 public-safe 数据源检查板、S11-P3 public-safe 项目成本页面，以及 Stage 11 整体复审。不声明 Stage 11 GitHub upload、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出、Stage 10 整体复审与 GitHub main 上传、S11-P1 public-safe 首页与导航、S11-P2 public-safe 数据源检查板、S11-P3 public-safe 项目成本页面、Stage 11 整体复审与 GitHub main 上传。不声明 S12、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -217,16 +217,16 @@ product_version: 0.1.0-s11-stage-review
 - purpose: 生成 KMFA 项目成本页面的 public-safe manifest、项目页面 records 和蓝色商务风 HTML 页面，覆盖项目列表、毛利状态、成本结构、回款状态、差异状态、项目详情、来源证据、待处理事项和报告预览。
 - fact_level: EXTRACTED
 - evidence: `KMFA/tools/project_cost_page_runtime.py`, `KMFA/tools/check_s11_p3_project_cost_page.py`, `KMFA/tests/test_project_cost_page_runtime.py`, `KMFA/metadata/reports/project_cost_page_manifest.json`, `KMFA/metadata/reports/project_cost_page_projects.jsonl`, `KMFA/stage_artifacts/S11_P3_project_cost_page/human/s11_p3_completion_record.md`
-- limitation: 只提交公开安全项目分组、状态、成本分类标签、证据引用、待处理事项、HTML 样张、manifest 和 records；不提交 raw business values、字段明文、真实源文件名、真实账号、Excel workbook、PDF、zip、sqlite/db 或 private CSV；报告预览可直接查看但必须显示 D 级且不可绕过质量等级；Stage 11 review 已本地通过，但不代表正式报告、lineage full check、外部接口或 GitHub upload 完成。
+- limitation: 只提交公开安全项目分组、状态、成本分类标签、证据引用、待处理事项、HTML 样张、manifest 和 records；不提交 raw business values、字段明文、真实源文件名、真实账号、Excel workbook、PDF、zip、sqlite/db 或 private CSV；报告预览可直接查看但必须显示 D 级且不可绕过质量等级；Stage 11 review/upload 已完成，但不代表 S12、正式报告、lineage full check 或外部接口完成。
 
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, Stage 9 review/upload, S10-P1 report templates, S10-P2 report grade runtime, S10-P3 report export, S11-P1 home navigation, S11-P2 source check board, S11-P3 project cost page, and Stage 11 review active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, Stage 9 review/upload, S10-P1 report templates, S10-P2 report grade runtime, S10-P3 report export, S11-P1 home navigation, S11-P2 source check board, S11-P3 project cost page, and Stage 11 review/upload active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
-- current limitation: Stage 11 GitHub upload, lineage full check, official report generation, and external connectors are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.
+- current limitation: S12, lineage full check, official report generation, and external connectors are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.
 
 ## Counts
 

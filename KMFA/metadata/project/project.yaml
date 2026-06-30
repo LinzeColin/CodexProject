@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s11-stage-review"
-current_stage: "S11"
-current_phase: "S11_STAGE_REVIEW"
-current_phase_status: "review_passed_upload_ready_local_only"
-current_stage_status: "s11_review_passed_upload_ready_local_only"
+version: "0.1.0-s11-github-upload"
+current_stage: "S12"
+current_phase: "S12-P1"
+current_phase_status: "pending"
+current_stage_status: "s11_uploaded_to_github_main_s12_p1_pending"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -61,6 +61,8 @@ machine_plane:
   - "stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
   - "stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
+  - "stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
+  - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
@@ -262,8 +264,10 @@ upload_policy:
   stage11_review_passed: true
   stage11_review_evidence: "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
   stage11_review_manifest: "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
-  stage11_upload_ready_local_only: true
-  stage11_uploaded_to_github_main: false
-  stage11_blocker: "stage11_final_github_upload_pending"
+  stage11_upload_ready_local_only: false
+  stage11_uploaded_to_github_main: true
+  stage11_upload_evidence: "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
+  stage11_upload_manifest: "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
+  stage11_blocker: "none"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_stage11_upload_next"
+  upload_surface: "project_level_kmfa_worktree_s12_p1_next"

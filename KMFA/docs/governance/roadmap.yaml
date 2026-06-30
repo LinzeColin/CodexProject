@@ -3,10 +3,10 @@ roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
-current_stage_id: "S11"
-current_phase_id: "S11_GITHUB_UPLOAD"
-current_task_id: "KMFA-S11-GITHUB-UPLOAD"
-next_gate_id: "KMFA-S11-FINAL-GITHUB-UPLOAD-GATE"
+current_stage_id: "S12"
+current_phase_id: "S12-P1"
+current_task_id: "KMFA-S12-P1"
+next_gate_id: "KMFA-S12-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -701,10 +701,10 @@ stages:
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/machine/stage10_upload_manifest.json"
   - stage_id: "S11"
     name: "前端基础界面与数据源检查板"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S11-P1 首页与导航、S11-P2 数据源检查板、S11-P3 项目成本页面和 Stage 11 整体复审均已本地验证通过，证据在 KMFA/stage_artifacts/S11_P1_home_navigation/、KMFA/stage_artifacts/S11_P2_source_check_board/、KMFA/stage_artifacts/S11_P3_project_cost_page/ 和 KMFA/stage_artifacts/S11_STAGE_REVIEW/；下一轮只允许执行 Stage 11 final GitHub upload gate，不得做 S12、lineage full check、正式报告或外部接口。"
+    current_result: "S11-P1 首页与导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 整体复审和 final GitHub upload 均已完成，证据在 KMFA/stage_artifacts/S11_STAGE_REVIEW/；下一轮只允许执行 S12-P1，不得做 S12-P2/P3、lineage full check、正式报告或外部接口。"
     evidence_refs:
       - "KMFA/stage_artifacts/S11_P1_home_navigation/human/s11_p1_completion_record.md"
       - "KMFA/stage_artifacts/S11_P2_source_check_board/human/s11_p2_completion_record.md"
@@ -714,6 +714,8 @@ stages:
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
+      - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
   - stage_id: "S12"
     name: "人工处理工作台与重跑机制"
     status: "planned"

@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 5、Stage 6、Stage 7、Stage 8、Stage 9 和 Stage 10 final GitHub upload；S11-P1 首页与导航、S11-P2 数据源检查板、S11-P3 项目成本页面和 Stage 11 整体复审已本地验证通过；Stage 11 GitHub upload、正式报告、lineage full check 和外部接口仍未完成。"
-version: "0.1.0-s11-stage-review"
+summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10 和 Stage 11 final GitHub upload；S12 人工处理工作台、正式报告、lineage full check 和外部接口仍未完成。"
+version: "0.1.0-s11-github-upload"
 fact_level: "EXTRACTED"
 owner_role: "owner"
-current_status: "s11_review_passed_upload_ready_local_only"
+current_status: "s11_uploaded_to_github_main_s12_p1_pending"
 features:
   - feature_id: "FEAT-KMFA-001"
     name: "项目治理骨架"
@@ -489,6 +489,13 @@ features:
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
+  - feature_id: "FEAT-KMFA-053"
+    name: "S11 GitHub Upload"
+    status: "uploaded_to_github_main"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
 limitations:
   - statement: "S02-P1/P2/P3 已完成、Stage 2 复审通过并已上传 GitHub main。"
     fact_level: "EXTRACTED"
@@ -541,7 +548,7 @@ limitations:
       - "KMFA/tools/validation_evidence_output.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
-  - statement: "S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 review/upload、S08-P1 项目组合键、S08-P2 业务实体模型、S08-P3 匹配质量测试、Stage 8 review/upload、S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对、Stage 9 review/upload、S10-P1 报告模板、S10-P2 报告可信等级、S10-P3 报告导出、Stage 10 review/upload、S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面和 Stage 11 review 已完成；下一步只能执行 Stage 11 final GitHub upload gate。"
+  - statement: "S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 review/upload、S08-P1 项目组合键、S08-P2 业务实体模型、S08-P3 匹配质量测试、Stage 8 review/upload、S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对、Stage 9 review/upload、S10-P1 报告模板、S10-P2 报告可信等级、S10-P3 报告导出、Stage 10 review/upload、S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面和 Stage 11 review/upload 已完成；下一步只能执行 S12-P1。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"

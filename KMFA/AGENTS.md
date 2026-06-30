@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `S11｜前端基础界面与数据源检查板`
-- 当前 Phase: `S11_STAGE_REVIEW｜整体复审｜本地通过，待 final GitHub upload gate`
+- 当前 Stage: `S12｜人工处理工作台与重跑机制`
+- 当前 Phase: `S12-P1｜待开始`
 
 ## Execution Rules
 
@@ -38,10 +38,10 @@
 
 ## Current Non-Goals
 
-- 不扩展 Stage 11 review 以外的 UI；Stage 11 当前只允许 public-safe 首页导航、数据源检查板、项目成本页面及其复审证据。
+- 不在未开始 S12-P1 前扩展人工处理工作台或重跑机制。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
-- 不在 Stage 11 整体复审通过后跳过 final GitHub upload gate 直接进入 S12、lineage full check 或正式报告。
+- 不跳过 S12-P1 直接进入 S12-P2/S12-P3、lineage full check 或正式报告。
 - 不在未读取 v1.2 HTML/UIUX 样板前实现 S11 前端。
 - 不接红圈、金蝶、WPS、银行、税务自动接口。
 - 不做付款、报税、开票、工资或奖金审批执行。
