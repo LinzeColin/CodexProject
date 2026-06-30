@@ -1,0 +1,62 @@
+{
+  "schema_version": "kmfa.github_upload_manifest.v1",
+  "project_id": "KMFA",
+  "upload_id": "KMFA-S06-GITHUB-UPLOAD-20260630",
+  "stage": "S06",
+  "target": "LinzeColin/CodexProject main",
+  "status": "uploaded_to_github_main",
+  "upload_time": "2026-06-30T15:40:00+10:00",
+  "upload_base_origin_main": "fd14057e7427d7f275fdb62a33619936618d0d35",
+  "reviewed_content_commit": "5cd284e500fec5ff215741b0e8ee164912f50268",
+  "reviewed_s06p3_commit": "c66c8b44c17ae760a5a6da4b98ab5892d90d73d0",
+  "reviewed_head_before_rebase": "cadb1e814bb06f8b65dd5ca84befb973b465bce6",
+  "reviewed_head_after_rebase": "c66c8b44c17ae760a5a6da4b98ab5892d90d73d0",
+  "review_refs": [
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md",
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
+  ],
+  "upload_refs": [
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md",
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json"
+  ],
+  "validation_summary": {
+    "full_unit_tests": "PASS: 69 tests",
+    "s06_p1": "PASS_EXPECTED_FAILURE_ON_1_CENT: zero_delta_passed=false, mismatch_count=1",
+    "s06_p2": "PASS: queue_items=1, report_grade_a_allowed=false",
+    "s06_p3": "PASS: metadata_quality_records=4, mismatches=1, project_statuses=2, no raw or field plaintext output",
+    "s05_p3_dependency": "PASS: q5_locked_fields=40, excluded_fields=5, authority_records=45, formal_report_allowed=false",
+    "no_float_money": "PASS",
+    "no_omission": "PASS: requirements=20, P0=9, P1=8, tasks=162, v1.2_html=45+",
+    "governance": "PASS: errors 0 / warnings 0",
+    "json_jsonl_parse": "PASS",
+    "parameter_registry_csv_shape": "PASS",
+    "upload_evidence_consistency": "PASS",
+    "raw_private_artifact_scan": "PASS",
+    "secret_scan": "PASS",
+    "dry_run_push": "PASS",
+    "push": "PASS",
+    "post_push_parity": "PASS: HEAD == origin/main"
+  },
+  "privacy_boundary": {
+    "raw_sensitive_data_uploaded": false,
+    "raw_business_files_uploaded": false,
+    "business_records_committed": false,
+    "credentials_committed": false,
+    "private_csv_committed": false,
+    "bank_contract_payroll_tax_files_uploaded": false
+  },
+  "upload_gate_findings_fixed": [
+    "KMFA-S06-UPLOAD-F01 reviewed_head rebound after rebase",
+    "KMFA-S06-UPLOAD-F02 duplicate stale Stage 6 upload policy removed"
+  ],
+  "non_scope": [
+    "S07 file adapters",
+    "fact layer",
+    "lineage full check",
+    "management report generation",
+    "UI",
+    "external connectors"
+  ],
+  "next_gate": "KMFA-S07-P1-GATE"
+}

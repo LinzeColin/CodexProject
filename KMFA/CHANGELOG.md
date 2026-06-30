@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s06-github-upload - 2026-06-30
+
+- 完成 Stage 6 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `fd14057e7427d7f275fdb62a33619936618d0d35` rebase 完整 Stage 6 栈，并复跑 S06-P1/P2/P3 validators、治理 validator、raw/secret scan、JSON/JSONL parse check 和 evidence consistency check。
+- 修复 upload gate finding：rebase 后 Stage 6 review evidence 的 `reviewed_head` 已更新为当前 rebased S06-P3 commit `c66c8b44c17ae760a5a6da4b98ab5892d90d73d0`。
+- 修复 upload gate finding：`KMFA/metadata/project/project.yaml` 中重复且过期的 Stage 6 upload policy 已归一。
+- 新增 `KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json`。
+- 保持 S07 文件适配、lineage、事实层、报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s06-stage-review - 2026-06-30
 
 - 完成 Stage 6 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。

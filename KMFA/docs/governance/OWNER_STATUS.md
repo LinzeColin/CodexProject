@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload，以及 `S06-P1｜零差异校验器`、`S06-P2｜跨源差异队列`、`S06-P3｜校验证据输出` 和 Stage 6 整体复审本地验证。S06-P3 已把 public-safe zero-delta summary、sanitized mismatch index、project validation status 和差异队列状态写入 `metadata/quality`。Stage 6 final GitHub upload、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload，以及 Stage 6 全部 Phase/复审/upload。S06-P3 已把 public-safe zero-delta summary、sanitized mismatch index、project validation status 和差异队列状态写入 `metadata/quality`。Stage 6 final GitHub upload 证据已记录；S07-P1、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -40,7 +40,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S06-P1 零差异校验器已存在：`KMFA/tools/zero_delta_validator.py` 使用 public-safe 已结构化整数分 fixture，逐字段比较权威值和系统值，1 分差异失败，并生成包含来源、字段、权威值、系统值和差额的 mismatch report。
 - S06-P2 跨源差异队列已存在：`KMFA/tools/cross_source_difference_queue.py` 使用 public-safe PDF/Excel synthetic fixture，1 分冲突进入人工队列；`KMFA/tools/check_s06_p2_difference_queue.py` 验证未关闭差异阻断 A 级报告。
 - S06-P3 校验证据输出已存在：`KMFA/tools/validation_evidence_output.py` 输出 stage evidence 并写入 `metadata/quality`；`KMFA/tools/check_s06_p3_validation_evidence.py` 验证输出不新增字段明文或原始金额值。
-- Stage 6 整体复审已本地通过：`KMFA/stage_artifacts/S06_STAGE_REVIEW/` 记录 S06-P1/P2/P3 复跑、治理 validator、raw/secret scan 和 evidence consistency check；本轮未 push。
+- Stage 6 整体复审和 final GitHub upload 已完成：`KMFA/stage_artifacts/S06_STAGE_REVIEW/` 记录 S06-P1/P2/P3 复跑、治理 validator、raw/secret scan、evidence consistency check、dry-run push、push 和 post-push parity。
 
 ## 你现在不能信任什么
 
@@ -48,7 +48,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为真实业务源解析、事实层或报告已经实现。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
-- 不能认为 S06 Stage 已经上传 GitHub；当前只完成 S06-P1/S06-P2/S06-P3 和 Stage 6 整体复审本地证据，不含 final GitHub upload。
+- 不能认为 Stage 6 upload 代表正式经营报告、事实层、lineage 或差异关闭能力已经实现。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -57,4 +57,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `Stage 6 final GitHub upload gate`；不得扩大到 UI、正式报告、事实层或自动接口。
+下一步只执行 `S07-P1｜财务文件适配`；不得扩大到 WPS、红圈、UI、正式报告、事实层或自动接口。
