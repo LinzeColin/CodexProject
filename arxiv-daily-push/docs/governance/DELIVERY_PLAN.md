@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 289
+- task_count: 290
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 12:37:34 Australia/Sydney - S2PMT07 S2PLT04 S2PLT02 Latest Evidence Sync
+
+- `S2PMT07-S2PLT04-S2PLT02-LATEST-EVIDENCE-SYNC` updates `audit-s2plt04-completion-evidence` to consume the live S2PLT02 authorization artifact and latest S2PLT02 evidence refs.
+- Actual CLI remains blocked / exit 2 with `state_hash=f255e549c11eb035d41265fedce451b278fc9be92636d1e474e5917d67507418` and blockers `s2plt02_live_2d_terminal_proof_missing`, `s2plt03_resilience_terminal_proof_missing`.
+- S2PLT02 authorization is now `pass`; stale `s2plt02_real_proof_capture_authorization_missing` is no longer reported by the S2PLT04 audit.
+- Remaining S2PLT02 terminal blockers are `two_consecutive_real_days_not_proven`, `eight_real_emails_not_proven`, and `real_scheduler_not_proven`; terminal proof artifact and S2PLT03 proof are still missing.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT04-S2PLT02-LATEST-EVIDENCE-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_S2PLT02_LATEST_EVIDENCE_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT04 completion report, write terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 12:09:41 Australia/Sydney - S2PLT02 Terminal Capture Window Audit CLI
 

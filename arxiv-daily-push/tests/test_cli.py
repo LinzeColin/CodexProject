@@ -1071,8 +1071,14 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]["artifact_status"], "missing_terminal")
         s2plt02_evidence = payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]
         self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json",
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
             s2plt02_evidence["nonterminal_refs"],
+        )
+        self.assertEqual(s2plt02_evidence["real_proof_capture_authorization_status"], "pass")
+        self.assertTrue(s2plt02_evidence["real_proof_capture_authorized"])
+        self.assertNotIn(
+            "s2plt02_real_proof_capture_authorization_missing",
+            s2plt02_evidence["remaining_terminal_blockers"],
         )
         self.assertEqual(s2plt02_evidence["observed_natural_days"], 1)
         self.assertEqual(s2plt02_evidence["required_natural_days"], 2)

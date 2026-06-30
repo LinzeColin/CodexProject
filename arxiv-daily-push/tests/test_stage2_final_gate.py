@@ -4406,22 +4406,34 @@ class Stage2FinalGateTests(unittest.TestCase):
             s2plt02["existing_nonterminal_refs"],
         )
         self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json",
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json",
+            s2plt02["existing_nonterminal_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
+            s2plt02["existing_nonterminal_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
             s2plt02["existing_nonterminal_refs"],
         )
         self.assertEqual(
             s2plt02["real_proof_capture_authorization_manifest_ref"],
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json",
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json",
         )
         self.assertEqual(
             s2plt02["real_proof_capture_authorization_artifact_ref"],
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
         )
-        self.assertEqual(s2plt02["real_proof_capture_authorization_status"], "blocked")
-        self.assertFalse(s2plt02["real_proof_capture_authorized"])
-        self.assertIn(
+        self.assertEqual(s2plt02["real_proof_capture_authorization_status"], "pass")
+        self.assertTrue(s2plt02["real_proof_capture_authorized"])
+        self.assertNotIn(
             "s2plt02_real_proof_capture_authorization_missing",
             s2plt02["real_proof_capture_authorization_blocking_reasons"],
+        )
+        self.assertNotIn(
+            "s2plt02_real_proof_capture_authorization_missing",
+            s2plt02["remaining_terminal_blockers"],
         )
         self.assertEqual(s2plt02["terminal_readiness_audit_status"], "blocked")
         self.assertEqual(

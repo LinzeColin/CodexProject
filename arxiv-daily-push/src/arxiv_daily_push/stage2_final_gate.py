@@ -6777,43 +6777,45 @@ def build_s2plt04_completion_evidence_audit_state(
     if not p1_zero:
         s2plt02_remaining_blockers.append("inherited_v7_1_p1_findings_open")
     s2plt02_authorization_manifest_ref = (
-        "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json"
+        "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json"
     )
-    s2plt02_authorization_manifest = _load_json_mapping_artifact(root / s2plt02_authorization_manifest_ref)
-    s2plt02_authorization_status = str(
-        s2plt02_authorization_manifest.get("status", "missing")
-        if s2plt02_authorization_manifest is not None
-        else "missing"
+    s2plt02_authorization_artifact = _load_json_mapping_artifact(
+        root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
     )
-    if s2plt02_authorization_manifest is not None:
-        s2plt02_authorization_blocking_reasons = [
-            reason
-            for reason in s2plt02_authorization_manifest.get("blocking_reasons", [])
-            if isinstance(reason, str)
-        ]
-        s2plt02_real_proof_capture_authorized = (
-            s2plt02_authorization_manifest.get("real_proof_capture_authorized") is True
-        )
-    else:
-        s2plt02_authorization_blocking_reasons = [
-            "s2plt02_real_proof_capture_authorization_missing"
-        ]
-        s2plt02_real_proof_capture_authorized = False
+    s2plt02_authorization_validation = build_s2plt02_real_proof_capture_authorization_validation_state(
+        s2plt02_authorization_artifact
+    )
+    s2plt02_authorization_status = str(s2plt02_authorization_validation["status"])
+    s2plt02_authorization_blocking_reasons = [
+        reason
+        for reason in s2plt02_authorization_validation.get("validation_errors", [])
+        if isinstance(reason, str)
+    ]
+    s2plt02_real_proof_capture_authorized = (
+        s2plt02_authorization_validation.get("real_proof_capture_authorized_by_payload") is True
+    )
     if not s2plt02_real_proof_capture_authorized:
         for reason in s2plt02_authorization_blocking_reasons:
             if reason not in s2plt02_remaining_blockers:
                 s2plt02_remaining_blockers.append(reason)
-    s2plt02_existing_nonterminal_refs = [
-        ref
-        for ref in (
+    s2plt02_existing_nonterminal_ref_candidates = (
             "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json",
             "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
             "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json",
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json",
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json",
+            "governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR-20260630.json",
+            "governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION-20260630.json",
+            "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY-20260630.json",
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json",
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
             s2plt02_authorization_manifest_ref,
         )
-        if (root / ref).exists()
-    ]
+    s2plt02_existing_nonterminal_refs = []
+    for ref in s2plt02_existing_nonterminal_ref_candidates:
+        if ref not in s2plt02_existing_nonterminal_refs and (root / ref).exists():
+            s2plt02_existing_nonterminal_refs.append(ref)
     source_evidence = {
         "S2PLT01_REPLAY_REVIEW": {
             "artifact_status": "pass" if s2plt01_accepted else "nonterminal",
@@ -6842,6 +6844,9 @@ def build_s2plt04_completion_evidence_audit_state(
             "real_proof_capture_authorization_manifest_ref": s2plt02_authorization_manifest_ref,
             "real_proof_capture_authorization_artifact_ref": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
             "real_proof_capture_authorization_status": s2plt02_authorization_status,
+            "real_proof_capture_authorization_validation_state_hash": (
+                s2plt02_authorization_validation["state_hash"]
+            ),
             "real_proof_capture_authorized": s2plt02_real_proof_capture_authorized,
             "real_proof_capture_authorization_blocking_reasons": s2plt02_authorization_blocking_reasons,
             "terminal_dependency": "S2PLT02_ACCEPTED",
