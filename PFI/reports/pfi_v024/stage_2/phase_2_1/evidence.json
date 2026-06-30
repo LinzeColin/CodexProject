@@ -1,0 +1,133 @@
+{
+  "schema": "PFIV024Stage2Phase21EvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 2",
+  "phase_id": "2.1",
+  "phase_name": "入口链路映射",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-06-30T12:46:45Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "3a0cbd902867c356a8e08f844a838304e61f9c65",
+    "origin_main_at_evidence_write": "0203d5abed2b58e23ae98f1145c157ec5bc53b0a",
+    "local_ahead_origin_main_at_evidence_write": 1
+  },
+  "tasks": {
+    "T2.1.1": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_2/phase_2_1/entry_map.md"
+    },
+    "T2.1.2": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_2/phase_2_1/entry_map.md"
+    },
+    "T2.1.3": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_2/phase_2_1/old_ui_signatures.json"
+    },
+    "T2.1.4": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_2/phase_2_1/build_hash_display_spec.md"
+    }
+  },
+  "phase_2_1_complete": true,
+  "phase_2_2_complete": false,
+  "phase_2_3_complete": false,
+  "stage_2_candidate_complete": false,
+  "stage_2_complete": false,
+  "requires_user_acceptance": true,
+  "no_auto_next_phase": true,
+  "no_auto_closeout": true,
+  "github_main_uploaded": false,
+  "business_ui_changes_made": false,
+  "data_logic_changes_made": false,
+  "app_bundle_changes_made": false,
+  "launcher_changes_made": false,
+  "entry_surfaces_count": 9,
+  "installed_app_roots_recorded": true,
+  "old_ui_signatures_recorded": true,
+  "build_hash_display_spec_present": true,
+  "artifact_hashes": {
+    "PFI/web/index.html": "020813e22e2f566bf726429cc88df1cd261af232ffcc7b8f337dc099d6ca3254",
+    "PFI/web/app/shell.js": "e8fded83cf99a0c7e2df6891a2f4273b2a311d070639ea42b58605ab80c30151",
+    "PFI/web/app/version.js": "0eb03a0345480823ff191cae8046b0a69a231e76219f26f7ef94b45740f05a71",
+    "PFI/src/pfi_os/app/streamlit_app.py": "09b70ee81e5e437d927f1f6af35befbd047ec1e9dd89cb21c40f10af3876eafd",
+    "PFI/scripts/startPFI.sh": "757b2e6b5cfe6816dc3409266ec131a9c02f827235792059f5668788b74c2d7b",
+    "PFI/scripts/installPFIEntryApps.sh": "4ba3c89382a581c8efd0f6b97c1b5b3da292abf8276f081aee5f4c9461229508",
+    "PFI/macos/PFI_launcher.c": "23f1bbec1a73b646ede0859977967e6ba61944ddacb57b4cc856415f63fa969d"
+  },
+  "acceptance_checks": {
+    "entry_map_present": true,
+    "old_ui_signatures_recorded": true,
+    "build_hash_display_spec_present": true,
+    "installed_app_roots_recorded": true,
+    "no_business_ui_or_data_logic_changes": true,
+    "no_app_bundle_or_launcher_changes": true
+  },
+  "commands": [
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "pass",
+      "detail": "executed with Codex bundled Node executable"
+    },
+    {
+      "cmd": "node --check PFI/web/app/version.js",
+      "status": "pass",
+      "detail": "executed with Codex bundled Node executable"
+    },
+    {
+      "cmd": "pytest stage2 phase21 contract",
+      "status": "pass",
+      "detail": "5 passed after evidence finalization"
+    },
+    {
+      "cmd": "pytest v024 current regression set through stage2 phase21",
+      "status": "pass",
+      "detail": "40 passed"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE2_ENTRY_CONSISTENCY.md",
+    "PFI/reports/pfi_v024/stage_2/phase_2_1/build_hash_display_spec.md",
+    "PFI/reports/pfi_v024/stage_2/phase_2_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_2/phase_2_1/entry_map.md",
+    "PFI/reports/pfi_v024/stage_2/phase_2_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_2/phase_2_1/old_ui_signatures.json",
+    "PFI/reports/pfi_v024/stage_2/phase_2_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_2/phase_2_1/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py",
+    "PFI/tests/test_v024_stage2_phase21_entry_mapping.py"
+  ],
+  "explicitly_not_done": [
+    "Stage 2 Phase 2.2 version-link implementation",
+    "Stage 2 Phase 2.3 real app/browser validation",
+    "Stage 2 whole-stage review",
+    "GitHub main upload",
+    "business UI changes",
+    "app bundle or launcher changes",
+    "data logic changes"
+  ],
+  "validation_results": {
+    "pytest_stage2_phase21_contract": "5 passed",
+    "pytest_v024_current_regression_set_through_stage2_phase21": "40 passed",
+    "node_check_shell_js": "pass with Codex bundled Node executable",
+    "node_check_version_js": "pass with Codex bundled Node executable",
+    "json_and_git_diff_check": "pass"
+  }
+}

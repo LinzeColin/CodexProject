@@ -1,0 +1,17 @@
+PFI/CHANGELOG.md
+PFI/HANDOFF.md
+PFI/README.md
+PFI/功能清单.md
+PFI/开发记录.md
+PFI/模型参数文件.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+PFI/docs/pfi_v024/STAGE2_ENTRY_CONSISTENCY.md
+PFI/reports/pfi_v024/stage_2/phase_2_1/build_hash_display_spec.md
+PFI/reports/pfi_v024/stage_2/phase_2_1/changed_files.txt
+PFI/reports/pfi_v024/stage_2/phase_2_1/entry_map.md
+PFI/reports/pfi_v024/stage_2/phase_2_1/evidence.json
+PFI/reports/pfi_v024/stage_2/phase_2_1/old_ui_signatures.json
+PFI/reports/pfi_v024/stage_2/phase_2_1/risk_and_rollback.md
+PFI/reports/pfi_v024/stage_2/phase_2_1/terminal.log
+PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py
+PFI/tests/test_v024_stage2_phase21_entry_mapping.py
