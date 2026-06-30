@@ -633,6 +633,79 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertFalse(payload["daily_operation_enabled"])
 
+    def test_audit_s2plt02_terminal_proof_evidence_inventory_json_classifies_dry_run_candidate(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            state_dir = Path(tmp_dir)
+            run_dir = state_dir / "runs" / "20260629"
+            run_dir.mkdir(parents=True)
+            products = ["M1", "M2", "M3", "M4"]
+            for product in products:
+                (run_dir / f"adp-smtp-delivery-report-{product}.json").write_text(
+                    json.dumps(
+                        {
+                            "status": "dry_run",
+                            "product_id": product,
+                            "dry_run": True,
+                            "allow_send": False,
+                            "real_send_attempted": False,
+                            "real_smtp_send_enabled": False,
+                        },
+                        ensure_ascii=False,
+                    ),
+                    encoding="utf-8",
+                )
+            (run_dir / "adp-local-runner-report.json").write_text(
+                json.dumps(
+                    {
+                        "status": "pass",
+                        "production_evidence_ready": False,
+                        "real_smtp_sent": False,
+                        "mail_delivery_summary": {
+                            "planned_send_total": 4,
+                            "planned_mail_products": products,
+                            "sent_mail_count": 0,
+                            "sent_mail_products": [],
+                            "dry_run_mail_products": products,
+                            "status_by_product": {product: "dry_run" for product in products},
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "audit-s2plt02-terminal-proof-evidence-inventory",
+                        "--repo-root",
+                        str(repo_root),
+                        "--state-dir",
+                        str(state_dir),
+                        "--candidate-service-dates",
+                        "2026-06-29",
+                        "--generated-at",
+                        "2026-06-30T13:24:00+10:00",
+                        "--json",
+                    ]
+                )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["task_id"], "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY")
+        self.assertFalse(payload["safe_to_build_terminal_artifact"])
+        self.assertFalse(payload["artifact_written"])
+        self.assertIn("FIRST_REAL_DELIVERY_DAY", payload["ready_inputs"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["missing_terminal_inputs"])
+        self.assertEqual(payload["blocked_candidate_service_dates"], ["2026-06-29"])
+        self.assertEqual(payload["blocked_candidate_inputs"][0]["classification"], "blocked_dry_run_not_real_terminal_input")
+        self.assertFalse(payload["blocked_candidate_inputs"][0]["counts_toward_s2plt02_terminal_proof"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
     def test_plan_s2plt02_terminal_delivery_proof_capture_json_lists_safe_next_steps(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()

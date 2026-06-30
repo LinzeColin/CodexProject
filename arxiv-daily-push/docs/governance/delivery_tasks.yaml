@@ -5365,3 +5365,27 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY"
+    title: "S2PLT02 terminal proof evidence inventory"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T13:02:33+10:00"
+    objective: "Classify current S2PLT02 terminal proof evidence as usable, blocked candidate, or missing before any terminal proof artifact can be written."
+    scope: "Final-gate evidence inventory builder, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY", "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_evidence_inventory_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_proof_evidence_inventory_classifies_blocked_dry_run_candidates arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt02_terminal_proof_evidence_inventory_json_classifies_dry_run_candidate", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_evidence_inventory_green2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_proof_evidence_inventory_classifies_blocked_dry_run_candidates arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt02_terminal_proof_evidence_inventory_json_classifies_dry_run_candidate", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_evidence_inventory_actual2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --state-dir /Users/linzezhang/.adp/arxiv-daily-push --candidate-service-dates 2026-06-29,2026-06-30 --generated-at 2026-06-30T13:02:33+10:00 --json"]
+    test_results: ["TDD red failed before build_s2plt02_terminal_proof_evidence_inventory_state existed", "focused final-gate and CLI evidence-inventory tests: 2 passed", "actual CLI audit: blocked / exit 2 with state_hash 431949620cef28641fcd606ee5646c006cd5cf9fd412daadc899a534185ac613"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt02_terminal_proof_evidence_inventory_dry_run_candidates_no_production"
+    risk: "A dry-run candidate file can be misread as terminal proof input; this inventory explicitly classifies 2026-06-29 and 2026-06-30 as blocked dry-run candidates that do not count."
+    rollback: "Revert the evidence inventory builder, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

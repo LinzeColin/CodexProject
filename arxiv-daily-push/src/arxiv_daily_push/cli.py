@@ -141,6 +141,7 @@ from .stage2_final_gate import (
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_terminal_capture_window_audit_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
+    build_s2plt02_terminal_proof_evidence_inventory_state,
     build_s2plt02_terminal_delivery_proof_capture_plan_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
@@ -161,6 +162,7 @@ from .stage2_final_gate import (
     validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_capture_window_audit_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
+    validate_s2plt02_terminal_proof_evidence_inventory_state,
     validate_s2plt02_terminal_delivery_proof_capture_plan_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
@@ -1448,6 +1450,41 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON S2PLT02 terminal delivery input inventory.",
+    )
+
+    s2plt02_terminal_proof_evidence_inventory = subparsers.add_parser(
+        "audit-s2plt02-terminal-proof-evidence-inventory",
+        help="Classify current S2PLT02 terminal proof evidence inputs without writing the proof artifact.",
+    )
+    s2plt02_terminal_proof_evidence_inventory.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing final-bundle artifacts.",
+    )
+    s2plt02_terminal_proof_evidence_inventory.add_argument(
+        "--state-dir",
+        default=None,
+        help="ADP state directory containing runs/YYYYMMDD reports; defaults to ~/.adp/arxiv-daily-push.",
+    )
+    s2plt02_terminal_proof_evidence_inventory.add_argument(
+        "--candidate-service-dates",
+        default="2026-06-29,2026-06-30",
+        help="Comma-separated service dates to classify as terminal-proof candidates.",
+    )
+    s2plt02_terminal_proof_evidence_inventory.add_argument(
+        "--launchctl-disabled-file",
+        default=None,
+        help="Optional sanitized launchctl print-disabled text file for deterministic validation.",
+    )
+    s2plt02_terminal_proof_evidence_inventory.add_argument(
+        "--generated-at",
+        required=True,
+        help="Inventory timestamp.",
+    )
+    s2plt02_terminal_proof_evidence_inventory.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON S2PLT02 terminal proof evidence inventory.",
     )
 
     s2plt02_terminal_delivery_capture_plan = subparsers.add_parser(
@@ -4177,6 +4214,51 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- observed_real_email_count: {report.get('observed_real_email_count')}")
             for item in report.get("missing_inputs", []):
                 print(f"- missing_input: {item}")
+            for error in state_errors:
+                print(f"- state_error: {error}")
+        return 0 if report["status"] == "pass" and not state_errors else 2
+    if args.command == "audit-s2plt02-terminal-proof-evidence-inventory":
+        if args.launchctl_disabled_file:
+            launchctl_disabled_text = Path(args.launchctl_disabled_file).read_text(encoding="utf-8")
+        else:
+            completed = subprocess.run(
+                ["launchctl", "print-disabled", f"gui/{os.getuid()}"],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            launchctl_disabled_text = completed.stdout
+        candidate_service_dates = tuple(
+            item.strip()
+            for item in str(args.candidate_service_dates).split(",")
+            if item.strip()
+        )
+        report = build_s2plt02_terminal_proof_evidence_inventory_state(
+            generated_at=args.generated_at,
+            repo_root=args.repo_root,
+            state_dir=args.state_dir,
+            candidate_service_dates=candidate_service_dates,
+            launchctl_disabled_text=launchctl_disabled_text,
+            adp_allow_smtp_send=str(os.environ.get("ADP_ALLOW_SMTP_SEND", "false")).strip().lower()
+            in {"true", "1", "yes", "on"},
+        )
+        state_errors = validate_s2plt02_terminal_proof_evidence_inventory_state(report)
+        if state_errors:
+            report = {**report, "state_validation_errors": state_errors}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- safe_to_build_terminal_artifact: {report.get('safe_to_build_terminal_artifact')}")
+            print(f"- usable_terminal_inputs: {len(report.get('usable_terminal_inputs', []))}")
+            print(f"- blocked_candidate_inputs: {len(report.get('blocked_candidate_inputs', []))}")
+            for item in report.get("missing_terminal_inputs", []):
+                print(f"- missing_input: {item}")
+            for item in report.get("blocked_candidate_inputs", []):
+                print(
+                    "- blocked_candidate: "
+                    f"{item.get('service_date')} {item.get('classification')}"
+                )
             for error in state_errors:
                 print(f"- state_error: {error}")
         return 0 if report["status"] == "pass" and not state_errors else 2
