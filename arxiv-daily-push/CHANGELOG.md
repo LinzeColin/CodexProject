@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-30 11:45:16 Australia/Sydney - S2PLT02 real delivery manifest normalization
+
+- Added `build-s2plt02-normalized-delivery-manifest`, a no-write builder that converts the historical 2026-06-28 real M1-M4 manifest into a strict normalized S2PLT02 input.
+- The normalized manifest binds raw hash `a795bd90778b5a0bbbd217d286f696936954af47a1a547ed689f907b677d9fa2`, validates with `normalized_manifest_ready=true`, `manifest_validation_state_hash=91bf1a4477c621a75fceed90efecdb620341cfc97d5a751c127cc5ffbd6a0d99`, and `state_hash=c56a7a1a5e9cb8a81ba0b05aa848c05e1577ce7558bae1700ea4563652c2d93c`.
+- Direct strict validation of the raw historical manifest remains `blocked_missing_explicit_no_production_flags`; future terminal proof assembly must consume complete normalized manifests.
+- No second real SMTP day, live terminal proof artifact, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-30 11:05:56 Australia/Sydney - S2PLT02 real delivery manifest input validator
 
 - Added `validate-s2plt02-real-delivery-manifest`, a no-write validator for one complete real M1-M4 delivery manifest before S2PLT02 terminal proof assembly.

@@ -1,0 +1,76 @@
+{
+  "current_pointer_changed": false,
+  "daily_input_report_path": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260628/adp-daily-input-report.json",
+  "daily_input_source": "existing_report",
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
+    "arxiv-daily-push/用户中心/README.md",
+    "arxiv-daily-push/用户中心/一看三查.md"
+  ],
+  "generated_at": "2026-06-28T11:28:25+10:00",
+  "integrated_production_accepted": false,
+  "mail_delivery_summary": {
+    "delivery_ref_by_product": {
+      "M1": "smtp://message/smtp-delivery:87f268d29a31288d",
+      "M2": "smtp://message/smtp-delivery:c72ffcd03a277e1d",
+      "M3": "smtp://message/smtp-delivery:590b7230463ff9f7",
+      "M4": "smtp://message/smtp-delivery:7f815186af789297"
+    },
+    "historical_sent_mail_products": [
+      "M1"
+    ],
+    "newly_sent_mail_products": [
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "planned_send_total": 4,
+    "sent_mail_count": 4,
+    "sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ]
+  },
+  "manifest_ref": "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
+  "normalization_scope": "real_delivery_manifest_normalization_no_smtp_send_no_write",
+  "normalization_task_id": "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION",
+  "normalized_at": "2026-06-30T11:45:16+10:00",
+  "normalized_from_manifest_hash": "a795bd90778b5a0bbbd217d286f696936954af47a1a547ed689f907b677d9fa2",
+  "normalized_from_manifest_ref": "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+  "production_queue_mutated": false,
+  "production_restore_executed": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_smtp_send_enabled": true,
+  "real_smtp_sent": true,
+  "release_uploaded": false,
+  "rollback": "This is real-send evidence and cannot be undone by deleting the record. If the record is wrong, append a corrective evidence record and update the user-center history.",
+  "scheduler_enabled": false,
+  "schema_version": 1,
+  "sent_mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "service_date": "2026-06-28",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "pass",
+  "summary": "2026-06-28 M1-M4 邮件补发完成：M1 识别为历史已发送，M2-M4 通过真实 SMTP 补发成功。",
+  "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+  "task_ids": [
+    "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+    "LOCAL-DAILY-RESEND-REUSE-INPUT",
+    "EMAIL_LEARNING_V1"
+  ],
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-06-30 11:16:57 Australia/Sydney
+更新时间：2026-06-30 11:47:12 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -26,7 +26,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 378 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 379 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
@@ -164,3 +164,9 @@
 
 - 最新记录：[PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md](../docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR-20260630.json)
 - 结论：validator 只校验未来完整单日 M1-M4 real delivery manifest；规范化第一天 evidence 可通过，但历史 2026-06-28 manifest 直接 strict CLI 会 blocked，因为缺少显式 no-production 字段。它不采集第二真实日、不发送 SMTP、不启用 scheduler，也不能代替 S2PLT02 terminal proof 或 production acceptance。
+
+## 2026-06-30 11:45:16 Australia/Sydney - S2PLT02 real delivery manifest 规范化输入
+
+- 最新记录：[PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION.md](../docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION-20260630.json)
+- 结论：历史 2026-06-28 第一真实 M1-M4 manifest 已规范化为 strict S2PLT02 输入；raw hash `a795bd90778b5a0bbbd217d286f696936954af47a1a547ed689f907b677d9fa2`，normalized manifest validation state hash `91bf1a4477c621a75fceed90efecdb620341cfc97d5a751c127cc5ffbd6a0d99`。
+- 边界：这不采集第二真实日、不发 SMTP、不启用 scheduler、不写 terminal proof，不代表 S2PLT02 或 production accepted。

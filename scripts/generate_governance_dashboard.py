@@ -262,6 +262,40 @@ def adp_s2pmt07_gate_is_current(project_id: str, matrix: dict[str, Any]) -> bool
     return current_v7_task_id == "S2PMT07" or current_gate.startswith("S2PMT07")
 
 
+def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
+    """Build the current ADP S2PMT07 owner recommendation from the active matrix."""
+
+    normalized_manifest_clause = ""
+    current_iteration = str(matrix.get("current_iteration") or "")
+    current_alias = str(matrix.get("current_v7_legacy_alias") or "")
+    if (
+        "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION" in current_iteration
+        or "normalized manifest" in current_alias.lower()
+        or "normalized_manifest_ready=true" in current_alias
+    ):
+        normalized_manifest_clause = (
+            " S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate,"
+        )
+    return (
+        "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
+        "live authorization, independent reviewer assignment, P0/P1 zero-proof "
+        "artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only "
+        "terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, "
+        "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, "
+        "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, "
+        "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, "
+        "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate,"
+        f"{normalized_manifest_clause} and only current explicit no-production "
+        "real-delivery manifest inputs as validated no-write inputs, record the "
+        "current dry-run/scheduler-disabled capture window as blocked evidence, "
+        "and next collect S2PLT02 terminal delivery proof only from complete real "
+        "delivery/scheduler manifests in a controlled real capture window before "
+        "S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, "
+        "independent final signoff, final command execution proof, no-production "
+        "attestation, and next-agent handoff."
+    )
+
+
 def git_output(args: list[str]) -> str:
     result = subprocess.run(
         ["git", "-c", "core.quotePath=false", *args],
@@ -860,6 +894,8 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     for key, value in existing_owner_decision.items():
         if value not in (None, ""):
             owner_decision[key] = value
+    if adp_s2pmt07_current:
+        owner_decision["current_recommendation"] = adp_s2pmt07_current_recommendation(matrix)
     if "decision_question" not in owner_decision and "question" in owner_decision:
         owner_decision["decision_question"] = owner_decision["question"]
     if "question" not in owner_decision and "decision_question" in owner_decision:

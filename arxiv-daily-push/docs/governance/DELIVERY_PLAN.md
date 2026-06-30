@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 287
+- task_count: 288
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 11:45:16 Australia/Sydney - S2PLT02 Real Delivery Manifest Normalization
+
+- `S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION` normalizes the historical 2026-06-28 first real M1-M4 delivery manifest into a strict no-production S2PLT02 input.
+- Normalized manifest validation passes with `normalized_manifest_ready=true`, `service_date=2026-06-28`, `observed_email_count=4`, `sent_mail_products=M1,M2,M3,M4`, `artifact_written=false`, `terminal_delivery_proof_written=false`, manifest validation state hash `91bf1a4477c621a75fceed90efecdb620341cfc97d5a751c127cc5ffbd6a0d99`, and normalization state hash `c56a7a1a5e9cb8a81ba0b05aa848c05e1577ce7558bae1700ea4563652c2d93c`.
+- Raw manifest hash `a795bd90778b5a0bbbd217d286f696936954af47a1a547ed689f907b677d9fa2` is bound to `governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json`; direct raw strict validation remains `blocked_missing_explicit_no_production_flags` and future terminal proof assembly must consume complete normalized manifests.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION-20260630.json`; `governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 11:05:56 Australia/Sydney - S2PLT02 Real Delivery Manifest Input Validator
 

@@ -756,6 +756,80 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertFalse(payload["daily_operation_enabled"])
 
+    def test_build_s2plt02_normalized_delivery_manifest_json_command(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            raw = Path(tmp_dir) / "raw-day1.json"
+            raw.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "project_id": "arxiv-daily-push",
+                        "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+                        "status": "pass",
+                        "generated_at": "2026-06-28T11:28:25+10:00",
+                        "service_date": "2026-06-28",
+                        "mail_delivery_summary": {
+                            "planned_send_total": 4,
+                            "sent_mail_count": 4,
+                            "sent_mail_products": ["M1", "M2", "M3", "M4"],
+                            "delivery_ref_by_product": {
+                                "M1": "smtp://message/smtp-delivery:87f268d29a31288d",
+                                "M2": "smtp://message/smtp-delivery:c72ffcd03a277e1d",
+                                "M3": "smtp://message/smtp-delivery:590b7230463ff9f7",
+                                "M4": "smtp://message/smtp-delivery:7f815186af789297",
+                            },
+                        },
+                        "evidence_refs": [
+                            "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md"
+                        ],
+                        "real_smtp_sent": True,
+                        "real_smtp_send_enabled": True,
+                        "stage2_integrated_production_accepted": False,
+                        "integrated_production_accepted": False,
+                        "scheduler_enabled": False,
+                        "release_uploaded": False,
+                        "public_schema_changed": False,
+                        "ranking_algorithm_changed": False,
+                        "source_adapter_changed": False,
+                        "current_pointer_changed": False,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "build-s2plt02-normalized-delivery-manifest",
+                        "--raw-manifest",
+                        str(raw),
+                        "--raw-manifest-ref",
+                        "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+                        "--normalized-manifest-ref",
+                        "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
+                        "--normalized-at",
+                        "2026-06-30T11:45:16+10:00",
+                        "--json",
+                    ]
+                )
+
+        payload = json.loads(buffer.getvalue())
+        normalized = payload["normalized_manifest"]
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["normalized_manifest_ready"])
+        self.assertEqual(normalized["manifest_ref"], "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json")
+        self.assertEqual(normalized["service_date"], "2026-06-28")
+        self.assertFalse(normalized["daily_operation_enabled"])
+        self.assertFalse(normalized["production_restore_executed"])
+        self.assertFalse(normalized["production_queue_mutated"])
+        self.assertFalse(normalized["db_migration_executed"])
+        self.assertFalse(normalized["v7_1_baseline_changed"])
+        self.assertFalse(normalized["v7_2_contract_files_changed"])
+        self.assertEqual(payload["manifest_validation"]["status"], "pass")
+        self.assertFalse(payload["artifact_written"])
+        self.assertFalse(payload["terminal_delivery_proof_written"])
+
     def test_validate_s2plt02_real_scheduler_proof_json_command(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             scheduler = Path(tmp_dir) / "scheduler.json"
