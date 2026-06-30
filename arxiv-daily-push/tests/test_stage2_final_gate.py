@@ -5528,6 +5528,21 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_to_write_live_artifacts"])
         capture_summary = plan["s2plt02_terminal_delivery_capture_plan_summary"]
         self.assertEqual(plan["current_wait_state"], capture_summary["current_wait_state"])
+        self.assertIs(
+            plan["write_terminal_artifact_allowed"],
+            capture_summary["write_terminal_artifact_allowed"],
+        )
+        self.assertIs(
+            plan["scheduler_enable_allowed_by_this_plan"],
+            capture_summary["scheduler_enable_allowed_by_this_plan"],
+        )
+        self.assertIs(
+            plan["production_acceptance_allowed"],
+            capture_summary["production_acceptance_allowed"],
+        )
+        self.assertFalse(plan["write_terminal_artifact_allowed"])
+        self.assertFalse(plan["scheduler_enable_allowed_by_this_plan"])
+        self.assertFalse(plan["production_acceptance_allowed"])
         self.assertEqual(capture_summary["status"], "blocked")
         self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(capture_summary["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
@@ -6087,6 +6102,17 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(state["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertFalse(state["ready_to_write_live_artifacts"])
         self.assertIs(state["ready_to_write_live_artifacts"], prerequisite_plan["ready_to_write_live_artifacts"])
+        for field in (
+            "write_terminal_artifact_allowed",
+            "scheduler_enable_allowed_by_this_plan",
+            "production_acceptance_allowed",
+        ):
+            self.assertIs(state[field], prerequisite_plan[field])
+            self.assertIs(
+                state[field],
+                state["s2plt02_terminal_delivery_capture_plan_summary"][field],
+            )
+            self.assertFalse(state[field])
         self.assertEqual(state["final_bundle_prerequisite_plan_state_hash"], prerequisite_plan["state_hash"])
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"],

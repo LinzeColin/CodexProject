@@ -34,24 +34,23 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-
-
         self.assertIn(
-            "S2PLT02_TERMINAL_CAPTURE_NO_WRITE_FLAGS_TOP_LEVEL_SYNC_BLOCKED_NO_PRODUCTION",
+            "S2PMT07_FINAL_BUNDLE_NO_WRITE_FLAGS_OUTERMOST_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", current_state)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC", current_state)
         self.assertIn("write_terminal_artifact_allowed=false", current_state)
         self.assertIn("scheduler_enable_allowed_by_this_plan=false", current_state)
         self.assertIn("production_acceptance_allowed=false", current_state)
         self.assertIn("12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa", current_state)
-        self.assertIn("d95f0afad934a6692635960d48cda963074840c0615f9bafe1fb023ff9c4f612", current_state)
-        self.assertIn("0c032d9c804410f2b4ffe11cb52b00e91500fd7790d1eac533154650625b3c6e", current_state)
+        self.assertIn("581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506", current_state)
+        self.assertIn("67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232", current_state)
+        self.assertIn("cfcd3d70c0cca7f0a5a8bc3804f599001e585a65dc80fed0cecc75996c6798ee", current_state)
         self.assertIn(
-            "ADP-S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC-20260701.json",
+            "ADP-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC-20260701.json",
             current_state,
         )
-        self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_NO_WRITE_FLAGS_TOP_LEVEL_SYNC.md", ledger)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_NO_WRITE_FLAGS_OUTERMOST_SYNC.md", ledger)
 
         self.assertIn(
             "S2PMT07_FINAL_BUNDLE_LIVE_WRITE_READY_TOP_LEVEL_SYNC_BLOCKED_NO_PRODUCTION",
