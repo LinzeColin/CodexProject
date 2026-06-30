@@ -9,13 +9,14 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.1
-- Current phase: S2PL
-- Current gate: S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC_BLOCKED_TERMINAL_GAPS_VISIBLE_NO_PRODUCTION
-- Confirmed iteration count: 251
+- Current phase: S2PM
+- Current gate: S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC_BLOCKED_TERMINAL_GAPS_VISIBLE_NO_PRODUCTION
+- Confirmed iteration count: 252
 - Reconstructed event count: 0
-- Current task: `S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC` fixes the S2PLT02 real-proof capture readiness gate so it consumes the live authorization artifact instead of reporting the superseded authorization-missing state. The CLI `audit-s2plt02-real-proof-capture-readiness --json` returns blocked / exit 2 with state hash `7647b32a4ec17c9687e71238ee0ddf2d184ea666d84982dd77e7f2a2d2e427a9`: `authorization_artifact_status=pass`, `real_proof_capture_authorized=true`, `completed_next_actions=obtain_explicit_owner_authorization_for_real_smtp_scheduler`, `safe_to_collect_terminal_proof=false`, `scheduler_install_enabled=false`, and `daily_operation_enabled=false`. Remaining blockers are `required_launchagents_disabled`, `second_real_delivery_day_missing`, `dry_run_second_day_not_terminal`, `s2plt02_terminal_delivery_proof_artifact_missing`, and `real_scheduler_not_proven`. S2PLT02/S2PLT03/S2PLT04/S2PMT07 and production acceptance remain blocked; no production acceptance or production side effect is claimed.
+- Current task: `S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC` keeps S2PLT04 completion evidence aligned with the latest S2PLT02 nonterminal evidence refs. The CLI `audit-s2plt04-completion-evidence --json` returns blocked / exit 2 with state hash `0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be`: S2PLT02 evidence includes `13` nonterminal refs, including `governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json` and `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json`. Remaining blockers are `s2plt02_live_2d_terminal_proof_missing` and `s2plt03_resilience_terminal_proof_missing`; `scheduler_install_enabled=false`, `daily_operation_enabled=false`, no S2PLT04 completion report is claimed, and no production acceptance is claimed.
 - Current plan routing: final bundle prerequisite planning now reports `live_authorization_artifact_status=pass`, `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF` / `S2PLT02-TERMINAL-DELIVERY-PROOF`, no next executable draft command, and upstream order `S2PLT02_TERMINAL_DELIVERY_PROOF -> S2PLT03_TERMINAL_RESILIENCE_PROOF -> S2PLT04_COMPLETION_REPORT`. It does not create S2PLT02 terminal delivery proof, S2PLT03 proof, S2PLT04 completion report, live final bundle manifest, final command execution, handoff, signoff, or production acceptance.
-- Latest readiness live-authorization sync: `S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC` records the corrected readiness behavior: live authorization is now a completed next action, but second real day, real scheduler proof, and terminal delivery proof artifact remain blocking; `artifact_written=false` for the terminal delivery proof artifact.
+- Latest S2PLT04/S2PLT02 nonterminal evidence sync: `S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC` adds terminal-proof evidence inventory and readiness live-authorization sync refs to the S2PLT04 audit input set; `state_hash=0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be`, `s2plt02_nonterminal_ref_count=13`, `completion_report_ready=false`, and S2PLT04 remains blocked by S2PLT02/S2PLT03 terminal proof gaps.
+- Latest readiness live-authorization sync: `S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC` records the corrected readiness behavior: `authorization_artifact_status=pass`, `real_proof_capture_authorized=true`, `completed_next_actions=obtain_explicit_owner_authorization_for_real_smtp_scheduler`, `safe_to_collect_terminal_proof=false`, `state_hash=7647b32a4ec17c9687e71238ee0ddf2d184ea666d84982dd77e7f2a2d2e427a9`, remaining blockers `required_launchagents_disabled`, `second_real_delivery_day_missing`, `dry_run_second_day_not_terminal`, `s2plt02_terminal_delivery_proof_artifact_missing`, and `real_scheduler_not_proven`; live authorization is now a completed next action, but second real day, real scheduler proof, and terminal delivery proof artifact remain blocking; `artifact_written=false` for the terminal delivery proof artifact.
 - Latest terminal proof draft builder sync: `S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER` adds `build-s2plt02-terminal-delivery-proof-artifact-draft` as the no-write candidate generation step for future real inputs; current dry-run/scheduler-disabled evidence still cannot feed the live terminal proof artifact.
 - Latest scheduler proof input sync: `S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR` adds `validate-s2plt02-real-scheduler-proof` as the no-write input gate for the future real scheduler proof manifest; current disabled launchd state still cannot satisfy real scheduler proof.
 - Latest terminal input inventory sync: `S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY` adds `audit-s2plt02-terminal-delivery-inputs` as the no-write checklist before terminal proof artifact assembly; it confirms the remaining missing input set `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT` without writing `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`.
@@ -29,6 +30,19 @@ The append-only machine record is `development_events.jsonl`.
 
 
 
+
+
+### `ITER-20260630-ADP-S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC`
+
+- Timestamp: 2026-06-30 14:10:42 Australia/Sydney
+- Fact level: EXTRACTED from actual S2PLT04 completion-evidence CLI output, focused final-gate regression, focused CLI regression, phase record, run manifest, traceability row, delivery/event records, and owner/user-center pages.
+- Status: S2PLT04 completion evidence audit now consumes the latest S2PLT02 nonterminal evidence refs, including terminal-proof evidence inventory and readiness live-authorization sync, but remains blocked by terminal proof gaps.
+- Task IDs: `S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC`; parent `S2PMT07-S2PLT04-COMPLETION-REPORT`; current V7 task `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- Decisions: `state_hash=0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be`; `s2plt02_nonterminal_ref_count=13`; required latest refs present are terminal-proof evidence inventory and readiness live-authorization sync; remaining blockers are `s2plt02_live_2d_terminal_proof_missing` and `s2plt03_resilience_terminal_proof_missing`.
+- Validation: focused final-gate regression 1 OK; focused final-gate + CLI regressions 2 OK; actual CLI audit blocked / exit 2 with current state hash and no-production flags false.
+- Risk: evidence freshness can be misread as S2PLT04 completion. This sync closes only evidence visibility lag and keeps `completion_report_ready=false`.
+- No-production boundary: no SMTP send, scheduler enablement, Release upload, restore execution, CURRENT/V7 change, source/ranking/schema/DB/queue mutation, DAILY_OPERATION, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, or integrated production acceptance changed.
 
 ### `ITER-20260630-ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC`
 

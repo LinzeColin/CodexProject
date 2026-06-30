@@ -156,6 +156,22 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("real_proof_capture_authorized=true", page)
         self.assertIn("completed_next_actions=obtain_explicit_owner_authorization_for_real_smtp_scheduler", page)
         self.assertIn("7647b32a4ec17c9687e71238ee0ddf2d184ea666d84982dd77e7f2a2d2e427a9", page)
+        self.assertIn(
+            "REQ-ADP-V7-041-S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC",
+            page,
+        )
+        self.assertIn("S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC.md", page)
+        self.assertIn(
+            "blocked_s2plt04_s2plt02_latest_nonterminal_evidence_synced_inventory_and_live_auth_no_production",
+            page,
+        )
+        self.assertIn("s2plt02_nonterminal_ref_count=13", page)
+        self.assertIn("0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be", page)
         self.assertIn("REQ-ADP-V7-041-S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json", page)
