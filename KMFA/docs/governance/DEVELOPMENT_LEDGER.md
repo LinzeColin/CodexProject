@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s08-github-upload
+product_version: 0.1.0-s09p1-project-cost-fact-layer
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S09`
-- current_phase: `S09-P1｜项目成本事实层 待开始`
-- current_tasks: `S9PAT01-S9PAT03`
-- status: `stage8_uploaded_to_github_main_s09p1_next`
+- current_phase: `S09-P2｜毛利与现金毛利 待开始`
+- current_tasks: `S9PBT01-S9PBT03`
+- status: `s09p1_completed_validated_local_only_s09p2_next`
 - risk_tier: `T3`
 
 ## Completed
@@ -65,16 +65,19 @@ product_version: 0.1.0-s08-github-upload
 | `S8PCT01-S8PCT03` | S08-P3 匹配质量测试完成本地验证：4 类 public-safe 质量场景、4 条 quality cases、3 条人工复核队列和 entity_matching_report 已生成 | `KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/s08_p3_completion_record.md` |
 | `KMFA-S08-STAGE-REVIEW-20260630` | Stage 8 整体复审本地通过，复审步骤未执行 GitHub upload | `KMFA/stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md` |
 | `KMFA-S08-GITHUB-UPLOAD-20260630` | Stage 8 final GitHub upload 已完成 | `KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` |
+| `S9PAT01-S9PAT03` | S09-P1 项目成本事实层完成本地验证：6 个 fact metric slots、4 条 project cost fact records、9 条 unallocated project cost pool records；保留 S06/S08 质量阻断，不执行 S09-P2/S09-P3、Stage 9 review 或 GitHub upload | `KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/s09_p1_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S9PAT01-S9PAT03` | S09-P1 项目成本事实层尚未开始；下一轮只允许建立 public-safe fact layer、validator、metadata 和证据 | `KMFA/taskpack/v1_2/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
+| `S9PBT01-S9PBT03` | S09-P2 毛利与现金毛利尚未开始；下一轮只允许建立 public-safe margin/cash margin 计算证据、validator、metadata 和证据 | `KMFA/taskpack/v1_2/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S09-P1 项目成本事实层 | Stage 8 upload 已完成，下一阶段尚未开始 | 下一轮只执行 S09-P1 |
+| S09-P2 毛利与现金毛利 | S09-P1 已完成 local-only，S09-P2 尚未开始 | 下一轮只执行 S09-P2 |
+| S09-P3 经营质量 bridge | S09-P2 尚未完成 | 等 S09-P2 完成后再执行 |
+| Stage 9 整体复审/GitHub upload | S09-P2/S09-P3 尚未完成，且本轮禁止执行 | 等 Stage 9 所有 phase 完成后再复审 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

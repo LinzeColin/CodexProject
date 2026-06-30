@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s08p3-entity-matching-quality
+product_version: 0.1.0-s09p1-project-cost-fact-layer
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型，以及 S08-P3 public-safe 匹配质量测试。不声明 Stage 8 整体复审、项目成本事实层、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试，以及 S09-P1 public-safe 项目成本事实层。不声明 S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对、Stage 9 整体复审、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -142,20 +142,28 @@ product_version: 0.1.0-s08p3-entity-matching-quality
 - evidence: `KMFA/tools/entity_matching_quality.py`, `KMFA/tools/check_s08_p3_entity_matching_quality.py`, `KMFA/metadata/quality/entity_matching_quality_manifest.json`, `KMFA/metadata/quality/entity_matching_quality_cases.jsonl`, `KMFA/metadata/quality/entity_matching_review_queue.jsonl`, `KMFA/stage_artifacts/S08_P3_entity_matching_quality/machine/entity_matching_report.json`, `KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/s08_p3_completion_record.md`
 - limitation: 只保存 profile/entity/source hash refs、匹配分、风险等级、人工复核状态和 evidence metadata；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV，不执行 Stage 8 review、事实层、lineage、正式报告、UI、外部接口或 GitHub upload。
 
+### FORM-KMFA-PROJECT-COST-FACT-LAYER-001
+
+- type: deterministic public-safe project cost fact layer
+- purpose: 为收入、合同额、开票、回款、成本合计、成本分类建立结构化 fact slots，并将未归项目成本进入未归集成本池。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/project_cost_fact_layer.py`, `KMFA/tools/check_s09_p1_project_cost_fact_layer.py`, `KMFA/metadata/reports/project_cost_fact_layer_manifest.json`, `KMFA/metadata/lineage/project_cost_fact_records.jsonl`, `KMFA/metadata/lineage/unallocated_project_cost_pool.jsonl`, `KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/s09_p1_completion_record.md`
+- limitation: 只保存 metric/category slots、private refs、hash refs、质量阻断状态和 evidence metadata；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV，不执行 S09-P2 毛利/现金毛利、S09-P3 差异核对、Stage 9 review、lineage 完整检查、正式报告、UI、外部接口或 GitHub upload。
+
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, and S08-P3 entity matching quality active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, and S09-P1 project cost fact layer active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
-- current limitation: Stage 8 review is not started; no production fact layer, no lineage full check, no official report generation, and no Redcircle automatic connector.
+- current limitation: S09-P2 margin calculation, S09-P3 scope reconciliation, Stage 9 review, lineage full check, official report generation, UI, and Redcircle automatic connector are not implemented.
 
 ## Counts
 
 - active models: 7
-- active formulas: 21
-- active parameters: 78
+- active formulas: 22
+- active parameters: 84
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 1

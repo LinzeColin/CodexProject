@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S08-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260630-S09P1-PROJECT-COST-FACT-LAYER"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "4add0b6a00798008f6eb3439ff5a8da10279265f"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S08_UPLOAD_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T23:20:00+10:00"
-generator_version: "manual-s08-github-upload"
-final_commit_binding: "precommit-pending-s08-upload-local"
+source_base_commit: "precommit-pending-s09p1-local"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S09P1_LOCAL_COMMIT"
+snapshot_event_time: "2026-06-30T23:30:00+10:00"
+generator_version: "manual-s09p1-project-cost-fact-layer"
+final_commit_binding: "precommit-pending-s09p1-local"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 78
-    total_active_formulas: 21
+    total_active_parameters: 84
+    total_active_formulas: 22
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -94,6 +94,9 @@ dimensions:
       - "KMFA/tools/check_s08_p3_entity_matching_quality.py"
       - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/test_results.md"
+      - "KMFA/tools/project_cost_fact_layer.py"
+      - "KMFA/tools/check_s09_p1_project_cost_fact_layer.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
