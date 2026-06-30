@@ -1,0 +1,43 @@
+schema_version: "kmfa.finance_file_mapping_policy.v1"
+project_id: "KMFA"
+stage_phase: "S07-P1"
+mapping_version: "MAP-SRC-kmfa-finance-file-adapter-s07p1-v0.1.0"
+status: "completed_validated_local_only"
+required_finance_categories:
+  - "operating_analysis"
+  - "journal"
+  - "customer_aging"
+  - "cash"
+  - "tax"
+  - "invoice"
+  - "account"
+  - "loan"
+  - "r_and_d_expense"
+source_registry_ref: "KMFA/metadata/imports/finance_support_source_registry.json"
+field_candidates_ref: "KMFA/metadata/schema_maps/finance_field_candidates.jsonl"
+field_report_ref: "KMFA/stage_artifacts/S07_P1_finance_file_adapter/machine/finance_readonly_field_report.jsonl"
+public_repo_policy:
+  raw_business_values_committed: false
+  normalized_business_values_committed: false
+  source_header_plaintext_committed: false
+  raw_file_committed: false
+  private_csv_committed: false
+  xlsx_committed: false
+  pdf_committed: false
+  zip_committed: false
+quality_gate:
+  candidate_quality_grade: "Q2_structure_candidate"
+  q4_human_confirmed: false
+  q5_calculation_baseline_allowed: false
+  formal_report_allowed: false
+stage_scope:
+  finance_file_adapter: true
+  wps_scope_included: false
+  redcircle_scope_included: false
+  facts_layer_write_included: false
+  formal_report_generation_included: false
+  external_connector_included: false
+evidence_refs:
+  - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"
+  - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
+  - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/machine/s07_p1_manifest.json"

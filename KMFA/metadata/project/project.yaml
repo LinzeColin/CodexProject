@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s06-github-upload"
+version: "0.1.0-s07p1-finance-file-adapter"
 current_stage: "S07"
-current_phase: "S07-P1"
+current_phase: "S07-P2"
 current_phase_status: "not_started"
-current_stage_status: "s06_uploaded_to_github_main_s07_p1_not_started"
+current_stage_status: "s07p1_completed_validated_local_only_s07p2_not_started"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -55,6 +55,13 @@ machine_plane:
   - "stage_artifacts/S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
   - "stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
   - "stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json"
+  - "stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"
+  - "stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
+  - "stage_artifacts/S07_P1_finance_file_adapter/machine/s07_p1_manifest.json"
+  - "stage_artifacts/S07_P1_finance_file_adapter/machine/finance_readonly_field_report.jsonl"
+  - "metadata/imports/finance_support_source_registry.json"
+  - "metadata/schema_maps/finance_file_adapter_manifest.json"
+  - "metadata/schema_maps/finance_field_candidates.jsonl"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s07p1-finance-file-adapter - 2026-06-30
+
+- 完成 `S07-P1｜财务文件适配` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/finance_file_adapter.py`、`KMFA/tools/check_s07_p1_finance_file_adapter.py` 和 `KMFA/tests/test_finance_file_adapter.py`。
+- 生成 9 类财务支撑源登记、45 条 hash-only 字段候选和 9 条只读字段报告，覆盖经营分析、日记账、客户账龄、现金、纳税、开票、账户、贷款、研发费用。
+- 新增 `KMFA/metadata/imports/finance_support_source_registry.json`、`KMFA/metadata/schema_maps/finance_file_adapter_manifest.json`、`KMFA/metadata/schema_maps/finance_field_candidates.jsonl`、`KMFA/metadata/schema_maps/finance_file_mapping_policy.yaml` 和 `KMFA/stage_artifacts/S07_P1_finance_file_adapter/`。
+- 公开仓库不提交 raw Excel/PDF/zip/private CSV、字段明文、来源表头明文或真实业务值；WPS、红圈、事实层、lineage、正式报告、UI 和外部接口仍未完成。
+
 ## 0.1.0-s06-github-upload - 2026-06-30
 
 - 完成 Stage 6 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
