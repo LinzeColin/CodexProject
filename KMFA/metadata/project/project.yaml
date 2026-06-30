@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s10-github-upload"
+version: "0.1.0-s11p1-home-navigation"
 current_stage: "S11"
 current_phase: "S11-P1"
-current_phase_status: "not_started"
-current_stage_status: "s10_uploaded_to_github_main_s11_p1_pending"
+current_phase_status: "completed_validated_local_only"
+current_stage_status: "s11_p1_completed_validated_local_only_s11_p2_pending"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -31,6 +31,8 @@ machine_plane:
   - "metadata/reports/report_grade_runtime_records.jsonl"
   - "metadata/reports/report_export_manifest.json"
   - "metadata/reports/report_export_records.jsonl"
+  - "metadata/reports/home_navigation_manifest.json"
+  - "metadata/reports/home_navigation_modules.jsonl"
   - "stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md"
   - "stage_artifacts/S10_P1_report_templates/human/test_results.md"
   - "stage_artifacts/S10_P1_report_templates/machine/s10_p1_manifest.json"
@@ -40,6 +42,10 @@ machine_plane:
   - "stage_artifacts/S10_P3_report_export/human/s10_p3_completion_record.md"
   - "stage_artifacts/S10_P3_report_export/human/test_results.md"
   - "stage_artifacts/S10_P3_report_export/machine/s10_p3_manifest.json"
+  - "stage_artifacts/S11_P1_home_navigation/human/s11_p1_completion_record.md"
+  - "stage_artifacts/S11_P1_home_navigation/human/test_results.md"
+  - "stage_artifacts/S11_P1_home_navigation/machine/s11_p1_manifest.json"
+  - "stage_artifacts/S11_P1_home_navigation/exports/html/kmfa_home_navigation.html"
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
@@ -233,5 +239,12 @@ upload_policy:
   stage10_upload_evidence: "KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md"
   stage10_upload_manifest: "KMFA/stage_artifacts/S10_STAGE_REVIEW/machine/stage10_upload_manifest.json"
   stage10_blocker: "none"
+  stage11_phase_completion_upload_allowed: false
+  stage11_s11p1_completed_validated_local_only: true
+  stage11_review_required_before_upload: true
+  stage11_review_passed: false
+  stage11_upload_ready_local_only: false
+  stage11_uploaded_to_github_main: false
+  stage11_blocker: "s11_p2_and_s11_p3_pending"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_s11_p1_next"
+  upload_surface: "project_level_kmfa_worktree_s11_p2_next"

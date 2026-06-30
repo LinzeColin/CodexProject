@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s11p1-home-navigation - 2026-07-01
+
+- 完成 `S11-P1｜首页与导航` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/home_navigation_runtime.py`、`KMFA/tools/check_s11_p1_home_navigation.py` 和 `KMFA/tests/test_home_navigation_runtime.py`。
+- 生成 public-safe 首页导航 manifest、8 条首页模块记录和 1 个蓝色商务风 HTML 首页样张，覆盖经营总览、项目成本、回款应收、财务资金、开票纳税、数据源检查、待处理事项、报告中心。
+- 保持 `formal_report_allowed=false`、`business_decision_basis_allowed=false`、`s11_p2_source_matrix_scope_included=false`、`s11_p3_project_cost_detail_scope_included=false`、`stage11_review_scope_included=false`、`github_upload_allowed=false`。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实业务值或 credentials。
+- 下一轮只能执行 `S11-P2｜数据源检查板`；不得做 Stage 11 整体复审、GitHub upload、S11-P3、S12、lineage full check、正式报告或外部接口。
+
 ## 0.1.0-s10-github-upload - 2026-06-30
 
 - 完成 Stage 10 final GitHub upload gate 证据准备：基于最新 `origin/main` rebase S10 stack，并复跑 S10-P1/P2/P3 validators、Stage 10 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 经营分析系统 首页导航</title>
+  <style>
+    :root {
+      --navy:#082143;
+      --navy-2:#103a72;
+      --blue:#1d4ed8;
+      --blue-soft:#eaf3ff;
+      --line:#d8e4f5;
+      --text:#142033;
+      --muted:#63718a;
+      --card:#ffffff;
+      --warning:#b45309;
+      --warning-bg:#fff7ed;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      background:#f5f8fc;
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+    }
+    .app { display:grid; grid-template-columns:264px 1fr; min-height:100vh; }
+    aside { background:#082143; color:#fff; padding:24px 20px; }
+    .brand { display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+    .logo {
+      width:48px; height:48px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+      background:#1d4ed8; border:1px solid rgba(255,255,255,.32); font-weight:800; font-size:18px;
+    }
+    .brand strong { display:block; font-size:18px; }
+    .brand span { display:block; color:#c7dcff; font-size:13px; margin-top:3px; }
+    nav { display:grid; gap:6px; }
+    nav button {
+      width:100%; border:0; border-radius:8px; padding:12px 12px; color:#dbeafe; background:transparent;
+      text-align:left; font-size:15px; cursor:pointer;
+    }
+    nav button.active, nav button:hover { background:rgba(255,255,255,.12); color:#fff; }
+    main { padding:28px 34px 34px; }
+    .topbar { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:18px; }
+    h1 { margin:0 0 8px; font-size:28px; color:#0b2b59; letter-spacing:0; }
+    .subline { margin:0; color:var(--muted); line-height:1.6; }
+    .status-strip { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .pill {
+      border:1px solid #bfdbfe; background:var(--blue-soft); color:#1d4ed8;
+      border-radius:999px; padding:6px 10px; font-size:12px; font-weight:700; white-space:nowrap;
+    }
+    .overview { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px 0; }
+    .metric { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; }
+    .metric b { display:block; color:#0f2f5f; font-size:22px; margin-bottom:4px; }
+    .metric span { color:var(--muted); font-size:13px; }
+    .module-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .module-card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; min-height:184px; }
+    .module-top { display:flex; gap:8px; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+    h2 { margin:0; color:#0b2b59; font-size:18px; letter-spacing:0; }
+    .module-card p { margin:0 0 16px; color:#475569; line-height:1.65; min-height:78px; }
+    .tag { display:inline-flex; align-items:center; border-radius:999px; padding:4px 8px; font-size:12px; font-weight:700; white-space:nowrap; }
+    .tag.blue { color:#1d4ed8; background:#eff6ff; border:1px solid #bfdbfe; }
+    .tag.warning_tag { color:var(--warning); background:var(--warning-bg); border:1px solid #fed7aa; }
+    .module-action { border:1px solid #bfdbfe; background:#fff; color:#1d4ed8; border-radius:8px; padding:9px 11px; font-weight:700; cursor:pointer; }
+    .notice { margin-top:16px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; line-height:1.7; }
+    .notice b { color:#0b2b59; }
+    footer { color:var(--muted); font-size:12px; padding:16px 0 0; }
+    @media(max-width:1100px) { .module-grid,.overview { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:820px) {
+      .app { grid-template-columns:1fr; }
+      main { padding:22px; }
+      .topbar { display:block; }
+      .status-strip { justify-content:flex-start; margin-top:12px; }
+      .module-grid,.overview { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand"><div class="logo">KM</div><div><strong>KMFA</strong><span>经营分析系统</span></div></div>
+      <nav aria-label="首页导航">
+        <button type="button" data-target="business_overview" class="active">经营总览</button>
+        <button type="button" data-target="project_cost">项目成本</button>
+        <button type="button" data-target="receivable_collection">回款应收</button>
+        <button type="button" data-target="financial_cash">财务资金</button>
+        <button type="button" data-target="invoice_tax">开票纳税</button>
+        <button type="button" data-target="source_check">数据源检查</button>
+        <button type="button" data-target="pending_actions">待处理事项</button>
+        <button type="button" data-target="report_center">报告中心</button>
+      </nav>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div>
+          <h1>KMFA 经营分析系统</h1>
+          <p class="subline">首页与导航 · 蓝色商务版 · 全中文业务入口 · 不展示真实经营明细</p>
+        </div>
+        <div class="status-strip">
+          <span class="pill">报告等级 D</span>
+          <span class="pill">不可作为正式经营报告</span>
+          <span class="pill">公开安全样张</span>
+        </div>
+      </header>
+      <section class="overview" aria-label="首页状态">
+        <div class="metric"><b>8</b><span>首页模块</span></div>
+        <div class="metric"><b>KM</b><span>品牌标识</span></div>
+        <div class="metric"><b>蓝色</b><span>商务视觉基调</span></div>
+        <div class="metric"><b>受控</b><span>报告发布状态</span></div>
+      </section>
+      <section class="module-grid" aria-label="业务模块">
+        <article class="module-card" id="business_overview">
+          <div class="module-top">
+            <h2>经营总览</h2>
+            <span class="tag blue">可预览</span>
+          </div>
+          <p>集中查看经营健康、回款压力、成本风险和本期重点事项。</p>
+          <button type="button" class="module-action">查看经营概览</button>
+        </article>
+        <article class="module-card" id="project_cost">
+          <div class="module-top">
+            <h2>项目成本</h2>
+            <span class="tag blue">受控预览</span>
+          </div>
+          <p>进入项目成本专题入口，保留质量等级和差异阻断提示。</p>
+          <button type="button" class="module-action">查看成本入口</button>
+        </article>
+        <article class="module-card" id="receivable_collection">
+          <div class="module-top">
+            <h2>回款应收</h2>
+            <span class="tag blue">待复核</span>
+          </div>
+          <p>展示回款、应收和逾期压力的公开安全摘要入口。</p>
+          <button type="button" class="module-action">查看回款入口</button>
+        </article>
+        <article class="module-card" id="financial_cash">
+          <div class="module-top">
+            <h2>财务资金</h2>
+            <span class="tag blue">可预览</span>
+          </div>
+          <p>查看现金、资金计划和财务口径说明的入口。</p>
+          <button type="button" class="module-action">查看资金入口</button>
+        </article>
+        <article class="module-card" id="invoice_tax">
+          <div class="module-top">
+            <h2>开票纳税</h2>
+            <span class="tag warning_tag">提示</span>
+          </div>
+          <p>查看开票、税务和合规提醒入口，不执行开票或报税。</p>
+          <button type="button" class="module-action">查看税务入口</button>
+        </article>
+        <article class="module-card" id="source_check">
+          <div class="module-top">
+            <h2>数据源检查</h2>
+            <span class="tag blue">下一阶段展开</span>
+          </div>
+          <p>进入数据源检查板入口；矩阵明细留到 S11-P2。</p>
+          <button type="button" class="module-action">查看检查入口</button>
+        </article>
+        <article class="module-card" id="pending_actions">
+          <div class="module-top">
+            <h2>待处理事项</h2>
+            <span class="tag blue">受控</span>
+          </div>
+          <p>汇总差异处理、人工确认和报告发布前的待办入口。</p>
+          <button type="button" class="module-action">查看待办入口</button>
+        </article>
+        <article class="module-card" id="report_center">
+          <div class="module-top">
+            <h2>报告中心</h2>
+            <span class="tag blue">报告等级 D</span>
+          </div>
+          <p>查看报告样张和发布限制，正式报告继续受质量等级阻断。</p>
+          <button type="button" class="module-action">查看报告入口</button>
+        </article>
+      </section>
+      <section class="notice">
+        <b>范围说明：</b>S11-P1 只锁定首页与导航，覆盖 经营总览、项目成本、回款应收、财务资金、开票纳税、数据源检查、待处理事项、报告中心。数据源检查矩阵留到 S11-P2，项目成本详情留到 S11-P3；当前页面不提交原始业务数据，不执行外部接口，不绕过质量等级。
+      </section>
+      <footer>KMFA 经营分析系统 · S11-P1 首页与导航 · 样张不包含真实经营数据</footer>
+    </main>
+  </div>
+  <script>
+    document.querySelectorAll("nav button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("nav button").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        const target = document.getElementById(button.dataset.target);
+        if (target) target.scrollIntoView({ behavior:"smooth", block:"nearest" });
+      });
+    });
+  </script>
+</body>
+</html>

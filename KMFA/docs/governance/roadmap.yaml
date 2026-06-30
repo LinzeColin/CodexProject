@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S11"
-current_phase_id: "S11_P1"
-current_task_id: "S11PAT01-S11PAT03"
-next_gate_id: "KMFA-S11-P1-GATE"
+current_phase_id: "S11_P2"
+current_task_id: "S11PBT01-S11PBT03"
+next_gate_id: "KMFA-S11-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -701,10 +701,10 @@ stages:
       - "KMFA/stage_artifacts/S10_STAGE_REVIEW/machine/stage10_upload_manifest.json"
   - stage_id: "S11"
     name: "前端基础界面与数据源检查板"
-    status: "planned_next"
+    status: "in_progress_s11p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
-    current_result: "下一轮只允许执行 S11-P1 首页与导航；必须读取 v1.2 S11 roadmap 和 HTML/UIUX 样板，不得跳到 S11-P2、S11-P3、S12、lineage full check、正式报告或外部接口。"
+    estimated_pct: 33.33
+    current_result: "S11-P1 首页与导航已本地验证完成，证据在 KMFA/stage_artifacts/S11_P1_home_navigation/；下一轮只允许执行 S11-P2 数据源检查板，不得跳到 S11-P3、Stage 11 review、GitHub upload、S12、lineage full check、正式报告或外部接口。"
   - stage_id: "S12"
     name: "人工处理工作台与重跑机制"
     status: "planned"
