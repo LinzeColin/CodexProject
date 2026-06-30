@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s11p1-home-navigation
+product_version: 0.1.0-s11p2-source-check-board
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S11`
-- current_phase: `S11-P1｜首页与导航｜本地验证完成`
-- current_tasks: `S11PAT01-S11PAT03`
-- status: `s11_p1_completed_validated_local_only_s11_p2_pending`
+- current_phase: `S11-P2｜数据源检查板｜本地验证完成`
+- current_tasks: `S11PBT01-S11PBT03`
+- status: `s11_p2_completed_validated_local_only_s11_p3_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -76,16 +76,17 @@ product_version: 0.1.0-s11p1-home-navigation
 | `KMFA-S10-STAGE-REVIEW-20260630` | Stage 10 整体复审本地通过；复跑 S10-P1/P2/P3 validators、`check_s10_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks；复审步骤未执行 GitHub upload、S11、UI、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S10_STAGE_REVIEW/human/stage10_review_report.md` |
 | `KMFA-S10-GITHUB-UPLOAD-20260630` | Stage 10 final GitHub upload 已完成；基于最新 origin/main rebase Stage 10 栈，复跑 validators、安全扫描和 parse checks，并留下 dry-run push、push 与 post-push parity 证据 | `KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md` |
 | `S11PAT01-S11PAT03` | S11-P1 首页与导航完成本地验证：生成 8 个 public-safe 首页模块、1 个蓝色商务风 HTML 首页样张、manifest、records 和 validator；覆盖经营总览、项目成本、回款应收、财务资金、开票纳税、数据源检查、待处理事项、报告中心；不执行 S11-P2、S11-P3、Stage 11 review 或 GitHub upload | `KMFA/stage_artifacts/S11_P1_home_navigation/human/s11_p1_completion_record.md` |
+| `S11PBT01-S11PBT03` | S11-P2 数据源检查板完成本地验证：生成 13 行 public-safe 来源状态矩阵、固定 11 列、5 种状态、状态点击详情、蓝灰低干扰 HTML 样张、manifest、rows 和 validator；不执行 S11-P3、Stage 11 review 或 GitHub upload | `KMFA/stage_artifacts/S11_P2_source_check_board/human/s11_p2_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S11PBT01-S11PBT03` | S11-P2 数据源检查板待开始；下一轮只允许实现来源系统、业务板块、文件包、主体、账户、状态矩阵和状态点击说明，不进入 S11-P3、Stage 11 review 或 GitHub upload | `KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
+| `S11PCT01-S11PCT03` | S11-P3 项目成本页面待开始；下一轮只允许实现项目列表、毛利、成本结构、回款、差异状态、来源证据和待处理事项，不进入 Stage 11 review 或 GitHub upload | `KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S11-P2 数据源检查板 | 尚未实现；S11-P1 刚完成本地验证 | 下一轮只执行 S11-P2 |
+| S11-P3 项目成本页面 | 尚未实现；S11-P2 刚完成本地验证 | 下一轮只执行 S11-P3 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
