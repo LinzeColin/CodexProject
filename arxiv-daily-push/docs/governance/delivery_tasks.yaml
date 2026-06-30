@@ -5462,3 +5462,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC"
+    title: "S2PMT07 S2PLT04 nonterminal summary sync"
+    parent_task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T15:04:03+10:00"
+    objective: "Expose S2PLT02/S2PLT03 nonterminal evidence summary fields at the top level of the S2PLT04 completion-evidence audit."
+    scope: "S2PLT04 completion-evidence audit builder, validator, focused test, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT04 completion report, no S2PLT02/S2PLT03 terminal proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC", "S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC.md", "governance/run_manifests/ADP-S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC-20260630.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PLT04-INTEGRATION-CANDIDATE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt04_completion_evidence_audit_consumes_latest_nonterminal_terminal_audits", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt04_completion_evidence_audit_consumes_latest_nonterminal_terminal_audits", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_tests PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_governance_current_state.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_actual PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt04-completion-evidence --json"]
+    test_results: ["TDD red failed because S2PLT04 audit output lacked top-level s2plt02_nonterminal_ref_count", "focused S2PLT04 final-gate regression: 1 passed", "targeted final-gate/CLI/current-state tests: 158 passed", "actual S2PLT04 audit: blocked / exit 2 with state_hash ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f and top-level nonterminal summary fields"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "blocked_s2plt04_nonterminal_summary_machine_fields_synced_no_production"
+    risk: "Nested evidence freshness can be misread or missed by final-bundle reviewers; this sync exposes summary fields while keeping terminal proof/report acceptance blocked."
+    rollback: "Revert the S2PLT04 nonterminal summary fields, focused test, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

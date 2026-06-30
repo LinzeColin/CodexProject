@@ -172,6 +172,31 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         )
         self.assertIn("s2plt02_nonterminal_ref_count=13", page)
         self.assertIn("0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be", page)
+        self.assertIn(
+            "REQ-ADP-V7-041-S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC",
+            page,
+        )
+        self.assertIn("S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC.md", page)
+        self.assertIn(
+            "blocked_s2plt04_nonterminal_summary_machine_fields_synced_no_production",
+            page,
+        )
+        self.assertIn("s2plt02_nonterminal_ref_count=14", page)
+        self.assertIn(
+            "s2plt02_latest_nonterminal_ref=governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
+            page,
+        )
+        self.assertIn("s2plt03_nonterminal_ref_count=4", page)
+        self.assertIn(
+            "s2plt03_latest_nonterminal_ref=governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+            page,
+        )
+        self.assertIn("ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f", page)
         self.assertIn("REQ-ADP-V7-041-S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json", page)

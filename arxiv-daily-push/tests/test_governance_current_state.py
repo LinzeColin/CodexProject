@@ -35,9 +35,23 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_TERMINAL_CAPTURE_WINDOW_RUNTIME_STATE_SYNC_BLOCKED_LOADED_DISABLED_NO_PRODUCTION",
+            "S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )
+        self.assertIn("S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC", current_state)
+        self.assertIn("ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f", current_state)
+        self.assertIn("s2plt02_nonterminal_ref_count=14", current_state)
+        self.assertIn(
+            "s2plt02_latest_nonterminal_ref=governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
+            current_state,
+        )
+        self.assertIn("s2plt03_nonterminal_ref_count=4", current_state)
+        self.assertIn(
+            "s2plt03_latest_nonterminal_ref=governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+            current_state,
+        )
+        self.assertIn("ADP-S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC.md", ledger)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC", current_state)
         self.assertIn("audit-s2plt02-terminal-capture-window", current_state)
         self.assertIn("cebee97e51f4cc6231a10b787aa65b17eed10c951330dea4328cd18d73ed912a", current_state)
