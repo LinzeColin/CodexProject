@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-s07-github-upload - 2026-06-30
+
+- 完成 Stage 7 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `a734729629efc07d49d95732b400144d39dc343c` rebase 完整 Stage 7 栈，并复跑 S07-P1/P2/P3 validators、全量 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency check。
+- 新增 `KMFA/stage_artifacts/S07_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_upload_manifest.json`。
+- 保持 S08 项目组合键、事实层、lineage 完整检查、正式报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s07-stage-review - 2026-06-30
 
 - 完成 Stage 7 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。

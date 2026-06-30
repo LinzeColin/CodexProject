@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s07-stage-review`
-- current_stage: `S07`
-- current_phase: `Stage 7 final GitHub upload 待开始`
-- status: `stage7_review_passed_upload_ready_local_only`
+- version: `0.1.0-s07-github-upload`
+- current_stage: `S08`
+- current_phase: `S08-P1｜项目组合键 待开始`
+- status: `stage7_uploaded_to_github_main_s08p1_next`
 - production_ready: `false`
 - github_upload_ready: `false_until_next_stage_review`
 
@@ -59,14 +59,15 @@
 - S07-P3 红圈导出后置策略已完成本地验证：`KMFA/tools/redcircle_postponement_policy.py`、`KMFA/tools/check_s07_p3_redcircle_postponement.py`、`KMFA/tests/test_redcircle_postponement_policy.py`、`KMFA/metadata/imports/redcircle_export_source_registry.json`、`KMFA/metadata/schema_maps/redcircle_postponement_manifest.json`、`KMFA/metadata/schema_maps/redcircle_reserved_export_templates.jsonl`、`KMFA/metadata/schema_maps/redcircle_postponement_policy.yaml` 和 `KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/` 已生成。
 - S07-P3 预留红圈经营、合同、回款、财务 4 类导出模板，明确 D15 文件型 MVP 不接自动接口，并建立只读、留 hash、可回滚、需人工授权的后续接入控制。
 - Stage 7 整体复审已本地通过：`KMFA/stage_artifacts/S07_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；复审确认 S07-P1/P2/P3 证据、治理 validator、raw/secret scan 和 evidence consistency check 通过。
+- Stage 7 final GitHub upload 已生成证据：`KMFA/stage_artifacts/S07_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_upload_manifest.json`。
 
 ## 未完成
 
-- Stage 7 GitHub upload、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy 和 Stage 7 review 不代表正式报告可发布。
+- S08-P1 项目组合键、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload 和 Stage 7 upload 不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy 和 Stage 7 review 已完成；下一步只能执行 Stage 7 final GitHub upload，不能跳到 S08、UI、报告、事实层、lineage 或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload 已完成；下一步只能执行 S08-P1 项目组合键，不能跳到 S08-P2、UI、报告、事实层、lineage 或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

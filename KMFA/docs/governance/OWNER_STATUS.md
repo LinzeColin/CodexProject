@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload，以及 Stage 7 的 S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略和整体复审。S07-P3 已预留红圈经营、合同、回款、财务 4 类导出模板，明确 D15 文件型 MVP 不接自动接口，并建立后续只读、留 hash、可回滚控制；Stage 7 upload、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload，以及 Stage 7 的 S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、整体复审和 final GitHub upload。S07-P3 已预留红圈经营、合同、回款、财务 4 类导出模板，明确 D15 文件型 MVP 不接自动接口，并建立后续只读、留 hash、可回滚控制；S08-P1 项目组合键、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -44,7 +44,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S07-P1 财务文件适配已本地验证完成：`KMFA/tools/finance_file_adapter.py` 支持只读 `.xlsx` 结构解析并只输出 hash/private refs；`KMFA/tools/check_s07_p1_finance_file_adapter.py` 验证 9 类财务源、45 条字段候选、9 条字段报告、无来源表头明文、无 raw business values、WPS/红圈 scope 均为 false。
 - S07-P2 WPS 文件适配已本地验证完成：`KMFA/tools/wps_file_adapter.py` 支持 WPS 导出转换后的 `.xlsx` 只读结构解析、原生 WPS 转换提示和版本化字段映射；`KMFA/tools/check_s07_p2_wps_file_adapter.py` 验证 4 类 WPS 导出、20 条字段映射、4 条转换提示、1 个 active mapping rule version、无来源表头明文、无 raw business values、财务/红圈 scope 边界。
 - S07-P3 红圈导出后置策略已本地验证完成：`KMFA/tools/redcircle_postponement_policy.py` 只生成 public-safe 预留模板、source registry、connector postponement policy 和 rollback plan；`KMFA/tools/check_s07_p3_redcircle_postponement.py` 验证 4 类红圈模板、D15 自动接口禁止、只读/hash/rollback/manual approval 控制、无接口凭证、无字段明文、无 raw business values。
-- Stage 7 整体复审已本地通过：`KMFA/stage_artifacts/S07_STAGE_REVIEW/` 复跑 S07-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 evidence consistency check；复审修复了 review evidence 与治理状态缺口，但未执行 GitHub upload。
+- Stage 7 整体复审和 final GitHub upload 已完成：`KMFA/stage_artifacts/S07_STAGE_REVIEW/` 记录 S07-P1/P2/P3 复跑、治理 validator、raw/secret scan、evidence consistency check、dry-run push、push 和 post-push parity。
 
 ## 你现在不能信任什么
 
@@ -61,4 +61,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `Stage 7 final GitHub upload`；不得扩大到 S08、UI、正式报告、事实层、lineage 或自动接口。Upload 必须基于最新 `origin/main` 复跑验证并留下 push proof。
+下一步只执行 `S08-P1｜项目组合键`；不得扩大到 S08-P2、UI、正式报告、事实层、lineage 或自动接口。S08-P1 必须只建立 public-safe matching metadata、tests 和 validator，不提交 raw business data。
