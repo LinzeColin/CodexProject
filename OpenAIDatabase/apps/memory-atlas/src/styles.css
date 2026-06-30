@@ -1459,6 +1459,42 @@ h3 {
   overflow: hidden;
 }
 
+.galaxy-heading-actions {
+  display: grid;
+  justify-items: end;
+  gap: 7px;
+  min-width: 0;
+}
+
+.galaxy-renderer-toggle,
+.galaxy-quality-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: rgba(9, 10, 13, 0.52);
+  padding: 3px;
+}
+
+.galaxy-renderer-toggle button,
+.galaxy-quality-tabs button {
+  min-height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #b6b1a6;
+  padding: 0 8px;
+  font-size: 11px;
+}
+
+.galaxy-renderer-toggle button[aria-pressed="true"],
+.galaxy-quality-tabs button[aria-pressed="true"] {
+  background: rgba(126, 224, 248, 0.18);
+  color: #f4f1e8;
+}
+
 .galaxy-scene {
   position: relative;
   isolation: isolate;
@@ -1558,6 +1594,18 @@ h3 {
   padding: 6px;
 }
 
+.galaxy-renderer-chip {
+  display: inline-grid;
+  place-items: center;
+  min-height: 30px;
+  border: 1px solid rgba(126, 224, 248, 0.16);
+  border-radius: 7px;
+  color: #8fd3ff;
+  padding: 0 8px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
 .galaxy-controls button {
   display: inline-grid;
   place-items: center;
@@ -1568,6 +1616,31 @@ h3 {
   background: rgba(244, 241, 232, 0.045);
   color: #f4f1e8;
   cursor: pointer;
+}
+
+.galaxy-quality-tabs button {
+  width: auto;
+  height: 24px;
+  min-width: 34px;
+  padding: 0 7px;
+  text-transform: uppercase;
+}
+
+.galaxy-flow-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.045);
+  color: #b6b1a6;
+  padding: 0 7px;
+}
+
+.galaxy-flow-control input {
+  width: 70px;
+  accent-color: #8fd3ff;
 }
 
 .galaxy-controls button:hover,
@@ -3947,6 +4020,15 @@ h3 {
     min-height: 300px;
   }
 
+  .galaxy-heading-actions {
+    justify-items: start;
+  }
+
+  .galaxy-controls {
+    flex-wrap: wrap;
+    max-width: min(430px, calc(100% - 28px));
+  }
+
   .semantic-panel {
     min-height: 260px;
   }
@@ -4571,6 +4653,20 @@ h3 {
 
   .galaxy-scene canvas {
     min-height: 220px;
+  }
+
+  .galaxy-controls {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .galaxy-flow-control {
+    flex: 1 1 118px;
+  }
+
+  .galaxy-flow-control input {
+    width: 100%;
   }
 
   .timeline-list button {

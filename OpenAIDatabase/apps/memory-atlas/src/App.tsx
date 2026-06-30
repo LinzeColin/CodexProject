@@ -36,6 +36,7 @@ import {
   uniqueSorted,
   visibleGraphFor,
 } from "./data/atlas";
+import { getInitialGalaxyRendererMode, persistGalaxyRendererMode, type GalaxyRendererMode } from "./config/visualFlags";
 import type { ActivityBucket, AtlasEdge, AtlasFilters, AtlasMetric, AtlasNode, MemoryAtlas, ViewKey } from "./types";
 
 const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) => ({ default: module.GalaxyScene })));
@@ -955,6 +956,13 @@ function GalaxyView({
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
 }) {
+  const [galaxyRendererMode, setGalaxyRendererMode] = useState<GalaxyRendererMode>(() => getInitialGalaxyRendererMode());
+
+  function updateGalaxyRendererMode(mode: GalaxyRendererMode) {
+    setGalaxyRendererMode(mode);
+    persistGalaxyRendererMode(mode);
+  }
+
   return (
     <div className="galaxy-view">
       <div className="surface-heading">
@@ -962,11 +970,29 @@ function GalaxyView({
           <p className="eyebrow">语义银河 / 记忆关系 / 增量观察</p>
           <h2>按主题关系探索记忆密度、局部邻域和近期增量</h2>
         </div>
-        <span>{memoryCount} 条记忆 / {graphNodes.length} 个节点 / {graphEdges.length} 条连接</span>
+        <div className="galaxy-heading-actions">
+          <span>{memoryCount} 条记忆 / {graphNodes.length} 个节点 / {graphEdges.length} 条连接</span>
+          <div className="galaxy-renderer-toggle" aria-label="Galaxy renderer feature flag">
+            <button
+              aria-pressed={galaxyRendererMode === "memory-starfield"}
+              onClick={() => updateGalaxyRendererMode("memory-starfield")}
+              type="button"
+            >
+              Flow Field
+            </button>
+            <button
+              aria-pressed={galaxyRendererMode === "legacy"}
+              onClick={() => updateGalaxyRendererMode("legacy")}
+              type="button"
+            >
+              Legacy
+            </button>
+          </div>
+        </div>
       </div>
       <DeltaStrip stats={deltaStats} />
       <Suspense fallback={<div className="galaxy-loading">正在载入 Three.js 银河...</div>}>
-        <GalaxyScene nodes={graphNodes} edges={graphEdges} selectedNode={selectedNode} onSelectNode={onSelectNode} />
+        <GalaxyScene nodes={graphNodes} edges={graphEdges} rendererMode={galaxyRendererMode} selectedNode={selectedNode} onSelectNode={onSelectNode} />
       </Suspense>
     </div>
   );
