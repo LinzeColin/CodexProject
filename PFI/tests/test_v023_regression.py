@@ -696,5 +696,93 @@ class TestV023Stage11WholeStageReview(unittest.TestCase):
             self.assertEqual(path.stat().st_size, item["bytes"], item["screenshot_id"])
 
 
+class TestV023OverallProjectReview(unittest.TestCase):
+    def test_overall_project_review_evidence_closes_three_phase_recovery_locally(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "overall_project_review"
+        expected_files = [
+            review_dir / "evidence.json",
+            review_dir / "review_audit.json",
+            review_dir / "browser_audit.json",
+            review_dir / "cleanup_report.json",
+            review_dir / "changed_files.txt",
+            review_dir / "terminal.log",
+        ]
+        for path in expected_files:
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads((review_dir / "evidence.json").read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in (review_dir / "changed_files.txt").read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023OverallProjectReviewEvidenceV1")
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["review_id"], "V023-OVERALL-PROJECT-REVIEW")
+        self.assertEqual(evidence["status"], "project_review_pass")
+        self.assertEqual(evidence["review_scope"], ["Stage 1-11", "group reviews", "overall project recovery gate"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertTrue(evidence["three_phase_recovery"]["phase_1_stage_by_stage_complete"])
+        self.assertTrue(evidence["three_phase_recovery"]["phase_2_group_review_complete"])
+        self.assertTrue(evidence["three_phase_recovery"]["phase_3_overall_project_review_complete"])
+        self.assertEqual(evidence["terminal_gates"]["github_main_upload"], "terminal_verified_after_push")
+        self.assertEqual(evidence["terminal_gates"]["backup_bundle"], "terminal_verified_after_final_commit")
+        self.assertFalse(evidence["github_main_uploaded_inside_evidence_commit"])
+
+        groups = evidence["group_review_summary"]
+        self.assertEqual(groups["stage_1_3"], "review_pass")
+        self.assertEqual(groups["stage_4_6"], "review_pass")
+        self.assertEqual(groups["stage_7_9"], "review_pass")
+        self.assertEqual(groups["stage_10_11"], "review_pass")
+        self.assertTrue(evidence["acceptance_checks"]["ten_primary_entries_stable"])
+        self.assertTrue(evidence["acceptance_checks"]["market_research_primary_entry"])
+        self.assertTrue(evidence["acceptance_checks"]["old_nine_entry_constraint_deprecated"])
+        self.assertTrue(evidence["acceptance_checks"]["no_mock_financial_data_used"])
+        self.assertTrue(evidence["acceptance_checks"]["external_download_sources_missing_not_fabricated"])
+        self.assertTrue(evidence["acceptance_checks"]["cleanup_completed_without_user_data_deletion"])
+
+    def test_overall_project_browser_audit_and_cleanup_are_machine_checkable(self) -> None:
+        browser = read_json("reports/pfi_v023/overall_project_review/browser_audit.json")
+        cleanup = read_json("reports/pfi_v023/overall_project_review/cleanup_report.json")
+        audit = read_json("reports/pfi_v023/overall_project_review/review_audit.json")
+
+        self.assertEqual(browser["schema"], "PFIV023OverallProjectBrowserAuditV1")
+        self.assertEqual(browser["findings"], [])
+        self.assertEqual(browser["desktop"]["primary_count"], 10)
+        self.assertEqual(browser["desktop"]["primary"], EXPECTED_PRIMARY_NAV)
+        self.assertEqual(browser["mobile"]["primary_count"], 10)
+        self.assertEqual(browser["mobile"]["primary"], EXPECTED_PRIMARY_NAV)
+        self.assertEqual(browser["desktop"]["routes"]["home"]["cny_zero_count"], 0)
+        self.assertTrue(browser["desktop"]["routes"]["home"]["has_real_metrics"])
+        self.assertTrue(browser["desktop"]["routes"]["sync"]["has_source_gate"])
+        self.assertTrue(browser["desktop"]["routes"]["insights"]["has_report_blocker"])
+        self.assertTrue(browser["desktop"]["routes"]["market_research"]["has_market_empty_state"])
+        self.assertTrue(browser["desktop"]["routes"]["settings"]["has_settings_feedback"])
+        self.assertEqual(browser["mobile"]["home"]["cny_zero_count"], 0)
+        self.assertTrue(browser["mobile"]["reports"]["has_report_blocker"])
+
+        screenshots = sorted((ROOT / "reports" / "pfi_v023" / "overall_project_review" / "screenshots").glob("*.png"))
+        self.assertGreaterEqual(len(screenshots), 7)
+        for path in screenshots:
+            self.assertGreater(path.stat().st_size, 20000, path.name)
+
+        self.assertEqual(cleanup["schema"], "PFIV023OverallProjectCleanupReportV1")
+        self.assertFalse(cleanup["user_data_deleted"])
+        self.assertFalse(cleanup["financial_data_deleted"])
+        self.assertFalse(cleanup["venv_deleted"])
+        self.assertIn("PFI/.venv", cleanup["protected_paths"])
+        self.assertIn("MetaDatabase/PFI", cleanup["protected_paths"])
+
+        self.assertEqual(audit["schema"], "PFIV023OverallProjectReviewAuditV1")
+        self.assertEqual(audit["blocker_count"], 0)
+        checks = {item["id"]: item["status"] for item in audit["checks"]}
+        for check_id in (
+            "stage0_contract_still_valid",
+            "all_group_reviews_passed",
+            "overall_browser_audit_passed",
+            "meta_database_real_data_present",
+            "external_sources_missing_not_fabricated",
+            "safe_cleanup_completed",
+        ):
+            self.assertEqual(checks[check_id], "pass", check_id)
+
+
 if __name__ == "__main__":
     unittest.main()

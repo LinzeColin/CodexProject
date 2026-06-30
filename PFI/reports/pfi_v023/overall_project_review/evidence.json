@@ -1,0 +1,179 @@
+{
+  "schema": "PFIV023OverallProjectReviewEvidenceV1",
+  "version": "v0.2.3",
+  "review_id": "V023-OVERALL-PROJECT-REVIEW",
+  "review_name": "v0.2.3 Human Product Experience Recovery overall project review",
+  "status": "project_review_pass",
+  "generated_at": "2026-06-30T09:38:44Z",
+  "review_scope": [
+    "Stage 1-11",
+    "group reviews",
+    "overall project recovery gate"
+  ],
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "97007dd824cc9c6257544b7cf057992b2f9bcc8c",
+    "origin_main_at_evidence_write": "d35d5845442ee9694f30f4486579a47141df3d9f",
+    "head_semantics": "Evidence refreshed after rebasing local PFI review commits onto current origin/main; final upload remains a terminal gate after commit.",
+    "head_at_final_validation": "97007dd824cc9c6257544b7cf057992b2f9bcc8c",
+    "origin_main_at_final_validation": "d35d5845442ee9694f30f4486579a47141df3d9f"
+  },
+  "stage0_contract": {
+    "status": "candidate_pass",
+    "ten_primary_entries": true,
+    "market_research_primary_entry": true,
+    "old_nine_entry_constraint_deprecated": true,
+    "no_mock_financial_data": true,
+    "one_stage_per_run_contract": true
+  },
+  "three_phase_recovery": {
+    "phase_1_stage_by_stage_complete": true,
+    "phase_2_group_review_complete": true,
+    "phase_3_overall_project_review_complete": true
+  },
+  "group_review_summary": {
+    "stage_1_3": "review_pass",
+    "stage_4_6": "review_pass",
+    "stage_7_9": "review_pass",
+    "stage_10_11": "review_pass"
+  },
+  "stage11_closeout": {
+    "status": "closeout_pass",
+    "human_acceptance_claimed": true,
+    "review_id": "V023-S11-WHOLE-STAGE-REVIEW"
+  },
+  "external_taskpack_status": "missing_from_downloads",
+  "external_taskpack_paths_checked": {
+    "roadmap": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+    "taskpack": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+    "preview": "/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html"
+  },
+  "external_taskpack_missing_paths": [
+    "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+    "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+    "/Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html"
+  ],
+  "meta_database": {
+    "root": "MetaDatabase/PFI",
+    "root_exists": true,
+    "processed_transactions": {
+      "path": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+      "exists": true,
+      "bytes": 2387686
+    },
+    "import_manifest": {
+      "path": "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+      "exists": true,
+      "bytes": 5011
+    },
+    "raw_file_count": 4,
+    "raw_files": [
+      {
+        "path": "MetaDatabase/PFI/alipay_daily/raw/alipay_20220605-20230605_24779d7bb0f9.csv",
+        "exists": true,
+        "bytes": 264554
+      },
+      {
+        "path": "MetaDatabase/PFI/alipay_daily/raw/alipay_20230605-20240605_c16e278e987c.csv",
+        "exists": true,
+        "bytes": 259891
+      },
+      {
+        "path": "MetaDatabase/PFI/alipay_daily/raw/alipay_20240605-20250605_c592e6a224da.csv",
+        "exists": true,
+        "bytes": 263668
+      },
+      {
+        "path": "MetaDatabase/PFI/alipay_daily/raw/alipay_20250604-20260603_eaff20de65cc.csv",
+        "exists": true,
+        "bytes": 689203
+      }
+    ]
+  },
+  "browser_audit": {
+    "path": "PFI/reports/pfi_v023/overall_project_review/browser_audit.json",
+    "findings": [],
+    "desktop_primary_count": 10,
+    "mobile_primary_count": 10,
+    "screenshots": {
+      "PFI/reports/pfi_v023/overall_project_review/screenshots/final_home_desktop.png": 275465,
+      "PFI/reports/pfi_v023/overall_project_review/screenshots/final_home_mobile.png": 170716,
+      "PFI/reports/pfi_v023/overall_project_review/screenshots/final_market_desktop.png": 266091,
+      "PFI/reports/pfi_v023/overall_project_review/screenshots/final_reports_desktop.png": 255486,
+      "PFI/reports/pfi_v023/overall_project_review/screenshots/final_reports_mobile.png": 169840,
+      "PFI/reports/pfi_v023/overall_project_review/screenshots/final_settings_desktop.png": 274531,
+      "PFI/reports/pfi_v023/overall_project_review/screenshots/final_sync_desktop.png": 270336
+    }
+  },
+  "cleanup": {
+    "path": "PFI/reports/pfi_v023/overall_project_review/cleanup_report.json",
+    "removed_dir_count": 27,
+    "removed_file_count": 0,
+    "user_data_deleted": false,
+    "financial_data_deleted": false,
+    "venv_deleted": false
+  },
+  "acceptance_checks": {
+    "ten_primary_entries_stable": true,
+    "market_research_primary_entry": true,
+    "old_nine_entry_constraint_deprecated": true,
+    "no_mock_financial_data_used": true,
+    "external_download_sources_missing_not_fabricated": true,
+    "stage0_to_stage11_evidence_present": true,
+    "all_group_reviews_passed": true,
+    "overall_browser_audit_passed": true,
+    "meta_database_real_data_present": true,
+    "cleanup_completed_without_user_data_deletion": true
+  },
+  "terminal_gates": {
+    "github_main_upload": "terminal_verified_after_push",
+    "backup_bundle": "terminal_verified_after_final_commit",
+    "remote_head_equality": "terminal_verified_after_push",
+    "final_worktree_clean": "terminal_verified_after_backup"
+  },
+  "github_main_uploaded_inside_evidence_commit": false,
+  "validation_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_regression.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q",
+    "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+    "python3 -B -m json.tool PFI/reports/pfi_v023/overall_project_review/evidence.json >/dev/null and git diff --check -- PFI",
+    "PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json",
+    "curl http://127.0.0.1:8501/_stcore/health and curl http://127.0.0.1:8766/health"
+  ],
+  "validation_results": {
+    "regression": "25 passed in 0.05s",
+    "all_v023_tests": "195 passed in 2.30s",
+    "node_check_shell_js": "pass",
+    "json_and_git_diff_check": "pass",
+    "macos_app_acceptance_lite": "29 pass / 0 fail / 2 info",
+    "localhost_health": {
+      "8501": "ok",
+      "8766": "{\"status\": \"ok\", \"schema\": \"PFIV021RuntimeAPIV1\"}"
+    },
+    "post_rebase_validation": true
+  },
+  "changed_files": [
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v023/OVERALL_PROJECT_REVIEW.md",
+    "PFI/docs/pfi_v023/README.md",
+    "PFI/reports/pfi_v023/overall_project_review/browser_audit.json",
+    "PFI/reports/pfi_v023/overall_project_review/changed_files.txt",
+    "PFI/reports/pfi_v023/overall_project_review/cleanup_report.json",
+    "PFI/reports/pfi_v023/overall_project_review/evidence.json",
+    "PFI/reports/pfi_v023/overall_project_review/review_audit.json",
+    "PFI/reports/pfi_v023/overall_project_review/screenshots/final_home_desktop.png",
+    "PFI/reports/pfi_v023/overall_project_review/screenshots/final_home_mobile.png",
+    "PFI/reports/pfi_v023/overall_project_review/screenshots/final_market_desktop.png",
+    "PFI/reports/pfi_v023/overall_project_review/screenshots/final_reports_desktop.png",
+    "PFI/reports/pfi_v023/overall_project_review/screenshots/final_reports_mobile.png",
+    "PFI/reports/pfi_v023/overall_project_review/screenshots/final_settings_desktop.png",
+    "PFI/reports/pfi_v023/overall_project_review/screenshots/final_sync_desktop.png",
+    "PFI/reports/pfi_v023/overall_project_review/terminal.log",
+    "PFI/tests/test_v023_regression.py"
+  ],
+  "last_verified_at": "2026-06-30T09:41:04Z",
+  "last_refreshed_after_rebase_at": "2026-06-30T09:40:22Z"
+}

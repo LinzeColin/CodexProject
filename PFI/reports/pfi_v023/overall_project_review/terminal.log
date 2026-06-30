@@ -1,0 +1,14 @@
+last_verified_at=2026-06-30T09:41:04Z
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+head_at_final_validation=97007dd824cc9c6257544b7cf057992b2f9bcc8c
+origin_main_at_final_validation=d35d5845442ee9694f30f4486579a47141df3d9f
+regression=25 passed in 0.05s
+all_v023_tests=195 passed in 2.30s
+node_check_shell_js=pass
+json_and_git_diff_check=pass
+macos_app_acceptance_lite=29 pass / 0 fail / 2 info
+localhost_8501=ok
+localhost_8766={"status": "ok", "schema": "PFIV021RuntimeAPIV1"}
+cleanup_after_tests=0 project cache dirs and 0 project cache files outside PFI/.venv
+github_main_upload=terminal_pending_after_final_commit
+backup_bundle=terminal_pending_after_final_commit
