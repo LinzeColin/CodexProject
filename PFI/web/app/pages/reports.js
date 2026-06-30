@@ -67,6 +67,40 @@
     });
   }
 
+  function buildStage7Phase73QualityTuningViewModel(qualityTuning = {}) {
+    const qualityReport = qualityTuning.data_quality_report ? buildReportCard(qualityTuning.data_quality_report) : null;
+    const formulas = Array.isArray(qualityTuning.formula_explanations)
+      ? qualityTuning.formula_explanations.map(buildFormulaExplanationCard)
+      : [];
+    const parameterPreview = Array.isArray(qualityTuning.parameter_impact_preview)
+      ? qualityTuning.parameter_impact_preview.map(buildParameterPreviewCard)
+      : [];
+    const exportPolicy = buildExportPolicyCard(qualityTuning.export_save_policy || {});
+    const blockedMetricCount = qualityTuning.summary ? Number(qualityTuning.summary.blocked_metric_count || 0) : 0;
+    return Object.freeze({
+      schema: "PFIV023Stage7QualityTuningPageViewModelV1",
+      version: VERSION,
+      stage: "Stage 7",
+      phase_id: "V023-S7-P7.3",
+      page: "reports",
+      title: "数据质量与调参",
+      subtitle_zh: "展示数据质量报告、公式解释、参数影响预览与导出/保存策略；缺失 read model 不补零。",
+      read_model_hash: qualityTuning.source_core_metrics ? qualityTuning.source_core_metrics.read_model_hash : null,
+      as_of: qualityTuning.source_core_metrics ? qualityTuning.source_core_metrics.as_of : null,
+      blocked_metric_count: blockedMetricCount,
+      section_count: 4,
+      sections: Object.freeze([
+        Object.freeze({ id: "data-quality", title: "数据质量报告", cards: qualityReport ? [qualityReport] : [] }),
+        Object.freeze({ id: "formula-explanations", title: "公式解释", cards: formulas }),
+        Object.freeze({ id: "parameter-impact", title: "参数影响预览", cards: parameterPreview }),
+        Object.freeze({ id: "export-save", title: "导出/保存策略", cards: [exportPolicy] }),
+      ]),
+      warnings_zh: blockedMetricCount
+        ? `仍有 ${blockedMetricCount} 个核心指标被 read model 缺口阻断。`
+        : "核心指标输入未发现阻断项。",
+    });
+  }
+
   function buildReportCard(report = {}) {
     const formulas = Array.isArray(report.formulas) ? report.formulas : [];
     const parameters = Array.isArray(report.parameters) ? report.parameters : [];
@@ -86,6 +120,53 @@
       gap_summary_zh: missing.length ? `缺口：${missing.join("；")}` : "缺口：无",
       next_actions: Array.isArray(report.next_actions) ? report.next_actions : [],
       evidence_hash: report.evidence_hash || null,
+    });
+  }
+
+  function buildFormulaExplanationCard(formula = {}) {
+    return Object.freeze({
+      section: "公式解释",
+      formula_id: formula.formula_id || "",
+      metric_id: formula.metric_id || "",
+      label: formula.label || formula.metric_id || "",
+      input_status: formula.input_status || "review_required",
+      formula_zh: formula.formula_zh || "公式缺失",
+      missing_inputs_zh: Array.isArray(formula.missing_inputs) && formula.missing_inputs.length
+        ? `缺失输入：${formula.missing_inputs.join("、")}`
+        : "缺失输入：无",
+      parameter_summary_zh: Array.isArray(formula.parameters)
+        ? `参数 ${formula.parameters.length} 项：${formula.parameters.map((item) => `${item.label_zh || item.parameter_id}=${displayValue(item.value)}`).join("；")}`
+        : "参数缺失",
+      status_policy_zh: formula.status_policy_zh || "输入完整前不得显示正式结论。",
+      explanation_zh: formula.explanation_zh || "公式解释缺失。",
+    });
+  }
+
+  function buildParameterPreviewCard(item = {}) {
+    return Object.freeze({
+      section: "参数影响预览",
+      parameter_id: item.parameter_id || "",
+      label_zh: item.label_zh || item.parameter_id || "",
+      current_value: displayValue(item.current_value),
+      current_source: item.current_source || "未加载",
+      impact_status: item.impact_status || "review_required",
+      impacted_metrics_zh: Array.isArray(item.impacted_metric_ids) ? item.impacted_metric_ids.join("、") : "",
+      blocked_missing_inputs_zh: Array.isArray(item.blocked_missing_inputs) && item.blocked_missing_inputs.length
+        ? item.blocked_missing_inputs.join("、")
+        : "无",
+      impact_summary_zh: item.impact_summary_zh || "参数影响说明缺失。",
+      preview_value: item.preview_value === null || item.preview_value === undefined ? null : item.preview_value,
+    });
+  }
+
+  function buildExportPolicyCard(policy = {}) {
+    return Object.freeze({
+      section: "导出/保存策略",
+      title: policy.title || "导出/保存策略",
+      saved_artifacts: Array.isArray(policy.saved_artifacts) ? policy.saved_artifacts : [],
+      export_ready_formats: Array.isArray(policy.export_ready_formats) ? policy.export_ready_formats : [],
+      explicitly_not_implemented: Array.isArray(policy.explicitly_not_implemented) ? policy.explicitly_not_implemented : [],
+      save_policy_zh: policy.save_policy_zh || "导出/保存策略缺失。",
     });
   }
 
@@ -131,5 +212,6 @@
   return Object.freeze({
     buildStage7Phase71ReportsViewModel,
     buildStage7Phase72CoreReportsViewModel,
+    buildStage7Phase73QualityTuningViewModel,
   });
 });

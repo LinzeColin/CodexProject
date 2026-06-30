@@ -1,0 +1,11 @@
+{
+  "schema": "PFIV023Stage7Phase73SourceTermScanV1",
+  "version": "v0.2.3",
+  "stage": "Stage 7",
+  "phase_id": "V023-S7-P7.3",
+  "scanned_file_count": 11,
+  "ignored_contract_fields": [
+    "sample_size"
+  ],
+  "violations": []
+}

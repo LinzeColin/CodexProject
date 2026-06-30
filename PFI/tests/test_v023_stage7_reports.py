@@ -353,7 +353,130 @@ console.log(JSON.stringify(reportsPage.buildStage7Phase72CoreReportsViewModel(pa
         doc_text = (ROOT / "docs" / "pfi_v023" / "STAGE7_REPORTS.md").read_text(encoding="utf-8")
         self.assertIn("Stage 7 Phase 7.2", doc_text)
         self.assertIn("核心报告", doc_text)
-        self.assertIn("Phase 7.3 数据质量与调参未执行", doc_text)
+        self.assertIn("Stage 7 Phase 7.3", doc_text)
+        self.assertIn("Stage 7 whole-stage review 未执行", doc_text)
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("PFI/tests/test_v023_stage7_reports.py -q", terminal_log)
+
+    def test_phase73_contract_is_limited_to_data_quality_and_tuning(self) -> None:
+        module = load_reports_module()
+        contract = module.build_stage7_phase73_contract()
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 7")
+        self.assertEqual(contract["phase_id"], "V023-S7-P7.3")
+        self.assertEqual(contract["phase_name"], "数据质量与调参")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertEqual(contract["task_ids"], ["T7.3.1", "T7.3.2", "T7.3.3", "T7.3.4"])
+        self.assertIn("PFI/src/pfi_v02/stage_v023_reports.py", contract["allowed_files"])
+        self.assertIn("PFI/web/app/pages/reports.js", contract["allowed_files"])
+        self.assertNotIn("PFI/web/app/shell.js", contract["changed_in_this_phase"])
+        self.assertIn("Stage 7 whole-stage review", contract["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
+
+    def test_phase73_quality_and_tuning_uses_only_real_read_model_and_preserves_blockers(self) -> None:
+        module = load_reports_module()
+        core_metrics = json.loads((ROOT / "reports" / "pfi_v023" / "stage_6" / "phase_6_1" / "core_metrics.json").read_text(encoding="utf-8"))
+        payload = module.build_stage7_quality_tuning(core_metrics_read_model=core_metrics)
+
+        self.assertEqual(payload["schema"], "PFIV023Stage7QualityTuningV1")
+        self.assertEqual(payload["phase_id"], "V023-S7-P7.3")
+        self.assertEqual(payload["source_core_metrics"]["read_model_hash"], core_metrics["read_model_hash"])
+        self.assertEqual(payload["data_quality_report"]["status"], "partial")
+        self.assertEqual(payload["data_quality_report"]["data_range"], {"start": "2022-06-06", "end": "2026-06-03"})
+        self.assertEqual(payload["data_quality_report"]["sample_size"]["transaction_count"], 8815)
+        self.assertEqual(payload["data_quality_report"]["sample_size"]["raw_file_count"], 4)
+        self.assertEqual(set(payload["data_quality_report"]["blocked_metric_ids"]), {"net_worth_cny", "cash_balance_cny", "investment_market_value_cny"})
+        text = json.dumps(payload, ensure_ascii=False)
+        for term in ("未挂载账户余额", "未挂载持仓市值", "数据质量报告", "公式解释", "参数影响预览", "导出/保存策略"):
+            self.assertIn(term, text)
+        self.assertNotIn("CNY 0.00", text)
+        self.assertNotIn("完整财务结论", text)
+
+    def test_phase73_formula_explanations_and_parameter_preview_are_actionable_without_recalculation(self) -> None:
+        module = load_reports_module()
+        core_metrics = json.loads((ROOT / "reports" / "pfi_v023" / "stage_6" / "phase_6_1" / "core_metrics.json").read_text(encoding="utf-8"))
+        payload = module.build_stage7_quality_tuning(core_metrics_read_model=core_metrics)
+        explanations = {item["metric_id"]: item for item in payload["formula_explanations"]}
+        preview = {item["parameter_id"]: item for item in payload["parameter_impact_preview"]}
+
+        self.assertIn("net_worth_cny", explanations)
+        self.assertIn("life_consumption_cny", explanations)
+        self.assertEqual(explanations["net_worth_cny"]["input_status"], "blocked")
+        self.assertIn("cash_balance_cny", explanations["net_worth_cny"]["missing_inputs"])
+        self.assertEqual(explanations["life_consumption_cny"]["input_status"], "ready")
+        self.assertIn("生活消费流出减退款", explanations["life_consumption_cny"]["formula_zh"])
+        self.assertIn("life_event_type", preview)
+        self.assertIn(preview["life_event_type"]["impact_status"], {"not_adjustable", "blocked_by_read_model"})
+        for item in payload["parameter_impact_preview"]:
+            self.assertIn("current_value", item)
+            self.assertIn("current_source", item)
+            self.assertIn("impact_summary_zh", item)
+            self.assertIsNone(item["preview_value"])
+            self.assertIn(item["impact_status"], {"not_adjustable", "blocked_by_read_model"})
+
+        export_policy = payload["export_save_policy"]
+        self.assertEqual(export_policy["phase_id"], "V023-S7-P7.3")
+        self.assertIn("quality_tuning.json", " ".join(export_policy["saved_artifacts"]))
+        self.assertIn("PDF", " ".join(export_policy["explicitly_not_implemented"]))
+
+    def test_phase73_quality_tuning_page_model_exposes_sections(self) -> None:
+        payload = json.loads((ROOT / "reports" / "pfi_v023" / "stage_7" / "phase_7_3" / "quality_tuning.json").read_text(encoding="utf-8"))
+        script = """
+const reportsPage = require('./PFI/web/app/pages/reports.js');
+const payload = JSON.parse(process.argv[1]);
+console.log(JSON.stringify(reportsPage.buildStage7Phase73QualityTuningViewModel(payload)));
+"""
+        view = node_json(script, json.dumps(payload, ensure_ascii=False))
+
+        self.assertEqual(view["schema"], "PFIV023Stage7QualityTuningPageViewModelV1")
+        self.assertEqual(view["phase_id"], "V023-S7-P7.3")
+        self.assertEqual(view["section_count"], 4)
+        self.assertGreaterEqual(view["blocked_metric_count"], 3)
+        text = json.dumps(view, ensure_ascii=False)
+        for term in ("数据质量报告", "公式解释", "参数影响预览", "导出/保存策略", "未挂载账户余额", "PDF"):
+            self.assertIn(term, text)
+        self.assertNotIn("CNY 0.00", text)
+
+    def test_phase73_doc_and_evidence_exist_before_candidate_pass(self) -> None:
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_7" / "phase_7_3"
+        evidence_path = phase_dir / "evidence.json"
+        quality_path = phase_dir / "quality_tuning.json"
+        page_model_path = phase_dir / "quality_tuning_page_model.json"
+        scan_path = phase_dir / "no_source_term_scan.json"
+        screenshot_path = phase_dir / "screenshots" / "quality_tuning.png"
+        changed_files_path = phase_dir / "changed_files.txt"
+        terminal_log_path = phase_dir / "terminal.log"
+
+        for path in (evidence_path, quality_path, page_model_path, scan_path, screenshot_path, changed_files_path, terminal_log_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        quality = json.loads(quality_path.read_text(encoding="utf-8"))
+        page_model = json.loads(page_model_path.read_text(encoding="utf-8"))
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 7")
+        self.assertEqual(evidence["phase_id"], "V023-S7-P7.3")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertFalse(evidence["stage_contract"]["stage_7_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(quality["schema"], "PFIV023Stage7QualityTuningV1")
+        self.assertEqual(page_model["schema"], "PFIV023Stage7QualityTuningPageViewModelV1")
+        self.assertEqual(scan["violations"], [])
+        self.assertGreater(screenshot_path.stat().st_size, 10000)
+
+        doc_text = (ROOT / "docs" / "pfi_v023" / "STAGE7_REPORTS.md").read_text(encoding="utf-8")
+        self.assertIn("Stage 7 Phase 7.3", doc_text)
+        self.assertIn("数据质量与调参", doc_text)
+        self.assertIn("Stage 7 whole-stage review 未执行", doc_text)
 
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("PFI/tests/test_v023_stage7_reports.py -q", terminal_log)

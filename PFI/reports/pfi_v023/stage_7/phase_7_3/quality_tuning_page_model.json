@@ -1,0 +1,318 @@
+{
+  "schema": "PFIV023Stage7QualityTuningPageViewModelV1",
+  "version": "v0.2.3",
+  "stage": "Stage 7",
+  "phase_id": "V023-S7-P7.3",
+  "page": "reports",
+  "title": "数据质量与调参",
+  "subtitle_zh": "展示数据质量报告、公式解释、参数影响预览与导出/保存策略；缺失 read model 不补零。",
+  "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+  "as_of": "2026-06-03",
+  "blocked_metric_count": 3,
+  "section_count": 4,
+  "sections": [
+    {
+      "id": "data-quality",
+      "title": "数据质量报告",
+      "cards": [
+        {
+          "report_id": "data_quality_report",
+          "title": "数据质量报告",
+          "status": "partial",
+          "status_zh": "部分可用",
+          "conclusion_zh": "数据质量报告解释当前阻断项：净资产与现金余额缺少账户余额 read model，投资市值缺少持仓市值 read model；缺失输入补齐前不得生成正式报告结论。",
+          "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+          "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+          "formula_summary_zh": "公式 6 项：净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。；现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。；投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。；生活消费 = 真实 Alipay 交易中的生活消费流出减退款。；消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。；数据健康 = 已通过导入清单校验的真实标准化交易记录数。",
+          "parameter_summary_zh": "参数 16 项：净资产币种=CNY；资产范围=现金余额、投资市值、其他已确认资产；负债范围=可确认负债；现金币种=CNY；现金账户范围=真实账户余额 read model；投资市值币种=CNY；价格口径=最新可确认价格；汇率口径=对应 CNY 汇率；生活消费事件类型=CASH；退款抵消=REFUND 抵消；生活消费事件类型=CASH；基金申购事件类型=FUND；资产买入事件类型=BUY_ASSET；退款抵消=REFUND 抵消；交易记录来源=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json；原始文件数=4",
+          "gap_summary_zh": "缺口：净资产：未挂载账户余额与持仓 read model，无法计算净资产；现金余额：未挂载账户余额 read model，无法计算现金余额；投资市值：未挂载持仓市值 read model，无法计算投资市值",
+          "next_actions": [
+            "接入账户余额 read model 后重新生成净资产与现金余额报告",
+            "接入持仓市值 read model 后重新生成净资产与投资市值报告",
+            "保留当前 Alipay 消费输入的 evidence hash，不用缺失输入补零"
+          ],
+          "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+        }
+      ]
+    },
+    {
+      "id": "formula-explanations",
+      "title": "公式解释",
+      "cards": [
+        {
+          "section": "公式解释",
+          "formula_id": "formula_net_worth_cny",
+          "metric_id": "net_worth_cny",
+          "label": "净资产",
+          "input_status": "blocked",
+          "formula_zh": "净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。",
+          "missing_inputs_zh": "缺失输入：cash_balance_cny、investment_market_value_cny",
+          "parameter_summary_zh": "参数 3 项：净资产币种=CNY；资产范围=现金余额、投资市值、其他已确认资产；负债范围=可确认负债",
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。",
+          "explanation_zh": "公式输入完整时才允许形成完整结论；当前缺失输入会保留 blocked/partial 状态并显示修复动作。"
+        },
+        {
+          "section": "公式解释",
+          "formula_id": "formula_cash_balance_cny",
+          "metric_id": "cash_balance_cny",
+          "label": "现金余额",
+          "input_status": "blocked",
+          "formula_zh": "现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。",
+          "missing_inputs_zh": "缺失输入：cash_balance_cny",
+          "parameter_summary_zh": "参数 2 项：现金币种=CNY；现金账户范围=真实账户余额 read model",
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。",
+          "explanation_zh": "公式输入完整时才允许形成完整结论；当前缺失输入会保留 blocked/partial 状态并显示修复动作。"
+        },
+        {
+          "section": "公式解释",
+          "formula_id": "formula_investment_market_value_cny",
+          "metric_id": "investment_market_value_cny",
+          "label": "投资市值",
+          "input_status": "blocked",
+          "formula_zh": "投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。",
+          "missing_inputs_zh": "缺失输入：investment_market_value_cny",
+          "parameter_summary_zh": "参数 3 项：投资市值币种=CNY；价格口径=最新可确认价格；汇率口径=对应 CNY 汇率",
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。",
+          "explanation_zh": "公式输入完整时才允许形成完整结论；当前缺失输入会保留 blocked/partial 状态并显示修复动作。"
+        },
+        {
+          "section": "公式解释",
+          "formula_id": "formula_life_consumption_cny",
+          "metric_id": "life_consumption_cny",
+          "label": "生活消费",
+          "input_status": "ready",
+          "formula_zh": "生活消费 = 真实 Alipay 交易中的生活消费流出减退款。",
+          "missing_inputs_zh": "缺失输入：无",
+          "parameter_summary_zh": "参数 2 项：生活消费事件类型=CASH；退款抵消=REFUND 抵消",
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。",
+          "explanation_zh": "公式输入完整时才允许形成完整结论；当前缺失输入会保留 blocked/partial 状态并显示修复动作。"
+        },
+        {
+          "section": "公式解释",
+          "formula_id": "formula_total_consumption_outflow_cny",
+          "metric_id": "total_consumption_outflow_cny",
+          "label": "消费总流出",
+          "input_status": "ready",
+          "formula_zh": "消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。",
+          "missing_inputs_zh": "缺失输入：无",
+          "parameter_summary_zh": "参数 4 项：生活消费事件类型=CASH；基金申购事件类型=FUND；资产买入事件类型=BUY_ASSET；退款抵消=REFUND 抵消",
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。",
+          "explanation_zh": "公式输入完整时才允许形成完整结论；当前缺失输入会保留 blocked/partial 状态并显示修复动作。"
+        },
+        {
+          "section": "公式解释",
+          "formula_id": "formula_data_health",
+          "metric_id": "data_health",
+          "label": "数据健康",
+          "input_status": "ready",
+          "formula_zh": "数据健康 = 已通过导入清单校验的真实标准化交易记录数。",
+          "missing_inputs_zh": "缺失输入：无",
+          "parameter_summary_zh": "参数 2 项：交易记录来源=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json；原始文件数=4",
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。",
+          "explanation_zh": "公式输入完整时才允许形成完整结论；当前缺失输入会保留 blocked/partial 状态并显示修复动作。"
+        }
+      ]
+    },
+    {
+      "id": "parameter-impact",
+      "title": "参数影响预览",
+      "cards": [
+        {
+          "section": "参数影响预览",
+          "parameter_id": "net_worth_currency",
+          "label_zh": "净资产币种",
+          "current_value": "CNY",
+          "current_source": "Stage 6 核心指标币种",
+          "impact_status": "blocked_by_read_model",
+          "impacted_metrics_zh": "net_worth_cny",
+          "blocked_missing_inputs_zh": "cash_balance_cny、investment_market_value_cny",
+          "impact_summary_zh": "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "asset_scope",
+          "label_zh": "资产范围",
+          "current_value": "现金余额、投资市值、其他已确认资产",
+          "current_source": "Stage 7 报告合同",
+          "impact_status": "blocked_by_read_model",
+          "impacted_metrics_zh": "net_worth_cny",
+          "blocked_missing_inputs_zh": "cash_balance_cny、investment_market_value_cny",
+          "impact_summary_zh": "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "liability_scope",
+          "label_zh": "负债范围",
+          "current_value": "可确认负债",
+          "current_source": "Stage 7 报告合同",
+          "impact_status": "blocked_by_read_model",
+          "impacted_metrics_zh": "net_worth_cny",
+          "blocked_missing_inputs_zh": "cash_balance_cny、investment_market_value_cny",
+          "impact_summary_zh": "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "cash_currency",
+          "label_zh": "现金币种",
+          "current_value": "CNY",
+          "current_source": "Stage 6 核心指标币种",
+          "impact_status": "blocked_by_read_model",
+          "impacted_metrics_zh": "cash_balance_cny",
+          "blocked_missing_inputs_zh": "cash_balance_cny",
+          "impact_summary_zh": "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "cash_account_scope",
+          "label_zh": "现金账户范围",
+          "current_value": "真实账户余额 read model",
+          "current_source": "Stage 7 报告合同",
+          "impact_status": "blocked_by_read_model",
+          "impacted_metrics_zh": "cash_balance_cny",
+          "blocked_missing_inputs_zh": "cash_balance_cny",
+          "impact_summary_zh": "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "investment_currency",
+          "label_zh": "投资市值币种",
+          "current_value": "CNY",
+          "current_source": "Stage 6 核心指标币种",
+          "impact_status": "blocked_by_read_model",
+          "impacted_metrics_zh": "investment_market_value_cny",
+          "blocked_missing_inputs_zh": "investment_market_value_cny",
+          "impact_summary_zh": "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "pricing_policy",
+          "label_zh": "价格口径",
+          "current_value": "最新可确认价格",
+          "current_source": "Stage 7 报告合同",
+          "impact_status": "blocked_by_read_model",
+          "impacted_metrics_zh": "investment_market_value_cny",
+          "blocked_missing_inputs_zh": "investment_market_value_cny",
+          "impact_summary_zh": "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "fx_policy",
+          "label_zh": "汇率口径",
+          "current_value": "对应 CNY 汇率",
+          "current_source": "Stage 7 报告合同",
+          "impact_status": "blocked_by_read_model",
+          "impacted_metrics_zh": "investment_market_value_cny",
+          "blocked_missing_inputs_zh": "investment_market_value_cny",
+          "impact_summary_zh": "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "life_event_type",
+          "label_zh": "生活消费事件类型",
+          "current_value": "CASH",
+          "current_source": "Stage 6 read model event_type",
+          "impact_status": "not_adjustable",
+          "impacted_metrics_zh": "life_consumption_cny、total_consumption_outflow_cny",
+          "blocked_missing_inputs_zh": "无",
+          "impact_summary_zh": "当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "refund_offset",
+          "label_zh": "退款抵消",
+          "current_value": "REFUND 抵消",
+          "current_source": "Stage 6 read model event_type",
+          "impact_status": "not_adjustable",
+          "impacted_metrics_zh": "life_consumption_cny、total_consumption_outflow_cny",
+          "blocked_missing_inputs_zh": "无",
+          "impact_summary_zh": "当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "fund_event_type",
+          "label_zh": "基金申购事件类型",
+          "current_value": "FUND",
+          "current_source": "Stage 6 read model event_type",
+          "impact_status": "not_adjustable",
+          "impacted_metrics_zh": "total_consumption_outflow_cny",
+          "blocked_missing_inputs_zh": "无",
+          "impact_summary_zh": "当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "asset_buy_event_type",
+          "label_zh": "资产买入事件类型",
+          "current_value": "BUY_ASSET",
+          "current_source": "Stage 6 read model event_type",
+          "impact_status": "not_adjustable",
+          "impacted_metrics_zh": "total_consumption_outflow_cny",
+          "blocked_missing_inputs_zh": "无",
+          "impact_summary_zh": "当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "transaction_count_source",
+          "label_zh": "交易记录来源",
+          "current_value": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+          "current_source": "Stage 6 read model source",
+          "impact_status": "not_adjustable",
+          "impacted_metrics_zh": "data_health",
+          "blocked_missing_inputs_zh": "无",
+          "impact_summary_zh": "当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。",
+          "preview_value": null
+        },
+        {
+          "section": "参数影响预览",
+          "parameter_id": "raw_file_count",
+          "label_zh": "原始文件数",
+          "current_value": "4",
+          "current_source": "Stage 6 read model source",
+          "impact_status": "not_adjustable",
+          "impacted_metrics_zh": "data_health",
+          "blocked_missing_inputs_zh": "无",
+          "impact_summary_zh": "当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。",
+          "preview_value": null
+        }
+      ]
+    },
+    {
+      "id": "export-save",
+      "title": "导出/保存策略",
+      "cards": [
+        {
+          "section": "导出/保存策略",
+          "title": "导出/保存策略",
+          "saved_artifacts": [
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_page_model.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_snapshot.html",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/screenshots/quality_tuning.png"
+          ],
+          "export_ready_formats": [
+            "JSON evidence pack",
+            "HTML snapshot",
+            "PNG screenshot"
+          ],
+          "explicitly_not_implemented": [
+            "PDF export in Stage 7 Phase 7.3",
+            "CSV export in Stage 7 Phase 7.3"
+          ],
+          "save_policy_zh": "Phase 7.3 只保存只读证据包和页面快照；PDF/CSV 导出记录为未实现范围，不用假导出占位。"
+        }
+      ]
+    }
+  ],
+  "warnings_zh": "仍有 3 个核心指标被 read model 缺口阻断。"
+}

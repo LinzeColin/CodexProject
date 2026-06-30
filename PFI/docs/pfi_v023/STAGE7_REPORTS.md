@@ -80,6 +80,41 @@ Phase 7.2 证据：
 - `PFI/reports/pfi_v023/stage_7/phase_7_2/core_reports_page_model.json`
 - `PFI/reports/pfi_v023/stage_7/phase_7_2/screenshots/core_reports.png`
 
-Phase 7.3 数据质量与调参未执行。
+## Stage 7 Phase 7.3 数据质量与调参
+
+Phase 7.3 只生成数据质量与调参说明，不补造账户余额、现金余额、持仓市值或可调参数结果。
+
+本 phase 覆盖：
+
+- `T7.3.1` 数据质量报告。
+- `T7.3.2` 公式解释页。
+- `T7.3.3` 参数影响预览。
+- `T7.3.4` 导出/保存策略。
+
+当前数据质量结论：
+
+- Stage 6 核心 read model 输入来自 `MetaDatabase/PFI`，数据范围 `2022-06-06` 至 `2026-06-03`，样本量 8815 条交易和 4 个原始文件。
+- 净资产与现金余额仍缺少账户余额 read model。
+- 投资市值仍缺少持仓市值 read model。
+- 生活消费和消费总流出有真实 Alipay 输入，但消费分类、商户、预算和异常消费明细仍未挂载。
+- 缺失输入补齐前不得生成完整财务结论，也不得显示 `CNY 0.00`。
+
+参数影响预览策略：
+
+- 当前参数均按 Stage 6/Stage 7 合同只读展示。
+- 输入未完整的公式显示 `blocked_by_read_model`，不计算调参后财务值。
+- 输入完整但参数不可调的公式显示 `not_adjustable`，只展示影响范围和参数来源。
+
+导出/保存策略：
+
+- 当前保存 JSON evidence pack、HTML snapshot 和 PNG screenshot。
+- PDF/CSV 导出在 Phase 7.3 明确记录为未实现范围。
+
+Phase 7.3 证据：
+
+- `PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning.json`
+- `PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_page_model.json`
+- `PFI/reports/pfi_v023/stage_7/phase_7_3/screenshots/quality_tuning.png`
+
 Stage 7 whole-stage review 未执行。
 GitHub main upload 未执行。
