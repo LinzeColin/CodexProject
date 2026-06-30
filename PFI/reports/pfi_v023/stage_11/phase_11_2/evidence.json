@@ -1,0 +1,55 @@
+{
+  "schema": "PFIV023Stage11Phase112EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 11",
+  "phase_id": "V023-S11-P11.2",
+  "phase_name": "文档冻结",
+  "status": "candidate_pass",
+  "generated_at": "2026-06-30T07:25:14Z",
+  "git": {
+    "base_head_at_evidence_write": "d635ca85bf688a986b1ce2e1379e4d64f45ab233",
+    "head_semantics": "Phase evidence records the head available before this evidence commit; final local commit hash is verified by terminal after commit."
+  },
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T11.2.1",
+    "T11.2.2",
+    "T11.2.3",
+    "T11.2.4"
+  ],
+  "stage_contract": {
+    "phase_11_1_regression_tests_done": true,
+    "phase_11_2_doc_freeze_done": true,
+    "phase_11_3_final_candidate_delivery_done": false,
+    "stage_11_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "human_acceptance_claimed": false,
+  "acceptance_checks": {
+    "readme_candidate_status": true,
+    "future_development_constraints": true,
+    "history_deprecation_frozen": true,
+    "residual_risks_listed": true
+  },
+  "documents": {
+    "readme": "PFI/README.md",
+    "doc_freeze": "PFI/docs/pfi_v023/STAGE11_DOC_FREEZE.md",
+    "history_policy": "PFI/docs/pfi_v023/HISTORY_DEPRECATION_POLICY.md"
+  },
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "node --check PFI/web/app/shell.js",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_11/phase_11_2/evidence.json"
+  ],
+  "changed_files": [
+    "PFI/README.md",
+    "PFI/docs/pfi_v023/STAGE11_DOC_FREEZE.md",
+    "PFI/docs/pfi_v023/HISTORY_DEPRECATION_POLICY.md",
+    "PFI/tests/test_v023_regression.py",
+    "PFI/reports/pfi_v023/stage_11/phase_11_2/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_11/phase_11_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_11/phase_11_2/terminal.log"
+  ]
+}
