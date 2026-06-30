@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 3.2 Preview Widgets
+
+- Added Home Overview preview widgets for Stage 3.2: a lightweight static
+  `Mini Starfield`, a recent-topic `River Pulse`, and `Inspector Deep Link`
+  cards that preserve the selected focus before switching boards.
+- Kept the preview starfield as SVG/CSS only and explicitly avoided loading a
+  new WebGL scene on the default home board.
+- Extended visual acceptance with a deterministic preview-widget contract check.
+- Completed Stage 3 whole-stage review after Stage 3.1 and Stage 3.2 passed
+  local validation.
+
+No Galaxy replacement, Timeline replacement, ingestion, raw/private data
+access, direct writeback, Cloudflare live deploy, or external account operation
+was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 3.1 Default Home
 
 - Made `记忆总览` the default Memory Atlas startup board while preserving the

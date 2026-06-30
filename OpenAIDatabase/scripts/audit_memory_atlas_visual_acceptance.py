@@ -91,6 +91,31 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     require(
         checks,
+        "Mini Starfield" in app_source
+        and "River Pulse" in app_source
+        and "Inspector Deep Link" in app_source
+        and "function buildMiniStarfieldPreview" in app_source
+        and "function buildRiverPulsePreview" in app_source
+        and "function buildHomeInspectorLinks" in app_source
+        and 'className="home-preview-card mini-starfield-preview"' in app_source
+        and 'className="home-preview-card river-pulse-preview"' in app_source
+        and 'className="home-inspector-link-list"' in app_source
+        and 'jumpToPreview(model.miniStarfieldFocus, "galaxy")' in app_source
+        and 'jumpToPreview(model.riverPulseFocus, "timeline")' in app_source
+        and 'jumpToPreview(link.node, "search")' in app_source
+        and "不加载 WebGL" in app_source
+        and ".home-preview-grid" in css_source
+        and ".home-preview-card" in css_source
+        and ".river-pulse-row" in css_source
+        and ".home-inspector-panel" in css_source
+        and ".home-inspector-link-list" in css_source,
+        "memory_home_preview_widgets_ready",
+        "Home overview includes lightweight static starfield, recent river-pulse deltas, and Inspector deep links that preserve selected focus before switching boards",
+        "Home overview preview widgets, focus-preserving deep links, or lightweight non-WebGL guard are missing",
+    )
+
+    require(
+        checks,
         'const visualFocusViews: ViewKey[] = ["home", "galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"]' in app_source
         and "const wideView = visualFocusViews.includes(activeView)" in app_source
         and "const workspaceClassName = wideView ? `workspace visual-focus-workspace ${activeView}-workspace` : \"workspace\"" in app_source

@@ -172,6 +172,33 @@ interface HomeAction {
   node: AtlasNode | null;
 }
 
+interface MiniStarfieldPoint {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  radius: number;
+  color: string;
+  node: AtlasNode;
+}
+
+interface RiverPulseSegment {
+  id: string;
+  label: string;
+  recentCount: number;
+  previousCount: number;
+  delta: number;
+  intensity: number;
+  node: AtlasNode | null;
+}
+
+interface HomeInspectorLink {
+  id: string;
+  title: string;
+  meta: string;
+  node: AtlasNode | null;
+}
+
 interface SemanticInsight {
   label: string;
   count: number;
@@ -788,6 +815,11 @@ function HomeOverviewView({
     onSwitchView(action.targetView);
   }
 
+  function jumpToPreview(node: AtlasNode | null, targetView: ViewKey) {
+    if (node) onSelectNode(node);
+    onSwitchView(targetView);
+  }
+
   return (
     <div className="home-overview-view visual-workspace">
       <div className="surface-heading compact">
@@ -819,6 +851,57 @@ function HomeOverviewView({
           </article>
         ))}
       </section>
+      <section className="home-preview-grid" aria-label="记忆总览预览组件">
+        <button
+          className="home-preview-card mini-starfield-preview"
+          onClick={() => jumpToPreview(model.miniStarfieldFocus, "galaxy")}
+          type="button"
+        >
+          <div className="panel-title-row">
+            <h3>Mini Starfield</h3>
+            <span>点击进入记忆星系</span>
+          </div>
+          <svg viewBox="0 0 420 190" role="img" aria-label="轻量记忆星系预览">
+            <defs>
+              <radialGradient id="homeStarfieldGlow" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stopColor="rgba(126, 232, 212, 0.38)" />
+                <stop offset="54%" stopColor="rgba(72, 199, 232, 0.11)" />
+                <stop offset="100%" stopColor="rgba(2, 3, 8, 0)" />
+              </radialGradient>
+            </defs>
+            <rect className="home-starfield-nebula" x="10" y="10" width="400" height="170" rx="18" />
+            <ellipse className="home-starfield-disk" cx="210" cy="96" rx="170" ry="58" />
+            {model.miniStarfieldPoints.map((point) => (
+              <g className="home-star-point" key={point.id}>
+                <title>{point.label}</title>
+                <circle cx={point.x} cy={point.y} r={point.radius + 5} fill={point.color} opacity="0.08" />
+                <circle cx={point.x} cy={point.y} r={point.radius} fill={point.color} />
+              </g>
+            ))}
+          </svg>
+          <small>{model.miniStarfieldSummary}</small>
+        </button>
+        <button
+          className="home-preview-card river-pulse-preview"
+          onClick={() => jumpToPreview(model.riverPulseFocus, "timeline")}
+          type="button"
+        >
+          <div className="panel-title-row">
+            <h3>River Pulse</h3>
+            <span>点击进入时间河</span>
+          </div>
+          <div className="river-pulse-lanes" aria-label="近期主题增强和衰退">
+            {model.riverPulseSegments.map((segment) => (
+              <div className={segment.delta >= 0 ? "river-pulse-row rising" : "river-pulse-row declining"} key={segment.id}>
+                <span>{segment.label}</span>
+                <i style={{ "--pulse-width": `${segment.intensity}%` } as CSSProperties} aria-hidden="true" />
+                <b>{formatSigned(segment.delta)}</b>
+              </div>
+            ))}
+          </div>
+          <small>近 30 天对比上一观察窗，显示主题增强/衰退方向。</small>
+        </button>
+      </section>
       <section className="home-action-panel" aria-label="下一步行动建议">
         <div className="panel-title-row">
           <h3>Next Best Actions</h3>
@@ -830,6 +913,20 @@ function HomeOverviewView({
               <span>{action.priority}</span>
               <strong>{action.title}</strong>
               <small>{action.reason}</small>
+            </button>
+          ))}
+        </div>
+      </section>
+      <section className="home-inspector-panel" aria-label="Inspector Deep Link">
+        <div className="panel-title-row">
+          <h3>Inspector Deep Link</h3>
+          <span>点击后同步焦点和详情面板</span>
+        </div>
+        <div className="home-inspector-link-list">
+          {model.inspectorLinks.map((link) => (
+            <button key={link.id} onClick={() => jumpToPreview(link.node, "search")} type="button">
+              <strong>{link.title}</strong>
+              <span>{link.meta}</span>
             </button>
           ))}
         </div>
@@ -3039,6 +3136,12 @@ function buildHomeOverviewModel(
   blackHoleCount: number;
   signals: HomeSignalCard[];
   actions: HomeAction[];
+  miniStarfieldPoints: MiniStarfieldPoint[];
+  miniStarfieldFocus: AtlasNode | null;
+  miniStarfieldSummary: string;
+  riverPulseSegments: RiverPulseSegment[];
+  riverPulseFocus: AtlasNode | null;
+  inspectorLinks: HomeInspectorLink[];
 } {
   const memoryNodes = nodes.filter((node) => node.kind === "memory");
   const topicRows = topRows(countBy(memoryNodes, (node) => compactThemeLabel(humanThemeLabel(node)) || "未归类主题"), 6);
@@ -3064,6 +3167,9 @@ function buildHomeOverviewModel(
   const highLeverageNode = selectRepresentativeNode(memoryNodes);
   const decisionCount = memoryNodes.filter((node) => node.category === "decision").length;
   const coreCount = memoryNodes.filter((node) => normalizeMemoryTier(node.memory_tier) === "核心画像").length;
+  const miniStarfieldPoints = buildMiniStarfieldPreview(memoryNodes, graphEdges);
+  const riverPulseSegments = buildRiverPulsePreview(recentNodes, olderComparableNodes);
+  const riverPulseFocus = riverPulseSegments.find((segment) => segment.node)?.node ?? protoStarNode ?? highLeverageNode;
 
   return {
     weatherLabel: weather.label,
@@ -3162,7 +3268,117 @@ function buildHomeOverviewModel(
         node: protoStarNode ?? highLeverageNode,
       },
     ],
+    miniStarfieldPoints,
+    miniStarfieldFocus: miniStarfieldPoints[0]?.node ?? highLeverageNode,
+    miniStarfieldSummary: `${miniStarfieldPoints.length.toLocaleString()} 个轻量静态星点，按 ROI、连接和层级压缩显示，不加载 WebGL。`,
+    riverPulseSegments,
+    riverPulseFocus,
+    inspectorLinks: buildHomeInspectorLinks([protoStarNode, blackHoleNode, highLeverageNode], memoryNodes, graphEdges),
   };
+}
+
+function buildMiniStarfieldPreview(nodes: AtlasNode[], graphEdges: AtlasEdge[]): MiniStarfieldPoint[] {
+  const degree = degreeMap(graphEdges);
+  return [...nodes]
+    .sort((a, b) => homePreviewScore(b, degree) - homePreviewScore(a, degree) || (b.date ?? "").localeCompare(a.date ?? ""))
+    .slice(0, 28)
+    .map((node, index) => {
+      const orbit = index % 4;
+      const angle = stableUnit(node.id, "home-mini-star-angle") * Math.PI * 2;
+      const radius = 20 + orbit * 32 + stableUnit(node.id, "home-mini-star-radius") * 28;
+      const centerX = 210 + Math.cos(angle) * radius;
+      const centerY = 95 + Math.sin(angle) * radius * 0.46;
+      const score = homePreviewScore(node, degree);
+      return {
+        id: node.id,
+        label: humanNodeDisplayTitle(node),
+        x: Math.min(384, Math.max(36, centerX)),
+        y: Math.min(158, Math.max(30, centerY)),
+        radius: Math.min(9, 3.2 + Math.sqrt(Math.max(0, score)) * 0.42),
+        color: nodeColor(node),
+        node,
+      };
+    });
+}
+
+function homePreviewScore(node: AtlasNode, degree: Map<string, number>): number {
+  const tier = normalizeMemoryTier(node.memory_tier);
+  const tierScore = tier === "核心画像" ? 14 : tier === "一般" ? 8 : 3;
+  const categoryScore = ["decision", "project_context", "workflow", "preference", "answering_rule"].includes(node.category ?? "") ? 10 : 0;
+  const roi = (node.metrics?.roi?.leverage_score ?? 0) * 16;
+  const importance = node.importance === "高" ? 10 : node.importance === "中" ? 5 : 1;
+  return tierScore + categoryScore + roi + importance + (degree.get(node.id) ?? 0) * 1.6;
+}
+
+function buildRiverPulsePreview(recentNodes: AtlasNode[], previousNodes: AtlasNode[]): RiverPulseSegment[] {
+  const recentCounts = countBy(recentNodes, (node) => compactThemeLabel(humanThemeLabel(node)) || "近期主题");
+  const previousCounts = countBy(previousNodes, (node) => compactThemeLabel(humanThemeLabel(node)) || "历史主题");
+  const labels = Array.from(new Set([...Object.keys(recentCounts), ...Object.keys(previousCounts)]));
+  const rows = labels
+    .map((label) => {
+      const candidates = recentNodes.filter((node) => compactThemeLabel(humanThemeLabel(node)) === label);
+      const fallback = previousNodes.filter((node) => compactThemeLabel(humanThemeLabel(node)) === label);
+      const recentCount = recentCounts[label] ?? 0;
+      const previousCount = previousCounts[label] ?? 0;
+      return {
+        id: normalizeDisplayKey(label) || label,
+        label,
+        recentCount,
+        previousCount,
+        delta: recentCount - previousCount,
+        intensity: 0,
+        node: selectRepresentativeNode(candidates.length ? candidates : fallback),
+      };
+    })
+    .filter((row) => row.recentCount > 0 || row.previousCount > 0)
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta) || b.recentCount - a.recentCount || a.label.localeCompare(b.label, "zh-CN"))
+    .slice(0, 6);
+  const maxDelta = Math.max(1, ...rows.map((row) => Math.abs(row.delta)));
+  const displayRows = rows.length
+    ? rows
+    : [{
+        id: "no-river-pulse",
+        label: "暂无近期主题变化",
+        recentCount: 0,
+        previousCount: 0,
+        delta: 0,
+        intensity: 18,
+        node: null,
+      }];
+  return displayRows.map((row) => ({
+    ...row,
+    intensity: row.intensity || Math.max(12, Math.round((Math.abs(row.delta) / maxDelta) * 100)),
+  }));
+}
+
+function buildHomeInspectorLinks(
+  preferredNodes: Array<AtlasNode | null>,
+  memoryNodes: AtlasNode[],
+  graphEdges: AtlasEdge[],
+): HomeInspectorLink[] {
+  const degree = degreeMap(graphEdges);
+  const rows = new Map<string, AtlasNode>();
+  for (const node of preferredNodes) {
+    if (node) rows.set(node.id, node);
+  }
+  for (const node of [...memoryNodes].sort((a, b) => homePreviewScore(b, degree) - homePreviewScore(a, degree))) {
+    if (rows.size >= 4) break;
+    rows.set(node.id, node);
+  }
+  if (!rows.size) {
+    return [{
+      id: "empty-inspector-link",
+      title: "暂无可同步焦点",
+      meta: "放宽筛选条件后可从首页直接打开详情。",
+      node: null,
+    }];
+  }
+  return Array.from(rows.values()).slice(0, 4).map((node) => ({
+    id: node.id,
+    title: humanNodeDisplayTitle(node),
+    meta: `${normalizeMemoryTier(node.memory_tier)} / ${humanCategoryLabel(node.category)} / ${node.date || "未知日期"}`,
+    node,
+  }));
 }
 
 function isBlackHoleCandidate(node: AtlasNode): boolean {
