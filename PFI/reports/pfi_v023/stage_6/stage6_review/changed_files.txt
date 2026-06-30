@@ -1,0 +1,7 @@
+PFI/tests/test_v023_stage6_core_metrics.py
+PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md
+PFI/reports/pfi_v023/stage_6/stage6_review/evidence.json
+PFI/reports/pfi_v023/stage_6/stage6_review/review_audit.json
+PFI/reports/pfi_v023/stage_6/stage6_review/no_source_term_scan.json
+PFI/reports/pfi_v023/stage_6/stage6_review/terminal.log
+PFI/reports/pfi_v023/stage_6/stage6_review/changed_files.txt

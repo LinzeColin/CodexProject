@@ -517,6 +517,55 @@ console.log(JSON.stringify(card));
         self.assertIn("PFI/tests/test_v023_stage6_core_metrics.py -q", terminal_log)
         self.assertIn("blocked source term scan", terminal_log)
 
+    def test_stage6_review_evidence_exists_before_stage_upload(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "stage_6" / "stage6_review"
+        evidence_path = review_dir / "evidence.json"
+        audit_path = review_dir / "review_audit.json"
+        scan_path = review_dir / "no_source_term_scan.json"
+        terminal_log_path = review_dir / "terminal.log"
+        changed_files_path = review_dir / "changed_files.txt"
+
+        self.assertTrue(evidence_path.exists(), "Stage 6 whole-stage review evidence is required before upload")
+        self.assertTrue(audit_path.exists(), "Stage 6 whole-stage review audit is required before upload")
+        self.assertTrue(scan_path.exists(), "Stage 6 whole-stage no-source-term scan is required")
+        self.assertTrue(terminal_log_path.exists(), "Stage 6 whole-stage review terminal log is required")
+        self.assertTrue(changed_files_path.exists(), "Stage 6 whole-stage review changed files record is required")
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 6")
+        self.assertEqual(evidence["review_id"], "V023-S6-REVIEW")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["stage6_whole_stage_review"])
+        self.assertTrue(evidence["findings_fixed"])
+        self.assertFalse(evidence["stage7_started"])
+        self.assertFalse(evidence["github_main_uploaded_before_review"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(audit["review_id"], "V023-S6-REVIEW")
+        self.assertEqual(audit["phase_status"], {"phase_6_1": "candidate_pass", "phase_6_2": "candidate_pass", "phase_6_3": "candidate_pass"})
+        self.assertEqual(audit["consistency_findings"], [])
+        self.assertEqual(scan["violations"], [])
+        self.assertTrue(audit["read_model_audit"]["real_metadatabase_pfi"])
+        self.assertEqual(audit["read_model_audit"]["transaction_count"], 8815)
+        self.assertEqual(audit["read_model_audit"]["raw_file_count"], 4)
+        self.assertRegex(audit["read_model_audit"]["read_model_hash"], r"^sha256:[0-9a-f]{64}$")
+        self.assertEqual(audit["metric_status"]["ready"], 3)
+        self.assertEqual(audit["metric_status"]["blocked"], 3)
+        self.assertIn("life_consumption_cny", audit["metric_status"]["ready_metric_ids"])
+        self.assertIn("cash_balance_cny", audit["metric_status"]["blocked_metric_ids"])
+
+        doc_text = (ROOT / "docs" / "pfi_v023" / "STAGE6_CORE_METRICS.md").read_text(encoding="utf-8")
+        self.assertIn("Stage 6 Whole-stage Review", doc_text)
+        self.assertNotIn("Stage 6 whole-stage review 未执行", doc_text)
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("Stage 6 whole-stage review", terminal_log)
+        self.assertIn("PFI/tests/test_v023_stage6_core_metrics.py -q", terminal_log)
+
 
 if __name__ == "__main__":
     unittest.main()

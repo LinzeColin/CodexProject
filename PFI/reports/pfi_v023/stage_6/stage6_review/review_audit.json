@@ -1,0 +1,58 @@
+{
+  "schema": "PFIV023Stage6WholeStageReviewAuditV1",
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "review_id": "V023-S6-REVIEW",
+  "status": "candidate_pass",
+  "phase_status": {
+    "phase_6_1": "candidate_pass",
+    "phase_6_2": "candidate_pass",
+    "phase_6_3": "candidate_pass"
+  },
+  "read_model_audit": {
+    "real_metadatabase_pfi": true,
+    "data_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI",
+    "transaction_count": 8815,
+    "raw_file_count": 4,
+    "date_range": {
+      "start": "2022-06-06",
+      "end": "2026-06-03"
+    },
+    "as_of": "2026-06-03",
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "input_evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a"
+  },
+  "metric_status": {
+    "ready": 3,
+    "blocked": 3,
+    "ready_metric_ids": [
+      "life_consumption_cny",
+      "total_consumption_outflow_cny",
+      "data_health"
+    ],
+    "blocked_metric_ids": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ]
+  },
+  "page_wiring": {
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03",
+    "pages": [
+      "home",
+      "accounts",
+      "investment",
+      "consumption"
+    ],
+    "home_metric_count": 6,
+    "accounts_metric_count": 3,
+    "investment_metric_count": 2,
+    "consumption_metric_count": 3
+  },
+  "consistency_findings": [],
+  "source_term_scan": "PFI/reports/pfi_v023/stage_6/stage6_review/no_source_term_scan.json",
+  "review_findings": [],
+  "stage7_started": false,
+  "github_main_uploaded_before_review": false
+}
