@@ -30,16 +30,24 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_summary_describes_s2plt02_terminal_delivery_proof_next(self) -> None:
+    def test_current_state_summary_describes_s2plt04_latest_nonterminal_evidence_sync(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC_BLOCKED_TERMINAL_GAPS_VISIBLE_NO_PRODUCTION",
+            "S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC_BLOCKED_TERMINAL_GAPS_VISIBLE_NO_PRODUCTION",
             current_state,
         )
+        self.assertIn("S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC", current_state)
+        self.assertIn("audit-s2plt04-completion-evidence", current_state)
+        self.assertIn("0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be", current_state)
+        self.assertIn("s2plt02_nonterminal_ref_count=13", current_state)
+        self.assertIn("ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json", current_state)
+        self.assertIn("ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json", current_state)
+        self.assertIn("s2plt02_live_2d_terminal_proof_missing", current_state)
+        self.assertIn("s2plt03_resilience_terminal_proof_missing", current_state)
+        self.assertIn("completion_report_ready=false", current_state)
         self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC", current_state)
-        self.assertIn("audit-s2plt02-real-proof-capture-readiness", current_state)
         self.assertIn("authorization_artifact_status=pass", current_state)
         self.assertIn("real_proof_capture_authorized=true", current_state)
         self.assertIn("completed_next_actions=obtain_explicit_owner_authorization_for_real_smtp_scheduler", current_state)
@@ -110,6 +118,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", text)
             self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI", text)
             self.assertIn("S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", text)
+            self.assertIn("S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC", text)
             self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
             self.assertIn("real", text_lower)

@@ -1147,6 +1147,14 @@ class CliTests(unittest.TestCase):
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
             s2plt02_evidence["nonterminal_refs"],
         )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json",
+            s2plt02_evidence["nonterminal_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
+            s2plt02_evidence["nonterminal_refs"],
+        )
         self.assertEqual(s2plt02_evidence["real_proof_capture_authorization_status"], "pass")
         self.assertTrue(s2plt02_evidence["real_proof_capture_authorized"])
         self.assertNotIn(

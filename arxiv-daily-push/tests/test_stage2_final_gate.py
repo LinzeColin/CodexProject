@@ -4528,6 +4528,14 @@ class Stage2FinalGateTests(unittest.TestCase):
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
             s2plt02["existing_nonterminal_refs"],
         )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json",
+            s2plt02["existing_nonterminal_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
+            s2plt02["existing_nonterminal_refs"],
+        )
         self.assertEqual(
             s2plt02["real_proof_capture_authorization_manifest_ref"],
             "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json",

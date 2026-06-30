@@ -156,6 +156,8 @@ def adp_s2pmt07_blocked_next_task(
         or "S2PLT02_TERMINAL_DELIVERY_PROOF" in current_gate
         or "S2PLT02 terminal delivery proof" in current_alias
         or "terminal proof" in current_alias
+        or "LATEST-NONTERMINAL-EVIDENCE-SYNC" in current_iteration
+        or "LATEST_NONTERMINAL_EVIDENCE_SYNC" in current_gate
     )
     real_proof_capture_is_next = (
         "S2PLT02-REAL-PROOF-CAPTURE" in current_iteration
@@ -269,6 +271,7 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     capture_window_cli_clause = ""
     evidence_inventory_clause = ""
     readiness_live_auth_clause = ""
+    latest_nonterminal_clause = ""
     current_iteration = str(matrix.get("current_iteration") or "")
     current_alias = str(matrix.get("current_v7_legacy_alias") or "")
     if (
@@ -309,6 +312,15 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         readiness_live_auth_clause = (
             " S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC authorization-pass readiness,"
         )
+    if (
+        "S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC" in current_iteration
+        or "S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC" in str(matrix.get("current_gate") or "")
+        or "latest nonterminal" in current_alias.lower()
+        or "13 S2PLT02 nonterminal refs" in current_alias
+    ):
+        latest_nonterminal_clause = (
+            " S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC evidence freshness gate,"
+        )
     return (
         "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
         "live authorization, independent reviewer assignment, P0/P1 zero-proof "
@@ -318,7 +330,7 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, "
         "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, "
         "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate,"
-        f"{normalized_manifest_clause}{capture_window_cli_clause}{evidence_inventory_clause}{readiness_live_auth_clause} and only current explicit no-production "
+        f"{normalized_manifest_clause}{capture_window_cli_clause}{evidence_inventory_clause}{readiness_live_auth_clause}{latest_nonterminal_clause} and only current explicit no-production "
         "real-delivery manifest inputs as validated no-write inputs, record the "
         "current dry-run/scheduler-disabled capture window as blocked evidence, "
         "and next collect S2PLT02 terminal delivery proof only from complete real "

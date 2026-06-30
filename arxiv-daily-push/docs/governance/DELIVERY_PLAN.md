@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 292
+- task_count: 293
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 14:10:42 Australia/Sydney - S2PMT07 S2PLT04 S2PLT02 Latest Nonterminal Evidence Sync
+
+- `S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC` updates `audit-s2plt04-completion-evidence` to consume the latest S2PLT02 nonterminal refs, including terminal-proof evidence inventory and readiness live-authorization sync.
+- Actual CLI remains blocked / exit 2 with `state_hash=0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be` and blockers `s2plt02_live_2d_terminal_proof_missing`, `s2plt03_resilience_terminal_proof_missing`.
+- S2PLT02 nonterminal evidence ref count is now `13`; this closes only the evidence visibility lag, not the terminal proof gap.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT04 completion report, write S2PLT02 terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 13:33:22 Australia/Sydney - S2PLT02 Real-Proof Capture Readiness Live Authorization Sync
 

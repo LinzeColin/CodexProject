@@ -5413,3 +5413,27 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC"
+    title: "S2PMT07 S2PLT04 S2PLT02 latest nonterminal evidence sync"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T14:10:42+10:00"
+    objective: "Make S2PLT04 completion evidence consume the latest committed S2PLT02 nonterminal evidence refs."
+    scope: "Final-gate evidence audit, focused tests, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT04 completion report, no S2PLT02 terminal proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", "S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC.md", "governance/run_manifests/ADP-S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC-20260630.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PLT04-INTEGRATION-CANDIDATE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_latest_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt04_completion_evidence_audit_consumes_latest_nonterminal_terminal_audits", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_latest_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt04_completion_evidence_audit_consumes_latest_nonterminal_terminal_audits", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_latest_target PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt04_completion_evidence_audit_consumes_latest_nonterminal_terminal_audits arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt04_completion_evidence_json_command_exposes_terminal_gaps", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_latest_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt04-completion-evidence --json"]
+    test_results: ["TDD red failed because S2PLT04 audit omitted latest S2PLT02 terminal-proof evidence inventory and readiness live-authorization sync refs", "focused S2PLT04 final-gate regression: 1 passed", "focused S2PLT04 final-gate and CLI regressions: 2 passed", "actual CLI audit: blocked / exit 2 with 13 S2PLT02 nonterminal refs and state_hash 0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt04_s2plt02_latest_nonterminal_evidence_synced_inventory_and_live_auth_no_production"
+    risk: "A latest-nonterminal evidence sync can be misread as S2PLT04 completion; this only updates evidence visibility and keeps terminal proof/report acceptance blocked."
+    rollback: "Revert the S2PLT04 latest nonterminal evidence sync, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
