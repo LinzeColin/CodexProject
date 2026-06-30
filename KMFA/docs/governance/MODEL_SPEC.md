@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s08p1-project-composite-key
+product_version: 0.1.0-s08p2-business-entity-model
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传，以及 S08-P1 public-safe 项目组合键。不声明 S08-P2 业务实体模型、S08-P3 匹配质量测试、项目成本事实层、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键，以及 S08-P2 public-safe 业务实体模型。不声明 S08-P3 匹配质量测试、项目成本事实层、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -124,22 +124,30 @@ product_version: 0.1.0-s08p1-project-composite-key
 - purpose: 用合同编号、项目名称、对手方、主体、时间、金额签名、责任人、来源 hash 八个组件建立项目组合键并输出匹配候选。
 - fact_level: EXTRACTED
 - evidence: `KMFA/tools/project_composite_key.py`, `KMFA/tools/check_s08_p1_project_composite_key.py`, `KMFA/metadata/schema_maps/project_composite_key_manifest.json`, `KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md`
-- limitation: 只保存组件 hash、private ref、整数权重、匹配状态和人工复核队列；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV，不实现 S08-P2、S08-P3、事实层、lineage、正式报告、UI 或外部接口。
+- limitation: 只保存组件 hash、private ref、整数权重、匹配状态和人工复核队列；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV；S08-P2 已由业务实体模型覆盖，但不实现 S08-P3、事实层、lineage、正式报告、UI 或外部接口。
+
+### FORM-KMFA-BUSINESS-ENTITY-MODEL-001
+
+- type: deterministic public-safe business entity schema
+- purpose: 定义客户、合同、项目、成本、开票、回款、应收和税务证据 8 类业务实体，以及 14 条关系和 32 个生命周期状态。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/business_entity_model.py`, `KMFA/tools/check_s08_p2_business_entity_model.py`, `KMFA/metadata/schema_maps/business_entity_model_manifest.json`, `KMFA/docs/governance/BUSINESS_ENTITY_MODEL_SCHEMA.md`, `KMFA/stage_artifacts/S08_P2_business_entity_model/human/s08_p2_completion_record.md`
+- limitation: 只保存 entity refs、source refs、source hashes、public-safe schema、关系和生命周期 metadata；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV，不实现 S08-P3、事实层、lineage、正式报告、UI、外部接口、Stage 8 review 或 GitHub upload。
 
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, and S08-P1 project composite key active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, and S08-P2 business entity model active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
-- current limitation: S08-P2 and S08-P3 are not implemented; no production fact layer, no lineage full check, no official report generation, and no Redcircle automatic connector.
+- current limitation: S08-P3 is not implemented; no production fact layer, no lineage full check, no official report generation, and no Redcircle automatic connector.
 
 ## Counts
 
 - active models: 7
-- active formulas: 19
-- active parameters: 66
+- active formulas: 20
+- active parameters: 72
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 1

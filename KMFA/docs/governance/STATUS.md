@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s08p1-project-composite-key`
+- version: `0.1.0-s08p2-business-entity-model`
 - current_stage: `S08`
-- current_phase: `S08-P2｜业务实体模型 待开始`
-- status: `s08p1_completed_validated_local_only_s08p2_next`
+- current_phase: `S08-P3｜匹配质量测试 待开始`
+- status: `s08p2_completed_validated_local_only_s08p3_next`
 - production_ready: `false`
 - github_upload_ready: `false_until_next_stage_review`
 
@@ -62,14 +62,16 @@
 - Stage 7 final GitHub upload 已生成证据：`KMFA/stage_artifacts/S07_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_upload_manifest.json`。
 - S08-P1 项目组合键已完成本地验证：`KMFA/tools/project_composite_key.py` 生成 hash-only 项目身份 profile、匹配候选和人工复核队列；`KMFA/tools/check_s08_p1_project_composite_key.py` 验证 8 个组件、整数权重、阈值、单字段缺失不全阻断、manual review queue 和 public-safe 边界。
 - S08-P1 证据位于 `KMFA/stage_artifacts/S08_P1_project_composite_key/`；当前中间 Phase 未执行 GitHub upload。
+- S08-P2 业务实体模型已完成本地验证：`KMFA/tools/business_entity_model.py` 生成 8 类 public-safe 实体、14 条关系、32 条生命周期状态和 schema 文档；`KMFA/tools/check_s08_p2_business_entity_model.py` 验证 S08-P3、事实层、报告和 GitHub upload scope 均为 false。
+- S08-P2 证据位于 `KMFA/stage_artifacts/S08_P2_business_entity_model/`；当前中间 Phase 未执行 GitHub upload。
 
 ## 未完成
 
-- S08-P2 业务实体模型、S08-P3 匹配质量测试、Stage 8 整体复审、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload、Stage 7 upload 和 S08-P1 项目组合键不代表正式报告可发布。
+- S08-P3 匹配质量测试、Stage 8 整体复审、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload、Stage 7 upload、S08-P1 项目组合键和 S08-P2 业务实体模型不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload 和 S08-P1 project composite key 已完成；下一步只能执行 S08-P2 业务实体模型，不能跳到 S08-P3、Stage 8 review、UI、报告、事实层、lineage 或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key 和 S08-P2 business entity model 已完成；下一步只能执行 S08-P3 匹配质量测试，不能跳到 Stage 8 review、UI、报告、事实层、lineage 或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

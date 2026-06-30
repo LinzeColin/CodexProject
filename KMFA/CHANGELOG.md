@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s08p2-business-entity-model - 2026-06-30
+
+- 完成 `S08-P2｜业务实体模型` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/business_entity_model.py`、`KMFA/tools/check_s08_p2_business_entity_model.py` 和 `KMFA/tests/test_business_entity_model.py`。
+- 定义 customer、contract、project、cost_record、invoice、collection、receivable、tax_evidence 8 类 public-safe 业务实体。
+- 建立 14 条实体关系和 32 条生命周期状态，将 schema 文档写入 `KMFA/docs/governance/BUSINESS_ENTITY_MODEL_SCHEMA.md`，并输出 metadata/schema_maps 机器文件。
+- 公开仓库不提交 raw business data、zip、Excel、PDF、private CSV、字段明文或真实业务值；S08-P3、Stage 8 review、事实层、lineage、正式报告、UI、外部接口和 GitHub upload 仍未完成。
+
 ## 0.1.0-s08p1-project-composite-key - 2026-06-30
 
 - 完成 `S08-P1｜项目组合键` 本地验证，不上传 GitHub。
