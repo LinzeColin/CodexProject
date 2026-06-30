@@ -31,11 +31,20 @@ jobs:
       (
         github.event.issue.body &&
         contains(github.event.issue.body, 'AGENT_LOOP_METADATA') &&
-        contains(github.event.issue.labels.*.name, 'source:chatgpt-approved') &&
-        contains(github.event.issue.labels.*.name, 'agent:run') &&
-        !contains(github.event.issue.labels.*.name, 'agent:running') &&
-        !contains(github.event.issue.labels.*.name, 'agent:done') &&
-        !contains(github.event.issue.labels.*.name, 'agent:blocked')
+        !contains(toJson(github.event.issue.labels), 'agent:running') &&
+        !contains(toJson(github.event.issue.labels), 'agent:done') &&
+        !contains(toJson(github.event.issue.labels), 'agent:blocked') &&
+        (
+          github.event.issue.user.login == github.repository_owner ||
+          github.event.issue.author_association == 'OWNER' ||
+          github.event.issue.author_association == 'MEMBER' ||
+          github.event.issue.author_association == 'COLLABORATOR'
+        ) &&
+        (
+          github.event.action == 'opened' ||
+          github.event.action == 'edited' ||
+          (github.event.action == 'labeled' && github.event.label.name == 'agent:run')
+        )
       )
     runs-on: ubuntu-latest
     env:
@@ -56,15 +65,6 @@ jobs:
       REVIEW_NEEDS_AUTOFIX: "false"
 
     steps:
-      - name: Check OPENAI_API_KEY
-        env:
-          OPENAI_API_KEY_PRESENT: ${{ secrets.OPENAI_API_KEY != '' }}
-        run: |
-          if [ "$OPENAI_API_KEY_PRESENT" != "true" ]; then
-            echo "OPENAI_API_KEY is required as a GitHub Actions secret." >&2
-            exit 1
-          fi
-
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
@@ -86,8 +86,13 @@ jobs:
           python3 - <<'PY'
           import json
           import os
+          import re
           from pathlib import Path
 
+          meta_re = re.compile(
+              r"<!--\s*AGENT_LOOP_METADATA\s*(.*?)\s*END_AGENT_LOOP_METADATA\s*-->",
+              re.DOTALL,
+          )
           event_name = os.environ["EVENT_NAME"]
           event_action = os.environ.get("EVENT_ACTION", "")
           taskpack = ""
@@ -100,17 +105,22 @@ jobs:
               label_names = {str(item.get("name", "")) for item in labels if isinstance(item, dict)}
               if event_action not in {"opened", "edited", "labeled"}:
                   raise SystemExit("issues trigger ignored because action is not opened, edited, or labeled")
-              required = {"agent:run", "source:chatgpt-approved"}
               blocked = {"agent:running", "agent:done", "agent:blocked"}
-              missing = sorted(required - label_names)
               present_blocked = sorted(blocked & label_names)
-              if missing:
-                  raise SystemExit(f"issues trigger missing required labels: {', '.join(missing)}")
               if present_blocked:
                   raise SystemExit(f"issues trigger blocked by state labels: {', '.join(present_blocked)}")
-              if "source:chatgpt-approved" not in label_names:
-                  raise SystemExit("issues:labeled requires source:chatgpt-approved label")
               taskpack = os.environ.get("ISSUE_BODY", "")
+              match = meta_re.search(taskpack)
+              if not match:
+                  raise SystemExit("issue body must contain AGENT_LOOP_METADATA")
+              try:
+                  metadata = json.loads(match.group(1))
+              except json.JSONDecodeError as exc:
+                  raise SystemExit(f"metadata JSON parse failed: {exc}") from exc
+              if not isinstance(metadata, dict):
+                  raise SystemExit("metadata must be a JSON object")
+              if metadata.get("source") != "chatgpt-approved":
+                  raise SystemExit("issue Task Pack metadata source must be chatgpt-approved")
           elif event_name == "repository_dispatch":
               if event_action != "agent_loop_taskpack":
                   raise SystemExit("repository_dispatch action must be agent_loop_taskpack")
@@ -139,6 +149,8 @@ jobs:
           gh label create "agent:done" --color "0e8a16" --description "Agent Loop completed" || true
           gh label create "agent:blocked" --color "b60205" --description "Agent Loop blocked" || true
           gh label create "source:chatgpt-approved" --color "0e8a16" --description "Approved ChatGPT Task Pack" || true
+          gh label create "risk:T1" --color "fbca04" --description "Agent Loop risk tier T1" || true
+          gh label create "risk:T2" --color "fbca04" --description "Agent Loop risk tier T2" || true
 
       - name: Resolve audit issue
         id: audit
@@ -167,6 +179,8 @@ jobs:
           if [ "$EVENT_NAME" = "issues" ]; then
             echo "AUDIT_ISSUE=${ISSUE_NUMBER}" >> "$GITHUB_ENV"
             echo "issue_number=${ISSUE_NUMBER}" >> "$GITHUB_OUTPUT"
+            gh issue edit "$ISSUE_NUMBER" --add-label "source:chatgpt-approved" || true
+            gh issue edit "$ISSUE_NUMBER" --add-label "agent:run" || true
             gh issue edit "$ISSUE_NUMBER" --add-label "agent:running" || true
             gh issue comment "$ISSUE_NUMBER" --body "Agent Loop run started from this approved Task Pack issue: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           else
@@ -234,6 +248,21 @@ jobs:
             exit "$status"
           fi
 
+      - name: Apply risk label
+        run: |
+          gh label create "risk:T1" --color "fbca04" --description "Agent Loop risk tier T1" || true
+          gh label create "risk:T2" --color "fbca04" --description "Agent Loop risk tier T2" || true
+          gh issue edit "$AUDIT_ISSUE" --add-label "risk:${RISK_TIER}" || true
+
+      - name: Check OPENAI_API_KEY
+        env:
+          OPENAI_API_KEY_PRESENT: ${{ secrets.OPENAI_API_KEY != '' }}
+        run: |
+          if [ "$OPENAI_API_KEY_PRESENT" != "true" ]; then
+            echo "OPENAI_API_KEY is required as a GitHub Actions secret." >&2
+            exit 1
+          fi
+
       - name: Prepare routing and branch
         run: |
           python3 - <<'PY'
@@ -261,8 +290,6 @@ jobs:
           Path("agent-loop-work/branch-name.txt").write_text(branch + "\n", encoding="utf-8")
           Path("agent-loop-work/project.txt").write_text(project + "\n", encoding="utf-8")
           PY
-          gh label create "risk:${RISK_TIER}" --color "fbca04" --description "Agent Loop risk tier ${RISK_TIER}" || true
-          gh issue edit "$AUDIT_ISSUE" --add-label "risk:${RISK_TIER}" || true
 
       - name: Create working branch
         run: |

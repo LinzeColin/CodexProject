@@ -46,12 +46,14 @@ GitHub Actions 只消费 Owner 已批准的 Task Pack：
 `issues` opened/edited/labeled:
 
 - Issue body 必须包含 `AGENT_LOOP_METADATA`。
-- Issue 必须有 `source:chatgpt-approved`。
-- Issue 必须有 `agent:run`。
-- Issue 不得已有 `agent:running`、`agent:done`、`agent:blocked`。
 - Metadata 中 `source` 必须是 `chatgpt-approved`。
+- Issue 作者必须是 repository owner、member 或 collaborator。
+- `opened` 和 `edited` 不要求预先存在 labels。
+- `labeled` 仅在新增 `agent:run` 时作为兼容入口。
+- Issue 不得已有 `agent:running`、`agent:done`、`agent:blocked`。
 - 这个 issue 本身就是 audit issue。
-- Workflow 开始时添加 `agent:running`。
+- Workflow 开始时创建缺失 labels，并添加 `source:chatgpt-approved`、
+  `agent:run`、`agent:running` 和风险 label。
 - 成功时移除 `agent:running`、添加 `agent:done`、关闭 issue。
 - 失败时移除 `agent:running`、添加 `agent:blocked`、评论失败摘要。
 
@@ -94,10 +96,11 @@ Owner 不需要记忆每个项目的 `allowed_paths` 和 `forbidden_paths`。
 
 ## C2/C3/D1 使用方式
 
-- C2: Owner 创建 issue，把完整 Task Pack 放在 issue body，并带上
-  `source:chatgpt-approved` 与 `agent:run`。Workflow 自动运行。
+- C2: Owner 创建 issue，把完整 Task Pack 放在 issue body。可信作者不需要手动
+  添加 labels；workflow 自动补齐。
 - C3: Owner 使用 `.github/ISSUE_TEMPLATE/codex-task.yml`。表单只有一个大
-  textarea，不要求手选 project 或 risk；这些字段必须来自 metadata。
+  textarea，不要求手选 project、risk 或 labels；这些字段必须来自 metadata
+  或 routing/autofill。
 - D1: 可选本地工具。Owner 不需要默认运行脚本；C2/C3 是默认入口。
 - D2 future: 可由 Cloudflare Workers 或类似 webhook bridge 转发已批准的
   Task Pack 到 `repository_dispatch`。本阶段不实现。
