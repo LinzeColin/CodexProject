@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `S08｜业务实体与项目身份匹配`
-- 当前 Phase: `S08-FINAL-GITHUB-UPLOAD｜Stage 8 final GitHub upload 待开始`
+- 当前 Stage: `S09｜项目成本计算引擎`
+- 当前 Phase: `S09-P1｜项目成本事实层 待开始`
 
 ## Execution Rules
 
@@ -40,6 +40,6 @@
 
 - 不写 UI。
 - 不生成经营报告。
-- 不在 Stage 8 final GitHub upload 完成前进入 S09、事实层、报告、UI 或外部接口。
+- 不在 S09-P1 明确开始前实现事实层、报告、UI 或外部接口。
 - 不接红圈、金蝶、WPS、银行、税务自动接口。
 - 不做付款、报税、开票、工资或奖金审批执行。
