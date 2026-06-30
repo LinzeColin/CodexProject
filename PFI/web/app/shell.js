@@ -395,7 +395,6 @@ const STAGE2_SECONDARY_TABS = {
     { title: "预算", routeAlias: "/consumption?tab=budget" },
     { title: "订阅", routeAlias: "/consumption?tab=subscription" },
     { title: "异常消费", routeAlias: "/consumption?tab=anomaly" },
-    { title: "现金流预测", routeAlias: "/consumption?tab=cashflow" },
   ],
   sync: [
     { title: "上传中心", routeAlias: "/sources-upload?tab=upload" },
@@ -3751,16 +3750,19 @@ function renderSecondaryTabs(tabs, workspaceId, routeForState) {
 }
 
 function resolveStage4Subpage(workspaceId, routeAlias) {
-  const catalog = stage4Phase41Catalog();
+  const catalog = stage4SubpageCatalog();
   const pages = catalog[workspaceId] || [];
   if (!pages.length) return null;
   const cleanRoute = normalizeRouteAlias(routeAlias || defaultRouteAliasForWorkspace(workspaceId));
   return pages.find((page) => normalizeRouteAlias(page.routeAlias) === cleanRoute) || pages[0] || null;
 }
 
-function stage4Phase41Catalog() {
+function stage4SubpageCatalog() {
   stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES || null;
-  return stage4PagesCatalog?.phase41Subpages || {};
+  return {
+    ...(stage4PagesCatalog?.phase41Subpages || {}),
+    ...(stage4PagesCatalog?.phase42Subpages || {}),
+  };
 }
 
 function renderStage4SubpageSurface(page, workspaceId, routeForState) {
