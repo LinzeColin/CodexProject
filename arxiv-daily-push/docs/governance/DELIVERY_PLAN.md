@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 323
+- task_count: 324
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 05:17:15 Australia/Sydney - S2PLT02 terminal capture inventory summary sync
+
+- Task: `S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC`
+- Result: `blocked_s2plt02_terminal_capture_inventory_summary_synced_no_production`
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC.md`.
+- Current hashes: capture plan `cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4`; input summary `4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`; artifact summary `3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`; prerequisite plan `bcb40505ad7244626589c24991dcf05fe775268ce44b5eab3b68444f38cded6e`; final readiness `23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c`.
+- Remaining blockers: second real M1-M4 SMTP day, eight real emails, real scheduler proof, S2PLT02 terminal proof artifact, S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command, and production acceptance.
+- Production boundary: No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 04:57:53 Australia/Sydney - S2PMT07 final bundle zero-proof request consumption sync
 

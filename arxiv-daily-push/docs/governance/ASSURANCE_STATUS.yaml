@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC"
+as_of_event_id: "EVENT-20260701-ADP-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC"
 source_snapshot_hash: "sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -106,7 +106,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
   status: "blocked"
-  reason: "The final bundle readiness now consumes the validated P0/P1 zero-proof artifact in reviewer assignment and closure decision request states while S2PLT02/S2PLT03/S2PLT04 remain blocked. S2PLT04 audit state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f, completion_report_ready=false, s2plt04_completion_report_written=false, and blockers=s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing. S2PLT02 terminal delivery proof still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real scheduler proof, and reviewed terminal proof artifact."
+  reason: "The S2PLT02 capture plan and final-bundle readiness now expose terminal_delivery_input_inventory_summary and terminal_delivery_artifact_validation_summary while S2PLT02/S2PLT03/S2PLT04 remain blocked. Capture plan state_hash=cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4, input summary state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b, artifact summary state_hash=3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db, final readiness state_hash=23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c. S2PLT02 terminal delivery proof still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real scheduler proof, and reviewed terminal proof artifact."
   acceptance_ids:
     - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"

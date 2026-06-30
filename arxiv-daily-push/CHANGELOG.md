@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-01 05:17:15 Australia/Sydney - S2PLT02 terminal capture inventory summary sync
+
+- Added `terminal_delivery_input_inventory_summary` and `terminal_delivery_artifact_validation_summary` to `plan-s2plt02-terminal-delivery-proof-capture`.
+- Carried both summaries into `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle` under `s2plt02_terminal_delivery_capture_plan_summary`.
+- Current live CLIs remain blocked with capture plan `cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4`, input summary `4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`, artifact summary `3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`, prerequisite plan `bcb40505ad7244626589c24991dcf05fe775268ce44b5eab3b68444f38cded6e`, and final readiness `23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-07-01 04:57:53 Australia/Sydney - S2PMT07 final bundle zero-proof request consumption sync
 
 - 任务：`S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC`。
