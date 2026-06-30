@@ -6,6 +6,9 @@
   the future startup board while preserving the left sidebar navigation.
 - Recorded the current route evidence: production still defaults to `galaxy`,
   and the runtime change is deferred to Stage 3 implementation.
+- Added the Stage 2.2 Galaxy replacement plan, including a legacy/new renderer
+  feature-flag strategy, starfield extraction boundary, rollback path, and
+  screenshot/FPS/privacy validation plan.
 
 No production route, raw/private data access, direct writeback, Cloudflare live
 deployment, or visual board replacement was added.
