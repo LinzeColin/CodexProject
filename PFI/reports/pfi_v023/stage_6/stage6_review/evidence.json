@@ -1,0 +1,39 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "stage_name": "核心财务指标真实 read model 接入",
+  "review_id": "V023-S6-REVIEW",
+  "status": "candidate_pass",
+  "stage6_whole_stage_review": true,
+  "findings_fixed": true,
+  "stage7_started": false,
+  "github_main_uploaded_before_review": false,
+  "requires_user_acceptance_before_stage7": true,
+  "phase_evidence": {
+    "phase_6_1": "PFI/reports/pfi_v023/stage_6/phase_6_1/evidence.json",
+    "phase_6_2": "PFI/reports/pfi_v023/stage_6/phase_6_2/evidence.json",
+    "phase_6_3": "PFI/reports/pfi_v023/stage_6/phase_6_3/evidence.json"
+  },
+  "review_audit": "PFI/reports/pfi_v023/stage_6/stage6_review/review_audit.json",
+  "source_term_scan": "PFI/reports/pfi_v023/stage_6/stage6_review/no_source_term_scan.json",
+  "review_findings": [],
+  "acceptance_checks": {
+    "core_metric_real_or_blocked_state": true,
+    "no_zero_fallback_for_blocked_metrics": true,
+    "read_model_has_as_of_and_hash": true,
+    "page_models_preserve_metric_status_value_source_as_of_hash": true,
+    "cash_investment_consumption_basis_documented": true,
+    "error_state_screenshot_exists": true,
+    "no_forbidden_financial_data_terms": true
+  },
+  "changed_files": [
+    "PFI/tests/test_v023_stage6_core_metrics.py",
+    "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+    "PFI/reports/pfi_v023/stage_6/stage6_review/evidence.json",
+    "PFI/reports/pfi_v023/stage_6/stage6_review/review_audit.json",
+    "PFI/reports/pfi_v023/stage_6/stage6_review/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_6/stage6_review/terminal.log",
+    "PFI/reports/pfi_v023/stage_6/stage6_review/changed_files.txt"
+  ],
+  "terminal_log": "PFI/reports/pfi_v023/stage_6/stage6_review/terminal.log"
+}

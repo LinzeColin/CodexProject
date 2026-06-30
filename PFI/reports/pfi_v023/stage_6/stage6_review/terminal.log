@@ -1,0 +1,53 @@
+Stage 6 whole-stage review terminal log
+
+Scope:
+V023-S6-REVIEW reviews Stage 6 only. Stage 7 is not started.
+
+RED review gate:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q
+Result: 1 failed, 15 passed
+Failure: Stage 6 whole-stage review evidence is required before upload.
+
+Review audit:
+- Phase 6.1 evidence status: candidate_pass
+- Phase 6.2 evidence status: candidate_pass
+- Phase 6.3 evidence status: candidate_pass
+- Real MetaDatabase/PFI transaction_count: 8815
+- Raw file count: 4
+- Read model hash: sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675
+- Consistency findings: 0
+- Whole-stage source term scan violations: 0
+
+GREEN target to rerun:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+node --check PFI/web/app/data/coreMetrics.js
+node --check PFI/web/app/pages/home.js
+node --check PFI/web/app/pages/accounts.js
+node --check PFI/web/app/pages/investment.js
+node --check PFI/web/app/pages/consumption.js
+git diff --check -- PFI
+
+GREEN verification:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q
+Result: 16 passed in 0.33s
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 107 passed, 100 subtests passed in 1.70s
+
+node --check PFI/web/app/data/coreMetrics.js
+node --check PFI/web/app/pages/home.js
+node --check PFI/web/app/pages/accounts.js
+node --check PFI/web/app/pages/investment.js
+node --check PFI/web/app/pages/consumption.js
+Result: pass
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_read_model.py PFI/src/pfi_v02/stage_v023_core_metrics.py PFI/tests/test_v023_stage6_core_metrics.py
+Result: pass
+
+git diff --check -- PFI
+Result: pass
+
+Whole-stage source term scan over Stage 6 source, tests, docs, and evidence
+Result: no matches
+
