@@ -164,8 +164,8 @@
           </article>
           <article class="metric-tile" data-home-card="review_queue">
             <span>待复核交易</span>
-            <strong data-card-value>0</strong>
-            <small data-card-detail>导入流水后显示</small>
+            <strong data-card-value>未读取状态</strong>
+            <small data-card-detail>read model 返回后显示</small>
           </article>
           <article class="metric-tile" data-home-card="data_source_status">
             <span>数据源状态</span>
@@ -390,7 +390,7 @@
           </div>
           <dl class="holdings-summary" data-holdings-summary aria-label="持仓摘要">
             <div><dt>持仓数</dt><dd data-holdings-summary-count>0</dd></div>
-            <div><dt>总市值</dt><dd data-holdings-summary-value>CNY 0.00</dd></div>
+            <div><dt>总市值</dt><dd data-holdings-summary-value>暂无真实持仓</dd></div>
             <div><dt>草稿状态</dt><dd data-holdings-summary-saved data-holdings-draft-label>未提交草稿</dd></div>
           </dl>
           <div class="holdings-table-wrap" data-holding-edit-form>
@@ -733,10 +733,14 @@
         }
       }
     </script>
+    <script type="application/json" id="pfi-read-model-status">
+      {}
+    </script>
     <script src="./app/version.js"></script>
     <script src="./app/entry_audit.js"></script>
     <script src="./app/navigation.js"></script>
     <script src="./app/routes.js"></script>
+    <script src="./app/data_state.js"></script>
     <script src="./app/shell.js"></script>
   </body>
 </html>

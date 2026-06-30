@@ -72,23 +72,25 @@ Stage 1 records:
 
 ## v0.2.4 Stage 4 Status
 
-Current run unit: `Stage 4 / Phase 4.1 - 状态机定义`.
+Current run unit: `Stage 4 / Phase 4.2 - read model 挂链`.
 
 - Stage 3 GitHub main upload: complete before this run.
 - Phase 4.1: candidate pass.
-- Phase 4.2 read model 挂链: not started.
+- Phase 4.2 read model 挂链: candidate pass.
 - Phase 4.3 验收: not started.
 - Stage 4 whole-stage review: not executed.
 - GitHub main upload: not executed in this run.
 - Current data state contract: `PFI-V024-STAGE4-PHASE41-DATA-STATE`.
+- Current read model status contract: `PFI-V024-STAGE4-PHASE42-READ-MODEL-STATUS`.
 - Core metric status values: `ready`、`confirmed_zero`、`not_loaded`、`source_missing`、`path_error`、`parse_failed`、`outdated_snapshot`、`permission_denied`、`calculation_failed`、`filtered_empty`.
 - Every core metric state requires `metric_id`、`value`、`currency`、`status`、`source_id`、`record_count`、`as_of`、`formula_id`、`confidence`、`blocking_reason_zh`、`calculation_state`.
 - Non-ready statuses must not render `CNY 0.00`.
 - `confirmed_zero` may render `CNY 0.00` only with source, as-of time, record count, formula, and confidence evidence.
-- Phase 4.1 only freezes the data-state contract and browser-side rendering helper; it does not wire Home/accounts/investment/consumption/reports read models yet.
+- Phase 4.2 wires the shared read model status into `/api/read-model-status`, Streamlit embedded JSON, `data_state.js`, and the Home/accounts/investment/consumption/insights card surfaces.
+- Current real source summary: `MetaDatabase/PFI` ready, `8815` records, `4` raw files, as of `2026-06-03`; net worth/cash/investment remain `source_missing` until their real account/holding read models are mounted.
 - Business financial source data changes: none.
 - App bundle changes: none.
-- Next gate: Stage 4 Phase 4.2 only after explicit user instruction.
+- Next gate: Stage 4 Phase 4.3 only after explicit user instruction.
 
 Stage 4 Phase 4.1 records:
 
@@ -101,6 +103,20 @@ Stage 4 Phase 4.1 records:
 - `reports/pfi_v024/stage_4/phase_4_1/changed_files.txt`
 - `reports/pfi_v024/stage_4/phase_4_1/terminal.log`
 - `reports/pfi_v024/stage_4/phase_4_1/risk_and_rollback.md`
+
+Stage 4 Phase 4.2 records:
+
+- `src/pfi_os/application/read_model_status.py`
+- `src/pfi_v02/stage_v021_runtime_api.py`
+- `web/app/data_state.js`
+- `web/app/shell.js`
+- `web/index.html`
+- `src/pfi_os/app/streamlit_app.py`
+- `tests/test_v024_stage4_phase42_read_model_link.py`
+- `reports/pfi_v024/stage_4/phase_4_2/evidence.json`
+- `reports/pfi_v024/stage_4/phase_4_2/read_model_status.json`
+- `reports/pfi_v024/stage_4/phase_4_2/core_metric_states.json`
+- `reports/pfi_v024/stage_4/phase_4_2/page_metric_states.json`
 
 ## v0.2.4 Stage 3 Status
 

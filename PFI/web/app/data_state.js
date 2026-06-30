@@ -47,6 +47,8 @@
     filtered_empty: "当前筛选无结果，不代表全局为零",
   });
 
+  const sharedSurfaces = Object.freeze(["home", "accounts", "investment", "consumption", "insights"]);
+
   function canDisplayFinancialValue(metric) {
     return Boolean(
       metric &&
@@ -73,11 +75,80 @@
     })}`;
   }
 
+  function normalizeReadModelStatus(payload) {
+    const source = payload && typeof payload === "object" ? payload : {};
+    const metrics = Array.isArray(source.core_metric_states) ? source.core_metric_states : [];
+    return {
+      schema: source.schema || "PFIV024Stage4ReadModelStatusV1",
+      read_model_hash: source.read_model_hash || null,
+      as_of: source.as_of || null,
+      source: source.source || {},
+      core_metric_states: metrics.map(normalizeMetricState),
+    };
+  }
+
+  function buildSurfaceMetricViews(payload) {
+    const normalized = normalizeReadModelStatus(payload);
+    const surfaces = {};
+    sharedSurfaces.forEach((surface) => {
+      surfaces[surface] = {
+        surface,
+        read_model_hash: normalized.read_model_hash,
+        as_of: normalized.as_of,
+        metrics: normalized.core_metric_states.map((metric) => ({
+          ...metric,
+          display_value: renderMetricValueZh(metric),
+          display_detail: metricDetailZh(metric),
+        })),
+      };
+    });
+    return Object.freeze({
+      schema: "PFIV024Stage4SurfaceStateViewsV1",
+      surfaces,
+    });
+  }
+
+  function metricById(payload, metricId) {
+    const normalized = normalizeReadModelStatus(payload);
+    return normalized.core_metric_states.find((metric) => metric.metric_id === metricId) || null;
+  }
+
+  function normalizeMetricState(metric) {
+    const source = metric && typeof metric === "object" ? metric : {};
+    const status = statuses.includes(source.status) ? source.status : "not_loaded";
+    return {
+      metric_id: source.metric_id || "",
+      value: source.value === undefined ? null : source.value,
+      currency: source.currency === undefined ? "CNY" : source.currency,
+      status,
+      source_id: source.source_id || null,
+      record_count: Number.isFinite(Number(source.record_count)) ? Number(source.record_count) : null,
+      as_of: source.as_of || null,
+      formula_id: source.formula_id || null,
+      confidence: Number.isFinite(Number(source.confidence)) ? Number(source.confidence) : null,
+      blocking_reason_zh: source.blocking_reason_zh || blockingReasonZh[status] || "数据状态未知",
+      calculation_state: source.calculation_state || "blocked",
+    };
+  }
+
+  function metricDetailZh(metric) {
+    const parts = [];
+    if (metric.source_id) parts.push(metric.source_id);
+    if (Number.isFinite(Number(metric.record_count))) parts.push(`${Number(metric.record_count).toLocaleString("zh-CN")} 条记录`);
+    if (metric.as_of) parts.push(`截至 ${metric.as_of}`);
+    if (metric.formula_id) parts.push(metric.formula_id);
+    return parts.join(" · ") || metric.calculation_state || "状态待确认";
+  }
+
   return Object.freeze({
     statuses,
     requiredFields,
     blockingReasonZh,
+    sharedSurfaces,
+    buildSurfaceMetricViews,
     canDisplayFinancialValue,
+    metricById,
+    normalizeReadModelStatus,
     renderMetricValueZh,
   });
 });

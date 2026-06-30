@@ -1,0 +1,124 @@
+{
+  "schema": "PFIV024Stage4Phase42EvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 4",
+  "phase_id": "4.2",
+  "phase_name": "read model 挂链",
+  "status": "candidate_pass",
+  "generated_at": "2026-06-30T23:10:28Z",
+  "final_validated_at": "2026-06-30T23:19:04Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_before_phase": "55a5b3dbcbbdfc4072d1a33a15d7a087e0f446de",
+    "origin_main_before_phase": "5f6ff2792c8a879998ac90262b0f0a259107cad0",
+    "local_ahead_origin_main_before_phase": 1,
+    "local_behind_origin_main_before_phase": 0,
+    "origin_main_after_final_fetch": "2092de5c4d08f3b75de2015f1866600cc2b0c061",
+    "local_ahead_origin_main_after_final_fetch": 1,
+    "local_behind_origin_main_after_final_fetch": 6,
+    "origin_main_pfi_path_changes_after_final_fetch": false,
+    "post_rebase_origin_main": "2092de5c4d08f3b75de2015f1866600cc2b0c061",
+    "post_rebase_local_ahead_origin_main": 2,
+    "post_rebase_local_behind_origin_main": 0
+  },
+  "current_phase_only": true,
+  "max_phases_per_run": 1,
+  "phase_4_1_complete": true,
+  "phase_4_2_complete": true,
+  "phase_4_3_started": false,
+  "stage_4_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "read_model_wiring_done": true,
+  "ui_core_cards_wiring_done": true,
+  "shared_surfaces": [
+    "home",
+    "accounts",
+    "investment",
+    "consumption",
+    "insights"
+  ],
+  "source_summary": {
+    "status": "ready",
+    "data_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI",
+    "record_count": 8815,
+    "raw_file_count": 4,
+    "as_of": "2026-06-03",
+    "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a"
+  },
+  "read_model_hash": "sha256:89c3bac811ce9e38d78dae3fdb646a12e17d9eadb86ac2c2cc52b3a3642add2a",
+  "blocked_metric_ids": [
+    "net_worth_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny"
+  ],
+  "commands": [
+    {
+      "cmd": "pytest stage4 phase42 read model link red run",
+      "status": "expected_fail",
+      "detail": "6 failed: missing read_model_status module, frontend/runtime wiring, and evidence pack"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data_state.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "python py_compile phase42 modules and tests",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage4 phase42 plus phase41/no-mock regression",
+      "status": "pass",
+      "detail": "17 passed in 0.85s"
+    },
+    {
+      "cmd": "python3 -m json.tool phase42 evidence files",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE4_DATA_STATE_MACHINE.md",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/core_metric_states.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/data_source_scan.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/page_metric_states.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/read_model_status.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/terminal.log",
+    "PFI/src/pfi_os/app/streamlit_app.py",
+    "PFI/src/pfi_os/application/read_model_status.py",
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py",
+    "PFI/tests/test_v024_stage4_phase42_read_model_link.py",
+    "PFI/web/app/data_state.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 4 Phase 4.3 验收",
+    "Stage 4 whole-stage review",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "requires_user_acceptance": true,
+  "no_auto_next_stage": true
+}
