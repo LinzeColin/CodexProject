@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>PFI v0.2.3 Stage 7 Phase 7.2 Core Reports</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif; background: #f4f5f1; color: #1d2620; }
+main { width: 1180px; margin: 0 auto; padding: 44px 0 72px; }
+header { border-bottom: 2px solid #1d2620; padding-bottom: 22px; margin-bottom: 28px; display: flex; justify-content: space-between; gap: 24px; align-items: end; }
+h1 { font-size: 42px; line-height: 1.08; margin: 0 0 10px; letter-spacing: 0; }
+header p { max-width: 760px; margin: 0; color: #465149; font-size: 16px; line-height: 1.55; }
+.badge { border: 1px solid #1d2620; padding: 8px 10px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.summary div { background: #ffffff; border: 1px solid #d5d8ce; padding: 14px; min-height: 76px; }
+.summary b { display: block; font-size: 28px; line-height: 1; margin-top: 7px; }
+.report { background: #ffffff; border: 1px solid #d7dad2; border-left: 8px solid #59665d; padding: 22px; margin: 16px 0; }
+.report.blocked { border-left-color: #a43d37; }
+.report.partial { border-left-color: #b98224; }
+.report-head { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+h2 { margin: 0; font-size: 24px; }
+.report-head span { border: 1px solid currentColor; padding: 5px 9px; font-size: 13px; font-weight: 700; }
+.conclusion { color: #26322b; font-size: 16px; line-height: 1.6; margin: 14px 0; }
+.meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 14px 0; }
+.meta div { background: #f7f7f2; border: 1px solid #e2e3dc; padding: 11px; color: #4a544c; }
+.meta b { color: #1d2620; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+th, td { text-align: left; border-bottom: 1px solid #e3e5de; padding: 9px 8px; font-size: 13px; vertical-align: top; }
+th { color: #4a544c; background: #f7f7f2; }
+.grid { display: grid; grid-template-columns: 1.2fr 0.8fr 1fr; gap: 12px; }
+.grid div { background: #fbfbf7; border: 1px solid #e5e6de; padding: 12px; }
+h3 { font-size: 14px; margin: 0 0 8px; }
+ul { margin: 0; padding-left: 18px; }
+li { margin: 4px 0; line-height: 1.45; font-size: 13px; }
+footer { margin-top: 28px; color: #5c665f; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>Stage 7 Phase 7.2 核心报告</h1><p>核心报告只使用 Stage 6 真实 read model；未挂载输入保持阻断，消费报告显示部分真实结论。</p></div><div class="badge">sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675</div></header>
+<section class="summary"><div>报告数<b>4</b></div><div>阻断<b>3</b></div><div>部分可用<b>1</b></div><div>as of<b>2026-06-03</b></div></section>
+
+    <section class="report blocked">
+      <div class="report-head">
+        <h2>None</h2>
+        <span>阻断</span>
+      </div>
+      <p class="conclusion">净资产报告被阻断：未挂载账户余额与持仓 read model，不能生成完整结论。</p>
+      <div class="meta"><div>数据范围<br><b>2022-06-06 至 2026-06-03</b></div><div>样本量<br><b>8815 交易 / 4 文件</b></div></div>
+      <table><thead><tr><th>指标</th><th>值</th><th>状态</th></tr></thead><tbody><tr><td>净资产</td><td>None</td><td>not_mounted</td></tr></tbody></table>
+      <div class="grid"><div><h3>公式</h3><ul><li><strong>formula_net_worth_cny</strong>: 净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。</li></ul></div><div><h3>参数</h3><ul><li>net_worth_currency = CNY </li><li>asset_scope = 现金余额、投资市值、其他已确认资产 </li><li>liability_scope = 可确认负债 </li></ul></div><div><h3>缺口</h3><ul><li>净资产：未挂载账户余额与持仓 read model，无法计算净资产</li></ul></div></div>
+    </section>
+
+
+    <section class="report blocked">
+      <div class="report-head">
+        <h2>None</h2>
+        <span>阻断</span>
+      </div>
+      <p class="conclusion">现金余额报告被阻断：未挂载账户余额 read model，不能生成完整结论。</p>
+      <div class="meta"><div>数据范围<br><b>2022-06-06 至 2026-06-03</b></div><div>样本量<br><b>8815 交易 / 4 文件</b></div></div>
+      <table><thead><tr><th>指标</th><th>值</th><th>状态</th></tr></thead><tbody><tr><td>现金余额</td><td>None</td><td>not_mounted</td></tr></tbody></table>
+      <div class="grid"><div><h3>公式</h3><ul><li><strong>formula_cash_balance_cny</strong>: 现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。</li></ul></div><div><h3>参数</h3><ul><li>cash_currency = CNY </li><li>cash_account_scope = 真实账户余额 read model </li></ul></div><div><h3>缺口</h3><ul><li>现金余额：未挂载账户余额 read model，无法计算现金余额</li></ul></div></div>
+    </section>
+
+
+    <section class="report blocked">
+      <div class="report-head">
+        <h2>None</h2>
+        <span>阻断</span>
+      </div>
+      <p class="conclusion">投资市值报告被阻断：未挂载持仓市值 read model，不能生成完整结论。</p>
+      <div class="meta"><div>数据范围<br><b>2022-06-06 至 2026-06-03</b></div><div>样本量<br><b>8815 交易 / 4 文件</b></div></div>
+      <table><thead><tr><th>指标</th><th>值</th><th>状态</th></tr></thead><tbody><tr><td>投资市值</td><td>None</td><td>not_mounted</td></tr></tbody></table>
+      <div class="grid"><div><h3>公式</h3><ul><li><strong>formula_investment_market_value_cny</strong>: 投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。</li></ul></div><div><h3>参数</h3><ul><li>investment_currency = CNY </li><li>pricing_policy = 最新可确认价格 </li><li>fx_policy = 对应 CNY 汇率 </li></ul></div><div><h3>缺口</h3><ul><li>投资市值：未挂载持仓市值 read model，无法计算投资市值</li></ul></div></div>
+    </section>
+
+
+    <section class="report partial">
+      <div class="report-head">
+        <h2>None</h2>
+        <span>部分可用</span>
+      </div>
+      <p class="conclusion">消费结构报告已有真实 Alipay 输入：生活消费 CNY 1,545,600.44，消费总流出 CNY 1,727,278.37。当前缺少分类结构、商户、预算和异常消费明细，因此报告状态为 partial。</p>
+      <div class="meta"><div>数据范围<br><b>2022-06-06 至 2026-06-03</b></div><div>样本量<br><b>8815 交易 / 4 文件</b></div></div>
+      <table><thead><tr><th>指标</th><th>值</th><th>状态</th></tr></thead><tbody><tr><td>生活消费</td><td>1545600.44</td><td>ready</td></tr><tr><td>消费总流出</td><td>1727278.37</td><td>ready</td></tr></tbody></table>
+      <div class="grid"><div><h3>公式</h3><ul><li><strong>formula_life_consumption_cny</strong>: 生活消费 = 真实 Alipay 交易中的生活消费流出减退款。</li><li><strong>formula_total_consumption_outflow_cny</strong>: 消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。</li></ul></div><div><h3>参数</h3><ul><li>life_event_type = CASH </li><li>refund_offset = REFUND 抵消 </li><li>life_event_type = CASH </li><li>fund_event_type = FUND </li><li>asset_buy_event_type = BUY_ASSET </li><li>refund_offset = REFUND 抵消 </li></ul></div><div><h3>缺口</h3><ul><li>缺少消费分类结构、商户、预算和异常消费明细，当前只能生成 partial 结论。</li></ul></div></div>
+    </section>
+
+<footer>Phase 7.3、Stage 7 whole-stage review、GitHub main upload 均未执行。</footer>
+</main>
+</body>
+</html>

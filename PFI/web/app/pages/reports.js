@@ -45,6 +45,28 @@
     });
   }
 
+  function buildStage7Phase72CoreReportsViewModel(coreReports = {}) {
+    const reports = Array.isArray(coreReports.reports) ? coreReports.reports.map(buildReportCard) : [];
+    const blockedCount = reports.filter((report) => report.status === "blocked").length;
+    const partialCount = reports.filter((report) => report.status === "partial").length;
+    return Object.freeze({
+      schema: "PFIV023Stage7CoreReportsPageViewModelV1",
+      version: VERSION,
+      stage: "Stage 7",
+      phase_id: "V023-S7-P7.2",
+      page: "reports",
+      title: "核心报告",
+      subtitle_zh: "核心报告只使用 Stage 6 真实 read model；未挂载输入保持阻断，消费报告显示部分真实结论。",
+      report_count: reports.length,
+      blocked_count: blockedCount,
+      partial_count: partialCount,
+      read_model_hash: coreReports.source_core_metrics ? coreReports.source_core_metrics.read_model_hash : null,
+      as_of: coreReports.source_core_metrics ? coreReports.source_core_metrics.as_of : null,
+      reports,
+      summary_zh: `核心报告 ${reports.length} 个，其中 ${blockedCount} 个阻断，${partialCount} 个部分可用。`,
+    });
+  }
+
   function buildReportCard(report = {}) {
     const formulas = Array.isArray(report.formulas) ? report.formulas : [];
     const parameters = Array.isArray(report.parameters) ? report.parameters : [];
@@ -108,5 +130,6 @@
 
   return Object.freeze({
     buildStage7Phase71ReportsViewModel,
+    buildStage7Phase72CoreReportsViewModel,
   });
 });

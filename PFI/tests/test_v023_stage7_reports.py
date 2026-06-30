@@ -223,7 +223,9 @@ console.log(JSON.stringify(reportsPage.buildStage7Phase71ReportsViewModel(report
         doc_text = doc_path.read_text(encoding="utf-8")
         self.assertIn("Stage 7 Phase 7.1", doc_text)
         self.assertIn("报告合同", doc_text)
-        self.assertIn("Phase 7.2 核心报告未执行", doc_text)
+        self.assertIn("Stage 7 Phase 7.2", doc_text)
+        self.assertIn("Stage 7 whole-stage review 未执行", doc_text)
+        self.assertIn("GitHub main upload 未执行", doc_text)
 
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("PFI/tests/test_v023_stage7_reports.py -q", terminal_log)
@@ -242,6 +244,119 @@ console.log(JSON.stringify(reportsPage.buildStage7Phase71ReportsViewModel(report
             text = path.read_text(encoding="utf-8").lower().replace("sample_size", "")
             for term in terms:
                 self.assertIsNone(re.search(term, text), f"{path} contains blocked placeholder term {term}")
+
+    def test_phase72_contract_is_limited_to_core_reports(self) -> None:
+        module = load_reports_module()
+        contract = module.build_stage7_phase72_contract()
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 7")
+        self.assertEqual(contract["phase_id"], "V023-S7-P7.2")
+        self.assertEqual(contract["phase_name"], "核心报告")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertEqual(contract["task_ids"], ["T7.2.1", "T7.2.2", "T7.2.3", "T7.2.4"])
+        self.assertIn("PFI/src/pfi_v02/stage_v023_reports.py", contract["allowed_files"])
+        self.assertIn("PFI/web/app/pages/reports.js", contract["allowed_files"])
+        self.assertNotIn("PFI/web/app/shell.js", contract["changed_in_this_phase"])
+        self.assertIn("Phase 7.3 数据质量与调参", contract["explicitly_not_done"])
+        self.assertIn("Stage 7 whole-stage review", contract["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
+
+    def test_phase72_core_reports_preserve_blocked_status_and_real_consumption_inputs(self) -> None:
+        module = load_reports_module()
+        core_metrics = json.loads((ROOT / "reports" / "pfi_v023" / "stage_6" / "phase_6_1" / "core_metrics.json").read_text(encoding="utf-8"))
+        payload = module.build_stage7_core_reports(core_metrics_read_model=core_metrics)
+
+        self.assertEqual(payload["schema"], "PFIV023Stage7CoreReportsV1")
+        self.assertEqual(payload["phase_id"], "V023-S7-P7.2")
+        self.assertEqual(payload["source_core_metrics"]["read_model_hash"], core_metrics["read_model_hash"])
+        reports = {item["report_id"]: item for item in payload["reports"]}
+        self.assertEqual(set(reports), {"net_worth_report", "cash_balance_report", "investment_market_value_report", "consumption_structure_report"})
+
+        for report_id in ("net_worth_report", "cash_balance_report", "investment_market_value_report"):
+            report = reports[report_id]
+            self.assertEqual(report["status"], "blocked", report_id)
+            self.assertGreater(len(report["missing_data"]), 0, report_id)
+            self.assertRegex(report["conclusion_zh"], r"未挂载|阻断")
+            self.assertNotIn("CNY 0.00", json.dumps(report, ensure_ascii=False))
+            self.assertNotRegex(report["conclusion_zh"], r"完整财务结论")
+
+        consumption = reports["consumption_structure_report"]
+        self.assertEqual(consumption["status"], "partial")
+        self.assertEqual(consumption["data_range"], {"start": "2022-06-06", "end": "2026-06-03"})
+        self.assertEqual(consumption["sample_size"]["transaction_count"], 8815)
+        self.assertEqual(consumption["sample_size"]["raw_file_count"], 4)
+        self.assertIn("life_consumption_cny", {item["metric_id"] for item in consumption["core_metrics"]})
+        self.assertIn("total_consumption_outflow_cny", {item["metric_id"] for item in consumption["core_metrics"]})
+        self.assertIn("CNY 1,545,600.44", consumption["conclusion_zh"])
+        self.assertIn("CNY 1,727,278.37", consumption["conclusion_zh"])
+        self.assertIn("分类结构", " ".join(consumption["missing_data"]))
+        self.assertIn("生活消费流出减退款", json.dumps(consumption["formulas"], ensure_ascii=False))
+        self.assertIn("基金申购", json.dumps(consumption["formulas"], ensure_ascii=False))
+
+    def test_phase72_core_reports_page_model_highlights_one_real_partial_report(self) -> None:
+        core_reports = json.loads((ROOT / "reports" / "pfi_v023" / "stage_7" / "phase_7_2" / "core_reports.json").read_text(encoding="utf-8"))
+        script = """
+const reportsPage = require('./PFI/web/app/pages/reports.js');
+const payload = JSON.parse(process.argv[1]);
+console.log(JSON.stringify(reportsPage.buildStage7Phase72CoreReportsViewModel(payload)));
+"""
+        view = node_json(script, json.dumps(core_reports, ensure_ascii=False))
+
+        self.assertEqual(view["schema"], "PFIV023Stage7CoreReportsPageViewModelV1")
+        self.assertEqual(view["phase_id"], "V023-S7-P7.2")
+        self.assertEqual(view["report_count"], 4)
+        self.assertEqual(view["blocked_count"], 3)
+        self.assertEqual(view["partial_count"], 1)
+        text = json.dumps(view, ensure_ascii=False)
+        for term in ("净资产报告", "现金余额报告", "投资市值报告", "消费结构报告", "数据范围", "样本量", "公式", "缺口"):
+            self.assertIn(term, text)
+        self.assertIn("CNY 1,545,600.44", text)
+        self.assertNotIn("完整财务结论", text)
+        self.assertNotIn("CNY 0.00", text)
+
+    def test_phase72_doc_and_evidence_exist_before_candidate_pass(self) -> None:
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_7" / "phase_7_2"
+        evidence_path = phase_dir / "evidence.json"
+        core_reports_path = phase_dir / "core_reports.json"
+        page_model_path = phase_dir / "core_reports_page_model.json"
+        scan_path = phase_dir / "no_source_term_scan.json"
+        screenshot_path = phase_dir / "screenshots" / "core_reports.png"
+        changed_files_path = phase_dir / "changed_files.txt"
+        terminal_log_path = phase_dir / "terminal.log"
+
+        for path in (evidence_path, core_reports_path, page_model_path, scan_path, screenshot_path, changed_files_path, terminal_log_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        core_reports = json.loads(core_reports_path.read_text(encoding="utf-8"))
+        page_model = json.loads(page_model_path.read_text(encoding="utf-8"))
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 7")
+        self.assertEqual(evidence["phase_id"], "V023-S7-P7.2")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertFalse(evidence["stage_contract"]["phase_7_3_data_quality_tuning_done"])
+        self.assertFalse(evidence["stage_contract"]["stage_7_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(core_reports["schema"], "PFIV023Stage7CoreReportsV1")
+        self.assertEqual(page_model["schema"], "PFIV023Stage7CoreReportsPageViewModelV1")
+        self.assertEqual(scan["violations"], [])
+        self.assertGreater(screenshot_path.stat().st_size, 10000)
+
+        doc_text = (ROOT / "docs" / "pfi_v023" / "STAGE7_REPORTS.md").read_text(encoding="utf-8")
+        self.assertIn("Stage 7 Phase 7.2", doc_text)
+        self.assertIn("核心报告", doc_text)
+        self.assertIn("Phase 7.3 数据质量与调参未执行", doc_text)
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("PFI/tests/test_v023_stage7_reports.py -q", terminal_log)
 
 
 if __name__ == "__main__":

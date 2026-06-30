@@ -10,6 +10,8 @@ VERSION = "v0.2.3"
 STAGE = "Stage 7"
 PHASE_ID = "V023-S7-P7.1"
 PHASE_NAME = "报告合同"
+PHASE72_ID = "V023-S7-P7.2"
+PHASE72_NAME = "核心报告"
 REPORT_STATUSES = ("complete", "partial", "blocked", "outdated", "review_required")
 REQUIRED_REPORT_FIELDS = (
     "report_id",
@@ -31,6 +33,22 @@ REQUIRED_REPORT_FIELDS = (
 
 @dataclass(frozen=True)
 class Stage7Phase71Contract:
+    version: str
+    stage: str
+    phase_id: str
+    phase_name: str
+    current_phase_only: bool
+    max_one_phase_per_run: bool
+    task_ids: tuple[str, ...]
+    allowed_files: tuple[str, ...]
+    changed_in_this_phase: tuple[str, ...]
+    validation_commands: tuple[str, ...]
+    evidence_files: tuple[str, ...]
+    explicitly_not_done: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class Stage7Phase72Contract:
     version: str
     stage: str
     phase_id: str
@@ -88,6 +106,57 @@ def build_stage7_phase71_contract() -> dict[str, Any]:
         ),
         explicitly_not_done=(
             "Phase 7.2 核心报告",
+            "Phase 7.3 数据质量与调参",
+            "Stage 7 whole-stage review",
+            "GitHub main upload for intermediate phase",
+        ),
+    )
+    payload = asdict(contract)
+    for key in ("task_ids", "allowed_files", "changed_in_this_phase", "validation_commands", "evidence_files", "explicitly_not_done"):
+        payload[key] = list(payload[key])
+    return payload
+
+
+def build_stage7_phase72_contract() -> dict[str, Any]:
+    contract = Stage7Phase72Contract(
+        version=VERSION,
+        stage=STAGE,
+        phase_id=PHASE72_ID,
+        phase_name=PHASE72_NAME,
+        current_phase_only=True,
+        max_one_phase_per_run=True,
+        task_ids=("T7.2.1", "T7.2.2", "T7.2.3", "T7.2.4"),
+        allowed_files=(
+            "PFI/src/pfi_v02/stage_v023_reports.py",
+            "PFI/src/pfi_v02/stage_v023_formula_registry.py",
+            "PFI/web/app/pages/reports.js",
+            "PFI/web/app/components/report*.js",
+            "PFI/tests/test_v023_stage7_reports.py",
+            "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+            "PFI/reports/pfi_v023/stage_7/*",
+        ),
+        changed_in_this_phase=(
+            "PFI/src/pfi_v02/stage_v023_reports.py",
+            "PFI/web/app/pages/reports.js",
+            "PFI/tests/test_v023_stage7_reports.py",
+            "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+            "PFI/reports/pfi_v023/stage_7/phase_7_2/*",
+        ),
+        validation_commands=(
+            "node --check PFI/web/app/pages/reports.js",
+            "python3 -m pytest PFI/tests/test_v023_stage7_reports.py -q",
+            "python3 -m pytest PFI/tests/test_v023_*.py -q",
+        ),
+        evidence_files=(
+            "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+            "PFI/reports/pfi_v023/stage_7/phase_7_2/evidence.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_2/core_reports.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_2/core_reports_page_model.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_2/no_source_term_scan.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_2/terminal.log",
+            "PFI/reports/pfi_v023/stage_7/phase_7_2/changed_files.txt",
+        ),
+        explicitly_not_done=(
             "Phase 7.3 数据质量与调参",
             "Stage 7 whole-stage review",
             "GitHub main upload for intermediate phase",
@@ -161,6 +230,51 @@ def build_stage7_report_contract(core_metrics_read_model: dict[str, Any] | None 
         "read_model_hash": read_model.get("read_model_hash"),
         "as_of": read_model.get("as_of"),
         "reports": reports,
+    }
+
+
+def build_stage7_core_reports(core_metrics_read_model: dict[str, Any] | None = None) -> dict[str, Any]:
+    read_model = core_metrics_read_model or {}
+    contract = build_stage7_report_contract(read_model)
+    reports = {str(item["report_id"]): item for item in contract["reports"]}
+    core_report_ids = (
+        "net_worth_report",
+        "cash_balance_report",
+        "investment_market_value_report",
+        "consumption_structure_report",
+    )
+    selected = []
+    for report_id in core_report_ids:
+        report = dict(reports[report_id])
+        report["phase_id"] = PHASE72_ID
+        if report_id == "consumption_structure_report":
+            report["conclusion_zh"] = _consumption_phase72_conclusion(report)
+            report["missing_data"] = [
+                "缺少消费分类结构、商户、预算和异常消费明细，当前只能生成 partial 结论。",
+            ]
+        selected.append(report)
+    return {
+        "schema": "PFIV023Stage7CoreReportsV1",
+        "version": VERSION,
+        "stage": STAGE,
+        "phase_id": PHASE72_ID,
+        "phase_name": PHASE72_NAME,
+        "source_core_metrics": {
+            "path": "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+            "read_model_hash": read_model.get("read_model_hash"),
+            "as_of": read_model.get("as_of"),
+        },
+        "reports": selected,
+        "summary": {
+            "complete": sum(1 for item in selected if item["status"] == "complete"),
+            "partial": sum(1 for item in selected if item["status"] == "partial"),
+            "blocked": sum(1 for item in selected if item["status"] == "blocked"),
+        },
+        "explicitly_not_done": [
+            "Phase 7.3 数据质量与调参",
+            "Stage 7 whole-stage review",
+            "GitHub main upload for intermediate phase",
+        ],
     }
 
 
@@ -294,3 +408,25 @@ def _missing_metric_text(metric: dict[str, Any]) -> str:
     label = metric.get("label") or metric.get("metric_id")
     message = metric.get("message_zh") or "未加载真实数据"
     return f"{label}：{message}"
+
+
+def _consumption_phase72_conclusion(report: dict[str, Any]) -> str:
+    metrics = {str(item.get("metric_id")): item for item in report.get("core_metrics", [])}
+    life = metrics.get("life_consumption_cny", {})
+    total = metrics.get("total_consumption_outflow_cny", {})
+    return (
+        "消费结构报告已有真实 Alipay 输入："
+        f"生活消费 {_display_metric_value(life)}，"
+        f"消费总流出 {_display_metric_value(total)}。"
+        "当前缺少分类结构、商户、预算和异常消费明细，因此报告状态为 partial。"
+    )
+
+
+def _display_metric_value(metric: dict[str, Any]) -> str:
+    value = metric.get("value")
+    currency = metric.get("currency") or "CNY"
+    if value is None:
+        return str(metric.get("message_zh") or "未加载真实数据")
+    if currency == "records":
+        return f"{int(value):,} records"
+    return f"{currency} {float(value):,.2f}"
