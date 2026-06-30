@@ -1,0 +1,84 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S09_P2_margin_cash_margin/human/s09_p2_completion_record.md",
+    "margin_cash_margin_manifest": "KMFA/metadata/reports/project_margin_cash_margin_manifest.json",
+    "margin_records": "KMFA/metadata/lineage/project_margin_cash_margin_records.jsonl",
+    "scope_difference_summary": "KMFA/metadata/quality/scope_difference_summary.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S09_P2_margin_cash_margin/machine/s09_p2_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S09_P2_margin_cash_margin/human/test_results.md",
+    "validator": "KMFA/tools/check_s09_p2_margin_cash_margin.py"
+  },
+  "calculation_status": "margin_slots_recorded_blocked_for_formal_report",
+  "formula_contract": {
+    "authority_gross_profit": "authoritative_display_value_from_q5_hash_lock",
+    "calculation_unit": "integer_cents_and_basis_points",
+    "cash_gross_profit": "collection_amount_cents - cash_paid_cost_cents",
+    "gross_margin_rate_basis_points": "system_recomputed_gross_profit_cents / management_revenue_cents",
+    "public_numeric_values_committed": false,
+    "system_recomputed_gross_profit": "management_revenue_cents - management_project_cost_cents"
+  },
+  "formula_version": "FORM-KMFA-MARGIN-CASH-MARGIN-001",
+  "generated_at": "2026-06-30T23:45:00+10:00",
+  "mapping_version": "MAP-KMFA-S09P2-PUBLIC-SAFE-v1",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "quality_gate": {
+    "automatic_external_action_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "phase_completion_upload_allowed": false,
+    "raw_layer_write_allowed": false,
+    "s09_p3_reconciliation_allowed": false,
+    "stage9_review_allowed": false
+  },
+  "record_type": "project_margin_cash_margin_manifest",
+  "required_margin_metrics": [
+    "authority_gross_profit",
+    "system_recomputed_gross_profit",
+    "cash_gross_profit",
+    "gross_margin_rate"
+  ],
+  "schema_version": "kmfa.project_margin_cash_margin_manifest.v1",
+  "stage_phase": "S09-P2",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "formal_report_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s09_p1_project_cost_fact_layer_scope_included": false,
+    "s09_p2_margin_cash_margin_scope_included": true,
+    "s09_p3_scope_difference_reconciliation_scope_included": false,
+    "stage9_review_scope_included": false,
+    "ui_scope_included": false
+  },
+  "summary": {
+    "authority_field_group_count": 8,
+    "difference_summary_count": 12,
+    "margin_metric_count": 4,
+    "margin_record_count": 4,
+    "project_cost_fact_record_count": 4,
+    "upstream_manual_review_queue_count": 3,
+    "upstream_unresolved_difference_count": 1
+  },
+  "upstream_quality_summary": {
+    "blocked_quality_result_count": 2,
+    "data_quality_results_ref": "KMFA/metadata/quality/data_quality_results.jsonl",
+    "entity_matching_review_queue_ref": "KMFA/metadata/quality/entity_matching_review_queue.jsonl",
+    "formal_calculation_blocked": true,
+    "manual_review_queue_count": 3,
+    "source_difference_queue_ref": "KMFA/metadata/quality/source_difference_queue.jsonl",
+    "unresolved_difference_count": 1,
+    "zero_delta_fail_count": 1,
+    "zero_delta_results_ref": "KMFA/metadata/quality/zero_delta_results.jsonl"
+  },
+  "upstream_refs": {
+    "authority_baseline_records": "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl",
+    "project_cost_fact_layer_manifest": "KMFA/metadata/reports/project_cost_fact_layer_manifest.json",
+    "project_cost_fact_records": "KMFA/metadata/lineage/project_cost_fact_records.jsonl"
+  }
+}
