@@ -1,0 +1,29 @@
+{
+  "completion_record_ref": "KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md",
+  "fact_layer_scope_included": false,
+  "formal_report_allowed": false,
+  "generated_at": "2026-06-30T20:00:00+10:00",
+  "github_upload_allowed": false,
+  "manifest_ref": "KMFA/metadata/schema_maps/project_composite_key_manifest.json",
+  "manual_review_queue_count": 2,
+  "manual_review_queue_ref": "KMFA/metadata/quality/project_identity_review_queue.jsonl",
+  "match_result_count": 3,
+  "match_results_ref": "KMFA/metadata/schema_maps/project_composite_key_matches.jsonl",
+  "profile_count": 4,
+  "profiles_ref": "KMFA/metadata/schema_maps/project_identity_profiles.jsonl",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "normalized_business_values_committed": false,
+    "plaintext_identity_values_committed": false,
+    "private_csv_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "record_type": "s08_p1_project_composite_key_manifest",
+  "required_component_count": 8,
+  "schema_version": "kmfa.s08_p1_manifest.v1",
+  "stage_phase": "S08-P1",
+  "strong_auto_match_count": 1,
+  "test_results_ref": "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md",
+  "validator_ref": "KMFA/tools/check_s08_p1_project_composite_key.py"
+}

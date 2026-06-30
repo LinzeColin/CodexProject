@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S8"
-current_phase_id: "S8PA"
-current_task_id: "S8PAT01"
-next_gate_id: "KMFA-S08-P1-GATE"
+current_phase_id: "S8PB"
+current_task_id: "S8PBT01"
+next_gate_id: "KMFA-S08-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -631,9 +631,14 @@ stages:
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_upload_manifest.json"
   - stage_id: "S8"
     name: "业务实体与项目身份匹配"
-    status: "planned"
+    status: "in_progress_local_only_s08p1_completed"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33.33
+    current_result: "S08-P1 项目组合键已本地验证完成；下一门禁仅为 S08-P2 业务实体模型。"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/machine/s08_p1_manifest.json"
   - stage_id: "S9"
     name: "项目成本计算引擎"
     status: "planned"

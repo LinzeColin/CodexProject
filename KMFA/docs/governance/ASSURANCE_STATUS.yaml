@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S07-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260630-S08P1-PROJECT-COMPOSITE-KEY"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "fd14057e7427d7f275fdb62a33619936618d0d35"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S07_REVIEW_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T19:30:00+10:00"
-generator_version: "manual-s07-github-upload"
-final_commit_binding: "precommit-pending-s07-upload"
+source_base_commit: "946f5c41c8db1ec4eb5e289ae35696ccb6d42f47"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S08P1_LOCAL_COMMIT"
+snapshot_event_time: "2026-06-30T20:00:00+10:00"
+generator_version: "manual-s08p1-project-composite-key"
+final_commit_binding: "precommit-pending-s08p1-local"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 58
-    total_active_formulas: 18
+    total_active_parameters: 66
+    total_active_formulas: 19
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -83,6 +83,9 @@ dimensions:
       - "KMFA/tools/redcircle_postponement_policy.py"
       - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
+      - "KMFA/tools/project_composite_key.py"
+      - "KMFA/tools/check_s08_p1_project_composite_key.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -116,6 +119,9 @@ dimensions:
       - "KMFA/tools/redcircle_postponement_policy.py"
       - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/tools/project_composite_key.py"
+      - "KMFA/tools/check_s08_p1_project_composite_key.py"
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -212,14 +218,23 @@ dimensions:
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_review_manifest.json"
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_upload_manifest.json"
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
+      - "KMFA/stage_artifacts/S08_P1_project_composite_key/machine/s08_p1_manifest.json"
+      - "KMFA/metadata/schema_maps/project_composite_key_manifest.json"
+      - "KMFA/metadata/schema_maps/project_identity_profiles.jsonl"
+      - "KMFA/metadata/schema_maps/project_composite_key_matches.jsonl"
+      - "KMFA/metadata/quality/project_identity_review_queue.jsonl"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S07_UPLOADED_TO_GITHUB_MAIN"
-  release_gate: "KMFA-S08-P1-GATE"
+  status: "S08P1_COMPLETED_VALIDATED_LOCAL_ONLY"
+  release_gate: "KMFA-S08-P2-GATE"
   blocker_ids:
-    - "STAGE7_GITHUB_UPLOAD_NOT_STARTED"
+    - "S08_P2_BUSINESS_ENTITY_MODEL_NOT_STARTED"
+    - "S08_P3_MATCH_QUALITY_TEST_NOT_STARTED"
+    - "STAGE8_REVIEW_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

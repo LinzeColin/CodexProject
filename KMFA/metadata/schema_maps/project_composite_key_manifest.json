@@ -1,0 +1,70 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md",
+    "manual_review_queue": "KMFA/metadata/quality/project_identity_review_queue.jsonl",
+    "match_results": "KMFA/metadata/schema_maps/project_composite_key_matches.jsonl",
+    "profiles": "KMFA/metadata/schema_maps/project_identity_profiles.jsonl",
+    "test_results": "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
+  },
+  "generated_at": "2026-06-30T20:00:00+10:00",
+  "matching_weights_bps": {
+    "amount_signature": 1200,
+    "company_entity": 1000,
+    "contract_number": 2000,
+    "counterparty": 1500,
+    "occurrence_or_project_date": 1200,
+    "project_name": 1800,
+    "responsible_person": 600,
+    "source_hash": 700
+  },
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "normalized_business_values_committed": false,
+    "plaintext_identity_values_committed": false,
+    "private_csv_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "quality_gate": {
+    "below_strong_threshold_enters_manual_review": true,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "missing_single_component_blocks_all_matching": false,
+    "phase_completion_upload_allowed": false,
+    "q5_calculation_baseline_allowed": false
+  },
+  "record_type": "s08_p1_project_composite_key_manifest",
+  "required_components": [
+    "contract_number",
+    "project_name",
+    "counterparty",
+    "company_entity",
+    "occurrence_or_project_date",
+    "amount_signature",
+    "responsible_person",
+    "source_hash"
+  ],
+  "schema_version": "kmfa.project_composite_key_manifest.v1",
+  "stage_phase": "S08-P1",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "fact_layer_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "report_scope_included": false,
+    "s08_p1_scope_included": true,
+    "s08_p2_entity_model_scope_included": false,
+    "s08_p3_matching_quality_scope_included": false,
+    "ui_scope_included": false
+  },
+  "summary": {
+    "manual_review_queue_count": 2,
+    "match_result_count": 3,
+    "profile_count": 4,
+    "strong_auto_match_count": 1
+  },
+  "thresholds_bps": {
+    "human_review": 7000,
+    "strong_auto_match": 8500,
+    "weak_candidate": 5000
+  }
+}

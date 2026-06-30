@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s07-github-upload
+product_version: 0.1.0-s08p1-project-composite-key
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S08`
-- current_phase: `S08-P1｜项目组合键 待开始`
-- current_tasks: `S8PAT01-S8PAT03`
-- status: `stage7_uploaded_to_github_main_s08p1_next`
+- current_phase: `S08-P2｜业务实体模型 待开始`
+- current_tasks: `S8PBT01-S8PBT03`
+- status: `s08p1_completed_validated_local_only_s08p2_next`
 - risk_tier: `T3`
 
 ## Completed
@@ -60,16 +60,18 @@ product_version: 0.1.0-s07-github-upload
 | `S7PCT01-S7PCT03` | S07-P3 红圈导出后置策略完成本地验证：4 类红圈导出模板已预留，D15 自动接口已阻断，后续只读/hash/rollback/manual approval 控制已建立 | `KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md` |
 | `KMFA-S07-STAGE-REVIEW-20260630` | Stage 7 整体复审本地通过，复审步骤未执行 GitHub upload | `KMFA/stage_artifacts/S07_STAGE_REVIEW/human/stage7_review_report.md` |
 | `KMFA-S07-GITHUB-UPLOAD-20260630` | Stage 7 final GitHub upload 已完成 | `KMFA/stage_artifacts/S07_STAGE_REVIEW/human/github_upload_record.md` |
+| `S8PAT01-S8PAT03` | S08-P1 项目组合键完成本地验证：8 个 hash-only 身份组件、整数权重、单字段缺失不全阻断和人工复核队列已生成 | `KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S8PAT01-S8PAT03` | S08-P1 项目组合键尚未开始；下一轮只允许建立组合键匹配 metadata、validator 和证据 | `KMFA/taskpack/v1_2/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
+| `S8PBT01-S8PBT03` | S08-P2 业务实体模型尚未开始；下一轮只允许建立业务实体模型 metadata、validator 和证据 | `KMFA/taskpack/v1_2/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `S08-P1` 项目组合键 | Stage 7 已上传；S08-P1 尚未实现 | 下一轮只执行 S08-P1 |
+| `S08-P2` 业务实体模型 | S08-P1 已本地验证；S08-P2 尚未实现 | 下一轮只执行 S08-P2 |
+| `S08-P3` 匹配质量测试 | Stage 8 未完成前不得越界 | 完成 S08-P2 后再执行 S08-P3 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

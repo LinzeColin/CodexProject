@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s08p1-project-composite-key - 2026-06-30
+
+- 完成 `S08-P1｜项目组合键` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/project_composite_key.py`、`KMFA/tools/check_s08_p1_project_composite_key.py` 和 `KMFA/tests/test_project_composite_key.py`。
+- 建立 public-safe 项目身份组合键：合同编号、项目名称、对手方、主体、时间、金额签名、责任人、来源 hash 八个组件全部只保存 hash/private refs。
+- 使用整数 basis points 锁定权重和阈值，支持单字段缺失不全阻断；低于强匹配阈值进入人工复核队列，`auto_merge_allowed=false`。
+- 新增 `KMFA/metadata/schema_maps/project_composite_key_manifest.json`、`KMFA/metadata/schema_maps/project_identity_profiles.jsonl`、`KMFA/metadata/schema_maps/project_composite_key_matches.jsonl`、`KMFA/metadata/quality/project_identity_review_queue.jsonl` 和 `KMFA/stage_artifacts/S08_P1_project_composite_key/`。
+- 公开仓库不提交 raw business data、zip、Excel、PDF、private CSV、字段明文或真实业务值；S08-P2、S08-P3、Stage 8 review、事实层、lineage、正式报告、UI、外部接口和 GitHub upload 仍未完成。
+
 ## 0.1.0-s07-github-upload - 2026-06-30
 
 - 完成 Stage 7 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
