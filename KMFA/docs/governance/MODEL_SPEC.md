@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s12p2-impact-preview
+product_version: 0.1.0-s12p3-rerun-mechanism
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出、Stage 10 整体复审与 GitHub main 上传、S11-P1 public-safe 首页与导航、S11-P2 public-safe 数据源检查板、S11-P3 public-safe 项目成本页面、Stage 11 整体复审与 GitHub main 上传、S12-P1 public-safe 人工处理事件，以及 S12-P2 public-safe 影响预览。不声明 S12-P3 派生重跑、Stage 12 整体复审、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出、Stage 10 整体复审与 GitHub main 上传、S11-P1 public-safe 首页与导航、S11-P2 public-safe 数据源检查板、S11-P3 public-safe 项目成本页面、Stage 11 整体复审与 GitHub main 上传、S12-P1 public-safe 人工处理事件、S12-P2 public-safe 影响预览，以及 S12-P3 public-safe 重跑机制。不声明 Stage 12 整体复审、GitHub upload、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -233,10 +233,10 @@ product_version: 0.1.0-s12p2-impact-preview
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, Stage 9 review/upload, S10-P1 report templates, S10-P2 report grade runtime, S10-P3 report export, S11-P1 home navigation, S11-P2 source check board, S11-P3 project cost page, Stage 11 review/upload, and S12-P1 manual resolution events active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, Stage 9 review/upload, S10-P1 report templates, S10-P2 report grade runtime, S10-P3 report export, S11-P1 home navigation, S11-P2 source check board, S11-P3 project cost page, Stage 11 review/upload, S12-P1 manual resolution events, S12-P2 impact preview and S12-P3 rerun mechanism active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
-- current limitation: S12-P2 impact preview, S12-P3 rerun mechanism, Stage 12 review/upload, lineage full check, official report generation, and external connectors are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.
+- current limitation: Stage 12 review/upload, lineage full check, official report generation, and external connectors are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.
 
 ## Counts
 

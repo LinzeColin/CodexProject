@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 重跑机制</title>
+  <style>
+    :root {
+      --navy:#0b2447;
+      --blue:#1d4ed8;
+      --ink:#152033;
+      --muted:#64748b;
+      --line:#d8e4f5;
+      --bg:#f6f9fe;
+      --ok:#166534;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+    .header { background:linear-gradient(135deg,var(--navy),#123a70 55%,#2563eb); color:#fff; padding:30px 40px; }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .logo { width:52px; height:52px; border:1px solid rgba(255,255,255,.45); border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; background:rgba(255,255,255,.10); }
+    h1 { margin:0; font-size:28px; letter-spacing:0; }
+    .sub { margin-top:8px; color:#d6e7ff; line-height:1.65; }
+    .wrap { max-width:1260px; margin:0 auto; padding:24px; }
+    .cards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; box-shadow:0 12px 28px rgba(17,45,88,.06); }
+    .card span { display:block; color:var(--muted); font-size:13px; }
+    .card b { display:block; color:#0b2b59; font-size:26px; margin:6px 0; }
+    .card small { color:#475569; }
+    .panel { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; margin-bottom:14px; }
+    .panel h2 { margin:0 0 10px; color:#0b2b59; font-size:18px; }
+    .note { color:#475569; line-height:1.7; max-width:940px; }
+    .rules { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+    .rule { border:1px solid #bfdbfe; background:#f8fbff; color:#1e3a5f; border-radius:8px; padding:12px; line-height:1.6; }
+    table { width:100%; border-collapse:separate; border-spacing:0; }
+    th { background:#0f2f5f; color:#fff; text-align:left; font-size:13px; padding:12px; }
+    td { padding:12px; font-size:13px; line-height:1.55; border-bottom:1px solid #edf2f7; vertical-align:top; }
+    .ok { color:var(--ok); font-weight:800; }
+    .footer { margin-top:14px; color:#64748b; font-size:12px; line-height:1.6; }
+    @media(max-width:980px) { .cards,.rules { grid-template-columns:1fr 1fr; } }
+    @media(max-width:720px) { .cards,.rules { grid-template-columns:1fr; } .wrap { padding:16px; } .header { padding:24px; } table { display:block; overflow-x:auto; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand"><div class="logo">KM</div><div><h1>KMFA 重跑机制</h1><div class="sub">事件通过影响预览后失效派生缓存，并重跑字段映射、事实层、指标和报告引用。</div></div></div>
+  </header>
+  <main class="wrap">
+    <section class="cards" aria-label="重跑摘要"><div class="card"><span>派生缓存失效</span><b>2</b><small>预览通过后执行</small></div><div class="card"><span>重跑步骤</span><b>8</b><small>四段派生链</small></div><div class="card"><span>同源引用一致性</span><b>2</b><small>重跑后校验</small></div><div class="card"><span>阻断预览</span><b>3</b><small>不进入重跑</small></div></section>
+    <section class="panel">
+      <h2>执行边界</h2>
+      <p class="note">S12-P3 只记录 public-safe 派生链路重跑证据。进入重跑的事件为：MANEVT-S12P1-001、MANEVT-S12P1-004。未通过影响预览或等待二次确认的事件不失效缓存、不重跑。正式报告未生成，Stage 12 复审和上传未执行。</p>
+      <div class="rules">
+        <div class="rule">派生缓存失效后旧版本保留。</div>
+        <div class="rule">字段映射、事实层、指标、报告引用按顺序追加新版本。</div>
+        <div class="rule">重跑后必须通过同源引用一致性校验。</div>
+        <div class="rule">正式报告未生成，报告等级不升级。</div>
+      </div>
+    </section>
+    <section class="panel" aria-label="重跑步骤">
+      <h2>重跑步骤</h2>
+      <table>
+        <thead><tr><th>事件</th><th>预览</th><th>顺序</th><th>链路</th><th>状态</th><th>版本策略</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>MANEVT-S12P1-001</td>
+            <td>IMPREV-S12P2-001</td>
+            <td>1</td>
+            <td>字段映射</td>
+            <td>completed_public_safe_metadata_only</td>
+            <td>旧版本保留，新版本追加</td>
+          </tr>
+          <tr>
+            <td>MANEVT-S12P1-001</td>
+            <td>IMPREV-S12P2-001</td>
+            <td>2</td>
+            <td>事实层</td>
+            <td>completed_public_safe_metadata_only</td>
+            <td>旧版本保留，新版本追加</td>
+          </tr>
+          <tr>
+            <td>MANEVT-S12P1-001</td>
+            <td>IMPREV-S12P2-001</td>
+            <td>3</td>
+            <td>指标</td>
+            <td>completed_public_safe_metadata_only</td>
+            <td>旧版本保留，新版本追加</td>
+          </tr>
+          <tr>
+            <td>MANEVT-S12P1-001</td>
+            <td>IMPREV-S12P2-001</td>
+            <td>4</td>
+            <td>报告引用</td>
+            <td>completed_public_safe_metadata_only</td>
+            <td>旧版本保留，新版本追加</td>
+          </tr>
+          <tr>
+            <td>MANEVT-S12P1-004</td>
+            <td>IMPREV-S12P2-004</td>
+            <td>1</td>
+            <td>字段映射</td>
+            <td>completed_public_safe_metadata_only</td>
+            <td>旧版本保留，新版本追加</td>
+          </tr>
+          <tr>
+            <td>MANEVT-S12P1-004</td>
+            <td>IMPREV-S12P2-004</td>
+            <td>2</td>
+            <td>事实层</td>
+            <td>completed_public_safe_metadata_only</td>
+            <td>旧版本保留，新版本追加</td>
+          </tr>
+          <tr>
+            <td>MANEVT-S12P1-004</td>
+            <td>IMPREV-S12P2-004</td>
+            <td>3</td>
+            <td>指标</td>
+            <td>completed_public_safe_metadata_only</td>
+            <td>旧版本保留，新版本追加</td>
+          </tr>
+          <tr>
+            <td>MANEVT-S12P1-004</td>
+            <td>IMPREV-S12P2-004</td>
+            <td>4</td>
+            <td>报告引用</td>
+            <td>completed_public_safe_metadata_only</td>
+            <td>旧版本保留，新版本追加</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel" aria-label="一致性校验">
+      <h2>同源引用一致性</h2>
+      <table>
+        <thead><tr><th>事件</th><th>校验层</th><th>状态</th><th>不一致数</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>MANEVT-S12P1-001</td>
+            <td>字段映射、事实层、指标、报告引用</td>
+            <td>passed</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>MANEVT-S12P1-004</td>
+            <td>字段映射、事实层、指标、报告引用</td>
+            <td>passed</td>
+            <td>0</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <div class="footer">KMFA 经营分析系统 · S12-P3 重跑机制 · 本页面不生成正式报告、不执行 Stage 12 复审、上传、完整追溯检查或外部接口。</div>
+  </main>
+</body>
+</html>

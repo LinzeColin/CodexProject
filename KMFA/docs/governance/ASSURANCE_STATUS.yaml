@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S12P2-MANUAL-IMPACT-PREVIEW"
+as_of_event_id: "EVENT-KMFA-20260701-S12P3-MANUAL-RERUN-MECHANISM"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "7a175eb0a44c92dda3f96d55b93e9825f2d5dd6e"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S12P2_LOCAL_COMMIT"
-snapshot_event_time: "2026-07-01T13:00:00+10:00"
-generator_version: "manual-s12p2-impact-preview"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S12P3_LOCAL_COMMIT"
+snapshot_event_time: "2026-07-01T14:00:00+10:00"
+generator_version: "manual-s12p3-rerun-mechanism"
 final_commit_binding: "local_commit_pending"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 128
-    total_active_formulas: 32
+    total_active_parameters: 134
+    total_active_formulas: 33
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -114,6 +114,9 @@ dimensions:
       - "KMFA/stage_artifacts/S11_P3_project_cost_page/human/test_results.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/test_results.md"
+      - "KMFA/stage_artifacts/S12_P2_manual_impact_preview/human/test_results.md"
+      - "KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -338,15 +341,19 @@ dimensions:
       - "KMFA/stage_artifacts/S12_P2_manual_impact_preview/human/test_results.md"
       - "KMFA/stage_artifacts/S12_P2_manual_impact_preview/machine/s12_p2_manifest.json"
       - "KMFA/tools/check_s12_p2_manual_impact_preview.py"
+      - "KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/human/s12_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/human/test_results.md"
+      - "KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/machine/s12_p3_manifest.json"
+      - "KMFA/tools/check_s12_p3_manual_rerun_mechanism.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S12_P2_COMPLETED_VALIDATED_LOCAL_ONLY_S12_P3_PENDING"
-  release_gate: "KMFA-S12-P3-GATE"
+  status: "S12_P3_COMPLETED_VALIDATED_LOCAL_ONLY_STAGE12_REVIEW_PENDING"
+  release_gate: "KMFA-S12-STAGE-REVIEW-GATE"
   blocker_ids:
-    - "S12_P3_NOT_STARTED"
     - "STAGE12_REVIEW_NOT_PERFORMED"
+    - "STAGE12_GITHUB_UPLOAD_NOT_PERFORMED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

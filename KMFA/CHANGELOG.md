@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s12p3-rerun-mechanism - 2026-07-01
+
+- 完成 `S12-P3｜重跑机制` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/manual_rerun_mechanism.py`、`KMFA/tools/check_s12_p3_manual_rerun_mechanism.py` 和 `KMFA/tests/test_manual_rerun_mechanism.py`。
+- 基于 S12-P1 人工处理事件与 S12-P2 影响预览，只有 2 条 preview passed/publish-allowed 事件进入派生缓存失效与重跑；3 条高风险 pending preview 继续阻断。
+- 生成 2 条 cache invalidation、8 条 rerun step、2 条 same-source consistency check、stage manifest 和 1 个 public-safe HTML 重跑机制样张。
+- 锁定旧派生版本保留、新版本追加，重跑链路覆盖字段映射、事实层、指标、报告引用，并保持 `formal_report=false`、`stage12_review=false`、`github_upload=false`。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额或 credentials。
+- 下一轮只能执行 Stage 12 整体复审；不得直接 upload、进入 S13、执行 lineage full check、正式报告或外部接口。
+
 ## 0.1.0-s12p2-impact-preview - 2026-07-01
 
 - 完成 `S12-P2｜影响预览` 本地验证，不上传 GitHub。
