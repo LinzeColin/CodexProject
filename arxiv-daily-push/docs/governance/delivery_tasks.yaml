@@ -5937,3 +5937,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD"
+    title: "S2PLT02 terminal capture wait-state guard"
+    parent_task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-07-01T01:32:33+10:00"
+    objective: "Expose a machine-readable wait-state guard while S2PLT02 is blocked on the real SMTP/scheduler capture window."
+    scope: "S2PLT02 capture plan builder/validator, final-bundle prerequisite summary, focused final-gate regression, phase record, run manifest, traceability row, delivery/event records, user-center status, and three base notes."
+    non_scope: "No S2PLT02/S2PLT03 terminal proof artifact, no S2PLT04 completion report, no final-bundle manifest/handoff/signoff/final-command proof, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-TERMINAL-DELIVERY-PROOF", "S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_GUARD.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD-20260701.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_wait_guard_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_wait_guard_green3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red failed with KeyError because capture_wait_state_guard was missing", "focused final-gate tests: 121 OK", "capture plan state_hash 2b82aea9755bc7d3d2f316cc48dcbc89a0cd1f9c324f687e385dc780a24d3997; wait guard state_hash 693c4a0f9c57a2a3c7f1a7bfeb6683fda661a9456a5010ee773cbd00f487fdcf; prerequisite plan state_hash b22c4110a1fa85ec1ddd004a8c52962f9daa61f16fb83cbfdb2f796ea84198ed; final validator state_hash f1fab7374737527ffb5278b4d9a476e27d708d61b88e0dbe57a60e56085f39bd"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_GUARD.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    result: "blocked_s2plt02_terminal_capture_wait_state_guard_synced_no_production"
+    risk: "Future agents can write terminal or final artifacts while the real SMTP/scheduler capture window is still blocked if the wait state is not machine-readable."
+    rollback: "Revert the capture_wait_state_guard fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

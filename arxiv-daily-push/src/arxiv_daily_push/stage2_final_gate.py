@@ -4261,6 +4261,45 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
     for reason in runtime_capture_blockers:
         if reason not in blocking_reasons:
             blocking_reasons.append(reason)
+    capture_wait_state_guard = {
+        "status": "pass" if runtime_capture_ready else "blocked",
+        "scope": "s2plt02_wait_for_real_smtp_scheduler_capture_window_no_write",
+        "current_wait_state": (
+            "READY_FOR_TERMINAL_CAPTURE"
+            if runtime_capture_ready
+            else "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW"
+        ),
+        "next_safe_runtime_action": (
+            "capture_real_terminal_delivery_inputs"
+            if runtime_capture_ready
+            else "wait_for_real_smtp_scheduler_capture_window"
+        ),
+        "runtime_capture_blockers": runtime_capture_blockers,
+        "blocked_by_missing_inputs": missing_inputs,
+        "remaining_runtime_actions": remaining_runtime_actions,
+        "allowed_readonly_commands": [
+            "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --json",
+            "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
+            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
+            "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+        ],
+        "forbidden_until_terminal_dependencies_pass": [
+            S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json",
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+            "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+            "HANDOFF/00_下一Agent先读.md",
+        ],
+        "write_terminal_artifact_allowed": False,
+        "smtp_send_allowed_by_this_plan": False,
+        "scheduler_enable_allowed_by_this_plan": False,
+        "production_acceptance_allowed": False,
+        "no_production_side_effects": True,
+        "state_hash": "",
+    }
+    capture_wait_state_guard["state_hash"] = _stable_hash(
+        {key: value for key, value in capture_wait_state_guard.items() if key != "state_hash"}
+    )
     state = {
         "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
         "schema_version": S2PLT02_SCHEMA_VERSION,
@@ -4321,6 +4360,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "terminal_artifact_ready": terminal_artifact_validation.get("terminal_delivery_proof_ready"),
         "terminal_artifact_validation_errors": list(terminal_artifact_validation.get("validation_errors", [])),
         "terminal_artifact_blocking_reasons": list(terminal_artifact_validation.get("blocking_reasons", [])),
+        "capture_wait_state_guard": capture_wait_state_guard,
         "capture_steps": capture_steps,
         "next_executable_step": next_step,
         "no_production_side_effects": True,
@@ -4516,6 +4556,54 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         and state.get("next_executable_step") in {"CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY", "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF"}
     ):
         errors.append("runtime blockers must prevent direct real SMTP/scheduler capture as next step")
+    wait_guard = _mapping(state.get("capture_wait_state_guard"))
+    if wait_guard.get("scope") != "s2plt02_wait_for_real_smtp_scheduler_capture_window_no_write":
+        errors.append("S2PLT02 terminal delivery proof capture wait guard scope is invalid")
+    if wait_guard.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal delivery proof capture wait guard status is invalid")
+    if state.get("runtime_capture_ready") is False:
+        if wait_guard.get("status") != "blocked":
+            errors.append("blocked runtime capture must keep wait guard blocked")
+        if wait_guard.get("current_wait_state") != "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW":
+            errors.append("blocked runtime capture must expose WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        if wait_guard.get("next_safe_runtime_action") != "wait_for_real_smtp_scheduler_capture_window":
+            errors.append("blocked runtime capture wait guard next action is invalid")
+    if wait_guard.get("runtime_capture_blockers") != state.get("runtime_capture_blockers"):
+        errors.append("S2PLT02 wait guard runtime blockers must match capture plan")
+    if wait_guard.get("blocked_by_missing_inputs") != state.get("blocked_by_missing_inputs"):
+        errors.append("S2PLT02 wait guard missing inputs must match capture plan")
+    if wait_guard.get("remaining_runtime_actions") != state.get("remaining_runtime_actions"):
+        errors.append("S2PLT02 wait guard remaining runtime actions must match capture plan")
+    expected_wait_readonly_commands = [
+        "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --json",
+        "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
+        "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
+        "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+    ]
+    if wait_guard.get("allowed_readonly_commands") != expected_wait_readonly_commands:
+        errors.append("S2PLT02 wait guard readonly commands are invalid")
+    expected_forbidden_artifacts = [
+        S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json",
+        "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+        "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+        "HANDOFF/00_下一Agent先读.md",
+    ]
+    if wait_guard.get("forbidden_until_terminal_dependencies_pass") != expected_forbidden_artifacts:
+        errors.append("S2PLT02 wait guard forbidden artifacts are invalid")
+    for flag in (
+        "write_terminal_artifact_allowed",
+        "smtp_send_allowed_by_this_plan",
+        "scheduler_enable_allowed_by_this_plan",
+        "production_acceptance_allowed",
+    ):
+        if wait_guard.get(flag) is not False:
+            errors.append(f"S2PLT02 wait guard {flag} must be false")
+    if wait_guard.get("no_production_side_effects") is not True:
+        errors.append("S2PLT02 wait guard no_production_side_effects must be true")
+    expected_wait_hash = _stable_hash({key: value for key, value in wait_guard.items() if key != "state_hash"})
+    if wait_guard.get("state_hash") != expected_wait_hash:
+        errors.append("S2PLT02 wait guard state_hash does not match guard content")
     if tuple(state.get("required_smtp_secret_env_names", [])) != S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS:
         errors.append("required_smtp_secret_env_names must match S2PLT02 real SMTP env keys")
     secret_presence = _mapping(state.get("smtp_secret_env_name_presence"))
@@ -8908,6 +8996,9 @@ def build_final_bundle_prerequisite_plan_state(
             "terminal_artifact_blocking_reasons": list(
                 s2plt02_capture_plan.get("terminal_artifact_blocking_reasons", [])
             ),
+            "capture_wait_state_guard": dict(
+                _mapping(s2plt02_capture_plan.get("capture_wait_state_guard"))
+            ),
             "runtime_capture_ready": s2plt02_capture_plan.get("runtime_capture_ready"),
             "runtime_capture_blockers": list(s2plt02_capture_plan.get("runtime_capture_blockers", [])),
             "remaining_runtime_actions": list(s2plt02_capture_plan.get("remaining_runtime_actions", [])),
@@ -9601,6 +9692,46 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             and capture_plan_summary.get("runtime_capture_blockers")
         ):
             errors.append("S2PLT02 runtime blockers must prevent direct SMTP/scheduler capture routing")
+        wait_guard = _mapping(capture_plan_summary.get("capture_wait_state_guard"))
+        if wait_guard.get("scope") != "s2plt02_wait_for_real_smtp_scheduler_capture_window_no_write":
+            errors.append("S2PLT02 capture plan summary wait guard scope is invalid")
+        if wait_guard.get("status") not in {"pass", "blocked"}:
+            errors.append("S2PLT02 capture plan summary wait guard status is invalid")
+        if capture_plan_summary.get("runtime_capture_ready") is False:
+            if wait_guard.get("status") != "blocked":
+                errors.append("S2PLT02 capture plan summary wait guard must be blocked")
+            if wait_guard.get("current_wait_state") != "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW":
+                errors.append("S2PLT02 capture plan summary wait guard current state is invalid")
+            if wait_guard.get("next_safe_runtime_action") != "wait_for_real_smtp_scheduler_capture_window":
+                errors.append("S2PLT02 capture plan summary wait guard next action is invalid")
+        if wait_guard.get("runtime_capture_blockers") != capture_plan_summary.get("runtime_capture_blockers"):
+            errors.append("S2PLT02 capture plan summary wait guard blockers must match summary")
+        if wait_guard.get("blocked_by_missing_inputs") != capture_plan_summary.get("blocked_by_missing_inputs"):
+            errors.append("S2PLT02 capture plan summary wait guard missing inputs must match summary")
+        if wait_guard.get("remaining_runtime_actions") != capture_plan_summary.get("remaining_runtime_actions"):
+            errors.append("S2PLT02 capture plan summary wait guard remaining actions must match summary")
+        expected_forbidden_artifacts = [
+            S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json",
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+            "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+            "HANDOFF/00_下一Agent先读.md",
+        ]
+        if wait_guard.get("forbidden_until_terminal_dependencies_pass") != expected_forbidden_artifacts:
+            errors.append("S2PLT02 capture plan summary wait guard forbidden artifacts are invalid")
+        for flag in (
+            "write_terminal_artifact_allowed",
+            "smtp_send_allowed_by_this_plan",
+            "scheduler_enable_allowed_by_this_plan",
+            "production_acceptance_allowed",
+        ):
+            if wait_guard.get(flag) is not False:
+                errors.append(f"S2PLT02 capture plan summary wait guard {flag} must be false")
+        if wait_guard.get("no_production_side_effects") is not True:
+            errors.append("S2PLT02 capture plan summary wait guard no_production_side_effects must be true")
+        expected_wait_hash = _stable_hash({key: value for key, value in wait_guard.items() if key != "state_hash"})
+        if wait_guard.get("state_hash") != expected_wait_hash:
+            errors.append("S2PLT02 capture plan summary wait guard state_hash does not match content")
         runtime_summary = _mapping(state.get("s2plt02_runtime_readiness_summary"))
         if runtime_summary.get("state_hash") != capture_plan_summary.get("state_hash"):
             errors.append("S2PLT02 runtime readiness summary hash must match capture plan summary")
