@@ -1,0 +1,34 @@
+{
+  "connector_status": "postponed_until_after_file_mvp",
+  "covered_export_types": [
+    "operating",
+    "contract",
+    "collection",
+    "finance"
+  ],
+  "d15_file_mvp_automatic_connector_allowed": false,
+  "evidence_ref": "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md",
+  "external_connector_included": false,
+  "future_connector_controls": {
+    "hash_retention_required": true,
+    "manual_approval_required": true,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "read_only_required": true,
+    "rollback_plan_required": true,
+    "source_header_plaintext_committed": false
+  },
+  "generated_at": "2026-06-30T18:00:00+10:00",
+  "hard_blocks": [
+    "automatic_connector_before_stage7_review",
+    "missing_read_only_contract",
+    "missing_hash_retention",
+    "missing_rollback_plan",
+    "missing_manual_approval"
+  ],
+  "manual_export_file_allowed": true,
+  "project_id": "KMFA",
+  "record_type": "redcircle_connector_postponement_policy",
+  "schema_version": "kmfa.redcircle_connector_postponement_policy.v1",
+  "stage_phase": "S07-P3"
+}

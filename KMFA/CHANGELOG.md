@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s07p3-redcircle-postponement - 2026-06-30
+
+- 完成 `S07-P3｜红圈导出后置策略` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/redcircle_postponement_policy.py`、`KMFA/tools/check_s07_p3_redcircle_postponement.py` 和 `KMFA/tests/test_redcircle_postponement_policy.py`。
+- 预留红圈经营、合同、回款、财务 4 类导出模板，明确 D15 文件型 MVP 不接自动接口。
+- 新增后续红圈接入必须只读、留 hash、可回滚、需人工授权的策略与 rollback plan。
+- 公开仓库不提交 raw Excel/PDF/zip/private CSV、红圈原始导出文件、接口凭证、字段明文、来源表头明文或真实业务值；Stage 7 review、事实层、lineage、正式报告、UI 和外部接口仍未完成。
+
 ## 0.1.0-s07p2-wps-file-adapter - 2026-06-30
 
 - 完成 `S07-P2｜WPS 文件适配` 本地验证，不上传 GitHub。

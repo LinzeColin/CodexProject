@@ -1,0 +1,62 @@
+{
+  "completion_record_ref": "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md",
+  "connector_policy_ref": "stage_artifacts/S07_P3_redcircle_postponement_policy/machine/redcircle_connector_postponement_policy.json",
+  "future_required_controls": {
+    "hash_retention_required": true,
+    "manual_approval_required": true,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "read_only_required": true,
+    "rollback_plan_required": true,
+    "source_header_plaintext_committed": false
+  },
+  "generated_at": "2026-06-30T18:00:00+10:00",
+  "mvp_scope": {
+    "d15_file_mvp_automatic_connector_allowed": false,
+    "manual_export_file_allowed": true,
+    "reserved_templates_only": true
+  },
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "normalized_business_values_committed": false,
+    "private_csv_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "source_header_plaintext_committed": false
+  },
+  "quality_gate": {
+    "formal_report_allowed": false,
+    "q5_calculation_baseline_allowed": false,
+    "release_gate": "blocked_until_stage7_review"
+  },
+  "record_type": "s07_p3_redcircle_postponement_manifest",
+  "redcircle_export_types": [
+    "operating",
+    "contract",
+    "collection",
+    "finance"
+  ],
+  "rollback_plan_ref": "stage_artifacts/S07_P3_redcircle_postponement_policy/machine/redcircle_future_rollback_plan.jsonl",
+  "schema_version": "kmfa.s07_p3_manifest.v1",
+  "source_registry_ref": "metadata/imports/redcircle_export_source_registry.json",
+  "stage_phase": "S07-P3",
+  "stage_scope": {
+    "external_connector_included": false,
+    "facts_layer_write_included": false,
+    "finance_scope_included": false,
+    "formal_report_generation_included": false,
+    "github_upload_allowed": false,
+    "redcircle_scope_included": true,
+    "stage7_review_included": false,
+    "wps_scope_included": false
+  },
+  "summary": {
+    "automatic_connector_allowed_count": 0,
+    "connector_policy_count": 1,
+    "reserved_template_count": 4,
+    "rollback_plan_count": 4
+  },
+  "template_records_ref": "metadata/schema_maps/redcircle_reserved_export_templates.jsonl",
+  "test_results_ref": "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/test_results.md",
+  "validator_ref": "KMFA/tools/check_s07_p3_redcircle_postponement.py"
+}

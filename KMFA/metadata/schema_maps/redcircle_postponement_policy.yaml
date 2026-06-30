@@ -1,0 +1,33 @@
+schema_version: "kmfa.redcircle_postponement_policy.v1"
+project_id: "KMFA"
+stage_phase: "S07-P3"
+policy_status: "reserved_templates_only_no_connector"
+required_export_types:
+  - "operating"
+  - "contract"
+  - "collection"
+  - "finance"
+mvp_scope:
+  d15_file_mvp_automatic_connector_allowed: false
+  manual_export_file_allowed: true
+future_connector_controls:
+  read_only_required: true
+  hash_retention_required: true
+  rollback_plan_required: true
+  manual_approval_required: true
+public_repo_policy:
+  raw_business_values_committed: false
+  normalized_business_values_committed: false
+  source_header_plaintext_committed: false
+  raw_file_committed: false
+  private_csv_committed: false
+out_of_scope:
+  automatic_connector_included: false
+  facts_layer_write_included: false
+  formal_report_generation_included: false
+  stage7_review_included: false
+  github_upload_allowed: false
+evidence_refs:
+  - "KMFA/tools/redcircle_postponement_policy.py"
+  - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
+  - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"

@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S07P2-WPS-FILE-ADAPTER"
+as_of_event_id: "EVENT-KMFA-20260630-S07P3-REDCIRCLE-POSTPONEMENT"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "fd14057e7427d7f275fdb62a33619936618d0d35"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_UPLOAD"
-snapshot_event_time: "2026-06-30T17:00:00+10:00"
-generator_version: "manual-s07p2-wps-file-adapter"
-final_commit_binding: "precommit-pending-s07p2"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S07P3_LOCAL_COMMIT"
+snapshot_event_time: "2026-06-30T18:00:00+10:00"
+generator_version: "manual-s07p3-redcircle-postponement"
+final_commit_binding: "precommit-pending-s07p3"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 53
-    total_active_formulas: 17
+    total_active_parameters: 58
+    total_active_formulas: 18
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -79,6 +79,9 @@ dimensions:
       - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/test_results.md"
       - "KMFA/tools/wps_file_adapter.py"
       - "KMFA/tools/check_s07_p2_wps_file_adapter.py"
+      - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/test_results.md"
+      - "KMFA/tools/redcircle_postponement_policy.py"
+      - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -109,6 +112,8 @@ dimensions:
       - "KMFA/tools/cross_source_difference_queue.py"
       - "KMFA/tools/check_s06_p2_difference_queue.py"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
+      - "KMFA/tools/redcircle_postponement_policy.py"
+      - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -191,15 +196,24 @@ dimensions:
       - "KMFA/metadata/schema_maps/wps_file_adapter_manifest.json"
       - "KMFA/metadata/schema_maps/wps_field_mappings.jsonl"
       - "KMFA/metadata/schema_maps/wps_mapping_rule_versions.json"
+      - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/test_results.md"
+      - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/machine/s07_p3_manifest.json"
+      - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/machine/redcircle_connector_postponement_policy.json"
+      - "KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/machine/redcircle_future_rollback_plan.jsonl"
+      - "KMFA/metadata/imports/redcircle_export_source_registry.json"
+      - "KMFA/metadata/schema_maps/redcircle_postponement_manifest.json"
+      - "KMFA/metadata/schema_maps/redcircle_reserved_export_templates.jsonl"
+      - "KMFA/metadata/schema_maps/redcircle_postponement_policy.yaml"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S07P2_COMPLETED_VALIDATED_LOCAL_ONLY_S07P3_NOT_STARTED"
-  release_gate: "KMFA-S07-P3-GATE"
+  status: "S07P3_COMPLETED_VALIDATED_LOCAL_ONLY_STAGE7_REVIEW_NOT_STARTED"
+  release_gate: "KMFA-S07-STAGE-REVIEW-GATE"
   blocker_ids:
-    - "S07_P3_NOT_STARTED"
     - "STAGE7_REVIEW_NOT_STARTED"
+    - "STAGE7_GITHUB_UPLOAD_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
