@@ -5437,3 +5437,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC"
+    title: "S2PLT02 terminal capture-window runtime state sync"
+    parent_task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T14:31:47+10:00"
+    objective: "Expose loaded-but-disabled launchd runtime state in the S2PLT02 terminal capture-window audit."
+    scope: "S2PLT02 capture-window audit builder, CLI deterministic launchctl print inputs, focused tests, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE", "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_RUNTIME_STATE_SYNC.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_runtime_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_capture_window_reports_loaded_disabled_launchagents_as_nonterminal_scheduler arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt02_terminal_capture_window_json_blocks_dry_runs_and_disabled_scheduler", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_runtime_green2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_capture_window_reports_loaded_disabled_launchagents_as_nonterminal_scheduler arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt02_terminal_capture_window_json_blocks_dry_runs_and_disabled_scheduler", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_runtime_actual PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-terminal-capture-window --repo-root . --state-dir /Users/linzezhang/.adp/arxiv-daily-push --candidate-service-dates 2026-06-28,2026-06-29,2026-06-30 --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_runtime_actual PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt04-completion-evidence --json"]
+    test_results: ["TDD red failed because terminal capture-window audit lacked launchctl runtime print inputs and CLI --launchctl-print-file support", "focused runtime capture-window tests: 2 passed", "actual capture-window audit: blocked / exit 2 with state_hash cebee97e51f4cc6231a10b787aa65b17eed10c951330dea4328cd18d73ed912a", "actual S2PLT04 audit: blocked / exit 2 with 14 S2PLT02 nonterminal refs and state_hash a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_RUNTIME_STATE_SYNC.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt02_terminal_capture_window_runtime_loaded_disabled_no_production"
+    risk: "Loaded LaunchAgents with calendar triggers can be misread as real scheduler proof; this record explicitly marks loaded-but-disabled as nonterminal."
+    rollback: "Revert the runtime-state sync fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

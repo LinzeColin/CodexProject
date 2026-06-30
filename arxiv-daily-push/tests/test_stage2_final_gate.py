@@ -155,6 +155,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_normalized_delivery_manifest_state,
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_partial_real_delivery_state,
+    build_s2plt02_terminal_capture_window_audit_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
     build_s2plt02_terminal_proof_evidence_inventory_state,
     build_s2plt02_terminal_delivery_proof_capture_plan_state,
@@ -186,6 +187,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_real_delivery_manifest_validation_state,
     validate_s2plt02_normalized_delivery_manifest_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
+    validate_s2plt02_terminal_capture_window_audit_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
     validate_s2plt02_terminal_proof_evidence_inventory_state,
     validate_s2plt02_terminal_delivery_proof_capture_plan_state,
@@ -679,6 +681,54 @@ class Stage2FinalGateTests(unittest.TestCase):
             },
         )
         self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
+
+    def test_s2plt02_terminal_capture_window_reports_loaded_disabled_launchagents_as_nonterminal_scheduler(self) -> None:
+        launchctl_disabled_text = """
+            "com.linze.adp.local.daily" => disabled
+            "com.linze.adp.local.health" => disabled
+            "com.linze.adp.local.watchdog" => disabled
+        """
+        launchctl_print_outputs = {
+            label: """
+                type = LaunchAgent
+                state = not running
+                event triggers = {
+                    com.linze.adp.local.daily.268435486 => {
+                        stream = com.apple.launchd.calendarinterval
+                    }
+                }
+            """
+            for label in (
+                "com.linze.adp.local.daily",
+                "com.linze.adp.local.health",
+                "com.linze.adp.local.watchdog",
+            )
+        }
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            self._write_s2plt02_second_day_dry_run_reports(state_dir)
+
+            capture_window = build_s2plt02_terminal_capture_window_audit_state(
+                repo_root=tmp_root,
+                state_dir=state_dir,
+                candidate_service_dates=("2026-06-29",),
+                launchctl_disabled_text=launchctl_disabled_text,
+                launchctl_print_outputs=launchctl_print_outputs,
+            )
+
+        self.assertTrue(capture_window["all_required_launchagents_disabled"])
+        self.assertTrue(capture_window["all_required_launchagents_loaded"])
+        self.assertTrue(capture_window["all_required_launchagents_not_running"])
+        self.assertTrue(capture_window["all_required_launchagents_have_calendar_triggers"])
+        self.assertTrue(capture_window["launchagents_loaded_but_disabled"])
+        self.assertEqual(
+            capture_window["scheduler_runtime_evidence_status"],
+            "launchagents_loaded_but_disabled_not_terminal_scheduler_proof",
+        )
+        self.assertFalse(capture_window["real_scheduler_proven"])
+        self.assertIn("real_launchd_scheduler_proof_missing", capture_window["blocking_reasons"])
+        self.assertEqual(validate_s2plt02_terminal_capture_window_audit_state(capture_window), [])
 
     def test_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self) -> None:
         state = build_s2plt02_real_proof_capture_authorization_validation_state(None)
@@ -4526,6 +4576,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
+            s2plt02["existing_nonterminal_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC-20260630.json",
             s2plt02["existing_nonterminal_refs"],
         )
         self.assertIn(

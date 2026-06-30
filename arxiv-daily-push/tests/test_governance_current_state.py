@@ -35,9 +35,19 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC_BLOCKED_TERMINAL_GAPS_VISIBLE_NO_PRODUCTION",
+            "S2PLT02_TERMINAL_CAPTURE_WINDOW_RUNTIME_STATE_SYNC_BLOCKED_LOADED_DISABLED_NO_PRODUCTION",
             current_state,
         )
+        self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC", current_state)
+        self.assertIn("audit-s2plt02-terminal-capture-window", current_state)
+        self.assertIn("cebee97e51f4cc6231a10b787aa65b17eed10c951330dea4328cd18d73ed912a", current_state)
+        self.assertIn("real_sent_candidate_email_count=4", current_state)
+        self.assertIn("observed_terminal_email_count_credit=4/8", current_state)
+        self.assertIn("launchagents_loaded_but_disabled=true", current_state)
+        self.assertIn("scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof", current_state)
+        self.assertIn("ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC-20260630.json", current_state)
+        self.assertIn("s2plt02_nonterminal_ref_count=14", current_state)
+        self.assertIn("a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a", current_state)
         self.assertIn("S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC", current_state)
         self.assertIn("audit-s2plt04-completion-evidence", current_state)
         self.assertIn("0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be", current_state)
