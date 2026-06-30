@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-30 10:41:36 Australia/Sydney - S2PLT02 terminal delivery proof capture plan
+
+- Added `plan-s2plt02-terminal-delivery-proof-capture`, a no-write ordered capture plan for the future S2PLT02 terminal delivery proof.
+- Current plan returns blocked / exit 2 with `next_executable_step=CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY`; missing inputs remain `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- The plan lists the six required steps from second real M1-M4 SMTP day capture through independent review, live artifact write, and `validate-s2plt02-terminal-delivery-proof --repo-root . --json`; state hash `81d89c0b03458d4b5cc569ae1d994b7d02ef36dfa89377516f7968619d03e878`.
+- No live terminal proof artifact, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-30 10:12:54 Australia/Sydney - S2PLT02 terminal delivery input inventory
 
 - Added `audit-s2plt02-terminal-delivery-inputs`, a no-write inventory of current S2PLT02 terminal delivery proof inputs.

@@ -35,9 +35,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY_READY_NO_WRITE_NO_PRODUCTION",
+            "S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN_READY_NO_WRITE_NO_PRODUCTION",
             current_state,
         )
+        self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN", current_state)
         self.assertIn("S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY", current_state)
         self.assertIn("S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR", current_state)
         self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER", current_state)
@@ -49,10 +50,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("EIGHT_REAL_EMAILS", current_state)
         self.assertIn("REAL_SCHEDULER_PROOF", current_state)
         self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
+        self.assertIn("CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY", current_state)
         self.assertIn("artifact_written=false", current_state)
         self.assertIn("scheduler_install_enabled=false", current_state)
         self.assertIn("daily_operation_enabled=false", current_state)
-        self.assertIn("5976272c0102361222027116f94f5a73cc53e87fa18d1b0e9a5d82208e7c4444", current_state)
+        self.assertIn("81d89c0b03458d4b5cc569ae1d994b7d02ef36dfa89377516f7968619d03e878", current_state)
         self.assertIn("2026-06-29", current_state)
         self.assertIn("2026-06-30", current_state)
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", current_state)
@@ -75,6 +77,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         for text in (assurance, owner_status):
             text_lower = text.lower()
             self.assertIn("S2PMT07", text)
+            self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN", text)
             self.assertIn("S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY", text)
             self.assertIn("S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR", text)
             self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", text)
@@ -84,6 +87,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("P0/P1 zero-proof", text)
             self.assertIn("live authorization", text_lower)
             self.assertIn("input inventory", text_lower)
+            self.assertIn("capture plan", text_lower)
             self.assertIn("dry-run", text_lower)
             self.assertNotIn(stale_option, text)
         self.assertIn("adp_s2pmt07_blocked_next_task", generator)
@@ -99,14 +103,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         )
 
         self.assertIn("S2PLT02 终态交付 proof", first_action_row)
-        self.assertIn("input inventory", first_action_row)
+        self.assertIn("capture plan", first_action_row)
+        self.assertIn("CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY", first_action_row)
         self.assertIn("dry-run/scheduler-disabled", first_action_row)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", default_next)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", default_next)
         self.assertIn("受控真实捕获窗口", default_next)
         self.assertIn("真实 launchd scheduler proof", default_next)
         self.assertIn("S2PLT02 terminal proof 输入仍不完整", decisions)
+        self.assertIn("S2PLT02 terminal proof 捕获计划仍 blocked", decisions)
         self.assertIn("PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md", decisions)
+        self.assertIn("PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md", decisions)
         self.assertNotIn("候选池", first_action_row)
         self.assertNotIn("评分标准公开", first_action_row)
         self.assertNotIn("独立终审 reviewer assignment artifact 准备", default_next)

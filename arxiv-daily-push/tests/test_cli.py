@@ -550,6 +550,39 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertFalse(payload["daily_operation_enabled"])
 
+    def test_plan_s2plt02_terminal_delivery_proof_capture_json_lists_safe_next_steps(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "plan-s2plt02-terminal-delivery-proof-capture",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-06-30T10:41:36+10:00",
+                    "--json",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["task_id"], "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN")
+        self.assertFalse(payload["terminal_delivery_proof_ready"])
+        self.assertFalse(payload["artifact_written"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["blocked_by_missing_inputs"])
+        self.assertIn("REAL_SCHEDULER_PROOF", payload["blocked_by_missing_inputs"])
+        self.assertEqual(payload["capture_steps"][0]["step_id"], "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY")
+        self.assertEqual(
+            payload["capture_steps"][-1]["command"],
+            "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+        )
+        self.assertTrue(payload["no_production_side_effects"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
     def test_build_s2plt02_terminal_delivery_proof_artifact_draft_json_command(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp = Path(tmp_dir)

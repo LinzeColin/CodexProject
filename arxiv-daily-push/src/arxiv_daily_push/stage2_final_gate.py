@@ -2937,6 +2937,221 @@ def validate_s2plt02_terminal_delivery_input_inventory_state(state: Mapping[str,
     return errors
 
 
+def build_s2plt02_terminal_delivery_proof_capture_plan_state(
+    *,
+    generated_at: str,
+    repo_root: str | Path = ".",
+) -> dict[str, Any]:
+    """Build the safe S2PLT02 terminal proof capture plan without executing capture."""
+
+    inventory = build_s2plt02_terminal_delivery_input_inventory_state(
+        generated_at=generated_at,
+        repo_root=repo_root,
+    )
+    missing_inputs = [str(item) for item in inventory.get("missing_inputs", [])]
+    terminal_delivery_proof_ready = inventory.get("terminal_delivery_proof_ready") is True
+    capture_steps = [
+        {
+            "step_id": "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY",
+            "owner_action": (
+                "After explicit owner authorization, capture the second consecutive real M1-M4 SMTP "
+                "delivery-day manifest; this plan itself must not send mail."
+            ),
+            "required_inputs": ["SECOND_REAL_DELIVERY_DAY", "EIGHT_REAL_EMAILS"],
+            "expected_evidence_refs": ["governance/run_manifests/FUTURE-S2PLT02-DAY2.json"],
+            "command": "",
+            "production_side_effect_allowed_by_this_plan": False,
+        },
+        {
+            "step_id": "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF",
+            "owner_action": (
+                "Collect launchd scheduler evidence from the already-authorized environment and validate "
+                "it without installing or enabling scheduler jobs."
+            ),
+            "required_inputs": ["REAL_SCHEDULER_PROOF"],
+            "expected_evidence_refs": ["governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json"],
+            "command": "adp validate-s2plt02-real-scheduler-proof --scheduler-proof REAL-SCHEDULER-PROOF.json --json",
+            "production_side_effect_allowed_by_this_plan": False,
+        },
+        {
+            "step_id": "BUILD_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT",
+            "owner_action": "Build a stdout-only terminal proof artifact draft from reviewed real evidence inputs.",
+            "required_inputs": ["FIRST_REAL_DELIVERY_DAY", "SECOND_REAL_DELIVERY_DAY", "REAL_SCHEDULER_PROOF"],
+            "expected_evidence_refs": ["stdout:s2plt02_terminal_delivery_proof_artifact_draft"],
+            "command": (
+                "adp build-s2plt02-terminal-delivery-proof-artifact-draft "
+                "--delivery-manifest DAY1.json --delivery-manifest DAY2.json "
+                "--scheduler-proof REAL-SCHEDULER-PROOF.json --json"
+            ),
+            "production_side_effect_allowed_by_this_plan": False,
+        },
+        {
+            "step_id": "RUN_INDEPENDENT_TERMINAL_PROOF_REVIEW",
+            "owner_action": (
+                "Have the independent final reviewer inspect the draft, delivery manifests, scheduler proof, "
+                "and no-production side-effect fields before any final artifact is written."
+            ),
+            "required_inputs": ["INDEPENDENT_REVIEWER_REVIEW"],
+            "expected_evidence_refs": ["FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml"],
+            "command": "",
+            "production_side_effect_allowed_by_this_plan": False,
+        },
+        {
+            "step_id": "WRITE_REVIEWED_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+            "owner_action": (
+                "Only after independent review, write the reviewed terminal proof artifact at the final-bundle path."
+            ),
+            "required_inputs": ["S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"],
+            "expected_evidence_refs": [S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH],
+            "command": "",
+            "production_side_effect_allowed_by_this_plan": False,
+        },
+        {
+            "step_id": "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+            "owner_action": "Validate the final artifact; validation does not accept production.",
+            "required_inputs": ["S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"],
+            "expected_evidence_refs": ["stdout:s2plt02_terminal_delivery_proof_validation"],
+            "command": "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+            "production_side_effect_allowed_by_this_plan": False,
+        },
+    ]
+    next_step = next(
+        (
+            step["step_id"]
+            for step in capture_steps
+            if set(step.get("required_inputs", [])) & set(missing_inputs)
+        ),
+        "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+    )
+    state = {
+        "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN",
+        "parent_task_id": "S2PLT02-TERMINAL-DELIVERY-PROOF",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if terminal_delivery_proof_ready and not missing_inputs else "blocked",
+        "scope": "s2plt02_terminal_delivery_proof_capture_plan_no_write_no_production",
+        "input_inventory_state_hash": inventory.get("state_hash"),
+        "ready_inputs": list(inventory.get("ready_inputs", [])),
+        "blocked_by_missing_inputs": missing_inputs,
+        "blocking_reasons": list(inventory.get("blocking_reasons", [])),
+        "observed_real_delivery_days": inventory.get("observed_real_delivery_days"),
+        "required_real_delivery_days": S2PLT02_REQUIRED_NATURAL_DAYS,
+        "observed_real_email_count": inventory.get("observed_real_email_count"),
+        "required_real_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+        "terminal_delivery_proof_ready": terminal_delivery_proof_ready,
+        "terminal_delivery_proof_artifact_ref": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        "capture_steps": capture_steps,
+        "next_executable_step": next_step,
+        "no_production_side_effects": True,
+        "artifact_written": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the no-write S2PLT02 terminal proof capture plan state."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID:
+        errors.append("S2PLT02 terminal delivery proof capture plan model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 terminal delivery proof capture plan schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN":
+        errors.append("S2PLT02 terminal delivery proof capture plan task_id is invalid")
+    if state.get("parent_task_id") != "S2PLT02-TERMINAL-DELIVERY-PROOF":
+        errors.append("S2PLT02 terminal delivery proof capture plan parent_task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 terminal delivery proof capture plan acceptance_id is invalid")
+    if state.get("scope") != "s2plt02_terminal_delivery_proof_capture_plan_no_write_no_production":
+        errors.append("S2PLT02 terminal delivery proof capture plan scope is invalid")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal delivery proof capture plan status is invalid")
+    if state.get("required_real_delivery_days") != S2PLT02_REQUIRED_NATURAL_DAYS:
+        errors.append("S2PLT02 terminal delivery proof capture plan required_real_delivery_days must be 2")
+    if state.get("required_real_email_count") != S2PLT02_REQUIRED_EMAIL_COUNT:
+        errors.append("S2PLT02 terminal delivery proof capture plan required_real_email_count must be 8")
+    if tuple(state.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        errors.append("S2PLT02 terminal delivery proof capture plan required_mail_products must be M1-M4")
+    if state.get("terminal_delivery_proof_artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
+        errors.append("S2PLT02 terminal delivery proof capture plan artifact ref is invalid")
+    if state.get("status") == "pass" and state.get("terminal_delivery_proof_ready") is not True:
+        errors.append("pass status requires terminal_delivery_proof_ready")
+    if state.get("terminal_delivery_proof_ready") is True and state.get("blocked_by_missing_inputs"):
+        errors.append("terminal_delivery_proof_ready requires no blocked_by_missing_inputs")
+    required_step_ids = (
+        "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY",
+        "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF",
+        "BUILD_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT",
+        "RUN_INDEPENDENT_TERMINAL_PROOF_REVIEW",
+        "WRITE_REVIEWED_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+        "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+    )
+    capture_steps = state.get("capture_steps", [])
+    if not isinstance(capture_steps, list):
+        errors.append("capture_steps must be a list")
+    elif tuple(step.get("step_id") for step in capture_steps if isinstance(step, Mapping)) != required_step_ids:
+        errors.append("capture_steps must list the required S2PLT02 terminal proof capture steps in order")
+    else:
+        for step in capture_steps:
+            if not isinstance(step, Mapping):
+                errors.append("capture_steps entries must be objects")
+                continue
+            if step.get("production_side_effect_allowed_by_this_plan") is not False:
+                errors.append(f"{step.get('step_id')} must not allow production side effects")
+        commands = {str(step.get("step_id")): str(step.get("command") or "") for step in capture_steps}
+        if (
+            commands.get("BUILD_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT")
+            != "adp build-s2plt02-terminal-delivery-proof-artifact-draft --delivery-manifest DAY1.json --delivery-manifest DAY2.json --scheduler-proof REAL-SCHEDULER-PROOF.json --json"
+        ):
+            errors.append("terminal proof draft command is invalid")
+        if (
+            commands.get("VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT")
+            != "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json"
+        ):
+            errors.append("terminal proof validation command is invalid")
+    if state.get("no_production_side_effects") is not True:
+        errors.append("no_production_side_effects must be true")
+    if state.get("artifact_written") is not False:
+        errors.append("artifact_written must be false")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+        "current_pointer_changed",
+        "v7_1_baseline_changed",
+        "v7_2_contract_files_changed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 terminal delivery proof capture plan state_hash does not match state content")
+    return errors
+
+
 def build_s2plt02_terminal_delivery_proof_artifact_draft_state(
     *,
     generated_at: str,
