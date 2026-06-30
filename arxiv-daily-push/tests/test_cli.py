@@ -790,6 +790,39 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertFalse(payload["daily_operation_enabled"])
 
+    def test_audit_s2plt02_terminal_proof_evidence_inventory_json_blocks_missing_launchctl_file(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            state_dir = Path(tmp_dir)
+            missing_launchctl_file = state_dir / "missing-launchctl-disabled.txt"
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "audit-s2plt02-terminal-proof-evidence-inventory",
+                        "--repo-root",
+                        str(repo_root),
+                        "--state-dir",
+                        str(state_dir),
+                        "--candidate-service-dates",
+                        "2026-06-30",
+                        "--launchctl-disabled-file",
+                        str(missing_launchctl_file),
+                        "--generated-at",
+                        "2026-06-30T16:36:09+10:00",
+                        "--json",
+                    ]
+                )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["safe_to_build_terminal_artifact"])
+        self.assertFalse(payload["counts_toward_s2plt02_terminal_proof"])
+        self.assertIn("launchctl_disabled_file_missing", payload["blocking_reasons"])
+        self.assertEqual(payload["launchctl_disabled_file_status"], "missing")
+        self.assertEqual(payload["launchctl_disabled_file_ref"], str(missing_launchctl_file))
+
     def test_plan_s2plt02_terminal_delivery_proof_capture_json_lists_safe_next_steps(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()

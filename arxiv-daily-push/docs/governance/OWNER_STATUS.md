@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在明确区分：`FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` 已存在且 validator 通过，但这只满足独立最终复审人分配输入；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断。
+Owner 视图现在明确区分：S2PLT02 terminal proof evidence inventory 已补齐缺失 `--launchctl-disabled-file` 的 fail-closed 行为，缺文件时返回 blocked JSON 和 `launchctl_disabled_file_missing`，不再以 Python traceback 中断审计；但这只提升证据采集链路的可审计性。`FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` 已存在且 validator 通过，但 S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断。
 
 ## 3. 为什么重要
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_LIVE_VALIDATION_SYNC_BLOCKED_FINAL_BUNDLE_INCOMPLETE_NO_PRODUCTION`
+- release_gate: `S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_LIVE_VALIDATION_SYNC_BLOCKED_FINAL_BUNDLE_INCOMPLETE_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
