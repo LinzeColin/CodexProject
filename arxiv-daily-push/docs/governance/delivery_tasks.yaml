@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC"
+    phase: "S2PL"
+    objective: "Synchronize S2PLT02 terminal gate after controlled second-day evidence so current blockers are only real scheduler proof and the reviewed terminal delivery proof artifact."
+    scope: "terminal input inventory, capture plan, final-bundle readiness state hashes, governance records, user-center traceability, and no-production run manifest."
+    non_scope: "No SMTP send, scheduler enable/install/kickstart, S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, Release, restore, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect."
+    status: "blocked"
+    dependencies: ["S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"]
+    required_files: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC.md"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_sched_sync_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_governance_current_state.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["pending in this commit until verification run"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC.md"]
+    risk: "Second-day/eight-email evidence could be treated as still missing or misread as scheduler proof; this task records the precise remaining blockers."
+    rollback: "Revert this scheduler-blocker sync manifest, phase record, governance docs, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE"
     phase: "S2PL"
     objective: "Record one owner-authorized foreground real SMTP catch-up for service date 2026-06-29 as the second S2PLT02 real M1-M4 service day while keeping terminal proof, scheduler, and production acceptance blocked."
