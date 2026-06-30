@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-01 04:05:59 Australia/Sydney - S2PMT07 final bundle no-write flags outermost sync
+
+- Added outermost final-bundle no-write/no-enable/no-acceptance flags to `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle`.
+- Live CLIs remain blocked with capture plan `12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa`, prerequisite plan `67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232`, final readiness `cfcd3d70c0cca7f0a5a8bc3804f599001e585a65dc80fed0cecc75996c6798ee`, and wait guard `581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`.
+- No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-07-01 03:46:29 Australia/Sydney - S2PLT02 terminal capture no-write flags top-level sync
 
 - Added top-level S2PLT02 no-write/no-enable/no-acceptance flags to capture-plan and final-bundle summaries.

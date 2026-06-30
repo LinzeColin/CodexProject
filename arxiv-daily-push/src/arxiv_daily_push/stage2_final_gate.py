@@ -9356,6 +9356,18 @@ def build_final_bundle_prerequisite_plan_state(
             if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
             else ""
         ),
+        "write_terminal_artifact_allowed": s2plt02_capture_plan_summary.get(
+            "write_terminal_artifact_allowed",
+            False,
+        ),
+        "scheduler_enable_allowed_by_this_plan": s2plt02_capture_plan_summary.get(
+            "scheduler_enable_allowed_by_this_plan",
+            False,
+        ),
+        "production_acceptance_allowed": s2plt02_capture_plan_summary.get(
+            "production_acceptance_allowed",
+            False,
+        ),
         "s2plt02_terminal_delivery_capture_plan_summary": s2plt02_capture_plan_summary,
         "s2plt02_runtime_readiness_summary": s2plt02_runtime_readiness_summary,
         "s2plt03_terminal_resilience_capture_plan_summary": s2plt03_capture_plan_summary,
@@ -9682,10 +9694,23 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         if state.get("next_executable_task") == "S2PLT02_TERMINAL_DELIVERY_PROOF":
             if state.get("current_wait_state") != capture_plan_summary.get("current_wait_state"):
                 errors.append("final bundle prerequisite plan current_wait_state must match S2PLT02 capture summary")
+            for flag in (
+                "write_terminal_artifact_allowed",
+                "scheduler_enable_allowed_by_this_plan",
+                "production_acceptance_allowed",
+            ):
+                if state.get(flag) is not capture_plan_summary.get(flag):
+                    errors.append(f"final bundle prerequisite plan {flag} must match S2PLT02 capture summary")
         elif state.get("current_wait_state") not in {"", None}:
             errors.append(
                 "final bundle prerequisite plan current_wait_state must stay empty before S2PLT02 terminal proof routing"
             )
+        elif any(state.get(flag) is not False for flag in (
+            "write_terminal_artifact_allowed",
+            "scheduler_enable_allowed_by_this_plan",
+            "production_acceptance_allowed",
+        )):
+            errors.append("final bundle prerequisite plan no-write flags must stay false outside S2PLT02 routing")
         if capture_plan_summary.get("status") not in {"pass", "blocked"}:
             errors.append("S2PLT02 capture plan summary status is invalid")
         for field in (
@@ -10832,6 +10857,18 @@ def build_final_acceptance_bundle_readiness_state(
         "next_executable_runtime_step": final_bundle_prerequisite_plan.get("next_executable_runtime_step"),
         "ready_to_write_live_artifacts": final_bundle_prerequisite_plan.get("ready_to_write_live_artifacts"),
         "current_wait_state": final_bundle_prerequisite_plan.get("current_wait_state"),
+        "write_terminal_artifact_allowed": final_bundle_prerequisite_plan.get(
+            "write_terminal_artifact_allowed",
+            False,
+        ),
+        "scheduler_enable_allowed_by_this_plan": final_bundle_prerequisite_plan.get(
+            "scheduler_enable_allowed_by_this_plan",
+            False,
+        ),
+        "production_acceptance_allowed": final_bundle_prerequisite_plan.get(
+            "production_acceptance_allowed",
+            False,
+        ),
         "s2plt02_terminal_delivery_capture_plan_summary": dict(
             final_bundle_prerequisite_plan.get("s2plt02_terminal_delivery_capture_plan_summary", {})
         ),
@@ -11010,6 +11047,9 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         "next_executable_runtime_step",
         "ready_to_write_live_artifacts",
         "current_wait_state",
+        "write_terminal_artifact_allowed",
+        "scheduler_enable_allowed_by_this_plan",
+        "production_acceptance_allowed",
     ):
         if state.get(field) != final_bundle_prerequisite_plan.get(field):
             errors.append(f"final acceptance bundle readiness {field} must match nested prerequisite plan")

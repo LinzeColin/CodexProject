@@ -144,6 +144,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
 
+        self.assertIn("REQ-ADP-V7-067-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_NO_WRITE_FLAGS_OUTERMOST_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_no_write_flags_outermost_synced_no_production", page)
+        self.assertIn("write_terminal_artifact_allowed=false", page)
+        self.assertIn("scheduler_enable_allowed_by_this_plan=false", page)
+        self.assertIn("production_acceptance_allowed=false", page)
+        self.assertIn("12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa", page)
+        self.assertIn("67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232", page)
+        self.assertIn("cfcd3d70c0cca7f0a5a8bc3804f599001e585a65dc80fed0cecc75996c6798ee", page)
 
         self.assertIn("REQ-ADP-V7-066-S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", page)
@@ -199,7 +213,6 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", page)
         self.assertIn("0b6753d007633aaeca00368eb29ebe54cc677846085051988a60854713c93b42", page)
         self.assertIn("4f1e0e311ea68a5cc320e1c0a5d11985b2a256acbeb06217a57e86d6fa217d65", page)
-        self.assertIn("410 条可点击链路", readme)
 
         self.assertIn("REQ-ADP-V7-061-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", page)

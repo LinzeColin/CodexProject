@@ -1425,6 +1425,21 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["ready_to_write_live_artifacts"])
         capture_summary = payload["s2plt02_terminal_delivery_capture_plan_summary"]
         self.assertEqual(payload["current_wait_state"], capture_summary["current_wait_state"])
+        self.assertIs(
+            payload["write_terminal_artifact_allowed"],
+            capture_summary["write_terminal_artifact_allowed"],
+        )
+        self.assertIs(
+            payload["scheduler_enable_allowed_by_this_plan"],
+            capture_summary["scheduler_enable_allowed_by_this_plan"],
+        )
+        self.assertIs(
+            payload["production_acceptance_allowed"],
+            capture_summary["production_acceptance_allowed"],
+        )
+        self.assertFalse(payload["write_terminal_artifact_allowed"])
+        self.assertFalse(payload["scheduler_enable_allowed_by_this_plan"])
+        self.assertFalse(payload["production_acceptance_allowed"])
         self.assertEqual(capture_summary["status"], "blocked")
         self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(capture_summary["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
