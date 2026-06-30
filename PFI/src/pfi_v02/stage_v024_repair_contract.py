@@ -253,3 +253,86 @@ def build_v024_stage0_phase03_contract() -> V024Stage0Phase03Contract:
         whole_stage_review_required=True,
         next_phase_requires_user_acceptance=True,
     )
+
+
+@dataclass(frozen=True)
+class V024Stage0WholeReviewContract:
+    target_version: str
+    source_package_version: str
+    stage_id: str
+    review_id: str
+    review_name: str
+    reviewed_phase_ids: list[str]
+    phase_0_1_complete: bool
+    phase_0_2_complete: bool
+    phase_0_3_complete: bool
+    stage_0_candidate_complete: bool
+    stage_0_review_complete: bool
+    stage_0_complete: bool
+    stage_1_allowed_without_user_instruction: bool
+    official_nav: list[str]
+    official_nav_count: int
+    market_research_top_level: bool
+    deprecated_constraints: list[dict[str, str]]
+    no_mock_financial_data: bool
+    forbidden_financial_data_labels: list[str]
+    evidence_pack_required: list[str]
+    review_findings: list[dict[str, str]]
+    business_ui_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    app_bundle_changes_allowed: bool
+    next_stage_requires_user_acceptance: bool
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage0_whole_review_contract() -> V024Stage0WholeReviewContract:
+    return V024Stage0WholeReviewContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        stage_id=STAGE_ID,
+        review_id="stage_0_whole_review",
+        review_name="Stage 0 整体复审",
+        reviewed_phase_ids=["0.1", "0.2", "0.3"],
+        phase_0_1_complete=True,
+        phase_0_2_complete=True,
+        phase_0_3_complete=True,
+        stage_0_candidate_complete=True,
+        stage_0_review_complete=True,
+        stage_0_complete=True,
+        stage_1_allowed_without_user_instruction=False,
+        official_nav=OFFICIAL_NAV,
+        official_nav_count=len(OFFICIAL_NAV),
+        market_research_top_level=True,
+        deprecated_constraints=DEPRECATED_CONSTRAINTS,
+        no_mock_financial_data=True,
+        forbidden_financial_data_labels=FORBIDDEN_FINANCIAL_DATA_LABELS,
+        evidence_pack_required=[
+            "PFI/reports/pfi_v024/stage_0/phase_0_1/evidence.json",
+            "PFI/reports/pfi_v024/stage_0/phase_0_2/evidence.json",
+            "PFI/reports/pfi_v024/stage_0/phase_0_3/evidence.json",
+            "PFI/reports/pfi_v024/stage_0/whole_stage_review/evidence.json",
+            "PFI/reports/pfi_v024/stage_0/whole_stage_review/terminal.log",
+            "PFI/reports/pfi_v024/stage_0/whole_stage_review/changed_files.txt",
+            "PFI/reports/pfi_v024/stage_0/whole_stage_review/risk_and_rollback.md",
+        ],
+        review_findings=[
+            {
+                "finding_id": "V024-S0-REVIEW-F1",
+                "severity": "medium",
+                "status": "fixed",
+                "summary": "Stage 0 lacked a whole-stage review contract and evidence pack after Phase 0.1-0.3 candidate pass.",
+            },
+            {
+                "finding_id": "V024-S0-REVIEW-F2",
+                "severity": "medium",
+                "status": "fixed",
+                "summary": "Top-level run/status files still described Phase 0.3 as the current terminal state.",
+            },
+        ],
+        business_ui_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        app_bundle_changes_allowed=False,
+        next_stage_requires_user_acceptance=True,
+    )

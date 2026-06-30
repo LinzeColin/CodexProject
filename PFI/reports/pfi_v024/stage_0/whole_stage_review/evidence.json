@@ -1,0 +1,137 @@
+{
+  "schema": "PFIV024Stage0WholeReviewEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 0",
+  "review_id": "stage_0_whole_review",
+  "review_name": "Stage 0 整体复审",
+  "status": "pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-06-30T11:21:15Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "e4d5c177529a0174bdbb63e1e74209cdda9c0c5f",
+    "origin_main_at_evidence_write": "e4d5c177529a0174bdbb63e1e74209cdda9c0c5f"
+  },
+  "reviewed_inputs": [
+    "PFI/docs/pfi_v024/REPAIR_SCOPE_LOCK.md",
+    "PFI/docs/pfi_v024/HISTORY_DEPRECATION_POLICY.md",
+    "PFI/docs/pfi_v024/STAGE0_WHOLE_STAGE_REVIEW.md",
+    "PFI/src/pfi_v02/stage_v024_repair_contract.py",
+    "PFI/tests/test_v024_stage0_phase01_contract.py",
+    "PFI/tests/test_v024_stage0_phase02_contract.py",
+    "PFI/tests/test_v024_stage0_phase03_contract.py",
+    "PFI/tests/test_v024_stage0_whole_review_contract.py",
+    "PFI/reports/pfi_v024/stage_0/phase_0_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_0/phase_0_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_0/phase_0_3/evidence.json"
+  ],
+  "review_findings": [
+    {
+      "finding_id": "V024-S0-REVIEW-F1",
+      "severity": "medium",
+      "status": "fixed",
+      "summary": "Stage 0 lacked a whole-stage review contract and evidence pack after Phase 0.1-0.3 candidate pass.",
+      "resolution": "Added whole-stage review contract, test, report, and evidence pack."
+    },
+    {
+      "finding_id": "V024-S0-REVIEW-F2",
+      "severity": "medium",
+      "status": "fixed",
+      "summary": "Top-level run/status files still described Phase 0.3 as the current terminal state.",
+      "resolution": "Updated RUN_CONTRACT, README, HANDOFF, CHANGELOG, and three project root record files."
+    }
+  ],
+  "phase_0_1_complete": true,
+  "phase_0_2_complete": true,
+  "phase_0_3_complete": true,
+  "stage_0_candidate_complete": true,
+  "stage_0_review_complete": true,
+  "stage_0_complete": true,
+  "stage_1_allowed_without_user_instruction": false,
+  "next_stage_requires_user_acceptance": true,
+  "official_nav_count": 10,
+  "market_research_top_level": true,
+  "deprecated_constraints_recorded": true,
+  "no_mock_financial_data": true,
+  "business_ui_changes_made": false,
+  "data_logic_changes_made": false,
+  "app_bundle_or_launcher_changes_made": false,
+  "acceptance_checks": {
+    "all_phase_evidence_present": true,
+    "official_nav_count_is_10": true,
+    "market_research_is_top_level": true,
+    "deprecated_constraints_recorded": true,
+    "no_mock_financial_data": true,
+    "no_readme_docs_only_completion": true,
+    "no_business_ui_or_data_logic_changes": true,
+    "stage_1_not_started": true
+  },
+  "commands": [
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "unavailable",
+      "detail": "node is not on PATH in this Codex environment"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_repair_contract.py PFI/tests/test_v024_stage0_whole_review_contract.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v024_stage0_whole_review_contract.py -q",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v024_pre_stage0_contract.py PFI/tests/test_v024_stage0_phase01_contract.py PFI/tests/test_v024_stage0_phase02_contract.py PFI/tests/test_v024_stage0_phase03_contract.py PFI/tests/test_v024_stage0_whole_review_contract.py -q",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -B -m json.tool PFI/reports/pfi_v024/stage_0/whole_stage_review/evidence.json",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE0_WHOLE_STAGE_REVIEW.md",
+    "PFI/reports/pfi_v024/stage_0/whole_stage_review/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_0/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v024/stage_0/whole_stage_review/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_0/whole_stage_review/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_repair_contract.py",
+    "PFI/tests/test_v024_stage0_whole_review_contract.py"
+  ],
+  "explicitly_not_done": [
+    "Stage 1 shell.js repair",
+    "business UI changes",
+    "app bundle or launcher changes",
+    "data logic changes"
+  ],
+  "validation_results": {
+    "node_on_path": "unavailable",
+    "node_check_shell_js": "pass via Codex bundled Node",
+    "py_compile_stage0_review": "pass",
+    "pytest_stage0_review": "3 passed in 0.11s",
+    "pytest_v024_stage0_full": "16 passed in 0.16s",
+    "json_checks": "pass",
+    "git_diff_check": "pass",
+    "project_cache_after_validation": "0 dirs / 0 files outside PFI/.venv"
+  },
+  "last_verified_at": "2026-06-30T11:28:19Z"
+}

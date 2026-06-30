@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 0 Whole-Stage Review - 2026-06-30
+
+- 完成 `Stage 0 whole-stage review - 复审并解决暴露问题`，复审 Phase 0.1、0.2、0.3 的合同、证据、测试和状态文件。
+- 修复复审发现的两个 Stage 0 范围问题：缺少整体复审合同/evidence，以及顶层 run/status 文件仍停留在 Phase 0.3。
+- 新增 `docs/pfi_v024/STAGE0_WHOLE_STAGE_REVIEW.md`、`tests/test_v024_stage0_whole_review_contract.py` 和 `reports/pfi_v024/stage_0/whole_stage_review/evidence.json`。
+- Stage 0 已整体复审完成；Stage 1 尚未开始，仍需用户验收或明确指令。
+- 本轮未修改业务 UI、app bundle、launcher 或数据逻辑。
+
 ## v0.2.4 Repair Pack Stage 0 Phase 0.3 - 2026-06-30
 
 - 完成 `Stage 0 / Phase 0.3 - Stage 0 测试与证据`，用合同测试覆盖 10 个正式一级入口、`市场与研究` 一级入口、禁止假财务数据和 evidence pack 完整性。
