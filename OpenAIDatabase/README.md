@@ -39,6 +39,7 @@ Canonical governance files live under `docs/governance/`.
 - Delivery plan: `docs/governance/DELIVERY_PLAN.md`
 - Version matrix: `docs/governance/VERSION_MATRIX.yaml`
 - Traceability matrix: `docs/governance/TRACEABILITY_MATRIX.csv`
+- Local old-Mac import source move: `docs/governance/LOCAL_HISTORY_IMPORTS_MOVE_20260630.md`
 
 中文人类入口：`功能清单`、`开发记录`、`模型参数文件`。这三份文件必须直接保留
 owner 可读的功能摘要、Roadmap/任务、模型/参数、证据状态、限制和下一步门禁；
