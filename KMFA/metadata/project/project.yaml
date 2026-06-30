@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s12p3-rerun-mechanism"
+version: "0.1.0-s12-stage-review"
 current_stage: "S12"
-current_phase: "S12-STAGE-REVIEW"
+current_phase: "S12-GITHUB-UPLOAD"
 current_phase_status: "pending"
-current_stage_status: "s12p3_completed_validated_local_only_stage12_review_pending"
+current_stage_status: "s12_stage_review_passed_upload_ready_local_only"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -83,6 +83,9 @@ machine_plane:
   - "stage_artifacts/S12_P3_manual_rerun_mechanism/human/test_results.md"
   - "stage_artifacts/S12_P3_manual_rerun_mechanism/machine/s12_p3_manifest.json"
   - "stage_artifacts/S12_P3_manual_rerun_mechanism/exports/html/kmfa_manual_rerun_mechanism.html"
+  - "stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md"
+  - "stage_artifacts/S12_STAGE_REVIEW/human/test_results.md"
+  - "stage_artifacts/S12_STAGE_REVIEW/machine/stage12_review_manifest.json"
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
@@ -294,8 +297,11 @@ upload_policy:
   stage12_s12p2_completed_validated_local_only: true
   stage12_s12p3_completed_validated_local_only: true
   stage12_review_required_before_upload: true
-  stage12_review_passed: false
+  stage12_review_passed: true
+  stage12_review_evidence: "KMFA/stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md"
+  stage12_review_manifest: "KMFA/stage_artifacts/S12_STAGE_REVIEW/machine/stage12_review_manifest.json"
+  stage12_upload_ready_local_only: true
   stage12_uploaded_to_github_main: false
-  stage12_blocker: "Stage 12 review and GitHub upload not performed"
-  next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_stage12_review_next"
+  stage12_blocker: "Stage 12 final GitHub upload not performed"
+  next_phase_upload_allowed: true
+  upload_surface: "project_level_kmfa_worktree_stage12_final_upload_next"

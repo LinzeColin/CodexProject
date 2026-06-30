@@ -1,4 +1,4 @@
-version: "0.1.0-s12p3-rerun-mechanism"
+version: "0.1.0-s12-stage-review"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"

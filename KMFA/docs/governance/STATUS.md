@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s12p3-rerun-mechanism`
+- version: `0.1.0-s12-stage-review`
 - current_stage: `S12`
-- current_phase: `S12-STAGE-REVIEW｜待开始`
-- status: `s12p3_completed_validated_local_only_stage12_review_pending`
+- current_phase: `S12-GITHUB-UPLOAD｜待开始`
+- status: `s12_stage_review_passed_upload_ready_local_only`
 - production_ready: `false`
-- github_upload_ready: `false_stage12_requires_all_phases_and_review`
+- github_upload_ready: `true_local_only_pending_stage12_final_upload`
 
 ## 已完成
 
@@ -92,14 +92,15 @@
 - S12-P1 人工处理事件已完成本地验证：`KMFA/tools/manual_resolution_events.py` 生成 5 条 append-only manual resolution events、manifest 和 HTML 工作台；`KMFA/tools/check_s12_p1_manual_resolution_events.py` 验证字段映射、项目匹配、差异处理、备注、处理人/时间/原因/影响范围/版本和已批准事件只能追加反向事件。
 - S12-P2 影响预览已完成本地验证：`KMFA/tools/manual_impact_preview.py` 基于 5 条 S12-P1 人工处理事件生成 5 条 public-safe impact previews、manifest 和 HTML 影响预览；`KMFA/tools/check_s12_p2_manual_impact_preview.py` 验证受影响项目/指标/报告展示、高风险二次确认、未通过不得发布、rerun/formal report/review/upload 均为 false。
 - S12-P3 重跑机制已完成本地验证：`KMFA/tools/manual_rerun_mechanism.py` 基于 S12-P1/S12-P2 public-safe 证据生成 2 条 cache invalidation、8 条 rerun step、2 条 same-source consistency check、manifest 和 HTML 重跑机制；`KMFA/tools/check_s12_p3_manual_rerun_mechanism.py` 验证只有通过影响预览的事件进入重跑，blocked preview 不进入重跑，旧版本保留、新版本追加，formal report/review/upload 均为 false。
+- Stage 12 整体复审已本地通过：`KMFA/stage_artifacts/S12_STAGE_REVIEW/` 记录 S12-P1/P2/P3 validators、`KMFA/tools/check_s12_stage_review.py`、全量 152 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 public-safe 证据一致性；复审未执行 GitHub upload、S13、lineage full check、正式报告、差异关闭或外部接口。
 
 ## 未完成
 
-- Stage 12 整体复审、GitHub upload、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
+- Stage 12 final GitHub upload、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page、Stage 11 review/upload、S12-P1 manual resolution events、S12-P2 impact preview 和 S12-P3 rerun mechanism 已完成；下一步只能执行 Stage 12 整体复审，不能直接 upload、进入 S13、lineage full check、正式报告或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page、Stage 11 review/upload、S12-P1 manual resolution events、S12-P2 impact preview、S12-P3 rerun mechanism 和 Stage 12 review 已完成；下一步只能执行 Stage 12 final GitHub upload gate，不能进入 S13、lineage full check、正式报告或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

@@ -4,7 +4,7 @@ source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "7a175eb0a44c92dda3f96d55b93e9825f2d5dd6e"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S12P3_LOCAL_COMMIT"
 snapshot_event_time: "2026-07-01T14:00:00+10:00"
-generator_version: "manual-s12p3-rerun-mechanism"
+generator_version: "manual-s12-stage-review"
 final_commit_binding: "local_commit_pending"
 dimensions:
   structural_completeness:
@@ -351,9 +351,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S12_P3_COMPLETED_VALIDATED_LOCAL_ONLY_STAGE12_REVIEW_PENDING"
-  release_gate: "KMFA-S12-STAGE-REVIEW-GATE"
+  status: "S12_STAGE_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
+  release_gate: "KMFA-S12-GITHUB-UPLOAD-GATE"
   blocker_ids:
-    - "STAGE12_REVIEW_NOT_PERFORMED"
     - "STAGE12_GITHUB_UPLOAD_NOT_PERFORMED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
