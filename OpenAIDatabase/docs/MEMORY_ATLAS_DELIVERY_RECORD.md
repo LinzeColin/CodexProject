@@ -114,6 +114,7 @@ Writeback：
 - 2026-06-18：重做 Obsidian Graph、贡献网格、Galaxy 局部邻域、运行缓存释放、本地 app icon 与 Downloads/Applications app 入口。
 - 2026-06-19：本轮重点修复 Timeline 动态交互、writeback proposal 版本控制/rollback、模型参数文档边界、交付历史记录。
 - 2026-06-19：修复 `.app` 每次打开刷新最新快照时依赖 Documents 仓库权限的问题；installer 现在同步 Application Support source workspace，launcher 每次从该运行副本刷新数据并写入 runtime。
+- 2026-06-30：完成 Memory Atlas v1.1.5 Stage 2.1 默认首页集成计划；当前生产入口仍为 Galaxy，实际切换到 `记忆总览` 延后到 Stage 3.1 实施和浏览器验收。
 
 近期提交参考：
 

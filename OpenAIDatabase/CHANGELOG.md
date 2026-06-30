@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 2 Planning
+
+- Added the Stage 2.1 default-home integration plan for making `记忆总览`
+  the future startup board while preserving the left sidebar navigation.
+- Recorded the current route evidence: production still defaults to `galaxy`,
+  and the runtime change is deferred to Stage 3 implementation.
+
+No production route, raw/private data access, direct writeback, Cloudflare live
+deployment, or visual board replacement was added.
+
 ## Unreleased - OpenAIDatabase CI Repair
 
 - Restored OpenAIDatabase CI by accepting legacy `sync_runs` records in the evaluator while making future sync logs emit the task-run evidence schema.
