@@ -52,6 +52,8 @@ Phase 3.1 固定当前 v0.2.4 修补包的一级导航合同：
 
 ## Acceptance Result
 
+### Phase 3.1
+
 - Desktop primary nav count: 10.
 - Mobile primary nav count: 10.
 - No-js fallback primary route count: 10.
@@ -60,9 +62,24 @@ Phase 3.1 固定当前 v0.2.4 修补包的一级导航合同：
 - Streamlit embed inlines `navigation.js` before `routes.js` and `shell.js`.
 - v0.2.3 `PFI_V023_STAGE3_NAV` compatibility remains available in `routes.js`.
 
+### Phase 3.2
+
+- `PFI/web/app/routes.js` exposes `window.PFI_V024_STAGE3_ROUTES`.
+- Primary route table resolves all 10 official first-level routes.
+- Secondary route table resolves 45 owned second-level routes across the 10 workspaces.
+- v0.1 alias routes redirect to owned v0.2.4 routes:
+  - `/home/today` -> `/home`
+  - `/market/watch` -> `/market-research?tab=market`
+  - `/market/research` -> `/market-research?tab=research`
+  - `/investment/holdings` -> `/investment?tab=holdings`
+  - `/market/lab` -> `/market-research/strategy-lab`
+  - `/settings/data` -> `/settings?tab=data-system`
+- `PFI/web/app/shell.js` uses `PFI_V024_STAGE3_ROUTES.resolveRouteAlias()` before fallback route parsing.
+- Runtime declarations exist for hash routes, `pushState`, `replaceState`, `hashchange`, and `popstate`.
+- Browser back/forward validation is intentionally left for Phase 3.3.
+
 ## Explicitly Not Done
 
-- Phase 3.2 route implementation and browser route mutation are not completed in this run.
 - Phase 3.3 browser back/forward/direct URL validation is not completed in this run.
 - Stage 3 whole-stage review is not completed in this run.
 - GitHub main upload is not completed in this run.

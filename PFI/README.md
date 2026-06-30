@@ -72,22 +72,25 @@ Stage 1 records:
 
 ## v0.2.4 Stage 3 Status
 
-Current run unit: `Stage 3 / Phase 3.1 - 导航合同`.
+Current run unit: `Stage 3 / Phase 3.2 - 路由实现`.
 
 - Stage 2 GitHub main upload: complete at `c34af606f9793272e92d067fbe808dfdf100ec84`.
 - Phase 3.1: candidate pass.
-- Phase 3.2: not executed.
+- Phase 3.2: candidate pass.
 - Phase 3.3: not executed.
 - Stage 3 candidate complete: no.
 - Stage 3 whole-stage review: not executed.
 - GitHub main upload: not executed in this run.
 - Current navigation contract: `PFI-V024-STAGE3-PHASE31-NAVIGATION`.
+- Current route contract: `PFI-V024-STAGE3-PHASE32-ROUTES`.
 - Official primary entries remain exactly 10: `首页总览`、`账户与资产`、`账本流水`、`投资管理`、`消费管理`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`市场与研究`、`设置`.
 - v0.1 labels `首页`、`市场`、`研究`、`持仓`、`策略实验室`、`数据与系统` remain available only as aliases/commands, not peer primary entries.
 - `PFI/web/app/navigation.js` is loaded before `routes.js`; Streamlit embed now inlines it before routes and shell.
+- `PFI/web/app/routes.js` exposes `window.PFI_V024_STAGE3_ROUTES` and resolves 10 primary routes, 45 secondary routes, and 6 v0.1 redirect routes.
+- `PFI/web/app/shell.js` uses the v0.2.4 route table before fallback parsing and keeps hash/history/popstate runtime declarations for Phase 3.3 validation.
 - Business financial data logic changes: none.
 - App bundle changes: none.
-- Next gate: Phase 3.2 route implementation only after user instruction.
+- Next gate: Phase 3.3 browser navigation acceptance only after user instruction.
 
 Phase 3.1 records:
 
@@ -96,6 +99,11 @@ Phase 3.1 records:
 - `tests/test_v024_stage3_phase31_navigation_contract.py`
 - `web/app/navigation.js`
 - `reports/pfi_v024/stage_3/phase_3_1/evidence.json`
+
+Phase 3.2 records:
+
+- `tests/test_v024_stage3_phase32_route_implementation.py`
+- `reports/pfi_v024/stage_3/phase_3_2/evidence.json`
 
 ## v0.2.4 Stage 2 Status
 

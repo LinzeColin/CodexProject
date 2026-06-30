@@ -469,6 +469,7 @@ const STAGE3_NAV = window.PFI_V024_STAGE3_NAVIGATION || window.PFI_V024_STAGE3_N
     Object.freeze({ taskId: "T3.1.2", label: "数据与系统", targetWorkspace: "settings", routeAlias: "/settings/data", resolvedRouteAlias: "/settings?tab=data-system", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
   ]),
 });
+const STAGE3_ROUTES = window.PFI_V024_STAGE3_ROUTES || STAGE3_NAV || Object.freeze({});
 const LEGACY_ALIAS_ENTRIES = Object.freeze([...(STAGE3_NAV.legacyAliasEntries || [])]);
 const LEGACY_ALIAS_KEYWORDS = Object.freeze({
   首页: "home 首页 今日 总览",
@@ -4621,11 +4622,21 @@ function defaultRouteAliasForWorkspace(workspaceId) {
 function normalizeRouteAlias(routeAlias) {
   const clean = String(routeAlias || "").trim();
   if (!clean) return "";
+  if (typeof STAGE3_ROUTES.resolveRouteAlias === "function") {
+    const resolved = STAGE3_ROUTES.resolveRouteAlias(clean);
+    if (resolved?.status === "resolved" && resolved.routeAlias) return resolved.routeAlias;
+  }
   if (Object.prototype.hasOwnProperty.call(LEGACY_ROUTE_ALIAS_TARGETS, clean)) return LEGACY_ROUTE_ALIAS_TARGETS[clean];
   return clean;
 }
 
 function routeWorkspaceFromAlias(routeAlias) {
+  if (typeof STAGE3_ROUTES.resolveRouteAlias === "function") {
+    const resolved = STAGE3_ROUTES.resolveRouteAlias(routeAlias);
+    if (resolved?.status === "resolved" && resolved.workspace) {
+      return { workspace: resolved.workspace, routeAlias: resolved.routeAlias, view: "" };
+    }
+  }
   const clean = normalizeRouteAlias(routeAlias);
   if (!clean) return null;
   if (clean.startsWith("/market-research/strategy-lab")) {
