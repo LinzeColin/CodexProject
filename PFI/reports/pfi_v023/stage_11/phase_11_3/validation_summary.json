@@ -1,0 +1,73 @@
+{
+  "schema": "PFIV023Stage11FinalValidationSummaryV1",
+  "version": "v0.2.3",
+  "stage": "Stage 11",
+  "phase_id": "V023-S11-P11.3",
+  "generated_at": "2026-06-30T07:38:00Z",
+  "commands": {
+    "stage11_regression_pytest": {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q",
+      "status": "pass",
+      "note": "Fresh command passed after Phase 11.3 artifact generation.",
+      "result": "14 passed in 0.03s"
+    },
+    "all_v023_pytest": {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "status": "pass",
+      "note": "Fresh full v0.2.3 pytest matrix passed after Phase 11.3 artifact generation.",
+      "result": "182 passed in 2.38s"
+    },
+    "node_check": {
+      "command": "PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js",
+      "status": "pass",
+      "note": "Used Codex bundled Node because local shell has no node on default PATH.",
+      "result": "shell.js, routes.js, reports.js, upload.js syntax checks passed"
+    },
+    "json_validation": {
+      "command": "PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_11/phase_11_3/*.json",
+      "status": "pass",
+      "note": "All Phase 11.3 JSON files parse with json.tool.",
+      "result": "json-ok"
+    },
+    "app_health": {
+      "command": "curl http://127.0.0.1:8501/_stcore/health && curl http://127.0.0.1:8766/health",
+      "status": "pass",
+      "note": "8501 Streamlit health and 8766 runtime API health passed after validation commands.",
+      "result": "8501=ok; 8766=ok"
+    }
+  },
+  "app_health": {
+    "8501": "ok",
+    "8766": {
+      "status": "ok",
+      "schema": "PFIV021RuntimeAPIV1"
+    }
+  },
+  "human_acceptance_claimed": false,
+  "stage_11_whole_review_done": false,
+  "github_main_upload_done": false,
+  "last_verified_at": "2026-06-30T07:40:23Z",
+  "git": {
+    "head_at_last_verification": "9cb1eafcc0df3d5fb067880ef550ccf4eae98a7d",
+    "origin_main_at_last_verification": "946f5c41c8db1ec4eb5e289ae35696ccb6d42f47",
+    "local_phase_commit_pending": true
+  },
+  "additional_checks": {
+    "git_diff_check": {
+      "status": "pass",
+      "result": "diff-check-ok"
+    },
+    "scope_check": {
+      "status": "pass",
+      "result": "Only PFI/tests/test_v023_regression.py and reports/pfi_v023/stage_11/phase_11_3 are changed in this phase before commit."
+    },
+    "forbidden_data_word_scan": {
+      "status": "pass",
+      "result": "forbidden-scan-ok"
+    },
+    "screenshot_bytes": {
+      "final_desktop": 269727,
+      "final_mobile": 70774
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "PFIV023Stage11FinalScreenshotIndexV1",
+  "version": "v0.2.3",
+  "stage": "Stage 11",
+  "phase_id": "V023-S11-P11.3",
+  "generated_at": "2026-06-30T07:38:00Z",
+  "source_app": {
+    "url": "http://127.0.0.1:8501/",
+    "health_url": "http://127.0.0.1:8501/_stcore/health",
+    "health": "ok",
+    "runtime_api_health": {
+      "status": "ok",
+      "schema": "PFIV021RuntimeAPIV1"
+    }
+  },
+  "screenshots": [
+    {
+      "screenshot_id": "final_desktop",
+      "path": "reports/pfi_v023/stage_11/phase_11_3/screenshots/final_desktop.png",
+      "bytes": 269727,
+      "note": "Stage 11.3 final candidate desktop capture from the current 8501 app entry."
+    },
+    {
+      "screenshot_id": "final_mobile",
+      "path": "reports/pfi_v023/stage_11/phase_11_3/screenshots/final_mobile.png",
+      "bytes": 70774,
+      "note": "Stage 11.3 final candidate mobile capture from the current 8501 app entry."
+    },
+    {
+      "screenshot_id": "stage10_app_entry_review",
+      "path": "reports/pfi_v023/stage_10/whole_stage_review/screenshots/app_entry_review.png",
+      "bytes": 241258,
+      "note": "Existing Stage 10 whole-stage app entry review screenshot referenced as prior e2e evidence."
+    },
+    {
+      "screenshot_id": "stage10_navigation_review",
+      "path": "reports/pfi_v023/stage_10/whole_stage_review/screenshots/navigation_review.png",
+      "bytes": 252601,
+      "note": "Existing Stage 10 whole-stage navigation review screenshot referenced as prior e2e evidence."
+    },
+    {
+      "screenshot_id": "stage10_report_review",
+      "path": "reports/pfi_v023/stage_10/whole_stage_review/screenshots/data_report_review.png",
+      "bytes": 240967,
+      "note": "Existing Stage 10 whole-stage data/report review screenshot referenced as prior e2e evidence."
+    }
+  ]
+}

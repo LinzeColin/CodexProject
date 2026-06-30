@@ -1,0 +1,55 @@
+{
+  "schema": "PFIV023Stage11Phase113EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 11",
+  "phase_id": "V023-S11-P11.3",
+  "phase_name": "最终候选交付",
+  "status": "candidate_pass",
+  "generated_at": "2026-06-30T07:38:00Z",
+  "git": {
+    "base_head_at_evidence_write": "9cb1eafcc0df3d5fb067880ef550ccf4eae98a7d",
+    "origin_main_at_evidence_write": "946f5c41c8db1ec4eb5e289ae35696ccb6d42f47",
+    "head_semantics": "Phase evidence records the head available before this evidence commit; final local commit hash is verified by terminal after commit."
+  },
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T11.3.1"
+  ],
+  "stage_contract": {
+    "phase_11_1_regression_tests_done": true,
+    "phase_11_2_doc_freeze_done": true,
+    "phase_11_3_final_candidate_delivery_done": true,
+    "stage_11_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "human_acceptance_claimed": false,
+  "acceptance_checks": {
+    "final_evidence_pack_present": true,
+    "final_screenshot_index_present": true,
+    "final_validation_summary_present": true,
+    "risk_and_remaining_items_present": true
+  },
+  "artifacts": {
+    "final_evidence_pack": "PFI/reports/pfi_v023/stage_11/phase_11_3/final_evidence_pack.json",
+    "screenshot_index": "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshot_index.json",
+    "validation_summary": "PFI/reports/pfi_v023/stage_11/phase_11_3/validation_summary.json",
+    "risk_register": "PFI/reports/pfi_v023/stage_11/phase_11_3/risk_register.json",
+    "remaining_items": "PFI/reports/pfi_v023/stage_11/phase_11_3/remaining_items.json",
+    "terminal_log": "PFI/reports/pfi_v023/stage_11/phase_11_3/terminal.log"
+  },
+  "changed_files": [
+    "PFI/tests/test_v023_regression.py",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/final_evidence_pack.json",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshot_index.json",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/validation_summary.json",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/risk_register.json",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/remaining_items.json",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/terminal.log",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshot_capture_meta.json",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshots/final_desktop.png",
+    "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshots/final_mobile.png"
+  ]
+}

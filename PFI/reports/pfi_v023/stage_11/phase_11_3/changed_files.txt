@@ -1,0 +1,12 @@
+PFI/tests/test_v023_regression.py
+PFI/reports/pfi_v023/stage_11/phase_11_3/changed_files.txt
+PFI/reports/pfi_v023/stage_11/phase_11_3/evidence.json
+PFI/reports/pfi_v023/stage_11/phase_11_3/final_evidence_pack.json
+PFI/reports/pfi_v023/stage_11/phase_11_3/screenshot_index.json
+PFI/reports/pfi_v023/stage_11/phase_11_3/validation_summary.json
+PFI/reports/pfi_v023/stage_11/phase_11_3/risk_register.json
+PFI/reports/pfi_v023/stage_11/phase_11_3/remaining_items.json
+PFI/reports/pfi_v023/stage_11/phase_11_3/terminal.log
+PFI/reports/pfi_v023/stage_11/phase_11_3/screenshot_capture_meta.json
+PFI/reports/pfi_v023/stage_11/phase_11_3/screenshots/final_desktop.png
+PFI/reports/pfi_v023/stage_11/phase_11_3/screenshots/final_mobile.png

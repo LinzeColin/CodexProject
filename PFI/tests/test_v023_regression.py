@@ -296,5 +296,103 @@ class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
             self.assertTrue(evidence["acceptance_checks"][key], key)
 
 
+class TestV023Stage11Phase113FinalCandidateDelivery(unittest.TestCase):
+    def test_t1131_final_candidate_evidence_pack_exists_and_is_candidate_only(self) -> None:
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_11" / "phase_11_3"
+        expected_files = [
+            phase_dir / "evidence.json",
+            phase_dir / "final_evidence_pack.json",
+            phase_dir / "screenshot_index.json",
+            phase_dir / "validation_summary.json",
+            phase_dir / "risk_register.json",
+            phase_dir / "remaining_items.json",
+            phase_dir / "changed_files.txt",
+            phase_dir / "terminal.log",
+        ]
+        for path in expected_files:
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads((phase_dir / "evidence.json").read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in (phase_dir / "changed_files.txt").read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage11Phase113EvidenceV1")
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 11")
+        self.assertEqual(evidence["phase_id"], "V023-S11-P11.3")
+        self.assertEqual(evidence["phase_name"], "最终候选交付")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertEqual(evidence["task_ids"], ["T11.3.1"])
+        self.assertTrue(evidence["stage_contract"]["phase_11_1_regression_tests_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_11_2_doc_freeze_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_11_3_final_candidate_delivery_done"])
+        self.assertFalse(evidence["stage_contract"]["stage_11_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
+        self.assertFalse(evidence["human_acceptance_claimed"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        for key in ("final_evidence_pack_present", "final_screenshot_index_present", "final_validation_summary_present", "risk_and_remaining_items_present"):
+            self.assertTrue(evidence["acceptance_checks"][key], key)
+
+    def test_phase113_final_evidence_pack_indexes_prior_phase_outputs_and_final_gate_artifacts(self) -> None:
+        pack = read_json("reports/pfi_v023/stage_11/phase_11_3/final_evidence_pack.json")
+
+        self.assertEqual(pack["schema"], "PFIV023Stage11FinalCandidateEvidencePackV1")
+        self.assertEqual(pack["version"], "v0.2.3")
+        self.assertEqual(pack["status"], "candidate_pass")
+        self.assertFalse(pack["human_acceptance_claimed"])
+        self.assertFalse(pack["stage_11_whole_review_done"])
+        self.assertFalse(pack["github_main_upload_done"])
+        self.assertEqual(pack["included_phase_ids"], ["V023-S11-P11.1", "V023-S11-P11.2", "V023-S11-P11.3"])
+
+        for path in pack["required_artifacts"]:
+            self.assertTrue((ROOT / path).exists(), path)
+
+        gates = pack["candidate_gate_summary"]
+        self.assertTrue(gates["regression_tests"])
+        self.assertTrue(gates["doc_freeze"])
+        self.assertTrue(gates["final_screenshot_index"])
+        self.assertTrue(gates["validation_summary"])
+        self.assertTrue(gates["risk_register"])
+        self.assertTrue(gates["remaining_items"])
+
+    def test_phase113_screenshot_index_has_current_final_screenshots_and_existing_e2e_references(self) -> None:
+        index = read_json("reports/pfi_v023/stage_11/phase_11_3/screenshot_index.json")
+
+        self.assertEqual(index["schema"], "PFIV023Stage11FinalScreenshotIndexV1")
+        self.assertEqual(index["phase_id"], "V023-S11-P11.3")
+        screenshot_ids = {item["screenshot_id"] for item in index["screenshots"]}
+        self.assertTrue({"final_desktop", "final_mobile", "stage10_app_entry_review", "stage10_navigation_review", "stage10_report_review"}.issubset(screenshot_ids))
+        for item in index["screenshots"]:
+            path = ROOT / item["path"]
+            self.assertTrue(path.exists(), item["path"])
+            self.assertGreater(item["bytes"], 20000, item["screenshot_id"])
+            self.assertEqual(path.stat().st_size, item["bytes"], item["screenshot_id"])
+
+    def test_phase113_validation_summary_risk_register_and_remaining_items_are_explicit(self) -> None:
+        validation = read_json("reports/pfi_v023/stage_11/phase_11_3/validation_summary.json")
+        risks = read_json("reports/pfi_v023/stage_11/phase_11_3/risk_register.json")
+        remaining = read_json("reports/pfi_v023/stage_11/phase_11_3/remaining_items.json")
+
+        self.assertEqual(validation["schema"], "PFIV023Stage11FinalValidationSummaryV1")
+        self.assertEqual(validation["phase_id"], "V023-S11-P11.3")
+        for key in ("stage11_regression_pytest", "all_v023_pytest", "node_check", "json_validation", "app_health"):
+            self.assertEqual(validation["commands"][key]["status"], "pass", key)
+        self.assertEqual(validation["app_health"]["8501"], "ok")
+        self.assertEqual(validation["app_health"]["8766"]["status"], "ok")
+
+        self.assertEqual(risks["schema"], "PFIV023Stage11RiskRegisterV1")
+        risk_titles = {item["title"] for item in risks["risks"]}
+        self.assertIn("用户手动验收未完成", risk_titles)
+        self.assertIn("Stage 11 whole-stage review 未执行", risk_titles)
+        self.assertIn("GitHub main upload 未执行", risk_titles)
+
+        self.assertEqual(remaining["schema"], "PFIV023Stage11RemainingItemsV1")
+        remaining_titles = {item["title"] for item in remaining["items"]}
+        self.assertIn("用户明确验收", remaining_titles)
+        self.assertIn("Stage 11 whole-stage review", remaining_titles)
+        self.assertIn("Stage 11 GitHub main upload", remaining_titles)
+
+
 if __name__ == "__main__":
     unittest.main()

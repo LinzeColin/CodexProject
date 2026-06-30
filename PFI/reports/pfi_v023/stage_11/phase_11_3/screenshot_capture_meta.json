@@ -1,0 +1,35 @@
+{
+  "captured_at": "2026-06-30T07:35:48.403Z",
+  "screenshots": [
+    {
+      "screenshot_id": "final_desktop",
+      "path": "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshots/final_desktop.png",
+      "bytes": 269727,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "title": "PFI",
+      "visible_text_bytes": 0,
+      "console_error_count": 0,
+      "page_error_count": 0,
+      "response_error_count": 0,
+      "response_errors": []
+    },
+    {
+      "screenshot_id": "final_mobile",
+      "path": "PFI/reports/pfi_v023/stage_11/phase_11_3/screenshots/final_mobile.png",
+      "bytes": 70774,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "title": "PFI",
+      "visible_text_bytes": 0,
+      "console_error_count": 0,
+      "page_error_count": 0,
+      "response_error_count": 0,
+      "response_errors": []
+    }
+  ]
+}
