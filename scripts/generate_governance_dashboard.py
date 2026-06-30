@@ -266,15 +266,26 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     """Build the current ADP S2PMT07 owner recommendation from the active matrix."""
 
     normalized_manifest_clause = ""
+    capture_window_cli_clause = ""
     current_iteration = str(matrix.get("current_iteration") or "")
     current_alias = str(matrix.get("current_v7_legacy_alias") or "")
     if (
         "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION" in current_iteration
+        or "s2plt02_real_delivery_manifest_normalization_iteration" in matrix
         or "normalized manifest" in current_alias.lower()
+        or "normalized 2026" in current_alias.lower()
         or "normalized_manifest_ready=true" in current_alias
     ):
         normalized_manifest_clause = (
             " S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate,"
+        )
+    if (
+        "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI" in current_iteration
+        or "capture-window audit reproducible" in current_alias.lower()
+        or "audit-s2plt02-terminal-capture-window" in current_alias
+    ):
+        capture_window_cli_clause = (
+            " S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI reproducible dry-run blocker CLI,"
         )
     return (
         "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
@@ -285,7 +296,7 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, "
         "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, "
         "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate,"
-        f"{normalized_manifest_clause} and only current explicit no-production "
+        f"{normalized_manifest_clause}{capture_window_cli_clause} and only current explicit no-production "
         "real-delivery manifest inputs as validated no-write inputs, record the "
         "current dry-run/scheduler-disabled capture window as blocked evidence, "
         "and next collect S2PLT02 terminal delivery proof only from complete real "

@@ -139,6 +139,7 @@ from .stage2_final_gate import (
     build_s2plt02_real_delivery_manifest_validation_state,
     build_s2plt02_normalized_delivery_manifest_state,
     build_s2plt02_real_scheduler_proof_validation_state,
+    build_s2plt02_terminal_capture_window_audit_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
     build_s2plt02_terminal_delivery_proof_capture_plan_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
@@ -158,6 +159,7 @@ from .stage2_final_gate import (
     validate_s2plt02_real_delivery_manifest_validation_state,
     validate_s2plt02_normalized_delivery_manifest_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
+    validate_s2plt02_terminal_capture_window_audit_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
     validate_s2plt02_terminal_delivery_proof_capture_plan_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
@@ -1271,6 +1273,36 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional sanitized launchctl print-disabled text file for deterministic validation.",
     )
     s2plt02_real_proof_capture_readiness.add_argument("--json", action="store_true", help="Print JSON real-proof capture readiness state.")
+
+    s2plt02_terminal_capture_window = subparsers.add_parser(
+        "audit-s2plt02-terminal-capture-window",
+        help="Audit the current S2PLT02 terminal capture window without sending mail or enabling scheduler.",
+    )
+    s2plt02_terminal_capture_window.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing final-bundle artifacts.",
+    )
+    s2plt02_terminal_capture_window.add_argument(
+        "--state-dir",
+        default=None,
+        help="ADP state directory containing runs/YYYYMMDD reports; defaults to ~/.adp/arxiv-daily-push.",
+    )
+    s2plt02_terminal_capture_window.add_argument(
+        "--candidate-service-dates",
+        default="2026-06-29,2026-06-30",
+        help="Comma-separated service dates to audit as the current terminal capture window.",
+    )
+    s2plt02_terminal_capture_window.add_argument(
+        "--launchctl-disabled-file",
+        default=None,
+        help="Optional sanitized launchctl print-disabled text file for deterministic validation.",
+    )
+    s2plt02_terminal_capture_window.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON S2PLT02 terminal capture-window audit state.",
+    )
 
     s2plt02_real_proof_capture_authorization = subparsers.add_parser(
         "validate-s2plt02-real-proof-capture-authorization",
@@ -3940,6 +3972,51 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"- blocked: {reason}")
             for error in report.get("validation_errors", []):
                 print(f"- evidence_error: {error}")
+            for error in validation_errors:
+                print(f"- validator_error: {error}")
+        return 0 if report["status"] == "pass" and not validation_errors else 2
+    if args.command == "audit-s2plt02-terminal-capture-window":
+        if args.launchctl_disabled_file:
+            launchctl_disabled_text = Path(args.launchctl_disabled_file).read_text(encoding="utf-8")
+        else:
+            completed = subprocess.run(
+                ["launchctl", "print-disabled", f"gui/{os.getuid()}"],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            launchctl_disabled_text = completed.stdout
+        candidate_service_dates = tuple(
+            item.strip()
+            for item in str(args.candidate_service_dates).split(",")
+            if item.strip()
+        )
+        report = build_s2plt02_terminal_capture_window_audit_state(
+            repo_root=args.repo_root,
+            state_dir=args.state_dir,
+            candidate_service_dates=candidate_service_dates,
+            launchctl_disabled_text=launchctl_disabled_text,
+            adp_allow_smtp_send=str(os.environ.get("ADP_ALLOW_SMTP_SEND", "false")).strip().lower()
+            in {"true", "1", "yes", "on"},
+        )
+        validation_errors = validate_s2plt02_terminal_capture_window_audit_state(report)
+        if validation_errors:
+            report = dict(report)
+            report["validator_errors"] = validation_errors
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- candidate_service_dates: {','.join(report.get('candidate_service_dates', []))}")
+            print(f"- terminal_delivery_credit: {report.get('terminal_delivery_credit')}")
+            print(
+                "- counts_toward_s2plt02_terminal_proof: "
+                f"{report.get('counts_toward_s2plt02_terminal_proof')}"
+            )
+            print(f"- all_required_launchagents_disabled: {report.get('all_required_launchagents_disabled')}")
+            print(f"- observed_terminal_email_count_credit: {report.get('observed_terminal_email_count_credit')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
             for error in validation_errors:
                 print(f"- validator_error: {error}")
         return 0 if report["status"] == "pass" and not validation_errors else 2

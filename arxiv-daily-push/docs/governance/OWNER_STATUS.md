@@ -21,7 +21,7 @@ Owner 视图现在把实现一致性、参数来源、方法依据、实证验�
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, P0/P1 zero-proof artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate, S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate, and only current explicit no-production real-delivery manifest inputs as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from complete real delivery/scheduler manifests in a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, P0/P1 zero-proof artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate, S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI reproducible dry-run blocker CLI, and only current explicit no-production real-delivery manifest inputs as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from complete real delivery/scheduler manifests in a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, P0/P1 zero-proof artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate, S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate, and only current explicit no-production real-delivery manifest inputs as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from complete real delivery/scheduler manifests in a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff. | 继续 S2PMT07 / S2PLT04 前置证据链：先补 S2PLT01 终态验收、第二真实自然日、8 封真实邮件、真实 scheduler proof 和 S2PLT03 终态韧性 proof，保持 S2PLT04/final bundle/production gate 阻断。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, P0/P1 zero-proof artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate, S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI reproducible dry-run blocker CLI, and only current explicit no-production real-delivery manifest inputs as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from complete real delivery/scheduler manifests in a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff. | 继续 S2PMT07 / S2PLT04 前置证据链：先补 S2PLT01 终态验收、第二真实自然日、8 封真实邮件、真实 scheduler proof 和 S2PLT03 终态韧性 proof，保持 S2PLT04/final bundle/production gate 阻断。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_READY_NO_WRITE_NO_PRODUCTION`
+- release_gate: `S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `1`
 - commit_bound_events: `4`
-- legacy_unbound_events: `283`
+- legacy_unbound_events: `284`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `323`
+- pending_or_stale_events: `324`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
-- source_snapshot_hash: `sha256:f78b3e7a37fafc46d8ede764c9e96083a8e7c268aa736f5c9531dadff7050443`
-- snapshot_event_time: `2026-06-30T11:45:16+10:00`
+- source_snapshot_hash: `sha256:eb82efe54eb516c49be1829c51022e018decdf046f7f8b19b429a0a26f9e5785`
+- snapshot_event_time: `2026-06-30T12:09:41+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_READY_NO_WRITE_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

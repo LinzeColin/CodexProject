@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-06-30 11:47:12 Australia/Sydney
+更新时间：2026-06-30 12:20:22 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -26,7 +26,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 379 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 380 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
@@ -134,6 +134,13 @@
 - 2026-06-29 23:05:25 Australia/Sydney：已补齐 S2PLT02 授权模板 `FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json`；该模板当时不等于 live 授权，当前 live 授权以上方 2026-06-30 记录为准。
 - 2026-06-30 07:41:53 Australia/Sydney：已写入并校验 S2PLT02 live authorization artifact；下一步为 `S2PLT02_TERMINAL_DELIVERY_PROOF`，但 S2PLT02/S2PMT07/production acceptance 仍未通过。
 
+
+
+## 2026-06-30 12:09:41 Australia/Sydney - S2PLT02 terminal capture window audit CLI
+
+- 新增 `audit-s2plt02-terminal-capture-window` 可复现当前授权后捕获窗口状态：blocked / exit 2，`state_hash=6ad683a0590f9d43c808cf7812edc7c7f93feabec52d365ddb2a8abbbf42b4bf`。
+- 结论：2026-06-29 与 2026-06-30 M1-M4 均为 dry-run，`real_sent_candidate_email_count=0`、`observed_terminal_email_count_credit=4/8`、LaunchAgents disabled；不能计入第二真实日、8 封真实邮件或 scheduler proof。
+- 证据：[阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json)。
 
 ## S2PLT02 terminal capture window audit
 
