@@ -35,6 +35,19 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC", current_state)
+        self.assertIn("next_executable_command=plan-s2plt02-terminal-delivery-proof-capture", current_state)
+        self.assertIn("next_executable_command_dry_run_status=blocked", current_state)
+        self.assertIn("next_executable_command_writes_artifact=false", current_state)
+        self.assertIn("next_executable_command_satisfies_gate=false", current_state)
+        self.assertIn("9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b", current_state)
+        self.assertIn("e7f33cbf0d084cb00c547016d83139b47e62809e2638be3a33effc8dcbe74358", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC.md", ledger)
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_S2PLT02_RUNTIME_READINESS_SUMMARY_BLOCKED_NO_PRODUCTION",
             current_state,
         )

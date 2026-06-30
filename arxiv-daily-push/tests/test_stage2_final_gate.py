@@ -5468,12 +5468,19 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertFalse(capture_summary["smtp_secret_env_ready"])
         self.assertFalse(capture_summary["smtp_secret_values_logged"])
-        self.assertEqual(plan["next_executable_command"], "")
-        self.assertEqual(plan["next_executable_command_args"], {})
+        self.assertEqual(plan["next_executable_command"], "plan-s2plt02-terminal-delivery-proof-capture")
+        self.assertEqual(plan["next_executable_command_args"], {
+            "repo_root": ".",
+            "generated_at": "2026-06-30T18:03:24+10:00",
+            "json": True,
+        })
         self.assertFalse(plan["next_executable_command_writes_artifact"])
         self.assertFalse(plan["next_executable_command_satisfies_gate"])
-        self.assertEqual(plan["next_executable_command_dry_run_status"], "")
-        self.assertEqual(plan["next_executable_command_dry_run_evidence_ref"], "")
+        self.assertEqual(plan["next_executable_command_dry_run_status"], "blocked")
+        self.assertEqual(
+            plan["next_executable_command_dry_run_evidence_ref"],
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json",
+        )
         self.assertFalse(plan["next_executable_command_dry_run_wrote_artifact"])
         self.assertFalse(plan["draft_authorization_is_live_authorization"])
         self.assertEqual(plan["live_authorization_artifact_status"], "pass")
@@ -5482,8 +5489,15 @@ class Stage2FinalGateTests(unittest.TestCase):
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
         )
         self.assertEqual(plan["live_authorization_validation_errors"], [])
-        self.assertEqual(plan["next_executable_command_validation_command"], "")
-        self.assertEqual(plan["next_executable_evidence_refs"], [])
+        self.assertEqual(
+            plan["next_executable_command_validation_command"],
+            "plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
+            "--generated-at 2026-06-30T18:03:24+10:00 --json",
+        )
+        self.assertEqual(plan["next_executable_evidence_refs"], [
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json",
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md",
+        ])
         self.assertTrue(plan["next_required_step_blocked_by_upstream_evidence"])
         self.assertEqual(
             plan["upstream_unblock_order"],

@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 304
+- task_count: 305
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 20:57:02 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Capture Command Sync
+
+- `S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC` makes `plan-final-bundle-prerequisites` expose `next_executable_command=plan-s2plt02-terminal-delivery-proof-capture` while S2PLT04 remains upstream-blocked by S2PLT02/S2PLT03 terminal evidence.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b`, final validator `state_hash=e7f33cbf0d084cb00c547016d83139b47e62809e2638be3a33effc8dcbe74358`, and S2PLT02 capture plan `state_hash=48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`.
+- The exposed command is `plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json`; it remains `next_executable_command_dry_run_status=blocked`, `next_executable_command_writes_artifact=false`, `next_executable_command_satisfies_gate=false`, and `next_executable_command_dry_run_wrote_artifact=false`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC.md`; `governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT03 terminal proof, write S2PLT04 completion report, create final-bundle manifest/handoff/signoff/final-command proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 20:27:55 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Runtime Readiness Summary
 
