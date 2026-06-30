@@ -663,7 +663,24 @@
         </div>
       </form>
     </dialog>
-    <noscript>PFI 需要启用浏览器脚本来保存本地导航状态。</noscript>
+    <noscript>
+      <section class="no-js-route-fallback" data-no-js-route-fallback="10" aria-label="PFI 无脚本一级入口">
+        <h2>PFI 一级入口</h2>
+        <p>浏览器脚本关闭时，可以使用这些入口定位到对应 route；完整页面状态和浏览器历史需要启用脚本。</p>
+        <nav aria-label="无脚本一级入口">
+          <a href="#/home" data-no-js-route="/home">首页总览</a>
+          <a href="#/accounts" data-no-js-route="/accounts">账户与资产</a>
+          <a href="#/ledger" data-no-js-route="/ledger">账本流水</a>
+          <a href="#/investment" data-no-js-route="/investment">投资管理</a>
+          <a href="#/consumption" data-no-js-route="/consumption">消费管理</a>
+          <a href="#/sources-upload" data-no-js-route="/sources-upload">数据源与上传</a>
+          <a href="#/review" data-no-js-route="/review">建议与复盘</a>
+          <a href="#/reports" data-no-js-route="/reports">报告与洞察</a>
+          <a href="#/market-research" data-no-js-route="/market-research">市场与研究</a>
+          <a href="#/settings" data-no-js-route="/settings">设置</a>
+        </nav>
+      </section>
+    </noscript>
     <script type="application/json" id="pfi-runtime-config">
       {"apiBaseUrl":"http://127.0.0.1:8766"}
     </script>

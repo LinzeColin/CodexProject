@@ -37,6 +37,17 @@
 
 兼容 route 合同在 `PFI/web/app/routes.js` 中暴露，`PFI/web/app/shell.js` 使用同一合同生成命令别名并做 route normalize。浏览器验收记录在 `PFI/reports/pfi_v023/stage_3/phase_3_2/browser_validation.json`。
 
+## Phase 3.3 浏览器行为
+
+本 phase 只交付 `Stage 3 Phase 3.3 — 浏览器行为`。浏览器行为范围固定为：
+
+- 点击一级入口后由 `pushState` 写入 hash route，并同步主工作区 state。
+- `popstate`/`hashchange` 可恢复工作区、active 状态和 route state。
+- 直接打开 hash route 或 `?route=` alias 时进入对应工作区。
+- 浏览器脚本关闭时，`noscript` fallback 暴露 10 个正式一级入口 route 链接。
+
+浏览器验收记录在 `PFI/reports/pfi_v023/stage_3/phase_3_3/browser_validation.json`，截图为 `screenshots/browser_history.png` 和 `screenshots/no_js_fallback.png`。
+
 ## 明确未做
 
-已完成 phase 不做 browser history/popstate 验收、不做二级页面差异化、不做 Stage 3 整体复审、不上传 GitHub main。上述内容分别属于 Stage 3 Phase 3.3、Stage 4 或 Stage 3 整体复审。
+已完成 phase 不做二级页面差异化、不做 Stage 3 整体复审、不上传 GitHub main。上述内容分别属于 Stage 4 或 Stage 3 整体复审。

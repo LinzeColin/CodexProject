@@ -106,8 +106,10 @@ class PFIHTMLParser(HTMLParser):
         self.primary_entries: list[dict[str, str]] = []
         self.mobile_entries: list[dict[str, str]] = []
         self.command_entries: list[dict[str, str]] = []
+        self.no_js_links: list[dict[str, str]] = []
         self.stylesheets: list[str] = []
         self.scripts: list[str] = []
+        self._noscript_depth = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         data = {key: value or "" for key, value in attrs}
@@ -115,6 +117,13 @@ class PFIHTMLParser(HTMLParser):
             self.stylesheets.append(data.get("href", ""))
         if tag == "script" and data.get("src"):
             self.scripts.append(data["src"])
+        if tag == "noscript":
+            self._noscript_depth += 1
+        if tag == "a" and self._noscript_depth > 0 and data.get("data-no-js-route"):
+            self._active_button = {"kind": "no_js", **data, "text": ""}
+            self._active_button_depth = 1
+            self._stack.append(self._active_button)
+            return
         if tag == "button" and data.get("data-primary-entry") == "true":
             self._active_button = {"kind": "primary", **data, "text": ""}
             self._active_button_depth = 1
@@ -150,7 +159,14 @@ class PFIHTMLParser(HTMLParser):
             if self._aria_hidden_depth > 0:
                 self._aria_hidden_depth -= 1
             self._active_button_depth -= 1
+        if item.get("kind") == "no_js":
+            self.no_js_links.append(_clean_entry(item))
         if tag != "button":
+            if self._active_button_depth <= 0:
+                self._active_button = None
+                self._active_button_depth = 0
+            if tag == "noscript" and self._noscript_depth > 0:
+                self._noscript_depth -= 1
             return
         if item.get("kind") == "primary":
             self.primary_entries.append(_clean_entry(item))
@@ -161,6 +177,8 @@ class PFIHTMLParser(HTMLParser):
         if self._active_button_depth <= 0:
             self._active_button = None
             self._active_button_depth = 0
+        if tag == "noscript" and self._noscript_depth > 0:
+            self._noscript_depth -= 1
 
 
 def _clean_entry(item: dict[str, str]) -> dict[str, str]:
@@ -352,6 +370,65 @@ class TestV023Stage3NavigationRoutes(unittest.TestCase):
         self.assertTrue(browser_validation["v01_alias_routes_resolve"])
         self.assertTrue(browser_validation["v01_aliases_not_top_level"])
         self.assertIn("Stage 3 Phase 3.3 browser history acceptance", evidence["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", evidence["explicitly_not_done"])
+
+    def test_phase33_shell_declares_browser_route_behaviors(self) -> None:
+        shell_text = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
+
+        self.assertIn("function syncBrowserRoute", shell_text)
+        self.assertIn("pushState", shell_text)
+        self.assertIn("replaceState", shell_text)
+        self.assertIn("function routeAliasFromLocation", shell_text)
+        self.assertIn("function applyRouteFromLocation", shell_text)
+        self.assertIn('window.addEventListener("hashchange"', shell_text)
+        self.assertIn('window.addEventListener("popstate"', shell_text)
+        self.assertIn("skipRouteSync", shell_text)
+
+    def test_phase33_no_js_fallback_exposes_10_official_route_links(self) -> None:
+        parser = parse_index()
+        labels = [entry["text"] for entry in parser.no_js_links]
+        hrefs = [entry["href"] for entry in parser.no_js_links]
+        routes = [entry["data-no-js-route"] for entry in parser.no_js_links]
+
+        self.assertEqual(labels, OFFICIAL_PRIMARY_LABELS)
+        self.assertEqual(routes, OFFICIAL_PRIMARY_ROUTES)
+        self.assertEqual(hrefs, [f"#{route}" for route in OFFICIAL_PRIMARY_ROUTES])
+        self.assertEqual(len(labels), 10)
+
+    def test_phase33_stage_evidence_exists_before_stage_review_or_upload(self) -> None:
+        evidence_path = ROOT / "reports" / "pfi_v023" / "stage_3" / "phase_3_3" / "evidence.json"
+        changed_files_path = ROOT / "reports" / "pfi_v023" / "stage_3" / "phase_3_3" / "changed_files.txt"
+        terminal_log_path = ROOT / "reports" / "pfi_v023" / "stage_3" / "phase_3_3" / "terminal.log"
+        browser_validation_path = ROOT / "reports" / "pfi_v023" / "stage_3" / "phase_3_3" / "browser_validation.json"
+        screenshot_path = ROOT / "reports" / "pfi_v023" / "stage_3" / "phase_3_3" / "screenshots" / "browser_history.png"
+
+        self.assertTrue(evidence_path.exists())
+        self.assertTrue(changed_files_path.exists())
+        self.assertTrue(terminal_log_path.exists())
+        self.assertTrue(browser_validation_path.exists())
+        self.assertTrue(screenshot_path.exists())
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser_validation = json.loads(browser_validation_path.read_text(encoding="utf-8"))
+        changed_files = [
+            line.strip()
+            for line in changed_files_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 3")
+        self.assertEqual(evidence["phase_id"], "V023-S3-P3.3")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertTrue(browser_validation["pushstate_hash_state_changes"])
+        self.assertTrue(browser_validation["popstate_back_forward_ok"])
+        self.assertTrue(browser_validation["direct_url_open_ok"])
+        self.assertTrue(browser_validation["no_js_fallback_has_10_routes"])
+        self.assertEqual(browser_validation["console_errors"], [])
+        self.assertIn("Stage 3 review not run", evidence["explicitly_not_done"])
         self.assertIn("GitHub main upload for intermediate phase", evidence["explicitly_not_done"])
 
 

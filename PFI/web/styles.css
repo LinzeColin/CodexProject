@@ -4,6 +4,41 @@
   }
 }
 
+.no-js-route-fallback {
+  margin: 24px auto;
+  max-width: 960px;
+  padding: 18px;
+  border: 1px solid var(--pfi-border, #d7dee2);
+  border-radius: 8px;
+  background: var(--pfi-surface, #ffffff);
+  color: var(--pfi-text, #1c2a33);
+}
+
+.no-js-route-fallback h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.no-js-route-fallback p {
+  margin: 0 0 14px;
+  color: var(--pfi-muted, #62717a);
+}
+
+.no-js-route-fallback nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.no-js-route-fallback a {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid var(--pfi-border, #d7dee2);
+  border-radius: 6px;
+  color: var(--pfi-blue, #215f9a);
+  text-decoration: none;
+}
+
 @media (max-width: 780px) {
   .mobile-bottom-nav[data-stage3-mobile-primary="10"] {
     display: flex;
