@@ -1,8 +1,8 @@
 schema_version: memory_river_params.v1
 product_target: Memory Atlas v1.1.5
-stage: "5.2"
-task: "5.2 Memory River Interaction"
-status: production_phase_5_2_heuristic
+stage: "5.3"
+task: "5.3 Evidence Layers"
+status: production_phase_5_3_heuristic
 last_updated: "2026-07-01"
 data_boundary:
   allowed_inputs:
@@ -13,8 +13,8 @@ data_boundary:
   local_absolute_paths_allowed: false
   writeback_allowed: false
 notes:
-  purpose: "Production Stage 5.2 parameters for Timeline renderer flag, UTC day scale, Macro/Meso/Micro Memory River lanes, pan, brush, event card, and safe feedback."
-  calibration_status: "heuristic layout and interaction constants; source-level and browser-smoke validated, not empirically calibrated"
+  purpose: "Production Stage 5.3 parameters for Timeline renderer flag, UTC day scale, Macro/Meso/Micro Memory River lanes, pan, brush, event card, safe feedback, and evidence layers."
+  calibration_status: "heuristic layout, interaction, and evidence-layer constants; source-level and browser-smoke validated, not empirically calibrated"
   rollback: "Set timelineRenderer=legacy, timeline=legacy, VITE_MEMORY_ATLAS_TIMELINE_RENDERER=legacy, or localStorage memory-atlas.timeline-renderer=legacy."
 time:
   use_utc_scale: true
@@ -96,6 +96,46 @@ feedback:
   vibration_default: false
   audio_feedback_max_gain: 0.018
   audio_feedback_max_duration_ms: 55
+evidence_layers:
+  evidence_payload: redacted_derived_signal_only
+  home_consistency_source: isBlackHoleCandidate / isProtoStarCandidate
+  black_hole_lifecycle_enabled: true
+  black_hole_signals:
+    - stale_short_term
+    - needs_review
+    - deprecated_info
+    - temporary_or_sensitive
+    - memory_tier: 临时
+  black_hole_render:
+    layer_kind: black-hole-lifecycle
+    shape: band_plus_strength_path
+    y_px: 500
+    min_width_px: 46
+    rollback: hide_layer_or_use_legacy_renderer
+  proto_star_lifecycle_enabled: true
+  proto_star_signals:
+    - decision
+    - project_context
+    - importance: 高
+    - leverage_score_min: 0.54
+    - opportunity_text_patterns: 机会|增长|突破|下一步|opportunity|next
+  proto_star_render:
+    layer_kind: proto-star-lifecycle
+    shape: growth_path_plus_markers
+    max_points: 10
+    rollback: show_as_candidate_markers_only
+  stale_deprecated_fade_enabled: true
+  stale_deprecated_signals:
+    - stale_short_term
+    - needs_review
+    - deprecated_info
+    - temporary_or_sensitive
+    - memory_tier: 临时
+  stale_deprecated_render:
+    layer_kind: stale-deprecated
+    shape: cooling_fade_segments
+    max_segments: 18
+    rollback: analysis_only_or_hide_layer
 validation_hints:
   required_sections:
     - time
@@ -103,6 +143,7 @@ validation_hints:
     - visual
     - interaction
     - feedback
+    - evidence_layers
   required_interactions:
     - renderer toggle
     - legacy rollback
@@ -117,11 +158,13 @@ validation_hints:
     - click event lock
     - black hole marker
     - proto-star marker
+    - black hole lifecycle band
+    - proto-star lifecycle path
+    - stale deprecated fade layer
     - reduced motion setting
     - default no audio
     - default no vibration
   non_goals:
-    - no Stage 5.3 evidence layers in Phase 5.2
-    - no Stage 5 whole-stage review in Phase 5.2
+    - no Stage 5 whole-stage review in Phase 5.3
     - no raw transcript access
     - no writeback

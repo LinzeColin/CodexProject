@@ -308,7 +308,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and ".memory-river-event-card" in css_source
         and ".timeline-sync-pill" in css_source
         and ".filter-chip-row .timeline-range-chip" in css_source
-        and 'stage: "5.2"' in memory_river_params_source
+        and 'stage: "5.3"' in memory_river_params_source
+        and 'task: "5.3 Evidence Layers"' in memory_river_params_source
         and "pan_enabled: true" in memory_river_params_source
         and "brush_enabled: true" in memory_river_params_source
         and "click_event_card_enabled: true" in memory_river_params_source
@@ -318,6 +319,39 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "timeline_stage5_2_river_interaction_ready",
         "Memory River supports pointer pan, brush range selection synced to Home/Galaxy/Interaction Lens, hover/click event cards, and safe reduced-motion/audio/haptic feedback settings",
         "Stage 5.2 Memory River pan, brush, event-card, sync, safe-feedback, or parameter contract is missing",
+    )
+    require(
+        checks,
+        'type MemoryRiverEvidenceKind = "black-hole-lifecycle" | "proto-star-lifecycle" | "stale-deprecated"' in app_source
+        and "interface MemoryRiverEvidenceLayer" in app_source
+        and "buildMemoryRiverEvidenceLayers(events, laneLookup, visibleLanes)" in app_source
+        and "buildBlackHoleLifecycleLayer" in app_source
+        and "buildProtoStarLifecycleLayer" in app_source
+        and "buildStaleDeprecatedLayer" in app_source
+        and "isMemoryRiverBlackHoleEvent" in app_source
+        and "isMemoryRiverProtoStarEvent" in app_source
+        and "isMemoryRiverStaleDeprecatedEvent" in app_source
+        and "isBlackHoleCandidate(event.node)" in app_source
+        and "isProtoStarCandidate(event.node, recentStart, latest)" in app_source
+        and "riverDisplay.evidenceLayers.map((layer)" in timeline_view
+        and 'data-evidence-layer={layer.kind}' in timeline_view
+        and 'data-evidence-segment={layer.kind}' in timeline_view
+        and "redacted derived signals" in timeline_view
+        and "black-hole-lifecycle" in timeline_view
+        and "proto-star-lifecycle" in timeline_view
+        and "stale-deprecated" in timeline_view
+        and ".memory-river-evidence-layer.black-hole-lifecycle rect" in css_source
+        and ".memory-river-evidence-layer.proto-star-lifecycle path" in css_source
+        and ".memory-river-evidence-layer.stale-deprecated rect" in css_source
+        and 'stage: "5.3"' in memory_river_params_source
+        and "black_hole_lifecycle_enabled: true" in memory_river_params_source
+        and "proto_star_lifecycle_enabled: true" in memory_river_params_source
+        and "stale_deprecated_fade_enabled: true" in memory_river_params_source
+        and "home_consistency_source: isBlackHoleCandidate / isProtoStarCandidate" in memory_river_params_source
+        and "evidence_payload: redacted_derived_signal_only" in memory_river_params_source,
+        "timeline_stage5_3_evidence_layers_ready",
+        "Memory River renders Stage 5.3 black-hole lifecycle, proto-star lifecycle, and stale/deprecated fade layers from redacted derived signals consistent with Home overview semantics",
+        "Stage 5.3 Memory River evidence layers, derived-signal mapping, CSS, parameters, or audit contract are missing",
     )
     require(
         checks,

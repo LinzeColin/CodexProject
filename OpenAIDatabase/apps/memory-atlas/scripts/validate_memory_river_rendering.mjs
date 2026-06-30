@@ -109,8 +109,8 @@ requireCheck(
   "memory_river_parameters_match_phase",
   hasAll(modelParams, [
     "schema_version: memory_river_params.v1",
-    'stage: "5.2"',
-    'task: "5.2 Memory River Interaction"',
+    'stage: "5.3"',
+    'task: "5.3 Evidence Layers"',
     "renderer_default: memory-river",
     "legacy_renderer: legacy",
     "use_utc_scale: true",
@@ -124,7 +124,7 @@ requireCheck(
     "click_event_card_enabled: true",
     "reduced_motion_suppresses_feedback: true",
   ]),
-  "Memory River model parameters document the current Phase 5.2 renderer, UTC scale, lane grouping, marker cap, rollback, and enabled interaction boundaries",
+  "Memory River model parameters document the current Phase 5.3 renderer, UTC scale, lane grouping, marker cap, rollback, interaction boundaries, and evidence-layer continuity",
   "Memory River model parameters are missing Phase 5.2 status, UTC/lane/marker values, rollback, or interaction boundaries",
 );
 

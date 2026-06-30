@@ -63,7 +63,7 @@ Cloudflare 方案：
 - 数据导图：应使用框架导图格式展示来源、画像、项目决策和行动机会，不是普通列表。
 - ROI Dashboard：显示 leverage score、推荐动作、层级、主题、增量信号；用于 ROI 排序和决策。
 - Obsidian Graph：支持 global/local graph、图谱设置折叠、Focus - Connectivity、节点显示名 `层级 · 主题 · 关键词`，并同步 Inspector。
-- Timeline：默认使用 Memory River 渲染器，以 UTC 日期尺度展示 Macro / Meso / Micro 河道、主题/项目/分类 lane、密度背景、真实事件日期 tick、播放游标、black-hole / proto-star / event marker；保留 legacy Timeline feature flag 回滚。Stage 5.2 已支持 Pan/Brush 模式、横向拖拽平移、UTC 时间段 brush selection、Interaction Lens / 首页 / 星系 heading 同步、hover/click redacted event card、click 锁定事件并同步 Inspector，以及 Reduced Motion / optional pseudo-haptic / optional audio 的安全反馈设置。Stage 5.3 evidence layers 仍未完成。
+- Timeline：默认使用 Memory River 渲染器，以 UTC 日期尺度展示 Macro / Meso / Micro 河道、主题/项目/分类 lane、密度背景、真实事件日期 tick、播放游标、black-hole / proto-star / event marker；保留 legacy Timeline feature flag 回滚。Stage 5.2 已支持 Pan/Brush 模式、横向拖拽平移、UTC 时间段 brush selection、Interaction Lens / 首页 / 星系 heading 同步、hover/click redacted event card、click 锁定事件并同步 Inspector，以及 Reduced Motion / optional pseudo-haptic / optional audio 的安全反馈设置。Stage 5.3 已支持 black-hole lifecycle band、proto-star lifecycle growth path、stale/deprecated cooling fade layer，均只使用 redacted derived snapshot 信号。
 - Contribution Grid：支持日/周/月/年和年份选择。日/周共享 7 行 x 52-54 列全年坐标，周模式以一整列自然周为对象；月/年共享两年 24 列，年视图纵向展示。
 - Word Cloud：Heatmap、Bubble Chart、Word Cloud 三层都可点击并同步右侧详情。
 - Search/Review：搜索与复盘必须输出人能直接用的结论和行动，不只给数据库字段。
@@ -118,6 +118,7 @@ Writeback：
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 2.2 Galaxy 替换计划；当前生产 Galaxy 未替换，新旧 renderer feature flag、回滚路径、截图/FPS/隐私验收进入后续 Stage 4 实施。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 2.3 Timeline 替换计划；当前生产 Timeline 未替换，新旧 renderer feature flag、UTC 时间尺度、brush、hover、Inspector 同步和 reduced motion 验收进入后续 Stage 5 实施。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 2 整体复审；复审确认本阶段只新增计划和记录文件，未替换生产路由、Galaxy、Timeline 或写回行为。
+- 2026-07-01：完成 Memory Atlas v1.1.5 Stage 5.3 Evidence Layers；Memory River 增加黑洞生命周期、机会生命周期和冷却/废弃 fade layer，Stage 5 整阶段复审和 main 上传仍需下一轮执行。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.1 默认首页实现；`记忆总览` 成为启动板块，左侧导航保留，首页显示 Memory Weather、Universe State 状态卡、Black Hole / Proto-Star 信号和 proposal-only 行动建议；Galaxy 与 Timeline 仍未替换。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.2 首页预览组件；首页新增轻量 `Mini Starfield`、近期主题变化 `River Pulse` 和 `Inspector Deep Link`，点击前同步当前焦点再进入 Galaxy、Timeline 或详情检索；Stage 3 整体复审通过，仍未替换 Galaxy/Timeline、未直接写回长期记忆、未读取 raw/private 数据。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 4.1 Galaxy Rendering Integration；`memory-starfield` 成为 Galaxy 默认生产 renderer，`legacy` 可通过 feature flag 回滚；生产 Galaxy 增加 Flow Field 动态、轨迹线、语义信号标记、quality selector 和低质量 fallback，仍未进入 Stage 4.2 数据映射或 Stage 4.3 交互扩展。
