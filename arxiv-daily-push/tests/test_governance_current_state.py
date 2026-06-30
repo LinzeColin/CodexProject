@@ -35,6 +35,15 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_VALIDATOR_RUNTIME_STEP_SUMMARY_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY", current_state)
+        self.assertIn("303854706b4dee813e8e9d3f970bfce8943db4a162779845835d1682d5dc91ff", current_state)
+        self.assertIn("final_bundle_prerequisite_plan_state_hash=bc5c75ce6138842f2b3de247420260b55d3b1a5f7cfb6f10dc44f91efb594af6", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_VALIDATOR_RUNTIME_STEP_SUMMARY.md", ledger)
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )

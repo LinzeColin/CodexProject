@@ -5662,3 +5662,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY"
+    title: "S2PMT07 final bundle validator runtime step summary"
+    parent_task_id: "S2PMT07-FINAL-BUNDLE-VALIDATION"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T19:00:51+10:00"
+    objective: "Make validate-final-acceptance-bundle expose final-bundle prerequisite routing and S2PLT02 runtime wait step at top level."
+    scope: "Final acceptance bundle readiness builder validation, focused final-gate and CLI regressions, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no S2PLT03 terminal proof artifact, no S2PLT04 completion report, no final-bundle manifest/handoff/signoff/final-command proof, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC", "S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE", "S2PLT04-COMPLETION-REPORT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_VALIDATOR_RUNTIME_STEP_SUMMARY.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY-20260630.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_bundle_top_focus PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_bundle_top_live PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json"]
+    test_results: ["focused final-gate + CLI tests: 159 OK", "live CLI: blocked / exit 2 with state_hash 303854706b4dee813e8e9d3f970bfce8943db4a162779845835d1682d5dc91ff and next_executable_runtime_step WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_VALIDATOR_RUNTIME_STEP_SUMMARY.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_final_bundle_validator_runtime_step_summary_synced_no_production"
+    risk: "A reviewer can run validate-final-acceptance-bundle as the final entrypoint and miss the nested prerequisite route unless the top-level payload exposes the runtime wait step."
+    rollback: "Revert the final-bundle readiness top-level routing summary fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
