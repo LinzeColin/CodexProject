@@ -1407,6 +1407,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(payload["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(payload["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertFalse(payload["ready_to_write_live_artifacts"])
         capture_summary = payload["s2plt02_terminal_delivery_capture_plan_summary"]
         self.assertEqual(payload["current_wait_state"], capture_summary["current_wait_state"])
         self.assertEqual(capture_summary["status"], "blocked")
@@ -1898,6 +1899,11 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(payload["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(payload["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertFalse(payload["ready_to_write_live_artifacts"])
+        self.assertIs(
+            payload["ready_to_write_live_artifacts"],
+            payload["final_bundle_prerequisite_plan"]["ready_to_write_live_artifacts"],
+        )
         self.assertEqual(
             payload["final_bundle_prerequisite_plan_state_hash"],
             payload["final_bundle_prerequisite_plan"]["state_hash"],
