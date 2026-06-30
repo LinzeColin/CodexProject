@@ -4261,6 +4261,10 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
     for reason in runtime_capture_blockers:
         if reason not in blocking_reasons:
             blocking_reasons.append(reason)
+    capture_plan_readonly_command = (
+        "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
+        f"--generated-at {generated_at} --json"
+    )
     capture_wait_state_guard = {
         "status": "pass" if runtime_capture_ready else "blocked",
         "scope": "s2plt02_wait_for_real_smtp_scheduler_capture_window_no_write",
@@ -4278,7 +4282,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "blocked_by_missing_inputs": missing_inputs,
         "remaining_runtime_actions": remaining_runtime_actions,
         "allowed_readonly_commands": [
-            "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --json",
+            capture_plan_readonly_command,
             "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
             "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
             "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
@@ -4574,8 +4578,12 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         errors.append("S2PLT02 wait guard missing inputs must match capture plan")
     if wait_guard.get("remaining_runtime_actions") != state.get("remaining_runtime_actions"):
         errors.append("S2PLT02 wait guard remaining runtime actions must match capture plan")
+    generated_at = str(state.get("generated_at") or "")
     expected_wait_readonly_commands = [
-        "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --json",
+        (
+            "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
+            f"--generated-at {generated_at} --json"
+        ),
         "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
         "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
         "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
@@ -8970,6 +8978,7 @@ def build_final_bundle_prerequisite_plan_state(
         {
             "status": s2plt02_capture_plan.get("status"),
             "state_hash": s2plt02_capture_plan.get("state_hash"),
+            "generated_at": s2plt02_capture_plan.get("generated_at"),
             "next_executable_step": s2plt02_capture_plan.get("next_executable_step"),
             "authorization_artifact_status": s2plt02_capture_plan.get("authorization_artifact_status"),
             "authorization_validation_state_hash": s2plt02_capture_plan.get(
@@ -9717,6 +9726,17 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
             "HANDOFF/00_下一Agent先读.md",
         ]
+        expected_wait_readonly_commands = [
+            (
+                "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
+                f"--generated-at {capture_plan_summary.get('generated_at')} --json"
+            ),
+            "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
+            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
+            "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+        ]
+        if wait_guard.get("allowed_readonly_commands") != expected_wait_readonly_commands:
+            errors.append("S2PLT02 capture plan summary wait guard readonly commands are invalid")
         if wait_guard.get("forbidden_until_terminal_dependencies_pass") != expected_forbidden_artifacts:
             errors.append("S2PLT02 capture plan summary wait guard forbidden artifacts are invalid")
         for flag in (
