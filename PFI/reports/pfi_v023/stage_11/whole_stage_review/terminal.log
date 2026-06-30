@@ -44,3 +44,42 @@ Candidate boundary:
 - human_acceptance_claimed=false
 - user acceptance remains required before closeout
 - GitHub main upload is verified after push by terminal gate
+
+User acceptance closeout appended at: 2026-06-30T08:17:46Z
+
+Acceptance source:
+- Current Codex thread user reply: 接受
+
+Closeout updates applied:
+- README now records v0.2.3 user-accepted closeout complete.
+- STAGE11_CLOSEOUT.md records user_acceptance_claimed=true and closeout_status=complete.
+- evidence.json status changed from review_pass to closeout_pass.
+- review_audit.json closes the user acceptance remaining item.
+
+Final closeout validation output will be appended after fresh verification commands.
+
+Final user-accepted closeout validation appended at: 2026-06-30T08:20:47Z
+
+Fresh verification commands and results:
+1. PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q
+   Result: 19 passed in 0.04s
+2. PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+   Result: 187 passed in 2.34s
+3. PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js routes.js reports.js upload.js
+   Result: node-check-ok
+4. json.tool over Stage 11 JSON plus git diff --check -- PFI
+   Result: json-and-diff-ok
+5. PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json
+   Result: status=Pass; 29 pass / 0 fail / 2 info
+6. app health
+   Result: 8501=ok; 8766={"status": "ok", "schema": "PFIV021RuntimeAPIV1"}
+7. targeted stale current-status scan on README, closeout doc, and whole-stage review evidence
+   Result: stale-status-scan-ok
+8. targeted forbidden finance data word scan on Stage 11 closeout evidence/audit docs
+   Result: forbidden-finance-data-word-scan-ok
+
+Final closeout boundary:
+- human_acceptance_claimed=true
+- user acceptance source: current Codex thread user reply "接受"
+- status=closeout_pass
+- GitHub main upload is verified after push by terminal gate

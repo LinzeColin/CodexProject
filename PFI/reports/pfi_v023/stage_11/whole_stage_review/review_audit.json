@@ -3,8 +3,14 @@
   "version": "v0.2.3",
   "stage": "Stage 11",
   "review_id": "V023-S11-WHOLE-STAGE-REVIEW",
-  "generated_at": "2026-06-30T07:50:52Z",
-  "human_acceptance_claimed": false,
+  "generated_at": "2026-06-30T08:17:46Z",
+  "human_acceptance_claimed": true,
+  "user_acceptance": {
+    "accepted": true,
+    "accepted_at": "2026-06-30T08:17:46Z",
+    "source": "current Codex thread user reply",
+    "acceptance_text": "接受"
+  },
   "blocker_count": 0,
   "checks": [
     {
@@ -33,9 +39,14 @@
       "evidence": "reports/pfi_v023/stage_11/phase_11_3/final_evidence_pack.json"
     },
     {
-      "id": "user_acceptance_gate_open",
+      "id": "user_acceptance_recorded",
       "status": "pass",
-      "evidence": "README.md and STAGE11_CLOSEOUT.md keep user_acceptance_claimed=false."
+      "evidence": "README.md, STAGE11_CLOSEOUT.md, and evidence.json record current-thread user reply acceptance_text=接受."
+    },
+    {
+      "id": "closeout_status_recorded",
+      "status": "pass",
+      "evidence": "README.md and STAGE11_CLOSEOUT.md record v0.2.3 closeout complete."
     }
   ],
   "findings_fixed": [
@@ -54,7 +65,8 @@
     {
       "id": "S11-REMAINING-1",
       "title": "用户明确验收",
-      "status": "open"
+      "status": "closed",
+      "resolution": "用户在当前 Codex thread 明确回复“接受”。"
     }
   ]
 }

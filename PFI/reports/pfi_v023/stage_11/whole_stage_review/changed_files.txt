@@ -1,12 +1,7 @@
 PFI/README.md
 PFI/docs/pfi_v023/STAGE11_CLOSEOUT.md
 PFI/tests/test_v023_regression.py
-PFI/reports/pfi_v023/stage_11/phase_11_3/evidence.json
-PFI/reports/pfi_v023/stage_11/phase_11_3/terminal.log
-PFI/reports/pfi_v023/stage_11/whole_stage_review/browser_validation.json
 PFI/reports/pfi_v023/stage_11/whole_stage_review/changed_files.txt
 PFI/reports/pfi_v023/stage_11/whole_stage_review/evidence.json
 PFI/reports/pfi_v023/stage_11/whole_stage_review/review_audit.json
 PFI/reports/pfi_v023/stage_11/whole_stage_review/terminal.log
-PFI/reports/pfi_v023/stage_11/whole_stage_review/screenshots/desktop_review.png
-PFI/reports/pfi_v023/stage_11/whole_stage_review/screenshots/mobile_review.png
