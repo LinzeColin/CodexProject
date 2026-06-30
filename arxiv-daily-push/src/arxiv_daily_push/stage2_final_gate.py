@@ -7317,6 +7317,12 @@ def build_s2plt04_completion_evidence_audit_state(
         all(terminal_dependency_state.values())
         and all(evidence.get("artifact_status") == "pass" for evidence in source_evidence.values())
     )
+    s2plt02_nonterminal_refs = list(
+        _mapping(source_evidence["S2PLT02_LIVE_2D_PROOF"]).get("existing_nonterminal_refs", [])
+    )
+    s2plt03_nonterminal_refs = list(
+        _mapping(source_evidence["S2PLT03_RESILIENCE_PROOF"]).get("nonterminal_refs", [])
+    )
     state = {
         "status": "pass" if completion_report_ready else "blocked",
         "scope": S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_SCOPE,
@@ -7327,6 +7333,10 @@ def build_s2plt04_completion_evidence_audit_state(
         "s2plt04_completion_report_written": False,
         "required_source_evidence_refs": list(S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_SOURCE_EVIDENCE_REFS),
         "source_evidence": source_evidence,
+        "s2plt02_nonterminal_ref_count": len(s2plt02_nonterminal_refs),
+        "s2plt02_latest_nonterminal_ref": s2plt02_nonterminal_refs[-1] if s2plt02_nonterminal_refs else "",
+        "s2plt03_nonterminal_ref_count": len(s2plt03_nonterminal_refs),
+        "s2plt03_latest_nonterminal_ref": s2plt03_nonterminal_refs[-1] if s2plt03_nonterminal_refs else "",
         "terminal_dependency_state": terminal_dependency_state,
         "blocking_reasons": blocking_reasons,
         "default_next_actions": [
@@ -7382,6 +7392,22 @@ def validate_s2plt04_completion_evidence_audit_state(state: Mapping[str, Any]) -
     for ref in S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_SOURCE_EVIDENCE_REFS:
         if ref not in source_evidence:
             errors.append(f"S2PLT04 completion evidence audit must include {ref}")
+    s2plt02_evidence = _mapping(source_evidence.get("S2PLT02_LIVE_2D_PROOF"))
+    s2plt02_nonterminal_refs = list(s2plt02_evidence.get("existing_nonterminal_refs", []))
+    if state.get("s2plt02_nonterminal_ref_count") != len(s2plt02_nonterminal_refs):
+        errors.append("S2PLT04 completion evidence audit S2PLT02 nonterminal ref count is inconsistent")
+    if state.get("s2plt02_latest_nonterminal_ref") != (
+        s2plt02_nonterminal_refs[-1] if s2plt02_nonterminal_refs else ""
+    ):
+        errors.append("S2PLT04 completion evidence audit S2PLT02 latest nonterminal ref is inconsistent")
+    s2plt03_evidence = _mapping(source_evidence.get("S2PLT03_RESILIENCE_PROOF"))
+    s2plt03_nonterminal_refs = list(s2plt03_evidence.get("nonterminal_refs", []))
+    if state.get("s2plt03_nonterminal_ref_count") != len(s2plt03_nonterminal_refs):
+        errors.append("S2PLT04 completion evidence audit S2PLT03 nonterminal ref count is inconsistent")
+    if state.get("s2plt03_latest_nonterminal_ref") != (
+        s2plt03_nonterminal_refs[-1] if s2plt03_nonterminal_refs else ""
+    ):
+        errors.append("S2PLT04 completion evidence audit S2PLT03 latest nonterminal ref is inconsistent")
     terminal_dependencies = _mapping(state.get("terminal_dependency_state"))
     for dependency in S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES:
         if dependency not in terminal_dependencies:

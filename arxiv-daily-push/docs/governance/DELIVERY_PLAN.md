@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 294
+- task_count: 295
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 15:04:03 Australia/Sydney - S2PMT07 S2PLT04 Nonterminal Summary Sync
+
+- `S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC` updates `audit-s2plt04-completion-evidence` so its top-level JSON exposes S2PLT02/S2PLT03 nonterminal ref counts and latest refs.
+- Actual CLI remains blocked / exit 2 with `state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f`, `completion_report_ready=false`, `s2plt02_nonterminal_ref_count=14`, `s2plt02_latest_nonterminal_ref=governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json`, `s2plt03_nonterminal_ref_count=4`, and `s2plt03_latest_nonterminal_ref=governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json`.
+- This closes only a machine-readable evidence summary gap; S2PLT04 remains blocked by `s2plt02_live_2d_terminal_proof_missing` and `s2plt03_resilience_terminal_proof_missing`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- This does not write S2PLT02/S2PLT03 terminal proof, write S2PLT04 completion report, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 14:31:47 Australia/Sydney - S2PLT02 Terminal Capture Window Runtime State Sync
 

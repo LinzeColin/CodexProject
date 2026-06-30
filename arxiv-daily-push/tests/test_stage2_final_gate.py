@@ -4590,6 +4590,18 @@ class Stage2FinalGateTests(unittest.TestCase):
             "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
             s2plt02["existing_nonterminal_refs"],
         )
+        self.assertEqual(state["s2plt02_nonterminal_ref_count"], len(s2plt02["existing_nonterminal_refs"]))
+        self.assertEqual(state["s2plt02_nonterminal_ref_count"], 14)
+        self.assertEqual(
+            state["s2plt02_latest_nonterminal_ref"],
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
+        )
+        self.assertEqual(state["s2plt03_nonterminal_ref_count"], len(s2plt03["nonterminal_refs"]))
+        self.assertEqual(state["s2plt03_nonterminal_ref_count"], 4)
+        self.assertEqual(
+            state["s2plt03_latest_nonterminal_ref"],
+            "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+        )
         self.assertEqual(
             s2plt02["real_proof_capture_authorization_manifest_ref"],
             "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json",
