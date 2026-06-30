@@ -33,21 +33,82 @@ REQUIRED_KEYS = [
     "max_autofix_loops",
 ]
 
-REQUIRED_SECTIONS = [
-    "Human Summary",
-    "Background",
-    "Scope",
-    "Files To Inspect",
-    "Files Allowed To Modify",
-    "Files Forbidden",
-    "Implementation Requirements",
-    "Acceptance Criteria",
-    "Validation Tests",
-    "Stop Conditions",
-    "Review Requirements",
-    "Rollback Plan",
-    "Required Codex Result Pack",
-]
+SECTION_ALIASES = {
+    "human_summary": [
+        "Human Summary",
+        "人类摘要",
+        "摘要",
+        "任务摘要",
+    ],
+    "background": [
+        "Background",
+        "背景",
+        "上下文",
+    ],
+    "scope": [
+        "Scope",
+        "范围",
+        "任务范围",
+    ],
+    "files_to_inspect": [
+        "Files To Inspect",
+        "Files to Read",
+        "允许读取的文件",
+        "需要读取的文件",
+        "读取范围",
+    ],
+    "files_allowed_to_modify": [
+        "Files Allowed To Modify",
+        "Allowed Files",
+        "允许修改的文件",
+        "可修改文件",
+    ],
+    "files_forbidden": [
+        "Files Forbidden",
+        "Forbidden Files",
+        "禁止修改的文件",
+        "禁止文件",
+    ],
+    "implementation_requirements": [
+        "Implementation Requirements",
+        "Requirements",
+        "实现要求",
+        "需求要求",
+    ],
+    "acceptance_criteria": [
+        "Acceptance Criteria",
+        "验收标准",
+        "验收条件",
+    ],
+    "validation_tests": [
+        "Validation Tests",
+        "Validation Commands",
+        "验证测试",
+        "测试命令",
+    ],
+    "stop_conditions": [
+        "Stop Conditions",
+        "停止条件",
+        "阻断条件",
+    ],
+    "review_requirements": [
+        "Review Requirements",
+        "复审要求",
+        "审查要求",
+    ],
+    "rollback_plan": [
+        "Rollback Plan",
+        "回滚方案",
+        "回滚计划",
+    ],
+    "required_codex_result_pack": [
+        "Required Codex Result Pack",
+        "Codex Result Pack",
+        "Required Final Response",
+        "Required Codex Final Response",
+        "Codex 最终结果包",
+    ],
+}
 
 SECRET_PATTERNS = [
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
@@ -80,19 +141,38 @@ def extract_metadata(text: str) -> tuple[dict | None, list[str]]:
     return metadata, errors
 
 
-def section_body(text: str, heading: str) -> str:
-    pattern = re.compile(rf"^##\s+{re.escape(heading)}\s*$", re.I | re.M)
-    match = pattern.search(text)
-    if not match:
-        return ""
-    start = match.end()
-    next_heading = re.search(r"^##\s+", text[start:], re.M)
-    end = start + next_heading.start() if next_heading else len(text)
-    return text[start:end].strip()
+def normalize_heading(title: str) -> str:
+    title = title.strip()
+    title = re.sub(r"\s+#+\s*$", "", title)
+    title = re.sub(r"^\d+\s*[\.\)\-:：、]\s*", "", title)
+    return title.strip().casefold()
 
 
-def has_section(text: str, heading: str) -> bool:
-    return bool(re.search(rf"^##\s+{re.escape(heading)}\s*$", text, re.I | re.M))
+def iter_level_two_headings(text: str) -> list[tuple[int, int, str]]:
+    headings: list[tuple[int, int, str]] = []
+    for match in re.finditer(r"^##\s+(.+?)\s*$", text, re.M):
+        headings.append((match.start(), match.end(), match.group(1).strip()))
+    return headings
+
+
+def find_section_body(text: str, aliases: list[str]) -> str:
+    accepted = {normalize_heading(alias) for alias in aliases}
+    headings = iter_level_two_headings(text)
+    for index, (_, end, title) in enumerate(headings):
+        if normalize_heading(title) not in accepted:
+            continue
+        next_start = headings[index + 1][0] if index + 1 < len(headings) else len(text)
+        return text[end:next_start].strip()
+    return ""
+
+
+def section_body(text: str, canonical_key: str) -> str:
+    return find_section_body(text, SECTION_ALIASES[canonical_key])
+
+
+def has_section(text: str, canonical_key: str) -> bool:
+    accepted = {normalize_heading(alias) for alias in SECTION_ALIASES[canonical_key]}
+    return any(normalize_heading(title) in accepted for _, _, title in iter_level_two_headings(text))
 
 
 def list_value(value: object) -> list[str]:
@@ -175,18 +255,18 @@ def validate(text: str, allow_production: bool = False) -> tuple[dict | None, li
     if not isinstance(metadata.get("max_autofix_loops"), int) or metadata.get("max_autofix_loops", -1) < 0:
         fail(errors, "max_autofix_loops must be a non-negative integer")
 
-    for section in REQUIRED_SECTIONS:
-        if not has_section(text, section):
-            fail(errors, f"missing Markdown section: {section}")
-        elif not section_body(text, section):
-            fail(errors, f"empty Markdown section: {section}")
+    for canonical_key in SECTION_ALIASES:
+        if not has_section(text, canonical_key):
+            fail(errors, f"missing Markdown section: {canonical_key}")
+        elif not section_body(text, canonical_key):
+            fail(errors, f"empty Markdown section: {canonical_key}")
 
-    if not section_body(text, "Acceptance Criteria"):
+    if not section_body(text, "acceptance_criteria"):
         fail(errors, "acceptance criteria must exist")
-    validation_body = section_body(text, "Validation Tests")
+    validation_body = section_body(text, "validation_tests")
     if not validations and not re.search(r"(?i)\bN/A\b|not applicable|no runnable validation", validation_body):
         fail(errors, "validation tests must exist or include explicit N/A reason")
-    if not section_body(text, "Stop Conditions"):
+    if not section_body(text, "stop_conditions"):
         fail(errors, "stop conditions must exist")
     if contains_secret(text):
         fail(errors, "obvious secret-like value detected")

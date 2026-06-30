@@ -53,30 +53,40 @@ YAML-only 语法。
 
 ## Plane B: Human-Readable Markdown
 
-必须包含以下 section heading：
+Human plane 可以是中文、英文或中英双语。Owner 不需要记住精确英文标题；
+validator 会把等价的中文/英文/编号式 `##` headings 映射到同一组 canonical
+sections。
 
-- `## Human Summary`
-- `## Background`
-- `## Scope`
-- `## Files To Inspect`
-- `## Files Allowed To Modify`
-- `## Files Forbidden`
-- `## Implementation Requirements`
-- `## Acceptance Criteria`
-- `## Validation Tests`
-- `## Stop Conditions`
-- `## Review Requirements`
-- `## Rollback Plan`
-- `## Required Codex Result Pack`
+必须覆盖以下 canonical sections：
+
+| Canonical section | Accepted heading examples |
+|---|---|
+| `human_summary` | `## Human Summary`, `## 1. 人类摘要`, `## 摘要` |
+| `background` | `## Background`, `## 2. 背景`, `## 上下文` |
+| `scope` | `## Scope`, `## 3. 范围`, `## 任务范围` |
+| `files_to_inspect` | `## Files To Inspect`, `## 4. 允许读取的文件`, `## 需要读取的文件` |
+| `files_allowed_to_modify` | `## Files Allowed To Modify`, `## 5. 允许修改的文件`, `## 可修改文件` |
+| `files_forbidden` | `## Files Forbidden`, `## 6. 禁止修改的文件`, `## 禁止文件` |
+| `implementation_requirements` | `## Implementation Requirements`, `## 7. 实现要求`, `## Requirements` |
+| `acceptance_criteria` | `## Acceptance Criteria`, `## 8. 验收标准`, `## 验收条件` |
+| `validation_tests` | `## Validation Tests`, `## 9. 验证测试`, `## Validation Commands` |
+| `stop_conditions` | `## Stop Conditions`, `## 10. 停止条件`, `## 阻断条件` |
+| `review_requirements` | `## Review Requirements`, `## 11. 审查要求`, `## 复审要求` |
+| `rollback_plan` | `## Rollback Plan`, `## 12. 回滚计划`, `## 回滚方案` |
+| `required_codex_result_pack` | `## Required Codex Result Pack`, `## 13. Codex 最终结果包`, `## Required Final Response` |
+
+Validator 只匹配 Markdown 二级标题：以 `##` 开头的 heading。正文里的随机文本
+不会被当作 section。
 
 ## Ingestion Modes
 
 同一个 Task Pack 可以通过三种方式进入 workflow：
 
 - `workflow_dispatch`: 粘贴到 `taskpack` 输入。
-- `issues` opened/edited/labeled: issue body 就是 Task Pack，issue 必须同时有
-  `agent:run` 和 `source:chatgpt-approved`，且没有 `agent:running`、
-  `agent:done`、`agent:blocked`。
+- `issues` opened/edited/labeled: issue body 就是 Task Pack。可信作者创建或编辑
+  包含 metadata 的 issue 时不需要手动加标签；workflow 会读取 live issue labels，
+  自动加 `agent:run`、`source:chatgpt-approved`、`agent:running`，并让重复
+  opened/labeled 触发安全跳过。
 - `repository_dispatch`: event type 为 `agent_loop_taskpack`，payload 中
   `taskpack` 字段就是 Task Pack。
 
