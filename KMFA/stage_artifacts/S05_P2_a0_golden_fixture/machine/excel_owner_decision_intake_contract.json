@@ -1,0 +1,65 @@
+{
+  "accepted_record_type": "s05_p2_excel_owner_resolution_decision",
+  "allowed_actor_roles": [
+    "owner",
+    "authorized_delegate"
+  ],
+  "allowed_decision_codes": [
+    "provide_private_field_mapping",
+    "downgrade_to_cross_source_support",
+    "keep_pending"
+  ],
+  "candidate_id": "A0-CAND-70023EFC7305",
+  "current_gate": "KMFA-S05-P2-EXCEL-RESOLUTION-GATE",
+  "decision_record_status": "no_owner_decision_recorded",
+  "file_id": "A0-FILE-BAE6D90834C5",
+  "forbidden_public_metadata_keys": [
+    "raw_value",
+    "normalized_value",
+    "original_value",
+    "plaintext_content",
+    "full_file_text",
+    "raw_file_bytes",
+    "bank_account_number",
+    "identity_document_number",
+    "password",
+    "token",
+    "api_key",
+    "private_key"
+  ],
+  "github_upload_allowed": false,
+  "pending_field_keys": [
+    "contract_amount",
+    "total_expense",
+    "gross_profit",
+    "gross_margin",
+    "cost_category"
+  ],
+  "phase_id": "S05-P2",
+  "post_intake_rules": {
+    "downgrade_to_cross_source_support": [
+      "candidate_role must be cross_source_support_only",
+      "q5_exclusion_confirmed must be true",
+      "private_hash_refs must not be supplied"
+    ],
+    "keep_pending": [
+      "reason_pending is required",
+      "next_review_trigger is required",
+      "private_hash_refs must not be supplied"
+    ],
+    "provide_private_field_mapping": [
+      "source_anchor_refs must include every pending field",
+      "private_hash_refs must include every pending field",
+      "hash refs must use sha256: prefix",
+      "Q4/Q5 remain false until S05-P3"
+    ]
+  },
+  "project_id": "KMFA",
+  "q4_confirmation_permitted_by_intake": false,
+  "q5_baseline_permitted_by_intake": false,
+  "raw_or_plaintext_allowed": false,
+  "readiness_status": "ready_for_owner_decision_record",
+  "record_type": "s05_p2_excel_owner_decision_intake_contract",
+  "schema_version": "kmfa.s05_p2_excel_owner_decision_intake_contract.v1",
+  "stage_id": "S05"
+}

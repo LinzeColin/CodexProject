@@ -1190,10 +1190,13 @@ tasks:
       - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
       - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_s05_p2_excel_owner_decision -q"
       - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_excel_owner_decision.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_s05_p2_owner_decision_intake -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_owner_decision_intake.py"
     test_results:
       - "PASS: field contract contains contract_amount, total_expense, gross_profit, gross_margin and cost_category"
       - "PARTIAL_HASH_ONLY_BACKFILL: 40 PDF field candidates have private value hashes; 5 Excel field candidates remain pending after machine review"
       - "PASS: Excel owner decision packet validator confirms allowed decisions, pending fields, approval/control events and Q4/Q5 boundaries"
+      - "PASS: Excel owner decision intake validator confirms public-safe future decision schema, actor role boundary, forbidden plaintext keys and Q4/Q5 boundaries"
     evidence_refs:
       - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
@@ -1203,8 +1206,11 @@ tasks:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_packet.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_intake_contract.json"
       - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
       - "KMFA/tests/test_s05_p2_excel_owner_decision.py"
+      - "KMFA/tools/check_s05_p2_owner_decision_intake.py"
+      - "KMFA/tests/test_s05_p2_owner_decision_intake.py"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
     risk: "Public-safe field contract and 40 hash-only rows do not prove the full A0 baseline until Excel pending fields receive owner/authorized resolution and human confirmation."
     rollback: "Remove a0_golden_fixture.py, check_a0_golden_fixture.py, S05-P2 metadata/artifacts, and restore S05-P2 status to planned."
@@ -1232,8 +1238,10 @@ tasks:
     test_commands:
       - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
       - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_excel_owner_decision.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_owner_decision_intake.py"
     test_results:
       - "PASS_WITH_EXCEL_PENDING: 40 field candidates have hash/source anchors; 5 Excel field candidates remain pending after machine review; raw/normalized values are not public"
+      - "PASS: owner decision intake contract is ready but no owner decision record is supplied"
     evidence_refs:
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
@@ -1241,6 +1249,8 @@ tasks:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
       - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_intake_contract.json"
+      - "KMFA/tools/check_s05_p2_owner_decision_intake.py"
     risk: "Excel page/sheet/cell and value hashes remain pending until private mapping or an explicit owner/authorized resolution exists."
     rollback: "Remove A0 golden fixture candidate JSONL and rerun S05-P2 status update."
     target_version: "0.1.0-s05p2-private-backfill-partial"
@@ -1267,15 +1277,19 @@ tasks:
     test_commands:
       - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
       - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_excel_owner_decision.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_owner_decision_intake.py"
     test_results:
       - "PASS_WITH_EXCEL_PENDING: 45 public-safe fixture candidates generated; 40 hash-recorded, 5 pending; q4_human_confirmed=false and q5_calculation_baseline_allowed=false"
+      - "PASS_WITH_NO_OWNER_DECISION_SUPPLIED: intake contract is ready for future owner/authorized decision records"
     evidence_refs:
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/s05_p2_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/private_backfill_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_packet.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_intake_contract.json"
       - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
+      - "KMFA/tools/check_s05_p2_owner_decision_intake.py"
     risk: "Generated candidates are not authoritative golden fixtures until Excel pending fields and human confirmation are complete."
     rollback: "Remove S05-P2 golden fixture artifacts and restore S05-P2 status to planned."
     target_version: "0.1.0-s05p2-private-backfill-partial"
