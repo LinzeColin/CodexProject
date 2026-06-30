@@ -552,6 +552,72 @@ class CliTests(unittest.TestCase):
         self.assertNotIn("second_consecutive_real_m1_m4_smtp_day_missing", payload["blocking_reasons"])
         self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", payload["blocking_reasons"])
 
+    def test_audit_s2plt02_real_scheduler_proof_capture_json_blocks_disabled_launchagents(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            launchctl_file = tmp_root / "launchctl-disabled.txt"
+            launchctl_file.write_text(
+                "\n".join(
+                    [
+                        '"com.linze.adp.local.daily" => disabled',
+                        '"com.linze.adp.local.health" => disabled',
+                        '"com.linze.adp.local.watchdog" => disabled',
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            launchctl_print_files = []
+            for label in (
+                "com.linze.adp.local.daily",
+                "com.linze.adp.local.health",
+                "com.linze.adp.local.watchdog",
+            ):
+                launchctl_print_file = tmp_root / f"{label}.print.txt"
+                launchctl_print_file.write_text(
+                    """
+                    type = LaunchAgent
+                    state = not running
+                    event triggers = {
+                        com.linze.adp.local.daily.268435486 => {
+                            stream = com.apple.launchd.calendarinterval
+                        }
+                    }
+                    """,
+                    encoding="utf-8",
+                )
+                launchctl_print_files.extend(["--launchctl-print-file", f"{label}={launchctl_print_file}"])
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "arxiv_daily_push",
+                    "audit-s2plt02-real-scheduler-proof-capture",
+                    "--launchctl-disabled-file",
+                    str(launchctl_file),
+                    *launchctl_print_files,
+                    "--generated-at",
+                    "2026-07-01T09:22:00+10:00",
+                    "--json",
+                ],
+                cwd=repo_root,
+                env={**os.environ, "PYTHONPATH": str(repo_root / "arxiv-daily-push" / "src")},
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(completed.returncode, 2)
+        self.assertTrue(completed.stdout.strip().startswith("{"), completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertEqual(payload["task_id"], "S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-AUDIT")
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["scheduler_proof_ready"])
+        self.assertIn("launchagents_disabled_not_terminal_scheduler_proof", payload["blocking_reasons"])
+        self.assertIn("scheduler_run_manifest_missing", payload["blocking_reasons"])
+        self.assertFalse(payload["scheduler_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+
     def test_validate_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             path = Path(tmp_dir) / "s2plt02_real_proof_capture_authorization.json"
