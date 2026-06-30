@@ -1,0 +1,32 @@
+{
+  "completion_record_ref": "KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/s09_p1_completion_record.md",
+  "cost_category_count": 9,
+  "fact_layer_manifest_ref": "KMFA/metadata/reports/project_cost_fact_layer_manifest.json",
+  "fact_layer_status": "structural_fact_layer_blocked_for_formal_calculation",
+  "fact_record_count": 4,
+  "fact_records_ref": "KMFA/metadata/lineage/project_cost_fact_records.jsonl",
+  "formal_report_allowed": false,
+  "generated_at": "2026-06-30T23:30:00+10:00",
+  "github_upload_allowed": false,
+  "manual_review_queue_count": 3,
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "record_type": "s09_p1_project_cost_fact_layer_manifest",
+  "required_metric_count": 6,
+  "s09_p2_scope_included": false,
+  "s09_p3_scope_included": false,
+  "schema_version": "kmfa.s09_p1_manifest.v1",
+  "stage9_review_scope_included": false,
+  "stage_phase": "S09-P1",
+  "test_results_ref": "KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/test_results.md",
+  "unallocated_pool_count": 9,
+  "unallocated_project_cost_pool_ref": "KMFA/metadata/lineage/unallocated_project_cost_pool.jsonl",
+  "unresolved_difference_count": 1,
+  "validator_ref": "KMFA/tools/check_s09_p1_project_cost_fact_layer.py"
+}

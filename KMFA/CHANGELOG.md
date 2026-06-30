@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s09p1-project-cost-fact-layer - 2026-06-30
+
+- 完成 `S09-P1｜项目成本事实层` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/project_cost_fact_layer.py`、`KMFA/tools/check_s09_p1_project_cost_fact_layer.py` 和 `KMFA/tests/test_project_cost_fact_layer.py`。
+- 生成 public-safe fact layer manifest、4 条 project cost fact records 和 9 条 unallocated project cost pool records，覆盖 revenue、contract_amount、invoice_amount、collection_amount、cost_total、cost_category。
+- 成本分类覆盖 labor、material、machinery、subcontract、transport、travel、tax、management_fee、interest；S06/S08 未关闭质量阻断保留为 formal calculation blocker。
+- 公开仓库不提交 raw business data、zip、Excel、PDF、private CSV、字段明文或真实业务值；S09-P2、S09-P3、Stage 9 review、lineage、正式报告、UI、外部接口和 GitHub upload 均未执行。
+
 ## 0.1.0-s08-github-upload - 2026-06-30
 
 - 完成 Stage 8 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。

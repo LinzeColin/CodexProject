@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s08-github-upload`
+- version: `0.1.0-s09p1-project-cost-fact-layer`
 - current_stage: `S09`
-- current_phase: `S09-P1｜项目成本事实层 待开始`
-- status: `stage8_uploaded_to_github_main_s09p1_next`
+- current_phase: `S09-P2｜毛利与现金毛利 待开始`
+- status: `s09p1_completed_validated_local_only_s09p2_next`
 - production_ready: `false`
 - github_upload_ready: `false_until_stage9_review`
 
@@ -68,14 +68,16 @@
 - S08-P3 证据位于 `KMFA/stage_artifacts/S08_P3_entity_matching_quality/`；当前中间 Phase 未执行 GitHub upload。
 - Stage 8 整体复审已本地通过：`KMFA/stage_artifacts/S08_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；复审确认 S08-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 evidence consistency check 通过。
 - Stage 8 final GitHub upload 已完成：`KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json` 记录 rebase binding、validator、raw/secret scan、dry-run push、push 和 post-push parity 证据。
+- S09-P1 项目成本事实层已完成本地验证：`KMFA/tools/project_cost_fact_layer.py` 生成 public-safe project cost fact layer manifest、4 条项目事实记录和 9 条未归集成本池记录；`KMFA/tools/check_s09_p1_project_cost_fact_layer.py` 验证收入、合同额、开票、回款、成本合计、成本分类 slots，9 类成本分类覆盖，S09-P2/S09-P3/Stage 9 review/报告/UI/外部接口/GitHub upload scope 均为 false。
+- S09-P1 证据位于 `KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/`；当前中间 Phase 未执行 Stage 9 整体复审或 GitHub upload。
 
 ## 未完成
 
-- S09-P1 项目成本事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload、Stage 7 upload、Stage 8 upload 不代表正式报告可发布。
+- S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对、Stage 9 整体复审、lineage 完整检查、报告、UI 和外部接口尚未完成；S09-P1 fact layer 不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload 已完成；下一步只能执行 S09-P1 项目成本事实层，不能跳到 S09-P2、UI、报告、lineage 或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload 和 S09-P1 project cost fact layer 已完成；下一步只能执行 S09-P2 毛利与现金毛利，不能跳到 S09-P3、Stage 9 review、UI、报告、lineage 或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
