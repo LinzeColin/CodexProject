@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC"
+    phase: "S2PL"
+    objective: "Consume the validated P0/P1 zero-proof artifact inside final-bundle reviewer request states without closing P0/P1 or enabling production."
+    scope: "stage2_final_gate assignment request and closure decision request state, focused tests, governance records, user-center traceability, and no-production run manifest."
+    non_scope: "No P0/P1 closure, S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced."
+    status: "blocked"
+    dependencies: ["S2PMT07-P0-P1-ZERO-PROOF-VALIDATOR", "S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC"]
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "src/arxiv_daily_push/stage2_final_gate.py", "tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_zero_request_sync_focused PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_governance_current_state.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["pending in this commit until verification run"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC.md", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"]
+    risk: "Validated zero-proof artifact could be misread as final closure; gate remains blocked until independent closure decision, S2PLT04, final bundle, and terminal proofs pass."
+    rollback: "Revert stage2_final_gate zero-proof request consumption changes plus this governance sync."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC"
     phase: "S2PL"
     objective: "Consume the validated independent final reviewer assignment artifact in final-bundle readiness without closing P0/P1 or enabling production."

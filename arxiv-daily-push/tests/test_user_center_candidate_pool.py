@@ -144,6 +144,19 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
 
+        self.assertIn("REQ-ADP-V7-069-S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_zero_proof_request_consumed_no_production", page)
+        self.assertIn("zero_proof_artifact_validation_state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786", page)
+        self.assertIn("assignment_request_state_hash=8a4596dbb16f55932e36b256fc22852e1f8ca52da22bdd85d6d1c79d23b61c1b", page)
+        self.assertIn("closure_decision_request_state_hash=afc1155fafad8c460db5e09eb9890e7408a1e28dd0bf155121bf1a0308529e34", page)
+        self.assertIn("cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094", page)
+
         self.assertIn("REQ-ADP-V7-068-S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC", page)
         self.assertIn(

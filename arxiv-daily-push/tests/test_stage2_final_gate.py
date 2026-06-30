@@ -4423,6 +4423,63 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["daily_operation_enabled"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
+    def test_final_acceptance_bundle_readiness_consumes_committed_zero_proof_in_reviewer_requests(self) -> None:
+        assignment = self._valid_independent_final_reviewer_assignment_payload()
+        zero_proof = self._valid_zero_proof_payload()
+
+        with TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            bundle_dir = root / "FINAL_ACCEPTANCE_BUNDLE"
+            bundle_dir.mkdir()
+            (bundle_dir / "independent_final_reviewer_assignment.json").write_text(
+                json.dumps(assignment, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            (bundle_dir / "p0_p1_zero_proof.json").write_text(
+                json.dumps(zero_proof, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            state = build_final_acceptance_bundle_readiness_state(repo_root=root)
+
+        artifact_validation = state["p0_p1_zero_proof_artifact_validation"]
+        self.assertEqual(artifact_validation["status"], "pass")
+        self.assertTrue(artifact_validation["artifact_present"])
+        self.assertTrue(artifact_validation["p0_zero_proven_by_payload"])
+        self.assertTrue(artifact_validation["p1_zero_proven_by_payload"])
+
+        assignment_request = state["independent_final_reviewer_assignment_request"]
+        self.assertTrue(assignment_request["zero_proof_artifact_present"])
+        self.assertTrue(assignment_request["p0_zero_proven"])
+        self.assertTrue(assignment_request["p1_zero_proven"])
+        self.assertEqual(
+            assignment_request["p0_p1_zero_proof_artifact_validation_state_hash"],
+            artifact_validation["state_hash"],
+        )
+        self.assertNotIn(
+            "p0_p1_zero_proof_artifact_missing",
+            assignment_request["blocking_reasons"],
+        )
+
+        closure_request = state["independent_final_closure_decision_request"]
+        self.assertTrue(closure_request["zero_proof_artifact_present"])
+        self.assertTrue(closure_request["p0_zero_proven"])
+        self.assertTrue(closure_request["p1_zero_proven"])
+        self.assertEqual(
+            closure_request["p0_p1_zero_proof_artifact_validation_state_hash"],
+            artifact_validation["state_hash"],
+        )
+        self.assertNotIn(
+            "p0_p1_zero_proof_artifact_missing",
+            closure_request["blocking_reasons"],
+        )
+
+        self.assertIn("s2plt04_completion_evidence_missing", state["blocking_reasons"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
     def test_final_acceptance_bundle_readiness_requires_independent_reviewer_assignment_even_when_artifacts_pass(self) -> None:
         with TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
