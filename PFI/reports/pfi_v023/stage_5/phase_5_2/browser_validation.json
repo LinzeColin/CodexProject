@@ -1,0 +1,16 @@
+{
+  "stage_id": "PFI-V023-STAGE5-PHASE52",
+  "browser": "Google Chrome headless",
+  "url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html#/home",
+  "screenshot": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_5/phase_5_2/home_phase52_actions.png",
+  "screenshot_bytes": 563959,
+  "pixel_width": 1440,
+  "pixel_height": 1100,
+  "next_actions_source_json": "PFI/reports/pfi_v023/stage_5/phase_5_2/action_sources.json",
+  "action_sources": [
+    "data_status",
+    "review_task"
+  ],
+  "route_jump_required": true,
+  "blocked_action_explanation_required": true
+}

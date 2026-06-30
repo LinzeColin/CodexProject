@@ -16,6 +16,11 @@ STAGE5_PHASE51_SECTIONS = (
     "recent_changes",
 )
 
+STAGE5_PHASE52_ACTION_SOURCES = (
+    "data_status",
+    "review_task",
+)
+
 HOME_FORBIDDEN_VISIBLE_TERMS = (
     "Task Pack",
     "运行边界",
@@ -33,6 +38,7 @@ const home = require('./PFI/web/app/pages/home.js');
 const payload = JSON.parse(process.argv[1] || '{}');
 console.log(JSON.stringify({
   contract: home.buildStage5Phase51Contract(),
+  phase52Contract: home.buildStage5Phase52Contract(),
   view: home.buildStage5HomeViewModel(payload),
 }));
 """
@@ -66,6 +72,25 @@ class TestV023Stage5HomeExperience(unittest.TestCase):
         self.assertIn("PFI/web/app/pages/home.js", contract["allowed_files"])
         self.assertIn("PFI/tests/test_v023_stage5_home_experience.py", contract["allowed_files"])
         self.assertIn("Phase 5.2 下一步动作生成", contract["explicitly_not_done"])
+        self.assertIn("Stage 6 核心财务指标 read model 接入", contract["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
+
+    def test_phase52_contract_is_limited_to_next_action_generation(self) -> None:
+        payload = load_stage5_home()
+        contract = payload["phase52Contract"]
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 5")
+        self.assertEqual(contract["phase_id"], "V023-S5-P5.2")
+        self.assertEqual(contract["phase_name"], "下一步动作")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertEqual(tuple(contract["action_sources"]), STAGE5_PHASE52_ACTION_SOURCES)
+        self.assertIn("由数据状态生成动作", contract["tasks"])
+        self.assertIn("由待复核生成动作", contract["tasks"])
+        self.assertIn("动作可跳转", contract["tasks"])
+        self.assertIn("阻断动作可解释", contract["tasks"])
+        self.assertIn("Phase 5.3 去 AI 痕迹全量清理", contract["explicitly_not_done"])
         self.assertIn("Stage 6 核心财务指标 read model 接入", contract["explicitly_not_done"])
         self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
 
@@ -122,6 +147,105 @@ class TestV023Stage5HomeExperience(unittest.TestCase):
         self.assertTrue(view["data_health"]["uses_stage2_statuses"])
         self.assertEqual(view["recent_changes"][0]["state"], "empty")
         self.assertIn("真实变化记录", view["recent_changes"][0]["message"])
+
+    def test_phase52_next_actions_are_generated_from_data_status_and_review_tasks(self) -> None:
+        payload = load_stage5_home(
+            {
+                "metric_states": [
+                    {
+                        "metric_id": "net_worth_cny",
+                        "label": "净资产",
+                        "value": None,
+                        "currency": "CNY",
+                        "status": "not_mounted",
+                        "source": None,
+                        "as_of": None,
+                        "evidence_hash": None,
+                        "message_zh": "真实数据源未挂链",
+                    },
+                    {
+                        "metric_id": "cash_balance_cny",
+                        "label": "现金余额",
+                        "value": None,
+                        "currency": "CNY",
+                        "status": "review_required",
+                        "source": "read_model:cash",
+                        "as_of": "2026-06-30T09:00:00+10:00",
+                        "evidence_hash": "sha256:cash-review",
+                        "message_zh": "需要人工复核",
+                    },
+                    {
+                        "metric_id": "investment_market_value_cny",
+                        "label": "投资市值",
+                        "value": 1100,
+                        "currency": "CNY",
+                        "status": "ready",
+                        "source": "read_model:holdings",
+                        "as_of": "2026-06-30T09:00:00+10:00",
+                        "evidence_hash": "sha256:holdings",
+                        "message_zh": "真实数据已加载",
+                    },
+                ],
+                "review_tasks": [
+                    {
+                        "task_id": "ledger-review-001",
+                        "label": "复核低置信度流水",
+                        "reason": "有 3 条流水需要人工确认分类",
+                        "routeAlias": "/ledger?tab=review",
+                        "targetWorkspace": "ledger",
+                        "evidence_count": 3,
+                    }
+                ],
+            }
+        )
+        view = payload["view"]
+        actions = view["next_actions"]
+        action_sources = {action["source_type"] for action in actions}
+
+        self.assertIn("data_status", action_sources)
+        self.assertIn("review_task", action_sources)
+        self.assertTrue(all(action["routeAlias"].startswith("/") for action in actions))
+        self.assertTrue(all(action["targetWorkspace"] for action in actions))
+        self.assertTrue(all(action["explanation_zh"] for action in actions))
+        self.assertTrue(all(action["generated_from"] for action in actions))
+
+        data_actions = [action for action in actions if action["source_type"] == "data_status"]
+        review_actions = [action for action in actions if action["source_type"] == "review_task"]
+
+        self.assertEqual({action["source_metric_id"] for action in data_actions}, {"net_worth_cny", "cash_balance_cny"})
+        self.assertTrue(any(action["blocked"] and "真实数据源未挂链" in action["explanation_zh"] for action in data_actions))
+        self.assertEqual(review_actions[0]["source_task_id"], "ledger-review-001")
+        self.assertEqual(review_actions[0]["routeAlias"], "/ledger?tab=review")
+        self.assertEqual(review_actions[0]["targetWorkspace"], "ledger")
+        self.assertIn("3 条流水", review_actions[0]["explanation_zh"])
+
+    def test_phase52_next_actions_drive_home_tasks_and_action_cards(self) -> None:
+        payload = load_stage5_home(
+            {
+                "metric_states": [
+                    {
+                        "metric_id": "month_spend_cny",
+                        "label": "本月支出",
+                        "value": None,
+                        "currency": "CNY",
+                        "status": "parse_error",
+                        "source": None,
+                        "as_of": None,
+                        "evidence_hash": None,
+                        "message_zh": "解析失败，请检查文件、行或字段",
+                    }
+                ],
+                "review_tasks": [],
+            }
+        )
+        view = payload["view"]
+
+        self.assertGreaterEqual(len(view["next_actions"]), 1)
+        self.assertEqual(view["next_actions"][0]["routeAlias"], "/sources-upload?tab=review")
+        self.assertIn("解析失败", view["next_actions"][0]["explanation_zh"])
+        self.assertIn("下一步动作", [card["title"] for card in view["home_features"]])
+        self.assertTrue(any(task["source_type"] == "data_status" for task in view["home_tasks"]))
+        self.assertNotIn("写死", json.dumps(view["next_actions"], ensure_ascii=False))
 
     def test_phase51_shell_loads_home_module_before_rendering_home(self) -> None:
         shell_text = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")

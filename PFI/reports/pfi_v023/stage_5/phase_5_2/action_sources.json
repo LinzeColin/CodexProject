@@ -1,0 +1,37 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 5",
+  "phase_id": "V023-S5-P5.2",
+  "schema": "PFIV023Stage5Phase52ActionSourcesV1",
+  "action_sources": [
+    {
+      "source_type": "data_status",
+      "source_metric_id": "net_worth_cny",
+      "status": "not_mounted",
+      "routeAlias": "/sources-upload?tab=sources",
+      "targetWorkspace": "sync",
+      "blocked": true,
+      "explanation_zh": "净资产：真实数据源未挂链。先检查真实数据源是否挂链。"
+    },
+    {
+      "source_type": "data_status",
+      "source_metric_id": "cash_balance_cny",
+      "status": "review_required",
+      "routeAlias": "/ledger?tab=review",
+      "targetWorkspace": "ledger",
+      "blocked": true,
+      "explanation_zh": "现金余额：需要人工复核。先处理待复核记录。"
+    },
+    {
+      "source_type": "review_task",
+      "source_task_id": "ledger-review-001",
+      "routeAlias": "/ledger?tab=review",
+      "targetWorkspace": "ledger",
+      "blocked": false,
+      "explanation_zh": "有 3 条流水需要人工确认分类，证据 3 项。"
+    }
+  ],
+  "static_action_list_used": false,
+  "route_jump_required": true,
+  "blocked_action_explanation_required": true
+}

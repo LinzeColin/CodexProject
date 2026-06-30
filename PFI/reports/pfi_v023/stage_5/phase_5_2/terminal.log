@@ -1,0 +1,40 @@
+PFI v0.2.3 Stage 5 Phase 5.2
+Timestamp: 2026-06-30T11:58:00+10:00
+Repo: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+
+Scope:
+Only V023-S5-P5.2 next actions.
+No Phase 5.3 cleanup.
+No Stage 5 whole-stage review.
+No Stage 6 read model.
+No GitHub main upload for this intermediate phase.
+
+RED:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+6 failed because buildStage5Phase52Contract and next_actions were missing.
+
+GREEN:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+8 passed, 12 subtests passed in 0.28s
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/home.js
+Exit code: 0
+
+Regression:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+84 passed, 76 subtests passed in 1.19s
+
+$ node syntax checks for home, shell, and routes
+Exit code: 0
+
+Browser:
+$ Google Chrome headless screenshot of PFI/web/index.html#/home
+Screenshot: PFI/reports/pfi_v023/stage_5/phase_5_2/home_phase52_actions.png
+Size: 1440x1100, 563959 bytes
+
+$ rg forbidden finance-data terms over Stage 5 Phase 5.2 files
+Exit code: 1, no matches
+
+$ git diff --check -- PFI
+Exit code: 0

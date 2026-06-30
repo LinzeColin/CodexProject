@@ -9,8 +9,10 @@
 })(typeof window !== "undefined" ? window : globalThis, function buildPFIStage5Home() {
   const VERSION = "v0.2.3";
   const STAGE = "Stage 5";
-  const PHASE_ID = "V023-S5-P5.1";
-  const PHASE_NAME = "首页信息架构";
+  const PHASE51_ID = "V023-S5-P5.1";
+  const PHASE51_NAME = "首页信息架构";
+  const PHASE52_ID = "V023-S5-P5.2";
+  const PHASE52_NAME = "下一步动作";
 
   const DISPLAY_VALUE_STATUSES = Object.freeze(["ready", "confirmed_zero"]);
   const STATUS_COPY_ZH = Object.freeze({
@@ -61,8 +63,8 @@
     return Object.freeze({
       version: VERSION,
       stage: STAGE,
-      phase_id: PHASE_ID,
-      phase_name: PHASE_NAME,
+      phase_id: PHASE51_ID,
+      phase_name: PHASE51_NAME,
       current_phase_only: true,
       max_one_phase_per_run: true,
       uses_stage2_data_state_machine: true,
@@ -98,18 +100,64 @@
     });
   }
 
+  function buildStage5Phase52Contract() {
+    return Object.freeze({
+      version: VERSION,
+      stage: STAGE,
+      phase_id: PHASE52_ID,
+      phase_name: PHASE52_NAME,
+      current_phase_only: true,
+      max_one_phase_per_run: true,
+      action_sources: Object.freeze(["data_status", "review_task"]),
+      tasks: Object.freeze([
+        "由数据状态生成动作",
+        "由待复核生成动作",
+        "动作可跳转",
+        "阻断动作可解释",
+      ]),
+      allowed_files: Object.freeze([
+        "PFI/web/app/pages/home.js",
+        "PFI/web/app/components/*.js",
+        "PFI/web/styles.css",
+        "PFI/tests/test_v023_stage5_home_experience.py",
+        "PFI/docs/pfi_v023/STAGE5_HOME_EXPERIENCE.md",
+        "PFI/reports/pfi_v023/stage_5/*",
+      ]),
+      validation_commands: Object.freeze([
+        "node --check PFI/web/app/pages/home.js",
+        "python3 -m pytest PFI/tests/test_v023_stage5_home_experience.py -q",
+        "python3 -m pytest PFI/tests/test_v023_*.py -q",
+      ]),
+      evidence_files: Object.freeze([
+        "PFI/reports/pfi_v023/stage_5/phase_5_2/evidence.json",
+        "PFI/reports/pfi_v023/stage_5/phase_5_2/action_sources.json",
+        "PFI/reports/pfi_v023/stage_5/phase_5_2/terminal.log",
+        "PFI/reports/pfi_v023/stage_5/phase_5_2/changed_files.txt",
+      ]),
+      explicitly_not_done: Object.freeze([
+        "Phase 5.3 去 AI 痕迹全量清理",
+        "Stage 5 whole-stage review",
+        "Stage 6 核心财务指标 read model 接入",
+        "GitHub main upload for intermediate phase",
+      ]),
+    });
+  }
+
   function buildStage5HomeViewModel(input = {}) {
     const metricStates = normalizeMetricStates(input.metric_states || input.metricStates || input.core_metric_states);
     const financialState = metricStates.map(buildFinancialCard);
     const readyCount = financialState.filter((item) => item.status === "ready" || item.status === "confirmed_zero").length;
     const blockedCount = financialState.length - readyCount;
     const recentChanges = normalizeRecentChanges(input.recent_changes || input.recentChanges);
+    const reviewTasks = normalizeReviewTasks(input.review_tasks || input.reviewTasks);
+    const nextActions = buildNextActions(financialState, reviewTasks);
 
     return Object.freeze({
       schema: "PFIV023Stage5HomeExperienceV1",
       version: VERSION,
       stage: STAGE,
-      phase_id: PHASE_ID,
+      phase_id: PHASE51_ID,
+      phase_ids: Object.freeze([PHASE51_ID, PHASE52_ID]),
       current_phase_only: true,
       sections: HOME_SECTIONS.map((section) => ({ ...section })),
       financial_state: financialState,
@@ -133,14 +181,15 @@
         })),
       }),
       recent_changes: recentChanges,
+      next_actions: nextActions,
       home_cards: financialState.map((item) => [
         item.label,
         item.display_value,
         item.source ? `${item.status_label} · ${item.source}` : item.message_zh,
       ]),
-      home_features: buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges),
+      home_features: buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges, nextActions),
       home_rows: buildHomeRows(financialState, readyCount, blockedCount, recentChanges),
-      home_tasks: buildPhase51TaskRows(readyCount, blockedCount, recentChanges),
+      home_tasks: buildHomeTaskRows(readyCount, blockedCount, recentChanges, nextActions),
     });
   }
 
@@ -179,8 +228,8 @@
           ? `${item.label}来自${item.source}`
           : `${item.label}等待真实来源，不展示数值替代`,
       }),
-    );
-  }
+      );
+    }
 
   function normalizeRecentChanges(changes) {
     if (!Array.isArray(changes) || !changes.length) {
@@ -205,9 +254,96 @@
     );
   }
 
-  function buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges) {
+  function normalizeReviewTasks(tasks) {
+    if (!Array.isArray(tasks)) return [];
+    return tasks
+      .filter((item) => item && (item.task_id || item.taskId || item.label))
+      .slice(0, 6)
+      .map((item, index) => ({
+        task_id: safeText(item.task_id || item.taskId, `review-task-${index + 1}`),
+        label: safeText(item.label, "待复核任务"),
+        reason: safeText(item.reason, "需要人工复核"),
+        routeAlias: normalizeRouteAlias(item.routeAlias || item.route_alias || "/ledger?tab=review"),
+        targetWorkspace: safeText(item.targetWorkspace || item.target_workspace, "ledger"),
+        evidence_count: Number(item.evidence_count || item.evidenceCount || 0),
+      }));
+  }
+
+  function buildNextActions(financialState, reviewTasks) {
+    const dataActions = financialState
+      .filter((item) => !canDisplayFinancialValue(item))
+      .map(buildDataStatusAction);
+    const reviewActions = reviewTasks.map(buildReviewTaskAction);
+    return Object.freeze([...dataActions, ...reviewActions].slice(0, 6));
+  }
+
+  function buildDataStatusAction(item) {
+    const target = actionTargetForStatus(item.status);
+    return Object.freeze({
+      action_id: `data-status-${item.metric_id}`,
+      title: actionTitleForStatus(item),
+      source_type: "data_status",
+      source_metric_id: item.metric_id,
+      source_task_id: null,
+      generated_from: `metric:${item.metric_id}:${item.status}`,
+      blocked: item.status !== "filter_empty",
+      targetWorkspace: target.targetWorkspace,
+      routeAlias: target.routeAlias,
+      explanation_zh: `${item.label}：${item.message_zh || STATUS_COPY_ZH[item.status] || STATUS_COPY_ZH.not_loaded}。${target.reason}`,
+    });
+  }
+
+  function buildReviewTaskAction(item) {
+    return Object.freeze({
+      action_id: `review-task-${item.task_id}`,
+      title: item.label,
+      source_type: "review_task",
+      source_metric_id: null,
+      source_task_id: item.task_id,
+      generated_from: `review_task:${item.task_id}`,
+      blocked: false,
+      targetWorkspace: item.targetWorkspace,
+      routeAlias: item.routeAlias,
+      explanation_zh: item.evidence_count
+        ? `${item.reason}，证据 ${item.evidence_count} 项。`
+        : item.reason,
+    });
+  }
+
+  function actionTargetForStatus(status) {
+    const targets = {
+      not_loaded: ["sync", "/sources-upload?tab=upload", "先进入上传中心补齐真实文件。"],
+      not_mounted: ["sync", "/sources-upload?tab=sources", "先检查真实数据源是否挂链。"],
+      path_error: ["sync", "/sources-upload?tab=sources", "先检查数据目录和来源路径。"],
+      permission_error: ["settings", "/settings?tab=data-system", "先检查本机权限和数据目录。"],
+      parse_error: ["sync", "/sources-upload?tab=review", "先处理解析失败和字段问题。"],
+      outdated: ["sync", "/sources-upload?tab=history", "先检查快照日期和导入历史。"],
+      filter_empty: ["ledger", "/ledger?tab=filter", "先调整筛选或查看数据范围。"],
+      calculation_error: ["insights", "/reports?tab=monthly", "先查看报告阻断和公式输入。"],
+      review_required: ["ledger", "/ledger?tab=review", "先处理待复核记录。"],
+    };
+    const [targetWorkspace, routeAlias, reason] = targets[status] || targets.not_loaded;
+    return { targetWorkspace, routeAlias, reason };
+  }
+
+  function actionTitleForStatus(item) {
+    if (item.status === "review_required") return `复核${item.label}`;
+    if (item.status === "parse_error") return `处理${item.label}解析问题`;
+    return `补齐${item.label}数据`;
+  }
+
+  function buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges, nextActions) {
     const locationReady = financialState.filter((item) => item.source).length;
     return [
+      {
+        title: "下一步动作",
+        status: nextActions.length ? "待处理" : "暂无动作",
+        source: nextActions[0]?.generated_from || "数据状态和待复核任务",
+        detail: nextActions[0]?.explanation_zh || "当前没有由数据状态或待复核任务生成的动作。",
+        target: nextActions[0]
+          ? { workspace: nextActions[0].targetWorkspace, routeAlias: nextActions[0].routeAlias, label: "处理动作" }
+          : { workspace: "home", routeAlias: "/home?tab=actions", label: "查看首页" },
+      },
       {
         title: "财务状态摘要",
         status: blockedCount ? "需要复核" : "可用",
@@ -248,12 +384,21 @@
     ];
   }
 
-  function buildPhase51TaskRows(readyCount, blockedCount, recentChanges) {
+  function buildHomeTaskRows(readyCount, blockedCount, recentChanges, nextActions) {
+    const actionTasks = nextActions.slice(0, 3).map((action) => ({
+      title: action.title,
+      detail: action.explanation_zh,
+      status: action.blocked ? "review" : "ready",
+      source_type: action.source_type,
+      routeAlias: action.routeAlias,
+      targetWorkspace: action.targetWorkspace,
+    }));
     return [
-      { title: "财务状态摘要", detail: `可显示 ${readyCount} 项，中文状态 ${blockedCount} 项`, status: blockedCount ? "review" : "ready" },
-      { title: "钱在哪里", detail: "账户、现金和投资只按真实来源展示。", status: "ready" },
-      { title: "最近变化", detail: recentChanges[0]?.message || "等待真实变化记录。", status: recentChanges[0]?.state === "empty" ? "queued" : "ready" },
-    ];
+      ...actionTasks,
+      { title: "财务状态摘要", detail: `可显示 ${readyCount} 项，中文状态 ${blockedCount} 项`, status: blockedCount ? "review" : "ready", source_type: "home_section" },
+      { title: "钱在哪里", detail: "账户、现金和投资只按真实来源展示。", status: "ready", source_type: "home_section" },
+      { title: "最近变化", detail: recentChanges[0]?.message || "等待真实变化记录。", status: recentChanges[0]?.state === "empty" ? "queued" : "ready", source_type: "home_section" },
+    ].slice(0, 6);
   }
 
   function renderMetricValueZh(metricState) {
@@ -294,8 +439,15 @@
     return text || fallback;
   }
 
+  function normalizeRouteAlias(routeAlias) {
+    const route = String(routeAlias || "").trim();
+    if (!route) return "/home";
+    return route.startsWith("/") ? route : `/${route}`;
+  }
+
   return Object.freeze({
     buildStage5Phase51Contract,
+    buildStage5Phase52Contract,
     buildStage5HomeViewModel,
     renderMetricValueZh,
     canDisplayFinancialValue,
