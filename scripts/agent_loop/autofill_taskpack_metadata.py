@@ -58,7 +58,7 @@ def missing_or_ambiguous_project(metadata: dict[str, Any]) -> bool:
 def replace_metadata(text: str, metadata: dict[str, Any]) -> str:
     normalized = json.dumps(metadata, ensure_ascii=False, indent=2, sort_keys=True)
     replacement = f"<!-- AGENT_LOOP_METADATA\n{normalized}\nEND_AGENT_LOOP_METADATA -->"
-    return META_RE.sub(replacement, text, count=1)
+    return META_RE.sub(lambda _: replacement, text, count=1)
 
 
 def write_report(path: str | None, report: dict[str, Any]) -> None:

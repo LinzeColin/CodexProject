@@ -313,6 +313,7 @@ jobs:
       - name: Extract Task Pack metadata
         if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
+          set -o pipefail
           python3 scripts/agent_loop/extract_taskpack.py \
             --input "$TASKPACK_PATH" \
             --out-dir "$WORK_DIR" | tee "$WORK_DIR/extract-output.txt"

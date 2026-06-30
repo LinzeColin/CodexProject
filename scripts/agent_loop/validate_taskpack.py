@@ -150,6 +150,17 @@ def normalize_heading(title: str) -> str:
     return title.strip().casefold()
 
 
+def heading_candidates(title: str) -> list[str]:
+    normalized = normalize_heading(title)
+    candidates = [normalized]
+    candidates.extend(part.strip() for part in re.split(r"\s*[／/]\s*", normalized) if part.strip())
+    return candidates
+
+
+def heading_matches(title: str, accepted: set[str]) -> bool:
+    return any(candidate in accepted for candidate in heading_candidates(title))
+
+
 def iter_level_two_headings(text: str) -> list[tuple[int, int, str]]:
     headings: list[tuple[int, int, str]] = []
     for match in re.finditer(r"^##\s+(.+?)\s*$", text, re.M):
@@ -161,7 +172,7 @@ def find_section_body(text: str, aliases: list[str]) -> str:
     accepted = {normalize_heading(alias) for alias in aliases}
     headings = iter_level_two_headings(text)
     for index, (_, end, title) in enumerate(headings):
-        if normalize_heading(title) not in accepted:
+        if not heading_matches(title, accepted):
             continue
         next_start = headings[index + 1][0] if index + 1 < len(headings) else len(text)
         return text[end:next_start].strip()
@@ -174,7 +185,7 @@ def section_body(text: str, canonical_key: str) -> str:
 
 def has_section(text: str, canonical_key: str) -> bool:
     accepted = {normalize_heading(alias) for alias in SECTION_ALIASES[canonical_key]}
-    return any(normalize_heading(title) in accepted for _, _, title in iter_level_two_headings(text))
+    return any(heading_matches(title, accepted) for _, _, title in iter_level_two_headings(text))
 
 
 def list_value(value: object) -> list[str]:
