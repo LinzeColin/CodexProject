@@ -1,4 +1,4 @@
-import { Gauge, Layers, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { Gauge, Layers, Pause, Play, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -76,6 +76,8 @@ interface GalaxySignal {
   rendererMode: GalaxyRendererMode;
   quality: StarfieldQuality;
   flowFieldStrength: number;
+  flowPaused: boolean;
+  starfieldMode: StarfieldViewMode;
   terrainFeatureCount: number;
   parameterSource: string;
   fallbackMode: "webgl" | "low-quality" | "legacy";
@@ -96,6 +98,7 @@ interface HoverPreview {
 }
 
 type FocusNeighborLayer = "primary" | "secondary";
+type StarfieldViewMode = "presentation" | "analysis";
 
 interface FocusNeighbor {
   id: string;
@@ -198,11 +201,14 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   const selectedIdRef = useRef<string | null>(selectedNode?.id ?? null);
   const hoveredIdRef = useRef<string | null>(null);
   const flowFieldStrengthRef = useRef(1);
+  const flowPausedRef = useRef(false);
+  const starfieldModeRef = useRef<StarfieldViewMode>("presentation");
   const [renderError, setRenderError] = useState("");
   const [hoverPreview, setHoverPreview] = useState<HoverPreview | null>(null);
   const [starfieldQuality, setStarfieldQuality] = useState<StarfieldQuality>("mid");
   const [flowFieldStrength, setFlowFieldStrength] = useState(1);
-  const [terrainAnalysisOpen, setTerrainAnalysisOpen] = useState(false);
+  const [flowPaused, setFlowPaused] = useState(false);
+  const [starfieldMode, setStarfieldMode] = useState<StarfieldViewMode>("presentation");
 
   const qualitySettings = STARFIELD_QUALITY_SETTINGS[starfieldQuality];
   const renderNodeLimit = rendererMode === "memory-starfield" ? qualitySettings.maxNodes : MAX_RENDERED_NODES;
@@ -242,6 +248,21 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   useEffect(() => {
     flowFieldStrengthRef.current = flowFieldStrength;
   }, [flowFieldStrength]);
+
+  useEffect(() => {
+    flowPausedRef.current = flowPaused;
+  }, [flowPaused]);
+
+  useEffect(() => {
+    starfieldModeRef.current = starfieldMode;
+  }, [starfieldMode]);
+
+  useEffect(() => {
+    const canvas = containerRef.current?.querySelector<HTMLCanvasElement>(".galaxy-webgl-canvas");
+    if (!canvas) return;
+    canvas.dataset.flowFrozen = rendererMode === "memory-starfield" && flowPaused ? "true" : "false";
+    canvas.dataset.starfieldMode = rendererMode === "memory-starfield" ? starfieldMode : "legacy";
+  }, [flowPaused, rendererMode, starfieldMode]);
 
   useEffect(() => {
     hoveredIdRef.current = null;
@@ -290,6 +311,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     renderer.domElement.dataset.rendererMode = rendererMode;
     renderer.domElement.dataset.quality = rendererMode === "memory-starfield" ? starfieldQuality : "legacy";
     renderer.domElement.dataset.flowField = rendererMode === "memory-starfield" ? "enabled" : "legacy-off";
+    renderer.domElement.dataset.flowFrozen = rendererMode === "memory-starfield" && flowPaused ? "true" : "false";
+    renderer.domElement.dataset.starfieldMode = rendererMode === "memory-starfield" ? starfieldMode : "legacy";
     containerElement.appendChild(renderer.domElement);
 
     const scene = new Scene();
@@ -677,6 +700,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         rendererMode,
         quality: starfieldQuality,
         flowFieldStrength: Number(flowFieldStrengthRef.current.toFixed(2)),
+        flowPaused: flowPausedRef.current,
+        starfieldMode: starfieldModeRef.current,
         terrainFeatureCount: terrainSummary.total,
         parameterSource: MEMORY_STARFIELD_PARAMS.parameterSource,
         fallbackMode: rendererMode === "legacy" ? "legacy" : starfieldQuality === "low" ? "low-quality" : "webgl",
@@ -829,6 +854,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     }
 
     function updateNeighborPulse() {
+      if (flowPausedRef.current) return;
       if (!pulseItems.length) return;
       const time = frame * 0.075;
       for (const item of pulseItems) {
@@ -841,6 +867,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
 
     function updateMemoryStarfieldFlow() {
       if (rendererMode !== "memory-starfield") return;
+      if (flowPausedRef.current) return;
       const positionAttribute = geometry.getAttribute("position") as Float32BufferAttribute;
       const positionArray = positionAttribute.array as Float32Array;
       const time = frame * 0.016;
@@ -892,8 +919,9 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     }
 
     function render() {
-      frame += 1;
-      const autoMotion = prefersReducedMotion ? 0 : 0.0016;
+      const frozen = rendererMode === "memory-starfield" && flowPausedRef.current;
+      if (!frozen) frame += 1;
+      const autoMotion = prefersReducedMotion || frozen ? 0 : 0.0016;
       galaxyGroup.rotation.x = rotationRef.current.x;
       galaxyGroup.rotation.y = rotationRef.current.y + frame * autoMotion;
       galaxyGroup.updateMatrixWorld(true);
@@ -1080,8 +1108,18 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     setStarfieldQuality(nextQuality);
   }
 
+  function updateStarfieldMode(nextMode: StarfieldViewMode) {
+    setStarfieldMode(nextMode);
+  }
+
   return (
-    <div className="galaxy-scene" data-renderer-mode={rendererMode} data-starfield-quality={starfieldQuality} ref={containerRef}>
+    <div
+      className="galaxy-scene"
+      data-renderer-mode={rendererMode}
+      data-starfield-mode={starfieldMode}
+      data-starfield-quality={starfieldQuality}
+      ref={containerRef}
+    >
       {renderError ? <canvas className="nebula-canvas" ref={nebulaCanvasRef} aria-hidden="true" /> : null}
       {renderError ? (
         <div className="star-overlay" aria-label="可点击记忆星体层">
@@ -1136,14 +1174,30 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
           ) : null}
           {rendererMode === "memory-starfield" ? (
             <button
-              aria-label={terrainAnalysisOpen ? "关闭 Memory Terrain analysis" : "打开 Memory Terrain analysis"}
-              aria-pressed={terrainAnalysisOpen}
-              title="Memory Terrain analysis"
+              aria-label={flowPaused ? "Resume Flow Field" : "Freeze Flow Field"}
+              aria-pressed={flowPaused}
+              title={flowPaused ? "Resume Flow Field" : "Freeze Flow Field"}
               type="button"
-              onClick={() => setTerrainAnalysisOpen((open) => !open)}
+              onClick={() => setFlowPaused((paused) => !paused)}
             >
-              <Layers size={16} />
+              {flowPaused ? <Play size={16} /> : <Pause size={16} />}
             </button>
+          ) : null}
+          {rendererMode === "memory-starfield" ? (
+            <div className="galaxy-mode-tabs" aria-label="Starfield mode selector">
+              {(["presentation", "analysis"] as StarfieldViewMode[]).map((mode) => (
+                <button
+                  aria-label={`${mode} mode`}
+                  aria-pressed={starfieldMode === mode}
+                  key={mode}
+                  title={mode === "presentation" ? "Presentation Mode" : "Analysis Mode"}
+                  type="button"
+                  onClick={() => updateStarfieldMode(mode)}
+                >
+                  {mode === "presentation" ? "Present" : "Analysis"}
+                </button>
+              ))}
+            </div>
           ) : null}
           <button aria-label="放大银河视角" title="放大" type="button" onClick={() => zoomGalaxy(0.14)}>
             <ZoomIn size={16} />
@@ -1156,11 +1210,25 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
           </button>
         </div>
       ) : null}
-      {rendererMode === "memory-starfield" && terrainAnalysisOpen ? (
+      {rendererMode === "memory-starfield" && starfieldMode === "analysis" ? (
         <div className="galaxy-terrain-panel" aria-label="Memory Terrain analysis panel">
           <div className="terrain-panel-heading">
-            <strong>Memory Terrain</strong>
+            <strong><Layers size={14} /> Memory Terrain</strong>
             <span>{terrainSummary.total.toLocaleString()} mapped features</span>
+          </div>
+          <div className="terrain-formula-grid" aria-label="Starfield formula summary">
+            <div>
+              <b>mass</b>
+              <span>tier + kind + ROI + importance + recency + usage</span>
+            </div>
+            <div>
+              <b>particle</b>
+              <span>size / brightness / color = mass + recency + confidence</span>
+            </div>
+            <div>
+              <b>flow</b>
+              <span>{flowPaused ? "frozen for reading" : "animated by interaction density"}</span>
+            </div>
           </div>
           <div className="terrain-row-list">
             {terrainSummary.rows.map((row) => (
@@ -1171,6 +1239,14 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
                 <small>{row.sampleLabels.length ? row.sampleLabels.join(" / ") : "No current sample"}</small>
               </div>
             ))}
+          </div>
+          <div className="terrain-inspector-strip" aria-label="Analysis inspector summary">
+            <b>Inspector</b>
+            <span>
+              {selectedNode
+                ? `${galaxyPreviewTitle(selectedNode)} / ${normalizeMemoryTier(selectedNode.memory_tier)} / ${selectedEdgeCount.toLocaleString()} links`
+                : "Select a cluster to inspect focus, neighbors and formula context"}
+            </span>
           </div>
         </div>
       ) : null}

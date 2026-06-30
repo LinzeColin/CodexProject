@@ -734,7 +734,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "memory-starfield-terrain-layer" in galaxy_source
         and "terrainFeatureCount" in galaxy_source
         and "parameterSource: MEMORY_STARFIELD_PARAMS.parameterSource" in galaxy_source
-        and "terrainAnalysisOpen" in galaxy_source
+        and "starfieldMode === \"analysis\"" in galaxy_source
+        and "Starfield mode selector" in galaxy_source
         and 'className="galaxy-terrain-panel"' in galaxy_source
         and ".galaxy-terrain-panel" in css_source
         and ".terrain-row[data-terrain-type=\"ridge\"]" in css_source
@@ -742,6 +743,41 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "galaxy_stage4_2_data_mapping_ready",
         "Galaxy Stage 4.2 maps mass, particle attributes, trajectory strength, quality settings, and Memory Terrain from the v1.1.5 parameter file with an explainable terrain panel",
         "Galaxy Stage 4.2 data mapping may still be hardcoded or lack parameter-backed mass, particle attributes, terrain layer, analysis panel, or audit signal",
+    )
+    require(
+        checks,
+        "function updateHoverPreview" in galaxy_source
+        and "hoveredIdRef.current = item.node.id" in galaxy_source
+        and "setHoverPreview({" in galaxy_source
+        and "function onPointerUp" in galaxy_source
+        and "if (item) onSelectNode(item.node)" in galaxy_source
+        and "function updateCameraFocus" in galaxy_source
+        and "camera.position.lerp(cameraTargetPosition" in galaxy_source
+        and "MAX_FOCUS_VISIBLE_NEIGHBORS" in galaxy_source
+        and "hiddenNeighborCount" in galaxy_source
+        and "primaryNeighborCards" in galaxy_source
+        and "const [flowPaused, setFlowPaused]" in galaxy_source
+        and "flowPausedRef" in galaxy_source
+        and "dataset.flowFrozen" in galaxy_source
+        and "Freeze Flow Field" in galaxy_source
+        and "Resume Flow Field" in galaxy_source
+        and "if (flowPausedRef.current) return;" in galaxy_source
+        and "const frozen = rendererMode === \"memory-starfield\" && flowPausedRef.current" in galaxy_source
+        and "type StarfieldViewMode = \"presentation\" | \"analysis\"" in galaxy_source
+        and "Starfield mode selector" in galaxy_source
+        and "Presentation Mode" in galaxy_source
+        and "Analysis Mode" in galaxy_source
+        and "starfieldMode === \"analysis\"" in galaxy_source
+        and "Starfield formula summary" in galaxy_source
+        and "Analysis inspector summary" in galaxy_source
+        and "flowPaused:" in galaxy_source
+        and "starfieldMode:" in galaxy_source
+        and ".galaxy-mode-tabs" in css_source
+        and ".terrain-formula-grid" in css_source
+        and ".terrain-inspector-strip" in css_source,
+        "galaxy_stage4_3_interaction_ready",
+        "Galaxy Stage 4.3 preserves transient hover preview and capped click focus, adds Freeze/Resume Flow, and exposes Presentation/Analysis mode with formula, terrain legend and Inspector context",
+        "Galaxy Stage 4.3 interaction may lack transient hover preview, capped click focus, Freeze/Resume Flow, Presentation/Analysis mode, formula legend or Inspector context",
     )
     require(
         checks,
