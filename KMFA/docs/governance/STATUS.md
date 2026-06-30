@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s09p2-margin-cash-margin`
+- version: `0.1.0-s09p3-scope-reconciliation`
 - current_stage: `S09`
-- current_phase: `S09-P3｜口径转换与差异核对 待开始`
-- status: `s09p2_completed_validated_local_only_s09p3_next`
+- current_phase: `S09-STAGE-REVIEW｜Stage 9 整体复审 待开始`
+- status: `s09p3_completed_validated_local_only_stage9_review_next`
 - production_ready: `false`
 - github_upload_ready: `false_until_stage9_review`
 
@@ -72,14 +72,16 @@
 - S09-P1 证据位于 `KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/`；当前中间 Phase 未执行 Stage 9 整体复审或 GitHub upload。
 - S09-P2 毛利与现金毛利已完成本地验证：`KMFA/tools/project_margin_cash_margin.py` 生成 public-safe margin/cash margin manifest、4 条 margin records 和 12 条 scope difference summary records；`KMFA/tools/check_s09_p2_margin_cash_margin.py` 验证 authority/system refs 分离、S09-P3/Stage 9 review/报告/UI/外部接口/GitHub upload scope 均为 false。
 - S09-P2 证据位于 `KMFA/stage_artifacts/S09_P2_margin_cash_margin/`；当前中间 Phase 未执行 S09-P3、Stage 9 整体复审或 GitHub upload。
+- S09-P3 口径转换与差异核对已完成本地验证：`KMFA/tools/project_scope_reconciliation.py` 生成 public-safe scope reconciliation manifest、12 条 reconciliation records 和 6 条 domain controls；`KMFA/tools/check_s09_p3_scope_reconciliation.py` 验证 6 类核对域、必需人工字段、pending owner/授权复核门禁和 public-safe 边界。
+- S09-P3 证据位于 `KMFA/stage_artifacts/S09_P3_scope_reconciliation/`；当前中间 Phase 未执行 Stage 9 整体复审或 GitHub upload，派生指标重跑和正式报告仍被阻断。
 
 ## 未完成
 
-- S09-P3 口径转换与差异核对、Stage 9 整体复审、lineage 完整检查、报告、UI 和外部接口尚未完成；S09-P2 margin/cash margin layer 不代表正式报告可发布。
+- Stage 9 整体复审、lineage 完整检查、报告、UI 和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer 和 S09-P2 margin/cash margin layer 已完成；下一步只能执行 S09-P3 口径转换与差异核对，不能跳到 Stage 9 review、UI、报告、lineage 或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer 和 S09-P3 scope reconciliation 已完成；下一步只能执行 Stage 9 整体复审，不能跳到 UI、报告、lineage、外部接口或 GitHub upload。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

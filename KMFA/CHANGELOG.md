@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s09p3-scope-reconciliation - 2026-06-30
+
+- 完成 `S09-P3｜口径转换与差异核对` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/project_scope_reconciliation.py`、`KMFA/tools/check_s09_p3_scope_reconciliation.py` 和 `KMFA/tests/test_project_scope_reconciliation.py`。
+- 生成 public-safe scope reconciliation manifest、12 条 reconciliation records 和 6 条 domain controls，覆盖合同/项目收入、项目成本/财务费用、银行回款/应收账龄、开票/合同结算/税务、研发费用/项目人员证据、权威 PDF/Excel 与系统复算。
+- 每条记录只保存 refs/hash/status/evidence metadata、原因候选、依据 refs、影响范围、责任角色和 reviewer；不保存真实金额、字段明文或原始文件。
+- 当前 12 条 records 均为 `pending_owner_or_authorized_review`；派生指标重跑、正式报告、Stage 9 review 和 GitHub upload 仍为禁止状态。
+- 不提交 raw business data、zip、Excel、PDF、private CSV、字段明文或真实业务值；本次不执行 Stage 9 整体复审、lineage 完整检查、正式报告、UI、外部接口或 GitHub upload。
+
 ## 0.1.0-s09p2-margin-cash-margin - 2026-06-30
 
 - 完成 `S09-P2｜毛利与现金毛利` 本地验证，不上传 GitHub。

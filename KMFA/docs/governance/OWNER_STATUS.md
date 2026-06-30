@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、S08-P1 项目组合键、S08-P2 业务实体模型、S08-P3 匹配质量测试、Stage 8 整体复审和 Stage 8 final GitHub upload。S09-P1 项目成本事实层和 S09-P2 毛利与现金毛利已本地验证完成，生成 public-safe fact records、margin records 和口径差异摘要；S09-P3 口径转换、lineage 和报告仍未完成，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、S08-P1/P2/P3、Stage 8 整体复审和 Stage 8 final GitHub upload。S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对均已本地验证完成；Stage 9 整体复审、lineage 和报告仍未完成，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -52,14 +52,15 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - Stage 8 final GitHub upload 已完成：`KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json` 记录 rebase、validators、raw/secret scan、dry-run push、push 和 post-push parity。
 - S09-P1 项目成本事实层已本地验证完成：`KMFA/tools/project_cost_fact_layer.py` 生成 6 个 fact metric slots、4 条 public-safe project cost fact records 和 9 条 unallocated project cost pool records；`KMFA/tools/check_s09_p1_project_cost_fact_layer.py` 验证 S09-P2/S09-P3、Stage 9 review、lineage、报告、UI、外部接口和 GitHub upload 均未执行。
 - S09-P2 毛利与现金毛利已本地验证完成：`KMFA/tools/project_margin_cash_margin.py` 使用整数分和 basis points 建立 authority gross profit、system recomputed gross profit、cash gross profit 和 gross margin rate 的 public-safe 计算合同，生成 4 条 margin records 和 12 条 scope difference summary records；`KMFA/tools/check_s09_p2_margin_cash_margin.py` 验证 S09-P3、Stage 9 review、lineage、报告、UI、外部接口和 GitHub upload 均未执行。
+- S09-P3 口径转换与差异核对已本地验证完成：`KMFA/tools/project_scope_reconciliation.py` 将 12 条 scope difference summary 转为 12 条 public-safe reconciliation records，并建立 6 条 domain controls；`KMFA/tools/check_s09_p3_scope_reconciliation.py` 验证原因候选、依据 refs、影响范围、责任角色、reviewer、pending 状态和禁止 raw/private value 边界。
 
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经完整实现。
-- 不能认为真实业务源解析、S09-P3 口径差异核对、lineage 或报告已经实现。
+- 不能认为真实业务源解析、Stage 9 整体复审、lineage 或报告已经实现。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
-- 不能认为 Stage 6 upload、Stage 7 upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 upload、S09-P1 fact layer 或 S09-P2 margin/cash margin layer 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
+- 不能认为 Stage 6 upload、Stage 7 upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 upload、S09-P1 fact layer、S09-P2 margin/cash margin layer 或 S09-P3 scope reconciliation 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -68,4 +69,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S09-P3｜口径转换与差异核对`；不得扩大到 Stage 9 review、UI、正式报告、lineage 或自动接口。S09-P3 必须继续使用 public-safe metadata、整数分金额、A0 authority baseline、S06 quality blockers、S08 entity matching、S09-P1 fact layer 和 S09-P2 margin/cash margin layer，不提交 raw business data。
+下一步只执行 `Stage 9 整体复审`；不得扩大到 GitHub upload、UI、正式报告、lineage 或自动接口。Stage 9 review 必须复跑 S09-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 evidence consistency check，修复 findings 后才允许后续 upload gate。
