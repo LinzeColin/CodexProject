@@ -62,6 +62,23 @@ class Stage6Phase62Contract:
     explicitly_not_done: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class Stage6Phase63Contract:
+    version: str
+    stage: str
+    phase_id: str
+    phase_name: str
+    current_phase_only: bool
+    max_one_phase_per_run: bool
+    real_data_only_financial_metrics: bool
+    task_ids: tuple[str, ...]
+    allowed_files: tuple[str, ...]
+    changed_in_this_phase: tuple[str, ...]
+    validation_commands: tuple[str, ...]
+    evidence_files: tuple[str, ...]
+    explicitly_not_done: tuple[str, ...]
+
+
 def build_stage6_phase61_contract() -> dict[str, Any]:
     contract = Stage6Phase61Contract(
         version=VERSION,
@@ -172,6 +189,146 @@ def build_stage6_phase62_contract() -> dict[str, Any]:
     for key in ("task_ids", "allowed_files", "changed_in_this_phase", "validation_commands", "evidence_files", "explicitly_not_done"):
         payload[key] = list(payload[key])
     return payload
+
+
+def build_stage6_phase63_contract() -> dict[str, Any]:
+    contract = Stage6Phase63Contract(
+        version=VERSION,
+        stage=STAGE,
+        phase_id="V023-S6-P6.3",
+        phase_name="指标一致性",
+        current_phase_only=True,
+        max_one_phase_per_run=True,
+        real_data_only_financial_metrics=True,
+        task_ids=("T6.3.1", "T6.3.2", "T6.3.3", "T6.3.4"),
+        allowed_files=(
+            "PFI/src/pfi_v02/stage_v023_core_metrics.py",
+            "PFI/src/pfi_v02/stage_v023_read_model.py",
+            "PFI/web/app/data/*.js",
+            "PFI/web/app/data/coreMetrics.js",
+            "PFI/web/app/pages/home.js",
+            "PFI/web/app/pages/accounts.js",
+            "PFI/web/app/pages/investment.js",
+            "PFI/web/app/pages/consumption.js",
+            "PFI/tests/test_v023_stage6_core_metrics.py",
+            "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+            "PFI/reports/pfi_v023/stage_6/*",
+        ),
+        changed_in_this_phase=(
+            "PFI/src/pfi_v02/stage_v023_core_metrics.py",
+            "PFI/web/app/data/coreMetrics.js",
+            "PFI/tests/test_v023_stage6_core_metrics.py",
+            "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/*",
+        ),
+        validation_commands=(
+            "node --check PFI/web/app/data/coreMetrics.js",
+            "python3 -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q",
+        ),
+        evidence_files=(
+            "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/evidence.json",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/consistency_matrix.json",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/metric_basis.json",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/no_source_term_scan.json",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/error_state_view_models.json",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/screenshots/error_states.png",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/terminal.log",
+            "PFI/reports/pfi_v023/stage_6/phase_6_3/changed_files.txt",
+        ),
+        explicitly_not_done=(
+            "Stage 6 whole-stage review",
+            "GitHub main upload for intermediate phase",
+        ),
+    )
+    payload = asdict(contract)
+    for key in ("task_ids", "allowed_files", "changed_in_this_phase", "validation_commands", "evidence_files", "explicitly_not_done"):
+        payload[key] = list(payload[key])
+    return payload
+
+
+def build_stage6_metric_basis_catalog() -> dict[str, Any]:
+    status_policy = "只有 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时显示数值；其他状态显示中文原因。"
+    hash_policy = "所有可显示值必须保留 as_of 和 evidence_hash，跨页面不得改写。"
+    return {
+        "schema": "PFIV023Stage6MetricBasisCatalogV1",
+        "version": VERSION,
+        "stage": STAGE,
+        "phase_id": "V023-S6-P6.3",
+        "metrics": {
+            "net_worth_cny": {
+                "label": "净资产",
+                "basis_zh": "来自真实账户余额与持仓 read model；未挂载时返回中文阻塞状态。",
+                "status_policy_zh": status_policy,
+                "as_of_hash_policy_zh": hash_policy,
+            },
+            "cash_balance_cny": {
+                "label": "现金余额",
+                "basis_zh": "来自真实账户余额 read model；当前未挂载账户余额时不得显示金额替代。",
+                "status_policy_zh": status_policy,
+                "as_of_hash_policy_zh": hash_policy,
+            },
+            "investment_market_value_cny": {
+                "label": "投资市值",
+                "basis_zh": "来自真实持仓市值 read model；当前未挂载持仓市值时不得显示金额替代。",
+                "status_policy_zh": status_policy,
+                "as_of_hash_policy_zh": hash_policy,
+            },
+            "life_consumption_cny": {
+                "label": "生活消费",
+                "basis_zh": "来自真实 Alipay 交易，口径为生活消费流出减退款。",
+                "status_policy_zh": status_policy,
+                "as_of_hash_policy_zh": hash_policy,
+            },
+            "total_consumption_outflow_cny": {
+                "label": "消费总流出",
+                "basis_zh": "来自真实 Alipay 交易，口径为生活消费、基金申购、资产买入流出减退款。",
+                "status_policy_zh": status_policy,
+                "as_of_hash_policy_zh": hash_policy,
+            },
+            "data_health": {
+                "label": "数据健康",
+                "basis_zh": "来自真实导入清单的交易记录数、原始文件数和数据时间范围。",
+                "status_policy_zh": status_policy,
+                "as_of_hash_policy_zh": hash_policy,
+            },
+        },
+    }
+
+
+def build_stage6_phase63_consistency_matrix(
+    core_metrics_read_model: dict[str, Any],
+    page_view_models: dict[str, Any],
+) -> dict[str, Any]:
+    source_metrics = {
+        str(metric.get("metric_id")): _metric_chain(metric)
+        for metric in core_metrics_read_model.get("core_metrics", [])
+    }
+    source_hash = core_metrics_read_model.get("read_model_hash")
+    source_as_of = core_metrics_read_model.get("as_of")
+    home_metrics = [_metric_chain(metric) for metric in page_view_models.get("home", {}).get("cards", [])]
+    account_metrics = [_metric_chain(metric) for metric in page_view_models.get("accounts", {}).get("cards", [])]
+    report_metrics = list(source_metrics.values())
+    surfaces = {
+        "home": _surface_consistency_record("home", home_metrics, source_hash, source_as_of),
+        "accounts": _surface_consistency_record("accounts", account_metrics, source_hash, source_as_of),
+        "report": _surface_consistency_record("report", report_metrics, source_hash, source_as_of),
+    }
+    findings = _consistency_findings(source_metrics, surfaces)
+    return {
+        "schema": "PFIV023Stage6MetricConsistencyMatrixV1",
+        "version": VERSION,
+        "stage": STAGE,
+        "phase_id": "V023-S6-P6.3",
+        "source_core_metrics": {
+            "schema": core_metrics_read_model.get("schema"),
+            "read_model_hash": source_hash,
+            "as_of": source_as_of,
+            "source_status": core_metrics_read_model.get("source", {}).get("status"),
+        },
+        "surfaces": surfaces,
+        "findings": findings,
+    }
 
 
 def build_stage6_core_metrics_read_model(
@@ -350,3 +507,59 @@ def _model_hash(read_input: dict[str, Any], metrics: list[dict[str, Any]]) -> st
 
 def _money(value: Decimal) -> Decimal:
     return value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+
+def _metric_chain(metric: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "metric_id": metric.get("metric_id"),
+        "label": metric.get("label"),
+        "value": metric.get("value"),
+        "currency": metric.get("currency"),
+        "status": metric.get("status"),
+        "source": metric.get("source"),
+        "as_of": metric.get("as_of"),
+        "evidence_hash": metric.get("evidence_hash"),
+        "message_zh": metric.get("message_zh"),
+    }
+
+
+def _surface_consistency_record(
+    surface: str,
+    metrics: list[dict[str, Any]],
+    read_model_hash: str | None,
+    as_of: str | None,
+) -> dict[str, Any]:
+    return {
+        "surface": surface,
+        "read_model_hash": read_model_hash,
+        "as_of": as_of,
+        "metrics": metrics,
+    }
+
+
+def _consistency_findings(
+    source_metrics: dict[str, dict[str, Any]],
+    surfaces: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    comparable_fields = ("status", "value", "source", "as_of", "evidence_hash")
+    findings: list[dict[str, Any]] = []
+    for surface_name, surface in surfaces.items():
+        for metric in surface["metrics"]:
+            metric_id = str(metric.get("metric_id"))
+            source = source_metrics.get(metric_id)
+            if not source:
+                findings.append({"surface": surface_name, "metric_id": metric_id, "field": "metric_id", "reason_zh": "核心指标源中不存在该指标"})
+                continue
+            for field in comparable_fields:
+                if metric.get(field) != source.get(field):
+                    findings.append(
+                        {
+                            "surface": surface_name,
+                            "metric_id": metric_id,
+                            "field": field,
+                            "expected": source.get(field),
+                            "actual": metric.get(field),
+                            "reason_zh": "页面指标链路与核心 read model 不一致",
+                        }
+                    )
+    return findings

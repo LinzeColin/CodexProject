@@ -1,0 +1,47 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "phase_id": "V023-S6-P6.3",
+  "phase_name": "指标一致性",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "real_data_only_financial_metrics": true,
+  "consistency_matrix": "PFI/reports/pfi_v023/stage_6/phase_6_3/consistency_matrix.json",
+  "metric_basis": "PFI/reports/pfi_v023/stage_6/phase_6_3/metric_basis.json",
+  "source_term_scan": "PFI/reports/pfi_v023/stage_6/phase_6_3/no_source_term_scan.json",
+  "error_state_evidence": {
+    "view_models": "PFI/reports/pfi_v023/stage_6/phase_6_3/error_state_view_models.json",
+    "html_snapshot": "PFI/reports/pfi_v023/stage_6/phase_6_3/error_state_snapshot.html",
+    "screenshot": "PFI/reports/pfi_v023/stage_6/phase_6_3/screenshots/error_states.png",
+    "screenshot_size": {
+      "pixel_width": 1440,
+      "pixel_height": 1600
+    }
+  },
+  "source_core_metrics": {
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03"
+  },
+  "consistency_findings": [],
+  "scan_violations": [],
+  "stage_contract": {
+    "stage_6_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "changed_files": [
+    "PFI/src/pfi_v02/stage_v023_core_metrics.py",
+    "PFI/web/app/data/coreMetrics.js",
+    "PFI/tests/test_v023_stage6_core_metrics.py",
+    "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/consistency_matrix.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/metric_basis.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/error_state_view_models.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/error_state_snapshot.html",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/screenshots/error_states.png",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/terminal.log",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/changed_files.txt"
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "schema": "PFIV023Stage6MetricConsistencyMatrixV1",
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "phase_id": "V023-S6-P6.3",
+  "source_core_metrics": {
+    "schema": "PFIV023Stage6CoreMetricsReadModelV1",
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03",
+    "source_status": "ready"
+  },
+  "surfaces": {
+    "home": {
+      "surface": "home",
+      "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+      "as_of": "2026-06-03",
+      "metrics": [
+        {
+          "metric_id": "net_worth_cny",
+          "label": "净资产",
+          "value": null,
+          "currency": "CNY",
+          "status": "not_mounted",
+          "source": null,
+          "as_of": null,
+          "evidence_hash": null,
+          "message_zh": "未挂载账户余额与持仓 read model，无法计算净资产"
+        },
+        {
+          "metric_id": "cash_balance_cny",
+          "label": "现金余额",
+          "value": null,
+          "currency": "CNY",
+          "status": "not_mounted",
+          "source": null,
+          "as_of": null,
+          "evidence_hash": null,
+          "message_zh": "未挂载账户余额 read model，无法计算现金余额"
+        },
+        {
+          "metric_id": "investment_market_value_cny",
+          "label": "投资市值",
+          "value": null,
+          "currency": "CNY",
+          "status": "not_mounted",
+          "source": null,
+          "as_of": null,
+          "evidence_hash": null,
+          "message_zh": "未挂载持仓市值 read model，无法计算投资市值"
+        },
+        {
+          "metric_id": "life_consumption_cny",
+          "label": "生活消费",
+          "value": 1545600.44,
+          "currency": "CNY",
+          "status": "ready",
+          "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+          "as_of": "2026-06-03",
+          "evidence_hash": "sha256:2395ab15ee5ea32be37e205c69986b3d90829b19fc7c59d67c8178fa78ace9cd",
+          "message_zh": "真实 Alipay 交易：生活消费流出减退款"
+        },
+        {
+          "metric_id": "total_consumption_outflow_cny",
+          "label": "消费总流出",
+          "value": 1727278.37,
+          "currency": "CNY",
+          "status": "ready",
+          "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+          "as_of": "2026-06-03",
+          "evidence_hash": "sha256:b9d6213a63a6d974be20904942ff1931dc5ecf2c218ebe97297ad94540c1a605",
+          "message_zh": "真实 Alipay 交易：生活消费、基金申购、资产买入流出减退款"
+        },
+        {
+          "metric_id": "data_health",
+          "label": "数据健康",
+          "value": 8815,
+          "currency": "records",
+          "status": "ready",
+          "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+          "as_of": "2026-06-03",
+          "evidence_hash": "sha256:2b2f9773fd285e502aae3c9c375dc25c01239a08015e4b76a05990dc933b2ca6",
+          "message_zh": "真实交易记录数已完成 read model 输入校验"
+        }
+      ]
+    },
+    "accounts": {
+      "surface": "accounts",
+      "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+      "as_of": "2026-06-03",
+      "metrics": [
+        {
+          "metric_id": "net_worth_cny",
+          "label": "净资产",
+          "value": null,
+          "currency": "CNY",
+          "status": "not_mounted",
+          "source": null,
+          "as_of": null,
+          "evidence_hash": null,
+          "message_zh": "未挂载账户余额与持仓 read model，无法计算净资产"
+        },
+        {
+          "metric_id": "cash_balance_cny",
+          "label": "现金余额",
+          "value": null,
+          "currency": "CNY",
+          "status": "not_mounted",
+          "source": null,
+          "as_of": null,
+          "evidence_hash": null,
+          "message_zh": "未挂载账户余额 read model，无法计算现金余额"
+        },
+        {
+          "metric_id": "data_health",
+          "label": "数据健康",
+          "value": 8815,
+          "currency": "records",
+          "status": "ready",
+          "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+          "as_of": "2026-06-03",
+          "evidence_hash": "sha256:2b2f9773fd285e502aae3c9c375dc25c01239a08015e4b76a05990dc933b2ca6",
+          "message_zh": "真实交易记录数已完成 read model 输入校验"
+        }
+      ]
+    },
+    "report": {
+      "surface": "report",
+      "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+      "as_of": "2026-06-03",
+      "metrics": [
+        {
+          "metric_id": "net_worth_cny",
+          "label": "净资产",
+          "value": null,
+          "currency": "CNY",
+          "status": "not_mounted",
+          "source": null,
+          "as_of": null,
+          "evidence_hash": null,
+          "message_zh": "未挂载账户余额与持仓 read model，无法计算净资产"
+        },
+        {
+          "metric_id": "cash_balance_cny",
+          "label": "现金余额",
+          "value": null,
+          "currency": "CNY",
+          "status": "not_mounted",
+          "source": null,
+          "as_of": null,
+          "evidence_hash": null,
+          "message_zh": "未挂载账户余额 read model，无法计算现金余额"
+        },
+        {
+          "metric_id": "investment_market_value_cny",
+          "label": "投资市值",
+          "value": null,
+          "currency": "CNY",
+          "status": "not_mounted",
+          "source": null,
+          "as_of": null,
+          "evidence_hash": null,
+          "message_zh": "未挂载持仓市值 read model，无法计算投资市值"
+        },
+        {
+          "metric_id": "life_consumption_cny",
+          "label": "生活消费",
+          "value": 1545600.44,
+          "currency": "CNY",
+          "status": "ready",
+          "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+          "as_of": "2026-06-03",
+          "evidence_hash": "sha256:2395ab15ee5ea32be37e205c69986b3d90829b19fc7c59d67c8178fa78ace9cd",
+          "message_zh": "真实 Alipay 交易：生活消费流出减退款"
+        },
+        {
+          "metric_id": "total_consumption_outflow_cny",
+          "label": "消费总流出",
+          "value": 1727278.37,
+          "currency": "CNY",
+          "status": "ready",
+          "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+          "as_of": "2026-06-03",
+          "evidence_hash": "sha256:b9d6213a63a6d974be20904942ff1931dc5ecf2c218ebe97297ad94540c1a605",
+          "message_zh": "真实 Alipay 交易：生活消费、基金申购、资产买入流出减退款"
+        },
+        {
+          "metric_id": "data_health",
+          "label": "数据健康",
+          "value": 8815,
+          "currency": "records",
+          "status": "ready",
+          "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+          "as_of": "2026-06-03",
+          "evidence_hash": "sha256:2b2f9773fd285e502aae3c9c375dc25c01239a08015e4b76a05990dc933b2ca6",
+          "message_zh": "真实交易记录数已完成 read model 输入校验"
+        }
+      ]
+    }
+  },
+  "findings": []
+}
