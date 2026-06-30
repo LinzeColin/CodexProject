@@ -1,0 +1,52 @@
+{
+  "schema": "PFIV023Stage9Phase92FeedbackAuditV1",
+  "version": "v0.2.3",
+  "stage": "Stage 9",
+  "phase_id": "V023-S9-P9.2",
+  "phase_name": "动效反馈",
+  "generated_at_utc": "2026-06-30T05:38:48Z",
+  "page_transition": {
+    "duration_ms": 180,
+    "max_duration_ms": 220,
+    "route_state_attribute": "data-route-transition",
+    "css_selectors": [
+      ".workspace[data-route-transition=\"enter\"]",
+      ".workspace[data-route-transition=\"exit\"]"
+    ]
+  },
+  "feedback_states": [
+    "loading",
+    "success",
+    "error",
+    "blocked"
+  ],
+  "feedback_state_labels_zh": {
+    "loading": "处理中",
+    "success": "已完成",
+    "error": "处理失败",
+    "blocked": "已阻断"
+  },
+  "report_generation_progress": {
+    "schema": "PFIV023ReportProgressV1",
+    "step_count": 4,
+    "step_ids": [
+      "scope",
+      "data_status",
+      "formula_parameters",
+      "reviewable_report"
+    ]
+  },
+  "reduced_motion": {
+    "supported": true,
+    "selectors": [
+      "@media (prefers-reduced-motion: reduce)",
+      "body.reduce-motion"
+    ],
+    "disables": [
+      "page transition",
+      "skeleton pulse",
+      "progress step animation"
+    ]
+  },
+  "phase_9_3_haptics_settings_started": false
+}
