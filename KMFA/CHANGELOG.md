@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s07p2-wps-file-adapter - 2026-06-30
+
+- 完成 `S07-P2｜WPS 文件适配` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/wps_file_adapter.py`、`KMFA/tools/check_s07_p2_wps_file_adapter.py` 和 `KMFA/tests/test_wps_file_adapter.py`。
+- 覆盖 WPS 回款、应收账龄、生产项目状态、保证金 4 类导出，生成 20 条 hash-only 字段映射、4 条转换提示、4 条只读字段报告和 1 个映射规则版本。
+- 新增 `KMFA/metadata/imports/wps_export_source_registry.json`、`KMFA/metadata/schema_maps/wps_file_adapter_manifest.json`、`KMFA/metadata/schema_maps/wps_field_mappings.jsonl`、`KMFA/metadata/schema_maps/wps_mapping_rule_versions.json`、`KMFA/metadata/schema_maps/wps_file_mapping_policy.yaml` 和 `KMFA/stage_artifacts/S07_P2_wps_file_adapter/`。
+- 公开仓库不提交 raw Excel/PDF/zip/private CSV、WPS 原始文件、字段明文、来源表头明文或真实业务值；红圈、事实层、lineage、正式报告、UI 和外部接口仍未完成。
+
 ## 0.1.0-s07p1-finance-file-adapter - 2026-06-30
 
 - 完成 `S07-P1｜财务文件适配` 本地验证，不上传 GitHub。

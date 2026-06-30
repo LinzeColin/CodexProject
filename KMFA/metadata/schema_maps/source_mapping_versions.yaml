@@ -24,6 +24,7 @@
   ],
   "field_standardization_policy_ref": "KMFA/metadata/schema_maps/field_standardization_policy.yaml",
   "finance_file_mapping_policy_ref": "KMFA/metadata/schema_maps/finance_file_mapping_policy.yaml",
+  "wps_file_mapping_policy_ref": "KMFA/metadata/schema_maps/wps_file_mapping_policy.yaml",
   "field_alias_dictionary_ref": "KMFA/metadata/schema_maps/field_alias_dictionary.csv",
   "field_quality_status_ref": "KMFA/metadata/quality/field_quality_status.jsonl",
   "mapping_versions": [
@@ -102,6 +103,38 @@
       "source_header_plaintext_committed": false,
       "field_skipped_silently_allowed": false,
       "evidence_ref": "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"
+    },
+    {
+      "mapping_version": "MAP-SRC-kmfa-wps-file-adapter-s07p2-v0.1.0",
+      "stage_phase": "S07-P2",
+      "status": "completed_validated_local_only",
+      "source_id": "SRC-kmfa-wps-file-adapter-s07p2",
+      "scope": "WPS collection, receivable aging, production project status, and deposit hash-only field mappings for S07-P2",
+      "canonical_fields": [
+        "collection_date",
+        "project_ref",
+        "customer_ref",
+        "collection_amount",
+        "receipt_status",
+        "receivable_amount",
+        "aging_bucket",
+        "overdue_days",
+        "production_status",
+        "planned_finish_date",
+        "actual_progress_rate",
+        "responsible_team_ref",
+        "deposit_ref",
+        "counterparty_ref",
+        "deposit_amount",
+        "deposit_status"
+      ],
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "public_repo_business_rows_committed": false,
+      "source_header_plaintext_committed": false,
+      "field_skipped_silently_allowed": false,
+      "native_wps_parse_status": "requires_conversion_to_xlsx_or_csv",
+      "evidence_ref": "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"
     }
   ]
 }

@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s07p1-finance-file-adapter`
+- version: `0.1.0-s07p2-wps-file-adapter`
 - current_stage: `S07`
-- current_phase: `S07-P2 WPS 文件适配 待开始`
-- status: `s07p1_completed_validated_local_only_s07p2_not_started`
+- current_phase: `S07-P3 红圈导出后置策略 待开始`
+- status: `s07p2_completed_validated_local_only_s07p3_not_started`
 - production_ready: `false`
 - github_upload_ready: `false_until_next_stage_review`
 
@@ -54,14 +54,16 @@
 - Stage 6 final GitHub upload 已完成：`KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json` 记录 rebase binding、validator、raw/secret scan、dry-run push、push 和 post-push parity 证据。
 - S07-P1 财务文件适配已完成本地验证：`KMFA/tools/finance_file_adapter.py`、`KMFA/tools/check_s07_p1_finance_file_adapter.py`、`KMFA/tests/test_finance_file_adapter.py`、`KMFA/metadata/imports/finance_support_source_registry.json`、`KMFA/metadata/schema_maps/finance_file_adapter_manifest.json`、`KMFA/metadata/schema_maps/finance_field_candidates.jsonl` 和 `KMFA/stage_artifacts/S07_P1_finance_file_adapter/` 已生成。
 - S07-P1 覆盖经营分析、日记账、客户账龄、现金、纳税、开票、账户、贷款、研发费用 9 类财务支撑源，生成 45 条 hash-only 字段候选和 9 条只读字段报告。
+- S07-P2 WPS 文件适配已完成本地验证：`KMFA/tools/wps_file_adapter.py`、`KMFA/tools/check_s07_p2_wps_file_adapter.py`、`KMFA/tests/test_wps_file_adapter.py`、`KMFA/metadata/imports/wps_export_source_registry.json`、`KMFA/metadata/schema_maps/wps_file_adapter_manifest.json`、`KMFA/metadata/schema_maps/wps_field_mappings.jsonl`、`KMFA/metadata/schema_maps/wps_mapping_rule_versions.json` 和 `KMFA/stage_artifacts/S07_P2_wps_file_adapter/` 已生成。
+- S07-P2 覆盖 WPS 回款、应收账龄、生产项目状态、保证金 4 类导出，生成 20 条 hash-only 字段映射、4 条转换提示、4 条只读字段报告和 1 个映射规则版本。
 
 ## 未完成
 
-- S07-P2 WPS 文件适配、S07-P3 红圈后置策略、Stage 7 整体复审、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload 和 S07-P1 finance adapter 不代表正式报告可发布。
+- S07-P3 红圈后置策略、Stage 7 整体复审、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload、S07-P1 finance adapter 和 S07-P2 WPS adapter 不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload 和 S07-P1 finance adapter 已完成；下一步只能执行 S07-P2 WPS 文件适配，不能跳到红圈、Stage 7 review、UI、报告、事实层或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter 和 S07-P2 WPS adapter 已完成；下一步只能执行 S07-P3 红圈导出后置策略，不能跳到 Stage 7 review、UI、报告、事实层或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
