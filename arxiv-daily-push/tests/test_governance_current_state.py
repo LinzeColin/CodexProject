@@ -35,6 +35,23 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_S2PLT03_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC", current_state)
+        self.assertIn("s2plt03_terminal_resilience_capture_plan_summary", current_state)
+        self.assertIn("3b2475e26547816b77885fddb170944fb858a4aa14fc04305de6798c288a8651", current_state)
+        self.assertIn("55e5d994d17ceb53cb8e8a1729c52e29d7808dd07527e9ee9a48f52982e129f5", current_state)
+        self.assertIn("s2plt03_next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE", current_state)
+        self.assertIn("s2plt03_missing_terminal_inputs=S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT;S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", current_state)
+        self.assertIn("s2plt03_blocking_reasons=s2plt03_terminal_resilience_proof_artifact_missing;s2plt02_not_accepted", current_state)
+        self.assertIn("s2plt03_completed_inputs=LOCAL_RESILIENCE_DRILL=true;RESILIENCE_PRECHECK=true;P0_P1_ZERO_PROOF=true;S2PLT02_TERMINAL_DELIVERY_PROOF=false;S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT=false", current_state)
+        self.assertIn("s2plt03_artifact_written=false", current_state)
+        self.assertIn("s2plt03_accepted=false", current_state)
+        self.assertIn("s2plt03_resilience_drill_completed=false", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT03_SUMMARY_SYNC.md", ledger)
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )

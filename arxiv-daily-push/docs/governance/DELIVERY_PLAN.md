@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 305
+- task_count: 306
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 21:38:54 Australia/Sydney - S2PMT07 Final Bundle S2PLT03 Summary Sync
+
+- `S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC` makes `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle` expose the S2PLT03 terminal resilience capture-plan summary while S2PLT04 remains upstream-blocked by S2PLT02/S2PLT03 terminal evidence.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=3b2475e26547816b77885fddb170944fb858a4aa14fc04305de6798c288a8651`, final validator `state_hash=55e5d994d17ceb53cb8e8a1729c52e29d7808dd07527e9ee9a48f52982e129f5`, and S2PLT03 capture plan `state_hash=bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5`.
+- S2PLT03 summary remains `next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`, with missing inputs `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT` and `S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT`; it keeps `artifact_written=false`, `s2plt03_accepted=false`, and `s2plt03_resilience_drill_completed=false`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT03_SUMMARY_SYNC.md`; `governance/run_manifests/ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT03 terminal proof, write S2PLT04 completion report, create final-bundle manifest/handoff/signoff/final-command proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 20:57:02 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Capture Command Sync
 

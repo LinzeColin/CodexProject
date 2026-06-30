@@ -1234,6 +1234,9 @@ S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_TASK_ID = "S2PLT03-TERMINAL-RESIL
 S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_SCOPE = (
     "s2plt03_terminal_resilience_proof_capture_plan_no_write_no_production"
 )
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT03_CAPTURE_PLAN_GENERATED_AT = (
+    "2026-06-30T17:00:08+10:00"
+)
 S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_STEPS = (
     "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE",
     "REVALIDATE_S2PLT03_PRECHECK",
@@ -8674,6 +8677,43 @@ def build_final_bundle_prerequisite_plan_state(
         if s2plt04_blocked_by_upstream_evidence
         else {}
     )
+    s2plt03_capture_plan = (
+        build_s2plt03_terminal_resilience_proof_capture_plan_state(
+            generated_at=S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT03_CAPTURE_PLAN_GENERATED_AT,
+            repo_root=root,
+        )
+        if s2plt04_blocked_by_upstream_evidence
+        else {}
+    )
+    s2plt03_capture_plan_summary = (
+        {
+            "status": s2plt03_capture_plan.get("status"),
+            "state_hash": s2plt03_capture_plan.get("state_hash"),
+            "next_executable_step": s2plt03_capture_plan.get("next_executable_step"),
+            "resilience_precheck_status": s2plt03_capture_plan.get("resilience_precheck_status"),
+            "resilience_precheck_report_hash": s2plt03_capture_plan.get("resilience_precheck_report_hash"),
+            "terminal_artifact_validation_status": s2plt03_capture_plan.get(
+                "terminal_artifact_validation_status"
+            ),
+            "terminal_artifact_validation_state_hash": s2plt03_capture_plan.get(
+                "terminal_artifact_validation_state_hash"
+            ),
+            "terminal_artifact_ref": s2plt03_capture_plan.get("terminal_artifact_ref"),
+            "s2plt02_terminal_delivery_proof_ref": s2plt03_capture_plan.get(
+                "s2plt02_terminal_delivery_proof_ref"
+            ),
+            "completed_inputs": dict(s2plt03_capture_plan.get("completed_inputs", {})),
+            "missing_terminal_inputs": list(s2plt03_capture_plan.get("missing_terminal_inputs", [])),
+            "blocking_reasons": list(s2plt03_capture_plan.get("blocking_reasons", [])),
+            "artifact_written": s2plt03_capture_plan.get("artifact_written"),
+            "s2plt03_accepted": s2plt03_capture_plan.get("s2plt03_accepted"),
+            "s2plt03_resilience_drill_completed": s2plt03_capture_plan.get(
+                "s2plt03_resilience_drill_completed"
+            ),
+        }
+        if s2plt04_blocked_by_upstream_evidence
+        else {}
+    )
     upstream_blockers = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
     upstream_unblock_order = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
     if live_authorization_passed:
@@ -8735,6 +8775,7 @@ def build_final_bundle_prerequisite_plan_state(
         ),
         "s2plt02_terminal_delivery_capture_plan_summary": s2plt02_capture_plan_summary,
         "s2plt02_runtime_readiness_summary": s2plt02_runtime_readiness_summary,
+        "s2plt03_terminal_resilience_capture_plan_summary": s2plt03_capture_plan_summary,
         "next_executable_command": (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_COMMAND
             if next_executable_is_s2plt02_auth
@@ -8994,10 +9035,45 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             and "real_smtp_secret_env_missing" not in capture_plan_summary.get("runtime_capture_blockers", [])
         ):
             errors.append("S2PLT02 capture plan summary must block on missing real SMTP secret env names")
+        s2plt03_summary = _mapping(state.get("s2plt03_terminal_resilience_capture_plan_summary"))
+        if s2plt03_summary.get("status") not in {"pass", "blocked"}:
+            errors.append("S2PLT03 capture plan summary status is invalid")
+        for field in (
+            "state_hash",
+            "next_executable_step",
+            "resilience_precheck_status",
+            "resilience_precheck_report_hash",
+            "terminal_artifact_validation_status",
+            "terminal_artifact_validation_state_hash",
+            "terminal_artifact_ref",
+            "s2plt02_terminal_delivery_proof_ref",
+        ):
+            if not isinstance(s2plt03_summary.get(field), str) or not s2plt03_summary.get(field):
+                errors.append(f"S2PLT03 capture plan summary {field} is required")
+        if s2plt03_summary.get("terminal_artifact_ref") != S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH:
+            errors.append("S2PLT03 capture plan summary terminal artifact ref is invalid")
+        if s2plt03_summary.get("s2plt02_terminal_delivery_proof_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
+            errors.append("S2PLT03 capture plan summary S2PLT02 dependency ref is invalid")
+        if not isinstance(s2plt03_summary.get("completed_inputs"), dict):
+            errors.append("S2PLT03 capture plan summary completed_inputs must be an object")
+        if not isinstance(s2plt03_summary.get("missing_terminal_inputs"), list):
+            errors.append("S2PLT03 capture plan summary missing_terminal_inputs must be a list")
+        if not isinstance(s2plt03_summary.get("blocking_reasons"), list):
+            errors.append("S2PLT03 capture plan summary blocking_reasons must be a list")
+        if s2plt03_summary.get("next_executable_step") == "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE":
+            if "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT" not in s2plt03_summary.get("missing_terminal_inputs", []):
+                errors.append("S2PLT03 capture plan summary must expose missing S2PLT02 terminal proof input")
+            if "s2plt02_not_accepted" not in s2plt03_summary.get("blocking_reasons", []):
+                errors.append("S2PLT03 capture plan summary must block on S2PLT02 not accepted")
+        for flag in ("artifact_written", "s2plt03_accepted", "s2plt03_resilience_drill_completed"):
+            if s2plt03_summary.get(flag) is not False:
+                errors.append(f"S2PLT03 capture plan summary {flag} must be false")
     elif capture_plan_summary:
         errors.append("S2PLT02 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
     elif state.get("s2plt02_runtime_readiness_summary"):
         errors.append("S2PLT02 runtime readiness summary must be empty when S2PLT04 is not upstream-blocked")
+    elif state.get("s2plt03_terminal_resilience_capture_plan_summary"):
+        errors.append("S2PLT03 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
     expected_next_executable_runtime_step = (
         str(capture_plan_summary.get("next_executable_step") or "")
         if expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
@@ -9738,6 +9814,9 @@ def build_final_acceptance_bundle_readiness_state(
         "s2plt02_runtime_readiness_summary": dict(
             final_bundle_prerequisite_plan.get("s2plt02_runtime_readiness_summary", {})
         ),
+        "s2plt03_terminal_resilience_capture_plan_summary": dict(
+            final_bundle_prerequisite_plan.get("s2plt03_terminal_resilience_capture_plan_summary", {})
+        ),
         "final_bundle_prerequisite_plan": final_bundle_prerequisite_plan,
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_assembly": p0_p1_zero_proof_assembly,
@@ -9908,6 +9987,12 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     ):
         errors.append(
             "final acceptance bundle readiness S2PLT02 runtime readiness summary must match nested prerequisite plan"
+        )
+    if state.get("s2plt03_terminal_resilience_capture_plan_summary") != final_bundle_prerequisite_plan.get(
+        "s2plt03_terminal_resilience_capture_plan_summary"
+    ):
+        errors.append(
+            "final acceptance bundle readiness S2PLT03 capture-plan summary must match nested prerequisite plan"
         )
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):

@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260630-ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC"
+as_of_event_id: "EVENT-20260630-ADP-S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC"
 source_snapshot_hash: "sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_BUNDLE_S2PLT03_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
