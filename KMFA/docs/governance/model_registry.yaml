@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s10p2-report-grade-runtime"
+    model_version: "0.1.0-s10p3-report-export"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -141,6 +141,7 @@ models:
       - "FORM-KMFA-SCOPE-RECONCILIATION-001"
       - "FORM-KMFA-REPORT-TEMPLATE-001"
       - "FORM-KMFA-REPORT-GRADE-RUNTIME-001"
+      - "FORM-KMFA-REPORT-EXPORT-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -231,6 +232,13 @@ models:
       - "PARAM-KMFA-480"
       - "PARAM-KMFA-481"
       - "PARAM-KMFA-482"
+      - "PARAM-KMFA-483"
+      - "PARAM-KMFA-484"
+      - "PARAM-KMFA-485"
+      - "PARAM-KMFA-486"
+      - "PARAM-KMFA-487"
+      - "PARAM-KMFA-488"
+      - "PARAM-KMFA-489"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -276,10 +284,12 @@ models:
       - "KMFA/tools/check_s10_p1_report_templates.py"
       - "KMFA/tools/report_grade_runtime.py"
       - "KMFA/tools/check_s10_p2_report_grade_runtime.py"
+      - "KMFA/tools/report_export_runtime.py"
+      - "KMFA/tools/check_s10_p3_report_export.py"
       - "KMFA/tools/check_s09_stage_review.py"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md"
-      - "remaining_export_lineage_components_not_implemented_until_S10P3_or_later"
+      - "remaining_lineage_review_ui_components_not_implemented_until_S10_STAGE_REVIEW_or_later"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
@@ -307,6 +317,8 @@ models:
       - "python3 KMFA/tools/check_s10_p1_report_templates.py"
       - "python3 -m unittest KMFA.tests.test_report_grade_runtime -q"
       - "python3 KMFA/tools/check_s10_p2_report_grade_runtime.py"
+      - "python3 -m unittest KMFA.tests.test_report_export_runtime -q"
+      - "python3 KMFA/tools/check_s10_p3_report_export.py"
       - "python3 KMFA/tools/check_s09_stage_review.py"
       - "python3 -m unittest discover KMFA/tests -q"
       - "python3 scripts/lean_governance.py validate --project KMFA"

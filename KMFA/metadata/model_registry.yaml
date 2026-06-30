@@ -1,4 +1,4 @@
-version: "0.1.0-s10p2-report-grade-runtime"
+version: "0.1.0-s10p3-report-export"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -30,6 +30,7 @@ active_formula_ids:
   - "FORM-KMFA-SCOPE-RECONCILIATION-001"
   - "FORM-KMFA-REPORT-TEMPLATE-001"
   - "FORM-KMFA-REPORT-GRADE-RUNTIME-001"
+  - "FORM-KMFA-REPORT-EXPORT-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

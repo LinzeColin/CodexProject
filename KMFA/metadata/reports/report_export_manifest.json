@@ -1,0 +1,103 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S10_P3_report_export/human/s10_p3_completion_record.md",
+    "csv_exports_dir": "KMFA/stage_artifacts/S10_P3_report_export/exports/csv",
+    "html_exports_dir": "KMFA/stage_artifacts/S10_P3_report_export/exports/html",
+    "report_export_manifest": "KMFA/metadata/reports/report_export_manifest.json",
+    "report_export_records": "KMFA/metadata/reports/report_export_records.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S10_P3_report_export/machine/s10_p3_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S10_P3_report_export/human/test_results.md",
+    "validator": "KMFA/tools/check_s10_p3_report_export.py"
+  },
+  "content_hash": "sha256:cab25b1ff7e9be5895d91d992990d42e5ffe75f61704e18547c28876409dc87c",
+  "csv_appendix_schema_version": "CSV-KMFA-S10P3-APPENDIX-v1",
+  "formula_version": "FORM-KMFA-S10P3-REPORT-EXPORT-001",
+  "generated_at": "2026-06-30T23:59:55+10:00",
+  "grade_runtime_content_hash": "sha256:2e934d53adfb2e7bdab9bcdb89fdddf61812b7414dd7291e8648aabb51e2902c",
+  "html_template_version": "HTML-KMFA-S10P3-BLUE-v1",
+  "limitations": [
+    "S10-P3 只生成 public-safe HTML 和 CSV 附表导出，不关闭报告等级阻断。",
+    "Excel 附表下载以兼容 CSV 实现，公开仓库不提交工作簿文件。",
+    "PDF 导出在模板稳定后启用为私有运行时策略，公开仓库不提交 PDF 文件。",
+    "本阶段不执行 Stage 10 整体复审、UI、lineage full check、外部接口或 GitHub upload。"
+  ],
+  "mapping_version": "MAP-KMFA-S10P3-PUBLIC-SAFE-v1",
+  "pdf_export_policy_version": "PDF-KMFA-S10P3-PRIVATE-RUNTIME-v1",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "pdf_file_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "csv_excel_export_allowed": true,
+    "excel_download_mode": "excel_compatible_csv_no_workbook_committed",
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "html_export_allowed": true,
+    "pdf_export_allowed": true,
+    "pdf_export_mode": "enabled_private_runtime_only_no_public_file_committed",
+    "pending_reconciliation_count": 12,
+    "phase_completion_upload_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "exports_available_as_public_safe_draft_only_report_grade_d",
+    "s10_p3_export_allowed": true,
+    "stage10_review_allowed": false
+  },
+  "record_type": "report_export_manifest",
+  "report_export_version": "RPTEXP-KMFA-S10P3-REPORT-EXPORT-001",
+  "required_template_ids": [
+    "project_cost_special_report",
+    "business_overview_report"
+  ],
+  "runtime_status": "public_safe_exports_generated_formal_report_blocked",
+  "schema_version": "kmfa.report_export_manifest.v1",
+  "source_taskpack_refs": {
+    "html_acceptance_index": "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/HTML文件索引_v1_2.csv",
+    "html_acceptance_inheritance": "KMFA/taskpack/v1_2/00_总索引与补漏复核/KMFA_HTML_UIUX_报告样板强制继承规范_v1_2.md",
+    "roadmap_s10_p3": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S10-P3"
+  },
+  "stage_phase": "S10-P3",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "full_trusted_report_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "report_export_runtime_scope_included": true,
+    "s10_p1_report_template_scope_included": false,
+    "s10_p2_report_grade_scope_included": false,
+    "s10_p3_export_scope_included": true,
+    "stage10_review_scope_included": false,
+    "ui_scope_included": false
+  },
+  "summary": {
+    "business_decision_basis_count": 0,
+    "committed_excel_file_count": 0,
+    "committed_pdf_file_count": 0,
+    "csv_appendix_count": 2,
+    "excel_compatible_download_count": 2,
+    "formal_report_count": 0,
+    "grade_distribution": {
+      "D": 2
+    },
+    "html_export_count": 2,
+    "pdf_export_enabled_after_template_stable": true,
+    "pending_reconciliation_count": 12,
+    "report_export_record_count": 2,
+    "template_count": 2
+  },
+  "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001",
+  "upstream_metadata_refs": {
+    "report_grade_runtime_manifest": "source_ref://KMFA/S10-P2/report_grade_runtime_manifest",
+    "report_grade_runtime_records": "source_ref://KMFA/S10-P2/report_grade_runtime_records",
+    "report_template_manifest": "source_ref://KMFA/S10-P1/report_template_manifest",
+    "scope_reconciliation_manifest": "source_ref://KMFA/S09-P3/project_scope_reconciliation_manifest"
+  },
+  "upstream_template_content_hash": "sha256:dc02a28d14ef445af3da1df03a42ecd8117942b8ab1ab03872c6fa0c9fb8401d"
+}
