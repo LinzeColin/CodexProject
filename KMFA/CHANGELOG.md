@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s10-github-upload - 2026-06-30
+
+- 完成 Stage 10 final GitHub upload gate 证据准备：基于最新 `origin/main` rebase S10 stack，并复跑 S10-P1/P2/P3 validators、Stage 10 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。
+- 新增 `KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S10_STAGE_REVIEW/machine/stage10_upload_manifest.json`。
+- 上传范围只包含 public-safe S10 报告模板、D 级报告可信等级运行时、HTML/CSV preview/export、Stage 10 review 和 upload proof；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文或 credentials。
+- Stage 10 上传不实现 S11、UI、lineage full check、正式报告、外部 connector、差异关闭或派生指标重跑。
+- 下一轮只能执行 `S11-P1｜首页与导航`，且必须先读取 v1.2 HTML/UIUX 样板和 S11 roadmap；不得跳到 S11-P2/S11-P3、S12 或正式报告。
+
 ## 0.1.0-s10-stage-review - 2026-06-30
 
 - 完成 Stage 10 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
