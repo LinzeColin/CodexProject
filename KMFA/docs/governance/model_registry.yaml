@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s08p2-business-entity-model"
+    model_version: "0.1.0-s08p3-entity-matching-quality"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -135,6 +135,7 @@ models:
       - "FORM-KMFA-REDCIRCLE-POSTPONEMENT-001"
       - "FORM-KMFA-PROJECT-COMPOSITE-KEY-001"
       - "FORM-KMFA-BUSINESS-ENTITY-MODEL-001"
+      - "FORM-KMFA-ENTITY-MATCHING-QUALITY-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -188,6 +189,12 @@ models:
       - "PARAM-KMFA-443"
       - "PARAM-KMFA-444"
       - "PARAM-KMFA-445"
+      - "PARAM-KMFA-446"
+      - "PARAM-KMFA-447"
+      - "PARAM-KMFA-448"
+      - "PARAM-KMFA-449"
+      - "PARAM-KMFA-450"
+      - "PARAM-KMFA-451"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -221,7 +228,9 @@ models:
       - "KMFA/tools/check_s08_p1_project_composite_key.py"
       - "KMFA/tools/business_entity_model.py"
       - "KMFA/tools/check_s08_p2_business_entity_model.py"
-      - "remaining_cost_model_not_implemented_until_S08P3_S10"
+      - "KMFA/tools/entity_matching_quality.py"
+      - "KMFA/tools/check_s08_p3_entity_matching_quality.py"
+      - "remaining_cost_model_not_implemented_until_S09_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
@@ -249,6 +258,8 @@ models:
       - "python3 KMFA/tools/check_s08_p1_project_composite_key.py"
       - "python3 -m unittest KMFA.tests.test_business_entity_model -q"
       - "python3 KMFA/tools/check_s08_p2_business_entity_model.py"
+      - "python3 -m unittest KMFA.tests.test_entity_matching_quality -q"
+      - "python3 KMFA/tools/check_s08_p3_entity_matching_quality.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
@@ -268,6 +279,9 @@ models:
       - "KMFA/stage_artifacts/S08_P2_business_entity_model/human/s08_p2_completion_record.md"
       - "KMFA/stage_artifacts/S08_P2_business_entity_model/human/test_results.md"
       - "KMFA/stage_artifacts/S08_P2_business_entity_model/machine/s08_p2_manifest.json"
+      - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/s08_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/test_results.md"
+      - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/machine/s08_p3_manifest.json"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

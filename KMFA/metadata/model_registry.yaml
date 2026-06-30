@@ -1,4 +1,4 @@
-version: "0.1.0-s08p2-business-entity-model"
+version: "0.1.0-s08p3-entity-matching-quality"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -24,6 +24,7 @@ active_formula_ids:
   - "FORM-KMFA-REDCIRCLE-POSTPONEMENT-001"
   - "FORM-KMFA-PROJECT-COMPOSITE-KEY-001"
   - "FORM-KMFA-BUSINESS-ENTITY-MODEL-001"
+  - "FORM-KMFA-ENTITY-MATCHING-QUALITY-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

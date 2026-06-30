@@ -1,0 +1,30 @@
+{
+  "completion_record_ref": "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/s08_p3_completion_record.md",
+  "entity_matching_report_count": 1,
+  "entity_matching_report_human_ref": "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/entity_matching_report.md",
+  "entity_matching_report_ref": "KMFA/stage_artifacts/S08_P3_entity_matching_quality/machine/entity_matching_report.json",
+  "fact_layer_scope_included": false,
+  "formal_report_allowed": false,
+  "generated_at": "2026-06-30T22:00:00+10:00",
+  "github_upload_allowed": false,
+  "manual_review_queue_count": 3,
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "quality_case_count": 4,
+  "quality_cases_ref": "KMFA/metadata/quality/entity_matching_quality_cases.jsonl",
+  "quality_manifest_ref": "KMFA/metadata/quality/entity_matching_quality_manifest.json",
+  "record_type": "s08_p3_entity_matching_quality_manifest",
+  "review_queue_ref": "KMFA/metadata/quality/entity_matching_review_queue.jsonl",
+  "scenario_count": 4,
+  "schema_version": "kmfa.s08_p3_manifest.v1",
+  "stage8_review_scope_included": false,
+  "stage_phase": "S08-P3",
+  "test_results_ref": "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/test_results.md",
+  "validator_ref": "KMFA/tools/check_s08_p3_entity_matching_quality.py"
+}

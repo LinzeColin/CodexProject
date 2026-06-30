@@ -1,0 +1,34 @@
+{
+  "cases_ref": "KMFA/metadata/quality/entity_matching_quality_cases.jsonl",
+  "formal_report_allowed": false,
+  "generated_at": "2026-06-30T22:00:00+10:00",
+  "github_upload_allowed": false,
+  "manual_review_queue_count": 3,
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "q5_calculation_baseline_allowed": false,
+  "quality_case_count": 4,
+  "record_type": "entity_matching_report",
+  "report_type": "entity_matching_report",
+  "review_queue_ref": "KMFA/metadata/quality/entity_matching_review_queue.jsonl",
+  "risk_summary": {
+    "high": 2,
+    "low": 1,
+    "medium": 1
+  },
+  "scenario_count": 4,
+  "schema_version": "kmfa.entity_matching_report.v1",
+  "stage_phase": "S08-P3",
+  "tested_scenarios": [
+    "same_project_name",
+    "multiple_company_entities",
+    "multiple_accounts",
+    "multiple_periods"
+  ]
+}

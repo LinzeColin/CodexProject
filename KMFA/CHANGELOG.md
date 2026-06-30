@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s08p3-entity-matching-quality - 2026-06-30
+
+- 完成 `S08-P3｜匹配质量测试` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/entity_matching_quality.py`、`KMFA/tools/check_s08_p3_entity_matching_quality.py` 和 `KMFA/tests/test_entity_matching_quality.py`。
+- 覆盖同名项目、多主体、多账户、多期间 4 类 public-safe 匹配质量场景，生成 4 条 quality cases、3 条人工复核队列记录和 1 份 `entity_matching_report`。
+- 中高风险匹配候选进入人工复核，`auto_merge_allowed=false`，公开证据只保存 `profile_ref`、`entity_ref`、`source_hash`、status、risk、evidence metadata。
+- 公开仓库不提交 raw business data、zip、Excel、PDF、private CSV、字段明文或真实业务值；Stage 8 review、事实层、lineage、正式报告、UI、外部接口和 GitHub upload 仍未执行。
+
 ## 0.1.0-s08p2-business-entity-model - 2026-06-30
 
 - 完成 `S08-P2｜业务实体模型` 本地验证，不上传 GitHub。
