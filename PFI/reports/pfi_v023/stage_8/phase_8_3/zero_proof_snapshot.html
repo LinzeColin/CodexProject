@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>真为 0 状态证明</title><style>
+:root{--bg:#f6f7f8;--surface:#fff;--ink:#17202a;--muted:#5d6975;--border:#d9e0e6;--blue:#215f9a;--amber:#b7791f;--red:#b42318;--teal:#0f766e;--radius:8px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45;letter-spacing:0}main{max-width:1080px;margin:0 auto;padding:32px}header{display:flex;justify-content:space-between;gap:18px;margin-bottom:18px;align-items:end}h1{margin:0 0 8px;font-size:28px;line-height:1.15}p{margin:0;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.state-card,.summary{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:18px}.state-card span{display:inline-block;margin-bottom:8px;color:var(--blue);font-weight:760}.state-card h2{margin:0 0 8px;font-size:20px}.state-card dl{display:grid;gap:10px;margin:16px 0 0}.state-card div{border-top:1px solid var(--border);padding-top:9px}.state-card dt{color:var(--muted);font-size:12px}.state-card dd{margin:2px 0 0;font-weight:650}.summary{display:grid;gap:8px;margin-bottom:12px}.summary strong{font-size:20px}.pill{display:inline-flex;min-height:32px;align-items:center;padding:0 10px;border:1px solid var(--border);border-radius:999px;background:#eef2f4;color:var(--ink);font-weight:650}@media(max-width:760px){main{padding:18px}.grid,header{grid-template-columns:1fr;display:grid}}
+</style></head><body><main><header><div><h1>真为 0 状态证明</h1><p>零值只允许由完整证据链确认</p></div><span class="pill">Stage 8 Phase 8.3</span></header>
+<section class="summary"><strong>真为 0 状态证明</strong><p>当前 Stage 8 没有真实 confirmed_zero 财务指标被渲染；这里证明零值显示门禁。</p></section>
+<section class="grid"><article class="state-card">
+      <span>confirmed_zero</span>
+      <h2>真为 0 状态证明</h2>
+      <p>仅当 status=confirmed_zero 且 source、as_of、evidence_hash 完整时才允许显示零值。</p>
+      <dl>
+        <div><dt>reason</dt><dd>真实数据确认数值为零时必须保留证据链。</dd></div>
+        <div><dt>detail</dt><dd>当前 Stage 8 没有真实 confirmed_zero 财务指标；这里只证明零值显示门禁。</dd></div>
+        <div><dt>action</dt><dd>打开证据来源复核零值是否仍有效。</dd></div>
+      </dl>
+    </article><article class="state-card"><span>evidence chain</span><h2>证据链字段</h2><p>current_confirmed_zero_metric_count: 0</p><dl><div><dt>required</dt><dd>source, as_of, evidence_hash</dd></div><div><dt>current zero rendered</dt><dd>False</dd></div><div><dt>stage2 validation</dt><dd>True</dd></div></dl></article></section>
+</main></body></html>

@@ -1,0 +1,156 @@
+{
+  "schema": "PFIV023Stage8Phase83EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.3",
+  "phase_name": "禁止假数据回退",
+  "status": "candidate_pass",
+  "generated_at_utc": "2026-06-30T05:08:24Z",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T8.3.1",
+    "T8.3.2",
+    "T8.3.3",
+    "T8.3.4"
+  ],
+  "stage_contract": {
+    "phase_8_3_no_fallback_done": true,
+    "stage_8_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "outputs": {
+    "no_fallback_policy": "PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_policy.json",
+    "state_evidence_cases": "PFI/reports/pfi_v023/stage_8/phase_8_3/state_evidence_cases.json",
+    "page_model": "PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_page_model.json",
+    "screenshots": [
+      "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/failure_state.png",
+      "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png",
+      "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png"
+    ],
+    "no_source_term_scan": "PFI/reports/pfi_v023/stage_8/phase_8_3/no_source_term_scan.json"
+  },
+  "policy_summary": {
+    "fallback_financial_data_allowed": false,
+    "auto_import_test_data_allowed": false,
+    "missing_data_renders_financial_zero": false
+  },
+  "state_summary": {
+    "case_count": 4,
+    "statuses": [
+      "path_error",
+      "parse_error",
+      "outdated",
+      "confirmed_zero"
+    ],
+    "generates_personal_financial_data": false,
+    "current_confirmed_zero_metric_count": 0,
+    "current_personal_financial_zero_rendered": false
+  },
+  "scan": {
+    "schema": "PFIV023Stage8NoSourceTermScanV1",
+    "violations": []
+  },
+  "changed_files": [
+    "PFI/src/pfi_v02/stage_v023_data_sources.py",
+    "PFI/web/app/pages/upload.js",
+    "PFI/tests/test_v023_stage8_data_source_gate.py",
+    "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_policy.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/state_evidence_cases.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_page_model.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/failure_state_snapshot.html",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/outdated_state_snapshot.html",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/zero_proof_snapshot.html",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/failure_state.png",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/terminal.log",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/evidence.json"
+  ],
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/upload.js",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_data_sources.py PFI/tests/test_v023_stage8_data_source_gate.py",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_3/evidence.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_policy.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_3/state_evidence_cases.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_page_model.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_8/phase_8_3/no_source_term_scan.json",
+    "sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/failure_state.png",
+    "sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png",
+    "sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png",
+    "git diff --check -- PFI"
+  ],
+  "explicitly_not_done": [
+    "Stage 8 whole-stage review",
+    "GitHub main upload for intermediate phase",
+    "Stage 9 visual system"
+  ],
+  "validated_at_utc": "2026-06-30T05:09:52Z",
+  "screenshot_details": {
+    "failure_state": {
+      "path": "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/failure_state.png",
+      "bytes": 86785,
+      "pixel_width": 1280,
+      "pixel_height": 900
+    },
+    "outdated_state": {
+      "path": "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png",
+      "bytes": 63534,
+      "pixel_width": 1280,
+      "pixel_height": 900
+    },
+    "zero_proof": {
+      "path": "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png",
+      "bytes": 88887,
+      "pixel_width": 1280,
+      "pixel_height": 900
+    }
+  },
+  "validation_results": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q",
+      "exit_code": 0,
+      "result": "15 passed in 0.22s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "result": "138 passed, 100 subtests passed in 2.10s"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/upload.js",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_data_sources.py PFI/tests/test_v023_stage8_data_source_gate.py",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "python3 -m json.tool phase_8_3 evidence/policy/cases/page_model/scan",
+      "exit_code": 0,
+      "result": "all JSON files parse"
+    },
+    {
+      "command": "sips -g pixelWidth -g pixelHeight phase_8_3 screenshots",
+      "exit_code": 0,
+      "result": "failure/outdated/zero screenshots are 1280x900"
+    },
+    {
+      "command": "Stage 8.3 source placeholder term scan",
+      "exit_code": 0,
+      "result": "blocked placeholder term scan passed for Stage 8.3 source files"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    }
+  ]
+}

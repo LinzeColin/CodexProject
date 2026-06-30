@@ -1,0 +1,112 @@
+{
+  "schema": "PFIV023Stage8NoFallbackPolicyV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.3",
+  "phase_name": "禁止假数据回退",
+  "fallback_financial_data_allowed": false,
+  "auto_import_test_data_allowed": false,
+  "missing_data_renders_financial_zero": false,
+  "transient_notice_only_upload_feedback_allowed": false,
+  "covered_statuses": [
+    "ready",
+    "confirmed_zero",
+    "not_loaded",
+    "not_mounted",
+    "path_error",
+    "permission_error",
+    "parse_error",
+    "outdated",
+    "filter_empty",
+    "calculation_error",
+    "review_required"
+  ],
+  "disallowed_financial_source_codes": [
+    "mo***",
+    "sa***",
+    "sy***",
+    "fi***",
+    "de***",
+    "fa***",
+    "测试样例"
+  ],
+  "status_behaviors": [
+    {
+      "status": "ready",
+      "can_display_financial_value": true,
+      "requires_evidence_chain": true,
+      "replacement_action": "display_with_evidence"
+    },
+    {
+      "status": "confirmed_zero",
+      "can_display_financial_value": true,
+      "requires_evidence_chain": true,
+      "replacement_action": "display_with_evidence"
+    },
+    {
+      "status": "not_loaded",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    },
+    {
+      "status": "not_mounted",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    },
+    {
+      "status": "path_error",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    },
+    {
+      "status": "permission_error",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    },
+    {
+      "status": "parse_error",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    },
+    {
+      "status": "outdated",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    },
+    {
+      "status": "filter_empty",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    },
+    {
+      "status": "calculation_error",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    },
+    {
+      "status": "review_required",
+      "can_display_financial_value": false,
+      "requires_evidence_chain": false,
+      "replacement_action": "block_with_reason"
+    }
+  ],
+  "stop_conditions": [
+    "缺失、失败、过期或未挂链状态显示财务零值",
+    "上传/导入失败只显示短暂提示或笼统等待文案",
+    "读取失败后自动切换到非真实财务输入",
+    "confirmed_zero 缺少 source、as_of 或 evidence_hash"
+  ],
+  "explicitly_not_done": [
+    "Stage 8 whole-stage review",
+    "GitHub main upload for intermediate phase",
+    "Stage 9 visual system"
+  ]
+}

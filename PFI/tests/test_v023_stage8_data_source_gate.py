@@ -254,6 +254,109 @@ console.log(JSON.stringify(uploadPage.buildStage8Phase82DashboardViewModel(paylo
         self.assertNotIn("CNY 0.00", text)
         self.assertNotIn("toast", text.lower())
 
+    def test_phase83_contract_is_limited_to_no_fallback_evidence(self) -> None:
+        module = load_stage8_module()
+        contract = module.build_stage8_phase83_contract()
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 8")
+        self.assertEqual(contract["phase_id"], "V023-S8-P8.3")
+        self.assertEqual(contract["phase_name"], "禁止假数据回退")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertEqual(contract["task_ids"], ["T8.3.1", "T8.3.2", "T8.3.3", "T8.3.4"])
+        self.assertIn("PFI/src/pfi_v02/stage_v023_data_sources.py", contract["allowed_files"])
+        self.assertIn("PFI/web/app/pages/upload.js", contract["allowed_files"])
+        self.assertIn("PFI/reports/pfi_v023/stage_8/phase_8_3/*", contract["changed_in_this_phase"])
+        self.assertNotIn("PFI/web/app/shell.js", contract["changed_in_this_phase"])
+        self.assertIn("Stage 8 whole-stage review", contract["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
+        self.assertIn("Stage 9 visual system", contract["explicitly_not_done"])
+
+    def test_phase83_no_fallback_policy_blocks_auto_replacement_and_missing_zero(self) -> None:
+        module = load_stage8_module()
+        policy = module.build_stage8_no_fallback_policy()
+
+        self.assertEqual(policy["schema"], "PFIV023Stage8NoFallbackPolicyV1")
+        self.assertEqual(policy["phase_id"], "V023-S8-P8.3")
+        self.assertFalse(policy["fallback_financial_data_allowed"])
+        self.assertFalse(policy["auto_import_test_data_allowed"])
+        self.assertFalse(policy["missing_data_renders_financial_zero"])
+        self.assertGreaterEqual(len(policy["disallowed_financial_source_codes"]), 6)
+        self.assertEqual(set(policy["covered_statuses"]), DATA_SOURCE_STATUSES)
+        for behavior in policy["status_behaviors"]:
+            if behavior["status"] not in {"ready", "confirmed_zero"}:
+                self.assertFalse(behavior["can_display_financial_value"])
+                self.assertEqual(behavior["replacement_action"], "block_with_reason")
+        text = json.dumps(policy, ensure_ascii=False)
+        self.assertNotIn("CNY 0.00", text)
+        self.assertNotIn("等待上传", text)
+        self.assertNotIn("toast", text.lower())
+
+    def test_phase83_state_evidence_covers_failure_outdated_and_zero_proof_without_new_data(self) -> None:
+        module = load_stage8_module()
+        cases = module.build_stage8_no_fallback_state_evidence()
+
+        self.assertEqual(cases["schema"], "PFIV023Stage8NoFallbackStateEvidenceV1")
+        self.assertEqual(cases["phase_id"], "V023-S8-P8.3")
+        self.assertFalse(cases["generates_personal_financial_data"])
+        states = {item["status"]: item for item in cases["state_cases"]}
+        for status in ("path_error", "parse_error", "outdated", "confirmed_zero"):
+            self.assertIn(status, states)
+
+        path_error = states["path_error"]
+        self.assertFalse(path_error["can_display_financial_value"])
+        self.assertIn("路径", path_error["reason_zh"])
+        self.assertNotIn("CNY 0.00", path_error["display_text_zh"])
+
+        parse_error = states["parse_error"]
+        self.assertFalse(parse_error["can_display_financial_value"])
+        self.assertIn("解析失败", parse_error["reason_zh"])
+        self.assertIn("文件", parse_error["failure_detail_zh"])
+        self.assertIn("字段", parse_error["failure_detail_zh"])
+
+        outdated = states["outdated"]
+        self.assertFalse(outdated["can_display_financial_value"])
+        self.assertIn("快照日期", outdated["display_text_zh"])
+        self.assertIn("2026-06-03", outdated["display_text_zh"])
+
+        zero = states["confirmed_zero"]
+        self.assertTrue(zero["can_display_financial_value"])
+        self.assertTrue(zero["requires_evidence_chain"])
+        self.assertEqual(zero["required_evidence_fields"], ["source", "as_of", "evidence_hash"])
+        self.assertEqual(zero["current_confirmed_zero_metric_count"], 0)
+        self.assertFalse(zero["current_personal_financial_zero_rendered"])
+        self.assertTrue(zero["stage2_data_state_validates_zero_rule"])
+
+        text = json.dumps(cases, ensure_ascii=False)
+        self.assertNotIn("等待上传", text)
+        self.assertNotIn("toast", text.lower())
+
+    def test_phase83_upload_page_no_fallback_view_model_is_actionable(self) -> None:
+        payload = json.loads((ROOT / "reports" / "pfi_v023" / "stage_8" / "phase_8_3" / "no_fallback_policy.json").read_text(encoding="utf-8"))
+        cases = json.loads((ROOT / "reports" / "pfi_v023" / "stage_8" / "phase_8_3" / "state_evidence_cases.json").read_text(encoding="utf-8"))
+        script = """
+const uploadPage = require('./PFI/web/app/pages/upload.js');
+const policy = JSON.parse(process.argv[1]);
+const cases = JSON.parse(process.argv[2]);
+console.log(JSON.stringify(uploadPage.buildStage8Phase83NoFallbackViewModel(policy, cases)));
+"""
+        view = node_json(script, json.dumps(payload, ensure_ascii=False), json.dumps(cases, ensure_ascii=False))
+
+        self.assertEqual(view["schema"], "PFIV023Stage8NoFallbackPageViewModelV1")
+        self.assertEqual(view["phase_id"], "V023-S8-P8.3")
+        self.assertEqual(view["page"], "upload")
+        self.assertFalse(view["fallback_financial_data_allowed"])
+        self.assertEqual(view["state_case_count"], 4)
+        section_ids = {section["section_id"] for section in view["sections"]}
+        for section_id in ("no-fallback-policy", "failure-state", "outdated-state", "zero-proof"):
+            self.assertIn(section_id, section_ids)
+        text = json.dumps(view, ensure_ascii=False)
+        for term in ("path_error", "parse_error", "outdated", "confirmed_zero", "快照日期", "证据链"):
+            self.assertIn(term, text)
+        self.assertNotIn("等待上传", text)
+        self.assertNotIn("toast", text.lower())
+
     def test_phase81_doc_and_evidence_exist_before_candidate_pass(self) -> None:
         phase_dir = ROOT / "reports" / "pfi_v023" / "stage_8" / "phase_8_1"
         evidence_path = phase_dir / "evidence.json"
@@ -341,7 +444,70 @@ console.log(JSON.stringify(uploadPage.buildStage8Phase82DashboardViewModel(paylo
         self.assertIn("上传/导入状态", doc_text)
         self.assertIn("解析预览", doc_text)
         self.assertIn("字段映射", doc_text)
-        self.assertIn("Phase 8.3 禁止假数据回退未执行", doc_text)
+        self.assertIn("Stage 8 Phase 8.3", doc_text)
+        self.assertIn("Stage 8 whole-stage review 未执行", doc_text)
+        self.assertIn("GitHub main upload 未执行", doc_text)
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("PFI/tests/test_v023_stage8_data_source_gate.py -q", terminal_log)
+
+    def test_phase83_doc_and_evidence_exist_before_stage_review(self) -> None:
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_8" / "phase_8_3"
+        evidence_path = phase_dir / "evidence.json"
+        policy_path = phase_dir / "no_fallback_policy.json"
+        cases_path = phase_dir / "state_evidence_cases.json"
+        page_model_path = phase_dir / "no_fallback_page_model.json"
+        scan_path = phase_dir / "no_source_term_scan.json"
+        failure_screenshot_path = phase_dir / "screenshots" / "failure_state.png"
+        outdated_screenshot_path = phase_dir / "screenshots" / "outdated_state.png"
+        zero_screenshot_path = phase_dir / "screenshots" / "zero_proof.png"
+        changed_files_path = phase_dir / "changed_files.txt"
+        terminal_log_path = phase_dir / "terminal.log"
+
+        for path in (
+            evidence_path,
+            policy_path,
+            cases_path,
+            page_model_path,
+            scan_path,
+            failure_screenshot_path,
+            outdated_screenshot_path,
+            zero_screenshot_path,
+            changed_files_path,
+            terminal_log_path,
+        ):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        cases = json.loads(cases_path.read_text(encoding="utf-8"))
+        page_model = json.loads(page_model_path.read_text(encoding="utf-8"))
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 8")
+        self.assertEqual(evidence["phase_id"], "V023-S8-P8.3")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertTrue(evidence["stage_contract"]["phase_8_3_no_fallback_done"])
+        self.assertFalse(evidence["stage_contract"]["stage_8_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(policy["schema"], "PFIV023Stage8NoFallbackPolicyV1")
+        self.assertEqual(cases["schema"], "PFIV023Stage8NoFallbackStateEvidenceV1")
+        self.assertEqual(page_model["schema"], "PFIV023Stage8NoFallbackPageViewModelV1")
+        self.assertEqual(scan["violations"], [])
+        for path in (failure_screenshot_path, outdated_screenshot_path, zero_screenshot_path):
+            self.assertGreater(path.stat().st_size, 10000)
+
+        doc_text = (ROOT / "docs" / "pfi_v023" / "STAGE8_DATA_SOURCE_GATE.md").read_text(encoding="utf-8")
+        self.assertIn("Stage 8 Phase 8.3", doc_text)
+        self.assertIn("禁止假数据回退", doc_text)
+        self.assertIn("失败状态截图", doc_text)
+        self.assertIn("过期状态截图", doc_text)
+        self.assertIn("真为 0 状态证明", doc_text)
         self.assertIn("Stage 8 whole-stage review 未执行", doc_text)
         self.assertIn("GitHub main upload 未执行", doc_text)
 

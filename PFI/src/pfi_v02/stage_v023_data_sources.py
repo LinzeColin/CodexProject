@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any
 
-from pfi_v02.stage_v023_data_state import METRIC_DATA_STATUSES
+from pfi_v02.stage_v023_data_state import METRIC_DATA_STATUSES, build_metric_state
 
 
 VERSION = "v0.2.3"
@@ -12,6 +12,8 @@ PHASE_ID = "V023-S8-P8.1"
 PHASE_NAME = "数据源模型"
 PHASE82_ID = "V023-S8-P8.2"
 PHASE82_NAME = "检查板 UI"
+PHASE83_ID = "V023-S8-P8.3"
+PHASE83_NAME = "禁止假数据回退"
 
 
 @dataclass(frozen=True)
@@ -32,6 +34,22 @@ class Stage8Phase81Contract:
 
 @dataclass(frozen=True)
 class Stage8Phase82Contract:
+    version: str
+    stage: str
+    phase_id: str
+    phase_name: str
+    current_phase_only: bool
+    max_one_phase_per_run: bool
+    task_ids: tuple[str, ...]
+    allowed_files: tuple[str, ...]
+    changed_in_this_phase: tuple[str, ...]
+    validation_commands: tuple[str, ...]
+    evidence_files: tuple[str, ...]
+    explicitly_not_done: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class Stage8Phase83Contract:
     version: str
     stage: str
     phase_id: str
@@ -150,6 +168,60 @@ def build_stage8_phase82_contract() -> dict[str, Any]:
     return payload
 
 
+def build_stage8_phase83_contract() -> dict[str, Any]:
+    contract = Stage8Phase83Contract(
+        version=VERSION,
+        stage=STAGE,
+        phase_id=PHASE83_ID,
+        phase_name=PHASE83_NAME,
+        current_phase_only=True,
+        max_one_phase_per_run=True,
+        task_ids=("T8.3.1", "T8.3.2", "T8.3.3", "T8.3.4"),
+        allowed_files=(
+            "PFI/src/pfi_v02/stage_v023_data_sources.py",
+            "PFI/web/app/pages/upload.js",
+            "PFI/web/app/components/dataGate*.js",
+            "PFI/tests/test_v023_stage8_data_source_gate.py",
+            "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md",
+            "PFI/reports/pfi_v023/stage_8/*",
+        ),
+        changed_in_this_phase=(
+            "PFI/src/pfi_v02/stage_v023_data_sources.py",
+            "PFI/web/app/pages/upload.js",
+            "PFI/tests/test_v023_stage8_data_source_gate.py",
+            "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/*",
+        ),
+        validation_commands=(
+            "node --check PFI/web/app/pages/upload.js",
+            "python3 -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q",
+            "python3 -m pytest PFI/tests/test_v023_*.py -q",
+        ),
+        evidence_files=(
+            "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/evidence.json",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_policy.json",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/state_evidence_cases.json",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_page_model.json",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/no_source_term_scan.json",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/failure_state.png",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/terminal.log",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/changed_files.txt",
+        ),
+        explicitly_not_done=(
+            "Stage 8 whole-stage review",
+            "GitHub main upload for intermediate phase",
+            "Stage 9 visual system",
+        ),
+    )
+    payload = asdict(contract)
+    for key in ("task_ids", "allowed_files", "changed_in_this_phase", "validation_commands", "evidence_files", "explicitly_not_done"):
+        payload[key] = list(payload[key])
+    return payload
+
+
 def build_stage8_error_reason_catalog() -> dict[str, Any]:
     reason_map = {
         "ready": ("真实数据已挂链并可读取。", "继续检查报告、账本或相关指标。"),
@@ -176,6 +248,102 @@ def build_stage8_error_reason_catalog() -> dict[str, Any]:
                 "next_action_zh": reason_map[status][1],
             }
             for status in METRIC_DATA_STATUSES
+        ],
+    }
+
+
+def build_stage8_no_fallback_policy() -> dict[str, Any]:
+    return {
+        "schema": "PFIV023Stage8NoFallbackPolicyV1",
+        "version": VERSION,
+        "stage": STAGE,
+        "phase_id": PHASE83_ID,
+        "phase_name": PHASE83_NAME,
+        "fallback_financial_data_allowed": False,
+        "auto_import_test_data_allowed": False,
+        "missing_data_renders_financial_zero": False,
+        "transient_notice_only_upload_feedback_allowed": False,
+        "covered_statuses": list(METRIC_DATA_STATUSES),
+        "disallowed_financial_source_codes": ["mo***", "sa***", "sy***", "fi***", "de***", "fa***", "测试样例"],
+        "status_behaviors": [_status_behavior(status) for status in METRIC_DATA_STATUSES],
+        "stop_conditions": [
+            "缺失、失败、过期或未挂链状态显示财务零值",
+            "上传/导入失败只显示短暂提示或笼统等待文案",
+            "读取失败后自动切换到非真实财务输入",
+            "confirmed_zero 缺少 source、as_of 或 evidence_hash",
+        ],
+        "explicitly_not_done": [
+            "Stage 8 whole-stage review",
+            "GitHub main upload for intermediate phase",
+            "Stage 9 visual system",
+        ],
+    }
+
+
+def build_stage8_no_fallback_state_evidence() -> dict[str, Any]:
+    zero_rule_validated = _stage2_confirmed_zero_rule_is_enforced()
+    return {
+        "schema": "PFIV023Stage8NoFallbackStateEvidenceV1",
+        "version": VERSION,
+        "stage": STAGE,
+        "phase_id": PHASE83_ID,
+        "phase_name": PHASE83_NAME,
+        "generates_personal_financial_data": False,
+        "state_cases": [
+            {
+                "case_id": "failure-path-error",
+                "status": "path_error",
+                "title_zh": "失败状态：路径不可用",
+                "reason_zh": "路径不可用，系统无法定位本机真实文件。",
+                "failure_detail_zh": "文件路径不存在或目录未挂载。",
+                "display_text_zh": "数据路径不可用，请检查文件路径、挂载盘和目录权限。",
+                "next_action_zh": "检查数据目录配置后重新读取真实文件。",
+                "can_display_financial_value": False,
+                "auto_replacement_allowed": False,
+            },
+            {
+                "case_id": "failure-parse-error",
+                "status": "parse_error",
+                "title_zh": "失败状态：解析失败",
+                "reason_zh": "解析失败，需查看文件、行号、字段或异常摘要。",
+                "failure_detail_zh": "文件、行号、字段或异常摘要必须可见。",
+                "display_text_zh": "解析失败，请查看文件、行号、字段或异常摘要。",
+                "next_action_zh": "修正文件格式或字段映射后重新解析。",
+                "can_display_financial_value": False,
+                "auto_replacement_allowed": False,
+            },
+            {
+                "case_id": "outdated-snapshot-date",
+                "status": "outdated",
+                "title_zh": "过期状态：显示快照日期",
+                "reason_zh": "快照已过期，必须显示快照日期。",
+                "failure_detail_zh": "快照日期：2026-06-03；当前只允许复核旧快照，不输出新财务结论。",
+                "display_text_zh": "使用旧快照，请查看快照日期：2026-06-03。",
+                "next_action_zh": "刷新数据源或确认旧快照仅用于只读复核。",
+                "can_display_financial_value": False,
+                "auto_replacement_allowed": False,
+            },
+            {
+                "case_id": "confirmed-zero-evidence-chain",
+                "status": "confirmed_zero",
+                "title_zh": "真为 0 状态证明",
+                "reason_zh": "真实数据确认数值为零时必须保留证据链。",
+                "failure_detail_zh": "当前 Stage 8 没有真实 confirmed_zero 财务指标；这里只证明零值显示门禁。",
+                "display_text_zh": "仅当 status=confirmed_zero 且 source、as_of、evidence_hash 完整时才允许显示零值。",
+                "next_action_zh": "打开证据来源复核零值是否仍有效。",
+                "can_display_financial_value": True,
+                "requires_evidence_chain": True,
+                "required_evidence_fields": ["source", "as_of", "evidence_hash"],
+                "current_confirmed_zero_metric_count": 0,
+                "current_personal_financial_zero_rendered": False,
+                "stage2_data_state_validates_zero_rule": zero_rule_validated,
+                "auto_replacement_allowed": False,
+            },
+        ],
+        "screenshots_required": [
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/failure_state.png",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png",
+            "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png",
         ],
     }
 
@@ -541,3 +709,32 @@ def _date_range_display(date_range: dict[str, Any]) -> str:
     if not start and not end:
         return "未挂链"
     return f"{start or '未知'} 至 {end or '未知'}"
+
+
+def _status_behavior(status: str) -> dict[str, Any]:
+    can_display = status in {"ready", "confirmed_zero"}
+    return {
+        "status": status,
+        "can_display_financial_value": can_display,
+        "requires_evidence_chain": can_display,
+        "replacement_action": "display_with_evidence" if can_display else "block_with_reason",
+    }
+
+
+def _stage2_confirmed_zero_rule_is_enforced() -> bool:
+    try:
+        build_metric_state("investment_market_value_cny", "投资市值", status="confirmed_zero", value=0)
+    except ValueError:
+        missing_evidence_rejected = True
+    else:
+        missing_evidence_rejected = False
+    valid_zero = build_metric_state(
+        "investment_market_value_cny",
+        "投资市值",
+        status="confirmed_zero",
+        value=0,
+        source="read_model:evidence_required",
+        as_of="2026-06-30T00:00:00+10:00",
+        evidence_hash="sha256:evidence-required",
+    )
+    return missing_evidence_rejected and valid_zero["status"] == "confirmed_zero" and valid_zero["value"] == 0

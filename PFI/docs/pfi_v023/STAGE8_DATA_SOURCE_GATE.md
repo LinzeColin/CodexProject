@@ -65,6 +65,25 @@ Phase 8.2 证据：
 - `PFI/reports/pfi_v023/stage_8/phase_8_2/dashboard_page_model.json`
 - `PFI/reports/pfi_v023/stage_8/phase_8_2/screenshots/data_source_dashboard.png`
 
-Phase 8.3 禁止假数据回退未执行。
+## Stage 8 Phase 8.3 禁止假数据回退
+
+Phase 8.3 只实现数据源检查板的禁止假数据回退策略、失败状态截图、过期状态截图和真为 0 状态证明；不执行 Stage 8 whole-stage review，不上传 GitHub main，不推进 Stage 9。
+
+本 phase 覆盖：
+
+- `T8.3.1` 禁止 fallback 测试：缺失、失败、过期或未挂链状态不得自动替换成非真实财务输入，也不得显示 `CNY 0.00`。
+- `T8.3.2` 失败状态截图：`path_error` 与 `parse_error` 必须显示中文原因、失败细节和下一步动作。
+- `T8.3.3` 过期状态截图：`outdated` 必须显示快照日期。
+- `T8.3.4` 真为 0 状态证明：当前 Stage 8 没有真实 `confirmed_zero` 财务指标被渲染；零值只允许在 `status=confirmed_zero` 且 `source`、`as_of`、`evidence_hash` 完整时显示。
+
+Phase 8.3 证据：
+
+- `PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_policy.json`
+- `PFI/reports/pfi_v023/stage_8/phase_8_3/state_evidence_cases.json`
+- `PFI/reports/pfi_v023/stage_8/phase_8_3/no_fallback_page_model.json`
+- `PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/failure_state.png`
+- `PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png`
+- `PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png`
+
 Stage 8 whole-stage review 未执行。
 GitHub main upload 未执行。

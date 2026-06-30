@@ -1,0 +1,68 @@
+{
+  "schema": "PFIV023Stage8NoFallbackStateEvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.3",
+  "phase_name": "禁止假数据回退",
+  "generates_personal_financial_data": false,
+  "state_cases": [
+    {
+      "case_id": "failure-path-error",
+      "status": "path_error",
+      "title_zh": "失败状态：路径不可用",
+      "reason_zh": "路径不可用，系统无法定位本机真实文件。",
+      "failure_detail_zh": "文件路径不存在或目录未挂载。",
+      "display_text_zh": "数据路径不可用，请检查文件路径、挂载盘和目录权限。",
+      "next_action_zh": "检查数据目录配置后重新读取真实文件。",
+      "can_display_financial_value": false,
+      "auto_replacement_allowed": false
+    },
+    {
+      "case_id": "failure-parse-error",
+      "status": "parse_error",
+      "title_zh": "失败状态：解析失败",
+      "reason_zh": "解析失败，需查看文件、行号、字段或异常摘要。",
+      "failure_detail_zh": "文件、行号、字段或异常摘要必须可见。",
+      "display_text_zh": "解析失败，请查看文件、行号、字段或异常摘要。",
+      "next_action_zh": "修正文件格式或字段映射后重新解析。",
+      "can_display_financial_value": false,
+      "auto_replacement_allowed": false
+    },
+    {
+      "case_id": "outdated-snapshot-date",
+      "status": "outdated",
+      "title_zh": "过期状态：显示快照日期",
+      "reason_zh": "快照已过期，必须显示快照日期。",
+      "failure_detail_zh": "快照日期：2026-06-03；当前只允许复核旧快照，不输出新财务结论。",
+      "display_text_zh": "使用旧快照，请查看快照日期：2026-06-03。",
+      "next_action_zh": "刷新数据源或确认旧快照仅用于只读复核。",
+      "can_display_financial_value": false,
+      "auto_replacement_allowed": false
+    },
+    {
+      "case_id": "confirmed-zero-evidence-chain",
+      "status": "confirmed_zero",
+      "title_zh": "真为 0 状态证明",
+      "reason_zh": "真实数据确认数值为零时必须保留证据链。",
+      "failure_detail_zh": "当前 Stage 8 没有真实 confirmed_zero 财务指标；这里只证明零值显示门禁。",
+      "display_text_zh": "仅当 status=confirmed_zero 且 source、as_of、evidence_hash 完整时才允许显示零值。",
+      "next_action_zh": "打开证据来源复核零值是否仍有效。",
+      "can_display_financial_value": true,
+      "requires_evidence_chain": true,
+      "required_evidence_fields": [
+        "source",
+        "as_of",
+        "evidence_hash"
+      ],
+      "current_confirmed_zero_metric_count": 0,
+      "current_personal_financial_zero_rendered": false,
+      "stage2_data_state_validates_zero_rule": true,
+      "auto_replacement_allowed": false
+    }
+  ],
+  "screenshots_required": [
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/failure_state.png",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/outdated_state.png",
+    "PFI/reports/pfi_v023/stage_8/phase_8_3/screenshots/zero_proof.png"
+  ]
+}
