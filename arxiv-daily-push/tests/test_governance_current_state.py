@@ -30,10 +30,34 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_summary_describes_assignment_live_validation_and_s2plt02_blockers(self) -> None:
+    def test_current_state_summary_describes_s2plt02_inventory_summary_and_blockers(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
+        self.assertIn(
+            "S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC", current_state)
+        self.assertIn("terminal_delivery_input_inventory_summary", current_state)
+        self.assertIn("terminal_delivery_artifact_validation_summary", current_state)
+        self.assertIn("cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4", current_state)
+        self.assertIn("4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b", current_state)
+        self.assertIn("3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db", current_state)
+        self.assertIn("323015614b4a846a44ecd12e1a3f698237ff0987085f46f8d9cc2f098ddabb52", current_state)
+        self.assertIn("3285063a1708b45cc881f1868d91282293b89bdb8cc9b3a2a2d87d07d5dd439b", current_state)
+        self.assertIn("bcb40505ad7244626589c24991dcf05fe775268ce44b5eab3b68444f38cded6e", current_state)
+        self.assertIn("23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c", current_state)
+        self.assertIn("SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
+        self.assertIn("write_terminal_artifact_allowed=false", current_state)
+        self.assertIn("scheduler_enable_allowed_by_this_plan=false", current_state)
+        self.assertIn("production_acceptance_allowed=false", current_state)
+        self.assertIn(
+            "ADP-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC-20260701.json",
+            current_state,
+        )
+        self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC.md", ledger)
+        self.assertIn("Previous zero-proof request consumption sync remains visible", current_state)
         self.assertIn(
             "S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,

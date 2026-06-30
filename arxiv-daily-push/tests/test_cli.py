@@ -985,6 +985,25 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["authorization_validation_errors"], [])
         self.assertTrue(payload["authorization_validation_state_hash"])
         self.assertTrue(payload["terminal_evidence_inventory_state_hash"])
+        input_inventory_summary = payload["terminal_delivery_input_inventory_summary"]
+        self.assertEqual(input_inventory_summary["status"], "blocked")
+        self.assertEqual(input_inventory_summary["state_hash"], payload["input_inventory_state_hash"])
+        self.assertEqual(input_inventory_summary["missing_inputs"], payload["blocked_by_missing_inputs"])
+        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 1)
+        self.assertEqual(input_inventory_summary["observed_real_email_count"], 4)
+        self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
+        artifact_validation_summary = payload["terminal_delivery_artifact_validation_summary"]
+        self.assertEqual(artifact_validation_summary["status"], "blocked")
+        self.assertEqual(
+            artifact_validation_summary["state_hash"],
+            payload["terminal_artifact_validation_state_hash"],
+        )
+        self.assertEqual(
+            artifact_validation_summary["artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+        )
+        self.assertFalse(artifact_validation_summary["artifact_present"])
+        self.assertFalse(artifact_validation_summary["terminal_delivery_proof_ready"])
         self.assertFalse(payload["runtime_capture_ready"])
         self.assertIn("adp_allow_smtp_send_false", payload["runtime_capture_blockers"])
         self.assertIn("real_smtp_secret_env_missing", payload["runtime_capture_blockers"])

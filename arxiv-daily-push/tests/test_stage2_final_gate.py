@@ -1084,9 +1084,28 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(plan["authorization_validation_state_hash"])
         self.assertIsInstance(plan["terminal_evidence_inventory_state_hash"], str)
         self.assertTrue(plan["terminal_evidence_inventory_state_hash"])
+        input_inventory_summary = plan["terminal_delivery_input_inventory_summary"]
+        self.assertEqual(input_inventory_summary["status"], "blocked")
+        self.assertEqual(input_inventory_summary["state_hash"], plan["input_inventory_state_hash"])
+        self.assertEqual(input_inventory_summary["ready_inputs"], plan["ready_inputs"])
+        self.assertEqual(input_inventory_summary["missing_inputs"], plan["blocked_by_missing_inputs"])
+        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 1)
+        self.assertEqual(input_inventory_summary["required_real_delivery_days"], 2)
+        self.assertEqual(input_inventory_summary["observed_real_email_count"], 4)
+        self.assertEqual(input_inventory_summary["required_real_email_count"], 8)
+        self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
         self.assertEqual(plan["terminal_artifact_validation_status"], "blocked")
         self.assertIsInstance(plan["terminal_artifact_validation_state_hash"], str)
         self.assertTrue(plan["terminal_artifact_validation_state_hash"])
+        artifact_validation_summary = plan["terminal_delivery_artifact_validation_summary"]
+        self.assertEqual(artifact_validation_summary["status"], "blocked")
+        self.assertEqual(artifact_validation_summary["state_hash"], plan["terminal_artifact_validation_state_hash"])
+        self.assertEqual(
+            artifact_validation_summary["artifact_ref"],
+            S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        )
+        self.assertFalse(artifact_validation_summary["artifact_present"])
+        self.assertFalse(artifact_validation_summary["terminal_delivery_proof_ready"])
         self.assertEqual(
             plan["terminal_artifact_ref"],
             S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
@@ -1099,6 +1118,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertIn(
             "s2plt02_terminal_delivery_proof_artifact_missing",
+            plan["terminal_artifact_blocking_reasons"],
+        )
+        self.assertEqual(
+            artifact_validation_summary["validation_errors"],
+            plan["terminal_artifact_validation_errors"],
+        )
+        self.assertEqual(
+            artifact_validation_summary["blocking_reasons"],
             plan["terminal_artifact_blocking_reasons"],
         )
         self.assertFalse(plan["runtime_capture_ready"])
@@ -6210,7 +6237,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa",
+            "3285063a1708b45cc881f1868d91282293b89bdb8cc9b3a2a2d87d07d5dd439b",
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
@@ -6256,6 +6283,37 @@ class Stage2FinalGateTests(unittest.TestCase):
             "real_smtp_secret_env_missing",
             state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_blockers"],
         )
+        input_inventory_summary = state["s2plt02_terminal_delivery_capture_plan_summary"][
+            "terminal_delivery_input_inventory_summary"
+        ]
+        self.assertEqual(input_inventory_summary["status"], "blocked")
+        self.assertEqual(
+            input_inventory_summary["ready_inputs"],
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["ready_inputs"],
+        )
+        self.assertEqual(
+            input_inventory_summary["missing_inputs"],
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["blocked_by_missing_inputs"],
+        )
+        self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 1)
+        self.assertEqual(input_inventory_summary["observed_real_email_count"], 4)
+        self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
+        artifact_validation_summary = state["s2plt02_terminal_delivery_capture_plan_summary"][
+            "terminal_delivery_artifact_validation_summary"
+        ]
+        self.assertEqual(artifact_validation_summary["status"], "blocked")
+        self.assertEqual(
+            artifact_validation_summary["state_hash"],
+            state["s2plt02_terminal_delivery_capture_plan_summary"][
+                "terminal_artifact_validation_state_hash"
+            ],
+        )
+        self.assertEqual(
+            artifact_validation_summary["artifact_ref"],
+            S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        )
+        self.assertFalse(artifact_validation_summary["artifact_present"])
+        self.assertFalse(artifact_validation_summary["terminal_delivery_proof_ready"])
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["missing_smtp_secret_env_names"],
             ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],

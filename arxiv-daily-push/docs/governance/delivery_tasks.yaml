@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC"
+    phase: "S2PL"
+    objective: "Expose S2PLT02 terminal delivery input inventory and artifact validation summaries in capture-plan and final-bundle readiness outputs without writing terminal artifacts or enabling production."
+    scope: "stage2_final_gate capture plan/final-bundle summaries, CLI regression, focused tests, governance records, user-center traceability, and no-production run manifest."
+    non_scope: "No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final bundle manifest, handoff, signoff, final command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced."
+    status: "blocked"
+    dependencies: ["S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", "S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC"]
+    required_files: ["src/arxiv_daily_push/stage2_final_gate.py", "tests/test_stage2_final_gate.py", "tests/test_cli.py"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_inventory_summary_focused PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_governance_current_state.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["pending in this commit until verification run"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"]
+    risk: "Future agents could read a blocked capture plan but miss the exact missing terminal inputs or artifact validation blocker; summaries now make both visible while preserving no-write status."
+    rollback: "Revert stage2_final_gate summary fields and this governance sync."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC"
     phase: "S2PL"
     objective: "Consume the validated P0/P1 zero-proof artifact inside final-bundle reviewer request states without closing P0/P1 or enabling production."

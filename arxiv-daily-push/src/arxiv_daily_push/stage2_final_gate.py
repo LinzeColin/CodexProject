@@ -4116,6 +4116,26 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         ),
         "scheduler_runtime_evidence_status": evidence_inventory.get("scheduler_runtime_evidence_status"),
     }
+    terminal_delivery_input_inventory_summary = {
+        "status": inventory.get("status"),
+        "state_hash": inventory.get("state_hash"),
+        "ready_inputs": list(inventory.get("ready_inputs", [])),
+        "missing_inputs": missing_inputs,
+        "observed_real_delivery_days": int(inventory.get("observed_real_delivery_days") or 0),
+        "required_real_delivery_days": int(inventory.get("required_real_delivery_days") or 0),
+        "observed_real_email_count": int(inventory.get("observed_real_email_count") or 0),
+        "required_real_email_count": int(inventory.get("required_real_email_count") or 0),
+        "terminal_delivery_proof_ready": inventory.get("terminal_delivery_proof_ready") is True,
+    }
+    terminal_delivery_artifact_validation_summary = {
+        "status": terminal_artifact_validation.get("status"),
+        "state_hash": terminal_artifact_validation.get("state_hash"),
+        "artifact_ref": terminal_artifact_validation.get("artifact_ref"),
+        "artifact_present": terminal_artifact_validation.get("artifact_present") is True,
+        "terminal_delivery_proof_ready": terminal_artifact_validation.get("terminal_delivery_proof_ready") is True,
+        "validation_errors": list(terminal_artifact_validation.get("validation_errors", [])),
+        "blocking_reasons": list(terminal_artifact_validation.get("blocking_reasons", [])),
+    }
     authorization_valid = (
         authorization_artifact is not None
         and authorization_validation.get("status") == "pass"
@@ -4314,6 +4334,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "status": "pass" if terminal_delivery_proof_ready and not missing_inputs else "blocked",
         "scope": "s2plt02_terminal_delivery_proof_capture_plan_no_write_no_production",
         "input_inventory_state_hash": inventory.get("state_hash"),
+        "terminal_delivery_input_inventory_summary": terminal_delivery_input_inventory_summary,
         "terminal_evidence_inventory_state_hash": evidence_inventory.get("state_hash"),
         "terminal_capture_window_audit_summary": terminal_capture_window_audit_summary,
         "authorization_artifact_path": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
@@ -4359,6 +4380,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "terminal_delivery_proof_artifact_ref": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
         "terminal_artifact_validation_status": terminal_artifact_validation.get("status"),
         "terminal_artifact_validation_state_hash": terminal_artifact_validation.get("state_hash"),
+        "terminal_delivery_artifact_validation_summary": terminal_delivery_artifact_validation_summary,
         "terminal_artifact_ref": terminal_artifact_validation.get("artifact_ref"),
         "terminal_artifact_present": terminal_artifact_validation.get("artifact_present"),
         "terminal_artifact_ready": terminal_artifact_validation.get("terminal_delivery_proof_ready"),
@@ -4435,6 +4457,21 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         errors.append("S2PLT02 terminal delivery proof capture plan terminal_artifact_validation_errors must be a list")
     if not isinstance(state.get("terminal_artifact_blocking_reasons"), list):
         errors.append("S2PLT02 terminal delivery proof capture plan terminal_artifact_blocking_reasons must be a list")
+    artifact_validation_summary = _mapping(state.get("terminal_delivery_artifact_validation_summary"))
+    if artifact_validation_summary.get("status") != state.get("terminal_artifact_validation_status"):
+        errors.append("S2PLT02 terminal delivery proof capture plan artifact validation summary status mismatch")
+    if artifact_validation_summary.get("state_hash") != state.get("terminal_artifact_validation_state_hash"):
+        errors.append("S2PLT02 terminal delivery proof capture plan artifact validation summary hash mismatch")
+    if artifact_validation_summary.get("artifact_ref") != state.get("terminal_artifact_ref"):
+        errors.append("S2PLT02 terminal delivery proof capture plan artifact validation summary ref mismatch")
+    if artifact_validation_summary.get("artifact_present") != state.get("terminal_artifact_present"):
+        errors.append("S2PLT02 terminal delivery proof capture plan artifact validation summary presence mismatch")
+    if artifact_validation_summary.get("terminal_delivery_proof_ready") != state.get("terminal_artifact_ready"):
+        errors.append("S2PLT02 terminal delivery proof capture plan artifact validation summary readiness mismatch")
+    if artifact_validation_summary.get("validation_errors") != state.get("terminal_artifact_validation_errors"):
+        errors.append("S2PLT02 terminal delivery proof capture plan artifact validation summary errors mismatch")
+    if artifact_validation_summary.get("blocking_reasons") != state.get("terminal_artifact_blocking_reasons"):
+        errors.append("S2PLT02 terminal delivery proof capture plan artifact validation summary blockers mismatch")
     if state.get("terminal_artifact_present") is False:
         if "s2plt02_terminal_delivery_proof_artifact_missing" not in state.get(
             "terminal_artifact_blocking_reasons", []
@@ -4456,6 +4493,15 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         "terminal_evidence_inventory_state_hash"
     ):
         errors.append("S2PLT02 terminal delivery proof capture plan evidence inventory hash is required")
+    input_inventory_summary = _mapping(state.get("terminal_delivery_input_inventory_summary"))
+    if input_inventory_summary.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal delivery proof capture plan input inventory summary status is invalid")
+    if input_inventory_summary.get("state_hash") != state.get("input_inventory_state_hash"):
+        errors.append("S2PLT02 terminal delivery proof capture plan input inventory summary hash mismatch")
+    if input_inventory_summary.get("ready_inputs") != state.get("ready_inputs"):
+        errors.append("S2PLT02 terminal delivery proof capture plan input inventory summary ready inputs mismatch")
+    if input_inventory_summary.get("missing_inputs") != state.get("blocked_by_missing_inputs"):
+        errors.append("S2PLT02 terminal delivery proof capture plan input inventory summary missing inputs mismatch")
     capture_window_summary = _mapping(state.get("terminal_capture_window_audit_summary"))
     if capture_window_summary.get("status") not in {"pass", "blocked"}:
         errors.append("S2PLT02 terminal delivery proof capture plan capture-window summary status is invalid")
@@ -4506,6 +4552,20 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
     ):
         if not isinstance(state.get(field), int):
             errors.append(f"S2PLT02 terminal delivery proof capture plan {field} must be an integer")
+    for field in (
+        "observed_real_delivery_days",
+        "required_real_delivery_days",
+        "observed_real_email_count",
+        "required_real_email_count",
+    ):
+        if input_inventory_summary.get(field) != state.get(field):
+            errors.append(
+                f"S2PLT02 terminal delivery proof capture plan input inventory summary {field} mismatch"
+            )
+    if input_inventory_summary.get("terminal_delivery_proof_ready") != state.get(
+        "terminal_delivery_proof_ready"
+    ):
+        errors.append("S2PLT02 terminal delivery proof capture plan input inventory summary readiness mismatch")
     if capture_window_summary.get("counts_toward_s2plt02_terminal_proof") is False:
         if state.get("current_capture_window_real_delivery_days_added") != 0:
             errors.append("nonterminal capture-window must add zero real delivery days")
@@ -9203,6 +9263,9 @@ def build_final_bundle_prerequisite_plan_state(
             "terminal_evidence_inventory_state_hash": s2plt02_capture_plan.get(
                 "terminal_evidence_inventory_state_hash"
             ),
+            "terminal_delivery_input_inventory_summary": dict(
+                _mapping(s2plt02_capture_plan.get("terminal_delivery_input_inventory_summary"))
+            ),
             "terminal_capture_window_audit_summary": dict(
                 _mapping(s2plt02_capture_plan.get("terminal_capture_window_audit_summary"))
             ),
@@ -9211,6 +9274,9 @@ def build_final_bundle_prerequisite_plan_state(
             ),
             "terminal_artifact_validation_state_hash": s2plt02_capture_plan.get(
                 "terminal_artifact_validation_state_hash"
+            ),
+            "terminal_delivery_artifact_validation_summary": dict(
+                _mapping(s2plt02_capture_plan.get("terminal_delivery_artifact_validation_summary"))
             ),
             "terminal_artifact_ref": s2plt02_capture_plan.get("terminal_artifact_ref"),
             "terminal_artifact_present": s2plt02_capture_plan.get("terminal_artifact_present"),
@@ -9242,6 +9308,7 @@ def build_final_bundle_prerequisite_plan_state(
             ),
             "smtp_secret_env_ready": s2plt02_capture_plan.get("smtp_secret_env_ready"),
             "smtp_secret_values_logged": s2plt02_capture_plan.get("smtp_secret_values_logged"),
+            "ready_inputs": list(s2plt02_capture_plan.get("ready_inputs", [])),
             "blocked_by_missing_inputs": list(s2plt02_capture_plan.get("blocked_by_missing_inputs", [])),
             "observed_real_counts_source": s2plt02_capture_plan.get("observed_real_counts_source"),
             "observed_real_delivery_days": s2plt02_capture_plan.get("observed_real_delivery_days"),
@@ -9924,6 +9991,13 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         ):
             if not isinstance(capture_plan_summary.get(field), str) or not capture_plan_summary.get(field):
                 errors.append(f"S2PLT02 capture plan summary {field} is required")
+        input_inventory_summary = _mapping(capture_plan_summary.get("terminal_delivery_input_inventory_summary"))
+        if input_inventory_summary.get("status") not in {"pass", "blocked"}:
+            errors.append("S2PLT02 capture plan summary input inventory status is invalid")
+        if input_inventory_summary.get("ready_inputs") != capture_plan_summary.get("ready_inputs"):
+            errors.append("S2PLT02 capture plan summary input inventory ready inputs mismatch")
+        if input_inventory_summary.get("missing_inputs") != capture_plan_summary.get("blocked_by_missing_inputs"):
+            errors.append("S2PLT02 capture plan summary input inventory missing inputs mismatch")
         capture_window_summary = _mapping(capture_plan_summary.get("terminal_capture_window_audit_summary"))
         if capture_window_summary.get("status") not in {"pass", "blocked"}:
             errors.append("S2PLT02 capture plan summary capture-window status is invalid")
@@ -9959,6 +10033,35 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             errors.append("S2PLT02 capture plan summary terminal_artifact_validation_errors must be a list")
         if not isinstance(capture_plan_summary.get("terminal_artifact_blocking_reasons"), list):
             errors.append("S2PLT02 capture plan summary terminal_artifact_blocking_reasons must be a list")
+        artifact_validation_summary = _mapping(
+            capture_plan_summary.get("terminal_delivery_artifact_validation_summary")
+        )
+        if artifact_validation_summary.get("status") != capture_plan_summary.get(
+            "terminal_artifact_validation_status"
+        ):
+            errors.append("S2PLT02 capture plan summary artifact validation status mismatch")
+        if artifact_validation_summary.get("state_hash") != capture_plan_summary.get(
+            "terminal_artifact_validation_state_hash"
+        ):
+            errors.append("S2PLT02 capture plan summary artifact validation hash mismatch")
+        if artifact_validation_summary.get("artifact_ref") != capture_plan_summary.get("terminal_artifact_ref"):
+            errors.append("S2PLT02 capture plan summary artifact validation ref mismatch")
+        if artifact_validation_summary.get("artifact_present") != capture_plan_summary.get(
+            "terminal_artifact_present"
+        ):
+            errors.append("S2PLT02 capture plan summary artifact validation presence mismatch")
+        if artifact_validation_summary.get("terminal_delivery_proof_ready") != capture_plan_summary.get(
+            "terminal_artifact_ready"
+        ):
+            errors.append("S2PLT02 capture plan summary artifact validation readiness mismatch")
+        if artifact_validation_summary.get("validation_errors") != capture_plan_summary.get(
+            "terminal_artifact_validation_errors"
+        ):
+            errors.append("S2PLT02 capture plan summary artifact validation errors mismatch")
+        if artifact_validation_summary.get("blocking_reasons") != capture_plan_summary.get(
+            "terminal_artifact_blocking_reasons"
+        ):
+            errors.append("S2PLT02 capture plan summary artifact validation blockers mismatch")
         if capture_plan_summary.get("terminal_artifact_present") is False:
             if "s2plt02_terminal_delivery_proof_artifact_missing" not in capture_plan_summary.get(
                 "terminal_artifact_blocking_reasons", []
@@ -9993,6 +10096,18 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         ):
             if not isinstance(capture_plan_summary.get(numeric_field), int):
                 errors.append(f"S2PLT02 capture plan summary {numeric_field} must be an integer")
+        for field in (
+            "observed_real_delivery_days",
+            "required_real_delivery_days",
+            "observed_real_email_count",
+            "required_real_email_count",
+        ):
+            if input_inventory_summary.get(field) != capture_plan_summary.get(field):
+                errors.append(f"S2PLT02 capture plan summary input inventory {field} mismatch")
+        if input_inventory_summary.get("terminal_delivery_proof_ready") != (
+            capture_plan_summary.get("status") == "pass"
+        ):
+            errors.append("S2PLT02 capture plan summary input inventory readiness mismatch")
         if capture_window_summary.get("counts_toward_s2plt02_terminal_proof") is False:
             if capture_plan_summary.get("current_capture_window_real_delivery_days_added") != 0:
                 errors.append("S2PLT02 capture plan summary nonterminal window must add zero real days")
