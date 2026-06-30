@@ -1,0 +1,132 @@
+{
+  "schema": "PFIV024Stage0Phase01EvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 0",
+  "phase_id": "0.1",
+  "phase_name": "需求合同冻结",
+  "status": "candidate_pass",
+  "generated_at": "2026-06-30T10:48:17Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "345e998d1e8cac988db2dcaa0bdcb80bb36ac601",
+    "origin_main_at_evidence_write": "345e998d1e8cac988db2dcaa0bdcb80bb36ac601",
+    "head_at_final_validation": "345e998d1e8cac988db2dcaa0bdcb80bb36ac601",
+    "origin_main_at_final_validation": "345e998d1e8cac988db2dcaa0bdcb80bb36ac601"
+  },
+  "source_files": {
+    "roadmap": {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Repair_Roadmap.md",
+      "exists": true,
+      "sha256": "04a817a7f90acccc959c1eb537c24648e0061df0e764cdec5d834bbd07047950"
+    },
+    "taskpack_zip": {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Repair_TaskPack.zip",
+      "exists": true,
+      "sha256": "4521fe2ded19104e2dfd8aa368d235b2e724824171b47d336c42a09ee8ca760d"
+    }
+  },
+  "tasks": {
+    "T0.1.1": {
+      "status": "done",
+      "artifact": "PFI/docs/pfi_v024/REPAIR_SCOPE_LOCK.md"
+    },
+    "T0.1.2": {
+      "status": "done",
+      "artifact": "PFI/src/pfi_v02/stage_v024_repair_contract.py"
+    },
+    "T0.1.3": {
+      "status": "done",
+      "artifact": "PFI/docs/pfi_v024/REPAIR_SCOPE_LOCK.md"
+    },
+    "T0.1.4": {
+      "status": "done",
+      "artifact": "PFI/docs/pfi_v024/REPAIR_SCOPE_LOCK.md"
+    }
+  },
+  "contract_summary": {
+    "official_nav_count": 10,
+    "market_research_top_level": true,
+    "no_mock_financial_data": true,
+    "max_phases_per_run": 1,
+    "business_ui_changes_allowed": false,
+    "data_logic_changes_allowed": false
+  },
+  "phase_0_1_complete": true,
+  "phase_0_2_complete": false,
+  "phase_0_3_complete": false,
+  "stage_0_complete": false,
+  "requires_user_acceptance": true,
+  "no_auto_next_phase": true,
+  "no_auto_closeout": true,
+  "business_ui_changes_made": false,
+  "data_logic_changes_made": false,
+  "acceptance_checks": {
+    "repair_scope_lock_present": true,
+    "machine_contract_present": true,
+    "official_nav_count_10": true,
+    "market_research_top_level": true,
+    "no_mock_financial_data_rule_present": true,
+    "one_phase_rule_present": true,
+    "no_business_ui_or_data_logic_changes": true
+  },
+  "commands": [
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -m py_compile PFI/src/pfi_v02/stage_v024_repair_contract.py PFI/tests/test_v024_stage0_phase01_contract.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v024_stage0_phase01_contract.py -q",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -m json.tool PFI/reports/pfi_v024/stage_0/phase_0_1/evidence.json",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md",
+    "PFI/docs/pfi_v024/REPAIR_SCOPE_LOCK.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/reports/pfi_v024/stage_0/phase_0_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_0/phase_0_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_0/phase_0_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_0/phase_0_1/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_repair_contract.py",
+    "PFI/tests/test_v024_stage0_phase01_contract.py"
+  ],
+  "explicitly_not_done": [
+    "Stage 0 Phase 0.2 history deprecation policy",
+    "Stage 0 Phase 0.3 full test and evidence pack",
+    "Stage 0 whole-stage review",
+    "Stage 1 shell.js repair",
+    "business UI changes",
+    "data logic changes"
+  ],
+  "next_gate": "user acceptance or explicit instruction to enter Stage 0 Phase 0.2",
+  "validation_results": {
+    "node_check_shell_js": "pass",
+    "py_compile_phase01_contract_and_test": "pass",
+    "pytest_phase01_and_pre_stage0": "6 passed in 0.12s",
+    "json_and_git_diff_check": "pass",
+    "project_cache_after_validation": "0 dirs / 0 files outside PFI/.venv",
+    "post_fast_forward_validation": true
+  },
+  "last_verified_at": "2026-06-30T10:50:23Z",
+  "last_refreshed_after_fast_forward_at": "2026-06-30T10:49:48Z"
+}
