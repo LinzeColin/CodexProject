@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 1 Phase 1.3 - 2026-06-30
+
+- 完成 `Stage 1 / Phase 1.3 - 验证`：记录 `node --check`、pytest 合同测试和 changed files audit。
+- 新增 `tests/test_v024_stage1_phase13_validation_closeout.py` 和 `reports/pfi_v024/stage_1/phase_1_3/evidence.json`。
+- Stage 1 当前为 candidate complete；whole-stage review、复审问题修复和 GitHub main upload 尚未执行。
+- 本轮未修改业务 UI、app bundle、launcher、`shell.js` 或真实指标计算。
+
 ## v0.2.4 Repair Pack Stage 1 Phase 1.2 - 2026-06-30
 
 - 完成 `Stage 1 / Phase 1.2 - 最小恢复`：在 `shell.js` 中新增 `window.PFI_STAGE1_SHELL`，暴露 version、initialize、mountRoute 和 errorBoundary。

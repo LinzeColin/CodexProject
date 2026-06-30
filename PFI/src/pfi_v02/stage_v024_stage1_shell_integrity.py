@@ -8,6 +8,7 @@ SOURCE_PACKAGE_VERSION = "v0.2.3-repair"
 STAGE_ID = "Stage 1"
 PHASE_1_1_ID = "1.1"
 PHASE_1_2_ID = "1.2"
+PHASE_1_3_ID = "1.3"
 
 SHELL_JS_SHA256_AT_PHASE_1_1 = "bb2492ead4404dd8affd730b3c231884281aa163ce3adb1a438a3e26e9c3aa90"
 SHELL_JS_BYTES_AT_PHASE_1_1 = 272357
@@ -135,5 +136,61 @@ def build_v024_stage1_phase12_contract() -> V024Stage1Phase12Contract:
         business_ui_changes_allowed=False,
         data_logic_changes_allowed=False,
         formal_fake_financial_data_allowed=False,
+        next_phase_requires_user_acceptance=True,
+    )
+
+
+@dataclass(frozen=True)
+class V024Stage1Phase13Contract:
+    target_version: str
+    source_package_version: str
+    stage_id: str
+    phase_id: str
+    phase_name: str
+    task_ids: list[str]
+    phase_1_1_complete: bool
+    phase_1_2_complete: bool
+    phase_1_3_complete: bool
+    stage_1_candidate_complete: bool
+    stage_1_complete: bool
+    max_phases_per_run: int
+    validation_commands: list[str]
+    changed_files_audit_required: bool
+    whole_stage_review_required: bool
+    github_main_upload_allowed: bool
+    business_ui_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    next_phase_requires_user_acceptance: bool
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage1_phase13_contract() -> V024Stage1Phase13Contract:
+    return V024Stage1Phase13Contract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        stage_id=STAGE_ID,
+        phase_id=PHASE_1_3_ID,
+        phase_name="验证",
+        task_ids=["T1.3.1", "T1.3.2", "T1.3.3"],
+        phase_1_1_complete=True,
+        phase_1_2_complete=True,
+        phase_1_3_complete=True,
+        stage_1_candidate_complete=True,
+        stage_1_complete=False,
+        max_phases_per_run=1,
+        validation_commands=[
+            "node --check PFI/web/app/shell.js",
+            "node --check PFI/web/app/version.js",
+            "pytest stage1 phase13 contract",
+            "pytest v024 stage1 regression",
+            "changed files audit",
+        ],
+        changed_files_audit_required=True,
+        whole_stage_review_required=True,
+        github_main_upload_allowed=False,
+        business_ui_changes_allowed=False,
+        data_logic_changes_allowed=False,
         next_phase_requires_user_acceptance=True,
     )
