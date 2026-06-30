@@ -1,0 +1,69 @@
+schema_version: universe_state_params.v1
+product_target: Memory Atlas v1.1.5
+stage: "0"
+task: "0.5 Model Parameters Templates"
+status: template_v1_heuristic
+last_updated: "2026-06-30"
+data_boundary:
+  allowed_inputs:
+    - data/derived/visualization/memory_atlas.json
+    - redacted derived visualization aggregates
+  raw_private_data_allowed: false
+  plaintext_secrets_allowed: false
+  local_absolute_paths_allowed: false
+  writeback_allowed: false
+notes:
+  purpose: "Parameter template for the future Universe State Snapshot generator."
+  calibration_status: "initial heuristic from taskpack and Task 0.4 architecture; not empirically calibrated"
+  rollback: "Delete this file or mark all weights as pending recalibration."
+scores:
+  black_hole:
+    interaction_weight: 0.28
+    recency_weight: 0.22
+    repetition_weight: 0.25
+    roi_penalty_weight: 0.15
+    growth_penalty_weight: 0.10
+  proto_star:
+    recency_growth_weight: 0.30
+    cross_signal_weight: 0.20
+    capability_relation_weight: 0.25
+    roi_potential_weight: 0.20
+    uncertainty_penalty_weight: 0.05
+  stale:
+    inactive_days_weight: 0.55
+    low_recent_usage_weight: 0.25
+    confidence_decay_weight: 0.20
+weather:
+  storm_conflict_threshold: 0.72
+  black_hole_warning_threshold: 0.65
+  proto_star_notice_threshold: 0.58
+thresholds:
+  black_hole:
+    watch_below: 0.45
+    warning_from: 0.45
+    critical_from: 0.65
+  proto_star:
+    weak_below: 0.45
+    candidate_from: 0.45
+    visible_from: 0.58
+  stale:
+    watch_from: 0.45
+    review_from: 0.65
+diagnostics:
+  missing_positive_signal_fallback: 0.0
+  missing_uncertainty_fallback: 0.5
+  require_driver_signal_ids: true
+validation_hints:
+  required_sections:
+    - scores
+    - weather
+    - thresholds
+    - diagnostics
+  score_weight_groups:
+    - black_hole
+    - proto_star
+    - stale
+  non_goals:
+    - no generator implementation in Stage 0
+    - no raw transcript access
+    - no writeback

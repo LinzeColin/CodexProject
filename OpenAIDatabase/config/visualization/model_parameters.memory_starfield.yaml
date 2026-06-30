@@ -1,0 +1,64 @@
+schema_version: memory_starfield_params.v1
+product_target: Memory Atlas v1.1.5
+stage: "0"
+task: "0.5 Model Parameters Templates"
+status: template_v1_heuristic
+last_updated: "2026-06-30"
+data_boundary:
+  allowed_inputs:
+    - data/derived/visualization/memory_atlas.json
+    - redacted derived Universe State Snapshot
+  raw_private_data_allowed: false
+  plaintext_secrets_allowed: false
+  local_absolute_paths_allowed: false
+  writeback_allowed: false
+notes:
+  purpose: "Parameter template for the future isolated Memory Starfield spike and production integration."
+  calibration_status: "initial heuristic from taskpack; not empirically calibrated"
+  rollback: "Delete this file or reduce to the minimal layout/performance parameter set."
+layout:
+  seed: 20260628
+  lod_tiers:
+    core_max_clusters: 24
+    mid_max_clusters: 48
+    outer_max_clusters: 96
+    dust_min_weight: 0.05
+forces:
+  gravity_constant: 0.82
+  cluster_repulsion: 0.18
+  orbital_stability: 0.64
+  curl_noise_frequency: 0.42
+  curl_noise_amplitude: 0.76
+  curl_noise_octaves: 3
+visual:
+  bloom_strength: 1.2
+  trail_fade: 0.92
+  particle_base_size: 1.0
+  nebula_opacity: 0.72
+  black_hole_darkness: 0.88
+  proto_star_energy: 1.35
+mapping:
+  importance_to_mass_scale: 1.0
+  recency_half_life_days: 45
+  interaction_density_scale: 0.8
+  confidence_noise_amplitude: 0.35
+performance:
+  desktop_target_fps: 60
+  desktop_min_fps: 45
+  particle_count_high: 60000
+  particle_count_mid: 25000
+  particle_count_low: 8000
+validation_hints:
+  required_sections:
+    - layout
+    - forces
+    - visual
+    - mapping
+    - performance
+  expected_modes:
+    - Presentation Mode
+    - Analysis Mode
+  non_goals:
+    - no production import in Stage 0
+    - no raw transcript access
+    - no writeback
