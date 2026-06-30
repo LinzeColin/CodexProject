@@ -35,9 +35,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_BLOCKED_DRY_RUN_CANDIDATES_NO_PRODUCTION",
+            "S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC_BLOCKED_TERMINAL_GAPS_VISIBLE_NO_PRODUCTION",
             current_state,
         )
+        self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC", current_state)
+        self.assertIn("audit-s2plt02-real-proof-capture-readiness", current_state)
+        self.assertIn("authorization_artifact_status=pass", current_state)
+        self.assertIn("real_proof_capture_authorized=true", current_state)
+        self.assertIn("completed_next_actions=obtain_explicit_owner_authorization_for_real_smtp_scheduler", current_state)
+        self.assertIn("safe_to_collect_terminal_proof=false", current_state)
+        self.assertIn("7647b32a4ec17c9687e71238ee0ddf2d184ea666d84982dd77e7f2a2d2e427a9", current_state)
+        self.assertIn("required_launchagents_disabled", current_state)
         self.assertIn("S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION", current_state)
         self.assertIn("S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR", current_state)
         self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN", current_state)

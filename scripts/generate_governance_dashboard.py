@@ -268,6 +268,7 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     normalized_manifest_clause = ""
     capture_window_cli_clause = ""
     evidence_inventory_clause = ""
+    readiness_live_auth_clause = ""
     current_iteration = str(matrix.get("current_iteration") or "")
     current_alias = str(matrix.get("current_v7_legacy_alias") or "")
     if (
@@ -291,12 +292,22 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         )
     if (
         "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY" in current_iteration
+        or "s2plt02_terminal_proof_evidence_inventory_iteration" in matrix
         or "S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY" in str(matrix.get("current_gate") or "")
         or "audit-s2plt02-terminal-proof-evidence-inventory" in current_alias
         or "terminal proof classifier" in current_alias.lower()
     ):
         evidence_inventory_clause = (
             " S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY usable/blocked/missing classification,"
+        )
+    if (
+        "S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC" in current_iteration
+        or "S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC" in str(matrix.get("current_gate") or "")
+        or "authorization_artifact_status=pass" in current_alias
+        or "real_proof_capture_authorized=true" in current_alias
+    ):
+        readiness_live_auth_clause = (
+            " S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC authorization-pass readiness,"
         )
     return (
         "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
@@ -307,7 +318,7 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, "
         "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, "
         "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate,"
-        f"{normalized_manifest_clause}{capture_window_cli_clause}{evidence_inventory_clause} and only current explicit no-production "
+        f"{normalized_manifest_clause}{capture_window_cli_clause}{evidence_inventory_clause}{readiness_live_auth_clause} and only current explicit no-production "
         "real-delivery manifest inputs as validated no-write inputs, record the "
         "current dry-run/scheduler-disabled capture window as blocked evidence, "
         "and next collect S2PLT02 terminal delivery proof only from complete real "

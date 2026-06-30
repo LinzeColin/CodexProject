@@ -538,6 +538,73 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("obtain_explicit_owner_authorization_for_real_smtp_scheduler", readiness["required_next_actions"])
         self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
 
+    def test_s2plt02_real_proof_capture_readiness_consumes_live_authorization_artifact(self) -> None:
+        launchctl_disabled_text = """
+            "com.linze.adp.local.daily" => disabled
+            "com.linze.adp.local.health" => disabled
+            "com.linze.adp.local.watchdog" => disabled
+        """
+        artifact = {
+            "schema_version": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-30T07:41:53+10:00",
+            "authorization_decision": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION,
+            "authorized_by": {
+                "owner_id": "owner_or_coordinator",
+                "owner_role": "owner",
+                "authorization_source": "explicit_owner_instruction",
+            },
+            "authorization_scope": "S2PLT02_REAL_SMTP_SCHEDULER_PROOF_CAPTURE_ONLY",
+            "authorized_actions": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS),
+            "authorization_constraints": {
+                key: True for key in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS
+            },
+            "readiness_state_hash": "readiness-hash-current",
+            "evidence_refs": [
+                "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md",
+                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json",
+            ],
+            "no_production_side_effects": {
+                flag: False for flag in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS
+            },
+            "authorization_hash": "",
+        }
+        artifact["authorization_hash"] = build_s2plt02_real_proof_capture_authorization_hash(artifact)
+
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            self._write_s2plt02_second_day_dry_run_reports(state_dir)
+            artifact_path = tmp_root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+            artifact_path.parent.mkdir(parents=True)
+            artifact_path.write_text(json.dumps(artifact, ensure_ascii=False), encoding="utf-8")
+
+            readiness = build_s2plt02_real_proof_capture_readiness_state(
+                repo_root=tmp_root,
+                state_dir=state_dir,
+                service_date="2026-06-29",
+                launchctl_disabled_text=launchctl_disabled_text,
+            )
+
+        self.assertEqual(readiness["status"], "blocked")
+        self.assertTrue(readiness["real_proof_capture_authorized"])
+        self.assertEqual(readiness["authorization_artifact_status"], "pass")
+        self.assertEqual(
+            readiness["authorization_artifact_path"],
+            S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+        )
+        self.assertEqual(readiness["authorization_validation_errors"], [])
+        self.assertNotIn("real_proof_capture_authorization_missing", readiness["blocking_reasons"])
+        self.assertIn("obtain_explicit_owner_authorization_for_real_smtp_scheduler", readiness["completed_next_actions"])
+        self.assertNotIn("obtain_explicit_owner_authorization_for_real_smtp_scheduler", readiness["remaining_next_actions"])
+        self.assertIn("second_real_delivery_day_missing", readiness["blocking_reasons"])
+        self.assertIn("real_scheduler_not_proven", readiness["blocking_reasons"])
+        self.assertFalse(readiness["safe_to_collect_terminal_proof"])
+        self.assertFalse(readiness["real_smtp_send_enabled"])
+        self.assertFalse(readiness["scheduler_install_enabled"])
+        self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
+
     def test_s2plt02_real_proof_capture_readiness_requires_known_launchagent_states(self) -> None:
         launchctl_disabled_text = '"com.linze.adp.local.daily" => disabled'
         with TemporaryDirectory() as tmp_dir:

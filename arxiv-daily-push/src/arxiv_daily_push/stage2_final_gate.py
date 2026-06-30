@@ -1779,6 +1779,26 @@ def build_s2plt02_real_proof_capture_readiness_state(
     delivery_ledger = build_s2plt02_delivery_evidence_ledger_state()
     terminal_proof = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=repo_root)
     terminal_gates = _mapping(terminal_proof.get("terminal_gates"))
+    root = Path(repo_root)
+    authorization_artifact = _load_json_mapping_artifact(
+        root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+    )
+    authorization_validation = build_s2plt02_real_proof_capture_authorization_validation_state(
+        authorization_artifact
+    )
+    authorization_validation_errors = [
+        str(error)
+        for error in authorization_validation.get("validation_errors", [])
+        if isinstance(error, str)
+    ]
+    authorization_artifact_status = (
+        "missing"
+        if authorization_artifact is None
+        else str(authorization_validation.get("status") or "blocked")
+    )
+    real_proof_capture_authorized = (
+        authorization_validation.get("real_proof_capture_authorized_by_payload") is True
+    )
     second_real_delivery_day_present = (
         terminal_gates.get("two_consecutive_real_days") is True
         and terminal_gates.get("eight_real_emails_sent") is True
@@ -1787,7 +1807,11 @@ def build_s2plt02_real_proof_capture_readiness_state(
     real_scheduler_proven = terminal_gates.get("real_scheduler_proven") is True
     terminal_delivery_proof_artifact_present = terminal_proof.get("artifact_present") is True
 
-    blocking_reasons: list[str] = ["real_proof_capture_authorization_missing"]
+    blocking_reasons: list[str] = []
+    if authorization_artifact is None:
+        blocking_reasons.append("real_proof_capture_authorization_missing")
+    elif not real_proof_capture_authorized:
+        blocking_reasons.append("real_proof_capture_authorization_invalid")
     if validation_errors:
         blocking_reasons.append("required_launchagent_state_unknown")
     if all_required_launchagents_disabled:
@@ -1802,6 +1826,16 @@ def build_s2plt02_real_proof_capture_readiness_state(
         blocking_reasons.append("s2plt02_terminal_delivery_proof_artifact_missing")
     if not real_scheduler_proven:
         blocking_reasons.append("real_scheduler_not_proven")
+    completed_next_actions = (
+        ["obtain_explicit_owner_authorization_for_real_smtp_scheduler"]
+        if real_proof_capture_authorized
+        else []
+    )
+    remaining_next_actions = [
+        action
+        for action in S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS
+        if action not in completed_next_actions
+    ]
 
     state = {
         "model_id": S2PLT02_REAL_PROOF_CAPTURE_READINESS_MODEL_ID,
@@ -1822,7 +1856,14 @@ def build_s2plt02_real_proof_capture_readiness_state(
         "all_required_launchagents_have_calendar_triggers": all_required_launchagents_have_calendar_triggers,
         "launchagents_loaded_but_disabled": launchagents_loaded_but_disabled,
         "scheduler_runtime_evidence_status": scheduler_runtime_evidence_status,
-        "real_proof_capture_authorized": False,
+        "authorization_artifact_path": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+        "authorization_artifact_present": authorization_artifact is not None,
+        "authorization_artifact_status": authorization_artifact_status,
+        "authorization_validation_errors": authorization_validation_errors,
+        "authorization_validation_state_hash": str(
+            authorization_validation.get("state_hash") or ""
+        ),
+        "real_proof_capture_authorized": real_proof_capture_authorized,
         "safe_to_collect_terminal_proof": False,
         "second_real_delivery_day_present": second_real_delivery_day_present,
         "terminal_delivery_proof_artifact_present": terminal_delivery_proof_artifact_present,
@@ -1831,6 +1872,8 @@ def build_s2plt02_real_proof_capture_readiness_state(
         "delivery_evidence_ledger": delivery_ledger,
         "terminal_delivery_proof_validation": terminal_proof,
         "required_next_actions": list(S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS),
+        "completed_next_actions": completed_next_actions,
+        "remaining_next_actions": remaining_next_actions,
         "validation_errors": validation_errors,
         "blocking_reasons": blocking_reasons,
         "production_acceptance_claimed": False,
@@ -1870,14 +1913,40 @@ def validate_s2plt02_real_proof_capture_readiness_state(state: Mapping[str, Any]
         errors.append("S2PLT02 real-proof capture readiness required launchagents are invalid")
     if tuple(state.get("required_next_actions", [])) != S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS:
         errors.append("S2PLT02 real-proof capture readiness next actions are invalid")
-    for field in (
-        "real_proof_capture_authorized",
-        "safe_to_collect_terminal_proof",
-    ):
-        if state.get(field) is not False:
-            errors.append(f"{field} must be false until explicit owner authorization and terminal evidence exist")
+    if state.get("safe_to_collect_terminal_proof") is not False:
+        errors.append("safe_to_collect_terminal_proof must stay false until terminal evidence exists")
+    if state.get("authorization_artifact_path") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH:
+        errors.append("authorization_artifact_path is invalid")
+    if state.get("authorization_artifact_status") not in {"missing", "blocked", "pass"}:
+        errors.append("authorization_artifact_status is invalid")
+    if state.get("real_proof_capture_authorized") is True:
+        if state.get("authorization_artifact_status") != "pass":
+            errors.append("real_proof_capture_authorized requires pass authorization_artifact_status")
+        if "real_proof_capture_authorization_missing" in state.get("blocking_reasons", []):
+            errors.append("authorized readiness must not include authorization missing blocker")
+        if "real_proof_capture_authorization_invalid" in state.get("blocking_reasons", []):
+            errors.append("authorized readiness must not include authorization invalid blocker")
+    else:
+        if not (
+            "real_proof_capture_authorization_missing" in state.get("blocking_reasons", [])
+            or "real_proof_capture_authorization_invalid" in state.get("blocking_reasons", [])
+        ):
+            errors.append("unauthorized readiness requires missing or invalid authorization blocker")
+    completed_next_actions = tuple(state.get("completed_next_actions", []))
+    remaining_next_actions = tuple(state.get("remaining_next_actions", []))
+    if state.get("real_proof_capture_authorized") is True:
+        if "obtain_explicit_owner_authorization_for_real_smtp_scheduler" not in completed_next_actions:
+            errors.append("authorized readiness must mark authorization action completed")
+    elif completed_next_actions:
+        errors.append("unauthorized readiness must not have completed next actions")
+    expected_remaining = tuple(
+        action
+        for action in S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS
+        if action not in completed_next_actions
+    )
+    if remaining_next_actions != expected_remaining:
+        errors.append("remaining_next_actions must match required minus completed actions")
     for reason in (
-        "real_proof_capture_authorization_missing",
         "second_real_delivery_day_missing",
         "s2plt02_terminal_delivery_proof_artifact_missing",
         "real_scheduler_not_proven",

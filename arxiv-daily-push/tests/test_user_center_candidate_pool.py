@@ -143,6 +143,19 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
+        self.assertIn("REQ-ADP-V7-041-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC", page)
+        self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC", page)
+        self.assertIn("ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json", page)
+        self.assertIn("PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC.md", page)
+        self.assertIn(
+            "blocked_s2plt02_real_proof_capture_readiness_live_authorization_pass_terminal_gaps_visible_no_production",
+            page,
+        )
+        self.assertIn("authorization_artifact_status=pass", page)
+        self.assertIn("authorization_validation_errors=[]", page)
+        self.assertIn("real_proof_capture_authorized=true", page)
+        self.assertIn("completed_next_actions=obtain_explicit_owner_authorization_for_real_smtp_scheduler", page)
+        self.assertIn("7647b32a4ec17c9687e71238ee0ddf2d184ea666d84982dd77e7f2a2d2e427a9", page)
         self.assertIn("REQ-ADP-V7-041-S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json", page)
