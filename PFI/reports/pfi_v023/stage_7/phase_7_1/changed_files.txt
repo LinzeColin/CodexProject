@@ -1,0 +1,14 @@
+PFI/src/pfi_v02/stage_v023_reports.py
+PFI/src/pfi_v02/stage_v023_formula_registry.py
+PFI/web/app/pages/reports.js
+PFI/tests/test_v023_stage7_reports.py
+PFI/docs/pfi_v023/STAGE7_REPORTS.md
+PFI/reports/pfi_v023/stage_7/phase_7_1/evidence.json
+PFI/reports/pfi_v023/stage_7/phase_7_1/report_contract.json
+PFI/reports/pfi_v023/stage_7/phase_7_1/formula_registry.json
+PFI/reports/pfi_v023/stage_7/phase_7_1/report_page_model.json
+PFI/reports/pfi_v023/stage_7/phase_7_1/no_source_term_scan.json
+PFI/reports/pfi_v023/stage_7/phase_7_1/report_contract_snapshot.html
+PFI/reports/pfi_v023/stage_7/phase_7_1/screenshots/report_contract.png
+PFI/reports/pfi_v023/stage_7/phase_7_1/terminal.log
+PFI/reports/pfi_v023/stage_7/phase_7_1/changed_files.txt

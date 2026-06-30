@@ -1,0 +1,582 @@
+{
+  "schema": "PFIV023Stage7ReportsPageViewModelV1",
+  "version": "v0.2.3",
+  "stage": "Stage 7",
+  "phase_id": "V023-S7-P7.1",
+  "page": "reports",
+  "title": "报告与洞察",
+  "subtitle_zh": "报告合同页展示公式、参数、样本量、数据范围和缺口，不生成 Phase 7.2 核心报告。",
+  "report_count": 5,
+  "blocked_or_partial_count": 5,
+  "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+  "as_of": "2026-06-03",
+  "sections": [
+    {
+      "id": "reports",
+      "title": "报告合同",
+      "cards": [
+        {
+          "report_id": "net_worth_report",
+          "title": "净资产报告",
+          "status": "blocked",
+          "status_zh": "已阻断",
+          "conclusion_zh": "净资产报告被阻断：未挂载账户余额与持仓 read model，不能生成完整结论。",
+          "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+          "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+          "formula_summary_zh": "公式 1 项：净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。",
+          "parameter_summary_zh": "参数 3 项：净资产币种=CNY；资产范围=现金余额、投资市值、其他已确认资产；负债范围=可确认负债",
+          "gap_summary_zh": "缺口：净资产：未挂载账户余额与持仓 read model，无法计算净资产",
+          "next_actions": [
+            "挂载账户余额 read model",
+            "挂载持仓市值 read model"
+          ],
+          "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+        },
+        {
+          "report_id": "cash_balance_report",
+          "title": "现金余额报告",
+          "status": "blocked",
+          "status_zh": "已阻断",
+          "conclusion_zh": "现金余额报告被阻断：未挂载账户余额 read model，不能生成完整结论。",
+          "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+          "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+          "formula_summary_zh": "公式 1 项：现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。",
+          "parameter_summary_zh": "参数 2 项：现金币种=CNY；现金账户范围=真实账户余额 read model",
+          "gap_summary_zh": "缺口：现金余额：未挂载账户余额 read model，无法计算现金余额",
+          "next_actions": [
+            "挂载账户余额 read model"
+          ],
+          "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+        },
+        {
+          "report_id": "investment_market_value_report",
+          "title": "投资市值报告",
+          "status": "blocked",
+          "status_zh": "已阻断",
+          "conclusion_zh": "投资市值报告被阻断：未挂载持仓市值 read model，不能生成完整结论。",
+          "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+          "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+          "formula_summary_zh": "公式 1 项：投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。",
+          "parameter_summary_zh": "参数 3 项：投资市值币种=CNY；价格口径=最新可确认价格；汇率口径=对应 CNY 汇率",
+          "gap_summary_zh": "缺口：投资市值：未挂载持仓市值 read model，无法计算投资市值",
+          "next_actions": [
+            "挂载持仓市值 read model"
+          ],
+          "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+        },
+        {
+          "report_id": "consumption_structure_report",
+          "title": "消费结构报告",
+          "status": "partial",
+          "status_zh": "部分可用",
+          "conclusion_zh": "消费结构报告已有真实生活消费和消费总流出输入，但缺少分类结构明细，当前只能给出部分结论。",
+          "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+          "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+          "formula_summary_zh": "公式 2 项：生活消费 = 真实 Alipay 交易中的生活消费流出减退款。；消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。",
+          "parameter_summary_zh": "参数 6 项：生活消费事件类型=CASH；退款抵消=REFUND 抵消；生活消费事件类型=CASH；基金申购事件类型=FUND；资产买入事件类型=BUY_ASSET；退款抵消=REFUND 抵消",
+          "gap_summary_zh": "缺口：缺少消费分类、商户、预算和异常消费明细，Phase 7.2 才生成消费结构正式报告。",
+          "next_actions": [
+            "接入消费分类结构 read model",
+            "接入商户与预算视图"
+          ],
+          "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+        },
+        {
+          "report_id": "data_quality_report",
+          "title": "数据质量报告",
+          "status": "partial",
+          "status_zh": "部分可用",
+          "conclusion_zh": "数据质量报告可解释当前阻断项：未挂载账户余额、现金余额和持仓市值 read model。",
+          "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+          "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+          "formula_summary_zh": "公式 6 项：净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。；现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。；投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。；生活消费 = 真实 Alipay 交易中的生活消费流出减退款。；消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。；数据健康 = 已通过导入清单校验的真实标准化交易记录数。",
+          "parameter_summary_zh": "参数 16 项：净资产币种=CNY；资产范围=现金余额、投资市值、其他已确认资产；负债范围=可确认负债；现金币种=CNY；现金账户范围=真实账户余额 read model；投资市值币种=CNY；价格口径=最新可确认价格；汇率口径=对应 CNY 汇率；生活消费事件类型=CASH；退款抵消=REFUND 抵消；生活消费事件类型=CASH；基金申购事件类型=FUND；资产买入事件类型=BUY_ASSET；退款抵消=REFUND 抵消；交易记录来源=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json；原始文件数=4",
+          "gap_summary_zh": "缺口：净资产：未挂载账户余额与持仓 read model，无法计算净资产；现金余额：未挂载账户余额 read model，无法计算现金余额；投资市值：未挂载持仓市值 read model，无法计算投资市值",
+          "next_actions": [
+            "补齐账户余额 read model",
+            "补齐持仓市值 read model",
+            "复核 406 条待复核流水"
+          ],
+          "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+        }
+      ]
+    },
+    {
+      "id": "formulas",
+      "title": "公式与参数",
+      "cards": [
+        {
+          "formula_id": "formula_net_worth_cny",
+          "metric_id": "net_worth_cny",
+          "label": "净资产",
+          "input_status": "blocked",
+          "formula_zh": "净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。",
+          "parameter_count": 3,
+          "parameters": [
+            {
+              "parameter_id": "net_worth_currency",
+              "label_zh": "净资产币种",
+              "value": "CNY",
+              "source": "Stage 6 核心指标币种",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "asset_scope",
+              "label_zh": "资产范围",
+              "value": "现金余额、投资市值、其他已确认资产",
+              "source": "Stage 7 报告合同",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "liability_scope",
+              "label_zh": "负债范围",
+              "value": "可确认负债",
+              "source": "Stage 7 报告合同",
+              "adjustable": false
+            }
+          ],
+          "missing_inputs": [
+            "cash_balance_cny",
+            "investment_market_value_cny"
+          ],
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+        },
+        {
+          "formula_id": "formula_cash_balance_cny",
+          "metric_id": "cash_balance_cny",
+          "label": "现金余额",
+          "input_status": "blocked",
+          "formula_zh": "现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。",
+          "parameter_count": 2,
+          "parameters": [
+            {
+              "parameter_id": "cash_currency",
+              "label_zh": "现金币种",
+              "value": "CNY",
+              "source": "Stage 6 核心指标币种",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "cash_account_scope",
+              "label_zh": "现金账户范围",
+              "value": "真实账户余额 read model",
+              "source": "Stage 7 报告合同",
+              "adjustable": false
+            }
+          ],
+          "missing_inputs": [
+            "cash_balance_cny"
+          ],
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+        },
+        {
+          "formula_id": "formula_investment_market_value_cny",
+          "metric_id": "investment_market_value_cny",
+          "label": "投资市值",
+          "input_status": "blocked",
+          "formula_zh": "投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。",
+          "parameter_count": 3,
+          "parameters": [
+            {
+              "parameter_id": "investment_currency",
+              "label_zh": "投资市值币种",
+              "value": "CNY",
+              "source": "Stage 6 核心指标币种",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "pricing_policy",
+              "label_zh": "价格口径",
+              "value": "最新可确认价格",
+              "source": "Stage 7 报告合同",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "fx_policy",
+              "label_zh": "汇率口径",
+              "value": "对应 CNY 汇率",
+              "source": "Stage 7 报告合同",
+              "adjustable": false
+            }
+          ],
+          "missing_inputs": [
+            "investment_market_value_cny"
+          ],
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+        },
+        {
+          "formula_id": "formula_life_consumption_cny",
+          "metric_id": "life_consumption_cny",
+          "label": "生活消费",
+          "input_status": "ready",
+          "formula_zh": "生活消费 = 真实 Alipay 交易中的生活消费流出减退款。",
+          "parameter_count": 2,
+          "parameters": [
+            {
+              "parameter_id": "life_event_type",
+              "label_zh": "生活消费事件类型",
+              "value": "CASH",
+              "source": "Stage 6 read model event_type",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "refund_offset",
+              "label_zh": "退款抵消",
+              "value": "REFUND 抵消",
+              "source": "Stage 6 read model event_type",
+              "adjustable": false
+            }
+          ],
+          "missing_inputs": [],
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+        },
+        {
+          "formula_id": "formula_total_consumption_outflow_cny",
+          "metric_id": "total_consumption_outflow_cny",
+          "label": "消费总流出",
+          "input_status": "ready",
+          "formula_zh": "消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。",
+          "parameter_count": 4,
+          "parameters": [
+            {
+              "parameter_id": "life_event_type",
+              "label_zh": "生活消费事件类型",
+              "value": "CASH",
+              "source": "Stage 6 read model event_type",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "fund_event_type",
+              "label_zh": "基金申购事件类型",
+              "value": "FUND",
+              "source": "Stage 6 read model event_type",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "asset_buy_event_type",
+              "label_zh": "资产买入事件类型",
+              "value": "BUY_ASSET",
+              "source": "Stage 6 read model event_type",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "refund_offset",
+              "label_zh": "退款抵消",
+              "value": "REFUND 抵消",
+              "source": "Stage 6 read model event_type",
+              "adjustable": false
+            }
+          ],
+          "missing_inputs": [],
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+        },
+        {
+          "formula_id": "formula_data_health",
+          "metric_id": "data_health",
+          "label": "数据健康",
+          "input_status": "ready",
+          "formula_zh": "数据健康 = 已通过导入清单校验的真实标准化交易记录数。",
+          "parameter_count": 2,
+          "parameters": [
+            {
+              "parameter_id": "transaction_count_source",
+              "label_zh": "交易记录来源",
+              "value": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+              "source": "Stage 6 read model source",
+              "adjustable": false
+            },
+            {
+              "parameter_id": "raw_file_count",
+              "label_zh": "原始文件数",
+              "value": 4,
+              "source": "Stage 6 read model source",
+              "adjustable": false
+            }
+          ],
+          "missing_inputs": [],
+          "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+        }
+      ]
+    }
+  ],
+  "reports": [
+    {
+      "report_id": "net_worth_report",
+      "title": "净资产报告",
+      "status": "blocked",
+      "status_zh": "已阻断",
+      "conclusion_zh": "净资产报告被阻断：未挂载账户余额与持仓 read model，不能生成完整结论。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 1 项：净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。",
+      "parameter_summary_zh": "参数 3 项：净资产币种=CNY；资产范围=现金余额、投资市值、其他已确认资产；负债范围=可确认负债",
+      "gap_summary_zh": "缺口：净资产：未挂载账户余额与持仓 read model，无法计算净资产",
+      "next_actions": [
+        "挂载账户余额 read model",
+        "挂载持仓市值 read model"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    },
+    {
+      "report_id": "cash_balance_report",
+      "title": "现金余额报告",
+      "status": "blocked",
+      "status_zh": "已阻断",
+      "conclusion_zh": "现金余额报告被阻断：未挂载账户余额 read model，不能生成完整结论。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 1 项：现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。",
+      "parameter_summary_zh": "参数 2 项：现金币种=CNY；现金账户范围=真实账户余额 read model",
+      "gap_summary_zh": "缺口：现金余额：未挂载账户余额 read model，无法计算现金余额",
+      "next_actions": [
+        "挂载账户余额 read model"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    },
+    {
+      "report_id": "investment_market_value_report",
+      "title": "投资市值报告",
+      "status": "blocked",
+      "status_zh": "已阻断",
+      "conclusion_zh": "投资市值报告被阻断：未挂载持仓市值 read model，不能生成完整结论。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 1 项：投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。",
+      "parameter_summary_zh": "参数 3 项：投资市值币种=CNY；价格口径=最新可确认价格；汇率口径=对应 CNY 汇率",
+      "gap_summary_zh": "缺口：投资市值：未挂载持仓市值 read model，无法计算投资市值",
+      "next_actions": [
+        "挂载持仓市值 read model"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    },
+    {
+      "report_id": "consumption_structure_report",
+      "title": "消费结构报告",
+      "status": "partial",
+      "status_zh": "部分可用",
+      "conclusion_zh": "消费结构报告已有真实生活消费和消费总流出输入，但缺少分类结构明细，当前只能给出部分结论。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 2 项：生活消费 = 真实 Alipay 交易中的生活消费流出减退款。；消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。",
+      "parameter_summary_zh": "参数 6 项：生活消费事件类型=CASH；退款抵消=REFUND 抵消；生活消费事件类型=CASH；基金申购事件类型=FUND；资产买入事件类型=BUY_ASSET；退款抵消=REFUND 抵消",
+      "gap_summary_zh": "缺口：缺少消费分类、商户、预算和异常消费明细，Phase 7.2 才生成消费结构正式报告。",
+      "next_actions": [
+        "接入消费分类结构 read model",
+        "接入商户与预算视图"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    },
+    {
+      "report_id": "data_quality_report",
+      "title": "数据质量报告",
+      "status": "partial",
+      "status_zh": "部分可用",
+      "conclusion_zh": "数据质量报告可解释当前阻断项：未挂载账户余额、现金余额和持仓市值 read model。",
+      "data_range_zh": "数据范围：2022-06-06 至 2026-06-03",
+      "sample_size_zh": "样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓",
+      "formula_summary_zh": "公式 6 项：净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。；现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。；投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。；生活消费 = 真实 Alipay 交易中的生活消费流出减退款。；消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。；数据健康 = 已通过导入清单校验的真实标准化交易记录数。",
+      "parameter_summary_zh": "参数 16 项：净资产币种=CNY；资产范围=现金余额、投资市值、其他已确认资产；负债范围=可确认负债；现金币种=CNY；现金账户范围=真实账户余额 read model；投资市值币种=CNY；价格口径=最新可确认价格；汇率口径=对应 CNY 汇率；生活消费事件类型=CASH；退款抵消=REFUND 抵消；生活消费事件类型=CASH；基金申购事件类型=FUND；资产买入事件类型=BUY_ASSET；退款抵消=REFUND 抵消；交易记录来源=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json；原始文件数=4",
+      "gap_summary_zh": "缺口：净资产：未挂载账户余额与持仓 read model，无法计算净资产；现金余额：未挂载账户余额 read model，无法计算现金余额；投资市值：未挂载持仓市值 read model，无法计算投资市值",
+      "next_actions": [
+        "补齐账户余额 read model",
+        "补齐持仓市值 read model",
+        "复核 406 条待复核流水"
+      ],
+      "evidence_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+    }
+  ],
+  "formulas": [
+    {
+      "formula_id": "formula_net_worth_cny",
+      "metric_id": "net_worth_cny",
+      "label": "净资产",
+      "input_status": "blocked",
+      "formula_zh": "净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。",
+      "parameter_count": 3,
+      "parameters": [
+        {
+          "parameter_id": "net_worth_currency",
+          "label_zh": "净资产币种",
+          "value": "CNY",
+          "source": "Stage 6 核心指标币种",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "asset_scope",
+          "label_zh": "资产范围",
+          "value": "现金余额、投资市值、其他已确认资产",
+          "source": "Stage 7 报告合同",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "liability_scope",
+          "label_zh": "负债范围",
+          "value": "可确认负债",
+          "source": "Stage 7 报告合同",
+          "adjustable": false
+        }
+      ],
+      "missing_inputs": [
+        "cash_balance_cny",
+        "investment_market_value_cny"
+      ],
+      "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+    },
+    {
+      "formula_id": "formula_cash_balance_cny",
+      "metric_id": "cash_balance_cny",
+      "label": "现金余额",
+      "input_status": "blocked",
+      "formula_zh": "现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。",
+      "parameter_count": 2,
+      "parameters": [
+        {
+          "parameter_id": "cash_currency",
+          "label_zh": "现金币种",
+          "value": "CNY",
+          "source": "Stage 6 核心指标币种",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "cash_account_scope",
+          "label_zh": "现金账户范围",
+          "value": "真实账户余额 read model",
+          "source": "Stage 7 报告合同",
+          "adjustable": false
+        }
+      ],
+      "missing_inputs": [
+        "cash_balance_cny"
+      ],
+      "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+    },
+    {
+      "formula_id": "formula_investment_market_value_cny",
+      "metric_id": "investment_market_value_cny",
+      "label": "投资市值",
+      "input_status": "blocked",
+      "formula_zh": "投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。",
+      "parameter_count": 3,
+      "parameters": [
+        {
+          "parameter_id": "investment_currency",
+          "label_zh": "投资市值币种",
+          "value": "CNY",
+          "source": "Stage 6 核心指标币种",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "pricing_policy",
+          "label_zh": "价格口径",
+          "value": "最新可确认价格",
+          "source": "Stage 7 报告合同",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "fx_policy",
+          "label_zh": "汇率口径",
+          "value": "对应 CNY 汇率",
+          "source": "Stage 7 报告合同",
+          "adjustable": false
+        }
+      ],
+      "missing_inputs": [
+        "investment_market_value_cny"
+      ],
+      "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+    },
+    {
+      "formula_id": "formula_life_consumption_cny",
+      "metric_id": "life_consumption_cny",
+      "label": "生活消费",
+      "input_status": "ready",
+      "formula_zh": "生活消费 = 真实 Alipay 交易中的生活消费流出减退款。",
+      "parameter_count": 2,
+      "parameters": [
+        {
+          "parameter_id": "life_event_type",
+          "label_zh": "生活消费事件类型",
+          "value": "CASH",
+          "source": "Stage 6 read model event_type",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "refund_offset",
+          "label_zh": "退款抵消",
+          "value": "REFUND 抵消",
+          "source": "Stage 6 read model event_type",
+          "adjustable": false
+        }
+      ],
+      "missing_inputs": [],
+      "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+    },
+    {
+      "formula_id": "formula_total_consumption_outflow_cny",
+      "metric_id": "total_consumption_outflow_cny",
+      "label": "消费总流出",
+      "input_status": "ready",
+      "formula_zh": "消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。",
+      "parameter_count": 4,
+      "parameters": [
+        {
+          "parameter_id": "life_event_type",
+          "label_zh": "生活消费事件类型",
+          "value": "CASH",
+          "source": "Stage 6 read model event_type",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "fund_event_type",
+          "label_zh": "基金申购事件类型",
+          "value": "FUND",
+          "source": "Stage 6 read model event_type",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "asset_buy_event_type",
+          "label_zh": "资产买入事件类型",
+          "value": "BUY_ASSET",
+          "source": "Stage 6 read model event_type",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "refund_offset",
+          "label_zh": "退款抵消",
+          "value": "REFUND 抵消",
+          "source": "Stage 6 read model event_type",
+          "adjustable": false
+        }
+      ],
+      "missing_inputs": [],
+      "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+    },
+    {
+      "formula_id": "formula_data_health",
+      "metric_id": "data_health",
+      "label": "数据健康",
+      "input_status": "ready",
+      "formula_zh": "数据健康 = 已通过导入清单校验的真实标准化交易记录数。",
+      "parameter_count": 2,
+      "parameters": [
+        {
+          "parameter_id": "transaction_count_source",
+          "label_zh": "交易记录来源",
+          "value": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+          "source": "Stage 6 read model source",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "raw_file_count",
+          "label_zh": "原始文件数",
+          "value": 4,
+          "source": "Stage 6 read model source",
+          "adjustable": false
+        }
+      ],
+      "missing_inputs": [],
+      "status_policy_zh": "输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。"
+    }
+  ],
+  "warnings_zh": "存在 blocked/partial 报告；数据缺口补齐前不得显示正式结论。"
+}

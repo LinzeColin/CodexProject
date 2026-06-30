@@ -1,0 +1,72 @@
+Stage 7 Phase 7.1 validation log
+
+Scope:
+V023-S7-P7.1 only. Phase 7.2, Phase 7.3, Stage 7 whole-stage review, and GitHub upload are not executed.
+
+RED:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage7_reports.py -q
+Result: 6 failed
+Reason: Stage 7 Phase 7.1 modules, docs, and evidence did not exist.
+
+Generated artifacts:
+- report_contract.json
+- formula_registry.json
+- report_page_model.json
+- report_contract_snapshot.html
+- no_source_term_scan.json
+
+Validation commands to run:
+node --check PFI/web/app/pages/reports.js
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage7_reports.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+git diff --check -- PFI
+
+GREEN verification:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage7_reports.py -q
+Result: 6 passed in 0.12s
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 113 passed, 100 subtests passed in 1.77s
+
+node --check PFI/web/app/pages/reports.js
+Result: pass
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_reports.py PFI/src/pfi_v02/stage_v023_formula_registry.py PFI/tests/test_v023_stage7_reports.py
+Result: pass
+
+json.tool Phase 7.1 evidence/report/formula/page-model/scan files
+Result: pass
+
+sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_7/phase_7_1/screenshots/report_contract.png
+Result: 1440x1400
+
+git diff --check -- PFI
+Result: pass
+
+Blocked source term scan over Stage 7 Phase 7.1 files
+Result: no matches after ignoring the report contract field sample_size
+
+Final post-copy verification:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 113 passed, 100 subtests passed in 1.79s
+
+node --check PFI/web/app/pages/reports.js
+Result: pass
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_reports.py PFI/src/pfi_v02/stage_v023_formula_registry.py PFI/tests/test_v023_stage7_reports.py
+Result: pass
+
+Post-rebase verification:
+Rebased Stage 7 Phase 7.1 onto latest origin/main after unrelated LICENSE and ADP/arxiv updates.
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage7_reports.py -q
+Result: 6 passed in 0.12s
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 113 passed, 100 subtests passed in 1.76s
+
+node --check PFI/web/app/pages/reports.js && git diff --check -- PFI
+Result: pass
+
+git status --short --branch && git rev-list --left-right --count HEAD...origin/main
+Result before amend: ahead 1 / behind 0

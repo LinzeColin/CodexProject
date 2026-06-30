@@ -1,0 +1,113 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 7",
+  "stage_name": "分析结论、公式与报告中心",
+  "phase_id": "V023-S7-P7.1",
+  "phase_name": "报告合同",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_forbidden_financial_data": true,
+  "source_core_metrics": {
+    "path": "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03"
+  },
+  "report_contract": "PFI/reports/pfi_v023/stage_7/phase_7_1/report_contract.json",
+  "formula_registry": "PFI/reports/pfi_v023/stage_7/phase_7_1/formula_registry.json",
+  "report_page_model": "PFI/reports/pfi_v023/stage_7/phase_7_1/report_page_model.json",
+  "html_snapshot": "PFI/reports/pfi_v023/stage_7/phase_7_1/report_contract_snapshot.html",
+  "screenshots": [
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/screenshots/report_contract.png"
+  ],
+  "screenshot_size": {
+    "pixel_width": 1440,
+    "pixel_height": 1400
+  },
+  "data_status_summary": {
+    "complete_reports": 0,
+    "partial_reports": 2,
+    "blocked_reports": 3,
+    "page_model_blocked_or_partial_count": 5
+  },
+  "stage_contract": {
+    "phase_7_2_core_reports_done": false,
+    "phase_7_3_data_quality_tuning_done": false,
+    "stage_7_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage7_reports.py -q",
+      "exit_code": 0,
+      "summary": "6 passed in 0.12s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "113 passed, 100 subtests passed in 1.76s after rebase"
+    },
+    {
+      "command": "node --check PFI/web/app/pages/reports.js",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_reports.py PFI/src/pfi_v02/stage_v023_formula_registry.py PFI/tests/test_v023_stage7_reports.py",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "json.tool Phase 7.1 evidence/report/formula/page-model/scan files",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "sips -g pixelWidth -g pixelHeight PFI/reports/pfi_v023/stage_7/phase_7_1/screenshots/report_contract.png",
+      "exit_code": 0,
+      "summary": "1440x1400"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "pass"
+    },
+    {
+      "command": "blocked source term scan over Stage 7 Phase 7.1 files",
+      "exit_code": 1,
+      "summary": "no matches after ignoring sample_size contract field"
+    }
+  ],
+  "changed_files": [
+    "PFI/src/pfi_v02/stage_v023_reports.py",
+    "PFI/src/pfi_v02/stage_v023_formula_registry.py",
+    "PFI/web/app/pages/reports.js",
+    "PFI/tests/test_v023_stage7_reports.py",
+    "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/report_contract.json",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/formula_registry.json",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/report_page_model.json",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/report_contract_snapshot.html",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/screenshots/report_contract.png",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/terminal.log",
+    "PFI/reports/pfi_v023/stage_7/phase_7_1/changed_files.txt"
+  ],
+  "explicitly_not_done": [
+    "Phase 7.2 核心报告",
+    "Phase 7.3 数据质量与调参",
+    "Stage 7 whole-stage review",
+    "GitHub main upload for intermediate phase"
+  ],
+  "requires_user_acceptance": true,
+  "post_rebase_validation": {
+    "target_tests": "6 passed in 0.12s",
+    "v023_regression": "113 passed, 100 subtests passed in 1.76s",
+    "node_check": "pass",
+    "git_diff_check": "pass",
+    "ahead_behind": "1/0 after rebase onto origin/main"
+  }
+}
