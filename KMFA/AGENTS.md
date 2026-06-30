@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `S05｜A0 权威项目成本黄金基准`
-- 当前 Phase: `S05-P3｜权威基准锁定本地完成，下一步 Stage 5 整体复审`
+- 当前 Phase: `S05-STAGE-REVIEW｜Stage 5 整体复审本地通过，下一步 Stage 5 final GitHub upload`
 
 ## Execution Rules
 

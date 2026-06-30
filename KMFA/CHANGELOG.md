@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s05-stage-review - 2026-06-30
+
+- 完成 Stage 5 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
+- 新增 `KMFA/stage_artifacts/S05_STAGE_REVIEW/` 复审证据包，覆盖 S05-P1/P2/P3 validators、治理 validator、raw/secret scan 和 JSON/JSONL parse checks。
+- 复审确认 40 条 PDF 字段保持 public-safe Q5 calculation baseline，5 条 Excel 字段保持 cross-source support only，不进入正式报告。
+- 修复 Stage 5 review 证据和治理状态缺口，同步 owner-readable、stage_status、events 和 project governance。
+- 保持 zero-delta、lineage、事实层、报告、UI、外部接口和 GitHub upload 为未完成。
+
 ## 0.1.0-s05p3-authority-baseline-lock - 2026-06-30
 
 - 完成 `S05-P3｜权威基准锁定` 本地验证，不上传 GitHub。

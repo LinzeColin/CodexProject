@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s05p3-authority-baseline-lock
+product_version: 0.1.0-s05-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S05`
-- current_phase: `S05-P3 权威基准锁定本地完成，下一步 Stage 5 整体复审`
-- current_tasks: `S5PCT01-S5PCT03`
-- status: `s05p3_completed_validated_local_only_public_safe_authority_lock`
+- current_phase: `S05-STAGE-REVIEW 本地通过，下一步 Stage 5 final GitHub upload`
+- current_tasks: `KMFA-S05-STAGE-REVIEW-20260630`
+- status: `s05_stage_review_passed_local_only_no_upload`
 - risk_tier: `T3`
 
 ## Completed
@@ -48,17 +48,18 @@ product_version: 0.1.0-s05p3-authority-baseline-lock
 | `S5PAT01-S5PAT03` | S05-P1 A0 文件登记、A0 项目候选清单和 Q3/Q4 状态完成本地验证 | `KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md` |
 | `S5PBT01-S5PBT03` | S05-P2 public-safe 字段合同、45 条 A0 golden fixture 候选、40 条 PDF 字段 hash/source anchor 和 Excel owner/授权降级决策完成本地验证 | `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md` |
 | `S5PCT01-S5PCT03` | S05-P3 A0 authority baseline lock 完成本地验证：40 条 PDF 字段锁定为 Q5 calculation baseline，5 条 Excel 字段排除为 cross-source support only | `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md` |
+| `KMFA-S05-STAGE-REVIEW-20260630` | Stage 5 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S05-STAGE-REVIEW` | Stage 5 整体复审尚未开始；不得上传 GitHub | `KMFA/HANDOFF.md` |
+| `KMFA-S05-FINAL-GITHUB-UPLOAD` | Stage 5 final GitHub upload 尚未开始；必须先复跑 validators 并留下 push 证据 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `S05 Stage Review` | S05-P1/P2/P3 已本地完成，但整体复审未开始 | 下一轮只执行 Stage 5 整体复审，不上传 GitHub |
+| `S05 GitHub upload` | Stage 5 review 已本地通过，但尚未上传 GitHub | 下一轮只执行 Stage 5 final upload gate |
 | `S06` zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

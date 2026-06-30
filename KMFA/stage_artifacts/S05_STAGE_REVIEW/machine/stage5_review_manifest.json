@@ -1,0 +1,83 @@
+{
+  "acceptance_gate": "KMFA-S05-STAGE-REVIEW-GATE",
+  "branch": "codex/kmfa",
+  "github_upload_status": "not_pushed",
+  "raw_business_data_used": false,
+  "review_id": "KMFA-S05-STAGE-REVIEW-20260630",
+  "review_time": "2026-06-30T13:00:00+10:00",
+  "reviewed_head": "5f9504726f60e13ab558d18d7650db0671ebb27e",
+  "scope": [
+    "S05-P1",
+    "S05-P2",
+    "S05-P3",
+    "Stage 5 owner-readable entries",
+    "Stage 5 governance status",
+    "public repository safety boundary"
+  ],
+  "stage": "S05",
+  "status": "pass_upload_ready_local_only",
+  "stage_phase_status": {
+    "S05-P1": "completed_validated_local_only",
+    "S05-P2": "completed_validated_local_only_owner_downgrade",
+    "S05-P3": "completed_validated_local_only_public_safe_authority_lock"
+  },
+  "review_counts": {
+    "a0_files": 9,
+    "a0_pdf_files": 8,
+    "a0_excel_files": 1,
+    "member_sha256_recorded": 0,
+    "member_sha256_pending": 9,
+    "fixture_candidates": 45,
+    "fields_per_candidate": 5,
+    "private_value_hash_recorded": 40,
+    "private_value_pending": 5,
+    "source_anchor_recorded": 40,
+    "source_anchor_pending": 5,
+    "q5_locked_fields": 40,
+    "excluded_fields": 5,
+    "authority_records": 45
+  },
+  "findings": [
+    {
+      "finding_id": "KMFA-S05-REV-F01",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "Stage 5 review evidence and governance status were missing before this review; CHANGELOG.md also lacked the current product version. Both were fixed."
+    },
+    {
+      "finding_id": "KMFA-S05-REV-F02",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S05-P1 source package/member SHA256 boundary remains explicit; no raw source files are committed."
+    },
+    {
+      "finding_id": "KMFA-S05-REV-F03",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S05-P2 active owner/authorized downgrade resolves the Excel candidate as cross-source support only without Q4/Q5 escalation."
+    },
+    {
+      "finding_id": "KMFA-S05-REV-F04",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S05-P3 locks 40 public-safe hash/source-anchor fields, excludes 5 Excel fields, and keeps formal_report_allowed=false."
+    },
+    {
+      "finding_id": "KMFA-S05-REV-F05",
+      "severity": "P3",
+      "status": "accepted_next_step",
+      "summary": "GitHub upload remains a separate final upload step with required push proof."
+    }
+  ],
+  "evidence_refs": [
+    "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md",
+    "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_review_manifest.json",
+    "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md",
+    "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+  ],
+  "next_gate": "KMFA-S05-FINAL-GITHUB-UPLOAD-GATE",
+  "upload_allowed_after_review": true,
+  "upload_performed": false
+}
