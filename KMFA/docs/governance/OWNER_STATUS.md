@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload 和 `S05-P1｜A0 文件登记`。当前 `S05-P2｜字段级黄金基准` 已生成 public-safe 字段合同和 45 条 A0 golden fixture 候选，并对 8 个 PDF 候选完成 40 条 hash-only 私有回填；1 个 Excel 候选的 5 条字段已机器复核并有 owner 决策 intake validator 和三种决策模板，但仍 pending，全部保持 Q3，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload 和 `S05-P1｜A0 文件登记`。当前 `S05-P2｜字段级黄金基准` 已生成 public-safe 字段合同和 45 条 A0 golden fixture 候选，并对 8 个 PDF 候选完成 40 条 hash-only 私有回填；1 个 Excel 候选的 5 条字段已机器复核并有 owner 决策 intake validator、三种决策模板和 completion gate blocked-as-expected 证据，但仍 pending，全部保持 Q3，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -33,13 +33,13 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S05-P1 A0 文件登记已存在，登记了 `销售绩效考核.zip` 的 source package hash、8 个 PDF、1 个 Excel、A0 项目候选和 Q3/Q4 状态。
 - S05-P2 public-safe 字段合同已存在，覆盖合同额、支出合计、毛利、毛利率、成本分类。
 - S05-P2 A0 golden fixture 候选已存在，共 45 条；其中 40 条 PDF 字段候选已保存 hash/source anchor，5 条 Excel 字段候选仍 pending。公开仓库只保存 private refs、hash/status 和 source anchor 状态，不保存真实字段值。
-- Excel 候选已有机器复核记录、owner 决策包、专门 validator、owner 决策 intake validator 和三种 public-safe 决策模板：当前 workbook 证据只能作为交叉来源支持，不能机器合成为单一 A0 项目基准；需要 owner 或授权私有映射决策。intake validator 和模板只检查/辅助未来决策记录格式和公开安全边界，不代表 owner 已决策。
+- Excel 候选已有机器复核记录、owner 决策包、专门 validator、owner 决策 intake validator、三种 public-safe 决策模板和 completion gate：当前 workbook 证据只能作为交叉来源支持，不能机器合成为单一 A0 项目基准；需要 owner 或授权私有映射决策。intake validator 和模板只检查/辅助未来决策记录格式和公开安全边界，不代表 owner 已决策；completion gate 当前按预期阻断 S05-P2 完成。
 
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经实现。
 - 不能认为真实业务源解析、事实层或报告已经实现。
-- 不能认为 S05-P2 已经完整抽取并锁定真实合同额、支出合计、毛利、毛利率或成本分类；当前只是 40/45 hash-only 部分回填、Excel 待决策记录、owner 决策 intake validator 和非决策模板。
+- 不能认为 S05-P2 已经完整抽取并锁定真实合同额、支出合计、毛利、毛利率或成本分类；当前只是 40/45 hash-only 部分回填、Excel 待决策记录、owner 决策 intake validator、非决策模板和 completion gate 阻断证据。
 - 不能认为 A0 golden fixture 已经 Q4 人工确认或 Q5 可用于计算。
 - 不能认为 zero-delta 或 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
