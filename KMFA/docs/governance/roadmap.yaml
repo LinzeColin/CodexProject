@@ -576,10 +576,10 @@ stages:
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
   - stage_id: "S5"
     name: "A0权威项目成本黄金基准"
-    status: "in_progress_private_values_pending"
+    status: "completed_local_only_pending_stage_review"
     estimated_hours: 3
-    estimated_pct: 33.33
-    current_result: "S05-P1 A0 文件登记已完成本地验证；S05-P2 已生成 public-safe 字段合同和 A0 golden fixture 候选，但真实字段值、source anchor 和 private value hash 待私有源或授权字段 CSV 回填。S05-P3、Stage 5 复审和 GitHub upload 未开始。"
+    estimated_pct: 100
+    current_result: "S05-P1 A0 文件登记、S05-P2 public-safe 字段候选和 S05-P3 权威基准锁定均已完成本地验证；40 条 PDF 字段已锁定为 public-safe Q5 calculation baseline，5 条 Excel 字段已按 owner/授权降级决策排除。Stage 5 复审和 GitHub upload 未开始。"
     evidence_refs:
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md"
@@ -589,6 +589,10 @@ stages:
       - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
       - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+      - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
+      - "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl"
   - stage_id: "S6"
     name: "零差异校验与差异处理队列"
     status: "planned"

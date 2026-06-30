@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s05p2-private-backfill-partial"
+    model_version: "0.1.0-s05p3-authority-baseline-lock"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -126,6 +126,7 @@ models:
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
+      - "FORM-KMFA-A0-AUTHORITY-BASELINE-LOCK-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -140,6 +141,9 @@ models:
       - "PARAM-KMFA-404"
       - "PARAM-KMFA-405"
       - "PARAM-KMFA-406"
+      - "PARAM-KMFA-407"
+      - "PARAM-KMFA-408"
+      - "PARAM-KMFA-409"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -156,7 +160,9 @@ models:
       - "KMFA/tools/check_a0_file_registration.py"
       - "KMFA/tools/a0_golden_fixture.py"
       - "KMFA/tools/check_a0_golden_fixture.py"
-      - "remaining_cost_model_not_implemented_until_S05_S10"
+      - "KMFA/tools/a0_authority_baseline_lock.py"
+      - "KMFA/tools/check_a0_authority_baseline_lock.py"
+      - "remaining_cost_model_not_implemented_until_S06_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
@@ -167,6 +173,8 @@ models:
       - "python3 KMFA/tools/check_a0_file_registration.py"
       - "python3 -m unittest KMFA.tests.test_a0_golden_fixture -q"
       - "python3 KMFA/tools/check_a0_golden_fixture.py"
+      - "python3 -m unittest KMFA.tests.test_s05_p3_authority_baseline_lock -q"
+      - "python3 KMFA/tools/check_a0_authority_baseline_lock.py"
       - "planned: KMFA/tools/zero_delta_validator.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
@@ -175,6 +183,7 @@ models:
       - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md"
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

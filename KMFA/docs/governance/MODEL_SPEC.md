@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s05p2-private-backfill-partial
+product_version: 0.1.0-s05p3-authority-baseline-lock
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记，以及 S05-P2 public-safe A0 字段级黄金基准候选合同和 40/45 hash-only 部分私有回填。不声明 A0 字段级黄金基准已完整锁定、项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同和 S05-P3 public-safe A0 authority baseline lock。不声明 Stage 5 整体复审、项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -100,22 +100,30 @@ product_version: 0.1.0-s05p2-private-backfill-partial
 - purpose: 为合同额、支出合计、毛利、毛利率、成本分类建立字段合同、private refs、hash/status 和 source anchor 状态。
 - fact_level: EXTRACTED
 - evidence: `KMFA/tools/a0_golden_fixture.py`, `KMFA/tools/check_a0_golden_fixture.py`, `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md`
-- limitation: 真实 `raw_value`、`normalized_value`、source anchor 和 private value hash 待私有源或授权字段 CSV 回填；当前只生成 Q3 候选，不允许 Q4/Q5 或正式报告。
+- limitation: S05-P2 完成本地候选合同和 owner/授权降级决策；Q5 authority lock 由 `FORM-KMFA-A0-AUTHORITY-BASELINE-LOCK-001` 单独约束。
+
+### FORM-KMFA-A0-AUTHORITY-BASELINE-LOCK-001
+
+- type: deterministic public-safe A0 authority baseline lock
+- purpose: 将 40 条具备 private hash/source-anchor 证据的 PDF 字段锁定为 Q5 calculation baseline，并将 5 条 Excel 字段按 active owner/授权降级决策排除。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/a0_authority_baseline_lock.py`, `KMFA/tools/check_a0_authority_baseline_lock.py`, `KMFA/metadata/baseline/a0_authority_baseline_manifest.json`, `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md`
+- limitation: 只保存 public-safe hash/source-anchor baseline，不提交真实字段明文；不代表 Stage 5 review、zero-delta、lineage 或正式报告发布完成。
 
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, and S05-P2 public-safe fixture contract active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, and S05-P3 public-safe authority lock active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S09 成本计算、S10 报告等级。
-- current limitation: no true A0 field values/source anchors/private value hashes, no production data import, no zero-delta, no official report generation.
+- current limitation: no production data import, no zero-delta, no lineage full check, no official report generation, and no Stage 5 GitHub upload.
 
 ## Counts
 
 - active models: 7
-- active formulas: 11
-- active parameters: 30
+- active formulas: 12
+- active parameters: 33
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 3

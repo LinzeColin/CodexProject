@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s05p2-private-backfill-partial`
+- version: `0.1.0-s05p3-authority-baseline-lock`
 - current_stage: `S05`
-- current_phase: `S05-P2 字段级黄金基准本地完成，下一步 S05-P3 权威基准锁定`
-- status: `s05p2_completed_validated_local_only_owner_downgrade`
+- current_phase: `S05-P3 权威基准锁定本地完成，下一步 Stage 5 整体复审`
+- status: `s05p3_completed_validated_local_only_public_safe_authority_lock`
 - production_ready: `false`
-- github_upload_ready: `false_until_stage5_review`
+- github_upload_ready: `false_until_stage5_review_and_fix`
 
 ## 已完成
 
@@ -43,14 +43,17 @@
 - S05-P2 已生成 public-safe 字段合同和 A0 golden fixture 候选结构：`KMFA/tools/a0_golden_fixture.py` 生成 5 个字段合同和 45 条字段候选。
 - S05-P2 已对 8 个 PDF A0 候选执行 hash-only 部分回填：40 条字段候选已记录 private value hash/source anchor，1 个 Excel 候选的 5 条字段不写入 A0 baseline，并通过 active downgrade decision 作为 cross-source support only 处理。
 - S05-P2 已完成 Excel 候选机器复核记录、owner 决策包、owner decision validator、owner decision intake validator、三种 owner 决策模板、owner decision application preview、active owner/授权降级决策和 completion gate：该 Excel candidate 只作为交叉来源支持，不进入 Q4/Q5 A0 baseline；completion gate 使用 active decision 验证 ready。
+- S05-P3 已完成 A0 权威基准锁定：40 条 PDF 字段 hash/source-anchor 记录进入 public-safe Q5 calculation baseline，5 条 Excel 字段依据 active owner/授权降级决策排除为 cross-source support only。
+- S05-P3 已生成 `KMFA/metadata/baseline/a0_authority_baseline_manifest.json`、`KMFA/metadata/baseline/a0_authority_baseline_records.jsonl`、`KMFA/tools/a0_authority_baseline_lock.py`、`KMFA/tools/check_a0_authority_baseline_lock.py` 和 `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/`。
 
 ## 未完成
 
-- S05-P3 权威锁定、zero-delta、事实层、报告、UI 和外部接口尚未完成；S05-P2 active downgrade decision 只关闭本 phase，不代表 Q4/Q5、报告或 Stage 5 完成。
+- Stage 5 整体复审、复审问题修复和 GitHub upload 尚未完成。
+- zero-delta、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock 不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P2 已完成 40/45 hash-only 部分回填并通过 owner/授权降级决策处理 Excel candidate；下一步只能执行 S05-P3 权威基准锁定，不能跳到 Stage 5 复审或上传。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段；下一步只能执行 Stage 5 整体复审，不能跳到上传、UI、报告、事实层或 zero-delta。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

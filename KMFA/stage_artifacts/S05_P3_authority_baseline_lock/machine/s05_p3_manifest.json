@@ -1,0 +1,47 @@
+{
+  "acceptance_ids": [
+    "ACC-KMFA-S05-P3"
+  ],
+  "authority_records": 45,
+  "baseline_content_hash": "sha256:dbb55ffb4e3608e49dbcf91e97fc0f19395a8269ff7c8f4d5c3f8ca398c03670",
+  "baseline_version": "KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK",
+  "completed_task_ids": [
+    "S5PCT01",
+    "S5PCT02",
+    "S5PCT03"
+  ],
+  "evidence_refs": [
+    "KMFA/metadata/baseline/a0_authority_baseline_manifest.json",
+    "KMFA/metadata/baseline/a0_authority_baseline_records.jsonl",
+    "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md",
+    "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+  ],
+  "excluded_candidate_ids": [
+    "A0-CAND-70023EFC7305"
+  ],
+  "excluded_field_count": 5,
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "locked_at": "2026-06-30T12:00:00+10:00",
+  "locked_by_ref": "codex_delegate_s05p3_public_safe_lock_20260630",
+  "locked_by_role": "authorized_delegate",
+  "phase_id": "S5PC",
+  "private_csv_committed": false,
+  "project_id": "KMFA",
+  "public_repo_raw_files_committed": false,
+  "q4_human_confirmed_count": 40,
+  "q5_calculation_baseline_allowed_count": 40,
+  "q5_locked_field_count": 40,
+  "raw_business_values_committed": false,
+  "record_type": "stage_phase_manifest",
+  "schema_version": "kmfa.stage_phase_manifest.v1",
+  "stage5_review_completed": false,
+  "stage_id": "S05",
+  "status": "completed_validated_local_only_public_safe_authority_lock",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_s05_p3_authority_baseline_lock -q",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/a0_authority_baseline_lock.py --locked-at 2026-06-30T12:00:00+10:00 --locked-by-ref codex_delegate_s05p3_public_safe_lock_20260630 --check-only",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_authority_baseline_lock.py"
+  ],
+  "updated_at": "2026-06-30T12:00:00+10:00"
+}

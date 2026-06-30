@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、`S05-P1｜A0 文件登记` 和 `S05-P2｜字段级黄金基准` 本地验证。S05-P2 已生成 public-safe 字段合同和 45 条 A0 golden fixture 候选，并对 8 个 PDF 候选完成 40 条 hash-only 私有回填；剩余 Excel candidate 经私有 `销售绩效考核.zip`、`财务.zip` 只读复核后已由 owner/授权降级决策处理为 cross-source support only，不进入 Q4/Q5。项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload，以及 Stage 5 的 `S05-P1｜A0 文件登记`、`S05-P2｜字段级黄金基准`、`S05-P3｜权威基准锁定` 本地验证。S05-P3 已锁定 40 条 PDF 字段 hash/source-anchor 记录为 public-safe Q5 calculation baseline，并将 5 条 Excel 字段按 owner/授权降级决策排除为 cross-source support only。项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -32,15 +32,16 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - Stage 4 final GitHub upload 证据已生成，upload record 和 manifest 位于 `KMFA/stage_artifacts/S04_STAGE_REVIEW/`。
 - S05-P1 A0 文件登记已存在，登记了 `销售绩效考核.zip` 的 source package hash、8 个 PDF、1 个 Excel、A0 项目候选和 Q3/Q4 状态。
 - S05-P2 public-safe 字段合同已存在，覆盖合同额、支出合计、毛利、毛利率、成本分类。
-- S05-P2 A0 golden fixture 候选已存在，共 45 条；其中 40 条 PDF 字段候选已保存 hash/source anchor，5 条 Excel 字段候选仍 pending。公开仓库只保存 private refs、hash/status 和 source anchor 状态，不保存真实字段值。
+- S05-P2 A0 golden fixture 候选已存在，共 45 条；其中 40 条 PDF 字段候选已保存 hash/source anchor，5 条 Excel 字段候选已按 active owner/授权降级决策排除为 cross-source support only。公开仓库只保存 private refs、hash/status 和 source anchor 状态，不保存真实字段值。
 - Excel 候选已有机器复核记录、owner 决策包、专门 validator、owner 决策 intake validator、三种 public-safe 决策模板、application preview、active owner/授权降级决策和 completion gate ready 证据：当前 workbook 只能作为交叉来源支持，不能机器合成为单一 A0 项目基准，已被排除出 Q4/Q5 A0 baseline。
+- S05-P3 A0 authority baseline lock 已存在：40 条 PDF 字段 hash/source-anchor 记录被锁定，5 条 Excel 字段被排除；baseline version、content hash、锁定角色、锁定时间和 validator 均已记录。
 
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经实现。
 - 不能认为真实业务源解析、事实层或报告已经实现。
-- 不能认为 S05-P2 已经 Q4/Q5 锁定真实合同额、支出合计、毛利、毛利率或成本分类；当前只是 S05-P2 本地完成，Excel candidate 已降级为 cross-source support only。
-- 不能认为 A0 golden fixture 已经 Q4 人工确认或 Q5 可用于计算。
+- 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
+- 不能认为 A0 authority baseline 已经可以发布正式经营报告；Stage 5 review、zero-delta、lineage 和报告发布门禁尚未完成。
 - 不能认为 zero-delta 或 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -49,4 +50,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S05-P3｜权威基准锁定`；不扩大到 Stage 5 复审、UI、报告、事实层、zero-delta 或自动接口。
+下一步只执行 Stage 5 整体复审；不扩大到 UI、报告、事实层、zero-delta、自动接口或 GitHub 上传。

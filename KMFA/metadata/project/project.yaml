@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s05p2-private-backfill-partial"
+version: "0.1.0-s05p3-authority-baseline-lock"
 current_stage: "S05"
-current_phase: "S05-P2"
-current_phase_status: "s05p2_completed_validated_local_only_owner_downgrade"
-current_stage_status: "in_progress_local_only"
+current_phase: "S05-P3"
+current_phase_status: "s05p3_completed_validated_local_only_public_safe_authority_lock"
+current_stage_status: "phase_complete_local_only_pending_stage_review"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -31,6 +31,11 @@ machine_plane:
   - "stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
   - "stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md"
   - "stage_artifacts/S05_P2_a0_golden_fixture/machine/no_owner_decision_application_preview.json"
+  - "stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
+  - "stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+  - "stage_artifacts/S05_P3_authority_baseline_lock/machine/s05_p3_manifest.json"
+  - "metadata/baseline/a0_authority_baseline_manifest.json"
+  - "metadata/baseline/a0_authority_baseline_records.jsonl"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false
@@ -58,5 +63,5 @@ upload_policy:
   stage5_review_required_before_upload: true
   stage5_review_passed: false
   stage5_uploaded_to_github_main: false
-  stage5_blocker: "S05-P3 not started"
+  stage5_blocker: "Stage 5 review not started"
   upload_surface: "project_level_kmfa_worktree_stage5_local_only_no_upload"

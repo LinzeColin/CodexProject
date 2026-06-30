@@ -389,3 +389,42 @@ formulas:
     evidence_refs:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
+  - formula_id: "FORM-KMFA-A0-AUTHORITY-BASELINE-LOCK-001"
+    model_id: "MOD-KMFA-COST-001"
+    assumption_ids:
+      - "ASM-KMFA-003"
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-006"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "authority_lock_valid = q5_lock_requires(raw_value_hash AND normalized_value_hash AND source_anchor_status == recorded_from_private_input AND public_plaintext_absent); excluded_fields = active_owner_authorized_downgrade_decision; formal_report_allowed = false until stage5_review AND zero_delta AND lineage AND report_release_gate"
+    variables:
+      - name: "a0_authority_q5_locked_field_count"
+        data_type: "integer"
+        unit: "field"
+        input_domain: "40"
+      - name: "a0_authority_excluded_field_count"
+        data_type: "integer"
+        unit: "field"
+        input_domain: "5"
+      - name: "a0_authority_baseline_identity"
+        data_type: "string"
+        unit: "version_hash"
+        input_domain: "KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK;sha256:dbb55ffb4e3608e49dbcf91e97fc0f19395a8269ff7c8f4d5c3f8ca398c03670"
+    constraints:
+      - "Only hash/source-anchor complete PDF fields can be locked into Q5 calculation baseline."
+      - "Fields excluded by active owner/authorized downgrade decision cannot be used for formal reports."
+      - "Authority baseline records cannot contain raw_value or normalized_value plaintext."
+      - "S05-P3 does not perform Stage 5 review, zero-delta, lineage, report generation, UI, or GitHub upload."
+    missing_policy: "Missing field hash, source anchor, active downgrade decision, baseline identity, or public-safe boundary blocks S05-P3."
+    output_range: "authority_baseline_manifest, authority_baseline_records, blocked"
+    code_refs:
+      - "KMFA/tools/a0_authority_baseline_lock.py"
+      - "KMFA/tools/check_a0_authority_baseline_lock.py"
+    test_refs:
+      - "python3 -m unittest KMFA.tests.test_s05_p3_authority_baseline_lock -q"
+      - "python3 KMFA/tools/check_a0_authority_baseline_lock.py"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/test_results.md"
+      - "KMFA/metadata/baseline/a0_authority_baseline_manifest.json"
