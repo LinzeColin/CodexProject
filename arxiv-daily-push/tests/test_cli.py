@@ -576,6 +576,139 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
 
+    def test_audit_s2plt02_real_proof_capture_readiness_cli_blocks_stale_authorization_hash(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            products = ["M1", "M2", "M3", "M4"]
+            run_dir = state_dir / "runs" / "20260629"
+            run_dir.mkdir(parents=True)
+            for product in products:
+                (run_dir / f"adp-smtp-delivery-report-{product}.json").write_text(
+                    json.dumps(
+                        {
+                            "status": "dry_run",
+                            "mail_product_id": product,
+                            "service_date": "2026-06-29",
+                            "real_smtp_sent": False,
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            (run_dir / "adp-daily-run.json").write_text(
+                json.dumps(
+                    {
+                        "status": "succeeded",
+                        "service_date": "2026-06-29",
+                        "mail_delivery_summary": {
+                            "planned_send_total": 4,
+                            "sent_mail_count": 0,
+                            "status_by_product": {product: "dry_run" for product in products},
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            launchctl_file = tmp_root / "launchctl-disabled.txt"
+            launchctl_file.write_text(
+                "\n".join(
+                    [
+                        '"com.linze.adp.local.daily" => disabled',
+                        '"com.linze.adp.local.health" => disabled',
+                        '"com.linze.adp.local.watchdog" => disabled',
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            artifact_path = tmp_root / "FINAL_ACCEPTANCE_BUNDLE" / "s2plt02_real_proof_capture_authorization.json"
+            artifact_path.parent.mkdir(parents=True)
+            artifact = {
+                "schema_version": "adp.s2plt02_real_proof_capture_authorization.v1",
+                "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+                "generated_at": "2026-06-30T07:41:53+10:00",
+                "authorization_decision": "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZED_NO_PRODUCTION_ACCEPTANCE",
+                "authorized_by": {
+                    "owner_id": "owner_or_coordinator",
+                    "owner_role": "owner",
+                    "authorization_source": "explicit_owner_instruction",
+                },
+                "authorization_scope": "S2PLT02_REAL_SMTP_SCHEDULER_PROOF_CAPTURE_ONLY",
+                "authorized_actions": [
+                    "capture_second_consecutive_real_m1_m4_smtp_day",
+                    "capture_real_launchd_scheduler_proof",
+                    "validate_s2plt02_terminal_delivery_proof_artifact",
+                ],
+                "authorization_constraints": {
+                    "stage2_production_acceptance_not_granted": True,
+                    "daily_operation_not_enabled": True,
+                    "release_not_enabled": True,
+                    "current_v7_unchanged": True,
+                    "only_capture_second_day_and_scheduler_proof": True,
+                },
+                "readiness_state_hash": "old-readiness-hash",
+                "evidence_refs": [
+                    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+                    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md",
+                    "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json",
+                ],
+                "no_production_side_effects": {
+                    "production_acceptance_claimed": False,
+                    "integrated_production_accepted": False,
+                    "stage2_integrated_production_accepted": False,
+                    "daily_operation_enabled": False,
+                    "real_smtp_sent": False,
+                    "real_smtp_send_enabled": False,
+                    "scheduler_enabled": False,
+                    "scheduler_install_enabled": False,
+                    "release_uploaded": False,
+                    "release_packaging_enabled": False,
+                    "production_restore_enabled": False,
+                    "production_restore_executed": False,
+                    "public_schema_changed": False,
+                    "db_migration_executed": False,
+                    "production_queue_mutated": False,
+                    "source_adapter_changed": False,
+                    "ranking_algorithm_changed": False,
+                    "current_pointer_changed": False,
+                    "v7_1_baseline_changed": False,
+                    "v7_2_contract_files_changed": False,
+                },
+                "authorization_hash": "",
+            }
+            artifact["authorization_hash"] = (
+                "sha256:"
+                "a85e6e2e0d0fb45ec9bfbb6a0c8f103675bf20a98a93f950989cd150b3438f27"
+            )
+            artifact_path.write_text(json.dumps(artifact, ensure_ascii=False), encoding="utf-8")
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "audit-s2plt02-real-proof-capture-readiness",
+                        "--repo-root",
+                        str(tmp_root),
+                        "--state-dir",
+                        str(state_dir),
+                        "--service-date",
+                        "2026-06-29",
+                        "--launchctl-disabled-file",
+                        str(launchctl_file),
+                        "--expected-authorization-readiness-state-hash",
+                        "current-readiness-hash",
+                        "--json",
+                    ]
+                )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertFalse(payload["real_proof_capture_authorized"])
+        self.assertEqual(payload["authorization_artifact_status"], "blocked")
+        self.assertIn(
+            "readiness_state_hash does not match current readiness state",
+            payload["authorization_validation_errors"],
+        )
+        self.assertIn("real_proof_capture_authorization_invalid", payload["blocking_reasons"])
+
     def test_build_s2plt02_real_proof_capture_authorization_owner_packet_json_command(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):

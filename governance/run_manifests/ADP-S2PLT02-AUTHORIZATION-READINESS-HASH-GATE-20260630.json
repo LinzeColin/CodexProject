@@ -1,0 +1,110 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "project_id": "arxiv-daily-push",
+  "event_id": "EVENT-20260630-ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE",
+  "iteration_id": "ITER-20260630-ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE",
+  "task_id": "S2PLT02-AUTHORIZATION-READINESS-HASH-GATE",
+  "task_ids": [
+    "S2PLT02-AUTHORIZATION-READINESS-HASH-GATE",
+    "S2PLT02-REAL-PROOF-CAPTURE-READINESS",
+    "S2PLT02-TERMINAL-DELIVERY-PROOF",
+    "S2PLT02",
+    "S2PMT07",
+    "ACC-S2PLT02-2D",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "phase": "S2PL",
+  "status": "blocked",
+  "fact_level": "EXTRACTED",
+  "generated_at": "2026-06-30T17:34:32+10:00",
+  "occurred_at": "2026-06-30T17:34:32+10:00",
+  "result": "blocked_s2plt02_authorization_stale_readiness_hash_fail_closed_no_production",
+  "summary": "S2PLT02 real-proof capture readiness now requires the live authorization artifact to match the expected current readiness_state_hash; stale expected hashes fail closed before proof capture can count as authorized.",
+  "expected_authorization_readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
+  "matching_hash_result": {
+    "status": "blocked",
+    "authorization_artifact_status": "pass",
+    "authorization_validation_errors": [],
+    "real_proof_capture_authorized": true,
+    "authorization_validation_state_hash": "68cb9b1f0ae26262a42aa703567a9bf6409fe4e0fbdca12233f553f63879f3c1",
+    "state_hash": "218cfe1712e9020e02cea37b4f1982c4c959bca29462d6b73e8aec7308e8444c",
+    "completed_next_actions": [
+      "obtain_explicit_owner_authorization_for_real_smtp_scheduler"
+    ],
+    "blocking_reasons": [
+      "required_launchagents_disabled",
+      "second_real_delivery_day_missing",
+      "dry_run_second_day_not_terminal",
+      "s2plt02_terminal_delivery_proof_artifact_missing",
+      "real_scheduler_not_proven"
+    ]
+  },
+  "stale_hash_result": {
+    "status": "blocked",
+    "expected_authorization_readiness_state_hash": "stale-or-wrong-readiness-hash",
+    "authorization_artifact_status": "blocked",
+    "authorization_validation_errors": [
+      "readiness_state_hash does not match current readiness state"
+    ],
+    "real_proof_capture_authorized": false,
+    "authorization_validation_state_hash": "77de9e53b9d9feab7cc4f0d02d96e8eb45c514ab3769cfee6d697bac04c36934",
+    "state_hash": "76b9533077ad56d270a70a12b53af80936875795728d7399a48c6af976e37fa2",
+    "completed_next_actions": [],
+    "blocking_reasons": [
+      "real_proof_capture_authorization_invalid",
+      "required_launchagents_disabled",
+      "second_real_delivery_day_missing",
+      "dry_run_second_day_not_terminal",
+      "s2plt02_terminal_delivery_proof_artifact_missing",
+      "real_scheduler_not_proven"
+    ]
+  },
+  "cli_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_hash_ok_fields PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-real-proof-capture-readiness --repo-root . --expected-authorization-readiness-state-hash 79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_hash_bad_fields PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-real-proof-capture-readiness --repo-root . --expected-authorization-readiness-state-hash stale-or-wrong-readiness-hash --json"
+  ],
+  "test_results": [
+    "TDD red failed because readiness builder did not accept expected_authorization_readiness_state_hash and CLI rejected --expected-authorization-readiness-state-hash",
+    "focused final-gate and CLI green tests: 158 OK",
+    "matching expected hash CLI: blocked / exit 2 with authorization_artifact_status pass and state_hash 218cfe1712e9020e02cea37b4f1982c4c959bca29462d6b73e8aec7308e8444c",
+    "stale expected hash CLI: blocked / exit 2 with authorization_artifact_status blocked and state_hash 76b9533077ad56d270a70a12b53af80936875795728d7399a48c6af976e37fa2"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md",
+    "governance/run_manifests/ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json"
+  ],
+  "next_task": "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY_AND_REAL_SCHEDULER_PROOF_BEFORE_WRITING_TERMINAL_PROOF",
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

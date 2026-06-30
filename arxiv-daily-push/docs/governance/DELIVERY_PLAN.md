@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 299
+- task_count: 300
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 17:34:32 Australia/Sydney - S2PLT02 Authorization Readiness Hash Gate
+
+- `S2PLT02-AUTHORIZATION-READINESS-HASH-GATE` adds an expected readiness-hash binding to `audit-s2plt02-real-proof-capture-readiness`.
+- Matching expected hash `79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e` keeps the live authorization artifact valid while readiness remains blocked / exit 2 with `state_hash=218cfe1712e9020e02cea37b4f1982c4c959bca29462d6b73e8aec7308e8444c` by the existing terminal gaps.
+- Stale expected hash `stale-or-wrong-readiness-hash` now returns blocked / exit 2 with `authorization_artifact_status=blocked`, `authorization_validation_errors=["readiness_state_hash does not match current readiness state"]`, `real_proof_capture_authorized=false`, `completed_next_actions=[]`, `authorization_validation_state_hash=77de9e53b9d9feab7cc4f0d02d96e8eb45c514ab3769cfee6d697bac04c36934`, and `state_hash=76b9533077ad56d270a70a12b53af80936875795728d7399a48c6af976e37fa2`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02/S2PLT03 terminal proof, write S2PLT04 completion report, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 17:00:08 Australia/Sydney - S2PLT03 Terminal Resilience Proof Capture Plan
 

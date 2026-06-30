@@ -151,6 +151,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "blocked_s2plt02_real_proof_capture_readiness_live_authorization_pass_terminal_gaps_visible_no_production",
             page,
         )
+        self.assertIn("REQ-ADP-V7-043-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", page)
+        self.assertIn("S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", page)
+        self.assertIn("ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json", page)
+        self.assertIn("PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md", page)
+        self.assertIn("blocked_s2plt02_authorization_stale_readiness_hash_fail_closed_no_production", page)
+        self.assertIn("readiness_state_hash does not match current readiness state", page)
+        self.assertIn("authorization_artifact_status=blocked", page)
+        self.assertIn("real_proof_capture_authorized=false", page)
+        self.assertIn("218cfe1712e9020e02cea37b4f1982c4c959bca29462d6b73e8aec7308e8444c", page)
+        self.assertIn("76b9533077ad56d270a70a12b53af80936875795728d7399a48c6af976e37fa2", page)
         self.assertIn("authorization_artifact_status=pass", page)
         self.assertIn("authorization_validation_errors=[]", page)
         self.assertIn("real_proof_capture_authorized=true", page)
