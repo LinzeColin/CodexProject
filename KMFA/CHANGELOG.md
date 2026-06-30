@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s06-p2-cross-source-difference-queue - 2026-06-30
+
+- 完成 `S06-P2｜跨源差异队列` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/cross_source_difference_queue.py`、`KMFA/tools/check_s06_p2_difference_queue.py` 和 `KMFA/tests/test_cross_source_difference_queue.py`。
+- PDF 与 Excel 同项目同字段金额冲突进入人工差异队列；禁止自动修正、平均、四舍五入掩盖和自动选边。
+- 未关闭差异阻断 A 级报告：`report_grade_a_allowed=false`、`maximum_report_grade=B`、`hard_block_reason=unresolved_critical_difference`。
+- 新增 `KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/` 证据包，使用 synthetic fixture，不读取或提交真实业务文件。
+- 保持 S06-P3 metadata/quality 运行时证据输出、lineage、事实层、报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s06-p1-zero-delta-validator - 2026-06-30
 
 - 完成 `S06-P1｜零差异校验器` 本地验证，不上传 GitHub。

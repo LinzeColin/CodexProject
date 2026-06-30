@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `S06｜零差异校验与差异处理队列`
-- 当前 Phase: `S06-P2｜跨源差异队列待开始`
+- 当前 Phase: `S06-P3｜校验证据输出待开始`
 
 ## Execution Rules
 
