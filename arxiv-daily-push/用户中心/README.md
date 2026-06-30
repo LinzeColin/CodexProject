@@ -1,5 +1,13 @@
 # ADP 用户中心
 
+## 2026-06-30 23:18:23 Australia/Sydney - Final bundle 已公开 S2PLT04 completion evidence 阻断摘要
+
+- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在 final bundle 顶层公开 `s2plt04_completion_evidence_audit_summary`。
+- 当前仍 blocked：prerequisite plan `state_hash=b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4`，final validator `state_hash=5e0d1a81d1f8f8de49721844d8b96f376a74a11ee69170e30685c915032ed8e2`。
+- S2PLT04 audit 口径：`state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f`，`completion_report_ready=false`，`s2plt04_completion_report_written=false`。
+- 剩余缺口仍是 S2PLT02 terminal delivery proof 和 S2PLT03 terminal resilience proof；阻断为 `s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing`。
+- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY.md)。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
+
 ## 2026-06-30 22:46:02 Australia/Sydney - Final bundle 已公开 P0/P1 zero-proof 状态摘要
 
 - `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在 final bundle 顶层公开 `p0_p1_zero_proof_status_summary`。
@@ -101,7 +109,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-06-30 23:01:16 Australia/Sydney
+更新时间：2026-06-30 23:30:48 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -127,7 +135,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 398 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 399 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |

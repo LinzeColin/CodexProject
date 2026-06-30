@@ -8787,6 +8787,48 @@ def build_final_bundle_prerequisite_plan_state(
         if s2plt04_blocked_by_upstream_evidence
         else {}
     )
+    s2plt04_completion_evidence_audit = (
+        build_s2plt04_completion_evidence_audit_state(repo_root=root)
+        if s2plt04_blocked_by_upstream_evidence
+        else {}
+    )
+    s2plt04_completion_source_evidence = _mapping(
+        s2plt04_completion_evidence_audit.get("source_evidence")
+    )
+    s2plt04_completion_evidence_audit_summary = (
+        {
+            "status": s2plt04_completion_evidence_audit.get("status"),
+            "state_hash": s2plt04_completion_evidence_audit.get("state_hash"),
+            "next_required_artifact": s2plt04_completion_evidence_audit.get("next_required_artifact"),
+            "completion_report_ready": s2plt04_completion_evidence_audit.get("completion_report_ready"),
+            "s2plt04_completion_report_written": s2plt04_completion_evidence_audit.get(
+                "s2plt04_completion_report_written"
+            ),
+            "terminal_dependency_state": dict(
+                _mapping(s2plt04_completion_evidence_audit.get("terminal_dependency_state"))
+            ),
+            "source_evidence_status": {
+                evidence_id: _mapping(evidence_state).get("artifact_status")
+                for evidence_id, evidence_state in s2plt04_completion_source_evidence.items()
+            },
+            "s2plt02_nonterminal_ref_count": s2plt04_completion_evidence_audit.get(
+                "s2plt02_nonterminal_ref_count"
+            ),
+            "s2plt02_latest_nonterminal_ref": s2plt04_completion_evidence_audit.get(
+                "s2plt02_latest_nonterminal_ref"
+            ),
+            "s2plt03_nonterminal_ref_count": s2plt04_completion_evidence_audit.get(
+                "s2plt03_nonterminal_ref_count"
+            ),
+            "s2plt03_latest_nonterminal_ref": s2plt04_completion_evidence_audit.get(
+                "s2plt03_latest_nonterminal_ref"
+            ),
+            "blocking_reasons": list(s2plt04_completion_evidence_audit.get("blocking_reasons", [])),
+            "default_next_actions": list(s2plt04_completion_evidence_audit.get("default_next_actions", [])),
+        }
+        if s2plt04_blocked_by_upstream_evidence
+        else {}
+    )
     upstream_blockers = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
     upstream_unblock_order = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
     if live_authorization_passed:
@@ -8849,6 +8891,7 @@ def build_final_bundle_prerequisite_plan_state(
         "s2plt02_terminal_delivery_capture_plan_summary": s2plt02_capture_plan_summary,
         "s2plt02_runtime_readiness_summary": s2plt02_runtime_readiness_summary,
         "s2plt03_terminal_resilience_capture_plan_summary": s2plt03_capture_plan_summary,
+        "s2plt04_completion_evidence_audit_summary": s2plt04_completion_evidence_audit_summary,
         "p0_p1_zero_proof_status_summary": p0_p1_zero_proof_status_summary,
         "next_executable_command": (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_COMMAND
@@ -9162,12 +9205,46 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         for flag in ("artifact_written", "s2plt03_accepted", "s2plt03_resilience_drill_completed"):
             if s2plt03_summary.get(flag) is not False:
                 errors.append(f"S2PLT03 capture plan summary {flag} must be false")
+        s2plt04_summary = _mapping(state.get("s2plt04_completion_evidence_audit_summary"))
+        if s2plt04_summary.get("status") not in {"pass", "blocked"}:
+            errors.append("S2PLT04 completion evidence audit summary status is invalid")
+        for field in ("state_hash", "next_required_artifact"):
+            if not isinstance(s2plt04_summary.get(field), str) or not s2plt04_summary.get(field):
+                errors.append(f"S2PLT04 completion evidence audit summary {field} is required")
+        if s2plt04_summary.get("next_required_artifact") != "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json":
+            errors.append("S2PLT04 completion evidence audit summary next required artifact is invalid")
+        if not isinstance(s2plt04_summary.get("completion_report_ready"), bool):
+            errors.append("S2PLT04 completion evidence audit summary completion_report_ready must be boolean")
+        if s2plt04_summary.get("s2plt04_completion_report_written") is not False:
+            errors.append("S2PLT04 completion evidence audit summary must not write the completion report")
+        if not isinstance(s2plt04_summary.get("terminal_dependency_state"), dict):
+            errors.append("S2PLT04 completion evidence audit summary terminal_dependency_state must be an object")
+        if not isinstance(s2plt04_summary.get("source_evidence_status"), dict):
+            errors.append("S2PLT04 completion evidence audit summary source_evidence_status must be an object")
+        if not isinstance(s2plt04_summary.get("blocking_reasons"), list):
+            errors.append("S2PLT04 completion evidence audit summary blocking_reasons must be a list")
+        if not isinstance(s2plt04_summary.get("default_next_actions"), list):
+            errors.append("S2PLT04 completion evidence audit summary default_next_actions must be a list")
+        s2plt04_terminal_dependencies = _mapping(s2plt04_summary.get("terminal_dependency_state"))
+        if s2plt04_terminal_dependencies.get("S2PLT02_ACCEPTED") is False:
+            if "s2plt02_live_2d_terminal_proof_missing" not in s2plt04_summary.get("blocking_reasons", []):
+                errors.append("S2PLT04 completion evidence audit summary must block on missing S2PLT02 proof")
+        if s2plt04_terminal_dependencies.get("S2PLT03_ACCEPTED") is False:
+            if "s2plt03_resilience_terminal_proof_missing" not in s2plt04_summary.get("blocking_reasons", []):
+                errors.append("S2PLT04 completion evidence audit summary must block on missing S2PLT03 proof")
+        if (
+            s2plt04_summary.get("completion_report_ready") is True
+            and s2plt04_summary.get("status") != "pass"
+        ):
+            errors.append("S2PLT04 completion evidence audit summary ready state requires pass status")
     elif capture_plan_summary:
         errors.append("S2PLT02 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
     elif state.get("s2plt02_runtime_readiness_summary"):
         errors.append("S2PLT02 runtime readiness summary must be empty when S2PLT04 is not upstream-blocked")
     elif state.get("s2plt03_terminal_resilience_capture_plan_summary"):
         errors.append("S2PLT03 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
+    elif state.get("s2plt04_completion_evidence_audit_summary"):
+        errors.append("S2PLT04 completion evidence audit summary must be empty when S2PLT04 is not upstream-blocked")
     expected_next_executable_runtime_step = (
         str(capture_plan_summary.get("next_executable_step") or "")
         if expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
@@ -9941,6 +10018,9 @@ def build_final_acceptance_bundle_readiness_state(
         "s2plt03_terminal_resilience_capture_plan_summary": dict(
             final_bundle_prerequisite_plan.get("s2plt03_terminal_resilience_capture_plan_summary", {})
         ),
+        "s2plt04_completion_evidence_audit_summary": dict(
+            final_bundle_prerequisite_plan.get("s2plt04_completion_evidence_audit_summary", {})
+        ),
         "p0_p1_zero_proof_status_summary": dict(
             final_bundle_prerequisite_plan.get("p0_p1_zero_proof_status_summary", {})
         ),
@@ -10120,6 +10200,12 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     ):
         errors.append(
             "final acceptance bundle readiness S2PLT03 capture-plan summary must match nested prerequisite plan"
+        )
+    if state.get("s2plt04_completion_evidence_audit_summary") != final_bundle_prerequisite_plan.get(
+        "s2plt04_completion_evidence_audit_summary"
+    ):
+        errors.append(
+            "final acceptance bundle readiness S2PLT04 completion audit summary must match nested prerequisite plan"
         )
     if state.get("p0_p1_zero_proof_status_summary") != final_bundle_prerequisite_plan.get(
         "p0_p1_zero_proof_status_summary"

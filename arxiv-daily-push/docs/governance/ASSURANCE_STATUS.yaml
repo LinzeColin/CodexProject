@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -83,6 +83,11 @@ delivery_readiness:
   p0_p1_zero_proof_current_p0_findings: 0
   p0_p1_zero_proof_current_p1_findings: 0
   p0_p1_zero_proof_boundary: "V7.1 inherited baseline P0=8/P1=37 remains a historical contract baseline; current zero-proof artifact P0=0/P1=0 is a usable final-bundle input only and does not equal Stage2 production acceptance."
+  s2plt04_completion_evidence_summary_status: "blocked"
+  s2plt04_completion_evidence_summary_state_hash: "ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f"
+  s2plt04_completion_report_ready: false
+  s2plt04_completion_report_written: false
+  s2plt04_completion_evidence_summary_blocking_reasons: "s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing"
   production_forbidden_until: "inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed"
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
@@ -91,7 +96,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
   status: "blocked"
-  reason: "The final bundle prerequisite plan, final bundle validator, and S2PLT02 capture plan now expose terminal_artifact_validation_status=blocked for FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json. The artifact is not present and not ready: terminal_artifact_present=false, terminal_artifact_ready=false, terminal_artifact_validation_errors=s2plt02_terminal_delivery_proof_artifact_missing, and terminal_artifact_blocking_reasons=s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven. Runtime_capture_ready=false until remaining_runtime_actions capture the second consecutive real M1-M4 SMTP day, real launchd scheduler proof, and reviewed terminal proof artifact. Missing inputs remain SECOND_REAL_DELIVERY_DAY, EIGHT_REAL_EMAILS, REAL_SCHEDULER_PROOF, and S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT."
+  reason: "The final bundle prerequisite plan and final bundle validator now expose s2plt04_completion_evidence_audit_summary while S2PLT04 completion remains blocked. S2PLT04 audit state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f, completion_report_ready=false, s2plt04_completion_report_written=false, and blockers=s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing. S2PLT02 terminal delivery proof still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real scheduler proof, and reviewed terminal proof artifact."
   acceptance_ids:
     - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"
