@@ -30,10 +30,24 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_summary_describes_s2plt04_latest_nonterminal_evidence_sync(self) -> None:
+    def test_current_state_summary_describes_s2plt02_daily_run_dry_run_terminal_classification(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
+        self.assertIn(
+            "S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION", current_state)
+        self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", current_state)
+        self.assertIn("daily_run_succeeded_service_dates=2026-06-29,2026-06-30", current_state)
+        self.assertIn("nonterminal_succeeded_dry_run_service_dates=2026-06-29,2026-06-30", current_state)
+        self.assertIn("nonterminal_succeeded_dry_run_count=2", current_state)
+        self.assertIn("observed_candidate_dry_run_email_count=8", current_state)
+        self.assertIn("observed_candidate_real_sent_email_count=0", current_state)
+        self.assertIn("ADP-S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION-20260630.json", current_state)
+        self.assertIn("PHASE_S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION.md", ledger)
+        self.assertIn("a9179f2a386c23d6efb0495659f434a3991736ce7a10ec6e234659a4e6a0accf", current_state)
         self.assertIn(
             "S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,

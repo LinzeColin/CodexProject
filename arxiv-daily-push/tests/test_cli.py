@@ -298,6 +298,19 @@ class CliTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
+            (run_dir / "adp-daily-run.json").write_text(
+                json.dumps(
+                    {
+                        "status": "succeeded",
+                        "run_record": {
+                            "date": "2026-06-29",
+                            "current_state": "completed",
+                            "status": "SUCCESS",
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
             buffer = io.StringIO()
             with redirect_stdout(buffer):
                 result = main(
@@ -317,12 +330,18 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["service_date"], "2026-06-29")
         self.assertEqual(payload["dry_run_mail_count"], 4)
         self.assertEqual(payload["real_sent_mail_count"], 0)
+        self.assertTrue(payload["daily_run_report_present"])
+        self.assertEqual(payload["daily_run_status"], "succeeded")
+        self.assertTrue(payload["daily_run_succeeded"])
+        self.assertTrue(payload["daily_run_succeeded_but_smtp_dry_run_not_terminal"])
+        self.assertFalse(payload["daily_run_counts_toward_terminal_proof"])
         self.assertFalse(payload["counts_toward_s2plt02_terminal_proof"])
         self.assertFalse(payload["terminal_delivery_credit"])
         self.assertFalse(payload["real_smtp_proven"])
         self.assertFalse(payload["real_scheduler_proven"])
         self.assertFalse(payload["s2plt02_accepted"])
         self.assertIn("dry_run_evidence_only_not_real_smtp", payload["blocking_reasons"])
+        self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", payload["blocking_reasons"])
         self.assertIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
         self.assertIn("eight_real_emails_not_proven", payload["blocking_reasons"])
 
@@ -444,6 +463,19 @@ class CliTests(unittest.TestCase):
                     ),
                     encoding="utf-8",
                 )
+                (run_dir / "adp-daily-run.json").write_text(
+                    json.dumps(
+                        {
+                            "status": "succeeded",
+                            "run_record": {
+                                "date": service_date,
+                                "current_state": "completed",
+                                "status": "SUCCESS",
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
             launchctl_file = tmp_root / "launchctl-disabled.txt"
             launchctl_file.write_text(
                 "\n".join(
@@ -506,6 +538,9 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["all_required_launchagents_not_running"])
         self.assertTrue(payload["all_required_launchagents_have_calendar_triggers"])
         self.assertTrue(payload["launchagents_loaded_but_disabled"])
+        self.assertEqual(payload["daily_run_succeeded_service_dates"], ["2026-06-29", "2026-06-30"])
+        self.assertEqual(payload["nonterminal_succeeded_dry_run_service_dates"], ["2026-06-29", "2026-06-30"])
+        self.assertEqual(payload["nonterminal_succeeded_dry_run_count"], 2)
         self.assertEqual(
             payload["scheduler_runtime_evidence_status"],
             "launchagents_loaded_but_disabled_not_terminal_scheduler_proof",
@@ -514,6 +549,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["required_email_count"], 8)
         self.assertIn("adp_launchagents_disabled_by_user_domain_override", payload["blocking_reasons"])
         self.assertIn("second_consecutive_real_m1_m4_smtp_day_missing", payload["blocking_reasons"])
+        self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", payload["blocking_reasons"])
 
     def test_validate_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -703,6 +739,20 @@ class CliTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
+            (run_dir / "adp-daily-run.json").write_text(
+                json.dumps(
+                    {
+                        "status": "succeeded",
+                        "run_record": {
+                            "date": "2026-06-29",
+                            "current_state": "completed",
+                            "status": "SUCCESS",
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
             buffer = io.StringIO()
             with redirect_stdout(buffer):
                 result = main(
@@ -729,7 +779,12 @@ class CliTests(unittest.TestCase):
         self.assertIn("FIRST_REAL_DELIVERY_DAY", payload["ready_inputs"])
         self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["missing_terminal_inputs"])
         self.assertEqual(payload["blocked_candidate_service_dates"], ["2026-06-29"])
+        self.assertEqual(payload["daily_run_succeeded_service_dates"], ["2026-06-29"])
+        self.assertEqual(payload["nonterminal_succeeded_dry_run_service_dates"], ["2026-06-29"])
+        self.assertEqual(payload["nonterminal_succeeded_dry_run_count"], 1)
         self.assertEqual(payload["blocked_candidate_inputs"][0]["classification"], "blocked_dry_run_not_real_terminal_input")
+        self.assertTrue(payload["blocked_candidate_inputs"][0]["daily_run_succeeded"])
+        self.assertTrue(payload["blocked_candidate_inputs"][0]["daily_run_succeeded_but_smtp_dry_run_not_terminal"])
         self.assertFalse(payload["blocked_candidate_inputs"][0]["counts_toward_s2plt02_terminal_proof"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])

@@ -925,6 +925,7 @@ S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_MODEL_ID = "adp-s2plt02-dry-run-second-day-audi
 S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SCOPE = "second_day_dry_run_trace_no_terminal_delivery_credit"
 S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SERVICE_DATE = "2026-06-29"
 S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_RUNNER_REPORT = "adp-local-runner-report.json"
+S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_DAILY_RUN_REPORT = "adp-daily-run.json"
 S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_PRODUCT_REPORT_TEMPLATE = "adp-smtp-delivery-report-{product}.json"
 S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_NO_PRODUCTION_FLAGS = (
     "production_acceptance_claimed",
@@ -1533,12 +1534,28 @@ def build_s2plt02_dry_run_second_day_audit_state(
     state_root = Path(state_dir).expanduser() if state_dir is not None else Path.home() / ".adp" / "arxiv-daily-push"
     run_dir = state_root / "runs" / service_date.replace("-", "")
     runner_report_path = run_dir / S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_RUNNER_REPORT
+    daily_run_report_path = run_dir / S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_DAILY_RUN_REPORT
     validation_errors: list[str] = []
-    evidence_refs = [str(runner_report_path)]
+    evidence_refs = [str(runner_report_path), str(daily_run_report_path)]
 
     runner_report, load_error = _load_s2plt02_audit_json(runner_report_path)
     if load_error:
         validation_errors.append(f"runner_report_{load_error}")
+    daily_run_report, daily_run_load_error = _load_s2plt02_audit_json(daily_run_report_path)
+    daily_run_report_present = not daily_run_load_error
+    if daily_run_load_error and daily_run_load_error != "missing":
+        validation_errors.append(f"daily_run_report_{daily_run_load_error}")
+    daily_run_record = _mapping(daily_run_report.get("run_record"))
+    daily_run_status = str(daily_run_report.get("status") or daily_run_record.get("status") or "")
+    daily_run_record_state = str(daily_run_record.get("current_state") or "")
+    daily_run_record_date = str(daily_run_record.get("date") or daily_run_report.get("date") or "")
+    if daily_run_report_present and daily_run_record_date and daily_run_record_date != service_date:
+        validation_errors.append("daily_run_report_service_date_mismatch")
+    daily_run_succeeded = (
+        daily_run_status.lower() in {"succeeded", "success"}
+        or daily_run_record_state.lower() == "completed"
+        and daily_run_record.get("status") == "SUCCESS"
+    )
 
     mail_summary = _mapping(runner_report.get("mail_delivery_summary"))
     planned_products = [str(product) for product in mail_summary.get("planned_mail_products", [])]
@@ -1603,6 +1620,9 @@ def build_s2plt02_dry_run_second_day_audit_state(
         and not any(error.startswith("product_delivery_report_not_dry_run") for error in validation_errors)
         and not any(error.startswith("product_delivery_report_has_real_send") for error in validation_errors)
     )
+    daily_run_succeeded_but_smtp_dry_run_not_terminal = (
+        daily_run_succeeded and dry_run_evidence_present and sent_mail_count == 0
+    )
 
     blocking_reasons: list[str] = []
     if missing_product_report:
@@ -1611,6 +1631,8 @@ def build_s2plt02_dry_run_second_day_audit_state(
         blocking_reasons.append("dry_run_evidence_only_not_real_smtp")
     else:
         blocking_reasons.append("dry_run_evidence_not_complete")
+    if daily_run_succeeded_but_smtp_dry_run_not_terminal:
+        blocking_reasons.append("daily_run_succeeded_but_smtp_dry_run_not_terminal")
     for reason in (
         "real_scheduler_not_proven",
         "two_consecutive_real_days_not_proven",
@@ -1631,6 +1653,14 @@ def build_s2plt02_dry_run_second_day_audit_state(
         "state_dir": str(state_root),
         "run_dir": str(run_dir),
         "runner_report_ref": str(runner_report_path),
+        "daily_run_report_ref": str(daily_run_report_path),
+        "daily_run_report_present": daily_run_report_present,
+        "daily_run_status": daily_run_status,
+        "daily_run_record_state": daily_run_record_state,
+        "daily_run_record_date": daily_run_record_date,
+        "daily_run_succeeded": daily_run_succeeded,
+        "daily_run_succeeded_but_smtp_dry_run_not_terminal": daily_run_succeeded_but_smtp_dry_run_not_terminal,
+        "daily_run_counts_toward_terminal_proof": False,
         "product_report_refs": product_report_refs,
         "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
         "planned_mail_products": planned_products,
@@ -1690,6 +1720,7 @@ def validate_s2plt02_dry_run_second_day_audit_state(state: Mapping[str, Any]) ->
     for field in (
         "terminal_delivery_credit",
         "counts_toward_s2plt02_terminal_proof",
+        "daily_run_counts_toward_terminal_proof",
         "real_smtp_proven",
         "real_scheduler_proven",
         "s2plt02_accepted",
@@ -1715,6 +1746,13 @@ def validate_s2plt02_dry_run_second_day_audit_state(state: Mapping[str, Any]) ->
         errors.append("dry_run_evidence_only_not_real_smtp blocker is required")
     if state.get("dry_run_evidence_present") is False and "dry_run_evidence_not_complete" not in blocking_reasons:
         errors.append("dry_run_evidence_not_complete blocker is required")
+    if state.get("daily_run_succeeded_but_smtp_dry_run_not_terminal") is True:
+        if state.get("daily_run_succeeded") is not True:
+            errors.append("daily_run_succeeded_but_smtp_dry_run_not_terminal requires daily_run_succeeded")
+        if state.get("dry_run_evidence_present") is not True:
+            errors.append("daily_run_succeeded_but_smtp_dry_run_not_terminal requires dry_run evidence")
+        if "daily_run_succeeded_but_smtp_dry_run_not_terminal" not in blocking_reasons:
+            errors.append("daily_run_succeeded_but_smtp_dry_run_not_terminal blocker is required")
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("S2PLT02 dry-run second-day audit state_hash does not match state content")
@@ -2073,6 +2111,16 @@ def build_s2plt02_terminal_capture_window_audit_state(
         for audit in dry_run_audits
         if audit.get("dry_run_evidence_present") is True
     ]
+    daily_run_succeeded_service_dates = [
+        str(audit.get("service_date"))
+        for audit in dry_run_audits
+        if audit.get("daily_run_succeeded") is True
+    ]
+    nonterminal_succeeded_dry_run_service_dates = [
+        str(audit.get("service_date"))
+        for audit in dry_run_audits
+        if audit.get("daily_run_succeeded_but_smtp_dry_run_not_terminal") is True
+    ]
     dry_run_email_count = sum(int(audit.get("dry_run_mail_count") or 0) for audit in dry_run_audits)
     real_sent_candidate_email_count = sum(int(audit.get("real_sent_mail_count") or 0) for audit in dry_run_audits)
     delivery_ledger = build_s2plt02_delivery_evidence_ledger_state()
@@ -2102,6 +2150,8 @@ def build_s2plt02_terminal_capture_window_audit_state(
         blocking_reasons.append("adp_launchagent_disabled_state_missing_or_enabled")
     if not terminal_artifact_present:
         blocking_reasons.append("s2plt02_terminal_delivery_proof_artifact_missing")
+    if nonterminal_succeeded_dry_run_service_dates:
+        blocking_reasons.append("daily_run_succeeded_but_smtp_dry_run_not_terminal")
 
     state = {
         "model_id": S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_MODEL_ID,
@@ -2113,6 +2163,9 @@ def build_s2plt02_terminal_capture_window_audit_state(
         "scope": S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_SCOPE,
         "candidate_service_dates": list(candidate_service_dates),
         "dry_run_service_dates": dry_run_service_dates,
+        "daily_run_succeeded_service_dates": daily_run_succeeded_service_dates,
+        "nonterminal_succeeded_dry_run_service_dates": nonterminal_succeeded_dry_run_service_dates,
+        "nonterminal_succeeded_dry_run_count": len(nonterminal_succeeded_dry_run_service_dates),
         "dry_run_email_count": dry_run_email_count,
         "real_sent_candidate_email_count": real_sent_candidate_email_count,
         "required_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
@@ -2230,6 +2283,15 @@ def validate_s2plt02_terminal_capture_window_audit_state(state: Mapping[str, Any
         errors.append("real_launchd_scheduler_proof_missing blocker is required")
     if state.get("adp_allow_smtp_send") is False and "adp_allow_smtp_send_false" not in state.get("blocking_reasons", []):
         errors.append("adp_allow_smtp_send_false blocker is required")
+    nonterminal_dates = [str(item) for item in state.get("nonterminal_succeeded_dry_run_service_dates", [])]
+    if state.get("nonterminal_succeeded_dry_run_count") != len(nonterminal_dates):
+        errors.append("nonterminal_succeeded_dry_run_count must match nonterminal date count")
+    if nonterminal_dates:
+        if "daily_run_succeeded_but_smtp_dry_run_not_terminal" not in state.get("blocking_reasons", []):
+            errors.append("daily_run_succeeded_but_smtp_dry_run_not_terminal blocker is required")
+        dry_run_dates = {str(item) for item in state.get("dry_run_service_dates", [])}
+        if not set(nonterminal_dates).issubset(dry_run_dates):
+            errors.append("nonterminal succeeded dry-run dates must be dry-run service dates")
     if (
         state.get("all_required_launchagents_disabled") is True
         and "adp_launchagents_disabled_by_user_domain_override" not in state.get("blocking_reasons", [])
@@ -3667,6 +3729,10 @@ def build_s2plt02_terminal_proof_evidence_inventory_state(
                 "service_date": service_date,
                 "classification": classification,
                 "dry_run_evidence_present": dry_run_present,
+                "daily_run_succeeded": audit.get("daily_run_succeeded") is True,
+                "daily_run_succeeded_but_smtp_dry_run_not_terminal": (
+                    audit.get("daily_run_succeeded_but_smtp_dry_run_not_terminal") is True
+                ),
                 "dry_run_mail_count": int(audit.get("dry_run_mail_count") or 0),
                 "real_sent_mail_count": int(audit.get("real_sent_mail_count") or 0),
                 "terminal_delivery_credit": False,
@@ -3735,6 +3801,11 @@ def build_s2plt02_terminal_proof_evidence_inventory_state(
         "usable_terminal_inputs": usable_terminal_inputs,
         "blocked_candidate_inputs": blocked_candidate_inputs,
         "blocked_candidate_service_dates": blocked_candidate_service_dates,
+        "daily_run_succeeded_service_dates": list(capture_window.get("daily_run_succeeded_service_dates", [])),
+        "nonterminal_succeeded_dry_run_service_dates": list(
+            capture_window.get("nonterminal_succeeded_dry_run_service_dates", [])
+        ),
+        "nonterminal_succeeded_dry_run_count": int(capture_window.get("nonterminal_succeeded_dry_run_count") or 0),
         "safe_to_build_terminal_artifact": safe_to_build_terminal_artifact,
         "terminal_delivery_credit": False,
         "counts_toward_s2plt02_terminal_proof": False,
@@ -3804,6 +3875,14 @@ def validate_s2plt02_terminal_proof_evidence_inventory_state(state: Mapping[str,
             errors.append("blocked candidates must not grant terminal delivery credit")
         if not item.get("classification"):
             errors.append("blocked candidate classification is required")
+        if (
+            item.get("daily_run_succeeded_but_smtp_dry_run_not_terminal") is True
+            and item.get("daily_run_succeeded") is not True
+        ):
+            errors.append("daily-run nonterminal candidate requires daily_run_succeeded")
+    nonterminal_dates = [str(item) for item in state.get("nonterminal_succeeded_dry_run_service_dates", [])]
+    if state.get("nonterminal_succeeded_dry_run_count") != len(nonterminal_dates):
+        errors.append("nonterminal_succeeded_dry_run_count must match nonterminal date count")
     if state.get("terminal_delivery_credit") is not False:
         errors.append("terminal_delivery_credit must be false")
     if state.get("counts_toward_s2plt02_terminal_proof") is not False:

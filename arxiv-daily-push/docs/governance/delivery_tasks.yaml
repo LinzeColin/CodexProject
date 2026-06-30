@@ -5487,3 +5487,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION"
+    title: "S2PLT02 daily-run dry-run terminal classification"
+    parent_task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T15:31:00+10:00"
+    objective: "Expose adp-daily-run status=succeeded records and classify succeeded dry-run days as nonterminal S2PLT02 evidence."
+    scope: "S2PLT02 dry-run second-day audit, capture-window audit, terminal proof evidence inventory, focused tests, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", "S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION.md", "governance/run_manifests/ADP-S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_stage2_gate_tests PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cli_subset PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py -k 's2plt02_dry_run_second_day or terminal_capture_window or terminal_proof_evidence_inventory'", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_real_evidence_inventory PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-terminal-proof-evidence-inventory --repo-root /private/tmp/adp-s3-next-hdrIpr --state-dir /Users/linzezhang/.adp/arxiv-daily-push --candidate-service-dates 2026-06-29,2026-06-30 --launchctl-disabled-file /tmp/adp_launchctl_disabled_s2plt02.txt --generated-at 2026-06-30T15:31:00+10:00 --json"]
+    test_results: ["TDD red failed before daily_run_succeeded_service_dates existed", "focused final-gate S2PLT02 tests: 116 passed", "focused CLI S2PLT02 tests: 3 passed", "actual local evidence CLI: blocked / exit 2 with state_hash a9179f2a386c23d6efb0495659f434a3991736ce7a10ec6e234659a4e6a0accf"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt02_daily_run_success_dry_run_not_terminal_no_production"
+    risk: "A succeeded daily-run report can be misread as terminal proof; this record requires linked real SMTP reports before daily-run success can count toward S2PLT02."
+    rollback: "Revert the daily-run dry-run classification fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
