@@ -72,14 +72,18 @@ Stage 1 records:
 
 ## v0.2.4 Stage 2 Status
 
-Current run unit: `Stage 2 / Phase 2.3 - 实机验收`.
+Current run unit: `Stage 2 whole-stage review - 复审并解决暴露问题`.
 
 - Stage 1 GitHub main upload: complete at `99dea6212dd79b1b0027e8152fa18d81321d46a8`.
 - Phase 2.1: candidate pass.
 - Phase 2.2: candidate pass.
 - Phase 2.3: candidate pass.
 - Stage 2 candidate complete: yes.
-- Stage 2 complete: no.
+- Stage 2 whole-stage review: pass.
+- Stage 2 complete: yes at local review level.
+- Stage 3: not started.
+- GitHub main upload: not executed in this run.
+- Next gate: Stage 2 GitHub main upload before Stage 3.
 - Business UI changes: limited to entry identity status strip and version metadata visibility.
 - Data logic changes: none.
 - App bundle changes: none.
@@ -88,6 +92,7 @@ Current run unit: `Stage 2 / Phase 2.3 - 实机验收`.
 - Current bundle hash: `e8928ed7f3067ae3e732aacda74427a61b69fbcfe855b2254118e7dafe38f8e4`.
 - Current installed app dry-run mapping resolves `/Applications/PFI.app`, `~/Downloads/PFI.app`, and `~/Desktop/PFI.app` to the canonical PFI project root.
 - Current real browser validation service: `http://127.0.0.1:8502` with matching app/local/clear-cache/new-profile build id and bundle hash.
+- Review finding fixed: Phase 2.3 evidence was refreshed after rebase so its review-time evidence records current Stage 2 baseline HEAD.
 
 Phase 2.1 records:
 
@@ -115,6 +120,13 @@ Phase 2.3 records:
 - `reports/pfi_v024/stage_2/phase_2_3/evidence.json`
 - `reports/pfi_v024/stage_2/phase_2_3/browser_validation.json`
 - `reports/pfi_v024/stage_2/phase_2_3/screenshots/`
+
+Whole-stage review records:
+
+- `docs/pfi_v024/STAGE2_WHOLE_STAGE_REVIEW.md`
+- `tests/test_v024_stage2_whole_review_contract.py`
+- `reports/pfi_v024/stage_2/whole_stage_review/evidence.json`
+- `reports/pfi_v024/stage_2/whole_stage_review/terminal.log`
 
 ## v0.2.4 Stage 0 Status
 

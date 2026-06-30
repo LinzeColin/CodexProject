@@ -2,15 +2,15 @@
 
 ## Current Run
 
-本轮只执行：PFI v0.2.4 Stage 2 / Phase 2.3 - 实机验收。
-不执行 Stage 2 whole-stage review、Stage 3 或 GitHub main upload。
+本轮只执行：PFI v0.2.4 Stage 2 whole-stage review - 复审并解决暴露问题。
+不执行 Stage 3 或 GitHub main upload。
 
 ## Goal
 
-Validate the visible and machine-readable version chain from real entry paths:
-localhost, app dry-run/open URL, clear-cache browser context, and new browser
-profile. This phase may mark Stage 2 candidate complete, but it must not claim
-Stage 2 whole-stage review or GitHub main upload is complete.
+Review Phase 2.1, Phase 2.2, and Phase 2.3 together against the Stage 2
+app/localhost entry-consistency acceptance criteria. Fix review findings within
+the Stage 2 boundary, refresh evidence if it is stale, and close Stage 2
+locally without starting Stage 3 or uploading GitHub main.
 
 ## Allowed Files
 
@@ -21,7 +21,9 @@ PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py
 PFI/scripts/startPFI.sh
 PFI/scripts/validate_v024_stage2_phase23_entry.js
 PFI/tests/test_v024_stage2_phase23_real_entry_validation.py
+PFI/tests/test_v024_stage2_whole_review_contract.py
 PFI/reports/pfi_v024/stage_2/phase_2_3/*
+PFI/reports/pfi_v024/stage_2/whole_stage_review/*
 PFI/README.md
 PFI/HANDOFF.md
 PFI/CHANGELOG.md
@@ -52,15 +54,17 @@ zsh -n PFI/StartPFI.command
 zsh -n PFI/scripts/startPFI.sh
 PLAYWRIGHT_CORE_PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright-core@1.61.0/node_modules/playwright-core CHROME_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node PFI/scripts/validate_v024_stage2_phase23_entry.js
 PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py PFI/tests/test_v024_stage2_phase23_real_entry_validation.py
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/tests/test_v024_stage2_whole_review_contract.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_phase23_real_entry_validation.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_whole_review_contract.py -q
 python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_3/evidence.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_2/whole_stage_review/evidence.json
 git diff --check -- PFI
 ```
 
 ## Explicit Non-Goals
 
-- Do not execute Stage 2 whole-stage review in this run.
 - Do not start Stage 3 navigation repair in this run.
 - Do not reinstall or mutate app bundles.
 - Do not modify app launcher C source or Info.plist.

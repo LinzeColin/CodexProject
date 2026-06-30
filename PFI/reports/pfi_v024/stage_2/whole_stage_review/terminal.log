@@ -1,0 +1,71 @@
+PFI v0.2.4 Stage 2 whole-stage review terminal log
+Generated at: 2026-06-30T13:45:52Z
+Worktree: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+Review baseline HEAD: 93ca5280c06697d236c69cff97461db87a4f21b9
+Review baseline origin/main: 4d2cb00b4dd4e83c60aff586f9e54a046262477b
+
+$ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_whole_review_contract.py -q
+RED result before implementation:
+5 failed. Missing build_v024_stage2_whole_review_contract and missing whole-stage review evidence pack.
+
+$ PLAYWRIGHT_CORE_PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright-core@1.61.0/node_modules/playwright-core CHROME_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node PFI/scripts/validate_v024_stage2_phase23_entry.js
+{
+  "status": "candidate_pass",
+  "service": {
+    "url": "http://127.0.0.1:8502",
+    "port": 8502,
+    "pid": 56703,
+    "project_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+    "health": "ok",
+    "active_service_marker": {
+      "PFI_ACTIVE_BUILD_ID": "pfi-v024-stage2-phase22",
+      "PFI_ACTIVE_UI_CONTRACT": "PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+    }
+  },
+  "bundleHash": "e8928ed7f3067ae3e732aacda74427a61b69fbcfe855b2254118e7dafe38f8e4"
+}
+
+$ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_whole_review_contract.py -q
+.....                                                                    [100%]
+5 passed in 0.07s
+
+$ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_pre_stage0_contract.py PFI/tests/test_v024_stage0_phase01_contract.py PFI/tests/test_v024_stage0_phase02_contract.py PFI/tests/test_v024_stage0_phase03_contract.py PFI/tests/test_v024_stage0_whole_review_contract.py PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py PFI/tests/test_v024_stage1_phase12_shell_repair.py PFI/tests/test_v024_stage1_phase13_validation_closeout.py PFI/tests/test_v024_stage1_whole_review_contract.py PFI/tests/test_v024_stage2_phase21_entry_mapping.py PFI/tests/test_v024_stage2_phase22_version_link.py PFI/tests/test_v024_stage2_phase23_real_entry_validation.py PFI/tests/test_v024_stage2_whole_review_contract.py -q
+........................................................                 [100%]
+56 passed in 0.25s
+
+$ zsh -n PFI/StartPFI.command
+pass
+
+$ zsh -n PFI/scripts/startPFI.sh
+pass
+
+$ node --check PFI/web/app/version.js
+pass
+
+$ node --check PFI/web/app/entry_audit.js
+pass
+
+$ node --check PFI/web/app/shell.js
+pass
+
+$ node --check PFI/scripts/validate_v024_stage2_phase23_entry.js
+pass
+
+$ python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py PFI/tests/test_v024_stage2_phase23_real_entry_validation.py PFI/tests/test_v024_stage2_whole_review_contract.py
+pass
+
+$ python -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_3/evidence.json
+pass
+
+$ python -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json
+pass
+
+$ python -m json.tool PFI/reports/pfi_v024/stage_2/whole_stage_review/evidence.json
+pass
+
+$ old Stage 1 entry signature runtime scan
+pass: no hits in PFI/web, StartPFI.command, startPFI.sh, streamlit_app.py, or app entry version tests.
+
+$ git diff --check -- PFI
+pass

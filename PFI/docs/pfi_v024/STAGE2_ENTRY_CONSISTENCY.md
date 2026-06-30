@@ -2,8 +2,8 @@
 
 ## Current Run
 
-本轮只执行 `Stage 2 / Phase 2.3 - 实机验收`。
-本轮不执行 Stage 2 整体复审、不进入 Stage 3、不上传 GitHub main。
+本轮只执行 `Stage 2 whole-stage review - 复审并解决暴露问题`。
+本轮不进入 Stage 3、不上传 GitHub main。
 
 ## Phase 2.1 Result
 
@@ -52,6 +52,16 @@ Phase 2.3 已实现：
 5. `PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json` proves all four paths expose the same build id and bundle hash.
 6. Stage 2 is now candidate complete, but whole-stage review has not been executed.
 
+## Whole-Stage Review Result
+
+Stage 2 whole-stage review 已完成：
+
+1. Phase 2.1、Phase 2.2、Phase 2.3 evidence 均存在且为 candidate pass。
+2. Stage 2 real browser validation 已重新运行，`localhost`、`app`、`clear_cache`、`new_profile` 四路径仍共用同一 build id 和 bundle hash。
+3. 复审发现并修复 Phase 2.3 evidence 在 rebase 后仍记录旧 HEAD 的证据漂移；当前 Phase 2.3 evidence 记录 review baseline `93ca5280c06697d236c69cff97461db87a4f21b9`。
+4. 新增 `PFI/docs/pfi_v024/STAGE2_WHOLE_STAGE_REVIEW.md`、`PFI/tests/test_v024_stage2_whole_review_contract.py` 和 `PFI/reports/pfi_v024/stage_2/whole_stage_review/evidence.json`。
+5. Stage 2 本地复审完成；下一 gate 是 Stage 2 GitHub main upload，Stage 3 尚未执行。
+
 ## Phase 2.1 Artifacts
 
 - `PFI/reports/pfi_v024/stage_2/phase_2_1/entry_map.md`
@@ -76,6 +86,6 @@ Phase 2.3 已实现：
 
 ## Explicitly Not Done
 
-- Stage 2 whole-stage review.
+- Stage 3 navigation repair.
 - App bundle reinstall or launcher C/Info.plist rewrite.
 - GitHub main upload.

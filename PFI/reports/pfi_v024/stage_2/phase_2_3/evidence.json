@@ -8,12 +8,12 @@
   "phase_name": "实机验收",
   "status": "candidate_pass",
   "allowed_files_obeyed": true,
-  "generated_at": "2026-06-30T13:38:40.784Z",
+  "generated_at": "2026-06-30T13:45:07.550Z",
   "repo": {
     "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
     "branch": "codex/pfi",
     "remote": "git@github.com:LinzeColin/CodexProject.git",
-    "head_at_evidence_write": "87da6e6808445dbabd15ca096e4274182bcbd427",
+    "head_at_evidence_write": "93ca5280c06697d236c69cff97461db87a4f21b9",
     "origin_main_at_evidence_write": "4d2cb00b4dd4e83c60aff586f9e54a046262477b",
     "local_ahead_origin_main_at_evidence_write": 3
   },

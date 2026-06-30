@@ -1,0 +1,166 @@
+{
+  "schema": "PFIV024Stage2WholeReviewEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 2",
+  "review_id": "stage_2_whole_review",
+  "status": "pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-06-30T13:45:52Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "review_base_head": "93ca5280c06697d236c69cff97461db87a4f21b9",
+    "origin_main_at_review": "4d2cb00b4dd4e83c60aff586f9e54a046262477b",
+    "local_ahead_origin_main_at_review": 3
+  },
+  "reviewed_phase_ids": ["2.1", "2.2", "2.3"],
+  "phase_evidence": {
+    "2.1": {
+      "path": "PFI/reports/pfi_v024/stage_2/phase_2_1/evidence.json",
+      "status": "candidate_pass",
+      "head_at_evidence_write": "3a0cbd902867c356a8e08f844a838304e61f9c65"
+    },
+    "2.2": {
+      "path": "PFI/reports/pfi_v024/stage_2/phase_2_2/evidence.json",
+      "status": "candidate_pass",
+      "head_at_evidence_write": "87063ed769b69b4acb7aa1f40e0a743dc2c110f2"
+    },
+    "2.3": {
+      "path": "PFI/reports/pfi_v024/stage_2/phase_2_3/evidence.json",
+      "status": "candidate_pass",
+      "head_at_evidence_write": "93ca5280c06697d236c69cff97461db87a4f21b9"
+    }
+  },
+  "phase_2_1_complete": true,
+  "phase_2_2_complete": true,
+  "phase_2_3_complete": true,
+  "stage_2_candidate_complete": true,
+  "stage_2_review_complete": true,
+  "stage_2_complete": true,
+  "requires_user_acceptance": true,
+  "next_stage_requires_user_acceptance": true,
+  "next_gate": "PFI-V024-STAGE2-GITHUB-MAIN-UPLOAD",
+  "no_auto_next_stage": true,
+  "stage_3_started": false,
+  "stage_3_allowed_without_user_instruction": false,
+  "github_main_uploaded": false,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "business_ui_changes_made": false,
+  "repair_label": "PFI v0.2.3 Repair",
+  "build_id": "pfi-v024-stage2-phase22",
+  "bundle_version": "20260630.2",
+  "ui_contract_version": "PFI-V024-STAGE2-ENTRY-CONSISTENCY",
+  "validation_surface": {
+    "service_url": "http://127.0.0.1:8502",
+    "browser_validation": "PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json",
+    "browser_validation_status": "candidate_pass",
+    "browser_validation_paths": ["localhost", "app", "clear_cache", "new_profile"],
+    "web_bundle_hash": "e8928ed7f3067ae3e732aacda74427a61b69fbcfe855b2254118e7dafe38f8e4",
+    "screenshot_count": 4,
+    "screenshots": [
+      "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/localhost_home.png",
+      "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/app_home.png",
+      "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/clear_cache_home.png",
+      "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/new_profile_home.png"
+    ]
+  },
+  "review_findings": [
+    {
+      "finding_id": "S2-REVIEW-F1",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "Stage 2 lacked a whole-stage review contract and evidence gate.",
+      "resolution": "Added Stage 2 whole-review contract, test, doc, and evidence pack."
+    },
+    {
+      "finding_id": "S2-REVIEW-F2",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "Phase 2.3 evidence recorded a pre-rebase head before this review.",
+      "resolution": "Re-ran real browser validation and refreshed Phase 2.3 browser/evidence logs."
+    },
+    {
+      "finding_id": "S2-REVIEW-F3",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "Top-level status files still described the current run as Phase 2.3.",
+      "resolution": "Updated Stage 2 status, run contract, changelog, handoff, and PFI record files."
+    }
+  ],
+  "acceptance_checks": {
+    "all_phase_evidence_present": true,
+    "visible_repair_label_present": true,
+    "visible_build_id_present": true,
+    "visible_bundle_hash_present": true,
+    "visible_ui_contract_present": true,
+    "all_real_entry_paths_same_bundle_and_build": true,
+    "old_stage1_entry_signature_absent_from_runtime_sources": true,
+    "no_console_page_http_errors": true,
+    "no_app_bundle_reinstall": true,
+    "no_launcher_c_or_plist_changes": true,
+    "no_data_logic_changes": true,
+    "no_fake_financial_data_added": true,
+    "github_main_not_uploaded": true
+  },
+  "commands": [
+    {
+      "cmd": "real browser validation for localhost/app/clear-cache/new-profile",
+      "status": "pass",
+      "detail": "candidate_pass on http://127.0.0.1:8502; all four paths share build id and bundle hash"
+    },
+    {
+      "cmd": "pytest stage2 whole review contract",
+      "status": "pass",
+      "detail": "5 passed after evidence finalization"
+    },
+    {
+      "cmd": "pytest v024 regression through stage2 whole review",
+      "status": "pass",
+      "detail": "56 passed after evidence finalization"
+    },
+    {
+      "cmd": "old Stage 1 entry signature runtime scan",
+      "status": "pass",
+      "detail": "no hits in runtime entry sources"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE2_ENTRY_CONSISTENCY.md",
+    "PFI/docs/pfi_v024/STAGE2_WHOLE_STAGE_REVIEW.md",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/evidence.json",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/terminal.log",
+    "PFI/reports/pfi_v024/stage_2/whole_stage_review/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_2/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v024/stage_2/whole_stage_review/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_2/whole_stage_review/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py",
+    "PFI/tests/test_v024_stage2_whole_review_contract.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 3 navigation repair",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "business financial UI flow redesign",
+    "data logic changes",
+    "mock/sample/demo/synthetic/fixture/fake financial data"
+  ]
+}

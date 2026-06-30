@@ -11,6 +11,7 @@ STAGE_ID = "Stage 2"
 PHASE_2_1_ID = "2.1"
 PHASE_2_2_ID = "2.2"
 PHASE_2_3_ID = "2.3"
+STAGE_2_REVIEW_ID = "stage_2_whole_review"
 
 PROJECT_ROOT = "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI"
 REPAIR_LABEL = "PFI v0.2.3 Repair"
@@ -406,4 +407,95 @@ def build_v024_stage2_phase23_contract() -> V024Stage2Phase23Contract:
         business_ui_changes_allowed=False,
         github_main_upload_allowed=False,
         next_step_requires_whole_stage_review=True,
+    )
+
+
+@dataclass(frozen=True)
+class V024Stage2WholeReviewContract:
+    target_version: str
+    source_package_version: str
+    stage_id: str
+    review_id: str
+    reviewed_phase_ids: list[str]
+    phase_2_1_complete: bool
+    phase_2_2_complete: bool
+    phase_2_3_complete: bool
+    stage_2_candidate_complete: bool
+    stage_2_review_complete: bool
+    stage_2_complete: bool
+    stage_3_allowed_without_user_instruction: bool
+    github_main_upload_allowed: bool
+    github_main_uploaded: bool
+    next_stage_requires_user_acceptance: bool
+    max_phases_per_run: int
+    repair_label: str
+    build_id: str
+    bundle_version: str
+    ui_contract_version: str
+    validation_paths: list[str]
+    visible_identity_fields: list[str]
+    entry_audit_interface: str
+    evidence_pack_required: list[str]
+    validation_commands: list[str]
+    app_bundle_changes_allowed: bool
+    app_bundle_reinstall_allowed: bool
+    launcher_source_changes_allowed: bool
+    launcher_c_or_plist_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    business_ui_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage2_whole_review_contract() -> V024Stage2WholeReviewContract:
+    return V024Stage2WholeReviewContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        stage_id=STAGE_ID,
+        review_id=STAGE_2_REVIEW_ID,
+        reviewed_phase_ids=[PHASE_2_1_ID, PHASE_2_2_ID, PHASE_2_3_ID],
+        phase_2_1_complete=True,
+        phase_2_2_complete=True,
+        phase_2_3_complete=True,
+        stage_2_candidate_complete=True,
+        stage_2_review_complete=True,
+        stage_2_complete=True,
+        stage_3_allowed_without_user_instruction=False,
+        github_main_upload_allowed=False,
+        github_main_uploaded=False,
+        next_stage_requires_user_acceptance=True,
+        max_phases_per_run=1,
+        repair_label=REPAIR_LABEL,
+        build_id=STAGE2_BUILD_ID,
+        bundle_version=STAGE2_BUNDLE_VERSION,
+        ui_contract_version=STAGE2_UI_CONTRACT_VERSION,
+        validation_paths=["localhost", "app", "clear_cache", "new_profile"],
+        visible_identity_fields=["repairLabel", "buildId", "webBundleHash", "uiContractVersion"],
+        entry_audit_interface="window.PFI_READ_STAGE2_ENTRY_AUDIT",
+        evidence_pack_required=[
+            "PFI/reports/pfi_v024/stage_2/whole_stage_review/evidence.json",
+            "PFI/reports/pfi_v024/stage_2/whole_stage_review/terminal.log",
+            "PFI/reports/pfi_v024/stage_2/whole_stage_review/changed_files.txt",
+            "PFI/reports/pfi_v024/stage_2/whole_stage_review/risk_and_rollback.md",
+            "PFI/docs/pfi_v024/STAGE2_WHOLE_STAGE_REVIEW.md",
+        ],
+        validation_commands=[
+            "real browser validation for localhost/app/clear-cache/new-profile",
+            "node --check PFI/web/app/shell.js",
+            "node --check PFI/web/app/version.js",
+            "node --check PFI/web/app/entry_audit.js",
+            "pytest stage2 whole review contract",
+            "pytest v024 regression through stage2 whole review",
+            "old Stage 1 entry signature runtime scan",
+            "git diff --check -- PFI",
+        ],
+        app_bundle_changes_allowed=False,
+        app_bundle_reinstall_allowed=False,
+        launcher_source_changes_allowed=False,
+        launcher_c_or_plist_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        business_ui_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
     )
