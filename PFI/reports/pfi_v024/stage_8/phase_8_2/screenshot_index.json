@@ -1,0 +1,244 @@
+{
+  "schema": "PFIV024Stage8Phase82ScreenshotIndexV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 8",
+  "phase_id": "8.2",
+  "status": "pass",
+  "screenshot_count": 14,
+  "groups": {
+    "app": {
+      "count": 1,
+      "bytes": 302720
+    },
+    "localhost": {
+      "count": 1,
+      "bytes": 302720
+    },
+    "primary_entries": {
+      "count": 10,
+      "bytes": 2937548
+    },
+    "mobile": {
+      "count": 1,
+      "bytes": 92481
+    },
+    "desktop_all_pages": {
+      "count": 1,
+      "bytes": 1159816
+    }
+  },
+  "screenshots": [
+    {
+      "screenshot_id": "app_home",
+      "group": "app",
+      "label": "app",
+      "route_alias": "/home",
+      "workspace": "home",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=app&pfi_app_path=%2FUsers%2Flinzezhang%2FDownloads%2FPFI.app",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/app_home.png",
+      "bytes": 302720,
+      "sha256": "da43e6d4499837a30f84fbf2a4af690f37f167b4fd44f1cf097241fc6c8dbaa4"
+    },
+    {
+      "screenshot_id": "localhost_home",
+      "group": "localhost",
+      "label": "localhost",
+      "route_alias": "/home",
+      "workspace": "home",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/localhost_home.png",
+      "bytes": 302720,
+      "sha256": "da43e6d4499837a30f84fbf2a4af690f37f167b4fd44f1cf097241fc6c8dbaa4"
+    },
+    {
+      "screenshot_id": "primary_01_home",
+      "group": "primary_entries",
+      "label": "首页总览",
+      "route_alias": "/home",
+      "workspace": "home",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_01_home.png",
+      "bytes": 306757,
+      "sha256": "3ddca9894000e19b4b519a5d6e90aa1609887122ab5ee67b538faf3d6c680827"
+    },
+    {
+      "screenshot_id": "primary_02_accounts",
+      "group": "primary_entries",
+      "label": "账户与资产",
+      "route_alias": "/accounts",
+      "workspace": "accounts",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_02_accounts.png",
+      "bytes": 304051,
+      "sha256": "a988ed4c134a713c5794ee77962c35abd7bdfe0af4d020a95f46e2e8d8865cc8"
+    },
+    {
+      "screenshot_id": "primary_03_ledger",
+      "group": "primary_entries",
+      "label": "账本流水",
+      "route_alias": "/ledger",
+      "workspace": "ledger",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_03_ledger.png",
+      "bytes": 282464,
+      "sha256": "a5fb435c9abc6e04f17c51490afad7239e9269a599df95c149a0ada94970de9a"
+    },
+    {
+      "screenshot_id": "primary_04_investment",
+      "group": "primary_entries",
+      "label": "投资管理",
+      "route_alias": "/investment",
+      "workspace": "investment",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_04_investment.png",
+      "bytes": 308126,
+      "sha256": "66a0a686442e7882eb9f35e058871c9c05d6195007678c6228749900a4e9b377"
+    },
+    {
+      "screenshot_id": "primary_05_consumption",
+      "group": "primary_entries",
+      "label": "消费管理",
+      "route_alias": "/consumption",
+      "workspace": "consumption",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_05_consumption.png",
+      "bytes": 298550,
+      "sha256": "0145ca1b1ea4c33db72a539bf6d0693121a6dc0f99a989b90fecf85343b35324"
+    },
+    {
+      "screenshot_id": "primary_06_sources_upload",
+      "group": "primary_entries",
+      "label": "数据源与上传",
+      "route_alias": "/sources-upload",
+      "workspace": "sync",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_06_sources_upload.png",
+      "bytes": 290252,
+      "sha256": "df12f7ff518b560178605e4d5c15d2079f74593d06212ee32573be3d0c4676fc"
+    },
+    {
+      "screenshot_id": "primary_07_review",
+      "group": "primary_entries",
+      "label": "建议与复盘",
+      "route_alias": "/review",
+      "workspace": "recommendations",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_07_review.png",
+      "bytes": 287581,
+      "sha256": "f9071df0ea384729706a6655d5377135e79d944b113fa19b4d5064e6dcd39810"
+    },
+    {
+      "screenshot_id": "primary_08_reports",
+      "group": "primary_entries",
+      "label": "报告与洞察",
+      "route_alias": "/reports",
+      "workspace": "insights",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_08_reports.png",
+      "bytes": 295491,
+      "sha256": "1974ea69f7c4d47cdb4f0140d5746407349aef21ec172bd4a2dd906b75928b8b"
+    },
+    {
+      "screenshot_id": "primary_09_market_research",
+      "group": "primary_entries",
+      "label": "市场与研究",
+      "route_alias": "/market-research",
+      "workspace": "market_research",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_09_market_research.png",
+      "bytes": 281114,
+      "sha256": "085c9c448151224abd36e1e732d99f14bf3f4b114963f7c1838eb263f810f98c"
+    },
+    {
+      "screenshot_id": "primary_10_settings",
+      "group": "primary_entries",
+      "label": "设置",
+      "route_alias": "/settings",
+      "workspace": "settings",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_10_settings.png",
+      "bytes": 283162,
+      "sha256": "2626f66afb5ef6fe9ab7dc6263cfb03049fb2b764c1f16b286857f734f52776c"
+    },
+    {
+      "screenshot_id": "mobile_responsive",
+      "group": "mobile",
+      "label": "移动端响应式",
+      "route_alias": "/home",
+      "workspace": "home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "source": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/mobile_responsive.png",
+      "bytes": 92481,
+      "sha256": "0413edfac8bb34aa24e5fdfc3723cd79ce1d43d3b98b98462d12ca3acd425f00"
+    },
+    {
+      "screenshot_id": "desktop_all_pages",
+      "group": "desktop_all_pages",
+      "label": "10 个一级入口截图索引",
+      "route_alias": "",
+      "workspace": "",
+      "viewport": {
+        "width": 1600,
+        "height": 2400
+      },
+      "source": "generated_contact_sheet_from_phase82_screenshots",
+      "path": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/desktop_all_pages.png",
+      "bytes": 1159816,
+      "sha256": "77a22d666d3e64c25e2c46a4df122f1ce3300951cb1f8df571247933eb437466"
+    }
+  ],
+  "generated_at": "2026-07-01T04:53:43.135Z"
+}

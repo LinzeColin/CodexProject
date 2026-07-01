@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 8 Phase 8.2 - 2026-07-01
+
+- 完成 `Stage 8 / Phase 8.2 - 截图验收`：真实浏览器采集 app home、localhost home、10 个一级入口、移动端响应式和 `desktop_all_pages.png` 截图索引。
+- 新增 `PFI/scripts/validate_v024_stage8_phase82_screenshots.js`、`PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py` 和 `PFI/reports/pfi_v024/stage_8/phase_8_2/` evidence。
+- 截图验收使用当前 checkout 临时 Streamlit 服务，验证存在的 `PFI.app` 指向当前 checkout、app/localhost bundle hash 一致、浅色 UI、移动端水平溢出 `0px`，且 console/page/http errors 为空。
+- 本轮不执行 Phase 8.3 人工验收、Stage 8 whole-stage review、Stage 9 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 8 Phase 8.1 - 2026-07-01
 
 - 完成 `Stage 8 / Phase 8.1 - 自动验收`：用真实浏览器自动验证 10 个一级入口、核心二级页面、入口版本、真实数据状态和报告中心。

@@ -1,0 +1,43 @@
+Stage 8 Phase 8.2 screenshot acceptance validation log
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py -q
+5 failed: missing phase82 contract, screenshot evidence pack, screenshot index, browser validation, and docs.
+
+Generation:
+PLAYWRIGHT_PACKAGE_PATH=... PATH=... node PFI/scripts/validate_v024_stage8_phase82_screenshots.js
+generated_at=2026-07-01T04:53:43.135Z
+service_url=http://127.0.0.1:8601
+service_pid=86181
+service_project_root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI
+browser_validation=pass
+
+GREEN:
+PLAYWRIGHT_PACKAGE_PATH="/Users/linzezhang/Documents/Codex/CodexProject/EEI/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright" PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node PFI/scripts/validate_v024_stage8_phase82_screenshots.js
+status=pass app_entry=pass screenshots=pass screenshot_count=14
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py -q
+5 passed in 0.06s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py -q
+4 passed in 0.06s
+
+node --check PFI/scripts/validate_v024_stage8_phase82_screenshots.js
+pass
+
+node --check PFI/web/app/shell.js
+pass
+
+python -m py_compile PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py
+pass
+
+python3 -m json.tool Phase 8.2 evidence/browser_validation/screenshot_index/app_entry_validation
+pass
+
+git diff --check -- PFI
+pass
+
+changed_files.txt vs HEAD~1 Phase 8.2 full diff with core.quotePath=false
+pass
+
+temporary_service_health_after_run=http_code_000

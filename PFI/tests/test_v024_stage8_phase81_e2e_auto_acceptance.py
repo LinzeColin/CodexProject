@@ -180,8 +180,8 @@ class TestV024Stage8Phase81E2EAutoAcceptance(unittest.TestCase):
         self.assertIn("entry_version_validation.json", doc)
         self.assertIn("data_state_validation.json", doc)
         self.assertIn("report_center_validation.json", doc)
-        self.assertIn("Stage 8 / Phase 8.1 - 自动验收", run_contract)
-        self.assertIn("不执行 Phase 8.2", run_contract)
+        self.assertIn("Stage 8 / Phase 8.2 - 截图验收", run_contract)
+        self.assertIn("不执行 Phase 8.3", run_contract)
         self.assertIn("不执行 Stage 9", run_contract)
         self.assertNotIn("Stage 8 whole-stage review complete", doc)
 
