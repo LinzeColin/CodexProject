@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s13-stage-review"
+version: "0.1.0-s13-github-upload"
 current_stage: "S13"
 current_phase: "S13UPLOAD"
-current_phase_status: "github_upload_pending"
-current_stage_status: "review_passed_upload_ready_local_only"
+current_phase_status: "uploaded_to_github_main"
+current_stage_status: "uploaded_to_github_main"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -346,7 +346,9 @@ upload_policy:
   stage13_review_evidence: "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/stage13_review_report.md"
   stage13_review_manifest: "KMFA/stage_artifacts/S13_STAGE_REVIEW/machine/stage13_review_manifest.json"
   stage13_upload_ready_local_only: true
-  stage13_uploaded_to_github_main: false
-  stage13_blocker: "stage13_github_upload_not_completed"
+  stage13_uploaded_to_github_main: true
+  stage13_upload_evidence: "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md"
+  stage13_upload_manifest: "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/machine/stage13_upload_manifest.json"
+  stage13_blocker: "none_stage13_uploaded"
   next_phase_upload_allowed: false
-  upload_surface: "stage13_review_passed_local_only_next_run_github_upload"
+  upload_surface: "stage13_uploaded_to_github_main_next_run_s14p1"

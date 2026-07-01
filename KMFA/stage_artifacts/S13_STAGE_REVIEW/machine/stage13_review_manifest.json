@@ -5,7 +5,7 @@
   "stage_name": "财务经营报表与回款应收扩展",
   "review_id": "KMFA-S13-STAGE-REVIEW-20260701",
   "generated_at": "2026-07-01T20:00:00+10:00",
-  "source_head": "7543254be83ffba6ec799a33895fb35571537d90",
+  "source_head": "55c96758d7c883d5aa7131189bb77fcf669f0f4b",
   "status": "review_passed_upload_ready_local_only",
   "github_upload_status": "not_pushed",
   "next_gate_id": "KMFA-S13-GITHUB-UPLOAD-GATE",

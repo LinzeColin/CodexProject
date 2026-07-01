@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s13-github-upload - 2026-07-01
+
+- 完成 Stage 13 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `dfdf16c98656c4272fa105027dcbf46ba15d37dd` 复跑 S13-P1/P2/P3 validators、Stage 13 review validator、全量 172 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。
+- 新增 `KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S13_GITHUB_UPLOAD/machine/stage13_upload_manifest.json`。
+- 上传范围只包含 public-safe S13 财务经营报表初稿、回款应收账龄草案、跨表复核证据、Stage 13 review 和 upload proof；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额或 credentials。
+- Stage 13 upload 不实现 S14、lineage full check、正式报告、外部 connector、差异关闭、开票、付款、银行、税务、法务催收或业务 release。
+- 下一轮只能作为新 run work 从 `S14-P1｜资金计划现金贷款` 开始，且必须重新执行 git/root/status 检查并读取 v1.2 task pack / roadmap。
+
 ## 0.1.0-s13-stage-review - 2026-07-01
 
 - 完成 Stage 13 整体复审，本地状态为 `review_passed_upload_ready_local_only`，尚未 push GitHub。
