@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s16-github-upload`
+- version: `0.1.0-s17p1-access-security`
 - current_stage: `S17`
-- current_phase: `S17-P1｜权限与安全｜待开始`
-- status: `stage16_uploaded_to_github_main`
+- current_phase: `S17-P2｜通知｜待开始`
+- status: `s17p1_completed_validated_local_only`
 - production_ready: `false`
-- github_upload_ready: `false_stage16_uploaded_next_s17p1`
+- github_upload_ready: `false_intermediate_phase_s17p1_completed_next_s17p2`
 
 ## 已完成
 
@@ -109,16 +109,17 @@
 - Stage 15 整体复审已本地通过：`KMFA/tools/check_s15_stage_review.py`、`KMFA/tests/test_s15_stage_review.py` 和 `KMFA/stage_artifacts/S15_STAGE_REVIEW/` 已生成；复审复跑 S15-P1/P2/P3 validators、全量 207 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks，未执行 GitHub upload、S16、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终薪酬结论、付款发放或外部接口。
 - Stage 15 final GitHub upload 已完成：`KMFA/stage_artifacts/S15_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S15_GITHUB_UPLOAD/machine/stage15_upload_manifest.json` 已生成，记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
 - S16-P1 外协采购归集已完成本地验证：`KMFA/tools/subcontract_procurement_aggregation.py`、`KMFA/tools/check_s16_p1_subcontract_procurement.py`、`KMFA/tests/test_subcontract_procurement_aggregation.py`、`KMFA/metadata/reports/subcontract_procurement_aggregation_manifest.json`、`KMFA/metadata/reports/subcontract_procurement_source_lanes.jsonl`、`KMFA/metadata/reports/subcontract_project_matches.jsonl`、`KMFA/metadata/reports/subcontract_unallocated_cost_pool.jsonl`、`KMFA/metadata/reports/subcontract_anomaly_candidates.jsonl` 和 `KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/` 已生成；4 条 source lane、5 条项目匹配、2 条未归集成本池、4 条异常候选均为 public-safe 复核证据，报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、采购执行、付款执行、银行操作、Stage 16 review 和 GitHub upload。
+- S17-P1 权限与安全已完成本地验证：`KMFA/tools/access_security_policy.py`、`KMFA/tools/check_s17_p1_access_security.py`、`KMFA/tests/test_access_security_policy.py`、`KMFA/metadata/security/access_security_policy_manifest.json`、`role_permission_matrix.jsonl`、`public_repo_sensitive_data_policy.jsonl`、`audit_log_policy.jsonl` 和 `KMFA/stage_artifacts/S17_P1_access_security/` 已生成；覆盖 4 类角色、15 类敏感材料公开仓库禁入策略和 5 类审计日志动作；未执行 S17-P2、S17-P3、Stage 17 review 或 GitHub upload。
 
 ## 未完成
 
-- S16-P2 项目状态生命周期已完成本地验证：`KMFA/tools/project_status_lifecycle.py`、`KMFA/tools/check_s16_p2_project_status_lifecycle.py`、`KMFA/tests/test_project_status_lifecycle.py`、`KMFA/metadata/reports/project_status_lifecycle_manifest.json`、`project_status_source_lanes.jsonl`、`project_lifecycle_records.jsonl`、`project_lifecycle_exception_items.jsonl`、`project_lifecycle_handoff_guards.jsonl` 和 `KMFA/stage_artifacts/S16_P2_project_status_lifecycle/` 已生成；只输出 public-safe 生命周期状态、异常事项和 handoff guard，不代表现场施工、签字、结算、开票、催收、正式经营决策或业务系统可发布。
-- S16-P3 客户经营分析已完成本地验证：`KMFA/tools/customer_business_analysis.py`、`KMFA/tools/check_s16_p3_customer_business_analysis.py`、`KMFA/tests/test_customer_business_analysis.py`、`KMFA/metadata/reports/customer_business_analysis_manifest.json`、`customer_analysis_source_lanes.jsonl`、`customer_operating_summaries.jsonl`、`customer_analysis_exception_items.jsonl` 和 `KMFA/stage_artifacts/S16_P3_customer_business_analysis/` 已生成；只输出 public-safe 客户经营摘要和异常复核事项，不代表正式经营决策、自动催收、客户联系、法律决策、开票、付款、银行或外部接口。
-- Stage 16 整体复审和 final GitHub upload 已完成；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S16-P1/S16-P2/S16-P3 仅为 public-safe 外协采购付款归集、项目状态生命周期、客户经营分析和人工复核证据，不代表采购执行、付款执行、银行操作、供应商结算、现场施工、签字、开票、催收、法律决策、正式经营决策或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- S17-P2 通知尚未开始；S17-P1 只定义 notification audit log policy，不发送邮件、短信或完整报告正文。
+- S17-P3 运维与 SOP 尚未开始；尚未建立导入、复核、发布、回滚操作手册、财务 SOP、交接材料、错误处理和备份恢复演练。
+- Stage 17 整体复审和 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-16 review/upload 均已完成；下一步只能执行 S17-P1 权限与安全，不能直接进入 S17-P2/S17-P3、lineage full check、正式报告、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S17-P1 已完成本地权限、安全和审计策略；下一步只能执行 S17-P2 通知，不能直接进入 S17-P3、Stage 17 review、GitHub upload、lineage full check、正式报告、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

@@ -27,6 +27,8 @@ assumptions:
     evidence_refs:
       - "KMFA/docs/governance/METADATA_PROTOCOL.md"
       - "KMFA/metadata/protocol/metadata_protocol.yaml"
+      - "KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl"
+      - "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
   - assumption_id: "ASM-KMFA-005"
     statement: "raw manifest、派生数据版本和前端控制事件必须 append-only；纠错、失效、重跑、处理意见只能追加事件，不能改写原始文件、原始抽取值或 raw 层。"
     status: "active"
@@ -86,11 +88,17 @@ models:
       - "ASM-KMFA-007"
     formula_ids:
       - "FORM-KMFA-GOV-001"
+      - "FORM-KMFA-S17P1-ACCESS-SECURITY-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
       - "PARAM-KMFA-003"
       - "PARAM-KMFA-004"
+      - "PARAM-KMFA-593"
+      - "PARAM-KMFA-594"
+      - "PARAM-KMFA-595"
+      - "PARAM-KMFA-596"
+      - "PARAM-KMFA-597"
     inputs:
       - "user objective"
       - "KMFA TaskPack and Roadmap"
@@ -100,17 +108,23 @@ models:
       - "stage upload gate"
       - "privacy stop condition"
       - "v1.2 baseline gate"
+      - "S17-P1 access security policy gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
+      - "KMFA/tools/access_security_policy.py"
+      - "KMFA/tools/check_s17_p1_access_security.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p1_access_security.py"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
       - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
       - "KMFA/stage_artifacts/S01_REBASE_V12_FULL_TASKPACK/human/stage1_v12_replay_report.md"
+      - "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S17_P1_access_security/machine/s17_p1_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"

@@ -1854,3 +1854,105 @@ tasks:
     rollback: "Remove S16-P3 exception output and revert S16-P3 governance rows."
     target_version: "0.1.0-s16p3-customer-business-analysis"
     completed_version: "0.1.0-s16p3-customer-business-analysis"
+  - task_id: "S17PAT01"
+    phase: "S17PA"
+    objective: "角色权限覆盖管理层、财务、复核、只读。"
+    scope:
+      - "management role"
+      - "finance role"
+      - "reviewer role"
+      - "readonly role"
+      - "least privilege"
+    non_scope:
+      - "business execution"
+      - "quality gate bypass"
+      - "raw business material public access"
+      - "S17-P2 notification delivery"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "KMFA-S16-GITHUB-UPLOAD-20260701"
+    required_files:
+      - "KMFA/tools/access_security_policy.py"
+      - "KMFA/metadata/security/role_permission_matrix.jsonl"
+    acceptance_ids:
+      - "ACC-ACCESS-SECURITY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_access_security_policy.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p1_access_security.py"
+    test_results:
+      - "PASS: roles=4 and all business execution and quality bypass gates remain false."
+    evidence_refs:
+      - "KMFA/metadata/security/role_permission_matrix.jsonl"
+      - "KMFA/stage_artifacts/S17_P1_access_security/human/test_results.md"
+    risk: "Role permissions cannot be read as live identity provider integration or business execution authority."
+    rollback: "Remove S17-P1 access security outputs and revert S17-P1 governance rows before Stage 17 review."
+    target_version: "0.1.0-s17p1-access-security"
+    completed_version: "0.1.0-s17p1-access-security"
+  - task_id: "S17PAT02"
+    phase: "S17PA"
+    objective: "敏感数据不提交公开仓库。"
+    scope:
+      - "public repository sensitive material deny policy"
+      - "private storage or hash/ref-only metadata rule"
+      - "raw/private scan governance"
+    non_scope:
+      - "raw business data commit"
+      - "private spreadsheet or document commit"
+      - "credentials"
+      - "field value plaintext"
+    status: "completed"
+    dependencies:
+      - "S17PAT01"
+    required_files:
+      - "KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl"
+      - "KMFA/tools/check_s17_p1_access_security.py"
+    acceptance_ids:
+      - "ACC-ACCESS-SECURITY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_access_security_policy.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p1_access_security.py"
+    test_results:
+      - "PASS: sensitive_policy_categories=15 and public_repo_allowed=false for every category."
+    evidence_refs:
+      - "KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl"
+      - "KMFA/stage_artifacts/S17_P1_access_security/human/test_results.md"
+    risk: "The policy proves public repository rules only and does not move private material into GitHub."
+    rollback: "Remove S17-P1 sensitive policy output and revert S17-P1 governance rows."
+    target_version: "0.1.0-s17p1-access-security"
+    completed_version: "0.1.0-s17p1-access-security"
+  - task_id: "S17PAT03"
+    phase: "S17PA"
+    objective: "日志记录导入、处理、报告、导出、通知。"
+    scope:
+      - "import audit policy"
+      - "processing audit policy"
+      - "report audit policy"
+      - "export audit policy"
+      - "notification audit policy"
+    non_scope:
+      - "notification delivery"
+      - "full report email body"
+      - "S17-P3 SOP"
+      - "Stage 17 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S17PAT02"
+    required_files:
+      - "KMFA/metadata/security/audit_log_policy.jsonl"
+      - "KMFA/tools/check_s17_p1_access_security.py"
+    acceptance_ids:
+      - "ACC-ACCESS-SECURITY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_access_security_policy.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p1_access_security.py"
+    test_results:
+      - "PASS: audit_actions=5 and notification delivery remains log policy only."
+    evidence_refs:
+      - "KMFA/metadata/security/audit_log_policy.jsonl"
+      - "KMFA/stage_artifacts/S17_P1_access_security/human/test_results.md"
+    risk: "Notification audit policy cannot be treated as S17-P2 delivery implementation."
+    rollback: "Remove S17-P1 audit policy output and revert S17-P1 governance rows."
+    target_version: "0.1.0-s17p1-access-security"
+    completed_version: "0.1.0-s17p1-access-security"
