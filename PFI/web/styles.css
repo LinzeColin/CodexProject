@@ -253,6 +253,7 @@ body[data-pfi-version="v0.2.3"] .brand-mark {
 
 body[data-pfi-version="v0.2.3"] .workspace-header,
 body[data-pfi-version="v0.2.3"] .page-tabs-panel,
+body[data-pfi-version="v0.2.3"] .home-question-grid,
 body[data-pfi-version="v0.2.3"] .workflow-runtime,
 body[data-pfi-version="v0.2.3"] .function-panel,
 body[data-pfi-version="v0.2.3"] .stage4-subpage {
@@ -263,6 +264,7 @@ body[data-pfi-version="v0.2.3"] .stage4-subpage {
 }
 
 body[data-pfi-version="v0.2.3"] .metric-tile,
+body[data-pfi-version="v0.2.3"] .home-question-card,
 body[data-pfi-version="v0.2.3"] .workflow-card,
 body[data-pfi-version="v0.2.3"] .stage4-section,
 body[data-pfi-version="v0.2.3"] .rail-card,
@@ -275,11 +277,47 @@ body[data-pfi-version="v0.2.3"] .data-source-card {
 }
 
 body[data-pfi-version="v0.2.3"] .metric-tile strong,
+body[data-pfi-version="v0.2.3"] .home-question-card strong,
 body[data-pfi-version="v0.2.3"] .workflow-card strong,
 body[data-pfi-version="v0.2.3"] .stage4-section h3 {
   color: var(--pfi-v023-text);
   letter-spacing: 0;
   overflow-wrap: anywhere;
+}
+
+body[data-pfi-version="v0.2.3"] .home-question-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+}
+
+body[data-pfi-version="v0.2.3"] .home-question-card {
+  display: grid;
+  gap: 8px;
+  min-height: 132px;
+  padding: 16px;
+}
+
+body[data-pfi-version="v0.2.3"] .home-question-card span {
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pfi-v023-accent-blue) 10%, #ffffff);
+  color: var(--pfi-v023-accent-blue);
+  font-size: 0.78rem;
+  font-weight: 780;
+}
+
+body[data-pfi-version="v0.2.3"] .home-question-card p {
+  margin: 0;
+  color: var(--pfi-v023-muted);
+  line-height: 1.55;
+}
+
+body[data-pfi-version="v0.2.3"] .home-question-card code {
+  color: var(--pfi-v023-text);
+  word-break: break-word;
 }
 
 body[data-pfi-version="v0.2.3"] .compact-table {
@@ -370,6 +408,7 @@ body[data-pfi-version="v0.2.3"] .v023-chart-empty::before {
   body[data-pfi-version="v0.2.3"] .workspace,
   body[data-pfi-version="v0.2.3"] .workspace-header,
   body[data-pfi-version="v0.2.3"] .metric-grid,
+  body[data-pfi-version="v0.2.3"] .home-question-grid,
   body[data-pfi-version="v0.2.3"] .workflow-grid,
   body[data-pfi-version="v0.2.3"] .stage4-section-grid {
     grid-template-columns: 1fr;

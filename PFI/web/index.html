@@ -127,7 +127,7 @@
         <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="10" data-workspace="settings" data-route-alias="/settings" data-nav-icon="⚙" data-nav-hint="反馈 · 参数 · 数据管理">设置</button>
       </nav>
 
-      <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home">
+      <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home" data-v024-stage5-home="phase_5_1">
         <section class="workspace-header" aria-labelledby="workspace-title">
           <div>
             <p class="workspace-kicker" id="workspace-kicker">今日总览</p>
@@ -171,6 +171,39 @@
             <span>数据源状态</span>
             <strong data-card-value>等待上传</strong>
             <small data-card-detail>进入数据源与上传处理</small>
+          </article>
+        </section>
+
+        <section class="home-question-grid" data-v024-stage5-home="phase_5_1" data-home-question-grid aria-label="首页六个核心问题">
+          <article class="home-question-card">
+            <span>钱</span>
+            <strong>现在能确认多少钱</strong>
+            <p>只显示真实 read model 已确认的金额；阻断指标保留中文状态。</p>
+          </article>
+          <article class="home-question-card">
+            <span>位置</span>
+            <strong>钱和状态来自哪里</strong>
+            <p>按账户、持仓、流水和报告来源展示路径，不补写未知金额。</p>
+          </article>
+          <article class="home-question-card">
+            <span>变化</span>
+            <strong>最近真实记录发生了什么</strong>
+            <p>优先展示真实记录范围、更新时间和报告状态。</p>
+          </article>
+          <article class="home-question-card">
+            <span>问题</span>
+            <strong>哪些指标被阻断</strong>
+            <p>把来源缺失、路径、解析、权限、过期和计算状态直接暴露。</p>
+          </article>
+          <article class="home-question-card">
+            <span>下一步</span>
+            <strong>我现在该处理什么</strong>
+            <p>由数据状态生成可跳转任务，进入上传、来源、账本或设置页面。</p>
+          </article>
+          <article class="home-question-card" data-home-state-card>
+            <span>依据</span>
+            <strong>这些判断来自哪些真实来源</strong>
+            <p>读取 <code>pfi-read-model-status</code>、记录数、日期和 hash。</p>
           </article>
         </section>
 
@@ -249,16 +282,16 @@
         <section class="function-detail" data-function-detail hidden aria-labelledby="function-detail-title">
           <div class="function-detail-head">
             <div>
-              <p class="panel-kicker">功能面板</p>
-              <h2 id="function-detail-title" data-function-title>PFI 功能入口</h2>
-              <p data-function-purpose>选择一个功能后，这里会显示中文操作说明和下一步。</p>
+              <p class="panel-kicker">任务流程</p>
+              <h2 id="function-detail-title" data-function-title>PFI 处理入口</h2>
+              <p data-function-purpose>选择一个任务后，这里会显示中文操作说明和下一步。</p>
             </div>
             <span class="status-pill status-ready" data-function-status>可用</span>
           </div>
           <dl class="function-meta" data-function-meta>
             <div>
               <dt>核心操作</dt>
-              <dd data-function-primary-action>打开功能</dd>
+              <dd data-function-primary-action>打开任务</dd>
             </div>
             <div>
               <dt>工作区</dt>
@@ -270,7 +303,7 @@
             <div class="function-runner-head">
               <div>
                 <p class="panel-kicker">操作区</p>
-                <h3 id="function-runner-title" data-function-run-title>功能已准备</h3>
+                <h3 id="function-runner-title" data-function-run-title>任务已准备</h3>
                 <p data-function-run-summary>点击主操作后，这里会显示可执行步骤和当前状态。</p>
               </div>
               <span class="status-pill status-ready" data-function-run-state>已进入</span>
@@ -279,7 +312,7 @@
             <div class="function-run-output" data-function-run-output></div>
           </section>
           <div class="function-actions">
-            <button class="primary-action" type="button" data-function-action>进入操作面板</button>
+            <button class="primary-action" type="button" data-function-action>打开处理流程</button>
             <a class="secondary-link" href="?pfi_legacy=1&amp;view=single" target="_blank" rel="noreferrer" data-function-legacy-link hidden>兼容详情页</a>
             <button type="button" class="secondary-action" data-function-close>返回工作区</button>
           </div>
@@ -741,6 +774,7 @@
     <script src="./app/navigation.js"></script>
     <script src="./app/routes.js"></script>
     <script src="./app/data_state.js"></script>
+    <script src="./app/pages/home.js"></script>
     <script src="./app/shell.js"></script>
   </body>
 </html>
