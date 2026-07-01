@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION"
+    phase: "S2PL"
+    objective: "Bind the already-pushed owner option-A keep-disabled response to current mainline evidence without authorizing or enabling runtime production."
+    scope: "Mainline attestation manifest, phase record, CURRENT/VERSION_MATRIX state, owner-facing status, three-base summaries, traceability, and regression tests."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, V7.1 historical baseline mutation, or cross-project cleanup."
+    status: "completed"
+    dependencies: ["S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED-20260701.json"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTATION.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD current-state and user-center unittest", "focused governance current-state and user-center tests", "post-run safety state checks"]
+    test_results: ["TDD red: owner option-A mainline attestation manifest missing and REQ-085 traceability row absent", "TDD green target: binding_status=commit_bound", "result_commit=90b297a55451b691c3e0270cfaa64e5d58c5a519", "result_tree_hash=d92ec4a0cd884641263c7979f7a5c625229ae83c", "owner_selected_option=A", "decision=keep_daily_operation_disabled_no_persistent_authorization", "persistent_authorization_artifact_absent=true", "daily_operation_enabled=false", "real_smtp_send_enabled=false", "scheduler_enabled=false", "release_packaging_enabled=false", "production_restore_enabled=false"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTATION.md", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED-20260701.json", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"]
+    risk: "Future agents could treat the option-A decision as stale or pre-mainline; this task binds it to current main while preserving the missing persistent authorization blocker."
+    rollback: "Revert the mainline attestation manifest, phase record, current-state sync, owner-facing notes, event entries, traceability row, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED"
     phase: "S2PL"
     objective: "Record the owner option-A response after the persistent DAILY_OPERATION authorization request was bound to mainline: keep DAILY_OPERATION disabled and do not create persistent authorization."
