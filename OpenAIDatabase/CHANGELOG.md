@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 6.2 Inspector and Proposal
+
+- Added the Inspector explanation panel with human-readable summary, model
+  formulas, parameters, redacted evidence and explicit no-raw default marker.
+- Moved agent-structured memory/meta fields and low-sensitivity database
+  summary behind a default-closed Debug / Agent Inspector toggle.
+- Added proposal-only JSON preview and safety strip for writeback; the frontend
+  keeps `direct_frontend_mutation_of_active_memory=false` and requires
+  agent/human apply.
+- Added `validate:inspector-proposal` and extended visual acceptance with
+  `stage6_2_inspector_proposal_ready`.
+
+No Stage 6 whole-stage review, agent apply CLI, raw/private data access, direct
+active memory writeback, Cloudflare live deploy, GitHub main upload, or external
+account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 6.1 Shared State Store
 
 - Added a typed shared-state reducer for Memory Atlas selection, filter, time

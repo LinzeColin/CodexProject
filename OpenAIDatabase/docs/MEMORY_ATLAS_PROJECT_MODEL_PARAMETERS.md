@@ -434,3 +434,59 @@
 
 - 每次新增视觉要求都要同步到 audit，防止下一轮退化。
 - 每次新增数据源都要先增加 registry/source contract，再增加 UI 选择。
+
+## 11. Inspector 解释与 Proposal 安全模型
+
+模型假设：
+
+- Inspector 默认层应该先帮助人理解“为什么这条记忆重要、怎么算出来、有哪些脱敏证据”，而不是暴露 agent 内部字段。
+- 写回长期记忆是高风险动作；前端只能生成 proposal JSON，不能直接修改 active memory。
+- Debug 信息有用，但默认展示会增加认知负担和误用风险，因此必须手动开启。
+
+输入：
+
+- `AtlasNode`
+- `edgeCount`
+- `SharedAtlasState`
+- `source_contract.writeback_policy`
+- 用户在写回面板输入的 `action`、`proposed_text`、`reason`
+
+处理方法：
+
+- 默认解释面板只读取派生字段：层级、分类、日期、时效、连接数、来源、ROI、共享焦点。
+- `node.statement` 低敏数据库摘要只放入 Debug / Agent Inspector，默认关闭。
+- proposal preview 和保存逻辑共用 `buildWritebackProposalDraft`，避免 preview 与真实本地提案结构漂移。
+- 保存提案只写入浏览器本地 proposal queue，不写 active memory 文件。
+
+参数与公式：
+
+- `memory_weight = tier_score * 0.5 + importance_score * 0.3 + confidence_score * 0.2`
+- `TIER_WEIGHT = {"核心画像": 1.0, "一般": 0.66, "临时": 0.28}`
+- `IMPORTANCE_WEIGHT = {"高": 1.0, "中": 0.62, "低": 0.32}`
+- `CONFIDENCE_WEIGHT = {"high": 1.0, "medium": 0.72, "low": 0.45}`
+- `decision_impact = 1` 当 `category == "decision"`，否则 `0`
+- `sensitivity_penalty = 0.35` 当 `visual.sensitive == true` 或分类属于 `temporary_or_sensitive` / `security_boundary`，否则 `0.1`
+- `leverage_score = max(0, memory_weight + decision_impact * 0.15 - sensitivity_penalty)`
+- proposal safety 必须保持：
+  - `direct_frontend_mutation_of_active_memory = false`
+  - `requires_conflict_check = true`
+  - `requires_agent_or_human_apply = true`
+
+输出：
+
+- Inspector explanation panel：人类解释、公式、参数、脱敏证据、安全说明。
+- Debug / Agent Inspector：agent memory/meta 字段、低敏数据库摘要、结构化字段。
+- Writeback proposal JSON：`schema_version`、`proposal_id`、`target_ref`、`payload`、`diff`、`version`、`review`、`safety`。
+
+失败条件：
+
+- 默认 Inspector 展示 raw transcript、secret、cookie、session 或本地绝对路径。
+- Debug / Agent Inspector 默认打开。
+- 前端直接修改 active memory 或 proposal safety 字段不是 fail-closed。
+- proposal preview 和保存的 proposal 结构不一致。
+
+迭代规则：
+
+- Stage 6 整体复审必须同时跑 `validate:shared-state` 和 `validate:inspector-proposal`。
+- 后续 agent apply CLI 必须重新读库、做冲突检查、写 history、生成 git 回滚点；不能复用前端状态直接写库。
+- 如果默认解释面板过密，优先折叠公式细节，不把 raw 摘要移回默认层。

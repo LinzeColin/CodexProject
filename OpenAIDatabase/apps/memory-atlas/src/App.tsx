@@ -404,6 +404,38 @@ interface WritebackProposal {
   };
 }
 
+interface InspectorFormulaRow {
+  label: string;
+  value: string;
+  formula: string;
+  parameters: string;
+}
+
+interface InspectorEvidenceRow {
+  label: string;
+  value: string;
+}
+
+interface InspectorExplanation {
+  summary: string;
+  formulas: InspectorFormulaRow[];
+  evidence: InspectorEvidenceRow[];
+  safetyNotes: string[];
+}
+
+interface WritebackProposalDraftInput {
+  policy: MemoryAtlas["source_contract"]["writeback_policy"];
+  node: AtlasNode;
+  action: WritebackAction;
+  proposedText: string;
+  reason: string;
+  baseText: string;
+  latest: WritebackProposal | null;
+  proposalCount: number;
+  now: string;
+  proposalIdPrefix: "atlas" | "atlas_preview";
+}
+
 interface HeatStop {
   stop: number;
   rgb: readonly [number, number, number];
@@ -2787,8 +2819,12 @@ function NodeInspector({
   edgeCount: number;
   sharedState: SharedAtlasState;
 }) {
+  const [debugOpen, setDebugOpen] = useState(false);
   const memoryNodes = useMemo(() => getMemoryNodes(atlas), [atlas]);
   const overviewNodes = memoryNodes.length ? memoryNodes : atlas.nodes;
+  useEffect(() => {
+    setDebugOpen(false);
+  }, [node?.id]);
   if (!node) {
     return (
       <aside
@@ -2804,6 +2840,7 @@ function NodeInspector({
     );
   }
   const humanNode = buildHumanNodeSummary(node, edgeCount);
+  const explanation = buildInspectorExplanation(node, edgeCount, sharedState);
   return (
     <aside
       className="inspector"
@@ -2811,6 +2848,8 @@ function NodeInspector({
       data-shared-focus-node={sharedState.focus.inspector.nodeId ?? ""}
       data-shared-cluster={sharedState.focus.inspector.clusterId ?? ""}
       data-shared-record={sharedState.focus.inspector.recordId ?? ""}
+      data-debug-lite={debugOpen ? "open" : "closed"}
+      data-default-raw-summary="hidden"
     >
       <HumanOverviewPanel nodes={overviewNodes} deltaStats={buildDeltaStats(atlas, memoryNodes)} compact />
       <p className="eyebrow">{humanNode.scope}</p>
@@ -2846,42 +2885,93 @@ function NodeInspector({
           </div>
         </div>
       </section>
+      <InspectorExplanationPanel explanation={explanation} />
       <dl className="human-node-status">
         {humanNode.statusRows.map((row, index) => (
           <div key={`status-${index}-${row.label}`}><dt>{row.label}</dt><dd>{row.value}</dd></div>
         ))}
       </dl>
-      <details className="agent-structured-fields">
-        <summary>Agent 结构化字段 / 原始摘要</summary>
-        <div className="agent-field-grid">
-          <section>
-            <strong>Memory（给 ChatGPT / Codex Personalization）</strong>
-            <p>{humanNode.agentMemory}</p>
-          </section>
-          <section>
-            <strong>Meta Data（给 ChatGPT / Codex Agents.md）</strong>
-            <p>{humanNode.agentMeta}</p>
-          </section>
-        </div>
-        {node.statement ? (
-          <div className="raw-summary-inline">
-            <strong>低敏数据库摘要</strong>
-            <p>{node.statement}</p>
+      <button
+        className="inspector-debug-toggle"
+        type="button"
+        aria-expanded={debugOpen}
+        aria-controls="inspector-debug-panel"
+        onClick={() => setDebugOpen((open) => !open)}
+      >
+        <Search size={15} />
+        {debugOpen ? "隐藏 Debug" : "显示 Debug"}
+      </button>
+      {debugOpen ? (
+        <section id="inspector-debug-panel" className="agent-structured-fields inspector-debug-panel" data-debug-panel="true">
+          <div className="panel-title-row">
+            <h3>Debug / Agent Inspector</h3>
+            <span>默认隐藏</span>
           </div>
-        ) : null}
-        <dl>
-          <div><dt>类型</dt><dd>{translateKind(node.kind)}</dd></div>
-          <div><dt>连接数</dt><dd>{edgeCount.toLocaleString()}</dd></div>
-          <div><dt>日期</dt><dd>{node.date || "未知"}</dd></div>
-          <div><dt>分类</dt><dd>{node.category || "未知"}</dd></div>
-          <div><dt>重要性</dt><dd>{node.importance || "未知"}</dd></div>
-          <div><dt>有效期</dt><dd>{node.validity || "未知"}</dd></div>
-          <div><dt>置信度</dt><dd>{node.confidence || "未知"}</dd></div>
-          <div><dt>ROI</dt><dd>{formatScore(node.metrics?.roi?.leverage_score)}</dd></div>
-        </dl>
-      </details>
+          <div className="agent-field-grid">
+            <section>
+              <strong>Memory（给 ChatGPT / Codex Personalization）</strong>
+              <p>{humanNode.agentMemory}</p>
+            </section>
+            <section>
+              <strong>Meta Data（给 ChatGPT / Codex Agents.md）</strong>
+              <p>{humanNode.agentMeta}</p>
+            </section>
+          </div>
+          {node.statement ? (
+            <div className="raw-summary-inline">
+              <strong>低敏数据库摘要</strong>
+              <p>{node.statement}</p>
+            </div>
+          ) : null}
+          <dl>
+            <div><dt>类型</dt><dd>{translateKind(node.kind)}</dd></div>
+            <div><dt>连接数</dt><dd>{edgeCount.toLocaleString()}</dd></div>
+            <div><dt>日期</dt><dd>{node.date || "未知"}</dd></div>
+            <div><dt>分类</dt><dd>{node.category || "未知"}</dd></div>
+            <div><dt>重要性</dt><dd>{node.importance || "未知"}</dd></div>
+            <div><dt>有效期</dt><dd>{node.validity || "未知"}</dd></div>
+            <div><dt>置信度</dt><dd>{node.confidence || "未知"}</dd></div>
+            <div><dt>ROI</dt><dd>{formatScore(node.metrics?.roi?.leverage_score)}</dd></div>
+          </dl>
+        </section>
+      ) : null}
       <WritebackProposalPanel atlas={atlas} node={node} />
     </aside>
+  );
+}
+
+function InspectorExplanationPanel({ explanation }: { explanation: InspectorExplanation }) {
+  return (
+    <section className="inspector-explanation-panel" data-raw-display="false" aria-label="解释面板">
+      <div className="panel-title-row">
+        <h3>解释面板</h3>
+        <span>公式 / 证据</span>
+      </div>
+      <p>{explanation.summary}</p>
+      <div className="inspector-formula-grid" aria-label="公式与参数">
+        {explanation.formulas.map((row) => (
+          <article key={row.label} className="inspector-formula-card">
+            <span>{row.label}</span>
+            <strong>{row.value}</strong>
+            <code>{row.formula}</code>
+            <small>{row.parameters}</small>
+          </article>
+        ))}
+      </div>
+      <dl className="inspector-evidence-grid" aria-label="脱敏证据摘要">
+        {explanation.evidence.map((row) => (
+          <div key={row.label}>
+            <dt>{row.label}</dt>
+            <dd>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <ul className="inspector-safety-list" aria-label="安全边界">
+        {explanation.safetyNotes.map((note) => (
+          <li key={note}>{note}</li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -2971,6 +3061,22 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
   const baseText = node.statement ?? node.label;
   const draftDiff = useMemo(() => buildProposalDiff(baseText, draftText), [baseText, draftText]);
   const versionChain = useMemo(() => [...nodeProposals].reverse().slice(0, 6), [nodeProposals]);
+  const proposalPreview = useMemo(
+    () => buildWritebackProposalDraft({
+      policy,
+      node,
+      action,
+      proposedText: draftText,
+      reason,
+      baseText,
+      latest,
+      proposalCount: nodeProposals.length,
+      now: new Date().toISOString(),
+      proposalIdPrefix: "atlas_preview",
+    }),
+    [action, baseText, draftText, latest, node, nodeProposals.length, policy, reason],
+  );
+  const proposalJsonPreview = useMemo(() => JSON.stringify(proposalPreview, null, 2), [proposalPreview]);
 
   useEffect(() => {
     setDraftText(node.statement ?? node.label);
@@ -2987,45 +3093,18 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
     const text = draftText.trim();
     if (!editable || !text) return;
     const now = new Date().toISOString();
-    const proposal: WritebackProposal = {
-      schema_version: policy.proposal_schema_version || "memory_change_proposal.v1",
-      proposal_id: `atlas_${compactTimestamp(now)}_${stableHash(`${node.id}:${text}:${nodeProposals.length + 1}`)}`,
-      created_at: now,
-      status: "draft_pending_agent_apply",
-      target_ref: {
-        node_id: node.id,
-        memory_id: node.memory_id ?? node.id,
-        label: node.label,
-        source_file: node.source_label ?? node.data_source ?? "visual_snapshot",
-        base_date: node.date ?? "",
-      },
+    const proposal = buildWritebackProposalDraft({
+      policy,
+      node,
       action,
-      payload: {
-        proposed_text: text,
-        reason: reason.trim(),
-        current_tier: normalizeMemoryTier(node.memory_tier),
-        current_category: node.category ?? "",
-      },
-      diff: buildProposalDiff(baseText, text),
-      version: {
-        revision: (latest?.version.revision ?? 0) + 1,
-        parent_proposal_id: latest?.proposal_id ?? null,
-        rollback_unit: policy.rollback_unit || "per_memory_version",
-        supersedes_proposal_id: null,
-      },
-      review: buildProposalReview(action, node, reason.trim()),
-      safety: {
-        direct_frontend_mutation_of_active_memory: false,
-        requires_conflict_check: true,
-        requires_agent_or_human_apply: true,
-        forbidden_payload: policy.frontend_payload_contract?.forbidden_payload ?? [
-          "plaintext secrets",
-          "raw conversation text",
-          "record hashes",
-          "local absolute paths",
-        ],
-      },
-    };
+      proposedText: text,
+      reason,
+      baseText,
+      latest,
+      proposalCount: nodeProposals.length,
+      now,
+      proposalIdPrefix: "atlas",
+    });
     persist([...proposals, proposal]);
   }
 
@@ -3115,7 +3194,13 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
   }
 
   return (
-    <section className="writeback-panel" aria-label="长期记忆写回提案">
+    <section
+      className="writeback-panel"
+      aria-label="长期记忆写回提案"
+      data-proposal-only="true"
+      data-active-memory-mutation="false"
+      data-proposal-schema={policy.proposal_schema_version || "memory_change_proposal.v1"}
+    >
       <div className="panel-title-row">
         <h3>写回提案</h3>
         <span>{nodeProposals.length} 版</span>
@@ -3123,6 +3208,11 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
       <p>
         前端只生成版本化提案；不直接修改主动记忆库。后续受控代理写库前必须重新读库、做冲突检查并生成可回滚历史。
       </p>
+      <div className="writeback-safety-strip" aria-label="proposal-only safety contract">
+        <span>只生成提案 JSON</span>
+        <span>不直接改主动记忆</span>
+        <span>需代理/人工应用</span>
+      </div>
       <div className="writeback-diff-grid" aria-label="当前草稿差异">
         <div><span>长度变化</span><strong>{draftDiff.length_delta > 0 ? "+" : ""}{draftDiff.length_delta}</strong></div>
         <div><span>变更片段</span><strong>{draftDiff.changed_segments}</strong></div>
@@ -3158,7 +3248,7 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
       <div className="writeback-actions">
         <button type="button" onClick={saveProposal} disabled={!editable || !draftText.trim()}>
           <Save size={15} />
-          保存新版
+          保存 JSON 提案
         </button>
         <button type="button" onClick={exportLatest} disabled={!latest}>
           <Download size={15} />
@@ -3177,6 +3267,13 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
           生成回滚提案
         </button>
       </div>
+      <details className="writeback-json-preview">
+        <summary>
+          <GitBranch size={14} />
+          JSON 提案预览
+        </summary>
+        <pre>{proposalJsonPreview}</pre>
+      </details>
       {versionChain.length ? (
         <div className="writeback-version-chain" aria-label="写回提案版本链">
           {versionChain.map((proposal) => (
@@ -5972,6 +6069,129 @@ function contributionTitle(bucket: PeriodCounts) {
 
 function scaleLabel(scale: ContributionScale): string {
   return { day: "日", week: "周", month: "月", year: "年" }[scale];
+}
+
+function buildInspectorExplanation(node: AtlasNode, edgeCount: number, sharedState: SharedAtlasState): InspectorExplanation {
+  const tierScore = modelTierScore(node.memory_tier);
+  const importanceScore = modelImportanceScore(node.importance);
+  const confidenceScore = modelConfidenceScore(node.confidence);
+  const derivedWeight = node.metrics?.weight_score;
+  const calculatedWeight = tierScore * 0.5 + importanceScore * 0.3 + confidenceScore * 0.2;
+  const displayedWeight = typeof derivedWeight === "number" ? derivedWeight : calculatedWeight;
+  const decisionImpact = node.category === "decision" ? 1 : 0;
+  const sensitivityPenalty = modelSensitivityPenalty(node);
+  const displayedLeverage = node.metrics?.roi?.leverage_score;
+  const calculatedLeverage = Math.max(0, displayedWeight + decisionImpact * 0.15 - sensitivityPenalty);
+  const leverageValue = typeof displayedLeverage === "number" ? displayedLeverage : calculatedLeverage;
+  const theme = humanThemeLabel(node);
+  const focusNode = sharedState.focus.inspector.nodeId || sharedState.selection.nodeId || node.id;
+  return {
+    summary: `这条记忆当前作为「${humanCategoryLabel(node.category)}」解释：默认面板只使用派生层级、分类、日期、连接数、ROI 和共享焦点状态，不展示 raw transcript。`,
+    formulas: [
+      {
+        label: "记忆权重",
+        value: formatScore(displayedWeight),
+        formula: "memory_weight = tier*0.5 + importance*0.3 + confidence*0.2",
+        parameters: `tier=${tierScore.toFixed(2)}, importance=${importanceScore.toFixed(2)}, confidence=${confidenceScore.toFixed(2)}`,
+      },
+      {
+        label: "ROI Leverage",
+        value: `${formatScore(leverageValue)} · ${translateAction(node.metrics?.roi?.recommended_action)}`,
+        formula: "leverage_score = max(0, memory_weight + decision_impact*0.15 - sensitivity_penalty)",
+        parameters: `decision_impact=${decisionImpact}, sensitivity_penalty=${sensitivityPenalty.toFixed(2)}, stale=${translateStaleness(node.metrics?.roi?.staleness_status)}`,
+      },
+      {
+        label: "共享焦点",
+        value: `${sharedState.sync.updatedBy} · r${sharedState.sync.revision}`,
+        formula: "sharedAtlasReducer -> focus(inspector/home/galaxy/timeline/roi)",
+        parameters: `node=${focusNode}, cluster=${sharedState.focus.inspector.clusterId ?? "none"}`,
+      },
+    ],
+    evidence: [
+      { label: "主题", value: theme },
+      { label: "层级 / 分类", value: `${normalizeMemoryTier(node.memory_tier) || "未知"} / ${humanCategoryLabel(node.category)}` },
+      { label: "日期 / 时效", value: `${node.date || "未知"} / ${node.validity || translateStaleness(node.metrics?.roi?.staleness_status)}` },
+      { label: "连接数", value: edgeCount.toLocaleString() },
+      { label: "来源", value: node.source_label ?? node.data_source ?? "脱敏派生快照" },
+    ],
+    safetyNotes: [
+      "默认解释只读 redacted derived snapshot。",
+      "结构化字段和低敏摘要位于 Debug 面板，默认关闭。",
+      "长期记忆写回只生成提案 JSON，不能直接修改主动记忆库。",
+    ],
+  };
+}
+
+function modelTierScore(value: string | undefined): number {
+  const tier = normalizeMemoryTier(value);
+  if (tier === "核心画像") return 1;
+  if (tier === "一般") return 0.66;
+  if (tier === "临时") return 0.28;
+  return 0.5;
+}
+
+function modelImportanceScore(value: string | undefined): number {
+  if (value === "高") return 1;
+  if (value === "中") return 0.62;
+  if (value === "低") return 0.32;
+  return 0.5;
+}
+
+function modelConfidenceScore(value: string | undefined): number {
+  if (value === "high" || value === "高") return 1;
+  if (value === "medium" || value === "中") return 0.72;
+  if (value === "low" || value === "低") return 0.45;
+  return 0.72;
+}
+
+function modelSensitivityPenalty(node: AtlasNode): number {
+  if (node.visual?.sensitive || node.category === "temporary_or_sensitive" || node.category === "security_boundary") return 0.35;
+  return 0.1;
+}
+
+function buildWritebackProposalDraft(input: WritebackProposalDraftInput): WritebackProposal {
+  const text = input.proposedText.trim();
+  const reason = input.reason.trim();
+  const idSeed = `${input.node.id}:${input.action}:${text}:${reason}:${input.proposalCount + 1}:${input.proposalIdPrefix}`;
+  return {
+    schema_version: input.policy.proposal_schema_version || "memory_change_proposal.v1",
+    proposal_id: `${input.proposalIdPrefix}_${compactTimestamp(input.now)}_${stableHash(idSeed)}`,
+    created_at: input.now,
+    status: "draft_pending_agent_apply",
+    target_ref: {
+      node_id: input.node.id,
+      memory_id: input.node.memory_id ?? input.node.id,
+      label: input.node.label,
+      source_file: input.node.source_label ?? input.node.data_source ?? "visual_snapshot",
+      base_date: input.node.date ?? "",
+    },
+    action: input.action,
+    payload: {
+      proposed_text: text,
+      reason,
+      current_tier: normalizeMemoryTier(input.node.memory_tier),
+      current_category: input.node.category ?? "",
+    },
+    diff: buildProposalDiff(input.baseText, text),
+    version: {
+      revision: (input.latest?.version.revision ?? 0) + 1,
+      parent_proposal_id: input.latest?.proposal_id ?? null,
+      rollback_unit: input.policy.rollback_unit || "per_memory_version",
+      supersedes_proposal_id: null,
+    },
+    review: buildProposalReview(input.action, input.node, reason),
+    safety: {
+      direct_frontend_mutation_of_active_memory: false,
+      requires_conflict_check: true,
+      requires_agent_or_human_apply: true,
+      forbidden_payload: input.policy.frontend_payload_contract?.forbidden_payload ?? [
+        "plaintext secrets",
+        "raw conversation text",
+        "record hashes",
+        "local absolute paths",
+      ],
+    },
+  };
 }
 
 function buildProposalDiff(baseText: string, proposedText: string): NonNullable<WritebackProposal["diff"]> {

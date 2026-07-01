@@ -384,6 +384,31 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     )
     require(
         checks,
+        "interface InspectorExplanation" in app_source
+        and "function buildInspectorExplanation" in app_source
+        and "function InspectorExplanationPanel" in app_source
+        and "memory_weight = tier*0.5 + importance*0.3 + confidence*0.2" in app_source
+        and "leverage_score = max(0, memory_weight + decision_impact*0.15 - sensitivity_penalty)" in app_source
+        and 'data-raw-display="false"' in app_source
+        and 'data-default-raw-summary="hidden"' in app_source
+        and 'data-debug-lite={debugOpen ? "open" : "closed"}' in app_source
+        and 'data-debug-panel="true"' in app_source
+        and "function buildWritebackProposalDraft" in app_source
+        and 'proposalIdPrefix: "atlas_preview"' in app_source
+        and 'data-proposal-only="true"' in app_source
+        and 'data-active-memory-mutation="false"' in app_source
+        and "JSON 提案预览" in app_source
+        and "direct_frontend_mutation_of_active_memory: false" in app_source
+        and "requires_agent_or_human_apply: true" in app_source
+        and ".inspector-explanation-panel" in css_source
+        and ".inspector-debug-panel" in css_source
+        and ".writeback-json-preview" in css_source,
+        "stage6_2_inspector_proposal_ready",
+        "Stage 6.2 Inspector separates default formulas/evidence explanation from Debug fields and keeps writeback proposal-only JSON with active-memory mutation disabled",
+        "Stage 6.2 Inspector explanation, Debug separation, proposal-only JSON, or safety contract is missing",
+    )
+    require(
+        checks,
         '"rollback_to_version"' in app_source
         and "function createRollbackProposal" in app_source
         and "function exportProposalHistory" in app_source
@@ -606,7 +631,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "这条记忆说明了什么" in app_source
         and "为什么重要" in app_source
         and "未来应该怎么用" in app_source
-        and "Agent 结构化字段 / 原始摘要" in app_source
+        and ("Agent 结构化字段 / 原始摘要" in app_source or "Debug / Agent Inspector" in app_source)
         and "Memory / Personalization" in app_source
         and "Agents.md / 执行规则" in app_source
         and "降权/不再默认使用" in app_source
