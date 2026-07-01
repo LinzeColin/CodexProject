@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 8.2 Release Safety
+
+- Added `validate:stage8-release-safety` to run a production build, release
+  audit, overall acceptance audit, source-contract checks, real-browser
+  renderer rollback checks, screenshot capture, console/network checks, docs
+  checks, and 4177 cleanup assertion.
+- Verified Galaxy rollback through URL, localStorage, environment contract and
+  in-app toggle: `memory-starfield` remains the default renderer and `legacy`
+  remains the rollback path.
+- Verified Timeline rollback through URL, localStorage, environment contract
+  and in-app toggle: `memory-river` remains the default renderer and `legacy`
+  remains the rollback path.
+- Added Stage 8 release notes and Stage 8.2 acceptance/review docs covering
+  rollback, safety boundaries, and the next whole-stage review gate.
+
+No Stage 8 whole-stage review, Cloudflare live deploy, Access policy change,
+raw/private data access, direct writeback, GitHub main upload, or external
+account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 8.1 Local App Packaging
 
 - Added `validate:stage8-local-app` to run a production build, create a

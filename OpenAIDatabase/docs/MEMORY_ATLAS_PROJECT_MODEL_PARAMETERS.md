@@ -849,3 +849,47 @@ Stage 7 整体复审已确认：
 下一阶段：
 
 - Stage 8.2 Release Safety。
+
+## 17. Stage 8.2 Release Safety 验收模型
+
+状态：`stage_8_2_release_safety_passed`。
+
+范围：
+
+- 8.2.1 Feature Flag Rollback。
+- 8.2.2 Acceptance Audit。
+- 8.2.3 Release Notes。
+
+验收门槛：
+
+- `validate:stage8-release-safety` 必须通过。
+- Production build 必须生成 `dist/index.html` 与 `dist/memory_atlas.json`。
+- `audit_memory_atlas_release.py` 与 `audit_memory_atlas_acceptance.py` 必须
+  对同一 production dist 通过。
+- Galaxy 默认 renderer 必须保持 `memory-starfield`，回滚 renderer 必须保持
+  `legacy`。
+- Timeline 默认 renderer 必须保持 `memory-river`，回滚 renderer 必须保持
+  `legacy`。
+- URL rollback 必须支持 `?galaxyRenderer=legacy` 与
+  `?timelineRenderer=legacy`。
+- localStorage rollback/restore 必须使用
+  `memory-atlas.galaxy-renderer` 与 `memory-atlas.timeline-renderer`。
+- 环境变量 rollback contract 必须保留
+  `VITE_MEMORY_ATLAS_GALAXY_RENDERER` 与
+  `VITE_MEMORY_ATLAS_TIMELINE_RENDERER`。
+- 真实浏览器必须验证 legacy rollback、新 renderer restore、localStorage
+  persistence、screenshot 非空、console/network 无 actionable error。
+- 验证结束后 4177 不得留下 listener。
+
+边界：
+
+- Stage 8.2 不包含 Stage 8 whole-stage review。
+- Stage 8.2 不包含 Cloudflare live deploy 或 Access policy change。
+- Stage 8.2 不读取 raw/private/cookie/session/secret 数据。
+- Stage 8.2 不新增 direct active-memory writeback；前端写回仍为
+  proposal-only。
+- Stage 8.2 不上传 GitHub main。
+
+下一阶段：
+
+- Stage 8 整体复审。

@@ -133,6 +133,7 @@ Writeback：
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 7.3 Privacy and Accessibility；Timeline feedback 增加 reduced motion、伪触感、音频和 silent-by-default DOM contract；新增 `validate:stage7-privacy-accessibility`，扫描发布产物隐私边界、确认 `memory_atlas.json` 为 public redacted read-only visualization、确认默认无 sourcemap、浏览器 emulation 验证 reduced motion 自动启用并禁用播放、验证伪触感/音频默认关闭且 marker 点击不调用 vibration 或 AudioContext；Stage 7 整体复审和 GitHub main 上传仍未进入。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 7 整体复审；复审确认 7.1 Visual Acceptance、7.2 Performance Acceptance、7.3 Privacy and Accessibility 均通过，新增 `validate:stage7` 保持 phase review、package validators、visual hooks、模型参数、changelog 和交付记录一致；Stage 7 整阶段复审通过，仍未部署 Cloudflare、未读取 raw/private 数据、未直接写回长期记忆，GitHub main 上传需在最终远端检查后执行。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 8.1 Local App Packaging；新增 `validate:stage8-local-app`，真实 production build、临时 app bundle、launcher 单窗口合同和默认 `记忆总览` 路由均通过；installer 增加无 Pillow `.icns` fallback、npm/pnpm fallback、pnpm dependency readiness、Codex runtime PATH 注入和 managed pid cleanup；已重装 `~/Downloads/Memory Atlas.app` 与 `/Applications/Memory Atlas.app`，Application Support runtime manifest 匹配当前 git HEAD；Stage 8.2 Release Safety、Cloudflare live deploy、Access policy change、direct writeback 仍未进入。
+- 2026-07-01：完成 Memory Atlas v1.1.5 Stage 8.2 Release Safety；新增 `validate:stage8-release-safety`，真实 production build、release audit、overall acceptance audit、source-contract check、真实浏览器 URL rollback、in-app toggle restore、localStorage persistence、screenshot、console/network、文档一致性和 4177 cleanup 均通过；Galaxy 默认 `memory-starfield`、Timeline 默认 `memory-river`，均保留 `legacy` 回滚；Stage 8 整体复审、Cloudflare live deploy、Access policy change、GitHub main 上传仍未进入。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.1 默认首页实现；`记忆总览` 成为启动板块，左侧导航保留，首页显示 Memory Weather、Universe State 状态卡、Black Hole / Proto-Star 信号和 proposal-only 行动建议；Galaxy 与 Timeline 仍未替换。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.2 首页预览组件；首页新增轻量 `Mini Starfield`、近期主题变化 `River Pulse` 和 `Inspector Deep Link`，点击前同步当前焦点再进入 Galaxy、Timeline 或详情检索；Stage 3 整体复审通过，仍未替换 Galaxy/Timeline、未直接写回长期记忆、未读取 raw/private 数据。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 4.1 Galaxy Rendering Integration；`memory-starfield` 成为 Galaxy 默认生产 renderer，`legacy` 可通过 feature flag 回滚；生产 Galaxy 增加 Flow Field 动态、轨迹线、语义信号标记、quality selector 和低质量 fallback，仍未进入 Stage 4.2 数据映射或 Stage 4.3 交互扩展。
@@ -153,7 +154,7 @@ Writeback：
 
 高优先级：
 
-- Stage 8.2 Release Safety：feature flag rollback、acceptance audit、release notes。
+- Stage 8 整体复审：复跑 Stage 8.1 local app packaging 与 Stage 8.2 release safety，解决复审暴露问题后再进入 GitHub main 上传。
 - Timeline 后续增强多阶段聚类摘要、相邻时间段差异解释，以及 evidence layer 碰撞规避和阈值校准。
 - Writeback 增加 agent apply CLI：读取 proposal、冲突检测、写 history、更新 active memory、生成 git rollback commit。
 - Summary & Iteration 增加更强人类版输出：ROI 建议、能力成长建议、机会地图、下周行动建议。
