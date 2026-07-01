@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s16-github-upload - 2026-07-01
+
+- 完成 Stage 16 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `25698b30517e07e0655ff842f588d008516bc1d9` rebase Stage 16 栈，并复跑 S16-P1/P2/P3 validators、Stage 16 review validator、全量 227 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。
+- 新增 `KMFA/stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json`。
+- 上传范围只包含 public-safe 外协采购归集、项目状态生命周期、客户经营分析、Stage 16 review 和 upload proof；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或接口凭证。
+- Stage 16 upload 不实现 S17、lineage full check、正式报告、经营决策依据、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、外部 connector 或业务 release。
+- 下一轮只能作为新 run work 从 `S17-P1｜权限与安全` 开始，且必须重新执行 git/root/status 检查并读取 v1.2 task pack / roadmap。
+
 ## 0.1.0-s16-stage-review - 2026-07-01
 
 - 完成 `Stage 16 整体复审` 本地验证，不上传 GitHub。

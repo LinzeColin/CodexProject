@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S16-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260701-S16-GITHUB-UPLOAD"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "22f4dbcd434e411363a8f37b6986869f847e7162"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16_STAGE_REVIEW_COMMIT"
+source_base_commit: "25698b30517e07e0655ff842f588d008516bc1d9"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16_UPLOAD_COMMIT"
 snapshot_event_time: "2026-07-01T23:00:00+10:00"
-generator_version: "manual-s16-stage-review"
+generator_version: "manual-s16-github-upload"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -404,8 +404,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S16_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
-  release_gate: "KMFA-S16-GITHUB-UPLOAD-GATE"
+  status: "S16_UPLOADED_TO_GITHUB_MAIN"
+  release_gate: "KMFA-S17-P1-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"

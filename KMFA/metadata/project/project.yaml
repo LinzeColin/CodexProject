@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s16-stage-review"
-current_stage: "S16"
-current_phase: "S16UPLOAD"
-current_phase_status: "github_upload_pending"
-current_stage_status: "review_passed_upload_ready_local_only"
+version: "0.1.0-s16-github-upload"
+current_stage: "S17"
+current_phase: "S17PA"
+current_phase_status: "ready"
+current_stage_status: "stage16_uploaded_to_github_main"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -113,6 +113,8 @@ machine_plane:
   - "stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
   - "stage_artifacts/S16_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
+  - "stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md"
+  - "stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
   - "stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
   - "stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
@@ -466,8 +468,10 @@ upload_policy:
   stage16_review_passed: true
   stage16_review_evidence: "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
   stage16_review_manifest: "KMFA/stage_artifacts/S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
-  stage16_upload_ready_local_only: true
-  stage16_uploaded_to_github_main: false
-  stage16_blocker: "github_upload_not_yet_executed"
-  next_phase_upload_allowed: true
-  upload_surface: "stage16_review_passed_next_github_upload"
+  stage16_upload_ready_local_only: false
+  stage16_uploaded_to_github_main: true
+  stage16_upload_evidence: "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md"
+  stage16_upload_manifest: "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
+  stage16_blocker: "none_stage16_uploaded"
+  next_phase_upload_allowed: false
+  upload_surface: "stage16_uploaded_next_s17p1"
