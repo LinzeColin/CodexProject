@@ -1302,3 +1302,46 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 7 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 28. Part 7 Stage 6 复审门槛
+
+状态：`part_7_stage_6_review_passed`。
+
+范围：
+
+- Stage 6.1 Shared State Store。
+- Stage 6.2 Inspector and Proposal。
+- Stage 6 overall review。
+
+验收门槛：
+
+- `validate:part7-stage6` 必须通过。
+- Stage 6.1 必须保留 `SharedAtlasSelectionState`、
+  `SharedAtlasFilterState`、`SharedAtlasFocusState`、`sharedAtlasReducer`、
+  `clearSharedAtlasFilter`、single-dispatch loop guard、cross-view shared focus
+  和 `data-shared-*` runtime markers。
+- Stage 6.2 必须保留 `InspectorExplanationPanel`、
+  `buildWritebackProposalDraft`、formula/evidence explanation、`data-raw-display=false`、
+  proposal-only JSON、`data-proposal-only=true`、
+  `data-active-memory-mutation=false`、default-closed Debug separation 和
+  agent/human apply safety fields。
+- Stage 6 overall review 必须继续证明 Stage 6.1 / 6.2 均通过、release audit、
+  visual acceptance、overall acceptance、data boundary、writeback boundary 和
+  4177 cleanup 已验证。
+- Shared-state、Inspector/Proposal、stage6 validators、TypeScript/Vite build、
+  release audit、visual acceptance、overall acceptance 必须通过。
+
+边界：
+
+- 本 Part 7 复审不进入 Part 8。
+- 本 Part 7 复审不进入 Stage 7。
+- 本 Part 7 复审不执行整项目复审。
+- 本 Part 7 复审不上传 GitHub main。
+- 本 Part 7 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 7 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 7 复审不新增 direct active-memory writeback。
+- 本 Part 7 复审不新增 production runtime feature work。
+
+下一阶段：
+
+- 单独执行 Part 8 复审与修复；所有 part-level 复审完成后再进入整项目复审。

@@ -14,6 +14,7 @@
     "validate:part4-stage3": "node scripts/validate_memory_atlas_part4_stage3.cjs",
     "validate:part5-stage4": "node scripts/validate_memory_atlas_part5_stage4.cjs",
     "validate:part6-stage5": "node scripts/validate_memory_atlas_part6_stage5.cjs",
+    "validate:part7-stage6": "node scripts/validate_memory_atlas_part7_stage6.cjs",
     "validate:memory-river-evidence": "node scripts/validate_memory_river_evidence_layers.mjs",
     "validate:memory-river-interaction": "node scripts/validate_memory_river_interaction.mjs",
     "validate:memory-river-rendering": "node scripts/validate_memory_river_rendering.mjs",
