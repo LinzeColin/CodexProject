@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR"
+    phase: "S2PL"
+    objective: "Clear the DAILY_OPERATION production preflight gh CLI blocker with a reviewed GitHub open PR count equivalent while keeping runtime production disabled."
+    scope: "Production preflight reviewed-equivalent command gate, daily-operation authorization preflight integration, rerun manifest, current-state sync, owner-facing status, three-base summaries, and focused regression tests."
+    non_scope: "No SMTP secret value handling, no OpenAIDatabase archive deletion, no DAILY_OPERATION enablement, persistent SMTP permission, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, unrelated project cleanup, or V7.1 historical baseline mutation."
+    status: "blocked"
+    dependencies: ["S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT", "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_GH_EQUIVALENT_REPAIR.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD production preflight unittest", "TDD final-gate unittest", "live daily-operation authorization preflight CLI", "post-run safety state checks"]
+    test_results: ["TDD red: build_production_preflight rejected github_cli_equivalent", "TDD green: production preflight accepts github_open_pr_count_zero_api_v1 for missing gh only", "TDD red: daily-operation preflight did not pass github_cli_equivalent to production preflight", "TDD green: daily-operation preflight passes reviewed equivalent", "live preflight status=blocked, state_hash=2b8bd06a85516fc1608996a335a579153cd6db1a64eb090691b776f8ea03f361", "gh CLI blocker cleared by github_open_pr_count_zero_api_v1", "remaining production preflight blockers: missing SMTP secret env names; 10 existing OpenAIDatabase session-history archive git artifact hygiene violations", "daily_operation_enabled=false", "real_smtp_send_enabled=false", "scheduler_install_enabled=false", "release_packaging_enabled=false", "production_restore_enabled=false"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_GH_EQUIVALENT_REPAIR.md", "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"]
+    risk: "Future agents could treat clearing the gh CLI blocker as DAILY_OPERATION authorization; this task keeps runtime disabled and leaves SMTP secret env and OpenAIDatabase artifact hygiene blockers visible."
+    rollback: "Revert the reviewed-equivalent command gate, daily-operation preflight integration, rerun manifest, phase record, current-state sync, owner-facing notes, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
     phase: "S2PL"
     objective: "Run the first post-INTEGRATED_PRODUCTION_ACCEPTED DAILY_OPERATION authorization preflight without enabling runtime production."

@@ -1,0 +1,431 @@
+{
+  "acceptance_ids": [
+    "ACC-S2PMT07-FINAL-REVIEW",
+    "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"
+  ],
+  "adp_allow_smtp_send": false,
+  "background_adp_process_found": false,
+  "blocking_reasons": [
+    "production_preflight_passed_failed"
+  ],
+  "checks": {
+    "controlled_real_run_acceptance_passed": true,
+    "controlled_real_run_duplicate_send_avoided": true,
+    "controlled_real_run_no_background_process_after": true,
+    "controlled_real_run_post_smtp_flag_false": true,
+    "controlled_real_run_sent_all_four_mail_products": true,
+    "current_points_to_daily_operation_preflight": true,
+    "current_product_contract_v7_2": true,
+    "daily_operation_currently_disabled": true,
+    "integrated_production_acceptance_evidence_present": true,
+    "integrated_production_acceptance_evidence_valid": true,
+    "launchagents_disabled": true,
+    "no_background_adp_process": true,
+    "open_pr_count_zero": true,
+    "persistent_adp_allow_smtp_send_false": true,
+    "production_acceptance_claimed": true,
+    "production_preflight_passed": false,
+    "production_scheduler_contract_ready": true,
+    "stage2_integrated_production_accepted": true
+  },
+  "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+  "controlled_real_run_duplicate_send_avoided": true,
+  "controlled_real_run_historical_sent_mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "controlled_real_run_manifest_ref": "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json",
+  "controlled_real_run_newly_sent_mail_products": [],
+  "controlled_real_run_sent_mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "controlled_real_run_status": "pass_controlled_real_run_evidence_rechecked_no_new_send",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "daily_operation_enablement_allowed_by_this_artifact": false,
+  "daily_operation_preflight_validation_errors": [],
+  "db_migration_executed": false,
+  "failed_checks": [
+    "production_preflight_passed"
+  ],
+  "generated_at": "2026-07-01T20:12:13+10:00",
+  "integrated_production_acceptance_evidence_ref": "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json",
+  "integrated_production_acceptance_evidence_state_hash": "4b88b2edd8fe2eae7ee63f8b512eb713501805725f5fcdf3fb6363f0df3b5453",
+  "integrated_production_acceptance_evidence_validation_errors": [],
+  "integrated_production_accepted": true,
+  "launchagent_disabled_states": {
+    "daily": true,
+    "health": true,
+    "watchdog": true
+  },
+  "next_required_step": "REPAIR_DAILY_OPERATION_PREFLIGHT_PREREQUISITES_BEFORE_OWNER_AUTHORIZATION",
+  "open_pr_count": 0,
+  "owner_daily_operation_authorization_recorded": false,
+  "owner_daily_operation_authorization_required": true,
+  "preflight_checks_passed": false,
+  "production_acceptance_claimed": true,
+  "production_preflight_blocking_reasons": [
+    "missing required secret environment keys: ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD",
+    "git artifact hygiene violations: 10"
+  ],
+  "production_preflight_production_run_allowed": false,
+  "production_preflight_report": {
+    "blocking_reasons": [
+      "missing required secret environment keys: ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD",
+      "git artifact hygiene violations: 10"
+    ],
+    "gates": [
+      {
+        "blocking_reasons": [],
+        "commands": [
+          {
+            "available": true,
+            "command": "python3",
+            "path_present": true
+          },
+          {
+            "available": true,
+            "command": "git",
+            "path_present": true
+          },
+          {
+            "available": false,
+            "command": "gh",
+            "equivalent_accepted": true,
+            "equivalent_id": "github_open_pr_count_zero_api_v1",
+            "equivalent_source": "github_api",
+            "path_present": false
+          }
+        ],
+        "gate_id": "required_commands",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [
+          "missing required secret environment keys: ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD"
+        ],
+        "gate_id": "secret_environment",
+        "keys": [
+          {
+            "name": "ADP_SMTP_HOST",
+            "present": false
+          },
+          {
+            "name": "ADP_SMTP_PORT",
+            "present": false
+          },
+          {
+            "name": "ADP_SMTP_USERNAME",
+            "present": false
+          },
+          {
+            "name": "ADP_SMTP_PASSWORD",
+            "present": false
+          }
+        ],
+        "passed": false,
+        "values_logged": false
+      },
+      {
+        "blocking_reasons": [],
+        "disk": {
+          "free_gib": 41.91,
+          "path": "/private/tmp/codex-adp-s3-gate-20260701",
+          "production_min_free_gib": 8.0,
+          "stage1_text_delivery_ready": true
+        },
+        "gate_id": "disk_pressure",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "gate_id": "memory_pressure",
+        "min_required_gib": 8.0,
+        "passed": true,
+        "total_gib": 8.0
+      },
+      {
+        "blocking_reasons": [
+          "git artifact hygiene violations: 10"
+        ],
+        "gate_id": "git_artifact_hygiene",
+        "passed": false,
+        "violations": [
+          {
+            "path": "OpenAIDatabase/session_history/current-mac-20260630/current-mac-session-history-20260630.tar.gz",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-000",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-001",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-002",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-003",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-004",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-005",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-006",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-007",
+            "reason": "file exceeds 20 MiB"
+          },
+          {
+            "path": "OpenAIDatabase/session_history/old-mac-20260630/archive_parts/old-mac-session-history-20260630.tar.gz.part-008",
+            "reason": "file exceeds 20 MiB"
+          }
+        ]
+      },
+      {
+        "blocking_reasons": [],
+        "checked_dirs": [
+          ".cache",
+          "tmp",
+          "staging",
+          "renders",
+          "media",
+          "models",
+          "model_weights",
+          "voice_samples",
+          "release_assets"
+        ],
+        "gate_id": "local_artifact_cache",
+        "non_empty_dirs": [],
+        "passed": true
+      }
+    ],
+    "generated_at": "2026-07-01T20:12:13+10:00",
+    "preflight_id": "production-preflight:arxiv-daily-push",
+    "production_run_allowed": false,
+    "project_id": "arxiv-daily-push",
+    "recipient": "linzezhang35@gmail.com",
+    "resource_evidence": {
+      "resource_pressure_ok": false,
+      "resource_pressure_ok_ref": ""
+    },
+    "secret_policy": {
+      "codex_auth_read": false,
+      "secret_names_only": true,
+      "secret_values_logged": false
+    },
+    "status": "blocked",
+    "timezone": "Australia/Sydney",
+    "validator_id": "adp-production-preflight-v1"
+  },
+  "production_preflight_status": "blocked",
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "production_scheduler_blocking_reasons": [],
+  "production_scheduler_contract_ready": true,
+  "production_scheduler_plan": {
+    "blocking_reasons": [],
+    "checks": [
+      {
+        "blocking_reasons": [],
+        "check_id": "workflow_file_exists",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "runbook_file_exists",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "timezone_schedule_declared",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "manual_rerun_supported",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "production_enabled_gate",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "github_hosted_runner_targeted",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "preflight_before_scheduled_mode",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "preflight_artifact_uploaded",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "scheduled_execution_driver_present",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "daily_input_builder_present",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "stage1_text_delivery_present",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "candidate_queue_persistence_present",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "legacy_cs_ai_default_absent",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "trial_ledger_update_present",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "trial_ledger_state_persistence_present",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "secret_names_only",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "release_upload_not_required",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "read_only_contents_permission_declared",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "scheduled_side_effects_disabled",
+        "passed": true
+      },
+      {
+        "blocking_reasons": [],
+        "check_id": "runbook_documents_schedule",
+        "passed": true
+      }
+    ],
+    "codex_auth_read": false,
+    "generated_at": "2026-07-01T20:12:13+10:00",
+    "next_external_actions": [
+      "merge the workflow to the default branch before schedule triggers can run",
+      "configure ADP_PRODUCTION_ENABLED only after all-arXiv Phase 12 scan, queue, ROI ranking, SMTP and GitHub-hosted runner prerequisites pass",
+      "configure ADP_SCHEDULED_RUN_ENABLED only after daily all-arXiv execution evidence is implemented and verified",
+      "retain adp-trial-evidence-ledger artifacts so 30-day trial evidence can accumulate across runs",
+      "keep SMTP sending disabled until its explicit production enablement phase"
+    ],
+    "plan_id": "production-scheduler:arxiv-daily-push",
+    "project_id": "arxiv-daily-push",
+    "real_smtp_send_enabled": false,
+    "release_upload_enabled": false,
+    "required_github_permissions": [
+      "actions: read",
+      "contents: read"
+    ],
+    "required_github_secrets": [
+      "ADP_SMTP_HOST",
+      "ADP_SMTP_PORT",
+      "ADP_SMTP_USERNAME",
+      "ADP_SMTP_PASSWORD"
+    ],
+    "required_github_vars": [
+      "ADP_PRODUCTION_ENABLED",
+      "ADP_SCHEDULED_RUN_ENABLED",
+      "ADP_DAILY_INPUT_PATH",
+      "ADP_ARXIV_MAX_RESULTS_PER_CATEGORY",
+      "ADP_CANDIDATE_QUEUE_INPUT_PATH",
+      "ADP_RECENT_SOURCE_IDS",
+      "ADP_TRIAL_EVIDENCE_INPUT_PATH",
+      "ADP_TRIAL_ID",
+      "ADP_TRIAL_REF",
+      "ADP_TEXT_DEGRADATION_VERIFIED",
+      "ADP_ALLOW_SMTP_SEND"
+    ],
+    "runbook_path": "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md",
+    "schedule_slots": [
+      {
+        "cron": "45 4 * * *",
+        "local_time": "04:45",
+        "mode": "health-check"
+      },
+      {
+        "cron": "0 5 * * *",
+        "local_time": "05:00",
+        "mode": "daily-run"
+      },
+      {
+        "cron": "10 5 * * *",
+        "local_time": "05:10",
+        "mode": "watchdog"
+      }
+    ],
+    "scheduled_production_enabled": false,
+    "scheduled_run_enabled": false,
+    "scheduler_contract_ready": true,
+    "secret_values_logged": false,
+    "side_effect_enablement_vars": [
+      "ADP_ALLOW_SMTP_SEND"
+    ],
+    "status": "pass",
+    "timezone": "Australia/Sydney",
+    "validator_id": "adp-production-scheduler-v1",
+    "workflow_path": ".github/workflows/arxiv-daily-push-scheduled.yml"
+  },
+  "production_scheduler_status": "pass",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_smtp_send_enabled": false,
+  "real_smtp_sent": false,
+  "release_packaging_enabled": false,
+  "release_uploaded": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "schema_version": "adp.daily_operation_authorization_preflight.v1",
+  "scope": "daily_operation_authorization_preflight_only_no_runtime_enablement",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": true,
+  "state_hash": "2b8bd06a85516fc1608996a335a579153cd6db1a64eb090691b776f8ea03f361",
+  "status": "blocked",
+  "task_id": "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

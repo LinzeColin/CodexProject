@@ -73,6 +73,39 @@ class ProductionPreflightTests(unittest.TestCase):
         self.assertNotIn("present-", json.dumps(report))
         self.assertFalse(validate_production_preflight(report))
 
+    def test_preflight_accepts_reviewed_github_pr_equivalent_when_gh_is_missing(self) -> None:
+        def missing_gh(command: str) -> str | None:
+            if command == "gh":
+                return None
+            return command_resolver(command)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            report = build_production_preflight(
+                Path(tmp),
+                generated_at="2026-07-01T21:05:00+10:00",
+                env=complete_env(),
+                command_resolver=missing_gh,
+                disk_free_gib=120.0,
+                memory_total_gib=16.0,
+                git_scan=clean_git_scan(),
+                github_cli_equivalent={
+                    "equivalent_id": "github_open_pr_count_zero_api_v1",
+                    "source": "github_api",
+                    "open_pr_count": 0,
+                    "reviewed": True,
+                },
+            )
+
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["production_run_allowed"])
+        command_gate = next(gate for gate in report["gates"] if gate["gate_id"] == "required_commands")
+        gh_command = next(command for command in command_gate["commands"] if command["command"] == "gh")
+        self.assertFalse(gh_command["available"])
+        self.assertTrue(gh_command["equivalent_accepted"])
+        self.assertEqual(gh_command["equivalent_id"], "github_open_pr_count_zero_api_v1")
+        self.assertNotIn("missing production runtime commands: gh", " ".join(report["blocking_reasons"]))
+        self.assertFalse(validate_production_preflight(report))
+
     def test_preflight_blocks_low_disk_and_memory(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = build_production_preflight(

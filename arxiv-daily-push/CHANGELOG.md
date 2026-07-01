@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-07-01 20:12:13 Australia/Sydney - S2PMT07 daily operation gh equivalent repair
+
+- Added a reviewed `github_open_pr_count_zero_api_v1` equivalent for the production preflight `gh` CLI command gate.
+- Wired DAILY_OPERATION authorization preflight to pass the reviewed GitHub open PR count equivalent when `open_pr_count=0`.
+- Reran the DAILY_OPERATION authorization preflight: `status=blocked`, `state_hash=2b8bd06a85516fc1608996a335a579153cd6db1a64eb090691b776f8ea03f361`.
+- Cleared the original missing `gh` CLI blocker; remaining blockers are missing SMTP secret env names and existing `OpenAIDatabase/session_history` archive git artifact hygiene violations.
+- Kept operation disabled: `daily_operation_enabled=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, `release_packaging_enabled=false`, and `production_restore_enabled=false`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_GH_EQUIVALENT_REPAIR.md`.
+
 ## 2026-07-01 19:43:41 Australia/Sydney - S2PMT07 daily operation authorization preflight
 
 - Added `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT` builder/validator/CLI and wrote the blocked preflight manifest.

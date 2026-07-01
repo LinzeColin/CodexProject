@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 import arxiv_daily_push.stage2_final_gate as stage2_final_gate_module
 from arxiv_daily_push.stage2_final_gate import (
@@ -6861,6 +6862,43 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["daily_operation_enabled"])
         self.assertFalse(state["real_smtp_send_enabled"])
         self.assertFalse(state["scheduler_install_enabled"])
+        self.assertEqual(
+            stage2_final_gate_module.validate_daily_operation_authorization_preflight_state(state),
+            [],
+        )
+
+    def test_daily_operation_authorization_preflight_passes_reviewed_github_equivalent_to_production_preflight(self) -> None:
+        with patch("arxiv_daily_push.production_preflight.build_production_preflight") as build_preflight:
+            with patch("arxiv_daily_push.production_scheduler.build_production_scheduler_plan") as build_scheduler:
+                build_preflight.return_value = {
+                    "status": "pass",
+                    "production_run_allowed": True,
+                    "blocking_reasons": [],
+                }
+                build_scheduler.return_value = {
+                    "status": "pass",
+                    "scheduler_contract_ready": True,
+                    "blocking_reasons": [],
+                }
+
+                state = stage2_final_gate_module.build_daily_operation_authorization_preflight_state(
+                    generated_at="2026-07-01T21:10:00+10:00",
+                    open_pr_count=0,
+                    adp_allow_smtp_send=False,
+                    launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+                    background_adp_process_found=False,
+                )
+
+        self.assertEqual(
+            build_preflight.call_args.kwargs["github_cli_equivalent"],
+            {
+                "equivalent_id": "github_open_pr_count_zero_api_v1",
+                "source": "github_api",
+                "open_pr_count": 0,
+                "reviewed": True,
+            },
+        )
+        self.assertEqual(state["status"], "blocked_owner_daily_operation_authorization_required")
         self.assertEqual(
             stage2_final_gate_module.validate_daily_operation_authorization_preflight_state(state),
             [],
