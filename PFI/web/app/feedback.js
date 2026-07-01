@@ -219,6 +219,87 @@
     });
   }
 
+  function buildStage6Phase63HapticsContract() {
+    return Object.freeze({
+      schema: "PFIV024Stage6Phase63HapticsContractV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: "v0.2.3-repair",
+      stage: "Stage 6",
+      phase_id: "6.3",
+      phase_name: "触感与设置隔离",
+      current_phase_only: true,
+      max_one_phase_per_run: true,
+      task_ids: Object.freeze(["T6.3.1", "T6.3.2", "T6.3.3"]),
+      stage_contract: Object.freeze({
+        phase_6_1_complete: true,
+        phase_6_2_complete: true,
+        phase_6_3_complete: true,
+        stage_6_whole_review_complete: false,
+        github_main_uploaded: false,
+      }),
+      changed_in_this_phase: Object.freeze([
+        "PFI/web/index.html",
+        "PFI/web/app/feedback.js",
+        "PFI/web/app/pages/settings.js",
+        "PFI/web/app/shell.js",
+        "PFI/tests/test_v024_stage6_phase63_haptics_settings.py",
+        "PFI/docs/pfi_v024/STAGE6_HAPTICS_SETTINGS.md",
+        "PFI/reports/pfi_v024/stage_6/phase_6_3/*",
+      ]),
+      explicitly_not_done: Object.freeze([
+        "Stage 6 whole-stage review",
+        "GitHub main upload",
+        "App bundle reinstall",
+        "Financial data mutation or synthesis",
+      ]),
+    });
+  }
+
+  function detectStage6Phase63HapticCapability(environment = {}) {
+    const nav =
+      environment.navigator ||
+      (typeof navigator !== "undefined" && typeof navigator === "object" ? navigator : null);
+    const canVibrate = Boolean(nav && typeof nav.vibrate === "function");
+    return Object.freeze({
+      source: "navigator.vibrate",
+      can_vibrate: canVibrate,
+      supported_device_only: true,
+      reason_zh: canVibrate ? "当前浏览器支持 navigator.vibrate。" : "当前浏览器不支持触感震动，静默降级为视觉反馈。",
+    });
+  }
+
+  function buildStage6Phase63HapticsModel(environment = {}) {
+    const capability = detectStage6Phase63HapticCapability(environment);
+    return Object.freeze({
+      schema: "PFIV024Stage6Phase63HapticsModelV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: "v0.2.3-repair",
+      stage: "Stage 6",
+      phase_id: "6.3",
+      phase_name: "触感与设置隔离",
+      capability,
+      supported_device_only: true,
+      levels: HAPTIC_LEVELS,
+      preferences: Object.freeze({
+        can_disable: true,
+        default_enabled: true,
+        stored_in: "settings_feedback_preferences",
+        setting_route: "/settings?tab=feedback",
+        off_state_zh: "关闭后保留视觉状态与文字反馈。",
+      }),
+      silent_degradation: Object.freeze({
+        enabled: true,
+        degrade_to: "visual_feedback",
+        reason_zh: capability.can_vibrate ? "支持设备使用触感反馈。" : "不支持设备不报错、不提示失败，只保留视觉反馈。",
+      }),
+      settings_isolation: Object.freeze({
+        visible_on_workspaces: Object.freeze(["settings"]),
+        business_pages_show_feedback_console: false,
+        settings_route: "/settings?tab=feedback",
+      }),
+    });
+  }
+
   function buildStage9Phase92Contract() {
     return Object.freeze({
       version: VERSION,
@@ -422,6 +503,9 @@
     buildStage6Phase62MotionContract,
     buildStage6Phase62MotionFeedbackModel,
     buildStage6Phase62ReportProgressViewModel,
+    buildStage6Phase63HapticsContract,
+    buildStage6Phase63HapticsModel,
+    detectStage6Phase63HapticCapability,
     buildStage9Phase92Contract,
     buildStage9Phase92FeedbackModel,
     buildStage9Phase93Contract,

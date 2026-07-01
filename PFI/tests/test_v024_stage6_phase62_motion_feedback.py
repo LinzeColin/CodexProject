@@ -115,7 +115,7 @@ console.log(JSON.stringify(feedback.buildStage6Phase62MotionFeedbackModel()));
         for snippet in required_shell_snippets:
             self.assertIn(snippet, self.shell)
 
-        self.assertIn('data-pfi-phase="6.2"', self.index)
+        self.assertRegex(self.index, r'data-pfi-phase="6\.[23]"')
         self.assertIn('data-v024-stage6-motion-feedback="phase_6_2"', self.index)
 
     def test_css_defines_v024_motion_feedback_without_excessive_or_dark_console_motion(self) -> None:

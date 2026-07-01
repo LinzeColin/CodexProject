@@ -174,6 +174,16 @@ const PFI_V024_STAGE6_MOTION_CONTRACT = Object.freeze({
   routeTransitionAttribute: "data-v024-route-transition",
 });
 window.PFI_V024_STAGE6_MOTION_CONTRACT = PFI_V024_STAGE6_MOTION_CONTRACT;
+const PFI_V024_STAGE6_HAPTICS_CONTRACT = Object.freeze({
+  schema: "PFIV024Stage6Phase63RuntimeHapticsContractV1",
+  targetVersion: "v0.2.4",
+  stage: "Stage 6",
+  phase: "6.3",
+  capabilitySource: "navigator.vibrate",
+  settingRoute: "/settings?tab=feedback",
+  silentDegradation: "visual_feedback",
+});
+window.PFI_V024_STAGE6_HAPTICS_CONTRACT = PFI_V024_STAGE6_HAPTICS_CONTRACT;
 const FEEDBACK_HUB_LANES = {
   visual: "视觉状态轨道",
   haptic: "触感强度",
@@ -2506,8 +2516,22 @@ function emitMultimodalFeedback(kind = "select") {
   playFeedbackTone(kind);
 }
 
+function detectV024HapticRuntimeCapability() {
+  const canVibrate = typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
+  if (document.body) {
+    document.body.dataset.v024HapticCapability = canVibrate ? "supported" : "unsupported";
+    if (!canVibrate) document.body.dataset.v024HapticDegraded = "visual_feedback";
+    else delete document.body.dataset.v024HapticDegraded;
+  }
+  return canVibrate;
+}
+
 function vibrateFeedback(kind = "select") {
-  if (!feedbackRuntimeState.haptic || !("vibrate" in navigator)) return;
+  if (!feedbackRuntimeState.haptic) return;
+  if (typeof navigator.vibrate !== "function") {
+    detectV024HapticRuntimeCapability();
+    return;
+  }
   if (navigator.userActivation && !navigator.userActivation.isActive) return;
   const patterns = {
     soft: [8],
@@ -2517,9 +2541,11 @@ function vibrateFeedback(kind = "select") {
     error: [36, 44, 36, 44],
   };
   try {
+    detectV024HapticRuntimeCapability();
     navigator.vibrate(patterns[kind] || patterns.select);
   } catch (_error) {
     // 桌面浏览器可能没有震动设备。
+    if (document.body) document.body.dataset.v024HapticDegraded = "visual_feedback";
   }
 }
 
@@ -2563,12 +2589,16 @@ function createRipple(event, element) {
 }
 
 function bindFeedbackToggles() {
+  detectV024HapticRuntimeCapability();
   document.querySelectorAll("[data-feedback-toggle]").forEach((toggle) => {
     const key = toggle.dataset.feedbackToggle;
     if (!Object.prototype.hasOwnProperty.call(feedbackRuntimeState, key)) return;
+    toggle.dataset.v024FeedbackSetting = "phase_6_3";
+    if (key === "haptic") feedbackRuntimeState.haptic = Boolean(toggle.checked);
     feedbackRuntimeState[key] = Boolean(toggle.checked);
     document.body.classList.toggle("reduce-motion", !feedbackRuntimeState.motion);
     toggle.addEventListener("change", () => {
+      if (key === "haptic") feedbackRuntimeState.haptic = Boolean(toggle.checked);
       feedbackRuntimeState[key] = Boolean(toggle.checked);
       document.body.classList.toggle("reduce-motion", !feedbackRuntimeState.motion);
       const label = toggle.closest(".toggle-item")?.querySelector("strong")?.textContent || "反馈";

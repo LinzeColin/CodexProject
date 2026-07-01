@@ -1,0 +1,74 @@
+{
+  "schema": "PFIV024Stage6Phase63EvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 6",
+  "stage_name": "亮色设计系统、动效、触感反馈",
+  "phase_id": "6.3",
+  "phase_name": "触感与设置隔离",
+  "current_run_only": true,
+  "status": "pass",
+  "task_ids": [
+    "T6.3.1",
+    "T6.3.2",
+    "T6.3.3"
+  ],
+  "task_summary": {
+    "T6.3.1": "feedback.js 提供 v0.2.4 navigator.vibrate 函数级能力检测模型。",
+    "T6.3.2": "settings.js 提供设置页反馈偏好模型，触感/声音/动效开关只属于设置页。",
+    "T6.3.3": "shell.js 对不支持 navigator.vibrate 的环境静默降级为视觉反馈。"
+  },
+  "phase_6_1_complete": true,
+  "phase_6_2_complete": true,
+  "phase_6_3_complete": true,
+  "stage_6_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "app_bundle_reinstall_executed": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "acceptance_checks": {
+    "navigator_vibrate_function_detection": true,
+    "haptics_can_be_disabled": true,
+    "unsupported_silent_visual_degradation": true,
+    "settings_page_owns_feedback_preferences": true,
+    "business_pages_without_feedback_console": true
+  },
+  "changed_files": [
+    "PFI/web/index.html",
+        "PFI/web/app/feedback.js",
+        "PFI/web/app/pages/settings.js",
+        "PFI/web/app/shell.js",
+        "PFI/tests/test_v024_stage6_phase62_motion_feedback.py",
+        "PFI/tests/test_v024_stage6_phase63_haptics_settings.py",
+    "PFI/docs/pfi_v024/STAGE6_HAPTICS_SETTINGS.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/reports/pfi_v024/stage_6/phase_6_3/evidence.json",
+    "PFI/reports/pfi_v024/stage_6/phase_6_3/haptic_settings_validation.json",
+    "PFI/reports/pfi_v024/stage_6/phase_6_3/terminal.log",
+    "PFI/reports/pfi_v024/stage_6/phase_6_3/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_6/phase_6_3/risk_and_rollback.md",
+    "PFI/README.md",
+    "PFI/HANDOFF.md",
+    "PFI/CHANGELOG.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "validation_commands": [
+        "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase63_haptics_settings.py -q",
+        "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py PFI/tests/test_v024_stage6_phase62_motion_feedback.py PFI/tests/test_v024_stage6_phase63_haptics_settings.py -q",
+        "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase51_home_rebuild.py PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py PFI/tests/test_v024_stage5_phase53_interaction_states.py -q",
+        "PATH=\"/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/shell.js",
+    "PATH=\"/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/feedback.js",
+    "PATH=\"/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/pages/settings.js",
+    "python3 -m json.tool PFI/reports/pfi_v024/stage_6/phase_6_3/evidence.json",
+    "python3 -m json.tool PFI/reports/pfi_v024/stage_6/phase_6_3/haptic_settings_validation.json",
+    "git diff --check -- PFI"
+  ],
+  "explicitly_not_done": [
+    "Stage 6 whole-stage review",
+    "GitHub main upload",
+    "App bundle reinstall or launcher mutation",
+    "Financial data mutation or synthesis"
+  ]
+}
