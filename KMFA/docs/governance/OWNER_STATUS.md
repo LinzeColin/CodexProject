@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload，以及 S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据和 Stage 14 整体复审本地验证。S14 三个 phase 只生成 public-safe planning/evidence signals；Stage 14 GitHub upload、lineage 和正式报告运行时仍未完成，且当前报告等级仍为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload，以及 Stage 14 全部 Phase/整体复审/upload。S14 三个 phase 只生成 public-safe planning/evidence signals；lineage 和正式报告运行时仍未完成，且当前报告等级仍为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -81,7 +81,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、Stage 8 upload、Stage 9 upload 或 Stage 10 upload 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
-- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review、Stage 12 upload、S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审、Stage 13 upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据或 Stage 14 review 等于完整业务系统；Stage 14 GitHub upload、lineage full check 和正式报告仍未完成。
+- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review、Stage 12 upload、S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审、Stage 13 upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据、Stage 14 review 或 Stage 14 upload 等于完整业务系统；lineage full check 和正式报告仍未完成。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -90,4 +90,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 Stage 14 GitHub upload，且必须作为新 run work 重新确认 git/root/status 和 v1.2 task pack / roadmap，并在上传前对齐最新 `origin/main`、复跑 validators、治理 validator 和安全扫描；不得直接进入 S15、lineage full check、正式报告或自动接口。
+下一步只执行 `S15-P1｜销售绩效事实与复核清单`，且必须作为新 run work 重新确认 git/root/status 和 v1.2 task pack / roadmap；不得直接进入 lineage full check、正式报告或自动接口。

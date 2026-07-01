@@ -396,10 +396,9 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S14_P3_COMPLETED_LOCAL_ONLY_NO_STAGE14_REVIEW_OR_GITHUB_UPLOAD"
-  release_gate: "KMFA-S14-STAGE-REVIEW-GATE"
+  status: "S14_UPLOADED_TO_GITHUB_MAIN_S15_NOT_STARTED"
+  release_gate: "KMFA-S15-P1-GATE"
   blocker_ids:
-    - "S14_STAGE_REVIEW_UPLOAD_NOT_COMPLETE"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"
     - "REPORT_GRADE_D_BLOCKS_BUSINESS_DECISION"

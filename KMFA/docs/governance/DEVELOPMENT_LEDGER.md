@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s14-stage-review
+product_version: 0.1.0-s14-github-upload
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S14`
-- current_phase: `Stage 14 整体复审｜已完成本地验证`
-- current_tasks: `KMFA-S14-STAGE-REVIEW-20260701`
-- status: `review_passed_upload_ready_local_only`
+- current_stage: `S15`
+- current_phase: `S15-P1｜待开始`
+- current_tasks: `KMFA-S15-P1-GATE`
+- status: `stage14_uploaded_to_github_main_s15_not_started`
 - risk_tier: `T3`
 
 ## Completed
@@ -94,16 +94,17 @@ product_version: 0.1.0-s14-stage-review
 | `S14PBT01-S14PBT03` | S14-P2 开票纳税完成本地验证：生成 3 条 public-safe source lane、3 条开票纳税候选、3 条资金汇总、1 个 HTML overview、manifest 和 validator；报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、纳税申报、发票开具、Stage 14 review 和 GitHub upload | `KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/s14_p2_completion_record.md` |
 | `S14PCT01-S14PCT03` | S14-P3 政策证据完成本地验证：登记科小、高新、专精特新、小巨人、研发费用 5 类 public-safe 政策证据目录，输出 5 条证据缺口、5 条风险提示、1 个 HTML overview、manifest 和 validator；报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、正式政策资格结论、政策申报、Stage 14 review 和 GitHub upload | `KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/s14_p3_completion_record.md` |
 | `KMFA-S14-STAGE-REVIEW-20260701` | Stage 14 整体复审本地通过；复跑 S14-P1/P2/P3 validators、`check_s14_stage_review.py`、全量 191 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency；复审步骤未执行 GitHub upload、S15、lineage full check、正式报告、差异关闭、付款、银行、贷款管理、开票、纳税申报、政策申报、补贴申请或外部接口 | `KMFA/stage_artifacts/S14_STAGE_REVIEW/human/stage14_review_report.md` |
+| `KMFA-S14-GITHUB-UPLOAD-20260701` | Stage 14 final GitHub upload 完成；基于最新 origin/main rebase Stage 14 栈，复跑 S14 validators、Stage 14 review validator、全量 191 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、dry-run push、push 和 post-push parity；未执行 S15、lineage full check、正式报告或业务执行动作 | `KMFA/stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `Stage 14 GitHub upload` | 待下一轮 run work 开始；必须基于最新 origin/main 复跑 S14-P1/S14-P2/S14-P3 validators、Stage 14 review validator、治理 validator、raw/secret scan 和证据一致性检查，保留 dry-run push、push 和 post-push parity 证据 | `KMFA/docs/governance/roadmap.yaml` |
+| `S15-P1` | 待下一轮 run work 开始；必须重新确认 git/root/status、读取 v1.2 task pack / roadmap，并继续保持 D 级报告、pending reconciliation、lineage 和 public-safe 边界 | `KMFA/docs/governance/roadmap.yaml` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 14 GitHub upload | 尚未开始；S14-P1/P2/P3 和 Stage 14 review 已本地完成，但还必须整体上传 GitHub | 下一轮只执行 Stage 14 GitHub upload |
+| S15-P1 销售绩效事实与复核清单 | 尚未开始；Stage 14 已完成 review/upload，但 S15 仍需按一个 phase 独立执行 | 下一轮只执行 S15-P1 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

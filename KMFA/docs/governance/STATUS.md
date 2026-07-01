@@ -102,10 +102,11 @@
 - S14-P1 资金计划现金贷款已完成本地验证：`KMFA/tools/fund_cash_loan_plan.py`、`KMFA/tools/check_s14_p1_fund_cash_loan_plan.py`、`KMFA/tests/test_fund_cash_loan_plan.py`、`KMFA/metadata/reports/fund_cash_loan_plan_manifest.json`、`KMFA/metadata/reports/fund_cash_loan_source_lanes.jsonl`、`KMFA/metadata/reports/fund_cash_pressure_signals.jsonl`、`KMFA/metadata/reports/loan_due_alerts.jsonl`、`KMFA/metadata/reports/account_balance_summaries.jsonl` 和 `KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/` 已生成；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、付款审批、银行操作和贷款管理动作。
 - S14-P2 开票纳税已完成本地验证：`KMFA/tools/invoice_tax_plan.py`、`KMFA/tools/check_s14_p2_invoice_tax_plan.py`、`KMFA/tests/test_invoice_tax_plan.py`、`KMFA/metadata/reports/invoice_tax_plan_manifest.json`、`KMFA/metadata/reports/invoice_tax_source_lanes.jsonl`、`KMFA/metadata/reports/invoice_tax_issue_candidates.jsonl`、`KMFA/metadata/reports/invoice_tax_cash_summaries.jsonl` 和 `KMFA/stage_artifacts/S14_P2_invoice_tax_plan/` 已生成；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、纳税申报和发票开具动作。
 - S14-P3 政策证据已完成本地验证：`KMFA/tools/policy_evidence_plan.py`、`KMFA/tools/check_s14_p3_policy_evidence_plan.py`、`KMFA/tests/test_policy_evidence_plan.py`、`KMFA/metadata/reports/policy_evidence_plan_manifest.json`、`KMFA/metadata/reports/policy_evidence_directories.jsonl`、`KMFA/metadata/reports/policy_evidence_gaps.jsonl`、`KMFA/metadata/reports/policy_risk_tips.jsonl` 和 `KMFA/stage_artifacts/S14_P3_policy_evidence_plan/` 已生成；覆盖科小、高新、专精特新、小巨人、研发费用 5 类证据目录，只输出证据缺口和风险提示，不输出正式政策资格结论。
+- Stage 14 整体复审和 final GitHub upload 已完成：`KMFA/stage_artifacts/S14_STAGE_REVIEW/`、`KMFA/stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S14_GITHUB_UPLOAD/machine/stage14_upload_manifest.json` 记录 validators、安全扫描、dry-run push、push 和 post-push parity。
 
 ## 未完成
 
-- Stage 14 整体复审、Stage 14 GitHub upload、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S14-P1/S14-P2/S14-P3 仅为 public-safe 资金、现金、贷款、开票、纳税和政策证据缺口闭环，不代表正式报告、正式政策资格结论或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S14-P1/S14-P2/S14-P3 仅为 public-safe 资金、现金、贷款、开票、纳税和政策证据缺口闭环，不代表正式报告、正式政策资格结论或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
