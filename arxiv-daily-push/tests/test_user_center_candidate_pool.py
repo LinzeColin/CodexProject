@@ -168,6 +168,12 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1", page)
         self.assertIn("502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe", page)
         self.assertIn("26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c", page)
+        self.assertIn("REQ-ADP-V7-082-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST", page)
+        self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST", page)
+        self.assertIn("daily_operation_persistent_enablement_authorization.request.json", page)
+        self.assertIn("ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json", page)
+        self.assertIn("ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement", page)
+        self.assertIn("request_only=true", page)
         self.assertIn("94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9", page)
         self.assertIn("6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f", page)
 

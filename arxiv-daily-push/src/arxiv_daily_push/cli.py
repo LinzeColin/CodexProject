@@ -140,6 +140,7 @@ from .stage2_final_gate import (
     build_integrated_production_acceptance_write_gate_state,
     build_daily_operation_authorization_preflight_state,
     build_daily_operation_owner_authorization_decision_state,
+    build_daily_operation_persistent_authorization_request_state,
     build_daily_operation_persistent_enablement_authorization_state,
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
@@ -177,6 +178,7 @@ from .stage2_final_gate import (
     validate_integrated_production_acceptance_write_gate_state,
     validate_daily_operation_authorization_preflight_state,
     validate_daily_operation_owner_authorization_decision_state,
+    validate_daily_operation_persistent_authorization_request_state,
     validate_daily_operation_persistent_enablement_authorization_state,
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
@@ -2123,6 +2125,36 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON owner decision state.",
+    )
+
+    daily_operation_persistent_request = subparsers.add_parser(
+        "daily-operation-persistent-authorization-request",
+        help="Build the owner request packet for persistent DAILY_OPERATION authorization without enabling runtime.",
+    )
+    daily_operation_persistent_request.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing FINAL_ACCEPTANCE_BUNDLE and ADP governance artifacts.",
+    )
+    daily_operation_persistent_request.add_argument(
+        "--generated-at",
+        required=True,
+        help="Timestamp to embed in the persistent daily-operation authorization request.",
+    )
+    daily_operation_persistent_request.add_argument(
+        "--artifact-path",
+        default="FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json",
+        help="Request artifact path to write when --write is set.",
+    )
+    daily_operation_persistent_request.add_argument(
+        "--write",
+        action="store_true",
+        help="Write the request artifact after validation succeeds.",
+    )
+    daily_operation_persistent_request.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON persistent authorization request state.",
     )
 
     daily_operation_persistent_auth = subparsers.add_parser(
@@ -5315,6 +5347,44 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(report["status"])
             print(f"- decision: {report.get('decision')}")
+            print(f"- persistent_daily_operation_authorized: {report.get('persistent_daily_operation_authorized')}")
+            print(f"- daily_operation_enabled: {report.get('daily_operation_enabled')}")
+            print(f"- next_required_step: {report.get('next_required_step')}")
+            print(f"- artifact_written: {artifact_written}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors else 2
+    if args.command == "daily-operation-persistent-authorization-request":
+        repo_root = Path(args.repo_root)
+        report = build_daily_operation_persistent_authorization_request_state(
+            generated_at=args.generated_at,
+            repo_root=repo_root,
+            request_artifact_ref=args.artifact_path,
+        )
+        errors = validate_daily_operation_persistent_authorization_request_state(report)
+        artifact_written = False
+        artifact_path = Path(args.artifact_path)
+        resolved_artifact_path = artifact_path if artifact_path.is_absolute() else repo_root / artifact_path
+        if args.write and not errors:
+            resolved_artifact_path.parent.mkdir(parents=True, exist_ok=True)
+            resolved_artifact_path.write_text(
+                json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            artifact_written = True
+        output = {
+            **report,
+            "daily_operation_persistent_authorization_request_validation_errors": errors,
+            "artifact_written": artifact_written,
+            "artifact_write_path": str(resolved_artifact_path),
+        }
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- request_only: {report.get('request_only')}")
             print(f"- persistent_daily_operation_authorized: {report.get('persistent_daily_operation_authorized')}")
             print(f"- daily_operation_enabled: {report.get('daily_operation_enabled')}")
             print(f"- next_required_step: {report.get('next_required_step')}")

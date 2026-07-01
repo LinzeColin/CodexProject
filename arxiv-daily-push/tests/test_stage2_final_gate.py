@@ -7089,6 +7089,74 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_state(tampered),
         )
 
+    def test_daily_operation_persistent_authorization_request_is_request_only(self) -> None:
+        build_state = getattr(
+            stage2_final_gate_module,
+            "build_daily_operation_persistent_authorization_request_state",
+            None,
+        )
+        validate_state = getattr(
+            stage2_final_gate_module,
+            "validate_daily_operation_persistent_authorization_request_state",
+            None,
+        )
+        self.assertIsNotNone(build_state, "daily operation persistent authorization request builder must exist")
+        self.assertIsNotNone(validate_state, "daily operation persistent authorization request validator must exist")
+
+        state = build_state(generated_at="2026-07-01T22:20:00+10:00")
+
+        self.assertEqual(state["schema_version"], "adp.daily_operation_persistent_authorization_request.v1")
+        self.assertEqual(
+            state["task_id"],
+            "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST",
+        )
+        self.assertEqual(
+            state["status"],
+            "ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement",
+        )
+        self.assertTrue(state["request_only"])
+        self.assertFalse(state["owner_daily_operation_authorization_recorded"])
+        self.assertFalse(state["persistent_daily_operation_authorized"])
+        self.assertFalse(state["daily_operation_enablement_allowed_by_this_request"])
+        self.assertEqual(
+            state["request_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json",
+        )
+        self.assertEqual(
+            state["would_be_authorization_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+        )
+        self.assertEqual(
+            state["next_required_step"],
+            "OWNER_DECIDES_WHETHER_TO_CREATE_EXPLICIT_PERSISTENT_DAILY_OPERATION_AUTHORIZATION",
+        )
+        self.assertEqual(
+            state["next_executable_task"],
+            "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
+        )
+        self.assertIn("persistent_daily_operation_authorization_missing", state["blocking_reasons"])
+        self.assertTrue(state["checks"]["persistent_authorization_artifact_missing"])
+        self.assertTrue(state["checks"]["mainline_gate_attested"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["release_packaging_enabled"])
+        self.assertFalse(state["production_restore_enabled"])
+        self.assertEqual(validate_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["request_only"] = False
+        self.assertIn(
+            "daily operation persistent authorization request must be request_only",
+            validate_state(tampered),
+        )
+        tampered = json.loads(json.dumps(state))
+        tampered["daily_operation_enabled"] = True
+        self.assertIn(
+            "daily operation persistent authorization request must not enable daily_operation_enabled",
+            validate_state(tampered),
+        )
+
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:
         blocker = "independent_final_command_execution_missing"
         report = build_s2pmt07_precheck_report(generated_at="2026-06-27T02:59:04+10:00")

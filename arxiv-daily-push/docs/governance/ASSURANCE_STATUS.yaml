@@ -1,11 +1,11 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION"
-source_snapshot_hash: "sha256:4ed71ab1eb0bd357749d8d9fb605cd6ca50b9954e955759667f1ea3c2f721ecc"
+as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST"
+source_snapshot_hash: "sha256:9a7923506eb403fa07e31d1247a204b8aa33f42d66ac1d8484b05e6565cc96dc"
 source_base_commit: "f8e34c0ce3919945ca055dd781332128c72dfc4a"
 source_tree_hash: "21090213e25901ab8342dbd710c64da57bd619b7"
-snapshot_event_time: "2026-07-01T21:59:44+10:00"
+snapshot_event_time: "2026-07-01T22:22:48+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "COMMIT_BOUND:f8e34c0ce3919945ca055dd781332128c72dfc4a"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -58,7 +58,7 @@ dimensions:
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    tree_bound_events: 12
+    tree_bound_events: 13
     commit_bound_events: 8
     legacy_unbound_events: 330
     precommit_pending_events: 40
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT"
+  release_gate: "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_READY_NO_RUNTIME_ENABLEMENT"
   blocker_ids: []
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
@@ -86,13 +86,13 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
   status: "blocked"
-  reason: "Persistent DAILY_OPERATION authorization gate has run and is blocked because FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json does not exist. Runtime remains disabled."
+  reason: "Persistent DAILY_OPERATION authorization request packet is ready, but it is request-only. FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json still does not exist, so runtime remains disabled."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
     - "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"
   owner: "content_owner + engineering_owner"
   human_owner_role: "content_owner + engineering_owner"
-  unblock_condition: "Provide a new explicit owner persistent DAILY_OPERATION authorization artifact, then run a separate enablement preflight while keeping SMTP, scheduler, Release, restore, and DAILY_OPERATION disabled until that gate passes."
+  unblock_condition: "Owner must either keep DAILY_OPERATION disabled or create a separate explicit persistent DAILY_OPERATION authorization artifact, then run the persistent authorization gate and a separate enablement preflight while SMTP, scheduler, Release, restore, and DAILY_OPERATION remain disabled until those gates pass."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -100,25 +100,25 @@ next_executable_task:
 owner_decision:
   required: true
   decision_id: "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701"
-  review_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
+  review_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST"
   project_id: "arxiv-daily-push"
-  decision_question: "持久 DAILY_OPERATION 授权门已运行但阻断；是否提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，或继续保持禁用。"
-  question: "持久 DAILY_OPERATION 授权门已运行但阻断；是否提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，或继续保持禁用。"
+  decision_question: "持久 DAILY_OPERATION 授权请求包已准备好；是否创建新的显式 owner 持久 DAILY_OPERATION 授权 artifact，或继续保持禁用。"
+  question: "持久 DAILY_OPERATION 授权请求包已准备好；是否创建新的显式 owner 持久 DAILY_OPERATION 授权 artifact，或继续保持禁用。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY"
-  current_recommendation: "A: Persistent DAILY_OPERATION authorization gate is blocked because the explicit owner authorization artifact is missing. Keep DAILY_OPERATION disabled; do not enable SMTP, scheduler, Release, restore, or persistent operation until that artifact exists and a separate enablement preflight passes."
-  option_a: "继续保持 DAILY_OPERATION 禁用；不启用 SMTP、scheduler、Release 或 production restore。"
-  option_b: "若 owner 明确授权持久 DAILY_OPERATION，则提交 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，再跑单独 enablement preflight。"
-  option_c: "禁止把一次受控运行验收或 keep-disabled 决策当作持久运行授权。"
+  current_recommendation: "A: Persistent DAILY_OPERATION authorization request packet is ready, but it is request-only and does not authorize runtime. Keep DAILY_OPERATION disabled unless the owner creates a separate explicit authorization artifact, then rerun the persistent authorization gate and a separate enablement preflight."
+  option_a: "继续保持 DAILY_OPERATION 禁用；不创建授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。"
+  option_b: "若 owner 明确授权持久 DAILY_OPERATION，则提交 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，再跑 persistent authorization gate 和单独 enablement preflight。"
+  option_c: "禁止把 request artifact、一次受控运行验收或 keep-disabled 决策当作持久运行授权。"
   options:
-    - "继续保持 DAILY_OPERATION 禁用；不启用 SMTP、scheduler、Release 或 production restore。"
-    - "若 owner 明确授权持久 DAILY_OPERATION，则提交 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，再跑单独 enablement preflight。"
-    - "禁止把一次受控运行验收或 keep-disabled 决策当作持久运行授权。"
+    - "继续保持 DAILY_OPERATION 禁用；不创建授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。"
+    - "若 owner 明确授权持久 DAILY_OPERATION，则提交 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，再跑 persistent authorization gate 和单独 enablement preflight。"
+    - "禁止把 request artifact、一次受控运行验收或 keep-disabled 决策当作持久运行授权。"
   estimated_effort: "P0/P1; production boundary safety review; owner decision; no-production proof verification"
   estimated_cost_or_resource: "local development and GitHub main evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "把已通过的 final bundle 状态与生产边界状态分开，避免重复 S2PLT04，同时阻止误启生产。"
   principal_risks: "将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement"
-  evidence_required: "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json, persistent_daily_operation_authorization_missing, FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+  evidence_required: "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json, FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
   decision_deadline_or_priority: "P0"
   consequence_of_no_decision: "Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。"
   unblock_task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
