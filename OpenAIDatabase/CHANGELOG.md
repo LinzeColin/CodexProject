@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 6.1 Shared State Store
+
+- Added a typed shared-state reducer for Memory Atlas selection, filter, time
+  range and focus sync.
+- The shared state now records selected node, cluster, record, time range,
+  contribution period, signal, data source, layer/tier, theme and ROI filter
+  schema fields.
+- Home, Galaxy, Timeline, Inspector and ROI Dashboard now expose the same
+  shared focus target contract instead of relying only on isolated local
+  state.
+- Added `validate:shared-state` and extended visual acceptance with
+  `stage6_1_shared_state_store_ready`.
+
+No Stage 6.2 Inspector proposal work, raw/private data access, direct active
+memory writeback, Cloudflare live deploy, or external account operation was
+added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 5 Whole-Stage Review
 
 - Completed the Stage 5 whole-stage review across Memory River rendering,

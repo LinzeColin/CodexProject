@@ -1,6 +1,6 @@
 # Memory Atlas Project Model Parameters
 
-更新时间：2026-06-19
+更新时间：2026-07-01
 
 本文件定义 Memory Atlas 当前真实使用的模型假设、输入、处理方法、输出、公式、函数、阈值、门槛和迭代策略。它不是功能清单，也不是开发记录。功能、交付运行方式、验收标准和历史过程记录见 `docs/MEMORY_ATLAS_DELIVERY_RECORD.md`。
 
@@ -305,7 +305,76 @@
 - 后续 agent apply 时必须重新读取数据库、冲突检测、写 proposal history、git commit。
 - 若 active memory 已有更新版本，必须先生成冲突报告，不能静默覆盖。
 
-## 8. 情绪分模型
+## 8. Shared State Store 状态模型
+
+模型假设：
+
+- Memory Atlas 的各板块不应各自重复维护 selection、filter、time range
+  和 focus 状态；否则 Home、Galaxy、Timeline、Inspector、ROI Dashboard 会
+  产生不一致焦点。
+- 全局状态必须小而显式，只记录可解释 identity 和 filter schema，不保存
+  raw transcript、secret、完整数据库对象或不可回滚写入。
+- 视图只能通过显式 action 更新 shared state，派生视图读取 state，避免双向
+  effect 循环。
+
+输入：
+
+- `activeView`
+- selected `AtlasNode`
+- Timeline brush `SharedTimelineTimeRangeSelection`
+- Atlas filter fields: `query`, `source`, `tier`, `category`, `theme`
+- ROI filter schema field: `roi`
+- contribution period identity and summary metrics
+
+处理方法：
+
+- `sharedAtlasReducer` 接收 `select_node`、`select_time_range`、
+  `clear_time_range`、`set_filters`、`set_filter`、`clear_filter`、
+  `reset_filters`、`select_contribution_period`、`switch_view` 和
+  `clear_focus` action。
+- `selectionFromNode` 只提取 `nodeId`、`nodeKind`、`clusterId`、`recordId`
+  和当前 `timeRangeId`。
+- `focusFromSelection` 把同一 `SharedAtlasFocusTarget` 投射给 Home、Galaxy、
+  Timeline、Inspector 和 ROI Dashboard。
+- `clearSharedAtlasFilter` 只清理指定 filter；例如清理 `source` 不会同时清理
+  `tier`、`category` 或 `theme`。
+
+参数与失败条件：
+
+- `schema_version = memory_atlas_shared_state.v1`
+- `loopGuard.mode = single-dispatch-reducer`
+- `loopGuard.derivedViews = read-only`
+- 默认 Atlas filters：
+  - `query = ""`
+  - `source = "all"`
+  - `tier = "all"`
+  - `category = "all"`
+  - `theme = "all"`
+- 默认 ROI filter：`roi = "all"`
+- 失败条件：
+  - action 后 `focus.home`、`focus.galaxy`、`focus.timeline`、
+    `focus.inspector`、`focus.roiDashboard` 不一致。
+  - 清理单个 filter 改动了其它 filter 或旧 state object。
+  - UI 直接写 active memory，而不是生成 proposal。
+
+输出：
+
+- `SharedAtlasState`
+- `SharedAtlasSelectionState`
+- `SharedAtlasFilterState`
+- `SharedAtlasFocusState`
+- `sync.revision`、`sync.updatedBy`、`sync.lastAction`
+- Home、Galaxy、Timeline、Inspector 的 `data-shared-*` contract。
+
+迭代规则：
+
+- Stage 6.2 可以从 shared state 读取 Inspector explanation/proposal
+  所需焦点，但不得直接写长期记忆。
+- 新增 filter 时先进入 `SharedAtlasFilterState` 和 validator，再接 UI。
+- 如果后续出现跨板块循环更新，优先收紧 reducer action，而不是增加组件内
+  effect 同步。
+
+## 9. 情绪分模型
 
 状态：当前未实现。
 
@@ -328,7 +397,7 @@
 - `friction_score = correction_count * 3 + repeated_requirement_count * 2 + abort_count * 2 + error_event_count + explicit_negative_feedback * 4`
 - 需要人工验证样本后才能进入正式模型参数。
 
-## 9. 质量门槛模型
+## 10. 质量门槛模型
 
 模型假设：
 
