@@ -2,11 +2,11 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
-- source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
+- source_base_commit: `fa91a3cccf4204c4d902fb54adb17561ca58c6ec`
+- source_tree_hash: `2d52c91fa61298c3a314dde3d6b4d21d4fe50949`
 - source_snapshot_hash: `sha256:b3c0f505dc442012d6075297e33ac6c72aaa49b81b93d4b214e2e92b1a838ba4`
-- snapshot_event_time: `2026-07-01T13:16:19+10:00`
-- generator_version: `4.0.0`
+- snapshot_event_time: `2026-07-01T14:49:29+10:00`
+- generator_version: `4.0.1`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE`
+- Phase/Gate: `S2PL / S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC_READY_NO_PRODUCTION_ACCEPTANCE`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -34,20 +34,21 @@
 
 ## Delivery
 
-- Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE`
+- Readiness: `BLOCKED_PRODUCTION_BOUNDARY`
+- Release gate: `S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC_READY_NO_PRODUCTION_ACCEPTANCE`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
 - V7.1 parallel audit: `ADP-V7.2-FINAL-BASELINE-REVIEW`
 - V7.1 audit hash: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
-- Open audit blockers: `P0=8 / P1=37`
-- Production-forbidden until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed`
+- Historical V7.1 baseline findings: `P0=8 / P1=37`
+- Current zero-proof open findings: `P0=0 / P1=0`
+- Production-forbidden until: `INTEGRATED_PRODUCTION_ACCEPTED written with evidence; owner production boundary decision recorded; production safety preflight passes`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
 - Next governance task: `S2PMT07`
-- Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
-- Next executable task: `S2PMT07-S2PLT04-COMPLETION-REPORT`
+- Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
+- Next executable task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`
 - Pending/stale events: `363`
 - Tree-bound events: `1`
 - Commit-bound events: `4`

@@ -2,39 +2,39 @@
 
 ## 1. 当前结论
 
-arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `VERIFIED` / `VERIFIED`，交付状态为 `BLOCKED_PRECHECK`；这不是生产上线声明。
+arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `VERIFIED` / `VERIFIED`，交付状态为 `BLOCKED_PRODUCTION_BOUNDARY`；final bundle artifact chain 已通过，但这仍不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+本轮把动态治理状态从旧的 `S2PLT04 completion report missing` 同步到 `S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC_READY_NO_PRODUCTION_ACCEPTANCE`。`FINAL_ACCEPTANCE_BUNDLE/manifest.json` 已通过 validator，`missing_items=[]`，S2PLT04 completion report、final command execution、next-agent handoff、independent signoff、no-production attestation 和 P0/P1 zero proof 都是 pass。
 
 ## 3. 为什么重要
 
-在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下聚焦 S2PMT07 独立终审、P0/P1 零证明、S2PLT04 完成和最终验收包证据。
+后续 agent 不应再重复构建 S2PLT04/final bundle 缺失件，也不能把 final bundle ready 误读成 `INTEGRATED_PRODUCTION_ACCEPTED`。当前正确下一步是生产验收边界预检与 owner 决策证据。
 
 ## 4. 需要人类决定什么
 
-- decision_id: `DEC-ADP-V7-2-CURRENT-20260624`
-- decision_question: 是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。
+- decision_id: `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701`
+- decision_question: 是否在最终验收包已通过且 no-production 边界仍有效的前提下，进入 `INTEGRATED_PRODUCTION_ACCEPTED` 生产验收边界预检。
 - human_owner_role: `content_owner + engineering_owner`
-- human_assignment_status: `CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT`
+- human_assignment_status: `CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY`
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the validated independent reviewer assignment, P0/P1 zero-proof artifact, FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json, and FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json as existing no-production final-bundle inputs; do not re-run S2PLT02 SMTP/scheduler capture or S2PLT03 resilience proof; next build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json before final bundle manifest, independent final signoff, final command execution proof, no-production attestation closure, and next-agent handoff.
-- estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
-- estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat FINAL_ACCEPTANCE_BUNDLE/manifest.json and missing_items=[] as validated no-production final-bundle evidence; do not rebuild S2PLT04/final-bundle artifacts and do not enable SMTP, scheduler, Release, restore, or DAILY_OPERATION until production boundary evidence is explicitly written.
+- estimated_effort: P0/P1; production boundary safety review; owner decision; no-production proof verification
+- estimated_cost_or_resource: local development and GitHub main evidence; no GitHub cloud scheduled production runner
 
 ## 6. 不决策后果
 
-Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift.
+Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 `DAILY_OPERATION`。
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`
+- next_task_id: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`
 - responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
-- acceptance_ids: `ACC-S2PLT04-COMPLETION, ACC-S2PMT07-FINAL-REVIEW`
-- unblock_condition: Build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json without enabling SMTP, scheduler, Release, restore, public schema changes, or production acceptance.
+- acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW, ACC-S2PL-INTEGRATED-PRODUCTION`
+- unblock_condition: Review final bundle, no-production attestation, LaunchAgent disabled state, persistent `ADP_ALLOW_SMTP_SEND=false`, open_pr_count=0, and owner production-boundary decision before writing `INTEGRATED_PRODUCTION_ACCEPTED` evidence.
 
 ## 8. 九层 Assurance 状态
 
@@ -46,24 +46,24 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - operational_validation: `VERIFIED`
 - delivery_evidence: `VERIFIED`
 - evidence_freshness: `PARTIAL`
-- delivery_readiness: `BLOCKED_PRECHECK`
+- delivery_readiness: `BLOCKED_PRODUCTION_BOUNDARY`
 
 ## 9. A/B/C Choice Matrix
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the validated independent reviewer assignment, P0/P1 zero-proof artifact, FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json, and FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json as existing no-production final-bundle inputs; do not re-run S2PLT02 SMTP/scheduler capture or S2PLT03 resilience proof; next build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json before final bundle manifest, independent final signoff, final command execution proof, no-production attestation closure, and next-agent handoff. | 继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 与 S2PLT03 terminal resilience proof 均已作为 no-production 输入通过，默认下一步只构建、独立复审并验证 S2PLT04 completion report，保持 final bundle/production gate 阻断。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701` | A: keep final bundle ready as no-production evidence and run production-boundary preflight only. | 继续 S2PMT07 final bundle 后的生产边界预检；保持 no-production flags，不自动启用 SMTP/scheduler/Release/DAILY_OPERATION。 | 暂停在 final bundle ready 状态，等待 owner 手动决策。 | 越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。 | Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。 |
 
 ## 10. Current Blockers
 
-1. S2PLT01 terminal acceptance, S2PLT02 two-day/eight-email/scheduler terminal proof, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence
-2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
-3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
+1. `INTEGRATED_PRODUCTION_ACCEPTED` 尚未写入证据。
+2. `DAILY_OPERATION` 尚未启用，且不得由本状态同步自动启用。
+3. 生产边界预检仍需再次证明 no-production flags、LaunchAgents disabled、持久 `ADP_ALLOW_SMTP_SEND=false`、open PR count 0、owner 决策证据。
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: S2PLT01 terminal acceptance, S2PLT02 two-day/eight-email/scheduler terminal proof, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 validate-final-command-execution CLI validator、P0/P1 zero-proof artifact validation、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除
+- evidence_required: `FINAL_ACCEPTANCE_BUNDLE/manifest.json` pass, no-production side-effect attestation pass, launchd disabled proof, persistent `ADP_ALLOW_SMTP_SEND=false`, open_pr_count=0, owner production-boundary decision
+- principal_risks: 将 final bundle ready 误读为 `INTEGRATED_PRODUCTION_ACCEPTED`、`DAILY_OPERATION`、真实 SMTP 自动发送、scheduler install 或 Release enablement
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
@@ -77,8 +77,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 13. Tests And Acceptance
 
-- required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE`
+- required_commands: `validate_project_governance --project arxiv-daily-push`; `validate_governance_sync`; `validate-final-bundle-manifest`; `verify_acceptance_bundle --require-zero P0 P1`
+- release_gate: `S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC_READY_NO_PRODUCTION_ACCEPTANCE`
 
 ## 14. Evidence Freshness
 
@@ -95,15 +95,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 16. 技术元数据
 
-- source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
-- source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
+- source_base_commit: `fa91a3cccf4204c4d902fb54adb17561ca58c6ec`
+- source_tree_hash: `2d52c91fa61298c3a314dde3d6b4d21d4fe50949`
 - source_snapshot_hash: `sha256:b3c0f505dc442012d6075297e33ac6c72aaa49b81b93d4b214e2e92b1a838ba4`
-- snapshot_event_time: `2026-07-01T13:16:19+10:00`
-- generator_version: `4.0.0`
+- snapshot_event_time: `2026-07-01T14:49:29+10:00`
+- generator_version: `4.0.1`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE`
+- phase/gate: `S2PL / S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC_READY_NO_PRODUCTION_ACCEPTANCE`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`
-- reason: S2PLT01 terminal acceptance, S2PLT02 terminal delivery proof, S2PLT03 terminal resilience proof, independent reviewer assignment, and P0/P1 zero-proof artifacts are validated as no-production final-bundle inputs; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed.
+- task_id: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`
+- reason: Final bundle artifact chain is validated with `missing_items=[]`, while `integrated_production_accepted=false` and `daily_operation_enabled=false`; next work must be production-boundary preflight and owner decision evidence, not another S2PLT04/final-bundle artifact build.

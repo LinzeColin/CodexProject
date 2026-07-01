@@ -9456,7 +9456,26 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertEqual(s2plt04_next_task["task_id"], "S2PMT07-S2PLT04-COMPLETION-REPORT")
         self.assertIn("S2PLT04 completion report", s2plt04_next_task["reason"])
-        self.assertEqual(s2plt04_next_task["acceptance_ids"], ["ACC-S2PMT07-FINAL-REVIEW"])
+        self.assertEqual(
+            s2plt04_next_task["acceptance_ids"],
+            ["ACC-S2PLT04-COMPLETION", "ACC-S2PMT07-FINAL-REVIEW"],
+        )
+        post_final_bundle_next_task = dashboard.adp_s2pmt07_blocked_next_task(
+            matrix={
+                "current_iteration": "ITER-20260701-ADP-S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC",
+                "current_gate": "S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC_READY_NO_PRODUCTION_ACCEPTANCE",
+                "current_v7_legacy_alias": "final bundle artifact chain complete",
+            }
+        )
+        self.assertEqual(
+            post_final_bundle_next_task["task_id"],
+            "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT",
+        )
+        self.assertIn("production-boundary preflight", post_final_bundle_next_task["reason"])
+        self.assertEqual(
+            post_final_bundle_next_task["acceptance_ids"],
+            ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"],
+        )
         s2plt02_terminal_next_task = dashboard.adp_s2pmt07_blocked_next_task(
             matrix={
                 "current_iteration": "ITER-20260630-ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE",

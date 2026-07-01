@@ -21,11 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 327
-- acceptance_count: 127
+- task_count: 328
+- acceptance_count: 128
 
 ## Delivery Tasks
 
+## 2026-07-01 14:49:29 Australia/Sydney - S2PMT07 post-final-bundle current-state sync
+
+- Task: `S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC`
+- Result: `pass_final_bundle_current_state_synced_no_production_acceptance`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC.md`; `FINAL_ACCEPTANCE_BUNDLE/manifest.json`.
+- Current final-bundle state: manifest validator `status=pass`; `missing_items=[]`; `manifest_validation_state_hash=558ec135fde8912868be73fe472c39bdd3a99f2038500eae15cb70baef470762`; readiness `state_hash=2e37a815934c84ffb08b79df572ec058081cfabb3fbbd4e8a2aba3630de36e4c`; prerequisite plan `state_hash=a05ed0633ecf8dbd0b1fd93e82b2ad568886544465b5be488ac043f7849ce87b`.
+- Current blocker: `INTEGRATED_PRODUCTION_ACCEPTED` is not written and `DAILY_OPERATION` is not enabled. The next task is `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`, not rebuilding S2PLT04/final-bundle artifacts.
+- Production boundary: No SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, or Stage2/S3 production acceptance is introduced by this sync.
 
 ## 2026-07-01 08:37:20 Australia/Sydney - S2PLT02 terminal scheduler blocker sync
 

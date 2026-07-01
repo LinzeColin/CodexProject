@@ -146,6 +146,12 @@ def adp_s2pmt07_blocked_next_task(
     current_iteration = str(matrix.get("current_iteration") or "")
     current_gate = str(matrix.get("current_gate") or "")
     current_alias = str(matrix.get("current_v7_legacy_alias") or "")
+    final_bundle_chain_ready = (
+        "POST-FINAL-BUNDLE-CURRENT-STATE-SYNC" in current_iteration
+        or "POST_FINAL_BUNDLE_CURRENT_STATE_SYNC" in current_gate
+        or "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE" in current_gate
+        or "final bundle artifact chain complete" in current_alias.lower()
+    )
     completion_report_is_next = (
         "S2PLT04-COMPLETION-REPORT" in current_iteration
         or "S2PLT04_COMPLETION_REPORT" in current_gate
@@ -189,6 +195,26 @@ def adp_s2pmt07_blocked_next_task(
         or "real-proof capture" in current_alias
         or "real proof capture" in current_alias
     )
+    if final_bundle_chain_ready:
+        return {
+            "task_id": "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT",
+            "status": "blocked",
+            "reason": (
+                "The S2PMT07 final acceptance bundle artifact chain is complete and "
+                "validates with missing_items=[] while production acceptance remains false. "
+                "The next action is a production-boundary preflight and owner decision, "
+                "not rebuilding S2PLT04 or enabling SMTP/scheduler/Release automatically."
+            ),
+            "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "Review the final bundle, no-production attestation, LaunchAgent disabled "
+                "state, persistent ADP_ALLOW_SMTP_SEND=false state, and owner production "
+                "boundary decision before writing INTEGRATED_PRODUCTION_ACCEPTED evidence."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
     if completion_report_is_next or s2plt03_terminal_resilience_accepted:
         return {
             "task_id": "S2PMT07-S2PLT04-COMPLETION-REPORT",
@@ -318,6 +344,12 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     current_iteration = str(matrix.get("current_iteration") or "")
     current_gate = str(matrix.get("current_gate") or "")
     current_alias = str(matrix.get("current_v7_legacy_alias") or "")
+    final_bundle_chain_ready = (
+        "POST-FINAL-BUNDLE-CURRENT-STATE-SYNC" in current_iteration
+        or "POST_FINAL_BUNDLE_CURRENT_STATE_SYNC" in current_gate
+        or "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE" in current_gate
+        or "final bundle artifact chain complete" in current_alias.lower()
+    )
     s2plt02_terminal_delivery_ready = (
         "S2PLT02_TERMINAL_DELIVERY_PROOF_READY" in current_gate
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
@@ -384,6 +416,16 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     ):
         capture_window_runtime_clause = (
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
+        )
+    if final_bundle_chain_ready:
+        return (
+            "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
+            "the validated S2PMT07 final acceptance bundle as complete no-production "
+            "evidence with FINAL_ACCEPTANCE_BUNDLE/manifest.json passing and "
+            "missing_items=[]; do not rebuild S2PLT04/final-bundle artifacts, do not "
+            "enable SMTP, scheduler, Release, restore, or DAILY_OPERATION, and next run "
+            "only the integrated production acceptance boundary preflight plus owner "
+            "decision evidence before any INTEGRATED_PRODUCTION_ACCEPTED claim."
         )
     if s2plt03_terminal_resilience_ready:
         return (
@@ -1029,7 +1071,19 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             owner_decision[key] = value
     if adp_s2pmt07_current:
         owner_decision["current_recommendation"] = adp_s2pmt07_current_recommendation(matrix)
-        if "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY" in str(matrix.get("current_gate") or ""):
+        current_gate_text = str(matrix.get("current_gate") or "")
+        current_iteration_text = str(matrix.get("current_iteration") or "")
+        if (
+            "POST_FINAL_BUNDLE_CURRENT_STATE_SYNC" in current_gate_text
+            or "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE" in current_gate_text
+            or "POST-FINAL-BUNDLE-CURRENT-STATE-SYNC" in current_iteration_text
+        ):
+            owner_decision["option_a"] = (
+                "继续 S2PMT07 final bundle 后的生产边界预检：最终包、S2PLT04、final command、handoff、"
+                "independent signoff 和 no-production attestation 均已通过；默认下一步只做 owner 生产验收边界决策和证据复核，"
+                "不自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+            )
+        elif "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY" in current_gate_text:
             owner_decision["option_a"] = (
                 "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 与 "
                 "S2PLT03 terminal resilience proof 均已作为 no-production 输入通过，默认下一步只构建、"
