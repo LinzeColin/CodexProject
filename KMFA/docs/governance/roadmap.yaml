@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S17"
-current_phase_id: "S17PC"
-current_task_id: "KMFA-S17-P3-GATE"
-next_gate_id: "KMFA-S17-P3-GATE"
+current_phase_id: "S17_STAGE_REVIEW"
+current_task_id: "KMFA-S17-STAGE-REVIEW-GATE"
+next_gate_id: "KMFA-S17-STAGE-REVIEW-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1255,9 +1255,9 @@ stages:
               - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
   - stage_id: "S17"
     name: "权限、通知、安全、审计与运维"
-    status: "in_progress_s17p2_completed_local_only"
+    status: "completed_local_only_pending_stage_review"
     estimated_hours: 3
-    estimated_pct: 67
+    estimated_pct: 100
     stop_conditions:
       - "原始数据被污染"
       - "金额精度使用 float"
@@ -1273,6 +1273,7 @@ stages:
       evidence:
         - "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
         - "KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md"
+        - "KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md"
       failure_action: "fix_and_rerun"
     phases:
       - phase_id: "S17PA"
@@ -1331,9 +1332,30 @@ stages:
               - "KMFA/metadata/notifications/notification_dispatch_log.jsonl"
       - phase_id: "S17PC"
         name: "运维与SOP"
-        status: "ready"
+        objective: "建立导入、复核、发布、回滚操作手册，财务 SOP 和交接材料知识索引，以及错误处理和备份恢复演练。"
+        status: "completed_validated_local_only"
         estimated_hours: 1
-        estimated_pct: 0
+        estimated_pct: 100
+        evidence_refs:
+          - "KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md"
+          - "KMFA/stage_artifacts/S17_P3_operations_sop/human/test_results.md"
+          - "KMFA/stage_artifacts/S17_P3_operations_sop/machine/s17_p3_manifest.json"
+        tasks:
+          - task_id: "S17PCT01"
+            name: "导入、复核、发布、回滚操作手册。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/operations/operations_runbooks.jsonl"
+          - task_id: "S17PCT02"
+            name: "财务 SOP 和交接材料进入知识索引。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/operations/finance_sop_knowledge_index.jsonl"
+          - task_id: "S17PCT03"
+            name: "错误处理和备份恢复演练。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/operations/error_backup_drill_log.jsonl"
   - stage_id: "S18"
     name: "回归、压力、稳定验收与后续接入准备"
     status: "planned"

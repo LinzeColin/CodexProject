@@ -90,6 +90,7 @@ models:
       - "FORM-KMFA-GOV-001"
       - "FORM-KMFA-S17P1-ACCESS-SECURITY-001"
       - "FORM-KMFA-S17P2-NOTIFICATION-001"
+      - "FORM-KMFA-S17P3-OPERATIONS-SOP-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -106,6 +107,12 @@ models:
       - "PARAM-KMFA-601"
       - "PARAM-KMFA-602"
       - "PARAM-KMFA-603"
+      - "PARAM-KMFA-604"
+      - "PARAM-KMFA-605"
+      - "PARAM-KMFA-606"
+      - "PARAM-KMFA-607"
+      - "PARAM-KMFA-608"
+      - "PARAM-KMFA-609"
     inputs:
       - "user objective"
       - "KMFA TaskPack and Roadmap"
@@ -117,6 +124,7 @@ models:
       - "v1.2 baseline gate"
       - "S17-P1 access security policy gate"
       - "S17-P2 notification metadata outbox gate"
+      - "S17-P3 operations SOP metadata-only gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
@@ -124,10 +132,13 @@ models:
       - "KMFA/tools/check_s17_p1_access_security.py"
       - "KMFA/tools/notification_reminders.py"
       - "KMFA/tools/check_s17_p2_notifications.py"
+      - "KMFA/tools/operations_sop.py"
+      - "KMFA/tools/check_s17_p3_operations_sop.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p1_access_security.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p3_operations_sop.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p2_notifications.py"
     evidence_refs:
       - "KMFA/AGENTS.md"

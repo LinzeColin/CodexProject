@@ -2059,3 +2059,109 @@ tasks:
     rollback: "Remove S17-P2 notification metadata and revert S17-P2 governance rows."
     target_version: "0.1.0-s17p2-notification"
     completed_version: "0.1.0-s17p2-notification"
+  - task_id: "S17PCT01"
+    phase: "S17PC"
+    objective: "建立导入、复核、发布、回滚操作手册。"
+    scope:
+      - "import runbook"
+      - "review runbook"
+      - "publish runbook"
+      - "rollback runbook"
+    non_scope:
+      - "live connector"
+      - "production publish execution"
+      - "Stage 17 review"
+      - "GitHub upload"
+      - "formal report release"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "S17PBT03"
+    required_files:
+      - "KMFA/metadata/operations/operations_sop_manifest.json"
+      - "KMFA/metadata/operations/operations_runbooks.jsonl"
+      - "KMFA/tools/check_s17_p3_operations_sop.py"
+    acceptance_ids:
+      - "ACC-OPERATIONS-SOP"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_operations_sop.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p3_operations_sop.py"
+    test_results:
+      - "PASS: import, review, publish and rollback runbooks are public-safe metadata-only records."
+    evidence_refs:
+      - "KMFA/metadata/operations/operations_runbooks.jsonl"
+      - "KMFA/stage_artifacts/S17_P3_operations_sop/human/test_results.md"
+    risk: "Runbooks are manual SOP metadata and cannot be treated as production execution or release approval."
+    rollback: "Remove S17-P3 operations runbook outputs and revert S17-P3 governance rows before Stage 17 review."
+    target_version: "0.1.0-s17p3-operations-sop"
+    completed_version: "0.1.0-s17p3-operations-sop"
+  - task_id: "S17PCT02"
+    phase: "S17PC"
+    objective: "财务 SOP、交接材料纳入知识库。"
+    scope:
+      - "finance SOP knowledge index"
+      - "handoff material knowledge index"
+      - "public-safe evidence refs"
+    non_scope:
+      - "private SOP content"
+      - "raw finance files"
+      - "credentials"
+      - "formal training material release"
+      - "Stage 17 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S17PCT01"
+    required_files:
+      - "KMFA/metadata/operations/finance_sop_knowledge_index.jsonl"
+      - "KMFA/stage_artifacts/S17_P3_operations_sop/machine/s17_p3_manifest.json"
+    acceptance_ids:
+      - "ACC-OPERATIONS-SOP"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_operations_sop.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p3_operations_sop.py"
+    test_results:
+      - "PASS: finance SOP and handoff knowledge entries use refs, hashes, roles and status only."
+    evidence_refs:
+      - "KMFA/metadata/operations/finance_sop_knowledge_index.jsonl"
+      - "KMFA/stage_artifacts/S17_P3_operations_sop/human/test_results.md"
+    risk: "Knowledge index entries do not publish private SOP bodies, raw finance data, contracts, payroll or tax filings."
+    rollback: "Remove S17-P3 finance SOP knowledge index outputs and revert S17-P3 governance rows."
+    target_version: "0.1.0-s17p3-operations-sop"
+    completed_version: "0.1.0-s17p3-operations-sop"
+  - task_id: "S17PCT03"
+    phase: "S17PC"
+    objective: "错误处理和备份恢复有演练记录。"
+    scope:
+      - "error handling drill log"
+      - "backup recovery drill log"
+      - "manual-only recovery gate"
+      - "stage manifest"
+    non_scope:
+      - "production restore"
+      - "database mutation"
+      - "external service call"
+      - "Stage 17 review"
+      - "GitHub upload"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "S17PCT02"
+    required_files:
+      - "KMFA/metadata/operations/error_backup_drill_log.jsonl"
+      - "KMFA/stage_artifacts/S17_P3_operations_sop/machine/s17_p3_manifest.json"
+      - "KMFA/tools/check_s17_p3_operations_sop.py"
+    acceptance_ids:
+      - "ACC-OPERATIONS-SOP"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_operations_sop.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p3_operations_sop.py"
+    test_results:
+      - "PASS: error handling and backup recovery drills are recorded as metadata-only dry-run evidence."
+    evidence_refs:
+      - "KMFA/metadata/operations/error_backup_drill_log.jsonl"
+      - "KMFA/stage_artifacts/S17_P3_operations_sop/human/test_results.md"
+    risk: "Drill records are not production restore proof, incident closure or external service operation."
+    rollback: "Remove S17-P3 drill logs and revert S17-P3 governance rows."
+    target_version: "0.1.0-s17p3-operations-sop"
+    completed_version: "0.1.0-s17p3-operations-sop"
