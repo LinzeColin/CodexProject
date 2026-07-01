@@ -2611,3 +2611,47 @@ tasks:
     rollback: "Remove PART1_STAGES_01_03_REVIEW artifacts, Part 1 validator/test and related governance rows before rerunning the Part 1 review gate."
     target_version: "0.1.0-post-s18-part1-review-local"
     completed_version: "0.1.0-post-s18-part1-review-local"
+  - task_id: "KMFA-PART2-STAGES-04-06-REVIEW-20260702"
+    phase: "POST_S18_PART2_REVIEW"
+    objective: "完成 Post-S18 第一阶段 Part 2 本地复审，范围仅为 Stage 4-6。"
+    scope:
+      - "Stage 4 amount precision, field standardization and basic tool boundary evidence"
+      - "Stage 5 A0 file registration, golden fixture, owner decision and authority baseline lock evidence"
+      - "Stage 6 zero-delta validator, cross-source difference queue and validation evidence output"
+      - "Part 2 review validator and evidence manifest"
+      - "governance validators, parse checks, raw/private and secret scans"
+    non_scope:
+      - "Stage 7-18 review"
+      - "whole-project final review"
+      - "GitHub upload"
+      - "lineage full check"
+      - "formal report release"
+      - "live connector"
+      - "production restore"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-PART1-STAGES-01-03-REVIEW-20260702"
+    required_files:
+      - "KMFA/tools/check_part2_stages_04_06_review.py"
+      - "KMFA/tests/test_part2_stages_04_06_review.py"
+      - "KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/human/part2_review_report.md"
+      - "KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/machine/part2_review_manifest.json"
+    acceptance_ids:
+      - "ACC-POST-S18-PART2-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_amount_tools KMFA.tests.test_field_standardization KMFA.tests.test_basic_tool_boundaries KMFA.tests.test_a0_file_register KMFA.tests.test_a0_golden_fixture KMFA.tests.test_s05_p2_excel_owner_decision KMFA.tests.test_s05_p2_owner_decision_intake KMFA.tests.test_s05_p2_owner_decision_templates KMFA.tests.test_s05_p2_owner_decision_application KMFA.tests.test_s05_p2_completion_gate KMFA.tests.test_s05_p3_authority_baseline_lock KMFA.tests.test_zero_delta_validator KMFA.tests.test_cross_source_difference_queue KMFA.tests.test_validation_evidence_output KMFA.tests.test_part2_stages_04_06_review -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_part2_stages_04_06_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s KMFA/tests -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_governance_sync.py --changed-only --enforce-sync"
+    test_results:
+      - "PASS: Part 2 review gates, full KMFA tests, governance validators, parse checks, raw/private path scan, high-signal secret scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/human/part2_review_report.md"
+      - "KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/machine/part2_review_manifest.json"
+    risk: "Part 2 review proves only Stage 4-6 post-S18 local review status and does not authorize Stage 7-18 review, whole-project final review, GitHub upload, lineage full check, formal reports or business execution."
+    rollback: "Remove PART2_STAGES_04_06_REVIEW artifacts, Part 2 validator/test and related governance rows before rerunning the Part 2 review gate."
+    target_version: "0.1.0-post-s18-part2-review-local"
+    completed_version: "0.1.0-post-s18-part2-review-local"

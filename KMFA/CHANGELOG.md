@@ -1,10 +1,17 @@
 # Changelog
 
+## 0.1.0-post-s18-part2-review-local - 2026-07-02
+
+- 完成 Post-S18 第一阶段 Part 2 本地复审，范围仅为 Stage 4、Stage 5、Stage 6。
+- 新增 `KMFA/tools/check_part2_stages_04_06_review.py`、`KMFA/tests/test_part2_stages_04_06_review.py` 和 `KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/`。
+- 复跑 S04 金额/字段/工具边界、S05 A0 authority baseline、S06 zero-delta/difference queue validators、Part 2 review validator、全量 270 个 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check。
+- 本轮未执行 GitHub upload、Stage 7-18 复审、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+
 ## 0.1.0-post-s18-part1-review-local - 2026-07-02
 
 - 完成 Post-S18 第一阶段 Part 1 本地复审，范围仅为 Stage 1、Stage 2、Stage 3。
 - 新增 `KMFA/tools/check_part1_stages_01_03_review.py`、`KMFA/tests/test_part1_stages_01_03_review.py` 和 `KMFA/stage_artifacts/PART1_STAGES_01_03_REVIEW/`。
-- 复跑 S01-S03 相关 no-omission、required HTML、metadata protocol、immutability、report grade gate、S03 unit tests、全量 268 个 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check。
+- 复跑 S01-S03 相关 no-omission、required HTML、metadata protocol、immutability、report grade gate、S03 unit tests、全量 269 个 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check。
 - 本轮未执行 GitHub upload、Stage 4-18 复审、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
 
 ## 0.1.0-s18-github-upload - 2026-07-01
