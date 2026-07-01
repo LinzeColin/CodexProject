@@ -21,10 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 336
+- task_count: 337
 - acceptance_count: 128
 
 ## Delivery Tasks
+
+## 2026-07-01 18:16:00 Australia/Sydney - S2PMT07 owner decision write gate allowed
+
+- Task: `S2PMT07-OWNER-DECISION-WRITE-GATE-ALLOWED`
+- Result: `pass_owner_decision_recorded_write_gate_allowed_no_runtime_enablement`
+- Evidence: `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json`; `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json`; `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_WRITE_GATE_ALLOWED.md`.
+- Gate state: `owner_production_boundary_decision_recorded=true`; owner artifact gate `state_hash=b1ce1cd2749ac3712dae378734b39d1354fff8613c5f875536beed44c2746e6a`; write gate `acceptance_write_gate_allowed=true`; `state_hash=565fb28fab914f9dc6a79fa0dd0144556516a5c3b0d22de5dddefc3e0d95c89b`; `failed_checks=[]`.
+- Next required step: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE`, limited to writing and validating `INTEGRATED_PRODUCTION_ACCEPTED` evidence with runtime enablement still forbidden.
+- Production boundary: no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, `INTEGRATED_PRODUCTION_ACCEPTED`, `DAILY_OPERATION`, or Stage2/S3 production acceptance is introduced by this task.
+- Verification: focused final-gate/CLI/current-state unittest 184 OK; full ADP pytest 775 passed / 64 subtests passed; project governance 0/0; governance sync 0/0; task pack PASS with production flags false; acceptance bundle zero proof PASS with production flags false; lean render drift 0 / reference issues 0; user-center timestamps 18 validated; changed JSON/JSONL/YAML parse OK; `git diff --check` PASS; persistent `ADP_ALLOW_SMTP_SEND=false`; daily/health/watchdog LaunchAgents disabled; no ADP background process found. Semantic extractor was interrupted after a long no-output run and is not claimed as passed.
 
 ## 2026-07-01 17:54:39 Australia/Sydney - S2PMT07 owner decision request mainline attestation
 

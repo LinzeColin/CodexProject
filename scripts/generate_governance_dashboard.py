@@ -160,6 +160,11 @@ def adp_s2pmt07_blocked_next_task(
         or "production-boundary preflight passed" in current_alias.lower()
         or "write-gate precheck" in current_alias.lower()
     )
+    owner_decision_recorded_write_gate_allowed = (
+        "WRITE_GATE_ALLOWED" in current_gate
+        or "owner_production_boundary_decision_recorded=true" in current_alias
+        or "acceptance_write_gate_allowed=true" in current_alias
+    )
     controlled_real_run_rechecked = (
         "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
         or "duplicate_smtp_send_avoided=true" in current_alias
@@ -207,6 +212,26 @@ def adp_s2pmt07_blocked_next_task(
         or "real-proof capture" in current_alias
         or "real proof capture" in current_alias
     )
+    if owner_decision_recorded_write_gate_allowed:
+        return {
+            "task_id": "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE",
+            "status": "blocked",
+            "reason": (
+                "Owner production-boundary decision evidence is recorded and the final "
+                "acceptance write gate is allowed only for evidence writing. Runtime "
+                "enablement remains forbidden: SMTP, scheduler, Release, restore, and "
+                "DAILY_OPERATION stay disabled until separately validated."
+            ),
+            "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "Write and validate INTEGRATED_PRODUCTION_ACCEPTED evidence through the "
+                "final gate without enabling runtime production or changing public schema, "
+                "DB, source adapters, ranking, queues, or V7 contracts."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
     if production_boundary_preflight_ready:
         controlled_run_clause = (
             " Owner-authorized controlled foreground real-run acceptance recheck passed "
@@ -403,6 +428,11 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
         or "duplicate_smtp_send_avoided=true" in current_alias
     )
+    owner_decision_recorded_write_gate_allowed = (
+        "WRITE_GATE_ALLOWED" in current_gate
+        or "owner_production_boundary_decision_recorded=true" in current_alias
+        or "acceptance_write_gate_allowed=true" in current_alias
+    )
     s2plt02_terminal_delivery_ready = (
         "S2PLT02_TERMINAL_DELIVERY_PROOF_READY" in current_gate
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
@@ -469,6 +499,13 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     ):
         capture_window_runtime_clause = (
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
+        )
+    if owner_decision_recorded_write_gate_allowed:
+        return (
+            "A: owner production-boundary decision evidence is recorded and the final "
+            "acceptance write gate is allowed as no-runtime evidence; next write "
+            "INTEGRATED_PRODUCTION_ACCEPTED evidence only through the final gate, while "
+            "keeping SMTP, scheduler, Release, restore, and DAILY_OPERATION disabled."
         )
     if production_boundary_preflight_ready:
         controlled_run_sentence = (
@@ -1150,7 +1187,29 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             or "INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE" in current_iteration_text
             or "INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE" in current_gate_text
         )
-        if production_boundary_preflight_ready:
+        owner_decision_recorded_write_gate_allowed = (
+            "WRITE_GATE_ALLOWED" in current_gate_text
+            or "owner_production_boundary_decision_recorded=true" in str(matrix.get("current_v7_legacy_alias") or "")
+            or "acceptance_write_gate_allowed=true" in str(matrix.get("current_v7_legacy_alias") or "")
+        )
+        if owner_decision_recorded_write_gate_allowed:
+            owner_decision["review_id"] = "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
+            owner_decision["decision_question"] = (
+                "Owner 生产边界决策证据已记录，acceptance write gate 已允许；是否只写入 "
+                "INTEGRATED_PRODUCTION_ACCEPTED 证据，并继续禁止 SMTP/scheduler/Release/DAILY_OPERATION。"
+            )
+            owner_decision["question"] = owner_decision["decision_question"]
+            owner_decision["option_a"] = (
+                "继续最终验收写入：只写入 INTEGRATED_PRODUCTION_ACCEPTED 证据，不启用 SMTP、"
+                "scheduler、Release、restore 或 DAILY_OPERATION。"
+            )
+            owner_decision["evidence_required"] = (
+                "FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json, passing owner decision artifact gate, "
+                "passing acceptance write gate, final bundle manifest pass, no-production side-effect attestation pass, "
+                "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+            )
+            owner_decision["unblock_task_id"] = next_task["task_id"]
+        elif production_boundary_preflight_ready:
             owner_decision["review_id"] = (
                 "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
                 if "WRITE_GATE" in current_gate_text or "WRITE-GATE" in current_iteration_text

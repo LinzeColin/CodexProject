@@ -161,7 +161,7 @@ S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID = (
     "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
 )
 S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE = (
-    "acceptance_write_gate_precheck_only_blocked_without_owner_decision_no_enablement"
+    "acceptance_write_gate_precheck_only_owner_decision_recorded_no_runtime_enablement"
 )
 S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS = (
     "owner_production_boundary_decision_missing",
@@ -12996,9 +12996,15 @@ def build_integrated_production_acceptance_write_gate_state(
     controlled_run_path = root / "governance" / "run_manifests" / (
         "ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"
     )
+    owner_decision_artifact_path = root / S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REF
     current_pointer_path = root / "arxiv-daily-push" / "docs" / "pursuing_goal" / "CURRENT.yaml"
     owner_packet = _load_json_mapping_artifact(owner_packet_path) if owner_packet_path.exists() else {}
     controlled_run = _load_json_mapping_artifact(controlled_run_path) if controlled_run_path.exists() else {}
+    owner_decision_artifact_gate = build_integrated_production_acceptance_owner_decision_artifact_gate_state(
+        generated_at=generated_at,
+        repo_root=root,
+        decision_artifact_path=owner_decision_artifact_path,
+    )
     final_bundle = build_final_acceptance_bundle_readiness_state(repo_root=root)
     try:
         current_pointer_text = current_pointer_path.read_text(encoding="utf-8")
@@ -13049,10 +13055,16 @@ def build_integrated_production_acceptance_write_gate_state(
         is False,
         "final_bundle_ready": final_bundle.get("status") == "pass"
         and final_bundle.get("missing_items") == [],
-        "owner_decision_not_recorded": (
-            "owner_production_boundary_decision_recorded: false" in current_pointer_text
-            and production_boundary.get("owner_production_boundary_decision_recorded") is False
-            and owner_packet.get("owner_production_boundary_decision_recorded") is False
+        "owner_decision_artifact_valid": (
+            owner_decision_artifact_gate.get("status")
+            == "pass_owner_decision_artifact_valid_no_runtime_enablement"
+        ),
+        "owner_decision_artifact_does_not_enable_runtime": (
+            owner_decision_artifact_gate.get("daily_operation_enabled") is False
+            and owner_decision_artifact_gate.get("real_smtp_send_enabled") is False
+            and owner_decision_artifact_gate.get("scheduler_install_enabled") is False
+            and owner_decision_artifact_gate.get("release_packaging_enabled") is False
+            and owner_decision_artifact_gate.get("production_restore_enabled") is False
         ),
         "current_points_to_owner_decision_or_write_gate": (
             f"next_executable_task: {S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_TASK_ID}"
@@ -13077,23 +13089,26 @@ def build_integrated_production_acceptance_write_gate_state(
         "task_id": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID,
         "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-INTEGRATED-PRODUCTION"],
         "generated_at": generated_at,
-        "status": "blocked_write_gate_owner_decision_required_no_acceptance"
-        if write_gate_precheck_ready
-        else "blocked",
+        "status": (
+            "pass_write_gate_allowed_owner_decision_recorded_no_runtime_enablement"
+            if write_gate_precheck_ready
+            else "blocked"
+        ),
         "scope": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE,
         "write_gate_precheck_ready": write_gate_precheck_ready,
-        "acceptance_write_gate_allowed": False,
+        "acceptance_write_gate_allowed": write_gate_precheck_ready,
         "checks": checks,
         "failed_checks": failed_checks,
-        "blocking_reasons": list(
-            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS
-        )
-        if write_gate_precheck_ready
-        else [f"{name}_failed" for name in failed_checks],
+        "blocking_reasons": [] if write_gate_precheck_ready else [f"{name}_failed" for name in failed_checks],
         "next_required_step": (
-            "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION_OR_PAUSE"
+            "WRITE_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_NO_RUNTIME_ENABLEMENT"
+            if write_gate_precheck_ready
+            else "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION_OR_PAUSE"
         ),
         "owner_decision_id": "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701",
+        "owner_decision_artifact_ref": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REF,
+        "owner_decision_artifact_gate_status": owner_decision_artifact_gate.get("status", ""),
+        "owner_decision_artifact_gate_state_hash": owner_decision_artifact_gate.get("state_hash", ""),
         "owner_packet_manifest_ref": str(owner_packet_path.relative_to(root)),
         "owner_packet_state_hash": owner_packet.get("state_hash", ""),
         "controlled_real_run_manifest_ref": str(controlled_run_path.relative_to(root)),
@@ -13121,7 +13136,7 @@ def build_integrated_production_acceptance_write_gate_state(
         "final_bundle_manifest_ref": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
         "final_bundle_readiness_state_hash": final_bundle.get("state_hash"),
         "final_bundle_missing_items": list(final_bundle.get("missing_items", [])),
-        "owner_production_boundary_decision_recorded": False,
+        "owner_production_boundary_decision_recorded": write_gate_precheck_ready,
         "production_acceptance_claimed": False,
         "integrated_production_accepted": False,
         "stage2_integrated_production_accepted": False,
@@ -13167,27 +13182,31 @@ def validate_integrated_production_acceptance_write_gate_state(
     expected_ready = not failed_checks
     if state.get("write_gate_precheck_ready") is not expected_ready:
         errors.append("integrated production acceptance write gate readiness must match checks")
-    expected_status = "blocked_write_gate_owner_decision_required_no_acceptance" if expected_ready else "blocked"
+    expected_status = (
+        "pass_write_gate_allowed_owner_decision_recorded_no_runtime_enablement"
+        if expected_ready
+        else "blocked"
+    )
     if state.get("status") != expected_status:
         errors.append("integrated production acceptance write gate status must match checks")
     if expected_ready:
-        if (
-            state.get("blocking_reasons")
-            != list(S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS)
-        ):
-            errors.append("integrated production acceptance write gate blockers must stop at owner decision")
+        if state.get("blocking_reasons") != []:
+            errors.append("passing integrated production acceptance write gate must not have blockers")
     else:
         expected_blocking = [f"{name}_failed" for name in failed_checks]
         if state.get("blocking_reasons") != expected_blocking:
             errors.append("integrated production acceptance write gate blockers must match failed checks")
-    if state.get("next_required_step") != (
-        "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION_OR_PAUSE"
-    ):
+    expected_next = (
+        "WRITE_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_NO_RUNTIME_ENABLEMENT"
+        if expected_ready
+        else "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION_OR_PAUSE"
+    )
+    if state.get("next_required_step") != expected_next:
         errors.append("integrated production acceptance write gate next_required_step is invalid")
-    if state.get("owner_production_boundary_decision_recorded") is not False:
-        errors.append("integrated production acceptance write gate must not record owner approval")
-    if state.get("acceptance_write_gate_allowed") is not False:
-        errors.append("integrated production acceptance write gate must stay disallowed without owner decision")
+    if state.get("owner_production_boundary_decision_recorded") is not expected_ready:
+        errors.append("integrated production acceptance write gate owner decision flag must match checks")
+    if state.get("acceptance_write_gate_allowed") is not expected_ready:
+        errors.append("integrated production acceptance write gate write allowance must match checks")
     if state.get("controlled_real_run_duplicate_send_avoided") is not True:
         errors.append("integrated production acceptance write gate must consume duplicate-send protection evidence")
     if state.get("controlled_real_run_sent_mail_products") != list(S2PLT01_REQUIRED_MAIL_PRODUCTS):

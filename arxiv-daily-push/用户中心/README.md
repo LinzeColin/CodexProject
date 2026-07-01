@@ -1,19 +1,27 @@
 # ADP 用户中心
 
-## 2026-07-01 17:35:58 Australia/Sydney - Owner 决策请求模板已公开，但不是批准
+## 2026-07-01 18:16:00 Australia/Sydney - Owner 决策已记录，写入门已允许但运行仍关闭
+
+- `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json` 已作为显式 owner production-boundary decision evidence 记录。
+- Owner decision artifact gate 已通过：`state_hash=b1ce1cd2749ac3712dae378734b39d1354fff8613c5f875536beed44c2746e6a`。
+- Acceptance write gate 已允许：`acceptance_write_gate_allowed=true`，`state_hash=565fb28fab914f9dc6a79fa0dd0144556516a5c3b0d22de5dddefc3e0d95c89b`，`failed_checks=[]`。
+- 这只允许下一步写入 `INTEGRATED_PRODUCTION_ACCEPTED` 证据；当前仍未写入 accepted，未启用 `DAILY_OPERATION`。
+- 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
+- 证据：[owner 决策 artifact](../../FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json) / [artifact gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json) / [write gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json)。
+
+## 2026-07-01 17:35:58 Australia/Sydney - 历史：Owner 决策请求模板已公开，但不是批准
 
 - `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json` 已生成并通过 request validator：`request_only=true`，`state_hash=b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea`。
-- 该文件只是 GitHub 可读的决策请求/模板，方便用户选择“记录 owner production-boundary decision evidence”或“暂停”；它不能替代真正批准文件。
-- 真正能解除 owner decision artifact gate 的文件仍只能是 `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json`，当前仍不存在。
-- 当前仍未记录 owner approval：`owner_production_boundary_decision_recorded=false`，`acceptance_write_gate_allowed_by_this_request=false`，`runtime_enablement_allowed_by_this_request=false`。
-- 运行边界仍关闭：不启用 SMTP/scheduler/Release/production restore，不写 `INTEGRATED_PRODUCTION_ACCEPTED`，不启用 `DAILY_OPERATION`。
+- 该文件只是 GitHub 可读的决策请求/模板；它不能替代真正批准文件。
+- 后续已由真实 artifact `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json` 记录 owner 决策。
+- 该 request 仍保持 `acceptance_write_gate_allowed_by_this_request=false`、`runtime_enablement_allowed_by_this_request=false`，不能单独启用生产。
 - 证据：[owner 决策请求模板](../../FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json) / [request 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST.md)。
 
-## 2026-07-01 16:34:41 Australia/Sydney - Acceptance write gate 预检查已准备，但仍等待用户明确决策
+## 2026-07-01 16:34:41 Australia/Sydney - 历史：Acceptance write gate 预检查已准备但当时仍等待决策
 
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE` 已由 CLI 生成并通过 validator：`write_gate_precheck_ready=true`，`failed_checks=[]`，`state_hash=48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8`。
-- 这个 gate 已消费 owner decision packet、final bundle、受控真实运行验收和去重证据，但 `acceptance_write_gate_allowed=false`，因为还没有显式 owner production-boundary acceptance/write decision。
-- 当前仍未记录 owner approval：`owner_production_boundary_decision_recorded=false`，未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`。
+- 这个历史 gate 已消费 owner decision packet、final bundle、受控真实运行验收和去重证据，但当时 `acceptance_write_gate_allowed=false`，因为还没有显式 owner production-boundary acceptance/write decision。
+- 后续 owner 决策已记录，新 write gate 已允许；当前仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`。
 - 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[write gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json) / [owner decision packet 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json) / [受控运行验收清单](../../governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json)。这不是 Stage2/S3 production accepted。
 

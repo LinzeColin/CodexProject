@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-OWNER-DECISION-WRITE-GATE-ALLOWED"
+    phase: "S2PL"
+    objective: "Record the owner production-boundary decision artifact and allow the final acceptance write gate only for evidence writing, without enabling runtime production."
+    scope: "Owner decision artifact, owner decision artifact gate manifest, final write gate manifest, current pointer, phase record, delivery/development ledgers, three-base summaries, user-center summaries, and focused regression tests."
+    non_scope: "No INTEGRATED_PRODUCTION_ACCEPTED write, DAILY_OPERATION enablement, SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, or P0/P1 historical baseline mutation."
+    status: "completed"
+    dependencies: ["S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST", "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE", "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"]
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_WRITE_GATE_ALLOWED.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["focused final-gate/CLI/current-state unittest", "full ADP pytest", "project governance", "governance sync", "task pack", "acceptance bundle zero proof", "lean render drift", "user-center timestamp check", "changed structured file parse", "git diff --check", "post-run safety state checks", "semantic extractor long-run attempt"]
+    test_results: ["owner decision artifact gate pass: state_hash=b1ce1cd2749ac3712dae378734b39d1354fff8613c5f875536beed44c2746e6a", "acceptance write gate pass: state_hash=565fb28fab914f9dc6a79fa0dd0144556516a5c3b0d22de5dddefc3e0d95c89b, acceptance_write_gate_allowed=true, failed_checks=[]", "focused final-gate/CLI/current-state unittest: 184 OK", "full ADP pytest: 775 passed, 64 subtests passed", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "task pack root validation: PASS with production flags false", "acceptance bundle zero proof: PASS with production flags false", "lean governance check-render: drift_count 0 reference_issue_count 0", "user-center timestamp check: 18 files validated", "changed structured JSON/JSONL/YAML parse OK", "git diff --check PASS", "post-run safety: persistent ADP_ALLOW_SMTP_SEND=false; daily/health/watchdog LaunchAgents disabled; no ADP background process found", "semantic extractor interrupted with KeyboardInterrupt after long no-output run and is not claimed as passed"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_WRITE_GATE_ALLOWED.md"]
+    risk: "Future agents could treat owner decision or write-gate allowance as runtime enablement; this task keeps runtime flags false and routes the next task only to final evidence writing."
+    rollback: "Revert the owner decision artifact, regenerated gate manifests, current-state sync, and focused test updates; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-OWNER-DECISION-REQUEST-MAINLINE-ATTESTATION"
     phase: "S2PL"
     objective: "Bind the owner production-boundary decision request/template to the current mainline commit without recording approval or enabling production."
