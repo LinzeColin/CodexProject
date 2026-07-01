@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s17-stage-review - 2026-07-01
+
+- 完成 `Stage 17 整体复审` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/check_s17_stage_review.py`、`KMFA/tests/test_s17_stage_review.py` 和 `KMFA/stage_artifacts/S17_STAGE_REVIEW/`。
+- 复跑 S17-P1 权限与安全、S17-P2 通知提醒、S17-P3 运维与 SOP validators，确认 4 类角色、15 类敏感材料禁入策略、5 类审计动作、3 类提醒、metadata-only 通知日志、4 类 runbook、2 条知识索引和 2 条演练日志仍为 public-safe evidence。
+- 复审将下一 gate 推进到 `KMFA-S17-GITHUB-UPLOAD-GATE`；仍未执行 GitHub upload、S18、lineage full check、正式报告、完整报告邮件、外部邮件连接器、live connector、生产恢复或业务执行。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或 credentials。
+- 下一轮只能执行 `Stage 17 GitHub upload`。
+
 ## 0.1.0-s17p3-operations-sop - 2026-07-01
 
 - 完成 `S17-P3｜运维与 SOP` 本地验证。

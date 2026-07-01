@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s17p3-operations-sop
+product_version: 0.1.0-s17-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S17`
-- current_phase: `Stage 17 整体复审｜待开始`
-- current_tasks: `KMFA-S17-STAGE-REVIEW-GATE`
-- status: `s17p3_completed_validated_local_only_pending_stage_review`
+- current_phase: `Stage 17 GitHub Upload｜待开始`
+- current_tasks: `KMFA-S17-GITHUB-UPLOAD-GATE`
+- status: `review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -107,16 +107,17 @@ product_version: 0.1.0-s17p3-operations-sop
 | `S17PAT01-S17PAT03` | S17-P1 权限与安全完成本地验证：4 类角色权限、15 类敏感材料公开仓库禁入策略、5 类审计日志动作和 scope gate 已生成；未执行 S17-P2/S17-P3、Stage 17 review 或 GitHub upload | `KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md` |
 | `S17PBT01-S17PBT03` | S17-P2 通知提醒完成本地验证：报告生成完成、重大风险、数据源缺失三类提醒规则、事件和 metadata dispatch log 已生成；不发送完整报告正文、不生成附件、不保存真实收件地址、不调用外部邮件连接器 | `KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md` |
 | `S17PCT01-S17PCT03` | S17-P3 运维与 SOP 完成本地验证：导入、复核、发布、回滚四类操作手册、财务 SOP/交接材料知识索引、错误处理和备份恢复演练已生成；仅为 public-safe metadata/manual SOP，不执行 live connector、生产恢复、外部服务调用或业务动作 | `KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md` |
+| `KMFA-S17-STAGE-REVIEW-20260701` | Stage 17 整体复审本地通过：复跑 S17-P1/P2/P3 validators、Stage 17 review validator、全量 tests、治理 validator、raw/secret scan、parse checks 和 diff check；未执行 GitHub upload、S18、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/S17_STAGE_REVIEW/human/stage17_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S17-STAGE-REVIEW-GATE` | 待下一轮 run work 开始；必须重新确认 git/root/status，复跑 S17-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 diff check；不得直接执行 GitHub upload、lineage full check、正式报告、完整报告邮件、外部邮件连接器或业务执行动作 | `KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md` |
+| `KMFA-S17-GITHUB-UPLOAD-GATE` | 待下一轮 run work 开始；必须重新确认 git/root/status、基于最新 origin/main 复跑 Stage 17 review validator、全量 tests、治理 validator、raw/secret scan、parse checks、diff check、dry-run push、push 和 post-push parity；不得执行 S18、lineage full check、正式报告、完整报告邮件、外部邮件连接器或业务执行动作 | `KMFA/stage_artifacts/S17_STAGE_REVIEW/human/stage17_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 17 整体复审 | 尚未开始；S17-P1/S17-P2/S17-P3 已分别完成本地验证，但未复跑 Stage 17 全阶段门禁 | 后续独立 Stage 17 review gate |
+| Stage 17 GitHub upload | 尚未开始；Stage 17 review 已本地通过但未上传 GitHub main | 后续独立 Stage 17 upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

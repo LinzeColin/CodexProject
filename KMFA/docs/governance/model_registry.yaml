@@ -81,7 +81,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s01p3"
+    model_version: "0.1.0-s17-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -125,6 +125,7 @@ models:
       - "S17-P1 access security policy gate"
       - "S17-P2 notification metadata outbox gate"
       - "S17-P3 operations SOP metadata-only gate"
+      - "S17 stage review upload-ready local gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
@@ -134,12 +135,14 @@ models:
       - "KMFA/tools/check_s17_p2_notifications.py"
       - "KMFA/tools/operations_sop.py"
       - "KMFA/tools/check_s17_p3_operations_sop.py"
+      - "KMFA/tools/check_s17_stage_review.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p1_access_security.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p3_operations_sop.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p2_notifications.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_stage_review.py"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
@@ -149,6 +152,10 @@ models:
       - "KMFA/stage_artifacts/S17_P1_access_security/machine/s17_p1_manifest.json"
       - "KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md"
       - "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json"
+      - "KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S17_P3_operations_sop/machine/s17_p3_manifest.json"
+      - "KMFA/stage_artifacts/S17_STAGE_REVIEW/human/stage17_review_report.md"
+      - "KMFA/stage_artifacts/S17_STAGE_REVIEW/machine/stage17_review_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"
