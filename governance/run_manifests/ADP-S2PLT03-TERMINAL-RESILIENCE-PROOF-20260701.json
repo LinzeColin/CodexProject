@@ -1,0 +1,82 @@
+{
+  "artifact_acceptance_hash": "dc1ba0e62e10bdfc3d45660ba2b6e5a33c4d383fdf2e11c6b529d0928e8e57ce",
+  "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json",
+  "controlled_real_run_closeout": {
+    "duplicate_real_send_avoided": true,
+    "email_template_contract": "EMAIL_LEARNING_V1",
+    "historical_sent_mail_products": [
+      "M1",
+      "M3",
+      "M4"
+    ],
+    "launchd_labels_disabled_after_closeout": true,
+    "launchd_labels_loaded_after_closeout": false,
+    "local_runtime_report_generated_at": "2026-06-30T23:51:34Z",
+    "local_runtime_report_ref": "~/.adp/arxiv-daily-push/runs/20260701/adp-local-runner-report.json",
+    "local_runtime_report_sha256": "7413b69865d3529a4217f6e543da1bcb326fbeea16b8b75af304590ab91ef192",
+    "local_runtime_report_status": "pass",
+    "new_send_executed_by_this_commit": false,
+    "newly_sent_mail_products": [
+      "M2"
+    ],
+    "owner_authorized_one_controlled_real_run": true,
+    "persistent_adp_allow_smtp_send_after_closeout": false,
+    "secret_values_logged": false,
+    "selected_source_id": "arxiv:2606.30473",
+    "sent_mail_count": 4,
+    "sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ]
+  },
+  "decision": "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
+  "generated_at": "2026-07-01T13:16:19+10:00",
+  "manifest_id": "ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-20260701",
+  "next_executable_task": "S2PLT04_COMPLETION_REPORT",
+  "no_production_side_effects": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "integrated_production_accepted": false,
+    "production_acceptance_claimed": false,
+    "production_queue_mutated": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "release_packaging_enabled": false,
+    "release_uploaded": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "source_adapter_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "status": "pass",
+  "task_id": "S2PLT03",
+  "terminal_evidence_refs": [
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+    "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json",
+    "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+    "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+    "governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
+  ],
+  "terminal_gates": {
+    "backup_restore_point_proven": true,
+    "disk_pressure_drill_proven": true,
+    "ledger_count_conserved": true,
+    "no_production_side_effects": true,
+    "p0_zero": true,
+    "p1_zero": true,
+    "parser_drift_drill_proven": true,
+    "rate_limit_drill_proven": true,
+    "restart_recovery_drill_proven": true,
+    "rollback_executable": true,
+    "s2plt02_accepted": true
+  }
+}

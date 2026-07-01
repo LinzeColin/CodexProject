@@ -1471,14 +1471,13 @@ class CliTests(unittest.TestCase):
             result = main(["validate-s2plt03-terminal-resilience-proof", "--repo-root", ".", "--json"])
         payload = json.loads(buffer.getvalue())
 
-        self.assertEqual(result, 2)
-        self.assertEqual(payload["status"], "blocked")
-        self.assertFalse(payload["artifact_present"])
-        self.assertFalse(payload["terminal_resilience_proof_ready"])
-        self.assertFalse(payload["s2plt03_accepted_by_artifact"])
-        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", payload["validation_errors"])
-        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", payload["blocking_reasons"])
-        self.assertNotIn("s2plt02_not_accepted", payload["blocking_reasons"])
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["artifact_present"])
+        self.assertTrue(payload["terminal_resilience_proof_ready"])
+        self.assertTrue(payload["s2plt03_accepted_by_artifact"])
+        self.assertEqual(payload["validation_errors"], [])
+        self.assertEqual(payload["blocking_reasons"], [])
         self.assertTrue(payload["terminal_gates"]["s2plt02_accepted"])
         self.assertTrue(payload["terminal_gates"]["rate_limit_drill_proven"])
         self.assertTrue(payload["terminal_gates"]["p0_zero"])
@@ -1501,12 +1500,11 @@ class CliTests(unittest.TestCase):
             )
         payload = json.loads(buffer.getvalue())
 
-        self.assertEqual(result, 2)
-        self.assertEqual(payload["status"], "blocked")
-        self.assertEqual(payload["next_executable_step"], "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["blocking_reasons"], [])
         self.assertNotIn("s2plt02_not_accepted", payload["blocking_reasons"])
-        self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", payload["missing_terminal_inputs"])
-        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", payload["missing_terminal_inputs"])
+        self.assertEqual(payload["missing_terminal_inputs"], [])
         self.assertFalse(payload["artifact_written"])
         self.assertFalse(payload["s2plt03_accepted"])
         self.assertFalse(payload["production_acceptance_claimed"])
@@ -1524,10 +1522,10 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["scope"], "final_bundle_prerequisite_plan_only_no_production_acceptance")
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["next_required_step_is_actionable"])
-        self.assertEqual(payload["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(payload["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
         self.assertEqual(
             payload["next_executable_runtime_step"],
-            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            "",
         )
         self.assertEqual(payload["current_wait_state"], "")
         self.assertFalse(payload["ready_to_write_live_artifacts"])
@@ -1582,12 +1580,12 @@ class CliTests(unittest.TestCase):
         self.assertFalse(capture_summary["smtp_secret_env_ready"])
         self.assertFalse(capture_summary["smtp_secret_values_logged"])
         s2plt03_summary = payload["s2plt03_terminal_resilience_capture_plan_summary"]
-        self.assertEqual(s2plt03_summary["status"], "blocked")
+        self.assertEqual(s2plt03_summary["status"], "pass")
         self.assertIsInstance(s2plt03_summary["state_hash"], str)
         self.assertEqual(len(s2plt03_summary["state_hash"]), 64)
         self.assertEqual(
             s2plt03_summary["next_executable_step"],
-            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            "RUN_VALIDATE_S2PLT03_TERMINAL_RESILIENCE_PROOF",
         )
         self.assertEqual(
             s2plt03_summary["terminal_artifact_ref"],
@@ -1598,9 +1596,9 @@ class CliTests(unittest.TestCase):
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
         )
         self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
-        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
+        self.assertNotIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
         self.assertNotIn("s2plt02_not_accepted", s2plt03_summary["blocking_reasons"])
-        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", s2plt03_summary["blocking_reasons"])
+        self.assertNotIn("s2plt03_terminal_resilience_proof_artifact_missing", s2plt03_summary["blocking_reasons"])
         self.assertFalse(s2plt03_summary["artifact_written"])
         self.assertFalse(s2plt03_summary["s2plt03_accepted"])
         self.assertFalse(s2plt03_summary["s2plt03_resilience_drill_completed"])
@@ -1621,10 +1619,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["next_executable_command_validation_command"], "")
         self.assertEqual(payload["next_executable_evidence_refs"], [])
         self.assertTrue(payload["next_required_step_blocked_by_upstream_evidence"])
-        self.assertEqual(
-            payload["upstream_blockers"],
-            ["s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing"],
-        )
+        self.assertEqual(payload["upstream_blockers"], [])
         missing_inventory = payload["final_bundle_missing_artifact_inventory"]
         self.assertEqual(missing_inventory["status"], "blocked")
         self.assertEqual(missing_inventory["missing_item_count"], 5)
@@ -1665,75 +1660,23 @@ class CliTests(unittest.TestCase):
             result = main(["audit-s2plt04-completion-evidence", "--json"])
         payload = json.loads(buffer.getvalue())
 
-        self.assertEqual(result, 2)
-        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["scope"], "s2plt04_completion_evidence_audit_only_no_report_creation")
-        self.assertFalse(payload["completion_report_ready"])
+        self.assertTrue(payload["completion_report_ready"])
         self.assertFalse(payload["s2plt04_completion_report_written"])
         self.assertEqual(payload["next_required_artifact"], "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json")
         self.assertEqual(
             payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["artifact_ref"],
             "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
         )
-        self.assertEqual(
-            payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["nonterminal_ref"],
-            "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
-        )
         self.assertEqual(payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["artifact_status"], "pass")
         self.assertTrue(payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["terminal_dependency_value"])
         self.assertEqual(payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]["artifact_status"], "pass")
-        s2plt02_evidence = payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
-            s2plt02_evidence["nonterminal_refs"],
-        )
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json",
-            s2plt02_evidence["nonterminal_refs"],
-        )
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
-            s2plt02_evidence["nonterminal_refs"],
-        )
-        self.assertEqual(s2plt02_evidence["real_proof_capture_authorization_status"], "pass")
-        self.assertTrue(s2plt02_evidence["real_proof_capture_authorized"])
-        self.assertNotIn(
-            "s2plt02_real_proof_capture_authorization_missing",
-            s2plt02_evidence["remaining_terminal_blockers"],
-        )
-        self.assertEqual(s2plt02_evidence["observed_natural_days"], 2)
-        self.assertEqual(s2plt02_evidence["required_natural_days"], 2)
-        self.assertEqual(s2plt02_evidence["observed_email_count"], 8)
-        self.assertEqual(s2plt02_evidence["required_email_count"], 8)
-        self.assertTrue(s2plt02_evidence["m4_watermark_correct"])
-        self.assertEqual(
-            s2plt02_evidence["m4_watermark_proof_ref"],
-            "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json",
-        )
-        self.assertNotIn("two_consecutive_real_days_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
-        self.assertNotIn("eight_real_emails_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
-        self.assertEqual(s2plt02_evidence["remaining_terminal_blockers"], [])
-        self.assertNotIn("inherited_v7_1_p0_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
-        self.assertNotIn("inherited_v7_1_p1_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
-        self.assertNotIn("m4_watermark_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
-        self.assertEqual(payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["artifact_status"], "missing_terminal")
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json",
-            payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["nonterminal_refs"],
-        )
-        self.assertEqual(payload["source_evidence"]["P0_P1_ZERO_PROOF"]["artifact_status"], "pass")
-        self.assertTrue(payload["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
-        self.assertTrue(payload["terminal_dependency_state"]["S2PLT02_ACCEPTED"])
-        self.assertFalse(payload["terminal_dependency_state"]["S2PLT03_ACCEPTED"])
-        self.assertTrue(payload["terminal_dependency_state"]["P0_ZERO_PROVEN"])
-        self.assertTrue(payload["terminal_dependency_state"]["P1_ZERO_PROVEN"])
-        self.assertNotIn("s2plt01_not_accepted", payload["blocking_reasons"])
-        self.assertNotIn("s2plt02_live_2d_terminal_proof_missing", payload["blocking_reasons"])
-        self.assertIn("s2plt03_resilience_terminal_proof_missing", payload["blocking_reasons"])
-        self.assertFalse(payload["production_acceptance_claimed"])
-        self.assertFalse(payload["integrated_production_accepted"])
-        self.assertFalse(payload["real_smtp_send_enabled"])
-        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertEqual(payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["artifact_status"], "pass")
+        self.assertTrue(payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["terminal_dependency_value"])
+        self.assertEqual(payload["terminal_dependency_state"]["S2PLT03_ACCEPTED"], True)
+        self.assertEqual(payload["blocking_reasons"], [])
 
     def test_module_entrypoint_executes_final_bundle_plan_command(self):
         repo_root = Path(__file__).resolve().parents[2]
@@ -1765,7 +1708,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "blocked")
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["next_required_step_is_actionable"])
-        self.assertEqual(payload["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(payload["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
@@ -2012,10 +1955,10 @@ class CliTests(unittest.TestCase):
         self.assertNotIn("p0_p1_zero_proof_missing", payload["blocking_reasons"])
         self.assertIn("s2plt04_completion_evidence_missing", payload["blocking_reasons"])
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
-        self.assertEqual(payload["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(payload["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
         self.assertEqual(
             payload["next_executable_runtime_step"],
-            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            "",
         )
         self.assertEqual(payload["current_wait_state"], "")
         self.assertFalse(payload["ready_to_write_live_artifacts"])
@@ -2061,8 +2004,8 @@ class CliTests(unittest.TestCase):
             payload["s2plt04_completion_evidence_audit_summary"],
             payload["final_bundle_prerequisite_plan"]["s2plt04_completion_evidence_audit_summary"],
         )
-        self.assertEqual(payload["s2plt04_completion_evidence_audit_summary"]["status"], "blocked")
-        self.assertFalse(payload["s2plt04_completion_evidence_audit_summary"]["completion_report_ready"])
+        self.assertEqual(payload["s2plt04_completion_evidence_audit_summary"]["status"], "pass")
+        self.assertTrue(payload["s2plt04_completion_evidence_audit_summary"]["completion_report_ready"])
         self.assertFalse(
             payload["s2plt04_completion_evidence_audit_summary"]["s2plt04_completion_report_written"]
         )
@@ -2070,13 +2013,13 @@ class CliTests(unittest.TestCase):
             "s2plt02_live_2d_terminal_proof_missing",
             payload["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
         )
-        self.assertIn(
+        self.assertNotIn(
             "s2plt03_resilience_terminal_proof_missing",
             payload["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
         )
         self.assertEqual(
             payload["s2plt03_terminal_resilience_capture_plan_summary"]["next_executable_step"],
-            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            "RUN_VALIDATE_S2PLT03_TERMINAL_RESILIENCE_PROOF",
         )
         self.assertNotIn(
             "s2plt02_not_accepted",

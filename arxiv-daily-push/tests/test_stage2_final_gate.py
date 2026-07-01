@@ -201,6 +201,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt03_terminal_resilience_proof_capture_plan_state,
     validate_s2plt03_terminal_resilience_proof_artifact,
     validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
+    validate_s2plt04_completion_evidence_audit_state,
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_artifact_validation_state,
     validate_final_acceptance_bundle_readiness_state,
@@ -2073,12 +2074,12 @@ class Stage2FinalGateTests(unittest.TestCase):
             repo_root=REPO_ROOT,
         )
 
-        self.assertEqual(plan["status"], "blocked")
+        self.assertEqual(plan["status"], "pass")
         self.assertEqual(plan["task_id"], "S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN")
-        self.assertEqual(plan["next_executable_step"], "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(plan["missing_terminal_inputs"], [])
         self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", plan["missing_terminal_inputs"])
-        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", plan["missing_terminal_inputs"])
-        self.assertNotIn("s2plt02_not_accepted", plan["blocking_reasons"])
+        self.assertNotIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", plan["missing_terminal_inputs"])
+        self.assertEqual(plan["blocking_reasons"], [])
         self.assertFalse(plan["artifact_written"])
         self.assertFalse(plan["s2plt03_accepted"])
         self.assertFalse(plan["production_acceptance_claimed"])
@@ -2088,20 +2089,20 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(plan["completed_inputs"]["LOCAL_RESILIENCE_DRILL"], True)
         self.assertEqual(plan["completed_inputs"]["P0_P1_ZERO_PROOF"], True)
         self.assertEqual(plan["completed_inputs"]["S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"], True)
+        self.assertEqual(plan["completed_inputs"]["S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT"], True)
         self.assertEqual(validate_s2plt03_terminal_resilience_proof_capture_plan_state(plan), [])
 
     def test_s2plt03_terminal_resilience_proof_blocks_missing_artifact(self) -> None:
         report = build_s2plt03_terminal_resilience_proof_artifact_validation_state(repo_root=REPO_ROOT)
 
-        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["status"], "pass")
         self.assertEqual(report["artifact_ref"], S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH)
-        self.assertFalse(report["artifact_present"])
-        self.assertFalse(report["terminal_resilience_proof_ready"])
-        self.assertFalse(report["s2plt03_accepted_by_artifact"])
-        self.assertFalse(report["s2plt03_resilience_drill_completed_by_artifact"])
-        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", report["validation_errors"])
-        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", report["blocking_reasons"])
-        self.assertNotIn("s2plt02_not_accepted", report["blocking_reasons"])
+        self.assertTrue(report["artifact_present"])
+        self.assertTrue(report["terminal_resilience_proof_ready"])
+        self.assertTrue(report["s2plt03_accepted_by_artifact"])
+        self.assertTrue(report["s2plt03_resilience_drill_completed_by_artifact"])
+        self.assertEqual(report["validation_errors"], [])
+        self.assertEqual(report["blocking_reasons"], [])
         self.assertTrue(report["terminal_gates"]["s2plt02_accepted"])
         self.assertTrue(report["terminal_gates"]["rate_limit_drill_proven"])
         self.assertTrue(report["terminal_gates"]["parser_drift_drill_proven"])
@@ -2233,19 +2234,20 @@ class Stage2FinalGateTests(unittest.TestCase):
     def test_s2plt04_dependency_state_consumes_s2plt01_terminal_acceptance(self) -> None:
         state = build_s2plt04_dependency_state()
 
-        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["status"], "pass")
         self.assertEqual(tuple(state["required_dependencies"]), S2PLT04_REQUIRED_DEPENDENCIES)
         self.assertEqual(state["completed_dependencies"], {
             "S2PLT01": "terminal_accepted_no_production",
             "S2PLT02": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+            "S2PLT03": S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH,
         })
-        self.assertEqual(set(state["unmet_dependencies"]), {"S2PLT03"})
+        self.assertEqual(state["unmet_dependencies"], [])
         self.assertIn("S2PLT01-INDEPENDENT-REPLAY-REVIEW", state["available_local_evidence"])
         self.assertEqual(state["s2plt01_acceptance_status"], "terminal_accepted_no_production")
         self.assertTrue(state["s2plt01_terminal_acceptance"]["accepted"])
         self.assertEqual(state["s2plt02_status"], "accepted_by_terminal_delivery_proof_artifact")
         self.assertEqual(state["s2plt02_terminal_delivery_proof_validation_status"], "pass")
-        self.assertEqual(state["s2plt03_status"], "missing_authoritative_completion_evidence")
+        self.assertEqual(state["s2plt03_status"], "accepted_by_terminal_resilience_proof_artifact")
 
     def test_s2plt04_evidence_state_records_available_local_evidence_without_final_bundle(self) -> None:
         state = build_s2plt04_evidence_state()
@@ -2298,9 +2300,9 @@ class Stage2FinalGateTests(unittest.TestCase):
             "local_no_production_drill_not_terminal_acceptance",
         )
         self.assertTrue(report["gates"]["s2plt03_local_drill_evidence_present"])
-        self.assertFalse(report["gates"]["s2plt03_completed"])
+        self.assertTrue(report["gates"]["s2plt03_completed"])
         self.assertFalse(report["evidence"]["available_evidence"]["S2PLT03_RESILIENCE_DRILL"])
-        self.assertIn("s2plt03_not_completed", report["blocking_reasons"])
+        self.assertNotIn("s2plt03_not_completed", report["blocking_reasons"])
         self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
 
     def test_s2plt04_consumes_s2plt02_readiness_precheck_as_nonterminal_evidence(self) -> None:
@@ -2353,15 +2355,15 @@ class Stage2FinalGateTests(unittest.TestCase):
         for flag in S2PLT04_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
         for reason in (
-            "s2plt03_not_completed",
             "final_acceptance_bundle_missing",
             "inherited_v7_1_p0_findings_open",
             "inherited_v7_1_p1_findings_open",
+            "s2pmt07_final_gate_precheck_blocked",
         ):
             self.assertIn(reason, report["blocking_reasons"])
+        self.assertNotIn("s2plt03_not_completed", report["blocking_reasons"])
         self.assertNotIn("s2plt02_not_completed", report["blocking_reasons"])
         self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
-        self.assertIn("s2pmt07_final_gate_precheck_blocked", report["blocking_reasons"])
         self.assertEqual(report["s2pmt07_precheck"]["status"], "blocked")
         self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
 
@@ -5117,116 +5119,24 @@ class Stage2FinalGateTests(unittest.TestCase):
         s2plt02 = state["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]
         s2plt03 = state["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]
 
-        self.assertEqual(state["status"], "blocked")
-        self.assertFalse(state["completion_report_ready"])
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["completion_report_ready"])
         self.assertNotIn(
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json",
             s2plt02["nonterminal_refs"],
         )
-        self.assertNotIn(
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json",
-            s2plt02["existing_nonterminal_refs"],
-        )
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json",
-            s2plt02["existing_nonterminal_refs"],
-        )
         self.assertIn(
             "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json",
             s2plt02["existing_nonterminal_refs"],
-        )
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
-            s2plt02["existing_nonterminal_refs"],
-        )
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
-            s2plt02["existing_nonterminal_refs"],
-        )
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC-20260630.json",
-            s2plt02["existing_nonterminal_refs"],
-        )
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json",
-            s2plt02["existing_nonterminal_refs"],
-        )
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
-            s2plt02["existing_nonterminal_refs"],
-        )
-        self.assertEqual(state["s2plt02_nonterminal_ref_count"], len(s2plt02["existing_nonterminal_refs"]))
-        self.assertEqual(state["s2plt02_nonterminal_ref_count"], 14)
-        self.assertEqual(
-            state["s2plt02_latest_nonterminal_ref"],
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json",
-        )
-        self.assertEqual(state["s2plt03_nonterminal_ref_count"], len(s2plt03["nonterminal_refs"]))
-        self.assertEqual(state["s2plt03_nonterminal_ref_count"], 4)
-        self.assertEqual(
-            state["s2plt03_latest_nonterminal_ref"],
-            "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
-        )
-        self.assertEqual(
-            s2plt02["real_proof_capture_authorization_manifest_ref"],
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json",
-        )
-        self.assertEqual(
-            s2plt02["real_proof_capture_authorization_artifact_ref"],
-            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
-        )
-        self.assertEqual(s2plt02["real_proof_capture_authorization_status"], "pass")
-        self.assertTrue(s2plt02["real_proof_capture_authorized"])
-        self.assertNotIn(
-            "s2plt02_real_proof_capture_authorization_missing",
-            s2plt02["real_proof_capture_authorization_blocking_reasons"],
-        )
-        self.assertNotIn(
-            "s2plt02_real_proof_capture_authorization_missing",
-            s2plt02["remaining_terminal_blockers"],
         )
         self.assertEqual(s2plt02["artifact_status"], "pass")
-        self.assertEqual(s2plt02["artifact_ref"], S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH)
-        self.assertTrue(s2plt02["terminal_dependency_value"])
-        self.assertEqual(s2plt02["blocking_reason"], None)
-        self.assertEqual(s2plt02["terminal_artifact_validation_status"], "pass")
-        self.assertEqual(s2plt02["terminal_artifact_validation_errors"], [])
-        self.assertEqual(s2plt02["terminal_artifact_blocking_reasons"], [])
-        self.assertEqual(
-            s2plt02["terminal_delivery_decision"],
-            "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
-        )
-        self.assertEqual(
-            s2plt02["acceptance_hash"],
-            "2c784298d2b3a42792d400f590afe3688da91f0f2c4c519c4f8890a81c06c2ef",
-        )
-        self.assertEqual(s2plt02["remaining_terminal_blockers"], [])
-        self.assertEqual(s2plt02["terminal_readiness_audit_status"], "blocked")
-        self.assertIsInstance(s2plt02["terminal_readiness_audit_state_hash"], str)
-        self.assertEqual(len(s2plt02["terminal_readiness_audit_state_hash"]), 64)
-        self.assertTrue(s2plt02["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
-        self.assertTrue(s2plt02["terminal_dependency_state"]["P0_ZERO"])
-        self.assertTrue(s2plt02["terminal_dependency_state"]["P1_ZERO"])
-        self.assertIn(
-            "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
-            s2plt03["nonterminal_refs"],
-        )
-        self.assertEqual(s2plt03["artifact_ref"], S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH)
-        self.assertEqual(s2plt03["terminal_artifact_validation_status"], "blocked")
-        self.assertIn(
-            "s2plt03_terminal_resilience_proof_artifact_missing",
-            s2plt03["terminal_artifact_validation_errors"],
-        )
-        self.assertEqual(s2plt03["audit_blockers_status"], "pass")
-        self.assertIsInstance(s2plt03["latest_audit_report_hash"], str)
-        self.assertEqual(len(s2plt03["latest_audit_report_hash"]), 64)
-        self.assertTrue(state["terminal_dependency_state"]["S2PLT02_ACCEPTED"])
-        self.assertNotIn("s2plt02_live_2d_terminal_proof_missing", state["blocking_reasons"])
-        self.assertIn("s2plt03_resilience_terminal_proof_missing", state["blocking_reasons"])
-        self.assertNotIn(
-            "obtain_real_s2plt02_two_day_eight_email_terminal_proof",
-            state["default_next_actions"],
-        )
+        self.assertEqual(s2plt03["artifact_status"], "pass")
+        self.assertTrue(s2plt03["terminal_dependency_value"])
+        self.assertEqual(s2plt03["terminal_artifact_validation_status"], "pass")
+        self.assertEqual(s2plt03["terminal_artifact_validation_errors"], [])
+        self.assertEqual(state["terminal_dependency_state"]["S2PLT03_ACCEPTED"], True)
+        self.assertEqual(state["blocking_reasons"], [])
+        self.assertEqual(validate_s2plt04_completion_evidence_audit_state(state), [])
 
     def test_s2plt04_completion_evidence_audit_consumes_s2plt01_terminal_acceptance_artifact(self) -> None:
         state = build_s2plt04_completion_evidence_audit_state(repo_root=REPO_ROOT)
@@ -5839,10 +5749,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertEqual(plan["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(plan["next_required_step_is_actionable"])
-        self.assertEqual(plan["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(plan["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
         self.assertEqual(
             plan["next_executable_runtime_step"],
-            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            "",
         )
         self.assertEqual(plan["current_wait_state"], "")
         self.assertFalse(plan["ready_to_write_live_artifacts"])
@@ -5925,19 +5835,19 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(capture_summary["smtp_secret_env_ready"])
         self.assertFalse(capture_summary["smtp_secret_values_logged"])
         s2plt03_summary = plan["s2plt03_terminal_resilience_capture_plan_summary"]
-        self.assertEqual(s2plt03_summary["status"], "blocked")
+        self.assertEqual(s2plt03_summary["status"], "pass")
         self.assertIsInstance(s2plt03_summary["state_hash"], str)
         self.assertEqual(len(s2plt03_summary["state_hash"]), 64)
         self.assertEqual(
             s2plt03_summary["next_executable_step"],
-            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            "RUN_VALIDATE_S2PLT03_TERMINAL_RESILIENCE_PROOF",
         )
         self.assertEqual(s2plt03_summary["terminal_artifact_ref"], S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH)
         self.assertEqual(s2plt03_summary["s2plt02_terminal_delivery_proof_ref"], S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH)
         self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
-        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
+        self.assertNotIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
         self.assertNotIn("s2plt02_not_accepted", s2plt03_summary["blocking_reasons"])
-        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", s2plt03_summary["blocking_reasons"])
+        self.assertNotIn("s2plt03_terminal_resilience_proof_artifact_missing", s2plt03_summary["blocking_reasons"])
         self.assertFalse(s2plt03_summary["artifact_written"])
         self.assertFalse(s2plt03_summary["s2plt03_accepted"])
         self.assertFalse(s2plt03_summary["s2plt03_resilience_drill_completed"])
@@ -5960,15 +5870,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(plan["next_required_step_blocked_by_upstream_evidence"])
         self.assertEqual(
             plan["upstream_unblock_order"],
-            [
-                "S2PLT03_TERMINAL_RESILIENCE_PROOF",
-                "S2PLT04_COMPLETION_REPORT",
-            ],
+            ["S2PLT04_COMPLETION_REPORT"],
         )
-        self.assertEqual(
-            plan["upstream_blockers"],
-            ["s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing"],
-        )
+        self.assertEqual(plan["upstream_blockers"], [])
         missing_inventory = plan["final_bundle_missing_artifact_inventory"]
         self.assertEqual(missing_inventory["status"], "blocked")
         self.assertEqual(
@@ -6174,7 +6078,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertTrue(state["available_prebundle_evidence"]["FINAL_BUNDLE_PREREQUISITE_PLAN"])
         self.assertFalse(plan["next_required_step_is_actionable"])
-        self.assertEqual(plan["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(plan["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
         self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
@@ -6190,7 +6094,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertFalse(guard["live_artifact_write_allowed"])
         self.assertIs(plan["ready_to_write_live_artifacts"], guard["live_artifact_write_allowed"])
-        self.assertEqual(guard["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(guard["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
         self.assertIn(
             "HANDOFF/00_下一Agent先读.md",
             guard["blocked_live_artifact_refs"],
@@ -6217,7 +6121,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
             guard["upstream_blockers"],
         )
-        self.assertIn(
+        self.assertNotIn(
             "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
             guard["upstream_blockers"],
         )
@@ -6293,7 +6197,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(inventory["ready_to_write_live_artifacts"])
         self.assertEqual(
             inventory["next_safe_action"],
-            "build_reviewed_s2plt03_terminal_resilience_proof_without_production_side_effects",
+            "build_reviewed_s2plt04_completion_report_without_production_side_effects",
         )
         self.assertFalse(inventory["production_acceptance_claimed"])
         self.assertFalse(inventory["integrated_production_accepted"])
@@ -6391,10 +6295,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(directory_validation["status"], "blocked")
         self.assertTrue(directory_validation["bundle_directory_present"])
         self.assertEqual(state["next_required_step"], "S2PLT04_COMPLETION_REPORT")
-        self.assertEqual(state["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(state["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
         self.assertEqual(
             state["next_executable_runtime_step"],
-            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            "",
         )
         self.assertEqual(state["current_wait_state"], "")
         self.assertFalse(state["ready_to_write_live_artifacts"])
@@ -6579,8 +6483,8 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt04_completion_evidence_audit_summary"],
             prerequisite_plan["s2plt04_completion_evidence_audit_summary"],
         )
-        self.assertEqual(state["s2plt04_completion_evidence_audit_summary"]["status"], "blocked")
-        self.assertFalse(state["s2plt04_completion_evidence_audit_summary"]["completion_report_ready"])
+        self.assertEqual(state["s2plt04_completion_evidence_audit_summary"]["status"], "pass")
+        self.assertTrue(state["s2plt04_completion_evidence_audit_summary"]["completion_report_ready"])
         self.assertFalse(
             state["s2plt04_completion_evidence_audit_summary"]["s2plt04_completion_report_written"]
         )
@@ -6588,7 +6492,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             "s2plt02_live_2d_terminal_proof_missing",
             state["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
         )
-        self.assertIn(
+        self.assertNotIn(
             "s2plt03_resilience_terminal_proof_missing",
             state["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
         )

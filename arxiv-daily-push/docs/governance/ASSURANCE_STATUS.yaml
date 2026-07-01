@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC"
-source_snapshot_hash: "sha256:7c17648277920a99469806009478317e1bbca9f587fc82525e1171516dd6695c"
+as_of_event_id: "EVENT-20260701-ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF"
+source_snapshot_hash: "sha256:b3c0f505dc442012d6075297e33ac6c72aaa49b81b93d4b214e2e92b1a838ba4"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-07-01T07:43:35+10:00"
+snapshot_event_time: "2026-07-01T13:16:19+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 1
     commit_bound_events: 4
-    legacy_unbound_events: 322
+    legacy_unbound_events: 323
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE"
+  release_gate: "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,15 +82,15 @@ delivery_readiness:
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "S2PLT03-TERMINAL-RESILIENCE-PROOF"
+  task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"
   status: "blocked"
-  reason: "S2PLT02 terminal delivery proof artifact is validated and ready as a no-production final-bundle input; the next blocked terminal dependency is the reviewed S2PLT03 terminal resilience proof artifact."
+  reason: "S2PLT01 terminal acceptance, S2PLT02 terminal delivery proof, S2PLT03 terminal resilience proof, independent reviewer assignment, and P0/P1 zero-proof artifacts are validated as no-production final-bundle inputs; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed."
   acceptance_ids:
-    - "ACC-S2PLT03-RESILIENCE"
+    - "ACC-S2PLT04-COMPLETION"
     - "ACC-S2PMT07-FINAL-REVIEW"
   owner: "content_owner + engineering_owner + independent_final_reviewer"
   human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json without enabling SMTP, scheduler, Release, restore, or production acceptance."
+  unblock_condition: "Build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json without enabling SMTP, scheduler, Release, restore, public schema changes, or production acceptance."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -104,12 +104,12 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the validated independent reviewer assignment, P0/P1 zero-proof artifact, and FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json as existing no-production final-bundle inputs; do not re-run S2PLT02 SMTP or scheduler capture; next build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json before S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff."
-  option_a: "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 已作为 no-production 输入通过，默认下一步只构建、独立复审并验证 S2PLT03 terminal resilience proof，保持 S2PLT04/final bundle/production gate 阻断。"
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the validated independent reviewer assignment, P0/P1 zero-proof artifact, FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json, and FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json as existing no-production final-bundle inputs; do not re-run S2PLT02 SMTP/scheduler capture or S2PLT03 resilience proof; next build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json before final bundle manifest, independent final signoff, final command execution proof, no-production attestation closure, and next-agent handoff."
+  option_a: "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 与 S2PLT03 terminal resilience proof 均已作为 no-production 输入通过，默认下一步只构建、独立复审并验证 S2PLT04 completion report，保持 final bundle/production gate 阻断。"
   option_b: "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
   option_c: "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
   options:
-    - "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 已作为 no-production 输入通过，默认下一步只构建、独立复审并验证 S2PLT03 terminal resilience proof，保持 S2PLT04/final bundle/production gate 阻断。"
+    - "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 与 S2PLT03 terminal resilience proof 均已作为 no-production 输入通过，默认下一步只构建、独立复审并验证 S2PLT04 completion report，保持 final bundle/production gate 阻断。"
     - "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
     - "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"

@@ -172,6 +172,11 @@ def adp_s2pmt07_blocked_next_task(
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
         or "S2PLT02 terminal delivery proof accepted" in current_alias
     )
+    s2plt03_terminal_resilience_accepted = (
+        "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY" in current_gate
+        or "S2PLT03 terminal resilience proof artifact passed" in current_alias
+        or "S2PLT03 terminal resilience proof accepted" in current_alias
+    )
     terminal_resilience_proof_is_next = (
         s2plt02_terminal_delivery_accepted
         or "S2PLT03-TERMINAL-RESILIENCE-PROOF" in current_iteration
@@ -184,6 +189,27 @@ def adp_s2pmt07_blocked_next_task(
         or "real-proof capture" in current_alias
         or "real proof capture" in current_alias
     )
+    if completion_report_is_next or s2plt03_terminal_resilience_accepted:
+        return {
+            "task_id": "S2PMT07-S2PLT04-COMPLETION-REPORT",
+            "status": "blocked",
+            "reason": (
+                "S2PLT01 terminal acceptance, S2PLT02 terminal delivery proof, "
+                "S2PLT03 terminal resilience proof, independent reviewer assignment, "
+                "and P0/P1 zero-proof artifacts are validated as no-production final-bundle "
+                "inputs; S2PLT04 completion report is the next required blocked artifact "
+                "before final command, handoff, signoff, manifest, or production acceptance can proceed."
+            ),
+            "acceptance_ids": ["ACC-S2PLT04-COMPLETION", "ACC-S2PMT07-FINAL-REVIEW"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "Build, independently review, write, and validate "
+                "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json without enabling "
+                "SMTP, scheduler, Release, restore, public schema changes, or production acceptance."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
     if terminal_resilience_proof_is_next:
         return {
             "task_id": "S2PLT03-TERMINAL-RESILIENCE-PROOF",
@@ -221,28 +247,6 @@ def adp_s2pmt07_blocked_next_task(
                 "the missing S2PLT02 terminal evidence, then validate "
                 "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json "
                 "without claiming Stage2 production acceptance."
-            ),
-            "stale_candidates": stale_candidates or [],
-        }
-    if completion_report_is_next:
-        return {
-            "task_id": "S2PMT07-S2PLT04-COMPLETION-REPORT",
-            "status": "blocked",
-            "reason": (
-                "Independent final reviewer assignment and P0/P1 zero-proof artifacts "
-                "are validated for the final-bundle chain; S2PLT04 completion report "
-                "is the next required blocked artifact before final command, handoff, "
-                "signoff, manifest, or production acceptance can proceed."
-            ),
-            "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW"],
-            "owner": "content_owner + engineering_owner + independent_final_reviewer",
-            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
-            "unblock_condition": (
-                "Provide real S2PLT04 completion report after S2PLT01/S2PLT02/S2PLT03 "
-                "terminal evidence and P0/P1 zero-proof inputs are truthfully available; "
-                "then proceed to final command execution, next-agent handoff, independent "
-                "signoff, and final bundle manifest without claiming production acceptance "
-                "until all final-bundle gates pass."
             ),
             "stale_candidates": stale_candidates or [],
         }
@@ -319,6 +323,11 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
         or "S2PLT02 terminal delivery proof accepted" in current_alias
     )
+    s2plt03_terminal_resilience_ready = (
+        "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY" in current_gate
+        or "S2PLT03 terminal resilience proof artifact passed" in current_alias
+        or "S2PLT03 terminal resilience proof accepted" in current_alias
+    )
     if (
         "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION" in current_iteration
         or "s2plt02_real_delivery_manifest_normalization_iteration" in matrix
@@ -375,6 +384,18 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     ):
         capture_window_runtime_clause = (
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
+        )
+    if s2plt03_terminal_resilience_ready:
+        return (
+            "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
+            "the validated independent reviewer assignment, P0/P1 zero-proof artifact, "
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json, and "
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json as existing "
+            "no-production final-bundle inputs; do not re-run S2PLT02 SMTP/scheduler capture "
+            "or S2PLT03 resilience proof; next build, independently review, write, and validate "
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json before final bundle manifest, "
+            "independent final signoff, final command execution proof, no-production attestation "
+            "closure, and next-agent handoff."
         )
     if s2plt02_terminal_delivery_ready:
         return (
@@ -1008,10 +1029,17 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             owner_decision[key] = value
     if adp_s2pmt07_current:
         owner_decision["current_recommendation"] = adp_s2pmt07_current_recommendation(matrix)
-        owner_decision["option_a"] = (
-            "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 已作为 no-production 输入通过，"
-            "默认下一步只构建、独立复审并验证 S2PLT03 terminal resilience proof，保持 S2PLT04/final bundle/production gate 阻断。"
-        )
+        if "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY" in str(matrix.get("current_gate") or ""):
+            owner_decision["option_a"] = (
+                "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 与 "
+                "S2PLT03 terminal resilience proof 均已作为 no-production 输入通过，默认下一步只构建、"
+                "独立复审并验证 S2PLT04 completion report，保持 final bundle/production gate 阻断。"
+            )
+        else:
+            owner_decision["option_a"] = (
+                "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 已作为 no-production 输入通过，"
+                "默认下一步只构建、独立复审并验证 S2PLT03 terminal resilience proof，保持 S2PLT04/final bundle/production gate 阻断。"
+            )
         options = list(structural.as_list(owner_decision.get("options")))
         if options:
             options[0] = owner_decision["option_a"]
