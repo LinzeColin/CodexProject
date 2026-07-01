@@ -155,7 +155,10 @@ def adp_s2pmt07_blocked_next_task(
     production_boundary_preflight_ready = (
         "INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT" in current_iteration
         or "INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_gate
+        or "INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE" in current_iteration
+        or "INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE" in current_gate
         or "production-boundary preflight passed" in current_alias.lower()
+        or "write-gate precheck" in current_alias.lower()
     )
     controlled_real_run_rechecked = (
         "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
@@ -217,7 +220,7 @@ def adp_s2pmt07_blocked_next_task(
             "status": "blocked",
             "reason": (
                 "The S2PMT07 production-boundary preflight checks passed with final bundle ready, "
-                "owner decision packet ready, "
+                "owner decision packet ready, acceptance write-gate precheck blocked correctly, "
                 "open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and no background "
                 "ADP process."
                 + controlled_run_clause
@@ -391,7 +394,10 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     production_boundary_preflight_ready = (
         "INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT" in current_iteration
         or "INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_gate
+        or "INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE" in current_iteration
+        or "INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE" in current_gate
         or "production-boundary preflight passed" in current_alias.lower()
+        or "write-gate precheck" in current_alias.lower()
     )
     controlled_real_run_rechecked = (
         "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
@@ -473,7 +479,7 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         )
         return (
             "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
-            "the integrated production acceptance preflight as passed no-production evidence; "
+            "the integrated production acceptance preflight and write-gate precheck as passed no-production evidence; "
             + controlled_run_sentence
             + "record owner production-boundary decision evidence next, and do not enable "
             "SMTP, scheduler, Release, restore, DAILY_OPERATION, or write "
@@ -1138,11 +1144,17 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         production_boundary_preflight_ready = (
             "INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT" in current_iteration_text
             or "INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_gate_text
+            or "INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE" in current_iteration_text
+            or "INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE" in current_gate_text
         )
         if production_boundary_preflight_ready:
-            owner_decision["review_id"] = "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
+            owner_decision["review_id"] = (
+                "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
+                if "WRITE_GATE" in current_gate_text or "WRITE-GATE" in current_iteration_text
+                else "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
+            )
             owner_decision["decision_question"] = (
-                "S2PMT07 production-boundary preflight 已通过；是否记录 owner 生产验收边界决策证据，"
+                "S2PMT07 production-boundary preflight 与 acceptance write-gate precheck 已通过；是否记录 owner 生产验收边界决策证据，"
                 "进入最终 acceptance write gate，同时继续禁止自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
             )
             owner_decision["question"] = owner_decision["decision_question"]

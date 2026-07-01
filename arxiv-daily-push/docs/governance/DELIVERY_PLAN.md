@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 331
+- task_count: 332
 - acceptance_count: 128
 
 ## Delivery Tasks
+
+## 2026-07-01 16:34:41 Australia/Sydney - S2PMT07 integrated production acceptance write gate
+
+- Task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE`
+- Result: `blocked_write_gate_owner_decision_required_no_acceptance`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json`; `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json`; `governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json`.
+- Write gate state: `write_gate_precheck_ready=true`; `acceptance_write_gate_allowed=false`; `state_hash=8dbaec78b3af9fa55b00f498995b1928399e92063a69b599babb3bed621f2c1d`; `failed_checks=[]`; blockers `owner_production_boundary_decision_missing;acceptance_write_gate_not_allowed_without_owner_decision;integrated_production_accepted_not_written;daily_operation_not_enabled`.
+- Current blocker: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION` must record explicit owner production-boundary acceptance/write decision evidence before any `INTEGRATED_PRODUCTION_ACCEPTED` write or `DAILY_OPERATION` enablement.
+- Production boundary: no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, or Stage2/S3 production acceptance is introduced by this write-gate precheck.
 
 ## 2026-07-01 16:10:24 Australia/Sydney - S2PMT07 authorized controlled real-run acceptance
 

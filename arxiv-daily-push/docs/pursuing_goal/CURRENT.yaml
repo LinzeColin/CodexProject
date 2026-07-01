@@ -15,11 +15,11 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: S2PMT07 integrated production acceptance boundary preflight passed all configured checks; the owner decision packet is ready; one owner-authorized controlled foreground real-run acceptance check has passed without duplicate send or persistent enablement; the current blocker is still explicit production acceptance/write evidence before any INTEGRATED_PRODUCTION_ACCEPTED write or DAILY_OPERATION enablement.
-  current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET
-  current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_OWNER_DECISION_PACKET_READY_BLOCKED_NO_PRODUCTION_ACCEPTANCE
+  global_current_task_meaning: S2PMT07 integrated production acceptance boundary preflight passed all configured checks; the owner decision packet is ready; one owner-authorized controlled foreground real-run acceptance check has passed without duplicate send or persistent enablement; the final acceptance write-gate precheck is ready but remains blocked because explicit owner production-boundary acceptance/write decision evidence is not recorded.
+  current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE
+  current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE
   next_executable_task: S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION
-  next_required_step: OWNER_PRODUCTION_BOUNDARY_DECISION
+  next_required_step: OWNER_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
   email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW
@@ -60,6 +60,15 @@ production_boundary:
     - M4
   owner_authorized_controlled_real_run_post_smtp_flag: false
   owner_authorized_controlled_real_run_background_process_count_after: 0
+  integrated_production_acceptance_write_gate_precheck_ready: true
+  integrated_production_acceptance_write_gate_allowed: false
+  integrated_production_acceptance_write_gate_state_hash: 8dbaec78b3af9fa55b00f498995b1928399e92063a69b599babb3bed621f2c1d
+  integrated_production_acceptance_write_gate_manifest: governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json
+  integrated_production_acceptance_write_gate_blocking_reasons:
+    - owner_production_boundary_decision_missing
+    - acceptance_write_gate_not_allowed_without_owner_decision
+    - integrated_production_accepted_not_written
+    - daily_operation_not_enabled
   owner_production_boundary_decision_recorded: false
   s2plt04_completed: true
   independent_final_review_passed: true

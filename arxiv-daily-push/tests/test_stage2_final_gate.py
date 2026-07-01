@@ -99,6 +99,10 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+    S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS,
+    S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_FORBIDDEN_FLAGS,
+    S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE,
+    S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID,
     S2PMT07_MAINLINE_ATTESTATION_NO_PRODUCTION_FLAGS,
     S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS,
     S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
@@ -133,6 +137,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_independent_final_reviewer_assignment_request_state,
     build_integrated_production_acceptance_owner_decision_packet_state,
     build_integrated_production_acceptance_preflight_state,
+    build_integrated_production_acceptance_write_gate_state,
     build_s2pmt07_mainline_attestation_state,
     build_final_acceptance_bundle_manifest_hash,
     build_final_acceptance_bundle_manifest_validation_state,
@@ -221,6 +226,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_independent_final_reviewer_assignment_request_state,
     validate_integrated_production_acceptance_owner_decision_packet_state,
     validate_integrated_production_acceptance_preflight_state,
+    validate_integrated_production_acceptance_write_gate_state,
     validate_s2pmt07_mainline_attestation_state,
     validate_p0_p1_zero_proof_assembly_state,
     validate_p0_p1_zero_proof_artifact,
@@ -6533,6 +6539,52 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(
             "owner decision packet alone must not allow acceptance write gate",
             validate_integrated_production_acceptance_owner_decision_packet_state(tampered),
+        )
+
+    def test_integrated_production_acceptance_write_gate_blocks_without_owner_decision(self) -> None:
+        state = build_integrated_production_acceptance_write_gate_state(
+            generated_at="2026-07-01T16:40:00+10:00"
+        )
+
+        self.assertEqual(state["task_id"], S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID)
+        self.assertEqual(state["status"], "blocked_write_gate_owner_decision_required_no_acceptance")
+        self.assertEqual(state["scope"], S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE)
+        self.assertTrue(state["write_gate_precheck_ready"])
+        self.assertFalse(state["acceptance_write_gate_allowed"])
+        self.assertEqual(state["failed_checks"], [])
+        self.assertEqual(
+            tuple(state["blocking_reasons"]),
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS,
+        )
+        self.assertTrue(state["checks"]["owner_packet_manifest_present"])
+        self.assertTrue(state["checks"]["owner_packet_ready"])
+        self.assertTrue(state["checks"]["owner_packet_does_not_allow_write_gate"])
+        self.assertTrue(state["checks"]["controlled_real_run_manifest_present"])
+        self.assertTrue(state["checks"]["controlled_real_run_sent_all_four_mail_products"])
+        self.assertTrue(state["checks"]["controlled_real_run_duplicate_send_avoided"])
+        self.assertTrue(state["checks"]["controlled_real_run_post_smtp_flag_false"])
+        self.assertTrue(state["checks"]["controlled_real_run_launchagents_disabled_after"])
+        self.assertTrue(state["checks"]["controlled_real_run_no_background_process_after"])
+        self.assertTrue(state["checks"]["final_bundle_ready"])
+        self.assertTrue(state["checks"]["owner_decision_not_recorded"])
+        self.assertEqual(state["controlled_real_run_sent_mail_products"], ["M1", "M2", "M3", "M4"])
+        self.assertEqual(state["controlled_real_run_newly_sent_mail_products"], [])
+        self.assertEqual(state["controlled_real_run_historical_sent_mail_products"], ["M1", "M2", "M3", "M4"])
+        self.assertEqual(state["controlled_real_run_background_process_count_after"], 0)
+        self.assertEqual(state["controlled_real_run_persistent_adp_allow_smtp_send_after"], "false")
+        self.assertFalse(state["owner_production_boundary_decision_recorded"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        for flag in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_FORBIDDEN_FLAGS:
+            self.assertFalse(state[flag])
+        self.assertEqual(validate_integrated_production_acceptance_write_gate_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["acceptance_write_gate_allowed"] = True
+        self.assertIn(
+            "integrated production acceptance write gate must stay disallowed without owner decision",
+            validate_integrated_production_acceptance_write_gate_state(tampered),
         )
 
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:
