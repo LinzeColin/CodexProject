@@ -26,7 +26,7 @@
     "KMFA/**",
     "MetaDatabase/**",
     "OpenAIDatabase/**",
-    "OpMe_System/**",
+    "KM_IDSystem/**",
     "PFI/**",
     "QBVS/**",
     "Serenity-Alipay/**",

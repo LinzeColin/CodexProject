@@ -1,6 +1,6 @@
-# OpMe_System Model Specification
+# KM_IDSystem Model Specification
 
-Project: `OpMe_System`
+Project: `KM_IDSystem`
 Governance spec version: `1.0.0`
 
 - model_count: 7
@@ -16,7 +16,7 @@ Governance spec version: `1.0.0`
 
 ## Model Overview
 
-OpMe_System has active deterministic industrial rule models for dynamic kiln analysis, fault diagnosis, gear repair, machining advice, generic consulting, risk-level mapping, and an LLM provider router with offline fallback.
+KM_IDSystem has active deterministic industrial rule models for dynamic kiln analysis, fault diagnosis, gear repair, machining advice, generic consulting, risk-level mapping, and an LLM provider router with offline fallback.
 
 Technology stack components such as FastAPI, React, SQLite, ECharts, and PDF generation are architecture/output components, not models.
 
