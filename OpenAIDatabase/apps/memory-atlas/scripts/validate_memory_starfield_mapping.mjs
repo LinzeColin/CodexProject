@@ -88,7 +88,7 @@ requireCheck(
     "function memoryTerrainType",
     "function buildTerrainSummary",
     "memory-starfield-terrain-layer",
-    "Memory Terrain analysis panel",
+    "Memory Terrain v2 analysis panel",
     "terrainFeatureCount",
     "parameterSource: MEMORY_STARFIELD_PARAMS.parameterSource",
   ]),

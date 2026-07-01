@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 5 Stage 4 Review
+
+- Completed the Part 5 review for Stage 4.1 / 4.2 / 4.3 / Stage 4 overall:
+  Rendering Integration, Data Mapping, Starfield Interaction, and whole-stage
+  Memory Starfield production integration review.
+- Added `validate:part5-stage4` to verify the Stage 4 phase reviews, current
+  Starfield runtime markers, visual acceptance hooks, production experiment
+  isolation, Starfield mapping and interaction validators, TypeScript / Vite
+  build, and visual and overall acceptance audits.
+- Updated `validate_memory_starfield_mapping.mjs` to accept the current
+  `Memory Terrain v2 analysis panel` runtime marker instead of the older
+  Terrain panel marker.
+- Confirmed the Galaxy board keeps `memory-starfield` as the default renderer,
+  preserves legacy rollback, maps mass/particles/terrain from
+  `model_parameters.memory_starfield.yaml`, and exposes transient hover, capped
+  click focus, Freeze/Resume Flow, and Presentation/Analysis mode without
+  adding new runtime work in this review.
+
+No Part 6 review, Stage 5 review, whole-project review, GitHub main upload,
+Cloudflare live deploy, Access policy change, raw/private data access, direct
+writeback, production runtime feature work, or external account operation was
+added.
+
+Machine-readable boundary summary: Stage 4.1 / 4.2 / 4.3 / Stage 4 overall; No
+Part 6 review; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 4 Stage 3 Review
 
 - Completed the Part 4 review for Stage 3.1 / 3.2 / Stage 3 overall: Home

@@ -1211,3 +1211,48 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 5 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 26. Part 5 Stage 4 复审门槛
+
+状态：`part_5_stage_4_review_passed`。
+
+范围：
+
+- Stage 4.1 Rendering Integration。
+- Stage 4.2 Data Mapping。
+- Stage 4.3 Starfield Interaction。
+- Stage 4 overall review。
+
+验收门槛：
+
+- `validate:part5-stage4` 必须通过。
+- Stage 4.1 必须保留 `memory-starfield` default Galaxy renderer、legacy
+  rollback flag、Flow Field trajectories、semantic signal markers、quality
+  selector 和 low-quality fallback。
+- Stage 4.2 必须保留
+  `config/visualization/model_parameters.memory_starfield.yaml` 参数源、
+  `memoryStarfieldMass`、`memoryStarfieldParticleAttributes`、
+  `memoryTerrainType`、Memory Terrain rendering layer 和 Analysis explanation
+  panel。
+- Stage 4.3 必须保留 transient hover preview、click focus、capped focused
+  neighborhood、Freeze/Resume Flow、Presentation/Analysis mode、formula summary、
+  terrain legend 和 Inspector context。
+- Stage 4 overall review 必须继续证明 Stage 4.1 / 4.2 / 4.3 均通过、
+  desktop/mobile browser evidence 已记录、安全边界通过、4177 cleanup 已验证。
+- Starfield mapping validator、Starfield interaction validator、
+  TypeScript/Vite build、visual acceptance、overall acceptance 必须通过。
+
+边界：
+
+- 本 Part 5 复审不进入 Part 6。
+- 本 Part 5 复审不进入 Stage 5。
+- 本 Part 5 复审不执行整项目复审。
+- 本 Part 5 复审不上传 GitHub main。
+- 本 Part 5 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 5 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 5 复审不新增 direct active-memory writeback。
+- 本 Part 5 复审不新增 production runtime feature work。
+
+下一阶段：
+
+- 单独执行 Part 6 复审与修复；所有 part-level 复审完成后再进入整项目复审。
