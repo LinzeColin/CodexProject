@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 9 Whole-Stage Review
+
+- Completed the Stage 9 whole-stage review across Obsidian Graph E Iteration
+  and Visual Semantics Enrichment.
+- Added `validate:stage9` to run Stage 9.1 Obsidian validation, Stage 9.2
+  visual semantics validation, visual acceptance, release audit, overall
+  acceptance, Stage 9 documentation consistency checks, and 4177 cleanup.
+- Confirmed Stage 9 keeps bounded Obsidian local graph behavior, sparse/focused
+  label rules, Galaxy shared-focus sync, explainable Memory Terrain v2,
+  Memory Weather v2, and Galaxy/Memory River ROI capability gradients.
+
+No Cloudflare live deploy, Access policy change, raw/private data access,
+direct writeback, external account operation, or Stage 10 feature work was
+added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 9.2 Visual Semantics Enrichment
 
 - Added Memory Weather v2 on the Home overview with stability, momentum, risk,

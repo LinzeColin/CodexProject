@@ -1007,3 +1007,39 @@ Stage 8 整体复审已确认：
 下一阶段：
 
 - Stage 9 整体复审与修复；通过后再做 GitHub main 上传。
+
+## 21. Stage 9 整体复审状态
+
+状态：`stage_9_whole_stage_review_passed`。
+
+Stage 9 整体复审已确认：
+
+- 9.1 Obsidian Graph E Iteration 已通过 `validate:stage9-obsidian`：
+  bounded local graph、label rules、Galaxy shared-focus sync 和 4177 cleanup
+  均通过。
+- 9.2 Visual Semantics Enrichment 已通过
+  `validate:stage9-visual-semantics`：Memory Weather v2、Memory Terrain v2、
+  Galaxy ROI gradient、Memory River ROI/capability gradient、browser
+  console/network 和 4177 cleanup 均通过。
+- `validate:stage9` 会同时运行 Stage 9.1 validator、Stage 9.2 validator、
+  visual acceptance、release audit、overall acceptance、Stage 9 文档一致性检查
+  和 4177 cleanup assertion。
+- `audit_memory_atlas_visual_acceptance.py` 必须继续包含
+  `stage9_1_obsidian_graph_iteration_ready` 和
+  `stage9_2_visual_semantics_enrichment_ready`。
+- 发布产物必须继续满足
+  `source_contract.mode == "public_redacted_read_only_visualization"`。
+- 前端写回边界保持
+  `direct_frontend_mutation_of_active_memory == false`。
+
+边界：
+
+- Stage 9 整体复审不包含 Cloudflare live deploy 或 Access policy change。
+- Stage 9 整体复审不读取 raw/private/cookie/session/secret 数据。
+- Stage 9 整体复审不新增 direct active-memory writeback。
+- Stage 9 整体复审不进入 Stage 10。
+- GitHub main 上传必须在复审通过后再做 final fast-forward 检查。
+
+下一阶段：
+
+- GitHub main 上传后，Stage 9 交付关闭；后续新需求另开下一阶段。
