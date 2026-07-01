@@ -180,10 +180,10 @@ def adp_s2pmt07_blocked_next_task(
         or "DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED" in current_gate
         or "keep_daily_operation_disabled_no_persistent_authorization" in current_alias
     )
-    daily_operation_owner_decision_keep_disabled = (
-        "DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED" in current_iteration
-        or "DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED" in current_gate
-        or "keep_daily_operation_disabled_no_persistent_authorization" in current_alias
+    daily_operation_persistent_authorization_missing = (
+        "DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE" in current_iteration
+        or "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING" in current_gate
+        or "persistent_daily_operation_authorization_missing" in current_alias
     )
     daily_operation_blockers = str(matrix.get("s2pmt07_daily_operation_authorization_preflight_blockers") or "")
     daily_operation_preflight_passed = bool(
@@ -243,6 +243,25 @@ def adp_s2pmt07_blocked_next_task(
         or "real-proof capture" in current_alias
         or "real proof capture" in current_alias
     )
+    if daily_operation_persistent_authorization_missing:
+        return {
+            "task_id": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
+            "status": "blocked",
+            "reason": (
+                "Persistent DAILY_OPERATION authorization gate has run and is blocked because "
+                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json "
+                "does not exist. Runtime remains disabled."
+            ),
+            "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
+            "owner": "content_owner + engineering_owner",
+            "human_owner_role": "content_owner + engineering_owner",
+            "unblock_condition": (
+                "Provide a new explicit owner persistent DAILY_OPERATION authorization artifact, "
+                "then run a separate enablement preflight while keeping SMTP, scheduler, Release, "
+                "restore, and DAILY_OPERATION disabled until that gate passes."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
     if daily_operation_owner_decision_keep_disabled:
         return {
             "task_id": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
@@ -591,6 +610,11 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         or "DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED" in current_gate
         or "keep_daily_operation_disabled_no_persistent_authorization" in current_alias
     )
+    daily_operation_persistent_authorization_missing = (
+        "DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE" in current_iteration
+        or "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING" in current_gate
+        or "persistent_daily_operation_authorization_missing" in current_alias
+    )
     daily_operation_blockers = str(matrix.get("s2pmt07_daily_operation_authorization_preflight_blockers") or "")
     daily_operation_preflight_passed = bool(
         matrix.get("s2pmt07_daily_operation_authorization_preflight_passed", False)
@@ -668,6 +692,13 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     ):
         capture_window_runtime_clause = (
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
+        )
+    if daily_operation_persistent_authorization_missing:
+        return (
+            "A: Persistent DAILY_OPERATION authorization gate is blocked because the explicit "
+            "owner authorization artifact is missing. Keep DAILY_OPERATION disabled; do not "
+            "enable SMTP, scheduler, Release, restore, or persistent operation until that "
+            "artifact exists and a separate enablement preflight passes."
         )
     if daily_operation_owner_decision_keep_disabled:
         return (
@@ -1418,6 +1449,11 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             or "DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED" in current_gate_text
             or "keep_daily_operation_disabled_no_persistent_authorization" in daily_operation_alias
         )
+        daily_operation_persistent_authorization_missing = (
+            "DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE" in current_iteration_text
+            or "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING" in current_gate_text
+            or "persistent_daily_operation_authorization_missing" in daily_operation_alias
+        )
         daily_operation_blockers = str(matrix.get("s2pmt07_daily_operation_authorization_preflight_blockers") or "")
         daily_operation_preflight_passed = bool(
             matrix.get("s2pmt07_daily_operation_authorization_preflight_passed", False)
@@ -1429,7 +1465,36 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 and "missing_smtp_secret_env_names" in daily_operation_blockers
             )
         )
-        if daily_operation_owner_decision_keep_disabled:
+        if daily_operation_persistent_authorization_missing:
+            owner_decision["review_id"] = "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
+            owner_decision["decision_question"] = (
+                "持久 DAILY_OPERATION 授权门已运行但阻断；是否提供新的显式 owner 持久 "
+                "DAILY_OPERATION 授权 artifact，或继续保持禁用。"
+            )
+            owner_decision["question"] = owner_decision["decision_question"]
+            owner_decision["option_a"] = (
+                "继续保持 DAILY_OPERATION 禁用；不启用 SMTP、scheduler、Release 或 production restore。"
+            )
+            owner_decision["option_b"] = (
+                "若 owner 明确授权持久 DAILY_OPERATION，则提交 "
+                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，"
+                "再跑单独 enablement preflight。"
+            )
+            owner_decision["option_c"] = "禁止把一次受控运行验收或 keep-disabled 决策当作持久运行授权。"
+            owner_decision["options"] = [
+                owner_decision["option_a"],
+                owner_decision["option_b"],
+                owner_decision["option_c"],
+            ]
+            owner_decision["evidence_required"] = (
+                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json, "
+                "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json, "
+                "persistent_daily_operation_authorization_missing, "
+                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, "
+                "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+            )
+            owner_decision["unblock_task_id"] = next_task["task_id"]
+        elif daily_operation_owner_decision_keep_disabled:
             owner_decision["review_id"] = "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
             owner_decision["decision_question"] = (
                 "DAILY_OPERATION owner decision 已记录为保持禁用；是否提供新的显式 owner 持久 "

@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
+    phase: "S2PL"
+    objective: "Validate the persistent DAILY_OPERATION authorization gate and block safely when the explicit owner persistent authorization artifact is missing."
+    scope: "Persistent authorization builder/validator/CLI, gate artifact, run manifest, phase record, CURRENT state, dashboard routing, owner-facing status, three-base summaries, and focused regression tests."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, V7.1 historical baseline mutation, or cross-project cleanup."
+    status: "blocked"
+    dependencies: ["S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION", "S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE", "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"]
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_GATE.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD final-gate unittest", "TDD CLI unittest", "persistent authorization gate CLI", "post-run safety state checks"]
+    test_results: ["TDD red: missing daily-operation persistent authorization builder/validator and CLI command", "TDD green: final-gate and CLI command block when explicit persistent authorization artifact is missing", "gate status=blocked_persistent_daily_operation_authorization_missing", "state_hash=f9ef81e7a07bca57e11876e2a53d3d18e9148d6da7c8919002ce6cfb55f8ef61", "blocking_reasons=persistent_daily_operation_authorization_missing", "persistent_daily_operation_authorized=false", "daily_operation_enabled=false", "real_smtp_send_enabled=false", "scheduler_install_enabled=false", "release_packaging_enabled=false", "production_restore_enabled=false"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_GATE.md", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json", "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"]
+    risk: "Future agents could treat one-time controlled real-run authorization or the keep-disabled owner decision as persistent DAILY_OPERATION permission; this gate records the missing explicit authorization and keeps runtime disabled."
+    rollback: "Revert the persistent authorization gate builder/validator/CLI, gate artifact, run manifest, phase record, current-state sync, owner-facing notes, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION"
     phase: "S2PL"
     objective: "Record the owner DAILY_OPERATION decision as keep-disabled after the technical authorization preflight passed, without granting persistent runtime authorization."
