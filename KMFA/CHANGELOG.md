@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s18p3-integration-preparation - 2026-07-01
+
+- 完成 `S18-P3｜后续接入准备` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/integration_preparation.py` 和 `KMFA/tools/check_s18_p3_integration_preparation.py`，生成并验证 public-safe 后续接入准备 artifacts。
+- 新增 `KMFA/tests/test_integration_preparation.py`，覆盖红圈/金蝶/WPS 只读 future connector、OpMe 轻入口、下一阶段 backlog、scope gate、public-safe 禁止词和 CLI validator。
+- 新增 `KMFA/metadata/integration/integration_preparation_manifest.json`、`read_only_connector_plan.jsonl`、`opme_entry_integration_plan.json`、`next_stage_backlog.jsonl` 和 `KMFA/stage_artifacts/S18_P3_integration_preparation/` 证据包。
+- 红圈、金蝶、WPS 仅整理为后续只读 future connector 方案；OpMe 仅整理为轻入口、报告索引、运行状态和 handoff 指针方案，不深度耦合。
+- 未执行 Stage 18 整体复审、GitHub upload、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+- 下一轮只能执行 `Stage 18 整体复审`。
+
 ## 0.1.0-s18p2-full-regression - 2026-07-01
 
 - 完成 `S18-P2｜全量回归和验收` 本地验证，不上传 GitHub。

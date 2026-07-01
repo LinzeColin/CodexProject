@@ -2372,3 +2372,101 @@ tasks:
     rollback: "Remove S18-P2 Go/No-Go outputs and revert S18-P2 governance rows before S18-P3."
     target_version: "0.1.0-s18p2-full-regression"
     completed_version: "0.1.0-s18p2-full-regression"
+  - task_id: "S18PCT01"
+    phase: "S18PC"
+    objective: "整理红圈、金蝶、WPS 自动接入后续只读方案。"
+    scope:
+      - "read-only future connector plans"
+      - "manual authorization and hash retention controls"
+      - "public-safe connector boundary evidence"
+    non_scope:
+      - "live connector call"
+      - "credential collection"
+      - "source mutation"
+      - "Stage 18 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S18PBT03"
+    required_files:
+      - "KMFA/metadata/integration/read_only_connector_plan.jsonl"
+      - "KMFA/tools/integration_preparation.py"
+      - "KMFA/tools/check_s18_p3_integration_preparation.py"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_integration_preparation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p3_integration_preparation.py"
+    test_results:
+      - "PASS: redcircle, kingdee and wps connector plans are proposal-only read-only future connectors."
+    evidence_refs:
+      - "KMFA/metadata/integration/read_only_connector_plan.jsonl"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/read_only_connector_plan.md"
+    risk: "Connector plans are not live integrations and do not authorize external service calls."
+    rollback: "Remove S18-P3 integration outputs and revert S18-P3 governance rows before Stage 18 review."
+    target_version: "0.1.0-s18p3-integration-preparation"
+    completed_version: "0.1.0-s18p3-integration-preparation"
+  - task_id: "S18PCT02"
+    phase: "S18PC"
+    objective: "整理 OpMe 入口集成方案，不深度耦合。"
+    scope:
+      - "OpMe light entry surfaces"
+      - "status and report-index pointers"
+      - "responsibility split"
+    non_scope:
+      - "shared database"
+      - "deep coupling"
+      - "sensitive data mixing"
+      - "business logic transfer"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S18PCT01"
+    required_files:
+      - "KMFA/metadata/integration/opme_entry_integration_plan.json"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/opme_entry_integration_plan.md"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p3_integration_preparation.py"
+    test_results:
+      - "PASS: OpMe plan is light entry and status-index only with deep coupling blocked."
+    evidence_refs:
+      - "KMFA/metadata/integration/opme_entry_integration_plan.json"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/opme_entry_integration_plan.md"
+    risk: "OpMe entry plan is a future shell design and does not move KMFA business logic or private data."
+    rollback: "Remove S18-P3 OpMe outputs and revert S18-P3 governance rows before Stage 18 review."
+    target_version: "0.1.0-s18p3-integration-preparation"
+    completed_version: "0.1.0-s18p3-integration-preparation"
+  - task_id: "S18PCT03"
+    phase: "S18PC"
+    objective: "发布下一阶段 Backlog。"
+    scope:
+      - "next-stage proposed backlog"
+      - "stage review first gate"
+      - "public-safe not-started status"
+    non_scope:
+      - "starting backlog work"
+      - "Stage 18 review"
+      - "GitHub upload"
+      - "lineage full check"
+      - "formal report release"
+    status: "completed"
+    dependencies:
+      - "S18PCT02"
+    required_files:
+      - "KMFA/metadata/integration/next_stage_backlog.jsonl"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/next_stage_backlog.md"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p3_integration_preparation.py"
+    test_results:
+      - "PASS: six proposed backlog items remain not started and cannot execute business or external connector work."
+    evidence_refs:
+      - "KMFA/metadata/integration/next_stage_backlog.jsonl"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/next_stage_backlog.md"
+    risk: "Backlog publication is not execution approval and must follow Stage 18 review/upload gates."
+    rollback: "Remove S18-P3 backlog outputs and revert S18-P3 governance rows before Stage 18 review."
+    target_version: "0.1.0-s18p3-integration-preparation"
+    completed_version: "0.1.0-s18p3-integration-preparation"

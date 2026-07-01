@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s18p2-full-regression
+product_version: 0.1.0-s18p3-integration-preparation
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S18`
-- current_phase: `S18-P3｜后续接入准备｜待开始`
-- current_tasks: `KMFA-S18-P3-GATE`
-- status: `s18p2_completed_local_only_s18p3_pending_no_go`
+- current_phase: `Stage 18 Review｜待开始`
+- current_tasks: `KMFA-S18-STAGE-REVIEW-GATE`
+- status: `s18_all_phases_completed_local_only_stage_review_pending_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -111,16 +111,17 @@ product_version: 0.1.0-s18p2-full-regression
 | `KMFA-S17-GITHUB-UPLOAD-20260701` | Stage 17 final GitHub upload 完成；基于最新 origin/main rebase Stage 17 栈，复跑 S17 validators、Stage 17 review validator、全量 246 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、diff check、dry-run push、push 和 post-push parity | `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md` |
 | `S18PAT01-S18PAT03` | S18-P1 精度与压力测试本地完成：5 类 public-safe synthetic 场景、3 次连续一致导入、1200 文件 synthetic metadata 性能预算、2 条阻断错误报告和 HTML 样板读取记录已生成；未执行 S18-P2、S18-P3、Stage 18 review 或 GitHub upload | `KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md` |
 | `S18PBT01-S18PBT03` | S18-P2 全量回归和验收本地完成：5 类检查、18 个 Stage acceptance evidence、HTML/UI 读取记录和 Go/No-Go 报告已生成；结论为 `NO_GO` 且 `delivery_allowed=false`；未执行 S18-P3、Stage 18 review 或 GitHub upload | `KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/s18_p2_completion_record.md` |
+| `S18PCT01-S18PCT03` | S18-P3 后续接入准备本地完成：红圈、金蝶、WPS 三类只读 future connector 方案、OpMe 轻入口/状态索引方案和 6 条下一阶段 backlog 已生成；未执行 Stage 18 review、GitHub upload、live connector 或 OpMe 深度耦合 | `KMFA/stage_artifacts/S18_P3_integration_preparation/human/s18_p3_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S18-P3-GATE` | 待下一轮 run work 开始；必须读取 S18-P1/S18-P2 evidence、v1.2 task pack、HTML/UIUX/报告样板和 S18 roadmap，只执行 S18-P3 后续接入准备 | `KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/s18_p2_completion_record.md` |
+| `KMFA-S18-STAGE-REVIEW-GATE` | 待下一轮 run work 开始；必须复跑 S18-P1/P2/P3 validators、治理 validator、raw/secret scan 和证据一致性检查，只执行 Stage 18 整体复审 | `KMFA/stage_artifacts/S18_P3_integration_preparation/human/s18_p3_completion_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S18-P3 后续接入准备 | 尚未开始；S18-P2 Go/No-Go 为 `NO_GO`，中间 Phase 不上传 GitHub | 后续独立 S18-P3 run work |
+| Stage 18 整体复审 | 尚未开始；S18 三个 phase 已本地完成且 S18-P2 Go/No-Go 仍为 `NO_GO`，Stage 上传前必须先复审并修复 findings | 后续独立 Stage 18 review run work |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
