@@ -4,7 +4,7 @@
 
 ## 当前目标
 
-v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线，并已按 v1.2 重新走完 Stage 1。Stage 2、Stage 3、Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10、Stage 11、Stage 12、Stage 13、Stage 14 和 Stage 15 均已完成本地实现、验证、整体复审和 GitHub main 上传。S15-P1 绩效事实字段、S15-P2 绩效复核清单、S15-P3 工资项目边界、Stage 15 整体复审和 Stage 15 final GitHub upload 均已完成，证据在 `KMFA/stage_artifacts/S15_P1_performance_fact_fields/`、`KMFA/stage_artifacts/S15_P2_performance_review_list/`、`KMFA/stage_artifacts/S15_P3_salary_boundary/`、`KMFA/stage_artifacts/S15_STAGE_REVIEW/` 和 `KMFA/stage_artifacts/S15_GITHUB_UPLOAD/`。本轮未执行 S16、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终发放或外部接口。下一轮只能执行 S16-P1，且必须重新确认 git/root/status、读取 v1.2 task pack / roadmap、保持 D 级报告、pending reconciliation、lineage 和 public-safe 边界。
+v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线，并已按 v1.2 重新走完 Stage 1。Stage 2、Stage 3、Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10、Stage 11、Stage 12、Stage 13、Stage 14 和 Stage 15 均已完成本地实现、验证、整体复审和 GitHub main 上传。S15-P1 绩效事实字段、S15-P2 绩效复核清单、S15-P3 工资项目边界、Stage 15 整体复审和 Stage 15 final GitHub upload 均已完成，证据在 `KMFA/stage_artifacts/S15_P1_performance_fact_fields/`、`KMFA/stage_artifacts/S15_P2_performance_review_list/`、`KMFA/stage_artifacts/S15_P3_salary_boundary/`、`KMFA/stage_artifacts/S15_STAGE_REVIEW/` 和 `KMFA/stage_artifacts/S15_GITHUB_UPLOAD/`。S16-P1 外协采购归集已完成本地验证，证据在 `KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/`、`KMFA/metadata/reports/subcontract_procurement_aggregation_manifest.json` 和 `KMFA/tools/check_s16_p1_subcontract_procurement.py`。本轮未执行 S16-P2、S16-P3、Stage 16 review、GitHub upload、lineage full check、正式报告、采购执行、付款审批、付款执行、银行操作、工资计算、奖金审批、薪资导出、最终发放或外部接口。下一轮只能执行 S16-P2，且必须重新确认 git/root/status、读取 v1.2 task pack / roadmap、保持 D 级报告、pending reconciliation、lineage 和 public-safe 边界。
 
 ## 当前状态
 
@@ -346,11 +346,11 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - Stage 5 已完成 S05-P1、S05-P2、S05-P3、整体复审和 GitHub upload；S05-P3 已锁定 40 条 public-safe hash/source-anchor 字段并排除 5 条 Excel 字段；S06-P1、S06-P2、S06-P3、Stage 6 review 和 Stage 6 upload 已完成。
 - S05-P1 成员级 SHA256 仍未补算；S05-P2 后续私有审计只确认本机 zip 的 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配，但整包 hash/size 与登记 source package 不匹配。公开仓库不得提交 zip、PDF、Excel 或解包文件。
 - S05-P3、Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、Stage 7 review/upload、Stage 8 review/upload、S09-P1 和 S09-P2 只完成 A0 authority baseline lock、校验/差异/适配/匹配、结构化 fact layer、margin/cash margin 计算合同、整体复审和上传；不能把它扩展解释为差异关闭、lineage 或报告发布。
-- S10-P3 public-safe 报告导出、Stage 10 整体复审、final GitHub upload、S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 review/upload、S12-P1/P2/P3、Stage 12 review/upload、S13-P1 财务经营报表初稿、S13-P2 回款应收账龄草案、S13-P3 跨表复核、Stage 13 review/upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据、Stage 14 review/upload、S15-P1 绩效事实字段、S15-P2 绩效复核清单、S15-P3 工资项目边界、Stage 15 review 和 Stage 15 upload 已完成；lineage 完整检查和运行时正式报告生成尚未实现。
+- S10-P3 public-safe 报告导出、Stage 10 整体复审、final GitHub upload、S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 review/upload、S12-P1/P2/P3、Stage 12 review/upload、S13-P1 财务经营报表初稿、S13-P2 回款应收账龄草案、S13-P3 跨表复核、Stage 13 review/upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据、Stage 14 review/upload、S15-P1 绩效事实字段、S15-P2 绩效复核清单、S15-P3 工资项目边界、Stage 15 review、Stage 15 upload 和 S16-P1 外协采购归集已完成；lineage 完整检查和运行时正式报告生成尚未实现。
 - S02-P3 只实现 report grade gate 协议；正式报告生成和 lineage 完整检查仍属后续 Stage。
 - Stage 3 已上传 GitHub main；业务导入解析、A0、zero-delta、lineage 和报告生成仍是后续 Stage。
 - v1.2 中私有源数据只能本地使用，不能提交公开 GitHub。
 
 ## 下一步
 
-下一步若继续开发，只执行 `S16-P1｜外协采购归集`：先确认 git root、branch、remote、HEAD、status，读取 v1.2 task pack / roadmap，保持 D 级报告、pending reconciliation、lineage full check、formal report、public-safe、工资/奖金/薪资导出和付款执行阻断；不得提交 raw Excel/PDF/zip/private CSV、真实金额、真实账号、真实客户/项目明细、银行流水、合同、薪资、税务申报、credentials 或字段明文。
+下一步若继续开发，只执行 `S16-P2｜项目状态生命周期`：先确认 git root、branch、remote、HEAD、status，读取 v1.2 task pack / roadmap，保持 D 级报告、pending reconciliation、lineage full check、formal report、public-safe、S16-P3、Stage 16 review、GitHub upload、采购执行、付款审批、付款执行、银行操作、工资/奖金/薪资导出阻断；不得提交 raw Excel/PDF/zip/private CSV、真实金额、真实账号、真实客户/项目明细、银行流水、合同、薪资、税务申报、credentials 或字段明文。

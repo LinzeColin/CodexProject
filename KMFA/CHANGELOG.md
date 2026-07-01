@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.0-s16-p1-local - 2026-07-01
+
+- 完成 `S16-P1｜外协采购归集` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/subcontract_procurement_aggregation.py`、`KMFA/tools/check_s16_p1_subcontract_procurement.py` 和 `KMFA/tests/test_subcontract_procurement_aggregation.py`。
+- 生成 `subcontract_procurement_aggregation_manifest.json`、`subcontract_procurement_source_lanes.jsonl`、`subcontract_project_matches.jsonl`、`subcontract_unallocated_cost_pool.jsonl`、`subcontract_anomaly_candidates.jsonl` 和 `S16_P1_subcontract_procurement_aggregation/` 证据。
+- 覆盖外协费用、采购、付款按项目匹配；未匹配进入 2 条未归集成本池；识别 2 条重复付款候选和 2 条跨项目费用候选。
+- 报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、采购执行、付款执行、银行操作、供应商结算和业务 release。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、银行流水、合同、薪资、税务申报材料或 credentials。
+- S16-P1 不执行 S16-P2、S16-P3、Stage 16 review、GitHub upload、lineage full check、正式报告、外部 connector 或任何采购/付款/银行执行动作。
+- 下一轮只能执行 `S16-P2｜项目状态生命周期`。
+
 ## 0.1.0-s15-github-upload - 2026-07-01
 
 - 完成 Stage 15 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
