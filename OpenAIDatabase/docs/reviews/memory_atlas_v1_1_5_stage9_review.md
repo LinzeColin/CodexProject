@@ -53,9 +53,11 @@ No raw/private/cookie/session/secret fields were introduced.
 
 No direct frontend writeback was added. Writeback remains proposal-only.
 
-GitHub main upload may proceed only after this review passes, the branch is a
-fast-forward descendant of `origin/main`, and the final push target is verified.
+Whole-project review must run after this review and before GitHub main upload.
+GitHub main upload may proceed only after whole-project review passes, the
+branch is a fast-forward descendant of `origin/main`, and the final push target
+is verified.
 
 ## Next Gate
 
-GitHub main upload, then close Stage 9 delivery.
+Whole-project review, then GitHub main upload after final remote checks.
