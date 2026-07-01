@@ -1174,3 +1174,40 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 4 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 25. Part 4 Stage 3 复审门槛
+
+状态：`part_4_stage_3_review_passed`。
+
+范围：
+
+- Stage 3.1 Home Information Architecture。
+- Stage 3.2 Preview Widgets。
+- Stage 3 overall review。
+
+验收门槛：
+
+- `validate:part4-stage3` 必须通过。
+- Stage 3.1 必须保留 `home` default entry、`记忆总览` nav label、
+  HomeOverviewView、Memory Weather、Universe State status cards、Black Hole、
+  Proto-Star 和 proposal-only next actions。
+- Stage 3.2 必须保留 Mini Starfield、River Pulse、Inspector Deep Link、
+  focus-preserving navigation、static SVG/non-WebGL Home preview boundary 和
+  visual acceptance hook。
+- Stage 3 overall review 必须继续证明 Stage 3.1 / 3.2 均通过、Home 默认页
+  验收通过、安全边界通过、4177 cleanup 已验证。
+- TypeScript/Vite build、visual acceptance、overall acceptance 必须通过。
+
+边界：
+
+- 本 Part 4 复审不进入 Part 5。
+- 本 Part 4 复审不执行整项目复审。
+- 本 Part 4 复审不上传 GitHub main。
+- 本 Part 4 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 4 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 4 复审不新增 direct active-memory writeback。
+- 本 Part 4 复审不新增 production runtime feature work。
+
+下一阶段：
+
+- 单独执行 Part 5 复审与修复；所有 part-level 复审完成后再进入整项目复审。
