@@ -1,0 +1,46 @@
+2026-07-01T05:52:06Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_before_phase92=89b662b86582db175dc8fb883f888326943b7309
+origin_main_before_phase92=500f51ced1c1ea42863f463d10c37cc8bb15b7a6
+ahead_behind_before_phase92=1 0
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase92_delivery_freeze.py -q
+Result: 5 failed before implementation; missing Phase 9.2 contract, final evidence index, closeout candidate, README candidate language, and phase_9_2 evidence pack.
+
+Implementation boundary:
+Stage 9 Phase 9.2 delivery freeze candidate only. Did not execute Phase 9.3 user acceptance, Stage 9 whole-stage review, GitHub main upload, app bundle reinstall, launcher mutation, or financial data changes.
+
+Final verification is recorded in evidence.json command entries after this pack is generated.
+
+Validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase92_delivery_freeze.py -q
+Result: 5 passed in 0.07s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q
+Result: 3 passed in 0.09s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_github_upload_contract.py -q
+Result: 3 passed in 0.07s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py
+Result: pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_9/phase_9_2/evidence.json
+Result: pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_9/phase_9_2/final_evidence_index.json
+Result: pass
+git diff --check -- PFI
+Result: pass
+changed_files reconciliation
+Result: pass
+
+Post-rebase final verification:
+2026-07-01T06:01:08Z
+origin_main_after_fetch=22f4dbcd434e411363a8f37b6986869f847e7162
+head_after_rebase=7ba40d328c8fb982f03c954d880aeb0cebd99b48
+ahead_behind_after_rebase=1 0
+Rebase reason: origin/main advanced with non-PFI project work after Phase 9.2 implementation started. Stage 9.1 was rebased on latest origin/main before committing Phase 9.2.
+Validation rerun after rebase:
+PFI/tests/test_v024_stage9_phase92_delivery_freeze.py -q -> 5 passed in 0.07s
+PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q -> 3 passed in 0.09s
+PFI/tests/test_v024_stage8_github_upload_contract.py -q -> 3 passed in 0.07s
+py_compile/json.tool/git diff --check/changed_files reconciliation -> pass

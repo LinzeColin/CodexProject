@@ -1,0 +1,97 @@
+{
+  "schema": "PFIV024Stage9Phase92DeliveryFreezeEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 9",
+  "stage_name": "回归防线与交付冻结",
+  "phase_id": "9.2",
+  "phase_name": "交付冻结",
+  "status": "candidate_pass",
+  "generated_at": "2026-07-01T15:52:06+10:00",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "phase_9_1_required": true,
+  "phase_9_1_guardrails_verified": true,
+  "phase_9_1_evidence": "PFI/reports/pfi_v024/stage_9/phase_9_1/evidence.json",
+  "task_ids": [
+    "T9.2.1",
+    "T9.2.2",
+    "T9.2.3",
+    "T9.2.4"
+  ],
+  "final_evidence_index": "PFI/reports/pfi_v024/stage_9/phase_9_2/final_evidence_index.json",
+  "closeout_candidate": "PFI/reports/pfi_v024/stage_9/phase_9_2/closeout_candidate.md",
+  "readme_candidate_language_written": true,
+  "phase_9_3_started": false,
+  "user_acceptance_claimed": false,
+  "stage_9_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "commands": [
+    {
+      "cmd": "pytest stage9 phase92 red run",
+      "status": "expected_fail",
+      "detail": "5 failed before implementation: missing build_v024_stage9_phase92_contract, final evidence index, closeout candidate, README candidate language, and phase_9_2 evidence pack"
+    },
+    {
+      "cmd": "pytest stage9 phase92 delivery freeze",
+      "status": "pass",
+      "detail": "5 passed in 0.07s"
+    },
+    {
+      "cmd": "pytest stage9 phase91 regression guardrails",
+      "status": "pass",
+      "detail": "3 passed in 0.09s"
+    },
+    {
+      "cmd": "pytest stage8 github upload contract",
+      "status": "pass",
+      "detail": "3 passed in 0.07s"
+    },
+    {
+      "cmd": "py_compile stage9 module and json evidence checks",
+      "status": "pass",
+      "detail": "py_compile stage_v024_stage9_regression_freeze.py passed; evidence.json and final_evidence_index.json json.tool checks passed"
+    },
+    {
+      "cmd": "changed files reconciliation",
+      "status": "pass",
+      "detail": "changed_files.txt matches git diff plus untracked PFI files"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "no whitespace errors"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/closeout_candidate.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/final_evidence_index.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+    "PFI/tests/test_v024_stage9_phase92_delivery_freeze.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 9 Phase 9.3 user acceptance",
+    "Stage 9 whole-stage review",
+    "Stage 9 GitHub main upload",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}

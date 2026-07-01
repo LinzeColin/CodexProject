@@ -21,6 +21,9 @@ STAGE_NAME = "回归防线与交付冻结"
 PHASE_9_1_ID = "9.1"
 PHASE_9_1_NAME = "回归规则"
 PHASE_9_1_TASK_IDS = ["T9.1.1", "T9.1.2", "T9.1.3", "T9.1.4"]
+PHASE_9_2_ID = "9.2"
+PHASE_9_2_NAME = "交付冻结"
+PHASE_9_2_TASK_IDS = ["T9.2.1", "T9.2.2", "T9.2.3", "T9.2.4"]
 GUARDRAIL_VERSION = "PFI-V024-STAGE9-PHASE91-REGRESSION-GUARDRAILS"
 
 PRIMARY_ENTRY_LABELS = [
@@ -105,6 +108,36 @@ class V024Stage9Phase91Contract:
     evidence_files: list[str]
     phase_9_2_started: bool
     phase_9_3_started: bool
+    stage_9_whole_review_complete: bool
+    github_main_uploaded: bool
+    app_bundle_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+    explicitly_not_done: list[str]
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class V024Stage9Phase92Contract:
+    target_version: str
+    source_package_version: str
+    repair_label: str
+    stage: str
+    stage_name: str
+    phase_id: str
+    phase_name: str
+    current_phase_only: bool
+    max_phases_per_run: int
+    phase_9_1_required: bool
+    task_ids: list[str]
+    required_artifacts: list[str]
+    allowed_files: list[str]
+    validation_commands: list[str]
+    evidence_files: list[str]
+    phase_9_3_started: bool
+    user_acceptance_claimed: bool
     stage_9_whole_review_complete: bool
     github_main_uploaded: bool
     app_bundle_changes_allowed: bool
@@ -204,6 +237,75 @@ def build_v024_stage9_phase91_contract() -> V024Stage9Phase91Contract:
             "Stage 9 GitHub main upload",
             "app bundle reinstall",
             "financial data mutation or synthesis",
+        ],
+    )
+
+
+def build_v024_stage9_phase92_contract() -> V024Stage9Phase92Contract:
+    return V024Stage9Phase92Contract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        repair_label=REPAIR_LABEL,
+        stage=STAGE,
+        stage_name=STAGE_NAME,
+        phase_id=PHASE_9_2_ID,
+        phase_name=PHASE_9_2_NAME,
+        current_phase_only=True,
+        max_phases_per_run=1,
+        phase_9_1_required=True,
+        task_ids=PHASE_9_2_TASK_IDS,
+        required_artifacts=[
+            "final_evidence_index.json",
+            "closeout_candidate.md",
+            "evidence.json",
+            "terminal.log",
+            "changed_files.txt",
+            "risk_and_rollback.md",
+        ],
+        allowed_files=[
+            "PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+            "PFI/tests/test_v024_stage9_phase92_delivery_freeze.py",
+            "PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md",
+            "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+            "PFI/reports/pfi_v024/stage_9/phase_9_2/*",
+            "PFI/README.md",
+            "PFI/HANDOFF.md",
+            "PFI/CHANGELOG.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/模型参数文件.md",
+        ],
+        validation_commands=[
+            "python3 -m pytest PFI/tests/test_v024_stage9_phase92_delivery_freeze.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage8_github_upload_contract.py -q",
+            "python3 -m py_compile PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+            "python3 -m json.tool PFI/reports/pfi_v024/stage_9/phase_9_2/evidence.json",
+            "python3 -m json.tool PFI/reports/pfi_v024/stage_9/phase_9_2/final_evidence_index.json",
+            "git diff --check -- PFI",
+        ],
+        evidence_files=[
+            "PFI/reports/pfi_v024/stage_9/phase_9_2/final_evidence_index.json",
+            "PFI/reports/pfi_v024/stage_9/phase_9_2/closeout_candidate.md",
+            "PFI/reports/pfi_v024/stage_9/phase_9_2/evidence.json",
+            "PFI/reports/pfi_v024/stage_9/phase_9_2/terminal.log",
+            "PFI/reports/pfi_v024/stage_9/phase_9_2/changed_files.txt",
+            "PFI/reports/pfi_v024/stage_9/phase_9_2/risk_and_rollback.md",
+        ],
+        phase_9_3_started=False,
+        user_acceptance_claimed=False,
+        stage_9_whole_review_complete=False,
+        github_main_uploaded=False,
+        app_bundle_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
+        explicitly_not_done=[
+            "Stage 9 Phase 9.3 user acceptance",
+            "Stage 9 whole-stage review",
+            "Stage 9 GitHub main upload",
+            "app bundle reinstall",
+            "financial data mutation or synthesis",
+            "claiming user acceptance",
         ],
     )
 
