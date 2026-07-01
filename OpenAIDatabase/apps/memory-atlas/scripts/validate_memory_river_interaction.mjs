@@ -46,8 +46,9 @@ requireCheck(
 
 requireCheck(
   "brush_range_sync_contract",
-  hasAll(appSource, [
-    "interface TimelineTimeRangeSelection",
+  (appSource.includes("interface TimelineTimeRangeSelection")
+    || appSource.includes("type TimelineTimeRangeSelection = SharedTimelineTimeRangeSelection"))
+  && hasAll(appSource, [
     "timelineTimeRange",
     "onSelectTimelineRange(selection)",
     "buildTimelineRangeSelection",
