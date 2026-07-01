@@ -2076,6 +2076,13 @@ def build_parser() -> argparse.ArgumentParser:
         "--production-scheduler-plan",
         help="Optional production scheduler plan JSON to consume instead of rebuilding it.",
     )
+    daily_operation_preflight.add_argument(
+        "--local-runner-env-file",
+        help=(
+            "Optional local runner env file used only for SMTP secret key-presence evidence; "
+            "secret values are not written to the preflight output."
+        ),
+    )
     daily_operation_preflight.add_argument("--json", action="store_true", help="Print JSON preflight state.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
@@ -5187,6 +5194,7 @@ def main(argv: list[str] | None = None) -> int:
             background_adp_process_found=args.background_adp_process_found,
             production_preflight_report=production_preflight_report,
             production_scheduler_plan=production_scheduler_plan,
+            local_runner_env_file=Path(args.local_runner_env_file) if args.local_runner_env_file else None,
         )
         errors = validate_daily_operation_authorization_preflight_state(report)
         output = {**report, "daily_operation_preflight_validation_errors": errors}

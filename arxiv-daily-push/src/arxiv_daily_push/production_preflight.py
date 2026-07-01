@@ -61,19 +61,25 @@ def build_production_preflight(
     env: Mapping[str, str] | None = None,
     command_resolver: CommandResolver | None = None,
     github_cli_equivalent: Mapping[str, Any] | None = None,
+    secret_env_evidence: Mapping[str, Any] | None = None,
     disk_free_gib: float | None = None,
     memory_total_gib: float | None = None,
     git_scan: Mapping[str, Any] | None = None,
+    git_artifact_scope_roots: Sequence[str] | None = None,
 ) -> dict[str, Any]:
     root = Path(path or ".").resolve()
     environment = env if env is not None else os.environ
     resolver = command_resolver or shutil.which
 
     command_gate = _command_gate(resolver, github_cli_equivalent=github_cli_equivalent)
-    secret_gate = _secret_gate(environment)
+    secret_gate = _secret_gate(environment, secret_env_evidence=secret_env_evidence)
     disk_gate = _disk_gate(root, disk_free_gib=disk_free_gib)
     memory_gate = _memory_gate(memory_total_gib=memory_total_gib)
-    git_gate = dict(git_scan) if git_scan is not None else _git_artifact_gate(root)
+    git_gate = (
+        dict(git_scan)
+        if git_scan is not None
+        else _git_artifact_gate(root, scope_roots=git_artifact_scope_roots)
+    )
     cache_gate = _cache_gate(root)
 
     gates = [
@@ -182,14 +188,57 @@ def _github_cli_equivalent_accepted(command: str, equivalent: Mapping[str, Any] 
     )
 
 
-def _secret_gate(env: Mapping[str, str]) -> dict[str, Any]:
-    keys = [{"name": key, "present": bool(env.get(key))} for key in PRODUCTION_SECRET_ENV_KEYS]
+def _secret_gate(
+    env: Mapping[str, str],
+    *,
+    secret_env_evidence: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    evidence_accepted = _secret_env_evidence_accepted(secret_env_evidence)
+    evidence_keys = {
+        str(item)
+        for item in secret_env_evidence.get("present_keys", [])
+    } if evidence_accepted else set()
+    keys = []
+    for key in PRODUCTION_SECRET_ENV_KEYS:
+        present_in_env = bool(env.get(key))
+        present_in_evidence = key in evidence_keys
+        keys.append(
+            {
+                "name": key,
+                "present": present_in_env or present_in_evidence,
+                "present_in_env": present_in_env,
+                "present_in_evidence": present_in_evidence,
+            }
+        )
     missing = [item["name"] for item in keys if not item["present"]]
+    extra: dict[str, Any] = {"keys": keys, "values_logged": False}
+    if evidence_accepted:
+        extra.update(
+            {
+                "evidence_accepted": True,
+                "evidence_id": str(secret_env_evidence.get("evidence_id")),
+                "evidence_source": str(secret_env_evidence.get("source")),
+                "env_file_ref": str(secret_env_evidence.get("env_file_ref", "")),
+            }
+        )
     return _gate(
         "secret_environment",
         not missing,
         [f"missing required secret environment keys: {', '.join(missing)}"] if missing else [],
-        {"keys": keys, "values_logged": False},
+        extra,
+    )
+
+
+def _secret_env_evidence_accepted(evidence: Mapping[str, Any] | None) -> bool:
+    if not isinstance(evidence, Mapping):
+        return False
+    return (
+        evidence.get("evidence_id") == "adp_local_runner_env_file_secret_presence_v1"
+        and evidence.get("source") == "local_runner_env_file"
+        and evidence.get("values_logged") is False
+        and evidence.get("reviewed") is True
+        and evidence.get("outside_repo") is True
+        and isinstance(evidence.get("present_keys"), list)
     )
 
 
@@ -233,7 +282,8 @@ def _memory_gate(*, memory_total_gib: float | None = None) -> dict[str, Any]:
     )
 
 
-def _git_artifact_gate(root: Path) -> dict[str, Any]:
+def _git_artifact_gate(root: Path, *, scope_roots: Sequence[str] | None = None) -> dict[str, Any]:
+    normalized_scope_roots = _normalize_scope_roots(scope_roots)
     try:
         files = _git_files(root, "--cached") + _git_files(root, "--others", "--exclude-standard")
     except (OSError, subprocess.SubprocessError) as error:
@@ -242,6 +292,8 @@ def _git_artifact_gate(root: Path) -> dict[str, Any]:
     violations = []
     max_bytes = MAX_GIT_FILE_MIB * 1024 * 1024
     for relative in sorted(set(files)):
+        if normalized_scope_roots and not _relative_in_scope(relative, normalized_scope_roots):
+            continue
         candidate = root / relative
         name = candidate.name
         suffix = candidate.suffix.lower()
@@ -255,7 +307,26 @@ def _git_artifact_gate(root: Path) -> dict[str, Any]:
         if size > max_bytes:
             violations.append({"path": relative, "reason": f"file exceeds {MAX_GIT_FILE_MIB} MiB"})
     reasons = [f"git artifact hygiene violations: {len(violations)}"] if violations else []
-    return _gate("git_artifact_hygiene", not violations, reasons, {"violations": violations})
+    return _gate(
+        "git_artifact_hygiene",
+        not violations,
+        reasons,
+        {"violations": violations, "scope_roots": normalized_scope_roots or ["<repo-root>"]},
+    )
+
+
+def _normalize_scope_roots(scope_roots: Sequence[str] | None) -> list[str]:
+    normalized = []
+    for raw in scope_roots or ():
+        value = str(raw).strip().replace("\\", "/").strip("/")
+        if value and value not in {".", "*"}:
+            normalized.append(value)
+    return normalized
+
+
+def _relative_in_scope(relative: str, scope_roots: Sequence[str]) -> bool:
+    normalized = relative.replace("\\", "/").strip("/")
+    return any(normalized == scope or normalized.startswith(scope + "/") for scope in scope_roots)
 
 
 def _cache_gate(root: Path) -> dict[str, Any]:

@@ -6904,6 +6904,64 @@ class Stage2FinalGateTests(unittest.TestCase):
             [],
         )
 
+    def test_daily_operation_authorization_preflight_passes_local_runner_env_presence_and_adp_git_scope(self) -> None:
+        with TemporaryDirectory() as tmp:
+            env_file = Path(tmp) / "local-runner.env"
+            env_file.write_text(
+                "\n".join(
+                    [
+                        "ADP_SMTP_HOST=smtp.example.invalid",
+                        "ADP_SMTP_PORT=587",
+                        "ADP_SMTP_USERNAME=sender@example.invalid",
+                        "ADP_SMTP_PASSWORD=super-secret-value",
+                        "ADP_ALLOW_SMTP_SEND=false",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            with patch("arxiv_daily_push.production_preflight.build_production_preflight") as build_preflight:
+                with patch("arxiv_daily_push.production_scheduler.build_production_scheduler_plan") as build_scheduler:
+                    build_preflight.return_value = {
+                        "status": "pass",
+                        "production_run_allowed": True,
+                        "blocking_reasons": [],
+                    }
+                    build_scheduler.return_value = {
+                        "status": "pass",
+                        "scheduler_contract_ready": True,
+                        "blocking_reasons": [],
+                    }
+
+                    state = stage2_final_gate_module.build_daily_operation_authorization_preflight_state(
+                        generated_at="2026-07-01T22:20:00+10:00",
+                        open_pr_count=0,
+                        adp_allow_smtp_send=False,
+                        launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+                        background_adp_process_found=False,
+                        local_runner_env_file=env_file,
+                    )
+
+        kwargs = build_preflight.call_args.kwargs
+        self.assertEqual(
+            kwargs["secret_env_evidence"],
+            {
+                "evidence_id": "adp_local_runner_env_file_secret_presence_v1",
+                "source": "local_runner_env_file",
+                "env_file_ref": "<provided-local-runner-env-file>",
+                "present_keys": ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
+                "values_logged": False,
+                "reviewed": True,
+                "outside_repo": True,
+            },
+        )
+        self.assertEqual(kwargs["git_artifact_scope_roots"], ("arxiv-daily-push",))
+        self.assertNotIn("super-secret-value", json.dumps(state))
+        self.assertEqual(state["status"], "blocked_owner_daily_operation_authorization_required")
+        self.assertEqual(
+            stage2_final_gate_module.validate_daily_operation_authorization_preflight_state(state),
+            [],
+        )
+
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:
         blocker = "independent_final_command_execution_missing"
         report = build_s2pmt07_precheck_report(generated_at="2026-06-27T02:59:04+10:00")
