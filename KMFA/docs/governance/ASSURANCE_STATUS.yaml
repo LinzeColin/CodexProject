@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S18-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260702-WHOLE-PROJECT-FINAL-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "acddc0d36150c072606afad9f91846967cbb4de3"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S18UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-01T22:36:55+10:00"
-generator_version: "manual-s18-github-upload"
+snapshot_event_time: "2026-07-02T09:30:00+10:00"
+generator_version: "manual-whole-project-final-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 284
+    total_active_parameters: 289
     total_active_formulas: 52
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
@@ -436,11 +436,10 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S18_GITHUB_UPLOADED_NO_GO"
+  status: "WHOLE_PROJECT_REVIEWED_NO_GO"
   release_gate: "KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE"
   blocker_ids:
     - "LINEAGE_FULL_CHECK_NOT_COMPLETE"
     - "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED"
-    - "STAGE18_GITHUB_UPLOADED_NO_BUSINESS_RELEASE"
     - "S09_PENDING_RECONCILIATION_12"
     - "REPORT_GRADE_D_BLOCKS_BUSINESS_DECISION"

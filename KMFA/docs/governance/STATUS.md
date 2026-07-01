@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s18-github-upload`
+- version: `0.1.0-post-s18-whole-project-review-local`
 - current_stage: `S18`
-- current_phase: `Post-S18 Part 6 Review｜Stages 16-18 本地完成`
-- status: `post_s18_part6_review_passed_local_only_no_go`
+- current_phase: `Post-S18 Whole Project Final Review｜本地复审通过且 delivery NO_GO`
+- status: `whole_project_review_passed_local_only_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_stage18_uploaded`
 
@@ -40,6 +40,7 @@
 - Post-S18 Part 4 已完成 Stage 10-12 本地复审，证据位于 `KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/`；本轮未执行 GitHub upload、Stage 13-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+- Post-S18 Whole Project Final Review 已完成本地复审和 findings 修复，证据位于 `KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/`；当前全项目 Go/No-Go 仍为 `NO_GO`，`delivery_allowed=false`。
 - S04-P1 金额工具已完成本地验证：`KMFA/tools/amount_tools.py` 支持金额标准化到整数分，`KMFA/tools/check_no_float_money.py` 阻断业务金额 float 用法。
 - S04-P2 字段标准化已完成本地验证：`KMFA/tools/field_standardization.py` 支持字段别名、日期、期间、主体、项目、客户/对手方和合同编号标准化，缺字段进入 metadata 质量状态。
 - S04-P3 基础工具测试已完成本地验证：`KMFA/tests/test_basic_tool_boundaries.py` 覆盖 22 个合成边界用例，`KMFA/tools/generate_tool_test_report.py` 可生成 JSON/Markdown 工具函数测试报告。

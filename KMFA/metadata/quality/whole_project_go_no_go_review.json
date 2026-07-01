@@ -1,0 +1,35 @@
+{
+  "blocked_check_categories": [
+    "lineage",
+    "official_report_release",
+    "pending_reconciliation"
+  ],
+  "blocker_ids": [
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "S09_PENDING_RECONCILIATION_12"
+  ],
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "delivery_allowed": false,
+  "external_connector_allowed": false,
+  "fact_level": "EXTRACTED",
+  "generated_at": "2026-07-02T09:30:00+10:00",
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_required_gate": "KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE",
+  "official_report_release_allowed": false,
+  "project_id": "KMFA",
+  "quality_not_passed_must_not_deliver": true,
+  "record_type": "whole_project_go_no_go_review",
+  "resolved_blocker_ids": [
+    "S18_P3_PENDING",
+    "STAGE18_REVIEW_PENDING",
+    "STAGE18_GITHUB_UPLOAD_PENDING"
+  ],
+  "review_id": "KMFA-WHOLE-PROJECT-FINAL-REVIEW-20260702",
+  "schema_version": "kmfa.whole_project_go_no_go_review.v1",
+  "stage18_github_upload_completed": true,
+  "stage18_upload_pending_blocker_removed": true,
+  "status": "no_go_delivery_blocked"
+}

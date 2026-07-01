@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-post-s18-whole-project-review-local - 2026-07-02
+
+- 完成 Post-S18 第二阶段全项目本地复审和 findings 修复。
+- 修复 task pack 指定命令缺口：新增 public-safe synthetic `KMFA/metadata/fixtures/a0_project_cost_fixture.json`，`zero_delta_validator.py --fixture` 现在可直接通过。
+- 新增 `KMFA/tools/check_lineage_completeness.py`、`KMFA/tests/test_lineage_completeness.py`、`KMFA/tools/check_whole_project_final_review.py`、`KMFA/tests/test_whole_project_final_review.py` 和 `KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/`。
+- 新增当前全项目 Go/No-Go `KMFA/metadata/quality/whole_project_go_no_go_review.json`，把历史 `STAGE18_GITHUB_UPLOAD_PENDING` 记录为 resolved，但保持 `NO_GO`、`delivery_allowed=false`。
+- 本轮未执行 GitHub upload、backup、local cleanup、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+
 ## 0.1.0-post-s18-part6-review-local - 2026-07-02
 
 - 完成 Post-S18 第一阶段 Part 6 本地复审，范围仅为 Stage 16、Stage 17、Stage 18。

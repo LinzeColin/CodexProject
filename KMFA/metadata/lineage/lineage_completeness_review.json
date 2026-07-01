@@ -1,0 +1,60 @@
+{
+  "blocker_ids": [
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE"
+  ],
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "delivery_allowed": false,
+  "external_connector_allowed": false,
+  "fact_level": "EXTRACTED",
+  "generated_at": "2026-07-02T09:30:00+10:00",
+  "github_upload_allowed": false,
+  "lineage_counts": {
+    "field_lineage_records": 1,
+    "manual_rerun_consistency_checks": 2,
+    "manual_rerun_steps": 8,
+    "metric_lineage_records": 1,
+    "report_lineage_records": 1
+  },
+  "lineage_full_check_complete": false,
+  "lineage_full_check_performed": false,
+  "minimum_required_full_lineage_gates": [
+    "all_calculation_fields_bound_to_authority_or_approved_fallback",
+    "all_report_rows_bound_to_metric_and_source_lineage",
+    "all_pending_reconciliations_closed_or_owner_accepted",
+    "formal_report_release_review_passed"
+  ],
+  "official_report_release_allowed": false,
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "bank_contract_payroll_tax_files_committed": false,
+    "business_records_committed": false,
+    "credential_committed": false,
+    "excel_workbooks_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_files_committed": false,
+    "private_csv_committed": false,
+    "raw_business_files_committed": false,
+    "raw_sensitive_data_committed": false,
+    "sqlite_or_db_files_committed": false,
+    "true_account_numbers_committed": false,
+    "true_customer_names_committed": false,
+    "true_money_amounts_committed": false,
+    "true_project_names_committed": false
+  },
+  "record_type": "lineage_completeness_review",
+  "review_id": "KMFA-LINEAGE-COMPLETENESS-REVIEW-20260702",
+  "schema_version": "kmfa.lineage_completeness_review.v1",
+  "source_refs": [
+    "KMFA/metadata/lineage/field_lineage.jsonl",
+    "KMFA/metadata/lineage/metric_lineage.jsonl",
+    "KMFA/metadata/lineage/report_lineage.jsonl",
+    "KMFA/metadata/lineage/manual_rerun_manifest.json",
+    "KMFA/metadata/lineage/manual_rerun_steps.jsonl",
+    "KMFA/metadata/lineage/manual_rerun_consistency_checks.jsonl",
+    "KMFA/metadata/quality/stage_acceptance_evidence_index.jsonl",
+    "KMFA/metadata/quality/go_no_go_report.json",
+    "KMFA/metadata/quality/stage18_go_no_go_review.json"
+  ],
+  "status": "blocked_not_complete"
+}
