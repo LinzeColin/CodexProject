@@ -170,6 +170,12 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("## 历史：S2PLT03 zero-proof resilience readiness audit", page)
         self.assertIn("历史当时 S2PLT01 blockers", page)
         self.assertIn("历史当时结论：这只是 nonterminal readiness sync", page)
+        self.assertIn("## 历史：S2PMT07 S2PLT01 terminal acceptance dependency order", page)
+        self.assertIn("## 历史：S2PLT02 terminal readiness audit", page)
+        self.assertIn("## 历史：S2PMT07 S2PLT04 completion evidence audit", page)
+        self.assertIn("## 历史：S2PMT07 S2PLT01 terminal acceptance audit", page)
+        self.assertIn("历史当时状态：`terminal_acceptance_ready=false`", page)
+        self.assertIn("历史当时状态：`completion_report_ready=false`", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
@@ -1290,6 +1296,14 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("当前只是 nonterminal readiness sync；不得据此验收 S2PLT01", page)
         self.assertNotIn("当前只是 nonterminal readiness sync；不得据此验收 S2PLT03", page)
         self.assertNotIn("当前只是 nonterminal readiness audit 一致性修正；不得据此验收 S2PLT03", page)
+        self.assertNotIn("## 最新 S2PMT07 S2PLT01 terminal acceptance dependency order", page)
+        self.assertNotIn("## 最新 S2PLT02 terminal readiness audit", page)
+        self.assertNotIn("## 最新 S2PMT07 S2PLT04 completion evidence audit", page)
+        self.assertNotIn("## 最新 S2PMT07 S2PLT01 terminal acceptance audit", page)
+        self.assertNotIn("当前剩余 S2PLT01 blockers", page)
+        self.assertNotIn("当前 `terminal_acceptance_ready=false`", page)
+        self.assertNotIn("当前 `completion_report_ready=false`", page)
+        self.assertNotIn("当前只是 nonterminal readiness audit；不得据此验收 S2PLT02", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
