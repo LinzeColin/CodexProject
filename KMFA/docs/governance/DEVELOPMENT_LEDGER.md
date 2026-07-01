@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s16-p3-local
+product_version: 0.1.0-s16-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S16`
-- current_phase: `Stage 16 整体复审｜待开始`
-- current_tasks: `KMFA-S16-STAGE-REVIEW-GATE`
-- status: `s16p3_completed_validated_local_only_next_stage16_review`
+- current_phase: `Stage 16 GitHub upload｜待开始`
+- current_tasks: `KMFA-S16-GITHUB-UPLOAD-GATE`
+- status: `review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -102,16 +102,17 @@ product_version: 0.1.0-s16-p3-local
 | `S16PAT01-S16PAT03` | S16-P1 外协采购归集完成本地验证：生成 4 条 public-safe source lane、5 条项目匹配、2 条未归集成本池、2 条重复付款候选和 2 条跨项目费用候选；报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、采购执行、付款执行、银行操作、S16-P2/S16-P3、Stage 16 review 和 GitHub upload | `KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/s16_p1_completion_record.md` |
 | `S16PBT01-S16PBT03` | S16-P2 项目状态生命周期完成本地验证：生成 6 条 public-safe 状态来源线、4 条生命周期记录、3 条异常事项和 3 条人工 handoff guard；报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、现场施工、安全签字、技术签字、开票、催收、付款、银行、S16-P3、Stage 16 review 和 GitHub upload | `KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/s16_p2_completion_record.md` |
 | `S16PCT01-S16PCT03` | S16-P3 客户经营分析完成本地验证：生成 5 条 public-safe 客户分析来源线、4 条客户经营摘要和 4 条客户异常复核事项；报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、自动催收、客户联系、法律决策、付款、银行、开票、外部接口、Stage 16 review 和 GitHub upload | `KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md` |
+| `KMFA-S16-STAGE-REVIEW-20260701` | Stage 16 整体复审本地通过；复跑 S16-P1/P2/P3 validators、Stage 16 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check；未执行 GitHub upload、S17、lineage full check、正式报告、业务执行或外部接口 | `KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S16-STAGE-REVIEW-GATE` | 待下一轮 run work 开始；必须重新确认 git/root/status、读取 v1.2 task pack / roadmap，并复跑 S16-P1/S16-P2/S16-P3 validators、治理 validator、raw/secret scan、parse checks 和 evidence consistency；不得执行 GitHub upload 或业务执行动作 | `KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md` |
+| `KMFA-S16-GITHUB-UPLOAD-GATE` | 待下一轮 run work 开始；必须基于最新 origin/main 复跑 S16-P1/S16-P2/S16-P3 validators、Stage 16 review validator、治理 validator、raw/secret scan、parse checks、diff check 和 evidence consistency；不得执行 S17、lineage full check、正式报告或业务执行动作 | `KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 16 整体复审 | 尚未开始；S16-P1/S16-P2/S16-P3 已完成本地验证，下一轮必须作为独立 run work 执行整体复审并先修复复审 findings | 后续独立 Stage 16 review gate |
+| Stage 16 GitHub upload | 尚未开始；Stage 16 整体复审已本地通过，下一轮必须作为独立 run work 执行 upload gate 并先复跑验证 | 后续独立 Stage 16 upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

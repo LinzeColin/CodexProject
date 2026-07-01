@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s16-p3-local`
+- version: `0.1.0-s16-stage-review`
 - current_stage: `S16`
-- current_phase: `Stage 16 整体复审｜待开始`
-- status: `s16p3_completed_validated_local_only_next_stage16_review`
+- current_phase: `Stage 16 GitHub upload｜待开始`
+- status: `review_passed_upload_ready_local_only`
 - production_ready: `false`
-- github_upload_ready: `false_stage16_not_reviewed`
+- github_upload_ready: `true_stage16_review_passed_local_only`
 
 ## 已完成
 
@@ -114,11 +114,11 @@
 
 - S16-P2 项目状态生命周期已完成本地验证：`KMFA/tools/project_status_lifecycle.py`、`KMFA/tools/check_s16_p2_project_status_lifecycle.py`、`KMFA/tests/test_project_status_lifecycle.py`、`KMFA/metadata/reports/project_status_lifecycle_manifest.json`、`project_status_source_lanes.jsonl`、`project_lifecycle_records.jsonl`、`project_lifecycle_exception_items.jsonl`、`project_lifecycle_handoff_guards.jsonl` 和 `KMFA/stage_artifacts/S16_P2_project_status_lifecycle/` 已生成；只输出 public-safe 生命周期状态、异常事项和 handoff guard，不代表现场施工、签字、结算、开票、催收、正式经营决策或业务系统可发布。
 - S16-P3 客户经营分析已完成本地验证：`KMFA/tools/customer_business_analysis.py`、`KMFA/tools/check_s16_p3_customer_business_analysis.py`、`KMFA/tests/test_customer_business_analysis.py`、`KMFA/metadata/reports/customer_business_analysis_manifest.json`、`customer_analysis_source_lanes.jsonl`、`customer_operating_summaries.jsonl`、`customer_analysis_exception_items.jsonl` 和 `KMFA/stage_artifacts/S16_P3_customer_business_analysis/` 已生成；只输出 public-safe 客户经营摘要和异常复核事项，不代表正式经营决策、自动催收、客户联系、法律决策、开票、付款、银行或外部接口。
-- Stage 16 整体复审和 Stage 16 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S16-P1/S16-P2/S16-P3 仅为 public-safe 外协采购付款归集、项目状态生命周期、客户经营分析和人工复核证据，不代表采购执行、付款执行、银行操作、供应商结算、现场施工、签字、开票、催收、法律决策、正式经营决策或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- Stage 16 整体复审已本地通过，Stage 16 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S16-P1/S16-P2/S16-P3 仅为 public-safe 外协采购付款归集、项目状态生命周期、客户经营分析和人工复核证据，不代表采购执行、付款执行、银行操作、供应商结算、现场施工、签字、开票、催收、法律决策、正式经营决策或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-15 review/upload 均已完成，S16-P1/S16-P2/S16-P3 已本地完成；下一步只能执行 Stage 16 整体复审，不能直接进入 GitHub upload、lineage full check、正式报告、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-15 review/upload 均已完成，S16-P1/S16-P2/S16-P3 和 Stage 16 整体复审已本地完成；下一步只能执行 Stage 16 GitHub upload，不能直接进入 S17、lineage full check、正式报告、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s16-stage-review - 2026-07-01
+
+- 完成 `Stage 16 整体复审` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/check_s16_stage_review.py`、`KMFA/tests/test_s16_stage_review.py` 和 `KMFA/stage_artifacts/S16_STAGE_REVIEW/`。
+- 复跑 S16-P1 外协采购归集、S16-P2 项目状态生命周期、S16-P3 客户经营分析 validators，确认 4 条外协来源线、5 条项目匹配、2 条未归集成本池、4 条外协异常候选、6 条项目状态来源线、4 条生命周期记录、3 条项目异常、3 条 handoff guard、5 条客户来源线、4 条客户经营摘要和 4 条客户异常事项仍为 public-safe 证据。
+- 复审将下一 gate 推进到 `KMFA-S16-GITHUB-UPLOAD-GATE`；仍未执行 GitHub upload、S17、lineage full check、正式报告、经营决策依据发布、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策或外部 connector。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或 credentials。
+- 下一轮只能执行 `Stage 16 GitHub upload`，且 upload 前必须基于最新 origin/main 复跑 validators、治理校验、安全扫描、parse checks 和 diff check。
+
 ## 0.1.0-s16-p3-local - 2026-07-01
 
 - 完成 `S16-P3｜客户经营分析` 本地验证，不上传 GitHub。

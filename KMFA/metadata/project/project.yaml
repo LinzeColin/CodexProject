@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s16-p3-local"
+version: "0.1.0-s16-stage-review"
 current_stage: "S16"
-current_phase: "S16PC"
-current_phase_status: "stage_review_pending"
-current_stage_status: "completed_local_only_pending_stage_review"
+current_phase: "S16UPLOAD"
+current_phase_status: "github_upload_pending"
+current_stage_status: "review_passed_upload_ready_local_only"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -110,6 +110,9 @@ machine_plane:
   - "stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md"
   - "stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md"
   - "stage_artifacts/S16_P3_customer_business_analysis/machine/s16_p3_manifest.json"
+  - "stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
+  - "stage_artifacts/S16_STAGE_REVIEW/human/test_results.md"
+  - "stage_artifacts/S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
   - "stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
   - "stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
@@ -450,5 +453,21 @@ upload_policy:
   stage15_upload_evidence: "KMFA/stage_artifacts/S15_GITHUB_UPLOAD/human/github_upload_record.md"
   stage15_upload_manifest: "KMFA/stage_artifacts/S15_GITHUB_UPLOAD/machine/stage15_upload_manifest.json"
   stage15_blocker: "none_stage15_uploaded"
-  next_phase_upload_allowed: false
-  upload_surface: "stage15_uploaded_s16p3_local_next_stage16_review"
+  stage16_s16p1_completed_validated_local_only: true
+  stage16_s16p1_evidence: "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/s16_p1_completion_record.md"
+  stage16_s16p1_manifest: "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/machine/s16_p1_manifest.json"
+  stage16_s16p2_completed_validated_local_only: true
+  stage16_s16p2_evidence: "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/s16_p2_completion_record.md"
+  stage16_s16p2_manifest: "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/machine/s16_p2_manifest.json"
+  stage16_s16p3_completed_validated_local_only: true
+  stage16_s16p3_evidence: "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md"
+  stage16_s16p3_manifest: "KMFA/stage_artifacts/S16_P3_customer_business_analysis/machine/s16_p3_manifest.json"
+  stage16_review_required_before_upload: true
+  stage16_review_passed: true
+  stage16_review_evidence: "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
+  stage16_review_manifest: "KMFA/stage_artifacts/S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
+  stage16_upload_ready_local_only: true
+  stage16_uploaded_to_github_main: false
+  stage16_blocker: "github_upload_not_yet_executed"
+  next_phase_upload_allowed: true
+  upload_surface: "stage16_review_passed_next_github_upload"
