@@ -1,0 +1,48 @@
+Stage 6 GitHub main upload validation log
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_github_upload_contract.py -q
+3 failed in 0.10s
+
+Rebase:
+git rebase origin/main
+Successfully rebased and updated refs/heads/codex/pfi.
+
+Pre-push validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_github_upload_contract.py -q
+3 passed in 0.07s
+
+PLAYWRIGHT_PACKAGE_PATH=... PATH=... node PFI/scripts/validate_v024_stage6_whole_review_browser.js
+status pass; screenshots 3; failures []
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_github_upload_contract.py PFI/tests/test_v024_stage6_whole_review_contract.py -q
+8 passed in 0.12s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py PFI/tests/test_v024_stage6_phase62_motion_feedback.py PFI/tests/test_v024_stage6_phase63_haptics_settings.py -q
+16 passed in 0.29s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase51_home_rebuild.py PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py PFI/tests/test_v024_stage5_phase53_interaction_states.py -q
+14 passed in 0.40s
+
+PATH=... node --check PFI/web/app/shell.js
+pass
+
+PATH=... node --check PFI/scripts/validate_v024_stage6_whole_review_browser.js
+pass
+
+python3 -m py_compile PFI/src/pfi_v02/stage_v024_stage6_experience.py
+pass
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_6/github_main_upload/evidence.json
+pass
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_6/whole_stage_review/evidence.json
+pass
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_6/whole_stage_review/browser_validation.json
+pass
+
+git diff --check -- PFI
+pass
+
+Push and remote equality verification are terminal gates executed after the upload commit is created, because the final commit hash is self-referential and is not embedded in this file.

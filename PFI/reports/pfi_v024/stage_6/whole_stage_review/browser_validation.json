@@ -5,7 +5,7 @@
   "stage": "Stage 6",
   "review_id": "stage_6_whole_review",
   "status": "pass",
-  "source": "http://127.0.0.1:55066/index.html",
+  "source": "http://127.0.0.1:55478/index.html",
   "playwright_package_path": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.61.1/node_modules/playwright",
   "primary_entry_count": 10,
   "primary_workspaces": [
@@ -68,10 +68,10 @@
         "width": 1440,
         "height": 960
       },
-      "bytes": 970937
+      "bytes": 971044
     }
   ],
-  "generated_at": "2026-07-01T02:44:30.218Z",
-  "validation_hash": "b1b453acbc230fcb4e18f39175bed66957e3266f8d21318b317134c2707e291f",
+  "generated_at": "2026-07-01T02:54:21.203Z",
+  "validation_hash": "a9717a899093ffc2895fcfc2cf5df4eb392b23f56c45f25449c738bd047d4a61",
   "failures": []
 }
