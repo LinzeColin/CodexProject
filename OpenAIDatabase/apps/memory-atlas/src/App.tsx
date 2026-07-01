@@ -23,7 +23,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 import type { ComponentType, CSSProperties, KeyboardEvent, PointerEvent, WheelEvent } from "react";
-import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import {
   emptyAtlas,
   filterMemoryNodes,
@@ -45,6 +45,14 @@ import {
   type TimelineRendererMode,
 } from "./config/visualFlags";
 import type { ActivityBucket, AtlasEdge, AtlasFilters, AtlasMetric, AtlasNode, MemoryAtlas, ViewKey } from "./types";
+import {
+  atlasFiltersFromSharedState,
+  createSharedAtlasState,
+  sharedAtlasReducer,
+  sharedContributionSelection,
+  type SharedAtlasState,
+  type SharedTimelineTimeRangeSelection,
+} from "./state/sharedAtlasState";
 
 const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) => ({ default: module.GalaxyScene })));
 const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene").then((module) => ({ default: module.ObsidianGraphScene })));
@@ -110,17 +118,7 @@ interface TimelineDisplayEvent {
   shortLabel: string;
 }
 
-interface TimelineTimeRangeSelection {
-  id: string;
-  source: "memory-river-brush";
-  startDate: string;
-  endDate: string;
-  label: string;
-  eventCount: number;
-  decisionCount: number;
-  coreMemoryCount: number;
-  topTheme: string;
-}
+type TimelineTimeRangeSelection = SharedTimelineTimeRangeSelection;
 
 interface TimelineBrushDraft {
   pointerId: number;
@@ -492,12 +490,16 @@ async function clearTransientBrowserState(): Promise<void> {
 }
 
 export function App() {
-  const [activeView, setActiveView] = useState<ViewKey>("home");
-  const [filters, setFilters] = useState<AtlasFilters>(defaultFilters);
+  const [sharedState, dispatchSharedState] = useReducer(
+    sharedAtlasReducer,
+    undefined,
+    () => createSharedAtlasState({ activeView: "home", filters: defaultFilters }),
+  );
+  const activeView = sharedState.mode.activeView;
+  const filters = useMemo(() => atlasFiltersFromSharedState(sharedState), [sharedState]);
+  const timelineTimeRange = sharedState.filters.timeRange;
   const [atlas, setAtlas] = useState<MemoryAtlas>(emptyAtlas);
-  const [selectedNode, setSelectedNode] = useState<AtlasNode | null>(null);
   const [selectedContributionPeriod, setSelectedContributionPeriod] = useState<ContributionPeriodDetail | null>(null);
-  const [timelineTimeRange, setTimelineTimeRange] = useState<TimelineTimeRangeSelection | null>(null);
   const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
   const [loadError, setLoadError] = useState("");
   const [runtimeState, setRuntimeState] = useState<RuntimeState>(() => ({
@@ -516,7 +518,10 @@ export function App() {
       .then((loadedAtlas) => {
         if (cancelled) return;
         setAtlas(loadedAtlas);
-        setSelectedNode(getMemoryNodes(loadedAtlas)[0] ?? loadedAtlas.nodes[0] ?? null);
+        const firstNode = getMemoryNodes(loadedAtlas)[0] ?? loadedAtlas.nodes[0] ?? null;
+        if (firstNode) {
+          dispatchSharedState({ type: "select_node", node: firstNode, source: "startup" });
+        }
         setLoadState("ready");
         setRuntimeState((current) => ({ ...current, snapshotLoadedAt: new Date(), lifecycle: "已同步" }));
       })
@@ -614,6 +619,11 @@ export function App() {
   );
   const themeNodes = useMemo(() => getThemeNodes(scopedAtlas), [scopedAtlas]);
   const nodeMap = useMemo(() => getNodeMap(scopedAtlas), [scopedAtlas]);
+  const selectedNode = useMemo(() => {
+    const selectedNodeId = sharedState.selection.nodeId;
+    if (!selectedNodeId) return null;
+    return nodeMap.get(selectedNodeId) ?? atlas.nodes.find((node) => node.id === selectedNodeId) ?? null;
+  }, [atlas.nodes, nodeMap, sharedState.selection.nodeId]);
   const sourceOptions = useMemo(() => buildSourceOptions(atlas, memoryNodes), [atlas, memoryNodes]);
   const categories = useMemo(() => uniqueSorted(sourceMemoryNodes.map((node) => node.category)), [sourceMemoryNodes]);
   const tiers = useMemo(() => uniqueSorted(sourceMemoryNodes.map((node) => normalizeMemoryTier(node.memory_tier))), [sourceMemoryNodes]);
@@ -632,28 +642,55 @@ export function App() {
 
   const handleSelectNode = useCallback((node: AtlasNode) => {
     setSelectedContributionPeriod(null);
-    setSelectedNode(node);
-  }, []);
+    dispatchSharedState({ type: "select_node", node, source: activeView });
+  }, [activeView]);
   const handleSelectContributionPeriod = useCallback((detail: ContributionPeriodDetail) => {
     setSelectedContributionPeriod(detail);
+    dispatchSharedState({
+      type: "select_contribution_period",
+      period: sharedContributionSelection({
+        id: `${detail.scale}:${detail.bucket.date}`,
+        scale: detail.scale,
+        label: detail.bucket.label,
+        activityScore: detail.bucket.activityScore,
+        filteredMemoryCount: detail.bucket.filteredMemoryCount,
+      }),
+      source: "contribution",
+    });
   }, []);
   const handleSelectTimelineRange = useCallback((range: TimelineTimeRangeSelection) => {
-    setTimelineTimeRange(range);
+    dispatchSharedState({ type: "select_time_range", range, source: "timeline" });
   }, []);
   const clearTimelineRange = useCallback(() => {
-    setTimelineTimeRange(null);
-  }, []);
+    dispatchSharedState({ type: "clear_time_range", source: activeView });
+  }, [activeView]);
   const updateFilters = useCallback((updater: (current: AtlasFilters) => AtlasFilters) => {
     setSelectedContributionPeriod(null);
-    setSelectedNode(null);
-    setFilters(updater);
-  }, []);
+    dispatchSharedState({ type: "set_filters", filters: updater(filters), source: activeView });
+  }, [activeView, filters]);
   const switchView = useCallback((view: ViewKey) => {
     if (view !== "contribution") {
       setSelectedContributionPeriod(null);
     }
-    setActiveView(view);
-  }, []);
+    dispatchSharedState({ type: "switch_view", view, source: activeView });
+  }, [activeView]);
+  const focusSelectedTheme = useCallback(() => {
+    const theme = selectedNode?.visual?.cluster;
+    if (!theme) return;
+    setSelectedContributionPeriod(null);
+    dispatchSharedState({ type: "set_filter", key: "theme", value: theme, source: activeView });
+  }, [activeView, selectedNode?.visual?.cluster]);
+  const clearFilter = useCallback(
+    (key: FilterKey) => {
+      setSelectedContributionPeriod(null);
+      dispatchSharedState({ type: "clear_filter", key, source: activeView });
+    },
+    [activeView],
+  );
+  const resetFilters = useCallback(() => {
+    setSelectedContributionPeriod(null);
+    dispatchSharedState({ type: "reset_filters", source: activeView });
+  }, [activeView]);
   const selectAdjacentNode = useCallback(
     (direction: -1 | 1) => {
       const candidates = selectableLensNodes(slice, selectedNode);
@@ -665,28 +702,16 @@ export function App() {
     },
     [handleSelectNode, selectedNode, slice],
   );
-  const focusSelectedTheme = useCallback(() => {
-    const theme = selectedNode?.visual?.cluster;
-    if (!theme) return;
-    updateFilters((current) => ({ ...current, theme }));
-  }, [selectedNode?.visual?.cluster, updateFilters]);
-  const clearFilter = useCallback(
-    (key: FilterKey) => {
-      updateFilters((current) => {
-        if (key === "query") return { ...current, query: "" };
-        if (key === "source") return { ...current, source: "all", tier: "all", category: "all", theme: "all" };
-        return { ...current, [key]: "all" };
-      });
-    },
-    [updateFilters],
-  );
-  const resetFilters = useCallback(() => updateFilters(() => defaultFilters), [updateFilters]);
-
   useEffect(() => {
     if (loadState !== "ready") return;
     if (selectedNode && selectionStillVisible(selectedNode, slice)) return;
-    setSelectedNode(slice.memoryNodes[0] ?? slice.graphNodes[0] ?? scopedAtlas.nodes[0] ?? null);
-  }, [loadState, scopedAtlas.nodes, selectedNode, slice.filterActive, slice.graphNodes, slice.memoryNodes, slice.visibleNodeIds]);
+    const fallbackNode = slice.memoryNodes[0] ?? slice.graphNodes[0] ?? scopedAtlas.nodes[0] ?? null;
+    if (fallbackNode) {
+      dispatchSharedState({ type: "select_node", node: fallbackNode, source: "system" });
+    } else if (sharedState.selection.nodeId) {
+      dispatchSharedState({ type: "clear_focus", source: "system" });
+    }
+  }, [loadState, scopedAtlas.nodes, selectedNode, sharedState.selection.nodeId, slice.filterActive, slice.graphNodes, slice.memoryNodes, slice.visibleNodeIds]);
 
   const generatedAt = atlas.overview.generated_at
     ? new Date(atlas.overview.generated_at).toLocaleString("zh-CN")
@@ -814,6 +839,7 @@ export function App() {
         <InteractionLens
           activeView={activeView}
           filters={filters}
+          sharedState={sharedState}
           selectedContributionPeriod={activeView === "contribution" ? selectedContributionPeriod : null}
           selectedNode={selectedNode}
           slice={slice}
@@ -832,6 +858,7 @@ export function App() {
               activeView={activeView}
               atlas={scopedAtlas}
               filters={filters}
+              sharedState={sharedState}
               slice={slice}
               nodeMap={nodeMap}
               selectedNode={selectedNode}
@@ -848,7 +875,7 @@ export function App() {
             activeView === "contribution" && selectedContributionPeriod ? (
               <ContributionPeriodInspector detail={selectedContributionPeriod} onSelectNode={handleSelectNode} />
             ) : (
-              <NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} />
+              <NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} sharedState={sharedState} />
             )
           ) : null}
         </div>
@@ -861,6 +888,7 @@ function ViewRouter({
   activeView,
   atlas,
   filters,
+  sharedState,
   slice,
   nodeMap,
   selectedNode,
@@ -875,6 +903,7 @@ function ViewRouter({
   activeView: ViewKey;
   atlas: MemoryAtlas;
   filters: AtlasFilters;
+  sharedState: SharedAtlasState;
   slice: FilteredAtlasSlice;
   nodeMap: Map<string, AtlasNode>;
   selectedNode: AtlasNode | null;
@@ -895,6 +924,8 @@ function ViewRouter({
         nodes={slice.memoryNodes}
         graphEdges={slice.graphEdges}
         deltaStats={slice.deltaStats}
+        selectedNode={selectedNode}
+        sharedState={sharedState}
         timelineTimeRange={timelineTimeRange}
         onSelectNode={onSelectNode}
         onSwitchView={onSwitchView}
@@ -908,6 +939,7 @@ function ViewRouter({
         graphEdges={slice.graphEdges}
         memoryCount={slice.memoryNodes.length}
         selectedNode={selectedNode}
+        sharedState={sharedState}
         deltaStats={slice.deltaStats}
         timelineTimeRange={timelineTimeRange}
         onSelectNode={onSelectNode}
@@ -929,6 +961,7 @@ function ViewRouter({
         timeline={slice.timeline}
         nodeMap={nodeMap}
         selectedNode={selectedNode}
+        sharedState={sharedState}
         selectedTimelineRange={timelineTimeRange}
         deltaStats={slice.deltaStats}
         onSelectNode={onSelectNode}
@@ -961,6 +994,8 @@ function HomeOverviewView({
   nodes,
   graphEdges,
   deltaStats,
+  selectedNode,
+  sharedState,
   timelineTimeRange,
   onSelectNode,
   onSwitchView,
@@ -968,6 +1003,8 @@ function HomeOverviewView({
   nodes: AtlasNode[];
   graphEdges: AtlasEdge[];
   deltaStats: DeltaStats;
+  selectedNode: AtlasNode | null;
+  sharedState: SharedAtlasState;
   timelineTimeRange: TimelineTimeRangeSelection | null;
   onSelectNode: (node: AtlasNode) => void;
   onSwitchView: (view: ViewKey) => void;
@@ -988,7 +1025,13 @@ function HomeOverviewView({
   }
 
   return (
-    <div className="home-overview-view visual-workspace">
+    <div
+      className="home-overview-view visual-workspace"
+      data-shared-state={sharedState.schema_version}
+      data-shared-focus-node={sharedState.focus.home.nodeId ?? ""}
+      data-shared-cluster={sharedState.focus.home.clusterId ?? ""}
+      data-shared-time-range={sharedState.focus.home.timeRangeId ?? ""}
+    >
       <div className="surface-heading compact">
         <div>
           <p className="eyebrow">记忆总览 / Universe State / 下一步行动</p>
@@ -996,6 +1039,11 @@ function HomeOverviewView({
         </div>
         <span>{timelineRangeSummary(timelineTimeRange) ?? `${nodes.length.toLocaleString()} 条筛选记忆 · 默认入口`}</span>
       </div>
+      <section className="home-shared-focus-strip" aria-label="共享焦点">
+        <span>Universe State</span>
+        <strong>{selectedNode ? humanNodeDisplayTitle(selectedNode) : "暂无焦点"}</strong>
+        <small>{sharedState.focus.home.clusterId ?? "无主题"} · r{sharedState.sync.revision}</small>
+      </section>
       <section className="home-primary-band" aria-label="当前认知状态">
         <article className={`home-weather-panel ${model.weatherTone}`}>
           <span>Memory Weather</span>
@@ -1112,6 +1160,7 @@ function GalaxyView({
   graphEdges,
   memoryCount,
   selectedNode,
+  sharedState,
   deltaStats,
   timelineTimeRange,
   onSelectNode,
@@ -1120,6 +1169,7 @@ function GalaxyView({
   graphEdges: AtlasEdge[];
   memoryCount: number;
   selectedNode: AtlasNode | null;
+  sharedState: SharedAtlasState;
   deltaStats: DeltaStats;
   timelineTimeRange: TimelineTimeRangeSelection | null;
   onSelectNode: (node: AtlasNode) => void;
@@ -1132,7 +1182,12 @@ function GalaxyView({
   }
 
   return (
-    <div className="galaxy-view">
+    <div
+      className="galaxy-view"
+      data-shared-state={sharedState.schema_version}
+      data-shared-focus-node={sharedState.focus.galaxy.nodeId ?? ""}
+      data-shared-cluster={sharedState.focus.galaxy.clusterId ?? ""}
+    >
       <div className="surface-heading">
         <div>
           <p className="eyebrow">语义银河 / 记忆关系 / 增量观察</p>
@@ -1332,6 +1387,7 @@ function TimelineView({
   timeline,
   nodeMap,
   selectedNode,
+  sharedState,
   selectedTimelineRange,
   deltaStats,
   onSelectNode,
@@ -1341,6 +1397,7 @@ function TimelineView({
   timeline: TimelineEvent[];
   nodeMap: Map<string, AtlasNode>;
   selectedNode: AtlasNode | null;
+  sharedState: SharedAtlasState;
   selectedTimelineRange: TimelineTimeRangeSelection | null;
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
@@ -1493,7 +1550,13 @@ function TimelineView({
   }
 
   return (
-    <div className="visual-workspace timeline-map" data-timeline-renderer={timelineRendererMode}>
+    <div
+      className="visual-workspace timeline-map"
+      data-timeline-renderer={timelineRendererMode}
+      data-shared-state={sharedState.schema_version}
+      data-shared-focus-node={sharedState.focus.timeline.nodeId ?? ""}
+      data-shared-time-range={sharedState.focus.timeline.timeRangeId ?? ""}
+    >
       <div className="surface-heading compact">
         <div>
           <p className="eyebrow">{timelineRendererMode === "memory-river" ? "记忆时间河 / UTC Time Scale / Theme Lanes" : "时间轴 / 动态窗口 / 事件密度"}</p>
@@ -2215,6 +2278,7 @@ function WordCloudView({
 function InteractionLens({
   activeView,
   filters,
+  sharedState,
   selectedContributionPeriod,
   selectedNode,
   slice,
@@ -2228,6 +2292,7 @@ function InteractionLens({
 }: {
   activeView: ViewKey;
   filters: AtlasFilters;
+  sharedState: SharedAtlasState;
   selectedContributionPeriod: ContributionPeriodDetail | null;
   selectedNode: AtlasNode | null;
   slice: FilteredAtlasSlice;
@@ -2257,7 +2322,17 @@ function InteractionLens({
       : "选择节点、事件或时间格后同步更新";
 
   return (
-    <section className="interaction-lens" aria-label="当前交互焦点">
+    <section
+      className="interaction-lens"
+      aria-label="当前交互焦点"
+      data-shared-state={sharedState.schema_version}
+      data-sync-revision={sharedState.sync.revision}
+      data-sync-source={sharedState.sync.updatedBy}
+      data-sync-action={sharedState.sync.lastAction}
+      data-shared-focus-node={sharedState.focus.inspector.nodeId ?? ""}
+      data-shared-cluster={sharedState.focus.inspector.clusterId ?? ""}
+      data-shared-time-range={sharedState.focus.inspector.timeRangeId ?? ""}
+    >
       <div className="lens-focus">
         <span className="lens-badge">{viewLabel}</span>
         <div>
@@ -2283,6 +2358,11 @@ function InteractionLens({
           <FilterX size={15} />
           <span>重置筛选</span>
         </button>
+      </div>
+      <div className="lens-state-strip" aria-label="Universe State Snapshot">
+        <span>Universe State</span>
+        <strong>{sharedState.selection.signal}</strong>
+        <em>{sharedState.sync.updatedBy} · r{sharedState.sync.revision}</em>
       </div>
       <div className="filter-chip-row" aria-label="活跃筛选">
         {chips.length || timelineTimeRange ? (
@@ -2696,12 +2776,27 @@ function RecommendationList({
   );
 }
 
-function NodeInspector({ atlas, node, edgeCount }: { atlas: MemoryAtlas; node: AtlasNode | null; edgeCount: number }) {
+function NodeInspector({
+  atlas,
+  node,
+  edgeCount,
+  sharedState,
+}: {
+  atlas: MemoryAtlas;
+  node: AtlasNode | null;
+  edgeCount: number;
+  sharedState: SharedAtlasState;
+}) {
   const memoryNodes = useMemo(() => getMemoryNodes(atlas), [atlas]);
   const overviewNodes = memoryNodes.length ? memoryNodes : atlas.nodes;
   if (!node) {
     return (
-      <aside className="inspector">
+      <aside
+        className="inspector"
+        data-shared-state={sharedState.schema_version}
+        data-shared-focus-node=""
+        data-shared-cluster=""
+      >
         <h2>选择一个节点</h2>
         <p>点击星体、关系图、时间轴事件或搜索结果查看记忆详情。</p>
         <HumanOverviewPanel nodes={overviewNodes} deltaStats={buildDeltaStats(atlas, memoryNodes)} compact />
@@ -2710,7 +2805,13 @@ function NodeInspector({ atlas, node, edgeCount }: { atlas: MemoryAtlas; node: A
   }
   const humanNode = buildHumanNodeSummary(node, edgeCount);
   return (
-    <aside className="inspector">
+    <aside
+      className="inspector"
+      data-shared-state={sharedState.schema_version}
+      data-shared-focus-node={sharedState.focus.inspector.nodeId ?? ""}
+      data-shared-cluster={sharedState.focus.inspector.clusterId ?? ""}
+      data-shared-record={sharedState.focus.inspector.recordId ?? ""}
+    >
       <HumanOverviewPanel nodes={overviewNodes} deltaStats={buildDeltaStats(atlas, memoryNodes)} compact />
       <p className="eyebrow">{humanNode.scope}</p>
       <h2>{humanNode.title}</h2>

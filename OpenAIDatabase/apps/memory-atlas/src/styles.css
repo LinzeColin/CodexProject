@@ -182,7 +182,7 @@ button {
 
 .visual-focus-workspace .interaction-lens,
 .contribution-workspace .interaction-lens {
-  grid-template-columns: minmax(180px, 1fr) auto auto minmax(160px, 0.8fr);
+  grid-template-columns: minmax(180px, 1fr) auto auto minmax(118px, 0.38fr) minmax(160px, 0.8fr);
   min-height: 36px;
   padding: 5px 7px;
 }
@@ -282,7 +282,7 @@ h3 {
 
 .interaction-lens {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto auto minmax(220px, 0.9fr);
+  grid-template-columns: minmax(220px, 1fr) auto auto minmax(128px, 0.4fr) minmax(220px, 0.9fr);
   align-items: center;
   gap: 8px;
   min-height: 42px;
@@ -341,6 +341,7 @@ h3 {
 
 .lens-stepper,
 .lens-actions,
+.lens-state-strip,
 .filter-chip-row {
   display: flex;
   align-items: center;
@@ -380,6 +381,30 @@ h3 {
 }
 
 .lens-actions button {
+  white-space: nowrap;
+}
+
+.lens-state-strip {
+  min-width: 0;
+  overflow: hidden;
+  border-left: 1px solid rgba(244, 241, 232, 0.12);
+  padding-left: 8px;
+}
+
+.lens-state-strip span,
+.lens-state-strip em {
+  color: #8f8a82;
+  font-size: 10px;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.lens-state-strip strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #dff7ff;
+  font-size: 11px;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -1119,6 +1144,35 @@ h3 {
 .home-overview-view {
   grid-template-rows: auto auto auto auto auto auto auto;
   overflow: auto;
+}
+
+.home-shared-focus-strip {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  margin: 0 16px 10px;
+  border: 1px solid rgba(126, 224, 248, 0.16);
+  border-radius: 8px;
+  background: rgba(9, 10, 13, 0.36);
+  padding: 7px 10px;
+}
+
+.home-shared-focus-strip span,
+.home-shared-focus-strip small {
+  color: #8f8a82;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.home-shared-focus-strip strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #f4f1e8;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .home-primary-band {
@@ -4531,6 +4585,14 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .home-shared-focus-strip {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .home-shared-focus-strip small {
+    grid-column: 1 / -1;
+  }
+
   .home-status-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -4596,9 +4658,15 @@ h3 {
   }
 
   .lens-actions,
+  .lens-state-strip,
   .filter-chip-row {
     grid-column: 1 / -1;
     justify-content: start;
+  }
+
+  .lens-state-strip {
+    border-left: 0;
+    padding-left: 0;
   }
 
   .obsidian-status-strip {
@@ -4665,6 +4733,13 @@ h3 {
   .filter-chip-row {
     grid-column: 1 / -1;
     justify-content: start;
+  }
+
+  .lens-state-strip {
+    grid-column: 1 / -1;
+    justify-content: start;
+    border-left: 0;
+    padding-left: 0;
   }
 
   .search-box,
@@ -4964,6 +5039,13 @@ h3 {
   .visual-focus-workspace .interaction-lens {
     grid-template-columns: minmax(0, 1fr) auto;
     min-width: 0;
+  }
+
+  .visual-focus-workspace .lens-state-strip {
+    grid-column: 1 / -1;
+    justify-content: start;
+    border-left: 0;
+    padding-left: 0;
   }
 
   .workspace.contribution-workspace {

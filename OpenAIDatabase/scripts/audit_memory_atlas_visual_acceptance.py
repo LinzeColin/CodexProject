@@ -75,7 +75,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         '{ key: "home", label: "记忆总览", icon: Home }' in app_source
-        and 'const [activeView, setActiveView] = useState<ViewKey>("home")' in app_source
+        and ('const [activeView, setActiveView] = useState<ViewKey>("home")' in app_source or "const activeView = sharedState.mode.activeView" in app_source)
         and 'if (activeView === "home")' in app_source
         and "function HomeOverviewView" in app_source
         and "function buildHomeOverviewModel" in app_source
@@ -172,7 +172,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "nodeMatchesContributionPeriod" in app_source
         and "selectionStillVisible" in app_source
         and "<ContributionPeriodInspector detail={selectedContributionPeriod} onSelectNode={handleSelectNode} />" in app_source
-        and '<NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} />' in app_source
+        and ('<NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} />' in app_source
+             or '<NodeInspector atlas={scopedAtlas} node={selectedNode} edgeCount={edgeCountFor(selectedNode?.id, scopedAtlas.edges)} sharedState={sharedState} />' in app_source)
         and "grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);" in css_source
         and ".content-grid.wide-view" in css_source
         and "grid-template-columns: 1fr;" in css_source
@@ -269,8 +270,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         'type TimelineInteractionMode = "pan" | "brush"' in app_source
-        and "interface TimelineTimeRangeSelection" in app_source
-        and "const [timelineTimeRange, setTimelineTimeRange]" in app_source
+        and ("interface TimelineTimeRangeSelection" in app_source or "type TimelineTimeRangeSelection = SharedTimelineTimeRangeSelection" in app_source)
+        and ("const [timelineTimeRange, setTimelineTimeRange]" in app_source or "const timelineTimeRange = sharedState.filters.timeRange" in app_source)
         and "handleMemoryRiverPointerDown" in timeline_view
         and "handleMemoryRiverPointerMove" in timeline_view
         and "handleMemoryRiverPointerUp" in timeline_view
@@ -352,6 +353,34 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "timeline_stage5_3_evidence_layers_ready",
         "Memory River renders Stage 5.3 black-hole lifecycle, proto-star lifecycle, and stale/deprecated fade layers from redacted derived signals consistent with Home overview semantics",
         "Stage 5.3 Memory River evidence layers, derived-signal mapping, CSS, parameters, or audit contract are missing",
+    )
+    shared_state_source = read_text(repo_root / "apps/memory-atlas/src/state/sharedAtlasState.ts")
+    require(
+        checks,
+        "export interface SharedAtlasSelectionState" in shared_state_source
+        and "export interface SharedAtlasFilterState" in shared_state_source
+        and "export interface SharedAtlasFocusState" in shared_state_source
+        and "export function sharedAtlasReducer" in shared_state_source
+        and "clearSharedAtlasFilter" in shared_state_source
+        and "roi: SharedAtlasRoiFilter" in shared_state_source
+        and "loopGuard" in shared_state_source
+        and "useReducer(" in app_source
+        and "sharedAtlasReducer" in app_source
+        and "const timelineTimeRange = sharedState.filters.timeRange" in app_source
+        and "dispatchSharedState({ type: \"select_node\", node, source: activeView })" in app_source
+        and "dispatchSharedState({ type: \"select_time_range\", range, source: \"timeline\" })" in app_source
+        and "dispatchSharedState({ type: \"clear_filter\", key, source: activeView })" in app_source
+        and "data-shared-state={sharedState.schema_version}" in app_source
+        and "data-shared-focus-node={sharedState.focus.home.nodeId ?? \"\"}" in app_source
+        and "data-shared-focus-node={sharedState.focus.galaxy.nodeId ?? \"\"}" in app_source
+        and "data-shared-focus-node={sharedState.focus.timeline.nodeId ?? \"\"}" in app_source
+        and "data-shared-focus-node={sharedState.focus.inspector.nodeId ?? \"\"}" in app_source
+        and "data-sync-revision={sharedState.sync.revision}" in app_source
+        and ".lens-state-strip" in css_source
+        and ".home-shared-focus-strip" in css_source,
+        "stage6_1_shared_state_store_ready",
+        "Stage 6.1 uses a typed shared-state reducer for selection/filter/time range/focus and exposes shared focus across Home, Galaxy, Timeline and Inspector",
+        "Stage 6.1 shared-state schema, reducer actions, focus bindings, or status UI evidence is missing",
     )
     require(
         checks,
