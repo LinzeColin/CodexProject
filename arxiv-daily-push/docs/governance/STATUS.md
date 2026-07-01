@@ -4,17 +4,17 @@
 
 - source_base_commit: `4f72c42ea62275fdd18285cf189070c6aa76bd71`
 - source_tree_hash: `0f0772e4250330372d58456a355e205327dff933`
-- source_snapshot_hash: `sha256:4d782bb47dc89e92c27a5918eefd745de4125263d313a7eb62b1c1145bc433ac`
-- snapshot_event_time: `2026-07-01T22:51:19+10:00`
+- source_snapshot_hash: `sha256:c1976ace1731497ba84521d3d735829791cfb9bf4408d28fb1cc5adec7d9f1a2`
+- snapshot_event_time: `2026-07-01T23:14:53+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `COMMIT_BOUND:4f72c42ea62275fdd18285cf189070c6aa76bd71`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`
+- Phase/Gate: `S2PL / DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`
+- Release gate: `DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -50,8 +50,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
-- Pending/stale events: `382`
+- Pending/stale events: `383`
 - Tree-bound events: `13`
 - Commit-bound events: `9`
-- Legacy unbound events: `330`
+- Legacy unbound events: `331`
 - Unresolved fact IDs: `0`

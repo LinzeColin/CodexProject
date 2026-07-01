@@ -35,7 +35,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT", current_state)
+        self.assertIn("DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT", current_state)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST", current_state)
         self.assertIn("ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement", current_state)
         self.assertIn("request_only=true", current_state)
@@ -131,11 +131,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         )
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
             current,
         )
         self.assertIn(
-            "current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT",
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT",
             current,
         )
         self.assertIn("daily_operation_persistent_authorization_request_ready: true", current)
@@ -214,11 +214,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(manifest["new_smtp_run_executed_by_this_attestation"])
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
             current,
         )
         self.assertIn(
-            "current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT",
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT",
             current,
         )
         self.assertIn("daily_operation_persistent_authorization_request_mainline_attested: true", current)
@@ -233,12 +233,73 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT", roadmap)
         self.assertIn("- source_base_commit: `4f72c42ea62275fdd18285cf189070c6aa76bd71`", owner_status)
         self.assertIn("- source_tree_hash: `0f0772e4250330372d58456a355e205327dff933`", owner_status)
-        self.assertIn("- final_commit_binding: `COMMIT_BOUND:4f72c42ea62275fdd18285cf189070c6aa76bd71`", owner_status)
+        self.assertIn("- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`", owner_status)
         self.assertIn('source_base_commit: "4f72c42ea62275fdd18285cf189070c6aa76bd71"', assurance)
         self.assertIn('source_tree_hash: "0f0772e4250330372d58456a355e205327dff933"', assurance)
-        self.assertIn('final_commit_binding: "COMMIT_BOUND:4f72c42ea62275fdd18285cf189070c6aa76bd71"', assurance)
+        self.assertIn('final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"', assurance)
         self.assertIn(
             "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION",
+            ledger,
+        )
+
+    def test_owner_option_a_after_persistent_request_keeps_daily_operation_disabled(self) -> None:
+        manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/"
+            / "ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED-20260701.json"
+        )
+        self.assertTrue(manifest_path.exists(), "owner option A decision after request must be recorded")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        current = (ADP_ROOT / "docs/pursuing_goal/CURRENT.yaml").read_text(encoding="utf-8")
+        readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+        roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
+        ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
+        auth_artifact = REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"
+
+        self.assertEqual(
+            manifest["task_id"],
+            "S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
+        )
+        self.assertEqual(
+            manifest["result"],
+            "pass_owner_selected_option_a_keep_daily_operation_disabled_after_request_no_runtime_enablement",
+        )
+        self.assertEqual(manifest["owner_selected_option"], "A")
+        self.assertEqual(manifest["decision"], "keep_daily_operation_disabled_no_persistent_authorization")
+        self.assertEqual(
+            manifest["decision_state_hash"],
+            "d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4",
+        )
+        self.assertTrue(manifest["request_mainline_attested"])
+        self.assertTrue(manifest["persistent_authorization_artifact_absent"])
+        self.assertFalse(manifest["persistent_daily_operation_authorized"])
+        self.assertFalse(manifest["daily_operation_enabled"])
+        self.assertFalse(manifest["real_smtp_send_enabled"])
+        self.assertFalse(manifest["scheduler_install_enabled"])
+        self.assertFalse(manifest["release_packaging_enabled"])
+        self.assertFalse(manifest["production_restore_enabled"])
+        self.assertFalse(auth_artifact.exists(), "option A must not create persistent DAILY_OPERATION authorization")
+
+        self.assertIn(
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
+            current,
+        )
+        self.assertIn(
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT",
+            current,
+        )
+        self.assertIn("next_required_step: DAILY_OPERATION_REMAINS_DISABLED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION", current)
+        self.assertIn("daily_operation_owner_option_a_after_request_recorded: true", current)
+        self.assertIn("daily_operation_persistent_authorization_request_owner_response: A_KEEP_DISABLED", current)
+        self.assertIn("daily_operation_persistent_authorization_owner_decision_after_request_state_hash: d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4", current)
+        self.assertIn("daily_operation_enabled: false", current)
+
+        self.assertIn("owner 已选择 A：继续禁用 DAILY_OPERATION", readme)
+        self.assertIn("owner 已选择 A：继续禁用 DAILY_OPERATION", decisions)
+        self.assertIn("DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT", roadmap)
+        self.assertIn(
+            "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
             ledger,
         )
 
@@ -250,7 +311,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', assurance)
         self.assertIn("next_task_id: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`", owner_status)
         self.assertIn(
-            'release_gate: "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT"',
+            'release_gate: "DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT"',
             assurance,
         )
         self.assertIn("stage2_integrated_production_accepted: true", assurance)
@@ -260,10 +321,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("open_pr_count=0", assurance)
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", assurance)
         self.assertIn("LaunchAgents disabled", assurance)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json", assurance)
-        self.assertIn("Persistent DAILY_OPERATION authorization request packet is ready", assurance)
-        self.assertIn("request-only", owner_status)
-        self.assertIn("daily_operation_persistent_enablement_authorization.request.json", owner_status)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json", assurance)
+        self.assertIn("DAILY_OPERATION owner decision is recorded as keep-disabled", assurance)
+        self.assertIn("keep-disabled", owner_status)
+        self.assertIn("daily_operation_owner_authorization_decision.json", owner_status)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes", assurance)
         self.assertIn("daily_operation_persistent_enablement_authorization.json if owner authorizes", owner_status)
         self.assertIn("runtime remains disabled", owner_status)
@@ -311,8 +372,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(manifest["scheduler_enabled"])
         self.assertFalse(manifest["release_packaging_enabled"])
         self.assertFalse(manifest["production_restore_enabled"])
-        self.assertIn("- final_commit_binding: `COMMIT_BOUND:4f72c42ea62275fdd18285cf189070c6aa76bd71`", owner_status)
-        self.assertIn('final_commit_binding: "COMMIT_BOUND:4f72c42ea62275fdd18285cf189070c6aa76bd71"', assurance)
+        self.assertIn("- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`", owner_status)
+        self.assertIn('final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"', assurance)
         self.assertRegex(owner_status, r"- source_base_commit: `[0-9a-f]{40}`")
         self.assertRegex(owner_status, r"- source_tree_hash: `[0-9a-f]{40}`")
         self.assertRegex(assurance, r'(?m)^source_base_commit: "[0-9a-f]{40}"$')
@@ -332,15 +393,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
             current,
         )
         self.assertIn(
-            "current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT",
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT",
             current,
         )
         self.assertIn("next_executable_task: S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", current)
-        self.assertIn("next_required_step: OWNER_DECIDES_WHETHER_TO_CREATE_EXPLICIT_PERSISTENT_DAILY_OPERATION_AUTHORIZATION", current)
+        self.assertIn("next_required_step: DAILY_OPERATION_REMAINS_DISABLED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION", current)
+        self.assertIn("daily_operation_owner_option_a_after_request_recorded: true", current)
+        self.assertIn("daily_operation_persistent_authorization_request_owner_response: A_KEEP_DISABLED", current)
+        self.assertIn(
+            "daily_operation_persistent_authorization_owner_decision_after_request_state_hash: d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4",
+            current,
+        )
         self.assertIn("daily_operation_persistent_authorization_request_ready: true", current)
         self.assertIn("daily_operation_persistent_authorization_request_only: true", current)
         self.assertIn("daily_operation_persistent_authorization_request_status: ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement", current)
@@ -514,14 +581,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- active_formula_count: `{active_formulas.group(1)}`", summary)
         self.assertIn(f"- active_parameter_count: `{active_parameters.group(1)}`", summary)
         self.assertIn(
-            "- current_task: `S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION`",
+            "- current_task: `S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED`",
             summary,
         )
         self.assertIn(
-            "- next_gate: `DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`",
+            "- next_gate: `DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT`",
             summary,
         )
-        self.assertIn("persistent DAILY_OPERATION authorization request is request-only", summary)
+        self.assertIn("owner selected A_KEEP_DISABLED after request", summary)
         self.assertIn("persistent_daily_operation_authorized=false", summary)
         self.assertIn("daily_operation_enabled=false", summary)
 
