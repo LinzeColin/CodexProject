@@ -398,6 +398,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506", page)
         self.assertIn("8409313fd39c4627122aca97cc80d28480f65b5230f6982ae7e720b6e0134b73", page)
         self.assertIn("eef4f33e08feb99de67c24c9339ae204658f6b0ac4d0e5cd810092b5a3246aff", page)
+        self.assertIn("| 历史字段 | `capture_wait_state_guard.status=blocked`；capture plan `state_hash=5b344929d8d00c9cf881accbbd9abd68963b5f40cbd975a805fa4da62a8a8a25`", page)
+        self.assertIn("| 历史当时允许命令 | `adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json", page)
 
         self.assertIn("REQ-ADP-V7-062-S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC", page)
@@ -410,6 +412,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04", page)
         self.assertIn("45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048", page)
         self.assertIn("51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0", page)
+        self.assertIn("| 历史字段 | `final_bundle_missing_artifact_inventory.status=blocked`；inventory `state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`", page)
+        self.assertIn("| 历史当时缺失 live refs | `FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", page)
+        self.assertIn("| 历史当时下一步 | `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF`", page)
 
         self.assertIn("REQ-ADP-V7-060-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD", page)
@@ -420,6 +425,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_GUARD.md", page)
         self.assertIn("blocked_s2plt02_terminal_capture_wait_state_guard_synced_no_production", page)
         self.assertIn("capture_wait_state_guard", page)
+        self.assertIn("| 历史字段 | `capture_wait_state_guard.status=blocked`；capture plan `state_hash=2b82aea9755bc7d3d2f316cc48dcbc89a0cd1f9c324f687e385dc780a24d3997`", page)
+        self.assertIn("| 历史当时禁止 refs | `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", page)
 
         self.assertIn("REQ-ADP-V7-059-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY", page)
@@ -433,6 +440,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("missing_item_count=5", page)
         self.assertIn("2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae", page)
         self.assertIn("51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0", page)
+        self.assertIn("| 历史字段 | `final_bundle_missing_artifact_inventory.status=blocked`；`missing_item_count=5`", page)
 
         self.assertIn("REQ-ADP-V7-057-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT", page)
@@ -471,6 +479,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("1146133f14fe04dba14e0313409fad828bfe2d6439adefc68a640d5500568b85", page)
         self.assertIn("HANDOFF/00_下一Agent先读.md", page)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", page)
+        self.assertIn("| 历史字段 | `live_artifact_write_guard.status=blocked`；`live_artifact_write_allowed=false`", page)
+        self.assertIn("| 历史当时阻断 live refs | `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`", page)
+        self.assertIn("| 历史当时禁止动作 | `write_live_next_agent_handoff`", page)
 
         self.assertIn("REQ-ADP-V7-056-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", page)
@@ -1378,6 +1389,14 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| 当前字段 | `write_terminal_artifact_allowed=false`；`scheduler_enable_allowed_by_this_plan=false`", page)
         self.assertNotIn("| 当前字段 | `ready_to_write_live_artifacts=false`；capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`", page)
         self.assertNotIn("| 当前字段 | `current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`", page)
+        self.assertNotIn("| 当前字段 | `final_bundle_missing_artifact_inventory.status=blocked`；inventory `state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`", page)
+        self.assertNotIn("| 当前字段 | `capture_wait_state_guard.status=blocked`；capture plan `state_hash=5b344929d8d00c9cf881accbbd9abd68963b5f40cbd975a805fa4da62a8a8a25`", page)
+        self.assertNotIn("| 当前字段 | `capture_wait_state_guard.status=blocked`；capture plan `state_hash=2b82aea9755bc7d3d2f316cc48dcbc89a0cd1f9c324f687e385dc780a24d3997`", page)
+        self.assertNotIn("| 当前字段 | `final_bundle_missing_artifact_inventory.status=blocked`；`missing_item_count=5`", page)
+        self.assertNotIn("| 当前字段 | `live_artifact_write_guard.status=blocked`；`live_artifact_write_allowed=false`", page)
+        self.assertNotIn("| 缺失 live refs | `FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", page)
+        self.assertNotIn("| 阻断 live refs | `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`", page)
+        self.assertNotIn("| 禁止动作 | `write_live_next_agent_handoff`", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
