@@ -117,6 +117,35 @@ class V024Stage8Phase83Contract:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class V024Stage8WholeReviewContract:
+    target_version: str
+    source_package_version: str
+    repair_label: str
+    stage: str
+    stage_name: str
+    review_id: str
+    current_run_unit: str
+    current_run_only: bool
+    reviewed_phase_ids: list[str]
+    phase_8_1_required: bool
+    phase_8_2_required: bool
+    phase_8_3_required: bool
+    phase_8_3_user_confirmation_required: bool
+    required_artifacts: list[str]
+    allowed_files: list[str]
+    validation_commands: list[str]
+    github_main_uploaded: bool
+    stage_9_started: bool
+    app_bundle_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+    explicitly_not_done: list[str]
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
 def build_v024_stage8_phase81_contract() -> V024Stage8Phase81Contract:
     return V024Stage8Phase81Contract(
         target_version=TARGET_VERSION,
@@ -316,5 +345,64 @@ def build_v024_stage8_phase83_contract() -> V024Stage8Phase83Contract:
             "app bundle reinstall",
             "financial data mutation or synthesis",
             "user acceptance claim without user confirmation",
+        ],
+    )
+
+
+def build_v024_stage8_whole_review_contract() -> V024Stage8WholeReviewContract:
+    return V024Stage8WholeReviewContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        repair_label=REPAIR_LABEL,
+        stage=STAGE,
+        stage_name=STAGE_NAME,
+        review_id="stage_8_whole_review",
+        current_run_unit="Stage 8 whole-stage review",
+        current_run_only=True,
+        reviewed_phase_ids=[PHASE_8_1_ID, PHASE_8_2_ID, PHASE_8_3_ID],
+        phase_8_1_required=True,
+        phase_8_2_required=True,
+        phase_8_3_required=True,
+        phase_8_3_user_confirmation_required=True,
+        required_artifacts=[
+            "PFI/docs/pfi_v024/STAGE8_WHOLE_STAGE_REVIEW.md",
+            "PFI/reports/pfi_v024/stage_8/whole_stage_review/evidence.json",
+            "PFI/reports/pfi_v024/stage_8/whole_stage_review/terminal.log",
+            "PFI/reports/pfi_v024/stage_8/whole_stage_review/changed_files.txt",
+            "PFI/reports/pfi_v024/stage_8/whole_stage_review/risk_and_rollback.md",
+        ],
+        allowed_files=[
+            "PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py",
+            "PFI/tests/test_v024_stage8_whole_review_contract.py",
+            "PFI/docs/pfi_v024/STAGE8_E2E_ACCEPTANCE.md",
+            "PFI/docs/pfi_v024/STAGE8_WHOLE_STAGE_REVIEW.md",
+            "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+            "PFI/reports/pfi_v024/stage_8/whole_stage_review/*",
+            "PFI/README.md",
+            "PFI/HANDOFF.md",
+            "PFI/CHANGELOG.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/模型参数文件.md",
+        ],
+        validation_commands=[
+            "python3 -m pytest PFI/tests/test_v024_stage8_whole_review_contract.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage8_phase83_manual_acceptance.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py -q",
+            "python3 -m py_compile PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py",
+            "python3 -m json.tool PFI/reports/pfi_v024/stage_8/whole_stage_review/evidence.json",
+            "git diff --check -- PFI",
+        ],
+        github_main_uploaded=False,
+        stage_9_started=False,
+        app_bundle_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
+        explicitly_not_done=[
+            "GitHub main upload",
+            "Stage 9 regression freeze",
+            "app bundle reinstall",
+            "financial data mutation or synthesis",
         ],
     )

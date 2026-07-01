@@ -1,0 +1,222 @@
+{
+  "schema": "PFIV024Stage8WholeReviewEvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 8",
+  "stage_name": "端到端浏览器与 app 验收",
+  "review_id": "stage_8_whole_review",
+  "current_run_unit": "Stage 8 whole-stage review",
+  "current_run_only": true,
+  "status": "pass",
+  "stage_8_candidate_complete": true,
+  "stage_8_whole_review_complete": true,
+  "phase_8_3_user_confirmed": true,
+  "user_confirmation_source": "chat_reply_1",
+  "github_main_uploaded": false,
+  "stage_9_started": false,
+  "app_bundle_reinstall_executed": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "generated_at": "2026-07-01T05:14:51Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_before_review_commit": "c66d5ba13f93e4d8bfc64a2211780feaf95bee0f",
+    "origin_main_observed_during_review": "01ac4a5b450792627322980e8249596fec7581d0",
+    "merge_base_with_origin_main": "fa91a3cccf4204c4d902fb54adb17561ca58c6ec",
+    "local_ahead_origin_main_observed_during_review": 3,
+    "local_behind_origin_main_observed_during_review": 1,
+    "origin_main_drift_touches_pfi": false
+  },
+  "reviewed_phase_ids": [
+    "8.1",
+    "8.2",
+    "8.3"
+  ],
+  "review_inputs": {
+    "phase_8_1": "PFI/reports/pfi_v024/stage_8/phase_8_1/evidence.json",
+    "phase_8_1_browser_validation": "PFI/reports/pfi_v024/stage_8/phase_8_1/browser_validation.json",
+    "phase_8_2": "PFI/reports/pfi_v024/stage_8/phase_8_2/evidence.json",
+    "phase_8_2_browser_validation": "PFI/reports/pfi_v024/stage_8/phase_8_2/browser_validation.json",
+    "phase_8_2_screenshot_index": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshot_index.json",
+    "phase_8_2_app_entry_validation": "PFI/reports/pfi_v024/stage_8/phase_8_2/app_entry_validation.json",
+    "phase_8_3": "PFI/reports/pfi_v024/stage_8/phase_8_3/evidence.json",
+    "phase_8_3_manual_acceptance": "PFI/reports/pfi_v024/stage_8/phase_8_3/manual_acceptance.md",
+    "phase_8_3_defects": "PFI/reports/pfi_v024/stage_8/phase_8_3/defects.md"
+  },
+  "phase_statuses": {
+    "phase_8_1": "candidate_pass",
+    "phase_8_2": "candidate_pass",
+    "phase_8_3": "user_confirmed"
+  },
+  "acceptance_checks": {
+    "route_click_test": {
+      "result": "pass",
+      "evidence": "Phase 8.1 browser_validation route_click_test_passed=true and no console/page/http errors"
+    },
+    "entry_version_test": {
+      "result": "pass",
+      "evidence": "Phase 8.1 browser_validation entry_version_test_passed=true"
+    },
+    "data_state_no_false_zero": {
+      "result": "pass",
+      "evidence": "Phase 8.1 data_state_test_passed=true and Stage 4 no-fake-zero read model is injected"
+    },
+    "report_center_test": {
+      "result": "pass",
+      "evidence": "Phase 8.1 report_center_test_passed=true and Stage 7 report schema is injected"
+    },
+    "screenshot_coverage": {
+      "result": "pass",
+      "evidence": "Phase 8.2 screenshot_index status=pass, screenshot_count=14, primary_entries=10"
+    },
+    "app_localhost_consistency": {
+      "result": "pass",
+      "evidence": "Phase 8.2 app_entry_validation app_localhost_same_bundle_hash=true"
+    },
+    "downloads_app_current_checkout": {
+      "result": "pass",
+      "evidence": "Phase 8.2 app_entry_validation downloads_app_points_to_current_checkout=true"
+    },
+    "light_ui_and_mobile": {
+      "result": "pass",
+      "evidence": "Phase 8.2 browser_validation desktop_light_ui=true and mobile_horizontal_overflow_px=0"
+    },
+    "manual_acceptance_confirmation": {
+      "result": "pass",
+      "evidence": "User replied 1 after the pass option; recorded as chat_reply_1"
+    },
+    "no_forbidden_financial_data_added": {
+      "result": "pass",
+      "evidence": "Stage 8 review changes only add contracts, docs, tests, status records and evidence"
+    }
+  },
+  "validation_surface": {
+    "primary_entry_count": 10,
+    "primary_entries": [
+      "首页总览",
+      "账户与资产",
+      "账本流水",
+      "投资管理",
+      "消费管理",
+      "数据源与上传",
+      "建议与复盘",
+      "报告与洞察",
+      "市场与研究",
+      "设置"
+    ],
+    "screenshot_count": 14,
+    "primary_entry_screenshot_count": 10,
+    "mobile_horizontal_overflow_px": 0,
+    "desktop_light_ui": true,
+    "app_localhost_same_bundle_hash": true,
+    "downloads_app_points_to_current_checkout": true,
+    "applications_app_exists": false,
+    "browser_console_errors": 0,
+    "browser_page_errors": 0,
+    "browser_http_errors": 0
+  },
+  "stop_condition_audit": {
+    "route_or_history_failure": "absent",
+    "entry_version_mismatch": "absent",
+    "false_financial_zero_visible": "absent",
+    "report_center_missing_required_fields": "absent",
+    "screenshot_evidence_missing": "absent",
+    "mobile_horizontal_overflow": "absent",
+    "manual_acceptance_missing": "absent",
+    "forbidden_financial_data_added": "absent",
+    "stage_9_started_before_upload": "absent"
+  },
+  "review_findings": [
+    {
+      "id": "S8-REVIEW-F1",
+      "severity": "P1",
+      "status": "fixed",
+      "finding": "Stage 8 had no whole-stage review gate or evidence after Phase 8.1/8.2/8.3 reached candidate/manual acceptance state.",
+      "fix": "Added STAGE8_WHOLE_STAGE_REVIEW.md, whole_stage_review evidence pack, terminal log, changed files, risk/rollback, and contract test.",
+      "verification": "test_v024_stage8_whole_review_contract.py covers artifacts, bounded scope, phase consistency, stop conditions, findings, and non-upload gate."
+    },
+    {
+      "id": "S8-REVIEW-F2",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Top-level status files still described Stage 8 Phase 8.3 as pending after the user replied 1 to confirm manual acceptance.",
+      "fix": "Updated README, HANDOFF, RUN_CONTRACT, STAGE8_E2E_ACCEPTANCE, CHANGELOG, and three baseline status files to record whole-stage review pass and next GitHub upload gate.",
+      "verification": "Stage 8 whole review contract checks status files for whole-stage review pass while keeping GitHub upload and Stage 9 unstarted."
+    },
+    {
+      "id": "S8-REVIEW-F3",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Stage 8 lacked one consolidated command/evidence surface tying route clicks, entry version, data state, report center, screenshots, manual confirmation and no-stage9 boundary together before upload.",
+      "fix": "Added whole_stage_review/evidence.json with reviewed phase IDs, acceptance checks, validation surface, stop-condition audit, commands, remaining gates and explicit non-goals.",
+      "verification": "Whole-review pytest, Stage 8 phase regressions, py_compile, json evidence checks, changed-files reconciliation and git diff check are recorded as pass."
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "pytest stage8 whole review red run",
+      "status": "expected_fail",
+      "detail": "5 failed: missing build_v024_stage8_whole_review_contract, STAGE8_WHOLE_STAGE_REVIEW.md, and whole_stage_review evidence artifacts"
+    },
+    {
+      "cmd": "pytest stage8 whole review contract",
+      "status": "pass",
+      "detail": "5 passed"
+    },
+    {
+      "cmd": "pytest stage8 phase regression",
+      "status": "pass",
+      "detail": "Phase 8.3 5 passed; Phase 8.2 5 passed; Phase 8.1 4 passed"
+    },
+    {
+      "cmd": "python py_compile stage8 contract",
+      "status": "pass",
+      "detail": "py_compile stage_v024_stage8_e2e_acceptance.py passed"
+    },
+    {
+      "cmd": "json evidence checks",
+      "status": "pass",
+      "detail": "json.tool whole_stage_review/evidence.json passed"
+    },
+    {
+      "cmd": "changed files reconciliation",
+      "status": "pass",
+      "detail": "actual changed files match whole_stage_review/changed_files.txt"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "pass"
+    }
+  ],
+  "remaining_gates": [
+    "GitHub main upload"
+  ],
+  "explicitly_not_done": [
+    "GitHub main upload",
+    "Stage 9 regression freeze",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "requires_upload_before_stage9": true,
+  "no_auto_upload": true,
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE8_E2E_ACCEPTANCE.md",
+    "PFI/docs/pfi_v024/STAGE8_WHOLE_STAGE_REVIEW.md",
+    "PFI/reports/pfi_v024/stage_8/whole_stage_review/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_8/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v024/stage_8/whole_stage_review/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_8/whole_stage_review/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py",
+    "PFI/tests/test_v024_stage8_whole_review_contract.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ]
+}

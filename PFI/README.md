@@ -32,13 +32,14 @@ Records:
 
 ## v0.2.4 Stage 8 Status
 
-Current run unit: `Stage 8 / Phase 8.3 - 人工验收`.
+Current run unit: `Stage 8 whole-stage review - 复审并解决暴露问题`.
 
 - Stage 7 GitHub main upload: complete before this run.
 - Phase 8.1 automated acceptance: candidate pass.
 - Phase 8.2 screenshot acceptance: candidate pass.
-- Phase 8.3 manual acceptance: ready for user acceptance; pending user confirmation.
-- Stage 8 whole-stage review: not executed.
+- Phase 8.3 manual acceptance: user confirmed by reply `1`.
+- Stage 8 whole-stage review: pass.
+- Stage 8 whole-stage review pass.
 - Stage 8 GitHub main upload: not executed.
 - Stage 9 regression freeze: not started.
 - App bundle reinstall: not executed.
@@ -46,8 +47,9 @@ Current run unit: `Stage 8 / Phase 8.3 - 人工验收`.
 - Financial data changes: none.
 - Automated checks passed: route click, entry version, data state, report center.
 - Screenshot checks passed: app home, localhost home, 10 primary entries, mobile responsive, app/localhost same bundle hash.
-- Current evidence: `reports/pfi_v024/stage_8/phase_8_3/evidence.json`.
-- Next gate: stop for user confirmation or explicit instruction to enter Stage 8 whole-stage review / fix loop.
+- Current evidence: `reports/pfi_v024/stage_8/whole_stage_review/evidence.json`.
+- Review findings fixed: missing whole-stage review gate, top-level status still at Phase 8.3 pending after user reply, missing consolidated Stage 8 evidence surface.
+- Next gate: Stage 8 GitHub main upload gate; Stage 9 only after upload verification.
 
 ## v0.2.4 Stage 7 Status
 

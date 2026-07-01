@@ -1,0 +1,39 @@
+2026-07-01T05:14:51Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_before_review=c66d5ba13f93e4d8bfc64a2211780feaf95bee0f
+origin_main_observed=01ac4a5b450792627322980e8249596fec7581d0
+merge_base_with_origin_main=fa91a3cccf4204c4d902fb54adb17561ca58c6ec
+ahead_behind_vs_origin_main=3 1
+origin_main_delta_touches_pfi=false
+
+User confirmation:
+The user replied "1" after the assistant offered "1. 通过"; this review records that as Stage 8 Phase 8.3 manual acceptance confirmation.
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_whole_review_contract.py -q
+Result: 5 failed before implementation; missing build_v024_stage8_whole_review_contract, STAGE8_WHOLE_STAGE_REVIEW.md, and whole_stage_review evidence files.
+
+Implementation boundary:
+Stage 8 whole-stage review only. Did not execute GitHub main upload, Stage 9, app bundle reinstall, launcher mutation, or financial data changes.
+
+GREEN:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_whole_review_contract.py -q
+Result: 5 passed in 0.07s
+
+Adjacent regression:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase83_manual_acceptance.py -q
+Result: 5 passed in 0.07s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py -q
+Result: 5 passed in 0.07s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py -q
+Result: 4 passed in 0.07s
+
+Static checks:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py
+python3 -m json.tool PFI/reports/pfi_v024/stage_8/whole_stage_review/evidence.json
+git diff --check -- PFI
+Result: pass
