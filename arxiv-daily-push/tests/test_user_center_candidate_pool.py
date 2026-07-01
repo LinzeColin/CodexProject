@@ -75,6 +75,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("当前仓库尚未接入日级库存流转账本", page)
         self.assertIn("板块期末候选数", page)
         self.assertIn("ending_pool = yesterday_pool + today_added - today_completed - today_removed", page)
+        self.assertNotIn("Stage 2 生产验收通过", page)
 
     def test_candidate_pool_top_20_exposes_per_article_score_breakdown(self):
         page = CANDIDATE_POOL_PAGE.read_text(encoding="utf-8")
@@ -1494,12 +1495,17 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         decisions = (USER_CENTER / "关键结论与用户决策.md").read_text(encoding="utf-8")
         roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
         mvp = (USER_CENTER / "MVP准备与复审修补.md").read_text(encoding="utf-8")
+        mail_status = (USER_CENTER / "邮件发送与队列状态.md").read_text(encoding="utf-8")
+        candidate_pool = CANDIDATE_POOL_PAGE.read_text(encoding="utf-8")
 
         for text in (readme, one_look, decisions, roadmap):
             self.assertIn("[MVP 准备与复审修补](./MVP准备与复审修补.md)", text)
         self.assertIn("Stage 2 最终门 | 已通过 Stage 2 integrated acceptance", one_look)
         self.assertIn("S3 / DAILY_OPERATION | 不进入；保持禁用", one_look)
         self.assertIn("宣称 S3/DAILY_OPERATION 已进入 | 不可以", one_look)
+        self.assertIn("Stage 2 integrated acceptance | 已记录并保持 `true`", decisions)
+        self.assertIn("是否现在宣称 Stage 2 integrated acceptance 已记录 | 接受", decisions)
+        self.assertIn("是否现在宣称 S3/DAILY_OPERATION 已进入 | 不接受", decisions)
         self.assertIn("Stage 2 integrated acceptance | `stage2_integrated_production_accepted=true`", roadmap)
         self.assertIn("DAILY_OPERATION | `daily_operation_enabled=false`", roadmap)
         self.assertIn("Stage 2 integrated acceptance | 已记录并保持 `true`", readme)
@@ -1509,7 +1515,12 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("Stage 2 最终门 | 未通过", one_look)
         self.assertNotIn("不能宣称正式生产验收完成", one_look)
         self.assertNotIn("Stage 2 是否正式生产通过 | 没有", readme)
-        self.assertNotIn("这不是 Stage 2 生产验收通过声明", readme)
+        for text in (readme, one_look, decisions, mail_status, candidate_pool):
+            self.assertNotIn("这不是 Stage 2 生产验收通过声明", text)
+            self.assertNotIn("Stage 2 生产验收通过", text)
+            self.assertNotIn("| Stage 2 | 尚未正式生产通过 |", text)
+            self.assertNotIn("是否现在宣称 Stage 2 生产通过 | 不接受", text)
+            self.assertNotIn("Final bundle 已公开 S2PLT03 capture plan summary，但它仍 blocked", text)
 
     def test_user_center_exposes_board_data_source_catalog(self):
         controls = load_owner_controls(CONTROLS)
