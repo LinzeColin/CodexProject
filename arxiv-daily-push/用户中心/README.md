@@ -1,5 +1,13 @@
 # ADP 用户中心
 
+## 2026-07-01 15:16:36 Australia/Sydney - Production-boundary preflight 已通过，仍等待 owner 决策
+
+- `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT` 已通过所有 configured checks，`failed_checks=[]`，`state_hash=6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5`。
+- 这只说明 final bundle、zero proof、final command、independent review、no-production attestation、open PR、持久 SMTP 开关、LaunchAgents 和后台进程状态满足进入生产边界决策的条件。
+- 当前仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled。
+- 下一步是 `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`：记录 owner production-boundary decision evidence。不得自动启用 SMTP/scheduler/Release/production restore。
+- 证据：[preflight 运行清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT.md) / [最终验收包 manifest](../../FINAL_ACCEPTANCE_BUNDLE/manifest.json)。这不是 Stage2/S3 production accepted。
+
 ## 2026-07-01 14:49:29 Australia/Sydney - Final bundle artifact chain 已收口，仍不等于生产验收
 
 - `FINAL_ACCEPTANCE_BUNDLE/manifest.json` 已生成并通过 final bundle validator；`missing_items=[]`，S2PLT04 completion report、final command execution、next-agent handoff、independent signoff、no-production attestation 和 P0/P1 zero proof 已进入最终包。
@@ -237,7 +245,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-07-01 15:00:20 Australia/Sydney
+更新时间：2026-07-01 15:36:20 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 

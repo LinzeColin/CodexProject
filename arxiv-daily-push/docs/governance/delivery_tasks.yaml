@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
+    phase: "S2PL"
+    objective: "Run and record the integrated production acceptance boundary preflight after the S2PMT07 final acceptance bundle artifact chain passed, while stopping before owner production-boundary decision and any production enablement."
+    scope: "preflight CLI evidence, current pointer, assurance/owner status, development ledger, version matrix, three-base/user-center summaries, dashboard routing, regression tests, and no-production run manifest."
+    non_scope: "No SMTP send, scheduler enable/install, Release packaging, production restore, DAILY_OPERATION, public schema/DB/source/ranking/queue mutation, V7 contract mutation, P0/P1 historical baseline mutation, or Stage2/S3 production acceptance."
+    status: "blocked"
+    dependencies: ["FINAL_ACCEPTANCE_BUNDLE/manifest.json", "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_integrated_preflight_current PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_governance_current_state.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_governance_sync.py", "python3 tools/validate_task_pack.py --root .", "python3 tools/verify_acceptance_bundle.py --require-zero P0 P1"]
+    test_results: ["preflight CLI PASS after CURRENT update: status=blocked_owner_decision_required, checks_passed=true, failed_checks=[]", "focused governance current-state unittest 5 OK", "root dashboard routing unittest 1 OK", "stage2 final-gate and CLI unittest 168 OK", "full ADP pytest 764 passed / 64 subtests passed", "project governance 0 errors / 0 warnings", "governance sync 0 errors / 0 warnings", "ADP task pack validation PASS", "acceptance bundle zero-proof verification PASS", "lean render drift 0 / reference issues 0", "user-center timestamp check validated 18 files", "git diff --check PASS", "open_pr_count=0 via GitHub REST API curl", "persistent ADP_ALLOW_SMTP_SEND=false", "daily/health/watchdog LaunchAgents disabled", "no ADP background process found", "semantic extractor was interrupted after a long no-output run and is not claimed as passed"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT.md", "FINAL_ACCEPTANCE_BUNDLE/manifest.json", "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"]
+    risk: "Future agents could treat preflight pass as production acceptance; this task separates preflight pass from owner decision, INTEGRATED_PRODUCTION_ACCEPTED write, and DAILY_OPERATION enablement."
+    rollback: "Revert this preflight sync, dashboard routing branch, tests, manifest, and phase record; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC"
     phase: "S2PL"
     objective: "Synchronize dynamic governance, owner-facing, and regression-test state after the S2PMT07 final acceptance bundle artifact chain is complete while keeping production acceptance false."

@@ -30,53 +30,83 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_records_final_bundle_complete_without_production_acceptance(self) -> None:
+    def test_current_state_records_preflight_pass_without_production_acceptance(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC_READY_NO_PRODUCTION_ACCEPTANCE", current_state)
-        self.assertIn("S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC", current_state)
+        self.assertIn(
+            "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE",
+            current_state,
+        )
+        self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", current_state)
+        self.assertIn("preflight_checks_passed=true", current_state)
+        self.assertIn(
+            "preflight_state_hash=6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5",
+            current_state,
+        )
+        self.assertIn("failed_checks=[]", current_state)
+        self.assertIn("owner_production_boundary_decision_missing", current_state)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", current_state)
-        self.assertIn("manifest_validation_state_hash=558ec135fde8912868be73fe472c39bdd3a99f2038500eae15cb70baef470762", current_state)
-        self.assertIn("final_bundle_readiness_state_hash=2e37a815934c84ffb08b79df572ec058081cfabb3fbbd4e8a2aba3630de36e4c", current_state)
-        self.assertIn("final_bundle_prerequisite_plan_state_hash=a05ed0633ecf8dbd0b1fd93e82b2ad568886544465b5be488ac043f7849ce87b", current_state)
-        self.assertIn("missing_items=[]", current_state)
-        self.assertIn("next_executable_task=null", current_state)
+        self.assertIn(
+            "final bundle manifest validation remains `state_hash=558ec135fde8912868be73fe472c39bdd3a99f2038500eae15cb70baef470762`",
+            current_state,
+        )
+        self.assertIn(
+            "Final bundle readiness remains `state_hash=2e37a815934c84ffb08b79df572ec058081cfabb3fbbd4e8a2aba3630de36e4c`",
+            current_state,
+        )
         self.assertIn("integrated_production_accepted=false", current_state)
         self.assertIn("daily_operation_enabled=false", current_state)
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", current_state)
         self.assertIn("LaunchAgents disabled", current_state)
         self.assertIn("No Stage2/S3/integrated production acceptance is claimed", current_state)
 
-    def test_owner_and_assurance_route_to_production_boundary_preflight(self) -> None:
+    def test_owner_and_assurance_route_to_owner_decision_after_preflight(self) -> None:
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
-        self.assertIn('task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"', assurance)
-        self.assertIn("next_task_id: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`", owner_status)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", assurance)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", owner_status)
-        self.assertIn("missing_items=[]", assurance)
-        self.assertIn("missing_items=[]", owner_status)
-        self.assertIn("current_zero_proof_open_p0_findings: 0", assurance)
-        self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
-        self.assertIn("inherited_v7_1_baseline_p0_findings: 8", assurance)
-        self.assertIn("inherited_v7_1_baseline_p1_findings: 37", assurance)
+        self.assertIn('task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION"', assurance)
+        self.assertIn("next_task_id: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`", owner_status)
+        self.assertIn(
+            "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE",
+            assurance,
+        )
+        self.assertIn("preflight checks passed", assurance)
+        self.assertIn("open_pr_count=0", assurance)
+        self.assertIn("ADP_ALLOW_SMTP_SEND=false", assurance)
+        self.assertIn("LaunchAgents disabled", assurance)
+        self.assertIn("owner production-boundary decision evidence", assurance)
+        self.assertIn("final bundle manifest pass", assurance)
+        self.assertIn("final bundle manifest pass", owner_status)
+        self.assertIn("owner production-boundary decision", owner_status)
+        self.assertIn("Final bundle ready 状态会保持", owner_status)
         self.assertIn("stage2_integrated_production_accepted: false", assurance)
-        self.assertIn("production_acceptance_claimed: false", assurance)
         self.assertNotIn('task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"', assurance)
         self.assertNotIn("next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`", owner_status)
         self.assertNotIn("next build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", owner_status)
-        self.assertIn("POST_FINAL_BUNDLE_CURRENT_STATE_SYNC", generator)
+        self.assertIn("production_boundary_preflight_ready", generator)
+        self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", generator)
 
-    def test_current_pointer_and_user_center_match_final_bundle_state(self) -> None:
+    def test_current_pointer_and_user_center_match_preflight_state(self) -> None:
         current = (ADP_ROOT / "docs/pursuing_goal/CURRENT.yaml").read_text(encoding="utf-8")
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
         roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
 
+        self.assertIn("current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", current)
+        self.assertIn(
+            "current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE",
+            current,
+        )
+        self.assertIn("next_executable_task: S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION", current)
+        self.assertIn("integrated_production_acceptance_preflight_passed: true", current)
+        self.assertIn(
+            "integrated_production_acceptance_preflight_state_hash: 6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5",
+            current,
+        )
+        self.assertIn("owner_production_boundary_decision_recorded: false", current)
         self.assertIn("final_bundle_present: true", current)
         self.assertIn("s2plt04_completed: true", current)
         self.assertIn("independent_final_review_passed: true", current)
@@ -86,12 +116,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("inherited_v7_1_baseline_p0_findings: 8", current)
         self.assertIn("inherited_v7_1_baseline_p1_findings: 37", current)
         self.assertIn("stage2_integrated_production_accepted: false", current)
-        self.assertIn("最终验收包 manifest 已通过", decisions)
-        self.assertIn("生产验收边界预检", decisions)
-        self.assertIn("不是再写 S2PLT04", decisions)
-        self.assertIn("Final bundle artifact chain 已通过", readme)
+        self.assertIn("Preflight 已通过", decisions)
+        self.assertIn("owner production-boundary decision", decisions)
+        self.assertIn("不得自动启用 SMTP/scheduler/Release/restore", decisions)
+        self.assertIn("Production-boundary preflight 已通过", readme)
         self.assertIn("Stage2/S3 production accepted", readme)
-        self.assertIn("Final bundle artifact chain 已收口", roadmap)
+        self.assertIn("Production-boundary preflight 已通过", roadmap)
         self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED", roadmap)
 
     def test_three_base_model_parameter_summary_matches_governance_counts(self) -> None:
@@ -109,8 +139,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- active_model_count: `{model_count.group(1)}`", summary)
         self.assertIn(f"- active_formula_count: `{active_formulas.group(1)}`", summary)
         self.assertIn(f"- active_parameter_count: `{active_parameters.group(1)}`", summary)
-        self.assertIn("- current_task: `S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC`", summary)
-        self.assertIn("- next_gate: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`", summary)
+        self.assertIn("- current_task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`", summary)
+        self.assertIn("- next_gate: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`", summary)
 
 
 if __name__ == "__main__":

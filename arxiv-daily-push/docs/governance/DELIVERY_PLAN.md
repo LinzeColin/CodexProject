@@ -21,10 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 328
+- task_count: 329
 - acceptance_count: 128
 
 ## Delivery Tasks
+
+## 2026-07-01 15:16:36 Australia/Sydney - S2PMT07 integrated production acceptance preflight
+
+- Task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`
+- Result: `blocked_owner_decision_required_after_preflight_pass_no_production_acceptance`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT.md`; `FINAL_ACCEPTANCE_BUNDLE/manifest.json`.
+- Preflight state: `preflight_checks_passed=true`; `preflight_state_hash=6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5`; `failed_checks=[]`; blockers `owner_production_boundary_decision_missing;integrated_production_accepted_not_written;daily_operation_not_enabled`.
+- Current blocker: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION` must record owner production-boundary decision evidence before any `INTEGRATED_PRODUCTION_ACCEPTED` write or `DAILY_OPERATION` enablement.
+- Production boundary: No SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, or Stage2/S3 production acceptance is introduced by this preflight.
+- Verification: preflight CLI pass after CURRENT update; focused governance current-state unittest 5 OK; root dashboard routing unittest 1 OK; stage2 final-gate/CLI unittest 168 OK; full ADP pytest 764 passed / 64 subtests passed; project governance 0/0; governance sync 0/0; task pack PASS; acceptance bundle PASS; lean render drift 0; user-center timestamps 18 validated; git diff --check PASS; open_pr_count=0; persistent ADP_ALLOW_SMTP_SEND=false; LaunchAgents disabled; no ADP background process. Semantic extractor was interrupted after a long no-output run and is not claimed as passed.
+
 
 ## 2026-07-01 14:49:29 Australia/Sydney - S2PMT07 post-final-bundle current-state sync
 
