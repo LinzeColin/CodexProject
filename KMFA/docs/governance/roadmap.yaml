@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S14"
-current_phase_id: "S14_STAGE_REVIEW"
-current_task_id: "KMFA-S14-STAGE-REVIEW"
-next_gate_id: "KMFA-S14-STAGE-REVIEW-GATE"
+current_phase_id: "S14_GITHUB_UPLOAD"
+current_task_id: "KMFA-S14-GITHUB-UPLOAD"
+next_gate_id: "KMFA-S14-GITHUB-UPLOAD-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -861,10 +861,10 @@ stages:
               - "KMFA/tools/check_s13_p3_cross_table_review.py"
   - stage_id: "S14"
     name: "资金、开票、纳税与政策证据模块"
-    status: "completed_local_only_pending_stage_review"
+    status: "review_passed_upload_ready_local_only"
     estimated_hours: 3
-    estimated_pct: 66.6667
-    current_result: "S14-P1 已完成 public-safe 资金计划现金贷款证据，S14-P2 已完成 public-safe 开票纳税证据，S14-P3 已完成 public-safe 政策证据缺口和风险提示；Stage 14 review 和 GitHub upload 未执行。"
+    estimated_pct: 100
+    current_result: "S14-P1 已完成 public-safe 资金计划现金贷款证据，S14-P2 已完成 public-safe 开票纳税证据，S14-P3 已完成 public-safe 政策证据缺口和风险提示；Stage 14 review 已本地通过并进入 Stage 14 GitHub upload gate；GitHub upload、S15、lineage full check、正式报告和外部接口未执行。"
     evidence_refs:
       - "KMFA/metadata/reports/fund_cash_loan_plan_manifest.json"
       - "KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/human/s14_p1_completion_record.md"
@@ -875,6 +875,10 @@ stages:
       - "KMFA/metadata/reports/policy_evidence_plan_manifest.json"
       - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/s14_p3_completion_record.md"
       - "KMFA/tools/check_s14_p3_policy_evidence_plan.py"
+      - "KMFA/stage_artifacts/S14_STAGE_REVIEW/human/stage14_review_report.md"
+      - "KMFA/stage_artifacts/S14_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S14_STAGE_REVIEW/machine/stage14_review_manifest.json"
+      - "KMFA/tools/check_s14_stage_review.py"
     phases:
       - phase_id: "S14PA"
         name: "资金计划现金贷款"
