@@ -1,0 +1,22 @@
+{
+  "schema": "PFIV024Stage5Phase53HistoryAcceptanceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 5",
+  "phase_id": "5.3",
+  "status": "pass",
+  "route_alias_from_location": true,
+  "push_state": true,
+  "replace_state": true,
+  "hashchange_listener": true,
+  "popstate_listener": true,
+  "route_state_preserved": true,
+  "total_route_aliases": 45,
+  "duplicate_route_aliases": [],
+  "acceptance_checks": [
+    "direct URL resolves active route alias",
+    "workspace click pushes route state",
+    "hashchange restores route state",
+    "popstate restores route state for back/forward"
+  ]
+}

@@ -138,6 +138,53 @@
   color: var(--pfi-muted, #62717a);
 }
 
+.stage5-ux-state-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stage5-ux-state {
+  min-width: 0;
+  min-height: 134px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--pfi-border, #d7dee2);
+  border-radius: 8px;
+  background: var(--pfi-surface, #ffffff);
+}
+
+.stage5-ux-state h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.stage5-ux-state p {
+  margin: 0;
+  color: var(--pfi-muted, #62717a);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.stage5-state-action {
+  min-height: 34px;
+  justify-self: start;
+  padding: 7px 10px;
+  border: 1px solid var(--pfi-border, #d7dee2);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--pfi-surface, #ffffff) 82%, #eef6ff);
+  color: var(--pfi-blue, #215f9a);
+  font-weight: 650;
+}
+
+.stage5-ux-state-error .stage5-state-action,
+.stage5-ux-state-empty .stage5-state-action {
+  background: color-mix(in srgb, var(--pfi-surface, #ffffff) 82%, #fff3d7);
+  color: #7a4d00;
+}
+
 .stage4-layout-account-map .stage4-section-grid,
 .stage4-layout-investment-overview .stage4-section-grid {
   grid-template-columns: 1.45fr 0.8fr 1fr;
@@ -166,7 +213,8 @@
 @media (max-width: 780px) {
   .stage4-subpage-head,
   .stage4-state-grid,
-  .stage4-section-grid {
+  .stage4-section-grid,
+  .stage5-ux-state-grid {
     grid-template-columns: 1fr;
   }
 

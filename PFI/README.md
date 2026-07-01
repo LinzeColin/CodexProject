@@ -152,12 +152,12 @@ Stage 4 GitHub main upload records:
 
 ## v0.2.4 Stage 5 Status
 
-Current run unit: `Stage 5 / Phase 5.2 - 二级页面差异化`.
+Current run unit: `Stage 5 / Phase 5.3 - 交互状态`.
 
 - Stage 4 GitHub main upload: complete before this run.
 - Phase 5.1 首页重建: candidate pass.
 - Phase 5.2 二级页面差异化: candidate pass.
-- Phase 5.3 交互状态: not started.
+- Phase 5.3 交互状态: candidate pass.
 - Stage 5 whole-stage review: not executed.
 - GitHub main upload: not executed in this phase run.
 - Homepage now answers six questions: `钱`、`位置`、`变化`、`问题`、`下一步`、`依据`.
@@ -165,10 +165,12 @@ Current run unit: `Stage 5 / Phase 5.2 - 二级页面差异化`.
 - Default homepage static layer no longer contains `功能面板 / PFI 功能入口 / 功能已准备 / 进入操作面板`.
 - `PFI_V024_STAGE5_PAGES` now exposes 45 differentiated secondary pages across the 10 official primary entries.
 - Phase 5.2 route validation: 10 primary entries, 45 subpages, minimum 4 subpages per entry, no missing Stage 3 secondary route, no orphan Stage 5 route, no title-only clone group.
+- `PFI_V024_STAGE5_UX_STATE` now exposes loading/success/error/empty state models for all 45 secondary pages.
+- Phase 5.3 UX validation: 45 pages, four required states per page, no missing states, no non-actionable empty/error states, no duplicate history route aliases.
 - Current real source summary remains `MetaDatabase/PFI` ready, `8815` records, `4` raw files, as of `2026-06-03`; net worth/cash/investment remain `source_missing`.
 - Business financial source data changes: none.
 - App bundle changes: none.
-- Next gate: Stage 5 Phase 5.3 only after explicit instruction.
+- Next gate: Stage 5 whole-stage review only after explicit instruction.
 
 Stage 5 Phase 5.1 records:
 
@@ -195,6 +197,20 @@ Stage 5 Phase 5.2 records:
 - `reports/pfi_v024/stage_5/phase_5_2/route_validation.json`
 - `reports/pfi_v024/stage_5/phase_5_2/ux_diff_report.md`
 - `reports/pfi_v024/stage_5/phase_5_2/terminal.log`
+
+Stage 5 Phase 5.3 records:
+
+- `web/app/ux_state.js`
+- `web/app/shell.js`
+- `web/index.html`
+- `web/styles.css`
+- `src/pfi_os/app/streamlit_app.py`
+- `docs/pfi_v024/STAGE5_INTERACTION_STATES.md`
+- `tests/test_v024_stage5_phase53_interaction_states.py`
+- `reports/pfi_v024/stage_5/phase_5_3/evidence.json`
+- `reports/pfi_v024/stage_5/phase_5_3/ux_state_validation.json`
+- `reports/pfi_v024/stage_5/phase_5_3/history_validation.json`
+- `reports/pfi_v024/stage_5/phase_5_3/terminal.log`
 
 ## v0.2.4 Stage 3 Status
 
