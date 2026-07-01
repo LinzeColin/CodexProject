@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 334
+- task_count: 335
 - acceptance_count: 128
 
 ## Delivery Tasks
+
+## 2026-07-01 17:35:58 Australia/Sydney - S2PMT07 owner decision request/template
+
+- Task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST`
+- Result: `ready_owner_decision_request_template_no_owner_approval_no_production_enablement`
+- Evidence: `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json`; `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST.md`.
+- Request state: `request_only=true`; `state_hash=b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea`; `owner_production_boundary_decision_recorded=false`; `acceptance_write_gate_allowed_by_this_request=false`; `runtime_enablement_allowed_by_this_request=false`.
+- Next required step: owner may review the request/template and either write explicit `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json` or keep the project paused; this request cannot satisfy the owner decision artifact gate.
+- Production boundary: no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, `INTEGRATED_PRODUCTION_ACCEPTED`, `DAILY_OPERATION`, or Stage2/S3 production acceptance is introduced by this request.
 
 ## 2026-07-01 17:06:13 Australia/Sydney - S2PMT07 owner decision artifact gate
 

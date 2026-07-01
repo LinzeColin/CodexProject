@@ -43,6 +43,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("write_gate_precheck_ready=true", current_state)
         self.assertIn("acceptance_write_gate_allowed=false", current_state)
         self.assertIn("write_gate_state_hash=48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json", current_state)
+        self.assertIn("request_only=true", current_state)
+        self.assertIn("state_hash=b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea", current_state)
+        self.assertIn("acceptance_write_gate_allowed_by_this_request=false", current_state)
+        self.assertIn("runtime_enablement_allowed_by_this_request=false", current_state)
         self.assertIn("Owner packet remains `state_hash=de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289`", current_state)
         self.assertIn("status=pass_controlled_real_run_evidence_rechecked_no_new_send", current_state)
         self.assertIn("sent_mail_count=4/4", current_state)
@@ -85,6 +90,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("owner decision packet ready", assurance)
         self.assertIn("acceptance write-gate precheck blocked correctly", assurance)
         self.assertIn("controlled foreground real-run acceptance recheck passed", assurance)
+        self.assertIn("owner_production_boundary_decision.request.json", assurance)
         self.assertIn("open_pr_count=0", assurance)
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", assurance)
         self.assertIn("LaunchAgents disabled", assurance)
@@ -92,6 +98,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("final bundle manifest pass", assurance)
         self.assertIn("final bundle manifest pass", owner_status)
         self.assertIn("owner production-boundary decision", owner_status)
+        self.assertIn("owner_production_boundary_decision.request.json", owner_status)
         self.assertIn("Final bundle ready 状态会保持", owner_status)
         self.assertIn("stage2_integrated_production_accepted: false", assurance)
         self.assertNotIn('task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"', assurance)
@@ -135,6 +142,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("owner_authorized_controlled_real_run_newly_sent_mail_products: []", current)
         self.assertIn("owner_authorized_controlled_real_run_post_smtp_flag: false", current)
         self.assertIn("owner_authorized_controlled_real_run_background_process_count_after: 0", current)
+        self.assertIn("integrated_production_acceptance_owner_decision_request_ready: true", current)
+        self.assertIn(
+            "integrated_production_acceptance_owner_decision_request_state_hash: b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea",
+            current,
+        )
+        self.assertIn(
+            "integrated_production_acceptance_owner_decision_request_artifact: FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json",
+            current,
+        )
+        self.assertIn("integrated_production_acceptance_owner_decision_request_only: true", current)
+        self.assertIn("integrated_production_acceptance_owner_decision_request_write_gate_allowed: false", current)
+        self.assertIn(
+            "integrated_production_acceptance_owner_decision_request_runtime_enablement_allowed: false",
+            current,
+        )
         self.assertIn("owner_production_boundary_decision_recorded: false", current)
         self.assertIn("final_bundle_present: true", current)
         self.assertIn("s2plt04_completed: true", current)
@@ -146,6 +168,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("inherited_v7_1_baseline_p1_findings: 37", current)
         self.assertIn("stage2_integrated_production_accepted: false", current)
         self.assertIn("Acceptance write gate 预检查已完成", decisions)
+        self.assertIn("Owner 决策请求模板已准备", decisions)
+        self.assertIn("owner_production_boundary_decision.request.json", decisions)
         self.assertIn("acceptance_write_gate_allowed=false", decisions)
         self.assertIn("受控真实运行验收已完成", decisions)
         self.assertIn("newly_sent_mail_products=[]", decisions)
@@ -153,11 +177,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("owner production-boundary decision", decisions)
         self.assertIn("不得自动启用 SMTP/scheduler/Release/restore", decisions)
         self.assertIn("Acceptance write gate 预检查已准备", readme)
+        self.assertIn("Owner 决策请求模板已公开", readme)
+        self.assertIn("owner_production_boundary_decision.request.json", readme)
         self.assertIn("acceptance_write_gate_allowed=false", readme)
         self.assertIn("受控真实运行验收复核已通过", readme)
         self.assertIn("Production-boundary preflight 已通过", readme)
         self.assertIn("Stage2/S3 production accepted", readme)
         self.assertIn("受控真实运行验收", roadmap)
+        self.assertIn("owner decision request 模板", roadmap)
         self.assertIn("acceptance write gate 预检查已准备", roadmap)
         self.assertIn("Production-boundary preflight 已通过", roadmap)
         self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED", roadmap)

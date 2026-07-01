@@ -2100,6 +2100,37 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["owner_packet_validation_errors"], [])
 
+    def test_integrated_production_acceptance_owner_decision_request_json_command_is_request_only(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "build-integrated-production-acceptance-owner-decision-request",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-07-01T18:00:00+10:00",
+                    "--json",
+                ]
+            )
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "ready_owner_decision_request_no_acceptance")
+        self.assertTrue(payload["request_only"])
+        self.assertFalse(payload["owner_production_boundary_decision_recorded"])
+        self.assertFalse(payload["acceptance_write_gate_allowed_by_this_request"])
+        self.assertFalse(payload["runtime_enablement_allowed_by_this_request"])
+        self.assertEqual(
+            payload["would_be_decision_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json",
+        )
+        self.assertEqual(
+            payload["request_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json",
+        )
+        self.assertEqual(payload["owner_decision_request_validation_errors"], [])
+
     def test_integrated_production_acceptance_owner_decision_artifact_json_command_blocks_missing(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()
