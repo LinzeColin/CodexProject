@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 7 Stage 6 Review
+
+- Completed the Part 7 review for Stage 6.1 / 6.2 / Stage 6 overall: Shared
+  State Store, Inspector and Proposal, and whole-stage cross-board sync and
+  Inspector review.
+- Added `validate:part7-stage6` to verify the Stage 6 phase reviews, current
+  shared-state and Inspector/Proposal runtime markers, visual acceptance hooks,
+  production experiment isolation, Stage 6 validators, TypeScript / Vite build,
+  release audit, and visual and overall acceptance audits.
+- Confirmed the app keeps one typed shared selection/filter/time-range/focus
+  reducer, exposes shared focus across Home/Galaxy/Timeline/Inspector/ROI, and
+  keeps Inspector writeback proposal-only with Debug fields default-closed
+  without adding new runtime work in this review.
+
+No Part 8 review, Stage 7 review, whole-project review, GitHub main upload,
+Cloudflare live deploy, Access policy change, raw/private data access, direct
+writeback, production runtime feature work, or external account operation was
+added.
+
+Machine-readable boundary summary: Stage 6.1 / 6.2 / Stage 6 overall; No Part
+8 review; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 6 Stage 5 Review
 
 - Completed the Part 6 review for Stage 5.1 / 5.2 / 5.3 / Stage 5 overall:
