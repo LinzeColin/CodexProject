@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-## 2026-07-02 07:40:30 Australia/Sydney - 当前阅读规则
+## 2026-07-02 07:46:05 Australia/Sydney - 当前阅读规则
 
 - 当前事实：Stage 2 integrated acceptance 已记录并保持 `true`；S3/DAILY_OPERATION 不进入，`daily_operation_enabled=false`。
 - 本页 2026-07-01 19:04 以前关于 S2PLT02、S2PLT03、S2PLT04、final bundle 缺口的记录只作历史追溯，不得用来回退当前 Stage 2 accepted 事实。
@@ -124,7 +124,7 @@
 - `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json` 已作为显式 owner production-boundary decision evidence 记录。
 - Owner decision artifact gate 已通过：`state_hash=b1ce1cd2749ac3712dae378734b39d1354fff8613c5f875536beed44c2746e6a`。
 - Acceptance write gate 已允许：`acceptance_write_gate_allowed=true`，`state_hash=565fb28fab914f9dc6a79fa0dd0144556516a5c3b0d22de5dddefc3e0d95c89b`，`failed_checks=[]`。
-- 这只允许下一步写入 `INTEGRATED_PRODUCTION_ACCEPTED` 证据；当前仍未写入 accepted，未启用 `DAILY_OPERATION`。
+- 这在当时只允许下一步写入 `INTEGRATED_PRODUCTION_ACCEPTED` 证据；当前该证据已写入，仍未启用的是 `DAILY_OPERATION`。
 - 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[owner 决策 artifact](../../FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json) / [artifact gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json) / [write gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json)。
 
@@ -140,7 +140,7 @@
 
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE` 已由 CLI 生成并通过 validator：`write_gate_precheck_ready=true`，`failed_checks=[]`，`state_hash=48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8`。
 - 这个历史 gate 已消费 owner decision packet、final bundle、受控真实运行验收和去重证据，但当时 `acceptance_write_gate_allowed=false`，因为还没有显式 owner production-boundary acceptance/write decision。
-- 后续 owner 决策已记录，新 write gate 已允许；当前仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`。
+- 后续 owner 决策已记录，新 write gate 已允许，且 `INTEGRATED_PRODUCTION_ACCEPTED` 证据已写入；当前仍未启用的是 `DAILY_OPERATION`。
 - 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[write gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json) / [owner decision packet 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json) / [受控运行验收清单](../../governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json)。这不是 Stage2/S3 production accepted。
 
@@ -156,7 +156,7 @@
 
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET` 已由 CLI 生成并通过 validator：`packet_ready=true`，`failed_checks=[]`，`state_hash=de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289`。
 - 这个 packet 只把 owner 下一步选择变成可审查证据：可以记录 production-boundary decision evidence 后进入单独 final acceptance write gate，或暂停在 final bundle ready 状态。
-- 当前仍未记录 owner approval：`owner_production_boundary_decision_recorded=false`，未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`。
+- 历史当时仍未记录 owner approval：`owner_production_boundary_decision_recorded=false`，未写 `INTEGRATED_PRODUCTION_ACCEPTED`；当前 owner 决策和 Stage 2 acceptance 已写入，仍未启用的是 `DAILY_OPERATION`。
 - 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[owner decision packet 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_PACKET.md) / [preflight 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json)。这不是 Stage2/S3 production accepted。
 
@@ -164,14 +164,14 @@
 
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT` 已通过所有 configured checks，`failed_checks=[]`，`state_hash=6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5`。
 - 这只说明 final bundle、zero proof、final command、independent review、no-production attestation、open PR、持久 SMTP 开关、LaunchAgents 和后台进程状态满足进入生产边界决策的条件。
-- 当前仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled。
+- 历史当时仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`；当前 Stage 2 acceptance 已写入，仍未启用的是 `DAILY_OPERATION`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled。
 - 下一步是 `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`：记录 owner production-boundary decision evidence。不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[preflight 运行清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT.md) / [最终验收包 manifest](../../FINAL_ACCEPTANCE_BUNDLE/manifest.json)。这不是 Stage2/S3 production accepted。
 
 ## 2026-07-01 14:49:29 Australia/Sydney - Final bundle artifact chain 已收口，仍不等于生产验收
 
 - `FINAL_ACCEPTANCE_BUNDLE/manifest.json` 已生成并通过 final bundle validator；`missing_items=[]`，S2PLT04 completion report、final command execution、next-agent handoff、independent signoff、no-production attestation 和 P0/P1 zero proof 已进入最终包。
-- Final bundle artifact chain 已通过并已收口；当前阻断点只剩生产验收边界，而不是最终包缺失项。
+- Final bundle artifact chain 已通过并已收口；历史当时阻断点只剩生产验收边界，而不是最终包缺失项。当前生产验收边界也已写入 Stage 2 acceptance，仍未进入的是 S3/DAILY_OPERATION。
 - 本轮只做一次受控前台真实运行验收：M1/M2/M3/M4 当日计划为 `4/4` 已发送证据，运行复用历史发送证据，`newly_sent_mail_products=[]`，没有重复补发。
 - 运行后持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents 均 disabled；未启用后台 scheduler、Release、production restore 或 daily operation。
 - 当前下一步不是再写 S2PLT04/final bundle 缺失件，也不是启用生产；下一步是 `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`，即生产验收边界预检和 owner 决策证据。
