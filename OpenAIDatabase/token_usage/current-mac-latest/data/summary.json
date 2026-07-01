@@ -1,0 +1,46 @@
+{
+  "by_source_deduped": {
+    "codex_root_logs_2": {
+      "cached_input_tokens": 204416,
+      "input_tokens": 223132,
+      "output_tokens": 1066,
+      "reasoning_output_tokens": 560,
+      "records": 3,
+      "total_tokens": 224198
+    }
+  },
+  "created_at_utc": "2026-07-01T05:50:04.992683+00:00",
+  "databases": [
+    {
+      "bytes": 215920640,
+      "log_rows": 27642,
+      "path": "/Users/linzezhang/.codex/logs_2.sqlite",
+      "quick_check": "ok",
+      "source_name": "codex_root_logs_2"
+    }
+  ],
+  "dedupe_rule": "sha256(thread_id + second-level timestamp + numeric usage fields)",
+  "deduped_record_count": 3,
+  "deduped_totals": {
+    "cached_input_tokens": 204416,
+    "input_tokens": 223132,
+    "output_tokens": 1066,
+    "reasoning_output_tokens": 560,
+    "total_tokens": 224198
+  },
+  "notes": [
+    "This is a local log-derived export, not an official billing statement.",
+    "Raw rows may contain mirrored log events; use deduped rows for rough local history totals.",
+    "No feedback_log_body, prompt text, response text, or session JSONL is exported."
+  ],
+  "raw_duplicate_count": 0,
+  "raw_record_count": 3,
+  "raw_totals": {
+    "cached_input_tokens": 204416,
+    "input_tokens": 223132,
+    "output_tokens": 1066,
+    "reasoning_output_tokens": 560,
+    "total_tokens": 224198
+  },
+  "scope": "numeric token usage only; no prompt/response/session body exported"
+}
