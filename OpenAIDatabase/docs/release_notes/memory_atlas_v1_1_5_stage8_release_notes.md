@@ -1,6 +1,6 @@
 # Memory Atlas v1.1.5 Stage 8 Release Notes
 
-状态：Stage 8.1 和 Stage 8.2 已完成；Stage 8 整体复审和 GitHub main 上传尚未完成。
+状态：Stage 8.1、Stage 8.2 和 Stage 8 整体复审已完成；GitHub main 上传需在最终 fast-forward 远端检查后执行。
 
 ## 本轮变化
 
@@ -11,6 +11,9 @@
   `MemoryAtlas.icns`。
 - Release Safety 新增 `validate:stage8-release-safety`，验证 Galaxy 与
   Timeline 的 feature flag rollback。
+- Stage 8 整体复审新增 `validate:stage8`，统一复跑本地 App 打包、
+  Release Safety、offline Cloudflare Pages + Access preflight、文档一致性和
+  4177 cleanup。
 - Galaxy 默认仍是 `memory-starfield`，可回滚到 `legacy`。
 - Timeline 默认仍是 `memory-river`，可回滚到 `legacy`。
 
@@ -45,7 +48,5 @@ Timeline 回滚方式：
 
 ## 尚未完成
 
-- Stage 8 whole-stage review。
-- 复审后问题修复。
 - GitHub main 上传。
 - Cloudflare live deploy 仍需用户明确授权账号、邮箱或访问策略。

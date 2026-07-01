@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 8 Whole-Stage Review
+
+- Completed the Stage 8 whole-stage review across Local App Packaging and
+  Release Safety.
+- Added `validate:stage8` to run Stage 8.1 packaging validation, Stage 8.2
+  release-safety validation, offline Cloudflare Pages + Access preflight,
+  Stage 8 documentation consistency checks, and 4177 cleanup assertion.
+- Confirmed the reviewed Stage 8 state keeps local app packaging, default
+  `记忆总览` routing, Galaxy/Timeline rollback paths, redacted release artifact
+  safety, proposal-only writeback, and static deploy readiness.
+
+No Cloudflare live deploy, Access policy change, raw/private data access,
+direct writeback, external account operation, or Stage 9 feature work was
+added. No raw/private data access or direct writeback was introduced. No direct writeback path was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 8.2 Release Safety
 
 - Added `validate:stage8-release-safety` to run a production build, release
