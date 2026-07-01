@@ -1040,11 +1040,12 @@ Stage 9 整体复审已确认：
 - Stage 9 整体复审不读取 raw/private/cookie/session/secret 数据。
 - Stage 9 整体复审不新增 direct active-memory writeback。
 - Stage 9 整体复审不进入 Stage 10。
-- GitHub main 上传必须在复审通过后再做 final fast-forward 检查。
+- Stage 9 整体复审通过后必须先进入整项目复审与修复。
+- GitHub main 上传必须在整项目复审通过后再做 final fast-forward 检查。
 
 下一阶段：
 
-- GitHub main 上传后，Stage 9 交付关闭；后续新需求另开下一阶段。
+- 整项目复审与修复；通过后再做 GitHub main 上传并关闭 Stage 9 交付。
 
 ## 22. Part 1 Stage 0 复审门槛
 
@@ -1433,3 +1434,42 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 10 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 31. Part 10 Stage 9 复审门槛
+
+状态：`part_10_stage_9_review_passed`。
+
+范围：
+
+- Stage 9.1 Obsidian Graph E Iteration。
+- Stage 9.2 Visual Semantics Enrichment。
+- Stage 9 overall review。
+
+验收门槛：
+
+- `validate:part10-stage9` 必须通过。
+- Stage 9.1 必须保留 bounded local graph、label rules、Galaxy
+  shared-focus sync、visual acceptance hooks 和 4177 cleanup。
+- Stage 9.2 必须保留 Memory Weather v2、Memory Terrain v2、Galaxy ROI
+  gradient、Memory River ROI/capability gradient、browser console/network gate
+  和 4177 cleanup。
+- Stage 9 overall 必须保留 `validate:stage9-obsidian`、
+  `validate:stage9-visual-semantics`、`validate:stage9`、visual acceptance、
+  release audit、overall acceptance 和 Stage 9 文档一致性检查。
+- Stage 9 review、model parameters、delivery record 和 changelog 必须明确：
+  part-level 复审完成后先进入整项目复审，通过后才可 GitHub main 上传。
+- Stage 9 validators、release audit、overall acceptance 和 visual acceptance
+  必须通过。
+
+边界：
+
+- 本 Part 10 复审不执行整项目复审。
+- 本 Part 10 复审不上传 GitHub main。
+- 本 Part 10 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 10 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 10 复审不新增 direct active-memory writeback。
+- 本 Part 10 复审不新增 production runtime feature work。
+
+下一阶段：
+
+- 进入整项目复审与修复；通过后再做 final remote checks 和 GitHub main 上传。

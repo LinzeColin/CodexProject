@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 10 Stage 9 Review
+
+- Completed the Part 10 review for Stage 9.1 / 9.2 / Stage 9 overall:
+  Obsidian Graph E Iteration, Visual Semantics Enrichment, and whole-stage
+  Stage 9 review.
+- Added `validate:part10-stage9` to verify Stage 9 review docs, Obsidian
+  local graph contracts, visual semantics runtime contracts, visual acceptance
+  hooks, production experiment isolation, Stage 9 validators, release audit,
+  overall acceptance, and Part 10 records.
+- Updated the Stage 9 next gate: part-level review completion now leads to
+  whole-project review first; GitHub main upload remains blocked until
+  whole-project review passes and final remote checks are complete.
+
+No whole-project review, GitHub main upload, Cloudflare live deploy, Access
+policy change, raw/private data access, direct writeback, production runtime
+feature work, or external account operation was added.
+
+Machine-readable boundary summary: Stage 9.1 / 9.2 / Stage 9 overall;
+whole-project review next; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 9 Stage 8 Review
 
 - Completed the Part 9 review for Stage 8.1 / 8.2 / Stage 8 overall: Local
@@ -208,6 +228,8 @@ review; No GitHub main upload.
 No Cloudflare live deploy, Access policy change, raw/private data access,
 direct writeback, external account operation, or Stage 10 feature work was
 added.
+
+Whole-project review remains required before GitHub main upload.
 
 ## Unreleased - Memory Atlas v1.1.5 Stage 9.2 Visual Semantics Enrichment
 
