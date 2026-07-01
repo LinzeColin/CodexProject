@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE"
+    phase: "S2PL"
+    objective: "Add a fail-closed explicit owner production-boundary decision artifact gate before the final acceptance write gate."
+    scope: "Stage2 final gate code, CLI, focused tests, run manifest, phase record, current pointer fields, delivery/development ledgers, and three-base summaries."
+    non_scope: "No owner approval artifact creation, INTEGRATED_PRODUCTION_ACCEPTED write, DAILY_OPERATION enablement, SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, or P0/P1 historical baseline mutation."
+    status: "blocked"
+    dependencies: ["S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET", "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_GATE.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["focused final-gate and CLI unittest", "live CLI missing owner decision artifact returns blocked JSON"]
+    test_results: ["focused final-gate/governance/CLI unittest 181 OK", "owner decision artifact gate blocked with state_hash=3b99bcb9fe38c1d16c8424742584f7d30b078c16f3bda6b6e2701a62ff3850ae", "full ADP pytest 772 passed / 64 subtests; project governance 0 errors / 0 warnings; changed-only governance sync 0 errors / 0 warnings; task pack PASS; acceptance bundle PASS; lean render drift 0; user-center timestamps 18 OK; JSON/JSONL/YAML parse OK; git diff --check PASS"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_GATE.md", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    risk: "Future agents could treat chat context or packet readiness as owner approval; this gate requires an explicit artifact and blocks otherwise."
+    rollback: "Revert owner-decision artifact gate code, tests, manifest, phase record, and governance summaries; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION"
     phase: "S2PL"
     objective: "Bind the owner-authorized controlled real-run acceptance and acceptance write-gate precheck evidence to the current mainline commit without rerunning SMTP or enabling production."
@@ -28,7 +45,7 @@ tasks:
     required_files: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_write_gate_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_governance_sync.py", "python3 tools/validate_task_pack.py --root .", "python3 tools/verify_acceptance_bundle.py --require-zero P0 P1"]
-    test_results: ["write gate CLI PASS: status=blocked_write_gate_owner_decision_required_no_acceptance, write_gate_precheck_ready=true, acceptance_write_gate_allowed=false, failed_checks=[]", "focused stage2 final-gate 128 OK and CLI 44 OK", "remaining repository validation pending until this commit closeout"]
+    test_results: ["write gate CLI PASS: status=blocked_write_gate_owner_decision_required_no_acceptance, write_gate_precheck_ready=true, acceptance_write_gate_allowed=false, failed_checks=[]", "focused final-gate/governance/CLI unittest 181 OK", "full ADP pytest 772 passed / 64 subtests; project governance 0 errors / 0 warnings; changed-only governance sync 0 errors / 0 warnings; task pack PASS; acceptance bundle PASS; lean render drift 0; user-center timestamps 18 OK; JSON/JSONL/YAML parse OK; git diff --check PASS"]
     evidence_refs: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json", "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json", "FINAL_ACCEPTANCE_BUNDLE/manifest.json"]
     risk: "Future agents could treat write-gate precheck readiness as approval to write INTEGRATED_PRODUCTION_ACCEPTED; this task makes acceptance_write_gate_allowed=false explicit until owner decision evidence exists."
     rollback: "Revert the write-gate CLI, tests, manifest, and governance/current-state sync; no runtime production state is changed."
@@ -45,7 +62,7 @@ tasks:
     required_files: ["governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md"]
     acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
     test_commands: ["foreground local-runner daily --allow-smtp-send with existing 20260701 daily input report", "post-run safety check for ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and no ADP process", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_governance_sync.py", "python3 tools/validate_task_pack.py --root ."]
-    test_results: ["controlled foreground local-runner PASS: sent_mail_count=4/4, newly_sent_mail_products=[], historical_sent_mail_products=M1,M2,M3,M4, duplicate_smtp_send_avoided=true", "post-run safety PASS: persistent ADP_ALLOW_SMTP_SEND=false, process flag false, daily/health/watchdog disabled, no ADP background process", "remaining repository validation pending until this commit closeout"]
+    test_results: ["controlled foreground local-runner PASS: sent_mail_count=4/4, newly_sent_mail_products=[], historical_sent_mail_products=M1,M2,M3,M4, duplicate_smtp_send_avoided=true", "post-run safety PASS: persistent ADP_ALLOW_SMTP_SEND=false, process flag false, daily/health/watchdog disabled, no ADP background process", "full ADP pytest 772 passed / 64 subtests; project governance 0 errors / 0 warnings; changed-only governance sync 0 errors / 0 warnings; task pack PASS; acceptance bundle PASS; lean render drift 0; user-center timestamps 18 OK; JSON/JSONL/YAML parse OK; git diff --check PASS"]
     evidence_refs: ["governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md", "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701/adp-local-runner-report.json"]
     risk: "Future agents could treat a single controlled foreground recheck as standing SMTP/scheduler permission or production acceptance; this task records the no-duplicate/no-persistent-enable boundary."
     rollback: "Revert this evidence manifest, phase record, and governance/user-center summary updates; runtime SMTP state remains disabled and no production config was changed."

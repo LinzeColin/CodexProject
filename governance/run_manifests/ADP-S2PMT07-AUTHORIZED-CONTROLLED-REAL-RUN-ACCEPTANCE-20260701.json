@@ -3,14 +3,15 @@
   "project_id": "arxiv-daily-push",
   "task_id": "S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE",
   "iteration_id": "ITER-20260701-ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE",
-  "event_id": "EVENT-20260701-ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE",
-  "generated_at": "2026-07-01T16:10:24+10:00",
+  "event_id": "EVENT-20260701-ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-RECHECK",
+  "generated_at": "2026-07-01T17:12:07+10:00",
   "status": "pass_controlled_real_run_evidence_rechecked_no_new_send",
   "owner_authorization": {
     "authorized_by": "owner/coordinator",
     "authorization_text": "允许一次受控真实运行验收，临时启用发送后立马禁止，不产生后台内存线程压力",
     "authorization_scope": "one foreground local-runner daily command with --allow-smtp-send; do not enable launchd scheduler, Release, production restore, or DAILY_OPERATION",
-    "authorization_used": true
+    "authorization_used": true,
+    "authorization_consumed_at": "2026-07-01T17:12:07+10:00"
   },
   "runtime_command_boundary": {
     "foreground_only": true,
@@ -20,11 +21,13 @@
     "release_upload_enabled": false,
     "production_restore_enabled": false,
     "persistent_env_file_changed": false,
-    "command_class": "python3 -B -m arxiv_daily_push local-runner daily --allow-smtp-send --daily-input-report <existing 20260701 report> --json"
+    "persistent_env_restored_to_false_after_run": true,
+    "command_class": "ADP_ALLOW_SMTP_SEND=true python3 -B -m arxiv_daily_push local-runner daily --project-root arxiv-daily-push --allow-smtp-send --daily-input-report <existing 20260701 report> --json"
   },
   "controlled_run_result": {
     "service_date": "2026-07-01",
     "runner_status": "pass",
+    "runtime_generated_at": "2026-07-01T17:12:07+1000",
     "daily_input_source": "existing_report",
     "selected_source_id": "arxiv:2606.30473",
     "selected_title": "Field Order Should Not Matter: Permutation-Invariant Embedding Model Fine-Tuning for Structured Metadata Retrieval",
@@ -33,9 +36,19 @@
     "real_smtp_sent": true,
     "planned_send_total": 4,
     "sent_mail_count": 4,
-    "sent_mail_products": ["M1", "M2", "M3", "M4"],
+    "sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
     "newly_sent_mail_products": [],
-    "historical_sent_mail_products": ["M1", "M2", "M3", "M4"],
+    "historical_sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
     "blocked_mail_products": [],
     "dry_run_mail_products": [],
     "all_planned_products_sent": true,
@@ -63,15 +76,26 @@
     },
     "adp_background_process_count_after": 0
   },
+  "diagnostic_attempts": [
+    {
+      "generated_at": "2026-07-01T17:11:22+10:00",
+      "status": "blocked_wrong_project_root",
+      "root_cause": "first foreground command used repository root instead of arxiv-daily-push project root, so user-center files were not found",
+      "new_smtp_sent": false,
+      "output_ref": "/tmp/adp_authorized_controlled_real_run_recheck_20260701T071122Z.json",
+      "backup_before_attempt": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701_before_authorized_controlled_recheck_20260701T071122Z"
+    }
+  ],
   "evidence_refs": {
+    "foreground_output": "/tmp/adp_authorized_controlled_real_run_recheck_adp_root_20260701T071207Z.json",
     "runtime_report": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701/adp-local-runner-report.json",
-    "runtime_report_sha256": "495d74faa1f9931d85798ca6fdc3de7b6a57874676b25f206ac34fd367ecd2e6",
-    "backup_before_run": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701_before_authorized_controlled_acceptance_20260701T061024Z",
+    "runtime_report_sha256": "123d516e640aa6549b32ff50ce927a71adc7a765175f8a16ea6a6f6be50f401e",
+    "backup_before_run": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701_before_authorized_controlled_recheck_adp_root_20260701T071207Z",
     "smtp_report_sha256_by_product": {
-      "M1": "f8257e8d7eb56443989fbf8373b054367220b9cc5590f1c1402c93faacb72d1a",
-      "M2": "356ebc2a985ec20f6e03cf161b9694d83540f76b9eaab5de2b97ecba1f319170",
-      "M3": "0700e1304196779153f461388a6fcddc70707a1efb39cd9bd82476ff420ef821",
-      "M4": "1901a33432e4c6d5f7cd9e0ee6b3710bcf8c2c44ac2c1a444a407cf40587321d"
+      "M1": "32004848bb172eb31141339fc45a19c9f3700ab5e041ab8221d2078f330ffa1b",
+      "M2": "0e15acdd2d492db16b16a43fb9d2b75c8ec1e56a0038a346f3006ba1e0744c04",
+      "M3": "87a677aecc91147e3ab775eac021434ab59c7c9775a7f0e93811740c82c8ef3b",
+      "M4": "caf07c1f1569e0c73edabde55f903c4f872641268494605e43c8ff351b640c7d"
     }
   },
   "production_boundary": {

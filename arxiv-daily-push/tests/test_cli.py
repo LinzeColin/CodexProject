@@ -2100,6 +2100,92 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["owner_packet_validation_errors"], [])
 
+    def test_integrated_production_acceptance_owner_decision_artifact_json_command_blocks_missing(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "validate-integrated-production-acceptance-owner-decision-artifact",
+                    "--repo-root",
+                    str(repo_root),
+                    "--decision-artifact",
+                    "/tmp/nonexistent-adp-owner-decision.json",
+                    "--generated-at",
+                    "2026-07-01T17:30:00+10:00",
+                    "--json",
+                ]
+            )
+        self.assertEqual(result, 2)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked_owner_decision_artifact_missing_or_invalid")
+        self.assertFalse(payload["decision_artifact_present"])
+        self.assertFalse(payload["owner_production_boundary_decision_recorded"])
+        self.assertFalse(payload["acceptance_write_gate_allowed"])
+        self.assertIn("owner production-boundary decision artifact is missing", payload["decision_artifact_validation_errors"])
+        self.assertEqual(payload["owner_decision_artifact_gate_validation_errors"], [])
+
+    def test_integrated_production_acceptance_owner_decision_artifact_json_command_passes_valid_artifact(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        artifact = {
+            "schema_version": "adp.integrated_production_acceptance_owner_decision_artifact.v1",
+            "decision_id": "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701",
+            "decision": "record_owner_production_boundary_decision_evidence_without_enabling_runtime",
+            "generated_at": "2026-07-01T17:30:00+10:00",
+            "authorized_by": "owner/coordinator",
+            "authorization_text": "记录 owner production-boundary acceptance/write decision evidence; do not enable runtime.",
+            "preflight_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json",
+            "owner_decision_packet_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json",
+            "controlled_real_run_manifest_ref": "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json",
+            "write_gate_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json",
+            "owner_production_boundary_decision_recorded": True,
+            "acceptance_write_gate_allowed": True,
+            "runtime_enablement_allowed_by_this_decision": False,
+            "production_acceptance_claimed": False,
+            "integrated_production_accepted": False,
+            "stage2_integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "real_smtp_send_enabled": False,
+            "scheduler_enabled": False,
+            "scheduler_install_enabled": False,
+            "release_packaging_enabled": False,
+            "production_restore_enabled": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "production_queue_mutated": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact_path = Path(tmp) / "owner-decision.json"
+            artifact_path.write_text(json.dumps(artifact), encoding="utf-8")
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "validate-integrated-production-acceptance-owner-decision-artifact",
+                        "--repo-root",
+                        str(repo_root),
+                        "--decision-artifact",
+                        str(artifact_path),
+                        "--generated-at",
+                        "2026-07-01T17:30:00+10:00",
+                        "--json",
+                    ]
+                )
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "pass_owner_decision_artifact_valid_no_runtime_enablement")
+        self.assertTrue(payload["owner_production_boundary_decision_recorded"])
+        self.assertTrue(payload["acceptance_write_gate_allowed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertEqual(payload["owner_decision_artifact_gate_validation_errors"], [])
+
     def test_integrated_production_acceptance_write_gate_json_command_stays_blocked(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()

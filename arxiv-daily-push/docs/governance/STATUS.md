@@ -2,12 +2,12 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `e85ec4b49c959cf6dbc0effa385df45fa8d468a2`
-- source_tree_hash: `5dc9d74c67407d69800cd86c652f833d2082f3ad`
-- source_snapshot_hash: `sha256:36b2c076bfa53bcbeed168006160ea45d31b6ecf6f75ec218c516541ae9d3ecd`
-- snapshot_event_time: `2026-07-01T16:52:40+10:00`
+- source_base_commit: `7496d69132780c1f7b1bdd813da7d4e23b2a34ea`
+- source_tree_hash: `7adb4069b20c5f1c4451617502eadf3ba47fb8c2`
+- source_snapshot_hash: `sha256:ff0ee97058f7a34969267ae3c243f9b1dde4e83730722fd1cd327036a273a35a`
+- snapshot_event_time: `2026-07-01T17:24:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `COMMIT_BOUND:e85ec4b49c959cf6dbc0effa385df45fa8d468a2`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
@@ -48,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`
-- Pending/stale events: `368`
-- Tree-bound events: `1`
+- Pending/stale events: `373`
+- Tree-bound events: `4`
 - Commit-bound events: `5`
-- Legacy unbound events: `328`
+- Legacy unbound events: `330`
 - Unresolved fact IDs: `0`

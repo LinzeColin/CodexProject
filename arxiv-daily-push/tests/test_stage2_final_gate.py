@@ -136,6 +136,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_independent_final_reviewer_assignment_validation_state,
     build_independent_final_reviewer_assignment_request_state,
     build_integrated_production_acceptance_owner_decision_packet_state,
+    build_integrated_production_acceptance_owner_decision_artifact_gate_state,
     build_integrated_production_acceptance_preflight_state,
     build_integrated_production_acceptance_write_gate_state,
     build_s2pmt07_mainline_attestation_state,
@@ -225,6 +226,8 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_independent_final_reviewer_assignment_artifact,
     validate_independent_final_reviewer_assignment_request_state,
     validate_integrated_production_acceptance_owner_decision_packet_state,
+    validate_integrated_production_acceptance_owner_decision_artifact,
+    validate_integrated_production_acceptance_owner_decision_artifact_gate_state,
     validate_integrated_production_acceptance_preflight_state,
     validate_integrated_production_acceptance_write_gate_state,
     validate_s2pmt07_mainline_attestation_state,
@@ -6539,6 +6542,86 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(
             "owner decision packet alone must not allow acceptance write gate",
             validate_integrated_production_acceptance_owner_decision_packet_state(tampered),
+        )
+
+    def test_integrated_production_acceptance_owner_decision_artifact_gate_is_fail_closed(self) -> None:
+        state = build_integrated_production_acceptance_owner_decision_artifact_gate_state(
+            generated_at="2026-07-01T17:30:00+10:00",
+            decision_artifact_path=Path("/tmp/nonexistent-adp-owner-decision.json"),
+        )
+
+        self.assertEqual(
+            state["task_id"],
+            "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE",
+        )
+        self.assertEqual(state["status"], "blocked_owner_decision_artifact_missing_or_invalid")
+        self.assertFalse(state["decision_artifact_present"])
+        self.assertFalse(state["owner_production_boundary_decision_recorded"])
+        self.assertFalse(state["acceptance_write_gate_allowed"])
+        self.assertIn("owner production-boundary decision artifact is missing", state["decision_artifact_validation_errors"])
+        self.assertIn("decision_artifact_present_failed", state["blocking_reasons"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertEqual(validate_integrated_production_acceptance_owner_decision_artifact_gate_state(state), [])
+
+    def test_integrated_production_acceptance_owner_decision_artifact_gate_accepts_explicit_decision_only(self) -> None:
+        artifact = {
+            "schema_version": "adp.integrated_production_acceptance_owner_decision_artifact.v1",
+            "decision_id": "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701",
+            "decision": "record_owner_production_boundary_decision_evidence_without_enabling_runtime",
+            "generated_at": "2026-07-01T17:30:00+10:00",
+            "authorized_by": "owner/coordinator",
+            "authorization_text": "记录 owner production-boundary acceptance/write decision evidence; do not enable runtime.",
+            "preflight_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json",
+            "owner_decision_packet_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json",
+            "controlled_real_run_manifest_ref": "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json",
+            "write_gate_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json",
+            "owner_production_boundary_decision_recorded": True,
+            "acceptance_write_gate_allowed": True,
+            "runtime_enablement_allowed_by_this_decision": False,
+            "production_acceptance_claimed": False,
+            "integrated_production_accepted": False,
+            "stage2_integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "real_smtp_send_enabled": False,
+            "scheduler_enabled": False,
+            "scheduler_install_enabled": False,
+            "release_packaging_enabled": False,
+            "production_restore_enabled": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "production_queue_mutated": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+        }
+        with TemporaryDirectory() as tmp:
+            artifact_path = Path(tmp) / "owner-decision.json"
+            artifact_path.write_text(json.dumps(artifact), encoding="utf-8")
+            state = build_integrated_production_acceptance_owner_decision_artifact_gate_state(
+                generated_at="2026-07-01T17:30:00+10:00",
+                decision_artifact_path=artifact_path,
+            )
+
+        self.assertEqual(state["status"], "pass_owner_decision_artifact_valid_no_runtime_enablement")
+        self.assertTrue(state["decision_artifact_present"])
+        self.assertEqual(state["decision_artifact_validation_errors"], [])
+        self.assertTrue(state["owner_production_boundary_decision_recorded"])
+        self.assertTrue(state["acceptance_write_gate_allowed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertEqual(validate_integrated_production_acceptance_owner_decision_artifact(artifact), [])
+        self.assertEqual(validate_integrated_production_acceptance_owner_decision_artifact_gate_state(state), [])
+
+        tampered = dict(artifact)
+        tampered["daily_operation_enabled"] = True
+        self.assertIn(
+            "owner production-boundary decision artifact must not claim daily_operation_enabled",
+            validate_integrated_production_acceptance_owner_decision_artifact(tampered),
         )
 
     def test_integrated_production_acceptance_write_gate_blocks_without_owner_decision(self) -> None:
