@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s14-github-upload - 2026-07-01
+
+- 完成 Stage 14 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `76782d14bd324a3c44f4e7fc843b6e7cad8843a2` rebase Stage 14 栈，并复跑 S14-P1/P2/P3 validators、Stage 14 review validator、全量 191 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。
+- 新增 `KMFA/stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S14_GITHUB_UPLOAD/machine/stage14_upload_manifest.json`。
+- 上传范围只包含 public-safe 资金/现金/贷款 planning signals、开票纳税 planning signals、政策证据目录/缺口/风险提示、Stage 14 review 和 upload proof；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额、税务申报材料、政策申报材料、政策评分、正式资格结论或 credentials。
+- Stage 14 upload 不实现 S15、lineage full check、正式报告、外部 connector、差异关闭、付款、银行、贷款管理、发票开具、纳税申报、政策申报、补贴申请或业务 release。
+- 下一轮只能作为新 run work 从 `S15-P1｜销售绩效事实与复核清单` 开始，且必须重新执行 git/root/status 检查并读取 v1.2 task pack / roadmap。
+
 ## 0.1.0-s14-stage-review - 2026-07-01
 
 - 完成 `Stage 14 整体复审` 本地验证，不上传 GitHub。

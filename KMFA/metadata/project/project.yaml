@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s14-stage-review"
-current_stage: "S14"
-current_phase: "S14REV"
-current_phase_status: "review_passed_upload_ready_local_only"
-current_stage_status: "review_passed_upload_ready_local_only"
+version: "0.1.0-s14-github-upload"
+current_stage: "S15"
+current_phase: "S15PA"
+current_phase_status: "planned"
+current_stage_status: "planned"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -61,6 +61,8 @@ machine_plane:
   - "stage_artifacts/S14_STAGE_REVIEW/human/stage14_review_report.md"
   - "stage_artifacts/S14_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S14_STAGE_REVIEW/machine/stage14_review_manifest.json"
+  - "stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md"
+  - "stage_artifacts/S14_GITHUB_UPLOAD/machine/stage14_upload_manifest.json"
   - "stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
   - "stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
@@ -381,9 +383,13 @@ upload_policy:
   stage14_s14p3_evidence: "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/s14_p3_completion_record.md"
   stage14_s14p3_manifest: "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/machine/s14_p3_manifest.json"
   stage14_review_required_before_upload: true
-  stage14_review_passed: false
-  stage14_upload_ready_local_only: false
-  stage14_uploaded_to_github_main: false
-  stage14_blocker: "stage14_review_github_upload_lineage_formal_report_not_done"
+  stage14_review_passed: true
+  stage14_review_evidence: "KMFA/stage_artifacts/S14_STAGE_REVIEW/human/stage14_review_report.md"
+  stage14_review_manifest: "KMFA/stage_artifacts/S14_STAGE_REVIEW/machine/stage14_review_manifest.json"
+  stage14_upload_ready_local_only: true
+  stage14_uploaded_to_github_main: true
+  stage14_upload_evidence: "KMFA/stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md"
+  stage14_upload_manifest: "KMFA/stage_artifacts/S14_GITHUB_UPLOAD/machine/stage14_upload_manifest.json"
+  stage14_blocker: "none_stage14_uploaded"
   next_phase_upload_allowed: false
-  upload_surface: "stage14_all_phases_completed_local_only_next_run_stage14_review"
+  upload_surface: "stage14_uploaded_to_github_main_next_run_s15_p1"
