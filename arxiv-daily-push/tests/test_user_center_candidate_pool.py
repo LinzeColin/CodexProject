@@ -311,6 +311,17 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("be9cd3bb14da9d57dcaee0168bae396ed95049bf6c261515a5d39959cf3ad461", page)
         self.assertIn("| 历史字段 | `assignment_validation_state_hash=b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2`", page)
 
+        self.assertIn("REQ-ADP-V7-067-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_NO_WRITE_FLAGS_OUTERMOST_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_no_write_flags_outermost_synced_no_production", page)
+        self.assertIn("| 历史字段 | `write_terminal_artifact_allowed=false`、`scheduler_enable_allowed_by_this_plan=false`", page)
+        self.assertIn("67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232", page)
+
         self.assertIn("REQ-ADP-V7-066-S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", page)
         self.assertIn(
@@ -325,6 +336,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa", page)
         self.assertIn("d95f0afad934a6692635960d48cda963074840c0615f9bafe1fb023ff9c4f612", page)
         self.assertIn("0c032d9c804410f2b4ffe11cb52b00e91500fd7790d1eac533154650625b3c6e", page)
+        self.assertIn("| 历史字段 | `write_terminal_artifact_allowed=false`；`scheduler_enable_allowed_by_this_plan=false`", page)
+        self.assertIn("| 历史当时下一步 | `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF`", page)
 
         self.assertIn("REQ-ADP-V7-065-S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC", page)
@@ -339,6 +352,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", page)
         self.assertIn("256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320", page)
         self.assertIn("494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67", page)
+        self.assertIn("| 历史字段 | `ready_to_write_live_artifacts=false`", page)
 
         self.assertIn("REQ-ADP-V7-064-S2PMT07-FINAL-BUNDLE-TOP-LEVEL-WAIT-STATE-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-TOP-LEVEL-WAIT-STATE-SYNC", page)
@@ -352,6 +366,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", page)
         self.assertIn("2ee61c653d48b74f03505221adf6e37039d9cd4339b5554ba145dd02f9ec6198", page)
         self.assertIn("3ba4d2fdcc2ea9bfc268f7f579ce8e8e4e3458ee6c69400e157571906ba16b29", page)
+        self.assertIn("| 历史字段 | `current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`", page)
 
         self.assertIn("REQ-ADP-V7-063-S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY", page)
@@ -365,6 +380,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", page)
         self.assertIn("0b6753d007633aaeca00368eb29ebe54cc677846085051988a60854713c93b42", page)
         self.assertIn("4f1e0e311ea68a5cc320e1c0a5d11985b2a256acbeb06217a57e86d6fa217d65", page)
+        self.assertIn("当前 Stage 2 integrated acceptance 已记录，S3/DAILY_OPERATION 仍未进入。", page)
 
         self.assertIn("REQ-ADP-V7-061-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", page)
@@ -1358,6 +1374,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| 当前字段 | `zero_proof_artifact_validation_state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`", page)
         self.assertNotIn("| 当前字段 | `assignment_validation_state_hash=b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2`", page)
         self.assertNotIn("；仍需 S2PLT02 scheduler proof/terminal artifact、independent final closure decision", page)
+        self.assertNotIn("| 当前字段 | `write_terminal_artifact_allowed=false`、`scheduler_enable_allowed_by_this_plan=false`", page)
+        self.assertNotIn("| 当前字段 | `write_terminal_artifact_allowed=false`；`scheduler_enable_allowed_by_this_plan=false`", page)
+        self.assertNotIn("| 当前字段 | `ready_to_write_live_artifacts=false`；capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`", page)
+        self.assertNotIn("| 当前字段 | `current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
