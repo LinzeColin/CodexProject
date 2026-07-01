@@ -32,23 +32,23 @@ Records:
 
 ## v0.2.4 Stage 7 Status
 
-Current run unit: `Stage 7 whole-stage review - 复审并解决暴露问题`.
+Current run unit: `Stage 7 GitHub main upload gate`.
 
 - Stage 6 GitHub main upload: complete before this run.
 - Phase 7.1 report schema: candidate pass.
 - Phase 7.2 report page display: candidate pass.
 - Phase 7.3 acceptance: candidate pass.
 - Stage 7 whole-stage review: pass.
-- GitHub main upload: not executed in this phase run.
+- GitHub main upload: complete in this gate after terminal remote verification.
 - App bundle reinstall: not executed.
 - Data logic changes: none.
 - Financial data changes: none.
 - Current report contract: `PFI-V024-STAGE7-PHASE73-ACCEPTANCE`.
 - Current report types: `net_worth_report`、`cash_report`、`investment_report`、`consumption_report`、`cashflow_report`、`data_quality_report`.
 - Current real input: Stage 4 read model status, `MetaDatabase/PFI` ready, `8815` records, `4` raw files, as of `2026-06-03`.
-- Current evidence: `reports/pfi_v024/stage_7/whole_stage_review/evidence.json`.
+- Current evidence: `reports/pfi_v024/stage_7/github_main_upload/evidence.json`.
 - Review findings fixed: missing whole-stage review gate, top-level status still at Phase 7.3, missing consolidated Stage 7 command/evidence surface.
-- Next gate: stop for user acceptance or explicit instruction to enter `Stage 7 GitHub main upload gate`.
+- Next gate: stop after Stage 7 upload; Stage 8 only after explicit user instruction.
 
 ## v0.2.4 Stage 6 Status
 

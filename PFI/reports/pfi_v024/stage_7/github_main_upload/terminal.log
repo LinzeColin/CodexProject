@@ -1,0 +1,50 @@
+Stage 7 GitHub main upload validation log
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_github_upload_contract.py -q
+3 failed in 0.09s
+
+Fetch/rebase baseline:
+git fetch origin main
+HEAD d120486894dd1899dcbd129b8f692fe3b124099c
+origin/main efff7ce03de9c7863d739492d2a4682de2ee7660
+ahead/behind 4 0
+origin/main delta touching PFI: none
+
+Pre-push validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_github_upload_contract.py -q
+3 passed in 0.07s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_whole_review_contract.py PFI/tests/test_v024_stage7_phase71_report_schema.py PFI/tests/test_v024_stage7_phase72_report_page_display.py PFI/tests/test_v024_stage7_phase73_report_acceptance.py -q
+first run: 1 failed, 15 passed in 0.38s
+fix: restored `Stage 7 / Phase 7.3 - 验收` package scope phrase in RUN_CONTRACT.md
+rerun: 16 passed in 0.37s
+
+PLAYWRIGHT_PACKAGE_PATH=... PATH=... node PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js
+status candidate_pass; acceptance_gate pass; browser_validation pass; report_count 6; formula_visibility_screenshot_bytes 940663; failures []
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py PFI/tests/test_v024_stage6_phase62_motion_feedback.py PFI/tests/test_v024_stage6_phase63_haptics_settings.py -q
+16 passed in 0.30s
+
+PATH=... node --check PFI/web/app/pages/reports.js
+pass
+
+PATH=... node --check PFI/web/app/shell.js
+pass
+
+PATH=... node --check PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js
+pass
+
+python3 -m py_compile PFI/src/pfi_v02/stage_v024_stage7_report_analysis.py PFI/src/pfi_os/app/streamlit_app.py
+pass
+
+python3 -m json.tool stage7 upload/whole/phase evidence
+pass
+
+test -s PFI/reports/pfi_v024/stage_7/phase_7_3/formula_visibility.png
+pass
+
+git diff --check -- PFI
+pass
+
+Push and remote equality verification are terminal gates executed after the upload commit is created, because the final commit hash is self-referential and is not embedded in this file.
