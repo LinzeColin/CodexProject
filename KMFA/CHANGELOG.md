@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s13p3-cross-table-review - 2026-07-01
+
+- 完成 `S13-P3｜跨表复核` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/cross_table_review.py`、`KMFA/tools/check_s13_p3_cross_table_review.py` 和 `KMFA/tests/test_cross_table_review.py`。
+- 生成 4 个 public-safe 跨表复核维度：项目、客户、金额、时间；全部不一致进入 4 条人工差异队列事项。
+- 输出 1 份经营报表质量报告和 1 个蓝色商务风 HTML evidence；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据和自动差异处理。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、字段明文、真实金额、真实账号、真实客户/项目明细或 credentials。
+- S13-P3 不执行 Stage 13 整体复审、GitHub upload、lineage full check、正式报告、差异关闭、外部 connector、开票、付款、银行、税务或法务催收动作。
+- 下一轮只能执行 `Stage 13 整体复审`。
+
 ## 0.1.0-s13p2-collection-receivable-aging - 2026-07-01
 
 - 完成 `S13-P2｜回款应收账龄` 本地验证，不上传 GitHub。

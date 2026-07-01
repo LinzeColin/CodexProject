@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S13P2-COLLECTION-RECEIVABLE-AGING"
+as_of_event_id: "EVENT-KMFA-20260701-S13P3-CROSS-TABLE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "1ed592aeb0f4345fd9287e46111b4abe9a3187da"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13P2_COMMIT"
-snapshot_event_time: "2026-07-01T18:00:00+10:00"
-generator_version: "manual-s13p2-collection-receivable-aging"
+source_base_commit: "0e205f71ed29091752cf0964212329f873f7d4ca"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13P3_COMMIT"
+snapshot_event_time: "2026-07-01T19:00:00+10:00"
+generator_version: "manual-s13p3-cross-table-review"
 final_commit_binding: "local_commit_pending"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 144
-    total_active_formulas: 35
+    total_active_parameters: 149
+    total_active_formulas: 36
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -117,6 +117,9 @@ dimensions:
       - "KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/test_results.md"
       - "KMFA/stage_artifacts/S12_P2_manual_impact_preview/human/test_results.md"
       - "KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_P3_cross_table_review/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -184,6 +187,18 @@ dimensions:
       - "KMFA/tools/check_s11_p3_project_cost_page.py"
       - "KMFA/tools/check_s11_stage_review.py"
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/tools/manual_resolution_events.py"
+      - "KMFA/tools/check_s12_p1_manual_resolution_events.py"
+      - "KMFA/tools/manual_impact_preview.py"
+      - "KMFA/tools/check_s12_p2_manual_impact_preview.py"
+      - "KMFA/tools/manual_rerun_mechanism.py"
+      - "KMFA/tools/check_s12_p3_manual_rerun_mechanism.py"
+      - "KMFA/tools/financial_operating_report.py"
+      - "KMFA/tools/check_s13_p1_financial_operating_report.py"
+      - "KMFA/tools/collection_receivable_aging.py"
+      - "KMFA/tools/check_s13_p2_collection_receivable_aging.py"
+      - "KMFA/tools/cross_table_review.py"
+      - "KMFA/tools/check_s13_p3_cross_table_review.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -356,14 +371,19 @@ dimensions:
       - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/test_results.md"
       - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/machine/s13_p2_manifest.json"
       - "KMFA/tools/check_s13_p2_collection_receivable_aging.py"
+      - "KMFA/stage_artifacts/S13_P3_cross_table_review/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_P3_cross_table_review/machine/s13_p3_manifest.json"
+      - "KMFA/tools/check_s13_p3_cross_table_review.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S13P2_COMPLETED_VALIDATED_LOCAL_ONLY"
-  release_gate: "KMFA-S13-P3-GATE"
+  status: "S13P3_COMPLETED_VALIDATED_LOCAL_ONLY_PENDING_STAGE_REVIEW"
+  release_gate: "KMFA-S13-STAGE-REVIEW-GATE"
   blocker_ids:
-    - "S13_P3_NOT_STARTED"
+    - "STAGE_13_REVIEW_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
+    - "S09_PENDING_RECONCILIATION_12"
+    - "REPORT_GRADE_D_BLOCKS_BUSINESS_DECISION"
