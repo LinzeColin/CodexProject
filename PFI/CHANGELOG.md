@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 7 Phase 7.2 - 2026-07-01
+
+- 完成 `Stage 7 / Phase 7.2 - 页面展示`：报告中心页面接入 Phase 7.1 报告结构，展示净资产、现金、投资、消费、现金流、数据质量 6 份报告。
+- `PFI/web/app/pages/reports.js` 新增 `PFI-V024-STAGE7-PHASE72-PAGE-DISPLAY` 合同、report center view model 和页面显示验证。
+- `PFI/web/app/shell.js` 通过 `PFI_V024_STAGE7_REPORTS` 把结论、公式、参数、样本量、数据范围、置信度、缺口和复核入口映射到 `报告与洞察`。
+- `PFI/web/index.html` 与 `PFI/src/pfi_os/app/streamlit_app.py` 同步加载/内联 `reports.js` 和 Phase 7.1 `report_schema.json`，防止 app bundle 漂移。
+- 新增 `PFI/tests/test_v024_stage7_phase72_report_page_display.py` 和 `PFI/reports/pfi_v024/stage_7/phase_7_2/` evidence。
+- 本轮不执行 Phase 7.3 验收、Stage 7 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 7 Phase 7.1 - 2026-07-01
 
 - 完成 `Stage 7 / Phase 7.1 - 报告结构`：建立 v0.2.4 报告 schema、6 类报告类型、数据不足阻断规则和导出字段。

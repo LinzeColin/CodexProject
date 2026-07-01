@@ -1,0 +1,22 @@
+{
+  "schema": "PFIV024Stage7Phase72PageDisplayValidationV1",
+  "target_version": "v0.2.4",
+  "stage": "Stage 7",
+  "phase_id": "7.2",
+  "status": "pass",
+  "visible_report_ids": [
+    "net_worth_report",
+    "cash_report",
+    "investment_report",
+    "consumption_report",
+    "cashflow_report",
+    "data_quality_report"
+  ],
+  "missing_report_ids": [],
+  "formula_visible": true,
+  "parameters_and_sample_visible": true,
+  "data_range_visible": true,
+  "confidence_visible": true,
+  "gaps_and_review_visible": true,
+  "blocked_conclusion_violations": []
+}

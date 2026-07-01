@@ -969,6 +969,8 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     stage5_pages_path = ROOT / "web" / "app" / "pages" / "stage5Subpages.js"
     ux_state_path = ROOT / "web" / "app" / "ux_state.js"
     home_page_path = ROOT / "web" / "app" / "pages" / "home.js"
+    reports_page_path = ROOT / "web" / "app" / "pages" / "reports.js"
+    stage7_report_schema_path = ROOT / "reports" / "pfi_v024" / "stage_7" / "phase_7_1" / "report_schema.json"
     js_path = ROOT / "web" / "app" / "shell.js"
     shell_html = shell_path.read_text(encoding="utf-8")
     css = css_path.read_text(encoding="utf-8")
@@ -982,11 +984,17 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     stage5_pages_js = stage5_pages_path.read_text(encoding="utf-8")
     ux_state_js = ux_state_path.read_text(encoding="utf-8")
     home_page_js = home_page_path.read_text(encoding="utf-8")
+    reports_page_js = reports_page_path.read_text(encoding="utf-8")
     js = js_path.read_text(encoding="utf-8")
     summary_payload = home_summary if isinstance(home_summary, dict) else empty_homepage_summary()
     summary_json = json.dumps(summary_payload, ensure_ascii=False).replace("</", "<\\/")
     read_model_status_payload = build_v024_read_model_status(ROOT)
     read_model_status_json = json.dumps(read_model_status_payload, ensure_ascii=False).replace("</", "<\\/")
+    if stage7_report_schema_path.exists():
+        stage7_report_schema_payload = json.loads(stage7_report_schema_path.read_text(encoding="utf-8"))
+    else:
+        stage7_report_schema_payload = {}
+    stage7_report_schema_json = json.dumps(stage7_report_schema_payload, ensure_ascii=False).replace("</", "<\\/")
     runtime_payload = {
         "apiBaseUrl": runtime_api_base_url,
         "readModelStatusApi": True,
@@ -1011,6 +1019,12 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     shell_html = re.sub(
         r'<script type="application/json" id="pfi-read-model-status">.*?</script>',
         f'<script type="application/json" id="pfi-read-model-status">{read_model_status_json}</script>',
+        shell_html,
+        flags=re.DOTALL,
+    )
+    shell_html = re.sub(
+        r'<script type="application/json" id="pfi-stage7-report-schema">.*?</script>',
+        f'<script type="application/json" id="pfi-stage7-report-schema">{stage7_report_schema_json}</script>',
         shell_html,
         flags=re.DOTALL,
     )
@@ -1049,6 +1063,10 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     shell_html = shell_html.replace(
         '<script src="./app/pages/home.js"></script>',
         f"<script>{home_page_js}</script>",
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/pages/reports.js"></script>',
+        f"<script>{reports_page_js}</script>",
     )
     shell_html = shell_html.replace('<script src="./app/shell.js"></script>', f"<script>{js}</script>")
     return shell_html

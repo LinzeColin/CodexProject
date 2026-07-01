@@ -32,22 +32,22 @@ Records:
 
 ## v0.2.4 Stage 7 Status
 
-Current run unit: `Stage 7 / Phase 7.1 - 报告结构`.
+Current run unit: `Stage 7 / Phase 7.2 - 页面展示`.
 
 - Stage 6 GitHub main upload: complete before this run.
 - Phase 7.1 report schema: candidate pass.
-- Phase 7.2 report page display: not started.
+- Phase 7.2 report page display: candidate pass.
 - Phase 7.3 acceptance: not started.
 - Stage 7 whole-stage review: not executed.
 - GitHub main upload: not executed in this phase run.
 - App bundle reinstall: not executed.
 - Data logic changes: none.
 - Financial data changes: none.
-- Current report contract: `PFI-V024-STAGE7-PHASE71-REPORT-SCHEMA`.
+- Current report contract: `PFI-V024-STAGE7-PHASE72-PAGE-DISPLAY`.
 - Current report types: `net_worth_report`、`cash_report`、`investment_report`、`consumption_report`、`cashflow_report`、`data_quality_report`.
 - Current real input: Stage 4 read model status, `MetaDatabase/PFI` ready, `8815` records, `4` raw files, as of `2026-06-03`.
-- Current evidence: `reports/pfi_v024/stage_7/phase_7_1/evidence.json`.
-- Next gate: stop for user acceptance or explicit instruction to enter `Stage 7 / Phase 7.2`.
+- Current evidence: `reports/pfi_v024/stage_7/phase_7_2/evidence.json`.
+- Next gate: stop for user acceptance or explicit instruction to enter `Stage 7 / Phase 7.3`.
 
 ## v0.2.4 Stage 6 Status
 
