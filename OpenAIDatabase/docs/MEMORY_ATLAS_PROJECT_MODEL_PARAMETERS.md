@@ -769,3 +769,28 @@ review_status: `stage_6_whole_stage_review_passed`
   passing.
 - Stage 7 whole-stage review may start only after 7.1, 7.2 and 7.3 validators
   all pass on the same current branch base.
+
+## 15. Stage 7 整体复审状态
+
+状态：`stage_7_whole_stage_review_passed`。
+
+Stage 7 整体复审已确认：
+
+- 7.1 Visual Acceptance 已通过真实浏览器截图、Galaxy canvas pixel signal 和
+  Memory River DOM/screenshot gate。
+- 7.2 Performance Acceptance 已通过 FPS overlay、high/mid FPS threshold、
+  low-quality non-blank fallback、adaptive quality 和 cleanup lifecycle gate。
+- 7.3 Privacy and Accessibility 已通过 release artifact privacy scan、
+  reduced motion browser behavior 和 silent feedback default gate。
+- `validate:stage7` 会同时检查 phase review docs、package validators、
+  visual acceptance hooks、模型参数、changelog 和 delivery record 是否一致。
+- 发布产物必须继续满足
+  `source_contract.mode == "public_redacted_read_only_visualization"`。
+- 前端写回边界保持
+  `direct_frontend_mutation_of_active_memory == false`。
+- Stage 7 整体复审不包含 Cloudflare live deploy、Access policy change、
+  raw/private data read、direct active-memory writeback 或 Stage 8 packaging。
+
+下一阶段：
+
+- Stage 8: 打包、部署、回滚。

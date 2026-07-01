@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 7 Whole-Stage Review
+
+- Completed the Stage 7 whole-stage review across Visual Acceptance,
+  Performance Acceptance, and Privacy/Accessibility.
+- Added `validate:stage7` to keep Stage 7 phase review documents, package
+  validators, visual acceptance hooks, model parameters, changelog and
+  delivery-record status aligned.
+- Confirmed the reviewed Stage 7 state keeps real-browser Galaxy and Memory
+  River visual gates, FPS/adaptive-quality/cleanup gates, release artifact
+  privacy scan, reduced-motion behavior and silent feedback defaults.
+
+No ingestion, raw/private data access, direct writeback, Cloudflare live deploy,
+GitHub main upload, or external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 7.3 Privacy and Accessibility
 
 - Added explicit Timeline feedback DOM contracts for reduced motion,

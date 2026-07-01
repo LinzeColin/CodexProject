@@ -18,6 +18,7 @@
     "validate:stage7-visual": "node scripts/validate_stage7_visual_acceptance.cjs",
     "validate:stage7-performance": "node scripts/validate_stage7_performance_acceptance.cjs",
     "validate:stage7-privacy-accessibility": "node scripts/validate_stage7_privacy_accessibility.cjs",
+    "validate:stage7": "node scripts/validate_memory_atlas_stage7.mjs",
     "validate:memory-starfield-interaction": "node scripts/validate_memory_starfield_interaction.mjs",
     "validate:memory-starfield-mapping": "node scripts/validate_memory_starfield_mapping.mjs",
     "validate:universe-state-spike": "node --experimental-strip-types scripts/validate_universe_state_spike.mjs"
