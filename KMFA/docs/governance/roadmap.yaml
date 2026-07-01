@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S15"
-current_phase_id: "S15PB"
-current_task_id: "KMFA-S15-P2-GATE"
-next_gate_id: "KMFA-S15-P2-GATE"
+current_phase_id: "S15PC"
+current_task_id: "KMFA-S15-P3-GATE"
+next_gate_id: "KMFA-S15-P3-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -979,10 +979,10 @@ stages:
               - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
   - stage_id: "S15"
     name: "销售绩效事实与复核清单"
-    status: "in_progress_s15p1_completed_local_only"
+    status: "in_progress_s15p2_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 33.3333
-    current_result: "S15-P1 已完成 public-safe 绩效事实字段定义、source binding 和缺失/未锁定字段人工复核标记；S15-P2 绩效复核清单、S15-P3 工资边界、Stage 15 review 和 GitHub upload 未执行。"
+    estimated_pct: 66.6667
+    current_result: "S15-P1 已完成 public-safe 绩效事实字段定义、source binding 和缺失/未锁定字段人工复核标记；S15-P2 已输出 public-safe 绩效事实表和异常项目复核事项；S15-P3 工资边界、Stage 15 review 和 GitHub upload 未执行。"
     evidence_refs:
       - "KMFA/metadata/reports/performance_fact_fields_manifest.json"
       - "KMFA/metadata/reports/performance_fact_field_definitions.jsonl"
@@ -991,6 +991,12 @@ stages:
       - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/s15_p1_completion_record.md"
       - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/machine/s15_p1_manifest.json"
       - "KMFA/tools/check_s15_p1_performance_fact_fields.py"
+      - "KMFA/metadata/reports/performance_review_manifest.json"
+      - "KMFA/metadata/reports/performance_fact_table.jsonl"
+      - "KMFA/metadata/reports/performance_review_items.jsonl"
+      - "KMFA/stage_artifacts/S15_P2_performance_review_list/human/s15_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S15_P2_performance_review_list/machine/s15_p2_manifest.json"
+      - "KMFA/tools/check_s15_p2_performance_review_list.py"
     phases:
       - phase_id: "S15PA"
         name: "绩效事实字段"
@@ -1025,12 +1031,37 @@ stages:
               - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/test_results.md"
       - phase_id: "S15PB"
         name: "绩效复核清单"
-        status: "planned_next"
+        status: "completed_validated_local_only"
         estimated_hours: 1
-        estimated_pct: 0
+        estimated_pct: 100
+        current_result: "已输出 4 条 public-safe 绩效事实表记录和 16 条异常项目复核事项；仅保存 hash/ref/status/evidence，不计算工资、不审批奖金、不导出薪资。"
+        evidence_refs:
+          - "KMFA/metadata/reports/performance_review_manifest.json"
+          - "KMFA/metadata/reports/performance_fact_table.jsonl"
+          - "KMFA/metadata/reports/performance_review_items.jsonl"
+          - "KMFA/stage_artifacts/S15_P2_performance_review_list/human/test_results.md"
+        tasks:
+          - task_id: "S15PBT01"
+            name: "输出绩效事实表。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/performance_fact_table.jsonl"
+              - "KMFA/metadata/reports/performance_review_manifest.json"
+          - task_id: "S15PBT02"
+            name: "输出异常项目和复核事项。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/performance_review_items.jsonl"
+              - "KMFA/tools/check_s15_p2_performance_review_list.py"
+          - task_id: "S15PBT03"
+            name: "不计算最终工资、不审批奖金。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/performance_review_manifest.json"
+              - "KMFA/stage_artifacts/S15_P2_performance_review_list/human/test_results.md"
       - phase_id: "S15PC"
         name: "与工资项目边界"
-        status: "planned"
+        status: "planned_next"
         estimated_hours: 1
         estimated_pct: 0
   - stage_id: "S16"

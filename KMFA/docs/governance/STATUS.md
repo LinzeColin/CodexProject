@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s15p1-performance-fact-fields`
+- version: `0.1.0-s15p2-performance-review-list`
 - current_stage: `S15`
-- current_phase: `S15-P1｜绩效事实字段｜已完成本地验证`
-- status: `in_progress_s15p1_completed_local_only`
+- current_phase: `S15-P2｜绩效复核清单｜已完成本地验证`
+- status: `in_progress_s15p2_completed_local_only`
 - production_ready: `false`
 - github_upload_ready: `false_phase_completion_no_upload`
 
@@ -104,14 +104,15 @@
 - S14-P3 政策证据已完成本地验证：`KMFA/tools/policy_evidence_plan.py`、`KMFA/tools/check_s14_p3_policy_evidence_plan.py`、`KMFA/tests/test_policy_evidence_plan.py`、`KMFA/metadata/reports/policy_evidence_plan_manifest.json`、`KMFA/metadata/reports/policy_evidence_directories.jsonl`、`KMFA/metadata/reports/policy_evidence_gaps.jsonl`、`KMFA/metadata/reports/policy_risk_tips.jsonl` 和 `KMFA/stage_artifacts/S14_P3_policy_evidence_plan/` 已生成；覆盖科小、高新、专精特新、小巨人、研发费用 5 类证据目录，只输出证据缺口和风险提示，不输出正式政策资格结论。
 - Stage 14 整体复审和 final GitHub upload 已完成：`KMFA/stage_artifacts/S14_STAGE_REVIEW/`、`KMFA/stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S14_GITHUB_UPLOAD/machine/stage14_upload_manifest.json` 记录 validators、安全扫描、dry-run push、push 和 post-push parity。
 - S15-P1 绩效事实字段已完成本地验证：`KMFA/tools/performance_fact_fields.py`、`KMFA/tools/check_s15_p1_performance_fact_fields.py`、`KMFA/tests/test_performance_fact_fields.py`、`KMFA/metadata/reports/performance_fact_fields_manifest.json`、`KMFA/metadata/reports/performance_fact_field_definitions.jsonl`、`KMFA/metadata/reports/performance_fact_field_bindings.jsonl`、`KMFA/metadata/reports/performance_fact_manual_review_fields.jsonl` 和 `KMFA/stage_artifacts/S15_P1_performance_fact_fields/` 已生成；只锁定 6 个 public-safe 绩效事实字段、6 条绑定和 4 条人工复核字段，不输出工资、奖金或薪资结果。
+- S15-P2 绩效复核清单已完成本地验证：`KMFA/tools/performance_review_list.py`、`KMFA/tools/check_s15_p2_performance_review_list.py`、`KMFA/tests/test_performance_review_list.py`、`KMFA/metadata/reports/performance_review_manifest.json`、`KMFA/metadata/reports/performance_fact_table.jsonl`、`KMFA/metadata/reports/performance_review_items.jsonl` 和 `KMFA/stage_artifacts/S15_P2_performance_review_list/` 已生成；只输出 4 条 public-safe 绩效事实行和 16 条异常/人工复核事项，不输出工资、奖金、薪资或最终发放结论。
 
 ## 未完成
 
-- S15-P2 绩效复核清单、S15-P3 工资项目边界、Stage 15 整体复审和 GitHub upload 尚未完成；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S15-P1 仅为 public-safe 绩效事实字段锁定，不代表工资计算、奖金审批、薪资导出、正式报告或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- S15-P3 工资项目边界、Stage 15 整体复审和 GitHub upload 尚未完成；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S15-P1/S15-P2 仅为 public-safe 绩效字段、事实表和复核事项锁定，不代表工资计算、奖金审批、薪资导出、正式报告或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-14 review/upload 均已完成，S15-P1 performance fact fields 已完成；下一步只能作为新 run work 执行 S15-P2 绩效复核清单，不能直接进入 S15-P3、Stage 15 review、GitHub upload、lineage full check、正式报告、工资计算、奖金审批、薪资导出或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-14 review/upload 均已完成，S15-P1 performance fact fields 和 S15-P2 performance review list 已完成；下一步只能作为新 run work 执行 S15-P3 工资项目边界，不能直接进入 Stage 15 review、GitHub upload、lineage full check、正式报告、工资计算、奖金审批、薪资导出或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

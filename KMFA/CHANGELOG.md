@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s15p2-performance-review-list - 2026-07-01
+
+- 完成 `S15-P2｜绩效复核清单` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/performance_review_list.py`、`KMFA/tools/check_s15_p2_performance_review_list.py` 和 `KMFA/tests/test_performance_review_list.py`。
+- 生成 `performance_review_manifest.json`、`performance_fact_table.jsonl`、`performance_review_items.jsonl` 和 `S15_P2_performance_review_list/` 证据。
+- 输出 4 条 public-safe 绩效事实行和 16 条异常/人工复核事项，覆盖结算速度、回款速度、审计偏差、客情费率四类人工复核字段。
+- 明确不计算最终工资、不审批奖金、不导出薪资、不产生最终发放结论，不执行 S15-P3、Stage 15 review 或 GitHub upload。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、来源表头明文、真实金额、真实人员/客户/项目明细、薪资税务材料或 credentials。
+- 下一轮只能执行 `S15-P3｜与工资项目边界`。
+
 ## 0.1.0-s15p1-performance-fact-fields - 2026-07-01
 
 - 完成 `S15-P1｜绩效事实字段` 本地验证，不上传 GitHub。
