@@ -1,0 +1,494 @@
+{
+  "schema": "PFIV024Stage7Phase71ReportPackV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 7",
+  "phase_id": "7.1",
+  "contract_version": "PFI-V024-STAGE7-PHASE71-REPORT-SCHEMA",
+  "source": {
+    "status": "ready",
+    "record_count": 8815,
+    "raw_file_count": 4,
+    "date_range": {
+      "start": "2022-06-06",
+      "end": "2026-06-03"
+    },
+    "as_of": "2026-06-03",
+    "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a"
+  },
+  "read_model_hash": "sha256:89c3bac811ce9e38d78dae3fdb646a12e17d9eadb86ac2c2cc52b3a3642add2a",
+  "report_ids": [
+    "net_worth_report",
+    "cash_report",
+    "investment_report",
+    "consumption_report",
+    "cashflow_report",
+    "data_quality_report"
+  ],
+  "required_report_fields": [
+    "report_id",
+    "report_type",
+    "title_zh",
+    "status",
+    "conclusion_zh",
+    "formula_zh",
+    "parameters",
+    "data_range",
+    "sample_size",
+    "metric_sources",
+    "confidence",
+    "gaps",
+    "anomalies",
+    "review_entry",
+    "export_fields"
+  ],
+  "export_fields": [
+    "report_id",
+    "report_type",
+    "title_zh",
+    "status",
+    "conclusion_zh",
+    "formula_zh",
+    "parameter_summary_zh",
+    "data_range_start",
+    "data_range_end",
+    "transaction_count",
+    "raw_file_count",
+    "confidence",
+    "gap_count",
+    "review_route"
+  ],
+  "reports": [
+    {
+      "report_id": "net_worth_report",
+      "report_type": "net_worth",
+      "title_zh": "净资产报告",
+      "status": "blocked",
+      "conclusion_zh": "净资产报告缺少真实输入，当前只输出缺口与复核入口，不输出最终结论。",
+      "formula_zh": "净资产 = 现金余额 + 投资市值 + 其他真实资产 - 真实负债；任一核心输入缺失时阻断。",
+      "parameters": [
+        {
+          "parameter_id": "currency",
+          "label_zh": "计价货币",
+          "value": "CNY",
+          "source": "Stage 4 read model status",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "blocking_policy",
+          "label_zh": "阻断策略",
+          "value": "缺少真实输入时不补零",
+          "source": "v0.2.4 Stage 7.1",
+          "adjustable": false
+        }
+      ],
+      "data_range": {
+        "start": "2022-06-06",
+        "end": "2026-06-03"
+      },
+      "sample_size": {
+        "transaction_count": 8815,
+        "raw_file_count": 4,
+        "account_count": 0,
+        "holding_count": 0
+      },
+      "metric_sources": [
+        "read_model:accounts_holdings",
+        "read_model:accounts",
+        "read_model:holdings"
+      ],
+      "confidence": null,
+      "gaps": [
+        {
+          "metric_id": "net_worth_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链账户余额与持仓 read model，无法计算净资产",
+          "review_route": "/reports?tab=data-quality&metric=net_worth_cny"
+        },
+        {
+          "metric_id": "cash_balance_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链账户余额 read model，无法计算现金余额",
+          "review_route": "/reports?tab=data-quality&metric=net_worth_cny"
+        },
+        {
+          "metric_id": "investment_market_value_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链持仓市值 read model，无法计算投资市值",
+          "review_route": "/reports?tab=data-quality&metric=net_worth_cny"
+        }
+      ],
+      "anomalies": [],
+      "review_entry": {
+        "label_zh": "查看数据缺口与复核入口",
+        "route": "/reports?tab=data-quality&metric=net_worth_cny"
+      },
+      "export_fields": [
+        "report_id",
+        "report_type",
+        "title_zh",
+        "status",
+        "conclusion_zh",
+        "formula_zh",
+        "parameter_summary_zh",
+        "data_range_start",
+        "data_range_end",
+        "transaction_count",
+        "raw_file_count",
+        "confidence",
+        "gap_count",
+        "review_route"
+      ]
+    },
+    {
+      "report_id": "cash_report",
+      "report_type": "cash",
+      "title_zh": "现金报告",
+      "status": "blocked",
+      "conclusion_zh": "现金报告缺少真实输入，当前只输出缺口与复核入口，不输出最终结论。",
+      "formula_zh": "现金余额 = 已挂链账户的真实余额合计；未挂链账户余额 read model 时阻断。",
+      "parameters": [
+        {
+          "parameter_id": "currency",
+          "label_zh": "计价货币",
+          "value": "CNY",
+          "source": "Stage 4 read model status",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "blocking_policy",
+          "label_zh": "阻断策略",
+          "value": "缺少真实输入时不补零",
+          "source": "v0.2.4 Stage 7.1",
+          "adjustable": false
+        }
+      ],
+      "data_range": {
+        "start": "2022-06-06",
+        "end": "2026-06-03"
+      },
+      "sample_size": {
+        "transaction_count": 8815,
+        "raw_file_count": 4,
+        "account_count": 0,
+        "holding_count": 0
+      },
+      "metric_sources": [
+        "read_model:accounts"
+      ],
+      "confidence": null,
+      "gaps": [
+        {
+          "metric_id": "cash_balance_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链账户余额 read model，无法计算现金余额",
+          "review_route": "/accounts?tab=reconcile"
+        }
+      ],
+      "anomalies": [],
+      "review_entry": {
+        "label_zh": "查看数据缺口与复核入口",
+        "route": "/accounts?tab=reconcile"
+      },
+      "export_fields": [
+        "report_id",
+        "report_type",
+        "title_zh",
+        "status",
+        "conclusion_zh",
+        "formula_zh",
+        "parameter_summary_zh",
+        "data_range_start",
+        "data_range_end",
+        "transaction_count",
+        "raw_file_count",
+        "confidence",
+        "gap_count",
+        "review_route"
+      ]
+    },
+    {
+      "report_id": "investment_report",
+      "report_type": "investment",
+      "title_zh": "投资报告",
+      "status": "blocked",
+      "conclusion_zh": "投资报告缺少真实输入，当前只输出缺口与复核入口，不输出最终结论。",
+      "formula_zh": "投资市值 = 持仓数量 * 最新真实价格 * 有效汇率；持仓市值 read model 缺失时阻断。",
+      "parameters": [
+        {
+          "parameter_id": "currency",
+          "label_zh": "计价货币",
+          "value": "CNY",
+          "source": "Stage 4 read model status",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "blocking_policy",
+          "label_zh": "阻断策略",
+          "value": "缺少真实输入时不补零",
+          "source": "v0.2.4 Stage 7.1",
+          "adjustable": false
+        }
+      ],
+      "data_range": {
+        "start": "2022-06-06",
+        "end": "2026-06-03"
+      },
+      "sample_size": {
+        "transaction_count": 8815,
+        "raw_file_count": 4,
+        "account_count": 0,
+        "holding_count": 0
+      },
+      "metric_sources": [
+        "read_model:holdings"
+      ],
+      "confidence": null,
+      "gaps": [
+        {
+          "metric_id": "investment_market_value_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链持仓市值 read model，无法计算投资市值",
+          "review_route": "/investment?tab=holdings"
+        }
+      ],
+      "anomalies": [],
+      "review_entry": {
+        "label_zh": "查看数据缺口与复核入口",
+        "route": "/investment?tab=holdings"
+      },
+      "export_fields": [
+        "report_id",
+        "report_type",
+        "title_zh",
+        "status",
+        "conclusion_zh",
+        "formula_zh",
+        "parameter_summary_zh",
+        "data_range_start",
+        "data_range_end",
+        "transaction_count",
+        "raw_file_count",
+        "confidence",
+        "gap_count",
+        "review_route"
+      ]
+    },
+    {
+      "report_id": "consumption_report",
+      "report_type": "consumption",
+      "title_zh": "消费报告",
+      "status": "partial",
+      "conclusion_zh": "真实流水消费总流出已加载，当前形成消费报告的部分结构；缺少细分解释时不补造明细。",
+      "formula_zh": "消费总流出 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消。",
+      "parameters": [
+        {
+          "parameter_id": "currency",
+          "label_zh": "计价货币",
+          "value": "CNY",
+          "source": "Stage 4 read model status",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "consumption_scope",
+          "label_zh": "消费口径",
+          "value": "双消费口径，区分消费总流出与生活消费",
+          "source": "v0.2.4 Stage 4",
+          "adjustable": false
+        }
+      ],
+      "data_range": {
+        "start": "2022-06-06",
+        "end": "2026-06-03"
+      },
+      "sample_size": {
+        "transaction_count": 8815,
+        "raw_file_count": 4,
+        "account_count": 0,
+        "holding_count": 0
+      },
+      "metric_sources": [
+        "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
+      ],
+      "confidence": 0.98,
+      "gaps": [],
+      "anomalies": [],
+      "review_entry": {
+        "label_zh": "查看数据缺口与复核入口",
+        "route": "/consumption?tab=analysis"
+      },
+      "export_fields": [
+        "report_id",
+        "report_type",
+        "title_zh",
+        "status",
+        "conclusion_zh",
+        "formula_zh",
+        "parameter_summary_zh",
+        "data_range_start",
+        "data_range_end",
+        "transaction_count",
+        "raw_file_count",
+        "confidence",
+        "gap_count",
+        "review_route"
+      ]
+    },
+    {
+      "report_id": "cashflow_report",
+      "report_type": "cashflow",
+      "title_zh": "现金流报告",
+      "status": "blocked",
+      "conclusion_zh": "现金流报告缺少现金余额与计划事件真实输入，当前只输出缺口与复核入口。",
+      "formula_zh": "现金流窗口 = 期初现金 + 已确认流入 - 已确认流出 + 真实计划事件；缺少现金或计划事件时阻断。",
+      "parameters": [
+        {
+          "parameter_id": "currency",
+          "label_zh": "计价货币",
+          "value": "CNY",
+          "source": "Stage 4 read model status",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "window_policy",
+          "label_zh": "窗口策略",
+          "value": "后续阶段只展示有真实输入的现金流窗口",
+          "source": "v0.2.4 Stage 7.1",
+          "adjustable": false
+        }
+      ],
+      "data_range": {
+        "start": "2022-06-06",
+        "end": "2026-06-03"
+      },
+      "sample_size": {
+        "transaction_count": 8815,
+        "raw_file_count": 4,
+        "account_count": 0,
+        "holding_count": 0
+      },
+      "metric_sources": [
+        "read_model:accounts",
+        "planned_cashflow_events"
+      ],
+      "confidence": null,
+      "gaps": [
+        {
+          "metric_id": "cash_balance_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链账户余额 read model，无法计算现金余额",
+          "review_route": "/accounts?tab=reconcile"
+        },
+        {
+          "metric_id": "planned_cashflow_events",
+          "status": "source_missing",
+          "reason_zh": "尚未挂链真实计划现金流事件，现金流报告不得生成预测结论。",
+          "review_route": "/reports?tab=data-quality&metric=planned_cashflow_events"
+        }
+      ],
+      "anomalies": [],
+      "review_entry": {
+        "label_zh": "查看数据缺口与复核入口",
+        "route": "/reports?tab=data-quality&metric=cashflow"
+      },
+      "export_fields": [
+        "report_id",
+        "report_type",
+        "title_zh",
+        "status",
+        "conclusion_zh",
+        "formula_zh",
+        "parameter_summary_zh",
+        "data_range_start",
+        "data_range_end",
+        "transaction_count",
+        "raw_file_count",
+        "confidence",
+        "gap_count",
+        "review_route"
+      ]
+    },
+    {
+      "report_id": "data_quality_report",
+      "report_type": "data_quality",
+      "title_zh": "数据质量报告",
+      "status": "ready",
+      "conclusion_zh": "真实 MetaDatabase/PFI 已加载 8815 条记录，仍有 3 个核心指标缺少 read model，先生成数据质量报告。",
+      "formula_zh": "数据质量 = 真实数据源状态 + 核心指标阻断数量 + 缺口复核入口；阻断项清零前不输出完整财务分析。",
+      "parameters": [
+        {
+          "parameter_id": "source_status",
+          "label_zh": "数据源状态",
+          "value": "ready",
+          "source": "Stage 4 read model status",
+          "adjustable": false
+        },
+        {
+          "parameter_id": "blocked_metric_count",
+          "label_zh": "阻断指标数量",
+          "value": 3,
+          "source": "Stage 4 read model status",
+          "adjustable": false
+        }
+      ],
+      "data_range": {
+        "start": "2022-06-06",
+        "end": "2026-06-03"
+      },
+      "sample_size": {
+        "transaction_count": 8815,
+        "raw_file_count": 4,
+        "account_count": 0,
+        "holding_count": 0
+      },
+      "metric_sources": [
+        "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
+      ],
+      "confidence": 0.9,
+      "gaps": [
+        {
+          "metric_id": "net_worth_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链账户余额与持仓 read model，无法计算净资产",
+          "review_route": "/reports?tab=data-quality"
+        },
+        {
+          "metric_id": "cash_balance_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链账户余额 read model，无法计算现金余额",
+          "review_route": "/reports?tab=data-quality"
+        },
+        {
+          "metric_id": "investment_market_value_cny",
+          "status": "source_missing",
+          "reason_zh": "未挂链持仓市值 read model，无法计算投资市值",
+          "review_route": "/reports?tab=data-quality"
+        }
+      ],
+      "anomalies": [],
+      "review_entry": {
+        "label_zh": "查看数据缺口与复核入口",
+        "route": "/reports?tab=data-quality"
+      },
+      "export_fields": [
+        "report_id",
+        "report_type",
+        "title_zh",
+        "status",
+        "conclusion_zh",
+        "formula_zh",
+        "parameter_summary_zh",
+        "data_range_start",
+        "data_range_end",
+        "transaction_count",
+        "raw_file_count",
+        "confidence",
+        "gap_count",
+        "review_route"
+      ]
+    }
+  ],
+  "phase_7_2_started": false,
+  "phase_7_3_started": false,
+  "stage_7_whole_review_complete": false
+}

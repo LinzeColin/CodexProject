@@ -30,6 +30,25 @@ Records:
 - `docs/pfi_v024/RUN_CONTRACT.md`
 - `reports/pfi_v024/pre_stage_0/evidence.json`
 
+## v0.2.4 Stage 7 Status
+
+Current run unit: `Stage 7 / Phase 7.1 - 报告结构`.
+
+- Stage 6 GitHub main upload: complete before this run.
+- Phase 7.1 report schema: candidate pass.
+- Phase 7.2 report page display: not started.
+- Phase 7.3 acceptance: not started.
+- Stage 7 whole-stage review: not executed.
+- GitHub main upload: not executed in this phase run.
+- App bundle reinstall: not executed.
+- Data logic changes: none.
+- Financial data changes: none.
+- Current report contract: `PFI-V024-STAGE7-PHASE71-REPORT-SCHEMA`.
+- Current report types: `net_worth_report`、`cash_report`、`investment_report`、`consumption_report`、`cashflow_report`、`data_quality_report`.
+- Current real input: Stage 4 read model status, `MetaDatabase/PFI` ready, `8815` records, `4` raw files, as of `2026-06-03`.
+- Current evidence: `reports/pfi_v024/stage_7/phase_7_1/evidence.json`.
+- Next gate: stop for user acceptance or explicit instruction to enter `Stage 7 / Phase 7.2`.
+
 ## v0.2.4 Stage 6 Status
 
 Current run unit: `Stage 6 GitHub main upload gate`.
@@ -49,7 +68,6 @@ Current run unit: `Stage 6 GitHub main upload gate`.
 - Current evidence: `reports/pfi_v024/stage_6/github_main_upload/evidence.json`.
 - Review browser evidence: `reports/pfi_v024/stage_6/whole_stage_review/browser_validation.json`.
 - Review findings fixed: missing whole-stage gate, missing bright UI screenshots, transparent body background fallback, old chart-token dark slot.
-- Next gate: stop for user acceptance or explicit instruction; Stage 7 is not started.
 
 ## v0.2.4 Stage 1 Status
 
