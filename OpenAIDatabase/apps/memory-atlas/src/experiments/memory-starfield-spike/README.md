@@ -21,6 +21,11 @@ README contract, redacted fixture boundary, acceptance criteria and rollback.
 Its existence is not production integration; production must still import this
 directory only through a later explicit integration run.
 
+Part 2 review marker: the Stage 1.1 spike preserves deep-space nebula, Flow
+Field, gravitational disk, Black Hole, Proto-Star, Memory Terrain,
+reduced-motion control, hover instrumentation and smoke instrumentation without
+production integration.
+
 Open locally through Vite:
 
 ```bash
