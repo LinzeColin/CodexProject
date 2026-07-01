@@ -1473,3 +1473,41 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 进入整项目复审与修复；通过后再做 final remote checks 和 GitHub main 上传。
+
+## 32. Whole-Project 整项目复审门槛
+
+状态：`whole_project_review_passed`。
+
+范围：
+
+- Part 1-10 全部复审 gate。
+- Roadmap v2 final acceptance：默认记忆总览、板块说明、建议动作、层级资产、主题分类、proposal-only 调整、搜索/复盘/总结、数据导图、Memory River、Memory Starfield、视觉反退化、raw/private 边界、feature flag rollback。
+- Production build、visual acceptance、release audit、overall acceptance、offline Cloudflare Pages + Access preflight。
+- OpenAIDatabase Python compile、unittest discover、diff-driven governance sync。
+- Canonical remote、GitHub main upload boundary、4177 cleanup。
+
+验收门槛：
+
+- `validate:whole-project` 必须通过。
+- Part 1-10 对应 validator 必须全部返回 PASS。
+- Production `dist/index.html` 与 `dist/memory_atlas.json` 必须重新生成并通过 release audit。
+- Visual acceptance 必须覆盖 roadmap v2 final acceptance 的核心视觉和交互面。
+- Overall acceptance 必须确认 redacted derived snapshot、proposal-only writeback、no raw/private data、local app launcher contract、Cloudflare offline preflight 和 CI acceptance gate。
+- Full OpenAIDatabase unittest discovery 必须在 Python 3.12 runtime 下通过；系统 Python 3.9 缺 `tomllib` 不能作为 personalization architecture 测试 runtime。
+- Diff-driven governance sync 必须对 `origin/main` 变更范围返回 0 errors。
+- Application Support runtime 的 `memory_atlas_build.json` 必须在整项目复审 commit 后刷新，并通过 `audit_memory_atlas_acceptance.py --require-local-apps`。
+- GitHub main 上传前必须确认 clean tree、final remote ancestry、fast-forward/merge 策略、push target 和 canonical remote。
+
+边界：
+
+- 本整项目复审不上传 GitHub main。
+- 本整项目复审不部署 Cloudflare，不修改 Access policy。
+- 本整项目复审不读取 raw/private/cookie/session/secret 数据。
+- 本整项目复审不新增 direct active-memory writeback。
+- 本整项目复审不新增 production runtime feature work。
+- 本整项目复审不把 sparse checkout 的 root 全仓治理缺文件当作 Memory Atlas 产品失败；上传前只使用 diff-driven governance sync 作为本项目变更同步证据。
+
+下一阶段：
+
+- 提交整项目复审后刷新本地 app/runtime，并重新运行 `MEMORY_ATLAS_REQUIRE_LOCAL_APPS=1 validate:whole-project`。
+- 通过后执行 final remote checks；若分支仍落后 `origin/main`，先处理 rebase/merge，再上传 GitHub main。

@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Whole-Project Review
+
+- Completed the whole-project review after Part 1 through Part 10 review gates
+  (Part 1-10).
+- Added `validate:whole-project` to rerun Part 1-10 validators, production
+  build, OpenAIDatabase unittest discovery, visual acceptance, release audit,
+  overall acceptance, offline Cloudflare Pages + Access preflight,
+  diff-driven governance sync, Roadmap v2 final acceptance coverage, upload
+  boundary checks, and 4177 cleanup.
+- Identified the installed local app runtime as a post-commit verification
+  requirement: the runtime manifest must be refreshed after this review commit
+  and re-audited with `--require-local-apps` before final upload.
+
+No GitHub main upload, Cloudflare live deploy, Access policy change,
+raw/private data access, direct writeback, production runtime feature work, or
+external account operation was added.
+
+Machine-readable boundary summary: whole-project review passed; final remote
+ancestry and local runtime refresh remain required before GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 10 Stage 9 Review
 
 - Completed the Part 10 review for Stage 9.1 / 9.2 / Stage 9 overall:
