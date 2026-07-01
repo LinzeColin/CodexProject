@@ -494,6 +494,11 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "ORIGINAL_REPO_ROOT" in installer_source
         and "INSTALLED_GIT_COMMIT" in installer_source
         and "runtime_is_stale" in installer_source
+        and "CODEX_NODE_BIN" in installer_source
+        and "CODEX_DEPS_BIN" in installer_source
+        and "install_frontend_dependencies" in installer_source
+        and 'pnpm --dir "$APP_DIR" install --frozen-lockfile' in installer_source
+        and 'pnpm --dir "$APP_DIR" run build -- --emptyOutDir' in installer_source
         and "refresh_latest_snapshot" in installer_source
         and "copy_latest_snapshot_to_runtime" in installer_source
         and "scripts/sync_codex_memory_data.py" in installer_source
@@ -508,13 +513,15 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "Application Support/OpenAIDatabase/MemoryAtlas" in installer_source
         and "scripts/audit_memory_atlas_release.py" in installer_source
         and "request_shutdown" in installer_source
+        and "MEMORY_ATLAS_PID_FILE" in installer_source
+        and "path.unlink()" in installer_source
         and "release_requested" in installer_source
         and "active_thread_count" in installer_source
         and "allow_reuse_address = True" in installer_source
         and '"-m http.server"' in installer_source
         and "last_seen_at = time.time() - max" not in installer_source,
         "local_app_launcher_contract",
-        "installer creates Downloads/Applications launchers, custom icon, an Application Support source workspace for every-launch snapshot refresh, runtime cache manifest/stale checks, cleanup guard, release audit gate, and immediate tab-close shutdown",
+        "installer creates Downloads/Applications launchers, custom icon, an Application Support source workspace, npm/pnpm dependency fallback, runtime cache manifest/stale checks, cleanup guard, release audit gate, pid cleanup, and immediate tab-close shutdown",
         "local app launcher contract missing required pieces",
     )
 

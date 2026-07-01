@@ -10,10 +10,12 @@ import plistlib
 import platform
 import shutil
 import stat
+import struct
 import subprocess
 import sys
 import tempfile
 import time
+import zlib
 from pathlib import Path
 
 
@@ -44,16 +46,70 @@ def source_workspace_root() -> Path:
 
 
 def run_command(args: list[str], cwd: Path) -> None:
-    subprocess.run(args, cwd=str(cwd), check=True)
+    subprocess.run(args, cwd=str(cwd), check=True, env=command_env())
 
 
-def run_npm_ci(repo_root: Path, app_dir: Path) -> None:
-    with tempfile.TemporaryDirectory(prefix="memory-atlas-npm-cache-") as cache_dir:
+def command_env() -> dict[str, str]:
+    env = os.environ.copy()
+    path_parts = []
+    codex_node_bin = Path.home() / ".cache" / "codex-runtimes" / "codex-primary-runtime" / "dependencies" / "node" / "bin"
+    codex_deps_bin = Path.home() / ".cache" / "codex-runtimes" / "codex-primary-runtime" / "dependencies" / "bin"
+    for candidate in (codex_node_bin, codex_deps_bin):
+        if candidate.exists():
+            path_parts.append(str(candidate))
+    path_parts.append(env.get("PATH", ""))
+    env["PATH"] = os.pathsep.join(part for part in path_parts if part)
+    return env
+
+
+def resolve_command(name: str, env: dict[str, str] | None = None) -> str | None:
+    return shutil.which(name, path=(env or command_env()).get("PATH"))
+
+
+def install_frontend_dependencies(repo_root: Path, app_dir: Path) -> None:
+    env = command_env()
+    npm = resolve_command("npm", env)
+    pnpm = resolve_command("pnpm", env)
+    with tempfile.TemporaryDirectory(prefix="memory-atlas-package-cache-") as cache_dir:
+        if npm:
+            subprocess.run(
+                [npm, "ci", "--prefix", str(app_dir), "--cache", cache_dir],
+                cwd=str(repo_root),
+                check=True,
+                env=env,
+            )
+            return
+        if pnpm:
+            subprocess.run(
+                [pnpm, "--dir", str(app_dir), "install", "--frozen-lockfile"],
+                cwd=str(repo_root),
+                check=True,
+                env=env,
+            )
+            return
+        raise RuntimeError("Memory Atlas requires npm or pnpm to install frontend dependencies")
+
+
+def build_frontend(app_dir: Path) -> None:
+    env = command_env()
+    npm = resolve_command("npm", env)
+    pnpm = resolve_command("pnpm", env)
+    if npm:
         subprocess.run(
-            ["npm", "ci", "--prefix", str(app_dir), "--cache", cache_dir],
-            cwd=str(repo_root),
+            [npm, "run", "build", "--", "--emptyOutDir"],
+            cwd=str(app_dir),
             check=True,
+            env=env,
         )
+        return
+    if pnpm:
+        subprocess.run(
+            [pnpm, "--dir", str(app_dir), "run", "build", "--", "--emptyOutDir"],
+            check=True,
+            env=env,
+        )
+        return
+    raise RuntimeError("Memory Atlas requires npm or pnpm to build the frontend")
 
 
 def remove_tree(path: Path) -> None:
@@ -75,9 +131,18 @@ def frontend_dependencies_ready(app_dir: Path) -> bool:
         (app_dir / "node_modules" / ".bin" / "vite").exists()
         and (app_dir / "node_modules" / ".bin" / "tsc").exists()
         and (app_dir / "node_modules" / "vite" / "dist" / "client" / "client.mjs").exists()
-        and (app_dir / "node_modules" / "lightningcss" / "package.json").exists()
+        and node_package_ready(app_dir, "lightningcss")
         and (app_dir / "node_modules" / "typescript" / "package.json").exists()
     )
+
+
+def node_package_ready(app_dir: Path, package_name: str) -> bool:
+    if (app_dir / "node_modules" / package_name / "package.json").exists():
+        return True
+    pnpm_root = app_dir / "node_modules" / ".pnpm"
+    if not pnpm_root.exists():
+        return False
+    return any(pnpm_root.glob(f"{package_name}@*/node_modules/{package_name}/package.json"))
 
 
 def git_commit(repo_root: Path) -> str:
@@ -311,16 +376,12 @@ def write_icon_png(source_image, path: Path, size: int) -> None:
 
 def create_app_icon(resources_dir: Path) -> bool:
     iconutil = shutil.which("iconutil")
-    if not iconutil:
-        if platform.system() == "Darwin":
-            raise RuntimeError("iconutil is required to create the Memory Atlas macOS app icon")
-        return False
     try:
         import PIL  # noqa: F401
     except Exception:
-        if platform.system() == "Darwin":
-            raise RuntimeError("Pillow is required to create the Memory Atlas macOS app icon")
-        return False
+        return create_fallback_icns(resources_dir)
+    if not iconutil:
+        return create_fallback_icns(resources_dir)
 
     with tempfile.TemporaryDirectory() as temp_dir:
         iconset = Path(temp_dir) / f"{ICON_NAME}.iconset"
@@ -346,6 +407,46 @@ def create_app_icon(resources_dir: Path) -> bool:
     return True
 
 
+def png_chunk(chunk_type: bytes, payload: bytes) -> bytes:
+    return struct.pack(">I", len(payload)) + chunk_type + payload + struct.pack(">I", zlib.crc32(chunk_type + payload) & 0xFFFFFFFF)
+
+
+def create_fallback_icon_png(size: int = 1024) -> bytes:
+    center = size / 2
+    rows = bytearray()
+    for y in range(size):
+        rows.append(0)
+        for x in range(size):
+            dx = (x - center) / center
+            dy = (y - center) / center
+            distance = min(1.0, (dx * dx + dy * dy) ** 0.5)
+            orbit = abs(((dx * 0.86 + dy * 0.28) * 1.8) ** 2 + ((dy * 0.86 - dx * 0.28) * 2.5) ** 2 - 0.72)
+            node = min(
+                ((x - size * 0.30) ** 2 + (y - size * 0.59) ** 2) ** 0.5,
+                ((x - size * 0.43) ** 2 + (y - size * 0.43) ** 2) ** 0.5,
+                ((x - size * 0.56) ** 2 + (y - size * 0.56) ** 2) ** 0.5,
+                ((x - size * 0.70) ** 2 + (y - size * 0.37) ** 2) ** 0.5,
+            )
+            glow = max(0.0, 1.0 - distance)
+            orbit_signal = max(0.0, 1.0 - orbit * 14.0)
+            node_signal = max(0.0, 1.0 - node / 46.0)
+            r = int(8 + 26 * glow + 92 * node_signal + 38 * orbit_signal)
+            g = int(12 + 44 * glow + 180 * node_signal + 158 * orbit_signal)
+            b = int(24 + 112 * glow + 214 * node_signal + 220 * orbit_signal)
+            alpha = 255
+            rows.extend((min(r, 255), min(g, 255), min(b, 255), alpha))
+    ihdr = struct.pack(">IIBBBBB", size, size, 8, 6, 0, 0, 0)
+    return b"\x89PNG\r\n\x1a\n" + png_chunk(b"IHDR", ihdr) + png_chunk(b"IDAT", zlib.compress(bytes(rows), 9)) + png_chunk(b"IEND", b"")
+
+
+def create_fallback_icns(resources_dir: Path) -> bool:
+    png_data = create_fallback_icon_png()
+    icon_entry = b"ic10" + struct.pack(">I", len(png_data) + 8) + png_data
+    icns_data = b"icns" + struct.pack(">I", len(icon_entry) + 8) + icon_entry
+    (resources_dir / f"{ICON_NAME}.icns").write_bytes(icns_data)
+    return True
+
+
 def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False, build_info_repo_root: Path | None = None) -> Path:
     app_dir = repo_root / "apps" / "memory-atlas"
     runtime_dir = runtime_root() / "runtime"
@@ -355,10 +456,10 @@ def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False, buil
         refresh_memory_atlas_snapshot(repo_root)
         if not frontend_dependencies_ready(app_dir):
             clean_frontend_dependencies(app_dir)
-            run_npm_ci(repo_root, app_dir)
+            install_frontend_dependencies(repo_root, app_dir)
         if not frontend_dependencies_ready(app_dir):
-            raise RuntimeError(f"Memory Atlas frontend dependencies are incomplete after npm ci: {app_dir / 'node_modules'}")
-        run_command(["npm", "run", "build", "--", "--emptyOutDir"], cwd=app_dir)
+            raise RuntimeError(f"Memory Atlas frontend dependencies are incomplete after package manager install: {app_dir / 'node_modules'}")
+        build_frontend(app_dir)
         dist_dir = app_dir / "dist"
         if not (dist_dir / "index.html").exists():
             raise RuntimeError(f"Memory Atlas build did not create expected index.html: {dist_dir}")
@@ -435,6 +536,14 @@ TTL_SECONDS="${{MEMORY_ATLAS_TTL_SECONDS:-7200}}"
 IDLE_SECONDS="${{MEMORY_ATLAS_IDLE_SECONDS:-45}}"
 REFRESH_TIMEOUT_SECONDS="${{MEMORY_ATLAS_REFRESH_TIMEOUT_SECONDS:-90}}"
 URL="http://127.0.0.1:$PORT"
+CODEX_NODE_BIN="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin"
+CODEX_DEPS_BIN="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin"
+if [[ -d "$CODEX_NODE_BIN" ]]; then
+  export PATH="$CODEX_NODE_BIN:$PATH"
+fi
+if [[ -d "$CODEX_DEPS_BIN" ]]; then
+  export PATH="$CODEX_DEPS_BIN:$PATH"
+fi
 
 mkdir -p "$LOG_DIR"
 exec >> "$LOG_FILE" 2>&1
@@ -552,6 +661,7 @@ released_at: float | None = None
 shutdown_timer: threading.Timer | None = None
 state_lock = threading.Lock()
 httpd: ThreadingHTTPServer | None = None
+pid_file = os.environ.get("MEMORY_ATLAS_PID_FILE", "")
 
 
 def touch(client: bool = True) -> None:
@@ -705,6 +815,13 @@ def main() -> int:
         httpd.serve_forever()
     finally:
         httpd.server_close()
+        if pid_file:
+            try:
+                path = Path(pid_file)
+                if path.exists() and path.read_text(encoding="utf-8").strip() == str(os.getpid()):
+                    path.unlink()
+            except Exception:
+                pass
     return 0
 
 
@@ -802,6 +919,68 @@ stop_managed_server() {{
     fi
     rm -f "$PID_FILE"
   fi
+}}
+
+node_package_ready() {{
+  local package_name="$1"
+  if [[ -f "$APP_DIR/node_modules/$package_name/package.json" ]]; then
+    return 0
+  fi
+  if [[ ! -d "$APP_DIR/node_modules/.pnpm" ]]; then
+    return 1
+  fi
+  find "$APP_DIR/node_modules/.pnpm" -path "*/node_modules/$package_name/package.json" -print -quit | grep -q .
+}}
+
+frontend_dependencies_ready() {{
+  [[ -x "$APP_DIR/node_modules/.bin/vite" ]] || return 1
+  [[ -x "$APP_DIR/node_modules/.bin/tsc" ]] || return 1
+  [[ -f "$APP_DIR/node_modules/vite/dist/client/client.mjs" ]] || return 1
+  [[ -f "$APP_DIR/node_modules/typescript/package.json" ]] || return 1
+  node_package_ready "lightningcss"
+}}
+
+install_frontend_dependencies() {{
+  rm -rf "$APP_DIR/node_modules"
+  if [[ -d "$APP_DIR/node_modules" ]]; then
+    notify_error "Memory Atlas 旧依赖清理失败，请查看日志：$LOG_FILE。"
+    exit 1
+  fi
+  echo "Installing Memory Atlas frontend dependencies..."
+  if command -v npm >/dev/null 2>&1; then
+    local npm_cache="$APP_SUPPORT/npm-cache"
+    rm -rf "$npm_cache"
+    mkdir -p "$npm_cache"
+    if ! npm ci --prefix "$APP_DIR" --cache "$npm_cache"; then
+      rm -rf "$npm_cache"
+      notify_error "Memory Atlas 依赖安装失败，请查看日志：$LOG_FILE。"
+      exit 1
+    fi
+    rm -rf "$npm_cache"
+    return
+  fi
+  if command -v pnpm >/dev/null 2>&1; then
+    if ! pnpm --dir "$APP_DIR" install --frozen-lockfile; then
+      notify_error "Memory Atlas 依赖安装失败，请查看日志：$LOG_FILE。"
+      exit 1
+    fi
+    return
+  fi
+  notify_error "需要 npm 或 pnpm 才能准备 Memory Atlas 本地运行环境。"
+  exit 1
+}}
+
+build_frontend() {{
+  if command -v npm >/dev/null 2>&1; then
+    (cd "$APP_DIR" && npm run build -- --emptyOutDir)
+    return $?
+  fi
+  if command -v pnpm >/dev/null 2>&1; then
+    pnpm --dir "$APP_DIR" run build -- --emptyOutDir
+    return $?
+  fi
+  notify_error "需要 npm 或 pnpm 才能构建 Memory Atlas 本地运行环境。"
+  return 1
 }}
 
 refresh_latest_snapshot() {{
@@ -919,32 +1098,14 @@ prepare_runtime() {{
     notify_error "Memory Atlas 无法刷新最新数据快照。请从终端重新安装运行副本：cd $ORIGINAL_REPO_ROOT && python3 scripts/install_memory_atlas_app.py"
     exit 1
   fi
-  if ! command -v npm >/dev/null 2>&1; then
-    notify_error "需要 npm 才能准备 Memory Atlas 本地运行环境。"
-    exit 1
+  if ! frontend_dependencies_ready; then
+    install_frontend_dependencies
   fi
-  if [[ ! -x "$APP_DIR/node_modules/.bin/vite" || ! -x "$APP_DIR/node_modules/.bin/tsc" || ! -f "$APP_DIR/node_modules/vite/dist/client/client.mjs" || ! -f "$APP_DIR/node_modules/lightningcss/package.json" || ! -f "$APP_DIR/node_modules/typescript/package.json" ]]; then
-    rm -rf "$APP_DIR/node_modules"
-    if [[ -d "$APP_DIR/node_modules" ]]; then
-      notify_error "Memory Atlas 旧依赖清理失败，请查看日志：$LOG_FILE。"
-      exit 1
-    fi
-    echo "Installing Memory Atlas frontend dependencies with npm ci..."
-    local npm_cache="$APP_SUPPORT/npm-cache"
-    rm -rf "$npm_cache"
-    mkdir -p "$npm_cache"
-    if ! npm ci --prefix "$APP_DIR" --cache "$npm_cache"; then
-      rm -rf "$npm_cache"
-      notify_error "Memory Atlas 依赖安装失败，请查看日志：$LOG_FILE。"
-      exit 1
-    fi
-    rm -rf "$npm_cache"
-  fi
-  if [[ ! -x "$APP_DIR/node_modules/.bin/vite" || ! -x "$APP_DIR/node_modules/.bin/tsc" || ! -f "$APP_DIR/node_modules/vite/dist/client/client.mjs" || ! -f "$APP_DIR/node_modules/lightningcss/package.json" || ! -f "$APP_DIR/node_modules/typescript/package.json" ]]; then
+  if ! frontend_dependencies_ready; then
     notify_error "Memory Atlas 依赖安装不完整，请查看日志：$LOG_FILE。"
     exit 1
   fi
-  if ! (cd "$APP_DIR" && npm run build -- --emptyOutDir); then
+  if ! build_frontend; then
     notify_error "Memory Atlas 本地运行环境构建失败，请查看日志：$LOG_FILE。"
     exit 1
   fi
@@ -1015,7 +1176,7 @@ fi
 
 echo "Starting Memory Atlas on $URL"
 write_runtime_server
-nohup python3 "$SERVER_SCRIPT" "$RUNTIME_DIR" "$PORT" "$TTL_SECONDS" "$IDLE_SECONDS" >> "$LOG_FILE" 2>&1 &
+  MEMORY_ATLAS_PID_FILE="$PID_FILE" nohup python3 "$SERVER_SCRIPT" "$RUNTIME_DIR" "$PORT" "$TTL_SECONDS" "$IDLE_SECONDS" >> "$LOG_FILE" 2>&1 &
 SERVER_PID=$!
 echo "$SERVER_PID" > "$PID_FILE"
 

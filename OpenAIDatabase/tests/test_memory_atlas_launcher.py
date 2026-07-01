@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import plistlib
+import platform
 import shutil
 import subprocess
 import sys
@@ -52,11 +53,7 @@ class MemoryAtlasLauncherTests(unittest.TestCase):
             self.assertFalse((source_workspace / ".git").exists())
             self.assertFalse((source_workspace / ".local_keys").exists())
             self.assertFalse((source_workspace / "apps/memory-atlas/node_modules").exists())
-            icon_expected = shutil.which("iconutil") is not None
-            try:
-                import PIL  # noqa: F401
-            except Exception:
-                icon_expected = False
+            icon_expected = platform.system() == "Darwin" or shutil.which("iconutil") is not None
             if icon_expected:
                 self.assertTrue(icon.exists())
                 self.assertGreater(icon.stat().st_size, 1024)
@@ -124,9 +121,15 @@ class MemoryAtlasLauncherTests(unittest.TestCase):
             self.assertIn("Memory Atlas snapshot refresh exceeded", launcher_text)
             self.assertIn("Using existing Memory Atlas runtime snapshot after refresh fallback.", launcher_text)
             self.assertIn("server.pid", launcher_text)
+            self.assertIn("MEMORY_ATLAS_PID_FILE", launcher_text)
+            self.assertIn("path.unlink()", launcher_text)
             self.assertIn("is_managed_server", launcher_text)
             self.assertIn('"-m http.server"', launcher_text)
             self.assertIn("stop_port_managed_server", launcher_text)
+            self.assertIn("CODEX_NODE_BIN", launcher_text)
+            self.assertIn("CODEX_DEPS_BIN", launcher_text)
+            self.assertIn('pnpm --dir "$APP_DIR" install --frozen-lockfile', launcher_text)
+            self.assertIn('pnpm --dir "$APP_DIR" run build -- --emptyOutDir', launcher_text)
             self.assertNotIn("last_seen_at = time.time() - max", launcher_text)
             self.assertNotIn("schedule_auto_shutdown", launcher_text)
             self.assertIn('rm -rf "$APP_DIR/node_modules"', launcher_text)

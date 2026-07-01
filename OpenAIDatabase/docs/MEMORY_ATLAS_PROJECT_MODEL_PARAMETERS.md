@@ -794,3 +794,58 @@ Stage 7 整体复审已确认：
 下一阶段：
 
 - Stage 8: 打包、部署、回滚。
+
+## 16. Stage 8.1 本地 App 打包验收模型
+
+状态：`stage_8_1_local_app_packaging_passed`。
+
+范围：
+
+- 8.1.1 local build。
+- 8.1.2 launcher check。
+- 8.1.3 default route check。
+
+验收门槛：
+
+- `validate:stage8-local-app` 必须通过。
+- Production build 必须生成 `dist/index.html` 与 `dist/memory_atlas.json`。
+- Installer 必须能在临时目录创建 executable `Memory Atlas.app` bundle，
+  `Info.plist`、`MemoryAtlas.icns` 和 `PkgInfo` 必须存在。
+- 无 Pillow 环境下必须使用标准库 `.icns` fallback，不得阻塞
+  `python3 scripts/install_memory_atlas_app.py`。
+- Launcher 必须只打开 `launching.html` 状态页，不直接打开第二个 `$URL`
+  窗口；状态页在 ready 后跳转到本地 app。
+- Launcher 必须支持 npm-first / pnpm-fallback dependency install and build，
+  并在 Finder 启动环境中注入 Codex bundled runtime PATH（存在时）。
+- pnpm `.pnpm/.../node_modules/lightningcss` dependency layout 必须被视为
+  ready。
+- 本地 runtime 必须写入 `memory_atlas_build.json`，且 `git_commit` 匹配当前
+  git HEAD。
+- Managed server 必须支持 `MEMORY_ATLAS_PID_FILE`，在 release、idle 或 TTL
+  正常退出时清理自己的 pid file。
+- 默认 production route 必须打开 `记忆总览`，`data-view="home"` 且
+  `.home-overview-view` 可见。
+- 关闭验证后 4177 不得留下 listener。
+
+已验证：
+
+- `python3 -m unittest OpenAIDatabase.tests.test_memory_atlas_launcher -q` PASS。
+- `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app`
+  PASS，默认首页 screenshot `504546` bytes。
+- `python3 OpenAIDatabase/scripts/install_memory_atlas_app.py --repo-root OpenAIDatabase`
+  PASS，已安装 Downloads 与 `/Applications` app bundle。
+- `python3 OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py --repo-root OpenAIDatabase --publish-dir "$HOME/Library/Application Support/OpenAIDatabase/MemoryAtlas/runtime" --require-local-apps`
+  PASS。
+- Runtime manifest 当前记录
+  `bb4cbd9d4eedbdfe9d95a5850994a293488fa742`。
+
+边界：
+
+- Stage 8.1 不包含 Stage 8.2 Release Safety。
+- Stage 8.1 不包含 Cloudflare live deploy 或 Access policy change。
+- Stage 8.1 不读取 raw/private/cookie/session/secret 数据。
+- Stage 8.1 不新增 direct active-memory writeback。
+
+下一阶段：
+
+- Stage 8.2 Release Safety。

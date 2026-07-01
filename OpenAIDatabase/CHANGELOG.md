@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 8.1 Local App Packaging
+
+- Added `validate:stage8-local-app` to run a production build, create a
+  temporary macOS app bundle, verify launcher single-window behavior, and
+  confirm the default production route opens `记忆总览`.
+- Hardened `scripts/install_memory_atlas_app.py` for local packaging by adding
+  a standard-library `.icns` fallback when Pillow is unavailable, npm-first /
+  pnpm-fallback dependency installation and build paths, pnpm dependency
+  readiness checks, and managed pid cleanup on normal runtime shutdown.
+- Reinstalled and validated the local app bundles at `~/Downloads/Memory
+  Atlas.app` and `/Applications/Memory Atlas.app`; the Application Support
+  runtime manifest matches the current git HEAD.
+
+No Stage 8.2 release safety work, Cloudflare live deploy, Access policy change,
+raw/private data access, direct writeback, GitHub main upload, or external
+account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 7 Whole-Stage Review
 
 - Completed the Stage 7 whole-stage review across Visual Acceptance,
