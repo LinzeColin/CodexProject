@@ -152,6 +152,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("历史当时结论：live authorization", page)
         self.assertIn("历史当时 S2PLT04 复核", page)
         self.assertIn("production acceptance 当时仍 blocked；当前 Stage 2 integrated acceptance 已记录", page)
+        self.assertIn("## 历史：S2PMT07 / S2PLT04 / S2PLT02 nonterminal evidence sync", page)
+        self.assertIn("历史字段：`state_hash=0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be`", page)
+        self.assertIn("历史当时结论：这是证据链新鲜度同步", page)
+        self.assertIn("当前状态以上方 S2PMT07 owner A mainline 记录", page)
         self.assertIn("## 历史：S2PLT02 terminal delivery proof artifact draft builder", page)
         self.assertIn("历史当时结论：该 builder", page)
         self.assertIn("## 历史：S2PLT02 scheduler proof 输入验证器", page)
@@ -1326,6 +1330,11 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("当前返回 `report_present=false`", page)
         self.assertNotIn("当前返回 `handoff_present=false`", page)
         self.assertNotIn("当前仓库事实仍是 `command_execution_present=false`", page)
+        self.assertNotIn("## 最新 S2PMT07 / S2PLT04 / S2PLT02 nonterminal evidence sync", page)
+        self.assertNotIn("当前字段：`state_hash=0cb047a1ae27d990b3a53c082194ee0e15e45e772244ecd74bbf454fbb6f11be`", page)
+        self.assertNotIn("当前结论：这是证据链新鲜度同步", page)
+        self.assertNotIn("不改变当前 blocked/no-production 状态", page)
+        self.assertNotIn("当前剩余阻断以摘要和最新阶段记录为准", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
