@@ -188,13 +188,51 @@ class CodexMemorySyncTests(unittest.TestCase):
             module.run_command = fake_run_command
             module.subprocess.run = lambda *_args, **_kwargs: DiffWithChanges()
 
-            result = module.git_commit_and_push(Path("/tmp/runtime-worktree"), push=True)
+            with tempfile.TemporaryDirectory() as td:
+                repo = Path(td)
+                (repo / "data/processed/codex").mkdir(parents=True)
+                result = module.git_commit_and_push(repo, push=True)
         finally:
             module.run_command = original_run_command
             module.subprocess.run = original_subprocess_run
 
         self.assertEqual(result, {"committed": True, "pushed": True, "reason": "updated"})
-        self.assertIn((["git", "push", "origin", "HEAD:main"], Path("/tmp/runtime-worktree")), commands)
+        self.assertEqual(commands[-1][0], ["git", "push", "origin", "HEAD:main"])
+
+    def test_git_add_skips_missing_untracked_optional_exports(self):
+        module = load_module()
+        commands = []
+
+        class CleanDiff:
+            returncode = 0
+
+        class MissingPath:
+            returncode = 1
+
+        def fake_run_command(args, cwd):
+            commands.append((args, cwd))
+
+        def fake_subprocess_run(args, *_args, **_kwargs):
+            if args[:3] == ["git", "ls-files", "--error-unmatch"]:
+                return MissingPath()
+            return CleanDiff()
+
+        original_run_command = module.run_command
+        original_subprocess_run = module.subprocess.run
+        try:
+            module.run_command = fake_run_command
+            module.subprocess.run = fake_subprocess_run
+
+            with tempfile.TemporaryDirectory() as td:
+                repo = Path(td)
+                (repo / "token_usage/current-mac-latest").mkdir(parents=True)
+                result = module.git_commit_and_push(repo, push=False)
+        finally:
+            module.run_command = original_run_command
+            module.subprocess.run = original_subprocess_run
+
+        self.assertEqual(result, {"committed": False, "pushed": False, "reason": "no_changes"})
+        self.assertEqual(commands[0][0], ["git", "add", "token_usage/current-mac-latest"])
 
 
 if __name__ == "__main__":
