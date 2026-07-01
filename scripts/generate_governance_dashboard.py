@@ -1041,6 +1041,15 @@ def final_commit_binding(events: list[dict[str, Any]]) -> str:
     return "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 
 
+def latest_commit_bound_source(events: list[dict[str, Any]]) -> tuple[str | None, str | None]:
+    for event in reversed(events):
+        commit = str(event.get("result_commit") or event.get("git_commit") or "").strip()
+        tree = str(event.get("result_tree_hash") or event.get("git_tree_hash") or "").strip()
+        if re.fullmatch(r"[0-9a-f]{40}", commit):
+            return commit, tree if re.fullmatch(r"[0-9a-f]{40}", tree) else None
+    return None, None
+
+
 def completed_task_ids(tasks: list[dict[str, Any]]) -> set[str]:
     return {
         str(task.get("task_id"))
@@ -1314,8 +1323,9 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     manifest = latest_manifest(project_id, events)
     source_paths = canonical_input_paths(project_path)
     source_hash = source_snapshot_hash(source_paths)
-    base_commit = configured_source_base() or existing_assurance_base(project_path) or current_commit()
-    tree_hash = configured_source_tree() or existing_assurance_tree(project_path) or current_tree_hash()
+    latest_commit, latest_tree = latest_commit_bound_source(events)
+    base_commit = configured_source_base() or latest_commit or existing_assurance_base(project_path) or current_commit()
+    tree_hash = configured_source_tree() or latest_tree or existing_assurance_tree(project_path) or current_tree_hash()
     policy = dict(ASSURANCE_POLICY.get(project_id, {}))
     arxiv_stage1_accepted = arxiv_stage1_acceptance_proven(project_id, events, manifest)
     if arxiv_stage1_accepted:
