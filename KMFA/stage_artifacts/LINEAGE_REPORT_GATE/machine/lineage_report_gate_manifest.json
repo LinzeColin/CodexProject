@@ -1,0 +1,74 @@
+{
+  "schema_version": "kmfa.lineage_report_gate_manifest.v1",
+  "project_id": "KMFA",
+  "gate_id": "KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE-20260702",
+  "status": "blocked_no_go_owner_scope_required",
+  "generated_at": "2026-07-02T09:34:55+10:00",
+  "review_ref": "KMFA/metadata/quality/lineage_report_release_gate_review.json",
+  "github_upload_performed": false,
+  "delivery_allowed": false,
+  "summary": {
+    "lineage_summary": {
+      "field_protocol_header_count": 1,
+      "field_actual_lineage_record_count": 0,
+      "metric_protocol_header_count": 1,
+      "metric_actual_lineage_record_count": 0,
+      "report_protocol_header_count": 1,
+      "report_actual_lineage_record_count": 0,
+      "lineage_full_check_complete": false,
+      "lineage_full_check_performed": false,
+      "lineage_protocol_only": true
+    },
+    "report_grade_summary": {
+      "runtime_report_count": 2,
+      "report_grade_distribution": {
+        "D": 2
+      },
+      "formal_report_allowed_count": 0,
+      "business_decision_basis_allowed_count": 0,
+      "complete_trusted_report_display_allowed_count": 0,
+      "hard_blocks": [
+        "missing_human_confirmation_for_A",
+        "missing_required_lineage",
+        "unresolved_critical_difference",
+        "zero_delta_failed"
+      ]
+    },
+    "report_export_summary": {
+      "report_export_record_count": 2,
+      "release_permission_distribution": {
+        "blocked_decision_use": 2
+      },
+      "formal_report_allowed_count": 0,
+      "business_decision_basis_allowed_count": 0
+    },
+    "reconciliation_summary": {
+      "reconciliation_record_count": 12,
+      "pending_resolution_count": 12,
+      "confirmed_resolution_count": 0,
+      "closed_resolution_count": 0,
+      "derived_metric_rerun_allowed": false,
+      "formal_report_allowed": false
+    }
+  },
+  "evidence_refs": [
+    "KMFA/metadata/quality/lineage_report_release_gate_review.json",
+    "KMFA/tools/check_lineage_report_gate.py",
+    "KMFA/tests/test_lineage_report_gate.py",
+    "KMFA/stage_artifacts/LINEAGE_REPORT_GATE/human/lineage_report_gate_report.md",
+    "KMFA/stage_artifacts/LINEAGE_REPORT_GATE/human/test_results.md"
+  ],
+  "public_repo_safety": {
+    "raw_business_data_committed": false,
+    "zip_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "field_plaintext_committed": false,
+    "credentials_committed": false,
+    "banking_raw_material_committed": false,
+    "contract_material_committed": false,
+    "salary_material_committed": false,
+    "tax_return_material_committed": false
+  }
+}

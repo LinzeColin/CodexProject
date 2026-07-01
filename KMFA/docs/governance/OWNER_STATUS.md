@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 1-18 的实现、复审和上传，并完成 Post-S18 Part 1-6 与 Whole Project Final Review 的本地复审。全项目复审修复了 task pack zero-delta fixture 缺失、lineage completeness validator 缺失和历史 Stage 18 upload pending blocker 未更新的问题。最新全项目 Go/No-Go 仍为 `NO_GO`，`delivery_allowed=false`：lineage full check、正式报告发布和 12 条 S09 pending reconciliation 仍阻断交付。项目仍不是可用业务系统；不得执行正式报告、live connector、OpMe 深度耦合、生产恢复、现场施工、安全签字、技术签字、开票、催收、法律决策、付款或银行动作。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 1-18 的实现、复审和上传，并完成 Post-S18 Part 1-6、Whole Project Final Review、worktree cleanup 与 Lineage / Report Gate 的本地证据。最新 gate 仍为 `NO_GO`，`delivery_allowed=false`：当前只有 lineage protocol header、0 条 actual lineage rows，12 条 S09 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据、release claim 和 delivery claim。项目仍不是可用业务系统；不得执行正式报告、live connector、OpMe 深度耦合、生产恢复、现场施工、安全签字、技术签字、开票、催收、法律决策、付款或银行动作。后续 GitHub final upload/backup 只能标记为 `NO_GO governance backup only`。
 
 ## 你现在能信任什么
 
