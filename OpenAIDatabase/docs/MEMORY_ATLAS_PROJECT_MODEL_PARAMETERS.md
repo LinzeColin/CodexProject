@@ -307,6 +307,8 @@
 
 ## 8. Shared State Store 状态模型
 
+review_status: `stage_6_whole_stage_review_passed`
+
 模型假设：
 
 - Memory Atlas 的各板块不应各自重复维护 selection、filter、time range
@@ -368,6 +370,9 @@
 
 迭代规则：
 
+- Stage 6 整体复审已确认 shared-state schema、sync actions、filter clearing
+  和 cross-view focus contract 均通过；后续变更必须继续跑
+  `validate:stage6`。
 - Stage 6.2 可以从 shared state 读取 Inspector explanation/proposal
   所需焦点，但不得直接写长期记忆。
 - 新增 filter 时先进入 `SharedAtlasFilterState` 和 validator，再接 UI。
@@ -437,6 +442,8 @@
 
 ## 11. Inspector 解释与 Proposal 安全模型
 
+review_status: `stage_6_whole_stage_review_passed`
+
 模型假设：
 
 - Inspector 默认层应该先帮助人理解“为什么这条记忆重要、怎么算出来、有哪些脱敏证据”，而不是暴露 agent 内部字段。
@@ -487,6 +494,8 @@
 
 迭代规则：
 
+- Stage 6 整体复审已确认 Inspector explanation、Debug separation、proposal
+  JSON preview 和 fail-closed writeback safety 均通过。
 - Stage 6 整体复审必须同时跑 `validate:shared-state` 和 `validate:inspector-proposal`。
 - 后续 agent apply CLI 必须重新读库、做冲突检查、写 history、生成 git 回滚点；不能复用前端状态直接写库。
 - 如果默认解释面板过密，优先折叠公式细节，不把 raw 摘要移回默认层。
