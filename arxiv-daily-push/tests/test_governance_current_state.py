@@ -674,6 +674,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+        mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
 
         self.assertIn("S3 DAILY_OPERATION 下一 Agent 先读", handoff)
         self.assertIn("交接内容生成基线", handoff)
@@ -693,6 +694,19 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("open PR count 为 0", handoff)
         self.assertIn("HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", readme)
         self.assertIn("HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", decisions)
+        self.assertTrue(mvp_prep.startswith("# MVP 准备与复审修补\n"))
+        self.assertIn("不进入 S3/DAILY_OPERATION", mvp_prep)
+        self.assertIn("只做复审、修补、用户向可读性、证据同步、测试补强和低风险局部修复", mvp_prep)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", mvp_prep)
+        self.assertIn("daily_operation_enabled=false", mvp_prep)
+        self.assertIn("ADP_ALLOW_SMTP_SEND=false", mvp_prep)
+        self.assertIn("## 09 推荐第一轮 Run Contract", mvp_prep)
+        self.assertIn("MVP 准备与复审修补](./MVP准备与复审修补.md)", readme)
+        self.assertIn("MVP 准备与复审修补](./MVP准备与复审修补.md)", decisions)
+        model_params = (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8")
+        self.assertIn("handoff_source_baseline=bccc600959e6bf478c8fc71f8c2e90c13c455d1f", model_params)
+        self.assertIn("handoff_first_main_commit=91f22b876b05f373229ef4bf5de2e67bdb927c0b", model_params)
+        self.assertNotIn("current_main=bccc600959e6bf478c8fc71f8c2e90c13c455d1f", model_params)
 
 
 if __name__ == "__main__":

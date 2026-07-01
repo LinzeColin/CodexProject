@@ -1,0 +1,101 @@
+# MVP 准备与复审修补
+
+更新时间：2026-07-02 06:52:05 Australia/Sydney
+
+## 当前结论
+
+本页是 ADP 在 Stage 2 integrated acceptance 已记录、但不进入 S3/DAILY_OPERATION 的前提下，为后续 MVP 复审和修补准备的 GitHub 浅层入口。
+
+| 项目 | 当前口径 | 证据 |
+|---|---|---|
+| Stage 2 状态 | 已记录 `stage2_integrated_production_accepted=true` 和 `production_acceptance_claimed=true` | [integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json) |
+| S3/DAILY_OPERATION | 不进入；继续保持 `daily_operation_enabled=false` | [S3 handoff](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md) |
+| 持久授权 | 缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`，不得伪造或由请求包替代 | [CURRENT.yaml](../docs/pursuing_goal/CURRENT.yaml) |
+| MVP 准备 | 只做复审、修补、用户向可读性、证据同步、测试补强和低风险局部修复 | 本页 |
+
+## 01 目标与用户结果
+
+MVP 目标不是开启后台日常运行，而是让 owner 和后续 agent 能稳定完成以下工作：
+
+- 快速理解当前 ADP 状态：Stage 2 已验收，S3/DAILY_OPERATION 未授权。
+- 找到下一轮复审修补入口，不翻本机 `.adp` 或深层历史文档。
+- 对用户中心、候选池、邮件模板、证据链、P0/P1 zero-proof、最终验收包和治理同步做小步修补。
+- 每次修补都能通过最小回归验证，并保持 SMTP/scheduler/Release/restore 禁用。
+
+## 02 用户与主流程
+
+| 用户 | 主流程 | 成功标准 |
+|---|---|---|
+| owner | 打开 GitHub `arxiv-daily-push/用户中心/`，先看本页和关键结论 | 能判断当前是否进入 DAILY_OPERATION，以及下一轮修补该看什么 |
+| 复审 agent | 读取本页、S3 handoff、CURRENT 和相关用户中心页面 | 能选一个小范围问题修补，不误开生产开关 |
+| 实现 agent | 根据复审发现做单点修复 | 同一提交更新用户向入口、三基、测试和验证证据 |
+
+## 03 MVP 范围
+
+| 范围 | 本轮允许 | 本轮禁止 |
+|---|---|---|
+| 用户中心 | 修复浅层页面、链接、中文口径、证据表、阻断项默认动作 | 只把本机路径当 owner 主入口 |
+| 证据链 | 修复 handoff、run manifest 引用、CURRENT 读取说明、测试断言 | 改写 V7.1/V7.2 合同基线或伪造验收 |
+| 邮件与队列 | 只读复审 Email V1、M1-M4、队列状态和去重证据 | 发送 SMTP、安装或 kickstart scheduler |
+| 数据源与板块 | 只做无生产副作用的文档/测试同步；任何来源变更必须同步用户中心和 source gate | 绕过 `source/board user-center sync gate` |
+| 评分与 ROI | 公开现有公式、因子、权重、空值处理和证据字段 | 伪造历史评分或用未公开模型声明高价值 |
+
+## 04 核心页面、模块与服务
+
+| 模块 | MVP 读入口 | 修补原则 |
+|---|---|---|
+| 当前状态 | [关键结论与用户决策](./关键结论与用户决策.md) | 阻断项必须写默认动作和验收证据 |
+| S3 边界 | [S3 DAILY_OPERATION 下一 Agent 先读](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md) | 不把 final bundle no-production handoff 当当前 S3 状态页 |
+| 总候选池 | [截至今日总候选池](./截至今日候选池.md) | 总候选池、前20精选、评分明细必须可复核 |
+| 邮件与队列 | [邮件发送与队列状态](./邮件发送与队列状态.md) | 已发送、未发送/阻断、排队必须 GitHub 可读 |
+| 数据源与板块 | [数据源与板块健康](./数据源与板块健康.md) | 来源/板块变更必须同步用户中心和测试 |
+| 最终验收包 | [manifest](../../FINAL_ACCEPTANCE_BUNDLE/manifest.json) | 只能作为 Stage 2 acceptance 证据，不等于 DAILY_OPERATION 授权 |
+
+## 05 数据输入与存储
+
+| 数据 | 用途 | MVP 约束 |
+|---|---|---|
+| `docs/owner/CONTENT_LEDGER.csv` | 总候选池、报告/邮件预览索引、候选状态 | 用户中心必须展示总量和可追踪链接 |
+| `governance/run_manifests/*.json` | 运行证据和阶段收口 | 只能引用真实存在文件 |
+| `FINAL_ACCEPTANCE_BUNDLE/*.json` | final bundle、zero-proof、acceptance 和授权门证据 | `.request.json` 不能替代真正授权 artifact |
+| `docs/pursuing_goal/CURRENT.yaml` | 当前合同、门和生产边界 | 不因 MVP 准备改变 CURRENT 或启用 DAILY_OPERATION |
+
+## 06 风险与约束
+
+| 风险 | 控制 |
+|---|---|
+| 把 Stage 2 accepted 误读为 S3 已进入 | 所有 MVP 页面必须同时写 `daily_operation_enabled=false` |
+| 把 request-only artifact 当授权 | 页面和测试必须点名真正授权 artifact 仍缺失 |
+| 用户中心再次变成深层或本机路径依赖 | owner-facing 信息必须在 `arxiv-daily-push/用户中心/` 可读 |
+| 复审修补扩大到生产运行 | 每轮只修一个明确问题；不启用 SMTP/scheduler/Release/restore |
+| 数据源/板块变更漏同步 | 遵守根规则和 `arxiv-daily-push/AGENTS.md` 的 source/board user-center sync gate |
+
+## 07 MVP 验收标准
+
+| 验收项 | 通过标准 | 验证入口 |
+|---|---|---|
+| 用户可读入口 | 本页、README、关键结论互相可跳转 | `test_governance_current_state.py` |
+| 生产边界 | 授权 artifact 不存在，`ADP_ALLOW_SMTP_SEND=false`，LaunchAgents disabled，无 ADP 后台进程 | S3 handoff 安全边界复核 |
+| Stage 2 证据 | final bundle pass，P0/P1 zero-proof pass，Stage2 accepted true | `tools/verify_acceptance_bundle.py --require-zero P0 P1` |
+| 治理同步 | 项目治理和治理同步 0 error / 0 warning | `validate_project_governance.py` / `validate_governance_sync.py` |
+| open PR | GitHub open PR count 为 0 | GitHub pulls API |
+
+## 08 停止条件
+
+遇到以下任一情况，停止 MVP 修补并回报：
+
+- 需要创建 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。
+- 需要启用 SMTP、scheduler、Release、restore 或后台 DAILY_OPERATION。
+- 需要修改 V7.1/V7.2 根合同、CURRENT 指针或公共 schema。
+- 发现证据文件不存在、hash 不匹配或测试失败且无法在当前小范围内修复。
+- GitHub `main` 直推被保护拒绝；不得改为开 PR。
+
+## 09 推荐第一轮 Run Contract
+
+| 项 | 内容 |
+|---|---|
+| 目标 | 复审一个 owner-facing 页面或一个证据链断点，并做最小修补 |
+| 最小范围 | 只改相关用户中心页、对应三基记录和一个目标测试 |
+| 验证 | 目标测试、project governance、governance sync、`verify_acceptance_bundle --require-zero P0 P1`、生产边界复核 |
+| 禁止 | SMTP/scheduler/Release/restore/DAILY_OPERATION、CURRENT/V7 合同、公共 schema、DB、数据源运行、副作用队列 |
+| 收口 | 直接 commit/push `main`；open PR count 保持 0；最终报告列已完成/未完成/剩余迭代 |
