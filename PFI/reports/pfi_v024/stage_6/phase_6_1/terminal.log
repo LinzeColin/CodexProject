@@ -1,0 +1,34 @@
+Stage 6 Phase 6.1 validation log
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py -q
+5 failed in 0.04s
+
+After HTML/CSS implementation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py -q
+1 failed, 4 passed in 0.04s
+
+Final validation is recorded in the terminal output for this run after evidence creation.
+
+Final:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py -q
+5 passed in 0.02s
+
+node --check PFI/web/app/shell.js
+blocked because zsh PATH has no node binary on this machine.
+
+PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/shell.js
+pass
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_6/phase_6_1/evidence.json
+pass
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_6/phase_6_1/design_token_validation.json
+pass
+
+git diff --check -- PFI
+pass
+
+Adjacent regression:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase51_home_rebuild.py PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py PFI/tests/test_v024_stage5_phase53_interaction_states.py -q
+14 passed in 0.43s

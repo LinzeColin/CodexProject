@@ -1,0 +1,72 @@
+{
+  "schema": "PFIV024Stage6Phase61EvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 6",
+  "stage_name": "亮色设计系统、动效、触感反馈",
+  "phase_id": "6.1",
+  "phase_name": "设计系统",
+  "current_run_only": true,
+  "status": "pass",
+  "task_ids": [
+    "T6.1.1",
+    "T6.1.2",
+    "T6.1.3",
+    "T6.1.4"
+  ],
+  "task_summary": {
+    "T6.1.1": "建立 v0.2.4 亮色 token 覆盖层，默认 color-scheme 锁定为 light。",
+    "T6.1.2": "建立 ready/success/warning/danger/blocked/loading/empty 状态色 token。",
+    "T6.1.3": "卡片、表格、图表槽和 Stage 5 四态卡片共享 v0.2.4 设计系统变量。",
+    "T6.1.4": "补齐移动端响应式布局约束，不引入桌面手机预览框。"
+  },
+  "phase_6_1_complete": true,
+  "phase_6_2_started": false,
+  "phase_6_3_started": false,
+  "stage_6_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "app_bundle_reinstall_executed": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "acceptance_checks": {
+    "default_light_ui": true,
+    "design_tokens_colors_spacing_shadow_radius_font": true,
+    "status_color_system": true,
+    "card_table_chart_slots": true,
+    "responsive_layout_without_phone_preview": true,
+    "dark_ai_console_style_removed_for_target_scope": true
+  },
+  "changed_files": [
+    "PFI/web/index.html",
+    "PFI/web/styles.css",
+    "PFI/tests/test_v024_stage6_phase61_design_system.py",
+    "PFI/docs/pfi_v024/STAGE6_DESIGN_SYSTEM.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/reports/pfi_v024/stage_6/phase_6_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_6/phase_6_1/design_token_validation.json",
+    "PFI/reports/pfi_v024/stage_6/phase_6_1/terminal.log",
+    "PFI/reports/pfi_v024/stage_6/phase_6_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_6/phase_6_1/risk_and_rollback.md",
+    "PFI/README.md",
+    "PFI/HANDOFF.md",
+    "PFI/CHANGELOG.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "validation_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py -q",
+    "PATH=\"/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/shell.js",
+    "python3 -m json.tool PFI/reports/pfi_v024/stage_6/phase_6_1/evidence.json",
+    "python3 -m json.tool PFI/reports/pfi_v024/stage_6/phase_6_1/design_token_validation.json",
+    "git diff --check -- PFI"
+  ],
+  "explicitly_not_done": [
+    "Phase 6.2 motion feedback",
+    "Phase 6.3 haptics and settings isolation",
+    "Stage 6 whole-stage review",
+    "GitHub main upload",
+    "App bundle reinstall or launcher mutation",
+    "Financial data mutation or synthesis"
+  ]
+}

@@ -1,0 +1,16 @@
+PFI/web/index.html
+PFI/web/styles.css
+PFI/tests/test_v024_stage6_phase61_design_system.py
+PFI/docs/pfi_v024/STAGE6_DESIGN_SYSTEM.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+PFI/reports/pfi_v024/stage_6/phase_6_1/evidence.json
+PFI/reports/pfi_v024/stage_6/phase_6_1/design_token_validation.json
+PFI/reports/pfi_v024/stage_6/phase_6_1/terminal.log
+PFI/reports/pfi_v024/stage_6/phase_6_1/changed_files.txt
+PFI/reports/pfi_v024/stage_6/phase_6_1/risk_and_rollback.md
+PFI/README.md
+PFI/HANDOFF.md
+PFI/CHANGELOG.md
+PFI/功能清单.md
+PFI/开发记录.md
+PFI/模型参数文件.md
