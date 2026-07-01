@@ -12,6 +12,7 @@
   const V024_TARGET_VERSION = "v0.2.4";
   const V024_SOURCE_PACKAGE_VERSION = "v0.2.3-repair";
   const V024_PHASE72_CONTRACT_VERSION = "PFI-V024-STAGE7-PHASE72-PAGE-DISPLAY";
+  const V024_PHASE73_CONTRACT_VERSION = "PFI-V024-STAGE7-PHASE73-ACCEPTANCE";
   const PHASE_ID = "V023-S7-P7.1";
   const STATUS_COPY_ZH = Object.freeze({
     ready: "可用",
@@ -99,6 +100,63 @@
       ]),
       explicitly_not_done: Object.freeze([
         "Phase 7.3 验收",
+        "Stage 7 whole-stage review",
+        "GitHub main upload",
+        "app bundle reinstall",
+        "financial data mutation or synthesis",
+      ]),
+    });
+  }
+
+  function buildV024Stage7Phase73Contract() {
+    return Object.freeze({
+      schema: "PFIV024Stage7Phase73ContractV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: V024_SOURCE_PACKAGE_VERSION,
+      repair_label: "PFI v0.2.3 Repair",
+      stage: "Stage 7",
+      stage_name: "分析结论与报告中心",
+      phase_id: "7.3",
+      phase_name: "验收",
+      contract_version: V024_PHASE73_CONTRACT_VERSION,
+      current_phase_only: true,
+      max_one_phase_per_run: true,
+      phase_7_1_complete_required: true,
+      phase_7_2_complete_required: true,
+      phase_7_3_acceptance_complete: true,
+      stage_7_whole_review_complete: false,
+      github_main_uploaded: false,
+      app_bundle_reinstall_executed: false,
+      data_logic_changes_allowed: false,
+      formal_fake_financial_data_allowed: false,
+      task_ids: Object.freeze(["T7.3.1", "T7.3.2", "T7.3.3"]),
+      allowed_files: Object.freeze([
+        "PFI/web/app/pages/reports.js",
+        "PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js",
+        "PFI/tests/test_v024_stage7_phase73_report_acceptance.py",
+        "PFI/docs/pfi_v024/STAGE7_REPORT_ANALYSIS.md",
+        "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+        "PFI/reports/pfi_v024/stage_7/phase_7_3/*",
+        "PFI/README.md",
+        "PFI/HANDOFF.md",
+        "PFI/CHANGELOG.md",
+        "PFI/功能清单.md",
+        "PFI/开发记录.md",
+        "PFI/模型参数文件.md",
+      ]),
+      validation_commands: Object.freeze([
+        "pytest PFI/tests/test_v024_stage7_phase73_report_acceptance.py -q",
+        "node PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js",
+        "pytest PFI/tests/test_v024_stage7_phase72_report_page_display.py PFI/tests/test_v024_stage7_phase71_report_schema.py -q",
+        "node --check PFI/web/app/pages/reports.js",
+        "node --check PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js",
+        "python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/evidence.json",
+        "python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/report_acceptance_gate.json",
+        "python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/browser_validation.json",
+        "test -s PFI/reports/pfi_v024/stage_7/phase_7_3/formula_visibility.png",
+        "git diff --check -- PFI",
+      ]),
+      explicitly_not_done: Object.freeze([
         "Stage 7 whole-stage review",
         "GitHub main upload",
         "app bundle reinstall",
@@ -221,6 +279,57 @@
       confidence_visible: confidenceVisible,
       gaps_and_review_visible: gapsAndReviewVisible,
       blocked_conclusion_violations: Object.freeze(blockedConclusionViolations),
+    });
+  }
+
+  function validateV024Stage7Phase73Acceptance(view = {}) {
+    const cards = Array.isArray(view.report_cards) ? view.report_cards : [];
+    const ids = cards.map((card) => card.report_id);
+    const requiredIds = ["net_worth_report", "cash_report", "investment_report", "consumption_report", "cashflow_report", "data_quality_report"];
+    const missingReportIds = requiredIds.filter((id) => !ids.includes(id));
+    const dataQualityReports = cards.filter((card) => card.report_id === "data_quality_report" || card.report_type === "data_quality");
+    const blockedCards = cards.filter((card) => card.status === "blocked");
+    const financialConclusionWhenBlocked = blockedCards
+      .filter((card) => blockedReportHasFinancialConclusion(card))
+      .map((card) => card.report_id);
+    const forbiddenSourceTerms = collectForbiddenSourceTerms(cards);
+    const aiParagraphReportIds = cards.filter(isAiParagraphReport).map((card) => card.report_id);
+    const singleParagraphReportIds = cards.filter((card) => !hasStructuredReportEvidence(card)).map((card) => card.report_id);
+    const formulaSampleVisible = cards.length > 0 && cards.every(hasFormulaSampleAndRange);
+    const dataQualityReportGenerated = dataQualityReports.length > 0
+      && dataQualityReports.every((card) => card.status === "ready" && Array.isArray(card.gaps) && card.gaps.length > 0);
+    const blockedReportsWithoutFullFinancialConclusion = blockedCards.length > 0
+      && financialConclusionWhenBlocked.length === 0
+      && blockedCards.every((card) => Array.isArray(card.gaps) && card.gaps.length > 0 && Boolean(card.review_entry?.route));
+    const dataInsufficientReportTestPassed = dataQualityReportGenerated && blockedReportsWithoutFullFinancialConclusion;
+    const pass = (
+      missingReportIds.length === 0 &&
+      dataInsufficientReportTestPassed &&
+      formulaSampleVisible &&
+      aiParagraphReportIds.length === 0 &&
+      singleParagraphReportIds.length === 0 &&
+      forbiddenSourceTerms.length === 0 &&
+      financialConclusionWhenBlocked.length === 0
+    );
+    return Object.freeze({
+      schema: "PFIV024Stage7Phase73AcceptanceGateV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: V024_SOURCE_PACKAGE_VERSION,
+      stage: "Stage 7",
+      phase_id: "7.3",
+      phase_name: "验收",
+      contract_version: V024_PHASE73_CONTRACT_VERSION,
+      status: pass ? "pass" : "fail",
+      visible_report_ids: Object.freeze(ids),
+      missing_report_ids: Object.freeze(missingReportIds),
+      data_insufficient_report_test_passed: dataInsufficientReportTestPassed,
+      data_quality_report_generated: dataQualityReportGenerated,
+      blocked_reports_without_full_financial_conclusion: blockedReportsWithoutFullFinancialConclusion,
+      formula_sample_visible: formulaSampleVisible,
+      ai_paragraph_report_ids: Object.freeze(aiParagraphReportIds),
+      single_paragraph_report_ids: Object.freeze(singleParagraphReportIds),
+      forbidden_source_terms: Object.freeze(forbiddenSourceTerms),
+      financial_conclusion_when_blocked: Object.freeze(financialConclusionWhenBlocked),
     });
   }
 
@@ -460,12 +569,64 @@
     return String(value);
   }
 
+  function blockedReportHasFinancialConclusion(card = {}) {
+    const text = JSON.stringify(card);
+    return text.includes("CNY 0.00") || String(card.conclusion_zh || "").includes("完整财务结论");
+  }
+
+  function collectForbiddenSourceTerms(cards = []) {
+    const blockedTerms = ["mo" + "ck", "sam" + "ple", "syn" + "thetic", "fix" + "ture", "de" + "mo", "fa" + "ke"];
+    const hits = [];
+    cards.forEach((card) => {
+      const sources = Array.isArray(card.metric_sources) ? card.metric_sources : [];
+      sources.forEach((source) => {
+        const sourceText = String(source).toLowerCase();
+        blockedTerms.forEach((term) => {
+          if (sourceText.includes(term)) {
+            hits.push(Object.freeze({ report_id: card.report_id || "", term, source: String(source) }));
+          }
+        });
+      });
+    });
+    return hits;
+  }
+
+  function isAiParagraphReport(card = {}) {
+    const conclusion = String(card.conclusion_zh || "");
+    const looksLikeAiSummary = conclusion.includes("AI") && conclusion.includes("总结");
+    return looksLikeAiSummary && !hasStructuredReportEvidence(card);
+  }
+
+  function hasStructuredReportEvidence(card = {}) {
+    return Boolean(card.report_id)
+      && Boolean(card.title_zh)
+      && Boolean(card.conclusion_zh)
+      && hasFormulaSampleAndRange(card)
+      && Array.isArray(card.metric_sources)
+      && card.metric_sources.length > 0
+      && Boolean(card.review_entry?.route);
+  }
+
+  function hasFormulaSampleAndRange(card = {}) {
+    const sampleSize = card.sample_size || {};
+    const dataRange = card.data_range || {};
+    return Boolean(card.formula_zh)
+      && Array.isArray(card.parameters)
+      && card.parameters.length > 0
+      && Number.isFinite(Number(sampleSize.transaction_count))
+      && Number.isFinite(Number(sampleSize.raw_file_count))
+      && Boolean(dataRange.start)
+      && Boolean(dataRange.end);
+  }
+
   return Object.freeze({
     buildStage7Phase71ReportsViewModel,
     buildStage7Phase72CoreReportsViewModel,
     buildStage7Phase73QualityTuningViewModel,
     buildV024Stage7Phase72Contract,
+    buildV024Stage7Phase73Contract,
     buildV024Stage7Phase72ReportCenterViewModel,
     validateV024Stage7Phase72ReportCenterViewModel,
+    validateV024Stage7Phase73Acceptance,
   });
 });

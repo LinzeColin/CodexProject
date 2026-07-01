@@ -2,9 +2,9 @@
 
 ## Current Run Boundary
 
-本轮只执行 `Stage 7 / Phase 7.2 - 页面展示`，覆盖 T7.2.1 至 T7.2.4。
+本轮只执行 `Stage 7 / Phase 7.3 - 验收`，覆盖 T7.3.1 至 T7.3.3。
 
-不执行 Phase 7.3 验收，不执行整阶段复审，不上传 GitHub main，不重装 app bundle，不修改、清理、删除或补造真实财务数据。
+不执行整阶段复审，不上传 GitHub main，不重装 app bundle，不修改、清理、删除或补造真实财务数据。
 
 ## Stage 7 Phase 7.1 - 报告结构
 
@@ -52,21 +52,51 @@ Phase 7.2 evidence:
 - `PFI/reports/pfi_v024/stage_7/phase_7_2/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_7/phase_7_2/risk_and_rollback.md`
 
+## Stage 7 Phase 7.3 - 验收
+
+Phase 7.3 验收已完成。
+
+已完成 `PFI-V024-STAGE7-PHASE73-ACCEPTANCE`：
+
+- `PFI/web/app/pages/reports.js` 新增 Phase 7.3 acceptance contract 和 report acceptance gate。
+- 数据不足验收确认：净资产、现金、投资、现金流缺少真实输入时只展示阻断状态、缺口和复核入口；数据质量报告 ready。
+- 报告反退化验收确认：6 份报告都具备结论、公式、参数、样本量、数据范围、置信度、缺口和复核入口，不是单段 AI 文本。
+- 浏览器验收脚本把 Phase 7.1 真实 `report_schema.json` 注入静态报告中心，验证公式/参数/样本量/数据范围可见，并生成 `formula_visibility.png`。
+- 本轮未写入、清理、删除、补造或改写任何真实财务数据。
+
+Phase 7.3 evidence:
+
+- `PFI/reports/pfi_v024/stage_7/phase_7_3/evidence.json`
+- `PFI/reports/pfi_v024/stage_7/phase_7_3/report_acceptance_gate.json`
+- `PFI/reports/pfi_v024/stage_7/phase_7_3/browser_validation.json`
+- `PFI/reports/pfi_v024/stage_7/phase_7_3/sample_data_quality_report.html`
+- `PFI/reports/pfi_v024/stage_7/phase_7_3/formula_visibility.png`
+- `PFI/reports/pfi_v024/stage_7/phase_7_3/terminal.log`
+- `PFI/reports/pfi_v024/stage_7/phase_7_3/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_7/phase_7_3/risk_and_rollback.md`
+
 ## Validation
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase72_report_page_display.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase71_report_schema.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase73_report_acceptance.py -q
+PLAYWRIGHT_PACKAGE_PATH="/Users/linzezhang/Documents/Codex/CodexProject/EEI/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright" PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py PFI/tests/test_v024_stage6_phase62_motion_feedback.py PFI/tests/test_v024_stage6_phase63_haptics_settings.py -q
 PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/pages/reports.js
 PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/shell.js
+PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_os/app/streamlit_app.py
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/report_acceptance_gate.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/browser_validation.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_2/evidence.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_2/report_center_view_model.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_2/page_display_validation.json
+test -s PFI/reports/pfi_v024/stage_7/phase_7_3/formula_visibility.png
 git diff --check -- PFI
 ```
 
 ## Next Gate
 
-下一轮可进入 `Stage 7 / Phase 7.3 - 验收`。Phase 7.3 之前不要声明 Stage 7 完成，也不要执行 whole-stage review 或 GitHub main upload。
+下一轮可进入 `Stage 7 whole-stage review - 复审并解决暴露问题`。在 whole-stage review 之前不要声明 Stage 7 完成，也不要执行 GitHub main upload。
