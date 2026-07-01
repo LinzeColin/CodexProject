@@ -670,6 +670,25 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("persistent_daily_operation_authorized=false", summary)
         self.assertIn("daily_operation_enabled=false", summary)
 
+    def test_s3_daily_operation_handoff_records_post_acceptance_blocker(self) -> None:
+        handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
+        readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn("S3 DAILY_OPERATION 下一 Agent 先读", handoff)
+        self.assertIn("bccc600959e6bf478c8fc71f8c2e90c13c455d1f", handoff)
+        self.assertIn("stage2_integrated_production_accepted=true", handoff)
+        self.assertIn("production_acceptance_claimed=true", handoff)
+        self.assertIn("daily_operation_enabled=false", handoff)
+        self.assertIn("persistent_daily_operation_authorized=false", handoff)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", handoff)
+        self.assertIn("不要把它当成当前 S3/DAILY_OPERATION 状态页", handoff)
+        self.assertIn("不要启用 SMTP", handoff)
+        self.assertIn("不要启用、安装或 kickstart scheduler/LaunchAgents", handoff)
+        self.assertIn("open PR count 为 0", handoff)
+        self.assertIn("HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", readme)
+        self.assertIn("HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", decisions)
+
 
 if __name__ == "__main__":
     unittest.main()
