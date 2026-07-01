@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE"
-source_snapshot_hash: "sha256:e87ff08c0a8b9a983c296c661e37d1e86618b22a11eb469572162cd76f86057c"
+as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
+source_snapshot_hash: "sha256:efe04c802b398d7e5a64524bf6eaf705403ba63314ec7883ec60dd33815c8e08"
 source_base_commit: "960e9d1a8871bac1b4e482b58a3d673d3c6b635c"
 source_tree_hash: "cf801941e53c389bcc3ac4456ba54a8b48543f3f"
-snapshot_event_time: "2026-07-01T19:04:10+10:00"
+snapshot_event_time: "2026-07-01T19:43:41+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -58,7 +58,7 @@ dimensions:
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    tree_bound_events: 7
+    tree_bound_events: 8
     commit_bound_events: 7
     legacy_unbound_events: 330
     precommit_pending_events: 40
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION"
+  release_gate: "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT"
   blocker_ids: []
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
@@ -81,18 +81,18 @@ delivery_readiness:
   current_zero_proof_open_p0_findings: 0
   current_zero_proof_open_p1_findings: 0
   baseline_counts_mutated: false
-  parallel_shadow_source_task: "NONE_UNTIL_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT"
+  parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
   task_id: "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
   status: "blocked"
-  reason: "INTEGRATED_PRODUCTION_ACCEPTED evidence is written for Stage 2, but DAILY_OPERATION remains disabled. The next action is a separate owner authorization and safety preflight for daily operation; SMTP, scheduler, Release, and restore remain disabled until that preflight passes."
+  reason: "DAILY_OPERATION authorization preflight has been run after INTEGRATED_PRODUCTION_ACCEPTED, but it remains blocked by the nested production preflight. Repair the production preflight blockers before requesting persistent DAILY_OPERATION authorization. Current boundary evidence remains open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json present."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
-    - "ACC-S2PL-INTEGRATED-PRODUCTION"
+    - "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"
   owner: "content_owner + engineering_owner + independent_final_reviewer"
   human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Record explicit DAILY_OPERATION authorization, prove disabled runtime flags, run the daily-operation preflight, and only then consider persistent operation enablement."
+  unblock_condition: "Make the production preflight pass: provide required runtime command availability, required SMTP secret environment names without logging secret values, and resolve OpenAIDatabase session-history archive git artifact hygiene violations. Maintain open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json evidence. Then rerun daily-operation authorization preflight; runtime remains disabled."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -102,23 +102,23 @@ owner_decision:
   decision_id: "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701"
   review_id: "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
   project_id: "arxiv-daily-push"
-  decision_question: "INTEGRATED_PRODUCTION_ACCEPTED 证据已写入；是否进入单独 DAILY_OPERATION 授权预检，并继续禁止 SMTP/scheduler/Release/restore，直到该预检通过。"
-  question: "INTEGRATED_PRODUCTION_ACCEPTED 证据已写入；是否进入单独 DAILY_OPERATION 授权预检，并继续禁止 SMTP/scheduler/Release/restore，直到该预检通过。"
+  decision_question: "DAILY_OPERATION 授权预检已运行但阻断；具体阻断来自 production preflight，是否先修复 gh CLI、SMTP secret env 名称和 OpenAIDatabase 大文件治理问题，并继续禁止 SMTP/scheduler/Release/restore/DAILY_OPERATION。"
+  question: "DAILY_OPERATION 授权预检已运行但阻断；具体阻断来自 production preflight，是否先修复 gh CLI、SMTP secret env 名称和 OpenAIDatabase 大文件治理问题，并继续禁止 SMTP/scheduler/Release/restore/DAILY_OPERATION。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY"
-  current_recommendation: "A: INTEGRATED_PRODUCTION_ACCEPTED evidence is written for Stage 2 and runtime enablement remains disabled; next request explicit DAILY_OPERATION authorization and run the daily-operation safety preflight before enabling SMTP, scheduler, Release, restore, or persistent operation."
-  option_a: "进入 DAILY_OPERATION 授权预检：先证明持久 SMTP 开关、LaunchAgents、后台进程和运行边界仍安全，再由 owner 单独决定是否启用日常运行。"
+  current_recommendation: "A: DAILY_OPERATION authorization preflight has run after INTEGRATED_PRODUCTION_ACCEPTED, but production_preflight_passed is false. Repair missing gh CLI availability, missing SMTP secret env names, and OpenAIDatabase session-history archive git artifact hygiene violations before requesting persistent DAILY_OPERATION authorization. runtime enablement remains disabled."
+  option_a: "先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求或启用持久日常运行。"
   option_b: "暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。"
   option_c: "越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。"
   options:
-    - "进入 DAILY_OPERATION 授权预检：先证明持久 SMTP 开关、LaunchAgents、后台进程和运行边界仍安全，再由 owner 单独决定是否启用日常运行。"
+    - "先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求或启用持久日常运行。"
     - "暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。"
     - "越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。"
   estimated_effort: "P0/P1; production boundary safety review; owner decision; no-production proof verification"
   estimated_cost_or_resource: "local development and GitHub main evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "把已通过的 final bundle 状态与生产边界状态分开，避免重复 S2PLT04，同时阻止误启生产。"
   principal_risks: "将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement"
-  evidence_required: "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json, daily-operation authorization artifact, daily-operation preflight pass, persistent ADP_ALLOW_SMTP_SEND=false before enablement, LaunchAgents disabled before enablement, open_pr_count=0, and no background ADP process before enablement"
+  evidence_required: "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json, gh CLI availability or reviewed equivalent, ADP_SMTP_HOST/ADP_SMTP_PORT/ADP_SMTP_USERNAME/ADP_SMTP_PASSWORD env names without secret values, and resolved OpenAIDatabase session-history archive git artifact hygiene blockers"
   decision_deadline_or_priority: "P0"
   consequence_of_no_decision: "Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。"
   unblock_task_id: "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"

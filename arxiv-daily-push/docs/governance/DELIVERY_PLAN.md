@@ -21,10 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 338
-- acceptance_count: 128
+- task_count: 339
+- acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-01 19:43:41 Australia/Sydney - S2PMT07 daily operation authorization preflight
+
+- Task: `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`
+- Result: `blocked_daily_operation_authorization_preflight_no_runtime_enablement`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md`; `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`.
+- Gate state: `status=blocked`; `preflight_checks_passed=false`; `failed_checks=production_preflight_passed`; `state_hash=f306ae932dfbbc9f50dd0f465b7d9b125004f81c6dff4a36f7e4062bcb494660`.
+- Blockers: missing `gh` CLI; missing SMTP secret env names `ADP_SMTP_HOST`, `ADP_SMTP_PORT`, `ADP_SMTP_USERNAME`, `ADP_SMTP_PASSWORD`; 10 existing `OpenAIDatabase/session_history` archive git artifact hygiene violations.
+- Next required step: `S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR`; repair production preflight blockers before requesting persistent DAILY_OPERATION authorization.
+- Production boundary: Stage 2 accepted evidence remains true, but no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, V7.1 baseline P0/P1 mutation, cross-project OpenAIDatabase deletion, or `DAILY_OPERATION` is introduced by this task.
+- Verification: focused final-gate/CLI/current-state tests plus governance validators are required before commit; semantic extractor is not claimed unless actually rerun.
 
 ## 2026-07-01 19:04:10 Australia/Sydney - S2PMT07 integrated production acceptance evidence
 

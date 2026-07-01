@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-01 19:43:41 Australia/Sydney - S2PMT07 daily operation authorization preflight
+
+- Added `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT` builder/validator/CLI and wrote the blocked preflight manifest.
+- Preserved Stage 2 accepted evidence while keeping operation disabled: `daily_operation_enabled=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, `release_packaging_enabled=false`, and `production_restore_enabled=false`.
+- Recorded blockers: missing `gh` CLI, missing SMTP secret env names, and existing `OpenAIDatabase/session_history` archive git artifact hygiene violations.
+- Updated CURRENT, dynamic governance status, owner-facing docs, three-base files, traceability matrix, delivery ledger, run manifest, and regression tests.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md`.
+
 ## 2026-07-01 19:04:10 Australia/Sydney - S2PMT07 integrated production acceptance evidence
 
 - Wrote and validated `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` with `integrated_production_accepted=true`, `stage2_integrated_production_accepted=true`, and `production_acceptance_claimed=true`.

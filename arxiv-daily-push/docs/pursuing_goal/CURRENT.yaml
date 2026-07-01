@@ -15,11 +15,11 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: S2PMT07 integrated production acceptance evidence is written and validated in FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json after final bundle readiness, P0/P1 zero proof, independent final review, final command execution, owner decision artifact, write gate, and controlled real-run evidence all passed. This records INTEGRATED_PRODUCTION_ACCEPTED for Stage 2 only; DAILY_OPERATION is not enabled, and SMTP/scheduler/Release/restore remain prohibited until a separate DAILY_OPERATION authorization and preflight pass.
-  current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE
-  current_gate: INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION
-  next_executable_task: S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT
-  next_required_step: REQUEST_DAILY_OPERATION_AUTHORIZATION_AND_PREFLIGHT
+  global_current_task_meaning: "S2PMT07 daily operation authorization preflight has been written and validated after Stage 2 integrated production acceptance evidence. It remains blocked because the nested production preflight is not pass: gh CLI is missing, SMTP secret environment names are absent, and existing OpenAIDatabase session-history archives violate the production git artifact hygiene gate. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited."
+  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT
+  current_gate: DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT
+  next_executable_task: S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR
+  next_required_step: REPAIR_DAILY_OPERATION_PREFLIGHT_PREREQUISITES_BEFORE_OWNER_AUTHORIZATION
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
   email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW
@@ -76,6 +76,22 @@ production_boundary:
   integrated_production_acceptance_evidence_state_hash: 4b88b2edd8fe2eae7ee63f8b512eb713501805725f5fcdf3fb6363f0df3b5453
   integrated_production_acceptance_evidence_manifest: governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-20260701.json
   integrated_production_acceptance_daily_operation_runtime_enablement_allowed: false
+  daily_operation_authorization_preflight_written: true
+  daily_operation_authorization_preflight_status: blocked
+  daily_operation_authorization_preflight_passed: false
+  daily_operation_authorization_preflight_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json
+  daily_operation_authorization_preflight_state_hash: f306ae932dfbbc9f50dd0f465b7d9b125004f81c6dff4a36f7e4062bcb494660
+  daily_operation_authorization_preflight_failed_checks:
+    - production_preflight_passed
+  daily_operation_authorization_preflight_blockers:
+    - missing gh CLI
+    - missing SMTP secret environment names ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD
+    - existing OpenAIDatabase session-history archives exceed production git artifact hygiene limit
+  daily_operation_authorization_preflight_blocker_ids:
+    - missing_gh_cli
+    - missing_smtp_secret_env_names
+    - openai_database_large_archive_git_artifact_hygiene_violations
+  daily_operation_authorization_enablement_allowed: false
   integrated_production_acceptance_owner_decision_request_ready: true
   integrated_production_acceptance_owner_decision_request_state_hash: b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea
   integrated_production_acceptance_owner_decision_request_artifact: FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json
@@ -91,7 +107,8 @@ production_boundary:
   no_production_side_effects_proven: true
   final_bundle_missing_items: []
   forbidden_until:
-    - DAILY_OPERATION separately authorized after accepted evidence
+    - daily operation production preflight blockers are repaired
+    - DAILY_OPERATION is separately authorized after accepted evidence
     - daily operation safety preflight passes without changing disabled runtime flags
     - owner explicitly authorizes persistent operation boundary
   forbidden_actions:

@@ -203,6 +203,39 @@ S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_RUNTIME_FORBIDDEN_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_TASK_ID = (
+    "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
+)
+S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_SCHEMA_VERSION = (
+    "adp.daily_operation_authorization_preflight.v1"
+)
+S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_SCOPE = (
+    "daily_operation_authorization_preflight_only_no_runtime_enablement"
+)
+S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_REQUIRED_LAUNCHAGENTS = (
+    "daily",
+    "health",
+    "watchdog",
+)
+S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_RUNTIME_FORBIDDEN_FLAGS = (
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PMT07_BLOCKING_REASONS = (
     "reviewer_independence_not_proven",
     "inherited_v7_1_p0_findings_open",
@@ -13474,6 +13507,273 @@ def validate_integrated_production_acceptance_evidence_state(
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("integrated production acceptance evidence state_hash does not match state content")
+    return errors
+
+
+def build_daily_operation_authorization_preflight_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+    open_pr_count: int | None = None,
+    adp_allow_smtp_send: bool | None = None,
+    launchagent_disabled_states: Mapping[str, bool] | None = None,
+    background_adp_process_found: bool | None = None,
+    production_preflight_report: Mapping[str, Any] | None = None,
+    production_scheduler_plan: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the post-acceptance DAILY_OPERATION authorization preflight without enabling runtime."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    current_pointer_path = root / "arxiv-daily-push" / "docs" / "pursuing_goal" / "CURRENT.yaml"
+    try:
+        current_pointer_text = current_pointer_path.read_text(encoding="utf-8")
+    except OSError:
+        current_pointer_text = ""
+
+    acceptance_ref = S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_ARTIFACT_REF
+    acceptance = _load_json_mapping_artifact(root / acceptance_ref)
+    acceptance_errors = validate_integrated_production_acceptance_evidence_state(acceptance)
+    controlled_run_ref = "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"
+    controlled_run = _load_json_mapping_artifact(root / controlled_run_ref) or {}
+    controlled_run_result = _mapping(controlled_run.get("controlled_run_result"))
+    duplicate_control = _mapping(controlled_run.get("duplicate_send_control"))
+    post_run_safety = _mapping(controlled_run.get("post_run_safety_state"))
+
+    if production_preflight_report is None:
+        from arxiv_daily_push.production_preflight import build_production_preflight
+
+        production_preflight_report = build_production_preflight(root, generated_at=generated_at)
+    if production_scheduler_plan is None:
+        from arxiv_daily_push.production_scheduler import build_production_scheduler_plan
+
+        production_scheduler_plan = build_production_scheduler_plan(root, generated_at=generated_at)
+    production_preflight_report = dict(production_preflight_report)
+    production_scheduler_plan = dict(production_scheduler_plan)
+    launchagent_disabled_states = dict(launchagent_disabled_states or {})
+    launchagents_disabled = all(
+        launchagent_disabled_states.get(label) is True
+        for label in S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_REQUIRED_LAUNCHAGENTS
+    )
+    acceptance_valid = (
+        not acceptance_errors
+        and acceptance.get("status")
+        == "pass_integrated_production_accepted_evidence_written_no_runtime_enablement"
+        and acceptance.get("integrated_production_accepted") is True
+        and acceptance.get("stage2_integrated_production_accepted") is True
+        and acceptance.get("daily_operation_enabled") is False
+    )
+    checks = {
+        "current_product_contract_v7_2": "version: ADP-PRODUCT-CONTRACT-V7.2" in current_pointer_text,
+        "current_points_to_daily_operation_preflight": (
+            f"next_executable_task: {S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_TASK_ID}"
+            in current_pointer_text
+            or f"current_iteration: ITER-20260701-ADP-{S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_TASK_ID}"
+            in current_pointer_text
+            or "current_gate: DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_pointer_text
+        ),
+        "integrated_production_acceptance_evidence_present": bool(acceptance),
+        "integrated_production_acceptance_evidence_valid": acceptance_valid,
+        "stage2_integrated_production_accepted": (
+            "stage2_integrated_production_accepted: true" in current_pointer_text
+            and acceptance.get("stage2_integrated_production_accepted") is True
+        ),
+        "production_acceptance_claimed": (
+            "production_acceptance_claimed: true" in current_pointer_text
+            and acceptance.get("production_acceptance_claimed") is True
+        ),
+        "daily_operation_currently_disabled": (
+            "daily_operation_enabled: false" in current_pointer_text
+            and acceptance.get("daily_operation_enabled") is False
+        ),
+        "controlled_real_run_acceptance_passed": controlled_run.get("status")
+        == "pass_controlled_real_run_evidence_rechecked_no_new_send",
+        "controlled_real_run_sent_all_four_mail_products": controlled_run_result.get("sent_mail_products")
+        == list(S2PLT01_REQUIRED_MAIL_PRODUCTS),
+        "controlled_real_run_duplicate_send_avoided": duplicate_control.get("duplicate_smtp_send_avoided")
+        is True,
+        "controlled_real_run_post_smtp_flag_false": post_run_safety.get("persistent_adp_allow_smtp_send")
+        == "false",
+        "controlled_real_run_no_background_process_after": post_run_safety.get(
+            "adp_background_process_count_after"
+        )
+        == 0,
+        "production_preflight_passed": production_preflight_report.get("status") == "pass"
+        and production_preflight_report.get("production_run_allowed") is True,
+        "production_scheduler_contract_ready": production_scheduler_plan.get("status") == "pass"
+        and production_scheduler_plan.get("scheduler_contract_ready") is True,
+        "open_pr_count_zero": open_pr_count == 0,
+        "persistent_adp_allow_smtp_send_false": adp_allow_smtp_send is False,
+        "launchagents_disabled": launchagents_disabled,
+        "no_background_adp_process": background_adp_process_found is False,
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    preflight_checks_passed = not failed_checks
+    blocking_reasons = (
+        ["owner_daily_operation_authorization_missing", "daily_operation_not_enabled"]
+        if preflight_checks_passed
+        else [f"{name}_failed" for name in failed_checks]
+    )
+    state = {
+        "schema_version": S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_SCHEMA_VERSION,
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "task_id": S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_TASK_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
+        "generated_at": generated_at,
+        "status": (
+            "blocked_owner_daily_operation_authorization_required"
+            if preflight_checks_passed
+            else "blocked"
+        ),
+        "scope": S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_SCOPE,
+        "preflight_checks_passed": preflight_checks_passed,
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": blocking_reasons,
+        "next_required_step": (
+            "OWNER_DAILY_OPERATION_AUTHORIZATION_REQUIRED"
+            if preflight_checks_passed
+            else "REPAIR_DAILY_OPERATION_PREFLIGHT_PREREQUISITES_BEFORE_OWNER_AUTHORIZATION"
+        ),
+        "owner_daily_operation_authorization_required": True,
+        "owner_daily_operation_authorization_recorded": False,
+        "daily_operation_enablement_allowed_by_this_artifact": False,
+        "open_pr_count": open_pr_count,
+        "adp_allow_smtp_send": adp_allow_smtp_send,
+        "launchagent_disabled_states": launchagent_disabled_states,
+        "background_adp_process_found": background_adp_process_found,
+        "integrated_production_acceptance_evidence_ref": acceptance_ref,
+        "integrated_production_acceptance_evidence_state_hash": acceptance.get("state_hash", ""),
+        "integrated_production_acceptance_evidence_validation_errors": acceptance_errors,
+        "controlled_real_run_manifest_ref": controlled_run_ref,
+        "controlled_real_run_status": controlled_run.get("status", ""),
+        "controlled_real_run_sent_mail_products": list(
+            controlled_run_result.get("sent_mail_products", [])
+        ),
+        "controlled_real_run_newly_sent_mail_products": list(
+            controlled_run_result.get("newly_sent_mail_products", [])
+        ),
+        "controlled_real_run_historical_sent_mail_products": list(
+            controlled_run_result.get("historical_sent_mail_products", [])
+        ),
+        "controlled_real_run_duplicate_send_avoided": duplicate_control.get(
+            "duplicate_smtp_send_avoided"
+        )
+        is True,
+        "production_preflight_status": production_preflight_report.get("status", ""),
+        "production_preflight_production_run_allowed": production_preflight_report.get(
+            "production_run_allowed"
+        ),
+        "production_preflight_blocking_reasons": list(
+            production_preflight_report.get("blocking_reasons", [])
+        ),
+        "production_preflight_report": production_preflight_report,
+        "production_scheduler_status": production_scheduler_plan.get("status", ""),
+        "production_scheduler_contract_ready": production_scheduler_plan.get(
+            "scheduler_contract_ready"
+        ),
+        "production_scheduler_blocking_reasons": list(
+            production_scheduler_plan.get("blocking_reasons", [])
+        ),
+        "production_scheduler_plan": production_scheduler_plan,
+        "production_acceptance_claimed": acceptance.get("production_acceptance_claimed") is True,
+        "integrated_production_accepted": acceptance.get("integrated_production_accepted") is True,
+        "stage2_integrated_production_accepted": acceptance.get("stage2_integrated_production_accepted")
+        is True,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_daily_operation_authorization_preflight_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate DAILY_OPERATION authorization preflight evidence without enabling runtime."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_SCHEMA_VERSION:
+        errors.append("daily operation authorization preflight schema_version is invalid")
+    if state.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("daily operation authorization preflight contract_id is invalid")
+    if state.get("task_id") != S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_TASK_ID:
+        errors.append("daily operation authorization preflight task_id is invalid")
+    if state.get("scope") != S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_SCOPE:
+        errors.append("daily operation authorization preflight scope is invalid")
+    if state.get("status") not in {"blocked", "blocked_owner_daily_operation_authorization_required"}:
+        errors.append("daily operation authorization preflight status is invalid")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("daily operation authorization preflight failed_checks must match checks")
+    expected_preflight_passed = not failed_checks
+    if state.get("preflight_checks_passed") is not expected_preflight_passed:
+        errors.append("daily operation authorization preflight pass flag must match checks")
+    expected_status = (
+        "blocked_owner_daily_operation_authorization_required"
+        if expected_preflight_passed
+        else "blocked"
+    )
+    if state.get("status") != expected_status:
+        errors.append("daily operation authorization preflight status must match checks")
+    expected_blocking = (
+        ["owner_daily_operation_authorization_missing", "daily_operation_not_enabled"]
+        if expected_preflight_passed
+        else [f"{name}_failed" for name in failed_checks]
+    )
+    if state.get("blocking_reasons") != expected_blocking:
+        errors.append("daily operation authorization preflight blocking_reasons must match checks")
+    expected_next = (
+        "OWNER_DAILY_OPERATION_AUTHORIZATION_REQUIRED"
+        if expected_preflight_passed
+        else "REPAIR_DAILY_OPERATION_PREFLIGHT_PREREQUISITES_BEFORE_OWNER_AUTHORIZATION"
+    )
+    if state.get("next_required_step") != expected_next:
+        errors.append("daily operation authorization preflight next_required_step is invalid")
+    if state.get("owner_daily_operation_authorization_required") is not True:
+        errors.append("daily operation authorization preflight must require owner authorization")
+    if state.get("owner_daily_operation_authorization_recorded") is not False:
+        errors.append("daily operation authorization preflight must not record owner authorization")
+    if state.get("daily_operation_enablement_allowed_by_this_artifact") is not False:
+        errors.append("daily operation authorization preflight must not allow daily operation enablement")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+    ):
+        if state.get(flag) is not True:
+            errors.append(f"daily operation authorization preflight must preserve accepted {flag}")
+    for label in S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_REQUIRED_LAUNCHAGENTS:
+        if label not in _mapping(state.get("launchagent_disabled_states")):
+            errors.append(f"launchagent_disabled_states must include {label}")
+    for flag in S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_RUNTIME_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"daily operation authorization preflight must not enable {flag}")
+    if checks.get("production_preflight_passed") is True:
+        production_preflight = _mapping(state.get("production_preflight_report"))
+        if production_preflight.get("status") != "pass" or production_preflight.get("production_run_allowed") is not True:
+            errors.append("daily operation authorization preflight production preflight pass check is inconsistent")
+    if checks.get("production_scheduler_contract_ready") is True:
+        scheduler_plan = _mapping(state.get("production_scheduler_plan"))
+        if scheduler_plan.get("status") != "pass" or scheduler_plan.get("scheduler_contract_ready") is not True:
+            errors.append("daily operation authorization preflight scheduler pass check is inconsistent")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("daily operation authorization preflight state_hash does not match state content")
     return errors
 
 

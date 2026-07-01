@@ -2312,6 +2312,74 @@ class CliTests(unittest.TestCase):
             "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
         )
 
+    def test_daily_operation_authorization_preflight_json_command_blocks_without_runtime_enablement(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        with tempfile.TemporaryDirectory() as tmp:
+            production_preflight = Path(tmp) / "production-preflight.json"
+            production_scheduler = Path(tmp) / "production-scheduler.json"
+            production_preflight.write_text(
+                json.dumps(
+                    {
+                        "status": "blocked",
+                        "production_run_allowed": False,
+                        "blocking_reasons": ["missing required secret environment keys: ADP_SMTP_HOST"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            production_scheduler.write_text(
+                json.dumps(
+                    {
+                        "status": "pass",
+                        "scheduler_contract_ready": True,
+                        "blocking_reasons": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "daily-operation-authorization-preflight",
+                        "--repo-root",
+                        str(repo_root),
+                        "--generated-at",
+                        "2026-07-01T20:40:00+10:00",
+                        "--open-pr-count",
+                        "0",
+                        "--adp-allow-smtp-send",
+                        "false",
+                        "--launchagent-daily-disabled",
+                        "true",
+                        "--launchagent-health-disabled",
+                        "true",
+                        "--launchagent-watchdog-disabled",
+                        "true",
+                        "--background-adp-process-found",
+                        "false",
+                        "--production-preflight-report",
+                        str(production_preflight),
+                        "--production-scheduler-plan",
+                        str(production_scheduler),
+                        "--json",
+                    ]
+                )
+
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["task_id"], "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT")
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["preflight_checks_passed"])
+        self.assertIn("production_preflight_passed_failed", payload["blocking_reasons"])
+        self.assertEqual(payload["daily_operation_preflight_validation_errors"], [])
+        self.assertTrue(payload["integrated_production_accepted"])
+        self.assertTrue(payload["stage2_integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["daily_operation_enablement_allowed_by_this_artifact"])
+
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {
             "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
