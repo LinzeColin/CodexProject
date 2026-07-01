@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-post-s18-lineage-report-gate-local - 2026-07-02
+
+- 新增 `KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE-20260702` 本地 gate 证据，明确当前只能保持 `NO_GO`。
+- 新增 `KMFA/tools/check_lineage_report_gate.py`、`KMFA/tests/test_lineage_report_gate.py`、`KMFA/metadata/quality/lineage_report_release_gate_review.json` 和 `KMFA/stage_artifacts/LINEAGE_REPORT_GATE/`。
+- validator 复算 0 条 actual lineage rows、2 条 D 级报告 runtime、12 条 pending reconciliation、0 个 formal report allowed/export decision basis allowed。
+- 后续若上传 GitHub，只能标记为 `NO_GO governance backup only`；本轮未执行 GitHub upload、backup、lineage full check completion、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+
 ## 0.1.0-post-s18-whole-project-review-local - 2026-07-02
 
 - 完成 Post-S18 第二阶段全项目本地复审和 findings 修复。

@@ -1,0 +1,116 @@
+{
+  "schema_version": "kmfa.lineage_report_release_gate_review.v1",
+  "project_id": "KMFA",
+  "gate_id": "KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE-20260702",
+  "status": "blocked_no_go_owner_scope_required",
+  "generated_at": "2026-07-02T09:34:55+10:00",
+  "delivery_allowed": false,
+  "official_report_release_allowed": false,
+  "formal_report_allowed": false,
+  "business_decision_basis_allowed": false,
+  "release_claim_allowed": false,
+  "github_upload_allowed": false,
+  "external_connector_allowed": false,
+  "business_execution_allowed": false,
+  "github_backup_upload_policy_under_no_go": {
+    "allowed_after_rebase_and_validators": true,
+    "release_claim_allowed": false,
+    "delivery_claim_allowed": false,
+    "conditions": [
+      "rebase_or_merge_latest_origin_main_before_upload",
+      "rerun_lineage_report_gate_validator",
+      "rerun_whole_project_final_review_validator",
+      "rerun_governance_validators",
+      "rerun_raw_private_and_secret_scans",
+      "label_any_push_as_no_go_governance_backup_only",
+      "record_dry_run_push_push_and_post_push_parity"
+    ]
+  },
+  "lineage_summary": {
+    "field_protocol_header_count": 1,
+    "field_actual_lineage_record_count": 0,
+    "metric_protocol_header_count": 1,
+    "metric_actual_lineage_record_count": 0,
+    "report_protocol_header_count": 1,
+    "report_actual_lineage_record_count": 0,
+    "lineage_full_check_complete": false,
+    "lineage_full_check_performed": false,
+    "lineage_protocol_only": true
+  },
+  "report_grade_summary": {
+    "runtime_report_count": 2,
+    "report_grade_distribution": {
+      "D": 2
+    },
+    "formal_report_allowed_count": 0,
+    "business_decision_basis_allowed_count": 0,
+    "complete_trusted_report_display_allowed_count": 0,
+    "hard_blocks": [
+      "missing_human_confirmation_for_A",
+      "missing_required_lineage",
+      "unresolved_critical_difference",
+      "zero_delta_failed"
+    ]
+  },
+  "report_export_summary": {
+    "report_export_record_count": 2,
+    "release_permission_distribution": {
+      "blocked_decision_use": 2
+    },
+    "formal_report_allowed_count": 0,
+    "business_decision_basis_allowed_count": 0
+  },
+  "reconciliation_summary": {
+    "reconciliation_record_count": 12,
+    "pending_resolution_count": 12,
+    "confirmed_resolution_count": 0,
+    "closed_resolution_count": 0,
+    "derived_metric_rerun_allowed": false,
+    "formal_report_allowed": false
+  },
+  "blocker_ids": [
+    "LINEAGE_PROTOCOL_ONLY_NO_FULL_FIELD_METRIC_REPORT_ROWS",
+    "S09_PENDING_RECONCILIATION_12",
+    "REPORT_GRADE_D_BLOCKED_DECISION_USE",
+    "ZERO_DELTA_OR_RECONCILIATION_HARD_BLOCKS_PRESENT",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED"
+  ],
+  "owner_required_actions": [
+    "complete_public_safe_full_field_metric_report_lineage_rows",
+    "resolve_or_formally_defer_all_12_pending_reconciliation_records",
+    "rerun_zero_delta_report_grade_and_export_gates_after_owner_resolution",
+    "record_explicit_owner_or_authorized_formal_report_release_decision",
+    "rerun_whole_project_go_no_go_before_any_release_claim"
+  ],
+  "source_refs": [
+    "KMFA/metadata/lineage/lineage_completeness_review.json",
+    "KMFA/metadata/quality/whole_project_go_no_go_review.json",
+    "KMFA/metadata/lineage/field_lineage.jsonl",
+    "KMFA/metadata/lineage/metric_lineage.jsonl",
+    "KMFA/metadata/lineage/report_lineage.jsonl",
+    "KMFA/metadata/reports/report_grade_runtime_records.jsonl",
+    "KMFA/metadata/reports/report_export_records.jsonl",
+    "KMFA/metadata/reports/project_scope_reconciliation_manifest.json",
+    "KMFA/metadata/quality/scope_reconciliation_records.jsonl"
+  ],
+  "evidence_refs": [
+    "KMFA/tools/check_lineage_report_gate.py",
+    "KMFA/tests/test_lineage_report_gate.py",
+    "KMFA/stage_artifacts/LINEAGE_REPORT_GATE/human/lineage_report_gate_report.md",
+    "KMFA/stage_artifacts/LINEAGE_REPORT_GATE/human/test_results.md",
+    "KMFA/stage_artifacts/LINEAGE_REPORT_GATE/machine/lineage_report_gate_manifest.json"
+  ],
+  "public_repo_safety": {
+    "raw_business_data_committed": false,
+    "zip_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "field_plaintext_committed": false,
+    "credentials_committed": false,
+    "banking_raw_material_committed": false,
+    "contract_material_committed": false,
+    "salary_material_committed": false,
+    "tax_return_material_committed": false
+  }
+}
