@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-## 2026-07-02 07:46:05 Australia/Sydney - 当前阅读规则
+## 2026-07-02 07:50:38 Australia/Sydney - 当前阅读规则
 
 - 当前事实：Stage 2 integrated acceptance 已记录并保持 `true`；S3/DAILY_OPERATION 不进入，`daily_operation_enabled=false`。
 - 本页 2026-07-01 19:04 以前关于 S2PLT02、S2PLT03、S2PLT04、final bundle 缺口的记录只作历史追溯，不得用来回退当前 Stage 2 accepted 事实。
@@ -187,13 +187,13 @@
 ## 2026-07-01 08:37:20 Australia/Sydney - 历史：S2PLT02 当时只剩 scheduler proof 与 terminal artifact 缺口
 
 - S2PLT02 当前真实邮件证据已达 `2/2` 天、`8/8` 封；第二真实日和 8 封真实邮件不再是当前缺口。
-- 当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；剩余缺口是 `REAL_SCHEDULER_PROOF` 和 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`。当前最新缺口见上方 2026-07-01 11:24:30 记录。
+- 当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；历史当时剩余缺口是 `REAL_SCHEDULER_PROOF` 和 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`。当前最新缺口见上方 2026-07-01 11:24:30 记录。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 07:43:35 Australia/Sydney - S2PLT02 第二真实发送日已捕获但仍未生产验收
 
 - 服务日 `2026-06-29` 的 M1/M2/M3/M4 受控前台真实 SMTP catch-up 已发送；S2PLT02 真实证据达到 `2/2` 天、`8/8` 封。
-- 当前下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；剩余缺口是 `REAL_SCHEDULER_PROOF` 和 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；历史当时剩余缺口是 `REAL_SCHEDULER_PROOF` 和 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`。
 - 运行后持久 `ADP_ALLOW_SMTP_SEND=false`，LaunchAgents disabled/not running，无后台 ADP 进程；这不是 scheduler/Release/production accepted。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE-20260630.json) / [邮件状态](./邮件发送与队列状态.md) / [阶段记录](../docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md)。
 
@@ -201,144 +201,144 @@
 ## 2026-07-01 05:42:34 Australia/Sydney - S2PLT02 只读命令已全部可被 CLI 执行
 
 - `capture_wait_state_guard.allowed_readonly_commands` 中的只读命令现在都会返回 blocked JSON；terminal proof evidence inventory 命令已带 `--generated-at 2026-07-01T05:42:34+10:00`。
-- 当前仍 blocked：capture plan `state_hash=aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1`，wait guard `state_hash=502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe`，inventory command `state_hash=26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c`，final readiness `state_hash=6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当时已捕获第二真实日和 8 封真实邮件；当时仍缺真实 scheduler proof 和 S2PLT02 terminal proof artifact。当前最新缺口见上方 2026-07-01 11:24:30 记录。
+- 历史当时仍 blocked：capture plan `state_hash=aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1`，wait guard `state_hash=502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe`，inventory command `state_hash=26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c`，final readiness `state_hash=6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当时已捕获第二真实日和 8 封真实邮件；当时仍缺真实 scheduler proof 和 S2PLT02 terminal proof artifact。当前最新缺口见上方 2026-07-01 11:24:30 记录。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 05:17:15 Australia/Sydney - S2PLT02 捕获计划已公开输入清单和 artifact 校验摘要
 
 - `plan-s2plt02-terminal-delivery-proof-capture`、`plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 现在都公开 `terminal_delivery_input_inventory_summary` 与 `terminal_delivery_artifact_validation_summary`。
-- 当前仍 blocked：capture plan `state_hash=cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4`，input summary `state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`，artifact summary `state_hash=3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`，final readiness `state_hash=23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当时已捕获第二真实日和 8 封真实邮件；当时仍缺真实 scheduler proof 和 S2PLT02 terminal proof artifact。当前最新缺口见上方 2026-07-01 11:24:30 记录。
+- 历史当时仍 blocked：capture plan `state_hash=cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4`，input summary `state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`，artifact summary `state_hash=3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`，final readiness `state_hash=23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当时已捕获第二真实日和 8 封真实邮件；当时仍缺真实 scheduler proof 和 S2PLT02 terminal proof artifact。当前最新缺口见上方 2026-07-01 11:24:30 记录。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 04:57:53 Australia/Sydney - Final bundle 已消费 P0/P1 zero-proof artifact 到 request 状态
 
 - `validate-final-acceptance-bundle` 现在在 reviewer assignment request 和 closure decision request 中显示 `zero_proof_artifact_present=true`、`p0_zero_proven=true`、`p1_zero_proven=true`。
-- 当前仍 blocked：zero-proof artifact validation `state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`，assignment request `state_hash=8a4596dbb16f55932e36b256fc22852e1f8ca52da22bdd85d6d1c79d23b61c1b`，closure decision request `state_hash=afc1155fafad8c460db5e09eb9890e7408a1e28dd0bf155121bf1a0308529e34`，final readiness `state_hash=cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
+- 历史当时仍 blocked：zero-proof artifact validation `state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`，assignment request `state_hash=8a4596dbb16f55932e36b256fc22852e1f8ca52da22bdd85d6d1c79d23b61c1b`，closure decision request `state_hash=afc1155fafad8c460db5e09eb9890e7408a1e28dd0bf155121bf1a0308529e34`，final readiness `state_hash=cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_ZERO_PROOF_REQUEST_CONSUMPTION_SYNC.md)。这不是 P0/P1 closure、SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 04:05:59 Australia/Sydney - Final bundle 最外层禁止写入/调度/验收字段已公开
 
 - `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 现在都在最外层直接显示 `write_terminal_artifact_allowed=false`、`scheduler_enable_allowed_by_this_plan=false`、`production_acceptance_allowed=false`。
-- 当前仍 blocked：S2PLT02 capture plan `state_hash=12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232`，final readiness `state_hash=cfcd3d70c0cca7f0a5a8bc3804f599001e585a65dc80fed0cecc75996c6798ee`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
+- 历史当时仍 blocked：S2PLT02 capture plan `state_hash=12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232`，final readiness `state_hash=cfcd3d70c0cca7f0a5a8bc3804f599001e585a65dc80fed0cecc75996c6798ee`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_NO_WRITE_FLAGS_OUTERMOST_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 03:46:29 Australia/Sydney - S2PLT02 写入/调度/验收禁止状态已在顶层公开
 
 - `plan-s2plt02-terminal-delivery-proof-capture`、`plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 现在都在 S2PLT02 相关顶层摘要显示 `write_terminal_artifact_allowed=false`、`scheduler_enable_allowed_by_this_plan=false`、`production_acceptance_allowed=false`。
-- 当前仍 blocked：S2PLT02 capture plan `state_hash=12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=d95f0afad934a6692635960d48cda963074840c0615f9bafe1fb023ff9c4f612`，final validator `state_hash=0c032d9c804410f2b4ffe11cb52b00e91500fd7790d1eac533154650625b3c6e`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
+- 历史当时仍 blocked：S2PLT02 capture plan `state_hash=12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=d95f0afad934a6692635960d48cda963074840c0615f9bafe1fb023ff9c4f612`，final validator `state_hash=0c032d9c804410f2b4ffe11cb52b00e91500fd7790d1eac533154650625b3c6e`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_NO_WRITE_FLAGS_TOP_LEVEL_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 03:21:16 Australia/Sydney - Final bundle 最外层写入状态已公开
 
 - `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 现在都在最外层显示 `ready_to_write_live_artifacts=false`。
-- 当前仍 blocked：S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320`，final validator `state_hash=494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
+- 历史当时仍 blocked：S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320`，final validator `state_hash=494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-LIVE-WRITE-READY-TOP-LEVEL-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_LIVE_WRITE_READY_TOP_LEVEL_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 02:59:33 Australia/Sydney - Final bundle 最外层等待状态已公开
 
 - `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 现在都在最外层显示 `current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
-- 当前仍 blocked：S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=2ee61c653d48b74f03505221adf6e37039d9cd4339b5554ba145dd02f9ec6198`，final validator `state_hash=3ba4d2fdcc2ea9bfc268f7f579ce8e8e4e3458ee6c69400e157571906ba16b29`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
+- 历史当时仍 blocked：S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=2ee61c653d48b74f03505221adf6e37039d9cd4339b5554ba145dd02f9ec6198`，final validator `state_hash=3ba4d2fdcc2ea9bfc268f7f579ce8e8e4e3458ee6c69400e157571906ba16b29`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-TOP-LEVEL-WAIT-STATE-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_TOP_LEVEL_WAIT_STATE_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 02:36:08 Australia/Sydney - S2PLT02 当前等待状态已在 final bundle 顶层公开
 
 - `plan-s2plt02-terminal-delivery-proof-capture`、`plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 现在都在顶层显示 `current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
-- 当前仍 blocked：S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=0b6753d007633aaeca00368eb29ebe54cc677846085051988a60854713c93b42`，final validator `state_hash=4f1e0e311ea68a5cc320e1c0a5d11985b2a256acbeb06217a57e86d6fa217d65`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
+- 历史当时仍 blocked：S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=0b6753d007633aaeca00368eb29ebe54cc677846085051988a60854713c93b42`，final validator `state_hash=4f1e0e311ea68a5cc320e1c0a5d11985b2a256acbeb06217a57e86d6fa217d65`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CURRENT_WAIT_STATE_SUMMARY.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 02:10:46 Australia/Sydney - Final bundle 缺失清单已同步到 prerequisite plan
 
 - `plan-final-bundle-prerequisites` 现在和 `validate-final-acceptance-bundle` 一样公开 `final_bundle_missing_artifact_inventory`。
-- 当前仍 blocked：prerequisite plan `state_hash=447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04`，final validator `state_hash=45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048`，inventory `state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`，缺失 live artifact `5` 项。
-- 缺失 live artifact：`FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml;FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json;HANDOFF/00_下一Agent先读.md`；下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
+- 历史当时仍 blocked：prerequisite plan `state_hash=447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04`，final validator `state_hash=45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048`，inventory `state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`，缺失 live artifact `5` 项。
+- 历史当时缺失 live artifact：`FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml;FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json;HANDOFF/00_下一Agent先读.md`；下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；`ready_to_write_live_artifacts=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_MISSING_INVENTORY_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 
 ## 2026-07-01 01:32:33 Australia/Sydney - S2PLT02 等待状态只读命令已修正为可执行
 
 - `capture_wait_state_guard.allowed_readonly_commands[0]` 已修正为 `adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json`，复制执行会返回 blocked JSON，不会再被 argparse 拒绝。
-- 当前 wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，只允许只读命令；禁止提前写 S2PLT02/S2PLT03 terminal proof、S2PLT04 completion report、final manifest 和 handoff。
+- 历史当时 wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，只允许只读命令；禁止提前写 S2PLT02/S2PLT03 terminal proof、S2PLT04 completion report、final manifest 和 handoff。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 00:41:25 Australia/Sydney - Final bundle 已公开 live artifact 写入保护
 
 - `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 现在公开 `live_artifact_write_guard`。
-- 当前 `live_artifact_write_allowed=false`，禁止提前写入 S2PLT04 completion report、final command execution、next-agent handoff、independent signoff 和 final bundle manifest。
-- 仍允许的下一步只是继续处理 `S2PLT02_TERMINAL_DELIVERY_PROOF` 的真实捕获窗口；当前 runtime step 仍是 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
+- 历史当时 `live_artifact_write_allowed=false`，禁止提前写入 S2PLT04 completion report、final command execution、next-agent handoff、independent signoff 和 final bundle manifest。
+- 历史当时仍允许的下一步只是继续处理 `S2PLT02_TERMINAL_DELIVERY_PROOF` 的真实捕获窗口；历史当时 runtime step 仍是 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD.md)。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 00:13:52 Australia/Sydney - Final bundle 已公开 S2PLT02 terminal count split
 
 - `plan-final-bundle-prerequisites`、`validate-final-acceptance-bundle` 和 `plan-s2plt02-terminal-delivery-proof-capture` 现在明确区分既有真实 SMTP 证据与当前 capture-window 新增计数。
 - 既有真实证据仍是 `1/2` 天、`4/8` 封；2026-06-29/2026-06-30 当前窗口新增真实天数 `0`、新增真实邮件 `0`，`8` 封 dry-run 被拒计入 terminal proof。
-- 剩余缺口仍是第二真实 M1-M4 SMTP 日、4 封真实邮件、真实 scheduler proof、reviewed S2PLT02 terminal proof artifact、S2PLT03 terminal proof、S2PLT04 completion report 和 final bundle 后续证据。
+- 历史当时剩余缺口是第二真实 M1-M4 SMTP 日、4 封真实邮件、真实 scheduler proof、reviewed S2PLT02 terminal proof artifact、S2PLT03 terminal proof、S2PLT04 completion report 和 final bundle 后续证据。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_TERMINAL_COUNT_SPLIT.md)。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 01:13:56 Australia/Sydney - S2PMT07 final bundle missing artifact inventory
 
-- 当前仍 blocked：prerequisite plan `state_hash=9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9`，final validator `state_hash=2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae`，missing artifact inventory `state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`，缺失 live artifact `5` 项。
-- 缺失 live artifact：`FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml;FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json;HANDOFF/00_下一Agent先读.md`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；这不是 SMTP/scheduler 授权，也不是生产验收。
+- 历史当时仍 blocked：prerequisite plan `state_hash=9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9`，final validator `state_hash=2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae`，missing artifact inventory `state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`，缺失 live artifact `5` 项。
+- 历史当时缺失 live artifact：`FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml;FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json;HANDOFF/00_下一Agent先读.md`。
+- 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；这不是 SMTP/scheduler 授权，也不是生产验收。
 
 ## 2026-06-30 23:50:28 Australia/Sydney - Final bundle 已公开 S2PLT02 capture-window dry-run 摘要
 
-- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在 S2PLT02 capture-plan summary 里公开 `terminal_capture_window_audit_summary`。
+- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 历史当时都在 S2PLT02 capture-plan summary 里公开 `terminal_capture_window_audit_summary`。
 - 2026-06-29 和 2026-06-30 的 daily run 是 succeeded，但 SMTP product reports 是 dry-run：`dry_run_email_count=8`，`real_sent_candidate_email_count=0`，`terminal_delivery_credit=false`，`counts_toward_s2plt02_terminal_proof=false`。
-- 当前仍 blocked：prerequisite plan `state_hash=9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144`，final validator `state_hash=1ab9fa8e6fc25ea35fb5405a26917bbf2d5993b1911704b2d3acb654fdb5c5c5`，capture-window summary `state_hash=e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c`，capture-window CLI `state_hash=ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151`。
+- 历史当时仍 blocked：prerequisite plan `state_hash=9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144`，final validator `state_hash=1ab9fa8e6fc25ea35fb5405a26917bbf2d5993b1911704b2d3acb654fdb5c5c5`，capture-window summary `state_hash=e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c`，capture-window CLI `state_hash=ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151`。
 - Scheduler proof 仍非终态：final-bundle summary 为 `launchagent_runtime_state_unknown`；实际 capture-window CLI 为 `launchagents_loaded_but_disabled_not_terminal_scheduler_proof`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY.md)。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 23:18:23 Australia/Sydney - Final bundle 已公开 S2PLT04 completion evidence 阻断摘要
 
-- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在 final bundle 顶层公开 `s2plt04_completion_evidence_audit_summary`。
-- 当前仍 blocked：prerequisite plan `state_hash=b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4`，final validator `state_hash=5e0d1a81d1f8f8de49721844d8b96f376a74a11ee69170e30685c915032ed8e2`。
+- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 历史当时都在 final bundle 顶层公开 `s2plt04_completion_evidence_audit_summary`。
+- 历史当时仍 blocked：prerequisite plan `state_hash=b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4`，final validator `state_hash=5e0d1a81d1f8f8de49721844d8b96f376a74a11ee69170e30685c915032ed8e2`。
 - S2PLT04 audit 口径：`state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f`，`completion_report_ready=false`，`s2plt04_completion_report_written=false`。
-- 剩余缺口仍是 S2PLT02 terminal delivery proof 和 S2PLT03 terminal resilience proof；阻断为 `s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing`。
+- 历史当时剩余缺口是 S2PLT02 terminal delivery proof 和 S2PLT03 terminal resilience proof；阻断为 `s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY.md)。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 22:46:02 Australia/Sydney - Final bundle 已公开 P0/P1 zero-proof 状态摘要
 
-- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在 final bundle 顶层公开 `p0_p1_zero_proof_status_summary`。
-- 当前仍 blocked：prerequisite plan `state_hash=6036321e310edadb57834353b45c08a632100caab1f61dfd00fa7c108a57b05f`，final validator `state_hash=b0fc0aefd87ee9ed3c412024d534ec23a6fdf5d32316b6089fee769a3d24d758`。
+- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 历史当时都在 final bundle 顶层公开 `p0_p1_zero_proof_status_summary`。
+- 历史当时仍 blocked：prerequisite plan `state_hash=6036321e310edadb57834353b45c08a632100caab1f61dfd00fa7c108a57b05f`，final validator `state_hash=b0fc0aefd87ee9ed3c412024d534ec23a6fdf5d32316b6089fee769a3d24d758`。
 - P0/P1 口径：V7.1 inherited audit baseline 仍是历史基线 `P0=8;P1=37`，不改合同；当前 zero-proof artifact 已验证 pass，`current_zero_proof_counts=P0=0;P1=0`，artifact `state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`。
-- 剩余缺口仍是 S2PLT02/S2PLT03 terminal proof、S2PLT04 completion report、manifest、handoff、signoff 和 final command；这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
+- 历史当时剩余缺口是 S2PLT02/S2PLT03 terminal proof、S2PLT04 completion report、manifest、handoff、signoff 和 final command；这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY.md)。
 
 ## 2026-06-30 22:10:33 Australia/Sydney - Final bundle 已公开 S2PLT02 terminal artifact validation 阻断摘要
 
-- `plan-final-bundle-prerequisites`、`validate-final-acceptance-bundle` 和 `plan-s2plt02-terminal-delivery-proof-capture` 当前都在 final bundle 层公开 S2PLT02 terminal delivery proof artifact validation summary。
-- 当前仍 blocked：prerequisite plan `state_hash=084c08ec36f925dedb7ecb3488874a23d82090e124b0a791ecd34a998691e54c`，final validator `state_hash=8b7dc7003c7f60c9065448b2c86d7e1089aedc022b56a84a36487899aa604fa9`，S2PLT02 capture plan `state_hash=797c920987dcb0f38a1af8c8dc2ed80633c412cf9bb5f91686a7c29bfeaa68f8`。
+- `plan-final-bundle-prerequisites`、`validate-final-acceptance-bundle` 和 `plan-s2plt02-terminal-delivery-proof-capture` 历史当时都在 final bundle 层公开 S2PLT02 terminal delivery proof artifact validation summary。
+- 历史当时仍 blocked：prerequisite plan `state_hash=084c08ec36f925dedb7ecb3488874a23d82090e124b0a791ecd34a998691e54c`，final validator `state_hash=8b7dc7003c7f60c9065448b2c86d7e1089aedc022b56a84a36487899aa604fa9`，S2PLT02 capture plan `state_hash=797c920987dcb0f38a1af8c8dc2ed80633c412cf9bb5f91686a7c29bfeaa68f8`。
 - `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 仍缺失/未就绪：`terminal_artifact_present=false`、`terminal_artifact_ready=false`、`terminal_artifact_validation_errors=s2plt02_terminal_delivery_proof_artifact_missing`。
-- 剩余缺口：第二个连续真实 M1-M4 SMTP 日、8 封真实邮件、真实 scheduler proof、reviewed S2PLT02 terminal delivery proof artifact；`artifact_written=false`、`accepted=false`。
+- 历史当时剩余缺口：第二个连续真实 M1-M4 SMTP 日、8 封真实邮件、真实 scheduler proof、reviewed S2PLT02 terminal delivery proof artifact；`artifact_written=false`、`accepted=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_ARTIFACT_VALIDATION_SUMMARY.md)。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 21:38:54 Australia/Sydney - Final bundle 已公开 S2PLT03 capture plan 阻断摘要
 
-- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在 final bundle 层公开 S2PLT03 terminal resilience capture plan summary。
-- 当前仍 blocked：prerequisite plan `state_hash=3b2475e26547816b77885fddb170944fb858a4aa14fc04305de6798c288a8651`，final validator `state_hash=55e5d994d17ceb53cb8e8a1729c52e29d7808dd07527e9ee9a48f52982e129f5`，S2PLT03 capture plan `state_hash=bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5`。
+- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 历史当时都在 final bundle 层公开 S2PLT03 terminal resilience capture plan summary。
+- 历史当时仍 blocked：prerequisite plan `state_hash=3b2475e26547816b77885fddb170944fb858a4aa14fc04305de6798c288a8651`，final validator `state_hash=55e5d994d17ceb53cb8e8a1729c52e29d7808dd07527e9ee9a48f52982e129f5`，S2PLT03 capture plan `state_hash=bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5`。
 - S2PLT03 下一步仍是 `WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`；已完成的 local drill、resilience precheck 和 P0/P1 zero-proof 不能替代 terminal proof。
-- 剩余缺口：`S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`、`S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT`；`artifact_written=false`、`s2plt03_accepted=false`、`s2plt03_resilience_drill_completed=false`。
+- 历史当时剩余缺口：`S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`、`S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT`；`artifact_written=false`、`s2plt03_accepted=false`、`s2plt03_resilience_drill_completed=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT03_SUMMARY_SYNC.md)。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 20:57:02 Australia/Sydney - Final bundle 已给出 S2PLT02 capture command
 
 - `plan-final-bundle-prerequisites` 当前已经在顶层给出下一条可执行只读命令：`plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json`。
-- 当前仍 blocked：prerequisite plan `state_hash=9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b`，final validator `state_hash=e7f33cbf0d084cb00c547016d83139b47e62809e2638be3a33effc8dcbe74358`，S2PLT02 capture plan `state_hash=48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`。
+- 历史当时仍 blocked：prerequisite plan `state_hash=9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b`，final validator `state_hash=e7f33cbf0d084cb00c547016d83139b47e62809e2638be3a33effc8dcbe74358`，S2PLT02 capture plan `state_hash=48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`。
 - 这条命令的 dry-run 状态仍是 `blocked`，并且 `writes_artifact=false`、`satisfies_gate=false`、`dry_run_wrote_artifact=false`；它不会发送邮件、不会启用定时器、不会写 final bundle proof。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC.md)。这不是 S2PLT02/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 20:27:55 Australia/Sydney - Final bundle S2PLT02 runtime readiness 顶层同步
 
-- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 当前都在顶层显示同一份 S2PLT02 runtime readiness summary。
-- 当前仍 blocked：final validator `state_hash=b70e0ae4ab942c46018d87e28c09b9d8e839f4ab10682cbf4fde8e993a15194e`，prerequisite plan `state_hash=8878509d00a04899d9b4a647d98146dea5aa88e39f41a07d25f39b9848cb8878`，runtime readiness `state_hash=48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`。
+- `plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 历史当时都在顶层显示同一份 S2PLT02 runtime readiness summary。
+- 历史当时仍 blocked：final validator `state_hash=b70e0ae4ab942c46018d87e28c09b9d8e839f4ab10682cbf4fde8e993a15194e`，prerequisite plan `state_hash=8878509d00a04899d9b4a647d98146dea5aa88e39f41a07d25f39b9848cb8878`，runtime readiness `state_hash=48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`。
 - 剩余动作：采集第二个连续真实 M1-M4 SMTP 日、采集真实 launchd scheduler proof、写入并验证 reviewed S2PLT02 terminal delivery proof artifact。当前仍是 `1/2` 真实日、`4/8` 真实邮件。
 - SMTP secret env 名称级缺口：`ADP_SMTP_HOST;ADP_SMTP_PORT;ADP_SMTP_USERNAME;ADP_SMTP_PASSWORD`；`smtp_secret_env_ready=false`；`smtp_secret_values_logged=false`。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_RUNTIME_READINESS_SUMMARY.md)。这不是 S2PLT02/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
@@ -357,7 +357,7 @@
 
 ## 2026-06-30 18:11:03 Australia/Sydney - S2PLT02 捕获计划 runtime/auth 门
 
-- `plan-s2plt02-terminal-delivery-proof-capture` 当前不会直接进入真实 SMTP/scheduler 捕获；虽然 live authorization pass，但 `runtime_capture_ready=false`，下一步是 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
+- `plan-s2plt02-terminal-delivery-proof-capture` 历史当时不会直接进入真实 SMTP/scheduler 捕获；虽然 live authorization pass，但 `runtime_capture_ready=false`，下一步是 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
 - 阻断原因：`adp_allow_smtp_send_false`、`daily_run_succeeded_but_smtp_dry_run_not_terminal`、`blocked_candidate_inputs_present`、第二真实 M1-M4 SMTP 日缺失、真实 launchd scheduler proof 缺失。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE.md)。这不是 SMTP/scheduler/Release/production accepted。
 
@@ -383,7 +383,7 @@
 ## 2026-06-30 15:04:03 Australia/Sydney - S2PLT04 非终态汇总字段同步
 
 - S2PLT04 completion evidence audit 现在顶层显示：S2PLT02 非终态引用 14 条，最新引用为 readiness live 授权同步；S2PLT03 非终态引用 4 条，最新引用为 audit blocker zero-proof 同步。
-- 当前仍 blocked：缺 S2PLT02 terminal proof 和 S2PLT03 terminal proof；没有生成 S2PLT04 completion report。
+- 历史当时仍 blocked：缺 S2PLT02 terminal proof 和 S2PLT03 terminal proof；没有生成 S2PLT04 completion report。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC.md)。
 
 ## 2026-06-30 14:10:42 Australia/Sydney - S2PLT04 最新 S2PLT02 非终态证据同步
