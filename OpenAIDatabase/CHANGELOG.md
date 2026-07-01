@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 9 Stage 8 Review
+
+- Completed the Part 9 review for Stage 8.1 / 8.2 / Stage 8 overall: Local
+  App Packaging, Release Safety, and whole-stage Stage 8 review.
+- Added `validate:part9-stage8` to verify Stage 8 review docs, local app and
+  runtime contracts, renderer rollback contracts, production experiment
+  isolation, Stage 8 validators, installed app/runtime acceptance, and Part 9
+  records.
+- Reinstalled `~/Downloads/Memory Atlas.app` and `/Applications/Memory Atlas.app`
+  after the pre-check found `/Applications/Memory Atlas.app` missing and the
+  runtime manifest pointing at an older commit.
+- Replaced the Stage 8.1 model parameter hard-coded runtime `git_commit` with a
+  live audit contract: exact commit is validated by audit, not hard-coded.
+
+No Part 10 review, Stage 9 review, whole-project review, GitHub main upload,
+Cloudflare live deploy, Access policy change, raw/private data access, direct
+writeback, production runtime feature work, or external account operation was
+added.
+
+Machine-readable boundary summary: Stage 8.1 / 8.2 / Stage 8 overall; No Part
+10 review; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 8 Stage 7 Review
 
 - Completed the Part 8 review for Stage 7.1 / 7.2 / 7.3 / Stage 7 overall:

@@ -836,8 +836,10 @@ Stage 7 整体复审已确认：
   PASS，已安装 Downloads 与 `/Applications` app bundle。
 - `python3 OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py --repo-root OpenAIDatabase --publish-dir "$HOME/Library/Application Support/OpenAIDatabase/MemoryAtlas/runtime" --require-local-apps`
   PASS。
-- Runtime manifest 当前记录
-  `bb4cbd9d4eedbdfe9d95a5850994a293488fa742`。
+- Runtime manifest 的具体 `git_commit` 不在模型参数中硬编码；exact
+  commit is validated by audit, not hard-coded。以
+  `audit_memory_atlas_acceptance.py --require-local-apps` 与
+  `memory_atlas_build.json` 对当前 git HEAD 的实时比对为准。
 
 边界：
 
@@ -1386,3 +1388,48 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 9 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 30. Part 9 Stage 8 复审门槛
+
+状态：`part_9_stage_8_review_passed`。
+
+范围：
+
+- Stage 8.1 Local App Packaging。
+- Stage 8.2 Release Safety。
+- Stage 8 overall review。
+
+验收门槛：
+
+- `validate:part9-stage8` 必须通过。
+- Stage 8.1 必须保留 production build、临时 app bundle、launcher
+  single-window contract、default `记忆总览` route、pid cleanup 和 runtime
+  manifest gate。
+- Stage 8.2 必须保留 Galaxy / Timeline legacy rollback、new renderer
+  restore、localStorage persistence、release audit、overall acceptance audit
+  和 release notes gate。
+- Stage 8 overall 必须保留 `validate:stage8-local-app`、
+  `validate:stage8-release-safety`、`validate:stage8`、offline Cloudflare
+  Pages + Access preflight 和 4177 cleanup assertion。
+- 本地 `~/Downloads/Memory Atlas.app` 与 `/Applications/Memory Atlas.app`
+  必须存在且通过 `--require-local-apps` audit。
+- Application Support runtime 的 `memory_atlas_build.json` 必须匹配当前
+  git HEAD。
+- Stage 8 model parameters must not hard-code an old runtime git commit。
+- Stage 8 validators、release audit、overall acceptance 和 local app audit
+  必须通过。
+
+边界：
+
+- 本 Part 9 复审不进入 Part 10。
+- 本 Part 9 复审不进入 Stage 9。
+- 本 Part 9 复审不执行整项目复审。
+- 本 Part 9 复审不上传 GitHub main。
+- 本 Part 9 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 9 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 9 复审不新增 direct active-memory writeback。
+- 本 Part 9 复审不新增 production runtime feature work。
+
+下一阶段：
+
+- 单独执行 Part 10 复审与修复；所有 part-level 复审完成后再进入整项目复审。
