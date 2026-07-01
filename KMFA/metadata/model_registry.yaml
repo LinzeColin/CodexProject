@@ -1,4 +1,4 @@
-version: "0.1.0-s15p1-performance-fact-fields"
+version: "0.1.0-s15p2-performance-review-list"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -44,6 +44,7 @@ active_formula_ids:
   - "FORM-KMFA-INVOICE-TAX-PLAN-001"
   - "FORM-KMFA-POLICY-EVIDENCE-PLAN-001"
   - "FORM-KMFA-S15P1-PERFORMANCE-FACT-FIELD-SLOTS-001"
+  - "FORM-KMFA-S15P2-PERFORMANCE-REVIEW-LIST-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

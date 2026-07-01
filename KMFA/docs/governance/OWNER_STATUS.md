@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload，以及 S15-P1 绩效事实字段本地验证。S15-P1 只锁定 public-safe 绩效事实字段和人工复核标记；lineage 和正式报告运行时仍未完成，且当前报告等级仍为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload，以及 S15-P1 绩效事实字段和 S15-P2 绩效复核清单本地验证。S15-P1/S15-P2 只锁定 public-safe 绩效字段、事实表和复核事项；lineage 和正式报告运行时仍未完成，且当前报告等级仍为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -75,6 +75,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - Stage 14 整体复审已本地通过：`KMFA/tools/check_s14_stage_review.py`、`KMFA/tests/test_s14_stage_review.py` 和 `KMFA/stage_artifacts/S14_STAGE_REVIEW/` 已生成；复审复跑 S14-P1/P2/P3 validators、全量 191 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks，未执行 GitHub upload、S15、lineage full check、正式报告、付款、银行、贷款管理、开票、纳税申报、政策申报、补贴申请或外部接口。
 - Stage 14 final GitHub upload 已完成：`KMFA/stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S14_GITHUB_UPLOAD/machine/stage14_upload_manifest.json` 记录 validators、安全扫描、dry-run push、push 和 post-push parity。
 - S15-P1 绩效事实字段已本地验证完成：`KMFA/tools/performance_fact_fields.py`、`KMFA/tools/check_s15_p1_performance_fact_fields.py`、`KMFA/tests/test_performance_fact_fields.py`、`KMFA/metadata/reports/performance_fact_fields_manifest.json`、`performance_fact_field_definitions.jsonl`、`performance_fact_field_bindings.jsonl`、`performance_fact_manual_review_fields.jsonl` 和 `KMFA/stage_artifacts/S15_P1_performance_fact_fields/` 已生成；覆盖开票金额、毛利率、结算速度、回款速度、审计偏差、客情费率 6 个字段，4 个字段标记人工复核，不输出工资、奖金或薪资结果。
+- S15-P2 绩效复核清单已本地验证完成：`KMFA/tools/performance_review_list.py`、`KMFA/tools/check_s15_p2_performance_review_list.py`、`KMFA/tests/test_performance_review_list.py`、`KMFA/metadata/reports/performance_review_manifest.json`、`performance_fact_table.jsonl`、`performance_review_items.jsonl` 和 `KMFA/stage_artifacts/S15_P2_performance_review_list/` 已生成；输出 4 条 public-safe 绩效事实行和 16 条复核事项，不输出工资、奖金、薪资或最终发放结论。
 
 ## 你现在不能信任什么
 
@@ -83,8 +84,8 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、Stage 8 upload、Stage 9 upload 或 Stage 10 upload 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
-- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review、Stage 12 upload、S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审、Stage 13 upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据、Stage 14 review、Stage 14 upload 或 S15-P1 绩效事实字段等于完整业务系统；lineage full check 和正式报告仍未完成。
-- 不能认为 S15-P1 已经生成绩效事实表、绩效复核清单、工资计算、奖金审批、薪资导出或任何可执行薪酬结论。
+- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review、Stage 12 upload、S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审、Stage 13 upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据、Stage 14 review、Stage 14 upload、S15-P1 绩效事实字段或 S15-P2 绩效复核清单等于完整业务系统；lineage full check 和正式报告仍未完成。
+- 不能认为 S15-P2 已经生成工资计算、奖金审批、薪资导出、最终发放建议或任何可执行薪酬结论。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -93,4 +94,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S15-P2｜绩效复核清单`，且必须作为新 run work 重新确认 git/root/status 和 v1.2 task pack / roadmap；不得直接进入 S15-P3、Stage 15 review、GitHub upload、lineage full check、正式报告、工资计算、奖金审批、薪资导出或自动接口。
+下一步只执行 `S15-P3｜与工资项目边界`，且必须作为新 run work 重新确认 git/root/status 和 v1.2 task pack / roadmap；不得直接进入 Stage 15 review、GitHub upload、lineage full check、正式报告、工资计算、奖金审批、薪资导出或自动接口。
