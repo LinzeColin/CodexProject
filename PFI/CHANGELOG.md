@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 7 Whole-Stage Review - 2026-07-01
+
+- 完成 `Stage 7 whole-stage review - 复审并解决暴露问题`，复审 Phase 7.1 报告结构、Phase 7.2 页面展示和 Phase 7.3 验收。
+- 新增 `PFI/tests/test_v024_stage7_whole_review_contract.py`、`PFI/docs/pfi_v024/STAGE7_WHOLE_STAGE_REVIEW.md` 和 `PFI/reports/pfi_v024/stage_7/whole_stage_review/` evidence。
+- 复审发现 3 项均已 fixed：缺少 whole-stage review gate、顶层状态仍停在 Phase 7.3、缺少整阶段命令/证据汇总。
+- 复审确认报告中心 6 类报告、公式/参数/样本量/数据范围可见、数据不足阻断、反单段 AI 文本和无假数据边界均有证据。
+- 本轮不执行 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 7 Phase 7.3 - 2026-07-01
 
 - 完成 `Stage 7 / Phase 7.3 - 验收`：验收报告中心 6 类报告、数据不足报告、公式/参数/样本量/数据范围可见性和反单段 AI 文本退化。

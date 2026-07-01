@@ -1,0 +1,183 @@
+{
+  "schema": "PFIV024Stage7WholeReviewEvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 7",
+  "review_id": "stage_7_whole_review",
+  "current_run_unit": "Stage 7 whole-stage review",
+  "current_run_only": true,
+  "status": "pass",
+  "stage_7_candidate_complete": true,
+  "stage_7_whole_review_complete": true,
+  "github_main_uploaded": false,
+  "app_bundle_reinstall_executed": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "generated_at": "2026-07-01T04:30:00Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_before_review_commit": "b943989c62f75cb09f16f3e3fe3f6c69cfb8c7de",
+    "origin_main_observed_during_review": "efff7ce0494427069e162956ff08174cb111ec58",
+    "merge_base_with_origin_main": "3a2a778cafd5b925424270d1dc9d989c15911aeb",
+    "local_ahead_origin_main_observed_during_review": 3,
+    "local_behind_origin_main_observed_during_review": 6,
+    "origin_main_drift_touches_pfi": false
+  },
+  "reviewed_phase_ids": [
+    "7.1",
+    "7.2",
+    "7.3"
+  ],
+  "review_inputs": {
+    "phase_7_1": "PFI/reports/pfi_v024/stage_7/phase_7_1/evidence.json",
+    "phase_7_1_quality_gate": "PFI/reports/pfi_v024/stage_7/phase_7_1/report_quality_gate.json",
+    "phase_7_1_report_schema": "PFI/reports/pfi_v024/stage_7/phase_7_1/report_schema.json",
+    "phase_7_2": "PFI/reports/pfi_v024/stage_7/phase_7_2/evidence.json",
+    "phase_7_2_page_display": "PFI/reports/pfi_v024/stage_7/phase_7_2/page_display_validation.json",
+    "phase_7_2_view_model": "PFI/reports/pfi_v024/stage_7/phase_7_2/report_center_view_model.json",
+    "phase_7_3": "PFI/reports/pfi_v024/stage_7/phase_7_3/evidence.json",
+    "phase_7_3_acceptance_gate": "PFI/reports/pfi_v024/stage_7/phase_7_3/report_acceptance_gate.json",
+    "phase_7_3_browser_validation": "PFI/reports/pfi_v024/stage_7/phase_7_3/browser_validation.json",
+    "phase_7_3_formula_visibility": "PFI/reports/pfi_v024/stage_7/phase_7_3/formula_visibility.png"
+  },
+  "phase_statuses": {
+    "phase_7_1": "candidate_pass",
+    "phase_7_2": "candidate_pass",
+    "phase_7_3": "candidate_pass"
+  },
+  "acceptance_checks": {
+    "six_report_types_visible": {
+      "result": "pass",
+      "evidence": "Phase 7.2 and 7.3 visible_report_ids contain net_worth, cash, investment, consumption, cashflow, and data_quality reports"
+    },
+    "required_report_fields_present": {
+      "result": "pass",
+      "evidence": "Phase 7.1 report_quality_gate status=pass and reports_missing_fields=[]"
+    },
+    "data_quality_report_generated": {
+      "result": "pass",
+      "evidence": "Phase 7.1 data_quality_report_generated=true and Phase 7.3 data_insufficient_report_test_passed=true"
+    },
+    "formula_parameter_range_sample_visible": {
+      "result": "pass",
+      "evidence": "Phase 7.2 page_display_validation formula/parameters/sample/range=true and Phase 7.3 browser required_terms_visible=true"
+    },
+    "blocked_reports_have_no_full_financial_conclusion": {
+      "result": "pass",
+      "evidence": "Phase 7.3 financial_conclusion_when_blocked=[] and browser contains_full_financial_conclusion=false"
+    },
+    "single_ai_paragraph_reports_rejected": {
+      "result": "pass",
+      "evidence": "Phase 7.1 ai_paragraph_report_ids=[] and Phase 7.3 single_paragraph_report_ids=[]"
+    },
+    "browser_formula_visibility_screenshot": {
+      "result": "pass",
+      "evidence": "Phase 7.3 browser_validation formula_visibility_screenshot=true and screenshot bytes > 10000"
+    },
+    "no_forbidden_financial_data_added": {
+      "result": "pass",
+      "evidence": "Stage 7 changes only add contracts, view models, tests, docs, scripts and evidence; no user financial source data mutation"
+    }
+  },
+  "validation_surface": {
+    "report_count": 6,
+    "blocked_report_count": 4,
+    "partial_report_count": 1,
+    "ready_report_count": 1,
+    "source_record_count": 8815,
+    "source_raw_file_count": 4,
+    "source_date_range": {
+      "start": "2022-06-06",
+      "end": "2026-06-03"
+    },
+    "source_read_model_hash": "sha256:89c3bac811ce9e38d78dae3fdb646a12e17d9eadb86ac2c2cc52b3a3642add2a",
+    "browser_validation_status": "pass",
+    "formula_visibility_screenshot_bytes": 940663
+  },
+  "stop_condition_audit": {
+    "report_missing_formula_or_sample_size": "absent",
+    "single_ai_paragraph_report": "absent",
+    "data_insufficient_full_financial_conclusion": "absent",
+    "report_numbers_from_forbidden_source": "absent"
+  },
+  "review_findings": [
+    {
+      "id": "S7-REVIEW-F1",
+      "severity": "P1",
+      "status": "fixed",
+      "finding": "Stage 7 had no whole-stage review gate or evidence after Phase 7.1/7.2/7.3 candidate pass.",
+      "fix": "Added STAGE7_WHOLE_STAGE_REVIEW.md, whole_stage_review evidence pack, terminal log, changed files, risk/rollback, and contract test.",
+      "verification": "test_v024_stage7_whole_review_contract.py covers artifacts, bounded scope, phase consistency, stop conditions, findings, and non-upload gate."
+    },
+    {
+      "id": "S7-REVIEW-F2",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Top-level status files still described Stage 7 Phase 7.3 as the current run after the stage became ready for whole-stage review.",
+      "fix": "Updated README, HANDOFF, RUN_CONTRACT, STAGE7_REPORT_ANALYSIS, CHANGELOG, and the three baseline status files to record whole-stage review status and next GitHub upload gate.",
+      "verification": "Stage 7 whole review contract reads the whole_stage_review evidence and phase inputs; final diff/status checks confirm bounded PFI-only changes."
+    },
+    {
+      "id": "S7-REVIEW-F3",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Stage 7 lacked one consolidated command/evidence surface tying report schema, page display, browser screenshot, stop-condition audit, and no-data-mutation boundary together before upload.",
+      "fix": "Added whole_stage_review/evidence.json with reviewed phase IDs, acceptance checks, validation surface, stop-condition audit, commands, remaining gates, and explicit non-goals.",
+      "verification": "json evidence checks, target whole review pytest, phase regressions, Phase 7.3 browser validation, Stage 6 adjacent regression, node checks, screenshot size check, and git diff check are recorded as pass."
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "pytest stage7 whole review red run",
+      "status": "expected_fail",
+      "detail": "4 failed: missing STAGE7_WHOLE_STAGE_REVIEW.md and whole_stage_review/evidence.json artifacts"
+    },
+    {
+      "cmd": "pytest stage7 whole review contract",
+      "status": "pass",
+      "detail": "5 passed"
+    },
+    {
+      "cmd": "pytest stage7 phase regression",
+      "status": "pass",
+      "detail": "11 passed"
+    },
+    {
+      "cmd": "node stage7 phase73 browser validation",
+      "status": "pass",
+      "detail": "candidate_pass, report_count=6, formula_visibility_screenshot_bytes=940663"
+    },
+    {
+      "cmd": "pytest stage6 adjacent regression",
+      "status": "pass",
+      "detail": "16 passed"
+    },
+    {
+      "cmd": "node syntax checks",
+      "status": "pass",
+      "detail": "node --check reports.js, shell.js, and validate_v024_stage7_phase73_report_acceptance.js"
+    },
+    {
+      "cmd": "json evidence checks",
+      "status": "pass",
+      "detail": "json.tool Stage 7 whole review, Phase 7.1, Phase 7.2, and Phase 7.3 evidence files"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "pass"
+    }
+  ],
+  "remaining_gates": [
+    "GitHub main upload"
+  ],
+  "explicitly_not_done": [
+    "GitHub main upload",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "requires_user_acceptance": true,
+  "no_auto_upload": true
+}
