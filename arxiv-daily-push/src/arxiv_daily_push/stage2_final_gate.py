@@ -12219,6 +12219,9 @@ def build_integrated_production_acceptance_preflight_state(
         "next_task_is_production_boundary_preflight": (
             f"next_executable_task: {S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_TASK_ID}"
             in current_pointer_text
+            or f"current_iteration: ITER-20260701-ADP-{S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_TASK_ID}"
+            in current_pointer_text
+            or "current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_pointer_text
         ),
         "final_bundle_ready": final_bundle.get("status") == "pass"
         and final_bundle.get("missing_items") == [],

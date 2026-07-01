@@ -9476,6 +9476,22 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             post_final_bundle_next_task["acceptance_ids"],
             ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"],
         )
+        production_boundary_preflight_next_task = dashboard.adp_s2pmt07_blocked_next_task(
+            matrix={
+                "current_iteration": "ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT",
+                "current_gate": "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE",
+                "current_v7_legacy_alias": "production-boundary preflight passed",
+            }
+        )
+        self.assertEqual(
+            production_boundary_preflight_next_task["task_id"],
+            "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION",
+        )
+        self.assertIn("owner production-boundary decision", production_boundary_preflight_next_task["reason"])
+        self.assertEqual(
+            production_boundary_preflight_next_task["acceptance_ids"],
+            ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"],
+        )
         s2plt02_terminal_next_task = dashboard.adp_s2pmt07_blocked_next_task(
             matrix={
                 "current_iteration": "ITER-20260630-ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE",

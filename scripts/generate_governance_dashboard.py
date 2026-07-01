@@ -152,6 +152,11 @@ def adp_s2pmt07_blocked_next_task(
         or "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE" in current_gate
         or "final bundle artifact chain complete" in current_alias.lower()
     )
+    production_boundary_preflight_ready = (
+        "INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT" in current_iteration
+        or "INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_gate
+        or "production-boundary preflight passed" in current_alias.lower()
+    )
     completion_report_is_next = (
         "S2PLT04-COMPLETION-REPORT" in current_iteration
         or "S2PLT04_COMPLETION_REPORT" in current_gate
@@ -195,6 +200,25 @@ def adp_s2pmt07_blocked_next_task(
         or "real-proof capture" in current_alias
         or "real proof capture" in current_alias
     )
+    if production_boundary_preflight_ready:
+        return {
+            "task_id": "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION",
+            "status": "blocked",
+            "reason": (
+                "The S2PMT07 production-boundary preflight checks passed with final bundle ready, "
+                "open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and no background "
+                "ADP process. The remaining action is owner production-boundary decision evidence "
+                "before any INTEGRATED_PRODUCTION_ACCEPTED write or DAILY_OPERATION enablement."
+            ),
+            "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "Record owner production-boundary decision evidence, then run the final acceptance "
+                "write gate without enabling SMTP/scheduler/Release/restore automatically."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
     if final_bundle_chain_ready:
         return {
             "task_id": "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT",
@@ -350,6 +374,11 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         or "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE" in current_gate
         or "final bundle artifact chain complete" in current_alias.lower()
     )
+    production_boundary_preflight_ready = (
+        "INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT" in current_iteration
+        or "INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_gate
+        or "production-boundary preflight passed" in current_alias.lower()
+    )
     s2plt02_terminal_delivery_ready = (
         "S2PLT02_TERMINAL_DELIVERY_PROOF_READY" in current_gate
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
@@ -416,6 +445,14 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     ):
         capture_window_runtime_clause = (
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
+        )
+    if production_boundary_preflight_ready:
+        return (
+            "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
+            "the integrated production acceptance preflight as passed no-production evidence; "
+            "record owner production-boundary decision evidence next, and do not enable "
+            "SMTP, scheduler, Release, restore, DAILY_OPERATION, or write "
+            "INTEGRATED_PRODUCTION_ACCEPTED automatically."
         )
     if final_bundle_chain_ready:
         return (
@@ -1073,7 +1110,29 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         owner_decision["current_recommendation"] = adp_s2pmt07_current_recommendation(matrix)
         current_gate_text = str(matrix.get("current_gate") or "")
         current_iteration_text = str(matrix.get("current_iteration") or "")
-        if (
+        production_boundary_preflight_ready = (
+            "INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT" in current_iteration_text
+            or "INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_gate_text
+        )
+        if production_boundary_preflight_ready:
+            owner_decision["review_id"] = "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
+            owner_decision["decision_question"] = (
+                "S2PMT07 production-boundary preflight 已通过；是否记录 owner 生产验收边界决策证据，"
+                "进入最终 acceptance write gate，同时继续禁止自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+            )
+            owner_decision["question"] = owner_decision["decision_question"]
+            owner_decision["option_a"] = (
+                "记录 owner 生产验收边界决策证据：preflight 已验证 final bundle ready、"
+                "open_pr_count=0、持久 ADP_ALLOW_SMTP_SEND=false、LaunchAgents disabled、无后台 ADP 进程；"
+                "下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+            )
+            owner_decision["evidence_required"] = (
+                "preflight checks passed, final bundle manifest pass, no-production side-effect "
+                "attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, "
+                "open_pr_count=0, no background ADP process, and owner production-boundary decision"
+            )
+            owner_decision["unblock_task_id"] = next_task["task_id"]
+        elif (
             "POST_FINAL_BUNDLE_CURRENT_STATE_SYNC" in current_gate_text
             or "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE" in current_gate_text
             or "POST-FINAL-BUNDLE-CURRENT-STATE-SYNC" in current_iteration_text

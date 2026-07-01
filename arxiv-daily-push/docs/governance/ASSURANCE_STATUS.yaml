@@ -1,10 +1,10 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC"
-source_snapshot_hash: "sha256:b3c0f505dc442012d6075297e33ac6c72aaa49b81b93d4b214e2e92b1a838ba4"
+as_of_event_id: "EVENT-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
+source_snapshot_hash: "sha256:3124497d8ee4bcc2628ee36d66291de53312079d3cc9b5386037c6f110ae118f"
 source_base_commit: "fa91a3cccf4204c4d902fb54adb17561ca58c6ec"
 source_tree_hash: "2d52c91fa61298c3a314dde3d6b4d21d4fe50949"
-snapshot_event_time: "2026-07-01T14:49:29+10:00"
-generator_version: "4.0.1"
+snapshot_event_time: "2026-07-01T15:16:36+10:00"
+generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -12,7 +12,6 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "scripts/validate_project_governance.py"
-      - "FINAL_ACCEPTANCE_BUNDLE/manifest.json"
   implementation_congruence:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
@@ -44,94 +43,83 @@ dimensions:
     fact_level: "EXTRACTED"
     unresolved_fact_ids: []
     evidence_refs:
-      - "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json"
-      - "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
+      - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
   operational_validation:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     unresolved_fact_ids: []
     evidence_refs:
-      - "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json"
-      - "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"
+      - "arxiv-daily-push/docs/governance/development_events.jsonl"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
-      - "FINAL_ACCEPTANCE_BUNDLE/manifest.json"
-      - "HANDOFF/00_下一Agent先读.md"
+      - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 1
     commit_bound_events: 4
-    legacy_unbound_events: 323
+    legacy_unbound_events: 325
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "BLOCKED_PRODUCTION_BOUNDARY"
-  release_gate: "S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC_READY_NO_PRODUCTION_ACCEPTANCE"
+  status: "BLOCKED_PRECHECK"
+  release_gate: "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE"
   blocker_ids:
-    - "INTEGRATED_PRODUCTION_ACCEPTED_NOT_WRITTEN"
-    - "DAILY_OPERATION_NOT_ENABLED"
+    - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
   v7_roadmap_hash: "7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1"
   v7_parallel_audit: "ADP-V7.2-FINAL-BASELINE-REVIEW"
   v7_parallel_audit_hash: "571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c"
-  inherited_v7_1_baseline_p0_findings: 8
-  inherited_v7_1_baseline_p1_findings: 37
-  current_zero_proof_open_p0_findings: 0
-  current_zero_proof_open_p1_findings: 0
-  baseline_counts_mutated: false
-  p0_p1_zero_proof_artifact: "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
-  final_bundle_manifest: "FINAL_ACCEPTANCE_BUNDLE/manifest.json"
-  final_bundle_missing_items: []
-  final_bundle_manifest_validation_state_hash: "558ec135fde8912868be73fe472c39bdd3a99f2038500eae15cb70baef470762"
-  final_bundle_readiness_state_hash: "2e37a815934c84ffb08b79df572ec058081cfabb3fbbd4e8a2aba3630de36e4c"
-  final_bundle_prerequisite_plan_state_hash: "a05ed0633ecf8dbd0b1fd93e82b2ad568886544465b5be488ac043f7849ce87b"
-  production_forbidden_until: "INTEGRATED_PRODUCTION_ACCEPTED written with evidence; owner production boundary decision recorded; production safety preflight passes"
+  open_p0_findings: 8
+  open_p1_findings: 37
+  production_forbidden_until: "inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed"
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
-  production_acceptance_claimed: false
-  daily_operation_enabled: false
-  parallel_shadow_source_task: "NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW"
+  parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
+  task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION"
   status: "blocked"
-  reason: "S2PMT07 final acceptance bundle artifact chain is complete and validates with missing_items=[]; production acceptance remains false, so the next action is production-boundary preflight and owner decision evidence, not rebuilding S2PLT04 or enabling SMTP/scheduler/Release automatically."
+  reason: "The S2PMT07 production-boundary preflight checks passed with final bundle ready, open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and no background ADP process. The remaining action is owner production-boundary decision evidence before any INTEGRATED_PRODUCTION_ACCEPTED write or DAILY_OPERATION enablement."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
     - "ACC-S2PL-INTEGRATED-PRODUCTION"
   owner: "content_owner + engineering_owner + independent_final_reviewer"
   human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Review final bundle, no-production attestation, LaunchAgent disabled state, persistent ADP_ALLOW_SMTP_SEND=false state, open_pr_count=0, and owner production boundary decision before writing INTEGRATED_PRODUCTION_ACCEPTED evidence."
+  unblock_condition: "Record owner production-boundary decision evidence, then run the final acceptance write gate without enabling SMTP/scheduler/Release/restore automatically."
+  stale_candidates:
+    -
+      task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
+      reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
 owner_decision:
   required: true
   decision_id: "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701"
-  review_id: "S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC"
+  review_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
   project_id: "arxiv-daily-push"
-  decision_question: "是否在最终验收包已通过且 no-production 边界仍有效的前提下，进入 INTEGRATED_PRODUCTION_ACCEPTED 生产验收边界预检。"
-  question: "是否在最终验收包已通过且 no-production 边界仍有效的前提下，进入 INTEGRATED_PRODUCTION_ACCEPTED 生产验收边界预检。"
+  decision_question: "S2PMT07 production-boundary preflight 已通过；是否记录 owner 生产验收边界决策证据，进入最终 acceptance write gate，同时继续禁止自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+  question: "S2PMT07 production-boundary preflight 已通过；是否记录 owner 生产验收边界决策证据，进入最终 acceptance write gate，同时继续禁止自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat FINAL_ACCEPTANCE_BUNDLE/manifest.json and missing_items=[] as validated no-production final-bundle evidence; do not rebuild S2PLT04/final-bundle artifacts and do not enable SMTP, scheduler, Release, restore, or DAILY_OPERATION until production boundary evidence is explicitly written."
-  option_a: "继续 S2PMT07 final bundle 后的生产边界预检；保持 no-production flags，不自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the integrated production acceptance preflight as passed no-production evidence; record owner production-boundary decision evidence next, and do not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, or write INTEGRATED_PRODUCTION_ACCEPTED automatically."
+  option_a: "记录 owner 生产验收边界决策证据：preflight 已验证 final bundle ready、open_pr_count=0、持久 ADP_ALLOW_SMTP_SEND=false、LaunchAgents disabled、无后台 ADP 进程；下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
   option_b: "暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。"
   option_c: "越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。"
   options:
-    - "继续 S2PMT07 final bundle 后的生产边界预检；保持 no-production flags，不自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+    - "记录 owner 生产验收边界决策证据：preflight 已验证 final bundle ready、open_pr_count=0、持久 ADP_ALLOW_SMTP_SEND=false、LaunchAgents disabled、无后台 ADP 进程；下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
     - "暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。"
     - "越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。"
   estimated_effort: "P0/P1; production boundary safety review; owner decision; no-production proof verification"
   estimated_cost_or_resource: "local development and GitHub main evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "把已通过的 final bundle 状态与生产边界状态分开，避免重复 S2PLT04，同时阻止误启生产。"
   principal_risks: "将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement"
-  evidence_required: "FINAL_ACCEPTANCE_BUNDLE/manifest.json pass, no-production side-effect attestation pass, launchd disabled proof, persistent ADP_ALLOW_SMTP_SEND=false, open_pr_count=0, owner production-boundary decision"
+  evidence_required: "preflight checks passed, final bundle manifest pass, no-production side-effect attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, no background ADP process, and owner production-boundary decision"
   decision_deadline_or_priority: "P0"
   consequence_of_no_decision: "Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。"
-  unblock_task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
+  unblock_task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION"
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
     - "ACC-S2PL-INTEGRATED-PRODUCTION"
