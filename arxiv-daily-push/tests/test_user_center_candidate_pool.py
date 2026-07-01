@@ -1488,6 +1488,29 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
                 self.assertIn("[截至今日候选池](./截至今日候选池.md)", text)
                 self.assertIn("候选队列前20精选", text)
 
+    def test_mvp_prep_entry_is_visible_from_owner_first_paths_without_s3_enablement(self):
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+        one_look = (USER_CENTER / "一看三查.md").read_text(encoding="utf-8")
+        decisions = (USER_CENTER / "关键结论与用户决策.md").read_text(encoding="utf-8")
+        roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
+        mvp = (USER_CENTER / "MVP准备与复审修补.md").read_text(encoding="utf-8")
+
+        for text in (readme, one_look, decisions, roadmap):
+            self.assertIn("[MVP 准备与复审修补](./MVP准备与复审修补.md)", text)
+        self.assertIn("Stage 2 最终门 | 已通过 Stage 2 integrated acceptance", one_look)
+        self.assertIn("S3 / DAILY_OPERATION | 不进入；保持禁用", one_look)
+        self.assertIn("宣称 S3/DAILY_OPERATION 已进入 | 不可以", one_look)
+        self.assertIn("Stage 2 integrated acceptance | `stage2_integrated_production_accepted=true`", roadmap)
+        self.assertIn("DAILY_OPERATION | `daily_operation_enabled=false`", roadmap)
+        self.assertIn("Stage 2 integrated acceptance | 已记录并保持 `true`", readme)
+        self.assertIn("这不代表 S3/DAILY_OPERATION 已进入", readme)
+        self.assertIn("当前不进入 S3/DAILY_OPERATION", one_look)
+        self.assertIn("不进入 S3/DAILY_OPERATION", mvp)
+        self.assertNotIn("Stage 2 最终门 | 未通过", one_look)
+        self.assertNotIn("不能宣称正式生产验收完成", one_look)
+        self.assertNotIn("Stage 2 是否正式生产通过 | 没有", readme)
+        self.assertNotIn("这不是 Stage 2 生产验收通过声明", readme)
+
     def test_user_center_exposes_board_data_source_catalog(self):
         controls = load_owner_controls(CONTROLS)
         page = DATA_SOURCE_PAGE.read_text(encoding="utf-8")
