@@ -69,10 +69,12 @@ Cloudflare 方案：
 - Search/Review：搜索与复盘必须输出人能直接用的结论和行动，不只给数据库字段。
 - Summary & Iteration：包含给 ChatGPT/Codex 使用的建议 `Personalization / Memory`、`Agents.md / 执行规则`、`config.toml`、`Memory`，显示更新时间，标明新增/修改/降权含义。
 - Shared State Store：`src/state/sharedAtlasState.ts` 统一记录 selected node、cluster、record、time range、signal、data source、tier/layer、category、theme、ROI filter 和 sync revision；Home、Galaxy、Timeline、Inspector、ROI Dashboard 读取同一 focus target。
+- Inspector：Stage 6.2 起默认显示人类可读解释、记忆权重公式、ROI leverage 公式、共享焦点公式、参数和脱敏证据摘要；agent 结构化字段和低敏数据库摘要只在手动开启 Debug / Agent Inspector 后显示。
 
 Writeback：
 
 - 前端允许生成长期记忆写回 proposal，但不能直接修改 active memory。
+- Stage 6.2 起写回区提供 proposal JSON preview 和 safety strip；前端状态必须保持 `direct_frontend_mutation_of_active_memory=false`、`requires_conflict_check=true`、`requires_agent_or_human_apply=true`。
 - proposal 必须包含 diff、版本链、parent proposal id、导出历史、rollback proposal。
 - 真正 apply 必须由 agent/human 重新读库、冲突检查、写 history、git commit。
 
@@ -93,6 +95,7 @@ Writeback：
 - `python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist`
 - `npm run build --prefix apps/memory-atlas`
 - `npm run validate:shared-state --prefix apps/memory-atlas`
+- `npm run validate:inspector-proposal --prefix apps/memory-atlas`
 - 关键浏览器 smoke：页面可打开、导航可切换、Timeline 动态控件可见、Obsidian/summary 不空白。
 
 安全验收：
@@ -123,6 +126,7 @@ Writeback：
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 5.3 Evidence Layers；Memory River 增加黑洞生命周期、机会生命周期和冷却/废弃 fade layer。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 5 整体复审；复审确认 5.1 River Rendering、5.2 River Interaction、5.3 Evidence Layers 均通过，Stage 5 整阶段复审通过，仍未部署 Cloudflare、未读取 raw/private 数据、未直接写回长期记忆。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 6.1 Shared State Store；新增 typed shared-state reducer、selection/filter/time range/focus schema、single-dispatch loop guard、`validate:shared-state` 和 `stage6_1_shared_state_store_ready` visual acceptance 钩子；Home、Galaxy、Timeline、Inspector、ROI Dashboard 共享同一 focus target；Stage 6.2 Inspector/Proposal、Stage 6 整体复审、GitHub main 上传仍未进入。
+- 2026-07-01：完成 Memory Atlas v1.1.5 Stage 6.2 Inspector and Proposal；Inspector 默认解释面板显示公式、参数、脱敏证据和人类可读解释；Debug / Agent Inspector 默认关闭；写回区只生成 proposal JSON preview 和本地版本提案，仍不直接修改 active memory；Stage 6 整体复审和 GitHub main 上传仍未进入。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.1 默认首页实现；`记忆总览` 成为启动板块，左侧导航保留，首页显示 Memory Weather、Universe State 状态卡、Black Hole / Proto-Star 信号和 proposal-only 行动建议；Galaxy 与 Timeline 仍未替换。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.2 首页预览组件；首页新增轻量 `Mini Starfield`、近期主题变化 `River Pulse` 和 `Inspector Deep Link`，点击前同步当前焦点再进入 Galaxy、Timeline 或详情检索；Stage 3 整体复审通过，仍未替换 Galaxy/Timeline、未直接写回长期记忆、未读取 raw/private 数据。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 4.1 Galaxy Rendering Integration；`memory-starfield` 成为 Galaxy 默认生产 renderer，`legacy` 可通过 feature flag 回滚；生产 Galaxy 增加 Flow Field 动态、轨迹线、语义信号标记、quality selector 和低质量 fallback，仍未进入 Stage 4.2 数据映射或 Stage 4.3 交互扩展。
@@ -143,7 +147,7 @@ Writeback：
 
 高优先级：
 
-- Stage 6.2 Inspector and Proposal：解释卡、proposal-only writeback JSON、安全 debug-lite 分离。
+- Stage 6 整体复审：复核 6.1 shared state 与 6.2 Inspector/Proposal 的交互、安全和验收闭环，通过后再汇总上传 GitHub main。
 - Timeline 后续增强多阶段聚类摘要、相邻时间段差异解释，以及 evidence layer 碰撞规避和阈值校准。
 - Writeback 增加 agent apply CLI：读取 proposal、冲突检测、写 history、更新 active memory、生成 git rollback commit。
 - Summary & Iteration 增加更强人类版输出：ROI 建议、能力成长建议、机会地图、下周行动建议。
