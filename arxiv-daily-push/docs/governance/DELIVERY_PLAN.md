@@ -21,10 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 342
+- task_count: 343
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-01 21:37:03 Australia/Sydney - S2PMT07 persistent DAILY_OPERATION authorization gate
+
+- Task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
+- Result: `blocked_persistent_daily_operation_authorization_missing_no_runtime_enablement`
+- Evidence: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json`; `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_GATE.md`.
+- Gate state: `status=blocked_persistent_daily_operation_authorization_missing`; `blocking_reasons=persistent_daily_operation_authorization_missing`; `state_hash=f9ef81e7a07bca57e11876e2a53d3d18e9148d6da7c8919002ce6cfb55f8ef61`.
+- Missing artifact: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`.
+- Boundary: one-time controlled real-run acceptance and keep-disabled owner decision are not persistent DAILY_OPERATION authorization. `persistent_daily_operation_authorized=false`; `daily_operation_enabled=false`; SMTP, scheduler, Release, and production restore remain disabled.
+- Next required step: `OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION`; do not run enablement until a separate explicit owner authorization artifact exists and a separate enablement preflight passes.
+- Verification: focused final-gate/CLI tests passed; full validation is required before commit. No production runtime was enabled.
 
 ## 2026-07-01 21:10:04 Australia/Sydney - S2PMT07 daily operation owner decision keep disabled
 

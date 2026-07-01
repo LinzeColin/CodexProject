@@ -2411,6 +2411,35 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["release_packaging_enabled"])
         self.assertFalse(payload["production_restore_enabled"])
 
+    def test_daily_operation_persistent_enablement_authorization_json_command_blocks_without_artifact(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "daily-operation-persistent-enablement-authorization",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-07-01T21:45:00+10:00",
+                    "--json",
+                ]
+            )
+
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["task_id"], "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION")
+        self.assertEqual(payload["status"], "blocked_persistent_daily_operation_authorization_missing")
+        self.assertEqual(payload["daily_operation_persistent_authorization_validation_errors"], [])
+        self.assertFalse(payload["persistent_daily_operation_authorized"])
+        self.assertFalse(payload["daily_operation_enablement_allowed_by_this_artifact"])
+        self.assertIn("persistent_daily_operation_authorization_missing", payload["blocking_reasons"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["release_packaging_enabled"])
+        self.assertFalse(payload["production_restore_enabled"])
+
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {
             "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,

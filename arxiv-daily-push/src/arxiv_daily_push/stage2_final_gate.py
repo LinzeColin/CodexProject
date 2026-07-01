@@ -260,6 +260,30 @@ S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_KEEP_DISABLED = (
 S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_FORBIDDEN_FLAGS = (
     S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_RUNTIME_FORBIDDEN_FLAGS
 )
+S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_TASK_ID = (
+    "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
+)
+S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_SCHEMA_VERSION = (
+    "adp.daily_operation_persistent_enablement_authorization.v1"
+)
+S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_SCOPE = (
+    "daily_operation_persistent_enablement_authorization_gate_no_runtime_enablement"
+)
+S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_ARTIFACT_REF = (
+    "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"
+)
+S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_GATE_ARTIFACT_REF = (
+    "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json"
+)
+S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_CONTROLLED_RUN_REF = (
+    "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"
+)
+S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_DECISION = (
+    "authorize_persistent_daily_operation_enablement"
+)
+S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_FORBIDDEN_FLAGS = (
+    S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_RUNTIME_FORBIDDEN_FLAGS
+)
 S2PMT07_BLOCKING_REASONS = (
     "reviewer_independence_not_proven",
     "inherited_v7_1_p0_findings_open",
@@ -13989,6 +14013,226 @@ def validate_daily_operation_owner_authorization_decision_state(state: Mapping[s
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("daily operation owner decision state_hash does not match state content")
+    return errors
+
+
+def _validate_persistent_daily_operation_authorization_artifact(artifact: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if artifact.get("schema_version") != S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_SCHEMA_VERSION:
+        errors.append("persistent daily operation authorization artifact schema_version is invalid")
+    if artifact.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("persistent daily operation authorization artifact contract_id is invalid")
+    if artifact.get("task_id") != S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_TASK_ID:
+        errors.append("persistent daily operation authorization artifact task_id is invalid")
+    if artifact.get("decision") != S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_DECISION:
+        errors.append("persistent daily operation authorization artifact decision is invalid")
+    if artifact.get("explicit_persistent_daily_operation_authorization") is not True:
+        errors.append("persistent daily operation authorization artifact must be explicit")
+    if artifact.get("authorization_scope") != "persistent_daily_operation_enablement":
+        errors.append("persistent daily operation authorization artifact authorization_scope is invalid")
+    if artifact.get("authorized_by") not in {"owner", "owner/coordinator"}:
+        errors.append("persistent daily operation authorization artifact authorized_by is invalid")
+    for flag in S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_FORBIDDEN_FLAGS:
+        if artifact.get(flag) is not False:
+            errors.append(f"persistent daily operation authorization artifact must not enable {flag}")
+    return errors
+
+
+def build_daily_operation_persistent_enablement_authorization_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+    persistent_authorization_artifact_ref: str = (
+        S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_ARTIFACT_REF
+    ),
+) -> dict[str, Any]:
+    """Validate whether persistent DAILY_OPERATION has explicit owner authorization."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    owner_decision_ref = S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_ARTIFACT_REF
+    owner_decision = _load_json_mapping_artifact(root / owner_decision_ref)
+    owner_decision_errors = validate_daily_operation_owner_authorization_decision_state(owner_decision)
+    controlled_ref = S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_CONTROLLED_RUN_REF
+    controlled_run = _load_json_mapping_artifact(root / controlled_ref)
+    controlled_owner_auth = _mapping(controlled_run.get("owner_authorization"))
+    controlled_result = _mapping(controlled_run.get("controlled_run_result"))
+    controlled_boundary = _mapping(controlled_run.get("production_boundary"))
+    controlled_post_safety = _mapping(controlled_run.get("post_run_safety_state"))
+    persistent_authorization = _load_json_mapping_artifact(root / persistent_authorization_artifact_ref)
+    persistent_authorization_errors = (
+        _validate_persistent_daily_operation_authorization_artifact(persistent_authorization)
+        if persistent_authorization
+        else []
+    )
+    persistent_authorized = bool(persistent_authorization) and not persistent_authorization_errors
+    checks = {
+        "owner_decision_artifact_present": bool(owner_decision),
+        "owner_decision_artifact_valid": not owner_decision_errors,
+        "owner_decision_recorded_keep_disabled": (
+            owner_decision.get("status") == "pass_daily_operation_owner_decision_recorded_keep_disabled"
+            and owner_decision.get("persistent_daily_operation_authorized") is False
+            and owner_decision.get("daily_operation_enabled") is False
+        ),
+        "controlled_real_run_acceptance_present": bool(controlled_run),
+        "controlled_real_run_acceptance_passed": str(controlled_run.get("status", "")).startswith("pass_"),
+        "controlled_real_run_authorization_consumed": controlled_owner_auth.get("authorization_used") is True,
+        "controlled_real_run_was_one_foreground_command": (
+            "one foreground local-runner daily command"
+            in str(controlled_owner_auth.get("authorization_scope", ""))
+        ),
+        "controlled_real_run_did_not_authorize_daily_operation": (
+            controlled_boundary.get("counts_as_daily_operation_enablement") is False
+            and controlled_boundary.get("daily_operation_enabled") is False
+        ),
+        "controlled_real_run_post_safety_disabled": (
+            controlled_post_safety.get("persistent_adp_allow_smtp_send") == "false"
+            and controlled_post_safety.get("adp_background_process_count_after") == 0
+        ),
+        "controlled_real_run_all_mail_products_accounted": controlled_result.get("all_planned_products_sent") is True,
+        "persistent_authorization_artifact_present": bool(persistent_authorization),
+        "persistent_authorization_artifact_valid": bool(persistent_authorization) and not persistent_authorization_errors,
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if persistent_authorized:
+        status = "pass_persistent_daily_operation_authorization_recorded_no_runtime_enablement"
+        blocking_reasons: list[str] = []
+        next_required_step = "RUN_DAILY_OPERATION_ENABLEMENT_PREFLIGHT_WITH_RUNTIME_STILL_DISABLED"
+        next_executable_task = "S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT"
+    elif not persistent_authorization:
+        status = "blocked_persistent_daily_operation_authorization_missing"
+        blocking_reasons = [
+            "persistent_daily_operation_authorization_missing",
+            *[
+                f"{name}_failed"
+                for name in failed_checks
+                if name
+                not in {
+                    "persistent_authorization_artifact_present",
+                    "persistent_authorization_artifact_valid",
+                }
+            ],
+        ]
+        next_required_step = "OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION"
+        next_executable_task = S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_TASK_ID
+    else:
+        status = "blocked_persistent_daily_operation_authorization_invalid"
+        blocking_reasons = [f"{name}_failed" for name in failed_checks]
+        next_required_step = "REPAIR_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_ARTIFACT"
+        next_executable_task = S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_TASK_ID
+    state = {
+        "schema_version": S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_SCHEMA_VERSION,
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "task_id": S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_TASK_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
+        "generated_at": generated_at,
+        "status": status,
+        "scope": S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_SCOPE,
+        "gate_artifact_ref": S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_GATE_ARTIFACT_REF,
+        "persistent_authorization_artifact_ref": persistent_authorization_artifact_ref,
+        "persistent_authorization_artifact_validation_errors": persistent_authorization_errors,
+        "owner_decision_artifact_ref": owner_decision_ref,
+        "owner_decision_state_hash": owner_decision.get("state_hash", ""),
+        "owner_decision_validation_errors": owner_decision_errors,
+        "controlled_real_run_acceptance_manifest_ref": controlled_ref,
+        "controlled_real_run_status": controlled_run.get("status", ""),
+        "controlled_real_run_generated_at": controlled_run.get("generated_at", ""),
+        "controlled_real_run_authorization_text": controlled_owner_auth.get("authorization_text", ""),
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": blocking_reasons,
+        "persistent_daily_operation_authorized": persistent_authorized,
+        "owner_daily_operation_authorization_recorded": persistent_authorized,
+        "daily_operation_enablement_allowed_by_this_artifact": persistent_authorized,
+        "authorization_text": (
+            "Persistent DAILY_OPERATION is blocked because no separate explicit owner authorization artifact exists."
+            if not persistent_authorization
+            else str(persistent_authorization.get("authorization_text", ""))
+        ),
+        "next_required_step": next_required_step,
+        "next_executable_task": next_executable_task,
+        "production_acceptance_claimed": True,
+        "integrated_production_accepted": True,
+        "stage2_integrated_production_accepted": True,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_daily_operation_persistent_enablement_authorization_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the persistent DAILY_OPERATION authorization gate without runtime enablement."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_SCHEMA_VERSION:
+        errors.append("daily operation persistent authorization gate schema_version is invalid")
+    if state.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("daily operation persistent authorization gate contract_id is invalid")
+    if state.get("task_id") != S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_TASK_ID:
+        errors.append("daily operation persistent authorization gate task_id is invalid")
+    if state.get("scope") != S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_SCOPE:
+        errors.append("daily operation persistent authorization gate scope is invalid")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("daily operation persistent authorization gate failed_checks must match checks")
+    persistent_authorized = bool(state.get("persistent_daily_operation_authorized"))
+    artifact_present = checks.get("persistent_authorization_artifact_present") is True
+    if persistent_authorized:
+        expected_status = "pass_persistent_daily_operation_authorization_recorded_no_runtime_enablement"
+        expected_blocking: list[str] = []
+        expected_next = "RUN_DAILY_OPERATION_ENABLEMENT_PREFLIGHT_WITH_RUNTIME_STILL_DISABLED"
+    elif not artifact_present:
+        expected_status = "blocked_persistent_daily_operation_authorization_missing"
+        expected_blocking = [
+            "persistent_daily_operation_authorization_missing",
+            *[
+                f"{name}_failed"
+                for name in failed_checks
+                if name
+                not in {
+                    "persistent_authorization_artifact_present",
+                    "persistent_authorization_artifact_valid",
+                }
+            ],
+        ]
+        expected_next = "OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION"
+    else:
+        expected_status = "blocked_persistent_daily_operation_authorization_invalid"
+        expected_blocking = [f"{name}_failed" for name in failed_checks]
+        expected_next = "REPAIR_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_ARTIFACT"
+    if state.get("status") != expected_status:
+        errors.append("daily operation persistent authorization gate status must match checks")
+    if state.get("blocking_reasons") != expected_blocking:
+        errors.append("daily operation persistent authorization gate blocking_reasons must match checks")
+    if state.get("owner_daily_operation_authorization_recorded") is not persistent_authorized:
+        errors.append("daily operation persistent authorization gate authorization flag must match state")
+    if state.get("daily_operation_enablement_allowed_by_this_artifact") is not persistent_authorized:
+        errors.append("daily operation persistent authorization gate enablement flag must match state")
+    if state.get("next_required_step") != expected_next:
+        errors.append("daily operation persistent authorization gate next_required_step is invalid")
+    for flag in S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"daily operation persistent authorization gate must not enable {flag}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("daily operation persistent authorization gate state_hash does not match state content")
     return errors
 
 

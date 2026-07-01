@@ -15,11 +15,11 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: "S2PMT07 daily operation authorization preflight has passed all technical prechecks, and the DAILY_OPERATION owner decision has been recorded as keep-disabled because no current artifact authorizes persistent DAILY_OPERATION. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited until a separate explicit owner authorization and enablement artifact exists."
-  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED
-  current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT
+  global_current_task_meaning: "S2PMT07 persistent DAILY_OPERATION authorization gate has run and is blocked because FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json does not exist. The prior one-time controlled real run and keep-disabled owner decision do not authorize persistent DAILY_OPERATION. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited until a separate explicit owner authorization artifact and enablement preflight pass."
+  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE
+  current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_NO_RUNTIME_ENABLEMENT
   next_executable_task: S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION
-  next_required_step: DAILY_OPERATION_REMAINS_DISABLED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION
+  next_required_step: OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
   email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW
@@ -104,6 +104,15 @@ production_boundary:
   daily_operation_owner_authorization_recorded: false
   daily_operation_persistent_authorized: false
   daily_operation_owner_decision_enablement_allowed: false
+  daily_operation_persistent_authorization_gate_written: true
+  daily_operation_persistent_authorization_gate_status: blocked_persistent_daily_operation_authorization_missing
+  daily_operation_persistent_authorization_gate_artifact: FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json
+  daily_operation_persistent_authorization_gate_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json
+  daily_operation_persistent_authorization_gate_state_hash: f9ef81e7a07bca57e11876e2a53d3d18e9148d6da7c8919002ce6cfb55f8ef61
+  daily_operation_persistent_authorization_artifact: FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json
+  daily_operation_persistent_authorization_blocking_reasons:
+    - persistent_daily_operation_authorization_missing
+  daily_operation_persistent_authorization_enablement_allowed: false
   integrated_production_acceptance_owner_decision_request_ready: true
   integrated_production_acceptance_owner_decision_request_state_hash: b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea
   integrated_production_acceptance_owner_decision_request_artifact: FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json
