@@ -10,10 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT02_LAUNCHAGENT_ROOT_CURRENT_MAIN_GUARD_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 281
+- Current gate: S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 282
 - Reconstructed event count: 0
-- Current task: `S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD` / `S2PLT02_LAUNCHAGENT_ROOT_CURRENT_MAIN_GUARD_BLOCKED_NO_PRODUCTION` hardens `audit-s2plt02-real-scheduler-proof-capture` so a scheduler proof candidate cannot be produced from LaunchAgents pointing at a different repo root/project root or at a repo root whose `HEAD != origin/main`. Live audit against the canonical LaunchAgent root remains `status=blocked`, `scheduler_proof_ready=false`, `state_hash=89b033448ce4ef8de096f847658c0a0beb3b02f5115965b10b30c3f5661ae878`, and blockers `launchagents_disabled_not_terminal_scheduler_proof;launchagent_repo_head_not_current_main;scheduler_run_manifest_missing`. Actual ADP LaunchAgents currently point at `/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject` with HEAD `9266a609eed3f8143f939abad29e7295e8d52f53` while `origin/main=0e205f71ed29091752cf0964212329f873f7d4ca`; therefore no real scheduler proof can be accepted yet. Evidence: `governance/run_manifests/ADP-S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD-20260701.json`, phase record `PHASE_S2PLT02_LAUNCHAGENT_ROOT_CURRENT_MAIN_GUARD.md`. No scheduler was enabled or kickstarted, no SMTP was sent, no terminal proof artifact was written, and no Stage2/S3/integrated production acceptance is claimed.
+- Current task: `S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT` / `S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT_BLOCKED_NO_PRODUCTION` aligns the installed canonical ADP LaunchAgent checkout `/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject` to current `origin/main` while preserving unrelated local Serenity dirty files. Live audit now reports `status=blocked`, `scheduler_proof_ready=false`, `state_hash=1ce7c3dc8bf1a20c6aed90182a4c43f056f4f01b504c159781c15c0afbc332df`, blockers `launchagents_disabled_not_terminal_scheduler_proof;scheduler_run_manifest_missing`, and root/project/current-main checks all `true` for daily, health, and watchdog. The previous `launchagent_repo_head_not_current_main` blocker is resolved, but no real scheduler proof can be accepted while LaunchAgents remain disabled and no scheduler run manifest exists. Evidence: `governance/run_manifests/ADP-S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT-20260701.json`, phase record `PHASE_S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT.md`. No scheduler was enabled or kickstarted, no SMTP was sent, no terminal proof artifact was written, and no Stage2/S3/integrated production acceptance is claimed.
+- Previous LaunchAgent root/current-main guard remains visible: `S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD` blocked stale or mismatched LaunchAgent roots with state hash `89b033448ce4ef8de096f847658c0a0beb3b02f5115965b10b30c3f5661ae878`; the canonical checkout has since been aligned to current `origin/main`.
 - Previous controlled real 20260701 run remains visible: `S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC` recorded `status=pass`, `real_smtp_sent=true`, `sent_mail_count=4`, `observed_real_delivery_days=2/2`, and `observed_real_email_count=8/8`, but still lacked `REAL_SCHEDULER_PROOF` and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
 - Previous terminal scheduler blocker sync remains visible: `S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC` confirmed `observed_real_delivery_days=2/2` and `observed_real_email_count=8/8` after the controlled second-day capture, but still showed stale SMTP runtime blockers before this scheduler-only blocker sync.
 - Previous controlled real second-day capture remains visible: `S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE` supplied the second real M1-M4 SMTP service day and raised S2PLT02 observed evidence to `2/2` days and `8/8` emails; it is no longer the current blocker.
@@ -65,6 +66,20 @@ The append-only machine record is `development_events.jsonl`.
 - Current final validator remains blocked / exit 2: prerequisite plan `state_hash=9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9`, final readiness `state_hash=2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae`. This is visibility only; it does not write final-bundle live artifacts or claim production acceptance.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY.md`.
 
+
+
+### `ITER-20260701-ADP-S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT`
+
+- Timestamp: 2026-07-01 10:57:11 Australia/Sydney
+- Task: `S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT`
+- Gate: `S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT_BLOCKED_NO_PRODUCTION`
+- Result: `blocked_no_write_canonical_launchagent_checkout_aligned`
+- Summary: Canonical ADP LaunchAgent checkout now has `HEAD == origin/main`; root/project/current-main checks all pass for daily, health, and watchdog. Unrelated local Serenity dirty content was preserved with checksum mismatch count `0`.
+- Live audit: `status=blocked`; `scheduler_proof_ready=false`; `real_scheduler_proven=false`; `state_hash=1ce7c3dc8bf1a20c6aed90182a4c43f056f4f01b504c159781c15c0afbc332df`.
+- Blocking reasons: `launchagents_disabled_not_terminal_scheduler_proof`; `scheduler_run_manifest_missing`.
+- Remaining blockers: temporarily enable the required LaunchAgent path under a controlled no-background-pressure window, capture valid real scheduler proof, then build/review/write/validate `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`.
+- Boundary: No scheduler enable/install/kickstart, SMTP send, terminal/final artifact write, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or integrated production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT.md`.
 
 
 ### `ITER-20260701-ADP-S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD`

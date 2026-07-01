@@ -30,32 +30,35 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_summary_describes_s2plt02_current_main_root_guard_and_blockers(self) -> None:
+    def test_current_state_summary_describes_s2plt02_canonical_alignment_and_blockers(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_LAUNCHAGENT_ROOT_CURRENT_MAIN_GUARD_BLOCKED_NO_PRODUCTION",
+            "S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT_BLOCKED_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD", current_state)
+        self.assertIn("S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT", current_state)
         self.assertIn("scheduler_proof_ready=false", current_state)
         self.assertIn("launchagents_disabled_not_terminal_scheduler_proof", current_state)
-        self.assertIn("launchagent_repo_head_not_current_main", current_state)
         self.assertIn("scheduler_run_manifest_missing", current_state)
-        self.assertIn("89b033448ce4ef8de096f847658c0a0beb3b02f5115965b10b30c3f5661ae878", current_state)
+        self.assertNotIn("launchagent_repo_head_not_current_main;", current_state)
+        self.assertIn("1ce7c3dc8bf1a20c6aed90182a4c43f056f4f01b504c159781c15c0afbc332df", current_state)
         self.assertIn("/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject", current_state)
-        self.assertIn("9266a609eed3f8143f939abad29e7295e8d52f53", current_state)
-        self.assertIn("0e205f71ed29091752cf0964212329f873f7d4ca", current_state)
+        self.assertIn("root/project/current-main checks all `true`", current_state)
+        self.assertIn("canonical checkout has since been aligned to current `origin/main`", current_state)
         self.assertIn(
-            "ADP-S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD-20260701.json",
+            "ADP-S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT-20260701.json",
             current_state,
         )
-        self.assertIn("PHASE_S2PLT02_LAUNCHAGENT_ROOT_CURRENT_MAIN_GUARD.md", ledger)
+        self.assertIn("PHASE_S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT.md", ledger)
         self.assertIn("No scheduler was enabled or kickstarted", current_state)
         self.assertIn("no SMTP was sent", current_state)
         self.assertIn("no terminal proof artifact was written", current_state)
         self.assertIn("no Stage2/S3/integrated production acceptance is claimed", current_state)
+        self.assertIn("Previous LaunchAgent root/current-main guard remains visible", current_state)
+        self.assertIn("S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD", current_state)
+        self.assertIn("89b033448ce4ef8de096f847658c0a0beb3b02f5115965b10b30c3f5661ae878", current_state)
         self.assertIn("Previous controlled real 20260701 run remains visible", current_state)
         self.assertIn("S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC", current_state)
         self.assertIn("real_smtp_sent=true", current_state)
