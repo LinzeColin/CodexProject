@@ -1,0 +1,17 @@
+PFI/src/pfi_v02/stage_v024_stage7_report_analysis.py
+PFI/tests/test_v024_stage7_phase71_report_schema.py
+PFI/docs/pfi_v024/STAGE7_REPORT_ANALYSIS.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+PFI/reports/pfi_v024/stage_7/phase_7_1/evidence.json
+PFI/reports/pfi_v024/stage_7/phase_7_1/report_schema.json
+PFI/reports/pfi_v024/stage_7/phase_7_1/report_quality_gate.json
+PFI/reports/pfi_v024/stage_7/phase_7_1/data_quality_report.json
+PFI/reports/pfi_v024/stage_7/phase_7_1/terminal.log
+PFI/reports/pfi_v024/stage_7/phase_7_1/changed_files.txt
+PFI/reports/pfi_v024/stage_7/phase_7_1/risk_and_rollback.md
+PFI/README.md
+PFI/HANDOFF.md
+PFI/CHANGELOG.md
+PFI/功能清单.md
+PFI/开发记录.md
+PFI/模型参数文件.md

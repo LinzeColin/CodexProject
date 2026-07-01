@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 7 Phase 7.1 - 2026-07-01
+
+- 完成 `Stage 7 / Phase 7.1 - 报告结构`：建立 v0.2.4 报告 schema、6 类报告类型、数据不足阻断规则和导出字段。
+- 新增 `PFI/src/pfi_v02/stage_v024_stage7_report_analysis.py`、`PFI/tests/test_v024_stage7_phase71_report_schema.py`、`PFI/docs/pfi_v024/STAGE7_REPORT_ANALYSIS.md` 和 `PFI/reports/pfi_v024/stage_7/phase_7_1/` evidence。
+- 报告结构读取 Stage 4 真实 read model status：`MetaDatabase/PFI` ready，`8815` 条记录，`4` 个原始文件，as of `2026-06-03`；净资产/现金/投资/现金流缺少输入时保持 blocked。
+- 本轮不执行 Phase 7.2 页面展示、Phase 7.3 验收、Stage 7 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 6 GitHub Main Upload - 2026-07-01
 
 - 完成 `Stage 6 GitHub main upload gate`：将 Stage 6 Phase 6.1、Phase 6.2、Phase 6.3 和 whole-stage review package rebase 到当前 `origin/main` 后上传。

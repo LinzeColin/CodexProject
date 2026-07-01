@@ -1,0 +1,79 @@
+{
+  "report_id": "data_quality_report",
+  "report_type": "data_quality",
+  "title_zh": "数据质量报告",
+  "status": "ready",
+  "conclusion_zh": "真实 MetaDatabase/PFI 已加载 8815 条记录，仍有 3 个核心指标缺少 read model，先生成数据质量报告。",
+  "formula_zh": "数据质量 = 真实数据源状态 + 核心指标阻断数量 + 缺口复核入口；阻断项清零前不输出完整财务分析。",
+  "parameters": [
+    {
+      "parameter_id": "source_status",
+      "label_zh": "数据源状态",
+      "value": "ready",
+      "source": "Stage 4 read model status",
+      "adjustable": false
+    },
+    {
+      "parameter_id": "blocked_metric_count",
+      "label_zh": "阻断指标数量",
+      "value": 3,
+      "source": "Stage 4 read model status",
+      "adjustable": false
+    }
+  ],
+  "data_range": {
+    "start": "2022-06-06",
+    "end": "2026-06-03"
+  },
+  "sample_size": {
+    "transaction_count": 8815,
+    "raw_file_count": 4,
+    "account_count": 0,
+    "holding_count": 0
+  },
+  "metric_sources": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
+  ],
+  "confidence": 0.9,
+  "gaps": [
+    {
+      "metric_id": "net_worth_cny",
+      "status": "source_missing",
+      "reason_zh": "未挂链账户余额与持仓 read model，无法计算净资产",
+      "review_route": "/reports?tab=data-quality"
+    },
+    {
+      "metric_id": "cash_balance_cny",
+      "status": "source_missing",
+      "reason_zh": "未挂链账户余额 read model，无法计算现金余额",
+      "review_route": "/reports?tab=data-quality"
+    },
+    {
+      "metric_id": "investment_market_value_cny",
+      "status": "source_missing",
+      "reason_zh": "未挂链持仓市值 read model，无法计算投资市值",
+      "review_route": "/reports?tab=data-quality"
+    }
+  ],
+  "anomalies": [],
+  "review_entry": {
+    "label_zh": "查看数据缺口与复核入口",
+    "route": "/reports?tab=data-quality"
+  },
+  "export_fields": [
+    "report_id",
+    "report_type",
+    "title_zh",
+    "status",
+    "conclusion_zh",
+    "formula_zh",
+    "parameter_summary_zh",
+    "data_range_start",
+    "data_range_end",
+    "transaction_count",
+    "raw_file_count",
+    "confidence",
+    "gap_count",
+    "review_route"
+  ]
+}

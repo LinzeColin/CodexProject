@@ -1,0 +1,37 @@
+Stage 7 Phase 7.1 report schema validation log
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase71_report_schema.py -q
+4 failed in 0.09s
+
+Expected RED reason:
+Missing pfi_v02.stage_v024_stage7_report_analysis module and Stage 7 Phase 7.1 evidence pack before implementation.
+
+GREEN:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase71_report_schema.py -q
+4 passed in 0.07s
+
+Adjacent Stage 6 regression:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py PFI/tests/test_v024_stage6_phase62_motion_feedback.py PFI/tests/test_v024_stage6_phase63_haptics_settings.py -q
+16 passed in 0.30s
+
+Syntax:
+python3 -m py_compile PFI/src/pfi_v02/stage_v024_stage7_report_analysis.py
+pass
+
+Evidence JSON:
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_1/evidence.json
+pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_1/report_schema.json
+pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_1/report_quality_gate.json
+pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_1/data_quality_report.json
+pass
+
+Diff:
+git diff --check -- PFI
+pass
+
+Boundary:
+Phase 7.2, Phase 7.3, Stage 7 whole-stage review, GitHub main upload, app bundle reinstall, and financial data mutation were not executed in this phase run.

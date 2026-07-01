@@ -1,0 +1,16 @@
+{
+  "schema": "PFIV024Stage7Phase71QualityGateV1",
+  "target_version": "v0.2.4",
+  "stage": "Stage 7",
+  "phase_id": "7.1",
+  "status": "pass",
+  "report_count": 6,
+  "required_report_count": 6,
+  "missing_report_ids": [],
+  "reports_missing_fields": [],
+  "data_quality_report_generated": true,
+  "ai_paragraph_report_ids": [],
+  "financial_conclusion_when_blocked": [],
+  "forbidden_source_terms": [],
+  "failures": []
+}
