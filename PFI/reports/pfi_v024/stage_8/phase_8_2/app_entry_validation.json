@@ -1,0 +1,51 @@
+{
+  "schema": "PFIV024Stage8Phase82AppEntryValidationV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "repair_label": "PFI v0.2.3 Repair",
+  "build_id": "pfi-v024-stage2-phase22",
+  "ui_contract_version": "PFI-V024-STAGE2-ENTRY-CONSISTENCY",
+  "status": "pass",
+  "app_url": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=app&pfi_app_path=%2FUsers%2Flinzezhang%2FDownloads%2FPFI.app",
+  "localhost_url": "http://127.0.0.1:8601/?pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY&pfi_entry=localhost",
+  "app_bundle_hash": "f48b2ce4dacd9bc92087ccff8692bb1d58eb69d731b97fc291220aea35901996",
+  "localhost_bundle_hash": "f48b2ce4dacd9bc92087ccff8692bb1d58eb69d731b97fc291220aea35901996",
+  "app_localhost_same_bundle_hash": true,
+  "selected_app_path": "/Users/linzezhang/Downloads/PFI.app",
+  "selected_app_points_to_current_checkout": true,
+  "applications_app_points_to_current_checkout": false,
+  "downloads_app_points_to_current_checkout": true,
+  "bindings": {
+    "applications": {
+      "path": "/Applications/PFI.app",
+      "exists": false,
+      "project_root": "",
+      "dry_run_exit_code": 1,
+      "dry_run_stdout": "",
+      "dry_run_stderr": "missing app executable"
+    },
+    "downloads": {
+      "path": "/Users/linzezhang/Downloads/PFI.app",
+      "exists": true,
+      "project_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+      "dry_run_exit_code": 0,
+      "dry_run_stdout": "PFI_APP_LAUNCH: project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI command=./StartPFI.command command_path=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/StartPFI.command mode=spawn-command",
+      "dry_run_stderr": ""
+    },
+    "selected": {
+      "path": "/Users/linzezhang/Downloads/PFI.app",
+      "exists": true,
+      "project_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+      "dry_run_exit_code": 0,
+      "dry_run_stdout": "PFI_APP_LAUNCH: project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI command=./StartPFI.command command_path=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/StartPFI.command mode=spawn-command",
+      "dry_run_stderr": ""
+    },
+    "applications_project_root": "",
+    "downloads_project_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+    "applications_app_points_to_current_checkout": false,
+    "downloads_app_points_to_current_checkout": true
+  },
+  "app_screenshot": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/app_home.png",
+  "localhost_screenshot": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/localhost_home.png",
+  "generated_at": "2026-07-01T04:53:43.135Z"
+}
