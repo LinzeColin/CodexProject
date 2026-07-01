@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s17p1-access-security"
+version: "0.1.0-s17p2-notification"
 current_stage: "S17"
-current_phase: "S17PB"
+current_phase: "S17PC"
 current_phase_status: "ready"
-current_stage_status: "in_progress_s17p1_completed_local_only"
+current_stage_status: "in_progress_s17p2_completed_local_only"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -33,6 +33,10 @@ machine_plane:
   - "metadata/reports/report_export_records.jsonl"
   - "metadata/security/access_security_policy_manifest.json"
   - "metadata/security/role_permission_matrix.jsonl"
+  - "metadata/notifications/notification_manifest.json"
+  - "metadata/notifications/notification_rules.jsonl"
+  - "metadata/notifications/notification_events.jsonl"
+  - "metadata/notifications/notification_dispatch_log.jsonl"
   - "metadata/security/public_repo_sensitive_data_policy.jsonl"
   - "metadata/security/audit_log_policy.jsonl"
   - "metadata/reports/home_navigation_manifest.json"
@@ -477,5 +481,15 @@ upload_policy:
   stage16_upload_evidence: "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md"
   stage16_upload_manifest: "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
   stage16_blocker: "none_stage16_uploaded"
+  stage17_s17p1_completed_validated_local_only: true
+  stage17_s17p1_evidence: "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
+  stage17_s17p1_manifest: "KMFA/stage_artifacts/S17_P1_access_security/machine/s17_p1_manifest.json"
+  stage17_s17p2_completed_validated_local_only: true
+  stage17_s17p2_evidence: "KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md"
+  stage17_s17p2_manifest: "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json"
+  stage17_review_required_before_upload: true
+  stage17_review_passed: false
+  stage17_uploaded_to_github_main: false
+  stage17_blocker: "s17p3_not_started_stage17_review_not_started"
   next_phase_upload_allowed: false
-  upload_surface: "stage16_uploaded_next_s17p1"
+  upload_surface: "stage16_uploaded_next_s17p3"

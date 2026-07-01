@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S17"
-current_phase_id: "S17PB"
-current_task_id: "KMFA-S17-P2-GATE"
-next_gate_id: "KMFA-S17-P2-GATE"
+current_phase_id: "S17PC"
+current_task_id: "KMFA-S17-P3-GATE"
+next_gate_id: "KMFA-S17-P3-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1255,9 +1255,9 @@ stages:
               - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
   - stage_id: "S17"
     name: "权限、通知、安全、审计与运维"
-    status: "in_progress_s17p1_completed_local_only"
+    status: "in_progress_s17p2_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 33
+    estimated_pct: 67
     stop_conditions:
       - "原始数据被污染"
       - "金额精度使用 float"
@@ -1272,6 +1272,7 @@ stages:
         - "复审 findings 已修复"
       evidence:
         - "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
+        - "KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md"
       failure_action: "fix_and_rerun"
     phases:
       - phase_id: "S17PA"
@@ -1302,12 +1303,35 @@ stages:
               - "KMFA/metadata/security/audit_log_policy.jsonl"
       - phase_id: "S17PB"
         name: "通知"
-        status: "ready"
+        objective: "建立报告生成完成、重大风险、数据源缺失三类提醒，并把通知日志写入 metadata。"
+        status: "completed_validated_local_only"
         estimated_hours: 1
-        estimated_pct: 0
+        estimated_pct: 100
+        evidence_refs:
+          - "KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md"
+          - "KMFA/stage_artifacts/S17_P2_notification/human/test_results.md"
+          - "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json"
+        tasks:
+          - task_id: "S17PBT01"
+            name: "报告生成完成、重大风险、数据源缺失发送提醒。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/notifications/notification_rules.jsonl"
+              - "KMFA/metadata/notifications/notification_events.jsonl"
+          - task_id: "S17PBT02"
+            name: "邮件只发提醒，不发完整报告正文。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/notifications/notification_dispatch_log.jsonl"
+          - task_id: "S17PBT03"
+            name: "通知日志进入 metadata。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/notifications/notification_events.jsonl"
+              - "KMFA/metadata/notifications/notification_dispatch_log.jsonl"
       - phase_id: "S17PC"
         name: "运维与SOP"
-        status: "planned"
+        status: "ready"
         estimated_hours: 1
         estimated_pct: 0
   - stage_id: "S18"

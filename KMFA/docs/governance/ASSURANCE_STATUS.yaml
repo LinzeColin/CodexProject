@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S16-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260701-S17P2-NOTIFICATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "25698b30517e07e0655ff842f588d008516bc1d9"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16_UPLOAD_COMMIT"
 snapshot_event_time: "2026-07-01T23:00:00+10:00"
-generator_version: "manual-s16-github-upload"
+generator_version: "manual-s17p2-notification"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 224
-    total_active_formulas: 46
+    total_active_parameters: 230
+    total_active_formulas: 47
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -400,14 +400,16 @@ dimensions:
       - "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/machine/stage13_upload_manifest.json"
       - "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
       - "KMFA/stage_artifacts/S17_P1_access_security/machine/s17_p1_manifest.json"
+      - "KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S17P1_COMPLETED_VALIDATED_LOCAL_ONLY"
-  release_gate: "KMFA-S17-P2-GATE"
+  status: "S17P2_COMPLETED_VALIDATED_LOCAL_ONLY"
+  release_gate: "KMFA-S17-P3-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"
