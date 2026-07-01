@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 5 GitHub Main Upload - 2026-07-01
+
+- 准备 `Stage 5 GitHub main upload gate`：将 Stage 5 Phase 5.1、Phase 5.2、Phase 5.3 和 whole-stage review package 上传到 GitHub main。
+- 新增 `PFI/src/pfi_v02/stage_v024_stage5_experience.py`、`PFI/docs/pfi_v024/STAGE5_GITHUB_MAIN_UPLOAD.md`、`PFI/tests/test_v024_stage5_github_upload_contract.py` 和 `PFI/reports/pfi_v024/stage_5/github_main_upload/evidence.json`。
+- 上传 gate 重新验证 Stage 5 upload contract、whole-stage review、Phase 5.1/5.2/5.3 回归、Stage 3/4 相邻回归、JS syntax、JSON evidence 和 diff。
+- 本轮不执行 Stage 6，不重装 app bundle，不修改 launcher C/Info.plist，不写入、清理、删除、补造或改写真实财务数据。
+
 ## v0.2.4 Repair Pack Stage 5 Whole-Stage Review - 2026-07-01
 
 - 完成 `Stage 5 whole-stage review - 复审并解决暴露问题`，复审 Phase 5.1 首页、Phase 5.2 二级页面差异化、Phase 5.3 交互状态。

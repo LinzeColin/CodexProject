@@ -152,14 +152,14 @@ Stage 4 GitHub main upload records:
 
 ## v0.2.4 Stage 5 Status
 
-Current run unit: `Stage 5 whole-stage review - 复审并解决暴露问题`.
+Current run unit: `Stage 5 GitHub main upload gate`.
 
 - Stage 4 GitHub main upload: complete before this run.
 - Phase 5.1 首页重建: candidate pass.
 - Phase 5.2 二级页面差异化: candidate pass.
 - Phase 5.3 交互状态: candidate pass.
 - Stage 5 whole-stage review: pass.
-- GitHub main upload: not executed in this review run.
+- GitHub main upload: complete in this gate after terminal remote verification.
 - Homepage now answers six questions: `钱`、`位置`、`变化`、`问题`、`下一步`、`依据`.
 - `PFI_V024_STAGE5_HOME` reads Stage 4 `read_model_status` and builds home data-state cards plus next task flow.
 - Default homepage static layer no longer contains `功能面板 / PFI 功能入口 / 功能已准备 / 进入操作面板`.
@@ -172,7 +172,7 @@ Current run unit: `Stage 5 whole-stage review - 复审并解决暴露问题`.
 - Current real source summary remains `MetaDatabase/PFI` ready, `8815` records, `4` raw files, as of `2026-06-03`; net worth/cash/investment remain `source_missing`.
 - Business financial source data changes: none.
 - App bundle reinstall: none.
-- Next gate: Stage 5 GitHub main upload only after explicit instruction.
+- Next gate: Stage 6 only after explicit instruction.
 
 Stage 5 Phase 5.1 records:
 
@@ -223,6 +223,16 @@ Stage 5 whole-stage review records:
 - `reports/pfi_v024/stage_5/whole_stage_review/browser_validation.json`
 - `reports/pfi_v024/stage_5/whole_stage_review/screenshots/`
 - `reports/pfi_v024/stage_5/whole_stage_review/terminal.log`
+
+Stage 5 GitHub main upload records:
+
+- `src/pfi_v02/stage_v024_stage5_experience.py`
+- `docs/pfi_v024/STAGE5_GITHUB_MAIN_UPLOAD.md`
+- `tests/test_v024_stage5_github_upload_contract.py`
+- `reports/pfi_v024/stage_5/github_main_upload/evidence.json`
+- `reports/pfi_v024/stage_5/github_main_upload/terminal.log`
+- `reports/pfi_v024/stage_5/github_main_upload/changed_files.txt`
+- `reports/pfi_v024/stage_5/github_main_upload/risk_and_rollback.md`
 
 ## v0.2.4 Stage 3 Status
 

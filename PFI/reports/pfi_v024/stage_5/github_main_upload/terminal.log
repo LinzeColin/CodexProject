@@ -1,0 +1,53 @@
+Stage 5 GitHub main upload RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_github_upload_contract.py -q
+result=expected red, 3 failed: missing stage_v024_stage5_experience module and stage_5/github_main_upload evidence pack
+
+REMOTE BASELINE:
+git fetch origin main
+result=pass
+
+git rev-parse HEAD
+result=7f25524895c782fb398bb46d95f577563bdc3c36
+
+git rev-parse origin/main
+result=bb195504ff65d54533ede164d2212608c6972906
+
+git rev-list --left-right --count HEAD...origin/main
+result=4/0 before upload gate commit
+
+PRE-PUSH VALIDATION 2026-07-01T11:35:40+1000:
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/scripts/validate_v024_stage5_whole_review_browser.js
+result=pass
+
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage5_experience.py PFI/src/pfi_os/app/streamlit_app.py PFI/tests/test_v024_stage5_github_upload_contract.py PFI/tests/test_v024_stage5_whole_review_contract.py
+result=pass
+
+PLAYWRIGHT_PACKAGE_PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node PFI/scripts/validate_v024_stage5_whole_review_browser.js
+result=pass, screenshots=20
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_github_upload_contract.py PFI/tests/test_v024_stage5_whole_review_contract.py PFI/tests/test_v024_stage5_phase51_home_rebuild.py PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py PFI/tests/test_v024_stage5_phase53_interaction_states.py -q
+result=pass, 23 passed in 0.58s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage3_phase32_route_implementation.py PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase43_acceptance.py -q
+result=pass, 15 passed in 1.03s
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_5/github_main_upload/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_5/whole_stage_review/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_5/whole_stage_review/browser_validation.json
+result=pass
+
+git diff --check -- PFI
+result=pass
+
+REMOTE PUSH VERIFICATION POLICY:
+This committed log cannot embed its own final remote hash without changing the
+commit hash. Close the upload gate with terminal-only verification after push:
+git push origin HEAD:main
+git fetch origin main
+git ls-remote origin refs/heads/main
+git rev-parse HEAD
+git rev-parse origin/main
+git rev-list --left-right --count HEAD...origin/main

@@ -5,7 +5,7 @@
   "stage": "Stage 5",
   "review_id": "stage_5_whole_review",
   "status": "pass",
-  "source": "http://127.0.0.1:50521/index.html",
+  "source": "http://127.0.0.1:51129/index.html",
   "playwright_package_path": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright",
   "primary_entry_count": 10,
   "primary_workspaces": [
@@ -202,16 +202,16 @@
       "workspace": "settings",
       "routeAlias": "/settings?tab=account",
       "file": "primary_10_settings.png",
-      "bytes": 939297
+      "bytes": 939331
     },
     {
       "kind": "core_secondary",
       "workspace": "settings",
       "routeAlias": "/settings?tab=data-system",
       "file": "core_secondary_10_settings.png",
-      "bytes": 975576
+      "bytes": 975519
     }
   ],
-  "generated_at": "2026-07-01T01:23:46.139Z",
-  "validation_hash": "77d97deff88b54426069cae8abd2357b8874423df9362f1e820427f0b7729dab"
+  "generated_at": "2026-07-01T01:34:56.787Z",
+  "validation_hash": "7ad3249bcfad1c9050bbb6f35ab829a4985f088a6b7469be0173081ce2163969"
 }
