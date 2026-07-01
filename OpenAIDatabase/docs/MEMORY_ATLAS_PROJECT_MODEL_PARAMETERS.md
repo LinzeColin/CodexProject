@@ -893,3 +893,36 @@ Stage 7 整体复审已确认：
 下一阶段：
 
 - Stage 8 整体复审。
+
+## 18. Stage 8 整体复审状态
+
+状态：`stage_8_whole_stage_review_passed`。
+
+Stage 8 整体复审已确认：
+
+- 8.1 Local App Packaging 已通过 production build、临时 app bundle、
+  launcher single-window contract、default `记忆总览` route 和 pid cleanup
+  gate。
+- 8.2 Release Safety 已通过 Galaxy/Timeline legacy rollback、new renderer
+  restore、localStorage persistence、release audit、overall acceptance audit
+  和 release notes gate。
+- `validate:stage8` 会同时运行 `validate:stage8-local-app`、
+  `validate:stage8-release-safety`、offline Cloudflare Pages + Access
+  preflight、Stage 8 文档一致性检查和 4177 cleanup assertion。
+- offline Cloudflare Pages + Access preflight 只验证 templates、runbook、
+  wrangler config 和 release-safe dist，不执行 live deploy。
+- 发布产物必须继续满足
+  `source_contract.mode == "public_redacted_read_only_visualization"`。
+- 前端写回边界保持
+  `direct_frontend_mutation_of_active_memory == false`。
+
+边界：
+
+- Stage 8 整体复审不包含 Cloudflare live deploy 或 Access policy change。
+- Stage 8 整体复审不读取 raw/private/cookie/session/secret 数据。
+- Stage 8 整体复审不新增 direct active-memory writeback。
+- GitHub main 上传必须在复审通过后再做 final fast-forward 检查。
+
+下一阶段：
+
+- GitHub main 上传后进入 Stage 9 后续增强迭代。
