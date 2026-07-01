@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s18-stage-review"
+version: "0.1.0-s18-github-upload"
 current_stage: "S18"
 current_phase: "S18_GITHUB_UPLOAD"
-current_phase_status: "pending_github_upload"
-current_stage_status: "s18_stage_review_passed_upload_ready_local_only_no_go"
+current_phase_status: "uploaded_to_github_main"
+current_stage_status: "s18_github_uploaded_no_go"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -514,12 +514,14 @@ upload_policy:
   stage18_s18p2_evidence: "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/s18_p2_completion_record.md"
   stage18_s18p2_manifest: "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/machine/s18_p2_manifest.json"
   stage18_review_required_before_upload: true
-  stage18_review_passed: false
-  stage18_uploaded_to_github_main: false
+  stage18_review_passed: true
+  stage18_uploaded_to_github_main: true
   stage18_review_completed_local_only: true
   stage18_review_go_no_go: "NO_GO"
   stage18_review_evidence: "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"
   stage18_review_manifest: "KMFA/stage_artifacts/S18_STAGE_REVIEW/machine/stage18_review_manifest.json"
-  stage18_blocker: "stage18_github_upload_pending_lineage_report_pending_no_go"
+  stage18_upload_evidence: "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md"
+  stage18_upload_manifest: "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json"
+  stage18_blocker: "lineage_report_pending_no_go_after_stage18_upload"
   next_phase_upload_allowed: false
-  upload_surface: "stage17_uploaded_next_s18_p3"
+  upload_surface: "stage18_uploaded_no_business_release"

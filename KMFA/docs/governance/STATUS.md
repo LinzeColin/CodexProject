@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s18-stage-review`
+- version: `0.1.0-s18-github-upload`
 - current_stage: `S18`
-- current_phase: `Stage 18 GitHub Upload｜待执行`
-- status: `s18_stage_review_passed_upload_ready_local_only_no_go`
+- current_phase: `Stage 18 GitHub Upload｜已完成`
+- status: `s18_github_uploaded_no_go`
 - production_ready: `false`
-- github_upload_ready: `true_stage18_review_passed_upload_pending`
+- github_upload_ready: `false_stage18_uploaded`
 
 ## 已完成
 
@@ -117,14 +117,15 @@
 - S18-P2 全量回归和验收已完成本地验证：`KMFA/tools/full_regression_acceptance.py`、`KMFA/tools/check_s18_p2_full_regression_acceptance.py`、`KMFA/tests/test_full_regression_acceptance.py`、`KMFA/metadata/quality/full_regression_acceptance_manifest.json`、`full_regression_check_results.jsonl`、`stage_acceptance_evidence_index.jsonl`、`go_no_go_report.json` 和 `KMFA/stage_artifacts/S18_P2_full_regression_acceptance/` 已生成；覆盖 no-omission、zero-delta、schema、lineage、UI 五类检查、18 个 Stage evidence 和 Go/No-Go；结论为 `NO_GO` 且 `delivery_allowed=false`。
 - S18-P3 后续接入准备已完成本地验证：`KMFA/tools/integration_preparation.py`、`KMFA/tools/check_s18_p3_integration_preparation.py`、`KMFA/tests/test_integration_preparation.py`、`KMFA/metadata/integration/integration_preparation_manifest.json`、`read_only_connector_plan.jsonl`、`opme_entry_integration_plan.json`、`next_stage_backlog.jsonl` 和 `KMFA/stage_artifacts/S18_P3_integration_preparation/` 已生成；覆盖红圈、金蝶、WPS 后续只读接入方案、OpMe 轻入口方案和下一阶段 backlog；未执行 Stage 18 review 或 GitHub upload。
 - Stage 18 整体复审已本地通过：`KMFA/tools/check_s18_stage_review.py`、`KMFA/tests/test_s18_stage_review.py`、`KMFA/metadata/quality/stage18_go_no_go_review.json` 和 `KMFA/stage_artifacts/S18_STAGE_REVIEW/` 已生成；复审复跑 S18-P1/P2/P3 validators、Stage 18 review validator、全量 268 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks；复审级 Go/No-Go 清除 `S18_P3_PENDING`，但仍保持 `NO_GO` 和 D 级阻断；未执行 GitHub upload、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。
+- Stage 18 final GitHub upload 已完成：`KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json` 记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity；upload 不改变 review-level `NO_GO`、D 级报告、lineage/report/business blockers。
 
 ## 未完成
 
-- Stage 18 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S17-P1/S17-P2/S17-P3、Stage 17 整体复审、Stage 17 final GitHub upload、S18-P1、S18-P2、S18-P3 和 Stage 18 整体复审已完成；Stage 18 review-level Go/No-Go 为 `NO_GO`；下一步只能执行 Stage 18 GitHub upload，不能直接进入 lineage full check、正式报告、完整报告邮件、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S17-P1/S17-P2/S17-P3、Stage 17 整体复审、Stage 17 final GitHub upload、S18-P1、S18-P2、S18-P3、Stage 18 整体复审和 Stage 18 final GitHub upload 已完成；Stage 18 review-level Go/No-Go 为 `NO_GO`；不能直接进入 lineage full check、正式报告、完整报告邮件、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload、Stage 15 全部 Phase/整体复审/upload、Stage 16 全部 Phase/整体复审/upload、Stage 17 全部 Phase、整体复审和 final GitHub upload，以及 S18-P1 精度与压力测试、S18-P2 全量回归验收和 S18-P3 后续接入准备本地验证。S18-P2 Go/No-Go 结论仍为 `NO_GO`；S18-P3 只锁定 public-safe 后续接入准备证据，不调用 live connector、不做 OpMe 深度耦合、不做生产恢复或业务动作。Stage 18 review、lineage 和正式报告运行时仍未完成，现场施工、安全签字、技术签字、开票、催收、法律决策、付款和银行动作均未执行，且当前报告等级仍为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload、Stage 15 全部 Phase/整体复审/upload、Stage 16 全部 Phase/整体复审/upload、Stage 17 全部 Phase、整体复审和 final GitHub upload，以及 S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload。S18 review-level Go/No-Go 结论仍为 `NO_GO`；Stage 18 upload 只证明 public-safe reviewed stack 已进入 GitHub main，不调用 live connector、不做 OpMe 深度耦合、不做生产恢复或业务动作。lineage 和正式报告运行时仍未完成，现场施工、安全签字、技术签字、开票、催收、法律决策、付款和银行动作均未执行，且当前报告等级仍为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -90,6 +90,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S18-P1 精度与压力测试已本地验证完成：`KMFA/tools/precision_stress_validation.py`、`KMFA/tools/check_s18_p1_precision_stress.py`、`KMFA/tests/test_precision_stress_validation.py` 和 `KMFA/stage_artifacts/S18_P1_precision_stress/` 已生成；覆盖 5 类 public-safe synthetic 场景、3 次连续一致导入、1200 文件 synthetic metadata 性能预算、2 条阻断错误报告和 HTML 样板读取记录，未执行 S18-P2、S18-P3、Stage 18 review、GitHub upload、lineage full check、正式报告、外部接口或业务执行。
 - S18-P2 全量回归和验收已本地验证完成：`KMFA/tools/full_regression_acceptance.py`、`KMFA/tools/check_s18_p2_full_regression_acceptance.py`、`KMFA/tests/test_full_regression_acceptance.py`、`KMFA/metadata/quality/full_regression_acceptance_manifest.json`、`full_regression_check_results.jsonl`、`stage_acceptance_evidence_index.jsonl`、`go_no_go_report.json` 和 `KMFA/stage_artifacts/S18_P2_full_regression_acceptance/` 已生成；Go/No-Go 结论为 `NO_GO`，未执行 Stage 18 review、GitHub upload、lineage full check、正式报告或业务执行。
 - S18-P3 后续接入准备已本地验证完成：`KMFA/tools/integration_preparation.py`、`KMFA/tools/check_s18_p3_integration_preparation.py`、`KMFA/tests/test_integration_preparation.py`、`KMFA/metadata/integration/integration_preparation_manifest.json`、`read_only_connector_plan.jsonl`、`opme_entry_integration_plan.json`、`next_stage_backlog.jsonl` 和 `KMFA/stage_artifacts/S18_P3_integration_preparation/` 已生成；红圈、金蝶、WPS 只保留未来只读方案，OpMe 只保留轻入口和状态索引，不执行 live connector、OpMe 深度耦合、Stage 18 review 或 GitHub upload。
+- Stage 18 整体复审和 final GitHub upload 已完成：`KMFA/stage_artifacts/S18_STAGE_REVIEW/`、`KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json` 已生成；上传后仍保持 `NO_GO`、D 级报告、12 条 pending reconciliation、lineage/report/business blockers。
 
 ## 你现在不能信任什么
 
@@ -103,7 +104,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S16-P1/S16-P2/S16-P3 已经允许采购执行、付款审批、付款执行、银行操作、供应商结算、现场施工、安全签字、技术签字、开票、催收、法律决策或正式经营决策；它们只是 public-safe 结构匹配、状态生命周期、客户经营摘要和人工复核候选。
 - 不能认为 S17-P2 已经实现外部邮件投递、完整报告邮件或真实收件地址管理；它只建立本地 metadata outbox-only 通知提醒证据。
 - 不能认为 Stage 17 upload 已经实现 S18、lineage full check、正式报告、完整报告邮件、live connector、生产恢复、外部服务调用或业务执行；它只建立 public-safe GitHub main 上传证据。
-- 不能认为 S18-P3 后续接入准备已经完成 Stage 18 review、GitHub upload、正式发布验收、lineage full check、正式报告、live connector、OpMe 深度耦合或任何业务执行动作；它只建立 public-safe 本地接入准备证据，且 S18-P2 Go/No-Go 仍为 `NO_GO`。
+- 不能认为 Stage 18 upload 已经完成正式发布验收、lineage full check、正式报告、live connector、OpMe 深度耦合或任何业务执行动作；它只建立 public-safe GitHub main 上传证据，且 review-level Go/No-Go 仍为 `NO_GO`。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -112,4 +113,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `Stage 18 整体复审`，且必须重新确认 git/root/status，复跑 S18-P1/S18-P2/S18-P3 validators、治理 validator、raw/secret scan、parse checks 和证据一致性检查；不得执行 GitHub upload、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只能另开独立目标确认 lineage/report gate 范围；不得跳过 `NO_GO`、D 级报告、12 条 pending reconciliation 和 public-safe 边界直接进入正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。

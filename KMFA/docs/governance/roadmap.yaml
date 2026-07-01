@@ -5,8 +5,8 @@ total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S18"
 current_phase_id: "S18_GITHUB_UPLOAD"
-current_task_id: "KMFA-S18-GITHUB-UPLOAD-GATE"
-next_gate_id: "KMFA-S18-GITHUB-UPLOAD-GATE"
+current_task_id: "KMFA-S18-GITHUB-UPLOAD-20260701"
+next_gate_id: "KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1387,10 +1387,10 @@ stages:
               - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json"
   - stage_id: "S18"
     name: "回归、压力、稳定验收与后续接入准备"
-    status: "review_passed_upload_ready_local_only_no_go"
+    status: "uploaded_to_github_main_no_go"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备和 Stage 18 整体复审已完成本地验证；review-level Go/No-Go 仍为 NO_GO；下一步只能执行 Stage 18 GitHub upload。"
+    current_result: "S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 已完成；review-level Go/No-Go 仍为 NO_GO；lineage/report/business gates 仍未完成。"
     evidence_refs:
       - "KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md"
       - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
@@ -1404,6 +1404,8 @@ stages:
       - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"
       - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S18_STAGE_REVIEW/machine/stage18_review_manifest.json"
+      - "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json"
     phases:
       - phase_id: "S18PA"
         name: "精度与压力测试"
@@ -1526,6 +1528,7 @@ stages:
               - "KMFA/tools/check_s18_stage_review.py"
           - task_id: "KMFA-S18-GITHUB-UPLOAD-GATE"
             name: "上传 Stage 18 reviewed stack 到 GitHub main。"
-            status: "pending_github_upload"
+            status: "uploaded_to_github_main"
             evidence_refs:
-              - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"
+              - "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md"
+              - "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json"
