@@ -2,9 +2,9 @@
 
 ## Current Run Boundary
 
-本轮只执行 `Stage 7 / Phase 7.3 - 验收`，覆盖 T7.3.1 至 T7.3.3。
+本轮只执行 `Stage 7 whole-stage review - 复审并解决暴露问题`。
 
-不执行整阶段复审，不上传 GitHub main，不重装 app bundle，不修改、清理、删除或补造真实财务数据。
+不上传 GitHub main，不重装 app bundle，不修改、清理、删除或补造真实财务数据。
 
 ## Stage 7 Phase 7.1 - 报告结构
 
@@ -75,18 +75,38 @@ Phase 7.3 evidence:
 - `PFI/reports/pfi_v024/stage_7/phase_7_3/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_7/phase_7_3/risk_and_rollback.md`
 
+## Stage 7 Whole-Stage Review
+
+Stage 7 whole-stage review 已完成。
+
+复审发现并修复 3 项：
+
+1. `S7-REVIEW-F1`: Stage 7 三个 phase 完成后缺少 whole-stage review gate、文档和 evidence。
+2. `S7-REVIEW-F2`: 顶层状态文件仍停留在 Phase 7.3 当前 run，未记录 whole-stage review 已执行。
+3. `S7-REVIEW-F3`: Stage 7 缺少整阶段级别的命令和证据汇总，用于把报告结构、页面展示、浏览器截图、停止条件和无数据修改边界绑定到同一 pass gate。
+
+Whole-stage review evidence:
+
+- `PFI/docs/pfi_v024/STAGE7_WHOLE_STAGE_REVIEW.md`
+- `PFI/reports/pfi_v024/stage_7/whole_stage_review/evidence.json`
+- `PFI/reports/pfi_v024/stage_7/whole_stage_review/terminal.log`
+- `PFI/reports/pfi_v024/stage_7/whole_stage_review/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_7/whole_stage_review/risk_and_rollback.md`
+
 ## Validation
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase72_report_page_display.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase71_report_schema.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase73_report_acceptance.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_whole_review_contract.py -q
 PLAYWRIGHT_PACKAGE_PATH="/Users/linzezhang/Documents/Codex/CodexProject/EEI/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright" PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage6_phase61_design_system.py PFI/tests/test_v024_stage6_phase62_motion_feedback.py PFI/tests/test_v024_stage6_phase63_haptics_settings.py -q
 PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/pages/reports.js
 PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/shell.js
 PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_os/app/streamlit_app.py
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/whole_stage_review/evidence.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/evidence.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/report_acceptance_gate.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/browser_validation.json
@@ -99,4 +119,4 @@ git diff --check -- PFI
 
 ## Next Gate
 
-下一轮可进入 `Stage 7 whole-stage review - 复审并解决暴露问题`。在 whole-stage review 之前不要声明 Stage 7 完成，也不要执行 GitHub main upload。
+下一轮可进入 `Stage 7 GitHub main upload gate`。上传前必须先处理 `origin/main` 漂移，并用 terminal 验证 `HEAD == origin/main == remote main`。
