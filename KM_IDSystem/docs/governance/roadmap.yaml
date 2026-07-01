@@ -1,6 +1,6 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
-project_id: "OpMe_System"
+project_id: "KM_IDSystem"
 current_stage_id: "S5"
 current_phase_id: "S5PA"
 current_task_id: "S5PAT03"
@@ -48,7 +48,7 @@ stages:
         tasks:
           -
             task_id: "S5PAT03"
-            name: "迁移 OpMe_System"
+            name: "迁移 KM_IDSystem"
             objective: "纠正技术栈被误作模型参数的问题并建立真实模型说明。"
             status: "completed"
             estimated_hours: 5
@@ -59,12 +59,12 @@ stages:
               - "ACC-S5PAT03"
             test_commands:
               - "python -B -m unittest ...test_review9_s5pat03_* -q"
-              - "python -B scripts/lean_governance.py check-render --project OpMe_System"
+              - "python -B scripts/lean_governance.py check-render --project KM_IDSystem"
               - "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main"
             evidence_refs:
-              - "OpMe_System/docs/governance/project.yaml"
-              - "OpMe_System/docs/governance/roadmap.yaml"
-              - "OpMe_System/docs/governance/events.jsonl"
+              - "KM_IDSystem/docs/governance/project.yaml"
+              - "KM_IDSystem/docs/governance/roadmap.yaml"
+              - "KM_IDSystem/docs/governance/events.jsonl"
               - "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json"
             risk: "范围扩张、事实失真或治理回归"
             rollback: "Revert only this task commit; retain the read-only audit evidence."

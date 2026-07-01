@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
-project_id: "OpMe_System"
-project_name: "OpMe_System"
-summary: "OpMe_System 是工业运维/工程分析辅助系统；真实模型为确定性风险规则和 LLM 路由/离线回退，不把 FastAPI、React、Docker 等技术栈误作模型参数，且当前不声明生产安全交付就绪。"
+project_id: "KM_IDSystem"
+project_name: "KM_IDSystem"
+summary: "KM_IDSystem 是工业运维/工程分析辅助系统；真实模型为确定性风险规则和 LLM 路由/离线回退，不把 FastAPI、React、Docker 等技术栈误作模型参数，且当前不声明生产安全交付就绪。"
 version: "1.0.0"
 fact_level: "EXTRACTED"
 owner_role: "engineering_owner + safety_owner + operations_owner"
@@ -54,10 +54,10 @@ features:
       - "PARAM-011"
       - "PARAM-012"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:60"
+      - "KM_IDSystem/backend/app/services/analysis.py:60"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py"
-      - "OpMe_System/backend/tests/test_api.py"
+      - "KM_IDSystem/backend/tests/test_analysis.py"
+      - "KM_IDSystem/backend/tests/test_api.py"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-FORMULA-REGISTRY"
@@ -81,10 +81,10 @@ features:
       - "PARAM-020"
       - "PARAM-021"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:137"
+      - "KM_IDSystem/backend/app/services/analysis.py:137"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py"
-      - "OpMe_System/backend/tests/test_api.py"
+      - "KM_IDSystem/backend/tests/test_analysis.py"
+      - "KM_IDSystem/backend/tests/test_api.py"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-FORMULA-REGISTRY"
@@ -107,10 +107,10 @@ features:
       - "PARAM-028"
       - "PARAM-029"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:205"
+      - "KM_IDSystem/backend/app/services/analysis.py:205"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py"
-      - "OpMe_System/backend/tests/test_api.py"
+      - "KM_IDSystem/backend/tests/test_analysis.py"
+      - "KM_IDSystem/backend/tests/test_api.py"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-FORMULA-REGISTRY"
@@ -134,10 +134,10 @@ features:
       - "PARAM-037"
       - "PARAM-038"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:262"
+      - "KM_IDSystem/backend/app/services/analysis.py:262"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py"
-      - "OpMe_System/backend/tests/test_api.py"
+      - "KM_IDSystem/backend/tests/test_analysis.py"
+      - "KM_IDSystem/backend/tests/test_api.py"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-FORMULA-REGISTRY"
@@ -165,11 +165,11 @@ features:
       - "PARAM-048"
       - "PARAM-049"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:333"
-      - "OpMe_System/backend/app/services/model_router.py:15"
+      - "KM_IDSystem/backend/app/services/analysis.py:333"
+      - "KM_IDSystem/backend/app/services/model_router.py:15"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py"
-      - "OpMe_System/backend/tests/test_api.py"
+      - "KM_IDSystem/backend/tests/test_analysis.py"
+      - "KM_IDSystem/backend/tests/test_api.py"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-FORMULA-REGISTRY"
@@ -180,7 +180,7 @@ models:
     name: "Dynamic kiln risk rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-001-v0"
@@ -214,9 +214,9 @@ models:
       - "visualizations"
       - "model_status"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:60"
+      - "KM_IDSystem/backend/app/services/analysis.py:60"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-MODEL-SPEC"
@@ -225,7 +225,7 @@ models:
     name: "Fault diagnosis risk rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-002-v0"
@@ -256,9 +256,9 @@ models:
       - "visualizations"
       - "model_status"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:60"
+      - "KM_IDSystem/backend/app/services/analysis.py:60"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-MODEL-SPEC"
@@ -267,7 +267,7 @@ models:
     name: "Gear repair risk rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-003-v0"
@@ -297,9 +297,9 @@ models:
       - "visualizations"
       - "model_status"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:60"
+      - "KM_IDSystem/backend/app/services/analysis.py:60"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-MODEL-SPEC"
@@ -308,7 +308,7 @@ models:
     name: "Machining delivery risk rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-004-v0"
@@ -339,9 +339,9 @@ models:
       - "visualizations"
       - "model_status"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:60"
+      - "KM_IDSystem/backend/app/services/analysis.py:60"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-MODEL-SPEC"
@@ -350,7 +350,7 @@ models:
     name: "Other consulting default rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-005-v0"
@@ -373,9 +373,9 @@ models:
       - "visualizations"
       - "model_status"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:60"
+      - "KM_IDSystem/backend/app/services/analysis.py:60"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-MODEL-SPEC"
@@ -384,7 +384,7 @@ models:
     name: "Risk level mapping"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-006-v0"
@@ -409,9 +409,9 @@ models:
       - "visualizations"
       - "model_status"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:60"
+      - "KM_IDSystem/backend/app/services/analysis.py:60"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-MODEL-SPEC"
@@ -420,7 +420,7 @@ models:
     name: "LLM provider router and offline fallback"
     kind: "llm_routing_fallback_strategy"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-007-v0"
@@ -449,9 +449,9 @@ models:
       - "visualizations"
       - "model_status"
     code_refs:
-      - "OpMe_System/backend/app/services/model_router.py:15"
+      - "KM_IDSystem/backend/app/services/model_router.py:15"
     test_refs:
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-MODEL-REGISTRY"
       - "EVID-OPME-MODEL-SPEC"
@@ -471,17 +471,17 @@ formulas:
     open_task_ids:
       - "TASK-OPME-B-001"
     implementation_refs:
-      - "OpMe_System/backend/app/services/analysis.py::analyze_dynamic"
-      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
-      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
-    implementation_fingerprint: "sha256:1f5a245eecd02498be57b7916bc26371a3e9db12b1778aec9efcf981edbd42ae"
+      - "KM_IDSystem/backend/app/services/analysis.py::analyze_dynamic"
+      - "KM_IDSystem/backend/app/services/analysis.py::_risk_level"
+      - "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:1a0e19dc7fc47ca1904747a9e5397fd663e50051f189632c74694ba6b6fe0aae"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:60"
+      - "KM_IDSystem/backend/app/services/analysis.py:60"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -500,17 +500,17 @@ formulas:
     open_task_ids:
       - "TASK-OPME-B-001"
     implementation_refs:
-      - "OpMe_System/backend/app/services/analysis.py::analyze_fault"
-      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
-      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
-    implementation_fingerprint: "sha256:93e620abdb8a3b1c9c3121ad0661232150f13f3420cb4b6908cbecec4fdb3b8d"
+      - "KM_IDSystem/backend/app/services/analysis.py::analyze_fault"
+      - "KM_IDSystem/backend/app/services/analysis.py::_risk_level"
+      - "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:67ed0beca5ea3d94c72c533ca8ca5677a4ec8d6cb3f77f6cfd121bb947feb5c5"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:137"
+      - "KM_IDSystem/backend/app/services/analysis.py:137"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -529,17 +529,17 @@ formulas:
     open_task_ids:
       - "TASK-OPME-B-001"
     implementation_refs:
-      - "OpMe_System/backend/app/services/analysis.py::analyze_gear"
-      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
-      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
-    implementation_fingerprint: "sha256:00eec7f7fa9e8162b98901d7916a0ff4799b7e2984a2ac5d888bd4a9861fc7a9"
+      - "KM_IDSystem/backend/app/services/analysis.py::analyze_gear"
+      - "KM_IDSystem/backend/app/services/analysis.py::_risk_level"
+      - "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:b2ea789558949408591a20c1ce9a73e1786add549834e790a0561292e28c0883"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:205"
+      - "KM_IDSystem/backend/app/services/analysis.py:205"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -558,17 +558,17 @@ formulas:
     open_task_ids:
       - "TASK-OPME-B-001"
     implementation_refs:
-      - "OpMe_System/backend/app/services/analysis.py::analyze_machining"
-      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
-      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
-    implementation_fingerprint: "sha256:6d71222d8b493bdaa6f4d27ef4eb37ed8a8ab52770da6bba18220307c0b25e15"
+      - "KM_IDSystem/backend/app/services/analysis.py::analyze_machining"
+      - "KM_IDSystem/backend/app/services/analysis.py::_risk_level"
+      - "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:1f5124ce29943e0a22751bdac303050e6eac81fd945afe76fdaf5347db7b048b"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:262"
+      - "KM_IDSystem/backend/app/services/analysis.py:262"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -587,17 +587,17 @@ formulas:
     open_task_ids:
       - "TASK-OPME-B-001"
     implementation_refs:
-      - "OpMe_System/backend/app/services/analysis.py::analyze_other"
-      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
-      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
-    implementation_fingerprint: "sha256:2fca115f446d6008c7b69e02d34c6ad0066e08fb2ac6790033fe2790a4a3e2d5"
+      - "KM_IDSystem/backend/app/services/analysis.py::analyze_other"
+      - "KM_IDSystem/backend/app/services/analysis.py::_risk_level"
+      - "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:a49ed2ce903c7f4e19fb062d045d9f9d5b220dada90a58438d34c4ccd5ce9038"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:333"
+      - "KM_IDSystem/backend/app/services/analysis.py:333"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -616,15 +616,15 @@ formulas:
     open_task_ids:
       - "TASK-OPME-B-001"
     implementation_refs:
-      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
-    implementation_fingerprint: "sha256:7a091c1e552fe839aabb40e1d6f54bde80dafb992ea10d150fa36ee172d529cf"
+      - "KM_IDSystem/backend/app/services/analysis.py::_risk_level"
+    implementation_fingerprint: "sha256:b6c801649d532ad14b7d80b28558648641fccf15f41212dd9b6e4016471610dd"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:16"
+      - "KM_IDSystem/backend/app/services/analysis.py:16"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -643,18 +643,18 @@ formulas:
     open_task_ids:
       - "TASK-OPME-B-001"
     implementation_refs:
-      - "OpMe_System/backend/app/services/model_router.py::route_model"
-      - "OpMe_System/backend/app/services/model_router.py::SYSTEM_PROMPT"
-      - "OpMe_System/backend/app/services/db.py::init_db"
-      - "OpMe_System/backend/app/services/db.py::get_model_configs"
-    implementation_fingerprint: "sha256:46121492d79d4048fd6beda839966513d39b7917ba516aca5c607139ceb694cf"
+      - "KM_IDSystem/backend/app/services/model_router.py::route_model"
+      - "KM_IDSystem/backend/app/services/model_router.py::SYSTEM_PROMPT"
+      - "KM_IDSystem/backend/app/services/db.py::init_db"
+      - "KM_IDSystem/backend/app/services/db.py::get_model_configs"
+    implementation_fingerprint: "sha256:94229e423b2304315a3a23ae4bcc3be611e3b47037103ef95874b1520a3a934e"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
     code_refs:
-      - "OpMe_System/backend/app/services/model_router.py:15"
+      - "KM_IDSystem/backend/app/services/model_router.py:15"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-FORMULA-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -671,7 +671,7 @@ parameters:
     value: "5"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:7"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:74:7"
     extracted_value: "5"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -681,9 +681,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:74"
+      - "KM_IDSystem/backend/app/services/analysis.py:74"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -699,7 +699,7 @@ parameters:
     value: "35"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:74:4"
     extracted_value: "35"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -709,9 +709,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:74"
+      - "KM_IDSystem/backend/app/services/analysis.py:74"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -727,7 +727,7 @@ parameters:
     value: "0.04"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:8"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:74:8"
     extracted_value: "0.04"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -737,9 +737,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:74"
+      - "KM_IDSystem/backend/app/services/analysis.py:74"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -755,7 +755,7 @@ parameters:
     value: "25"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:5"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:74:5"
     extracted_value: "25"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -765,9 +765,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:74"
+      - "KM_IDSystem/backend/app/services/analysis.py:74"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -783,7 +783,7 @@ parameters:
     value: "520"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:6"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:74:6"
     extracted_value: "520"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -793,9 +793,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:74"
+      - "KM_IDSystem/backend/app/services/analysis.py:74"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -811,7 +811,7 @@ parameters:
     value: "25"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:2"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:74:2"
     extracted_value: "25"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -821,9 +821,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:74"
+      - "KM_IDSystem/backend/app/services/analysis.py:74"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -839,7 +839,7 @@ parameters:
     value: "3"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:3"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:74:3"
     extracted_value: "3"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -849,9 +849,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:74"
+      - "KM_IDSystem/backend/app/services/analysis.py:74"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -867,7 +867,7 @@ parameters:
     value: "15"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:74:1"
     extracted_value: "15"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -877,9 +877,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:74"
+      - "KM_IDSystem/backend/app/services/analysis.py:74"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -895,7 +895,7 @@ parameters:
     value: "3"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:77:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:77:1"
     extracted_value: "3"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -905,9 +905,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:77"
+      - "KM_IDSystem/backend/app/services/analysis.py:77"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -923,7 +923,7 @@ parameters:
     value: "0.02"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:79:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:79:1"
     extracted_value: "0.02"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -933,9 +933,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:79"
+      - "KM_IDSystem/backend/app/services/analysis.py:79"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -951,7 +951,7 @@ parameters:
     value: "400"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:81:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:81:1"
     extracted_value: "400"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -961,9 +961,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:81"
+      - "KM_IDSystem/backend/app/services/analysis.py:81"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -979,7 +979,7 @@ parameters:
     value: "0.015"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:83:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:83:1"
     extracted_value: "0.015"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -989,9 +989,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:83"
+      - "KM_IDSystem/backend/app/services/analysis.py:83"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1007,7 +1007,7 @@ parameters:
     value: "2.0"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:143:5"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:143:5"
     extracted_value: "2"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1017,9 +1017,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:143"
+      - "KM_IDSystem/backend/app/services/analysis.py:143"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1035,7 +1035,7 @@ parameters:
     value: "450"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:144:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:144:4"
     extracted_value: "450"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1045,9 +1045,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:144"
+      - "KM_IDSystem/backend/app/services/analysis.py:144"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1063,7 +1063,7 @@ parameters:
     value: "1.0"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:145:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:145:4"
     extracted_value: "1"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1073,9 +1073,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:145"
+      - "KM_IDSystem/backend/app/services/analysis.py:145"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1091,7 +1091,7 @@ parameters:
     value: "4.5"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:145:5"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:145:5"
     extracted_value: "4.5"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1101,9 +1101,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:145"
+      - "KM_IDSystem/backend/app/services/analysis.py:145"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1119,7 +1119,7 @@ parameters:
     value: "4"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:5"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:165:5"
     extracted_value: "4"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1129,9 +1129,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:165"
+      - "KM_IDSystem/backend/app/services/analysis.py:165"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1147,7 +1147,7 @@ parameters:
     value: "35"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:165:4"
     extracted_value: "35"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1157,9 +1157,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:165"
+      - "KM_IDSystem/backend/app/services/analysis.py:165"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1175,7 +1175,7 @@ parameters:
     value: "550"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:6"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:165:6"
     extracted_value: "550"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1185,9 +1185,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:165"
+      - "KM_IDSystem/backend/app/services/analysis.py:165"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1203,7 +1203,7 @@ parameters:
     value: "35"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:3"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:165:3"
     extracted_value: "35"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1213,9 +1213,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:165"
+      - "KM_IDSystem/backend/app/services/analysis.py:165"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1231,7 +1231,7 @@ parameters:
     value: "10"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:2"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:165:2"
     extracted_value: "10"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1241,9 +1241,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:165"
+      - "KM_IDSystem/backend/app/services/analysis.py:165"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1259,7 +1259,7 @@ parameters:
     value: "3"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:6"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:209:6"
     extracted_value: "3"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1269,9 +1269,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:209"
+      - "KM_IDSystem/backend/app/services/analysis.py:209"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1287,7 +1287,7 @@ parameters:
     value: "45"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:3"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:209:3"
     extracted_value: "45"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1297,9 +1297,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:209"
+      - "KM_IDSystem/backend/app/services/analysis.py:209"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1315,7 +1315,7 @@ parameters:
     value: "80"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:7"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:209:7"
     extracted_value: "80"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1325,9 +1325,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:209"
+      - "KM_IDSystem/backend/app/services/analysis.py:209"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1343,7 +1343,7 @@ parameters:
     value: "35"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:209:4"
     extracted_value: "35"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1353,9 +1353,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:209"
+      - "KM_IDSystem/backend/app/services/analysis.py:209"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1371,7 +1371,7 @@ parameters:
     value: "180"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:5"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:209:5"
     extracted_value: "180"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1381,9 +1381,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:209"
+      - "KM_IDSystem/backend/app/services/analysis.py:209"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1399,7 +1399,7 @@ parameters:
     value: "20"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:2"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:209:2"
     extracted_value: "20"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1409,9 +1409,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:209"
+      - "KM_IDSystem/backend/app/services/analysis.py:209"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1427,7 +1427,7 @@ parameters:
     value: "1.0"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:212:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:212:1"
     extracted_value: "1"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1437,9 +1437,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:212"
+      - "KM_IDSystem/backend/app/services/analysis.py:212"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1455,7 +1455,7 @@ parameters:
     value: "120"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:218:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:218:1"
     extracted_value: "120"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1465,9 +1465,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:218"
+      - "KM_IDSystem/backend/app/services/analysis.py:218"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1483,7 +1483,7 @@ parameters:
     value: "0.05"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:2"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:275:2"
     extracted_value: "0.05"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1493,9 +1493,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:275"
+      - "KM_IDSystem/backend/app/services/analysis.py:275"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1511,7 +1511,7 @@ parameters:
     value: "0.12"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:5"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:275:5"
     extracted_value: "0.12"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1521,9 +1521,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:275"
+      - "KM_IDSystem/backend/app/services/analysis.py:275"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1539,7 +1539,7 @@ parameters:
     value: "35"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:275:1"
     extracted_value: "35"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1549,9 +1549,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:275"
+      - "KM_IDSystem/backend/app/services/analysis.py:275"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1567,7 +1567,7 @@ parameters:
     value: "15"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:3"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:275:3"
     extracted_value: "15"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1577,9 +1577,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:275"
+      - "KM_IDSystem/backend/app/services/analysis.py:275"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1595,7 +1595,7 @@ parameters:
     value: "5"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:275:4"
     extracted_value: "5"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1605,9 +1605,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:275"
+      - "KM_IDSystem/backend/app/services/analysis.py:275"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1623,7 +1623,7 @@ parameters:
     value: "10000"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:276:3"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:276:3"
     extracted_value: "10000"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1633,9 +1633,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:276"
+      - "KM_IDSystem/backend/app/services/analysis.py:276"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1651,7 +1651,7 @@ parameters:
     value: "35"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:276:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:276:1"
     extracted_value: "35"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1661,9 +1661,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:276"
+      - "KM_IDSystem/backend/app/services/analysis.py:276"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1679,7 +1679,7 @@ parameters:
     value: "20"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:277:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:277:1"
     extracted_value: "20"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1689,9 +1689,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:277"
+      - "KM_IDSystem/backend/app/services/analysis.py:277"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1707,7 +1707,7 @@ parameters:
     value: "10"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:277:2"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:277:2"
     extracted_value: "10"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1717,9 +1717,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:277"
+      - "KM_IDSystem/backend/app/services/analysis.py:277"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1735,7 +1735,7 @@ parameters:
     value: "25"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:339:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:339:1"
     extracted_value: "25"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1745,9 +1745,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:339"
+      - "KM_IDSystem/backend/app/services/analysis.py:339"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1763,7 +1763,7 @@ parameters:
     value: "75"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:17:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:17:1"
     extracted_value: "75"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1773,9 +1773,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:17"
+      - "KM_IDSystem/backend/app/services/analysis.py:17"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1791,7 +1791,7 @@ parameters:
     value: "40"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:19:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:19:1"
     extracted_value: "40"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1801,9 +1801,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:19"
+      - "KM_IDSystem/backend/app/services/analysis.py:19"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1819,7 +1819,7 @@ parameters:
     value: "100"
     source: "EXTRACTED from code/config default"
     calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:73:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/analysis.py:73:1"
     extracted_value: "100"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1829,9 +1829,9 @@ parameters:
     unknown_task_ids:
       - "TASK-OPME-B-001"
     code_refs:
-      - "OpMe_System/backend/app/services/analysis.py:72"
+      - "KM_IDSystem/backend/app/services/analysis.py:72"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1847,7 +1847,7 @@ parameters:
     value: "0.2"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/model_router.py:47:2"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/model_router.py:47:2"
     extracted_value: "0.2"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1856,9 +1856,9 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/model_router.py:47"
+      - "KM_IDSystem/backend/app/services/model_router.py:47"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1874,7 +1874,7 @@ parameters:
     value: "20"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/model_router.py:49:1"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/model_router.py:49:1"
     extracted_value: "20"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1883,9 +1883,9 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/model_router.py:49"
+      - "KM_IDSystem/backend/app/services/model_router.py:49"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1901,7 +1901,7 @@ parameters:
     value: "10"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:116:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/db.py:116:4"
     extracted_value: "10"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1910,9 +1910,9 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/db.py:116"
+      - "KM_IDSystem/backend/app/services/db.py:116"
     test_refs:
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1928,7 +1928,7 @@ parameters:
     value: "20"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:117:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/db.py:117:4"
     extracted_value: "20"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1937,9 +1937,9 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/db.py:117"
+      - "KM_IDSystem/backend/app/services/db.py:117"
     test_refs:
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1955,7 +1955,7 @@ parameters:
     value: "30"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:118:4"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/db.py:118:4"
     extracted_value: "30"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1964,9 +1964,9 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/db.py:118"
+      - "KM_IDSystem/backend/app/services/db.py:118"
     test_refs:
-      - "OpMe_System/backend/tests/test_api.py:31"
+      - "KM_IDSystem/backend/tests/test_api.py:31"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -1982,7 +1982,7 @@ parameters:
     value: "0"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "text_regex:OpMe_System/backend/app/services/db.py::VALUES \\(\\?, \\?, \\?, \\'\\', (0), \\?, \\?\\)"
+    source_selector: "text_regex:KM_IDSystem/backend/app/services/db.py::VALUES \\(\\?, \\?, \\?, \\'\\', (0), \\?, \\?\\)"
     extracted_value: "0"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1991,9 +1991,9 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/db.py:113"
+      - "KM_IDSystem/backend/app/services/db.py:113"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "KM_IDSystem/backend/tests/test_analysis.py:5"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -2009,7 +2009,7 @@ parameters:
     value: "offline_rules"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/model_router.py:20:2"
+    source_selector: "python_ast_literal:KM_IDSystem/backend/app/services/model_router.py:20:2"
     extracted_value: "offline_rules"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -2018,9 +2018,9 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/model_router.py:20"
+      - "KM_IDSystem/backend/app/services/model_router.py:20"
     test_refs:
-      - "OpMe_System/backend/tests/test_analysis.py:20"
+      - "KM_IDSystem/backend/tests/test_analysis.py:20"
     evidence_refs:
       - "EVID-OPME-PARAMETER-REGISTRY"
       - "EVID-OPME-SEMANTIC-MANIFEST"
@@ -2116,13 +2116,13 @@ delivery_readiness:
   status: "UNVERIFIED"
   release_gate: "GOV-SEMANTIC-OPME-in-progress"
   blocker_ids:
-    - "FACT-OpMe_System-EMPIRICAL-EVIDENCE"
-    - "FACT-OpMe_System-OPERATIONAL-EVIDENCE"
+    - "FACT-KM_IDSystem-EMPIRICAL-EVIDENCE"
+    - "FACT-KM_IDSystem-OPERATIONAL-EVIDENCE"
     - "TASK-OPME-B-001"
   next_executable_task: "TASK-OPME-B-001"
   next_task_status: "blocked"
   owner_decision_required: true
-  owner_decision_id: "DEC-OpMe_System-REVIEW8-001"
+  owner_decision_id: "DEC-KM_IDSystem-REVIEW8-001"
   evidence_refs:
     - "EVID-OPME-ASSURANCE-STATUS"
     - "EVID-OPME-DELIVERY-TASKS"
@@ -2131,47 +2131,47 @@ evidence_refs:
   -
     evidence_id: "EVID-OPME-MODEL-REGISTRY"
     kind: "legacy_registry"
-    ref: "OpMe_System/docs/governance/model_registry.yaml"
+    ref: "KM_IDSystem/docs/governance/model_registry.yaml"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-FORMULA-REGISTRY"
     kind: "legacy_registry"
-    ref: "OpMe_System/docs/governance/formula_registry.yaml"
+    ref: "KM_IDSystem/docs/governance/formula_registry.yaml"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-PARAMETER-REGISTRY"
     kind: "legacy_registry"
-    ref: "OpMe_System/docs/governance/parameter_registry.csv"
+    ref: "KM_IDSystem/docs/governance/parameter_registry.csv"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-MODEL-SPEC"
     kind: "legacy_spec"
-    ref: "OpMe_System/docs/governance/MODEL_SPEC.md"
+    ref: "KM_IDSystem/docs/governance/MODEL_SPEC.md"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-DELIVERY-TASKS"
     kind: "legacy_plan"
-    ref: "OpMe_System/docs/governance/delivery_tasks.yaml"
+    ref: "KM_IDSystem/docs/governance/delivery_tasks.yaml"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-ASSURANCE-STATUS"
     kind: "legacy_status"
-    ref: "OpMe_System/docs/governance/ASSURANCE_STATUS.yaml"
+    ref: "KM_IDSystem/docs/governance/ASSURANCE_STATUS.yaml"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-OWNER-STATUS"
     kind: "legacy_status"
-    ref: "OpMe_System/docs/governance/OWNER_STATUS.md"
+    ref: "KM_IDSystem/docs/governance/OWNER_STATUS.md"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-STATUS"
     kind: "legacy_status"
-    ref: "OpMe_System/docs/governance/STATUS.md"
+    ref: "KM_IDSystem/docs/governance/STATUS.md"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-DEVELOPMENT-EVENTS"
     kind: "legacy_events"
-    ref: "OpMe_System/docs/governance/development_events.jsonl"
+    ref: "KM_IDSystem/docs/governance/development_events.jsonl"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OPME-SEMANTIC-MANIFEST"
@@ -2186,7 +2186,7 @@ evidence_refs:
   -
     evidence_id: "EVID-OTHER8-S4PCT01-OPME-STRUCTURE-REPORT"
     kind: "stage_gate_evidence"
-    ref: "OpMe_System/docs/OpMe_structure_report.md"
+    ref: "KM_IDSystem/docs/OpMe_structure_report.md"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OTHER8-S4PCT01-MANIFEST"

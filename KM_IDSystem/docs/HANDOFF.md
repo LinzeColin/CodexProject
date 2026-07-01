@@ -79,7 +79,7 @@ If dependencies were removed during cleanup, the launcher restores them from:
 
 All future development for this system should be synchronized into:
 
-`LinzeColin/OpMe_System`
+`LinzeColin/KM_IDSystem`
 
 Use the subdirectory:
 

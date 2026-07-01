@@ -1,5 +1,5 @@
 governance_spec_version: "1.0.0"
-project_id: "OpMe_System"
+project_id: "KM_IDSystem"
 formulas:
   - formula_id: "FORM-001"
     model_id: "MOD-001"
@@ -19,14 +19,14 @@ formulas:
     missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
     output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
     open_task_ids: ["TASK-OPME-B-001"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
-    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
-    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_dynamic", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
-    implementation_fingerprint: "sha256:1f5a245eecd02498be57b7916bc26371a3e9db12b1778aec9efcf981edbd42ae"
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:60"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5", "KM_IDSystem/backend/tests/test_api.py:31"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py", "KM_IDSystem/backend/app/services/model_router.py"]
+    implementation_refs: ["KM_IDSystem/backend/app/services/analysis.py::analyze_dynamic", "KM_IDSystem/backend/app/services/analysis.py::_risk_level", "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:1a0e19dc7fc47ca1904747a9e5397fd663e50051f189632c74694ba6b6fe0aae"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
-    evidence_hash: "sha256:7faac7344d8eddd63427010f518b35cdac69c03b3462ecca830755972b533390"
+    evidence_hash: "sha256:0c3d16a7bfedb389ef0804dacea01abe4191c05a8e33ddc48eb3c2381b67991f"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-002"
@@ -47,14 +47,14 @@ formulas:
     missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
     output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
     open_task_ids: ["TASK-OPME-B-001"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:137"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
-    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
-    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_fault", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
-    implementation_fingerprint: "sha256:93e620abdb8a3b1c9c3121ad0661232150f13f3420cb4b6908cbecec4fdb3b8d"
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:137"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5", "KM_IDSystem/backend/tests/test_api.py:31"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py", "KM_IDSystem/backend/app/services/model_router.py"]
+    implementation_refs: ["KM_IDSystem/backend/app/services/analysis.py::analyze_fault", "KM_IDSystem/backend/app/services/analysis.py::_risk_level", "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:67ed0beca5ea3d94c72c533ca8ca5677a4ec8d6cb3f77f6cfd121bb947feb5c5"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
-    evidence_hash: "sha256:15ad9d948e691cbdec23842eb99a33a9e3d410a43880136079adc93cfd8de036"
+    evidence_hash: "sha256:00d42b059ff1318d95ed87a962752583189fa4804ed9e8966c1a1f2fa804580f"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-003"
@@ -75,14 +75,14 @@ formulas:
     missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
     output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
     open_task_ids: ["TASK-OPME-B-001"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:205"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
-    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
-    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_gear", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
-    implementation_fingerprint: "sha256:00eec7f7fa9e8162b98901d7916a0ff4799b7e2984a2ac5d888bd4a9861fc7a9"
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:205"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5", "KM_IDSystem/backend/tests/test_api.py:31"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py", "KM_IDSystem/backend/app/services/model_router.py"]
+    implementation_refs: ["KM_IDSystem/backend/app/services/analysis.py::analyze_gear", "KM_IDSystem/backend/app/services/analysis.py::_risk_level", "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:b2ea789558949408591a20c1ce9a73e1786add549834e790a0561292e28c0883"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
-    evidence_hash: "sha256:7692b401cdd296f7bdc9d870199a3d0982a6124112bae1b3411b4da647fc35f9"
+    evidence_hash: "sha256:91a2d55182de514e5bc56591aebe3129e775b1de14d51ca4a21b2ccc6ffa2f5d"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-004"
@@ -103,14 +103,14 @@ formulas:
     missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
     output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
     open_task_ids: ["TASK-OPME-B-001"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:262"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
-    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
-    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_machining", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
-    implementation_fingerprint: "sha256:6d71222d8b493bdaa6f4d27ef4eb37ed8a8ab52770da6bba18220307c0b25e15"
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:262"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5", "KM_IDSystem/backend/tests/test_api.py:31"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py", "KM_IDSystem/backend/app/services/model_router.py"]
+    implementation_refs: ["KM_IDSystem/backend/app/services/analysis.py::analyze_machining", "KM_IDSystem/backend/app/services/analysis.py::_risk_level", "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:1f5124ce29943e0a22751bdac303050e6eac81fd945afe76fdaf5347db7b048b"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
-    evidence_hash: "sha256:b7d0b7b727d70c739fd01e5fc1806dcd4bb7d37d31fe52f337719fbbf5b23391"
+    evidence_hash: "sha256:1134086878271bead8d3768045209d33137827641bbc5b5016b21b539e412c6b"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-005"
@@ -131,14 +131,14 @@ formulas:
     missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
     output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
     open_task_ids: ["TASK-OPME-B-001"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:333"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
-    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
-    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::analyze_other", "OpMe_System/backend/app/services/analysis.py::_risk_level", "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"]
-    implementation_fingerprint: "sha256:2fca115f446d6008c7b69e02d34c6ad0066e08fb2ac6790033fe2790a4a3e2d5"
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:333"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5", "KM_IDSystem/backend/tests/test_api.py:31"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py", "KM_IDSystem/backend/app/services/model_router.py"]
+    implementation_refs: ["KM_IDSystem/backend/app/services/analysis.py::analyze_other", "KM_IDSystem/backend/app/services/analysis.py::_risk_level", "KM_IDSystem/backend/app/services/analysis.py::REFERENCE_NOTES"]
+    implementation_fingerprint: "sha256:a49ed2ce903c7f4e19fb062d045d9f9d5b220dada90a58438d34c4ccd5ce9038"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
-    evidence_hash: "sha256:0a890c9e2aa8fe6237d61bae90197043d0af79590116c4568ad9eeac5434498e"
+    evidence_hash: "sha256:9c5c20c0d5e6295901d40b7f1c66e5bedacac7ecdd09446ca505a202c21687ef"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-006"
@@ -159,14 +159,14 @@ formulas:
     missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
     output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
     open_task_ids: ["TASK-OPME-B-001"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:16"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
-    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
-    implementation_refs: ["OpMe_System/backend/app/services/analysis.py::_risk_level"]
-    implementation_fingerprint: "sha256:7a091c1e552fe839aabb40e1d6f54bde80dafb992ea10d150fa36ee172d529cf"
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:16"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5", "KM_IDSystem/backend/tests/test_api.py:31"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py", "KM_IDSystem/backend/app/services/model_router.py"]
+    implementation_refs: ["KM_IDSystem/backend/app/services/analysis.py::_risk_level"]
+    implementation_fingerprint: "sha256:b6c801649d532ad14b7d80b28558648641fccf15f41212dd9b6e4016471610dd"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
-    evidence_hash: "sha256:c989ced04342480650ec701d5155715c03878a18abd553f9a22896ac297646c1"
+    evidence_hash: "sha256:a1b4ddf94e4c80bcfac55d193d79e4490fa08e4258cc3ce238af4dd77c47ab76"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-007"
@@ -187,13 +187,13 @@ formulas:
     missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
     output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
     open_task_ids: ["TASK-OPME-B-001"]
-    code_refs: ["OpMe_System/backend/app/services/model_router.py:15"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5", "OpMe_System/backend/tests/test_api.py:31"]
-    evidence_refs: ["OpMe_System/backend/app/services/analysis.py", "OpMe_System/backend/app/services/model_router.py"]
-    implementation_refs: ["OpMe_System/backend/app/services/model_router.py::route_model", "OpMe_System/backend/app/services/model_router.py::SYSTEM_PROMPT", "OpMe_System/backend/app/services/db.py::init_db", "OpMe_System/backend/app/services/db.py::get_model_configs"]
-    implementation_fingerprint: "sha256:46121492d79d4048fd6beda839966513d39b7917ba516aca5c607139ceb694cf"
+    code_refs: ["KM_IDSystem/backend/app/services/model_router.py:15"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5", "KM_IDSystem/backend/tests/test_api.py:31"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py", "KM_IDSystem/backend/app/services/model_router.py"]
+    implementation_refs: ["KM_IDSystem/backend/app/services/model_router.py::route_model", "KM_IDSystem/backend/app/services/model_router.py::SYSTEM_PROMPT", "KM_IDSystem/backend/app/services/db.py::init_db", "KM_IDSystem/backend/app/services/db.py::get_model_configs"]
+    implementation_fingerprint: "sha256:94229e423b2304315a3a23ae4bcc3be611e3b47037103ef95874b1520a3a934e"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
-    evidence_hash: "sha256:5be465ae2c5d4dfddd6e00ce467edd648690c50b4c9963267c45ca2e8472faae"
+    evidence_hash: "sha256:1e030580ef3f36bfc8e03d3c64461e687d876b71d5277c07f8986ad4b33d6201"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""

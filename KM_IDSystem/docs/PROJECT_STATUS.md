@@ -8,7 +8,7 @@
 - ECharts visualizations render in the local browser.
 - PDF generation works for dynamic, fault, gear, and machining sample cases.
 - macOS app entry bundle exists and is copied to Downloads and Applications by the setup workflow.
-- GitHub target is `LinzeColin/OpMe_System`.
+- GitHub target is `LinzeColin/KM_IDSystem`.
 
 ## Validation Snapshot
 

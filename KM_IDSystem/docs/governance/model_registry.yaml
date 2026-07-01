@@ -1,25 +1,25 @@
 governance_spec_version: "1.0.0"
-project_id: "OpMe_System"
+project_id: "KM_IDSystem"
 assumptions:
   - assumption_id: "ASM-001"
     statement: "Engineering analysis outputs are rule-based advice and report templates requiring engineer review."
     fact_level: "EXTRACTED"
-    evidence_refs: ["OpMe_System/README.md:48", "OpMe_System/开发记录:23"]
+    evidence_refs: ["KM_IDSystem/README.md:48", "KM_IDSystem/开发记录:23"]
   - assumption_id: "ASM-002"
     statement: "LLM providers are optional; missing keys or call failures use offline rules."
     fact_level: "EXTRACTED"
-    evidence_refs: ["OpMe_System/backend/app/services/model_router.py:15", "OpMe_System/backend/tests/test_analysis.py:20"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/model_router.py:15", "KM_IDSystem/backend/tests/test_analysis.py:20"]
   - assumption_id: "ASM-003"
     statement: "Engineering thresholds and weights are code constants; calibration source and field validation are not evidenced."
     fact_level: "UNKNOWN"
     unknown_task_ids: ["TASK-OPME-B-001"]
-    evidence_refs: ["OpMe_System/backend/app/services/analysis.py"]
+    evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py"]
 models:
   - model_id: "MOD-001"
     name: "Dynamic kiln risk rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-001-v0"
@@ -28,14 +28,14 @@ models:
     parameter_ids: ["PARAM-001", "PARAM-002", "PARAM-003", "PARAM-004", "PARAM-005", "PARAM-006", "PARAM-007", "PARAM-008", "PARAM-009", "PARAM-010", "PARAM-011", "PARAM-012"]
     inputs: ["module input_data", "uploaded_rows where applicable"]
     outputs: ["risk_score", "risk_level", "summary", "suggestions", "visualizations", "model_status"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5"]
-    evidence_refs: ["OpMe_System/README.md:5"]
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:60"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5"]
+    evidence_refs: ["KM_IDSystem/README.md:5"]
   - model_id: "MOD-002"
     name: "Fault diagnosis risk rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-002-v0"
@@ -44,14 +44,14 @@ models:
     parameter_ids: ["PARAM-013", "PARAM-014", "PARAM-015", "PARAM-016", "PARAM-017", "PARAM-018", "PARAM-019", "PARAM-020", "PARAM-021"]
     inputs: ["module input_data", "uploaded_rows where applicable"]
     outputs: ["risk_score", "risk_level", "summary", "suggestions", "visualizations", "model_status"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5"]
-    evidence_refs: ["OpMe_System/README.md:5"]
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:60"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5"]
+    evidence_refs: ["KM_IDSystem/README.md:5"]
   - model_id: "MOD-003"
     name: "Gear repair risk rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-003-v0"
@@ -60,14 +60,14 @@ models:
     parameter_ids: ["PARAM-022", "PARAM-023", "PARAM-024", "PARAM-025", "PARAM-026", "PARAM-027", "PARAM-028", "PARAM-029"]
     inputs: ["module input_data", "uploaded_rows where applicable"]
     outputs: ["risk_score", "risk_level", "summary", "suggestions", "visualizations", "model_status"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5"]
-    evidence_refs: ["OpMe_System/README.md:5"]
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:60"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5"]
+    evidence_refs: ["KM_IDSystem/README.md:5"]
   - model_id: "MOD-004"
     name: "Machining delivery risk rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-004-v0"
@@ -76,14 +76,14 @@ models:
     parameter_ids: ["PARAM-030", "PARAM-031", "PARAM-032", "PARAM-033", "PARAM-034", "PARAM-035", "PARAM-036", "PARAM-037", "PARAM-038"]
     inputs: ["module input_data", "uploaded_rows where applicable"]
     outputs: ["risk_score", "risk_level", "summary", "suggestions", "visualizations", "model_status"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5"]
-    evidence_refs: ["OpMe_System/README.md:5"]
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:60"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5"]
+    evidence_refs: ["KM_IDSystem/README.md:5"]
   - model_id: "MOD-005"
     name: "Other consulting default rule"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-005-v0"
@@ -92,14 +92,14 @@ models:
     parameter_ids: ["PARAM-039"]
     inputs: ["module input_data", "uploaded_rows where applicable"]
     outputs: ["risk_score", "risk_level", "summary", "suggestions", "visualizations", "model_status"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5"]
-    evidence_refs: ["OpMe_System/README.md:5"]
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:60"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5"]
+    evidence_refs: ["KM_IDSystem/README.md:5"]
   - model_id: "MOD-006"
     name: "Risk level mapping"
     kind: "deterministic_rule_engine"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-006-v0"
@@ -108,14 +108,14 @@ models:
     parameter_ids: ["PARAM-040", "PARAM-041", "PARAM-042"]
     inputs: ["module input_data", "uploaded_rows where applicable"]
     outputs: ["risk_score", "risk_level", "summary", "suggestions", "visualizations", "model_status"]
-    code_refs: ["OpMe_System/backend/app/services/analysis.py:60"]
-    test_refs: ["OpMe_System/backend/tests/test_analysis.py:5"]
-    evidence_refs: ["OpMe_System/README.md:5"]
+    code_refs: ["KM_IDSystem/backend/app/services/analysis.py:60"]
+    test_refs: ["KM_IDSystem/backend/tests/test_analysis.py:5"]
+    evidence_refs: ["KM_IDSystem/README.md:5"]
   - model_id: "MOD-007"
     name: "LLM provider router and offline fallback"
     kind: "llm_routing_fallback_strategy"
     purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
-    owner: "OpMe_System"
+    owner: "KM_IDSystem"
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "mod-007-v0"
@@ -124,6 +124,6 @@ models:
     parameter_ids: ["PARAM-043", "PARAM-044", "PARAM-045", "PARAM-046", "PARAM-047", "PARAM-048", "PARAM-049"]
     inputs: ["module input_data", "uploaded_rows where applicable"]
     outputs: ["risk_score", "risk_level", "summary", "suggestions", "visualizations", "model_status"]
-    code_refs: ["OpMe_System/backend/app/services/model_router.py:15"]
-    test_refs: ["OpMe_System/backend/tests/test_api.py:31"]
-    evidence_refs: ["OpMe_System/README.md:5"]
+    code_refs: ["KM_IDSystem/backend/app/services/model_router.py:15"]
+    test_refs: ["KM_IDSystem/backend/tests/test_api.py:31"]
+    evidence_refs: ["KM_IDSystem/README.md:5"]

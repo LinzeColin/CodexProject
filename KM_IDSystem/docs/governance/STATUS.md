@@ -11,8 +11,8 @@
 
 ## Current State
 
-- Project: `OpMe_System`
-- Path: `OpMe_System`
+- Project: `KM_IDSystem`
+- Path: `KM_IDSystem`
 - Product version: `1.0.0`
 - Phase/Gate: `B / GOV-SEMANTIC-OPME-in-progress`
 - Models/Formulas/Parameters total: `7 / 7 / 49`
@@ -24,13 +24,13 @@
 | Dimension | Status | Evidence |
 |---|---|---|
 | structural_completeness | `VERIFIED` | `scripts/validate_project_governance.py` |
-| implementation_congruence | `VERIFIED` | `OpMe_System/docs/governance/parameter_registry.csv, OpMe_System/docs/governance/formula_registry.yaml` |
-| parameter_source_quality | `VERIFIED` | `OpMe_System/docs/governance/parameter_registry.csv` |
-| methodological_rationale | `UNVERIFIED` | `OpMe_System/docs/governance/MODEL_SPEC.md` |
-| empirical_validation | `UNVERIFIED` | `OpMe_System/docs/governance/delivery_tasks.yaml` |
-| operational_validation | `FAILED` | `OpMe_System/docs/governance/development_events.jsonl` |
-| delivery_evidence | `UNVERIFIED` | `OpMe_System/docs/governance/delivery_tasks.yaml` |
-| evidence_freshness | `PARTIAL` | `OpMe_System/docs/governance/development_events.jsonl` |
+| implementation_congruence | `VERIFIED` | `KM_IDSystem/docs/governance/parameter_registry.csv, KM_IDSystem/docs/governance/formula_registry.yaml` |
+| parameter_source_quality | `VERIFIED` | `KM_IDSystem/docs/governance/parameter_registry.csv` |
+| methodological_rationale | `UNVERIFIED` | `KM_IDSystem/docs/governance/MODEL_SPEC.md` |
+| empirical_validation | `UNVERIFIED` | `KM_IDSystem/docs/governance/delivery_tasks.yaml` |
+| operational_validation | `FAILED` | `KM_IDSystem/docs/governance/development_events.jsonl` |
+| delivery_evidence | `UNVERIFIED` | `KM_IDSystem/docs/governance/delivery_tasks.yaml` |
+| evidence_freshness | `PARTIAL` | `KM_IDSystem/docs/governance/development_events.jsonl` |
 
 ## Delivery
 
