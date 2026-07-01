@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s14-stage-review - 2026-07-01
+
+- 完成 `Stage 14 整体复审` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/check_s14_stage_review.py`、`KMFA/tests/test_s14_stage_review.py` 和 `KMFA/stage_artifacts/S14_STAGE_REVIEW/`。
+- 复跑 S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据 validators，确认三个 phase 仍为 public-safe D 级 planning/evidence signals。
+- 复审将下一 gate 推进到 `KMFA-S14-GITHUB-UPLOAD-GATE`；仍未执行 GitHub upload、S15、lineage full check、正式报告、差异关闭、付款、银行、贷款管理、开票、纳税申报、政策资格正式结论、政策申报、补贴申请或外部 connector。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、发票号、税务申报材料、政策申报材料、政策评分、正式资格结论或 credentials。
+- 下一轮只能执行 `Stage 14 GitHub upload`，且 upload 前必须基于最新 origin/main 复跑 validators、治理校验和安全扫描。
+
 ## 0.1.0-s14p3-policy-evidence-plan - 2026-07-01
 
 - 完成 `S14-P3｜政策证据` 本地验证，不上传 GitHub。
