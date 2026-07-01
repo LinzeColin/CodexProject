@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 资金计划现金贷款</title>
+  <style>
+    :root { --ink:#182235; --muted:#667085; --line:#d8e2ef; --blue:#1f5fbf; --navy:#12233c; --soft:#eef6ff; --warn:#a15c07; --stop:#b42318; --card:#fff; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f6f8fb; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+    header { background:linear-gradient(135deg,var(--navy),#1f4f82); color:#fff; padding:28px 34px; }
+    .brand { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+    .logo { width:48px; height:48px; border-radius:8px; background:#2563eb; display:flex; align-items:center; justify-content:center; font-weight:800; }
+    h1 { margin:0 0 8px; font-size:28px; letter-spacing:0; }
+    .sub { color:#dbeafe; line-height:1.65; max-width:980px; }
+    main { max-width:1120px; margin:0 auto; padding:22px; }
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:-34px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:18px; box-shadow:0 12px 26px rgba(15,23,42,.07); }
+    .label { color:var(--muted); font-size:13px; }
+    .num { font-size:24px; font-weight:800; color:var(--blue); margin-top:6px; }
+    .stop { color:var(--stop); }
+    table { width:100%; border-collapse:collapse; margin-top:12px; background:white; border:1px solid var(--line); }
+    th,td { text-align:left; border-bottom:1px solid var(--line); padding:11px 12px; line-height:1.55; }
+    th { background:var(--soft); color:#153e75; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
+    .notice { border-left:4px solid var(--warn); background:#fff7ed; padding:12px 14px; line-height:1.65; }
+    @media(max-width:860px) { .cards, .grid { grid-template-columns:1fr; } header, main { padding-left:16px; padding-right:16px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><div class="logo">KM</div><div><strong>KMFA 经营分析系统</strong><div class="sub">S14-P1 · 公开安全 · 资金计划现金贷款</div></div></div>
+    <h1>KMFA 资金计划现金贷款</h1>
+    <div class="sub">接入账户清单、月度现金、资金计划和贷款明细结构，只输出现金压力、贷款到期和账户余额汇总状态。不展示真实金额、账号、客户、项目或凭证信息。</div>
+  </header>
+  <main>
+    <section class="cards">
+      <div class="card"><div class="label">报告等级</div><div class="num">报告等级 D</div><div class="label">正式资金结论仍被阻断</div></div>
+      <div class="card"><div class="label">未关闭差异</div><div class="num stop">12 项</div><div class="label">需要 owner 或授权复核</div></div>
+      <div class="card"><div class="label">操作边界</div><div class="num stop">只读</div><div class="label">不做付款审批和银行操作</div></div>
+    </section>
+    <section class="grid">
+      <div class="card">
+        <h2>现金压力</h2>
+        <table><thead><tr><th>窗口</th><th>等级</th><th>说明</th></tr></thead><tbody><tr><td>本周</td><td>watch</td><td>结构信号可查看，不能替代银行余额核对</td></tr>
+<tr><td>4 周</td><td>attention</td><td>需要结合回款计划和付款优先级人工复核</td></tr>
+<tr><td>8 周</td><td>pressure</td><td>D 级报告状态下只输出压力提示</td></tr>
+<tr><td>12 周</td><td>blocked</td><td>缺 lineage full check 时不输出正式资金结论</td></tr></tbody></table>
+      </div>
+      <div class="card">
+        <h2>贷款到期</h2>
+        <table><thead><tr><th>到期窗口</th><th>提示</th><th>边界</th></tr></thead><tbody><tr><td>30 天内</td><td>manual_review_required</td><td>仅提示，不触发贷款管理动作</td></tr>
+<tr><td>60 天内</td><td>watch</td><td>仅提示，不触发贷款管理动作</td></tr>
+<tr><td>90 天内</td><td>watch</td><td>仅提示，不触发贷款管理动作</td></tr></tbody></table>
+      </div>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>账户余额汇总</h2>
+      <table><thead><tr><th>账户组</th><th>状态</th><th>公开显示</th></tr></thead><tbody><tr><td>经营账户组</td><td>balance_hidden_structure_ready</td><td>余额值隐藏，账号隐藏</td></tr>
+<tr><td>受限/保证金账户组</td><td>balance_hidden_manual_review</td><td>余额值隐藏，账号隐藏</td></tr>
+<tr><td>贷款相关账户组</td><td>balance_hidden_loan_linked</td><td>余额值隐藏，账号隐藏</td></tr></tbody></table>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>使用限制</h2>
+      <div class="notice">S14-P1 只生成公开安全资金计划证据。开票纳税、政策证据、Stage 14 review、GitHub upload、lineage full check、正式报告、付款审批、银行操作、贷款管理动作均不在本 phase 范围内。</div>
+    </section>
+  </main>
+</body>
+</html>

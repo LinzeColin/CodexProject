@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S14"
-current_phase_id: "S14PA"
-current_task_id: "S14PAT01-S14PAT03"
-next_gate_id: "KMFA-S14-P1-GATE"
+current_phase_id: "S14PB"
+current_task_id: "S14PBT01-S14PBT03"
+next_gate_id: "KMFA-S14-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -861,9 +861,58 @@ stages:
               - "KMFA/tools/check_s13_p3_cross_table_review.py"
   - stage_id: "S14"
     name: "资金、开票、纳税与政策证据模块"
-    status: "planned"
+    status: "in_progress_s14p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33.3333
+    current_result: "S14-P1 已完成 public-safe 资金计划现金贷款证据；S14-P2、S14-P3、Stage 14 review 和 GitHub upload 未执行。"
+    evidence_refs:
+      - "KMFA/metadata/reports/fund_cash_loan_plan_manifest.json"
+      - "KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/human/s14_p1_completion_record.md"
+      - "KMFA/tools/check_s14_p1_fund_cash_loan_plan.py"
+    phases:
+      - phase_id: "S14PA"
+        name: "资金计划现金贷款"
+        status: "completed_validated_local_only"
+        estimated_hours: 1
+        estimated_pct: 100
+        current_result: "已接入账户清单、月度现金、资金计划和贷款明细 4 条 public-safe source lane，输出 4 条现金压力、3 条贷款到期、3 条账户余额汇总和 1 个 HTML evidence；付款审批、银行操作、贷款管理、S14-P2/P3、Stage 14 review 和 GitHub upload 均为 false。"
+        evidence_refs:
+          - "KMFA/metadata/reports/fund_cash_loan_plan_manifest.json"
+          - "KMFA/metadata/reports/fund_cash_loan_source_lanes.jsonl"
+          - "KMFA/metadata/reports/fund_cash_pressure_signals.jsonl"
+          - "KMFA/metadata/reports/loan_due_alerts.jsonl"
+          - "KMFA/metadata/reports/account_balance_summaries.jsonl"
+          - "KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/exports/html/fund_cash_loan_plan_overview.html"
+        tasks:
+          - task_id: "S14PAT01"
+            name: "接入账户清单、月度现金、资金计划、贷款明细。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/fund_cash_loan_source_lanes.jsonl"
+              - "KMFA/metadata/reports/fund_cash_loan_plan_manifest.json"
+          - task_id: "S14PAT02"
+            name: "输出现金压力、贷款到期、账户余额汇总。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/fund_cash_pressure_signals.jsonl"
+              - "KMFA/metadata/reports/loan_due_alerts.jsonl"
+              - "KMFA/metadata/reports/account_balance_summaries.jsonl"
+          - task_id: "S14PAT03"
+            name: "不做付款审批和银行操作。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/tools/check_s14_p1_fund_cash_loan_plan.py"
+              - "KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/human/test_results.md"
+      - phase_id: "S14PB"
+        name: "开票纳税"
+        status: "planned_next"
+        estimated_hours: 1
+        estimated_pct: 0
+      - phase_id: "S14PC"
+        name: "政策证据"
+        status: "planned"
+        estimated_hours: 1
+        estimated_pct: 0
   - stage_id: "S15"
     name: "销售绩效事实与复核清单"
     status: "planned"
