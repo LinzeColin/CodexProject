@@ -6,9 +6,9 @@ product_version: 0.1.0-s18-github-upload
 
 - project_id: `KMFA`
 - current_stage: `S18`
-- current_phase: `Post-S18 Part 3 Review｜Stages 7-9 本地完成`
-- current_tasks: `KMFA-PART3-STAGES-07-09-REVIEW-20260702`
-- status: `post_s18_part3_review_passed_local_only_no_go`
+- current_phase: `Post-S18 Part 4 Review｜Stages 10-12 本地完成`
+- current_tasks: `KMFA-PART4-STAGES-10-12-REVIEW-20260702`
+- status: `post_s18_part4_review_passed_local_only_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -117,17 +117,18 @@ product_version: 0.1.0-s18-github-upload
 | `KMFA-PART1-STAGES-01-03-REVIEW-20260702` | Post-S18 第一阶段 Part 1 本地复审通过：复审 Stage 1-3，复跑 no-omission、required HTML、metadata protocol、immutability、report grade gate、S03 tests、Part 1 review validator、全量 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；未执行 GitHub upload、Stage 4-18 复审、整体项目复审、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/PART1_STAGES_01_03_REVIEW/human/part1_review_report.md` |
 | `KMFA-PART2-STAGES-04-06-REVIEW-20260702` | Post-S18 第一阶段 Part 2 本地复审通过：复审 Stage 4-6，复跑 S04 金额/字段/工具边界、S05 A0 文件登记/golden fixture/authority baseline、S06 zero-delta/difference queue/validation evidence validators、Part 2 review validator、全量 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；未执行 GitHub upload、Stage 7-18 复审、整体项目复审、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/human/part2_review_report.md` |
 | `KMFA-PART3-STAGES-07-09-REVIEW-20260702` | Post-S18 第一阶段 Part 3 本地复审通过：复审 Stage 7-9，复跑 S07 finance/WPS/Redcircle adapters、S08 project/entity matching、S09 project cost fact/margin/scope reconciliation validators、Part 3 review validator、全量 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；未执行 GitHub upload、Stage 10-18 复审、整体项目复审、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/human/part3_review_report.md` |
+| `KMFA-PART4-STAGES-10-12-REVIEW-20260702` | Post-S18 第一阶段 Part 4 本地复审通过：复审 Stage 10-12，复跑 S10 report templates/grade/export、S11 home/source board/project cost page、S12 manual resolution/impact preview/rerun validators、Part 4 review validator、全量 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；未执行 GitHub upload、Stage 13-18 复审、整体项目复审、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/human/part4_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | Part 3 review 已完成；下一 run work 只允许执行 Part 4（Stages 10-12）本地复审 | `KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/human/part3_review_report.md` |
+| 无 | Part 4 review 已完成；下一 run work 只允许执行 Part 5（Stages 13-15）本地复审 | `KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/human/part4_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
-| Post-S18 Part 4 Review | 尚未执行；本轮只完成 Part 3（Stages 7-9） | 下一轮只复审并修复 Stages 10-12，不上传 GitHub |
+| Post-S18 Part 5 Review | 尚未执行；本轮只完成 Part 4（Stages 10-12） | 下一轮只复审并修复 Stages 13-15，不上传 GitHub |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

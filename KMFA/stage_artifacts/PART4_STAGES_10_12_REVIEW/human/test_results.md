@@ -1,0 +1,32 @@
+# KMFA Part 4 Review Test Results
+
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s10_p1_report_templates.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s10_p2_report_grade_runtime.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s10_p3_report_export.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s10_stage_review.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s11_p1_home_navigation.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s11_p2_source_check_board.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s11_p3_project_cost_page.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s11_stage_review.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s12_p1_manual_resolution_events.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s12_p2_manual_impact_preview.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s12_p3_manual_rerun_mechanism.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s12_stage_review.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_report_templates KMFA.tests.test_report_grade_runtime KMFA.tests.test_report_export_runtime KMFA.tests.test_s10_stage_review KMFA.tests.test_home_navigation_runtime KMFA.tests.test_source_check_board_runtime KMFA.tests.test_project_cost_page_runtime KMFA.tests.test_s11_stage_review KMFA.tests.test_manual_resolution_events KMFA.tests.test_manual_impact_preview KMFA.tests.test_manual_rerun_mechanism KMFA.tests.test_s12_stage_review -q`: PASS, 52 tests before adding Part 4 review test.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_part4_stages_10_12_review.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_part4_stages_10_12_review -q`: PASS, 1 test.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s KMFA/tests -q`: PASS, 272 tests.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_required_html.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/metadata_protocol_check.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/immutability_policy_check.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_report_grade_gate.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_no_float_money.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/lean_governance.py validate --project KMFA`: PASS, errors=0, warnings=0.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_project_governance.py --project KMFA`: PASS, errors=0, warnings=0.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_governance_sync.py --changed-only --enforce-sync`: PASS, errors=0, warnings=0.
+- YAML parse check: PASS.
+- JSON/JSONL/CSV parse check: PASS.
+- Raw/private path scan: PASS.
+- High-signal secret scan: PASS.
+- `git diff --check -- KMFA scripts`: PASS.

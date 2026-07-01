@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-post-s18-part4-review-local - 2026-07-02
+
+- 完成 Post-S18 第一阶段 Part 4 本地复审，范围仅为 Stage 10、Stage 11、Stage 12。
+- 新增 `KMFA/tools/check_part4_stages_10_12_review.py`、`KMFA/tests/test_part4_stages_10_12_review.py` 和 `KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/`。
+- 复跑 S10 report templates/grade/export、S11 home/source board/project cost page、S12 manual resolution/impact preview/rerun validators、Part 4 review validator、全量 272 个 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check。
+- 本轮未执行 GitHub upload、Stage 13-18 复审、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+
 ## 0.1.0-post-s18-part3-review-local - 2026-07-02
 
 - 完成 Post-S18 第一阶段 Part 3 本地复审，范围仅为 Stage 7、Stage 8、Stage 9。
