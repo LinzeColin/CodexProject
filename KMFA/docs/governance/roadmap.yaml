@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S16"
-current_phase_id: "S16REV"
-current_task_id: "KMFA-S16-STAGE-REVIEW-GATE"
-next_gate_id: "KMFA-S16-STAGE-REVIEW-GATE"
+current_phase_id: "S16UPLOAD"
+current_task_id: "KMFA-S16-GITHUB-UPLOAD-GATE"
+next_gate_id: "KMFA-S16-GITHUB-UPLOAD-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1103,10 +1103,10 @@ stages:
               - "KMFA/stage_artifacts/S15_P3_salary_boundary/human/test_results.md"
   - stage_id: "S16"
     name: "外协采购、项目状态、客户经营扩展"
-    status: "completed_local_only_pending_stage_review"
+    status: "review_passed_upload_ready_local_only"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S16-P1 外协采购归集、S16-P2 项目状态生命周期和 S16-P3 客户经营分析已完成本地验证；Stage 16 review 和 GitHub upload 尚未执行。"
+    current_result: "S16-P1 外协采购归集、S16-P2 项目状态生命周期、S16-P3 客户经营分析和 Stage 16 整体复审已完成本地验证；GitHub upload 尚未执行。"
     evidence_refs:
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/s16_p1_completion_record.md"
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
@@ -1117,6 +1117,9 @@ stages:
       - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md"
       - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md"
       - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/machine/s16_p3_manifest.json"
+      - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
+      - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
     phases:
       - phase_id: "S16PA"
         name: "外协采购归集"
@@ -1213,6 +1216,25 @@ stages:
             evidence_refs:
               - "KMFA/metadata/reports/customer_analysis_exception_items.jsonl"
               - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md"
+      - phase_id: "S16REV"
+        name: "Stage 16 整体复审"
+        status: "review_passed_upload_ready_local_only"
+        estimated_hours: 0
+        estimated_pct: 100
+        current_result: "已完成 Stage 16 整体复审，复跑 S16-P1/P2/P3 validators、Stage 16 review validator、全量 KMFA tests、治理 validator、raw/secret scan、parse checks 和 diff check；不执行 GitHub upload、S17、lineage full check、正式报告或业务执行动作。"
+        evidence_refs:
+          - "KMFA/tools/check_s16_stage_review.py"
+          - "KMFA/tests/test_s16_stage_review.py"
+          - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
+          - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/test_results.md"
+          - "KMFA/stage_artifacts/S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
+        tasks:
+          - task_id: "KMFA-S16-STAGE-REVIEW-20260701"
+            name: "复跑 Stage 16 validators 并修复复审发现。"
+            status: "review_passed_upload_ready_local_only"
+            evidence_refs:
+              - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
+              - "KMFA/tools/check_s16_stage_review.py"
   - stage_id: "S17"
     name: "权限、通知、安全、审计与运维"
     status: "planned"
