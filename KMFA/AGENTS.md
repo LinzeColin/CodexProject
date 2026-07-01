@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `S17｜权限、通知、安全、审计与运维`
-- 当前 Phase: `Stage 17 GitHub Upload｜待开始`
+- 当前 Stage: `S18｜回归、压力、稳定验收与后续接入准备`
+- 当前 Phase: `S18-P1｜精度与压力测试｜待开始`
 
 ## Execution Rules
 
@@ -38,7 +38,7 @@
 
 ## Current Non-Goals
 
-- Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1 已完成 public-safe 权限、安全和审计策略本地验证，S17-P2 已完成 public-safe metadata outbox-only 通知提醒本地验证，S17-P3 已完成 public-safe 运维 SOP 本地验证，Stage 17 整体复审已本地通过。下一轮只能作为新 run work 执行 Stage 17 GitHub upload；不得直接进入 S18、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成。下一轮只能作为新 run work 执行 S18-P1，且必须读取 v1.2 HTML/UIUX/报告样板；不得直接进入 S18-P2/S18-P3、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
 - 不把 Stage 12 GitHub upload 视为 lineage full check、差异关闭、正式报告或业务 release。

@@ -4,7 +4,7 @@
 
 ## 当前目标
 
-v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线，并已按 v1.2 重新走完 Stage 1。Stage 2、Stage 3、Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10、Stage 11、Stage 12、Stage 13、Stage 14、Stage 15 和 Stage 16 均已完成本地实现、验证、整体复审和 GitHub main 上传。S17-P1 权限与安全、S17-P2 通知提醒、S17-P3 运维与 SOP 已在 canonical worktree 本地完成并验证，Stage 17 整体复审已本地通过。Stage 17 review 新增 validator、unit test 和 public-safe review evidence，证据在 `KMFA/stage_artifacts/S17_STAGE_REVIEW/`、`KMFA/tools/check_s17_stage_review.py` 和 `KMFA/tests/test_s17_stage_review.py`。本轮未执行 GitHub upload、S18、lineage full check、正式报告、外部邮件连接器、完整报告邮件正文、报告附件、live connector、生产恢复、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。下一轮只能作为新 run work 执行 `Stage 17 GitHub upload`。
+v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线，并已按 v1.2 重新走完 Stage 1。Stage 2、Stage 3、Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10、Stage 11、Stage 12、Stage 13、Stage 14、Stage 15、Stage 16 和 Stage 17 均已完成本地实现、验证、整体复审和 GitHub main 上传。S17-P1 权限与安全、S17-P2 通知提醒、S17-P3 运维与 SOP、Stage 17 整体复审和 Stage 17 final GitHub upload 已在 canonical worktree 完成并验证。Stage 17 upload 证据在 `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/`，review 证据在 `KMFA/stage_artifacts/S17_STAGE_REVIEW/`、`KMFA/tools/check_s17_stage_review.py` 和 `KMFA/tests/test_s17_stage_review.py`。本轮未执行 S18、lineage full check、正式报告、外部邮件连接器、完整报告邮件正文、报告附件、live connector、生产恢复、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。下一轮只能作为新 run work 执行 `S18-P1｜精度与压力测试`。
 
 ## 当前状态
 
@@ -346,11 +346,11 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - Stage 5 已完成 S05-P1、S05-P2、S05-P3、整体复审和 GitHub upload；S05-P3 已锁定 40 条 public-safe hash/source-anchor 字段并排除 5 条 Excel 字段；S06-P1、S06-P2、S06-P3、Stage 6 review 和 Stage 6 upload 已完成。
 - S05-P1 成员级 SHA256 仍未补算；S05-P2 后续私有审计只确认本机 zip 的 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配，但整包 hash/size 与登记 source package 不匹配。公开仓库不得提交 zip、PDF、Excel 或解包文件。
 - S05-P3、Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、Stage 7 review/upload、Stage 8 review/upload、S09-P1 和 S09-P2 只完成 A0 authority baseline lock、校验/差异/适配/匹配、结构化 fact layer、margin/cash margin 计算合同、整体复审和上传；不能把它扩展解释为差异关闭、lineage 或报告发布。
-- S10-P3 public-safe 报告导出、Stage 10 整体复审、final GitHub upload、S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 review/upload、S12-P1/P2/P3、Stage 12 review/upload、S13-P1 财务经营报表初稿、S13-P2 回款应收账龄草案、S13-P3 跨表复核、Stage 13 review/upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据、Stage 14 review/upload、S15-P1 绩效事实字段、S15-P2 绩效复核清单、S15-P3 工资项目边界、Stage 15 review/upload、S16-P1 外协采购归集、S16-P2 项目状态生命周期、S16-P3 客户经营分析、Stage 16 整体复审、Stage 16 upload、S17-P1 权限与安全、S17-P2 通知提醒、S17-P3 运维与 SOP 和 Stage 17 整体复审已完成；Stage 17 GitHub upload、lineage 完整检查和运行时正式报告生成尚未实现。
+- S10-P3 public-safe 报告导出、Stage 10 整体复审、final GitHub upload、S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 review/upload、S12-P1/P2/P3、Stage 12 review/upload、S13-P1 财务经营报表初稿、S13-P2 回款应收账龄草案、S13-P3 跨表复核、Stage 13 review/upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据、Stage 14 review/upload、S15-P1 绩效事实字段、S15-P2 绩效复核清单、S15-P3 工资项目边界、Stage 15 review/upload、S16-P1 外协采购归集、S16-P2 项目状态生命周期、S16-P3 客户经营分析、Stage 16 整体复审、Stage 16 upload、S17-P1 权限与安全、S17-P2 通知提醒、S17-P3 运维与 SOP、Stage 17 整体复审和 Stage 17 upload 已完成；S18-P1、lineage 完整检查和运行时正式报告生成尚未实现。
 - S02-P3 只实现 report grade gate 协议；正式报告生成和 lineage 完整检查仍属后续 Stage。
 - Stage 3 已上传 GitHub main；业务导入解析、A0、zero-delta、lineage 和报告生成仍是后续 Stage。
 - v1.2 中私有源数据只能本地使用，不能提交公开 GitHub。
 
 ## 下一步
 
-下一步若继续开发，只执行 `Stage 17 GitHub upload`：先确认 git root、branch、remote、HEAD、status，基于最新 origin/main 复跑 S17-P1/P2/P3 validators、Stage 17 review validator、治理 validator、raw/secret scan、parse checks、diff check、dry-run push、push 和 post-push parity；不得直接进入 S18；不得跳过 D 级报告、12 条 pending reconciliation、lineage full check、formal report、public-safe、外部邮件连接器、完整报告正文、报告附件、live connector、生产恢复、采购执行、付款审批、付款执行、银行操作、现场施工、安全/技术签字、开票、催收、法律决策、工资/奖金/薪资导出阻断；不得提交 raw Excel/PDF/zip/private CSV、真实金额、真实账号、真实客户/项目明细、银行流水、合同、薪资、税务申报、credentials 或字段明文。
+下一步若继续开发，只执行 `S18-P1｜精度与压力测试`：先确认 git root、branch、remote、HEAD、status，读取 v1.2 task pack、roadmap、Stage 17 upload 证据和 HTML/UIUX/报告样板；不得直接进入 S18-P2/S18-P3；不得跳过 D 级报告、12 条 pending reconciliation、lineage full check、formal report、public-safe、外部邮件连接器、完整报告正文、报告附件、live connector、生产恢复、采购执行、付款审批、付款执行、银行操作、现场施工、安全/技术签字、开票、催收、法律决策、工资/奖金/薪资导出阻断；不得提交 raw Excel/PDF/zip/private CSV、真实金额、真实账号、真实客户/项目明细、银行流水、合同、薪资、税务申报、credentials 或字段明文。

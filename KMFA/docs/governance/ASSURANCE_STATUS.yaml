@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S17-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260701-S17-GITHUB-UPLOAD"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "25698b30517e07e0655ff842f588d008516bc1d9"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16_UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-01T23:59:45+10:00"
-generator_version: "manual-s17-stage-review"
+source_base_commit: "52c15e845c8d3b02d935bd5a234a213b43cd1d9f"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S17_UPLOAD_COMMIT"
+snapshot_event_time: "2026-07-01T23:59:59+10:00"
+generator_version: "manual-s17-github-upload"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -407,6 +407,8 @@ dimensions:
       - "KMFA/stage_artifacts/S17_STAGE_REVIEW/human/stage17_review_report.md"
       - "KMFA/stage_artifacts/S17_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S17_STAGE_REVIEW/machine/stage17_review_manifest.json"
+      - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json"
       - "KMFA/tools/check_s17_stage_review.py"
   evidence_freshness:
     status: "PARTIAL"
@@ -414,8 +416,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S17_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
-  release_gate: "KMFA-S17-GITHUB-UPLOAD-GATE"
+  status: "S17_UPLOADED_TO_GITHUB_MAIN_S18_P1_PENDING"
+  release_gate: "KMFA-S18-P1-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"

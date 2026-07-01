@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload、Stage 15 全部 Phase/整体复审/upload、Stage 16 全部 Phase/整体复审/upload，以及 Stage 17 全部 Phase 和整体复审本地验证。Stage 17 review 只锁定 public-safe upload-ready local evidence；尚未上传 GitHub、不调用 live connector、不做生产恢复或业务动作。Stage 17 upload、lineage 和正式报告运行时仍未完成，现场施工、安全签字、技术签字、开票、催收、法律决策、付款和银行动作均未执行，且当前报告等级仍为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload、Stage 15 全部 Phase/整体复审/upload、Stage 16 全部 Phase/整体复审/upload，以及 Stage 17 全部 Phase、整体复审和 final GitHub upload。Stage 17 upload 只锁定 public-safe GitHub main 上传证据；不调用 live connector、不做生产恢复或业务动作。S18-P1、lineage 和正式报告运行时仍未完成，现场施工、安全签字、技术签字、开票、催收、法律决策、付款和银行动作均未执行，且当前报告等级仍为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -86,6 +86,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S17-P2 通知提醒已本地验证完成：`KMFA/tools/notification_reminders.py`、`KMFA/tools/check_s17_p2_notifications.py`、`KMFA/tests/test_notification_reminders.py`、`KMFA/metadata/notifications/notification_manifest.json`、`notification_rules.jsonl`、`notification_events.jsonl`、`notification_dispatch_log.jsonl` 和 `KMFA/stage_artifacts/S17_P2_notification/` 已生成；覆盖报告生成完成、重大风险、数据源缺失三类提醒；所有 dispatch 仅写 metadata outbox/log。
 - S17-P3 运维与 SOP 已本地验证完成：`KMFA/tools/operations_sop.py`、`KMFA/tools/check_s17_p3_operations_sop.py`、`KMFA/tests/test_operations_sop.py`、`KMFA/metadata/operations/operations_sop_manifest.json`、`operations_runbooks.jsonl`、`finance_sop_knowledge_index.jsonl`、`error_backup_drill_log.jsonl` 和 `KMFA/stage_artifacts/S17_P3_operations_sop/` 已生成；覆盖导入、复核、发布、回滚操作手册、财务 SOP/交接材料知识索引、错误处理和备份恢复演练；只写 metadata/manual SOP，不调用 live connector、不做生产恢复或业务动作。
 - Stage 17 整体复审已本地通过：`KMFA/tools/check_s17_stage_review.py`、`KMFA/tests/test_s17_stage_review.py` 和 `KMFA/stage_artifacts/S17_STAGE_REVIEW/` 已生成；复审复跑 S17-P1/P2/P3 validators、全量 246 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check，未执行 GitHub upload、S18、lineage full check、正式报告、完整报告邮件、live connector、生产恢复或业务执行。
+- Stage 17 final GitHub upload 已完成：`KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json` 记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
 
 ## 你现在不能信任什么
 
@@ -98,7 +99,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 Stage 15 review/upload 已经生成工资计算、奖金审批、薪资导出、最终发放建议、live integration、自动接口或任何可执行薪酬结论。
 - 不能认为 S16-P1/S16-P2/S16-P3 已经允许采购执行、付款审批、付款执行、银行操作、供应商结算、现场施工、安全签字、技术签字、开票、催收、法律决策或正式经营决策；它们只是 public-safe 结构匹配、状态生命周期、客户经营摘要和人工复核候选。
 - 不能认为 S17-P2 已经实现外部邮件投递、完整报告邮件或真实收件地址管理；它只建立本地 metadata outbox-only 通知提醒证据。
-- 不能认为 Stage 17 review 已经实现 GitHub upload、S18、lineage full check、正式报告、完整报告邮件、live connector、生产恢复、外部服务调用或业务执行；它只建立本地 public-safe upload-ready 复审证据。
+- 不能认为 Stage 17 upload 已经实现 S18、lineage full check、正式报告、完整报告邮件、live connector、生产恢复、外部服务调用或业务执行；它只建立 public-safe GitHub main 上传证据。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -107,4 +108,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `Stage 17 GitHub upload`，且必须重新确认 git/root/status，复跑 Stage 17 upload gate 所需 validators、治理 validator、raw/secret scan、parse checks、diff check、dry-run push、push 和 post-push parity；不得执行 S18、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只执行 `S18-P1｜精度与压力测试`，且必须重新确认 git/root/status，读取 v1.2 task pack、roadmap、Stage 17 upload 证据和 HTML/UIUX/报告样板；不得执行 S18-P2/S18-P3、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。

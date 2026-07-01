@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s17-stage-review`
-- current_stage: `S17`
-- current_phase: `Stage 17 GitHub Upload｜待开始`
-- status: `review_passed_upload_ready_local_only`
+- version: `0.1.0-s17-github-upload`
+- current_stage: `S18`
+- current_phase: `S18-P1｜精度与压力测试｜待开始`
+- status: `stage17_uploaded_to_github_main_s18_p1_pending`
 - production_ready: `false`
-- github_upload_ready: `true_stage17_review_passed_local_only`
+- github_upload_ready: `false_stage17_uploaded`
 
 ## 已完成
 
@@ -112,14 +112,15 @@
 - S17-P1 权限与安全已完成本地验证：`KMFA/tools/access_security_policy.py`、`KMFA/tools/check_s17_p1_access_security.py`、`KMFA/tests/test_access_security_policy.py`、`KMFA/metadata/security/access_security_policy_manifest.json`、`role_permission_matrix.jsonl`、`public_repo_sensitive_data_policy.jsonl`、`audit_log_policy.jsonl` 和 `KMFA/stage_artifacts/S17_P1_access_security/` 已生成；覆盖 4 类角色、15 类敏感材料公开仓库禁入策略和 5 类审计日志动作；未执行 S17-P2、S17-P3、Stage 17 review 或 GitHub upload。
 - S17-P2 通知提醒已完成本地验证：`KMFA/tools/notification_reminders.py`、`KMFA/tools/check_s17_p2_notifications.py`、`KMFA/tests/test_notification_reminders.py`、`KMFA/metadata/notifications/notification_manifest.json`、`notification_rules.jsonl`、`notification_events.jsonl`、`notification_dispatch_log.jsonl` 和 `KMFA/stage_artifacts/S17_P2_notification/` 已生成；覆盖报告生成完成、重大风险、数据源缺失三类提醒；通知只进入 metadata outbox/log，不发送完整报告正文、附件或真实收件地址。
 - S17-P3 运维与 SOP 已完成本地验证：`KMFA/tools/operations_sop.py`、`KMFA/tools/check_s17_p3_operations_sop.py`、`KMFA/tests/test_operations_sop.py`、`KMFA/metadata/operations/operations_sop_manifest.json`、`operations_runbooks.jsonl`、`finance_sop_knowledge_index.jsonl`、`error_backup_drill_log.jsonl` 和 `KMFA/stage_artifacts/S17_P3_operations_sop/` 已生成；覆盖导入、复核、发布、回滚四类手册，财务 SOP/交接材料知识索引，以及错误处理和备份恢复演练；仅为 metadata/manual SOP，不执行 live connector、生产恢复、业务动作、Stage 17 review 或 GitHub upload。
+- Stage 17 final GitHub upload 已完成：`KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json` 记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
 
 ## 未完成
 
-- Stage 17 整体复审已本地通过：`KMFA/stage_artifacts/S17_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；复审确认 S17-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 local-only upload readiness 通过。GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- S18-P1 精度与压力测试尚未开始；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S17-P1 已完成本地权限、安全和审计策略，S17-P2 已完成 metadata outbox-only 通知提醒，S17-P3 已完成 metadata-only 运维 SOP，Stage 17 整体复审已本地通过；下一步只能执行 Stage 17 GitHub upload，不能直接进入 S18、lineage full check、正式报告、完整报告邮件、外部邮件连接器、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 Stage 17 final GitHub upload 已完成；下一步只能执行 S18-P1，不能直接进入 S18-P2/S18-P3、lineage full check、正式报告、完整报告邮件、外部邮件连接器、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
