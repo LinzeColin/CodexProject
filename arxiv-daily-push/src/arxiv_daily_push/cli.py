@@ -133,6 +133,7 @@ from .stage2_final_gate import (
     build_independent_final_reviewer_assignment_validation_state,
     build_integrated_production_acceptance_owner_decision_packet_state,
     build_integrated_production_acceptance_preflight_state,
+    build_integrated_production_acceptance_write_gate_state,
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
@@ -163,6 +164,7 @@ from .stage2_final_gate import (
     validate_independent_final_reviewer_assignment_owner_packet_state,
     validate_integrated_production_acceptance_owner_decision_packet_state,
     validate_integrated_production_acceptance_preflight_state,
+    validate_integrated_production_acceptance_write_gate_state,
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_real_proof_capture_readiness_state,
@@ -1910,6 +1912,26 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON owner decision packet.",
+    )
+
+    integrated_production_write_gate = subparsers.add_parser(
+        "build-integrated-production-acceptance-write-gate",
+        help="Build the S2PMT07 final acceptance write-gate precheck without accepting production.",
+    )
+    integrated_production_write_gate.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing FINAL_ACCEPTANCE_BUNDLE and ADP governance artifacts.",
+    )
+    integrated_production_write_gate.add_argument(
+        "--generated-at",
+        required=True,
+        help="Timestamp to embed in the write-gate precheck.",
+    )
+    integrated_production_write_gate.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON write-gate precheck state.",
     )
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
@@ -4887,6 +4909,27 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- acceptance_write_gate_allowed_by_this_packet: {report.get('acceptance_write_gate_allowed_by_this_packet')}")
             for action in report.get("required_owner_actions", []):
                 print(f"- required_owner_action: {action}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors else 2
+    if args.command == "build-integrated-production-acceptance-write-gate":
+        report = build_integrated_production_acceptance_write_gate_state(
+            generated_at=args.generated_at,
+            repo_root=Path(args.repo_root),
+        )
+        errors = validate_integrated_production_acceptance_write_gate_state(report)
+        output = {**report, "write_gate_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- write_gate_precheck_ready: {report.get('write_gate_precheck_ready')}")
+            print(f"- acceptance_write_gate_allowed: {report.get('acceptance_write_gate_allowed')}")
+            print(f"- next_required_step: {report.get('next_required_step')}")
+            print(f"- owner_packet_state_hash: {report.get('owner_packet_state_hash')}")
+            print(f"- controlled_real_run_status: {report.get('controlled_real_run_status')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

@@ -30,20 +30,20 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_records_owner_packet_and_controlled_run_without_production_acceptance(self) -> None:
+    def test_current_state_records_write_gate_and_controlled_run_without_production_acceptance(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_OWNER_DECISION_PACKET_READY_BLOCKED_NO_PRODUCTION_ACCEPTANCE",
+            "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE",
             current_state,
         )
-        self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET", current_state)
-        self.assertIn("status=blocked_owner_decision_packet_ready_no_acceptance", current_state)
-        self.assertIn(
-            "owner_decision_packet_state_hash=de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289",
-            current_state,
-        )
+        self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", current_state)
+        self.assertIn("status=blocked_write_gate_owner_decision_required_no_acceptance", current_state)
+        self.assertIn("write_gate_precheck_ready=true", current_state)
+        self.assertIn("acceptance_write_gate_allowed=false", current_state)
+        self.assertIn("write_gate_state_hash=8dbaec78b3af9fa55b00f498995b1928399e92063a69b599babb3bed621f2c1d", current_state)
+        self.assertIn("Owner packet remains `state_hash=de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289`", current_state)
         self.assertIn("status=pass_controlled_real_run_evidence_rechecked_no_new_send", current_state)
         self.assertIn("sent_mail_count=4/4", current_state)
         self.assertIn("newly_sent_mail_products=[]", current_state)
@@ -78,11 +78,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn('task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION"', assurance)
         self.assertIn("next_task_id: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`", owner_status)
         self.assertIn(
-            "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_OWNER_DECISION_PACKET_READY_BLOCKED_NO_PRODUCTION_ACCEPTANCE",
+            "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE",
             assurance,
         )
         self.assertIn("preflight checks passed", assurance)
         self.assertIn("owner decision packet ready", assurance)
+        self.assertIn("acceptance write-gate precheck blocked correctly", assurance)
         self.assertIn("controlled foreground real-run acceptance recheck passed", assurance)
         self.assertIn("open_pr_count=0", assurance)
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", assurance)
@@ -99,6 +100,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("production_boundary_preflight_ready", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", generator)
+        self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", generator)
 
     def test_current_pointer_and_user_center_match_owner_packet_and_controlled_run_state(self) -> None:
         current = (ADP_ROOT / "docs/pursuing_goal/CURRENT.yaml").read_text(encoding="utf-8")
@@ -106,9 +108,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
 
-        self.assertIn("current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET", current)
+        self.assertIn("current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", current)
         self.assertIn(
-            "current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_OWNER_DECISION_PACKET_READY_BLOCKED_NO_PRODUCTION_ACCEPTANCE",
+            "current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE",
             current,
         )
         self.assertIn("next_executable_task: S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION", current)
@@ -123,6 +125,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             current,
         )
         self.assertIn("owner_authorized_controlled_real_run_acceptance_passed: true", current)
+        self.assertIn("integrated_production_acceptance_write_gate_precheck_ready: true", current)
+        self.assertIn("integrated_production_acceptance_write_gate_allowed: false", current)
+        self.assertIn(
+            "integrated_production_acceptance_write_gate_state_hash: 8dbaec78b3af9fa55b00f498995b1928399e92063a69b599babb3bed621f2c1d",
+            current,
+        )
         self.assertIn("owner_authorized_controlled_real_run_duplicate_send_avoided: true", current)
         self.assertIn("owner_authorized_controlled_real_run_newly_sent_mail_products: []", current)
         self.assertIn("owner_authorized_controlled_real_run_post_smtp_flag: false", current)
@@ -137,15 +145,20 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("inherited_v7_1_baseline_p0_findings: 8", current)
         self.assertIn("inherited_v7_1_baseline_p1_findings: 37", current)
         self.assertIn("stage2_integrated_production_accepted: false", current)
+        self.assertIn("Acceptance write gate 预检查已完成", decisions)
+        self.assertIn("acceptance_write_gate_allowed=false", decisions)
         self.assertIn("受控真实运行验收已完成", decisions)
         self.assertIn("newly_sent_mail_products=[]", decisions)
         self.assertIn("Preflight 已通过", decisions)
         self.assertIn("owner production-boundary decision", decisions)
         self.assertIn("不得自动启用 SMTP/scheduler/Release/restore", decisions)
+        self.assertIn("Acceptance write gate 预检查已准备", readme)
+        self.assertIn("acceptance_write_gate_allowed=false", readme)
         self.assertIn("受控真实运行验收复核已通过", readme)
         self.assertIn("Production-boundary preflight 已通过", readme)
         self.assertIn("Stage2/S3 production accepted", readme)
         self.assertIn("受控真实运行验收", roadmap)
+        self.assertIn("acceptance write gate 预检查已准备", roadmap)
         self.assertIn("Production-boundary preflight 已通过", roadmap)
         self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED", roadmap)
 
@@ -164,8 +177,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- active_model_count: `{model_count.group(1)}`", summary)
         self.assertIn(f"- active_formula_count: `{active_formulas.group(1)}`", summary)
         self.assertIn(f"- active_parameter_count: `{active_parameters.group(1)}`", summary)
-        self.assertIn("- current_task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET`", summary)
+        self.assertIn("- current_task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE`", summary)
         self.assertIn("- next_gate: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`", summary)
+        self.assertIn("Acceptance write-gate precheck ready", summary)
         self.assertIn("controlled foreground real-run acceptance recheck passed without duplicate send", summary)
 
 

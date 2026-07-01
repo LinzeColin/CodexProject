@@ -2100,6 +2100,35 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["owner_packet_validation_errors"], [])
 
+    def test_integrated_production_acceptance_write_gate_json_command_stays_blocked(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "build-integrated-production-acceptance-write-gate",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-07-01T16:40:00+10:00",
+                    "--json",
+                ]
+            )
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked_write_gate_owner_decision_required_no_acceptance")
+        self.assertTrue(payload["write_gate_precheck_ready"])
+        self.assertFalse(payload["acceptance_write_gate_allowed"])
+        self.assertEqual(payload["failed_checks"], [])
+        self.assertTrue(payload["checks"]["owner_packet_ready"])
+        self.assertTrue(payload["checks"]["controlled_real_run_duplicate_send_avoided"])
+        self.assertEqual(payload["controlled_real_run_sent_mail_products"], ["M1", "M2", "M3", "M4"])
+        self.assertEqual(payload["controlled_real_run_newly_sent_mail_products"], [])
+        self.assertFalse(payload["owner_production_boundary_decision_recorded"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertEqual(payload["write_gate_validation_errors"], [])
+
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {
             "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,

@@ -111,6 +111,21 @@ S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_BLOCKING_REASONS = (
     "integrated_production_accepted_not_written",
     "daily_operation_not_enabled",
 )
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID = (
+    "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE = (
+    "acceptance_write_gate_precheck_only_blocked_without_owner_decision_no_enablement"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS = (
+    "owner_production_boundary_decision_missing",
+    "acceptance_write_gate_not_allowed_without_owner_decision",
+    "integrated_production_accepted_not_written",
+    "daily_operation_not_enabled",
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_FORBIDDEN_FLAGS = (
+    S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_FORBIDDEN_FLAGS
+)
 S2PMT07_BLOCKING_REASONS = (
     "reviewer_independence_not_proven",
     "inherited_v7_1_p0_findings_open",
@@ -12241,6 +12256,9 @@ def build_integrated_production_acceptance_preflight_state(
             or f"current_iteration: ITER-20260701-ADP-{S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_TASK_ID}"
             in current_pointer_text
             or "current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_pointer_text
+            or f"current_iteration: ITER-20260701-ADP-{S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID}"
+            in current_pointer_text
+            or "current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE" in current_pointer_text
         ),
         "final_bundle_ready": final_bundle.get("status") == "pass"
         and final_bundle.get("missing_items") == [],
@@ -12545,6 +12563,228 @@ def validate_integrated_production_acceptance_owner_decision_packet_state(
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("integrated production owner decision packet state_hash does not match state content")
+    return errors
+
+
+def build_integrated_production_acceptance_write_gate_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
+    """Build the final acceptance write-gate precheck, failing closed without owner approval."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    owner_packet_path = root / "governance" / "run_manifests" / (
+        "ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json"
+    )
+    controlled_run_path = root / "governance" / "run_manifests" / (
+        "ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"
+    )
+    current_pointer_path = root / "arxiv-daily-push" / "docs" / "pursuing_goal" / "CURRENT.yaml"
+    owner_packet = _load_json_mapping_artifact(owner_packet_path) if owner_packet_path.exists() else {}
+    controlled_run = _load_json_mapping_artifact(controlled_run_path) if controlled_run_path.exists() else {}
+    final_bundle = build_final_acceptance_bundle_readiness_state(repo_root=root)
+    try:
+        current_pointer_text = current_pointer_path.read_text(encoding="utf-8")
+    except OSError:
+        current_pointer_text = ""
+    controlled_run_result = _mapping(controlled_run.get("controlled_run_result"))
+    duplicate_control = _mapping(controlled_run.get("duplicate_send_control"))
+    post_run_safety = _mapping(controlled_run.get("post_run_safety_state"))
+    production_boundary = _mapping(controlled_run.get("production_boundary"))
+    launchagents_after = _mapping(post_run_safety.get("launchagents_disabled_after"))
+    current_mentions_write_gate = (
+        S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID in current_pointer_text
+        or "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE" in current_pointer_text
+    )
+    checks = {
+        "owner_packet_manifest_present": bool(owner_packet),
+        "owner_packet_ready": owner_packet.get("packet_ready") is True,
+        "owner_packet_failed_checks_empty": owner_packet.get("failed_checks") == [],
+        "owner_packet_stays_blocked_no_acceptance": owner_packet.get("status")
+        == "blocked_owner_decision_packet_ready_no_acceptance",
+        "owner_packet_does_not_allow_write_gate": owner_packet.get(
+            "acceptance_write_gate_allowed_by_this_packet"
+        )
+        is False,
+        "controlled_real_run_manifest_present": bool(controlled_run),
+        "controlled_real_run_status_passed": controlled_run.get("status")
+        == "pass_controlled_real_run_evidence_rechecked_no_new_send",
+        "controlled_real_run_sent_all_four_mail_products": controlled_run_result.get("sent_mail_count") == 4
+        and controlled_run_result.get("planned_send_total") == 4
+        and controlled_run_result.get("sent_mail_products") == list(S2PLT01_REQUIRED_MAIL_PRODUCTS),
+        "controlled_real_run_duplicate_send_avoided": duplicate_control.get("duplicate_smtp_send_avoided")
+        is True,
+        "controlled_real_run_post_smtp_flag_false": post_run_safety.get(
+            "persistent_adp_allow_smtp_send"
+        )
+        == "false",
+        "controlled_real_run_launchagents_disabled_after": all(
+            launchagents_after.get(f"com.linze.adp.local.{label}") is True
+            for label in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS
+        ),
+        "controlled_real_run_no_background_process_after": post_run_safety.get(
+            "adp_background_process_count_after"
+        )
+        == 0,
+        "controlled_real_run_not_daily_operation_enablement": production_boundary.get(
+            "counts_as_daily_operation_enablement"
+        )
+        is False,
+        "final_bundle_ready": final_bundle.get("status") == "pass"
+        and final_bundle.get("missing_items") == [],
+        "owner_decision_not_recorded": (
+            "owner_production_boundary_decision_recorded: false" in current_pointer_text
+            and production_boundary.get("owner_production_boundary_decision_recorded") is False
+            and owner_packet.get("owner_production_boundary_decision_recorded") is False
+        ),
+        "current_points_to_owner_decision_or_write_gate": (
+            f"next_executable_task: {S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_TASK_ID}"
+            in current_pointer_text
+            or current_mentions_write_gate
+        ),
+        "production_acceptance_not_claimed": "production_acceptance_claimed: false"
+        in current_pointer_text,
+        "integrated_production_not_accepted": (
+            "stage2_integrated_production_accepted: false" in current_pointer_text
+            and production_boundary.get("stage2_integrated_production_accepted") is False
+        ),
+        "daily_operation_not_enabled": (
+            "daily_operation_enabled: false" in current_pointer_text
+            and production_boundary.get("daily_operation_enabled") is False
+        ),
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    write_gate_precheck_ready = not failed_checks
+    state = {
+        "schema_version": "adp.integrated_production_acceptance_write_gate.v1",
+        "task_id": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-INTEGRATED-PRODUCTION"],
+        "generated_at": generated_at,
+        "status": "blocked_write_gate_owner_decision_required_no_acceptance"
+        if write_gate_precheck_ready
+        else "blocked",
+        "scope": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE,
+        "write_gate_precheck_ready": write_gate_precheck_ready,
+        "acceptance_write_gate_allowed": False,
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": list(
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS
+        )
+        if write_gate_precheck_ready
+        else [f"{name}_failed" for name in failed_checks],
+        "next_required_step": (
+            "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION_OR_PAUSE"
+        ),
+        "owner_decision_id": "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701",
+        "owner_packet_manifest_ref": str(owner_packet_path.relative_to(root)),
+        "owner_packet_state_hash": owner_packet.get("state_hash", ""),
+        "controlled_real_run_manifest_ref": str(controlled_run_path.relative_to(root)),
+        "controlled_real_run_status": controlled_run.get("status", ""),
+        "controlled_real_run_generated_at": controlled_run.get("generated_at", ""),
+        "controlled_real_run_sent_mail_count": controlled_run_result.get("sent_mail_count"),
+        "controlled_real_run_planned_send_total": controlled_run_result.get("planned_send_total"),
+        "controlled_real_run_sent_mail_products": list(controlled_run_result.get("sent_mail_products", [])),
+        "controlled_real_run_newly_sent_mail_products": list(
+            controlled_run_result.get("newly_sent_mail_products", [])
+        ),
+        "controlled_real_run_historical_sent_mail_products": list(
+            controlled_run_result.get("historical_sent_mail_products", [])
+        ),
+        "controlled_real_run_duplicate_send_avoided": duplicate_control.get(
+            "duplicate_smtp_send_avoided"
+        )
+        is True,
+        "controlled_real_run_persistent_adp_allow_smtp_send_after": post_run_safety.get(
+            "persistent_adp_allow_smtp_send"
+        ),
+        "controlled_real_run_background_process_count_after": post_run_safety.get(
+            "adp_background_process_count_after"
+        ),
+        "final_bundle_manifest_ref": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+        "final_bundle_readiness_state_hash": final_bundle.get("state_hash"),
+        "final_bundle_missing_items": list(final_bundle.get("missing_items", [])),
+        "owner_production_boundary_decision_recorded": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_integrated_production_acceptance_write_gate_state(
+    state: Mapping[str, Any],
+) -> list[str]:
+    """Validate the final acceptance write-gate precheck without permitting acceptance writes."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != "adp.integrated_production_acceptance_write_gate.v1":
+        errors.append("integrated production acceptance write gate schema_version is invalid")
+    if state.get("task_id") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID:
+        errors.append("integrated production acceptance write gate task_id is invalid")
+    if state.get("scope") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE:
+        errors.append("integrated production acceptance write gate scope is invalid")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("integrated production acceptance write gate failed_checks must match checks")
+    expected_ready = not failed_checks
+    if state.get("write_gate_precheck_ready") is not expected_ready:
+        errors.append("integrated production acceptance write gate readiness must match checks")
+    expected_status = "blocked_write_gate_owner_decision_required_no_acceptance" if expected_ready else "blocked"
+    if state.get("status") != expected_status:
+        errors.append("integrated production acceptance write gate status must match checks")
+    if expected_ready:
+        if (
+            state.get("blocking_reasons")
+            != list(S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS)
+        ):
+            errors.append("integrated production acceptance write gate blockers must stop at owner decision")
+    else:
+        expected_blocking = [f"{name}_failed" for name in failed_checks]
+        if state.get("blocking_reasons") != expected_blocking:
+            errors.append("integrated production acceptance write gate blockers must match failed checks")
+    if state.get("next_required_step") != (
+        "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION_OR_PAUSE"
+    ):
+        errors.append("integrated production acceptance write gate next_required_step is invalid")
+    if state.get("owner_production_boundary_decision_recorded") is not False:
+        errors.append("integrated production acceptance write gate must not record owner approval")
+    if state.get("acceptance_write_gate_allowed") is not False:
+        errors.append("integrated production acceptance write gate must stay disallowed without owner decision")
+    if state.get("controlled_real_run_duplicate_send_avoided") is not True:
+        errors.append("integrated production acceptance write gate must consume duplicate-send protection evidence")
+    if state.get("controlled_real_run_sent_mail_products") != list(S2PLT01_REQUIRED_MAIL_PRODUCTS):
+        errors.append("integrated production acceptance write gate must reference M1-M4 controlled-run evidence")
+    final_bundle = build_final_acceptance_bundle_readiness_state()
+    if state.get("final_bundle_readiness_state_hash") != final_bundle.get("state_hash"):
+        errors.append("integrated production acceptance write gate final bundle hash must match current readiness")
+    for flag in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"integrated production acceptance write gate must not claim {flag}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("integrated production acceptance write gate state_hash does not match state content")
     return errors
 
 
