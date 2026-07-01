@@ -8,6 +8,7 @@ The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
+- Mainline attestation now binds the S2PMT07 controlled real-run and write-gate evidence to `origin/main@e85ec4b4`; no new SMTP command ran for the attestation, and production remains blocked.
 - Product version: 0.23.1
 - Current phase: S2PL
 - Current gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE
@@ -72,6 +73,19 @@ The append-only machine record is `development_events.jsonl`.
 
 
 
+
+
+### `ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION`
+
+- Timestamp: 2026-07-01T16:52:40+10:00
+- Task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION`
+- Gate: `S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE`
+- Result: `pass_mainline_commit_bound_attestation_no_production_enablement`
+- Summary: The controlled real-run acceptance and final acceptance write-gate precheck evidence are bound to `origin/main@e85ec4b4` without rerunning SMTP or enabling production.
+- Validation: `binding_status=commit_bound`; `result_commit=e85ec4b49c959cf6dbc0effa385df45fa8d468a2`; `result_tree_hash=5dc9d74c67407d69800cd86c652f833d2082f3ad`; controlled run remains `sent_mail_count=4/4`, `newly_sent_mail_products=[]`, `historical_sent_mail_products=M1,M2,M3,M4`, and `duplicate_smtp_send_avoided=true`.
+- Closeout validation: focused governance/generator tests 6 OK; full ADP pytest 768 passed / 64 subtests passed; project governance 0/0; governance sync 0/0; changed-only governance sync 0/0; task pack PASS; acceptance bundle PASS; lean render drift 0; user-center timestamps 18 validated; JSON/JSONL parse OK; git diff --check PASS; open_pr_count=0; persistent SMTP flag false; LaunchAgents disabled; no ADP background process; pycache cleaned.
+- Boundary: no `INTEGRATED_PRODUCTION_ACCEPTED` write, no `DAILY_OPERATION`, no SMTP run by this attestation, no scheduler enable/install, no Release, no production restore, no CURRENT/V7 contract mutation, no public schema/DB/source/ranking/queue mutation, no P0/P1 historical baseline mutation, and no Stage2/S3 production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_MAINLINE_ATTESTATION.md`.
 
 ### `ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE`
 

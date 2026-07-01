@@ -753,7 +753,9 @@ def final_commit_binding(events: list[dict[str, Any]]) -> str:
     commit = str(latest.get("result_commit") or latest.get("git_commit") or "").strip()
     if re.fullmatch(r"[0-9a-f]{7,40}", commit):
         ref = str(latest.get("ci_run_reference") or latest.get("ci_attestation_ref") or "").strip()
-        return f"CI_ATTESTED:{commit}" + (f" {ref}" if ref else "")
+        if ref:
+            return f"CI_ATTESTED:{commit} {ref}"
+        return f"COMMIT_BOUND:{commit}"
     ref = str(latest.get("ci_attestation_ref") or "").strip()
     if ref:
         return f"CI_ATTESTED:{ref}"

@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION"
+    phase: "S2PL"
+    objective: "Bind the owner-authorized controlled real-run acceptance and acceptance write-gate precheck evidence to the current mainline commit without rerunning SMTP or enabling production."
+    scope: "Run manifest, phase record, append-only events, delivery/development ledgers, dashboard status, and three-base summaries."
+    non_scope: "No new SMTP send, scheduler enable/install, Release packaging, production restore, DAILY_OPERATION, INTEGRATED_PRODUCTION_ACCEPTED write, public schema/DB/source/ranking/queue mutation, V7 contract mutation, or P0/P1 historical baseline mutation."
+    status: "completed"
+    dependencies: ["S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", "S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_MAINLINE_ATTESTATION.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["mainline commit-bound attestation for origin/main@e85ec4b4", "post-run safety check for ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and no ADP process", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_governance_sync.py"]
+    test_results: ["mainline attestation recorded: result_commit=e85ec4b49c959cf6dbc0effa385df45fa8d468a2", "no new SMTP run executed by this attestation; controlled real-run evidence remains sent_mail_count=4/4 with newly_sent_mail_products=[]", "focused governance/generator tests 6 OK", "full ADP pytest 768 passed / 64 subtests passed", "project governance 0 errors / 0 warnings", "governance sync 0 errors / 0 warnings", "changed-only governance sync 0 errors / 0 warnings", "task pack PASS", "acceptance bundle PASS", "lean render drift 0 / reference issues 0", "user-center timestamps 18 validated", "JSON/JSONL parse OK", "git diff --check PASS", "open_pr_count=0", "persistent ADP_ALLOW_SMTP_SEND=false; LaunchAgents disabled; no ADP background process; pycache cleaned"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_MAINLINE_ATTESTATION.md", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json", "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"]
+    risk: "Future agents could rerun SMTP unnecessarily or misread controlled evidence as DAILY_OPERATION; this task binds the evidence while preserving the blocked production boundary."
+    rollback: "Revert this mainline attestation manifest, phase record, event, and status summaries; runtime SMTP state remains disabled and no production config is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
     phase: "S2PL"
     objective: "Build and record the final acceptance write-gate precheck after owner decision packet readiness and controlled real-run evidence, while keeping acceptance writes and production enablement blocked without explicit owner decision."

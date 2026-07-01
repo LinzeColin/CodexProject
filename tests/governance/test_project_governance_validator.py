@@ -10141,6 +10141,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("legacy_unbound_events: 2", rendered)
         self.assertIn("GOV-REVIEW7-BINDING-BACKLOG-001", rendered)
 
+    def test_review7_final_commit_binding_distinguishes_commit_from_ci(self) -> None:
+        dashboard = load_dashboard_module()
+        commit = "a" * 40
+
+        self.assertEqual(
+            dashboard.final_commit_binding([{"result_commit": commit}]),
+            f"COMMIT_BOUND:{commit}",
+        )
+        self.assertEqual(
+            dashboard.final_commit_binding([{"result_commit": commit, "ci_run_reference": "run-1"}]),
+            f"CI_ATTESTED:{commit} run-1",
+        )
+
     def test_review6_serenity_semantic_extractors_pass_current_registry(self) -> None:
         if os.environ.get("GITHUB_EVENT_NAME") == "pull_request":
             base_ref = os.environ.get("GITHUB_BASE_REF") or "main"
