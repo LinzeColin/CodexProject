@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S16P2-PROJECT-STATUS-LIFECYCLE"
+as_of_event_id: "EVENT-KMFA-20260701-S16P3-CUSTOMER-BUSINESS-ANALYSIS"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "22f4dbcd434e411363a8f37b6986869f847e7162"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16P2_COMMIT"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16P3_COMMIT"
 snapshot_event_time: "2026-07-01T23:00:00+10:00"
-generator_version: "manual-s16p2-project-status-lifecycle"
+generator_version: "manual-s16p3-customer-business-analysis"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 211
-    total_active_formulas: 44
+    total_active_parameters: 219
+    total_active_formulas: 45
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -404,8 +404,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S16P2_COMPLETED_VALIDATED_LOCAL_ONLY_NEXT_S16P3"
-  release_gate: "KMFA-S16-P3-GATE"
+  status: "S16P3_COMPLETED_VALIDATED_LOCAL_ONLY_NEXT_STAGE16_REVIEW"
+  release_gate: "KMFA-S16-STAGE-REVIEW-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"

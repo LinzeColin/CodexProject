@@ -1744,3 +1744,113 @@ tasks:
     rollback: "Remove S16-P2 handoff guard output and revert S16-P2 governance rows."
     target_version: "0.1.0-s16p2-project-status-lifecycle"
     completed_version: "0.1.0-s16p2-project-status-lifecycle"
+  - task_id: "S16PCT01"
+    phase: "S16PC"
+    objective: "接入客户价值、项目毛利、回款质量和账龄风险 public-safe 信号。"
+    scope:
+      - "customer value signal lane"
+      - "project margin signal lane"
+      - "collection quality signal lane"
+      - "aging risk signal lane"
+      - "project lifecycle signal lane"
+    non_scope:
+      - "raw business data"
+      - "customer plaintext"
+      - "project plaintext"
+      - "formal report"
+      - "business decision basis"
+      - "collection action"
+      - "legal collection decision"
+      - "Stage 16 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S16PBT03"
+    required_files:
+      - "KMFA/tools/customer_business_analysis.py"
+      - "KMFA/metadata/reports/customer_business_analysis_manifest.json"
+      - "KMFA/metadata/reports/customer_analysis_source_lanes.jsonl"
+    acceptance_ids:
+      - "ACC-CUSTOMER-BUSINESS-ANALYSIS"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_customer_business_analysis -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p3_customer_business_analysis.py"
+    test_results:
+      - "PASS: source_lanes=5 and required customer analysis dimensions remain public-safe."
+    evidence_refs:
+      - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/machine/s16_p3_manifest.json"
+    risk: "Customer business signals remain D-grade and cannot become formal report or business decision basis before lineage and reconciliation gates pass."
+    rollback: "Remove S16-P3 customer business analysis outputs and revert S16-P3 governance rows before Stage 16 review."
+    target_version: "0.1.0-s16p3-customer-business-analysis"
+    completed_version: "0.1.0-s16p3-customer-business-analysis"
+  - task_id: "S16PCT02"
+    phase: "S16PC"
+    objective: "输出 public-safe 客户经营摘要。"
+    scope:
+      - "customer operating summaries"
+      - "dimension signal references"
+      - "review-only status"
+    non_scope:
+      - "customer plaintext"
+      - "project plaintext"
+      - "raw values"
+      - "formal report"
+      - "business decision release"
+    status: "completed"
+    dependencies:
+      - "S16PCT01"
+    required_files:
+      - "KMFA/metadata/reports/customer_operating_summaries.jsonl"
+    acceptance_ids:
+      - "ACC-CUSTOMER-BUSINESS-ANALYSIS"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_customer_business_analysis -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p3_customer_business_analysis.py"
+    test_results:
+      - "PASS: customer_summaries=4 with customer value, project margin, collection quality and aging risk signal refs."
+    evidence_refs:
+      - "KMFA/metadata/reports/customer_operating_summaries.jsonl"
+      - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md"
+    risk: "Customer summaries are owner-review signals only and cannot be used as complete trusted reports."
+    rollback: "Remove S16-P3 customer summary output and revert S16-P3 governance rows."
+    target_version: "0.1.0-s16p3-customer-business-analysis"
+    completed_version: "0.1.0-s16p3-customer-business-analysis"
+  - task_id: "S16PCT03"
+    phase: "S16PC"
+    objective: "锁定客户异常事项不得自动催收或做法律决策。"
+    scope:
+      - "high aging risk review item"
+      - "weak collection quality review item"
+      - "margin review required item"
+      - "lifecycle customer handoff item"
+      - "collection and legal action blockers"
+    non_scope:
+      - "automatic customer contact"
+      - "legal collection decision"
+      - "collection action"
+      - "payment execution"
+      - "bank operation"
+      - "invoice issuance"
+      - "external connector"
+    status: "completed"
+    dependencies:
+      - "S16PCT02"
+    required_files:
+      - "KMFA/metadata/reports/customer_analysis_exception_items.jsonl"
+      - "KMFA/tools/check_s16_p3_customer_business_analysis.py"
+    acceptance_ids:
+      - "ACC-CUSTOMER-BUSINESS-ANALYSIS"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_customer_business_analysis -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p3_customer_business_analysis.py"
+    test_results:
+      - "PASS: exception_items=4 and collection/legal/business execution gates remain false."
+    evidence_refs:
+      - "KMFA/metadata/reports/customer_analysis_exception_items.jsonl"
+      - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md"
+    risk: "Exception items cannot be used as collection, legal, payment, bank, invoice or external connector instructions."
+    rollback: "Remove S16-P3 exception output and revert S16-P3 governance rows."
+    target_version: "0.1.0-s16p3-customer-business-analysis"
+    completed_version: "0.1.0-s16p3-customer-business-analysis"

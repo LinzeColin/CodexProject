@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s16-p2-local`
+- version: `0.1.0-s16-p3-local`
 - current_stage: `S16`
-- current_phase: `S16-P3｜客户经营分析｜待开始`
-- status: `s16p2_completed_validated_local_only_next_s16p3`
+- current_phase: `Stage 16 整体复审｜待开始`
+- status: `s16p3_completed_validated_local_only_next_stage16_review`
 - production_ready: `false`
 - github_upload_ready: `false_stage16_not_reviewed`
 
@@ -108,16 +108,17 @@
 - S15-P3 工资项目边界已完成本地验证：`KMFA/tools/performance_salary_boundary.py`、`KMFA/tools/check_s15_p3_salary_boundary.py`、`KMFA/tests/test_performance_salary_boundary.py`、`KMFA/metadata/reports/performance_salary_boundary_manifest.json`、`KMFA/metadata/reports/performance_fact_output_interface_contract.json`、`KMFA/metadata/reports/salary_system_readiness_draft.jsonl` 和 `KMFA/stage_artifacts/S15_P3_salary_boundary/` 已生成；只预留 public-safe 事实输出接口契约和未来读取草案，不创建 live integration、connector、导出、工资计算、奖金审批、薪资导出或最终发放结论。
 - Stage 15 整体复审已本地通过：`KMFA/tools/check_s15_stage_review.py`、`KMFA/tests/test_s15_stage_review.py` 和 `KMFA/stage_artifacts/S15_STAGE_REVIEW/` 已生成；复审复跑 S15-P1/P2/P3 validators、全量 207 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks，未执行 GitHub upload、S16、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终薪酬结论、付款发放或外部接口。
 - Stage 15 final GitHub upload 已完成：`KMFA/stage_artifacts/S15_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S15_GITHUB_UPLOAD/machine/stage15_upload_manifest.json` 已生成，记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
-- S16-P1 外协采购归集已完成本地验证：`KMFA/tools/subcontract_procurement_aggregation.py`、`KMFA/tools/check_s16_p1_subcontract_procurement.py`、`KMFA/tests/test_subcontract_procurement_aggregation.py`、`KMFA/metadata/reports/subcontract_procurement_aggregation_manifest.json`、`KMFA/metadata/reports/subcontract_procurement_source_lanes.jsonl`、`KMFA/metadata/reports/subcontract_project_matches.jsonl`、`KMFA/metadata/reports/subcontract_unallocated_cost_pool.jsonl`、`KMFA/metadata/reports/subcontract_anomaly_candidates.jsonl` 和 `KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/` 已生成；4 条 source lane、5 条项目匹配、2 条未归集成本池、4 条异常候选均为 public-safe 复核证据，报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、采购执行、付款执行、银行操作、S16-P2/S16-P3、Stage 16 review 和 GitHub upload。
+- S16-P1 外协采购归集已完成本地验证：`KMFA/tools/subcontract_procurement_aggregation.py`、`KMFA/tools/check_s16_p1_subcontract_procurement.py`、`KMFA/tests/test_subcontract_procurement_aggregation.py`、`KMFA/metadata/reports/subcontract_procurement_aggregation_manifest.json`、`KMFA/metadata/reports/subcontract_procurement_source_lanes.jsonl`、`KMFA/metadata/reports/subcontract_project_matches.jsonl`、`KMFA/metadata/reports/subcontract_unallocated_cost_pool.jsonl`、`KMFA/metadata/reports/subcontract_anomaly_candidates.jsonl` 和 `KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/` 已生成；4 条 source lane、5 条项目匹配、2 条未归集成本池、4 条异常候选均为 public-safe 复核证据，报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、采购执行、付款执行、银行操作、Stage 16 review 和 GitHub upload。
 
 ## 未完成
 
 - S16-P2 项目状态生命周期已完成本地验证：`KMFA/tools/project_status_lifecycle.py`、`KMFA/tools/check_s16_p2_project_status_lifecycle.py`、`KMFA/tests/test_project_status_lifecycle.py`、`KMFA/metadata/reports/project_status_lifecycle_manifest.json`、`project_status_source_lanes.jsonl`、`project_lifecycle_records.jsonl`、`project_lifecycle_exception_items.jsonl`、`project_lifecycle_handoff_guards.jsonl` 和 `KMFA/stage_artifacts/S16_P2_project_status_lifecycle/` 已生成；只输出 public-safe 生命周期状态、异常事项和 handoff guard，不代表现场施工、签字、结算、开票、催收、正式经营决策或业务系统可发布。
-- S16-P3、Stage 16 整体复审和 Stage 16 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S16-P1/S16-P2 仅为 public-safe 外协采购付款归集、项目状态生命周期和人工复核证据，不代表采购执行、付款执行、银行操作、供应商结算、现场施工、签字、开票、催收、正式经营决策或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- S16-P3 客户经营分析已完成本地验证：`KMFA/tools/customer_business_analysis.py`、`KMFA/tools/check_s16_p3_customer_business_analysis.py`、`KMFA/tests/test_customer_business_analysis.py`、`KMFA/metadata/reports/customer_business_analysis_manifest.json`、`customer_analysis_source_lanes.jsonl`、`customer_operating_summaries.jsonl`、`customer_analysis_exception_items.jsonl` 和 `KMFA/stage_artifacts/S16_P3_customer_business_analysis/` 已生成；只输出 public-safe 客户经营摘要和异常复核事项，不代表正式经营决策、自动催收、客户联系、法律决策、开票、付款、银行或外部接口。
+- Stage 16 整体复审和 Stage 16 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S16-P1/S16-P2/S16-P3 仅为 public-safe 外协采购付款归集、项目状态生命周期、客户经营分析和人工复核证据，不代表采购执行、付款执行、银行操作、供应商结算、现场施工、签字、开票、催收、法律决策、正式经营决策或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-15 review/upload 均已完成，S16-P1/S16-P2 已本地完成；下一步只能执行 S16-P3，不能直接进入 Stage 16 review、GitHub upload、lineage full check、正式报告、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-15 review/upload 均已完成，S16-P1/S16-P2/S16-P3 已本地完成；下一步只能执行 Stage 16 整体复审，不能直接进入 GitHub upload、lineage full check、正式报告、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

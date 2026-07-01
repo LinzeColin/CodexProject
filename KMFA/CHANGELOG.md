@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.0-s16-p3-local - 2026-07-01
+
+- 完成 `S16-P3｜客户经营分析` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/customer_business_analysis.py`、`KMFA/tools/check_s16_p3_customer_business_analysis.py` 和 `KMFA/tests/test_customer_business_analysis.py`。
+- 生成 `customer_business_analysis_manifest.json`、`customer_analysis_source_lanes.jsonl`、`customer_operating_summaries.jsonl`、`customer_analysis_exception_items.jsonl` 和 `S16_P3_customer_business_analysis/` 证据。
+- 覆盖客户价值、项目毛利、回款质量、账龄风险 4 个维度，生成 5 条来源线、4 条客户经营摘要和 4 条异常复核事项。
+- 客户经营摘要和异常事项均保持 review-only，不触发自动催收、客户联系、法律决策、开票、付款、银行、税务或外部接口动作。
+- 报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、催收/法律/付款/银行动作和业务 release。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或 credentials。
+- S16-P3 不执行 Stage 16 review、GitHub upload、lineage full check、正式报告、外部 connector 或任何业务执行动作。
+- 下一轮只能执行 `Stage 16 整体复审`。
+
 ## 0.1.0-s16-p2-local - 2026-07-01
 
 - 完成 `S16-P2｜项目状态生命周期` 本地验证，不上传 GitHub。
