@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 3 Stage 2 Review
+
+- Completed the Part 3 review for Phase 2.1 / 2.2 / 2.3: Default Home
+  Integration Plan, Galaxy Replacement Plan, and Timeline Replacement Plan.
+- Added `validate:part3-stage2` to verify the three planning contracts, mark
+  the Stage 2 runtime assertions as historical, confirm current later-stage
+  runtime markers, check production experiment isolation, run the TypeScript /
+  Vite build, and run visual and overall acceptance audits.
+- Added a Stage 2 historical runtime note so current Stage 3-9 runtime features
+  are not mistaken as contradictions of the original planning-stage review.
+
+No Part 4 review, whole-project review, GitHub main upload, Cloudflare live
+deploy, Access policy change, raw/private data access, direct writeback,
+production runtime feature work, or external account operation was added.
+
+Machine-readable boundary summary: Phase 2.1 / 2.2 / 2.3; Stage 2 historical
+runtime note; No Part 4 review; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 2 Stage 1 Review
 
 - Completed the Part 2 review for Phase 1.1 / 1.2 / 1.3: Memory Starfield

@@ -1133,3 +1133,44 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 3 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 24. Part 3 Stage 2 复审门槛
+
+状态：`part_3_stage_2_review_passed`。
+
+范围：
+
+- Phase 2.1 Default Home Integration Plan。
+- Phase 2.2 Galaxy Replacement Plan。
+- Phase 2.3 Timeline Replacement Plan。
+
+验收门槛：
+
+- `validate:part3-stage2` 必须通过。
+- Phase 2.1 必须保留默认首页目标、`记忆总览` 首屏 UX、Memory Weather、
+  Black Hole、Proto-Star、Next Actions、Mini Starfield、River Pulse、Stage 3
+  implementation sequence、rollback、validation 和 stop conditions。
+- Phase 2.2 必须保留 Galaxy replacement wrapper strategy、legacy/new
+  feature flag strategy、MemoryStarfieldScene 生产组件边界、data mapping、
+  screenshot/FPS/privacy validation、one-flag rollback 和 Stage 4 deferral。
+- Phase 2.3 必须保留 Timeline replacement wrapper strategy、legacy/new river
+  feature flag strategy、D3 UTC scale、zoom、brush、theme lanes、Black Hole
+  band、Proto-Star marker、reduced motion、data mapping、one-flag rollback 和
+  Stage 5 deferral。
+- Stage 2 historical runtime note 必须存在：Stage 2 review 的 runtime
+  assertions 是 2026-06-30 历史状态，不是当前 Stage 3-9 runtime truth。
+- TypeScript/Vite build、visual acceptance、overall acceptance 必须通过。
+
+边界：
+
+- 本 Part 3 复审不进入 Part 4。
+- 本 Part 3 复审不执行整项目复审。
+- 本 Part 3 复审不上传 GitHub main。
+- 本 Part 3 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 3 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 3 复审不新增 direct active-memory writeback。
+- 本 Part 3 复审不新增 production runtime feature work。
+
+下一阶段：
+
+- 单独执行 Part 4 复审与修复；所有 part-level 复审完成后再进入整项目复审。

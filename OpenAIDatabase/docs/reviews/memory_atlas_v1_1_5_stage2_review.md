@@ -19,6 +19,12 @@ unchanged by design: the app still defaults to the existing Galaxy board, and
 the existing Galaxy and Timeline renderers remain active until later
 implementation stages.
 
+Stage 2 historical runtime note: the runtime statements above describe the repo
+state at the original 2026-06-30 Stage 2 review. Current repo state may include
+later Stage 3-9 runtime changes, including the implemented `记忆总览` default,
+Galaxy renderer selection and Memory River renderer. Use this Stage 2 review as
+evidence for planning-contract completeness, not as current runtime truth.
+
 ## Stage 2 Artifact Matrix
 
 | Source requirement | Evidence file | Review status |
