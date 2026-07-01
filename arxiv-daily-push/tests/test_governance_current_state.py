@@ -35,6 +35,26 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_PASS_BLOCKED_TERMINAL_ARTIFACT",
+            current_state,
+        )
+        self.assertIn("S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-PASS", current_state)
+        self.assertIn("real_scheduler_proven=true", current_state)
+        self.assertIn("scheduler_evidence_present=true", current_state)
+        self.assertIn("scheduler_proof_ready=true", current_state)
+        self.assertIn("real_smtp_sent_by_scheduler_proof_run=false", current_state)
+        self.assertIn("production_evidence_ready_by_scheduler_proof_run=false", current_state)
+        self.assertIn("live_arxiv_fetch_attempted_by_scheduler_proof_run=false", current_state)
+        self.assertIn("020904b1b96c87cccdec3a64c77607373789ee0dbd275bf015f0cd5a79b22811", current_state)
+        self.assertIn("62f065d518d31c67d38a3c004ce48f9acc5f7e97867387eb5584dbf84c07aa21", current_state)
+        self.assertIn("ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json", current_state)
+        self.assertIn("ADP-S2PLT02-REAL-SCHEDULER-PROOF-VALIDATION-20260701.json", current_state)
+        self.assertIn("ADP-S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-PASS-20260701.json", current_state)
+        self.assertIn("PHASE_S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_PASS.md", ledger)
+        self.assertIn("Remaining S2PLT02 blocker is `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`", current_state)
+        self.assertIn("Previous controlled launchd timeout remains visible", current_state)
+
+        self.assertIn(
             "S2PLT02_CONTROLLED_LAUNCHD_KICKSTART_TIMEOUT_BLOCKED_NO_PRODUCTION",
             current_state,
         )
