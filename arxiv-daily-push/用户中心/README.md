@@ -1,9 +1,16 @@
 # ADP 用户中心
 
-## 2026-07-01 08:37:20 Australia/Sydney - S2PLT02 当前只剩 scheduler proof 与 terminal artifact 缺口
+## 2026-07-01 11:24:30 Australia/Sydney - S2PLT02 真实 scheduler proof 已捕获，仍未生产验收
+
+- S2PLT02 当前真实邮件证据已达 `2/2` 天、`8/8` 封；真实 scheduler proof 也已在受控 launchd/no-SMTP 窗口中通过验证。
+- 当前下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF`；剩余缺口是 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，不能跳到 S2PLT03/S2PLT04/final bundle。
+- 本次 scheduler proof run 未发送 SMTP，未启用持久 scheduler，未拉取 live arXiv；运行后 LaunchAgents disabled，ADP 进程数 `0`，持久 `ADP_ALLOW_SMTP_SEND=false`。
+- 证据：[scheduler proof](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json) / [proof validation](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-VALIDATION-20260701.json) / [capture audit pass](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-PASS-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_PASS.md)。这不是 SMTP/scheduler/Release/production accepted。
+
+## 2026-07-01 08:37:20 Australia/Sydney - 历史：S2PLT02 当时只剩 scheduler proof 与 terminal artifact 缺口
 
 - S2PLT02 当前真实邮件证据已达 `2/2` 天、`8/8` 封；第二真实日和 8 封真实邮件不再是当前缺口。
-- 当前下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；剩余缺口是 `REAL_SCHEDULER_PROOF` 和 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`。
+- 当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；剩余缺口是 `REAL_SCHEDULER_PROOF` 和 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`。当前最新缺口见上方 2026-07-01 11:24:30 记录。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 07:43:35 Australia/Sydney - S2PLT02 第二真实发送日已捕获但仍未生产验收
@@ -18,14 +25,14 @@
 
 - `capture_wait_state_guard.allowed_readonly_commands` 中的只读命令现在都会返回 blocked JSON；terminal proof evidence inventory 命令已带 `--generated-at 2026-07-01T05:42:34+10:00`。
 - 当前仍 blocked：capture plan `state_hash=aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1`，wait guard `state_hash=502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe`，inventory command `state_hash=26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c`，final readiness `state_hash=6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当前已捕获第二真实日和 8 封真实邮件；仍缺真实 scheduler proof 和 S2PLT02 terminal proof artifact。
+- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当时已捕获第二真实日和 8 封真实邮件；当时仍缺真实 scheduler proof 和 S2PLT02 terminal proof artifact。当前最新缺口见上方 2026-07-01 11:24:30 记录。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 05:17:15 Australia/Sydney - S2PLT02 捕获计划已公开输入清单和 artifact 校验摘要
 
 - `plan-s2plt02-terminal-delivery-proof-capture`、`plan-final-bundle-prerequisites` 和 `validate-final-acceptance-bundle` 现在都公开 `terminal_delivery_input_inventory_summary` 与 `terminal_delivery_artifact_validation_summary`。
 - 当前仍 blocked：capture plan `state_hash=cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4`，input summary `state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`，artifact summary `state_hash=3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`，final readiness `state_hash=23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c`。
-- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当前已捕获第二真实日和 8 封真实邮件；仍缺真实 scheduler proof 和 S2PLT02 terminal proof artifact。
+- 下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当时已捕获第二真实日和 8 封真实邮件；当时仍缺真实 scheduler proof 和 S2PLT02 terminal proof artifact。当前最新缺口见上方 2026-07-01 11:24:30 记录。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 04:57:53 Australia/Sydney - Final bundle 已消费 P0/P1 zero-proof artifact 到 request 状态
@@ -221,7 +228,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-07-01 08:45:44 Australia/Sydney
+更新时间：2026-07-01 11:38:56 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -247,7 +254,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 417 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 418 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
