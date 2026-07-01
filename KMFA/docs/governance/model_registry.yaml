@@ -81,7 +81,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s17-stage-review"
+    model_version: "0.1.0-s17-github-upload"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"

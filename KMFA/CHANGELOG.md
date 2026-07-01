@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s17-github-upload - 2026-07-01
+
+- 完成 Stage 17 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `52c15e845c8d3b02d935bd5a234a213b43cd1d9f` rebase Stage 17 栈，并复跑 S17-P1/P2/P3 validators、Stage 17 review validator、全量 246 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。
+- 新增 `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json`。
+- 上传范围只包含 public-safe 权限安全、通知提醒、运维 SOP、Stage 17 review 和 upload proof；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或接口凭证。
+- Stage 17 upload 不实现 S18、lineage full check、正式报告、完整报告邮件、live connector、生产恢复、外部服务调用或业务 release。
+- 下一轮只能作为新 run work 从 `S18-P1｜精度与压力测试` 开始，且必须读取 v1.2 task pack、roadmap 和 HTML/UIUX/报告样板。
+
 ## 0.1.0-s17-stage-review - 2026-07-01
 
 - 完成 `Stage 17 整体复审` 本地验证，不上传 GitHub。

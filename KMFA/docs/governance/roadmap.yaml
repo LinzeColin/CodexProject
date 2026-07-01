@@ -3,10 +3,10 @@ roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
-current_stage_id: "S17"
-current_phase_id: "S17_GITHUB_UPLOAD"
-current_task_id: "KMFA-S17-GITHUB-UPLOAD-GATE"
-next_gate_id: "KMFA-S17-GITHUB-UPLOAD-GATE"
+current_stage_id: "S18"
+current_phase_id: "S18_P1"
+current_task_id: "KMFA-S18-P1-GATE"
+next_gate_id: "KMFA-S18-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1255,7 +1255,7 @@ stages:
               - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
   - stage_id: "S17"
     name: "权限、通知、安全、审计与运维"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100
     stop_conditions:
@@ -1276,6 +1276,8 @@ stages:
         - "KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md"
         - "KMFA/stage_artifacts/S17_STAGE_REVIEW/human/stage17_review_report.md"
         - "KMFA/stage_artifacts/S17_STAGE_REVIEW/machine/stage17_review_manifest.json"
+        - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md"
+        - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json"
       failure_action: "fix_and_rerun"
     phases:
       - phase_id: "S17PA"
@@ -1379,11 +1381,12 @@ stages:
               - "KMFA/tools/check_s17_stage_review.py"
           - task_id: "KMFA-S17-GITHUB-UPLOAD-GATE"
             name: "上传 Stage 17 reviewed stack 到 GitHub main。"
-            status: "pending_next_run"
+            status: "uploaded_to_github_main"
             evidence_refs:
-              - "KMFA/stage_artifacts/S17_STAGE_REVIEW/human/test_results.md"
+              - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md"
+              - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json"
   - stage_id: "S18"
     name: "回归、压力、稳定验收与后续接入准备"
-    status: "planned"
+    status: "planned_pending_s18_p1"
     estimated_hours: 3
     estimated_pct: 0
