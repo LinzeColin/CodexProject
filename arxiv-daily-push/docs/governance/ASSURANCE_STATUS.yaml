@@ -1,11 +1,11 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-OWNER-DECISION-REQUEST-MAINLINE-ATTESTATION"
-source_snapshot_hash: "sha256:28ff558dbec03bd75709b1373347734df262212ab57fb88d6e2fe81f994114a5"
+as_of_event_id: "EVENT-20260701-ADP-S2PMT07-OWNER-DECISION-WRITE-GATE-ALLOWED"
+source_snapshot_hash: "sha256:d68bf5b01b73aed4d9b1528424d520b70d1bcfaeceaea646966e457d2c880310"
 source_base_commit: "960e9d1a8871bac1b4e482b58a3d673d3c6b635c"
 source_tree_hash: "cf801941e53c389bcc3ac4456ba54a8b48543f3f"
-snapshot_event_time: "2026-07-01T17:54:39+10:00"
+snapshot_event_time: "2026-07-01T18:16:00+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "COMMIT_BOUND:960e9d1a8871bac1b4e482b58a3d673d3c6b635c"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -58,7 +58,7 @@ dimensions:
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    tree_bound_events: 5
+    tree_bound_events: 6
     commit_bound_events: 7
     legacy_unbound_events: 330
     precommit_pending_events: 40
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE"
+  release_gate: "S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_ALLOWED_NO_RUNTIME_ENABLEMENT"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,15 +82,15 @@ delivery_readiness:
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION"
+  task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE"
   status: "blocked"
-  reason: "The S2PMT07 production-boundary preflight checks passed with final bundle ready, owner decision packet ready, acceptance write-gate precheck blocked correctly, open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and no background ADP process. Owner-authorized controlled foreground real-run acceptance recheck passed without duplicate SMTP and with persistent ADP_ALLOW_SMTP_SEND=false; this is evidence, not DAILY_OPERATION. The remaining action is owner production-boundary decision evidence before any INTEGRATED_PRODUCTION_ACCEPTED write or DAILY_OPERATION enablement."
+  reason: "Owner production-boundary decision evidence is recorded and the final acceptance write gate is allowed only for evidence writing. Runtime enablement remains forbidden: SMTP, scheduler, Release, restore, and DAILY_OPERATION stay disabled until separately validated."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
     - "ACC-S2PL-INTEGRATED-PRODUCTION"
   owner: "content_owner + engineering_owner + independent_final_reviewer"
   human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Record owner production-boundary decision evidence, then run the final acceptance write gate without enabling SMTP/scheduler/Release/restore automatically."
+  unblock_condition: "Write and validate INTEGRATED_PRODUCTION_ACCEPTED evidence through the final gate without enabling runtime production or changing public schema, DB, source adapters, ranking, queues, or V7 contracts."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -100,26 +100,26 @@ owner_decision:
   decision_id: "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701"
   review_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
   project_id: "arxiv-daily-push"
-  decision_question: "S2PMT07 production-boundary preflight 与 acceptance write-gate precheck 已通过；是否记录 owner 生产验收边界决策证据，进入最终 acceptance write gate，同时继续禁止自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
-  question: "S2PMT07 production-boundary preflight 与 acceptance write-gate precheck 已通过；是否记录 owner 生产验收边界决策证据，进入最终 acceptance write gate，同时继续禁止自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+  decision_question: "Owner 生产边界决策证据已记录，acceptance write gate 已允许；是否只写入 INTEGRATED_PRODUCTION_ACCEPTED 证据，并继续禁止 SMTP/scheduler/Release/DAILY_OPERATION。"
+  question: "Owner 生产边界决策证据已记录，acceptance write gate 已允许；是否只写入 INTEGRATED_PRODUCTION_ACCEPTED 证据，并继续禁止 SMTP/scheduler/Release/DAILY_OPERATION。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the integrated production acceptance preflight and write-gate precheck as passed no-production evidence; Owner-authorized controlled foreground real-run acceptance recheck passed without duplicate SMTP; treat it only as evidence, not DAILY_OPERATION; review FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, then record owner production-boundary decision evidence or pause; do not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, or write INTEGRATED_PRODUCTION_ACCEPTED automatically."
-  option_a: "记录 owner 生产验收边界决策证据：preflight 已验证 final bundle ready、open_pr_count=0、持久 ADP_ALLOW_SMTP_SEND=false、LaunchAgents disabled、无后台 ADP 进程；下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+  current_recommendation: "A: owner production-boundary decision evidence is recorded and the final acceptance write gate is allowed as no-runtime evidence; next write INTEGRATED_PRODUCTION_ACCEPTED evidence only through the final gate, while keeping SMTP, scheduler, Release, restore, and DAILY_OPERATION disabled."
+  option_a: "继续最终验收写入：只写入 INTEGRATED_PRODUCTION_ACCEPTED 证据，不启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION。"
   option_b: "暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。"
   option_c: "越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。"
   options:
-    - "记录 owner 生产验收边界决策证据：preflight 已验证 final bundle ready、open_pr_count=0、持久 ADP_ALLOW_SMTP_SEND=false、LaunchAgents disabled、无后台 ADP 进程；下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+    - "继续最终验收写入：只写入 INTEGRATED_PRODUCTION_ACCEPTED 证据，不启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION。"
     - "暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。"
     - "越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。"
   estimated_effort: "P0/P1; production boundary safety review; owner decision; no-production proof verification"
   estimated_cost_or_resource: "local development and GitHub main evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "把已通过的 final bundle 状态与生产边界状态分开，避免重复 S2PLT04，同时阻止误启生产。"
   principal_risks: "将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement"
-  evidence_required: "owner review of FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, preflight checks passed, final bundle manifest pass, no-production side-effect attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, no background ADP process, and explicit owner production-boundary decision artifact"
+  evidence_required: "FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json, passing owner decision artifact gate, passing acceptance write gate, final bundle manifest pass, no-production side-effect attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
   decision_deadline_or_priority: "P0"
   consequence_of_no_decision: "Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。"
-  unblock_task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION"
+  unblock_task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE"
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
     - "ACC-S2PL-INTEGRATED-PRODUCTION"

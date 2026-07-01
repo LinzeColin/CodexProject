@@ -6506,28 +6506,27 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_integrated_production_acceptance_preflight_state(tampered),
         )
 
-    def test_integrated_production_acceptance_owner_decision_packet_does_not_accept_production(self) -> None:
+    def test_integrated_production_acceptance_owner_decision_packet_fails_closed_after_owner_decision(self) -> None:
         state = build_integrated_production_acceptance_owner_decision_packet_state(
             generated_at="2026-07-01T16:30:00+10:00"
         )
 
         self.assertEqual(state["task_id"], "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION")
-        self.assertEqual(state["status"], "blocked_owner_decision_packet_ready_no_acceptance")
+        self.assertEqual(state["status"], "blocked")
         self.assertEqual(state["scope"], "owner_decision_packet_only_no_acceptance_no_enablement")
-        self.assertTrue(state["packet_ready"])
-        self.assertEqual(state["failed_checks"], [])
+        self.assertFalse(state["packet_ready"])
+        self.assertEqual(state["failed_checks"], ["current_points_to_owner_decision", "owner_decision_not_recorded"])
         self.assertEqual(
             state["blocking_reasons"],
             [
-                "owner_production_boundary_decision_missing",
-                "integrated_production_accepted_not_written",
-                "daily_operation_not_enabled",
+                "current_points_to_owner_decision_failed",
+                "owner_decision_not_recorded_failed",
             ],
         )
         self.assertIn("review_integrated_production_acceptance_preflight_evidence", state["required_owner_actions"])
         self.assertTrue(state["checks"]["preflight_checks_passed"])
-        self.assertTrue(state["checks"]["current_points_to_owner_decision"])
-        self.assertTrue(state["checks"]["owner_decision_not_recorded"])
+        self.assertFalse(state["checks"]["current_points_to_owner_decision"])
+        self.assertFalse(state["checks"]["owner_decision_not_recorded"])
         self.assertFalse(state["owner_production_boundary_decision_recorded"])
         self.assertFalse(state["acceptance_write_gate_allowed_by_this_packet"])
         self.assertFalse(state["production_acceptance_claimed"])
@@ -6546,7 +6545,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_integrated_production_acceptance_owner_decision_packet_state(tampered),
         )
 
-    def test_integrated_production_acceptance_owner_decision_request_is_not_approval_artifact(self) -> None:
+    def test_integrated_production_acceptance_owner_decision_request_is_not_approval_artifact_after_decision(self) -> None:
         state = build_integrated_production_acceptance_owner_decision_request_state(
             generated_at="2026-07-01T18:00:00+10:00"
         )
@@ -6555,7 +6554,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["task_id"],
             "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST",
         )
-        self.assertEqual(state["status"], "ready_owner_decision_request_no_acceptance")
+        self.assertEqual(state["status"], "blocked_owner_decision_request_inputs_missing")
         self.assertTrue(state["request_only"])
         self.assertFalse(state["owner_production_boundary_decision_recorded"])
         self.assertFalse(state["acceptance_write_gate_allowed_by_this_request"])
@@ -6657,24 +6656,23 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_integrated_production_acceptance_owner_decision_artifact(tampered),
         )
 
-    def test_integrated_production_acceptance_write_gate_blocks_without_owner_decision(self) -> None:
+    def test_integrated_production_acceptance_write_gate_allows_owner_decision_without_runtime_enablement(self) -> None:
         state = build_integrated_production_acceptance_write_gate_state(
-            generated_at="2026-07-01T16:40:00+10:00"
+            generated_at="2026-07-01T18:16:00+10:00"
         )
 
         self.assertEqual(state["task_id"], S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID)
-        self.assertEqual(state["status"], "blocked_write_gate_owner_decision_required_no_acceptance")
+        self.assertEqual(state["status"], "pass_write_gate_allowed_owner_decision_recorded_no_runtime_enablement")
         self.assertEqual(state["scope"], S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE)
         self.assertTrue(state["write_gate_precheck_ready"])
-        self.assertFalse(state["acceptance_write_gate_allowed"])
+        self.assertTrue(state["acceptance_write_gate_allowed"])
         self.assertEqual(state["failed_checks"], [])
-        self.assertEqual(
-            tuple(state["blocking_reasons"]),
-            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS,
-        )
+        self.assertEqual(state["blocking_reasons"], [])
         self.assertTrue(state["checks"]["owner_packet_manifest_present"])
         self.assertTrue(state["checks"]["owner_packet_ready"])
         self.assertTrue(state["checks"]["owner_packet_does_not_allow_write_gate"])
+        self.assertTrue(state["checks"]["owner_decision_artifact_valid"])
+        self.assertTrue(state["checks"]["owner_decision_artifact_does_not_enable_runtime"])
         self.assertTrue(state["checks"]["controlled_real_run_manifest_present"])
         self.assertTrue(state["checks"]["controlled_real_run_sent_all_four_mail_products"])
         self.assertTrue(state["checks"]["controlled_real_run_duplicate_send_avoided"])
@@ -6682,13 +6680,12 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["checks"]["controlled_real_run_launchagents_disabled_after"])
         self.assertTrue(state["checks"]["controlled_real_run_no_background_process_after"])
         self.assertTrue(state["checks"]["final_bundle_ready"])
-        self.assertTrue(state["checks"]["owner_decision_not_recorded"])
         self.assertEqual(state["controlled_real_run_sent_mail_products"], ["M1", "M2", "M3", "M4"])
         self.assertEqual(state["controlled_real_run_newly_sent_mail_products"], [])
         self.assertEqual(state["controlled_real_run_historical_sent_mail_products"], ["M1", "M2", "M3", "M4"])
         self.assertEqual(state["controlled_real_run_background_process_count_after"], 0)
         self.assertEqual(state["controlled_real_run_persistent_adp_allow_smtp_send_after"], "false")
-        self.assertFalse(state["owner_production_boundary_decision_recorded"])
+        self.assertTrue(state["owner_production_boundary_decision_recorded"])
         self.assertFalse(state["production_acceptance_claimed"])
         self.assertFalse(state["integrated_production_accepted"])
         self.assertFalse(state["daily_operation_enabled"])
@@ -6697,9 +6694,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(validate_integrated_production_acceptance_write_gate_state(state), [])
 
         tampered = json.loads(json.dumps(state))
-        tampered["acceptance_write_gate_allowed"] = True
+        tampered["acceptance_write_gate_allowed"] = False
         self.assertIn(
-            "integrated production acceptance write gate must stay disallowed without owner decision",
+            "integrated production acceptance write gate write allowance must match checks",
             validate_integrated_production_acceptance_write_gate_state(tampered),
         )
 
