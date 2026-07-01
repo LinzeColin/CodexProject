@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC"
+    phase: "S2PL"
+    objective: "Synchronize dynamic governance, owner-facing, and regression-test state after the S2PMT07 final acceptance bundle artifact chain is complete while keeping production acceptance false."
+    scope: "CURRENT pointer dynamic fields, assurance/owner status, development ledger, version matrix, three-base/user-center summaries, dashboard routing, regression tests, and no-production run manifest."
+    non_scope: "No SMTP send, scheduler enable/install, Release packaging, production restore, DAILY_OPERATION, public schema/DB/source/ranking/queue mutation, V7 contract mutation, or Stage2/S3 production acceptance."
+    status: "blocked"
+    dependencies: ["FINAL_ACCEPTANCE_BUNDLE/manifest.json", "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json", "HANDOFF/00_下一Agent先读.md"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_post_final_bundle_current PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_governance_current_state.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_governance_sync.py", "PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push validate-final-bundle-manifest --path FINAL_ACCEPTANCE_BUNDLE/manifest.json --json", "python3 tools/verify_acceptance_bundle.py --require-zero P0 P1"]
+    test_results: ["focused governance/user-center unittest 23 OK", "root dashboard routing unittest 1 OK", "full ADP pytest 762 passed / 64 subtests passed", "project governance 0 errors/0 warnings", "governance sync 0 errors/0 warnings", "task pack validation PASS", "final bundle manifest validation PASS", "acceptance bundle zero-proof verification PASS", "lean render drift 0 / reference issues 0", "git diff --check PASS", "open_pr_count=0", "persistent ADP_ALLOW_SMTP_SEND=false and daily/health/watchdog LaunchAgents disabled"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/manifest.json", "governance/run_manifests/ADP-S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC.md"]
+    risk: "Future agents could replay S2PLT04/final-bundle missing-artifact work or misread final bundle ready as production accepted; this task separates final-bundle readiness from production-boundary acceptance."
+    rollback: "Revert this dynamic current-state sync, dashboard routing branch, tests, manifest, and phase record; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC"
     phase: "S2PL"
     objective: "Synchronize S2PLT02 terminal gate after controlled second-day evidence so current blockers are only real scheduler proof and the reviewed terminal delivery proof artifact."
