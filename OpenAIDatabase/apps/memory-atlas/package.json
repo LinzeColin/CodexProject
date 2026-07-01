@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "lint": "tsc -b --pretty false",
+    "validate:part1-stage0": "node scripts/validate_memory_atlas_part1_stage0.cjs",
     "validate:memory-river-evidence": "node scripts/validate_memory_river_evidence_layers.mjs",
     "validate:memory-river-interaction": "node scripts/validate_memory_river_interaction.mjs",
     "validate:memory-river-rendering": "node scripts/validate_memory_river_rendering.mjs",
