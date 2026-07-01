@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 6 GitHub Main Upload - 2026-07-01
+
+- 完成 `Stage 6 GitHub main upload gate`：将 Stage 6 Phase 6.1、Phase 6.2、Phase 6.3 和 whole-stage review package rebase 到当前 `origin/main` 后上传。
+- 新增 `PFI/src/pfi_v02/stage_v024_stage6_experience.py`、`PFI/docs/pfi_v024/STAGE6_GITHUB_MAIN_UPLOAD.md`、`PFI/tests/test_v024_stage6_github_upload_contract.py` 和 `PFI/reports/pfi_v024/stage_6/github_main_upload/evidence.json`。
+- 上传 gate 重新验证 Stage 6 upload contract、whole-stage review、Phase 6.1/6.2/6.3 回归、Stage 5 相邻回归、browser validation、JS syntax、JSON evidence 和 diff。
+- 本轮不执行 Stage 7，不重装 app bundle，不修改 launcher C/Info.plist，不写入、清理、删除、补造或改写真实财务数据。
+
 ## v0.2.4 Repair Pack Stage 6 Whole-Stage Review - 2026-07-01
 
 - 完成 `Stage 6 whole-stage review - 复审并解决暴露问题`，复审 Phase 6.1 设计系统、Phase 6.2 动效反馈、Phase 6.3 触感与设置隔离。

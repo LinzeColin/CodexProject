@@ -32,24 +32,24 @@ Records:
 
 ## v0.2.4 Stage 6 Status
 
-Current run unit: `Stage 6 whole-stage review - 复审并解决暴露问题`.
+Current run unit: `Stage 6 GitHub main upload gate`.
 
 - Stage 5 GitHub main upload: complete before this run.
 - Phase 6.1: candidate pass.
 - Phase 6.2 motion feedback: candidate pass.
 - Phase 6.3 haptics and settings isolation: candidate pass.
 - Stage 6 whole-stage review: pass.
-- GitHub main upload: not executed in this run.
+- GitHub main upload: complete in this gate after terminal remote verification.
 - App bundle reinstall: not executed.
 - Data logic changes: none.
 - Financial data changes: none.
 - Current design system marker: `data-v024-stage6-design-system="phase_6_1"`.
 - Current motion feedback marker: `data-v024-stage6-motion-feedback="phase_6_2"`.
 - Current haptics/settings marker: `data-v024-stage6-haptics-settings="phase_6_3"`.
-- Current evidence: `reports/pfi_v024/stage_6/whole_stage_review/evidence.json`.
+- Current evidence: `reports/pfi_v024/stage_6/github_main_upload/evidence.json`.
 - Review browser evidence: `reports/pfi_v024/stage_6/whole_stage_review/browser_validation.json`.
 - Review findings fixed: missing whole-stage gate, missing bright UI screenshots, transparent body background fallback, old chart-token dark slot.
-- Next gate: `Stage 6 GitHub main upload gate`.
+- Next gate: stop for user acceptance or explicit instruction; Stage 7 is not started.
 
 ## v0.2.4 Stage 1 Status
 
