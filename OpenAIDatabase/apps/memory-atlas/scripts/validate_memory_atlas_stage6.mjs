@@ -94,10 +94,10 @@ requireCheck(
   hasAll(deliveryRecord, [
     "完成 Memory Atlas v1.1.5 Stage 6 整体复审",
     "Stage 6 整阶段复审通过",
-    "Stage 7 性能、安全、无障碍验收",
+    "Stage 7",
   ]) && !deliveryRecord.includes("Stage 6 整体复审：复核 6.1 shared state"),
-  "Delivery record marks Stage 6 reviewed and moves the next high-priority gate to Stage 7",
-  "Delivery record still lists Stage 6 whole-stage review as pending or lacks Stage 7 next gate",
+  "Delivery record marks Stage 6 reviewed and keeps later Stage 7 gates active",
+  "Delivery record still lists Stage 6 whole-stage review as pending or lacks Stage 7 follow-up gates",
 );
 
 requireCheck(

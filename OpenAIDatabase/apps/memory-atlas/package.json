@@ -15,6 +15,7 @@
     "validate:inspector-proposal": "node scripts/validate_inspector_proposal.mjs",
     "validate:shared-state": "node --experimental-strip-types scripts/validate_shared_state_store.mjs",
     "validate:stage6": "node scripts/validate_memory_atlas_stage6.mjs",
+    "validate:stage7-visual": "node scripts/validate_stage7_visual_acceptance.cjs",
     "validate:memory-starfield-interaction": "node scripts/validate_memory_starfield_interaction.mjs",
     "validate:memory-starfield-mapping": "node scripts/validate_memory_starfield_mapping.mjs",
     "validate:universe-state-spike": "node --experimental-strip-types scripts/validate_universe_state_spike.mjs"
