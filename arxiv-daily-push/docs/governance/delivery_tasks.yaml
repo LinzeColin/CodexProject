@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION"
+    phase: "S2PL"
+    objective: "Bind the already-pushed persistent DAILY_OPERATION authorization request packet to mainline evidence without authorizing or enabling runtime production."
+    scope: "Mainline attestation manifest, phase record, CURRENT/VERSION_MATRIX state, owner-facing status, three-base summaries, traceability, and regression tests."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, V7.1 historical baseline mutation, or cross-project cleanup."
+    status: "completed"
+    dependencies: ["S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTATION.md", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD current-state unittest", "focused governance current-state and user-center tests", "post-run safety state checks"]
+    test_results: ["TDD red: request mainline attestation manifest missing", "TDD green target: attestation manifest exists and keeps runtime flags false", "binding_status=commit_bound", "result_commit=4f72c42ea62275fdd18285cf189070c6aa76bd71", "result_tree_hash=0f0772e4250330372d58456a355e205327dff933", "request_only=true", "persistent_daily_operation_authorization_missing=true", "daily_operation_enabled=false", "new_smtp_run_executed_by_this_attestation=false"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTATION.md", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"]
+    risk: "Future agents could treat a request-only artifact as authorization or leave it precommit-bound; this task binds it to mainline while preserving the missing persistent authorization blocker."
+    rollback: "Revert the request mainline attestation manifest, phase record, current-state sync, owner-facing notes, event entries, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST"
     phase: "S2PL"
     objective: "Prepare an owner-readable request packet for explicit persistent DAILY_OPERATION authorization without authorizing or enabling runtime production."

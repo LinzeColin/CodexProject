@@ -174,6 +174,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json", page)
         self.assertIn("ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement", page)
         self.assertIn("request_only=true", page)
+        self.assertIn(
+            "REQ-ADP-V7-083-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION",
+            page,
+        )
+        self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION", page)
+        self.assertIn("PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTATION.md", page)
+        self.assertIn("ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION-20260701.json", page)
+        self.assertIn("pass_persistent_daily_operation_authorization_request_mainline_attested_no_runtime_enablement", page)
+        self.assertIn("4f72c42ea62275fdd18285cf189070c6aa76bd71", page)
+        self.assertIn("0f0772e4250330372d58456a355e205327dff933", page)
         self.assertIn("94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9", page)
         self.assertIn("6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f", page)
 
