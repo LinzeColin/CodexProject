@@ -1,0 +1,133 @@
+{
+  "analysis_version": "CBA-KMFA-S16P3-CUSTOMER-BUSINESS-PUBLIC-SAFE-001",
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md",
+    "customer_analysis_exception_items": "KMFA/metadata/reports/customer_analysis_exception_items.jsonl",
+    "customer_analysis_source_lanes": "KMFA/metadata/reports/customer_analysis_source_lanes.jsonl",
+    "customer_business_analysis_manifest": "KMFA/metadata/reports/customer_business_analysis_manifest.json",
+    "customer_operating_summaries": "KMFA/metadata/reports/customer_operating_summaries.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S16_P3_customer_business_analysis/machine/s16_p3_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md",
+    "validator": "KMFA/tools/check_s16_p3_customer_business_analysis.py"
+  },
+  "content_hash": "sha256:c8ebd324de1eecb2f27953f7e0964722d7e743e3422cf870f61b7472496e54bf",
+  "formula_version": "FORM-KMFA-S16P3-CUSTOMER-BUSINESS-ANALYSIS-001",
+  "generated_at": "2026-07-01T23:40:00+10:00",
+  "limitations": [
+    "S16-P3 只输出 public-safe 客户经营摘要和异常复核清单。",
+    "不展示真实客户名称、项目名称、合同信息、真实金额、字段头明文、账号或原始文件。",
+    "不自动执行催收、客户联系、法律决策、付款、银行、开票、税务或外部接口动作。",
+    "不执行 Stage 16 review、GitHub upload、lineage full check 或正式报告。",
+    "报告等级仍显示 D，12 条 pending owner 或授权复核差异继续阻断正式报告和经营决策依据。"
+  ],
+  "mapping_version": "MAP-KMFA-S16P3-PUBLIC-SAFE-v1",
+  "metadata_manifest_ref": "KMFA/metadata/reports/customer_business_analysis_manifest.json",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "customer_name_plaintext_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "pdf_file_committed": false,
+    "private_tabular_files_committed": false,
+    "project_name_plaintext_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "true_money_amount_committed": false
+  },
+  "quality_gate": {
+    "auto_customer_contact_allowed": false,
+    "bank_operation_allowed": false,
+    "business_decision_basis_allowed": false,
+    "collection_action_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "customer_exception_list_allowed": true,
+    "customer_operating_summary_allowed": true,
+    "customer_value_signal_allowed": true,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "invoice_issuance_allowed": false,
+    "legal_collection_decision_allowed": false,
+    "payment_execution_allowed": false,
+    "pending_reconciliation_count": 12,
+    "phase_completion_upload_allowed": false,
+    "quality_grade_bypass_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "customer_business_analysis_is_review_only_pending_lineage_reconciliation",
+    "report_grade_bypass_allowed": false,
+    "report_grade_visible": "D",
+    "s17_allowed": false,
+    "stage16_review_allowed": false,
+    "tax_filing_allowed": false
+  },
+  "record_type": "customer_business_analysis_manifest",
+  "required_analysis_dimensions": [
+    "customer_value",
+    "project_margin",
+    "collection_quality",
+    "aging_risk"
+  ],
+  "required_exception_types": [
+    "high_aging_risk",
+    "weak_collection_quality",
+    "margin_review_required",
+    "lifecycle_customer_handoff_required"
+  ],
+  "required_source_lanes": [
+    "customer_identity_model",
+    "project_margin_signal",
+    "collection_quality_signal",
+    "aging_risk_signal",
+    "project_lifecycle_signal"
+  ],
+  "runtime_status": "public_safe_customer_business_analysis_created_review_only",
+  "schema_version": "kmfa.customer_business_analysis_manifest.v1",
+  "source_taskpack_refs": {
+    "roadmap_s16_p3": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S16-P3",
+    "taskpack_customer_line": "KMFA/taskpack/v1_2/01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md:P2-customer-business-analysis"
+  },
+  "stage_artifact_manifest": true,
+  "stage_phase": "S16-P3",
+  "stage_scope": {
+    "bank_operation_scope_included": false,
+    "collection_action_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_scope_included": false,
+    "github_upload_scope_included": false,
+    "invoice_issuance_scope_included": false,
+    "legal_collection_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "payment_execution_scope_included": false,
+    "s16_p1_scope_included": false,
+    "s16_p2_scope_included": false,
+    "s16_p3_customer_analysis_scope_included": true,
+    "s16_p3_scope_included": true,
+    "s17_scope_included": false,
+    "stage16_review_scope_included": false
+  },
+  "summary": {
+    "analysis_dimension_count": 4,
+    "business_decision_basis_count": 0,
+    "collection_action_count": 0,
+    "collection_priority_item_count": 4,
+    "customer_summary_count": 4,
+    "exception_item_count": 4,
+    "formal_report_count": 0,
+    "legal_collection_decision_count": 0,
+    "lifecycle_signal_count": 4,
+    "margin_signal_count": 4,
+    "payment_or_bank_operation_count": 0,
+    "pending_reconciliation_count": 12,
+    "report_grade_visible": "D",
+    "source_lane_count": 5
+  },
+  "upstream_metadata_refs": {
+    "business_entity_relationships": "KMFA/metadata/schema_maps/business_entity_relationships.jsonl",
+    "collection_receivable_aging_priority_items": "KMFA/metadata/reports/collection_receivable_aging_priority_items.jsonl",
+    "project_lifecycle_records": "KMFA/metadata/reports/project_lifecycle_records.jsonl",
+    "project_margin_cash_margin_records": "KMFA/metadata/lineage/project_margin_cash_margin_records.jsonl",
+    "report_grade_runtime": "KMFA/metadata/reports/report_grade_runtime_records.jsonl",
+    "scope_reconciliation": "KMFA/metadata/quality/scope_reconciliation_records.jsonl"
+  }
+}

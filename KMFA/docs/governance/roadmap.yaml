@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S16"
-current_phase_id: "S16PC"
-current_task_id: "KMFA-S16-P3-GATE"
-next_gate_id: "KMFA-S16-P3-GATE"
+current_phase_id: "S16REV"
+current_task_id: "KMFA-S16-STAGE-REVIEW-GATE"
+next_gate_id: "KMFA-S16-STAGE-REVIEW-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1103,10 +1103,10 @@ stages:
               - "KMFA/stage_artifacts/S15_P3_salary_boundary/human/test_results.md"
   - stage_id: "S16"
     name: "外协采购、项目状态、客户经营扩展"
-    status: "in_progress_s16p2_completed_local_only"
+    status: "completed_local_only_pending_stage_review"
     estimated_hours: 3
-    estimated_pct: 67
-    current_result: "S16-P1 外协采购归集和 S16-P2 项目状态生命周期已完成本地验证；S16-P3、Stage 16 review 和 GitHub upload 尚未执行。"
+    estimated_pct: 100
+    current_result: "S16-P1 外协采购归集、S16-P2 项目状态生命周期和 S16-P3 客户经营分析已完成本地验证；Stage 16 review 和 GitHub upload 尚未执行。"
     evidence_refs:
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/s16_p1_completion_record.md"
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
@@ -1114,6 +1114,9 @@ stages:
       - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/s16_p2_completion_record.md"
       - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/test_results.md"
       - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/machine/s16_p2_manifest.json"
+      - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/machine/s16_p3_manifest.json"
     phases:
       - phase_id: "S16PA"
         name: "外协采购归集"
@@ -1181,9 +1184,35 @@ stages:
               - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/s16_p2_completion_record.md"
       - phase_id: "S16PC"
         name: "客户经营分析"
-        status: "planned_next"
+        status: "completed_validated_local_only"
         estimated_hours: 1
-        estimated_pct: 0
+        estimated_pct: 100
+        current_result: "已生成 5 条 public-safe 来源线、4 条客户经营摘要和 4 条异常复核事项；不执行自动催收、客户联系、法律决策、开票、付款、银行、Stage 16 review 或 GitHub upload。"
+        evidence_refs:
+          - "KMFA/metadata/reports/customer_business_analysis_manifest.json"
+          - "KMFA/metadata/reports/customer_analysis_source_lanes.jsonl"
+          - "KMFA/metadata/reports/customer_operating_summaries.jsonl"
+          - "KMFA/metadata/reports/customer_analysis_exception_items.jsonl"
+          - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md"
+        tasks:
+          - task_id: "S16PCT01"
+            name: "客户价值、项目毛利、回款质量、账龄风险。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/customer_analysis_source_lanes.jsonl"
+              - "KMFA/tools/check_s16_p3_customer_business_analysis.py"
+          - task_id: "S16PCT02"
+            name: "输出客户经营摘要。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/customer_operating_summaries.jsonl"
+              - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/test_results.md"
+          - task_id: "S16PCT03"
+            name: "不自动做催收或法律决策。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/customer_analysis_exception_items.jsonl"
+              - "KMFA/stage_artifacts/S16_P3_customer_business_analysis/human/s16_p3_completion_record.md"
   - stage_id: "S17"
     name: "权限、通知、安全、审计与运维"
     status: "planned"
