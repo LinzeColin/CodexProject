@@ -1,0 +1,31 @@
+{
+  "schema": "PFIV024Stage6Phase63HapticSettingsValidationV1",
+  "status": "pass",
+  "target_version": "v0.2.4",
+  "phase_id": "6.3",
+  "capability_detection": {
+    "source": "navigator.vibrate",
+    "uses_navigator_vibrate_function_check": true,
+    "supported_device_only": true
+  },
+  "settings_isolation": {
+    "route_alias": "/settings?tab=feedback",
+    "visible_only_in_settings": true,
+    "business_pages_show_feedback_console": false,
+    "toggle_ids": [
+      "haptic",
+      "sound",
+      "motion"
+    ]
+  },
+  "unsupported_degradation": {
+    "silent_visual_degradation": true,
+    "throws_on_unsupported": false,
+    "degrade_to": "visual_feedback"
+  },
+  "phase_6_1_complete": true,
+  "phase_6_2_complete": true,
+  "stage_6_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "financial_data_changes_made": false
+}

@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 6 Phase 6.3 - 2026-07-01
+
+- 完成 `Stage 6 / Phase 6.3 - 触感与设置隔离`：新增 haptics capability detection、设置页反馈偏好模型和不支持设备的静默视觉降级。
+- `PFI/web/app/feedback.js` 新增 v0.2.4 Phase 6.3 haptics contract、runtime capability detection 和 haptics settings model。
+- `PFI/web/app/pages/settings.js` 新增反馈设置 view model，明确触感、声音、动效控制只在设置页管理。
+- `PFI/web/app/shell.js` 写入 `data-v024-haptic-capability`、`data-v024-haptic-degraded` 和 `data-v024-feedback-setting` 运行态标记，并保持业务页面无反馈控制台。
+- 新增 `PFI/tests/test_v024_stage6_phase63_haptics_settings.py`、`PFI/docs/pfi_v024/STAGE6_HAPTICS_SETTINGS.md` 和 `PFI/reports/pfi_v024/stage_6/phase_6_3/` evidence。
+- 本轮不执行 Stage 6 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 6 Phase 6.2 - 2026-07-01
 
 - 完成 `Stage 6 / Phase 6.2 - 动效反馈`：新增页面切换、加载骨架、成功/失败/阻断反馈和报告生成进度的轻量动效。

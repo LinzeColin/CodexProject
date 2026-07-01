@@ -56,7 +56,49 @@
     });
   }
 
+  function buildStage6Phase63FeedbackSettingsViewModel() {
+    const toggles = Object.freeze({
+      haptic: Object.freeze({
+        ...TOGGLES.haptic,
+        can_disable: true,
+        unsupported_behavior: "silent_visual_degradation",
+        capability_source: "navigator.vibrate",
+      }),
+      sound: Object.freeze({
+        ...TOGGLES.sound,
+        can_disable: true,
+        unsupported_behavior: "silent_noop",
+      }),
+      motion: Object.freeze({
+        ...TOGGLES.motion,
+        can_disable: true,
+        unsupported_behavior: "reduce_motion_visual_state",
+      }),
+    });
+    return Object.freeze({
+      schema: "PFIV024Stage6Phase63FeedbackSettingsViewModelV1",
+      target_version: "v0.2.4",
+      source_package_version: "v0.2.3-repair",
+      stage: "Stage 6",
+      phase_id: "6.3",
+      phase_name: "触感与设置隔离",
+      page: "settings",
+      route_alias: "/settings?tab=feedback",
+      visible_on_workspaces: Object.freeze(["settings"]),
+      business_pages_show_feedback_console: false,
+      toggle_ids: Object.freeze(Object.keys(toggles)),
+      toggles,
+      isolation_policy: Object.freeze({
+        feedback_preferences_surface_zh: "设置页反馈偏好",
+        owner_path_zh: "设置 > 反馈偏好",
+        action_zh: "在设置页管理触感、声音和动效开关。",
+        hidden_outside_settings: true,
+      }),
+    });
+  }
+
   return Object.freeze({
     buildStage9Phase93FeedbackSettingsViewModel,
+    buildStage6Phase63FeedbackSettingsViewModel,
   });
 });

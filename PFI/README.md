@@ -32,12 +32,12 @@ Records:
 
 ## v0.2.4 Stage 6 Status
 
-Current run unit: `Stage 6 / Phase 6.2 - 动效反馈`.
+Current run unit: `Stage 6 / Phase 6.3 - 触感与设置隔离`.
 
 - Stage 5 GitHub main upload: complete before this run.
 - Phase 6.1: candidate pass.
 - Phase 6.2 motion feedback: candidate pass.
-- Phase 6.3 haptics and settings isolation: not started.
+- Phase 6.3 haptics and settings isolation: candidate pass.
 - Stage 6 whole-stage review: not executed.
 - GitHub main upload: not executed in this run.
 - App bundle reinstall: not executed.
@@ -45,8 +45,9 @@ Current run unit: `Stage 6 / Phase 6.2 - 动效反馈`.
 - Financial data changes: none.
 - Current design system marker: `data-v024-stage6-design-system="phase_6_1"`.
 - Current motion feedback marker: `data-v024-stage6-motion-feedback="phase_6_2"`.
-- Current evidence: `reports/pfi_v024/stage_6/phase_6_2/evidence.json`.
-- Next gate: `Stage 6 / Phase 6.3 - 触感与设置隔离`.
+- Current haptics/settings marker: `data-v024-stage6-haptics-settings="phase_6_3"`.
+- Current evidence: `reports/pfi_v024/stage_6/phase_6_3/evidence.json`.
+- Next gate: `Stage 6 whole-stage review - 复审并解决暴露问题`.
 
 ## v0.2.4 Stage 1 Status
 
