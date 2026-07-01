@@ -576,7 +576,7 @@ S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_SCOPE = (
     "final_bundle_missing_artifact_inventory_no_production_acceptance"
 )
 S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_NEXT_SAFE_ACTION = (
-    "continue_no_write_s2plt02_terminal_delivery_proof_capture_until_terminal_dependencies_pass"
+    "build_reviewed_s2plt04_completion_report_without_production_side_effects"
 )
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ITEM_BLOCKING_REASONS = {
     "FINAL_ACCEPTANCE_BUNDLE/manifest.json": "final_acceptance_bundle_manifest_missing",
@@ -701,7 +701,7 @@ S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_TEMPLATE_REFS = {
     "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": "FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json",
 }
 S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_SAFE_ACTIONS = {
-    "S2PLT04_COMPLETION_REPORT": "resolve_s2plt02_s2plt03_terminal_proofs_before_writing_completion_report",
+    "S2PLT04_COMPLETION_REPORT": "build_reviewed_s2plt04_completion_report_without_production_side_effects",
     "FINAL_COMMAND_EXECUTION": "keep_template_only_until_s2plt04_passes",
     "NEXT_AGENT_HANDOFF": "keep_template_only_until_s2plt04_and_final_command_pass",
     "INDEPENDENT_REVIEW_SIGNOFF": "keep_template_only_until_final_command_and_handoff_pass",
