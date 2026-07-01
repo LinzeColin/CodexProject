@@ -131,6 +131,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_independent_final_reviewer_assignment_hash,
     build_independent_final_reviewer_assignment_validation_state,
     build_independent_final_reviewer_assignment_request_state,
+    build_integrated_production_acceptance_preflight_state,
     build_s2pmt07_mainline_attestation_state,
     build_final_acceptance_bundle_manifest_hash,
     build_final_acceptance_bundle_manifest_validation_state,
@@ -217,6 +218,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_independent_final_reviewer_assignment_owner_packet_state,
     validate_independent_final_reviewer_assignment_artifact,
     validate_independent_final_reviewer_assignment_request_state,
+    validate_integrated_production_acceptance_preflight_state,
     validate_s2pmt07_mainline_attestation_state,
     validate_p0_p1_zero_proof_assembly_state,
     validate_p0_p1_zero_proof_artifact,
@@ -6445,6 +6447,50 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(
             "S2PMT07 final acceptance bundle readiness is invalid",
             validate_s2pmt07_precheck_report(tampered_bundle),
+        )
+
+    def test_integrated_production_acceptance_preflight_blocks_on_owner_decision_only(self) -> None:
+        state = build_integrated_production_acceptance_preflight_state(
+            generated_at="2026-07-01T16:00:00+10:00",
+            open_pr_count=0,
+            adp_allow_smtp_send=False,
+            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            background_adp_process_found=False,
+        )
+
+        self.assertEqual(state["task_id"], "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT")
+        self.assertEqual(state["status"], "blocked_owner_decision_required")
+        self.assertEqual(state["scope"], "production_boundary_preflight_only_no_acceptance_no_enablement")
+        self.assertTrue(state["preflight_checks_passed"])
+        self.assertEqual(
+            state["blocking_reasons"],
+            [
+                "owner_production_boundary_decision_missing",
+                "integrated_production_accepted_not_written",
+                "daily_operation_not_enabled",
+            ],
+        )
+        self.assertTrue(state["checks"]["final_bundle_ready"])
+        self.assertTrue(state["checks"]["p0_p1_zero_proof_passed"])
+        self.assertTrue(state["checks"]["no_production_attestation_passed"])
+        self.assertTrue(state["checks"]["open_pr_count_zero"])
+        self.assertTrue(state["checks"]["persistent_adp_allow_smtp_send_false"])
+        self.assertTrue(state["checks"]["launchagents_disabled"])
+        self.assertTrue(state["checks"]["no_background_adp_process"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["release_packaging_enabled"])
+        self.assertFalse(state["production_restore_enabled"])
+        self.assertEqual(validate_integrated_production_acceptance_preflight_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["integrated_production_accepted"] = True
+        self.assertIn(
+            "integrated production acceptance preflight must not claim integrated_production_accepted",
+            validate_integrated_production_acceptance_preflight_state(tampered),
         )
 
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:

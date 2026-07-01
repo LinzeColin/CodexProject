@@ -1983,6 +1983,7 @@ class CliTests(unittest.TestCase):
             "s2plt02_live_2d_terminal_proof_missing",
             payload["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
         )
+
         self.assertNotIn(
             "s2plt03_resilience_terminal_proof_missing",
             payload["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
@@ -2031,6 +2032,44 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["readiness_validation_errors"], [])
+
+    def test_integrated_production_acceptance_preflight_json_command_blocks_at_owner_decision(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "integrated-production-acceptance-preflight",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-07-01T16:00:00+10:00",
+                    "--open-pr-count",
+                    "0",
+                    "--adp-allow-smtp-send",
+                    "false",
+                    "--launchagent-daily-disabled",
+                    "true",
+                    "--launchagent-health-disabled",
+                    "true",
+                    "--launchagent-watchdog-disabled",
+                    "true",
+                    "--background-adp-process-found",
+                    "false",
+                    "--json",
+                ]
+            )
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked_owner_decision_required")
+        self.assertTrue(payload["preflight_checks_passed"])
+        self.assertEqual(payload["next_required_step"], "OWNER_PRODUCTION_BOUNDARY_DECISION")
+        self.assertTrue(payload["checks"]["final_bundle_ready"])
+        self.assertTrue(payload["checks"]["open_pr_count_zero"])
+        self.assertTrue(payload["checks"]["persistent_adp_allow_smtp_send_false"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertEqual(payload["preflight_validation_errors"], [])
 
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {
