@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S15"
-current_phase_id: "S15REV"
-current_task_id: "KMFA-S15-STAGE-REVIEW-GATE"
-next_gate_id: "KMFA-S15-STAGE-REVIEW-GATE"
+current_phase_id: "S15UPLOAD"
+current_task_id: "KMFA-S15-GITHUB-UPLOAD-GATE"
+next_gate_id: "KMFA-S15-GITHUB-UPLOAD-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -979,10 +979,10 @@ stages:
               - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
   - stage_id: "S15"
     name: "销售绩效事实与复核清单"
-    status: "completed_local_only_pending_stage_review"
+    status: "review_passed_upload_ready_local_only"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S15-P1 已完成 public-safe 绩效事实字段定义、source binding 和缺失/未锁定字段人工复核标记；S15-P2 已输出 public-safe 绩效事实表和异常项目复核事项；S15-P3 已锁定工资项目边界，仅预留事实输出接口契约和未来读取草案；Stage 15 review 和 GitHub upload 未执行。"
+    current_result: "S15-P1 已完成 public-safe 绩效事实字段定义、source binding 和缺失/未锁定字段人工复核标记；S15-P2 已输出 public-safe 绩效事实表和异常项目复核事项；S15-P3 已锁定工资项目边界，仅预留事实输出接口契约和未来读取草案；Stage 15 review 已本地通过，GitHub upload 未执行。"
     evidence_refs:
       - "KMFA/metadata/reports/performance_fact_fields_manifest.json"
       - "KMFA/metadata/reports/performance_fact_field_definitions.jsonl"
@@ -1003,6 +1003,10 @@ stages:
       - "KMFA/stage_artifacts/S15_P3_salary_boundary/human/s15_p3_completion_record.md"
       - "KMFA/stage_artifacts/S15_P3_salary_boundary/machine/s15_p3_manifest.json"
       - "KMFA/tools/check_s15_p3_salary_boundary.py"
+      - "KMFA/stage_artifacts/S15_STAGE_REVIEW/human/stage15_review_report.md"
+      - "KMFA/stage_artifacts/S15_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S15_STAGE_REVIEW/machine/stage15_review_manifest.json"
+      - "KMFA/tools/check_s15_stage_review.py"
     phases:
       - phase_id: "S15PA"
         name: "绩效事实字段"

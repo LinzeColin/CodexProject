@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s15p3-salary-boundary
+product_version: 0.1.0-s15-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S15`
-- current_phase: `S15-P3｜与工资项目边界｜已完成本地验证`
-- current_tasks: `KMFA-S15-STAGE-REVIEW-GATE`
-- status: `s15p3_completed_validated_local_only_next_stage15_review`
+- current_phase: `S15REV｜整体复审｜已完成本地验证`
+- current_tasks: `KMFA-S15-GITHUB-UPLOAD-GATE`
+- status: `stage15_review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -103,11 +103,11 @@ product_version: 0.1.0-s15p3-salary-boundary
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S15-STAGE-REVIEW-GATE` | 待下一轮 run work 开始；必须重新确认 git/root/status，复跑 S15-P1/P2/P3 validators、治理 validator 和安全扫描，并继续保持 D 级报告、pending reconciliation、lineage、public-safe 和工资/奖金/薪资导出阻断边界 | `KMFA/docs/governance/roadmap.yaml` |
+| `KMFA-S15-GITHUB-UPLOAD-GATE` | 待下一轮 run work 开始；必须重新确认 git/root/status、对齐最新 origin/main，复跑 S15-P1/P2/P3 validators、Stage 15 review validator、治理 validator、全量 tests 和安全扫描，并继续保持 D 级报告、pending reconciliation、lineage、public-safe 和工资/奖金/薪资导出阻断边界 | `KMFA/stage_artifacts/S15_STAGE_REVIEW/human/stage15_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 15 review/upload | 尚未开始；S15-P1/P2/P3 已全部完成本地验证，下一步必须先整体复审、修复复审 findings，再执行 GitHub upload | 后续独立 review/upload gate |
+| Stage 15 GitHub upload | 尚未开始；Stage 15 整体复审已本地通过，下一步必须先对齐最新 origin/main 并复跑 validators、治理校验和安全扫描，再执行 GitHub upload | 后续独立 upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
