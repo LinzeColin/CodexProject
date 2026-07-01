@@ -21,10 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 344
+- task_count: 345
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-01 22:22:48 Australia/Sydney - S2PMT07 persistent DAILY_OPERATION authorization request
+
+- Task: `S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST`
+- Result: `ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement`
+- Evidence: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json`; `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST.md`.
+- Request state: `request_only=true`; `state_hash=be561b7e01250e75d471bbdbd2a4df2e048d8b287bb310d202c8549b2aefb3ee`; `persistent_daily_operation_authorized=false`; `daily_operation_enablement_allowed_by_this_request=false`.
+- Still missing: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`.
+- Boundary: this request does not authorize persistent DAILY_OPERATION, does not send SMTP, and does not enable scheduler, Release, production restore, or DAILY_OPERATION.
+- Next required step: `OWNER_DECIDES_WHETHER_TO_CREATE_EXPLICIT_PERSISTENT_DAILY_OPERATION_AUTHORIZATION`; if owner authorizes, create a separate explicit authorization artifact and rerun the persistent authorization gate plus enablement preflight.
+- Verification: TDD red/green final-gate and CLI tests must pass; full ADP validation is required before commit.
 
 ## 2026-07-01 21:59:44 Australia/Sydney - S2PMT07 persistent DAILY_OPERATION authorization gate mainline attestation
 

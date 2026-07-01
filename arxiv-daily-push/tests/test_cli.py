@@ -2440,6 +2440,40 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["release_packaging_enabled"])
         self.assertFalse(payload["production_restore_enabled"])
 
+    def test_daily_operation_persistent_authorization_request_json_command_is_request_only(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "daily-operation-persistent-authorization-request",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-07-01T22:20:00+10:00",
+                    "--json",
+                ]
+            )
+
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["task_id"], "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST")
+        self.assertEqual(
+            payload["status"],
+            "ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement",
+        )
+        self.assertEqual(payload["daily_operation_persistent_authorization_request_validation_errors"], [])
+        self.assertTrue(payload["request_only"])
+        self.assertFalse(payload["artifact_written"])
+        self.assertFalse(payload["owner_daily_operation_authorization_recorded"])
+        self.assertFalse(payload["persistent_daily_operation_authorized"])
+        self.assertFalse(payload["daily_operation_enablement_allowed_by_this_request"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["release_packaging_enabled"])
+        self.assertFalse(payload["production_restore_enabled"])
+
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {
             "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,

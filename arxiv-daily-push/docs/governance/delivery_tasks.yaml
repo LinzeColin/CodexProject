@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST"
+    phase: "S2PL"
+    objective: "Prepare an owner-readable request packet for explicit persistent DAILY_OPERATION authorization without authorizing or enabling runtime production."
+    scope: "Request builder/validator/CLI, request artifact, run manifest, phase record, CURRENT/VERSION_MATRIX state, dashboard routing, owner-facing status, three-base summaries, traceability, and regression tests."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, V7.1 historical baseline mutation, or cross-project cleanup."
+    status: "completed"
+    dependencies: ["S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json"]
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD final-gate unittest", "TDD CLI unittest", "request artifact CLI", "post-run safety state checks"]
+    test_results: ["TDD red: missing daily-operation persistent authorization request builder/validator and CLI command", "TDD green: final-gate and CLI command emit request-only state", "request status=ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement", "state_hash=be561b7e01250e75d471bbdbd2a4df2e048d8b287bb310d202c8549b2aefb3ee", "request_only=true", "persistent_daily_operation_authorized=false", "owner_daily_operation_authorization_recorded=false", "daily_operation_enabled=false", "real_smtp_send_enabled=false", "scheduler_install_enabled=false", "release_packaging_enabled=false", "production_restore_enabled=false"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST.md", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"]
+    risk: "Future agents could treat a request packet as persistent DAILY_OPERATION authorization; this task validates request_only=true and keeps runtime disabled until a separate explicit owner authorization artifact exists."
+    rollback: "Revert the request builder/validator/CLI, request artifact, run manifest, phase record, current-state sync, owner-facing notes, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION"
     phase: "S2PL"
     objective: "Bind the already-pushed persistent DAILY_OPERATION authorization gate to mainline evidence without authorizing or enabling runtime production."

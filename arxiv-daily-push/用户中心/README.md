@@ -1,5 +1,15 @@
 # ADP 用户中心
 
+## 2026-07-01 22:22:48 Australia/Sydney - 持久 DAILY_OPERATION 授权请求包已准备好
+
+- `S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST` 已生成 owner 可读请求包：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json`。
+- 该请求包只是请求 owner 决策，不是授权文件：`request_only=true`、`persistent_daily_operation_authorized=false`、`daily_operation_enablement_allowed_by_this_request=false`。
+- 真正的持久授权文件仍缺失：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`；缺失时不得启用 DAILY_OPERATION。
+- 当前 request state hash：`be561b7e01250e75d471bbdbd2a4df2e048d8b287bb310d202c8549b2aefb3ee`，运行清单为 `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json`。
+- 运行边界仍关闭：`daily_operation_enabled=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- 默认下一步：owner 选择继续禁用，或另行创建显式持久授权文件后再跑 persistent authorization gate 和单独 enablement preflight。
+- 证据：[授权请求包](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json) / [请求包运行清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST.md)。
+
 ## 2026-07-01 21:59:44 Australia/Sydney - 持久 DAILY_OPERATION 授权门 mainline 证据已绑定
 
 - `S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION` 已把上一轮持久 DAILY_OPERATION 授权门绑定到 mainline：`binding_status=commit_bound`，`result_commit=f8e34c0ce3919945ca055dd781332128c72dfc4a`，`result_tree_hash=21090213e25901ab8342dbd710c64da57bd619b7`。
@@ -378,7 +388,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 425 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 426 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
