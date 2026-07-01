@@ -23,6 +23,7 @@
     "validate:stage8-release-safety": "node scripts/validate_stage8_release_safety.cjs",
     "validate:stage8": "node scripts/validate_memory_atlas_stage8.cjs",
     "validate:stage9-obsidian": "node scripts/validate_stage9_obsidian_iteration.cjs",
+    "validate:stage9-visual-semantics": "node scripts/validate_stage9_visual_semantics.cjs",
     "validate:memory-starfield-interaction": "node scripts/validate_memory_starfield_interaction.mjs",
     "validate:memory-starfield-mapping": "node scripts/validate_memory_starfield_mapping.mjs",
     "validate:universe-state-spike": "node --experimental-strip-types scripts/validate_universe_state_spike.mjs"

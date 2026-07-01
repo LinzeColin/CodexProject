@@ -1365,6 +1365,53 @@ h3 {
   line-height: 1.45;
 }
 
+.home-weather-v2-scores {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  margin: 2px 0 0;
+}
+
+.home-weather-v2-scores div {
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.045);
+  padding: 5px;
+}
+
+.home-weather-v2-scores dt {
+  overflow: hidden;
+  color: #a9a397;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-weather-v2-scores dd {
+  margin: 0;
+  color: #f4f1e8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.home-weather-v2-signals {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-weather-v2-signals li {
+  overflow: hidden;
+  color: #b6b1a6;
+  font-size: 10.5px;
+  line-height: 1.28;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .home-weather-panel.black-hole {
   border-color: rgba(244, 143, 177, 0.34);
   background:
@@ -1384,6 +1431,10 @@ h3 {
   background:
     linear-gradient(135deg, rgba(199, 167, 255, 0.12), rgba(143, 211, 255, 0.035)),
     rgba(9, 10, 13, 0.56);
+}
+
+.home-weather-panel.rising {
+  border-color: rgba(126, 232, 212, 0.38);
 }
 
 .home-weather-metrics {
@@ -1962,6 +2013,23 @@ h3 {
   max-height: min(40%, 336px);
 }
 
+.galaxy-roi-gradient-panel {
+  position: absolute;
+  top: 464px;
+  right: 14px;
+  z-index: 5;
+  display: grid;
+  gap: 8px;
+  width: min(360px, calc(100% - 28px));
+  border: 1px solid rgba(143, 211, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(5, 8, 14, 0.78);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(12px);
+  padding: 10px;
+  pointer-events: none;
+}
+
 .terrain-panel-heading {
   display: flex;
   align-items: center;
@@ -2056,6 +2124,17 @@ h3 {
   font-size: 10px;
 }
 
+.terrain-row::after {
+  grid-column: 1 / -1;
+  display: block;
+  width: var(--terrain-intensity, 0%);
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.55;
+  content: "";
+}
+
 .terrain-formula-grid,
 .terrain-inspector-strip {
   display: grid;
@@ -2067,7 +2146,7 @@ h3 {
 }
 
 .terrain-formula-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .terrain-formula-grid div,
@@ -2090,6 +2169,57 @@ h3 {
   font-size: 10px;
   line-height: 1.32;
   overflow-wrap: anywhere;
+}
+
+.galaxy-roi-gradient-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.galaxy-roi-gradient-strip span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.08);
+  border-radius: 7px;
+  background: rgba(143, 211, 255, 0.055);
+  padding: 7px;
+}
+
+.galaxy-roi-gradient-strip span::after {
+  display: block;
+  width: var(--roi-intensity, 0%);
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8fd3ff, #7ee8d4);
+  content: "";
+}
+
+.galaxy-roi-gradient-strip b,
+.galaxy-roi-gradient-strip em,
+.galaxy-roi-gradient-panel small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.galaxy-roi-gradient-strip b {
+  color: #f4f1e8;
+  font-size: 10px;
+}
+
+.galaxy-roi-gradient-strip em {
+  color: #7ee8d4;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.galaxy-roi-gradient-panel small {
+  color: #b6b1a6;
+  font-size: 10.5px;
 }
 
 .galaxy-hover-preview {
@@ -3552,6 +3682,26 @@ h3 {
   stroke-width: 4px;
 }
 
+.memory-river-roi-gradient {
+  pointer-events: none;
+}
+
+.memory-river-roi-gradient rect {
+  opacity: 0.82;
+  stroke: rgba(244, 241, 232, 0.05);
+  stroke-width: 0.7px;
+}
+
+.memory-river-roi-gradient text {
+  fill: rgba(223, 247, 255, 0.92);
+  font-size: 10px;
+  font-weight: 760;
+  paint-order: stroke;
+  stroke: rgba(9, 10, 13, 0.96);
+  stroke-linejoin: round;
+  stroke-width: 4px;
+}
+
 .memory-river-evidence-layer {
   pointer-events: none;
 }
@@ -4910,6 +5060,13 @@ h3 {
     max-height: min(34%, 260px);
   }
 
+  .galaxy-roi-gradient-panel {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    width: min(310px, calc(100% - 20px));
+  }
+
   .terrain-formula-grid {
     grid-template-columns: 1fr;
   }
@@ -5694,6 +5851,18 @@ h3 {
   .galaxy-performance-overlay + .galaxy-terrain-panel {
     top: 190px;
     max-height: 28%;
+  }
+
+  .galaxy-roi-gradient-panel {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  .galaxy-roi-gradient-panel small {
+    display: none;
   }
 
   .terrain-formula-grid {

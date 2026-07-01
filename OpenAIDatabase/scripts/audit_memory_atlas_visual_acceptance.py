@@ -1155,6 +1155,27 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     )
     require(
         checks,
+        '"validate:stage9-visual-semantics": "node scripts/validate_stage9_visual_semantics.cjs"' in read_text(repo_root / "apps/memory-atlas/package.json")
+        and "Memory Weather v2" in app_source
+        and "data-memory-weather-v2" in app_source
+        and "buildMemoryWeatherV2" in app_source
+        and "memory-river-roi-gradient" in app_source
+        and "buildMemoryRiverRoiGradient" in app_source
+        and 'data-roi-gradient="capability-growth"' in app_source
+        and "Memory Terrain v2" in galaxy_source
+        and "data-memory-terrain-v2" in galaxy_source
+        and "buildGalaxyRoiGradientSummary" in galaxy_source
+        and "galaxy-roi-gradient-panel" in galaxy_source
+        and 'data-roi-gradient="galaxy-analysis"' in galaxy_source
+        and ".home-weather-v2-scores" in css_source
+        and ".galaxy-roi-gradient-panel" in css_source
+        and ".memory-river-roi-gradient" in css_source,
+        "stage9_2_visual_semantics_enrichment_ready",
+        "Stage 9.2 adds explainable Memory Weather v2, Analysis-only Memory Terrain v2, Galaxy ROI gradient, and Memory River ROI/capability gradient",
+        "Stage 9.2 visual semantic enrichment source, styles, or validator script are missing",
+    )
+    require(
+        checks,
         "WebGL 正常时不叠加 HTML 点层" in readme
         and "不透明 WebGL 背景" in readme
         and "WebGL 内部程序化星云纹理" in readme

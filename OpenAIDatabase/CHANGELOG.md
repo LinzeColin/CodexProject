@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 9.2 Visual Semantics Enrichment
+
+- Added Memory Weather v2 on the Home overview with stability, momentum, risk,
+  opportunity and confidence signals derived from the existing redacted
+  Universe State slice.
+- Upgraded Galaxy Analysis Mode to Memory Terrain v2 with semantic roles,
+  coverage evidence, terrain intensity and an analysis-only rollback boundary.
+- Added ROI capability gradients in Galaxy and Memory River so high-leverage
+  and capability-growth trends are visible without changing Presentation mode
+  or timeline selection behavior.
+- Added `validate:stage9-visual-semantics` and visual acceptance coverage for
+  Stage 9.2.
+
+No Stage 9 whole-stage review, GitHub main upload, Cloudflare live deploy,
+Access policy change, raw/private data access, direct writeback, or external
+account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 9.1 Obsidian Graph E Iteration
 
 - Added bounded local graph neighborhoods for Obsidian Graph so high-connectivity
