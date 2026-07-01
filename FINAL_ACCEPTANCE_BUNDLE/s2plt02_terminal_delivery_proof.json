@@ -1,0 +1,75 @@
+{
+  "acceptance_hash": "2c784298d2b3a42792d400f590afe3688da91f0f2c4c519c4f8890a81c06c2ef",
+  "acceptance_id": "ACC-S2PLT02-2D",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "generated_at": "2026-07-01T12:08:55+10:00",
+  "integrated_production_accepted": false,
+  "mail_products_by_service_date": {
+    "2026-06-29": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "2026-06-30": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ]
+  },
+  "model_id": "adp-s2plt02-terminal-delivery-proof-v1",
+  "observed_email_count": 8,
+  "observed_natural_days": 2,
+  "production_acceptance_claimed": false,
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "release_uploaded": false,
+  "s2plt02_accepted": true,
+  "schema_version": 1,
+  "service_dates": [
+    "2026-06-29",
+    "2026-06-30"
+  ],
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PLT02",
+  "terminal_delivery_decision": "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
+  "terminal_evidence_refs": [
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json",
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260630.json",
+    "governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-CONTROLLED-REAL-CATCHUP-20260630.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260630.md"
+  ],
+  "terminal_evidence_refs_by_role": {
+    "day_1_delivery": "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json",
+    "day_2_delivery": "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260630.json",
+    "p0_p1_zero_proof": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "real_scheduler_proof": "governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json",
+    "s2plt01_terminal_acceptance": "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json"
+  },
+  "terminal_gates": {
+    "eight_real_emails_sent": true,
+    "m4_watermark_correct": true,
+    "no_duplicate_emails": true,
+    "p0_zero": true,
+    "p1_zero": true,
+    "real_scheduler_proven": true,
+    "real_smtp_proven": true,
+    "s2plt01_accepted": true,
+    "two_consecutive_real_days": true
+  },
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

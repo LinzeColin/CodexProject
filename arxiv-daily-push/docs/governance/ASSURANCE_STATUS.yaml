@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260701-ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC"
-source_snapshot_hash: "sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01"
+source_snapshot_hash: "sha256:7c17648277920a99469806009478317e1bbca9f587fc82525e1171516dd6695c"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-07-01T08:37:20+10:00"
+snapshot_event_time: "2026-07-01T07:43:35+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 1
     commit_bound_events: 4
-    legacy_unbound_events: 289
-    precommit_pending_events: 47
+    legacy_unbound_events: 322
+    precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -76,43 +76,21 @@ delivery_readiness:
   v7_parallel_audit_hash: "571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c"
   open_p0_findings: 8
   open_p1_findings: 37
-  inherited_v7_1_baseline_p0_findings: 8
-  inherited_v7_1_baseline_p1_findings: 37
-  p0_p1_zero_proof_artifact_status: "pass"
-  p0_p1_zero_proof_artifact_state_hash: "bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786"
-  p0_p1_zero_proof_current_p0_findings: 0
-  p0_p1_zero_proof_current_p1_findings: 0
-  p0_p1_zero_proof_boundary: "V7.1 inherited baseline P0=8/P1=37 remains a historical contract baseline; current zero-proof artifact P0=0/P1=0 and validated independent final reviewer assignment are usable final-bundle inputs only and do not equal independent closure signoff, S2PLT04, or Stage2 production acceptance."
-  s2plt04_completion_evidence_summary_status: "blocked"
-  s2plt04_completion_evidence_summary_state_hash: "060cb7d5b3bcb73f484586de5733b4438e19d761621a59d581e0b1f22f1c4fba"
-  s2plt04_completion_report_ready: false
-  s2plt04_completion_report_written: false
-  s2plt04_completion_evidence_summary_blocking_reasons: "s2plt02_real_scheduler_proof_missing;s2plt02_terminal_delivery_proof_artifact_missing;s2plt03_resilience_terminal_proof_missing"
-  s2plt02_capture_window_summary_status: "blocked"
-  s2plt02_capture_window_summary_state_hash: "e2471c2bdba40251132ae5d4374a5642db547f0fa82af54b4641b67a6f21b74c"
-  s2plt02_capture_window_cli_state_hash: "ab1ef6efbca6e019569e65849cd66dbb4cca336fca4bd95314252603db65a151"
-  s2plt02_capture_window_dry_run_service_dates: "2026-06-29;2026-06-30"
-  s2plt02_capture_window_dry_run_email_count: 8
-  s2plt02_capture_window_real_sent_candidate_email_count: 0
-  s2plt02_capture_window_terminal_delivery_credit: false
-  s2plt02_capture_window_counts_toward_terminal_proof: false
-  s2plt02_capture_window_scheduler_runtime_evidence_status: "launchagent_runtime_state_unknown"
-  s2plt02_capture_window_cli_scheduler_runtime_evidence_status: "launchagents_loaded_but_disabled_not_terminal_scheduler_proof"
   production_forbidden_until: "inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed"
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
+  task_id: "S2PLT03-TERMINAL-RESILIENCE-PROOF"
   status: "blocked"
-  reason: "S2PLT02 controlled foreground real SMTP catch-up captured the second real M1-M4 service day and eight real emails, with capture plan state_hash=05e8d88e9a09ec66acd59b03a8e77537e972e830eef9e1d3cca3edd9d3e1f3f7, final-bundle S2PLT02 summary state_hash=1de287b38fe4aafb862df33afefd6f2ea453c4f63d76dd3e40b10c4e8cd7bf0a, prerequisite state_hash=2663c6934972958d51f84f07f6ff4434ccbd00afa3cfe154db0453cdb724f7f5, final readiness state_hash=59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea. S2PLT02 still lacks real scheduler proof and reviewed terminal delivery proof artifact."
+  reason: "S2PLT02 terminal delivery proof artifact is validated and ready as a no-production final-bundle input; the next blocked terminal dependency is the reviewed S2PLT03 terminal resilience proof artifact."
   acceptance_ids:
-    - "ACC-S2PLT02-2D"
+    - "ACC-S2PLT03-RESILIENCE"
     - "ACC-S2PMT07-FINAL-REVIEW"
   owner: "content_owner + engineering_owner + independent_final_reviewer"
   human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Use the validated no-production authorization only after the runtime capture blockers clear; rerun plan-s2plt02-terminal-delivery-proof-capture, then validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json without claiming Stage2 production acceptance."
+  unblock_condition: "Build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json without enabling SMTP, scheduler, Release, restore, or production acceptance."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -126,14 +104,12 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, keep the validated independent reviewer assignment and P0/P1 zero-proof artifact as existing final-bundle inputs, treat FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json as blocked and missing until terminal_artifact_present=true and terminal_artifact_ready=true are backed by two consecutive real M1-M4 SMTP days, eight real emails, real scheduler proof, reviewed artifact write, and artifact validation; keep live authorization valid only when its readiness_state_hash matches the current expected hash; keep stale authorization hashes fail-closed; use the exposed next_executable_command=plan-s2plt02-terminal-delivery-proof-capture only as a blocked no-write locator; keep remaining_runtime_actions limited to capture_second_consecutive_real_m1_m4_smtp_day, capture_real_launchd_scheduler_proof, and write_and_validate_s2plt02_terminal_delivery_proof_artifact; keep S2PLT03, S2PLT04, final bundle, DAILY_OPERATION, and Stage2/S3 production acceptance blocked until those terminal artifacts exist and validate."
-  no_write_evidence_chain_refs: "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR;S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION;S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN;S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY;S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR;S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT;S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI;S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY;S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC;S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN;S2PLT02-TERMINAL-DELIVERY-PROOF"
-  no_write_evidence_chain_summary: "Validated no-write chain includes live authorization, input inventory, capture plan, manifest gate, normalized manifest gate, dry-run blocker evidence, terminal proof evidence inventory, and resilience proof capture planning while S2PLT02/S2PLT03 remain blocked."
-  option_a: "继续 S2PMT07 / S2PLT04 前置证据链：先补 S2PLT01 终态验收、第二真实自然日、8 封真实邮件、真实 scheduler proof 和 S2PLT03 终态韧性 proof，保持 S2PLT04/final bundle/production gate 阻断。"
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the validated independent reviewer assignment, P0/P1 zero-proof artifact, and FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json as existing no-production final-bundle inputs; do not re-run S2PLT02 SMTP or scheduler capture; next build, independently review, write, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json before S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff."
+  option_a: "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 已作为 no-production 输入通过，默认下一步只构建、独立复审并验证 S2PLT03 terminal resilience proof，保持 S2PLT04/final bundle/production gate 阻断。"
   option_b: "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
   option_c: "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
   options:
-    - "继续 S2PMT07 / S2PLT04 前置证据链：先补 S2PLT01 终态验收、第二真实自然日、8 封真实邮件、真实 scheduler proof 和 S2PLT03 终态韧性 proof，保持 S2PLT04/final bundle/production gate 阻断。"
+    - "继续 S2PMT07 / S2PLT04 前置证据链：S2PLT02 terminal delivery proof 已作为 no-production 输入通过，默认下一步只构建、独立复审并验证 S2PLT03 terminal resilience proof，保持 S2PLT04/final bundle/production gate 阻断。"
     - "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
     - "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
@@ -150,4 +126,6 @@ owner_decision:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
   last_reviewed_at: "2026-06-29T12:01:17+10:00"
+  no_write_evidence_chain_refs: "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR;S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION;S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN;S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY;S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR;S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT;S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI;S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY;S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC;S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN;S2PLT02-TERMINAL-DELIVERY-PROOF"
+  no_write_evidence_chain_summary: "Validated no-write chain includes live authorization, input inventory, capture plan, manifest gate, normalized manifest gate, dry-run blocker evidence, terminal proof evidence inventory, and resilience proof capture planning while S2PLT02/S2PLT03 remain blocked."
   parallel_shadow_task_id: "NONE_WHILE_S2PMT07_BLOCKED"

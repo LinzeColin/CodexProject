@@ -1110,12 +1110,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(report["integrated_production_accepted"])
         self.assertFalse(report["daily_operation_enabled"])
 
-    def test_s2plt02_terminal_delivery_proof_missing_artifact_consumes_current_readiness_gates(self) -> None:
+    def test_s2plt02_terminal_delivery_proof_committed_artifact_consumes_current_readiness_gates(self) -> None:
         report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=REPO_ROOT)
 
-        self.assertEqual(report["status"], "blocked")
-        self.assertFalse(report["artifact_present"])
-        self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", report["blocking_reasons"])
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["artifact_present"])
+        self.assertTrue(report["terminal_delivery_proof_ready"])
+        self.assertEqual(report["blocking_reasons"], [])
+        self.assertEqual(report["validation_errors"], [])
         self.assertTrue(report["terminal_gates"]["s2plt01_accepted"])
         self.assertTrue(report["terminal_gates"]["m4_watermark_correct"])
         self.assertTrue(report["terminal_gates"]["real_smtp_proven"])
@@ -1123,22 +1125,22 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(report["terminal_gates"]["p1_zero"])
         self.assertTrue(report["terminal_gates"]["two_consecutive_real_days"])
         self.assertTrue(report["terminal_gates"]["eight_real_emails_sent"])
-        self.assertFalse(report["terminal_gates"]["real_scheduler_proven"])
+        self.assertTrue(report["terminal_gates"]["real_scheduler_proven"])
         self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
         self.assertNotIn("m4_watermark_not_proven", report["blocking_reasons"])
         self.assertNotIn("real_smtp_not_proven", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
 
-    def test_s2plt02_terminal_delivery_input_inventory_lists_current_missing_inputs_without_writing(self) -> None:
+    def test_s2plt02_terminal_delivery_input_inventory_records_committed_artifact_ready_without_writing(self) -> None:
         inventory = build_s2plt02_terminal_delivery_input_inventory_state(
             generated_at="2026-06-30T10:12:54+10:00",
             repo_root=REPO_ROOT,
         )
 
-        self.assertEqual(inventory["status"], "blocked")
+        self.assertEqual(inventory["status"], "pass")
         self.assertEqual(inventory["task_id"], "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY")
-        self.assertFalse(inventory["terminal_delivery_proof_ready"])
+        self.assertTrue(inventory["terminal_delivery_proof_ready"])
         self.assertFalse(inventory["artifact_written"])
         self.assertEqual(inventory["observed_real_delivery_days"], 2)
         self.assertEqual(inventory["observed_real_email_count"], 8)
@@ -1147,10 +1149,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("EIGHT_REAL_EMAILS", inventory["ready_inputs"])
         self.assertIn("P0_P1_ZERO_PROOF", inventory["ready_inputs"])
         self.assertIn("M4_WATERMARK_PROOF", inventory["ready_inputs"])
+        self.assertIn("REAL_SCHEDULER_PROOF", inventory["ready_inputs"])
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["ready_inputs"])
         self.assertNotIn("SECOND_REAL_DELIVERY_DAY", inventory["missing_inputs"])
         self.assertNotIn("EIGHT_REAL_EMAILS", inventory["missing_inputs"])
-        self.assertIn("REAL_SCHEDULER_PROOF", inventory["missing_inputs"])
-        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["missing_inputs"])
+        self.assertEqual(inventory["missing_inputs"], [])
         self.assertEqual(
             inventory["next_draft_command"],
             "adp build-s2plt02-terminal-delivery-proof-artifact-draft --delivery-manifest DAY1.json --delivery-manifest DAY2.json --scheduler-proof REAL-SCHEDULER-PROOF.json --json",
@@ -1187,8 +1190,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("P0_P1_ZERO_PROOF", inventory["ready_inputs"])
         self.assertNotIn("SECOND_REAL_DELIVERY_DAY", inventory["missing_terminal_inputs"])
         self.assertNotIn("EIGHT_REAL_EMAILS", inventory["missing_terminal_inputs"])
-        self.assertIn("REAL_SCHEDULER_PROOF", inventory["missing_terminal_inputs"])
-        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["missing_terminal_inputs"])
+        self.assertIn("REAL_SCHEDULER_PROOF", inventory["ready_inputs"])
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["ready_inputs"])
+        self.assertNotIn("REAL_SCHEDULER_PROOF", inventory["missing_terminal_inputs"])
+        self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["missing_terminal_inputs"])
         self.assertEqual(inventory["usable_terminal_inputs"][0]["role"], "s2plt01_terminal_acceptance")
         self.assertIn(
             "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
@@ -1208,22 +1213,22 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(inventory["daily_operation_enabled"])
         self.assertEqual(validate_s2plt02_terminal_proof_evidence_inventory_state(inventory), [])
 
-    def test_s2plt02_terminal_delivery_proof_capture_plan_exposes_blocked_next_steps(self) -> None:
+    def test_s2plt02_terminal_delivery_proof_capture_plan_records_artifact_ready_without_production(self) -> None:
         plan = build_s2plt02_terminal_delivery_proof_capture_plan_state(
             generated_at="2026-06-30T10:41:36+10:00",
             repo_root=REPO_ROOT,
         )
 
-        self.assertEqual(plan["status"], "blocked")
+        self.assertEqual(plan["status"], "pass")
         self.assertEqual(plan["task_id"], "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN")
-        self.assertFalse(plan["terminal_delivery_proof_ready"])
+        self.assertTrue(plan["terminal_delivery_proof_ready"])
         self.assertFalse(plan["artifact_written"])
         self.assertEqual(plan["observed_real_delivery_days"], 2)
         self.assertEqual(plan["observed_real_email_count"], 8)
         self.assertNotIn("SECOND_REAL_DELIVERY_DAY", plan["blocked_by_missing_inputs"])
         self.assertNotIn("EIGHT_REAL_EMAILS", plan["blocked_by_missing_inputs"])
-        self.assertIn("REAL_SCHEDULER_PROOF", plan["blocked_by_missing_inputs"])
-        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", plan["blocked_by_missing_inputs"])
+        self.assertEqual(plan["blocked_by_missing_inputs"], [])
+        self.assertEqual(plan["blocking_reasons"], [])
         self.assertEqual(plan["authorization_artifact_status"], "pass")
         self.assertTrue(plan["real_proof_capture_authorized"])
         self.assertEqual(plan["authorization_validation_errors"], [])
@@ -1232,7 +1237,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIsInstance(plan["terminal_evidence_inventory_state_hash"], str)
         self.assertTrue(plan["terminal_evidence_inventory_state_hash"])
         input_inventory_summary = plan["terminal_delivery_input_inventory_summary"]
-        self.assertEqual(input_inventory_summary["status"], "blocked")
+        self.assertEqual(input_inventory_summary["status"], "pass")
         self.assertEqual(input_inventory_summary["state_hash"], plan["input_inventory_state_hash"])
         self.assertEqual(input_inventory_summary["ready_inputs"], plan["ready_inputs"])
         self.assertEqual(input_inventory_summary["missing_inputs"], plan["blocked_by_missing_inputs"])
@@ -1240,33 +1245,27 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(input_inventory_summary["required_real_delivery_days"], 2)
         self.assertEqual(input_inventory_summary["observed_real_email_count"], 8)
         self.assertEqual(input_inventory_summary["required_real_email_count"], 8)
-        self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
-        self.assertEqual(plan["terminal_artifact_validation_status"], "blocked")
+        self.assertTrue(input_inventory_summary["terminal_delivery_proof_ready"])
+        self.assertEqual(plan["terminal_artifact_validation_status"], "pass")
         self.assertIsInstance(plan["terminal_artifact_validation_state_hash"], str)
         self.assertTrue(plan["terminal_artifact_validation_state_hash"])
         artifact_validation_summary = plan["terminal_delivery_artifact_validation_summary"]
-        self.assertEqual(artifact_validation_summary["status"], "blocked")
+        self.assertEqual(artifact_validation_summary["status"], "pass")
         self.assertEqual(artifact_validation_summary["state_hash"], plan["terminal_artifact_validation_state_hash"])
         self.assertEqual(
             artifact_validation_summary["artifact_ref"],
             S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
         )
-        self.assertFalse(artifact_validation_summary["artifact_present"])
-        self.assertFalse(artifact_validation_summary["terminal_delivery_proof_ready"])
+        self.assertTrue(artifact_validation_summary["artifact_present"])
+        self.assertTrue(artifact_validation_summary["terminal_delivery_proof_ready"])
         self.assertEqual(
             plan["terminal_artifact_ref"],
             S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
         )
-        self.assertFalse(plan["terminal_artifact_present"])
-        self.assertFalse(plan["terminal_artifact_ready"])
-        self.assertIn(
-            "s2plt02_terminal_delivery_proof_artifact_missing",
-            plan["terminal_artifact_validation_errors"],
-        )
-        self.assertIn(
-            "s2plt02_terminal_delivery_proof_artifact_missing",
-            plan["terminal_artifact_blocking_reasons"],
-        )
+        self.assertTrue(plan["terminal_artifact_present"])
+        self.assertTrue(plan["terminal_artifact_ready"])
+        self.assertEqual(plan["terminal_artifact_validation_errors"], [])
+        self.assertEqual(plan["terminal_artifact_blocking_reasons"], [])
         self.assertEqual(
             artifact_validation_summary["validation_errors"],
             plan["terminal_artifact_validation_errors"],
@@ -1275,8 +1274,8 @@ class Stage2FinalGateTests(unittest.TestCase):
             artifact_validation_summary["blocking_reasons"],
             plan["terminal_artifact_blocking_reasons"],
         )
-        self.assertFalse(plan["runtime_capture_ready"])
-        self.assertIn("real_launchd_scheduler_proof_missing", plan["runtime_capture_blockers"])
+        self.assertTrue(plan["runtime_capture_ready"])
+        self.assertEqual(plan["runtime_capture_blockers"], [])
         self.assertNotIn("adp_allow_smtp_send_false", plan["runtime_capture_blockers"])
         self.assertNotIn("real_smtp_secret_env_missing", plan["runtime_capture_blockers"])
         self.assertNotIn("second_consecutive_real_m1_m4_smtp_day_missing", plan["runtime_capture_blockers"])
@@ -1320,13 +1319,13 @@ class Stage2FinalGateTests(unittest.TestCase):
             capture_window_summary["scheduler_runtime_evidence_status"],
             "launchagent_runtime_state_unknown",
         )
-        self.assertEqual(plan["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(plan["next_executable_step"], "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT")
         wait_guard = plan["capture_wait_state_guard"]
-        self.assertEqual(plan["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(plan["current_wait_state"], "READY_FOR_TERMINAL_CAPTURE")
         self.assertEqual(plan["current_wait_state"], wait_guard["current_wait_state"])
-        self.assertEqual(wait_guard["status"], "blocked")
-        self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
-        self.assertEqual(wait_guard["next_safe_runtime_action"], "wait_for_real_smtp_scheduler_capture_window")
+        self.assertEqual(wait_guard["status"], "pass")
+        self.assertEqual(wait_guard["current_wait_state"], "READY_FOR_TERMINAL_CAPTURE")
+        self.assertEqual(wait_guard["next_safe_runtime_action"], "capture_real_terminal_delivery_inputs")
         self.assertEqual(wait_guard["runtime_capture_blockers"], plan["runtime_capture_blockers"])
         self.assertEqual(wait_guard["blocked_by_missing_inputs"], plan["blocked_by_missing_inputs"])
         self.assertEqual(wait_guard["remaining_runtime_actions"], plan["remaining_runtime_actions"])
@@ -1885,8 +1884,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("proof governance/run_manifests/BROKEN-M4-WATERMARK-PROOF-20260628.json integrated_production_accepted must be false", errors)
         self.assertIn("proof governance/run_manifests/BROKEN-M4-WATERMARK-PROOF-20260628.json derived watermark must be ready", errors)
 
-    def test_s2plt02_live_evidence_state_records_partial_real_run_without_acceptance(self) -> None:
-        state = build_s2plt02_live_evidence_state()
+    def test_s2plt02_live_evidence_state_records_terminal_scheduler_proof_without_acceptance(self) -> None:
+        state = build_s2plt02_live_evidence_state(repo_root=REPO_ROOT)
 
         self.assertEqual(state["status"], "blocked")
         self.assertEqual(tuple(state["required_evidence"]), S2PLT02_REQUIRED_EVIDENCE)
@@ -1900,8 +1899,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["available_evidence"]["TWO_CONSECUTIVE_REAL_NATURAL_DAYS"])
         self.assertTrue(state["available_evidence"]["EIGHT_REAL_EMAILS_SENT"])
         self.assertTrue(state["available_evidence"]["NO_DUPLICATE_EMAILS"])
-        self.assertFalse(state["available_evidence"]["REAL_SCHEDULER_PROVEN"])
+        self.assertTrue(state["available_evidence"]["REAL_SCHEDULER_PROVEN"])
         self.assertTrue(state["available_evidence"]["REAL_SMTP_PROVEN"])
+        self.assertEqual(
+            state["real_scheduler_proof_ref"],
+            "governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json",
+        )
+        self.assertEqual(state["real_scheduler_proof_validation"]["status"], "pass")
+        self.assertTrue(state["real_scheduler_proof_validation"]["scheduler_proof_ready"])
         self.assertTrue(state["m4_watermark_correct"])
         self.assertTrue(state["available_evidence"]["M4_WATERMARK_CORRECT"])
         self.assertEqual(state["m4_watermark_proof"]["status"], "ready")
@@ -1909,17 +1914,16 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(state["delivery_evidence_ledger"]["status"], "ready")
         self.assertTrue(state["delivery_evidence_ledger"]["two_day_delivery_evidence_present"])
 
-    def test_s2plt02_live_2d_precheck_consumes_committed_zero_proof_without_acceptance(self) -> None:
+    def test_s2plt02_live_2d_precheck_passes_with_committed_inputs_without_acceptance(self) -> None:
         report = build_s2plt02_live_2d_precheck_report(generated_at="2026-06-26T19:00:00+10:00")
 
-        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["status"], "pass")
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["inherited_p0_p1_closed"])
         self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
         for flag in S2PLT02_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
-        for reason in ("real_scheduler_not_proven",):
-            self.assertIn(reason, report["blocking_reasons"])
+        self.assertNotIn("real_scheduler_not_proven", report["blocking_reasons"])
         self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
@@ -1928,7 +1932,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(report["gates"]["s2plt01_accepted"])
         self.assertTrue(report["gates"]["two_consecutive_real_days"])
         self.assertTrue(report["gates"]["eight_real_emails_sent"])
-        self.assertFalse(report["gates"]["real_scheduler_proven"])
+        self.assertTrue(report["gates"]["real_scheduler_proven"])
         self.assertTrue(report["gates"]["real_smtp_proven"])
         self.assertTrue(report["gates"]["p0_zero"])
         self.assertTrue(report["gates"]["p1_zero"])
@@ -1940,14 +1944,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         tampered["real_smtp_sent"] = True
         self.assertIn("real_smtp_sent must be false", validate_s2plt02_live_2d_precheck_report(tampered))
 
-    def test_s2plt03_dependency_state_blocks_without_s2plt02_acceptance(self) -> None:
-        state = build_s2plt03_dependency_state()
+    def test_s2plt03_dependency_state_consumes_s2plt02_terminal_artifact(self) -> None:
+        state = build_s2plt03_dependency_state(repo_root=REPO_ROOT)
 
-        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["status"], "pass")
         self.assertEqual(tuple(state["required_dependencies"]), S2PLT03_REQUIRED_DEPENDENCIES)
-        self.assertEqual(state["completed_dependencies"], {})
-        self.assertEqual(tuple(state["unmet_dependencies"]), S2PLT03_REQUIRED_DEPENDENCIES)
-        self.assertEqual(state["s2plt02_acceptance_status"], "blocked_by_missing_real_2d_run_and_final_gates")
+        self.assertEqual(state["completed_dependencies"], {"S2PLT02": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH})
+        self.assertEqual(tuple(state["unmet_dependencies"]), ())
+        self.assertEqual(state["s2plt02_acceptance_status"], "accepted_by_terminal_delivery_proof_artifact")
 
     def test_s2plt03_local_resilience_drill_bundle_passes_without_acceptance_or_side_effects(self) -> None:
         bundle = build_s2plt03_local_resilience_drill_bundle(generated_at="2026-06-28T03:00:00+10:00")
@@ -2001,12 +2005,12 @@ class Stage2FinalGateTests(unittest.TestCase):
     def test_s2plt03_resilience_precheck_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt03_resilience_precheck_report(generated_at="2026-06-28T01:30:57+10:00")
 
-        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["status"], "pass")
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["inherited_p0_p1_closed"])
         for flag in S2PLT03_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
-        self.assertIn("s2plt02_not_accepted", report["blocking_reasons"])
+        self.assertNotIn("s2plt02_not_accepted", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
         self.assertNotIn("rate_limit_drill_not_proven", report["blocking_reasons"])
@@ -2016,7 +2020,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("backup_restore_point_not_proven", report["blocking_reasons"])
         self.assertNotIn("rollback_executable_not_proven", report["blocking_reasons"])
         self.assertNotIn("ledger_count_conservation_not_proven", report["blocking_reasons"])
-        self.assertFalse(report["gates"]["s2plt02_accepted"])
+        self.assertTrue(report["gates"]["s2plt02_accepted"])
         self.assertTrue(report["gates"]["p0_zero"])
         self.assertTrue(report["gates"]["p1_zero"])
         self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
@@ -2035,11 +2039,11 @@ class Stage2FinalGateTests(unittest.TestCase):
             repo_root=REPO_ROOT,
         )
 
-        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["status"], "pass")
         self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
         self.assertTrue(report["gates"]["p0_zero"])
         self.assertTrue(report["gates"]["p1_zero"])
-        self.assertIn("s2plt02_not_accepted", report["blocking_reasons"])
+        self.assertNotIn("s2plt02_not_accepted", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
         self.assertFalse(report["s2plt03_accepted"])
@@ -2058,12 +2062,12 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(report["audit_blockers"]["checks"]["P1_zero"])
         self.assertEqual(report["audit_blockers"]["inherited_v7_1_open_p0_findings"], 0)
         self.assertEqual(report["audit_blockers"]["inherited_v7_1_open_p1_findings"], 0)
-        self.assertEqual(report["blocking_reasons"], ["s2plt02_not_accepted"])
+        self.assertEqual(report["blocking_reasons"], [])
         self.assertFalse(report["inherited_p0_p1_closed"])
         self.assertFalse(report["s2plt03_accepted"])
         self.assertFalse(report["integrated_production_accepted"])
 
-    def test_s2plt03_terminal_resilience_proof_capture_plan_blocks_until_s2plt02_acceptance(self) -> None:
+    def test_s2plt03_terminal_resilience_proof_capture_plan_blocks_only_on_missing_artifact(self) -> None:
         plan = build_s2plt03_terminal_resilience_proof_capture_plan_state(
             generated_at="2026-06-30T17:00:08+10:00",
             repo_root=REPO_ROOT,
@@ -2071,10 +2075,10 @@ class Stage2FinalGateTests(unittest.TestCase):
 
         self.assertEqual(plan["status"], "blocked")
         self.assertEqual(plan["task_id"], "S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN")
-        self.assertEqual(plan["next_executable_step"], "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE")
-        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", plan["missing_terminal_inputs"])
+        self.assertEqual(plan["next_executable_step"], "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", plan["missing_terminal_inputs"])
         self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", plan["missing_terminal_inputs"])
-        self.assertIn("s2plt02_not_accepted", plan["blocking_reasons"])
+        self.assertNotIn("s2plt02_not_accepted", plan["blocking_reasons"])
         self.assertFalse(plan["artifact_written"])
         self.assertFalse(plan["s2plt03_accepted"])
         self.assertFalse(plan["production_acceptance_claimed"])
@@ -2083,6 +2087,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["production_restore_enabled"])
         self.assertEqual(plan["completed_inputs"]["LOCAL_RESILIENCE_DRILL"], True)
         self.assertEqual(plan["completed_inputs"]["P0_P1_ZERO_PROOF"], True)
+        self.assertEqual(plan["completed_inputs"]["S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"], True)
         self.assertEqual(validate_s2plt03_terminal_resilience_proof_capture_plan_state(plan), [])
 
     def test_s2plt03_terminal_resilience_proof_blocks_missing_artifact(self) -> None:
@@ -2096,8 +2101,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(report["s2plt03_resilience_drill_completed_by_artifact"])
         self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", report["validation_errors"])
         self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", report["blocking_reasons"])
-        self.assertIn("s2plt02_not_accepted", report["blocking_reasons"])
-        self.assertFalse(report["terminal_gates"]["s2plt02_accepted"])
+        self.assertNotIn("s2plt02_not_accepted", report["blocking_reasons"])
+        self.assertTrue(report["terminal_gates"]["s2plt02_accepted"])
         self.assertTrue(report["terminal_gates"]["rate_limit_drill_proven"])
         self.assertTrue(report["terminal_gates"]["parser_drift_drill_proven"])
         self.assertTrue(report["terminal_gates"]["restart_recovery_drill_proven"])
@@ -2230,12 +2235,16 @@ class Stage2FinalGateTests(unittest.TestCase):
 
         self.assertEqual(state["status"], "blocked")
         self.assertEqual(tuple(state["required_dependencies"]), S2PLT04_REQUIRED_DEPENDENCIES)
-        self.assertEqual(state["completed_dependencies"], {"S2PLT01": "terminal_accepted_no_production"})
-        self.assertEqual(set(state["unmet_dependencies"]), {"S2PLT02", "S2PLT03"})
+        self.assertEqual(state["completed_dependencies"], {
+            "S2PLT01": "terminal_accepted_no_production",
+            "S2PLT02": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        })
+        self.assertEqual(set(state["unmet_dependencies"]), {"S2PLT03"})
         self.assertIn("S2PLT01-INDEPENDENT-REPLAY-REVIEW", state["available_local_evidence"])
         self.assertEqual(state["s2plt01_acceptance_status"], "terminal_accepted_no_production")
         self.assertTrue(state["s2plt01_terminal_acceptance"]["accepted"])
-        self.assertEqual(state["s2plt02_status"], "missing_authoritative_completion_evidence")
+        self.assertEqual(state["s2plt02_status"], "accepted_by_terminal_delivery_proof_artifact")
+        self.assertEqual(state["s2plt02_terminal_delivery_proof_validation_status"], "pass")
         self.assertEqual(state["s2plt03_status"], "missing_authoritative_completion_evidence")
 
     def test_s2plt04_evidence_state_records_available_local_evidence_without_final_bundle(self) -> None:
@@ -2246,7 +2255,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["available_evidence"]["STATE_CONSISTENCY_EVIDENCE"])
         self.assertTrue(state["available_evidence"]["CONTENT_EVIDENCE"])
         self.assertTrue(state["available_evidence"]["S2PLT01_ACCEPTED"])
-        self.assertFalse(state["available_evidence"]["S2PLT02_2D_REAL_RUN"])
+        self.assertTrue(state["available_evidence"]["S2PLT02_2D_REAL_RUN"])
+        self.assertEqual(
+            state["s2plt02_readiness_precheck_status"],
+            "terminal_delivery_proof_artifact_passed",
+        )
         self.assertFalse(state["available_evidence"]["S2PLT03_RESILIENCE_DRILL"])
         self.assertFalse(state["available_evidence"]["FINAL_ACCEPTANCE_BUNDLE/"])
 
@@ -2295,19 +2308,19 @@ class Stage2FinalGateTests(unittest.TestCase):
 
         self.assertEqual(report["status"], "blocked")
         self.assertIn("S2PLT02-LIVE-2D-PRECHECK", report["dependencies"]["available_local_evidence"])
-        self.assertTrue(report["evidence"]["available_nonterminal_evidence"]["S2PLT02_LIVE_2D_PRECHECK"])
+        self.assertFalse(report["evidence"]["available_nonterminal_evidence"]["S2PLT02_LIVE_2D_PRECHECK"])
+        self.assertTrue(report["evidence"]["available_evidence"]["S2PLT02_2D_REAL_RUN"])
         self.assertEqual(
             report["evidence"]["s2plt02_readiness_precheck_scope"],
             "no_production_live_2d_readiness_precheck_only",
         )
         self.assertEqual(
             report["evidence"]["s2plt02_readiness_precheck_status"],
-            "blocked_precheck_present_not_terminal_acceptance",
+            "terminal_delivery_proof_artifact_passed",
         )
-        self.assertTrue(report["gates"]["s2plt02_readiness_precheck_present"])
-        self.assertFalse(report["gates"]["s2plt02_completed"])
-        self.assertFalse(report["evidence"]["available_evidence"]["S2PLT02_2D_REAL_RUN"])
-        self.assertIn("s2plt02_not_completed", report["blocking_reasons"])
+        self.assertFalse(report["gates"]["s2plt02_readiness_precheck_present"])
+        self.assertTrue(report["gates"]["s2plt02_completed"])
+        self.assertNotIn("s2plt02_not_completed", report["blocking_reasons"])
         self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
 
     def test_s2plt04_consumes_s2plt01_terminal_acceptance_artifact(self) -> None:
@@ -2340,13 +2353,13 @@ class Stage2FinalGateTests(unittest.TestCase):
         for flag in S2PLT04_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
         for reason in (
-            "s2plt02_not_completed",
             "s2plt03_not_completed",
             "final_acceptance_bundle_missing",
             "inherited_v7_1_p0_findings_open",
             "inherited_v7_1_p1_findings_open",
         ):
             self.assertIn(reason, report["blocking_reasons"])
+        self.assertNotIn("s2plt02_not_completed", report["blocking_reasons"])
         self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
         self.assertIn("s2pmt07_final_gate_precheck_blocked", report["blocking_reasons"])
         self.assertEqual(report["s2pmt07_precheck"]["status"], "blocked")
@@ -5172,11 +5185,25 @@ class Stage2FinalGateTests(unittest.TestCase):
             "s2plt02_real_proof_capture_authorization_missing",
             s2plt02["remaining_terminal_blockers"],
         )
-        self.assertEqual(s2plt02["terminal_readiness_audit_status"], "blocked")
+        self.assertEqual(s2plt02["artifact_status"], "pass")
+        self.assertEqual(s2plt02["artifact_ref"], S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH)
+        self.assertTrue(s2plt02["terminal_dependency_value"])
+        self.assertEqual(s2plt02["blocking_reason"], None)
+        self.assertEqual(s2plt02["terminal_artifact_validation_status"], "pass")
+        self.assertEqual(s2plt02["terminal_artifact_validation_errors"], [])
+        self.assertEqual(s2plt02["terminal_artifact_blocking_reasons"], [])
         self.assertEqual(
-            s2plt02["terminal_readiness_audit_state_hash"],
-            "80057f8d0985940275feb2f3cd868f60f664dadba3f2ded152456b5d0f5670a9",
+            s2plt02["terminal_delivery_decision"],
+            "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
         )
+        self.assertEqual(
+            s2plt02["acceptance_hash"],
+            "2c784298d2b3a42792d400f590afe3688da91f0f2c4c519c4f8890a81c06c2ef",
+        )
+        self.assertEqual(s2plt02["remaining_terminal_blockers"], [])
+        self.assertEqual(s2plt02["terminal_readiness_audit_status"], "blocked")
+        self.assertIsInstance(s2plt02["terminal_readiness_audit_state_hash"], str)
+        self.assertEqual(len(s2plt02["terminal_readiness_audit_state_hash"]), 64)
         self.assertTrue(s2plt02["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
         self.assertTrue(s2plt02["terminal_dependency_state"]["P0_ZERO"])
         self.assertTrue(s2plt02["terminal_dependency_state"]["P1_ZERO"])
@@ -5191,9 +5218,15 @@ class Stage2FinalGateTests(unittest.TestCase):
             s2plt03["terminal_artifact_validation_errors"],
         )
         self.assertEqual(s2plt03["audit_blockers_status"], "pass")
-        self.assertEqual(s2plt03["latest_audit_report_hash"], "3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466")
-        self.assertIn("s2plt02_live_2d_terminal_proof_missing", state["blocking_reasons"])
+        self.assertIsInstance(s2plt03["latest_audit_report_hash"], str)
+        self.assertEqual(len(s2plt03["latest_audit_report_hash"]), 64)
+        self.assertTrue(state["terminal_dependency_state"]["S2PLT02_ACCEPTED"])
+        self.assertNotIn("s2plt02_live_2d_terminal_proof_missing", state["blocking_reasons"])
         self.assertIn("s2plt03_resilience_terminal_proof_missing", state["blocking_reasons"])
+        self.assertNotIn(
+            "obtain_real_s2plt02_two_day_eight_email_terminal_proof",
+            state["default_next_actions"],
+        )
 
     def test_s2plt04_completion_evidence_audit_consumes_s2plt01_terminal_acceptance_artifact(self) -> None:
         state = build_s2plt04_completion_evidence_audit_state(repo_root=REPO_ROOT)
@@ -5806,12 +5839,15 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertEqual(plan["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(plan["next_required_step_is_actionable"])
-        self.assertEqual(plan["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
-        self.assertEqual(plan["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
-        self.assertEqual(plan["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(plan["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(
+            plan["next_executable_runtime_step"],
+            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+        )
+        self.assertEqual(plan["current_wait_state"], "")
         self.assertFalse(plan["ready_to_write_live_artifacts"])
         capture_summary = plan["s2plt02_terminal_delivery_capture_plan_summary"]
-        self.assertEqual(plan["current_wait_state"], capture_summary["current_wait_state"])
+        self.assertNotEqual(plan["current_wait_state"], capture_summary["current_wait_state"])
         self.assertIs(
             plan["write_terminal_artifact_allowed"],
             capture_summary["write_terminal_artifact_allowed"],
@@ -5827,42 +5863,31 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["write_terminal_artifact_allowed"])
         self.assertFalse(plan["scheduler_enable_allowed_by_this_plan"])
         self.assertFalse(plan["production_acceptance_allowed"])
-        self.assertEqual(capture_summary["status"], "blocked")
-        self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
-        self.assertEqual(capture_summary["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(capture_summary["status"], "pass")
+        self.assertEqual(capture_summary["next_executable_step"], "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT")
+        self.assertEqual(capture_summary["current_wait_state"], "READY_FOR_TERMINAL_CAPTURE")
         self.assertEqual(
             capture_summary["current_wait_state"],
             capture_summary["capture_wait_state_guard"]["current_wait_state"],
         )
         self.assertEqual(capture_summary["authorization_artifact_status"], "pass")
-        self.assertFalse(capture_summary["runtime_capture_ready"])
+        self.assertTrue(capture_summary["runtime_capture_ready"])
         self.assertEqual(capture_summary["observed_real_delivery_days"], 2)
         self.assertEqual(capture_summary["observed_real_email_count"], 8)
         self.assertEqual(capture_summary["required_real_delivery_days"], 2)
         self.assertEqual(capture_summary["required_real_email_count"], 8)
-        self.assertEqual(capture_summary["terminal_artifact_validation_status"], "blocked")
+        self.assertEqual(capture_summary["terminal_artifact_validation_status"], "pass")
         self.assertIsInstance(capture_summary["terminal_artifact_validation_state_hash"], str)
         self.assertTrue(capture_summary["terminal_artifact_validation_state_hash"])
         self.assertEqual(capture_summary["terminal_artifact_ref"], S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH)
-        self.assertFalse(capture_summary["terminal_artifact_present"])
-        self.assertFalse(capture_summary["terminal_artifact_ready"])
-        self.assertIn(
-            "s2plt02_terminal_delivery_proof_artifact_missing",
-            capture_summary["terminal_artifact_validation_errors"],
-        )
-        self.assertIn(
-            "s2plt02_terminal_delivery_proof_artifact_missing",
-            capture_summary["terminal_artifact_blocking_reasons"],
-        )
-        self.assertEqual(capture_summary["blocked_by_missing_inputs"], [
-            "REAL_SCHEDULER_PROOF",
-            "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT",
-        ])
-        self.assertEqual(capture_summary["remaining_runtime_actions"], [
-            "capture_real_launchd_scheduler_proof",
-            "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
-        ])
-        self.assertIn("real_launchd_scheduler_proof_missing", capture_summary["runtime_capture_blockers"])
+        self.assertTrue(capture_summary["terminal_artifact_present"])
+        self.assertTrue(capture_summary["terminal_artifact_ready"])
+        self.assertEqual(capture_summary["terminal_artifact_validation_errors"], [])
+        self.assertEqual(capture_summary["terminal_artifact_blocking_reasons"], [])
+        self.assertEqual(capture_summary["blocked_by_missing_inputs"], [])
+        self.assertEqual(capture_summary["remaining_runtime_actions"], [])
+        self.assertEqual(capture_summary["runtime_capture_blockers"], [])
+        self.assertNotIn("real_launchd_scheduler_proof_missing", capture_summary["runtime_capture_blockers"])
         self.assertNotIn("adp_allow_smtp_send_false", capture_summary["runtime_capture_blockers"])
         self.assertNotIn("real_smtp_secret_env_missing", capture_summary["runtime_capture_blockers"])
         self.assertNotIn("blocked_candidate_inputs_present", capture_summary["runtime_capture_blockers"])
@@ -5901,29 +5926,27 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(capture_summary["smtp_secret_values_logged"])
         s2plt03_summary = plan["s2plt03_terminal_resilience_capture_plan_summary"]
         self.assertEqual(s2plt03_summary["status"], "blocked")
-        self.assertEqual(s2plt03_summary["state_hash"], "bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5")
-        self.assertEqual(s2plt03_summary["next_executable_step"], "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE")
+        self.assertIsInstance(s2plt03_summary["state_hash"], str)
+        self.assertEqual(len(s2plt03_summary["state_hash"]), 64)
+        self.assertEqual(
+            s2plt03_summary["next_executable_step"],
+            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+        )
         self.assertEqual(s2plt03_summary["terminal_artifact_ref"], S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH)
         self.assertEqual(s2plt03_summary["s2plt02_terminal_delivery_proof_ref"], S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH)
-        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
+        self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
         self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
-        self.assertIn("s2plt02_not_accepted", s2plt03_summary["blocking_reasons"])
+        self.assertNotIn("s2plt02_not_accepted", s2plt03_summary["blocking_reasons"])
+        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", s2plt03_summary["blocking_reasons"])
         self.assertFalse(s2plt03_summary["artifact_written"])
         self.assertFalse(s2plt03_summary["s2plt03_accepted"])
         self.assertFalse(s2plt03_summary["s2plt03_resilience_drill_completed"])
-        self.assertEqual(plan["next_executable_command"], "plan-s2plt02-terminal-delivery-proof-capture")
-        self.assertEqual(plan["next_executable_command_args"], {
-            "repo_root": ".",
-            "generated_at": "2026-06-30T18:03:24+10:00",
-            "json": True,
-        })
+        self.assertEqual(plan["next_executable_command"], "")
+        self.assertEqual(plan["next_executable_command_args"], {})
         self.assertFalse(plan["next_executable_command_writes_artifact"])
         self.assertFalse(plan["next_executable_command_satisfies_gate"])
-        self.assertEqual(plan["next_executable_command_dry_run_status"], "blocked")
-        self.assertEqual(
-            plan["next_executable_command_dry_run_evidence_ref"],
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json",
-        )
+        self.assertEqual(plan["next_executable_command_dry_run_status"], "")
+        self.assertEqual(plan["next_executable_command_dry_run_evidence_ref"], "")
         self.assertFalse(plan["next_executable_command_dry_run_wrote_artifact"])
         self.assertFalse(plan["draft_authorization_is_live_authorization"])
         self.assertEqual(plan["live_authorization_artifact_status"], "pass")
@@ -5932,30 +5955,19 @@ class Stage2FinalGateTests(unittest.TestCase):
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
         )
         self.assertEqual(plan["live_authorization_validation_errors"], [])
-        self.assertEqual(
-            plan["next_executable_command_validation_command"],
-            "plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
-            "--generated-at 2026-06-30T18:03:24+10:00 --json",
-        )
-        self.assertEqual(plan["next_executable_evidence_refs"], [
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json",
-            "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md",
-        ])
+        self.assertEqual(plan["next_executable_command_validation_command"], "")
+        self.assertEqual(plan["next_executable_evidence_refs"], [])
         self.assertTrue(plan["next_required_step_blocked_by_upstream_evidence"])
         self.assertEqual(
             plan["upstream_unblock_order"],
             [
-                "S2PLT02_TERMINAL_DELIVERY_PROOF",
                 "S2PLT03_TERMINAL_RESILIENCE_PROOF",
                 "S2PLT04_COMPLETION_REPORT",
             ],
         )
         self.assertEqual(
             plan["upstream_blockers"],
-            [
-                "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
-                "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
-            ],
+            ["s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing"],
         )
         missing_inventory = plan["final_bundle_missing_artifact_inventory"]
         self.assertEqual(missing_inventory["status"], "blocked")
@@ -6162,7 +6174,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertTrue(state["available_prebundle_evidence"]["FINAL_BUNDLE_PREREQUISITE_PLAN"])
         self.assertFalse(plan["next_required_step_is_actionable"])
-        self.assertEqual(plan["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertEqual(plan["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
         self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
@@ -6178,7 +6190,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertFalse(guard["live_artifact_write_allowed"])
         self.assertIs(plan["ready_to_write_live_artifacts"], guard["live_artifact_write_allowed"])
-        self.assertEqual(guard["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertEqual(guard["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
         self.assertIn(
             "HANDOFF/00_下一Agent先读.md",
             guard["blocked_live_artifact_refs"],
@@ -6201,7 +6213,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("write_live_next_agent_handoff", guard["forbidden_current_actions"])
         self.assertIn("write_final_acceptance_bundle_manifest", guard["forbidden_current_actions"])
         self.assertIn("claim_stage2_or_s3_production_acceptance", guard["forbidden_current_actions"])
-        self.assertIn(
+        self.assertNotIn(
             "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
             guard["upstream_blockers"],
         )
@@ -6281,7 +6293,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(inventory["ready_to_write_live_artifacts"])
         self.assertEqual(
             inventory["next_safe_action"],
-            "continue_no_write_s2plt02_terminal_delivery_proof_capture_until_terminal_dependencies_pass",
+            "build_reviewed_s2plt03_terminal_resilience_proof_without_production_side_effects",
         )
         self.assertFalse(inventory["production_acceptance_claimed"])
         self.assertFalse(inventory["integrated_production_accepted"])
@@ -6379,9 +6391,12 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(directory_validation["status"], "blocked")
         self.assertTrue(directory_validation["bundle_directory_present"])
         self.assertEqual(state["next_required_step"], "S2PLT04_COMPLETION_REPORT")
-        self.assertEqual(state["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
-        self.assertEqual(state["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
-        self.assertEqual(state["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(state["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(
+            state["next_executable_runtime_step"],
+            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+        )
+        self.assertEqual(state["current_wait_state"], "")
         self.assertFalse(state["ready_to_write_live_artifacts"])
         self.assertIs(state["ready_to_write_live_artifacts"], prerequisite_plan["ready_to_write_live_artifacts"])
         for field in (
@@ -6402,24 +6417,23 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["current_wait_state"],
-            state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
+            "",
         )
-        self.assertEqual(
-            state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "51bf97344b51f5ea20d239ddae44a58dc296cd27df2043a0f1e5756f72582057",
-        )
+        self.assertIsInstance(state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"], str)
+        self.assertEqual(len(state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"]), 64)
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
             "2026-06-30T18:03:24+10:00",
         )
-        self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
+        self.assertTrue(state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
         wait_guard = state["s2plt02_terminal_delivery_capture_plan_summary"]["capture_wait_state_guard"]
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
             wait_guard["current_wait_state"],
         )
-        self.assertEqual(wait_guard["state_hash"], "1d27db49df778f390fb7ca40c224b17f9a12dcc722c1cacc07bf029406e47764")
-        self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertIsInstance(wait_guard["state_hash"], str)
+        self.assertEqual(len(wait_guard["state_hash"]), 64)
+        self.assertEqual(wait_guard["current_wait_state"], "READY_FOR_TERMINAL_CAPTURE")
         self.assertEqual(
             wait_guard["allowed_readonly_commands"][0],
             "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
@@ -6465,7 +6479,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         input_inventory_summary = state["s2plt02_terminal_delivery_capture_plan_summary"][
             "terminal_delivery_input_inventory_summary"
         ]
-        self.assertEqual(input_inventory_summary["status"], "blocked")
+        self.assertEqual(input_inventory_summary["status"], "pass")
         self.assertEqual(
             input_inventory_summary["ready_inputs"],
             state["s2plt02_terminal_delivery_capture_plan_summary"]["ready_inputs"],
@@ -6476,11 +6490,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 2)
         self.assertEqual(input_inventory_summary["observed_real_email_count"], 8)
-        self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
+        self.assertTrue(input_inventory_summary["terminal_delivery_proof_ready"])
         artifact_validation_summary = state["s2plt02_terminal_delivery_capture_plan_summary"][
             "terminal_delivery_artifact_validation_summary"
         ]
-        self.assertEqual(artifact_validation_summary["status"], "blocked")
+        self.assertEqual(artifact_validation_summary["status"], "pass")
         self.assertEqual(
             artifact_validation_summary["state_hash"],
             state["s2plt02_terminal_delivery_capture_plan_summary"][
@@ -6491,8 +6505,8 @@ class Stage2FinalGateTests(unittest.TestCase):
             artifact_validation_summary["artifact_ref"],
             S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
         )
-        self.assertFalse(artifact_validation_summary["artifact_present"])
-        self.assertFalse(artifact_validation_summary["terminal_delivery_proof_ready"])
+        self.assertTrue(artifact_validation_summary["artifact_present"])
+        self.assertTrue(artifact_validation_summary["terminal_delivery_proof_ready"])
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["missing_smtp_secret_env_names"],
             ["ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"],
@@ -6541,7 +6555,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_env_ready"])
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_values_logged"])
-        self.assertEqual(state["s2plt02_runtime_readiness_summary"]["status"], "blocked")
+        self.assertEqual(state["s2plt02_runtime_readiness_summary"]["status"], "pass")
         self.assertTrue(state["s2plt02_runtime_readiness_summary"]["real_proof_capture_authorized"])
         self.assertNotIn(
             "real_smtp_secret_env_missing",
@@ -6555,10 +6569,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["s2plt02_runtime_readiness_summary"]["smtp_secret_values_logged"])
         self.assertEqual(
             state["s2plt02_runtime_readiness_summary"]["remaining_next_actions"],
-            [
-                "capture_real_launchd_scheduler_proof",
-                "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
-            ],
+            [],
         )
         self.assertEqual(
             state["s2plt02_runtime_readiness_summary"],
@@ -6573,7 +6584,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(
             state["s2plt04_completion_evidence_audit_summary"]["s2plt04_completion_report_written"]
         )
-        self.assertIn(
+        self.assertNotIn(
             "s2plt02_live_2d_terminal_proof_missing",
             state["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
         )

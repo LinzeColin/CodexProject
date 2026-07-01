@@ -51,7 +51,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("ADP-S2PLT02-REAL-SCHEDULER-PROOF-VALIDATION-20260701.json", current_state)
         self.assertIn("ADP-S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-PASS-20260701.json", current_state)
         self.assertIn("PHASE_S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_PASS.md", ledger)
-        self.assertIn("Remaining S2PLT02 blocker is `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`", current_state)
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", current_state)
+        self.assertIn("artifact_validation_state_hash=fa02f1ea5f652b90c84381f97538edf25c8fdd3574fc1eb6ed00e3b09f75d756", current_state)
+        self.assertIn("acceptance_hash=2c784298d2b3a42792d400f590afe3688da91f0f2c4c519c4f8890a81c06c2ef", current_state)
+        self.assertIn("next executable task is `S2PLT03_TERMINAL_RESILIENCE_PROOF`", current_state)
         self.assertIn("Previous controlled launchd timeout remains visible", current_state)
 
         self.assertIn(
@@ -591,49 +595,62 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("safe_to_build_terminal_artifact=false", current_state)
         self.assertIn("no production acceptance", current_state.lower())
 
-    def test_owner_next_action_points_to_s2plt02_terminal_delivery_proof(self) -> None:
+    def test_owner_next_action_points_to_s2plt03_terminal_resilience_proof(self) -> None:
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
         stale_option = "继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries"
-        self.assertIn('task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"', assurance)
-        self.assertIn("next_task_id: `S2PLT02-TERMINAL-DELIVERY-PROOF`", owner_status)
+        self.assertIn('task_id: "S2PLT03-TERMINAL-RESILIENCE-PROOF"', assurance)
+        self.assertIn("next_task_id: `S2PLT03-TERMINAL-RESILIENCE-PROOF`", owner_status)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", assurance)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", owner_status)
+        self.assertIn("do not re-run S2PLT02 SMTP or scheduler capture", assurance)
+        self.assertIn("do not re-run S2PLT02 SMTP or scheduler capture", owner_status)
+        self.assertNotIn("next collect S2PLT02 terminal delivery proof", assurance)
+        self.assertNotIn("next collect S2PLT02 terminal delivery proof", owner_status)
         self.assertNotIn('task_id: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT"', assurance)
         self.assertNotIn("next_task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`", owner_status)
         for text in (assurance, owner_status):
             text_lower = text.lower()
             self.assertIn("S2PMT07", text)
             self.assertIn("validated independent reviewer assignment", text)
-            self.assertIn("S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR", text)
-            self.assertIn("S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION", text)
-            self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN", text)
-            self.assertIn("S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY", text)
-            self.assertIn("S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR", text)
-            self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", text)
-            self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI", text)
-            self.assertIn("S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", text)
-            self.assertIn("S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC", text)
-            self.assertIn("S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN", text)
-            self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", text)
+            self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", text)
+            self.assertIn("S2PLT03-TERMINAL-RESILIENCE-PROOF", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
-            self.assertIn("real", text_lower)
+            self.assertTrue("real" in text_lower or "真实" in text)
             self.assertIn("smtp", text_lower)
             self.assertIn("scheduler", text_lower)
             self.assertIn("P0/P1 zero-proof", text)
-            self.assertIn("live authorization", text_lower)
-            self.assertIn("input inventory", text_lower)
-            self.assertIn("capture plan", text_lower)
-            self.assertIn("manifest", text_lower)
-            self.assertIn("normalized manifest", text_lower)
-            self.assertIn("dry-run", text_lower)
             self.assertIn("resilience", text_lower)
             self.assertNotIn(stale_option, text)
+        for no_write_ref in (
+            "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR",
+            "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION",
+            "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN",
+            "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY",
+            "S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR",
+            "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT",
+            "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI",
+            "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY",
+            "S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC",
+            "S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN",
+        ):
+            self.assertIn(no_write_ref, assurance)
+        assurance_lower = assurance.lower()
+        self.assertIn("live authorization", assurance_lower)
+        self.assertIn("input inventory", assurance_lower)
+        self.assertIn("capture plan", assurance_lower)
+        self.assertIn("manifest", assurance_lower)
+        self.assertIn("normalized manifest", assurance_lower)
+        self.assertIn("dry-run", assurance_lower)
         self.assertIn("adp_s2pmt07_blocked_next_task", generator)
         self.assertIn("terminal_delivery_proof_is_next", generator)
+        self.assertIn("terminal_resilience_proof_is_next", generator)
+        self.assertIn("s2plt02_terminal_delivery_accepted", generator)
         self.assertIn("current_v7_task_id", generator)
 
-    def test_user_center_default_next_step_prioritizes_s2plt02_terminal_proof(self) -> None:
+    def test_user_center_default_next_step_prioritizes_s2plt03_terminal_resilience_proof(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
         roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
         default_next = decisions.split("## 默认下一步", 1)[1]
@@ -641,16 +658,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             line for line in default_next.splitlines() if line.startswith("| 1 |")
         )
 
-        self.assertIn("S2PLT02 终态交付 proof", first_action_row)
-        self.assertIn("capture plan", first_action_row)
-        self.assertIn("audit-s2plt02-terminal-capture-window", first_action_row)
-        self.assertIn("validate-s2plt02-real-delivery-manifest", first_action_row)
-        self.assertIn("WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", first_action_row)
-        self.assertIn("dry-run/scheduler-disabled", first_action_row)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", default_next)
+        self.assertIn("S2PLT03 terminal resilience proof", first_action_row)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json", first_action_row)
+        self.assertIn("validate-s2plt03-terminal-resilience-proof", first_action_row)
+        self.assertIn("不得重复触发 S2PLT02 SMTP/scheduler 捕获", first_action_row)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", default_next)
-        self.assertIn("受控真实捕获窗口", default_next)
-        self.assertIn("真实 launchd scheduler proof", default_next)
+        self.assertIn("S2PLT04 completion report", default_next)
+        self.assertIn("S2PLT02 terminal delivery proof 已通过", decisions)
+        self.assertIn("默认下一步 `S2PLT03_TERMINAL_RESILIENCE_PROOF`", decisions)
         self.assertIn("独立最终复审人分配已验证", decisions)
         self.assertIn("validate-final-reviewer-assignment", decisions)
         self.assertIn("b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", decisions)

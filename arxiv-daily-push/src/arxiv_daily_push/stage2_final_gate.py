@@ -1002,6 +1002,9 @@ S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT02_REAL_SCHEDULER_PROOF_REF = (
+    "governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json"
+)
 S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_MODEL_ID = (
     "adp-s2plt02-real-scheduler-proof-capture-audit-v1"
 )
@@ -3524,12 +3527,18 @@ def build_s2plt02_partial_real_delivery_state() -> dict[str, Any]:
     return state
 
 
-def build_s2plt02_live_evidence_state() -> dict[str, Any]:
+def build_s2plt02_live_evidence_state(*, repo_root: str | Path = ".") -> dict[str, Any]:
     """Build current S2PLT02 live-run evidence state without touching production."""
 
+    root = Path(repo_root)
     delivery_ledger = build_s2plt02_delivery_evidence_ledger_state()
     partial_delivery = build_s2plt02_partial_real_delivery_state()
     m4_watermark_proof = build_s2plt02_m4_watermark_proof_state(delivery_ledger=delivery_ledger)
+    scheduler_proof = _load_json_mapping_artifact(root / S2PLT02_REAL_SCHEDULER_PROOF_REF)
+    scheduler_proof_validation = build_s2plt02_real_scheduler_proof_validation_state(
+        scheduler_proof=scheduler_proof
+    )
+    real_scheduler_proven = scheduler_proof_validation.get("scheduler_proof_ready") is True
     available = {
         "S2PLT01_ACCEPTED": False,
         "TWO_CONSECUTIVE_REAL_NATURAL_DAYS": delivery_ledger["two_day_delivery_evidence_present"],
@@ -3538,7 +3547,7 @@ def build_s2plt02_live_evidence_state() -> dict[str, Any]:
         "NO_DUPLICATE_EMAILS": delivery_ledger["duplicate_email_count"] == 0
         and delivery_ledger["duplicate_service_date_count"] == 0,
         "M4_WATERMARK_CORRECT": m4_watermark_proof["m4_watermark_correct"],
-        "REAL_SCHEDULER_PROVEN": partial_delivery["scheduler_evidence_present"],
+        "REAL_SCHEDULER_PROVEN": real_scheduler_proven,
         "REAL_SMTP_PROVEN": delivery_ledger["real_smtp_evidence_present"],
     }
     return {
@@ -3557,7 +3566,9 @@ def build_s2plt02_live_evidence_state() -> dict[str, Any]:
         "duplicate_email_count": delivery_ledger["duplicate_email_count"],
         "duplicate_service_date_count": delivery_ledger["duplicate_service_date_count"],
         "m4_watermark_correct": m4_watermark_proof["m4_watermark_correct"],
-        "real_scheduler_proven": partial_delivery["scheduler_evidence_present"],
+        "real_scheduler_proven": real_scheduler_proven,
+        "real_scheduler_proof_ref": S2PLT02_REAL_SCHEDULER_PROOF_REF,
+        "real_scheduler_proof_validation": scheduler_proof_validation,
         "real_smtp_proven": delivery_ledger["real_smtp_evidence_present"],
         "delivery_evidence_ledger": delivery_ledger,
         "m4_watermark_proof": m4_watermark_proof,
@@ -3575,7 +3586,7 @@ def build_s2plt02_live_2d_precheck_report(
     """Build a deterministic fail-closed S2PLT02 two-day live-run precheck."""
 
     dependencies = _build_s2plt02_dependency_state(repo_root=repo_root or Path("."))
-    evidence = build_s2plt02_live_evidence_state()
+    evidence = build_s2plt02_live_evidence_state(repo_root=repo_root or Path("."))
     audit_blockers = build_audit_blocker_state()
     if load_committed_artifacts and p0_p1_zero_proof is None:
         p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(repo_root)
@@ -4530,6 +4541,11 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         and max(S2PLT02_REQUIRED_NATURAL_DAYS - int(inventory.get("observed_real_delivery_days") or 0), 0) == 0
         and max(S2PLT02_REQUIRED_EMAIL_COUNT - int(inventory.get("observed_real_email_count") or 0), 0) == 0
     )
+    terminal_inputs_ready_for_artifact = (
+        smtp_terminal_inputs_complete
+        and "REAL_SCHEDULER_PROOF" not in missing_inputs
+        and "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT" in missing_inputs
+    )
     scheduler_only_runtime_blockers_to_ignore = (
         {
             "second_consecutive_real_m1_m4_smtp_day_missing",
@@ -4539,6 +4555,8 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
             "blocked_candidate_inputs_present",
         }
         if scheduler_only_terminal_capture_remaining
+        or terminal_inputs_ready_for_artifact
+        or terminal_delivery_proof_ready
         else set()
     )
     runtime_capture_blockers = [
@@ -4685,7 +4703,11 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         S2PLT02_REQUIRED_EMAIL_COUNT - terminal_proof_real_email_count_after_current_capture_window,
         0,
     )
-    blocking_reasons = list(inventory.get("blocking_reasons", []))
+    blocking_reasons = [
+        str(reason)
+        for reason in inventory.get("blocking_reasons", [])
+        if reason not in scheduler_only_runtime_blockers_to_ignore
+    ]
     if not authorization_valid and "real_proof_capture_authorization_invalid" not in blocking_reasons:
         blocking_reasons.append("real_proof_capture_authorization_invalid")
     for reason in runtime_capture_blockers:
@@ -5706,15 +5728,29 @@ def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[
     return errors
 
 
-def build_s2plt03_dependency_state() -> dict[str, Any]:
+def build_s2plt03_dependency_state(*, repo_root: str | Path = ".") -> dict[str, Any]:
     """Build current S2PLT03 dependency state without accepting S2PLT02."""
 
+    s2plt02_validation = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+        repo_root=repo_root
+    )
+    s2plt02_ready = s2plt02_validation.get("s2plt02_accepted_by_artifact") is True
     return {
-        "status": "blocked",
+        "status": "pass" if s2plt02_ready else "blocked",
         "required_dependencies": list(S2PLT03_REQUIRED_DEPENDENCIES),
-        "completed_dependencies": {},
-        "unmet_dependencies": list(S2PLT03_REQUIRED_DEPENDENCIES),
-        "s2plt02_acceptance_status": "blocked_by_missing_real_2d_run_and_final_gates",
+        "completed_dependencies": (
+            {"S2PLT02": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH}
+            if s2plt02_ready
+            else {}
+        ),
+        "unmet_dependencies": [] if s2plt02_ready else list(S2PLT03_REQUIRED_DEPENDENCIES),
+        "s2plt02_acceptance_status": (
+            "accepted_by_terminal_delivery_proof_artifact"
+            if s2plt02_ready
+            else "blocked_by_missing_real_2d_run_and_final_gates"
+        ),
+        "s2plt02_terminal_delivery_proof_validation_status": s2plt02_validation.get("status"),
+        "s2plt02_terminal_delivery_proof_validation_state_hash": s2plt02_validation.get("state_hash"),
     }
 
 
@@ -5945,7 +5981,7 @@ def build_s2plt03_resilience_precheck_report(
 ) -> dict[str, Any]:
     """Build a deterministic fail-closed S2PLT03 resilience precheck."""
 
-    dependencies = build_s2plt03_dependency_state()
+    dependencies = build_s2plt03_dependency_state(repo_root=repo_root or Path("."))
     local_drill_bundle = build_s2plt03_local_resilience_drill_bundle(generated_at=generated_at)
     evidence = build_s2plt03_resilience_evidence_state(local_drill_bundle=local_drill_bundle)
     if load_committed_artifacts and p0_p1_zero_proof is None:
@@ -6342,18 +6378,18 @@ def build_s2plt03_terminal_resilience_proof_capture_plan_state(
         ),
         "RESILIENCE_PRECHECK": validate_s2plt03_resilience_precheck_report(resilience_precheck) == [],
         "P0_P1_ZERO_PROOF": terminal_gates.get("p0_zero") is True and terminal_gates.get("p1_zero") is True,
-        "S2PLT02_TERMINAL_DELIVERY_PROOF": terminal_gates.get("s2plt02_accepted") is True,
+        "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT": terminal_gates.get("s2plt02_accepted") is True,
         "S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT": artifact_validation.get("artifact_present") is True,
     }
     missing_terminal_inputs: list[str] = []
-    if not completed_inputs["S2PLT02_TERMINAL_DELIVERY_PROOF"]:
+    if not completed_inputs["S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"]:
         missing_terminal_inputs.append("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT")
     if not completed_inputs["S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT"]:
         missing_terminal_inputs.append("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT")
     blocking_reasons = list(dict.fromkeys(str(reason) for reason in artifact_validation.get("blocking_reasons", [])))
     if missing_terminal_inputs and not blocking_reasons:
         blocking_reasons.append("s2plt03_terminal_resilience_proof_inputs_missing")
-    if not completed_inputs["S2PLT02_TERMINAL_DELIVERY_PROOF"]:
+    if not completed_inputs["S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"]:
         next_executable_step = "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE"
     elif not completed_inputs["S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT"]:
         next_executable_step = "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF"
@@ -6422,7 +6458,7 @@ def validate_s2plt03_terminal_resilience_proof_capture_plan_state(plan: Mapping[
         "LOCAL_RESILIENCE_DRILL",
         "RESILIENCE_PRECHECK",
         "P0_P1_ZERO_PROOF",
-        "S2PLT02_TERMINAL_DELIVERY_PROOF",
+        "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT",
         "S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT",
     ):
         if key not in completed_inputs:
@@ -6430,7 +6466,7 @@ def validate_s2plt03_terminal_resilience_proof_capture_plan_state(plan: Mapping[
     if plan.get("status") == "blocked" and not plan.get("blocking_reasons"):
         errors.append("blocked S2PLT03 capture plan must include blocking_reasons")
     if (
-        completed_inputs.get("S2PLT02_TERMINAL_DELIVERY_PROOF") is False
+        completed_inputs.get("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT") is False
         and plan.get("next_executable_step") != "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE"
     ):
         errors.append("S2PLT03 capture plan must wait for S2PLT02 acceptance first")
@@ -6444,22 +6480,44 @@ def build_s2plt04_dependency_state(*, repo_root: str | Path = ".") -> dict[str, 
     """Build current S2PLT04 dependency state without accepting upstream tasks."""
 
     s2plt01 = _build_s2plt01_terminal_acceptance_dependency_state(repo_root)
+    s2plt02_validation = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+        repo_root=repo_root,
+    )
+    s2plt03_validation = build_s2plt03_terminal_resilience_proof_artifact_validation_state(
+        repo_root=repo_root,
+    )
     completed = {"S2PLT01": s2plt01["status"]} if s2plt01["accepted"] else {}
+    if s2plt02_validation.get("s2plt02_accepted_by_artifact") is True:
+        completed["S2PLT02"] = S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH
+    if s2plt03_validation.get("s2plt03_accepted_by_artifact") is True:
+        completed["S2PLT03"] = S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH
     unmet = [task_id for task_id in S2PLT04_REQUIRED_DEPENDENCIES if task_id not in completed]
     available_local_evidence = {
         task_id: "local_evidence_present_not_terminal_acceptance"
         for task_id in S2PLT04_AVAILABLE_LOCAL_EVIDENCE
     }
     return {
-        "status": "blocked",
+        "status": "pass" if not unmet else "blocked",
         "required_dependencies": list(S2PLT04_REQUIRED_DEPENDENCIES),
         "completed_dependencies": completed,
         "unmet_dependencies": unmet,
         "available_local_evidence": available_local_evidence,
         "s2plt01_acceptance_status": s2plt01["status"],
         "s2plt01_terminal_acceptance": s2plt01,
-        "s2plt02_status": "missing_authoritative_completion_evidence",
-        "s2plt03_status": "missing_authoritative_completion_evidence",
+        "s2plt02_status": (
+            "accepted_by_terminal_delivery_proof_artifact"
+            if s2plt02_validation.get("s2plt02_accepted_by_artifact") is True
+            else "missing_authoritative_completion_evidence"
+        ),
+        "s2plt02_terminal_delivery_proof_validation_status": s2plt02_validation.get("status"),
+        "s2plt02_terminal_delivery_proof_validation_state_hash": s2plt02_validation.get("state_hash"),
+        "s2plt03_status": (
+            "accepted_by_terminal_resilience_proof_artifact"
+            if s2plt03_validation.get("s2plt03_accepted_by_artifact") is True
+            else "missing_authoritative_completion_evidence"
+        ),
+        "s2plt03_terminal_resilience_proof_validation_status": s2plt03_validation.get("status"),
+        "s2plt03_terminal_resilience_proof_validation_state_hash": s2plt03_validation.get("state_hash"),
     }
 
 
@@ -6577,6 +6635,10 @@ def build_s2plt04_evidence_state(
         )
     live_2d_precheck_valid = not validate_s2plt02_live_2d_precheck_report(live_2d_precheck_report)
     live_2d_precheck_present = live_2d_precheck_valid and live_2d_precheck_report.get("status") == "blocked"
+    s2plt02_terminal_validation = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+        repo_root=repo_root,
+    )
+    s2plt02_terminal_ready = s2plt02_terminal_validation.get("s2plt02_accepted_by_artifact") is True
     if local_drill_bundle is None:
         local_drill_bundle = build_s2plt03_local_resilience_drill_bundle(
             generated_at=S2PLT04_LOCAL_DRILL_BUNDLE_GENERATED_AT
@@ -6599,7 +6661,7 @@ def build_s2plt04_evidence_state(
     s2plt01 = _build_s2plt01_terminal_acceptance_dependency_state(repo_root)
     available = {
         "S2PLT01_ACCEPTED": s2plt01["accepted"],
-        "S2PLT02_2D_REAL_RUN": False,
+        "S2PLT02_2D_REAL_RUN": s2plt02_terminal_ready,
         "S2PLT03_RESILIENCE_DRILL": False,
         "STATE_CONSISTENCY_EVIDENCE": state_consistency_evidence_bundle["status"] == "pass",
         "CONTENT_EVIDENCE": content_evidence_bundle["status"] == "pass",
@@ -6638,8 +6700,13 @@ def build_s2plt04_evidence_state(
             live_2d_precheck_report.get("report_hash") if live_2d_precheck_valid else None
         ),
         "s2plt02_readiness_precheck_status": (
-            "blocked_precheck_present_not_terminal_acceptance" if live_2d_precheck_present else "not_proven"
+            "terminal_delivery_proof_artifact_passed"
+            if s2plt02_terminal_ready
+            else "blocked_precheck_present_not_terminal_acceptance"
+            if live_2d_precheck_present
+            else "not_proven"
         ),
+        "s2plt02_terminal_delivery_proof_validation": s2plt02_terminal_validation,
         "s2plt03_local_drill_scope": local_drill_bundle.get("scope") if local_drill_valid else "invalid",
         "s2plt03_local_drill_bundle_hash": local_drill_bundle.get("bundle_hash") if local_drill_valid else None,
         "s2plt03_local_drill_status": "present_not_terminal_acceptance" if local_drill_passed else "not_proven",
@@ -8634,6 +8701,12 @@ def build_s2plt04_completion_evidence_audit_state(
         generated_at="2026-06-29T10:35:11+10:00",
         repo_root=root,
     )
+    s2plt02_terminal_artifact_audit = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+        repo_root=root,
+    )
+    s2plt02_accepted_by_artifact = (
+        s2plt02_terminal_artifact_audit.get("s2plt02_accepted_by_artifact") is True
+    )
     s2plt03_resilience_audit = build_s2plt03_resilience_precheck_report(
         generated_at="2026-06-29T12:12:00+10:00",
         repo_root=root,
@@ -8712,8 +8785,12 @@ def build_s2plt04_completion_evidence_audit_state(
             ),
         },
         "S2PLT02_LIVE_2D_PROOF": {
-            "artifact_status": "missing_terminal",
-            "artifact_ref": "governance/run_manifests/MISSING_REAL_S2PLT02_TERMINAL_PROOF.json",
+            "artifact_status": "pass" if s2plt02_accepted_by_artifact else "missing_terminal",
+            "artifact_ref": (
+                S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH
+                if s2plt02_accepted_by_artifact
+                else "governance/run_manifests/MISSING_REAL_S2PLT02_TERMINAL_PROOF.json"
+            ),
             "nonterminal_refs": s2plt02_existing_nonterminal_refs,
             "existing_nonterminal_refs": s2plt02_existing_nonterminal_refs,
             "real_proof_capture_authorization_manifest_ref": s2plt02_authorization_manifest_ref,
@@ -8725,19 +8802,31 @@ def build_s2plt04_completion_evidence_audit_state(
             "real_proof_capture_authorized": s2plt02_real_proof_capture_authorized,
             "real_proof_capture_authorization_blocking_reasons": s2plt02_authorization_blocking_reasons,
             "terminal_dependency": "S2PLT02_ACCEPTED",
-            "terminal_dependency_value": False,
-            "blocking_reason": "s2plt02_live_2d_terminal_proof_missing",
+            "terminal_dependency_value": s2plt02_accepted_by_artifact,
+            "blocking_reason": (
+                None if s2plt02_accepted_by_artifact else "s2plt02_live_2d_terminal_proof_missing"
+            ),
             "terminal_readiness_audit_status": s2plt02_terminal_audit["status"],
             "terminal_readiness_audit_state_hash": s2plt02_terminal_audit["state_hash"],
             "terminal_readiness_precheck_report_hash": s2plt02_terminal_audit["precheck_report_hash"],
             "terminal_dependency_state": dict(s2plt02_terminal_audit["terminal_dependency_state"]),
+            "terminal_artifact_validation_status": s2plt02_terminal_artifact_audit["status"],
+            "terminal_artifact_validation_state_hash": s2plt02_terminal_artifact_audit["state_hash"],
+            "terminal_artifact_validation_errors": list(
+                s2plt02_terminal_artifact_audit["validation_errors"]
+            ),
+            "terminal_artifact_blocking_reasons": list(
+                s2plt02_terminal_artifact_audit["blocking_reasons"]
+            ),
+            "terminal_delivery_decision": s2plt02_terminal_artifact_audit["terminal_delivery_decision"],
+            "acceptance_hash": s2plt02_terminal_artifact_audit["acceptance_hash"],
             "observed_natural_days": int(s2plt02_terminal_audit.get("observed_natural_days") or 0),
             "required_natural_days": 2,
             "observed_email_count": int(s2plt02_terminal_audit.get("observed_email_count") or 0),
             "required_email_count": 8,
             "m4_watermark_correct": s2plt02_terminal_audit.get("m4_watermark_correct") is True,
             "m4_watermark_proof_ref": str(s2plt02_terminal_audit.get("m4_watermark_proof_ref") or ""),
-            "remaining_terminal_blockers": s2plt02_remaining_blockers,
+            "remaining_terminal_blockers": [] if s2plt02_accepted_by_artifact else s2plt02_remaining_blockers,
         },
         "S2PLT03_RESILIENCE_PROOF": {
             "artifact_status": "pass" if s2plt03_terminal_artifact_audit["status"] == "pass" else "missing_terminal",
@@ -8774,7 +8863,7 @@ def build_s2plt04_completion_evidence_audit_state(
     }
     terminal_dependency_state = {
         "S2PLT01_ACCEPTED": s2plt01_accepted,
-        "S2PLT02_ACCEPTED": False,
+        "S2PLT02_ACCEPTED": s2plt02_accepted_by_artifact,
         "S2PLT03_ACCEPTED": s2plt03_terminal_artifact_audit["s2plt03_accepted_by_artifact"] is True,
         "P0_ZERO_PROVEN": p0_zero,
         "P1_ZERO_PROVEN": p1_zero,
@@ -8815,10 +8904,18 @@ def build_s2plt04_completion_evidence_audit_state(
         "terminal_dependency_state": terminal_dependency_state,
         "blocking_reasons": blocking_reasons,
         "default_next_actions": [
-            "do_not_create_s2plt04_completion_report_until_terminal_dependencies_are_true",
-            "obtain_real_s2plt02_two_day_eight_email_terminal_proof",
-            "obtain_real_s2plt03_terminal_resilience_proof_after_s2plt02_acceptance",
-            "re-run validate-s2plt04-completion-report only after the real report exists",
+            action
+            for action in (
+                "do_not_create_s2plt04_completion_report_until_terminal_dependencies_are_true",
+                (
+                    None
+                    if s2plt02_accepted_by_artifact
+                    else "obtain_real_s2plt02_two_day_eight_email_terminal_proof"
+                ),
+                "obtain_real_s2plt03_terminal_resilience_proof_after_s2plt02_acceptance",
+                "re-run validate-s2plt04-completion-report only after the real report exists",
+            )
+            if action is not None
         ],
         "production_acceptance_claimed": False,
         "integrated_production_accepted": False,
@@ -9971,6 +10068,15 @@ def build_final_bundle_prerequisite_plan_state(
         if s2plt04_blocked_by_upstream_evidence
         else {}
     )
+    s2plt04_terminal_dependency_state = _mapping(
+        s2plt04_completion_evidence_audit_summary.get("terminal_dependency_state")
+    )
+    s2plt02_terminal_dependency_passed = (
+        s2plt04_terminal_dependency_state.get("S2PLT02_ACCEPTED") is True
+    )
+    s2plt03_terminal_dependency_passed = (
+        s2plt04_terminal_dependency_state.get("S2PLT03_ACCEPTED") is True
+    )
     upstream_blockers = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
     upstream_unblock_order = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
     if live_authorization_passed:
@@ -9982,12 +10088,24 @@ def build_final_bundle_prerequisite_plan_state(
             step for step in upstream_unblock_order
             if step != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
         ]
+    if s2plt02_terminal_dependency_passed:
+        upstream_blockers = [
+            blocker for blocker in upstream_blockers
+            if blocker != "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing"
+        ]
+        upstream_unblock_order = [
+            step for step in upstream_unblock_order if step != "S2PLT02_TERMINAL_DELIVERY_PROOF"
+        ]
+    if s2plt03_terminal_dependency_passed:
+        upstream_blockers = [
+            blocker for blocker in upstream_blockers
+            if blocker != "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing"
+        ]
+        upstream_unblock_order = [
+            step for step in upstream_unblock_order if step != "S2PLT03_TERMINAL_RESILIENCE_PROOF"
+        ]
     next_executable_task = (
-        (
-            "S2PLT02_TERMINAL_DELIVERY_PROOF"
-            if live_authorization_passed
-            else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
-        )
+        (upstream_unblock_order[0] if upstream_unblock_order else next_required_step)
         if s2plt04_blocked_by_upstream_evidence
         else next_required_step
     )
@@ -10030,8 +10148,7 @@ def build_final_bundle_prerequisite_plan_state(
         blocked_by_steps = list(step["blocked_by_steps"])
         if step_id == "S2PLT04_COMPLETION_REPORT" and s2plt04_blocked_by_upstream_evidence:
             blocked_by_steps = [
-                "S2PLT02_TERMINAL_DELIVERY_PROOF",
-                "S2PLT03_TERMINAL_RESILIENCE_PROOF",
+                step for step in upstream_unblock_order if step != "S2PLT04_COMPLETION_REPORT"
             ]
         blocked_live_artifact_refs[artifact_ref] = {
             "step_id": step_id,
@@ -10056,6 +10173,8 @@ def build_final_bundle_prerequisite_plan_state(
         "next_executable_runtime_step": (
             s2plt02_capture_plan_summary.get("next_executable_step", "")
             if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
+            else s2plt03_capture_plan_summary.get("next_executable_step", "")
+            if next_executable_task == "S2PLT03_TERMINAL_RESILIENCE_PROOF"
             else ""
         ),
         "upstream_blockers": (
@@ -10106,6 +10225,8 @@ def build_final_bundle_prerequisite_plan_state(
         "next_executable_runtime_step": (
             s2plt02_capture_plan_summary.get("next_executable_step", "")
             if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
+            else s2plt03_capture_plan_summary.get("next_executable_step", "")
+            if next_executable_task == "S2PLT03_TERMINAL_RESILIENCE_PROOF"
             else ""
         ),
         "ready_to_write_live_artifacts": live_artifact_write_allowed,
@@ -10319,12 +10440,30 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             step for step in expected_upstream_unblock_order
             if step != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
         ]
+    s2plt04_summary_for_routing = _mapping(state.get("s2plt04_completion_evidence_audit_summary"))
+    s2plt04_terminal_dependencies_for_routing = _mapping(
+        s2plt04_summary_for_routing.get("terminal_dependency_state")
+    )
+    if s2plt04_terminal_dependencies_for_routing.get("S2PLT02_ACCEPTED") is True:
+        expected_upstream_blockers = [
+            blocker
+            for blocker in expected_upstream_blockers
+            if blocker != "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing"
+        ]
+        expected_upstream_unblock_order = [
+            step for step in expected_upstream_unblock_order if step != "S2PLT02_TERMINAL_DELIVERY_PROOF"
+        ]
+    if s2plt04_terminal_dependencies_for_routing.get("S2PLT03_ACCEPTED") is True:
+        expected_upstream_blockers = [
+            blocker
+            for blocker in expected_upstream_blockers
+            if blocker != "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing"
+        ]
+        expected_upstream_unblock_order = [
+            step for step in expected_upstream_unblock_order if step != "S2PLT03_TERMINAL_RESILIENCE_PROOF"
+        ]
     expected_next_executable_task = (
-        (
-            "S2PLT02_TERMINAL_DELIVERY_PROOF"
-            if live_authorization_passed
-            else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
-        )
+        (expected_upstream_unblock_order[0] if expected_upstream_unblock_order else expected_next_required_step)
         if expected_next_step_upstream_blocked
         else expected_next_required_step
     )
@@ -10363,8 +10502,7 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         expected_blocked_by_steps = list(step.get("blocked_by_steps", []))
         if step_id == "S2PLT04_COMPLETION_REPORT" and expected_next_step_upstream_blocked:
             expected_blocked_by_steps = [
-                "S2PLT02_TERMINAL_DELIVERY_PROOF",
-                "S2PLT03_TERMINAL_RESILIENCE_PROOF",
+                step for step in expected_upstream_unblock_order if step != "S2PLT04_COMPLETION_REPORT"
             ]
         expected_blocked_live_artifact_refs[artifact_ref] = {
             "step_id": step_id,
@@ -10846,6 +10984,8 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     expected_next_executable_runtime_step = (
         str(capture_plan_summary.get("next_executable_step") or "")
         if expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
+        else str(_mapping(state.get("s2plt03_terminal_resilience_capture_plan_summary")).get("next_executable_step") or "")
+        if expected_next_executable_task == "S2PLT03_TERMINAL_RESILIENCE_PROOF"
         else ""
     )
     if state.get("next_executable_runtime_step") != expected_next_executable_runtime_step:
@@ -11397,6 +11537,12 @@ def _build_final_bundle_missing_artifact_inventory_state(
             "validation_errors": list(validation.get("validation_errors", [])),
             "validation_state_hash": validation.get("state_hash"),
         }
+    next_executable_task = str(final_bundle_prerequisite_plan.get("next_executable_task") or "")
+    next_safe_action = (
+        "build_reviewed_s2plt03_terminal_resilience_proof_without_production_side_effects"
+        if next_executable_task == "S2PLT03_TERMINAL_RESILIENCE_PROOF"
+        else S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_NEXT_SAFE_ACTION
+    )
 
     state = {
         "status": (
@@ -11424,8 +11570,8 @@ def _build_final_bundle_missing_artifact_inventory_state(
         "validation_blocked_refs": validation_blocked_refs,
         "validation_blocked_ref_count": len(validation_blocked_refs),
         "ready_to_write_live_artifacts": False,
-        "next_safe_action": S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_NEXT_SAFE_ACTION,
-        "next_executable_task": final_bundle_prerequisite_plan.get("next_executable_task"),
+        "next_safe_action": next_safe_action,
+        "next_executable_task": next_executable_task,
         "next_executable_runtime_step": final_bundle_prerequisite_plan.get("next_executable_runtime_step"),
         "production_acceptance_claimed": False,
         "integrated_production_accepted": False,
