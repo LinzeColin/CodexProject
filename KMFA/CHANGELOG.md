@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s15-stage-review - 2026-07-01
+
+- 完成 `Stage 15 整体复审` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/check_s15_stage_review.py`、`KMFA/tests/test_s15_stage_review.py` 和 `KMFA/stage_artifacts/S15_STAGE_REVIEW/`。
+- 复跑 S15-P1 绩效事实字段、S15-P2 绩效复核清单、S15-P3 工资项目边界 validators，确认 6 个绩效事实字段、4 条绩效事实行、16 条复核事项、1 个事实输出接口契约和 4 条未来读取草案仍为 public-safe 证据。
+- 复审将下一 gate 推进到 `KMFA-S15-GITHUB-UPLOAD-GATE`；仍未执行 GitHub upload、S16、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终薪酬结论、付款发放或外部 connector。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、人员薪资材料、合同、税务申报材料或 credentials。
+- 下一轮只能执行 `Stage 15 GitHub upload`，且 upload 前必须基于最新 origin/main 复跑 validators、治理校验和安全扫描。
+
 ## 0.1.0-s15p3-salary-boundary - 2026-07-01
 
 - 完成 `S15-P3｜与工资项目边界` 本地验证，不上传 GitHub。

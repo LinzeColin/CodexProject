@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S15P3-SALARY-BOUNDARY"
+as_of_event_id: "EVENT-KMFA-20260701-S15-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "dfdf16c98656c4272fa105027dcbf46ba15d37dd"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13_UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-01T23:55:00+10:00"
-generator_version: "manual-s15p3-salary-boundary"
-final_commit_binding: "local_phase_commit_pending_no_github_upload"
+snapshot_event_time: "2026-07-01T23:59:30+10:00"
+generator_version: "manual-s15-stage-review"
+final_commit_binding: "local_stage_review_commit_pending_no_github_upload"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -399,8 +399,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S15P3_COMPLETED_VALIDATED_LOCAL_ONLY_NEXT_STAGE15_REVIEW"
-  release_gate: "KMFA-S15-STAGE-REVIEW-GATE"
+  status: "S15_STAGE_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
+  release_gate: "KMFA-S15-GITHUB-UPLOAD-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"
