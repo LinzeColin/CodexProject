@@ -601,6 +601,7 @@ const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
 let runtimeTrendState = null;
 let stage4PagesCatalog = typeof window !== "undefined" ? window.PFI_V023_STAGE4_PAGES || null : null;
+let stage5SubpageCatalog = typeof window !== "undefined" ? window.PFI_V024_STAGE5_PAGES || null : null;
 let stage5HomeExperience =
   typeof window !== "undefined" ? window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME || null : null;
 let runtimeReadModelState = null;
@@ -4220,6 +4221,10 @@ function resolveStage4Subpage(workspaceId, routeAlias) {
 
 function stage4SubpageCatalog() {
   stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES || null;
+  stage5SubpageCatalog = stage5SubpageCatalog || window.PFI_V024_STAGE5_PAGES || null;
+  if (stage5SubpageCatalog && typeof stage5SubpageCatalog.buildV024Stage5Phase52Catalog === "function") {
+    return stage5SubpageCatalog.buildV024Stage5Phase52Catalog();
+  }
   return {
     ...(stage4PagesCatalog?.stage4ReviewSubpages || {}),
     ...(stage4PagesCatalog?.phase41Subpages || {}),
@@ -4242,11 +4247,15 @@ function renderStage4SubpageSurface(page, workspaceId, routeForState) {
   surface.hidden = false;
   surface.dataset.stage4Workspace = workspaceId;
   surface.dataset.stage4Route = normalizeRouteAlias(routeForState || page.routeAlias);
+  surface.dataset.stage5Route = normalizeRouteAlias(routeForState || page.routeAlias);
   surface.replaceChildren();
 
   const article = document.createElement("article");
   article.className = `stage4-subpage stage4-layout-${page.layoutKind}`;
   article.setAttribute("data-stage4-layout-kind", page.layoutKind);
+  article.setAttribute("data-stage5-differentiated-subpage", "phase_5_2");
+  article.setAttribute("data-stage5-state-key", ownerVisibleText(page.stateKey, ""));
+  article.setAttribute("data-stage5-data-object", ownerVisibleText(page.dataObject || page.primaryObject, ""));
   article.setAttribute("data-stage4-primary-object", page.primaryObject);
   article.setAttribute("data-stage4-primary-action", page.primaryAction);
   article.setAttribute("data-stage4-empty-state", page.emptyState);
@@ -5768,6 +5777,24 @@ function loadStage4PagesCatalog() {
   });
 }
 
+function loadStage5SubpageCatalog() {
+  if (stage5SubpageCatalog || window.PFI_V024_STAGE5_PAGES) {
+    stage5SubpageCatalog = stage5SubpageCatalog || window.PFI_V024_STAGE5_PAGES;
+    return Promise.resolve(stage5SubpageCatalog);
+  }
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "./app/pages/stage5Subpages.js";
+    script.dataset.stage5SubpageLoader = "true";
+    script.onload = () => {
+      stage5SubpageCatalog = window.PFI_V024_STAGE5_PAGES || null;
+      resolve(stage5SubpageCatalog);
+    };
+    script.onerror = () => resolve(null);
+    document.head.appendChild(script);
+  });
+}
+
 function loadStage5HomeExperience() {
   if (stage5HomeExperience || window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME) {
     stage5HomeExperience = stage5HomeExperience || window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME;
@@ -5809,7 +5836,7 @@ function bootPFIShell() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  Promise.all([loadStage4PagesCatalog(), loadStage5HomeExperience()])
+  Promise.all([loadStage4PagesCatalog().then(loadStage5SubpageCatalog), loadStage5HomeExperience()])
     .then(() => initializePFIStage1Shell({ source: "DOMContentLoaded" }))
     .catch((error) => handlePFIStage1ShellError(error, { source: "DOMContentLoaded" }));
 });

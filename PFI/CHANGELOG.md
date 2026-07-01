@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 5 Phase 5.2 - 2026-07-01
+
+- 完成 `Stage 5 / Phase 5.2 - 二级页面差异化`：10 个正式一级入口共 45 个二级页面，最少每个入口 4 个。
+- 新增 `PFI/web/app/pages/stage5Subpages.js`，暴露 `PFI_V024_STAGE5_PAGES`、Phase 5.2 合同、catalog flatten 和 route validation。
+- `PFI/web/app/shell.js` 优先读取 v0.2.4 Stage 5 页面目录，并给二级页 DOM 标记 `data-stage5-state-key` 和 `data-stage5-data-object`。
+- `PFI/web/index.html` 与 `PFI/src/pfi_os/app/streamlit_app.py` 同步加载/内联 `stage5Subpages.js`，防止 app bundle 漂移。
+- 新增 `PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py`、`PFI/docs/pfi_v024/STAGE5_SUBPAGE_DIFFERENTIATION.md` 和 `PFI/reports/pfi_v024/stage_5/phase_5_2/route_validation.json`。
+- 本轮不执行 Phase 5.3、Stage 5 whole-stage review 或 GitHub main upload；不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 5 Phase 5.1 - 2026-07-01
 
 - 完成 `Stage 5 / Phase 5.1 - 首页重建`：首页新增“钱、位置、变化、问题、下一步、依据”六问结构。
