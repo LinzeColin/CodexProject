@@ -21,7 +21,7 @@ Owner 视图现在把实现一致性、参数来源、方法依据、实证验�
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the integrated production acceptance preflight and write-gate precheck as passed no-production evidence; Owner-authorized controlled foreground real-run acceptance recheck passed without duplicate SMTP; treat it only as evidence, not DAILY_OPERATION; review `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json`, then record owner production-boundary decision evidence or pause; do not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, or write INTEGRATED_PRODUCTION_ACCEPTED automatically.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the integrated production acceptance preflight and write-gate precheck as passed no-production evidence; Owner-authorized controlled foreground real-run acceptance recheck passed without duplicate SMTP; treat it only as evidence, not DAILY_OPERATION; review FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, then record owner production-boundary decision evidence or pause; do not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, or write INTEGRATED_PRODUCTION_ACCEPTED automatically.
 - estimated_effort: P0/P1; production boundary safety review; owner decision; no-production proof verification
 - estimated_cost_or_resource: local development and GitHub main evidence; no GitHub cloud scheduled production runner
 
@@ -52,17 +52,17 @@ Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPE
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the integrated production acceptance preflight and write-gate precheck as passed no-production evidence; Owner-authorized controlled foreground real-run acceptance recheck passed without duplicate SMTP; treat it only as evidence, not DAILY_OPERATION; review `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json`, then record owner production-boundary decision evidence or pause; do not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, or write INTEGRATED_PRODUCTION_ACCEPTED automatically. | 记录 owner 生产验收边界决策证据：preflight 已验证 final bundle ready、open_pr_count=0、持久 ADP_ALLOW_SMTP_SEND=false、LaunchAgents disabled、无后台 ADP 进程；下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。 | 暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。 | 越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。 | Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。 |
+| `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the integrated production acceptance preflight and write-gate precheck as passed no-production evidence; Owner-authorized controlled foreground real-run acceptance recheck passed without duplicate SMTP; treat it only as evidence, not DAILY_OPERATION; review FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, then record owner production-boundary decision evidence or pause; do not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, or write INTEGRATED_PRODUCTION_ACCEPTED automatically. | 记录 owner 生产验收边界决策证据：preflight 已验证 final bundle ready、open_pr_count=0、持久 ADP_ALLOW_SMTP_SEND=false、LaunchAgents disabled、无后台 ADP 进程；下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。 | 暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。 | 越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。 | Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。 |
 
 ## 10. Current Blockers
 
-1. preflight checks passed, final bundle manifest pass, no-production side-effect attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, no background ADP process, and owner production-boundary decision
+1. owner review of FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, preflight checks passed, final bundle manifest pass, no-production side-effect attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, no background ADP process, and explicit owner production-boundary decision artifact
 2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: owner review of `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json`, preflight checks passed, final bundle manifest pass, no-production side-effect attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, no background ADP process, and explicit owner production-boundary decision artifact
+- evidence_required: owner review of FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, preflight checks passed, final bundle manifest pass, no-production side-effect attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, no background ADP process, and explicit owner production-boundary decision artifact
 - principal_risks: 将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
@@ -82,9 +82,9 @@ Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPE
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:960e9d1a8871bac1b4e482b58a3d673d3c6b635c`
 - tree_bound_events: `5`
-- commit_bound_events: `6`
+- commit_bound_events: `7`
 - legacy_unbound_events: `330`
 - precommit_pending_events: `40`
 - pending_or_stale_events: `374`
@@ -95,10 +95,10 @@ Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPE
 
 ## 16. 技术元数据
 
-- source_base_commit: `83ab32eb26dd6b79ba970f07fa50f53e3fea575b`
-- source_tree_hash: `d9d7716bd905d68454e9880d5ba0af0893091fb6`
-- source_snapshot_hash: `sha256:14671478112b684eb1ce125b63b86e4847c9c31d8bcd8cbd095acc7d10f6b44d`
-- snapshot_event_time: `2026-07-01T17:35:58+10:00`
+- source_base_commit: `960e9d1a8871bac1b4e482b58a3d673d3c6b635c`
+- source_tree_hash: `cf801941e53c389bcc3ac4456ba54a8b48543f3f`
+- source_snapshot_hash: `sha256:28ff558dbec03bd75709b1373347734df262212ab57fb88d6e2fe81f994114a5`
+- snapshot_event_time: `2026-07-01T17:54:39+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
 - phase/gate: `S2PL / S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE`
