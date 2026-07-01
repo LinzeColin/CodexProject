@@ -1,0 +1,59 @@
+2026-07-01T05:33:41Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_before_upload_gate=8196fcbc129282615d8e4983142c3343eef709cf
+origin_main_before_upload_gate=a508d5e547ce6a0ecc7277c5907d52d8579ff8aa
+ahead_behind_before_upload_gate=4 0
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_github_upload_contract.py -q
+Result: 3 failed before implementation; missing build_v024_stage8_github_upload_contract and stage_8/github_main_upload evidence pack.
+
+Implementation boundary:
+Stage 8 GitHub main upload gate only. Did not execute Stage 9, app bundle reinstall, launcher mutation, or financial data changes.
+
+Rebase refresh:
+git show --name-only --oneline origin/main --
+Result: e822c04b Add ADP production boundary preflight CLI; changed only arxiv-daily-push files.
+git stash push --include-untracked -m pfi-stage8-upload-gate-before-rebase
+Result: Saved working directory and index state.
+git rebase origin/main
+Result: Successfully rebased and updated refs/heads/codex/pfi.
+git stash pop
+Result: Restored Stage 8 upload gate working tree; stash dropped.
+
+Second rebase refresh:
+git log --oneline --decorate --left-right --cherry-pick HEAD...origin/main --
+Result: origin/main advanced by Memory Atlas commits through a508d5e5.
+git diff --name-only $(git merge-base HEAD origin/main)..origin/main --
+Result: changed OpenAIDatabase paths only; no PFI paths.
+git stash push --include-untracked -m pfi-stage8-upload-gate-before-memory-atlas-rebase
+Result: Saved working directory and index state.
+git rebase origin/main
+Result: Successfully rebased and updated refs/heads/codex/pfi.
+git stash pop
+Result: Restored Stage 8 upload gate working tree; stash dropped.
+
+Validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_github_upload_contract.py -q
+Result: 3 passed in 0.08s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_whole_review_contract.py -q
+Result: 5 passed in 0.07s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase83_manual_acceptance.py -q
+Result: 5 passed in 0.07s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py -q
+Result: 5 passed in 0.08s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py -q
+Result: 4 passed in 0.08s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py
+Result: pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_8/github_main_upload/evidence.json
+Result: pass
+git diff --check -- PFI
+Result: pass
+changed_files reconciliation
+Result: pass
+
+Final remote verification policy:
+After committing this gate, run git push origin HEAD:main, git fetch origin main, git rev-parse HEAD, git rev-parse origin/main, and git ls-remote origin refs/heads/main. The final terminal output after push is the authoritative remote-main proof because the final commit hash is self-referential to this evidence pack.

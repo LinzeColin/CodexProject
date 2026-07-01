@@ -2,9 +2,9 @@
 
 ## Current Run Boundary
 
-本轮只执行 `Stage 8 Whole-stage Review - 复审并解决暴露问题`，当前状态为 Stage 8 whole-stage review pass。
+本轮只执行 `Stage 8 GitHub main upload gate`，当前状态为上传 gate。
 
-不执行 Stage 8 GitHub main upload、不执行 Stage 9 regression freeze，不重装 app bundle，不写入、清理、删除、补造或改写真实财务数据。
+不执行 Stage 9 regression freeze，不重装 app bundle，不写入、清理、删除、补造或改写真实财务数据。
 
 ## Stage 8 Phase 8.1 - 自动验收
 
@@ -82,25 +82,43 @@ Whole-stage review evidence:
 - `PFI/reports/pfi_v024/stage_8/whole_stage_review/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_8/whole_stage_review/risk_and_rollback.md`
 
+## Stage 8 GitHub Main Upload
+
+Stage 8 GitHub main upload gate：
+
+- 上传对象包含 Phase 8.1、Phase 8.2、Phase 8.3 和 whole-stage review 的已复审 package。
+- 上传前已 rebase 到当前 `origin/main=a508d5e547ce6a0ecc7277c5907d52d8579ff8aa`，上传前 ahead/behind 为 `4/0`。
+- 本 gate 必须以 terminal 的 `git push origin HEAD:main`、fresh fetch、`git rev-parse HEAD`、`git rev-parse origin/main` 和 `git ls-remote origin refs/heads/main` 为最终远端事实。
+- Stage 9 未开始。
+
+Upload gate evidence:
+
+- `PFI/docs/pfi_v024/STAGE8_GITHUB_MAIN_UPLOAD.md`
+- `PFI/reports/pfi_v024/stage_8/github_main_upload/evidence.json`
+- `PFI/reports/pfi_v024/stage_8/github_main_upload/terminal.log`
+- `PFI/reports/pfi_v024/stage_8/github_main_upload/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_8/github_main_upload/risk_and_rollback.md`
+
 ## Validation
 
 ```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_github_upload_contract.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_whole_review_contract.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase83_manual_acceptance.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py
-python3 -m json.tool PFI/reports/pfi_v024/stage_8/whole_stage_review/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_8/github_main_upload/evidence.json
 git diff --check -- PFI
+git push origin HEAD:main
 ```
 
 ## Explicitly Not Done
 
-- Stage 8 GitHub main upload.
 - Stage 9 regression freeze.
 - App bundle reinstall.
 - Financial data mutation or synthesis.
 
 ## Next Gate
 
-下一轮可进入 `Stage 8 GitHub main upload gate`。上传完成并验证 `HEAD == origin/main == remote main` 后，才允许进入 Stage 9。
+上传完成并验证 `HEAD == origin/main == remote main` 后，下一轮才允许进入 Stage 9。

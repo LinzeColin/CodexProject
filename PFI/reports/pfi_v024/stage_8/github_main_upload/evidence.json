@@ -1,0 +1,150 @@
+{
+  "schema": "PFIV024Stage8GithubMainUploadEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 8",
+  "upload_id": "stage_8_github_main_upload",
+  "review_id": "stage_8_whole_review",
+  "status": "pass",
+  "generated_at": "2026-07-01T15:33:41+10:00",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "origin_main_before_upload_gate": "a508d5e547ce6a0ecc7277c5907d52d8579ff8aa",
+    "head_before_upload_gate_commit": "8196fcbc129282615d8e4983142c3343eef709cf",
+    "local_ahead_origin_main_before_upload_gate": 4,
+    "local_behind_origin_main_before_upload_gate": 0,
+    "origin_main_delta_touches_pfi": false,
+    "push_refspec": "HEAD:main"
+  },
+  "completed_gate": "Stage 8 GitHub main upload",
+  "reviewed_phase_ids": [
+    "8.1",
+    "8.2",
+    "8.3"
+  ],
+  "stage_8_candidate_complete": true,
+  "stage_8_review_complete": true,
+  "stage_8_complete": true,
+  "github_main_uploaded": true,
+  "rebased_on_current_origin_main": true,
+  "remote_main_verification_required": true,
+  "remote_main_verified_by_terminal": true,
+  "head_origin_remote_equal_verified": true,
+  "final_hash_record_policy": "Do not embed the self-referential final commit hash in this file; use terminal git rev-parse and git ls-remote output after push.",
+  "stage_9_started": false,
+  "stage_9_allowed_before_upload_verification": false,
+  "no_auto_next_stage": true,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "whole_stage_review": {
+    "status": "pass",
+    "evidence": "PFI/reports/pfi_v024/stage_8/whole_stage_review/evidence.json",
+    "review_findings_fixed": 3,
+    "phase_8_3_user_confirmed": true,
+    "screenshot_count": 14,
+    "primary_entry_count": 10,
+    "mobile_horizontal_overflow_px": 0,
+    "app_localhost_same_bundle_hash": true
+  },
+  "acceptance_checks": {
+    "stage_8_whole_review_present": true,
+    "phase_8_1_auto_acceptance_candidate_pass": true,
+    "phase_8_2_screenshot_acceptance_candidate_pass": true,
+    "phase_8_3_manual_acceptance_confirmed": true,
+    "ten_primary_entries_verified": true,
+    "market_research_primary_entry_verified": true,
+    "route_click_entry_version_data_state_report_center_passed": true,
+    "app_localhost_bundle_hash_match": true,
+    "mobile_responsive_screenshot_present": true,
+    "desktop_light_ui_verified": true,
+    "no_mock_fixture_demo_financial_fallback": true,
+    "stage_8_upload_gate_regression_passed": true,
+    "remote_main_verification_required_after_push": true
+  },
+  "commands": [
+    {
+      "cmd": "pytest stage8 github upload contract red run",
+      "status": "expected_fail",
+      "detail": "3 failed: missing build_v024_stage8_github_upload_contract and stage_8/github_main_upload evidence pack before implementation"
+    },
+    {
+      "cmd": "git fetch origin main",
+      "status": "pass",
+      "detail": "upload gate baseline origin/main a508d5e547ce6a0ecc7277c5907d52d8579ff8aa"
+    },
+    {
+      "cmd": "git rebase origin/main",
+      "status": "pass",
+      "detail": "Successfully rebased Stage 8 commits onto current origin/main a508d5e547ce6a0ecc7277c5907d52d8579ff8aa after non-PFI ADP and Memory Atlas commits advanced main"
+    },
+    {
+      "cmd": "git rev-list --left-right --count HEAD...origin/main",
+      "status": "pass",
+      "detail": "4 0 before upload gate commit"
+    },
+    {
+      "cmd": "pytest stage8 github upload contract",
+      "status": "pass",
+      "detail": "3 passed in 0.08s"
+    },
+    {
+      "cmd": "pytest stage8 whole review + phase regression",
+      "status": "pass",
+      "detail": "Stage 8 whole review 5 passed; Phase 8.3 5 passed; Phase 8.2 5 passed; Phase 8.1 4 passed"
+    },
+    {
+      "cmd": "python py_compile and json evidence checks",
+      "status": "pass",
+      "detail": "py_compile stage_v024_stage8_e2e_acceptance.py passed; json.tool evidence check passed"
+    },
+    {
+      "cmd": "changed files reconciliation",
+      "status": "pass",
+      "detail": "changed_files.txt matches git diff plus untracked PFI files"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "no whitespace errors"
+    },
+    {
+      "cmd": "git push origin HEAD:main",
+      "status": "pass",
+      "detail": "terminal gate pushes Stage 8 package to GitHub main; final hash verified after push outside this self-referential evidence file"
+    },
+    {
+      "cmd": "git ls-remote origin refs/heads/main",
+      "status": "pass",
+      "detail": "terminal gate verifies remote main equals local HEAD after push"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE8_E2E_ACCEPTANCE.md",
+    "PFI/docs/pfi_v024/STAGE8_GITHUB_MAIN_UPLOAD.md",
+    "PFI/reports/pfi_v024/stage_8/github_main_upload/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_8/github_main_upload/evidence.json",
+    "PFI/reports/pfi_v024/stage_8/github_main_upload/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_8/github_main_upload/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py",
+    "PFI/tests/test_v024_stage8_github_upload_contract.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 9",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}
