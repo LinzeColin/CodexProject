@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S18"
-current_phase_id: "S18_STAGE_REVIEW"
-current_task_id: "KMFA-S18-STAGE-REVIEW-GATE"
-next_gate_id: "KMFA-S18-STAGE-REVIEW-GATE"
+current_phase_id: "S18_GITHUB_UPLOAD"
+current_task_id: "KMFA-S18-GITHUB-UPLOAD-GATE"
+next_gate_id: "KMFA-S18-GITHUB-UPLOAD-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1387,10 +1387,10 @@ stages:
               - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json"
   - stage_id: "S18"
     name: "回归、压力、稳定验收与后续接入准备"
-    status: "completed_local_only_pending_stage_review_no_go"
+    status: "review_passed_upload_ready_local_only_no_go"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S18-P1 精度与压力测试、S18-P2 全量回归验收和 S18-P3 后续接入准备已完成本地验证；S18-P2 Go/No-Go 仍为 NO_GO；下一步只能执行 Stage 18 整体复审。"
+    current_result: "S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备和 Stage 18 整体复审已完成本地验证；review-level Go/No-Go 仍为 NO_GO；下一步只能执行 Stage 18 GitHub upload。"
     evidence_refs:
       - "KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md"
       - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
@@ -1401,6 +1401,9 @@ stages:
       - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/s18_p3_completion_record.md"
       - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/test_results.md"
       - "KMFA/stage_artifacts/S18_P3_integration_preparation/machine/s18_p3_manifest.json"
+      - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"
+      - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S18_STAGE_REVIEW/machine/stage18_review_manifest.json"
     phases:
       - phase_id: "S18PA"
         name: "精度与压力测试"
@@ -1473,7 +1476,7 @@ stages:
         status: "completed_validated_local_only_stage_review_pending"
         estimated_hours: 1
         estimated_pct: 100
-        current_result: "已完成红圈、金蝶、WPS 三类只读 future connector 方案、OpMe 轻入口和状态索引方案、6 条下一阶段 backlog；Stage 18 review 和 GitHub upload 均未执行。"
+        current_result: "已完成红圈、金蝶、WPS 三类只读 future connector 方案、OpMe 轻入口和状态索引方案、6 条下一阶段 backlog；Stage 18 review 已后续单独完成，GitHub upload 尚未执行。"
         evidence_refs:
           - "KMFA/metadata/integration/integration_preparation_manifest.json"
           - "KMFA/metadata/integration/read_only_connector_plan.jsonl"
@@ -1501,3 +1504,28 @@ stages:
             evidence_refs:
               - "KMFA/metadata/integration/next_stage_backlog.jsonl"
               - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/next_stage_backlog.md"
+      - phase_id: "S18_STAGE_REVIEW"
+        name: "Stage 18 整体复审"
+        objective: "复跑 S18-P1/P2/P3 validators、Stage 18 review validator、全量 tests、治理 validator、raw/secret scan、parse checks 和 diff check，确认 Stage 18 三个 phase 在 public-safe 边界内闭环。"
+        status: "review_passed_upload_ready_local_only_no_go"
+        estimated_hours: 0
+        estimated_pct: 100
+        evidence_refs:
+          - "KMFA/tools/check_s18_stage_review.py"
+          - "KMFA/tests/test_s18_stage_review.py"
+          - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"
+          - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/test_results.md"
+          - "KMFA/stage_artifacts/S18_STAGE_REVIEW/machine/stage18_review_manifest.json"
+          - "KMFA/metadata/quality/stage18_go_no_go_review.json"
+        tasks:
+          - task_id: "KMFA-S18-STAGE-REVIEW-20260701"
+            name: "Stage 18 整体复审通过，本地进入 GitHub upload gate。"
+            status: "review_passed_upload_ready_local_only_no_go"
+            evidence_refs:
+              - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"
+              - "KMFA/tools/check_s18_stage_review.py"
+          - task_id: "KMFA-S18-GITHUB-UPLOAD-GATE"
+            name: "上传 Stage 18 reviewed stack 到 GitHub main。"
+            status: "pending_github_upload"
+            evidence_refs:
+              - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"

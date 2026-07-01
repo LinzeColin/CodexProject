@@ -1,0 +1,30 @@
+{
+  "blocker_ids": [
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "S09_PENDING_RECONCILIATION_12",
+    "STAGE18_GITHUB_UPLOAD_PENDING"
+  ],
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "decision_reason": "Stage 18 review passed locally, but delivery remains blocked until lineage full check, official report release, pending reconciliation closure and Stage 18 GitHub upload are complete.",
+  "delivery_allowed": false,
+  "external_connector_allowed": false,
+  "github_upload_allowed_after_review": true,
+  "github_upload_performed": false,
+  "next_required_gate": "KMFA-S18-GITHUB-UPLOAD-GATE",
+  "official_report_release_allowed": false,
+  "phase_id": "S18_STAGE_REVIEW",
+  "policy_version": "KMFA-S18-STAGE-REVIEW-001",
+  "quality_not_passed_must_not_deliver": true,
+  "record_type": "s18_stage_review_go_no_go",
+  "report_grade_visible": "D",
+  "resolved_blocker_ids": [
+    "S18_P3_PENDING",
+    "STAGE18_REVIEW_PENDING"
+  ],
+  "s18_p3_pending": false,
+  "stage18_review_passed": true,
+  "stage_id": "S18"
+}

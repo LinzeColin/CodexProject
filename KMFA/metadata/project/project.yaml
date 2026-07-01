@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s18p3-integration-preparation"
+version: "0.1.0-s18-stage-review"
 current_stage: "S18"
-current_phase: "S18_STAGE_REVIEW"
-current_phase_status: "pending_stage_review"
-current_stage_status: "s18_all_phases_completed_local_only_stage_review_pending_no_go"
+current_phase: "S18_GITHUB_UPLOAD"
+current_phase_status: "pending_github_upload"
+current_stage_status: "s18_stage_review_passed_upload_ready_local_only_no_go"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -516,6 +516,10 @@ upload_policy:
   stage18_review_required_before_upload: true
   stage18_review_passed: false
   stage18_uploaded_to_github_main: false
-  stage18_blocker: "s18p3_pending_stage18_review_pending_s18p2_no_go"
+  stage18_review_completed_local_only: true
+  stage18_review_go_no_go: "NO_GO"
+  stage18_review_evidence: "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"
+  stage18_review_manifest: "KMFA/stage_artifacts/S18_STAGE_REVIEW/machine/stage18_review_manifest.json"
+  stage18_blocker: "stage18_github_upload_pending_lineage_report_pending_no_go"
   next_phase_upload_allowed: false
   upload_surface: "stage17_uploaded_next_s18_p3"
