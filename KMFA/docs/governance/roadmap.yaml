@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S18"
-current_phase_id: "S18_P3"
-current_task_id: "KMFA-S18-P3-GATE"
-next_gate_id: "KMFA-S18-P3-GATE"
+current_phase_id: "S18_STAGE_REVIEW"
+current_task_id: "KMFA-S18-STAGE-REVIEW-GATE"
+next_gate_id: "KMFA-S18-STAGE-REVIEW-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1387,10 +1387,10 @@ stages:
               - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json"
   - stage_id: "S18"
     name: "回归、压力、稳定验收与后续接入准备"
-    status: "in_progress_s18p2_completed_local_only_no_go"
+    status: "completed_local_only_pending_stage_review_no_go"
     estimated_hours: 3
-    estimated_pct: 66.6667
-    current_result: "S18-P1 精度与压力测试和 S18-P2 全量回归验收已完成本地验证；S18-P2 Go/No-Go 为 NO_GO；下一步只能执行 S18-P3 后续接入准备。"
+    estimated_pct: 100
+    current_result: "S18-P1 精度与压力测试、S18-P2 全量回归验收和 S18-P3 后续接入准备已完成本地验证；S18-P2 Go/No-Go 仍为 NO_GO；下一步只能执行 Stage 18 整体复审。"
     evidence_refs:
       - "KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md"
       - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
@@ -1398,6 +1398,9 @@ stages:
       - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/s18_p2_completion_record.md"
       - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/test_results.md"
       - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/machine/s18_p2_manifest.json"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/s18_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/test_results.md"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/machine/s18_p3_manifest.json"
     phases:
       - phase_id: "S18PA"
         name: "精度与压力测试"
@@ -1467,6 +1470,34 @@ stages:
               - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/go_no_go_report.md"
       - phase_id: "S18PC"
         name: "后续接入准备"
-        status: "pending"
+        status: "completed_validated_local_only_stage_review_pending"
         estimated_hours: 1
-        estimated_pct: 0
+        estimated_pct: 100
+        current_result: "已完成红圈、金蝶、WPS 三类只读 future connector 方案、OpMe 轻入口和状态索引方案、6 条下一阶段 backlog；Stage 18 review 和 GitHub upload 均未执行。"
+        evidence_refs:
+          - "KMFA/metadata/integration/integration_preparation_manifest.json"
+          - "KMFA/metadata/integration/read_only_connector_plan.jsonl"
+          - "KMFA/metadata/integration/opme_entry_integration_plan.json"
+          - "KMFA/metadata/integration/next_stage_backlog.jsonl"
+          - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/s18_p3_completion_record.md"
+          - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/test_results.md"
+          - "KMFA/stage_artifacts/S18_P3_integration_preparation/machine/s18_p3_manifest.json"
+        tasks:
+          - task_id: "S18PCT01"
+            name: "整理红圈、金蝶、WPS自动接入后续只读方案。"
+            status: "completed_validated_local_only_stage_review_pending"
+            evidence_refs:
+              - "KMFA/metadata/integration/read_only_connector_plan.jsonl"
+              - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/read_only_connector_plan.md"
+          - task_id: "S18PCT02"
+            name: "整理OpMe入口集成方案，不深度耦合。"
+            status: "completed_validated_local_only_stage_review_pending"
+            evidence_refs:
+              - "KMFA/metadata/integration/opme_entry_integration_plan.json"
+              - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/opme_entry_integration_plan.md"
+          - task_id: "S18PCT03"
+            name: "发布下一阶段Backlog。"
+            status: "completed_validated_local_only_stage_review_pending"
+            evidence_refs:
+              - "KMFA/metadata/integration/next_stage_backlog.jsonl"
+              - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/next_stage_backlog.md"

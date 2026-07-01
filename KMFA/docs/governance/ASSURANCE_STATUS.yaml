@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S18P2-FULL-REGRESSION"
+as_of_event_id: "EVENT-KMFA-20260701-S18P3-INTEGRATION-PREPARATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "52c15e845c8d3b02d935bd5a234a213b43cd1d9f"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S18P2_COMMIT"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S18P3_COMMIT"
 snapshot_event_time: "2026-07-01T23:59:59+10:00"
-generator_version: "manual-s18p2-full-regression"
+generator_version: "manual-s18p3-integration-preparation"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 252
-    total_active_formulas: 50
+    total_active_parameters: 260
+    total_active_formulas: 51
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -420,18 +420,22 @@ dimensions:
       - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/machine/s18_p2_manifest.json"
       - "KMFA/tools/full_regression_acceptance.py"
       - "KMFA/tools/check_s18_p2_full_regression_acceptance.py"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/test_results.md"
+      - "KMFA/stage_artifacts/S18_P3_integration_preparation/machine/s18_p3_manifest.json"
+      - "KMFA/tools/integration_preparation.py"
+      - "KMFA/tools/check_s18_p3_integration_preparation.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S18P2_COMPLETED_LOCAL_ONLY_NO_GO_S18P3_PENDING"
-  release_gate: "KMFA-S18-P3-GATE"
+  status: "S18P3_COMPLETED_LOCAL_ONLY_STAGE18_REVIEW_PENDING_NO_GO"
+  release_gate: "KMFA-S18-STAGE-REVIEW-GATE"
   blocker_ids:
     - "LINEAGE_FULL_CHECK_NOT_COMPLETE"
     - "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED"
-    - "S18_P3_PENDING"
     - "STAGE18_REVIEW_PENDING"
+    - "GITHUB_UPLOAD_PENDING"
     - "S09_PENDING_RECONCILIATION_12"
     - "REPORT_GRADE_D_BLOCKS_BUSINESS_DECISION"
