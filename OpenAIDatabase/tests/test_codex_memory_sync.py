@@ -172,6 +172,30 @@ class CodexMemorySyncTests(unittest.TestCase):
         self.assertEqual(rows[0]["started_day"], "2026-06-02")
         self.assertEqual(rows[0]["updated_day"], "2026-06-09")
 
+    def test_push_targets_github_main_from_runtime_worktree_branch(self):
+        module = load_module()
+        commands = []
+
+        class DiffWithChanges:
+            returncode = 1
+
+        def fake_run_command(args, cwd):
+            commands.append((args, cwd))
+
+        original_run_command = module.run_command
+        original_subprocess_run = module.subprocess.run
+        try:
+            module.run_command = fake_run_command
+            module.subprocess.run = lambda *_args, **_kwargs: DiffWithChanges()
+
+            result = module.git_commit_and_push(Path("/tmp/runtime-worktree"), push=True)
+        finally:
+            module.run_command = original_run_command
+            module.subprocess.run = original_subprocess_run
+
+        self.assertEqual(result, {"committed": True, "pushed": True, "reason": "updated"})
+        self.assertIn((["git", "push", "origin", "HEAD:main"], Path("/tmp/runtime-worktree")), commands)
+
 
 if __name__ == "__main__":
     unittest.main()
