@@ -1,4 +1,4 @@
-version: "0.1.0-s14p1-fund-cash-loan-plan"
+version: "0.1.0-s14p2-invoice-tax-plan"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -41,6 +41,7 @@ active_formula_ids:
   - "FORM-KMFA-COLLECTION-RECEIVABLE-AGING-001"
   - "FORM-KMFA-CROSS-TABLE-REVIEW-001"
   - "FORM-KMFA-FUND-CASH-LOAN-PLAN-001"
+  - "FORM-KMFA-INVOICE-TAX-PLAN-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

@@ -1,0 +1,133 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/s14_p2_completion_record.md",
+    "html_overview": "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/exports/html/invoice_tax_plan_overview.html",
+    "invoice_tax_cash_summaries": "KMFA/metadata/reports/invoice_tax_cash_summaries.jsonl",
+    "invoice_tax_issue_candidates": "KMFA/metadata/reports/invoice_tax_issue_candidates.jsonl",
+    "invoice_tax_plan_manifest": "KMFA/metadata/reports/invoice_tax_plan_manifest.json",
+    "invoice_tax_source_lanes": "KMFA/metadata/reports/invoice_tax_source_lanes.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/machine/s14_p2_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/test_results.md",
+    "validator": "KMFA/tools/check_s14_p2_invoice_tax_plan.py"
+  },
+  "content_hash": "sha256:0a68605d376e1fec3c5a88d7dc7a8ee043e4aa2ac6401db4393dd5016bbbeb08",
+  "formula_version": "FORM-KMFA-S14P2-INVOICE-TAX-CANDIDATE-SIGNAL-001",
+  "generated_at": "2026-07-01T23:00:00+10:00",
+  "html_template_version": "HTML-KMFA-S14P2-BLUE-v1",
+  "limitations": [
+    "S14-P2 只输出 public-safe 开票计划、纳税明细和开票纳税资金汇总结构证据。",
+    "不展示真实金额、真实税率值、真实发票号、客户或项目明文。",
+    "不执行纳税申报、发票开具、外部接口、Stage 14 review 或 GitHub upload。",
+    "报告等级仍显示 D，12 条 pending owner 或授权复核差异继续阻断正式报告和经营决策依据。"
+  ],
+  "mapping_version": "MAP-KMFA-S14P2-PUBLIC-SAFE-v1",
+  "plan_version": "PLAN-KMFA-S14P2-INVOICE-TAX-PUBLIC-SAFE-001",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "invoice_file_committed": false,
+    "normalized_business_values_committed": false,
+    "pdf_file_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "real_account_identifier_committed": false,
+    "tax_filing_file_committed": false,
+    "tax_rate_public_value_committed": false,
+    "true_money_amount_committed": false
+  },
+  "quality_gate": {
+    "bank_operation_allowed": false,
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "derived_amount_calculation_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "invoice_api_call_allowed": false,
+    "invoice_issuance_allowed": false,
+    "invoice_operation_allowed": false,
+    "invoice_tax_planning_signal_allowed": true,
+    "issue_candidate_review_allowed": true,
+    "loan_management_action_allowed": false,
+    "payment_approval_allowed": false,
+    "payment_execution_allowed": false,
+    "pending_reconciliation_count": 12,
+    "phase_completion_upload_allowed": false,
+    "quality_grade_bypass_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "invoice_tax_candidate_only_pending_lineage_reconciliation_and_formal_report_gates",
+    "report_grade_bypass_allowed": false,
+    "report_grade_visible": "D",
+    "s14_p3_allowed": false,
+    "stage14_review_allowed": false,
+    "tax_declaration_generation_allowed": false,
+    "tax_filing_allowed": false,
+    "tax_rate_exception_candidate_allowed": true
+  },
+  "record_type": "invoice_tax_plan_manifest",
+  "required_cash_summary_buckets": [
+    "invoice_expected_cash_inflow",
+    "tax_expected_cash_outflow",
+    "invoice_tax_net_pressure"
+  ],
+  "required_issue_candidate_types": [
+    "pending_invoice",
+    "invoiced_not_collected",
+    "tax_rate_exception_candidate"
+  ],
+  "required_source_lanes": [
+    "invoice_plan",
+    "tax_detail",
+    "invoice_tax_cash_summary"
+  ],
+  "runtime_status": "public_safe_invoice_tax_candidates_created_tax_and_invoice_actions_blocked",
+  "schema_version": "kmfa.invoice_tax_plan_manifest.v1",
+  "source_taskpack_refs": {
+    "html_sample": "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/02_前序HTML完整归档/kmfa_stage1_v4__KMFA_MVP_Report_Preview_v0_3.html",
+    "roadmap_s14_p2": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S14-P2",
+    "taskpack_business_line": "KMFA/taskpack/v1_2/01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md:P2-invoice-tax"
+  },
+  "stage_phase": "S14-P2",
+  "stage_scope": {
+    "bank_operation_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "invoice_issuance_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "loan_management_scope_included": false,
+    "payment_execution_scope_included": false,
+    "policy_qualification_scope_included": false,
+    "s14_p1_scope_reopened": false,
+    "s14_p2_invoice_tax_scope_included": true,
+    "s14_p3_scope_included": false,
+    "stage14_review_scope_included": false,
+    "tax_filing_scope_included": false
+  },
+  "summary": {
+    "business_decision_basis_count": 0,
+    "cash_summary_count": 3,
+    "external_connector_action_count": 0,
+    "field_mapping_count": 30,
+    "formal_report_count": 0,
+    "html_output_count": 1,
+    "invoice_issuance_count": 0,
+    "issue_candidate_count": 3,
+    "payment_or_bank_operation_count": 0,
+    "pending_reconciliation_count": 12,
+    "report_grade_visible": "D",
+    "source_count": 6,
+    "source_lane_count": 3,
+    "tax_filing_count": 0
+  },
+  "upstream_metadata_refs": {
+    "collection_receivable_aging": "KMFA/metadata/reports/collection_receivable_aging_manifest.json",
+    "finance_field_candidates": "KMFA/metadata/schema_maps/finance_field_candidates.jsonl",
+    "finance_support_source_registry": "KMFA/metadata/imports/finance_support_source_registry.json",
+    "fund_cash_loan_plan": "KMFA/metadata/reports/fund_cash_loan_plan_manifest.json",
+    "report_grade_runtime": "KMFA/metadata/reports/report_grade_runtime_records.jsonl",
+    "scope_reconciliation": "KMFA/metadata/quality/scope_reconciliation_records.jsonl"
+  }
+}
