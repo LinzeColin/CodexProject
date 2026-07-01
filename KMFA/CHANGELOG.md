@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-post-s18-part6-review-local - 2026-07-02
+
+- 完成 Post-S18 第一阶段 Part 6 本地复审，范围仅为 Stage 16、Stage 17、Stage 18。
+- 新增 `KMFA/tools/check_part6_stages_16_18_review.py`、`KMFA/tests/test_part6_stages_16_18_review.py` 和 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`。
+- 复跑 S16 subcontract/project/customer、S17 access/notification/operations、S18 precision/regression/integration validators、Part 6 review validator、全量 274 个 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check。
+- 本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行；Stage 18 review-level Go/No-Go 仍为 `NO_GO`。
+
 ## 0.1.0-post-s18-part5-review-local - 2026-07-02
 
 - 完成 Post-S18 第一阶段 Part 5 本地复审，范围仅为 Stage 13、Stage 14、Stage 15。

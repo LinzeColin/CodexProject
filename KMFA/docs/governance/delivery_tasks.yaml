@@ -2790,3 +2790,48 @@ tasks:
     rollback: "Remove PART5_STAGES_13_15_REVIEW artifacts, Part 5 validator/test and related governance rows before rerunning the Part 5 review gate."
     target_version: "0.1.0-post-s18-part5-review-local"
     completed_version: "0.1.0-post-s18-part5-review-local"
+  - task_id: "KMFA-PART6-STAGES-16-18-REVIEW-20260702"
+    phase: "POST_S18_PART6_REVIEW"
+    objective: "完成 Post-S18 第一阶段 Part 6 本地复审，范围仅为 Stage 16-18。"
+    scope:
+      - "Stage 16 subcontract procurement aggregation, project status lifecycle and customer business analysis evidence"
+      - "Stage 17 access security, notification reminders and operations SOP evidence"
+      - "Stage 18 precision stress, full regression acceptance and integration preparation evidence"
+      - "Part 6 review validator and evidence manifest"
+      - "governance validators, parse checks, raw/private and secret scans"
+    non_scope:
+      - "whole-project final review"
+      - "GitHub upload"
+      - "lineage full check"
+      - "formal report release"
+      - "official report release"
+      - "live connector"
+      - "OpMe deep coupling"
+      - "production restore"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-PART5-STAGES-13-15-REVIEW-20260702"
+    required_files:
+      - "KMFA/tools/check_part6_stages_16_18_review.py"
+      - "KMFA/tests/test_part6_stages_16_18_review.py"
+      - "KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/human/part6_review_report.md"
+      - "KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/machine/part6_review_manifest.json"
+    acceptance_ids:
+      - "ACC-POST-S18-PART6-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_subcontract_procurement_aggregation KMFA.tests.test_project_status_lifecycle KMFA.tests.test_customer_business_analysis KMFA.tests.test_s16_stage_review KMFA.tests.test_access_security_policy KMFA.tests.test_notification_reminders KMFA.tests.test_operations_sop KMFA.tests.test_s17_stage_review KMFA.tests.test_precision_stress_validation KMFA.tests.test_full_regression_acceptance KMFA.tests.test_integration_preparation KMFA.tests.test_s18_stage_review KMFA.tests.test_part6_stages_16_18_review -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_part6_stages_16_18_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s KMFA/tests -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_governance_sync.py --changed-only --enforce-sync"
+    test_results:
+      - "PASS: Part 6 review gates, full KMFA tests, governance validators, parse checks, raw/private path scan, high-signal secret scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/human/part6_review_report.md"
+      - "KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/machine/part6_review_manifest.json"
+    risk: "Part 6 review proves only Stage 16-18 post-S18 local review status and does not authorize whole-project final review, GitHub upload, lineage full check, formal reports, official report release, live connectors, OpMe deep coupling, production restore or business execution."
+    rollback: "Remove PART6_STAGES_16_18_REVIEW artifacts, Part 6 validator/test and related governance rows before rerunning the Part 6 review gate."
+    target_version: "0.1.0-post-s18-part6-review-local"
+    completed_version: "0.1.0-post-s18-part6-review-local"
