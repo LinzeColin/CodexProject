@@ -11,6 +11,11 @@ STAGE = "Stage 7"
 STAGE_NAME = "分析结论与报告中心"
 PHASE_ID = "7.1"
 PHASE_NAME = "报告结构"
+PHASE_7_1_ID = "7.1"
+PHASE_7_2_ID = "7.2"
+PHASE_7_3_ID = "7.3"
+WHOLE_REVIEW_ID = "stage_7_whole_review"
+GITHUB_UPLOAD_ID = "stage_7_github_main_upload"
 
 REPORT_IDS = [
     "net_worth_report",
@@ -64,6 +69,82 @@ REPORT_TYPE_LABELS = {
     "cashflow_report": ("cashflow", "现金流报告"),
     "data_quality_report": ("data_quality", "数据质量报告"),
 }
+
+
+@dataclass(frozen=True)
+class V024Stage7GithubUploadContract:
+    target_version: str
+    source_package_version: str
+    repair_label: str
+    stage_id: str
+    upload_id: str
+    review_id: str
+    reviewed_phase_ids: list[str]
+    validation_commands: list[str]
+    stage_7_candidate_complete: bool
+    stage_7_review_complete: bool
+    stage_7_complete: bool
+    github_main_uploaded: bool
+    rebased_on_current_origin_main: bool
+    remote_main_verification_required: bool
+    stage_8_started: bool
+    stage_8_allowed_without_user_instruction: bool
+    app_bundle_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+    max_phases_per_run: int
+    explicitly_not_done: list[str]
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage7_github_upload_contract() -> V024Stage7GithubUploadContract:
+    return V024Stage7GithubUploadContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        repair_label=REPAIR_LABEL,
+        stage_id=STAGE,
+        upload_id=GITHUB_UPLOAD_ID,
+        review_id=WHOLE_REVIEW_ID,
+        reviewed_phase_ids=[PHASE_7_1_ID, PHASE_7_2_ID, PHASE_7_3_ID],
+        validation_commands=[
+            "git fetch origin main",
+            "git rebase origin/main",
+            "pytest stage7 github upload contract",
+            "pytest stage7 whole review and phase regression",
+            "node stage7 phase73 browser validation",
+            "pytest stage6 adjacent regression",
+            "node --check PFI/web/app/pages/reports.js",
+            "node --check PFI/web/app/shell.js",
+            "node --check PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js",
+            "python3 -m py_compile PFI/src/pfi_v02/stage_v024_stage7_report_analysis.py",
+            "python3 -m py_compile PFI/src/pfi_os/app/streamlit_app.py",
+            "python3 -m json.tool stage7 upload/whole/phase evidence",
+            "test -s PFI/reports/pfi_v024/stage_7/phase_7_3/formula_visibility.png",
+            "git diff --check -- PFI",
+            "git push origin HEAD:main",
+            "git ls-remote origin refs/heads/main",
+        ],
+        stage_7_candidate_complete=True,
+        stage_7_review_complete=True,
+        stage_7_complete=True,
+        github_main_uploaded=True,
+        rebased_on_current_origin_main=True,
+        remote_main_verification_required=True,
+        stage_8_started=False,
+        stage_8_allowed_without_user_instruction=False,
+        app_bundle_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
+        max_phases_per_run=1,
+        explicitly_not_done=[
+            "Stage 8",
+            "app bundle reinstall",
+            "launcher C or Info.plist changes",
+            "financial data or metric logic changes",
+        ],
+    )
 
 
 @dataclass(frozen=True)

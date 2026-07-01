@@ -5,7 +5,7 @@
   "stage": "Stage 7",
   "phase_id": "7.3",
   "phase_name": "验收",
-  "source": "http://127.0.0.1:59073/index.html#/reports?tab=data-quality",
+  "source": "http://127.0.0.1:59573/index.html#/reports?tab=data-quality",
   "playwright_package_path": "/Users/linzezhang/Documents/Codex/CodexProject/EEI/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright",
   "status": "pass",
   "active_workspace": "insights",
@@ -23,6 +23,6 @@
   "page_errors": [],
   "http_errors": [],
   "server_not_found_paths": [],
-  "generated_at": "2026-07-01T03:57:09.747Z",
+  "generated_at": "2026-07-01T04:08:55.561Z",
   "failures": []
 }

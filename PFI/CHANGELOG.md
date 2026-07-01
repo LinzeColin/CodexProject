@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 7 GitHub Main Upload - 2026-07-01
+
+- 完成 `Stage 7 GitHub main upload gate`：将 Stage 7 Phase 7.1、Phase 7.2、Phase 7.3 和 whole-stage review package 上传到 GitHub main。
+- 新增 `PFI/tests/test_v024_stage7_github_upload_contract.py`、`PFI/docs/pfi_v024/STAGE7_GITHUB_MAIN_UPLOAD.md` 和 `PFI/reports/pfi_v024/stage_7/github_main_upload/evidence.json`。
+- 上传 gate 重新验证 Stage 7 upload contract、whole-stage review、Phase 7.1/7.2/7.3 回归、Stage 6 相邻回归、browser validation、JS syntax、JSON evidence 和 diff。
+- 本轮不执行 Stage 8，不重装 app bundle，不修改 launcher C/Info.plist，不写入、清理、删除、补造或改写真实财务数据。
+
 ## v0.2.4 Repair Pack Stage 7 Whole-Stage Review - 2026-07-01
 
 - 完成 `Stage 7 whole-stage review - 复审并解决暴露问题`，复审 Phase 7.1 报告结构、Phase 7.2 页面展示和 Phase 7.3 验收。

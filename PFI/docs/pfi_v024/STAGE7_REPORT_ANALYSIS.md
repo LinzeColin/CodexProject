@@ -2,9 +2,9 @@
 
 ## Current Run Boundary
 
-本轮只执行 `Stage 7 whole-stage review - 复审并解决暴露问题`。
+本轮只执行 `Stage 7 GitHub main upload gate`。
 
-不上传 GitHub main，不重装 app bundle，不修改、清理、删除或补造真实财务数据。
+不进入 Stage 8，不重装 app bundle，不修改、清理、删除或补造真实财务数据。
 
 ## Stage 7 Phase 7.1 - 报告结构
 
@@ -93,9 +93,31 @@ Whole-stage review evidence:
 - `PFI/reports/pfi_v024/stage_7/whole_stage_review/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_7/whole_stage_review/risk_and_rollback.md`
 
+## Stage 7 GitHub Main Upload
+
+Stage 7 GitHub main upload gate 已进入本轮，并在本轮收口。
+
+上传范围：
+
+- Phase 7.1 报告结构 candidate pass。
+- Phase 7.2 页面展示 candidate pass。
+- Phase 7.3 验收 candidate pass。
+- Stage 7 whole-stage review pass，3 项复审发现均已 fixed。
+- Stage 7 upload contract、文档和 evidence pack。
+
+Upload evidence:
+
+- `PFI/docs/pfi_v024/STAGE7_GITHUB_MAIN_UPLOAD.md`
+- `PFI/tests/test_v024_stage7_github_upload_contract.py`
+- `PFI/reports/pfi_v024/stage_7/github_main_upload/evidence.json`
+- `PFI/reports/pfi_v024/stage_7/github_main_upload/terminal.log`
+- `PFI/reports/pfi_v024/stage_7/github_main_upload/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_7/github_main_upload/risk_and_rollback.md`
+
 ## Validation
 
 ```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_github_upload_contract.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase72_report_page_display.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase71_report_schema.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage7_phase73_report_acceptance.py -q
@@ -106,6 +128,7 @@ PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies
 PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/shell.js
 PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_os/app/streamlit_app.py
+python3 -m json.tool PFI/reports/pfi_v024/stage_7/github_main_upload/evidence.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/whole_stage_review/evidence.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/evidence.json
 python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_3/report_acceptance_gate.json
@@ -119,4 +142,4 @@ git diff --check -- PFI
 
 ## Next Gate
 
-下一轮可进入 `Stage 7 GitHub main upload gate`。上传前必须先处理 `origin/main` 漂移，并用 terminal 验证 `HEAD == origin/main == remote main`。
+本轮完成后 Stage 7 停止在 GitHub main upload complete。下一阶段必须等待用户明确指令，不自动进入 Stage 8。
