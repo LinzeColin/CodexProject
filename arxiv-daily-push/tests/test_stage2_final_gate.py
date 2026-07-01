@@ -131,6 +131,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_independent_final_reviewer_assignment_hash,
     build_independent_final_reviewer_assignment_validation_state,
     build_independent_final_reviewer_assignment_request_state,
+    build_integrated_production_acceptance_owner_decision_packet_state,
     build_integrated_production_acceptance_preflight_state,
     build_s2pmt07_mainline_attestation_state,
     build_final_acceptance_bundle_manifest_hash,
@@ -218,6 +219,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_independent_final_reviewer_assignment_owner_packet_state,
     validate_independent_final_reviewer_assignment_artifact,
     validate_independent_final_reviewer_assignment_request_state,
+    validate_integrated_production_acceptance_owner_decision_packet_state,
     validate_integrated_production_acceptance_preflight_state,
     validate_s2pmt07_mainline_attestation_state,
     validate_p0_p1_zero_proof_assembly_state,
@@ -6491,6 +6493,46 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(
             "integrated production acceptance preflight must not claim integrated_production_accepted",
             validate_integrated_production_acceptance_preflight_state(tampered),
+        )
+
+    def test_integrated_production_acceptance_owner_decision_packet_does_not_accept_production(self) -> None:
+        state = build_integrated_production_acceptance_owner_decision_packet_state(
+            generated_at="2026-07-01T16:30:00+10:00"
+        )
+
+        self.assertEqual(state["task_id"], "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION")
+        self.assertEqual(state["status"], "blocked_owner_decision_packet_ready_no_acceptance")
+        self.assertEqual(state["scope"], "owner_decision_packet_only_no_acceptance_no_enablement")
+        self.assertTrue(state["packet_ready"])
+        self.assertEqual(state["failed_checks"], [])
+        self.assertEqual(
+            state["blocking_reasons"],
+            [
+                "owner_production_boundary_decision_missing",
+                "integrated_production_accepted_not_written",
+                "daily_operation_not_enabled",
+            ],
+        )
+        self.assertIn("review_integrated_production_acceptance_preflight_evidence", state["required_owner_actions"])
+        self.assertTrue(state["checks"]["preflight_checks_passed"])
+        self.assertTrue(state["checks"]["current_points_to_owner_decision"])
+        self.assertTrue(state["checks"]["owner_decision_not_recorded"])
+        self.assertFalse(state["owner_production_boundary_decision_recorded"])
+        self.assertFalse(state["acceptance_write_gate_allowed_by_this_packet"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["release_packaging_enabled"])
+        self.assertFalse(state["production_restore_enabled"])
+        self.assertEqual(validate_integrated_production_acceptance_owner_decision_packet_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["acceptance_write_gate_allowed_by_this_packet"] = True
+        self.assertIn(
+            "owner decision packet alone must not allow acceptance write gate",
+            validate_integrated_production_acceptance_owner_decision_packet_state(tampered),
         )
 
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:

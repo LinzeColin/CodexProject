@@ -1,5 +1,21 @@
 # ADP 用户中心
 
+## 2026-07-01 16:10:24 Australia/Sydney - 受控真实运行验收复核已通过，未重复发送
+
+- 用户授权一次前台真实运行验收：`local-runner daily --allow-smtp-send` 复用 `2026-07-01` 既有 daily input report。
+- 结果：`status=pass`，`sent_mail_count=4/4`，M1/M2/M3/M4 均有真实 sent 证据；本轮 `newly_sent_mail_products=[]`，因为同日 ledger 已有四封 sent refs，所以没有重复补发。
+- 运行后安全状态：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled，无 ADP 后台进程。
+- 这次验收只证明受控前台运行和去重边界；仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`，未启用 scheduler/Release/production restore。
+- 证据：[受控运行验收清单](../../governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md) / runtime report sha256 `495d74faa1f9931d85798ca6fdc3de7b6a57874676b25f206ac34fd367ecd2e6`。
+
+## 2026-07-01 16:01:30 Australia/Sydney - Owner decision packet 已准备，仍等待用户决策
+
+- `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET` 已由 CLI 生成并通过 validator：`packet_ready=true`，`failed_checks=[]`，`state_hash=de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289`。
+- 这个 packet 只把 owner 下一步选择变成可审查证据：可以记录 production-boundary decision evidence 后进入单独 final acceptance write gate，或暂停在 final bundle ready 状态。
+- 当前仍未记录 owner approval：`owner_production_boundary_decision_recorded=false`，未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`。
+- 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
+- 证据：[owner decision packet 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_PACKET.md) / [preflight 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json)。这不是 Stage2/S3 production accepted。
+
 ## 2026-07-01 15:16:36 Australia/Sydney - Production-boundary preflight 已通过，仍等待 owner 决策
 
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT` 已通过所有 configured checks，`failed_checks=[]`，`state_hash=6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5`。

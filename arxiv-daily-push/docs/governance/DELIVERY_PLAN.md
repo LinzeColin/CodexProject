@@ -21,10 +21,28 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 329
+- task_count: 331
 - acceptance_count: 128
 
 ## Delivery Tasks
+
+## 2026-07-01 16:10:24 Australia/Sydney - S2PMT07 authorized controlled real-run acceptance
+
+- Task: `S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE`
+- Result: `pass_controlled_real_run_evidence_rechecked_no_new_send`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md`; runtime report `/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701/adp-local-runner-report.json`.
+- Controlled run state: `status=pass`; `service_date=2026-07-01`; `sent_mail_count=4/4`; `newly_sent_mail_products=[]`; `historical_sent_mail_products=M1,M2,M3,M4`; `duplicate_smtp_send_avoided=true`; runtime report sha256 `495d74faa1f9931d85798ca6fdc3de7b6a57874676b25f206ac34fd367ecd2e6`.
+- Runtime boundary: foreground command only; no launchctl kickstart; no duplicate SMTP; persistent `ADP_ALLOW_SMTP_SEND=false`; daily/health/watchdog LaunchAgents disabled; no ADP background process.
+- Production boundary: no `INTEGRATED_PRODUCTION_ACCEPTED` write, no `DAILY_OPERATION`, no scheduler enable/install, no Release, no production restore, no public schema/DB/source/ranking/queue mutation, and no Stage2/S3 production acceptance.
+- Verification: foreground local-runner report pass; post-run safety checks pass; repository validation continues in the closeout command set.
+
+## 2026-07-01 16:01:30 Australia/Sydney - S2PMT07 owner decision packet
+
+- Task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET`
+- Result: `blocked_owner_decision_packet_ready_no_acceptance`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_PACKET.md`; `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json`.
+- Packet state: `packet_ready=true`; `owner_decision_packet_state_hash=de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289`; `failed_checks=[]`; blockers `owner_production_boundary_decision_missing;integrated_production_accepted_not_written;daily_operation_not_enabled`.
+- Production boundary: packet ready is not owner approval, not `INTEGRATED_PRODUCTION_ACCEPTED`, and not `DAILY_OPERATION`; no SMTP/scheduler/Release/restore/public schema/DB/source/ranking/queue mutation is introduced by this packet.
 
 ## 2026-07-01 15:16:36 Australia/Sydney - S2PMT07 integrated production acceptance preflight
 

@@ -2071,6 +2071,35 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["preflight_validation_errors"], [])
 
+    def test_integrated_production_acceptance_owner_decision_packet_json_command_stays_blocked(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "build-integrated-production-acceptance-owner-decision-packet",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-07-01T16:30:00+10:00",
+                    "--json",
+                ]
+            )
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked_owner_decision_packet_ready_no_acceptance")
+        self.assertTrue(payload["packet_ready"])
+        self.assertEqual(payload["failed_checks"], [])
+        self.assertEqual(
+            payload["next_required_step"],
+            "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_DECISION_OR_PAUSE",
+        )
+        self.assertFalse(payload["owner_production_boundary_decision_recorded"])
+        self.assertFalse(payload["acceptance_write_gate_allowed_by_this_packet"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertEqual(payload["owner_packet_validation_errors"], [])
+
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {
             "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,

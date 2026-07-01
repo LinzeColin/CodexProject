@@ -92,6 +92,25 @@ S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_FORBIDDEN_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_TASK_ID = (
+    "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_SCOPE = (
+    "owner_decision_packet_only_no_acceptance_no_enablement"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUIRED_ACTIONS = (
+    "review_integrated_production_acceptance_preflight_evidence",
+    "choose_record_owner_decision_or_pause",
+    "if_approving_record_explicit_owner_production_boundary_decision_before_acceptance_write_gate",
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_FORBIDDEN_FLAGS = (
+    S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_FORBIDDEN_FLAGS
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_BLOCKING_REASONS = (
+    "owner_production_boundary_decision_missing",
+    "integrated_production_accepted_not_written",
+    "daily_operation_not_enabled",
+)
 S2PMT07_BLOCKING_REASONS = (
     "reviewer_independence_not_proven",
     "inherited_v7_1_p0_findings_open",
@@ -12362,6 +12381,170 @@ def validate_integrated_production_acceptance_preflight_state(state: Mapping[str
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("integrated production acceptance preflight state_hash does not match state content")
+    return errors
+
+
+def build_integrated_production_acceptance_owner_decision_packet_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
+    """Build the owner decision packet after production-boundary preflight, without accepting production."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    preflight_path = root / "governance" / "run_manifests" / (
+        "ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json"
+    )
+    current_pointer_path = root / "arxiv-daily-push" / "docs" / "pursuing_goal" / "CURRENT.yaml"
+    preflight_state = _load_json_mapping_artifact(preflight_path) if preflight_path.exists() else {}
+    final_bundle = build_final_acceptance_bundle_readiness_state(repo_root=root)
+    try:
+        current_pointer_text = current_pointer_path.read_text(encoding="utf-8")
+    except OSError:
+        current_pointer_text = ""
+    checks = {
+        "preflight_manifest_present": bool(preflight_state),
+        "preflight_checks_passed": preflight_state.get("preflight_checks_passed") is True,
+        "preflight_failed_checks_empty": preflight_state.get("failed_checks") == [],
+        "preflight_stopped_at_owner_decision": preflight_state.get("status")
+        == "blocked_owner_decision_required",
+        "current_points_to_owner_decision": (
+            f"next_executable_task: {S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_TASK_ID}"
+            in current_pointer_text
+        ),
+        "owner_decision_not_recorded": "owner_production_boundary_decision_recorded: false"
+        in current_pointer_text,
+        "production_acceptance_not_claimed": "production_acceptance_claimed: false" in current_pointer_text,
+        "integrated_production_not_accepted": (
+            "stage2_integrated_production_accepted: false" in current_pointer_text
+        ),
+        "daily_operation_not_enabled": "daily_operation_enabled: false" in current_pointer_text,
+        "final_bundle_ready": final_bundle.get("status") == "pass"
+        and final_bundle.get("missing_items") == [],
+        "no_production_side_effects_proven": _mapping(
+            final_bundle.get("no_production_side_effect_attestation_validation")
+        ).get("status")
+        == "pass",
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    status = "blocked_owner_decision_packet_ready_no_acceptance" if not failed_checks else "blocked"
+    state = {
+        "schema_version": "adp.integrated_production_acceptance_owner_decision_packet.v1",
+        "task_id": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_TASK_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-INTEGRATED-PRODUCTION"],
+        "generated_at": generated_at,
+        "status": status,
+        "scope": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_SCOPE,
+        "packet_ready": not failed_checks,
+        "required_owner_actions": list(
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUIRED_ACTIONS
+        ),
+        "decision_id": "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701",
+        "decision_question": (
+            "S2PMT07 production-boundary preflight 已通过；是否记录 owner 生产验收边界决策证据，"
+            "进入最终 acceptance write gate，同时继续禁止自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+        ),
+        "recommended_option": (
+            "record_owner_production_boundary_decision_evidence_without_enabling_runtime"
+        ),
+        "allowed_options": [
+            "record_owner_production_boundary_decision_evidence_without_enabling_runtime",
+            "pause_at_final_bundle_ready_no_production_acceptance",
+        ],
+        "forbidden_option": (
+            "enable_smtp_scheduler_release_restore_or_daily_operation_from_this_packet"
+        ),
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": list(
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_BLOCKING_REASONS
+        )
+        if not failed_checks
+        else [f"{name}_failed" for name in failed_checks],
+        "next_required_step": "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_DECISION_OR_PAUSE",
+        "next_executable_task_after_owner_decision": "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE",
+        "preflight_manifest_ref": str(preflight_path.relative_to(root)),
+        "preflight_state_hash": preflight_state.get("state_hash", ""),
+        "final_bundle_manifest_ref": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+        "final_bundle_readiness_state_hash": final_bundle.get("state_hash"),
+        "final_bundle_missing_items": list(final_bundle.get("missing_items", [])),
+        "owner_production_boundary_decision_recorded": False,
+        "acceptance_write_gate_allowed_by_this_packet": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_integrated_production_acceptance_owner_decision_packet_state(
+    state: Mapping[str, Any],
+) -> list[str]:
+    """Validate the owner decision packet without treating it as owner approval."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != "adp.integrated_production_acceptance_owner_decision_packet.v1":
+        errors.append("integrated production owner decision packet schema_version is invalid")
+    if state.get("task_id") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_TASK_ID:
+        errors.append("integrated production owner decision packet task_id is invalid")
+    if state.get("scope") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_SCOPE:
+        errors.append("integrated production owner decision packet scope is invalid")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("integrated production owner decision packet failed_checks must match checks")
+    expected_ready = not failed_checks
+    if state.get("packet_ready") is not expected_ready:
+        errors.append("integrated production owner decision packet_ready must match checks")
+    expected_status = "blocked_owner_decision_packet_ready_no_acceptance" if expected_ready else "blocked"
+    if state.get("status") != expected_status:
+        errors.append("integrated production owner decision packet status must match checks")
+    if (
+        tuple(state.get("required_owner_actions", []))
+        != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUIRED_ACTIONS
+    ):
+        errors.append("integrated production owner decision packet required_owner_actions are invalid")
+    if state.get("decision_id") != "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701":
+        errors.append("integrated production owner decision packet decision_id is invalid")
+    if expected_ready:
+        if (
+            state.get("blocking_reasons")
+            != list(S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_BLOCKING_REASONS)
+        ):
+            errors.append("integrated production owner decision packet blockers must stop at owner decision")
+    else:
+        expected_blocking = [f"{name}_failed" for name in failed_checks]
+        if state.get("blocking_reasons") != expected_blocking:
+            errors.append("integrated production owner decision packet blockers must match failed checks")
+    if state.get("owner_production_boundary_decision_recorded") is not False:
+        errors.append("owner decision packet must not record owner approval")
+    if state.get("acceptance_write_gate_allowed_by_this_packet") is not False:
+        errors.append("owner decision packet alone must not allow acceptance write gate")
+    for flag in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"integrated production owner decision packet must not claim {flag}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("integrated production owner decision packet state_hash does not match state content")
     return errors
 
 

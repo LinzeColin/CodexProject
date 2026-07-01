@@ -4,8 +4,8 @@
 
 - source_base_commit: `fa91a3cccf4204c4d902fb54adb17561ca58c6ec`
 - source_tree_hash: `2d52c91fa61298c3a314dde3d6b4d21d4fe50949`
-- source_snapshot_hash: `sha256:3124497d8ee4bcc2628ee36d66291de53312079d3cc9b5386037c6f110ae118f`
-- snapshot_event_time: `2026-07-01T15:16:36+10:00`
+- source_snapshot_hash: `sha256:5b929bb883b77847d468498bf4c9114635a8595a6288e0a96aa65b465202492a`
+- snapshot_event_time: `2026-07-01T16:10:24+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE`
+- Phase/Gate: `S2PL / S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_OWNER_DECISION_PACKET_READY_BLOCKED_NO_PRODUCTION_ACCEPTANCE`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE`
+- Release gate: `S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_OWNER_DECISION_PACKET_READY_BLOCKED_NO_PRODUCTION_ACCEPTANCE`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`
-- Pending/stale events: `365`
+- Pending/stale events: `367`
 - Tree-bound events: `1`
 - Commit-bound events: `4`
-- Legacy unbound events: `325`
+- Legacy unbound events: `327`
 - Unresolved fact IDs: `0`

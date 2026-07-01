@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE"
+    phase: "S2PL"
+    objective: "Record the owner-authorized single foreground controlled real-run acceptance recheck after S2PMT07 preflight and owner-decision packet readiness, while preventing duplicate SMTP and persistent production enablement."
+    scope: "Controlled local-runner evidence manifest, phase record, current pointer safety fields, development ledger, three-base/user-center summaries, and no-production closeout validation."
+    non_scope: "No duplicate SMTP send, scheduler enable/install, Release packaging, production restore, DAILY_OPERATION, public schema/DB/source/ranking/queue mutation, V7 contract mutation, P0/P1 historical baseline mutation, INTEGRATED_PRODUCTION_ACCEPTED write, or Stage2/S3 production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET", "ADP local-runner 20260701 sent ledger evidence"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["foreground local-runner daily --allow-smtp-send with existing 20260701 daily input report", "post-run safety check for ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and no ADP process", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_governance_sync.py", "python3 tools/validate_task_pack.py --root ."]
+    test_results: ["controlled foreground local-runner PASS: sent_mail_count=4/4, newly_sent_mail_products=[], historical_sent_mail_products=M1,M2,M3,M4, duplicate_smtp_send_avoided=true", "post-run safety PASS: persistent ADP_ALLOW_SMTP_SEND=false, process flag false, daily/health/watchdog disabled, no ADP background process", "remaining repository validation pending until this commit closeout"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md", "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701/adp-local-runner-report.json"]
+    risk: "Future agents could treat a single controlled foreground recheck as standing SMTP/scheduler permission or production acceptance; this task records the no-duplicate/no-persistent-enable boundary."
+    rollback: "Revert this evidence manifest, phase record, and governance/user-center summary updates; runtime SMTP state remains disabled and no production config was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+  - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET"
+    phase: "S2PL"
+    objective: "Build and record the owner production-boundary decision packet after integrated production acceptance preflight passed, while keeping owner approval, acceptance write gate, and production enablement blocked."
+    scope: "owner decision packet CLI, validator, run manifest, current pointer, development ledger, three-base/user-center summaries, and regression tests."
+    non_scope: "No owner approval claim, INTEGRATED_PRODUCTION_ACCEPTED write, SMTP send, scheduler enable/install, Release packaging, production restore, DAILY_OPERATION, public schema/DB/source/ranking/queue mutation, V7 contract mutation, P0/P1 historical baseline mutation, or Stage2/S3 production acceptance."
+    status: "blocked"
+    dependencies: ["S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", "FINAL_ACCEPTANCE_BUNDLE/manifest.json", "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_PACKET.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_decision_packet_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "python3 scripts/validate_project_governance.py --project arxiv-daily-push", "python3 scripts/validate_governance_sync.py", "python3 tools/validate_task_pack.py --root .", "python3 tools/verify_acceptance_bundle.py --require-zero P0 P1"]
+    test_results: ["owner decision packet CLI PASS: status=blocked_owner_decision_packet_ready_no_acceptance, packet_ready=true, failed_checks=[]", "focused stage2 final-gate and CLI unittest 170 OK", "remaining verification pending until this commit closeout"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_PACKET.md", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json", "FINAL_ACCEPTANCE_BUNDLE/manifest.json"]
+    risk: "Future agents could treat owner packet readiness as owner approval or production acceptance; this task makes the packet explicit and keeps owner_production_boundary_decision_recorded=false."
+    rollback: "Revert the owner decision packet CLI, tests, manifest, phase record, and governance/current-state sync; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
     phase: "S2PL"
     objective: "Run and record the integrated production acceptance boundary preflight after the S2PMT07 final acceptance bundle artifact chain passed, while stopping before owner production-boundary decision and any production enablement."

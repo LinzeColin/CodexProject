@@ -1,0 +1,87 @@
+{
+  "schema_version": "adp.s2pmt07.authorized_controlled_real_run_acceptance.v1",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE",
+  "iteration_id": "ITER-20260701-ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE",
+  "event_id": "EVENT-20260701-ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE",
+  "generated_at": "2026-07-01T16:10:24+10:00",
+  "status": "pass_controlled_real_run_evidence_rechecked_no_new_send",
+  "owner_authorization": {
+    "authorized_by": "owner/coordinator",
+    "authorization_text": "允许一次受控真实运行验收，临时启用发送后立马禁止，不产生后台内存线程压力",
+    "authorization_scope": "one foreground local-runner daily command with --allow-smtp-send; do not enable launchd scheduler, Release, production restore, or DAILY_OPERATION",
+    "authorization_used": true
+  },
+  "runtime_command_boundary": {
+    "foreground_only": true,
+    "background_thread_or_daemon_started": false,
+    "launchctl_kickstart_used": false,
+    "launchagent_enabled": false,
+    "release_upload_enabled": false,
+    "production_restore_enabled": false,
+    "persistent_env_file_changed": false,
+    "command_class": "python3 -B -m arxiv_daily_push local-runner daily --allow-smtp-send --daily-input-report <existing 20260701 report> --json"
+  },
+  "controlled_run_result": {
+    "service_date": "2026-07-01",
+    "runner_status": "pass",
+    "daily_input_source": "existing_report",
+    "selected_source_id": "arxiv:2606.30473",
+    "selected_title": "Field Order Should Not Matter: Permutation-Invariant Embedding Model Fine-Tuning for Structured Metadata Retrieval",
+    "user_center_sync_ready": true,
+    "production_evidence_ready": true,
+    "real_smtp_sent": true,
+    "planned_send_total": 4,
+    "sent_mail_count": 4,
+    "sent_mail_products": ["M1", "M2", "M3", "M4"],
+    "newly_sent_mail_products": [],
+    "historical_sent_mail_products": ["M1", "M2", "M3", "M4"],
+    "blocked_mail_products": [],
+    "dry_run_mail_products": [],
+    "all_planned_products_sent": true,
+    "delivery_ref_by_product": {
+      "M1": "smtp://message/smtp-delivery:cec442e1da5bdfcf",
+      "M2": "smtp://message/smtp-delivery:b1053c91aec057f1",
+      "M3": "smtp://message/smtp-delivery:98c7dcb43ba2b9d5",
+      "M4": "smtp://message/smtp-delivery:6da07d3691f28db6"
+    },
+    "blocking_reasons": [],
+    "validation_errors": []
+  },
+  "duplicate_send_control": {
+    "existing_ledger_sent_evidence_detected": true,
+    "duplicate_smtp_send_avoided": true,
+    "reason": "2026-07-01 ledger already contained sent evidence for M1, M2, M3, and M4; the controlled foreground rerun consumed historical delivery evidence instead of resending."
+  },
+  "post_run_safety_state": {
+    "persistent_adp_allow_smtp_send": "false",
+    "process_env_adp_allow_smtp_send_after_command": "false",
+    "launchagents_disabled_after": {
+      "com.linze.adp.local.daily": true,
+      "com.linze.adp.local.health": true,
+      "com.linze.adp.local.watchdog": true
+    },
+    "adp_background_process_count_after": 0
+  },
+  "evidence_refs": {
+    "runtime_report": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701/adp-local-runner-report.json",
+    "runtime_report_sha256": "495d74faa1f9931d85798ca6fdc3de7b6a57874676b25f206ac34fd367ecd2e6",
+    "backup_before_run": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701_before_authorized_controlled_acceptance_20260701T061024Z",
+    "smtp_report_sha256_by_product": {
+      "M1": "f8257e8d7eb56443989fbf8373b054367220b9cc5590f1c1402c93faacb72d1a",
+      "M2": "356ebc2a985ec20f6e03cf161b9694d83540f76b9eaab5de2b97ecba1f319170",
+      "M3": "0700e1304196779153f461388a6fcddc70707a1efb39cd9bd82476ff420ef821",
+      "M4": "1901a33432e4c6d5f7cd9e0ee6b3710bcf8c2c44ac2c1a444a407cf40587321d"
+    }
+  },
+  "production_boundary": {
+    "owner_controlled_real_run_authorized": true,
+    "owner_production_boundary_decision_recorded": false,
+    "stage2_integrated_production_accepted": false,
+    "production_acceptance_claimed": false,
+    "daily_operation_enabled": false,
+    "smtp_scheduler_release_or_restore_enabled_by_this_run": false,
+    "counts_as_daily_operation_enablement": false
+  },
+  "next_required_step": "Record an explicit production-boundary acceptance/write decision or remain blocked; do not infer DAILY_OPERATION from this controlled run."
+}
