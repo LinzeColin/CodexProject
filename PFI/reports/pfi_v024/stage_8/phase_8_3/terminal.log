@@ -1,0 +1,30 @@
+2026-07-01T05:00:17Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head=cae21bdd370bddfa176a005bd31fb1c74719e87d
+origin/main=fa91a3cccf4204c4d902fb54adb17561ca58c6ec
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase83_manual_acceptance.py -q
+Result: 5 failed before implementation; missing build_v024_stage8_phase83_contract, manual_acceptance.md, defects.md, evidence.json, and Phase 8.3 docs/run contract updates.
+
+Implementation boundary:
+Stage 8 Phase 8.3 only. Prepared manual acceptance package and pending-user-confirmation evidence. Did not execute Stage 8 whole-stage review, Stage 9, GitHub main upload, app bundle reinstall, or financial data changes.
+
+GREEN:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase83_manual_acceptance.py -q
+Result: 5 passed in 0.07s
+
+Adjacent regression:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py -q
+Result: 5 passed in 0.07s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py -q
+Result: 4 passed in 0.07s
+
+Static checks:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py
+python3 -m json.tool PFI/reports/pfi_v024/stage_8/phase_8_3/evidence.json
+git diff --check -- PFI
+Result: pass

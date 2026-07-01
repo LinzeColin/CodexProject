@@ -2,11 +2,9 @@
 
 ## Current Run Boundary
 
-本轮只执行 `Stage 8 Phase 8.2 - 截图验收`。
+本轮只执行 `Stage 8 Phase 8.3 - 人工验收`，当前状态为待用户确认。
 
-不执行 Phase 8.3 人工验收、不执行 Stage 8 whole-stage review、
-不执行 Stage 9 regression freeze，不上传 GitHub main，不重装 app bundle，
-不写入、清理、删除、补造或改写真实财务数据。
+不执行 Stage 8 whole-stage review、不执行 Stage 9 regression freeze，不上传 GitHub main，不重装 app bundle，不写入、清理、删除、补造或改写真实财务数据。
 
 ## Stage 8 Phase 8.1 - 自动验收
 
@@ -28,7 +26,7 @@ Phase 8.1 evidence:
 
 ## Stage 8 Phase 8.2 - 截图验收
 
-Phase 8.2 覆盖 roadmap 中的四个截图验收任务：
+Phase 8.2 覆盖 roadmap 中的四个截图验收任务，当前状态为 candidate pass：
 
 - `T8.2.1` app 截图：`app_home.png`。
 - `T8.2.2` localhost 截图：`localhost_home.png`，与 app 入口 bundle hash 一致。
@@ -49,23 +47,37 @@ Phase 8.2 evidence:
 - `PFI/reports/pfi_v024/stage_8/phase_8_2/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_8/phase_8_2/risk_and_rollback.md`
 
+## Stage 8 Phase 8.3 - 人工验收
+
+Phase 8.3 覆盖 roadmap 中的三个人工验收准备任务，当前状态为待用户确认：
+
+- `T8.3.1` 人工验收清单：`manual_acceptance.md` 列出打开 PFI.app、打开 localhost、10 个一级入口、核心二级页面、浏览器后退/前进、核心指标无假零、报告中心、亮色 UI 和移动端响应式检查项。
+- `T8.3.2` 失败项定位：`defects.md` 记录待用户人工验收和 `/Applications/PFI.app` 缺失、`~/Downloads/PFI.app` 可用的环境开放项。
+- `T8.3.3` 不进入下一 Stage 规则：`evidence.json` 明确用户确认前不进入 Stage 8 whole-stage review、Stage 9 或 GitHub main upload。
+
+Phase 8.3 evidence:
+
+- `PFI/reports/pfi_v024/stage_8/phase_8_3/evidence.json`
+- `PFI/reports/pfi_v024/stage_8/phase_8_3/manual_acceptance.md`
+- `PFI/reports/pfi_v024/stage_8/phase_8_3/defects.md`
+- `PFI/reports/pfi_v024/stage_8/phase_8_3/terminal.log`
+- `PFI/reports/pfi_v024/stage_8/phase_8_3/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_8/phase_8_3/risk_and_rollback.md`
+
 ## Validation
 
 ```bash
-PLAYWRIGHT_PACKAGE_PATH="/Users/linzezhang/Documents/Codex/CodexProject/EEI/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright" PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node PFI/scripts/validate_v024_stage8_phase82_screenshots.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase83_manual_acceptance.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase82_screenshot_acceptance.py -q
-PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/scripts/validate_v024_stage8_phase82_screenshots.js
-PATH="/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/shell.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py
-python3 -m json.tool PFI/reports/pfi_v024/stage_8/phase_8_2/evidence.json
-python3 -m json.tool PFI/reports/pfi_v024/stage_8/phase_8_2/browser_validation.json
-python3 -m json.tool PFI/reports/pfi_v024/stage_8/phase_8_2/screenshot_index.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_8/phase_8_3/evidence.json
 git diff --check -- PFI
 ```
 
 ## Explicitly Not Done
 
-- Phase 8.3 manual acceptance.
+- User acceptance confirmation.
 - Stage 8 whole-stage review.
 - Stage 8 GitHub main upload.
 - Stage 9 regression freeze.
@@ -74,4 +86,4 @@ git diff --check -- PFI
 
 ## Next Gate
 
-下一轮可进入 `Stage 8 Phase 8.3 - 人工验收`。不得在没有用户明确指令时自动进入 Stage 8 whole-stage review、Stage 9 或 upload gate。
+下一轮必须先等待用户确认人工验收结果，或按用户明确指令进入 Stage 8 whole-stage review / 修复轮。不得自动进入 Stage 9 或 upload gate。
