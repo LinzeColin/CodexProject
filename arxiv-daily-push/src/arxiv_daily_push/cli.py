@@ -1427,6 +1427,21 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional future real scheduler proof manifest JSON to validate as an input candidate.",
     )
     s2plt02_real_scheduler_proof_capture.add_argument(
+        "--expected-repo-root",
+        default=None,
+        help="Expected CodexProject repo root for the installed ADP LaunchAgents. Defaults to the current working directory.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
+        "--expected-project-root",
+        default=None,
+        help="Expected arxiv-daily-push project root for the installed ADP LaunchAgents. Defaults to ./arxiv-daily-push.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
+        "--allow-non-current-main",
+        action="store_true",
+        help="Do not require the LaunchAgent repo root HEAD to match origin/main. This should not be used for S2PLT02 proof.",
+    )
+    s2plt02_real_scheduler_proof_capture.add_argument(
         "--json",
         action="store_true",
         help="Print JSON S2PLT02 real scheduler proof capture audit state.",
@@ -4249,12 +4264,17 @@ def main(argv: list[str] | None = None) -> int:
             if args.scheduler_run_manifest
             else None
         )
+        expected_repo_root = args.expected_repo_root or str(Path.cwd())
+        expected_project_root = args.expected_project_root or str(Path.cwd() / "arxiv-daily-push")
         report = build_s2plt02_real_scheduler_proof_capture_audit_state(
             generated_at=args.generated_at,
             proof_ref=args.proof_ref,
             launchctl_disabled_text=launchctl_disabled_text,
             launchctl_print_outputs=launchctl_print_outputs,
             scheduler_run_manifest=scheduler_run_manifest,
+            expected_repo_root=expected_repo_root,
+            expected_project_root=expected_project_root,
+            require_repo_head_matches_origin_main=not args.allow_non_current_main,
         )
         state_errors = validate_s2plt02_real_scheduler_proof_capture_audit_state(report)
         if state_errors:

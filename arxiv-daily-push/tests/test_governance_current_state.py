@@ -30,28 +30,40 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_summary_describes_s2plt02_inventory_summary_and_blockers(self) -> None:
+    def test_current_state_summary_describes_s2plt02_current_main_root_guard_and_blockers(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_CONTROLLED_REAL_RUN_20260701_SCHEDULER_ONLY_BLOCKER_SYNC_BLOCKED_NO_PRODUCTION",
+            "S2PLT02_LAUNCHAGENT_ROOT_CURRENT_MAIN_GUARD_BLOCKED_NO_PRODUCTION",
             current_state,
         )
+        self.assertIn("S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD", current_state)
+        self.assertIn("scheduler_proof_ready=false", current_state)
+        self.assertIn("launchagents_disabled_not_terminal_scheduler_proof", current_state)
+        self.assertIn("launchagent_repo_head_not_current_main", current_state)
+        self.assertIn("scheduler_run_manifest_missing", current_state)
+        self.assertIn("89b033448ce4ef8de096f847658c0a0beb3b02f5115965b10b30c3f5661ae878", current_state)
+        self.assertIn("/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject", current_state)
+        self.assertIn("9266a609eed3f8143f939abad29e7295e8d52f53", current_state)
+        self.assertIn("0e205f71ed29091752cf0964212329f873f7d4ca", current_state)
+        self.assertIn(
+            "ADP-S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD-20260701.json",
+            current_state,
+        )
+        self.assertIn("PHASE_S2PLT02_LAUNCHAGENT_ROOT_CURRENT_MAIN_GUARD.md", ledger)
+        self.assertIn("No scheduler was enabled or kickstarted", current_state)
+        self.assertIn("no SMTP was sent", current_state)
+        self.assertIn("no terminal proof artifact was written", current_state)
+        self.assertIn("no Stage2/S3/integrated production acceptance is claimed", current_state)
+        self.assertIn("Previous controlled real 20260701 run remains visible", current_state)
         self.assertIn("S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC", current_state)
         self.assertIn("real_smtp_sent=true", current_state)
         self.assertIn("sent_mail_count=4", current_state)
-        self.assertIn("runtime_capture_blockers=real_launchd_scheduler_proof_missing", current_state)
         self.assertIn("observed_real_delivery_days=2/2", current_state)
         self.assertIn("observed_real_email_count=8/8", current_state)
-        self.assertIn("REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
-        self.assertIn("56ae67654903caad8006b244e36a606f60a0b3a09db93f01d11327a4da546489", current_state)
-        self.assertIn("f89312b584b05e5f1c2d5f07f24a5bd6558086fb3473c2e6e715e90b38db78bd", current_state)
-        self.assertIn(
-            "ADP-S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC.json",
-            current_state,
-        )
-        self.assertIn("PHASE_S2PLT02_CONTROLLED_REAL_RUN_20260701_SCHEDULER_ONLY_BLOCKER_SYNC.md", ledger)
+        self.assertIn("REAL_SCHEDULER_PROOF", current_state)
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
         self.assertIn("Previous terminal scheduler blocker sync remains visible", current_state)
         self.assertIn("S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC", current_state)
         self.assertIn("Previous controlled real second-day capture remains visible", current_state)
