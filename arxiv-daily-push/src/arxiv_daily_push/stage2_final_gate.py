@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+import subprocess
 from collections.abc import Mapping
 from datetime import date
 from pathlib import Path
@@ -3705,6 +3707,9 @@ def build_s2plt02_real_scheduler_proof_capture_audit_state(
     launchctl_disabled_text: str = "",
     launchctl_print_outputs: Mapping[str, str] | None = None,
     scheduler_run_manifest: Mapping[str, Any] | None = None,
+    expected_repo_root: str | Path | None = None,
+    expected_project_root: str | Path | None = None,
+    require_repo_head_matches_origin_main: bool = False,
 ) -> dict[str, Any]:
     """Audit whether current launchd evidence can produce a real scheduler proof."""
 
@@ -3722,6 +3727,34 @@ def build_s2plt02_real_scheduler_proof_capture_audit_state(
     launchagent_calendar_triggers_present = {
         label: _launchd_calendar_trigger_present(str(launchd_print_outputs.get(label, "")))
         for label in required_labels
+    }
+    launchagent_command_paths = {
+        label: _parse_adp_launchagent_command_paths(str(launchd_print_outputs.get(label, "")))
+        for label in required_labels
+    }
+    expected_repo_root_value = _normalize_optional_path(expected_repo_root)
+    expected_project_root_value = _normalize_optional_path(expected_project_root)
+    launchagent_repo_root_matches_expected = {
+        label: (
+            bool(expected_repo_root_value)
+            and _normalize_optional_path(paths.get("repo_root")) == expected_repo_root_value
+        )
+        for label, paths in launchagent_command_paths.items()
+    }
+    launchagent_project_root_matches_expected = {
+        label: (
+            bool(expected_project_root_value)
+            and _normalize_optional_path(paths.get("project_root")) == expected_project_root_value
+        )
+        for label, paths in launchagent_command_paths.items()
+    }
+    launchagent_repo_git_states = {
+        label: _git_head_state_for_repo(paths.get("repo_root"))
+        for label, paths in launchagent_command_paths.items()
+    } if require_repo_head_matches_origin_main else {}
+    launchagent_repo_head_matches_origin_main = {
+        label: state.get("head_matches_origin_main") is True
+        for label, state in launchagent_repo_git_states.items()
     }
     all_required_launchagents_disabled = all(
         state == "disabled" for state in launchagent_disabled_states.values()
@@ -3755,6 +3788,12 @@ def build_s2plt02_real_scheduler_proof_capture_audit_state(
         blocking_reasons.append("launchagent_runtime_state_missing")
     if not all_required_launchagents_have_calendar_triggers:
         blocking_reasons.append("launchagent_calendar_trigger_missing")
+    if expected_repo_root_value and not all(launchagent_repo_root_matches_expected.values()):
+        blocking_reasons.append("launchagent_repo_root_mismatch")
+    if expected_project_root_value and not all(launchagent_project_root_matches_expected.values()):
+        blocking_reasons.append("launchagent_project_root_mismatch")
+    if require_repo_head_matches_origin_main and not all(launchagent_repo_head_matches_origin_main.values()):
+        blocking_reasons.append("launchagent_repo_head_not_current_main")
     if scheduler_run_manifest is None:
         blocking_reasons.append("scheduler_run_manifest_missing")
     elif scheduler_run_manifest_validation_errors:
@@ -3777,6 +3816,14 @@ def build_s2plt02_real_scheduler_proof_capture_audit_state(
         "launchagent_disabled_states": launchagent_disabled_states,
         "launchagent_runtime_states": launchagent_runtime_states,
         "launchagent_calendar_triggers_present": launchagent_calendar_triggers_present,
+        "launchagent_command_paths": launchagent_command_paths,
+        "expected_repo_root": expected_repo_root_value,
+        "expected_project_root": expected_project_root_value,
+        "launchagent_repo_root_matches_expected": launchagent_repo_root_matches_expected,
+        "launchagent_project_root_matches_expected": launchagent_project_root_matches_expected,
+        "require_repo_head_matches_origin_main": require_repo_head_matches_origin_main,
+        "launchagent_repo_git_states": launchagent_repo_git_states,
+        "launchagent_repo_head_matches_origin_main": launchagent_repo_head_matches_origin_main,
         "all_required_launchagents_disabled": all_required_launchagents_disabled,
         "all_required_launchagents_loaded": all_required_launchagents_loaded,
         "all_required_launchagents_not_running": all_required_launchagents_not_running,
@@ -3834,12 +3881,19 @@ def validate_s2plt02_real_scheduler_proof_capture_audit_state(state: Mapping[str
     disabled_states = _mapping(state.get("launchagent_disabled_states"))
     runtime_states = _mapping(state.get("launchagent_runtime_states"))
     calendar_triggers = _mapping(state.get("launchagent_calendar_triggers_present"))
+    command_paths = _mapping(state.get("launchagent_command_paths"))
+    repo_root_matches = _mapping(state.get("launchagent_repo_root_matches_expected"))
+    project_root_matches = _mapping(state.get("launchagent_project_root_matches_expected"))
+    repo_git_states = _mapping(state.get("launchagent_repo_git_states"))
+    repo_head_matches = _mapping(state.get("launchagent_repo_head_matches_origin_main"))
     if set(disabled_states) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
         errors.append("launchagent_disabled_states must cover all ADP local LaunchAgents")
     if set(runtime_states) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
         errors.append("launchagent_runtime_states must cover all ADP local LaunchAgents")
     if set(calendar_triggers) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
         errors.append("launchagent_calendar_triggers_present must cover all ADP local LaunchAgents")
+    if set(command_paths) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+        errors.append("launchagent_command_paths must cover all ADP local LaunchAgents")
     expected_disabled = all(
         disabled_states.get(label) == "disabled"
         for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
@@ -3858,6 +3912,29 @@ def validate_s2plt02_real_scheduler_proof_capture_audit_state(state: Mapping[str
     )
     if state.get("all_required_launchagents_have_calendar_triggers") is not expected_calendar:
         errors.append("all_required_launchagents_have_calendar_triggers must match trigger states")
+    if state.get("expected_repo_root"):
+        if set(repo_root_matches) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+            errors.append("launchagent_repo_root_matches_expected must cover all ADP local LaunchAgents")
+        if not all(repo_root_matches.values()) and "launchagent_repo_root_mismatch" not in state.get("blocking_reasons", []):
+            errors.append("launchagent_repo_root_mismatch blocker is required")
+    if state.get("expected_project_root"):
+        if set(project_root_matches) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+            errors.append("launchagent_project_root_matches_expected must cover all ADP local LaunchAgents")
+        if (
+            not all(project_root_matches.values())
+            and "launchagent_project_root_mismatch" not in state.get("blocking_reasons", [])
+        ):
+            errors.append("launchagent_project_root_mismatch blocker is required")
+    if state.get("require_repo_head_matches_origin_main") is True:
+        if set(repo_git_states) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+            errors.append("launchagent_repo_git_states must cover all ADP local LaunchAgents")
+        if set(repo_head_matches) != set(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS):
+            errors.append("launchagent_repo_head_matches_origin_main must cover all ADP local LaunchAgents")
+        if (
+            not all(repo_head_matches.values())
+            and "launchagent_repo_head_not_current_main" not in state.get("blocking_reasons", [])
+        ):
+            errors.append("launchagent_repo_head_not_current_main blocker is required")
     for flag in S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_AUDIT_NO_PRODUCTION_FLAGS:
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")
@@ -8952,6 +9029,66 @@ def _parse_launchd_disabled_states(print_disabled_output: str) -> dict[str, str]
         if label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
             states[label] = state
     return states
+
+
+def _normalize_optional_path(value: Any) -> str:
+    if value is None:
+        return ""
+    text = str(value).strip().strip('"').strip("'")
+    if not text:
+        return ""
+    try:
+        return str(Path(text).expanduser().resolve())
+    except OSError:
+        return str(Path(text).expanduser())
+
+
+def _parse_adp_launchagent_command_paths(print_output: str) -> dict[str, str]:
+    repo_root = ""
+    project_root = ""
+    cd_match = re.search(r"(?:^|\s)cd\s+([^;&\n]+)\s+&&", print_output)
+    if cd_match:
+        repo_root = _normalize_optional_path(cd_match.group(1))
+    project_match = re.search(r"--project-root\s+([^ \n]+)", print_output)
+    if project_match:
+        project_root = _normalize_optional_path(project_match.group(1))
+    return {
+        "repo_root": repo_root,
+        "project_root": project_root,
+    }
+
+
+def _git_head_state_for_repo(repo_root: Any) -> dict[str, Any]:
+    root = _normalize_optional_path(repo_root)
+    state: dict[str, Any] = {
+        "repo_root": root,
+        "head": "",
+        "origin_main": "",
+        "head_matches_origin_main": False,
+        "error": "",
+    }
+    if not root:
+        state["error"] = "repo_root_missing"
+        return state
+    try:
+        completed = subprocess.run(
+            ["git", "-C", root, "rev-parse", "HEAD", "origin/main"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        state["error"] = f"git_rev_parse_failed:{type(exc).__name__}"
+        return state
+    values = [line.strip() for line in completed.stdout.splitlines() if line.strip()]
+    if completed.returncode != 0 or len(values) < 2:
+        state["error"] = "git_rev_parse_failed"
+        return state
+    state["head"] = values[0]
+    state["origin_main"] = values[1]
+    state["head_matches_origin_main"] = values[0] == values[1]
+    return state
 
 
 def _parse_launchd_service_state(print_output: str) -> str:

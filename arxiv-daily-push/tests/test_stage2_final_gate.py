@@ -847,6 +847,70 @@ class Stage2FinalGateTests(unittest.TestCase):
             [],
         )
 
+    def test_s2plt02_real_scheduler_proof_capture_audit_blocks_stale_launchagent_repo_root(self) -> None:
+        launchctl_disabled_text = """
+            "com.linze.adp.local.daily" => enabled
+            "com.linze.adp.local.health" => enabled
+            "com.linze.adp.local.watchdog" => enabled
+        """
+        stale_repo = "/tmp/adp-stale-canonical"
+        expected_repo = "/tmp/adp-current-main"
+        launchctl_print_outputs = {
+            label: f"""
+                type = LaunchAgent
+                state = not running
+                arguments = {{
+                    /bin/zsh
+                    -lc
+                    cd {stale_repo} && PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push local-runner daily --project-root {stale_repo}/arxiv-daily-push --state-dir /tmp/adp-state --json
+                }}
+                event triggers = {{
+                    {label}.268435486 => {{
+                        stream = com.apple.launchd.calendarinterval
+                    }}
+                }}
+            """
+            for label in (
+                "com.linze.adp.local.daily",
+                "com.linze.adp.local.health",
+                "com.linze.adp.local.watchdog",
+            )
+        }
+        scheduler_manifest = {
+            "proof_ref": "governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json",
+            "status": "pass",
+            "real_scheduler_proven": True,
+            "scheduler_evidence_present": True,
+            **{flag: False for flag in stage2_final_gate_module.S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS},
+        }
+
+        audit = stage2_final_gate_module.build_s2plt02_real_scheduler_proof_capture_audit_state(
+            generated_at="2026-07-01T10:40:00+10:00",
+            launchctl_disabled_text=launchctl_disabled_text,
+            launchctl_print_outputs=launchctl_print_outputs,
+            scheduler_run_manifest=scheduler_manifest,
+            expected_repo_root=expected_repo,
+            expected_project_root=f"{expected_repo}/arxiv-daily-push",
+        )
+
+        self.assertEqual(audit["status"], "blocked")
+        self.assertFalse(audit["scheduler_proof_ready"])
+        self.assertIn("launchagent_repo_root_mismatch", audit["blocking_reasons"])
+        self.assertIn("launchagent_project_root_mismatch", audit["blocking_reasons"])
+        self.assertNotIn("scheduler_proof_candidate", audit)
+        self.assertEqual(
+            audit["launchagent_repo_root_matches_expected"],
+            {
+                "com.linze.adp.local.daily": False,
+                "com.linze.adp.local.health": False,
+                "com.linze.adp.local.watchdog": False,
+            },
+        )
+        self.assertEqual(
+            stage2_final_gate_module.validate_s2plt02_real_scheduler_proof_capture_audit_state(audit),
+            [],
+        )
+
     def test_s2plt02_terminal_capture_window_reports_loaded_disabled_launchagents_as_nonterminal_scheduler(self) -> None:
         launchctl_disabled_text = """
             "com.linze.adp.local.daily" => disabled
