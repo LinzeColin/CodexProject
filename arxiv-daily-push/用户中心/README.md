@@ -1,5 +1,11 @@
 # ADP 用户中心
 
+## 2026-07-02 07:27:44 Australia/Sydney - 当前阅读规则
+
+- 当前事实：Stage 2 integrated acceptance 已记录并保持 `true`；S3/DAILY_OPERATION 不进入，`daily_operation_enabled=false`。
+- 本页 2026-07-01 19:04 以前关于 S2PLT02、S2PLT03、S2PLT04、final bundle 缺口的记录只作历史追溯，不得用来回退当前 Stage 2 accepted 事实。
+- 后续默认工作仍是 [MVP 准备与复审修补](./MVP准备与复审修补.md)：只做用户中心、证据链、测试和治理同步的小范围修补。
+
 ## 2026-07-02 06:52:05 Australia/Sydney - MVP 准备与复审修补入口已补齐
 
 - 新增当前 MVP 准备入口：[MVP 准备与复审修补](./MVP准备与复审修补.md)。
@@ -399,7 +405,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-07-02 06:59:58 Australia/Sydney
+更新时间：2026-07-02 07:27:44 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -493,8 +499,8 @@
 ## 2026-06-30 07:41:53 Australia/Sydney - S2PLT02 live 授权状态
 
 - 已写入并校验 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`；`live_authorization_artifact_status=pass`。
-- 当前下一任务是 `S2PLT02_TERMINAL_DELIVERY_PROOF`：仍需第二个真实 M1-M4 SMTP 日、8 封真实邮件总量、真实 launchd scheduler proof 和 terminal delivery proof artifact。
-- SMTP、scheduler、Release、restore、DAILY_OPERATION 和 integrated production acceptance 均未启用。
+- 历史当时下一任务是 `S2PLT02_TERMINAL_DELIVERY_PROOF`：当时仍需第二个真实 M1-M4 SMTP 日、8 封真实邮件总量、真实 launchd scheduler proof 和 terminal delivery proof artifact。
+- 后续这些 final bundle 前置项已收口并被 Stage 2 integrated acceptance 消费；当前仍未启用的是 S3/DAILY_OPERATION、SMTP、scheduler、Release 和 restore。
 
 ## 2026-06-30 09:19:10 Australia/Sydney - S2PLT02 terminal proof 候选生成器
 
