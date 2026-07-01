@@ -137,8 +137,6 @@ def validate_stage_review(
     forbidden_upload_paths = [
         Path("KMFA/stage_artifacts/S13_STAGE_REVIEW/human/github_upload_record.md"),
         Path("KMFA/stage_artifacts/S13_STAGE_REVIEW/machine/stage13_upload_manifest.json"),
-        Path("KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md"),
-        Path("KMFA/stage_artifacts/S13_GITHUB_UPLOAD/machine/stage13_upload_manifest.json"),
     ]
     unexpected = [str(path) for path in forbidden_upload_paths if path.exists()]
     if unexpected:

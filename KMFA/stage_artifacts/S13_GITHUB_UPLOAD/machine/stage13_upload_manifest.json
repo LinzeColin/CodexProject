@@ -1,0 +1,73 @@
+{
+  "schema_version": "kmfa.github_upload_manifest.v1",
+  "project_id": "KMFA",
+  "upload_id": "KMFA-S13-GITHUB-UPLOAD-20260701",
+  "stage": "S13",
+  "target": "LinzeColin/CodexProject main",
+  "status": "uploaded_to_github_main",
+  "upload_time": "2026-07-01T21:00:00+10:00",
+  "upload_base_origin_main": "dfdf16c98656c4272fa105027dcbf46ba15d37dd",
+  "reviewed_content_commit": "7b61cc92ce4535bdfa4b459bcd280c4352b6bf95",
+  "reviewed_s13p1_commit": "891abf61001bdc36c64582535713f6a3215aad0a",
+  "reviewed_s13p2_commit": "0a1242a2b9803656a0e4fd34095140e2df550c0c",
+  "reviewed_s13p3_commit": "55c96758d7c883d5aa7131189bb77fcf669f0f4b",
+  "review_refs": [
+    "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/stage13_review_report.md",
+    "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S13_STAGE_REVIEW/machine/stage13_review_manifest.json"
+  ],
+  "upload_refs": [
+    "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md",
+    "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/machine/stage13_upload_manifest.json"
+  ],
+  "validation_summary": {
+    "s13_p1": "PASS: source_lanes=4, drafts=2, html=2, field_mappings=39, pending_reconciliation=12, report_grade_visible=D, formal_report_allowed=false, business_decision_basis=false, s13_p2_scope=false, s13_p3_scope=false, lineage_full_check_scope=false, github_upload=false",
+    "s13_p2": "PASS: source_lanes=5, issue_types=4, priority_items=4, responsibility_items=4, field_mappings=25, pending_reconciliation=12, report_grade_visible=D, formal_report_allowed=false, business_decision_basis=false, legal_collection_decision=false, payment_or_bank_operation=false, s13_p3_scope=false, stage13_review=false, github_upload=false",
+    "s13_p3": "PASS: review_dimensions=4, difference_queue=4, quality_report=1, pending_reconciliation=12, report_grade_visible=D, formal_report_allowed=false, business_decision_basis=false, difference_auto_resolution=false, stage13_review=false, github_upload=false",
+    "stage13_review": "PASS: financial_lanes=4, drafts=2, collection_lanes=5, priority_items=4, review_dimensions=4, difference_queue=4, quality_reports=1, pending_reconciliation=12, upload_allowed_after_review=true, s14_allowed=false, github_upload_status=not_pushed",
+    "full_unit_tests": "PASS: 172 tests",
+    "governance": "PASS: lean_governance and project_governance errors 0 / warnings 0",
+    "no_float_money": "PASS",
+    "metadata_protocol": "PASS: dirs=8, files=19, identifiers=5",
+    "immutability_policy": "PASS",
+    "report_grade_gate": "PASS",
+    "required_html": "PASS: html=45, core=7",
+    "no_omission": "PASS: requirements=20, P0=9, P1=8, status_records=445, tasks=162, v1.2_html=45+",
+    "yaml_parse": "PASS",
+    "json_jsonl_csv_parse": "PASS: stage_status=445, events=73, development_events=73, parameter_registry rows=150 columns=34",
+    "raw_private_artifact_scan": "PASS: forbidden tracked artifacts outside taskpack=0",
+    "secret_scan": "PASS: hits=0",
+    "diff_check": "PASS",
+    "final_dry_run_push": "PASS",
+    "push": "PASS",
+    "post_push_parity": "PASS: HEAD == origin/main == remote main"
+  },
+  "privacy_boundary": {
+    "raw_sensitive_data_uploaded": false,
+    "raw_business_files_uploaded": false,
+    "business_records_committed": false,
+    "credentials_committed": false,
+    "private_csv_committed": false,
+    "bank_contract_payroll_tax_files_uploaded": false,
+    "excel_workbooks_committed": false,
+    "pdf_files_committed": false,
+    "sqlite_or_db_files_committed": false,
+    "field_plaintext_committed": false,
+    "true_account_numbers_committed": false,
+    "true_money_amounts_committed": false
+  },
+  "non_scope": [
+    "S14 implementation",
+    "lineage full check",
+    "formal reports",
+    "external connectors",
+    "difference closure",
+    "invoicing",
+    "payment",
+    "bank operations",
+    "tax filing",
+    "legal collection actions",
+    "business release"
+  ],
+  "next_gate": "KMFA-S14-P1-GATE"
+}

@@ -3,10 +3,10 @@ roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
-current_stage_id: "S13"
-current_phase_id: "S13UPLOAD"
-current_task_id: "KMFA-S13-GITHUB-UPLOAD-20260701"
-next_gate_id: "KMFA-S13-GITHUB-UPLOAD-GATE"
+current_stage_id: "S14"
+current_phase_id: "S14PA"
+current_task_id: "S14PAT01-S14PAT03"
+next_gate_id: "KMFA-S14-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -748,10 +748,10 @@ stages:
       - "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
   - stage_id: "S13"
     name: "财务经营报表与回款应收扩展"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核和 Stage 13 整体复审均已本地完成并验证；Stage 13 review 复跑三个 phase validators、全量 KMFA tests、治理 validators、raw/secret scan、parse checks 和 evidence consistency，报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据和自动差异处理。"
+    current_result: "S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审和 Stage 13 GitHub upload 均已完成；upload gate 复跑三个 phase validators、Stage 13 review validator、全量 KMFA tests、治理 validators、raw/secret scan、parse checks、dry-run push、push 和 post-push parity，报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据和自动差异处理。"
     evidence_refs:
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md"
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
@@ -769,6 +769,8 @@ stages:
       - "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S13_STAGE_REVIEW/machine/stage13_review_manifest.json"
       - "KMFA/tools/check_s13_stage_review.py"
+      - "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/machine/stage13_upload_manifest.json"
     phases:
       - phase_id: "S13PA"
         name: "财务经营报表"
