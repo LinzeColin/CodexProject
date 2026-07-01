@@ -139,6 +139,7 @@ from .stage2_final_gate import (
     build_integrated_production_acceptance_evidence_state,
     build_integrated_production_acceptance_write_gate_state,
     build_daily_operation_authorization_preflight_state,
+    build_daily_operation_owner_authorization_decision_state,
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
@@ -174,6 +175,7 @@ from .stage2_final_gate import (
     validate_integrated_production_acceptance_evidence_state,
     validate_integrated_production_acceptance_write_gate_state,
     validate_daily_operation_authorization_preflight_state,
+    validate_daily_operation_owner_authorization_decision_state,
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_real_proof_capture_readiness_state,
@@ -2084,6 +2086,42 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     daily_operation_preflight.add_argument("--json", action="store_true", help="Print JSON preflight state.")
+
+    daily_operation_owner_decision = subparsers.add_parser(
+        "daily-operation-owner-authorization-decision",
+        help="Record the DAILY_OPERATION owner decision while keeping runtime disabled.",
+    )
+    daily_operation_owner_decision.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing FINAL_ACCEPTANCE_BUNDLE and ADP governance artifacts.",
+    )
+    daily_operation_owner_decision.add_argument(
+        "--generated-at",
+        required=True,
+        help="Timestamp to embed in the daily-operation owner decision evidence.",
+    )
+    daily_operation_owner_decision.add_argument(
+        "--decision",
+        default="keep_daily_operation_disabled_no_persistent_authorization",
+        choices=["keep_daily_operation_disabled_no_persistent_authorization"],
+        help="Owner decision value. This command only supports keeping DAILY_OPERATION disabled.",
+    )
+    daily_operation_owner_decision.add_argument(
+        "--artifact-path",
+        default="FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json",
+        help="Decision artifact path to write when --write is set.",
+    )
+    daily_operation_owner_decision.add_argument(
+        "--write",
+        action="store_true",
+        help="Write the decision artifact after validation passes.",
+    )
+    daily_operation_owner_decision.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON owner decision state.",
+    )
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -5206,6 +5244,44 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- next_required_step: {report.get('next_required_step')}")
             print(f"- daily_operation_enabled: {report.get('daily_operation_enabled')}")
             print(f"- daily_operation_enablement_allowed_by_this_artifact: {report.get('daily_operation_enablement_allowed_by_this_artifact')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors else 2
+    if args.command == "daily-operation-owner-authorization-decision":
+        repo_root = Path(args.repo_root)
+        report = build_daily_operation_owner_authorization_decision_state(
+            generated_at=args.generated_at,
+            repo_root=repo_root,
+            decision=args.decision,
+        )
+        errors = validate_daily_operation_owner_authorization_decision_state(report)
+        artifact_written = False
+        artifact_path = Path(args.artifact_path)
+        resolved_artifact_path = artifact_path if artifact_path.is_absolute() else repo_root / artifact_path
+        if args.write and not errors:
+            resolved_artifact_path.parent.mkdir(parents=True, exist_ok=True)
+            resolved_artifact_path.write_text(
+                json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            artifact_written = True
+        output = {
+            **report,
+            "daily_operation_owner_decision_validation_errors": errors,
+            "artifact_written": artifact_written,
+            "artifact_write_path": str(resolved_artifact_path),
+        }
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- decision: {report.get('decision')}")
+            print(f"- persistent_daily_operation_authorized: {report.get('persistent_daily_operation_authorized')}")
+            print(f"- daily_operation_enabled: {report.get('daily_operation_enabled')}")
+            print(f"- next_required_step: {report.get('next_required_step')}")
+            print(f"- artifact_written: {artifact_written}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

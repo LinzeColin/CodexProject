@@ -15,11 +15,11 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: "S2PMT07 daily operation authorization preflight has passed all technical prechecks after consuming reviewed GitHub open PR evidence, local-runner SMTP secret key-presence evidence, and ADP-scoped git artifact hygiene. It is still blocked because persistent DAILY_OPERATION owner authorization is not recorded. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited."
-  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-SECRET-AND-ARTIFACT-REPAIR
-  current_gate: DAILY_OPERATION_OWNER_AUTHORIZATION_REQUIRED_NO_RUNTIME_ENABLEMENT
-  next_executable_task: S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION
-  next_required_step: RECORD_OWNER_DAILY_OPERATION_AUTHORIZATION_OR_KEEP_DISABLED
+  global_current_task_meaning: "S2PMT07 daily operation authorization preflight has passed all technical prechecks, and the DAILY_OPERATION owner decision has been recorded as keep-disabled because no current artifact authorizes persistent DAILY_OPERATION. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited until a separate explicit owner authorization and enablement artifact exists."
+  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED
+  current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT
+  next_executable_task: S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION
+  next_required_step: DAILY_OPERATION_REMAINS_DISABLED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
   email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW
@@ -95,6 +95,15 @@ production_boundary:
     - owner_daily_operation_authorization_missing
     - daily_operation_not_enabled
   daily_operation_authorization_enablement_allowed: false
+  daily_operation_owner_decision_recorded: true
+  daily_operation_owner_decision_status: pass_daily_operation_owner_decision_recorded_keep_disabled
+  daily_operation_owner_decision_artifact: FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json
+  daily_operation_owner_decision_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json
+  daily_operation_owner_decision_state_hash: 803dc436b9c27b99fa82109604184fd8bc028c32eac9a40545e0824ce7f3972b
+  daily_operation_owner_decision: keep_daily_operation_disabled_no_persistent_authorization
+  daily_operation_owner_authorization_recorded: false
+  daily_operation_persistent_authorized: false
+  daily_operation_owner_decision_enablement_allowed: false
   integrated_production_acceptance_owner_decision_request_ready: true
   integrated_production_acceptance_owner_decision_request_state_hash: b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea
   integrated_production_acceptance_owner_decision_request_artifact: FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json

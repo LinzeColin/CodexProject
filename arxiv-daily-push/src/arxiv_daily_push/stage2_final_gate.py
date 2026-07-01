@@ -239,6 +239,27 @@ S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_RUNTIME_FORBIDDEN_FLAGS = (
 )
 S2PMT07_DAILY_OPERATION_PRODUCTION_PREFLIGHT_GIT_SCOPE_ROOTS = ("arxiv-daily-push",)
 S2PMT07_DAILY_OPERATION_LOCAL_RUNNER_ENV_FILE_REF = "$HOME/.config/arxiv-daily-push/local-runner.env"
+S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_TASK_ID = (
+    "S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION"
+)
+S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_SCHEMA_VERSION = (
+    "adp.daily_operation_owner_authorization_decision.v1"
+)
+S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_SCOPE = (
+    "daily_operation_owner_decision_keep_disabled_no_runtime_enablement"
+)
+S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_ARTIFACT_REF = (
+    "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json"
+)
+S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_ID = (
+    "DEC-ADP-S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-20260701"
+)
+S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_KEEP_DISABLED = (
+    "keep_daily_operation_disabled_no_persistent_authorization"
+)
+S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_FORBIDDEN_FLAGS = (
+    S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_RUNTIME_FORBIDDEN_FLAGS
+)
 S2PMT07_BLOCKING_REASONS = (
     "reviewer_independence_not_proven",
     "inherited_v7_1_p0_findings_open",
@@ -13594,6 +13615,10 @@ def build_daily_operation_authorization_preflight_state(
             in current_pointer_text
             or "current_gate: DAILY_OPERATION_OWNER_AUTHORIZATION_REQUIRED_NO_RUNTIME_ENABLEMENT"
             in current_pointer_text
+            or "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT"
+            in current_pointer_text
+            or "next_executable_task: S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
+            in current_pointer_text
         ),
         "integrated_production_acceptance_evidence_present": bool(acceptance),
         "integrated_production_acceptance_evidence_valid": acceptance_valid,
@@ -13798,6 +13823,172 @@ def validate_daily_operation_authorization_preflight_state(state: Mapping[str, A
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("daily operation authorization preflight state_hash does not match state content")
+    return errors
+
+
+def build_daily_operation_owner_authorization_decision_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+    decision: str = S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_KEEP_DISABLED,
+) -> dict[str, Any]:
+    """Record the DAILY_OPERATION owner decision while keeping runtime disabled."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    preflight_ref = "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json"
+    preflight = _load_json_mapping_artifact(root / preflight_ref)
+    preflight_core = dict(preflight)
+    preflight_core.pop("daily_operation_preflight_validation_errors", None)
+    preflight_errors = validate_daily_operation_authorization_preflight_state(preflight_core)
+    acceptance_ref = S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_ARTIFACT_REF
+    acceptance = _load_json_mapping_artifact(root / acceptance_ref)
+    acceptance_errors = validate_integrated_production_acceptance_evidence_state(acceptance)
+    decision_is_keep_disabled = decision == S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_KEEP_DISABLED
+    checks = {
+        "daily_operation_authorization_preflight_present": bool(preflight),
+        "daily_operation_authorization_preflight_valid": not preflight_errors,
+        "daily_operation_authorization_preflight_passed": preflight_core.get("preflight_checks_passed") is True,
+        "preflight_stopped_at_owner_authorization": preflight_core.get("status")
+        == "blocked_owner_daily_operation_authorization_required",
+        "integrated_production_acceptance_evidence_present": bool(acceptance),
+        "integrated_production_acceptance_evidence_valid": not acceptance_errors,
+        "integrated_production_accepted": acceptance.get("integrated_production_accepted") is True,
+        "stage2_integrated_production_accepted": acceptance.get("stage2_integrated_production_accepted") is True,
+        "daily_operation_still_disabled": (
+            preflight_core.get("daily_operation_enabled") is False
+            and acceptance.get("daily_operation_enabled") is False
+        ),
+        "decision_is_keep_disabled": decision_is_keep_disabled,
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    passed = not failed_checks
+    state = {
+        "schema_version": S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_SCHEMA_VERSION,
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "task_id": S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_TASK_ID,
+        "decision_id": S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
+        "generated_at": generated_at,
+        "status": (
+            "pass_daily_operation_owner_decision_recorded_keep_disabled"
+            if passed
+            else "blocked_daily_operation_owner_decision_inputs_missing"
+        ),
+        "scope": S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_SCOPE,
+        "decision": decision,
+        "decision_artifact_ref": S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_ARTIFACT_REF,
+        "preflight_manifest_ref": preflight_ref,
+        "preflight_state_hash": preflight_core.get("state_hash", ""),
+        "preflight_validation_errors": preflight_errors,
+        "integrated_production_acceptance_evidence_ref": acceptance_ref,
+        "integrated_production_acceptance_evidence_state_hash": acceptance.get("state_hash", ""),
+        "integrated_production_acceptance_evidence_validation_errors": acceptance_errors,
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": [] if passed else [f"{name}_failed" for name in failed_checks],
+        "owner_daily_operation_decision_recorded": passed,
+        "owner_daily_operation_authorization_recorded": False,
+        "persistent_daily_operation_authorized": False,
+        "authorization_text": (
+            "No current artifact records explicit owner authorization for persistent DAILY_OPERATION. "
+            "Keep DAILY_OPERATION disabled until a separate explicit owner authorization and enablement artifact exists."
+        ),
+        "daily_operation_enablement_allowed_by_this_decision": False,
+        "next_required_step": (
+            "DAILY_OPERATION_REMAINS_DISABLED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION"
+            if passed
+            else "REPAIR_DAILY_OPERATION_OWNER_DECISION_INPUTS_AND_RETRY"
+        ),
+        "next_executable_task": (
+            "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
+            if passed
+            else S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_TASK_ID
+        ),
+        "production_acceptance_claimed": acceptance.get("production_acceptance_claimed") is True,
+        "integrated_production_accepted": acceptance.get("integrated_production_accepted") is True,
+        "stage2_integrated_production_accepted": acceptance.get("stage2_integrated_production_accepted") is True,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_daily_operation_owner_authorization_decision_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate DAILY_OPERATION owner decision evidence without enabling runtime."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_SCHEMA_VERSION:
+        errors.append("daily operation owner decision schema_version is invalid")
+    if state.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("daily operation owner decision contract_id is invalid")
+    if state.get("task_id") != S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_TASK_ID:
+        errors.append("daily operation owner decision task_id is invalid")
+    if state.get("decision_id") != S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_ID:
+        errors.append("daily operation owner decision decision_id is invalid")
+    if state.get("scope") != S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_SCOPE:
+        errors.append("daily operation owner decision scope is invalid")
+    if state.get("decision") != S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_KEEP_DISABLED:
+        errors.append("daily operation owner decision must keep daily operation disabled")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("daily operation owner decision failed_checks must match checks")
+    expected_passed = not failed_checks
+    expected_status = (
+        "pass_daily_operation_owner_decision_recorded_keep_disabled"
+        if expected_passed
+        else "blocked_daily_operation_owner_decision_inputs_missing"
+    )
+    if state.get("status") != expected_status:
+        errors.append("daily operation owner decision status must match checks")
+    expected_blocking = [] if expected_passed else [f"{name}_failed" for name in failed_checks]
+    if state.get("blocking_reasons") != expected_blocking:
+        errors.append("daily operation owner decision blocking_reasons must match checks")
+    if state.get("owner_daily_operation_decision_recorded") is not expected_passed:
+        errors.append("daily operation owner decision recorded flag must match checks")
+    if state.get("owner_daily_operation_authorization_recorded") is not False:
+        errors.append("daily operation owner decision must not record persistent authorization")
+    if state.get("persistent_daily_operation_authorized") is not False:
+        errors.append("daily operation owner decision must not authorize persistent daily operation")
+    if state.get("daily_operation_enablement_allowed_by_this_decision") is not False:
+        errors.append("daily operation owner decision must not allow daily operation enablement")
+    expected_next = (
+        "DAILY_OPERATION_REMAINS_DISABLED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION"
+        if expected_passed
+        else "REPAIR_DAILY_OPERATION_OWNER_DECISION_INPUTS_AND_RETRY"
+    )
+    if state.get("next_required_step") != expected_next:
+        errors.append("daily operation owner decision next_required_step is invalid")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+    ):
+        if state.get(flag) is not True and expected_passed:
+            errors.append(f"daily operation owner decision must preserve accepted {flag}")
+    for flag in S2PMT07_DAILY_OPERATION_OWNER_AUTHORIZATION_DECISION_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"daily operation owner decision must not enable {flag}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("daily operation owner decision state_hash does not match state content")
     return errors
 
 

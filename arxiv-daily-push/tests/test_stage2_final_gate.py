@@ -6962,6 +6962,71 @@ class Stage2FinalGateTests(unittest.TestCase):
             [],
         )
 
+    def test_daily_operation_owner_decision_records_keep_disabled_without_runtime_enablement(self) -> None:
+        build_state = getattr(
+            stage2_final_gate_module,
+            "build_daily_operation_owner_authorization_decision_state",
+            None,
+        )
+        validate_state = getattr(
+            stage2_final_gate_module,
+            "validate_daily_operation_owner_authorization_decision_state",
+            None,
+        )
+        self.assertIsNotNone(build_state, "daily operation owner decision builder must exist")
+        self.assertIsNotNone(validate_state, "daily operation owner decision validator must exist")
+
+        state = build_state(
+            generated_at="2026-07-01T21:20:00+10:00",
+            decision="keep_daily_operation_disabled_no_persistent_authorization",
+        )
+
+        self.assertEqual(state["schema_version"], "adp.daily_operation_owner_authorization_decision.v1")
+        self.assertEqual(state["task_id"], "S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION")
+        self.assertEqual(state["status"], "pass_daily_operation_owner_decision_recorded_keep_disabled")
+        self.assertEqual(
+            state["decision"],
+            "keep_daily_operation_disabled_no_persistent_authorization",
+        )
+        self.assertTrue(state["owner_daily_operation_decision_recorded"])
+        self.assertFalse(state["owner_daily_operation_authorization_recorded"])
+        self.assertFalse(state["persistent_daily_operation_authorized"])
+        self.assertFalse(state["daily_operation_enablement_allowed_by_this_decision"])
+        self.assertEqual(
+            state["next_required_step"],
+            "DAILY_OPERATION_REMAINS_DISABLED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION",
+        )
+        self.assertEqual(
+            state["next_executable_task"],
+            "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
+        )
+        self.assertEqual(
+            state["decision_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json",
+        )
+        self.assertEqual(
+            state["preflight_manifest_ref"],
+            "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json",
+        )
+        self.assertTrue(state["checks"]["daily_operation_authorization_preflight_passed"])
+        self.assertTrue(state["checks"]["preflight_stopped_at_owner_authorization"])
+        self.assertTrue(state["checks"]["integrated_production_accepted"])
+        self.assertTrue(state["checks"]["daily_operation_still_disabled"])
+        self.assertEqual(state["failed_checks"], [])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["release_packaging_enabled"])
+        self.assertFalse(state["production_restore_enabled"])
+        self.assertEqual(validate_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["daily_operation_enabled"] = True
+        self.assertIn(
+            "daily operation owner decision must not enable daily_operation_enabled",
+            validate_state(tampered),
+        )
+
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:
         blocker = "independent_final_command_execution_missing"
         report = build_s2pmt07_precheck_report(generated_at="2026-06-27T02:59:04+10:00")
