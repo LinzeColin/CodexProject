@@ -1956,3 +1956,106 @@ tasks:
     rollback: "Remove S17-P1 audit policy output and revert S17-P1 governance rows."
     target_version: "0.1.0-s17p1-access-security"
     completed_version: "0.1.0-s17p1-access-security"
+  - task_id: "S17PBT01"
+    phase: "S17PB"
+    objective: "报告生成完成、重大风险、数据源缺失发送提醒。"
+    scope:
+      - "report_generation_completed reminder"
+      - "major_risk reminder"
+      - "data_source_missing reminder"
+      - "metadata notification rule and event"
+    non_scope:
+      - "external email connector"
+      - "full report body"
+      - "report attachment"
+      - "recipient plaintext address"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S17PAT03"
+    required_files:
+      - "KMFA/metadata/notifications/notification_rules.jsonl"
+      - "KMFA/metadata/notifications/notification_events.jsonl"
+      - "KMFA/tools/check_s17_p2_notifications.py"
+    acceptance_ids:
+      - "ACC-NOTIFICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_notification_reminders.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p2_notifications.py"
+    test_results:
+      - "PASS: notification triggers cover report_generation_completed, major_risk and data_source_missing."
+    evidence_refs:
+      - "KMFA/metadata/notifications/notification_rules.jsonl"
+      - "KMFA/stage_artifacts/S17_P2_notification/human/test_results.md"
+    risk: "Metadata notification reminders cannot be read as external email delivery or formal report release."
+    rollback: "Remove S17-P2 notification outputs and revert S17-P2 governance rows before Stage 17 review."
+    target_version: "0.1.0-s17p2-notification"
+    completed_version: "0.1.0-s17p2-notification"
+  - task_id: "S17PBT02"
+    phase: "S17PB"
+    objective: "邮件只发提醒，不发完整报告正文。"
+    scope:
+      - "email_reminder_only gate"
+      - "full report body blocker"
+      - "attachment blocker"
+      - "recipient plaintext blocker"
+    non_scope:
+      - "full report email body"
+      - "report attachment"
+      - "SMTP or live email delivery"
+      - "real recipient address"
+    status: "completed"
+    dependencies:
+      - "S17PBT01"
+    required_files:
+      - "KMFA/metadata/notifications/notification_dispatch_log.jsonl"
+      - "KMFA/tools/check_s17_p2_notifications.py"
+    acceptance_ids:
+      - "ACC-NOTIFICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_notification_reminders.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p2_notifications.py"
+    test_results:
+      - "PASS: full_report_body=false, attachments=false, recipient plaintext=false and metadata outbox-only."
+    evidence_refs:
+      - "KMFA/metadata/notifications/notification_dispatch_log.jsonl"
+      - "KMFA/stage_artifacts/S17_P2_notification/human/test_results.md"
+    risk: "Reminder metadata cannot be treated as sent email or recipient management."
+    rollback: "Remove S17-P2 dispatch logs and revert S17-P2 governance rows."
+    target_version: "0.1.0-s17p2-notification"
+    completed_version: "0.1.0-s17p2-notification"
+  - task_id: "S17PBT03"
+    phase: "S17PB"
+    objective: "通知日志进入 metadata。"
+    scope:
+      - "append-only notification event log"
+      - "metadata dispatch log"
+      - "stage manifest"
+    non_scope:
+      - "S17-P3 SOP"
+      - "Stage 17 review"
+      - "GitHub upload"
+      - "formal report release"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "S17PBT02"
+    required_files:
+      - "KMFA/metadata/notifications/notification_events.jsonl"
+      - "KMFA/metadata/notifications/notification_dispatch_log.jsonl"
+      - "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json"
+    acceptance_ids:
+      - "ACC-NOTIFICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_notification_reminders.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p2_notifications.py"
+    test_results:
+      - "PASS: notification events and dispatch logs are metadata records and Stage 17 review/GitHub upload gates remain false."
+    evidence_refs:
+      - "KMFA/metadata/notifications/notification_events.jsonl"
+      - "KMFA/metadata/notifications/notification_dispatch_log.jsonl"
+      - "KMFA/stage_artifacts/S17_P2_notification/human/test_results.md"
+    risk: "Notification logs are not operations SOP, delivery proof or Stage 17 review evidence."
+    rollback: "Remove S17-P2 notification metadata and revert S17-P2 governance rows."
+    target_version: "0.1.0-s17p2-notification"
+    completed_version: "0.1.0-s17p2-notification"

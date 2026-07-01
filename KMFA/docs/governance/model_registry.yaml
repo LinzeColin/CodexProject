@@ -89,6 +89,7 @@ models:
     formula_ids:
       - "FORM-KMFA-GOV-001"
       - "FORM-KMFA-S17P1-ACCESS-SECURITY-001"
+      - "FORM-KMFA-S17P2-NOTIFICATION-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -99,6 +100,12 @@ models:
       - "PARAM-KMFA-595"
       - "PARAM-KMFA-596"
       - "PARAM-KMFA-597"
+      - "PARAM-KMFA-598"
+      - "PARAM-KMFA-599"
+      - "PARAM-KMFA-600"
+      - "PARAM-KMFA-601"
+      - "PARAM-KMFA-602"
+      - "PARAM-KMFA-603"
     inputs:
       - "user objective"
       - "KMFA TaskPack and Roadmap"
@@ -109,15 +116,19 @@ models:
       - "privacy stop condition"
       - "v1.2 baseline gate"
       - "S17-P1 access security policy gate"
+      - "S17-P2 notification metadata outbox gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
       - "KMFA/tools/access_security_policy.py"
       - "KMFA/tools/check_s17_p1_access_security.py"
+      - "KMFA/tools/notification_reminders.py"
+      - "KMFA/tools/check_s17_p2_notifications.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p1_access_security.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p2_notifications.py"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
@@ -125,6 +136,8 @@ models:
       - "KMFA/stage_artifacts/S01_REBASE_V12_FULL_TASKPACK/human/stage1_v12_replay_report.md"
       - "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
       - "KMFA/stage_artifacts/S17_P1_access_security/machine/s17_p1_manifest.json"
+      - "KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"

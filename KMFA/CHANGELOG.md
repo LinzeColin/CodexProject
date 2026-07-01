@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s17p2-notification - 2026-07-01
+
+- 完成 `S17-P2｜通知` 本地验证。
+- 新增 `KMFA/tools/notification_reminders.py` 和 `KMFA/tools/check_s17_p2_notifications.py`，生成并验证报告生成完成、重大风险、数据源缺失三类通知提醒。
+- 新增 `KMFA/tests/test_notification_reminders.py`，覆盖 email reminder only、metadata outbox/log、完整报告正文/附件/真实收件地址/外部连接器阻断和 scope gate。
+- 新增 `KMFA/metadata/notifications/` 下 S17-P2 manifest、rules、events、dispatch log，以及 `KMFA/stage_artifacts/S17_P2_notification/` 证据包。
+- 保持中间 Phase 不上传 GitHub；未执行 S17-P3 运维 SOP、Stage 17 review、lineage full check、正式报告、外部邮件连接器、完整报告邮件正文、报告附件或业务执行。
+- 下一轮只能执行 `S17-P3｜运维与SOP`。
+
 ## 0.1.0-s17p1-access-security - 2026-07-01
 
 - 完成 `S17-P1｜权限与安全` 本地验证。

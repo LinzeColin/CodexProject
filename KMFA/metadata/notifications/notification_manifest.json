@@ -1,0 +1,73 @@
+{
+  "content_hash": "sha256:08003cdd963584462786358dfbf2ab1b74972a86e0286173781f4cf6cdcd9207",
+  "fact_level": "EXTRACTED",
+  "generated_at": "2026-07-01T23:59:00+10:00",
+  "iteration_id": "ITER-20260701-KMFA-S17P2-NOTIFICATION",
+  "metadata_outputs": {
+    "notification_dispatch_log": "KMFA/metadata/notifications/notification_dispatch_log.jsonl",
+    "notification_events": "KMFA/metadata/notifications/notification_events.jsonl",
+    "notification_manifest": "KMFA/metadata/notifications/notification_manifest.json",
+    "notification_rules": "KMFA/metadata/notifications/notification_rules.jsonl"
+  },
+  "phase_id": "S17PB",
+  "policy_version": "KMFA-S17P2-NOTIFICATION-REMINDER-PUBLIC-SAFE-001",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_committed": false,
+    "field_text_committed": false,
+    "full_report_body_committed": false,
+    "private_tabular_material_committed": false,
+    "raw_business_data_committed": false,
+    "recipient_address_committed": false,
+    "report_attachment_committed": false,
+    "source_document_committed": false,
+    "true_customer_project_committed": false,
+    "true_money_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "email_attachment_allowed": false,
+    "email_full_report_body_allowed": false,
+    "email_reminder_only": true,
+    "external_email_connector_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "lineage_full_check_allowed": false,
+    "notification_events_generated": true,
+    "notification_logs_written_to_metadata": true,
+    "notification_rules_complete": true,
+    "phase_completion_upload_allowed": false,
+    "raw_payload_allowed": false,
+    "recipient_address_plaintext_allowed": false,
+    "release_block_reason": "s17_p2_is_local_metadata_notification_reminder_only",
+    "s17_p3_scope_allowed": false,
+    "stage17_review_allowed": false
+  },
+  "record_type": "s17_p2_notification_manifest",
+  "required_notification_triggers": [
+    "report_generation_completed",
+    "major_risk",
+    "data_source_missing"
+  ],
+  "stage_artifact_ref": "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json",
+  "stage_id": "S17",
+  "stage_phase": "S17-P2",
+  "stage_scope": {
+    "business_execution_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s17_p1_scope_included": false,
+    "s17_p2_scope_included": true,
+    "s17_p3_scope_included": false,
+    "stage17_review_scope_included": false
+  },
+  "summary": {
+    "notification_dispatch_log_count": 3,
+    "notification_event_count": 3,
+    "notification_rule_count": 3,
+    "trigger_type_count": 3
+  }
+}

@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s17p1-access-security
+product_version: 0.1.0-s17p2-notification
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S17`
-- current_phase: `S17-P2｜通知｜待开始`
-- current_tasks: `KMFA-S17-P2-GATE`
-- status: `s17p1_completed_validated_local_only`
+- current_phase: `S17-P3｜运维与SOP｜待开始`
+- current_tasks: `KMFA-S17-P3-GATE`
+- status: `s17p2_completed_validated_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -105,17 +105,17 @@ product_version: 0.1.0-s17p1-access-security
 | `KMFA-S16-STAGE-REVIEW-20260701` | Stage 16 整体复审本地通过；复跑 S16-P1/P2/P3 validators、Stage 16 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check；未执行 GitHub upload、S17、lineage full check、正式报告、业务执行或外部接口 | `KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md` |
 | `KMFA-S16-GITHUB-UPLOAD-20260701` | Stage 16 final GitHub upload 完成；基于最新 origin/main rebase Stage 16 栈，复跑 S16 validators、Stage 16 review validator、全量 227 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、diff check、dry-run push、push 和 post-push parity | `KMFA/stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md` |
 | `S17PAT01-S17PAT03` | S17-P1 权限与安全完成本地验证：4 类角色权限、15 类敏感材料公开仓库禁入策略、5 类审计日志动作和 scope gate 已生成；未执行 S17-P2/S17-P3、Stage 17 review 或 GitHub upload | `KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md` |
+| `S17PBT01-S17PBT03` | S17-P2 通知提醒完成本地验证：报告生成完成、重大风险、数据源缺失三类提醒规则、事件和 metadata dispatch log 已生成；不发送完整报告正文、不生成附件、不保存真实收件地址、不调用外部邮件连接器 | `KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S17-P2-GATE` | 待下一轮 run work 开始；必须重新确认 git/root/status、读取 v1.2 task pack / roadmap，并只执行 S17-P2 通知；不得执行 S17-P3、Stage 17 review、GitHub upload、lineage full check、正式报告或业务执行动作 | `KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md` |
+| `KMFA-S17-P3-GATE` | 待下一轮 run work 开始；必须重新确认 git/root/status、读取 v1.2 task pack / roadmap，并只执行 S17-P3 运维与 SOP；不得执行 Stage 17 review、GitHub upload、lineage full check、正式报告、完整报告邮件、外部邮件连接器或业务执行动作 | `KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S17-P2 通知 | 尚未开始；S17-P1 只定义 notification audit log policy，未发送通知或完整报告正文 | 后续独立 S17-P2 gate |
-| S17-P3 运维与SOP | 尚未开始；S17-P2 完成后再处理 | 后续独立 S17-P3 gate |
+| S17-P3 运维与SOP | 尚未开始；S17-P2 已完成 metadata outbox-only 通知提醒，不等于运维 SOP | 后续独立 S17-P3 gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
