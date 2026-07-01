@@ -481,7 +481,8 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
             "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
             "the integrated production acceptance preflight and write-gate precheck as passed no-production evidence; "
             + controlled_run_sentence
-            + "record owner production-boundary decision evidence next, and do not enable "
+            + "review FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, "
+            "then record owner production-boundary decision evidence or pause; do not enable "
             "SMTP, scheduler, Release, restore, DAILY_OPERATION, or write "
             "INTEGRATED_PRODUCTION_ACCEPTED automatically."
         )
@@ -1166,9 +1167,10 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
             )
             owner_decision["evidence_required"] = (
+                "owner review of FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, "
                 "preflight checks passed, final bundle manifest pass, no-production side-effect "
                 "attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, "
-                "open_pr_count=0, no background ADP process, and owner production-boundary decision"
+                "open_pr_count=0, no background ADP process, and explicit owner production-boundary decision artifact"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
         elif (

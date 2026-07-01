@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 335
+- task_count: 336
 - acceptance_count: 128
 
 ## Delivery Tasks
+
+## 2026-07-01 17:54:39 Australia/Sydney - S2PMT07 owner decision request mainline attestation
+
+- Task: `S2PMT07-OWNER-DECISION-REQUEST-MAINLINE-ATTESTATION`
+- Result: `pass_owner_decision_request_mainline_attested_no_production_enablement`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-OWNER-DECISION-REQUEST-MAINLINE-ATTESTATION-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_OWNER_DECISION_REQUEST_MAINLINE_ATTESTATION.md`; `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json`.
+- Mainline binding: `result_commit=960e9d1a8871bac1b4e482b58a3d673d3c6b635c`; `result_tree_hash=cf801941e53c389bcc3ac4456ba54a8b48543f3f`; `binding_status=commit_bound`.
+- Request boundary: `owner_decision_request_ready=true`; `owner_production_boundary_decision_recorded=false`; `acceptance_write_gate_allowed=false`; `runtime_enablement_allowed=false`.
+- Production boundary: no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, `INTEGRATED_PRODUCTION_ACCEPTED`, `DAILY_OPERATION`, or Stage2/S3 production acceptance is introduced by this attestation.
 
 ## 2026-07-01 17:35:58 Australia/Sydney - S2PMT07 owner decision request/template
 

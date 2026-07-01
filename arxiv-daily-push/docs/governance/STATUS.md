@@ -2,12 +2,12 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `83ab32eb26dd6b79ba970f07fa50f53e3fea575b`
-- source_tree_hash: `d9d7716bd905d68454e9880d5ba0af0893091fb6`
-- source_snapshot_hash: `sha256:14671478112b684eb1ce125b63b86e4847c9c31d8bcd8cbd095acc7d10f6b44d`
-- snapshot_event_time: `2026-07-01T17:35:58+10:00`
+- source_base_commit: `960e9d1a8871bac1b4e482b58a3d673d3c6b635c`
+- source_tree_hash: `cf801941e53c389bcc3ac4456ba54a8b48543f3f`
+- source_snapshot_hash: `sha256:28ff558dbec03bd75709b1373347734df262212ab57fb88d6e2fe81f994114a5`
+- snapshot_event_time: `2026-07-01T17:54:39+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:960e9d1a8871bac1b4e482b58a3d673d3c6b635c`
 
 ## Current State
 
@@ -48,9 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`
-- Owner decision request/template: `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json` (`request_only=true`, not approval)
 - Pending/stale events: `374`
 - Tree-bound events: `5`
-- Commit-bound events: `6`
+- Commit-bound events: `7`
 - Legacy unbound events: `330`
 - Unresolved fact IDs: `0`

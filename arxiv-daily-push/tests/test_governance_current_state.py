@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import re
 import unittest
 
@@ -108,6 +109,45 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", generator)
+
+    def test_owner_decision_request_mainline_attestation_is_commit_bound_without_acceptance(self) -> None:
+        manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-OWNER-DECISION-REQUEST-MAINLINE-ATTESTATION-20260701.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
+        current = (ADP_ROOT / "docs/pursuing_goal/CURRENT.yaml").read_text(encoding="utf-8")
+
+        result_commit = manifest["result_commit"]
+        result_tree_hash = manifest["result_tree_hash"]
+        self.assertRegex(result_commit, r"^[0-9a-f]{40}$")
+        self.assertRegex(result_tree_hash, r"^[0-9a-f]{40}$")
+        self.assertEqual(manifest["binding_status"], "commit_bound")
+        self.assertEqual(manifest["task_id"], "S2PMT07-OWNER-DECISION-REQUEST-MAINLINE-ATTESTATION")
+        self.assertEqual(manifest["result"], "pass_owner_decision_request_mainline_attested_no_production_enablement")
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json", manifest["evidence_refs"])
+        self.assertTrue(manifest["owner_decision_request_ready"])
+        self.assertFalse(manifest["owner_production_boundary_decision_recorded"])
+        self.assertFalse(manifest["acceptance_write_gate_allowed"])
+        self.assertFalse(manifest["runtime_enablement_allowed"])
+        self.assertFalse(manifest["stage2_integrated_production_accepted"])
+        self.assertFalse(manifest["daily_operation_enabled"])
+        self.assertFalse(manifest["real_smtp_send_enabled"])
+        self.assertFalse(manifest["scheduler_enabled"])
+        self.assertFalse(manifest["release_packaging_enabled"])
+        self.assertFalse(manifest["production_restore_enabled"])
+        self.assertIn(f"- final_commit_binding: `COMMIT_BOUND:{result_commit}`", owner_status)
+        self.assertIn(f"- source_base_commit: `{result_commit}`", owner_status)
+        self.assertIn(f"- source_tree_hash: `{result_tree_hash}`", owner_status)
+        self.assertIn(f'final_commit_binding: "COMMIT_BOUND:{result_commit}"', assurance)
+        self.assertIn(f'source_base_commit: "{result_commit}"', assurance)
+        self.assertIn(f'source_tree_hash: "{result_tree_hash}"', assurance)
+        self.assertIn("owner_production_boundary_decision_recorded: false", current)
+        self.assertIn("integrated_production_acceptance_write_gate_allowed: false", current)
+        self.assertNotIn("owner_production_boundary_decision_recorded: true", current)
+        self.assertNotIn("stage2_integrated_production_accepted: true", current)
 
     def test_current_pointer_and_user_center_match_owner_packet_and_controlled_run_state(self) -> None:
         current = (ADP_ROOT / "docs/pursuing_goal/CURRENT.yaml").read_text(encoding="utf-8")
