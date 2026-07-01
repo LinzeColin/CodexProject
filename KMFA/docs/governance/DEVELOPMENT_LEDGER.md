@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s18-github-upload
+product_version: 0.1.0-post-s18-whole-project-review-local
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S18`
-- current_phase: `Post-S18 Part 6 Review｜Stages 16-18 本地完成`
-- current_tasks: `KMFA-PART6-STAGES-16-18-REVIEW-20260702`
-- status: `post_s18_part6_review_passed_local_only_no_go`
+- current_phase: `Post-S18 Whole Project Final Review｜本地复审通过且 delivery NO_GO`
+- current_tasks: `KMFA-WHOLE-PROJECT-FINAL-REVIEW-20260702`
+- status: `whole_project_review_passed_local_only_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -53,6 +53,7 @@ product_version: 0.1.0-s18-github-upload
 | `S6PAT01-S6PAT03` | S06-P1 零差异校验器完成本地验证：逐字段比较整数分，任意 1 分差异失败并生成 public-safe mismatch report | `KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md` |
 | `S6PBT01-S6PBT03` | S06-P2 跨源差异队列完成本地验证：PDF/Excel 同项目冲突进入人工队列，未关闭差异阻断 A 级报告 | `KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/s06_p2_completion_record.md` |
 | `S6PCT01-S6PCT03` | S06-P3 校验证据输出完成本地验证：zero-delta summary、sanitized mismatch index、project validation status 和 metadata/quality records 已生成 | `KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md` |
+| `KMFA-WHOLE-PROJECT-FINAL-REVIEW-20260702` | Post-S18 全项目本地复审完成，delivery 仍为 NO_GO | `KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/human/whole_project_final_review_report.md` |
 | `KMFA-S06-STAGE-REVIEW-20260630` | Stage 6 整体复审本地通过，复审步骤未执行 GitHub upload | `KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md` |
 | `KMFA-S06-GITHUB-UPLOAD-20260630` | Stage 6 final GitHub upload 已完成 | `KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md` |
 | `S7PAT01-S7PAT03` | S07-P1 财务文件适配完成本地验证：9 类财务支撑源登记、45 条 hash-only 字段候选和 9 条只读字段报告已生成 | `KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md` |
