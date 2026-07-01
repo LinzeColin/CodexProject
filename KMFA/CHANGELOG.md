@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-post-s18-part3-review-local - 2026-07-02
+
+- 完成 Post-S18 第一阶段 Part 3 本地复审，范围仅为 Stage 7、Stage 8、Stage 9。
+- 新增 `KMFA/tools/check_part3_stages_07_09_review.py`、`KMFA/tests/test_part3_stages_07_09_review.py` 和 `KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/`。
+- 复跑 S07 finance/WPS/Redcircle adapters、S08 project/entity matching、S09 project cost fact/margin/scope reconciliation validators、Part 3 review validator、全量 271 个 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check。
+- 本轮未执行 GitHub upload、Stage 10-18 复审、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+
 ## 0.1.0-post-s18-part2-review-local - 2026-07-02
 
 - 完成 Post-S18 第一阶段 Part 2 本地复审，范围仅为 Stage 4、Stage 5、Stage 6。

@@ -2655,3 +2655,47 @@ tasks:
     rollback: "Remove PART2_STAGES_04_06_REVIEW artifacts, Part 2 validator/test and related governance rows before rerunning the Part 2 review gate."
     target_version: "0.1.0-post-s18-part2-review-local"
     completed_version: "0.1.0-post-s18-part2-review-local"
+  - task_id: "KMFA-PART3-STAGES-07-09-REVIEW-20260702"
+    phase: "POST_S18_PART3_REVIEW"
+    objective: "完成 Post-S18 第一阶段 Part 3 本地复审，范围仅为 Stage 7-9。"
+    scope:
+      - "Stage 7 finance/WPS/Redcircle file-source adapter evidence"
+      - "Stage 8 project composite key, business entity model and entity matching quality evidence"
+      - "Stage 9 project cost fact, margin/cash margin and scope reconciliation evidence"
+      - "Part 3 review validator and evidence manifest"
+      - "governance validators, parse checks, raw/private and secret scans"
+    non_scope:
+      - "Stage 10-18 review"
+      - "whole-project final review"
+      - "GitHub upload"
+      - "lineage full check"
+      - "formal report release"
+      - "live connector"
+      - "production restore"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-PART2-STAGES-04-06-REVIEW-20260702"
+    required_files:
+      - "KMFA/tools/check_part3_stages_07_09_review.py"
+      - "KMFA/tests/test_part3_stages_07_09_review.py"
+      - "KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/human/part3_review_report.md"
+      - "KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/machine/part3_review_manifest.json"
+    acceptance_ids:
+      - "ACC-POST-S18-PART3-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_finance_file_adapter KMFA.tests.test_wps_file_adapter KMFA.tests.test_redcircle_postponement_policy KMFA.tests.test_project_composite_key KMFA.tests.test_business_entity_model KMFA.tests.test_entity_matching_quality KMFA.tests.test_project_cost_fact_layer KMFA.tests.test_project_margin_cash_margin KMFA.tests.test_project_scope_reconciliation KMFA.tests.test_part3_stages_07_09_review -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_part3_stages_07_09_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s KMFA/tests -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_governance_sync.py --changed-only --enforce-sync"
+    test_results:
+      - "PASS: Part 3 review gates, full KMFA tests, governance validators, parse checks, raw/private path scan, high-signal secret scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/human/part3_review_report.md"
+      - "KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/machine/part3_review_manifest.json"
+    risk: "Part 3 review proves only Stage 7-9 post-S18 local review status and does not authorize Stage 10-18 review, whole-project final review, GitHub upload, lineage full check, formal reports or business execution."
+    rollback: "Remove PART3_STAGES_07_09_REVIEW artifacts, Part 3 validator/test and related governance rows before rerunning the Part 3 review gate."
+    target_version: "0.1.0-post-s18-part3-review-local"
+    completed_version: "0.1.0-post-s18-part3-review-local"

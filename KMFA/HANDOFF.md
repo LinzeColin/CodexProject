@@ -4,12 +4,13 @@
 
 ## 当前目标
 
-v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线，并已按 v1.2 重新走完 Stage 1。Stage 2、Stage 3、Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10、Stage 11、Stage 12、Stage 13、Stage 14、Stage 15、Stage 16、Stage 17 和 Stage 18 均已完成本地实现、验证、整体复审和 GitHub main 上传。S18-P1 精度与压力测试、S18-P2 全量回归和验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已在 canonical worktree 完成。Stage 18 upload 新增 `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json`；复审级 Go/No-Go 已清除 `S18_P3_PENDING`，但仍为 `NO_GO`，`delivery_allowed=false`。Post-S18 Part 1 Review（Stages 1-3）和 Part 2 Review（Stages 4-6）已在 canonical worktree 本地通过并生成 validator/evidence/local-governance 记录；未执行 GitHub upload、lineage full check、正式报告或业务动作。后续按 Part 3（Stages 7-9）继续。
+v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线，并已按 v1.2 重新走完 Stage 1。Stage 2、Stage 3、Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10、Stage 11、Stage 12、Stage 13、Stage 14、Stage 15、Stage 16、Stage 17 和 Stage 18 均已完成本地实现、验证、整体复审和 GitHub main 上传。S18-P1 精度与压力测试、S18-P2 全量回归和验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已在 canonical worktree 完成。Stage 18 upload 新增 `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json`；复审级 Go/No-Go 已清除 `S18_P3_PENDING`，但仍为 `NO_GO`，`delivery_allowed=false`。Post-S18 Part 1 Review（Stages 1-3）、Part 2 Review（Stages 4-6）和 Part 3 Review（Stages 7-9）已在 canonical worktree 本地通过并生成 validator/evidence/local-governance 记录；未执行 GitHub upload、lineage full check、正式报告或业务动作。后续按 Part 4（Stages 10-12）继续。
 
 ## 当前状态
 
 - Post-S18 Part 1 Review 已本地通过：新增 `KMFA/tools/check_part1_stages_01_03_review.py`、`KMFA/tests/test_part1_stages_01_03_review.py` 和 `KMFA/stage_artifacts/PART1_STAGES_01_03_REVIEW/`；当轮全量 KMFA unittest 为 269 tests。
 - Post-S18 Part 2 Review 已本地通过：新增 `KMFA/tools/check_part2_stages_04_06_review.py`、`KMFA/tests/test_part2_stages_04_06_review.py` 和 `KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/`；全量 KMFA unittest 当前为 270 tests。
+- Post-S18 Part 3 Review 已本地通过：新增 `KMFA/tools/check_part3_stages_07_09_review.py`、`KMFA/tests/test_part3_stages_07_09_review.py` 和 `KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/`；全量 KMFA unittest 当前为 271 tests。
 - `S01-P1` 已在前序工作目录完成，只读计划证据已迁移到 `KMFA/stage_artifacts/S01_P1_read_only_plan/`。
 - `S01-P2` 已创建项目根、三中文入口、模型参数文件、Lean v2 与 v1 兼容治理文件、metadata 草案。
 - `S01-P3` 已导入完整需求追溯矩阵、新增正式 `KMFA/tools/no_omission_check.py`、建立 18 Stage / 54 Phase / 162 Task 状态登记。
@@ -358,4 +359,4 @@ git diff --check -- README.md governance/projects.yaml KMFA
 
 ## 下一步
 
-下一步只能执行 Post-S18 Part 3 Review（Stages 7-9）本地复审：先确认 git root、branch、remote、HEAD、status，复跑 S07/S08/S09 validators、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；不得直接进入 Part 4-6、整体项目复审、GitHub upload、formal report、外部邮件连接器、完整报告正文、报告附件、live connector、OpMe 深度耦合、生产恢复、采购执行、付款审批、付款执行、银行操作、现场施工、安全/技术签字、开票、催收、法律决策、工资/奖金/薪资导出；不得提交 raw Excel/PDF/zip/private CSV、真实金额、真实账号、真实客户/项目明细、银行流水、合同、薪资、税务申报、credentials 或字段明文。
+下一步只能执行 Post-S18 Part 4 Review（Stages 10-12）本地复审：先确认 git root、branch、remote、HEAD、status，复跑 S10/S11/S12 validators、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；不得直接进入 Part 5-6、整体项目复审、GitHub upload、formal report、外部邮件连接器、完整报告正文、报告附件、live connector、OpMe 深度耦合、生产恢复、采购执行、付款审批、付款执行、银行操作、现场施工、安全/技术签字、开票、催收、法律决策、工资/奖金/薪资导出；不得提交 raw Excel/PDF/zip/private CSV、真实金额、真实账号、真实客户/项目明细、银行流水、合同、薪资、税务申报、credentials 或字段明文。
