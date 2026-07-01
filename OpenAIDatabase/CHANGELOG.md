@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 8 Stage 7 Review
+
+- Completed the Part 8 review for Stage 7.1 / 7.2 / 7.3 / Stage 7 overall:
+  Visual Acceptance, Performance Acceptance, Privacy and Accessibility, and
+  whole-stage Stage 7 review.
+- Added `validate:part8-stage7` to verify the Stage 7 phase reviews, current
+  visual/performance/privacy runtime contracts, visual acceptance hooks,
+  production experiment isolation, Stage 7 browser validators, TypeScript /
+  Vite build, release audit, and visual and overall acceptance audits.
+- Updated stale Stage 7.1 / 7.2 / 7.3 model parameter status lines that still
+  said `Stage 7 整体复审未完成` after Stage 7 overall had already passed.
+
+No Part 9 review, Stage 8 review, whole-project review, GitHub main upload,
+Cloudflare live deploy, Access policy change, raw/private data access, direct
+writeback, production runtime feature work, or external account operation was
+added.
+
+Machine-readable boundary summary: Stage 7.1 / 7.2 / 7.3 / Stage 7 overall; No
+Part 9 review; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 7 Stage 6 Review
 
 - Completed the Part 7 review for Stage 6.1 / 6.2 / Stage 6 overall: Shared
