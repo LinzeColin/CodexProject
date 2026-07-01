@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s14p3-policy-evidence-plan"
+    model_version: "0.1.0-s15p1-performance-fact-fields"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -145,6 +145,7 @@ models:
       - "FORM-KMFA-FUND-CASH-LOAN-PLAN-001"
       - "FORM-KMFA-INVOICE-TAX-PLAN-001"
       - "FORM-KMFA-POLICY-EVIDENCE-PLAN-001"
+      - "FORM-KMFA-S15P1-PERFORMANCE-FACT-FIELD-SLOTS-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -263,6 +264,12 @@ models:
       - "PARAM-KMFA-541"
       - "PARAM-KMFA-542"
       - "PARAM-KMFA-543"
+      - "PARAM-KMFA-544"
+      - "PARAM-KMFA-545"
+      - "PARAM-KMFA-546"
+      - "PARAM-KMFA-547"
+      - "PARAM-KMFA-548"
+      - "PARAM-KMFA-549"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
