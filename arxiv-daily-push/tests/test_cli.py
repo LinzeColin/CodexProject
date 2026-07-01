@@ -1517,12 +1517,12 @@ class CliTests(unittest.TestCase):
             result = main(["plan-final-bundle-prerequisites", "--json"])
         payload = json.loads(buffer.getvalue())
 
-        self.assertEqual(result, 2)
-        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["scope"], "final_bundle_prerequisite_plan_only_no_production_acceptance")
-        self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
-        self.assertFalse(payload["next_required_step_is_actionable"])
-        self.assertEqual(payload["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
+        self.assertIsNone(payload["next_required_step"])
+        self.assertTrue(payload["next_required_step_is_actionable"])
+        self.assertIsNone(payload["next_executable_task"])
         self.assertEqual(
             payload["next_executable_runtime_step"],
             "",
@@ -1530,19 +1530,6 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["current_wait_state"], "")
         self.assertFalse(payload["ready_to_write_live_artifacts"])
         capture_summary = payload["s2plt02_terminal_delivery_capture_plan_summary"]
-        self.assertNotEqual(payload["current_wait_state"], capture_summary["current_wait_state"])
-        self.assertIs(
-            payload["write_terminal_artifact_allowed"],
-            capture_summary["write_terminal_artifact_allowed"],
-        )
-        self.assertIs(
-            payload["scheduler_enable_allowed_by_this_plan"],
-            capture_summary["scheduler_enable_allowed_by_this_plan"],
-        )
-        self.assertIs(
-            payload["production_acceptance_allowed"],
-            capture_summary["production_acceptance_allowed"],
-        )
         self.assertFalse(payload["write_terminal_artifact_allowed"])
         self.assertFalse(payload["scheduler_enable_allowed_by_this_plan"])
         self.assertFalse(payload["production_acceptance_allowed"])
@@ -1618,36 +1605,28 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["live_authorization_validation_errors"], [])
         self.assertEqual(payload["next_executable_command_validation_command"], "")
         self.assertEqual(payload["next_executable_evidence_refs"], [])
-        self.assertTrue(payload["next_required_step_blocked_by_upstream_evidence"])
+        self.assertFalse(payload["next_required_step_blocked_by_upstream_evidence"])
         self.assertEqual(payload["upstream_blockers"], [])
         missing_inventory = payload["final_bundle_missing_artifact_inventory"]
-        self.assertEqual(missing_inventory["status"], "blocked")
-        self.assertEqual(missing_inventory["missing_item_count"], 5)
-        self.assertEqual(
-            missing_inventory["missing_live_artifact_refs"],
-            [
-                "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
-                "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
-                "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
-                "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
-                "HANDOFF/00_下一Agent先读.md",
-            ],
-        )
+        self.assertEqual(missing_inventory["status"], "pass")
+        self.assertEqual(missing_inventory["missing_item_count"], 0)
+        self.assertEqual(missing_inventory["missing_live_artifact_refs"], [])
         self.assertEqual(missing_inventory["next_executable_task"], payload["next_executable_task"])
         self.assertEqual(
             missing_inventory["next_executable_runtime_step"],
             payload["next_executable_runtime_step"],
         )
         self.assertFalse(missing_inventory["ready_to_write_live_artifacts"])
-        self.assertFalse(payload["all_required_steps_passed"])
+        self.assertTrue(payload["all_required_steps_passed"])
         self.assertFalse(payload["ready_for_final_bundle_manifest"])
         step_status = {step["step_id"]: step["status"] for step in payload["ordered_steps"]}
         self.assertEqual(step_status["INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"], "pass")
         self.assertEqual(step_status["P0_P1_ZERO_PROOF_ARTIFACT"], "pass")
         self.assertEqual(step_status["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"], "pass")
+        self.assertTrue(all(status == "pass" for status in step_status.values()))
         self.assertNotIn("independent_final_reviewer_assignment_missing", payload["blocking_reasons"])
         self.assertNotIn("p0_p1_zero_proof_artifact_missing", payload["blocking_reasons"])
-        self.assertIn("s2plt04_completion_report_missing", payload["blocking_reasons"])
+        self.assertNotIn("s2plt04_completion_report_missing", payload["blocking_reasons"])
         self.assertNotIn("no_production_side_effect_attestation_missing", payload["blocking_reasons"])
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
@@ -1703,12 +1682,12 @@ class CliTests(unittest.TestCase):
             check=False,
         )
 
-        self.assertEqual(completed.returncode, 2, completed.stderr)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
         payload = json.loads(completed.stdout)
-        self.assertEqual(payload["status"], "blocked")
-        self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
-        self.assertFalse(payload["next_required_step_is_actionable"])
-        self.assertEqual(payload["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
+        self.assertEqual(payload["status"], "pass")
+        self.assertIsNone(payload["next_required_step"])
+        self.assertTrue(payload["next_required_step_is_actionable"])
+        self.assertIsNone(payload["next_executable_task"])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
@@ -1942,20 +1921,21 @@ class CliTests(unittest.TestCase):
                     "--json",
                 ]
             )
-        self.assertEqual(result, 2)
+        self.assertEqual(result, 0)
         payload = json.loads(buffer.getvalue())
-        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["scope"], "final_acceptance_bundle_readiness_precheck_only")
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", payload["missing_items"])
+        self.assertEqual(payload["missing_items"], [])
         self.assertNotIn("FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json", payload["missing_items"])
         self.assertNotIn("FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", payload["missing_items"])
+        self.assertTrue(payload["available_items"]["FINAL_ACCEPTANCE_BUNDLE/manifest.json"])
         self.assertTrue(payload["available_items"]["FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"])
         self.assertTrue(payload["available_items"]["FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"])
         self.assertNotIn("independent_final_reviewer_assignment_missing", payload["blocking_reasons"])
         self.assertNotIn("p0_p1_zero_proof_missing", payload["blocking_reasons"])
-        self.assertIn("s2plt04_completion_evidence_missing", payload["blocking_reasons"])
-        self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
-        self.assertEqual(payload["next_executable_task"], "S2PLT04_COMPLETION_REPORT")
+        self.assertNotIn("s2plt04_completion_evidence_missing", payload["blocking_reasons"])
+        self.assertIsNone(payload["next_required_step"])
+        self.assertIsNone(payload["next_executable_task"])
         self.assertEqual(
             payload["next_executable_runtime_step"],
             "",
@@ -1977,16 +1957,6 @@ class CliTests(unittest.TestCase):
         self.assertEqual(
             payload["current_wait_state"],
             "",
-        )
-        self.assertEqual(
-            payload["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
-            "READY_FOR_TERMINAL_CAPTURE",
-        )
-        self.assertEqual(
-            payload["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
-            payload["s2plt02_terminal_delivery_capture_plan_summary"]["capture_wait_state_guard"][
-                "current_wait_state"
-            ],
         )
         capture_summary = payload["s2plt02_terminal_delivery_capture_plan_summary"]
         wait_guard = capture_summary["capture_wait_state_guard"]

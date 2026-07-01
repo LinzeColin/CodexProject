@@ -1,0 +1,62 @@
+$ python tools/validate_task_pack.py --root .
+{
+  "status": "PASS",
+  "scope": "adp_task_pack_root_validation_no_production_side_effects",
+  "root": "/private/tmp/codex-adp-s2plt04-completion-report-20260701",
+  "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+  "task_id": "S2PMT07",
+  "validated_paths": {
+    "adp_project_root": "arxiv-daily-push",
+    "current_contract_pointer": "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml",
+    "v7_2_root_lock": "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml",
+    "v7_2_validator": "arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py",
+    "project_governance_validator": "scripts/validate_project_governance.py"
+  },
+  "missing_paths": [],
+  "command_results": [
+    {
+      "command": "/opt/anaconda3/bin/python arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+      "exit_code": 0,
+      "status": "pass",
+      "stdout_tail": [
+        "{",
+        "  \"status\": \"PASS\",",
+        "  \"contract_version\": \"ADP-PRODUCT-CONTRACT-V7.2\",",
+        "  \"current_pointer\": \"docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml\",",
+        "  \"roadmap_machine_gate\": {",
+        "    \"status\": \"PASS\",",
+        "    \"registered_stop_code_count\": 49,",
+        "    \"roadmap_task_count\": 6,",
+        "    \"roadmap_task_reference_count\": 9,",
+        "    \"roadmap_dependency_count\": 0,",
+        "    \"roadmap_stop_condition_count\": 3",
+        "  },",
+        "  \"errors\": [],",
+        "  \"warnings\": []",
+        "}"
+      ],
+      "stderr_tail": []
+    },
+    {
+      "command": "/opt/anaconda3/bin/python scripts/validate_project_governance.py --project arxiv-daily-push",
+      "exit_code": 0,
+      "status": "pass",
+      "stdout_tail": [
+        "CodexProject governance validation",
+        "root: checked",
+        "projects checked: arxiv-daily-push",
+        "errors: 0",
+        "warnings: 0"
+      ],
+      "stderr_tail": []
+    }
+  ],
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false
+}
+EXIT_CODE=0

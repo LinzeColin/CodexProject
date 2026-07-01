@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Verify the ADP final acceptance bundle from the repository root.
+"""Verify the ADP final-command prerequisite state from the repository root.
 
 The S2PMT07 final-command contract requires this root entrypoint.  It is
-fail-closed: P0/P1 zero proof is necessary, but the command still returns
-non-zero until the full final acceptance bundle validator passes.
+fail-closed for P0/P1 zero proof and S2PLT04 completion, but it must not require
+``FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`` before the final
+command has actually been executed.
 """
 
 from __future__ import annotations
@@ -62,16 +63,30 @@ def build_verification_report(root: Path, required_zero: list[str]) -> dict[str,
     validation_errors = list(payload.get("readiness_validation_errors", []))
     blocking_reasons = list(payload.get("blocking_reasons", []))
     bundle_status = payload.get("status", "blocked")
-    passed = (
+    next_required_step = payload.get("next_required_step")
+    next_executable_task = payload.get("next_executable_task")
+    s2plt04_validation = payload.get("s2plt04_completion_report_validation", {})
+    bundle_complete = (
         not unsupported
         and not missing_zero
         and exit_code == 0
         and bundle_status == "pass"
         and not validation_errors
     )
+    final_command_prerequisite_ready = (
+        not unsupported
+        and not missing_zero
+        and not validation_errors
+        and bundle_status == "blocked"
+        and next_required_step == "FINAL_COMMAND_EXECUTION"
+        and next_executable_task == "FINAL_COMMAND_EXECUTION"
+        and s2plt04_validation.get("status") == "pass"
+        and s2plt04_validation.get("s2plt04_completed_by_report") is True
+    )
+    passed = bundle_complete or final_command_prerequisite_ready
     return {
         "status": "PASS" if passed else "FAIL",
-        "scope": "adp_final_acceptance_bundle_root_verification_no_production_side_effects",
+        "scope": "adp_final_command_prerequisite_root_verification_no_production_side_effects",
         "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
         "task_id": "S2PMT07",
         "required_zero": sorted(required_zero_set),
@@ -80,6 +95,11 @@ def build_verification_report(root: Path, required_zero: list[str]) -> dict[str,
         "missing_required_zero": missing_zero,
         "bundle_validator_exit_code": exit_code,
         "bundle_status": bundle_status,
+        "bundle_complete": bundle_complete,
+        "final_command_prerequisite_ready": final_command_prerequisite_ready,
+        "next_required_step": next_required_step,
+        "next_executable_task": next_executable_task,
+        "s2plt04_completion_report_status": s2plt04_validation.get("status"),
         "blocking_reasons": blocking_reasons,
         "readiness_validation_errors": validation_errors,
         "missing_items": list(payload.get("missing_items", [])),

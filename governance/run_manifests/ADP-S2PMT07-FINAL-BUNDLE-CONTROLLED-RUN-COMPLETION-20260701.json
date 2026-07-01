@@ -1,0 +1,128 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "artifact_hashes": {
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json": "sha256:c42c5eae24dd3192714a945cd42de0086a2cc1c638e575364dc33c50827cf414",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json": "sha256:fdff2d1546c03ad7aa2ec7254f6fb2240e42d02e85eb313cb1766455d8245ef4",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": "sha256:8597565f19d7a9bf31e320cb8f5e07d2803d817b71ea12d26c6b3febed5b25ce",
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json": "sha256:c5d6f58a08dbb0713dcea0ce9e9c52de0ddc88c82b9db85381109c8bfb80efba",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json": "sha256:7f7be5b2e6a6d94d55b6f8bb57a72c37f199282fd9d3ae4dbe451adb11bc4602",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json": "sha256:49307d5dc0f0c7e3e033bbcad270fee7dadf182e00d9ee620975c0aaa51013e1",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": "sha256:da2a2c1f7d2a9347c1b7acfef9a4d69e9fd86fe147b4f471a4a6978de0d4452e",
+    "HANDOFF/00_下一Agent先读.md": "sha256:098e26237a24b104f4d507c15b4658c35db41b11138bc7193c7300b901260075"
+  },
+  "boundary": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "integrated_production_accepted": false,
+    "production_acceptance_claimed": false,
+    "production_restore_enabled": false,
+    "real_smtp_send_enabled": false,
+    "release_packaging_enabled": false,
+    "scheduler_install_enabled": false,
+    "stage2_integrated_production_accepted": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "controlled_real_run_acceptance": {
+    "background_scheduler_started": false,
+    "blocking_reasons": [],
+    "daily_input_source": "existing_report",
+    "daily_run_status": "succeeded",
+    "delivery_ref_by_product": {
+      "M1": "smtp://message/smtp-delivery:cec442e1da5bdfcf",
+      "M2": "smtp://message/smtp-delivery:b1053c91aec057f1",
+      "M3": "smtp://message/smtp-delivery:98c7dcb43ba2b9d5",
+      "M4": "smtp://message/smtp-delivery:6da07d3691f28db6"
+    },
+    "duplicate_send_attempted": false,
+    "foreground_only": true,
+    "generated_at_utc": "2026-07-01T03:46:50Z",
+    "historical_sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "local_output_json": "/tmp/adp_controlled_real_run_20260701T034650Z.json",
+    "newly_sent_mail_products": [],
+    "notification_allow_send_by_product": {
+      "M1": false,
+      "M2": false,
+      "M3": false,
+      "M4": false
+    },
+    "notification_historical_delivery_evidence_by_product": {
+      "M1": true,
+      "M2": true,
+      "M3": true,
+      "M4": true
+    },
+    "planned_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "planned_send_total": 4,
+    "production_evidence_ready": true,
+    "real_smtp_sent": true,
+    "sent_mail_count": 4,
+    "sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "service_date": "2026-07-01",
+    "state_backup_before_run": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701_before_controlled_real_send_20260701T034650Z",
+    "status": "pass",
+    "status_by_product": {
+      "M1": "sent",
+      "M2": "sent",
+      "M3": "sent",
+      "M4": "sent"
+    },
+    "user_center_sync_ready": true,
+    "validation_errors": []
+  },
+  "final_bundle": {
+    "artifact_validation_state_hash": "f897719873bb119e282e87a706b9765d936c79fa0a793f32bb85dd8b34c49a44",
+    "blocking_reasons": [],
+    "bundle_present": true,
+    "manifest_validation_state_hash": "558ec135fde8912868be73fe472c39bdd3a99f2038500eae15cb70baef470762",
+    "missing_items": [],
+    "prerequisite_plan_state_hash": "a05ed0633ecf8dbd0b1fd93e82b2ad568886544465b5be488ac043f7849ce87b",
+    "readiness_validation_errors": null,
+    "state_hash": "2e37a815934c84ffb08b79df572ec058081cfabb3fbbd4e8a2aba3630de36e4c",
+    "status": "pass"
+  },
+  "final_command_logs": {
+    "python -m pytest -q": "governance/final_command_logs/02.log",
+    "python tools/validate_task_pack.py --root .": "governance/final_command_logs/01.log",
+    "python tools/verify_acceptance_bundle.py --require-zero P0 P1": "governance/final_command_logs/03.log"
+  },
+  "generated_at": "2026-07-01T14:16:53+10:00",
+  "post_run_disable_evidence": {
+    "ADP_ALLOW_SMTP_SEND": "false",
+    "daily_operation_enabled_after_run": false,
+    "launchd_disabled_labels": [
+      "com.linze.adp.local.daily",
+      "com.linze.adp.local.health",
+      "com.linze.adp.local.watchdog"
+    ],
+    "real_smtp_send_enabled_after_run": false,
+    "scheduler_enabled_after_run": false
+  },
+  "project_id": "arxiv-daily-push",
+  "result": "final_bundle_artifact_chain_pass_controlled_real_run_no_background_production_enablement",
+  "schema_version": 1,
+  "scope": "S2PMT07 final bundle manifest, final command, handoff, signoff, and one controlled foreground real-run acceptance",
+  "source_base_commit": "efff7ce03de9c7863d739492d2a4682de2ee7660",
+  "status": "pass",
+  "task_id": "S2PMT07-FINAL-BUNDLE-CONTROLLED-RUN-COMPLETION",
+  "validation_evidence": [
+    "PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push validate-final-bundle-manifest --path FINAL_ACCEPTANCE_BUNDLE/manifest.json --json",
+    "PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push validate-final-acceptance-bundle --repo-root . --json",
+    "PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_final_command_root_tools.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_governance_current_state.py -q"
+  ]
+}

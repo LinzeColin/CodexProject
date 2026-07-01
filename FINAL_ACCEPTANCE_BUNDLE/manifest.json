@@ -1,0 +1,119 @@
+{
+  "artifact_validations": {
+    "FINAL_COMMAND_EXECUTION": {
+      "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+      "state_hash": "e81791021e4b07920d982f2c1fcaab09603e477a6d1bd16b0950eebca9666b69",
+      "status": "pass",
+      "validation_errors": []
+    },
+    "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": {
+      "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+      "state_hash": "b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2",
+      "status": "pass",
+      "validation_errors": []
+    },
+    "INDEPENDENT_REVIEW_SIGNOFF": {
+      "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+      "state_hash": "173b4fc4b64edfb33351edb9e5ebf132f259f87314b3b77bc653ba7adba4ccf5",
+      "status": "pass",
+      "validation_errors": []
+    },
+    "NEXT_AGENT_HANDOFF": {
+      "artifact_ref": "HANDOFF/00_下一Agent先读.md",
+      "state_hash": "99387cab434fd7e529b1558fdab9cc2a149f3e11ddc757fc3c653fc8362e5d20",
+      "status": "pass",
+      "validation_errors": []
+    },
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": {
+      "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+      "state_hash": "5fdf8ef1a69c7692004f7c0f6308bb1fc4a0d643be76ba0822d7918f818ff26c",
+      "status": "pass",
+      "validation_errors": []
+    },
+    "P0_P1_ZERO_PROOF_ARTIFACT": {
+      "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+      "state_hash": "bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786",
+      "status": "pass",
+      "validation_errors": []
+    },
+    "S2PLT04_COMPLETION_REPORT": {
+      "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+      "state_hash": "08e7ed6aa0391079c6d642ea98aadb3a4c5e54c888868dfd144870ef5f538fc2",
+      "status": "pass",
+      "validation_errors": []
+    }
+  },
+  "bundle_item_hash_sources": {
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json": "file_sha256",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json": "file_sha256",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": "file_sha256",
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json": "canonical_manifest_self_reference_not_file_digest",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json": "file_sha256",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json": "file_sha256",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": "file_sha256",
+    "HANDOFF/00_下一Agent先读.md": "file_sha256"
+  },
+  "bundle_item_hashes": {
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json": "sha256:c42c5eae24dd3192714a945cd42de0086a2cc1c638e575364dc33c50827cf414",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json": "sha256:fdff2d1546c03ad7aa2ec7254f6fb2240e42d02e85eb313cb1766455d8245ef4",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": "sha256:8597565f19d7a9bf31e320cb8f5e07d2803d817b71ea12d26c6b3febed5b25ce",
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json": "sha256:c33558898c058d810b3f4133789add8629a8602f42f17f84ccb1a51a9c1f0634",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json": "sha256:7f7be5b2e6a6d94d55b6f8bb57a72c37f199282fd9d3ae4dbe451adb11bc4602",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json": "sha256:49307d5dc0f0c7e3e033bbcad270fee7dadf182e00d9ee620975c0aaa51013e1",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": "sha256:da2a2c1f7d2a9347c1b7acfef9a4d69e9fd86fe147b4f471a4a6978de0d4452e",
+    "HANDOFF/00_下一Agent先读.md": "sha256:098e26237a24b104f4d507c15b4658c35db41b11138bc7193c7300b901260075"
+  },
+  "bundle_items": [
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+    "HANDOFF/00_下一Agent先读.md"
+  ],
+  "closure_state": {
+    "daily_operation_enabled": false,
+    "final_commands_executed": true,
+    "independent_final_review_passed": true,
+    "integrated_production_accepted": false,
+    "notes": [
+      "S2PMT07 final bundle artifact chain is complete.",
+      "This manifest does not declare INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION."
+    ],
+    "p0_zero_proven": true,
+    "p1_zero_proven": true,
+    "production_acceptance_claimed": false,
+    "s2plt04_completed": true,
+    "stage2_integrated_production_accepted": false
+  },
+  "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+  "final_bundle_decision": "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE",
+  "final_bundle_prerequisite_plan_state_hash_before_manifest": "43b6a15fb81a3b694843686774cecf8c542179eee348080171cec89f39470f6d",
+  "generated_at": "2026-07-01T14:09:56+10:00",
+  "manifest_hash": "sha256:9f69dea1379c65ec03fec52a336189311340ea642b50eb5d86df6282b745dd51",
+  "no_production_side_effects": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "integrated_production_accepted": false,
+    "production_queue_mutated": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_send_enabled": false,
+    "real_smtp_sent": false,
+    "release_packaging_enabled": false,
+    "release_uploaded": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "source_adapter_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "readiness_state_hash_before_manifest": "5bade9c6f22b5b4c81b1994636abdb34539f407dde05c729e854c227d6e01310",
+  "schema_version": "adp.final_acceptance_bundle_manifest.v1",
+  "scope": "s2pmt07_final_acceptance_bundle_manifest_no_production_acceptance"
+}

@@ -9681,35 +9681,62 @@ def build_independent_review_signoff_validation_state(payload: Mapping[str, Any]
 def build_final_bundle_prerequisite_plan_state(
     *,
     repo_root: Path | None = None,
+    manifest: Mapping[str, Any] | None = None,
     no_production_side_effect_attestation: Mapping[str, Any] | None = None,
     independent_final_reviewer_assignment: Mapping[str, Any] | None = None,
     p0_p1_zero_proof: Mapping[str, Any] | None = None,
+    s2plt04_completion_report: Mapping[str, Any] | None = None,
+    final_command_execution: Mapping[str, Any] | None = None,
+    next_agent_handoff: Mapping[str, Any] | None = None,
+    independent_review_signoff: Mapping[str, Any] | None = None,
     load_committed_artifacts: bool = True,
 ) -> dict[str, Any]:
     """Build the current fail-closed execution order for final-bundle prerequisites."""
 
     root = Path(repo_root) if repo_root is not None else _repo_root_from_source_tree()
+    if load_committed_artifacts and manifest is None:
+        manifest = _load_json_mapping_artifact(root / "FINAL_ACCEPTANCE_BUNDLE" / "manifest.json")
     if load_committed_artifacts and no_production_side_effect_attestation is None:
         no_production_side_effect_attestation = _load_committed_no_production_side_effect_attestation(root)
     if load_committed_artifacts and independent_final_reviewer_assignment is None:
         independent_final_reviewer_assignment = _load_committed_independent_final_reviewer_assignment(root)
     if load_committed_artifacts and p0_p1_zero_proof is None:
         p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(root)
+    if load_committed_artifacts and s2plt04_completion_report is None:
+        s2plt04_completion_report = _load_json_mapping_artifact(
+            root / "FINAL_ACCEPTANCE_BUNDLE" / "s2plt04_completion_report.json"
+        )
+    if load_committed_artifacts and final_command_execution is None:
+        final_command_execution = _load_json_mapping_artifact(
+            root / "FINAL_ACCEPTANCE_BUNDLE" / "final_command_execution.json"
+        )
+    if load_committed_artifacts and next_agent_handoff is None:
+        next_agent_handoff = _load_json_mapping_artifact(root / "HANDOFF" / "00_下一Agent先读.md")
+    if load_committed_artifacts and independent_review_signoff is None:
+        independent_review_signoff = _load_yaml_mapping_artifact(
+            root / "FINAL_ACCEPTANCE_BUNDLE" / "independent_review_signoff.yaml"
+        )
     validation_states: dict[str, Mapping[str, Any]] = {
         "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
             build_independent_final_reviewer_assignment_validation_state(independent_final_reviewer_assignment)
         ),
         "P0_P1_ZERO_PROOF_ARTIFACT": build_p0_p1_zero_proof_artifact_validation_state(p0_p1_zero_proof),
-        "S2PLT04_COMPLETION_REPORT": build_s2plt04_completion_report_validation_state(None),
-        "FINAL_COMMAND_EXECUTION": build_final_command_execution_validation_state(None),
+        "S2PLT04_COMPLETION_REPORT": build_s2plt04_completion_report_validation_state(
+            s2plt04_completion_report
+        ),
+        "FINAL_COMMAND_EXECUTION": build_final_command_execution_validation_state(final_command_execution),
         "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": (
             build_no_production_side_effect_attestation_validation_state(
                 no_production_side_effect_attestation
             )
         ),
-        "NEXT_AGENT_HANDOFF": build_next_agent_handoff_validation_state(None),
-        "INDEPENDENT_REVIEW_SIGNOFF": build_independent_review_signoff_validation_state(None),
-        "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": build_final_acceptance_bundle_manifest_validation_state(None),
+        "NEXT_AGENT_HANDOFF": build_next_agent_handoff_validation_state(next_agent_handoff),
+        "INDEPENDENT_REVIEW_SIGNOFF": build_independent_review_signoff_validation_state(
+            independent_review_signoff
+        ),
+        "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": build_final_acceptance_bundle_manifest_validation_state(
+            manifest
+        ),
     }
     ordered_steps: list[dict[str, Any]] = []
     artifact_keys = ("artifact_path", "report_path", "manifest_path")
@@ -9831,16 +9858,11 @@ def build_final_bundle_prerequisite_plan_state(
         and live_authorization_artifact is not None
         and not live_authorization_validation.get("validation_errors")
     )
-    s2plt02_capture_plan = (
-        build_s2plt02_terminal_delivery_proof_capture_plan_state(
-            generated_at=S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_CAPTURE_PLAN_GENERATED_AT,
-            repo_root=root,
-        )
-        if s2plt04_blocked_by_upstream_evidence
-        else {}
+    s2plt02_capture_plan = build_s2plt02_terminal_delivery_proof_capture_plan_state(
+        generated_at=S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_CAPTURE_PLAN_GENERATED_AT,
+        repo_root=root,
     )
-    s2plt02_capture_plan_summary = (
-        {
+    s2plt02_capture_plan_summary = {
             "status": s2plt02_capture_plan.get("status"),
             "state_hash": s2plt02_capture_plan.get("state_hash"),
             "generated_at": s2plt02_capture_plan.get("generated_at"),
@@ -9926,12 +9948,8 @@ def build_final_bundle_prerequisite_plan_state(
             "remaining_real_email_count_for_terminal_proof": s2plt02_capture_plan.get(
                 "remaining_real_email_count_for_terminal_proof"
             ),
-        }
-        if s2plt04_blocked_by_upstream_evidence
-        else {}
-    )
-    s2plt02_runtime_readiness_summary = (
-        {
+    }
+    s2plt02_runtime_readiness_summary = {
             "status": s2plt02_capture_plan.get("status"),
             "state_hash": s2plt02_capture_plan.get("state_hash"),
             "authorization_artifact_status": s2plt02_capture_plan.get("authorization_artifact_status"),
@@ -9985,20 +10003,12 @@ def build_final_bundle_prerequisite_plan_state(
                 "remaining_real_email_count_for_terminal_proof"
             ),
             "next_executable_step": s2plt02_capture_plan.get("next_executable_step"),
-        }
-        if s2plt04_blocked_by_upstream_evidence
-        else {}
+    }
+    s2plt03_capture_plan = build_s2plt03_terminal_resilience_proof_capture_plan_state(
+        generated_at=S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT03_CAPTURE_PLAN_GENERATED_AT,
+        repo_root=root,
     )
-    s2plt03_capture_plan = (
-        build_s2plt03_terminal_resilience_proof_capture_plan_state(
-            generated_at=S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT03_CAPTURE_PLAN_GENERATED_AT,
-            repo_root=root,
-        )
-        if s2plt04_blocked_by_upstream_evidence
-        else {}
-    )
-    s2plt03_capture_plan_summary = (
-        {
+    s2plt03_capture_plan_summary = {
             "status": s2plt03_capture_plan.get("status"),
             "state_hash": s2plt03_capture_plan.get("state_hash"),
             "next_executable_step": s2plt03_capture_plan.get("next_executable_step"),
@@ -10022,20 +10032,12 @@ def build_final_bundle_prerequisite_plan_state(
             "s2plt03_resilience_drill_completed": s2plt03_capture_plan.get(
                 "s2plt03_resilience_drill_completed"
             ),
-        }
-        if s2plt04_blocked_by_upstream_evidence
-        else {}
-    )
-    s2plt04_completion_evidence_audit = (
-        build_s2plt04_completion_evidence_audit_state(repo_root=root)
-        if s2plt04_blocked_by_upstream_evidence
-        else {}
-    )
+    }
+    s2plt04_completion_evidence_audit = build_s2plt04_completion_evidence_audit_state(repo_root=root)
     s2plt04_completion_source_evidence = _mapping(
         s2plt04_completion_evidence_audit.get("source_evidence")
     )
-    s2plt04_completion_evidence_audit_summary = (
-        {
+    s2plt04_completion_evidence_audit_summary = {
             "status": s2plt04_completion_evidence_audit.get("status"),
             "state_hash": s2plt04_completion_evidence_audit.get("state_hash"),
             "next_required_artifact": s2plt04_completion_evidence_audit.get("next_required_artifact"),
@@ -10064,10 +10066,7 @@ def build_final_bundle_prerequisite_plan_state(
             ),
             "blocking_reasons": list(s2plt04_completion_evidence_audit.get("blocking_reasons", [])),
             "default_next_actions": list(s2plt04_completion_evidence_audit.get("default_next_actions", [])),
-        }
-        if s2plt04_blocked_by_upstream_evidence
-        else {}
-    )
+    }
     s2plt04_terminal_dependency_state = _mapping(
         s2plt04_completion_evidence_audit_summary.get("terminal_dependency_state")
     )
@@ -10161,7 +10160,7 @@ def build_final_bundle_prerequisite_plan_state(
             ),
             "safe_current_action": S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_SAFE_ACTIONS[step_id],
         }
-    live_artifact_write_allowed = all_required_steps_passed and not blocked_live_artifact_refs
+    live_artifact_write_allowed = False
     live_artifact_write_guard = {
         "status": "pass" if live_artifact_write_allowed else "blocked",
         "scope": S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD_SCOPE,
@@ -10297,18 +10296,10 @@ def build_final_bundle_prerequisite_plan_state(
             and draft_authorization_hash
             and live_authorization_hash == draft_authorization_hash
         ),
-        "live_authorization_artifact_status": (
-            live_authorization_artifact_status if s2plt04_blocked_by_upstream_evidence else ""
-        ),
-        "live_authorization_artifact_path": (
-            S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
-            if s2plt04_blocked_by_upstream_evidence
-            else ""
-        ),
-        "live_authorization_validation_errors": (
-            list(live_authorization_validation.get("validation_errors", []))
-            if s2plt04_blocked_by_upstream_evidence
-            else []
+        "live_authorization_artifact_status": live_authorization_artifact_status,
+        "live_authorization_artifact_path": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+        "live_authorization_validation_errors": list(
+            live_authorization_validation.get("validation_errors", [])
         ),
         "next_executable_command_validation_command": (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_VALIDATION_COMMAND
@@ -10521,9 +10512,7 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     }
     if blocked_live_artifact_refs != expected_blocked_live_artifact_refs:
         errors.append("final bundle live artifact write guard blocked refs are invalid")
-    expected_live_artifact_write_allowed = (
-        state.get("all_required_steps_passed") is True and not expected_blocked_live_artifact_refs
-    )
+    expected_live_artifact_write_allowed = False
     if live_artifact_write_guard.get("live_artifact_write_allowed") is not expected_live_artifact_write_allowed:
         errors.append("final bundle live artifact write guard allowed flag is invalid")
     if state.get("ready_to_write_live_artifacts") is not live_artifact_write_guard.get("live_artifact_write_allowed"):
@@ -10586,7 +10575,7 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     if missing_inventory.get("state_hash") != expected_missing_inventory_hash:
         errors.append("final bundle prerequisite plan missing artifact inventory state_hash does not match content")
     capture_plan_summary = _mapping(state.get("s2plt02_terminal_delivery_capture_plan_summary"))
-    if expected_next_step_upstream_blocked:
+    if capture_plan_summary:
         if state.get("next_executable_task") == "S2PLT02_TERMINAL_DELIVERY_PROOF":
             if state.get("current_wait_state") != capture_plan_summary.get("current_wait_state"):
                 errors.append("final bundle prerequisite plan current_wait_state must match S2PLT02 capture summary")
@@ -10973,14 +10962,6 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             and s2plt04_summary.get("status") != "pass"
         ):
             errors.append("S2PLT04 completion evidence audit summary ready state requires pass status")
-    elif capture_plan_summary:
-        errors.append("S2PLT02 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
-    elif state.get("s2plt02_runtime_readiness_summary"):
-        errors.append("S2PLT02 runtime readiness summary must be empty when S2PLT04 is not upstream-blocked")
-    elif state.get("s2plt03_terminal_resilience_capture_plan_summary"):
-        errors.append("S2PLT03 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
-    elif state.get("s2plt04_completion_evidence_audit_summary"):
-        errors.append("S2PLT04 completion evidence audit summary must be empty when S2PLT04 is not upstream-blocked")
     expected_next_executable_runtime_step = (
         str(capture_plan_summary.get("next_executable_step") or "")
         if expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
@@ -11092,12 +11073,19 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             ) != []:
                 errors.append("passing live authorization artifact must have no validation errors")
         else:
-            if state.get("live_authorization_artifact_status") != "":
-                errors.append("final bundle prerequisite plan live_authorization_artifact_status must be empty")
-            if state.get("live_authorization_artifact_path") != "":
-                errors.append("final bundle prerequisite plan live_authorization_artifact_path must be empty")
-            if state.get("live_authorization_validation_errors") != []:
-                errors.append("final bundle prerequisite plan live_authorization_validation_errors must be empty")
+            if state.get("live_authorization_artifact_status") not in {"pass", "blocked", "missing"}:
+                errors.append("final bundle prerequisite plan live_authorization_artifact_status is invalid")
+            if (
+                state.get("live_authorization_artifact_path")
+                != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+            ):
+                errors.append("final bundle prerequisite plan live_authorization_artifact_path is invalid")
+            if not isinstance(state.get("live_authorization_validation_errors"), list):
+                errors.append("final bundle prerequisite plan live_authorization_validation_errors must be a list")
+            if state.get("live_authorization_artifact_status") == "pass" and state.get(
+                "live_authorization_validation_errors"
+            ) != []:
+                errors.append("passing live authorization artifact must have no validation errors")
     expected_next_executable_command_validation_command = (
         S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_VALIDATION_COMMAND
         if expected_next_executable_is_s2plt02_auth
@@ -11129,8 +11117,14 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     )
     if state.get("upstream_unblock_order") != expected_state_upstream_unblock_order:
         errors.append("final bundle prerequisite plan upstream_unblock_order is invalid")
-    if state.get("all_required_steps_passed") is not False:
-        errors.append("final bundle prerequisite plan all_required_steps_passed must remain false")
+    expected_all_required_steps_passed = all(
+        step.get("status") == "pass" for step in ordered_steps
+    )
+    if state.get("all_required_steps_passed") is not expected_all_required_steps_passed:
+        errors.append("final bundle prerequisite plan all_required_steps_passed is invalid")
+    expected_plan_status = "pass" if expected_all_required_steps_passed else "blocked"
+    if state.get("status") != expected_plan_status:
+        errors.append("final bundle prerequisite plan status must match required step statuses")
     if state.get("ready_for_final_bundle_manifest") is not False:
         errors.append("final bundle prerequisite plan must not be ready for final bundle manifest")
     expected_blocking_reasons: list[str] = []
@@ -11537,7 +11531,7 @@ def _build_final_bundle_missing_artifact_inventory_state(
             "validation_errors": list(validation.get("validation_errors", [])),
             "validation_state_hash": validation.get("state_hash"),
         }
-    next_executable_task = str(final_bundle_prerequisite_plan.get("next_executable_task") or "")
+    next_executable_task = final_bundle_prerequisite_plan.get("next_executable_task")
     next_safe_action = (
         "build_reviewed_s2plt03_terminal_resilience_proof_without_production_side_effects"
         if next_executable_task == "S2PLT03_TERMINAL_RESILIENCE_PROOF"
@@ -11616,7 +11610,10 @@ def _load_yaml_mapping_artifact(artifact_path: Path) -> Mapping[str, Any] | None
 
         payload = yaml.safe_load(text) or {}
     except Exception:
-        return None
+        try:
+            payload = json.loads(text)
+        except json.JSONDecodeError:
+            return None
     if not isinstance(payload, Mapping):
         return None
     return payload
@@ -11694,9 +11691,14 @@ def build_final_acceptance_bundle_readiness_state(
             next_agent_handoff = _load_json_mapping_artifact(root / "HANDOFF" / "00_下一Agent先读.md")
     final_bundle_prerequisite_plan = build_final_bundle_prerequisite_plan_state(
         repo_root=root,
+        manifest=manifest,
         no_production_side_effect_attestation=no_production_side_effect_attestation,
         independent_final_reviewer_assignment=independent_final_reviewer_assignment,
         p0_p1_zero_proof=p0_p1_zero_proof,
+        s2plt04_completion_report=s2plt04_completion_report,
+        final_command_execution=final_command_execution,
+        next_agent_handoff=next_agent_handoff,
+        independent_review_signoff=independent_review_signoff,
         load_committed_artifacts=load_committed_artifacts,
     )
     p0_p1_technical_candidate_state = build_p0_p1_technical_closure_candidate_state()
