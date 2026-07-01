@@ -1,0 +1,129 @@
+{
+  "schema": "PFIV024Stage8Phase81RouteClickValidationV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 8",
+  "phase_id": "8.1",
+  "status": "pass",
+  "primary_entry_count": 10,
+  "primary_labels": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "primary_routes": [
+    {
+      "label": "首页总览",
+      "routeAlias": "/home",
+      "workspace": "home"
+    },
+    {
+      "label": "账户与资产",
+      "routeAlias": "/accounts",
+      "workspace": "accounts"
+    },
+    {
+      "label": "账本流水",
+      "routeAlias": "/ledger",
+      "workspace": "ledger"
+    },
+    {
+      "label": "投资管理",
+      "routeAlias": "/investment",
+      "workspace": "investment"
+    },
+    {
+      "label": "消费管理",
+      "routeAlias": "/consumption",
+      "workspace": "consumption"
+    },
+    {
+      "label": "数据源与上传",
+      "routeAlias": "/sources-upload",
+      "workspace": "sync"
+    },
+    {
+      "label": "建议与复盘",
+      "routeAlias": "/review",
+      "workspace": "recommendations"
+    },
+    {
+      "label": "报告与洞察",
+      "routeAlias": "/reports",
+      "workspace": "insights"
+    },
+    {
+      "label": "市场与研究",
+      "routeAlias": "/market-research",
+      "workspace": "market_research"
+    },
+    {
+      "label": "设置",
+      "routeAlias": "/settings",
+      "workspace": "settings"
+    }
+  ],
+  "core_secondary_route_count": 10,
+  "core_secondary_routes": [
+    {
+      "workspace": "home",
+      "routeAlias": "/home?tab=todo",
+      "title": "首页总览 · 待办事项"
+    },
+    {
+      "workspace": "accounts",
+      "routeAlias": "/accounts?tab=list",
+      "title": "账户与资产 · 账户清单"
+    },
+    {
+      "workspace": "ledger",
+      "routeAlias": "/ledger?tab=filter",
+      "title": "账本流水 · 筛选搜索"
+    },
+    {
+      "workspace": "investment",
+      "routeAlias": "/investment?tab=holdings",
+      "title": "投资管理 · 持仓"
+    },
+    {
+      "workspace": "consumption",
+      "routeAlias": "/consumption?tab=category",
+      "title": "消费管理 · 分类分析"
+    },
+    {
+      "workspace": "sync",
+      "routeAlias": "/sources-upload?tab=import",
+      "title": "数据源与上传 · 导入中心"
+    },
+    {
+      "workspace": "recommendations",
+      "routeAlias": "/review?tab=detail",
+      "title": "建议与复盘 · 建议详情"
+    },
+    {
+      "workspace": "insights",
+      "routeAlias": "/reports?tab=quarterly",
+      "title": "报告与洞察 · 季报"
+    },
+    {
+      "workspace": "market_research",
+      "routeAlias": "/market-research?tab=research",
+      "title": "市场与研究 · 研究笔记"
+    },
+    {
+      "workspace": "settings",
+      "routeAlias": "/settings?tab=data-system",
+      "title": "设置 · 数据与系统"
+    }
+  ],
+  "all_primary_routes_clicked": true,
+  "all_core_secondary_routes_clicked": true,
+  "history_back_forward_passed": true
+}

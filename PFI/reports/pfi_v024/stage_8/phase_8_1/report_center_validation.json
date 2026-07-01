@@ -1,0 +1,26 @@
+{
+  "schema": "PFIV024Stage8Phase81ReportCenterValidationV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 8",
+  "phase_id": "8.1",
+  "status": "pass",
+  "report_count": 6,
+  "visible_report_ids": [
+    "net_worth_report",
+    "cash_report",
+    "investment_report",
+    "consumption_report",
+    "cashflow_report",
+    "data_quality_report"
+  ],
+  "formula_visible": true,
+  "parameters_and_sample_visible": true,
+  "data_range_visible": true,
+  "confidence_visible": true,
+  "gaps_and_review_visible": true,
+  "data_quality_report_generated": true,
+  "full_financial_conclusion_when_blocked": false,
+  "blocked_count": 4,
+  "partial_count": 1
+}

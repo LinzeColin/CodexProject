@@ -1,0 +1,14 @@
+{
+  "schema": "PFIV024Stage8Phase81EntryVersionValidationV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "repair_label": "PFI v0.2.3 Repair",
+  "build_id": "pfi-v024-stage2-phase22",
+  "bundle_version": "20260630.2",
+  "ui_contract_version": "PFI-V024-STAGE2-ENTRY-CONSISTENCY",
+  "web_bundle_hash": "de92f9855ed1cf9fa19c1e3608015683216ee4656718cc0d6e0f01d3e336bf65",
+  "web_bundle_hash_present": true,
+  "project_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+  "entry_source": "browser",
+  "status": "pass"
+}

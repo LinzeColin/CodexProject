@@ -1,0 +1,11 @@
+Stage 8 Phase 8.1 automated acceptance validation log
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py -q
+4 failed: missing stage_v024_stage8_e2e_acceptance module, STAGE8_E2E_ACCEPTANCE.md, and phase_8_1 evidence pack
+
+Generation:
+node PFI/scripts/validate_v024_stage8_phase81_e2e_auto.js
+generated_at 2026-07-01T04:30:04.621Z
+
+Final validation commands are recorded in the run terminal after the GREEN pass.
