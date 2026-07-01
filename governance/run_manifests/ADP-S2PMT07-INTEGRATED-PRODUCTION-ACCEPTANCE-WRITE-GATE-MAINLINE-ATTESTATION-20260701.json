@@ -5,7 +5,7 @@
   ],
   "acceptance_write_gate_allowed": false,
   "background_adp_process_count_after": 0,
-  "binding_status": "precommit_tree_bound",
+  "binding_status": "commit_bound",
   "changed_files_actual": [
     "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-20260701.json",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_MAINLINE_ATTESTATION.md",
@@ -49,7 +49,7 @@
   "daily_operation_enabled": false,
   "db_migration_executed": false,
   "duplicate_smtp_send_avoided": true,
-  "event_id": "EVENT-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-PENDING-RECHECK",
+  "event_id": "EVENT-20260701-ADP-S2PMT07-CONTROLLED-RUN-OWNER-GATE-MAINLINE-ATTESTATION",
   "evidence_refs": [
     "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-20260701.json",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_MAINLINE_ATTESTATION.md",
@@ -58,7 +58,7 @@
     "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701/adp-local-runner-report.json"
   ],
   "finished_at": "2026-07-01T16:52:40+10:00",
-  "generated_at": "2026-07-01T17:15:45+10:00",
+  "generated_at": "2026-07-01T17:31:00+10:00",
   "historical_sent_mail_products": [
     "M1",
     "M2",
@@ -72,8 +72,10 @@
   "new_smtp_run_executed_by_this_attestation": false,
   "newly_sent_mail_products": [],
   "next_required_step": "OWNER_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION_OR_PAUSE",
-  "occurred_at": "2026-07-01T17:15:45+10:00",
+  "occurred_at": "2026-07-01T17:31:00+10:00",
   "owner_authorization_consumed": true,
+  "owner_decision_artifact_gate_state_hash": "3b99bcb9fe38c1d16c8424742584f7d30b078c16f3bda6b6e2701a62ff3850ae",
+  "owner_decision_artifact_gate_status": "blocked_owner_decision_artifact_missing_or_invalid",
   "owner_production_boundary_decision_recorded": false,
   "persistent_adp_allow_smtp_send_after": false,
   "planned_send_total": 4,
@@ -93,9 +95,9 @@
     "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json",
     "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"
   ],
-  "result": "pending_commit_bound_attestation_no_production_enablement",
-  "result_commit": "PENDING",
-  "result_tree_hash": "PENDING",
+  "result": "pass_mainline_commit_bound_attestation_no_production_enablement",
+  "result_commit": "c743aec7b9543521c953edf4bd808bf64da40fa2",
+  "result_tree_hash": "0f5fd15bf009a39ffe09fb42cb6d93d83b9dd39b",
   "run_id": "ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-20260701",
   "runtime_report_sha256": "123d516e640aa6549b32ff50ce927a71adc7a765175f8a16ea6a6f6be50f401e",
   "scheduler_enabled": false,
@@ -104,8 +106,8 @@
   "sent_mail_count": 4,
   "source_adapter_changed": false,
   "stage2_integrated_production_accepted": false,
-  "status": "pending_commit_bound_attestation_no_new_smtp",
-  "summary": "Current tree records the latest controlled foreground real-run recheck and recomputed write-gate evidence; commit-bound attestation remains pending until this tree is committed and pushed to main.",
+  "status": "pass_mainline_attestation_no_new_smtp",
+  "summary": "Mainline attestation binds the latest controlled foreground real-run recheck, recomputed write-gate evidence, and owner decision artifact gate to commit c743aec7; no new SMTP run or production enablement occurred.",
   "task_id": "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION",
   "test_commands": [
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_mainline_attestation_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q",
@@ -130,7 +132,7 @@
     "open_pr_count=0",
     "persistent ADP_ALLOW_SMTP_SEND=false; daily/health/watchdog LaunchAgents disabled; no ADP background process; pycache cleaned"
   ],
-  "timestamp": "2026-07-01T17:15:45+10:00",
+  "timestamp": "2026-07-01T17:31:00+10:00",
   "updated_governance_files": [
     "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-20260701.json",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_MAINLINE_ATTESTATION.md",

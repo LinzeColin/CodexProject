@@ -82,9 +82,9 @@ Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPE
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:c743aec7b9543521c953edf4bd808bf64da40fa2`
 - tree_bound_events: `4`
-- commit_bound_events: `5`
+- commit_bound_events: `6`
 - legacy_unbound_events: `330`
 - precommit_pending_events: `40`
 - pending_or_stale_events: `373`
@@ -95,10 +95,10 @@ Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPE
 
 ## 16. 技术元数据
 
-- source_base_commit: `7496d69132780c1f7b1bdd813da7d4e23b2a34ea`
-- source_tree_hash: `7adb4069b20c5f1c4451617502eadf3ba47fb8c2`
-- source_snapshot_hash: `sha256:ff0ee97058f7a34969267ae3c243f9b1dde4e83730722fd1cd327036a273a35a`
-- snapshot_event_time: `2026-07-01T17:24:00+10:00`
+- source_base_commit: `c743aec7b9543521c953edf4bd808bf64da40fa2`
+- source_tree_hash: `0f5fd15bf009a39ffe09fb42cb6d93d83b9dd39b`
+- source_snapshot_hash: `sha256:251bea56015a3d6d4ee2236e11b84fd69950a62e214c2a363e3589d47937da73`
+- snapshot_event_time: `2026-07-01T17:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
 - phase/gate: `S2PL / S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE`
