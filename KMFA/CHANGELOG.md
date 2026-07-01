@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.0-s14p1-fund-cash-loan-plan - 2026-07-01
+
+- 完成 `S14-P1｜资金计划现金贷款` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/fund_cash_loan_plan.py`、`KMFA/tools/check_s14_p1_fund_cash_loan_plan.py` 和 `KMFA/tests/test_fund_cash_loan_plan.py`。
+- 生成 4 条 public-safe source lane：账户清单、月度现金、资金计划、贷款明细；共 5 个 source refs、25 个字段映射 refs。
+- 输出 4 条现金压力信号、3 条贷款到期提示、3 条账户余额汇总和 1 个蓝色商务风 HTML overview。
+- 报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、付款审批、银行操作、贷款管理、开票、税务和业务 release。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、银行流水、合同、薪资、税务申报或 credentials。
+- S14-P1 不执行 S14-P2 开票纳税、S14-P3 政策证据、Stage 14 整体复审、GitHub upload、lineage full check、正式报告、外部 connector 或任何资金/银行/贷款/开票/税务执行动作。
+- 下一轮只能执行 `S14-P2｜开票纳税`。
+
 ## 0.1.0-s13-github-upload - 2026-07-01
 
 - 完成 Stage 13 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。

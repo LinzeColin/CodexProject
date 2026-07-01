@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S13-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260701-S14P1-FUND-CASH-LOAN-PLAN"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "dfdf16c98656c4272fa105027dcbf46ba15d37dd"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13_UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-01T21:00:00+10:00"
-generator_version: "manual-s13-github-upload"
-final_commit_binding: "post_push_parity_required_after_upload_commit"
+snapshot_event_time: "2026-07-01T22:00:00+10:00"
+generator_version: "manual-s14p1-fund-cash-loan-plan"
+final_commit_binding: "local_phase_commit_pending_no_github_upload"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 149
-    total_active_formulas: 36
+    total_active_parameters: 156
+    total_active_formulas: 37
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -122,6 +122,7 @@ dimensions:
       - "KMFA/stage_artifacts/S13_P3_cross_table_review/human/test_results.md"
       - "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -389,10 +390,10 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "STAGE13_UPLOADED_TO_GITHUB_MAIN"
-  release_gate: "KMFA-S14-P1-GATE"
+  status: "S14P1_COMPLETED_LOCAL_ONLY_NO_GITHUB_UPLOAD"
+  release_gate: "KMFA-S14-P2-GATE"
   blocker_ids:
-    - "S14_NOT_STARTED"
+    - "S14_P2_P3_STAGE14_REVIEW_UPLOAD_NOT_COMPLETE"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"
     - "REPORT_GRADE_D_BLOCKS_BUSINESS_DECISION"
