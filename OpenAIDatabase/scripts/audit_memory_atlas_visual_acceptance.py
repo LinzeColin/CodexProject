@@ -64,6 +64,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     memory_river_params_source = read_text(repo_root / "config/visualization/model_parameters.memory_river.yaml")
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
+    stage7_visual_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_visual_acceptance.cjs")
     readme = read_text(repo_root / "README.md")
     atlas_path = repo_root / "data/derived/visualization/memory_atlas.json"
     atlas_source = atlas_path.read_text(encoding="utf-8") if atlas_path.exists() else ""
@@ -406,6 +407,27 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "stage6_2_inspector_proposal_ready",
         "Stage 6.2 Inspector separates default formulas/evidence explanation from Debug fields and keeps writeback proposal-only JSON with active-memory mutation disabled",
         "Stage 6.2 Inspector explanation, Debug separation, proposal-only JSON, or safety contract is missing",
+    )
+    require(
+        checks,
+        '"validate:stage7-visual": "node scripts/validate_stage7_visual_acceptance.cjs"' in read_text(repo_root / "apps/memory-atlas/package.json")
+        and "function validateGalaxyVisualAcceptance" in stage7_visual_source
+        and "function validateMemoryRiverVisualAcceptance" in stage7_visual_source
+        and "stage7-galaxy-desktop.png" in stage7_visual_source
+        and "stage7-memory-river-desktop.png" in stage7_visual_source
+        and "__memoryAtlasGalaxySignal" in stage7_visual_source
+        and "signal.lit > 100" in stage7_visual_source
+        and "signal.rendererMode === \"memory-starfield\"" in stage7_visual_source
+        and "signal.fallbackMode !== \"legacy\"" in stage7_visual_source
+        and ".memory-river-canvas" in stage7_visual_source
+        and "black-hole-lifecycle" in stage7_visual_source
+        and "proto-star-lifecycle" in stage7_visual_source
+        and "stale-deprecated" in stage7_visual_source
+        and "assertPortClosed" in stage7_visual_source
+        and "Playwright" in stage7_visual_source,
+        "stage7_1_visual_acceptance_ready",
+        "Stage 7.1 has a real-browser visual acceptance gate for non-empty Galaxy canvas pixels, starfield screenshot quality, Memory River screenshot quality, and 4177 cleanup",
+        "Stage 7.1 visual acceptance browser gate, screenshots, pixel checks, Memory River checks, or cleanup assertion is missing",
     )
     require(
         checks,

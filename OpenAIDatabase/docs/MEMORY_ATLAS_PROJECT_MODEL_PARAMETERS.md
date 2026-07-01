@@ -499,3 +499,87 @@ review_status: `stage_6_whole_stage_review_passed`
 - Stage 6 整体复审必须同时跑 `validate:shared-state` 和 `validate:inspector-proposal`。
 - 后续 agent apply CLI 必须重新读库、做冲突检查、写 history、生成 git 回滚点；不能复用前端状态直接写库。
 - 如果默认解释面板过密，优先折叠公式细节，不把 raw 摘要移回默认层。
+
+## 12. Stage 7.1 视觉验收模型
+
+状态：Stage 7.1 已实现，Stage 7 整体复审未完成。
+
+模型假设：
+
+- Memory Atlas 的关键视觉面板不能只靠源码字符串验收；Galaxy 和 Memory River
+  必须在真实浏览器中渲染、截图，并通过非空或结构质量 gate。
+- Galaxy 是 WebGL canvas，适合用 bounded pixel signal 验证不是空白、纯黑、
+  fallback-only 或静态点云。
+- Memory River 是 SVG 视觉系统，适合用截图文件和 DOM 结构验证 Macro / Meso /
+  Micro 河道、证据层、marker 和密度上下文没有退化成静态列表。
+
+输入：
+
+- Vite production preview output: `apps/memory-atlas/dist`
+- Playwright Chromium 页面
+- `window.__memoryAtlasGalaxySignal()`
+- `.memory-river-canvas` DOM contract
+- Browser screenshots
+
+处理方法：
+
+- `validate:stage7-visual` 启动 `vite preview --host 127.0.0.1 --port 4177
+  --strictPort`。
+- 使用 Playwright 打开页面，等待 `networkidle` 后依次切换到 Galaxy 和 Timeline。
+- Galaxy：读取 bounded pixel signal，捕获 `stage7-galaxy-desktop.png`。
+- Memory River：检查 SVG contract，捕获 `stage7-memory-river-desktop.png`。
+- 验证结束后关闭 preview server，并确认 4177 不再响应。
+
+参数与阈值：
+
+- Galaxy canvas signal:
+  - `lit > 100`
+  - `alpha > 100`
+  - `max > 42`
+  - `width > 100`
+  - `height > 100`
+  - `rendererMode == "memory-starfield"`
+  - `fallbackMode != "legacy"`
+  - `points > 0`
+  - `triangles > 0`
+  - `terrainFeatureCount > 0`
+  - `flowFieldStrength > 0`
+- Screenshot file:
+  - `stage7-galaxy-desktop.png` size `> 20000` bytes
+  - `stage7-memory-river-desktop.png` size `> 20000` bytes
+- Memory River structure:
+  - `data-utc-time-scale == "true"`
+  - Macro / Meso / Micro level labels all present
+  - `laneFlows >= 3`
+  - `laneLabels >= 3`
+  - evidence layers include `black-hole-lifecycle`, `proto-star-lifecycle`,
+    `stale-deprecated`
+  - `evidenceSegments > 0`
+  - black-hole lifecycle band contract is present through `black-hole-lifecycle`
+  - `protoStarMarkers > 0`
+  - `totalMarkers >= 3`
+  - `densityBands >= 24`
+
+输出：
+
+- PASS/FAIL JSON
+- `outputDir`
+- Galaxy screenshot path and signal object
+- Memory River screenshot path and structure object
+- server cleanup result through 4177 port close assertion
+
+失败条件：
+
+- Browser console/page error appears during visual validation.
+- Galaxy pixel signal is blank, too dark, legacy fallback, or missing terrain /
+  flow-field evidence.
+- Memory River lacks Macro / Meso / Micro, evidence layers, opportunity markers, density
+  context, or screenshot proof.
+- Preview server remains alive on 4177 after validation.
+
+迭代规则：
+
+- Stage 7.2 may add FPS and adaptive quality metrics, but must not weaken
+  Stage 7.1 non-empty visual gates.
+- Stage 7.3 may add privacy/accessibility checks, but must keep screenshots
+  redacted and avoid browser profile/cookie/session capture.

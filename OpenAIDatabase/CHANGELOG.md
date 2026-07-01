@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 7.1 Visual Acceptance
+
+- Added a real-browser Stage 7.1 visual acceptance gate that starts Vite
+  preview, captures Galaxy and Memory River screenshots, verifies Galaxy
+  WebGL non-empty pixel signal, and releases port 4177 after validation.
+- The Galaxy gate checks `memory-starfield` renderer mode, non-legacy fallback,
+  lit/alpha/max pixel thresholds, WebGL render stats, terrain features and
+  flow-field signal.
+- The Memory River gate checks Macro / Meso / Micro labels, UTC scale, lane
+  flows, density context, black-hole / proto-star / stale-deprecated evidence
+  layers, and required marker types.
+- Added `validate:stage7-visual` and extended visual acceptance with
+  `stage7_1_visual_acceptance_ready`.
+
+No Stage 7.2 performance gate, Stage 7.3 privacy/accessibility gate, Stage 7
+whole-stage review, raw/private data access, direct writeback, Cloudflare live
+deploy, GitHub main upload, or external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 6 Whole-Stage Review
 
 - Completed the Stage 6 whole-stage review across Shared State Store and
