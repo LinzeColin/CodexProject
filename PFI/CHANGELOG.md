@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 5 Phase 5.3 - 2026-07-01
+
+- 完成 `Stage 5 / Phase 5.3 - 交互状态`：45 个二级业务页面均有 `loading / success / error / empty` 四态。
+- 新增 `PFI/web/app/ux_state.js`，暴露 `PFI_V024_STAGE5_UX_STATE`、Phase 5.3 合同、页面状态模型、UX validation 和 history acceptance。
+- `PFI/web/app/shell.js` 在二级页面 surface 渲染四态卡片，并把 empty/error 动作接到真实 route，不只显示说明或 toast。
+- `PFI/web/index.html` 与 `PFI/src/pfi_os/app/streamlit_app.py` 同步加载/内联 `ux_state.js`，防止 app bundle 漂移。
+- 新增 `PFI/tests/test_v024_stage5_phase53_interaction_states.py`、`PFI/docs/pfi_v024/STAGE5_INTERACTION_STATES.md` 和 `PFI/reports/pfi_v024/stage_5/phase_5_3/` evidence。
+- 本轮不执行 Stage 5 whole-stage review 或 GitHub main upload；不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 5 Phase 5.2 - 2026-07-01
 
 - 完成 `Stage 5 / Phase 5.2 - 二级页面差异化`：10 个正式一级入口共 45 个二级页面，最少每个入口 4 个。

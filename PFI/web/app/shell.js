@@ -602,6 +602,7 @@ let holdingsPersistenceState = defaultHoldingsState();
 let runtimeTrendState = null;
 let stage4PagesCatalog = typeof window !== "undefined" ? window.PFI_V023_STAGE4_PAGES || null : null;
 let stage5SubpageCatalog = typeof window !== "undefined" ? window.PFI_V024_STAGE5_PAGES || null : null;
+let stage5UxState = typeof window !== "undefined" ? window.PFI_V024_STAGE5_UX_STATE || null : null;
 let stage5HomeExperience =
   typeof window !== "undefined" ? window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME || null : null;
 let runtimeReadModelState = null;
@@ -4133,6 +4134,7 @@ function renderWorkspace(workspaceId, options = {}) {
   main.dataset.routeAlias = routeForState;
   main.dataset.stage4SubpageRoute = stage4Subpage?.routeAlias || "";
   main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none";
+  main.setAttribute("data-stage5-history-ready", routeForState ? "true" : "false");
   const settingsConsole = document.querySelector("[data-settings-feedback-console]");
   if (settingsConsole) settingsConsole.hidden = workspaceId !== "settings";
   applyStage5Phase53HomeSurfacePolicy(workspaceId);
@@ -4241,19 +4243,25 @@ function renderStage4SubpageSurface(page, workspaceId, routeForState) {
     surface.replaceChildren();
     surface.dataset.stage4Workspace = "";
     surface.dataset.stage4Route = "";
+    surface.dataset.stage5Route = "";
+    surface.dataset.stage5UxState = "";
     return;
   }
 
+  const stage5StateModel = buildStage5UxStateForPage(page);
   surface.hidden = false;
   surface.dataset.stage4Workspace = workspaceId;
   surface.dataset.stage4Route = normalizeRouteAlias(routeForState || page.routeAlias);
   surface.dataset.stage5Route = normalizeRouteAlias(routeForState || page.routeAlias);
+  surface.dataset.stage5UxState = stage5StateModel ? "phase_5_3" : "";
   surface.replaceChildren();
 
   const article = document.createElement("article");
   article.className = `stage4-subpage stage4-layout-${page.layoutKind}`;
   article.setAttribute("data-stage4-layout-kind", page.layoutKind);
   article.setAttribute("data-stage5-differentiated-subpage", "phase_5_2");
+  article.setAttribute("data-stage5-ux-state", "phase_5_3");
+  article.setAttribute("data-stage5-history-ready", "true");
   article.setAttribute("data-stage5-state-key", ownerVisibleText(page.stateKey, ""));
   article.setAttribute("data-stage5-data-object", ownerVisibleText(page.dataObject || page.primaryObject, ""));
   article.setAttribute("data-stage4-primary-object", page.primaryObject);
@@ -4318,6 +4326,7 @@ function renderStage4SubpageSurface(page, workspaceId, routeForState) {
   });
 
   article.append(breadcrumb, header, stateGrid, sectionGrid);
+  appendStage5UxStates(article, stage5StateModel);
   surface.appendChild(article);
 }
 
@@ -4348,6 +4357,64 @@ function appendStage4State(list, label, value) {
   description.textContent = ownerVisibleText(value, "待补");
   item.append(term, description);
   list.appendChild(item);
+}
+
+function buildStage5UxStateForPage(page) {
+  const api = stage5UxState || window.PFI_V024_STAGE5_UX_STATE || null;
+  stage5UxState = api;
+  if (!api || typeof api.buildV024Stage5PageStateModel !== "function" || !page) return null;
+  return api.buildV024Stage5PageStateModel(page);
+}
+
+function buildStage5UxStateCatalogForRuntime() {
+  const api = stage5UxState || window.PFI_V024_STAGE5_UX_STATE || null;
+  stage5UxState = api;
+  if (!api || typeof api.buildV024Stage5UxStateCatalog !== "function") return null;
+  return api.buildV024Stage5UxStateCatalog(stage4SubpageCatalog());
+}
+
+function appendStage5UxStates(parent, stateModel) {
+  if (!parent || !stateModel?.states) return;
+  const grid = document.createElement("section");
+  grid.className = "stage5-ux-state-grid";
+  grid.setAttribute("aria-label", "页面交互状态");
+  (stateModel.stateKinds || ["loading", "success", "error", "empty"]).forEach((kind) => {
+    const state = stateModel.states[kind];
+    if (!state) return;
+    const item = document.createElement("article");
+    item.className = `stage5-ux-state stage5-ux-state-${kind}`;
+    item.setAttribute("data-stage5-state", kind);
+    const title = document.createElement("h3");
+    title.textContent = stage5StateTitle(kind);
+    const message = document.createElement("p");
+    message.textContent = ownerVisibleText(state.message_zh, "状态待确认");
+    const action = document.createElement("button");
+    action.type = "button";
+    action.className = "stage5-state-action";
+    action.textContent = ownerVisibleText(state.action?.label, "查看页面");
+    action.dataset.stage5StateAction = kind;
+    action.dataset.featureWorkspace = state.action?.targetWorkspace || stateModel.targetWorkspace || "home";
+    action.dataset.routeAlias = normalizeRouteAlias(state.action?.routeAlias || stateModel.routeAlias || "");
+    if (kind === "empty") action.setAttribute("data-stage5-empty-action", "true");
+    if (kind === "error") action.setAttribute("data-stage5-error-action", "true");
+    action.addEventListener("click", () => {
+      setActiveWorkspace(action.dataset.featureWorkspace || "home", {
+        routeAlias: action.dataset.routeAlias || "",
+        keepFunctionDetail: true,
+      });
+    });
+    item.append(title, message, action);
+    grid.appendChild(item);
+  });
+  parent.appendChild(grid);
+}
+
+function stage5StateTitle(kind) {
+  if (kind === "loading") return "加载中";
+  if (kind === "success") return "已就绪";
+  if (kind === "error") return "读取失败";
+  if (kind === "empty") return "暂无数据";
+  return "页面状态";
 }
 
 function renderFeatureCards(cards) {
@@ -5795,6 +5862,26 @@ function loadStage5SubpageCatalog() {
   });
 }
 
+function loadStage5UxState() {
+  if (stage5UxState || window.PFI_V024_STAGE5_UX_STATE) {
+    stage5UxState = stage5UxState || window.PFI_V024_STAGE5_UX_STATE;
+    buildStage5UxStateCatalogForRuntime();
+    return Promise.resolve(stage5UxState);
+  }
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "./app/ux_state.js";
+    script.dataset.stage5UxStateLoader = "true";
+    script.onload = () => {
+      stage5UxState = window.PFI_V024_STAGE5_UX_STATE || null;
+      buildStage5UxStateCatalogForRuntime();
+      resolve(stage5UxState);
+    };
+    script.onerror = () => resolve(null);
+    document.head.appendChild(script);
+  });
+}
+
 function loadStage5HomeExperience() {
   if (stage5HomeExperience || window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME) {
     stage5HomeExperience = stage5HomeExperience || window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME;
@@ -5836,7 +5923,7 @@ function bootPFIShell() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  Promise.all([loadStage4PagesCatalog().then(loadStage5SubpageCatalog), loadStage5HomeExperience()])
+  Promise.all([loadStage4PagesCatalog().then(loadStage5SubpageCatalog).then(loadStage5UxState), loadStage5HomeExperience()])
     .then(() => initializePFIStage1Shell({ source: "DOMContentLoaded" }))
     .catch((error) => handlePFIStage1ShellError(error, { source: "DOMContentLoaded" }));
 });
