@@ -1,4 +1,4 @@
-version: "0.1.0-s18p3-integration-preparation"
+version: "0.1.0-s18-stage-review"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -55,6 +55,7 @@ active_formula_ids:
   - "FORM-KMFA-S18P1-PRECISION-STRESS-001"
   - "FORM-KMFA-S18P2-FULL-REGRESSION-ACCEPTANCE-001"
   - "FORM-KMFA-S18P3-INTEGRATION-PREPARATION-001"
+  - "FORM-KMFA-S18-STAGE-REVIEW-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

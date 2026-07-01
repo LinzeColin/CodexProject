@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-s18-stage-review - 2026-07-01
+
+- 完成 `Stage 18 整体复审` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/check_s18_stage_review.py`、`KMFA/tests/test_s18_stage_review.py`、`KMFA/metadata/quality/stage18_go_no_go_review.json` 和 `KMFA/stage_artifacts/S18_STAGE_REVIEW/`。
+- 复跑并锁定 S18-P1 精度压力、S18-P2 全量回归验收、S18-P3 后续接入准备证据；复审级 Go/No-Go 清除 `S18_P3_PENDING`，但仍保持 `NO_GO`。
+- 复审后下一 gate 为 `KMFA-S18-GITHUB-UPLOAD-GATE`；仍未执行 GitHub upload、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+
 ## 0.1.0-s18p3-integration-preparation - 2026-07-01
 
 - 完成 `S18-P3｜后续接入准备` 本地验证，不上传 GitHub。

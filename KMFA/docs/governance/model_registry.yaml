@@ -81,7 +81,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s18p3-integration-preparation"
+    model_version: "0.1.0-s18-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -94,6 +94,7 @@ models:
       - "FORM-KMFA-S18P1-PRECISION-STRESS-001"
       - "FORM-KMFA-S18P2-FULL-REGRESSION-ACCEPTANCE-001"
       - "FORM-KMFA-S18P3-INTEGRATION-PREPARATION-001"
+      - "FORM-KMFA-S18-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -140,6 +141,12 @@ models:
       - "PARAM-KMFA-631"
       - "PARAM-KMFA-632"
       - "PARAM-KMFA-633"
+      - "PARAM-KMFA-634"
+      - "PARAM-KMFA-635"
+      - "PARAM-KMFA-636"
+      - "PARAM-KMFA-637"
+      - "PARAM-KMFA-638"
+      - "PARAM-KMFA-639"
     inputs:
       - "user objective"
       - "KMFA TaskPack and Roadmap"
@@ -156,6 +163,7 @@ models:
       - "S18-P1 precision stress local gate"
       - "S18-P2 full regression acceptance NO_GO local gate"
       - "S18-P3 integration preparation local gate"
+      - "S18 stage review upload-ready local NO_GO gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
