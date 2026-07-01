@@ -1,0 +1,115 @@
+{
+  "acceptance_id": "ACC-S2PLT02-2D",
+  "artifact_written": false,
+  "audit_state_hash": "1ce7c3dc8bf1a20c6aed90182a4c43f056f4f01b504c159781c15c0afbc332df",
+  "audit_status": "blocked",
+  "blocking_reasons": [
+    "launchagents_disabled_not_terminal_scheduler_proof",
+    "scheduler_run_manifest_missing"
+  ],
+  "canonical_dirty_checksum_mismatch_count": 0,
+  "canonical_dirty_state_preserved": true,
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_canonical_audit_after_realign PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-real-scheduler-proof-capture --generated-at 2026-07-01T10:57:11+10:00 --json",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT-20260701.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT.md"
+  ],
+  "expected_project_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/arxiv-daily-push",
+  "expected_repo_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject",
+  "generated_at": "2026-07-01T10:57:11+10:00",
+  "integrated_production_accepted": false,
+  "launchagent_command_paths": {
+    "com.linze.adp.local.daily": {
+      "project_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/arxiv-daily-push",
+      "repo_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject"
+    },
+    "com.linze.adp.local.health": {
+      "project_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/arxiv-daily-push",
+      "repo_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject"
+    },
+    "com.linze.adp.local.watchdog": {
+      "project_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/arxiv-daily-push",
+      "repo_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject"
+    }
+  },
+  "launchagent_project_root_matches_expected": {
+    "com.linze.adp.local.daily": true,
+    "com.linze.adp.local.health": true,
+    "com.linze.adp.local.watchdog": true
+  },
+  "launchagent_repo_git_states": {
+    "com.linze.adp.local.daily": {
+      "error": "",
+      "head": "0174455d05bb2b3255304573a2eb711772d2d117",
+      "head_matches_origin_main": true,
+      "origin_main": "0174455d05bb2b3255304573a2eb711772d2d117",
+      "repo_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject"
+    },
+    "com.linze.adp.local.health": {
+      "error": "",
+      "head": "0174455d05bb2b3255304573a2eb711772d2d117",
+      "head_matches_origin_main": true,
+      "origin_main": "0174455d05bb2b3255304573a2eb711772d2d117",
+      "repo_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject"
+    },
+    "com.linze.adp.local.watchdog": {
+      "error": "",
+      "head": "0174455d05bb2b3255304573a2eb711772d2d117",
+      "head_matches_origin_main": true,
+      "origin_main": "0174455d05bb2b3255304573a2eb711772d2d117",
+      "repo_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject"
+    }
+  },
+  "launchagent_repo_head_matches_origin_main": {
+    "com.linze.adp.local.daily": true,
+    "com.linze.adp.local.health": true,
+    "com.linze.adp.local.watchdog": true
+  },
+  "launchagent_repo_root_matches_expected": {
+    "com.linze.adp.local.daily": true,
+    "com.linze.adp.local.health": true,
+    "com.linze.adp.local.watchdog": true
+  },
+  "production_acceptance_claimed": false,
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_scheduler_proven": false,
+  "real_smtp_send_enabled": false,
+  "release_packaging_enabled": false,
+  "release_uploaded": false,
+  "remaining_blockers": [
+    "launchagents_disabled_not_terminal_scheduler_proof",
+    "scheduler_run_manifest_missing",
+    "REAL_SCHEDULER_PROOF",
+    "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"
+  ],
+  "run_id": "ADP-S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT-20260701",
+  "s2plt02_accepted": false,
+  "scheduler_enabled": false,
+  "scheduler_evidence_present": false,
+  "scheduler_install_enabled": false,
+  "scheduler_proof_ready": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "blocked_no_write_canonical_launchagent_checkout_aligned",
+  "summary": "Canonical ADP LaunchAgent checkout now has HEAD equal to origin/main, and audit confirms LaunchAgent repo root, project root, and current-main checks pass. S2PLT02 remains blocked because LaunchAgents are disabled and no real scheduler run manifest is present.",
+  "task_id": "S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT",
+  "task_ids": [
+    "S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT",
+    "S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-AUDIT",
+    "S2PLT02",
+    "ACC-S2PLT02-2D"
+  ],
+  "temporary_stash_dropped": true,
+  "terminal_delivery_proof_artifact_present": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}
