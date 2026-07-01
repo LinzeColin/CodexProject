@@ -10,10 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 282
+- Current gate: S2PLT02_CONTROLLED_LAUNCHD_KICKSTART_TIMEOUT_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 283
 - Reconstructed event count: 0
-- Current task: `S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT` / `S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT_BLOCKED_NO_PRODUCTION` aligns the installed canonical ADP LaunchAgent checkout `/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject` to current `origin/main` while preserving unrelated local Serenity dirty files. Live audit now reports `status=blocked`, `scheduler_proof_ready=false`, `state_hash=1ce7c3dc8bf1a20c6aed90182a4c43f056f4f01b504c159781c15c0afbc332df`, blockers `launchagents_disabled_not_terminal_scheduler_proof;scheduler_run_manifest_missing`, and root/project/current-main checks all `true` for daily, health, and watchdog. The previous `launchagent_repo_head_not_current_main` blocker is resolved, but no real scheduler proof can be accepted while LaunchAgents remain disabled and no scheduler run manifest exists. Evidence: `governance/run_manifests/ADP-S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT-20260701.json`, phase record `PHASE_S2PLT02_CANONICAL_LAUNCHAGENT_CHECKOUT_ALIGNMENT.md`. No scheduler was enabled or kickstarted, no SMTP was sent, no terminal proof artifact was written, and no Stage2/S3/integrated production acceptance is claimed.
+- Current task: `S2PLT02-CONTROLLED-LAUNCHD-KICKSTART-TIMEOUT` / `S2PLT02_CONTROLLED_LAUNCHD_KICKSTART_TIMEOUT_BLOCKED_NO_PRODUCTION` records the owner-authorized controlled launchd kickstart attempt as nonterminal evidence. `launchctl kickstart` returned `0`, but the daily runner did not exit within the bounded 180 second window, was terminated, and produced no valid scheduler run manifest; `counts_toward_s2plt02_terminal_proof=false`. The persistent env remained `ADP_ALLOW_SMTP_SEND=false`, final LaunchAgents are disabled, final ADP process count is `0`, and post-closeout audit remains blocked with `state_hash=86c26aed6038f185f993fc7e7bb3f3eb5a849fd9d6438a2fb6bcf2ddedcbdaa9` and blockers `launchagents_disabled_not_terminal_scheduler_proof;scheduler_run_manifest_missing`. Evidence: `governance/run_manifests/ADP-S2PLT02-CONTROLLED-LAUNCHD-KICKSTART-TIMEOUT-20260701.json`, phase record `PHASE_S2PLT02_CONTROLLED_LAUNCHD_KICKSTART_TIMEOUT.md`. No SMTP was sent, no terminal proof artifact was written, and no Stage2/S3/integrated production acceptance is claimed.
+- Previous canonical checkout alignment remains visible: `S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT` confirmed root/project/current-main checks all `true` with state hash `1ce7c3dc8bf1a20c6aed90182a4c43f056f4f01b504c159781c15c0afbc332df`; the subsequent controlled launchd attempt did not produce terminal scheduler proof.
 - Previous LaunchAgent root/current-main guard remains visible: `S2PLT02-LAUNCHAGENT-ROOT-CURRENT-MAIN-GUARD` blocked stale or mismatched LaunchAgent roots with state hash `89b033448ce4ef8de096f847658c0a0beb3b02f5115965b10b30c3f5661ae878`; the canonical checkout has since been aligned to current `origin/main`.
 - Previous controlled real 20260701 run remains visible: `S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC` recorded `status=pass`, `real_smtp_sent=true`, `sent_mail_count=4`, `observed_real_delivery_days=2/2`, and `observed_real_email_count=8/8`, but still lacked `REAL_SCHEDULER_PROOF` and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
 - Previous terminal scheduler blocker sync remains visible: `S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC` confirmed `observed_real_delivery_days=2/2` and `observed_real_email_count=8/8` after the controlled second-day capture, but still showed stale SMTP runtime blockers before this scheduler-only blocker sync.
@@ -66,6 +67,19 @@ The append-only machine record is `development_events.jsonl`.
 - Current final validator remains blocked / exit 2: prerequisite plan `state_hash=9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9`, final readiness `state_hash=2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae`. This is visibility only; it does not write final-bundle live artifacts or claim production acceptance.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY.md`.
 
+
+
+### `ITER-20260701-ADP-S2PLT02-CONTROLLED-LAUNCHD-KICKSTART-TIMEOUT`
+
+- Timestamp: 2026-07-01 11:06:10 Australia/Sydney
+- Task: `S2PLT02-CONTROLLED-LAUNCHD-KICKSTART-TIMEOUT`
+- Gate: `S2PLT02_CONTROLLED_LAUNCHD_KICKSTART_TIMEOUT_BLOCKED_NO_PRODUCTION`
+- Result: `blocked_nonterminal_launchd_kickstart_timeout_no_production`
+- Summary: The owner-authorized controlled launchd kickstart attempt was executed without SMTP send enabled. `launchctl kickstart` returned `0`, but the daily runner did not exit within the bounded 180 second window and was terminated, so this run is nonterminal and cannot satisfy `REAL_SCHEDULER_PROOF`.
+- Closeout: final LaunchAgents disabled, final ADP process count `0`, persistent `ADP_ALLOW_SMTP_SEND=false`.
+- Post-closeout audit: `state_hash=86c26aed6038f185f993fc7e7bb3f3eb5a849fd9d6438a2fb6bcf2ddedcbdaa9`; blockers `launchagents_disabled_not_terminal_scheduler_proof;scheduler_run_manifest_missing`.
+- Boundary: No scheduler proof, SMTP send, terminal/final artifact write, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or integrated production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-CONTROLLED-LAUNCHD-KICKSTART-TIMEOUT-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_CONTROLLED_LAUNCHD_KICKSTART_TIMEOUT.md`.
 
 
 ### `ITER-20260701-ADP-S2PLT02-CANONICAL-LAUNCHAGENT-CHECKOUT-ALIGNMENT`
