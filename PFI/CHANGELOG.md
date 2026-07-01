@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 9 Phase 9.1 - 2026-07-01
+
+- 完成 `Stage 9 / Phase 9.1 - 回归规则`：建立旧 UI signature、入口堆叠、假零、mock 财务数据回归防线。
+- 新增 `PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py`、`PFI/tests/test_v024_stage9_phase91_regression_guardrails.py`、`PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md` 和 `PFI/reports/pfi_v024/stage_9/phase_9_1/` evidence。
+- Guardrail evaluator 解析桌面/移动正式一级入口均为 10 个，确认旧 alias 未回到同层一级入口，非 ready 指标不显示 `CNY 0.00`，正式财务 runtime 未出现 mock/sample/synthetic/fixture/demo/fake 财务数据。
+- 本轮不执行 Phase 9.2 交付冻结、Phase 9.3 用户验收、Stage 9 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 8 GitHub Main Upload - 2026-07-01
 
 - 完成 `Stage 8 GitHub main upload gate`：将 Stage 8 Phase 8.1、Phase 8.2、Phase 8.3 和 whole-stage review package rebase 到当前 `origin/main` 后上传。
