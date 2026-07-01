@@ -1638,3 +1638,109 @@ tasks:
     rollback: "Remove S16-P1 anomaly output and revert S16-P1 governance rows."
     target_version: "0.1.0-s16p1-subcontract-procurement"
     completed_version: "0.1.0-s16p1-subcontract-procurement"
+  - task_id: "S16PBT01"
+    phase: "S16PB"
+    objective: "接入生产项目状态、开工、完工、结算、开票和回款六类 public-safe 状态来源线。"
+    scope:
+      - "production project status lane"
+      - "start status lane"
+      - "completion status lane"
+      - "settlement status lane"
+      - "invoice status lane"
+      - "collection status lane"
+    non_scope:
+      - "raw business data"
+      - "site construction execution"
+      - "safety or technical signature"
+      - "invoice issuance"
+      - "collection action"
+      - "S16-P3 customer analysis"
+      - "Stage 16 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S16PAT03"
+    required_files:
+      - "KMFA/tools/project_status_lifecycle.py"
+      - "KMFA/metadata/reports/project_status_lifecycle_manifest.json"
+      - "KMFA/metadata/reports/project_status_source_lanes.jsonl"
+    acceptance_ids:
+      - "ACC-PROJECT-LIFECYCLE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_project_status_lifecycle -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p2_project_status_lifecycle.py"
+    test_results:
+      - "PASS: source_lanes=6 with all public-safe and readonly gates locked."
+    evidence_refs:
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/s16_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/machine/s16_p2_manifest.json"
+    risk: "S16-P2 status lanes are structural lifecycle signals only and not site or finance execution instructions."
+    rollback: "Revert S16-P2 tool, validator, metadata outputs and governance rows before Stage 16 review."
+    target_version: "0.1.0-s16p2-project-status-lifecycle"
+    completed_version: "0.1.0-s16p2-project-status-lifecycle"
+  - task_id: "S16PBT02"
+    phase: "S16PB"
+    objective: "生成 public-safe 项目生命周期记录和完工未结算、结算未开票、开票未回款异常事项。"
+    scope:
+      - "project lifecycle records"
+      - "review-only exception items"
+    non_scope:
+      - "automatic exception closure"
+      - "settlement confirmation"
+      - "invoice issuance"
+      - "collection action"
+      - "formal report"
+    status: "completed"
+    dependencies:
+      - "S16PBT01"
+    required_files:
+      - "KMFA/metadata/reports/project_lifecycle_records.jsonl"
+      - "KMFA/metadata/reports/project_lifecycle_exception_items.jsonl"
+    acceptance_ids:
+      - "ACC-PROJECT-LIFECYCLE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_project_status_lifecycle -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p2_project_status_lifecycle.py"
+    test_results:
+      - "PASS: lifecycle_records=4 and exception_items=3 with review-only status."
+    evidence_refs:
+      - "KMFA/metadata/reports/project_lifecycle_records.jsonl"
+      - "KMFA/metadata/reports/project_lifecycle_exception_items.jsonl"
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/test_results.md"
+    risk: "Exception items require owner or authorized review before later manual handling or rerun."
+    rollback: "Remove S16-P2 lifecycle and exception outputs and revert S16-P2 governance rows."
+    target_version: "0.1.0-s16p2-project-status-lifecycle"
+    completed_version: "0.1.0-s16p2-project-status-lifecycle"
+  - task_id: "S16PBT03"
+    phase: "S16PB"
+    objective: "锁定现场施工、安全签字和技术签字必须由 owner 或授权现场角色处理。"
+    scope:
+      - "site construction handoff guard"
+      - "safety signature handoff guard"
+      - "technical acceptance signature handoff guard"
+    non_scope:
+      - "delegating signature authority to KMFA"
+      - "operation execution"
+      - "site work instruction"
+      - "business decision release"
+    status: "completed"
+    dependencies:
+      - "S16PBT02"
+    required_files:
+      - "KMFA/metadata/reports/project_lifecycle_handoff_guards.jsonl"
+      - "KMFA/tools/check_s16_p2_project_status_lifecycle.py"
+    acceptance_ids:
+      - "ACC-PROJECT-LIFECYCLE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_project_status_lifecycle -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p2_project_status_lifecycle.py"
+    test_results:
+      - "PASS: handoff_guards=3 and signature_authority_allowed=false."
+    evidence_refs:
+      - "KMFA/metadata/reports/project_lifecycle_handoff_guards.jsonl"
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/test_results.md"
+    risk: "Handoff guards cannot be used as site construction, safety, technical, invoice, collection, payment or bank execution authority."
+    rollback: "Remove S16-P2 handoff guard output and revert S16-P2 governance rows."
+    target_version: "0.1.0-s16p2-project-status-lifecycle"
+    completed_version: "0.1.0-s16p2-project-status-lifecycle"

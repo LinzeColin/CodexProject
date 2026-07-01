@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s16-p1-local`
+- version: `0.1.0-s16-p2-local`
 - current_stage: `S16`
-- current_phase: `S16-P2｜项目状态生命周期｜待开始`
-- status: `s16p1_completed_validated_local_only_next_s16p2`
+- current_phase: `S16-P3｜客户经营分析｜待开始`
+- status: `s16p2_completed_validated_local_only_next_s16p3`
 - production_ready: `false`
 - github_upload_ready: `false_stage16_not_reviewed`
 
@@ -112,11 +112,12 @@
 
 ## 未完成
 
-- S16-P2、S16-P3、Stage 16 整体复审和 Stage 16 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S16-P1 仅为 public-safe 外协采购付款归集证据，不代表采购执行、付款执行、银行操作、供应商结算、正式经营决策或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- S16-P2 项目状态生命周期已完成本地验证：`KMFA/tools/project_status_lifecycle.py`、`KMFA/tools/check_s16_p2_project_status_lifecycle.py`、`KMFA/tests/test_project_status_lifecycle.py`、`KMFA/metadata/reports/project_status_lifecycle_manifest.json`、`project_status_source_lanes.jsonl`、`project_lifecycle_records.jsonl`、`project_lifecycle_exception_items.jsonl`、`project_lifecycle_handoff_guards.jsonl` 和 `KMFA/stage_artifacts/S16_P2_project_status_lifecycle/` 已生成；只输出 public-safe 生命周期状态、异常事项和 handoff guard，不代表现场施工、签字、结算、开票、催收、正式经营决策或业务系统可发布。
+- S16-P3、Stage 16 整体复审和 Stage 16 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S16-P1/S16-P2 仅为 public-safe 外协采购付款归集、项目状态生命周期和人工复核证据，不代表采购执行、付款执行、银行操作、供应商结算、现场施工、签字、开票、催收、正式经营决策或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-15 review/upload 均已完成，S16-P1 已本地完成；下一步只能执行 S16-P2，不能直接进入 S16-P3、Stage 16 review、GitHub upload、lineage full check、正式报告、采购执行、付款执行、银行操作、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-15 review/upload 均已完成，S16-P1/S16-P2 已本地完成；下一步只能执行 S16-P3，不能直接进入 Stage 16 review、GitHub upload、lineage full check、正式报告、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

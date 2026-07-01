@@ -1,4 +1,4 @@
-version: "0.1.0-s16-p1-local"
+version: "0.1.0-s16-p2-local"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -47,6 +47,7 @@ active_formula_ids:
   - "FORM-KMFA-S15P2-PERFORMANCE-REVIEW-LIST-001"
   - "FORM-KMFA-S15P3-SALARY-BOUNDARY-001"
   - "FORM-KMFA-S16P1-SUBCONTRACT-PROCUREMENT-AGGREGATION-001"
+  - "FORM-KMFA-S16P2-PROJECT-STATUS-LIFECYCLE-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

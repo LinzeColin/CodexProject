@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.0-s16-p2-local - 2026-07-01
+
+- 完成 `S16-P2｜项目状态生命周期` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/project_status_lifecycle.py`、`KMFA/tools/check_s16_p2_project_status_lifecycle.py` 和 `KMFA/tests/test_project_status_lifecycle.py`。
+- 生成 `project_status_lifecycle_manifest.json`、`project_status_source_lanes.jsonl`、`project_lifecycle_records.jsonl`、`project_lifecycle_exception_items.jsonl`、`project_lifecycle_handoff_guards.jsonl` 和 `S16_P2_project_status_lifecycle/` 证据。
+- 覆盖生产项目状态、开工、完工、结算、开票、回款 6 条状态来源线，生成 4 条生命周期记录、3 条异常事项和 3 条人工 handoff guard。
+- 完工未结算、结算未开票、开票未回款均保持 review-only，不触发开票、催收、付款、银行、现场施工、安全签字或技术签字动作。
+- 报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、现场/签字/结算/开票/催收/付款/银行动作和业务 release。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实项目/客户名称、银行流水、合同、薪资、税务申报材料或 credentials。
+- S16-P2 不执行 S16-P3、Stage 16 review、GitHub upload、lineage full check、正式报告、外部 connector 或任何业务执行动作。
+- 下一轮只能执行 `S16-P3｜客户经营分析`。
+
 ## 0.1.0-s16-p1-local - 2026-07-01
 
 - 完成 `S16-P1｜外协采购归集` 本地验证，不上传 GitHub。
