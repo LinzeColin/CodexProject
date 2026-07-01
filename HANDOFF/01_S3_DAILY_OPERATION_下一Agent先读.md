@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 00:01:37 Australia/Sydney
+更新时间：2026-07-02 00:09:00 Australia/Sydney
 
 ## 当前结论
 
@@ -8,7 +8,8 @@
 
 | 项目 | 当前状态 | 证据 |
 |---|---|---|
-| current main | `bccc600959e6bf478c8fc71f8c2e90c13c455d1f` | `origin/main` |
+| 交接内容生成基线 | `bccc600959e6bf478c8fc71f8c2e90c13c455d1f` | 上一轮生成本页内容时的 `origin/main` |
+| 交接页首次落库提交 | `91f22b876b05f373229ef4bf5de2e67bdb927c0b` | 首次添加本页的 GitHub `main` 提交 |
 | final bundle | `status=pass`，`missing_items=[]` | `FINAL_ACCEPTANCE_BUNDLE/manifest.json` |
 | Stage 2 integrated acceptance | `stage2_integrated_production_accepted=true`，`production_acceptance_claimed=true` | `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` |
 | owner A 决策 | `keep_daily_operation_disabled_no_persistent_authorization` | `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION-20260701.json` |
@@ -20,6 +21,7 @@
 - `HANDOFF/00_下一Agent先读.md` 是 final bundle 的 no-production 输入 artifact，按 validator 必须保持 `integrated_production_accepted=false`。不要把它当成当前 S3/DAILY_OPERATION 状态页。
 - 当前最新状态以 `CURRENT.yaml`、`OWNER_STATUS.md`、`关键结论与用户决策.md` 和本文件为准。
 - 一次受控真实运行验收、final bundle pass、Stage 2 integrated acceptance 都不等于持久 DAILY_OPERATION 授权。
+- 不要为了追逐当前提交号重复改写本页；只有 S3/DAILY_OPERATION 事实、授权状态或证据路径变化时才更新。
 
 ## 唯一当前阻断
 
