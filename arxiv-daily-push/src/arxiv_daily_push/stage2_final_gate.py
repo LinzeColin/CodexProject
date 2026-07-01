@@ -117,6 +117,18 @@ S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_TASK_ID = (
 S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_SCHEMA_VERSION = (
     "adp.integrated_production_acceptance_owner_decision_artifact.v1"
 )
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_TASK_ID = (
+    "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_SCHEMA_VERSION = (
+    "adp.integrated_production_acceptance_owner_decision_request.v1"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_ARTIFACT_REF = (
+    "FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REF = (
+    "FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json"
+)
 S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_DECISION = (
     "record_owner_production_boundary_decision_evidence_without_enabling_runtime"
 )
@@ -12597,6 +12609,203 @@ def validate_integrated_production_acceptance_owner_decision_packet_state(
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("integrated production owner decision packet state_hash does not match state content")
+    return errors
+
+
+def build_integrated_production_acceptance_owner_decision_request_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
+    """Build an owner-facing decision request template without recording approval."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    packet_path = root / "governance" / "run_manifests" / (
+        "ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json"
+    )
+    artifact_gate_path = root / "governance" / "run_manifests" / (
+        "ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json"
+    )
+    write_gate_path = root / "governance" / "run_manifests" / (
+        "ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json"
+    )
+    packet = _load_json_mapping_artifact(packet_path) if packet_path.exists() else {}
+    artifact_gate = _load_json_mapping_artifact(artifact_gate_path) if artifact_gate_path.exists() else {}
+    write_gate = _load_json_mapping_artifact(write_gate_path) if write_gate_path.exists() else {}
+    checks = {
+        "owner_decision_packet_ready": packet.get("packet_ready") is True,
+        "owner_decision_packet_does_not_allow_write_gate": packet.get(
+            "acceptance_write_gate_allowed_by_this_packet"
+        )
+        is False,
+        "owner_decision_artifact_gate_blocked": artifact_gate.get("status")
+        == "blocked_owner_decision_artifact_missing_or_invalid",
+        "owner_decision_artifact_not_recorded": artifact_gate.get(
+            "owner_production_boundary_decision_recorded"
+        )
+        is False,
+        "write_gate_precheck_ready": write_gate.get("write_gate_precheck_ready") is True,
+        "write_gate_not_allowed": write_gate.get("acceptance_write_gate_allowed") is False,
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    ready = not failed_checks
+    state = {
+        "schema_version": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_SCHEMA_VERSION,
+        "task_id": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_TASK_ID,
+        "parent_task_id": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_TASK_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-INTEGRATED-PRODUCTION"],
+        "generated_at": generated_at,
+        "status": "ready_owner_decision_request_no_acceptance"
+        if ready
+        else "blocked_owner_decision_request_inputs_missing",
+        "scope": "owner_decision_request_template_only_no_acceptance_no_enablement",
+        "request_only": True,
+        "request_artifact_ref": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_ARTIFACT_REF,
+        "would_be_decision_artifact_ref": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REF,
+        "decision_artifact_schema_version": (
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_SCHEMA_VERSION
+        ),
+        "decision_artifact_required_decision": (
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_DECISION
+        ),
+        "decision_artifact_required_refs": dict(
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REQUIRED_REFS
+        ),
+        "decision_id": "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701",
+        "decision_question": (
+            "是否记录 owner 生产验收边界决策证据，允许最终 acceptance write gate 继续，"
+            "同时继续禁止自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
+        ),
+        "recommended_owner_option": "A_record_owner_decision_without_runtime_enablement",
+        "owner_options": [
+            "A_record_owner_decision_without_runtime_enablement",
+            "B_pause_at_final_bundle_ready_no_production_acceptance",
+        ],
+        "forbidden_options": [
+            "C_enable_runtime_or_claim_daily_operation",
+            "D_treat_this_request_as_owner_approval",
+        ],
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": []
+        if ready
+        else [f"{name}_failed" for name in failed_checks],
+        "evidence_refs": [
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REQUIRED_REFS[
+                "preflight_manifest_ref"
+            ],
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REQUIRED_REFS[
+                "owner_decision_packet_manifest_ref"
+            ],
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REQUIRED_REFS[
+                "controlled_real_run_manifest_ref"
+            ],
+            S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REQUIRED_REFS[
+                "write_gate_manifest_ref"
+            ],
+            "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json",
+        ],
+        "next_required_step": "OWNER_MAY_WRITE_EXPLICIT_DECISION_ARTIFACT_OR_PAUSE",
+        "owner_production_boundary_decision_recorded": False,
+        "acceptance_write_gate_allowed_by_this_request": False,
+        "runtime_enablement_allowed_by_this_request": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_integrated_production_acceptance_owner_decision_request_state(
+    state: Mapping[str, Any],
+) -> list[str]:
+    """Validate that an owner decision request is not owner approval."""
+
+    errors: list[str] = []
+    if (
+        state.get("schema_version")
+        != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_SCHEMA_VERSION
+    ):
+        errors.append("owner decision request schema_version is invalid")
+    if state.get("task_id") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_TASK_ID:
+        errors.append("owner decision request task_id is invalid")
+    if state.get("parent_task_id") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_TASK_ID:
+        errors.append("owner decision request parent_task_id is invalid")
+    if state.get("scope") != "owner_decision_request_template_only_no_acceptance_no_enablement":
+        errors.append("owner decision request scope is invalid")
+    if state.get("request_only") is not True:
+        errors.append("owner decision request must be request_only")
+    if state.get("request_artifact_ref") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST_ARTIFACT_REF:
+        errors.append("owner decision request artifact ref is invalid")
+    if state.get("would_be_decision_artifact_ref") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REF:
+        errors.append("owner decision request would-be artifact ref is invalid")
+    if (
+        state.get("decision_artifact_schema_version")
+        != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_SCHEMA_VERSION
+    ):
+        errors.append("owner decision request decision_artifact_schema_version is invalid")
+    if (
+        state.get("decision_artifact_required_decision")
+        != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_DECISION
+    ):
+        errors.append("owner decision request required decision is invalid")
+    if (
+        state.get("decision_artifact_required_refs")
+        != dict(S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REQUIRED_REFS)
+    ):
+        errors.append("owner decision request required refs are invalid")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("owner decision request failed_checks must match checks")
+    expected_ready = not failed_checks
+    expected_status = (
+        "ready_owner_decision_request_no_acceptance"
+        if expected_ready
+        else "blocked_owner_decision_request_inputs_missing"
+    )
+    if state.get("status") != expected_status:
+        errors.append("owner decision request status must match checks")
+    expected_blocking = [] if expected_ready else [f"{name}_failed" for name in failed_checks]
+    if state.get("blocking_reasons") != expected_blocking:
+        errors.append("owner decision request blocking_reasons must match checks")
+    if state.get("owner_production_boundary_decision_recorded") is not False:
+        errors.append("owner decision request must not record owner decision")
+    if state.get("acceptance_write_gate_allowed_by_this_request") is not False:
+        errors.append("owner decision request must not allow acceptance write gate")
+    if state.get("runtime_enablement_allowed_by_this_request") is not False:
+        errors.append("owner decision request must not allow runtime enablement")
+    owner_options = set(state.get("owner_options", []))
+    if not {"A_record_owner_decision_without_runtime_enablement", "B_pause_at_final_bundle_ready_no_production_acceptance"}.issubset(owner_options):
+        errors.append("owner decision request owner_options are invalid")
+    forbidden_options = set(state.get("forbidden_options", []))
+    if not {"C_enable_runtime_or_claim_daily_operation", "D_treat_this_request_as_owner_approval"}.issubset(forbidden_options):
+        errors.append("owner decision request forbidden_options are invalid")
+    for flag in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"owner decision request must not claim {flag}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("owner decision request state_hash does not match state content")
     return errors
 
 

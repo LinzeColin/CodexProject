@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST"
+    phase: "S2PL"
+    objective: "Expose a GitHub-readable owner production-boundary decision request/template without recording approval or enabling production."
+    scope: "Stage2 final gate code, CLI, focused tests, request artifact, run manifest, phase record, current pointer fields, delivery/development ledgers, user-center summaries, and three-base summaries."
+    non_scope: "No owner approval artifact creation, INTEGRATED_PRODUCTION_ACCEPTED write, DAILY_OPERATION enablement, SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, or P0/P1 historical baseline mutation."
+    status: "blocked"
+    dependencies: ["S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET", "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE", "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"]
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["focused final-gate and CLI unittest", "owner decision request CLI JSON", "artifact validator rejects the request object as non-approval"]
+    test_results: ["owner decision request ready: request_only=true, owner_production_boundary_decision_recorded=false, acceptance_write_gate_allowed_by_this_request=false, runtime_enablement_allowed_by_this_request=false", "focused stage2 final-gate and CLI unittest 178 OK", "remaining verification pending until this commit closeout"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST.md", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    risk: "Future agents could mistake a request/template for owner approval; the validator explicitly keeps request_only true and the owner decision artifact gate continues to require FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json."
+    rollback: "Revert the request/template file, request CLI/builder, tests, manifest, phase record, and governance summaries; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE"
     phase: "S2PL"
     objective: "Add a fail-closed explicit owner production-boundary decision artifact gate before the final acceptance write gate."

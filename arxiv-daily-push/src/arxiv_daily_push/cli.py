@@ -131,6 +131,7 @@ from .stage2_final_gate import (
     build_independent_final_reviewer_assignment_artifact_draft_state,
     build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_validation_state,
+    build_integrated_production_acceptance_owner_decision_request_state,
     build_integrated_production_acceptance_owner_decision_packet_state,
     build_integrated_production_acceptance_owner_decision_artifact_gate_state,
     build_integrated_production_acceptance_preflight_state,
@@ -163,6 +164,7 @@ from .stage2_final_gate import (
     validate_final_bundle_prerequisite_plan_state,
     validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
+    validate_integrated_production_acceptance_owner_decision_request_state,
     validate_integrated_production_acceptance_owner_decision_packet_state,
     validate_integrated_production_acceptance_owner_decision_artifact_gate_state,
     validate_integrated_production_acceptance_preflight_state,
@@ -1914,6 +1916,26 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON owner decision packet.",
+    )
+
+    integrated_production_owner_request = subparsers.add_parser(
+        "build-integrated-production-acceptance-owner-decision-request",
+        help="Build the owner-facing S2PMT07 production-boundary decision request template without accepting production.",
+    )
+    integrated_production_owner_request.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing FINAL_ACCEPTANCE_BUNDLE and ADP governance artifacts.",
+    )
+    integrated_production_owner_request.add_argument(
+        "--generated-at",
+        required=True,
+        help="Timestamp to embed in the owner decision request.",
+    )
+    integrated_production_owner_request.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON owner decision request.",
     )
 
     integrated_production_owner_decision_artifact = subparsers.add_parser(
@@ -4941,6 +4963,31 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if not errors else 2
+    if args.command == "build-integrated-production-acceptance-owner-decision-request":
+        report = build_integrated_production_acceptance_owner_decision_request_state(
+            generated_at=args.generated_at,
+            repo_root=Path(args.repo_root),
+        )
+        errors = validate_integrated_production_acceptance_owner_decision_request_state(report)
+        output = {**report, "owner_decision_request_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- request_only: {report.get('request_only')}")
+            print(f"- request_artifact_ref: {report.get('request_artifact_ref')}")
+            print(f"- would_be_decision_artifact_ref: {report.get('would_be_decision_artifact_ref')}")
+            print(f"- owner_production_boundary_decision_recorded: {report.get('owner_production_boundary_decision_recorded')}")
+            print(f"- acceptance_write_gate_allowed_by_this_request: {report.get('acceptance_write_gate_allowed_by_this_request')}")
+            print(f"- runtime_enablement_allowed_by_this_request: {report.get('runtime_enablement_allowed_by_this_request')}")
+            print(f"- next_required_step: {report.get('next_required_step')}")
+            for option in report.get("owner_options", []):
+                print(f"- owner_option: {option}")
+            for option in report.get("forbidden_options", []):
+                print(f"- forbidden_option: {option}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors and report.get("request_only") is True else 2
     if args.command == "validate-integrated-production-acceptance-owner-decision-artifact":
         report = build_integrated_production_acceptance_owner_decision_artifact_gate_state(
             generated_at=args.generated_at,

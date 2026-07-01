@@ -1,5 +1,14 @@
 # ADP 用户中心
 
+## 2026-07-01 17:35:58 Australia/Sydney - Owner 决策请求模板已公开，但不是批准
+
+- `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json` 已生成并通过 request validator：`request_only=true`，`state_hash=b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea`。
+- 该文件只是 GitHub 可读的决策请求/模板，方便用户选择“记录 owner production-boundary decision evidence”或“暂停”；它不能替代真正批准文件。
+- 真正能解除 owner decision artifact gate 的文件仍只能是 `FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json`，当前仍不存在。
+- 当前仍未记录 owner approval：`owner_production_boundary_decision_recorded=false`，`acceptance_write_gate_allowed_by_this_request=false`，`runtime_enablement_allowed_by_this_request=false`。
+- 运行边界仍关闭：不启用 SMTP/scheduler/Release/production restore，不写 `INTEGRATED_PRODUCTION_ACCEPTED`，不启用 `DAILY_OPERATION`。
+- 证据：[owner 决策请求模板](../../FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json) / [request 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-REQUEST-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_REQUEST.md)。
+
 ## 2026-07-01 16:34:41 Australia/Sydney - Acceptance write gate 预检查已准备，但仍等待用户明确决策
 
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE` 已由 CLI 生成并通过 validator：`write_gate_precheck_ready=true`，`failed_checks=[]`，`state_hash=48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8`。
