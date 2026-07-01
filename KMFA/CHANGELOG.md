@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s15p3-salary-boundary - 2026-07-01
+
+- 完成 `S15-P3｜与工资项目边界` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/performance_salary_boundary.py`、`KMFA/tools/check_s15_p3_salary_boundary.py` 和 `KMFA/tests/test_performance_salary_boundary.py`。
+- 生成 `performance_salary_boundary_manifest.json`、`performance_fact_output_interface_contract.json`、`salary_system_readiness_draft.jsonl` 和 `S15_P3_salary_boundary/` 证据。
+- 仅预留 public-safe 绩效事实输出接口契约和未来工资系统读取草案；不创建 live integration、API endpoint、connector、文件导出或外部写入。
+- 明确最终审批和发放必须人工处理；不计算工资、不审批奖金、不导出薪资、不产生最终薪酬或发放结论。
+- 下一轮只能执行 Stage 15 整体复审；不得直接 GitHub upload。
+
 ## 0.1.0-s15p2-performance-review-list - 2026-07-01
 
 - 完成 `S15-P2｜绩效复核清单` 本地验证，不上传 GitHub。

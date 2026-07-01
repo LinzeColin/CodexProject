@@ -1,4 +1,4 @@
-version: "0.1.0-s15p2-performance-review-list"
+version: "0.1.0-s15p3-salary-boundary"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -45,6 +45,7 @@ active_formula_ids:
   - "FORM-KMFA-POLICY-EVIDENCE-PLAN-001"
   - "FORM-KMFA-S15P1-PERFORMANCE-FACT-FIELD-SLOTS-001"
   - "FORM-KMFA-S15P2-PERFORMANCE-REVIEW-LIST-001"
+  - "FORM-KMFA-S15P3-SALARY-BOUNDARY-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

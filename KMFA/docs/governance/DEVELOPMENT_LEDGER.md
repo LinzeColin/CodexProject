@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s15p2-performance-review-list
+product_version: 0.1.0-s15p3-salary-boundary
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S15`
-- current_phase: `S15-P2｜绩效复核清单｜已完成本地验证`
-- current_tasks: `KMFA-S15-P3-GATE`
-- status: `s15p2_completed_validated_local_only_next_s15p3`
+- current_phase: `S15-P3｜与工资项目边界｜已完成本地验证`
+- current_tasks: `KMFA-S15-STAGE-REVIEW-GATE`
+- status: `s15p3_completed_validated_local_only_next_stage15_review`
 - risk_tier: `T3`
 
 ## Completed
@@ -97,17 +97,17 @@ product_version: 0.1.0-s15p2-performance-review-list
 | `KMFA-S14-GITHUB-UPLOAD-20260701` | Stage 14 final GitHub upload 完成；基于最新 origin/main rebase Stage 14 栈，复跑 S14 validators、Stage 14 review validator、全量 191 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、dry-run push、push 和 post-push parity；未执行 S15、lineage full check、正式报告或业务执行动作 | `KMFA/stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md` |
 | `S15PAT01-S15PAT03` | S15-P1 绩效事实字段完成本地验证：生成 6 个 public-safe 绩效事实字段、6 条绑定和 4 条人工复核字段；不输出绩效事实表、工资计算、奖金审批、薪资导出、Stage 15 review 或 GitHub upload | `KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/s15_p1_completion_record.md` |
 | `S15PBT01-S15PBT03` | S15-P2 绩效复核清单完成本地验证：生成 4 条 public-safe 绩效事实行和 16 条异常/人工复核事项；不计算最终工资、不审批奖金、不导出薪资、不执行 Stage 15 review 或 GitHub upload | `KMFA/stage_artifacts/S15_P2_performance_review_list/human/s15_p2_completion_record.md` |
+| `S15PCT01-S15PCT03` | S15-P3 工资项目边界完成本地验证：预留 1 个 public-safe 绩效事实输出接口契约和 4 条未来读取草案；最终审批和发放必须人工处理；不创建 live integration、API endpoint、connector、文件导出、工资计算、奖金审批、薪资导出、最终发放、Stage 15 review 或 GitHub upload | `KMFA/stage_artifacts/S15_P3_salary_boundary/human/s15_p3_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S15-P3` | 待下一轮 run work 开始；必须重新确认 git/root/status、读取 v1.2 task pack / roadmap，并继续保持 D 级报告、pending reconciliation、lineage、public-safe 和工资/奖金/薪资导出阻断边界 | `KMFA/docs/governance/roadmap.yaml` |
+| `KMFA-S15-STAGE-REVIEW-GATE` | 待下一轮 run work 开始；必须重新确认 git/root/status，复跑 S15-P1/P2/P3 validators、治理 validator 和安全扫描，并继续保持 D 级报告、pending reconciliation、lineage、public-safe 和工资/奖金/薪资导出阻断边界 | `KMFA/docs/governance/roadmap.yaml` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S15-P3 工资项目边界 | 尚未开始；不得从 S15-P2 直接进入 Stage 15 review 或 upload | 下一轮只执行 S15-P3 |
-| Stage 15 review/upload | 尚未开始；必须等待 S15-P1/P2/P3 全部完成后整体复审、修复复审 findings，再执行 GitHub upload | 后续独立 review/upload gate |
+| Stage 15 review/upload | 尚未开始；S15-P1/P2/P3 已全部完成本地验证，下一步必须先整体复审、修复复审 findings，再执行 GitHub upload | 后续独立 review/upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
