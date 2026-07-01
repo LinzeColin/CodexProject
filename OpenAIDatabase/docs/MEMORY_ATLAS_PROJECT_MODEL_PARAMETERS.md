@@ -1083,3 +1083,53 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 2 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 23. Part 2 Stage 1 复审门槛
+
+状态：`part_2_stage_1_review_passed`。
+
+范围：
+
+- Phase 1.1 Memory Starfield Spike。
+- Phase 1.2 Memory River Spike。
+- Phase 1.3 Universe State Generator Spike。
+
+验收门槛：
+
+- `validate:part2-stage1` 必须通过。
+- Phase 1.1 必须保留 isolated runnable Memory Starfield workspace、Three.js
+  canvas、默认 10k particle path、LOD、Flow Field、gravitational disk、Black
+  Hole、Proto-Star、Memory Terrain、reduced motion、hover card、smoke
+  instrumentation 和 false safety flags。
+- Phase 1.2 必须保留 isolated runnable Memory River workspace、D3 UTC scale、
+  zoom、brush、macro/meso/micro lanes、Black Hole band、Proto-Star marker、
+  pseudo-haptic visual feedback、reduced motion、hover card、smoke
+  instrumentation 和 false safety/writeback flags。
+- Phase 1.3 必须保留 Universe State adapter、score functions、schema/sample
+  gate、parameter drift check、`dominant/rising/declining/conflict/black_hole/
+  proto_star/stale` 输出、consumer map、proposal-only next actions 和 all-false
+  privacy/writeback diagnostics。
+- TypeScript/Vite build 必须通过。
+- Production source 不得引用 isolated Stage 1 spike/generator workspaces。
+
+参数边界：
+
+- Universe State score weights 必须继续从
+  `config/visualization/model_parameters.universe_state.yaml` 镜像并通过 drift
+  check。
+- `black_hole`、`proto_star`、`stale` weight groups 必须各自保持 sum `1.0`。
+- `recommended_next_actions[*].proposal_only == true`。
+
+边界：
+
+- 本 Part 2 复审不进入 Part 3。
+- 本 Part 2 复审不执行整项目复审。
+- 本 Part 2 复审不上传 GitHub main。
+- 本 Part 2 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 2 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 2 复审不新增 direct active-memory writeback。
+- 本 Part 2 复审不把 Stage 1 spike/generator 接入 production UI。
+
+下一阶段：
+
+- 单独执行 Part 3 复审与修复；所有 part-level 复审完成后再进入整项目复审。

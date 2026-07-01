@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 2 Stage 1 Review
+
+- Completed the Part 2 review for Phase 1.1 / 1.2 / 1.3: Memory Starfield
+  Spike, Memory River Spike, and Universe State Generator Spike.
+- Added `validate:part2-stage1` to import the isolated spike fixtures, rerun
+  `validate:universe-state-spike`, verify source/runtime contracts, confirm
+  production isolation, run the TypeScript/Vite build, and check review,
+  delivery and model records.
+- Confirmed the Stage 1 spikes remain isolated prototypes with redacted fixture
+  data, all-false privacy/writeback flags, and no production React/Three/D3
+  integration change.
+
+No Part 3 review, whole-project review, GitHub main upload, Cloudflare live
+deploy, Access policy change, raw/private data access, direct writeback,
+production React/Three/D3 integration change, or external account operation was
+added.
+
+Machine-readable boundary summary: Phase 1.1 / 1.2 / 1.3; No Part 3 review;
+No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 1 Stage 0 Review
 
 - Completed the Part 1 review for Phase 0.1 Scope & Naming Freeze, Phase 0.2
