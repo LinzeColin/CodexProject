@@ -709,7 +709,7 @@ def git_commit_and_push(repo_root: Path, push: bool) -> dict[str, Any]:
         return {"committed": False, "pushed": False, "reason": "no_changes"}
     run_command(["git", "commit", "-m", "Update Codex memory sync snapshot"], repo_root)
     if push:
-        run_command(["git", "push"], repo_root)
+        run_command(["git", "push", "origin", "HEAD:main"], repo_root)
     return {"committed": True, "pushed": push, "reason": "updated"}
 
 
