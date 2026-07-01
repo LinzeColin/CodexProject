@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 8 Whole-Stage Review - 2026-07-01
+
+- 完成 `Stage 8 whole-stage review - 复审并解决暴露问题`，复审 Phase 8.1 自动验收、Phase 8.2 截图验收和 Phase 8.3 人工验收确认。
+- 新增 `PFI/tests/test_v024_stage8_whole_review_contract.py`、`PFI/docs/pfi_v024/STAGE8_WHOLE_STAGE_REVIEW.md` 和 `PFI/reports/pfi_v024/stage_8/whole_stage_review/` evidence。
+- 记录用户回复 `1` 作为 Phase 8.3 人工验收通过来源；Phase 8.1/8.2/8.3 证据被绑定到同一个整阶段 pass gate。
+- 复审发现 3 项均已 fixed：缺少 whole-stage review gate、顶层状态仍停在 Phase 8.3 pending、缺少整阶段命令/证据汇总。
+- 本轮不执行 GitHub main upload，不进入 Stage 9，不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 8 Phase 8.3 - 2026-07-01
 
 - 完成 `Stage 8 / Phase 8.3 - 人工验收`准备包：新增 `manual_acceptance.md`、`defects.md` 和 pending-user-confirmation evidence。
