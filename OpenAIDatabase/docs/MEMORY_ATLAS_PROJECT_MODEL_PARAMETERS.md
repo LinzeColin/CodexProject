@@ -583,3 +583,90 @@ review_status: `stage_6_whole_stage_review_passed`
   Stage 7.1 non-empty visual gates.
 - Stage 7.3 may add privacy/accessibility checks, but must keep screenshots
   redacted and avoid browser profile/cookie/session capture.
+
+## 13. Stage 7.2 性能验收模型
+
+状态：Stage 7.2 已实现，Stage 7 整体复审未完成。
+
+模型假设：
+
+- FPS 验收必须来自真实浏览器 production preview，不用静态源码推断。
+- 高质量和中质量需要明确阈值；低质量的核心验收是不空白、不退回 legacy。
+- 自适应质量不能剥夺人工回滚路径；手动选择 `high` / `mid` / `low`
+  会关闭自动质量，`Auto` toggle 可重新启用。
+- 资源清理验收不只看 preview server 退出，还要看 Galaxy unmount 的 RAF、
+  WebGL renderer、Worker 和 AudioContext lifecycle contract。
+
+输入：
+
+- `window.__memoryAtlasGalaxySignal()`
+- `window.__memoryAtlasGalaxyLifecycle`
+- `.galaxy-performance-overlay`
+- Vite production preview output: `apps/memory-atlas/dist`
+- Playwright Chromium 页面
+
+处理方法：
+
+- `validate:stage7-performance` 启动 `vite preview --host 127.0.0.1
+  --port 4177 --strictPort`。
+- 进入 Galaxy 并切到 Analysis mode，等待 `.galaxy-performance-overlay` 和
+  `__memoryAtlasGalaxySignal()` 的 FPS sample。
+- 分别切换 `high`、`mid`、`low` quality；manual quality selection 作为
+  fallback/rollback path。
+- 重新启用 `Auto`，确认 adaptive quality 可以恢复。
+- 切到 Timeline 触发 Galaxy unmount，读取 lifecycle signal。
+- 关闭 preview server 并确认 4177 不再响应。
+
+参数与阈值：
+
+- FPS:
+  - high quality: `fps >= 45`
+  - mid quality: `fps >= 30`
+  - sample window: `>= 0.8s`
+  - `renderTicks > 8`
+- Quality:
+  - default adaptive quality starts at `mid`
+  - low quality `fallbackMode == "low-quality"`
+  - low quality still requires `lit > 100`, `alpha > 100`, `points > 0`,
+    `triangles > 0`
+- Adaptive quality:
+  - warmup `2400ms`
+  - cooldown `4200ms`
+  - high below `45 FPS` may downgrade to `mid`
+  - mid below `30 FPS` may downgrade to `low`
+  - low at or above `45 FPS` may upgrade to `mid`
+  - mid at or above `52 FPS` may upgrade to `high`
+- Cleanup:
+  - `activeRaf == false`
+  - `rafCancelled == true`
+  - `rendererDisposed == true`
+  - `webglContextLost == true`
+  - `workersClosed == true`
+  - `audioContextClosed == true`
+  - `__memoryAtlasGalaxySignal` removed after unmount
+
+输出：
+
+- PASS/FAIL JSON
+- `stage7-performance-report.json`
+- high/mid/low signal snapshots
+- adaptive overlay contract snapshot
+- cleanup lifecycle snapshot
+- server cleanup result through 4177 port close assertion
+
+失败条件：
+
+- high or mid quality FPS is below threshold.
+- FPS overlay or adaptive data contract is missing.
+- low quality is blank, missing render stats, or does not expose low-quality fallback.
+- Auto quality cannot resume after manual quality selection.
+- Galaxy unmount leaves RAF signal, renderer, WebGL context, Worker/Audio contract,
+  or `__memoryAtlasGalaxySignal` active.
+- Browser console/page errors appear during performance validation.
+- Preview server remains alive on 4177 after validation.
+
+迭代规则：
+
+- Stage 7.2 must keep Stage 7.1 visual gates passing.
+- Stage 7.3 may add privacy/accessibility checks but must not relax the FPS,
+  adaptive quality or cleanup lifecycle thresholds.
