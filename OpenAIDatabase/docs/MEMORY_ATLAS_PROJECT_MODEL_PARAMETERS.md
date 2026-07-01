@@ -670,3 +670,102 @@ review_status: `stage_6_whole_stage_review_passed`
 - Stage 7.2 must keep Stage 7.1 visual gates passing.
 - Stage 7.3 may add privacy/accessibility checks but must not relax the FPS,
   adaptive quality or cleanup lifecycle thresholds.
+
+## 14. Stage 7.3 隐私与无障碍验收模型
+
+状态：Stage 7.3 已实现，Stage 7 整体复审未完成。
+
+模型假设：
+
+- 发布产物只能作为 public redacted read-only visualization 使用；不能把
+  raw/private/cookie/session/secret 或本机绝对路径带入 `dist`。
+- reduced motion 必须使用浏览器偏好验证，不能只靠 UI 文案判断。
+- 伪触感和音频是用户显式 opt-in 的反馈；默认必须保持安静，不调用
+  `navigator.vibrate` 或 `AudioContext`。
+- Stage 7.3 只增加验收 gate 和安全 DOM contract，不改变写回、数据摄取或
+  Cloudflare 发布边界。
+
+输入：
+
+- `apps/memory-atlas/dist`
+- `apps/memory-atlas/dist/memory_atlas.json`
+- `scripts/audit_memory_atlas_release.py`
+- Playwright Chromium 页面
+- `prefers-reduced-motion` browser media emulation
+- Timeline feedback DOM contract
+
+处理方法：
+
+- `validate:stage7-privacy-accessibility` 先运行 release privacy audit。
+- 扫描 publish artifact，确认无 sourcemap，且 `memory_atlas.json` 的
+  `source_contract.mode == "public_redacted_read_only_visualization"`。
+- 启动 Vite production preview。
+- 用 `reducedMotion: "reduce"` 的 browser context 打开 Timeline，确认
+  Reduced Motion 默认开启、播放按钮禁用、Memory River transition 被关闭。
+- 用 `reducedMotion: "no-preference"` 的 browser context 清空本地反馈偏好，
+  确认伪触感和音频默认关闭。
+- 安装 vibration / AudioContext spy，点击 Memory River marker，确认默认
+  不调用 vibration 或 AudioContext。
+- 关闭 preview server 并确认 4177 不再响应。
+
+参数与阈值：
+
+- Privacy artifact:
+  - `memory_atlas.json` exists
+  - `schema_version == "memory_atlas.v1"`
+  - `source_contract.mode == "public_redacted_read_only_visualization"`
+  - `direct_frontend_mutation_of_active_memory == false`
+  - no `.map` files in `dist`
+  - forbidden text patterns absent:
+    - `PRIVATE CORE DETAIL`
+    - `SECRET DETAIL`
+    - `sk-*`
+    - private key headers
+    - `OpenAI-export.zip`
+    - `chatgpt_memory_vault`
+    - `.local_keys`
+    - `/Users/<name>/`
+- Reduced motion:
+  - browser `matchMedia("(prefers-reduced-motion: reduce)").matches == true`
+  - Reduced Motion checkbox checked
+  - `data-reduced-motion == "true"`
+  - `data-feedback-reduced-motion == "true"`
+  - play button disabled
+  - Memory River lane/marker transition duration `0s`
+- Feedback defaults:
+  - pseudo-haptic checkbox unchecked
+  - audio checkbox unchecked
+  - `data-feedback-pseudo-haptic == "disabled"`
+  - `data-feedback-audio == "disabled"`
+  - `data-feedback-defaults == "silent-by-default"`
+  - marker click leaves vibration spy count `0`
+  - marker click leaves AudioContext spy count `0`
+
+输出：
+
+- PASS/FAIL JSON
+- `stage7-privacy-accessibility-report.json`
+- release privacy audit result
+- publish artifact privacy summary
+- reduced-motion browser contract snapshot
+- silent feedback default probe snapshot
+- server cleanup result through 4177 port close assertion
+
+失败条件：
+
+- Release privacy audit fails.
+- Publish artifact contains sourcemaps or forbidden private/secret patterns.
+- `memory_atlas.json` does not advertise public redacted read-only mode.
+- Browser reduced-motion preference does not enable Reduced Motion behavior.
+- Playback remains available under reduced motion.
+- Pseudo-haptic or audio feedback defaults on.
+- Default marker interaction calls vibration or AudioContext.
+- Browser console/page errors appear during validation.
+- Preview server remains alive on 4177 after validation.
+
+迭代规则：
+
+- Stage 7.3 must keep Stage 7.1 visual gates and Stage 7.2 performance gates
+  passing.
+- Stage 7 whole-stage review may start only after 7.1, 7.2 and 7.3 validators
+  all pass on the same current branch base.
