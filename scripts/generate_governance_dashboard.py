@@ -301,7 +301,7 @@ def adp_s2pmt07_blocked_next_task(
             "human_owner_role": "content_owner + engineering_owner",
             "unblock_condition": (
                 "Provide explicit owner authorization for persistent DAILY_OPERATION in a new "
-                "artifact, then run a separate enablement gate. Do not enable SMTP, scheduler, "
+                "artifact, then run a separate enablement preflight. Do not enable SMTP, scheduler, "
                 "Release, restore, or persistent operation from the keep-disabled decision."
             ),
             "stale_candidates": stale_candidates or [],
@@ -1585,7 +1585,9 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "继续保持 DAILY_OPERATION 禁用；不启用 SMTP、scheduler、Release 或 production restore。"
             )
             owner_decision["option_b"] = (
-                "若 owner 明确授权持久 DAILY_OPERATION，则先写新的授权 artifact，再跑单独 enablement gate。"
+                "若 owner 明确授权持久 DAILY_OPERATION，则先写新的授权 artifact "
+                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，"
+                "再跑单独 enablement gate。"
             )
             owner_decision["option_c"] = "禁止把 keep-disabled artifact 当作运行授权并启用生产。"
             owner_decision["options"] = [
@@ -1596,6 +1598,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             owner_decision["evidence_required"] = (
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, "
                 "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, "
+                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, "
                 "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]

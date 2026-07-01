@@ -186,6 +186,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("0f0772e4250330372d58456a355e205327dff933", page)
         self.assertIn("94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9", page)
         self.assertIn("6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f", page)
+        self.assertIn(
+            "REQ-ADP-V7-084-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
+            page,
+        )
+        self.assertIn("S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED", page)
+        self.assertIn("ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED-20260701.json", page)
+        self.assertIn("PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_KEEP_DISABLED.md", page)
+        self.assertIn("pass_owner_selected_option_a_keep_daily_operation_disabled_after_request_no_runtime_enablement", page)
+        self.assertIn("d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4", page)
+        self.assertIn("owner_selected_option=A", page)
 
         self.assertIn("REQ-ADP-V7-070-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC", page)
