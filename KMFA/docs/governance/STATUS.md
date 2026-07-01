@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s18p1-precision-stress`
+- version: `0.1.0-s18p2-full-regression`
 - current_stage: `S18`
-- current_phase: `S18-P2｜全量回归和验收｜待开始`
-- status: `in_progress_s18p1_completed_local_only_s18p2_pending`
+- current_phase: `S18-P3｜后续接入准备｜待开始`
+- status: `in_progress_s18p2_completed_local_only_s18p3_pending_no_go`
 - production_ready: `false`
-- github_upload_ready: `false_stage17_uploaded`
+- github_upload_ready: `false_s18p2_no_go_stage18_review_pending`
 
 ## 已完成
 
@@ -114,14 +114,15 @@
 - S17-P3 运维与 SOP 已完成本地验证：`KMFA/tools/operations_sop.py`、`KMFA/tools/check_s17_p3_operations_sop.py`、`KMFA/tests/test_operations_sop.py`、`KMFA/metadata/operations/operations_sop_manifest.json`、`operations_runbooks.jsonl`、`finance_sop_knowledge_index.jsonl`、`error_backup_drill_log.jsonl` 和 `KMFA/stage_artifacts/S17_P3_operations_sop/` 已生成；覆盖导入、复核、发布、回滚四类手册，财务 SOP/交接材料知识索引，以及错误处理和备份恢复演练；仅为 metadata/manual SOP，不执行 live connector、生产恢复、业务动作、Stage 17 review 或 GitHub upload。
 - Stage 17 final GitHub upload 已完成：`KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json` 记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
 - S18-P1 精度与压力测试已完成本地验证：`KMFA/tools/precision_stress_validation.py`、`KMFA/tools/check_s18_p1_precision_stress.py`、`KMFA/tests/test_precision_stress_validation.py`、`KMFA/metadata/quality/precision_stress_manifest.json`、`precision_stress_scenarios.jsonl`、`precision_stress_import_runs.jsonl`、`precision_stress_error_reports.jsonl` 和 `KMFA/stage_artifacts/S18_P1_precision_stress/` 已生成；覆盖金额精度、zero-delta、重复导入、坏文件、缺字段、连续三次一致性、大批量 synthetic metadata 性能预算和错误报告；未执行 S18-P2/S18-P3、Stage 18 review 或 GitHub upload。
+- S18-P2 全量回归和验收已完成本地验证：`KMFA/tools/full_regression_acceptance.py`、`KMFA/tools/check_s18_p2_full_regression_acceptance.py`、`KMFA/tests/test_full_regression_acceptance.py`、`KMFA/metadata/quality/full_regression_acceptance_manifest.json`、`full_regression_check_results.jsonl`、`stage_acceptance_evidence_index.jsonl`、`go_no_go_report.json` 和 `KMFA/stage_artifacts/S18_P2_full_regression_acceptance/` 已生成；覆盖 no-omission、zero-delta、schema、lineage、UI 五类检查、18 个 Stage evidence 和 Go/No-Go；结论为 `NO_GO` 且 `delivery_allowed=false`，未执行 S18-P3、Stage 18 review 或 GitHub upload。
 
 ## 未完成
 
-- S18-P2 全量回归和验收、S18-P3 后续接入准备、Stage 18 整体复审和 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- S18-P3 后续接入准备、Stage 18 整体复审和 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S17-P1/S17-P2/S17-P3、Stage 17 整体复审、Stage 17 final GitHub upload 和 S18-P1 已完成；下一步只能执行 S18-P2，不能直接进入 S18-P3、Stage 18 review、GitHub upload、lineage full check、正式报告、完整报告邮件、外部邮件连接器、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S17-P1/S17-P2/S17-P3、Stage 17 整体复审、Stage 17 final GitHub upload、S18-P1 和 S18-P2 已完成；S18-P2 Go/No-Go 为 `NO_GO`；下一步只能执行 S18-P3，不能直接进入 Stage 18 review、GitHub upload、lineage full check、正式报告、完整报告邮件、外部邮件连接器、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

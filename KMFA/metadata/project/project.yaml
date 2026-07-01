@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s18p1-precision-stress"
+version: "0.1.0-s18p2-full-regression"
 current_stage: "S18"
-current_phase: "S18_P2"
+current_phase: "S18_P3"
 current_phase_status: "pending"
-current_stage_status: "in_progress_s18p1_completed_local_only_s18p2_pending"
+current_stage_status: "in_progress_s18p2_completed_local_only_s18p3_pending_no_go"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -505,5 +505,17 @@ upload_policy:
   stage17_upload_evidence: "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md"
   stage17_upload_manifest: "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json"
   stage17_blocker: "none_stage17_uploaded"
+  stage18_s18p1_completed_validated_local_only: true
+  stage18_s18p1_evidence: "KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md"
+  stage18_s18p1_manifest: "KMFA/stage_artifacts/S18_P1_precision_stress/machine/s18_p1_manifest.json"
+  stage18_s18p2_completed_validated_local_only: true
+  stage18_s18p2_go_no_go: "NO_GO"
+  stage18_s18p2_delivery_allowed: false
+  stage18_s18p2_evidence: "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/s18_p2_completion_record.md"
+  stage18_s18p2_manifest: "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/machine/s18_p2_manifest.json"
+  stage18_review_required_before_upload: true
+  stage18_review_passed: false
+  stage18_uploaded_to_github_main: false
+  stage18_blocker: "s18p3_pending_stage18_review_pending_s18p2_no_go"
   next_phase_upload_allowed: false
-  upload_surface: "stage17_uploaded_next_s18_p1"
+  upload_surface: "stage17_uploaded_next_s18_p3"

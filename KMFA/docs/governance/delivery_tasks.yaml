@@ -2270,3 +2270,105 @@ tasks:
     rollback: "Remove S18-P1 error/performance outputs and revert S18-P1 governance rows before S18-P2."
     target_version: "0.1.0-s18p1-precision-stress"
     completed_version: "0.1.0-s18p1-precision-stress"
+  - task_id: "S18PBT01"
+    phase: "S18PB"
+    objective: "运行并锁定 no-omission、zero-delta、schema、lineage、UI 五类 public-safe 回归检查记录。"
+    scope:
+      - "full regression check result metadata"
+      - "public-safe check command references"
+      - "S18-P2 manifest"
+    non_scope:
+      - "S18-P3 integration preparation"
+      - "Stage 18 review"
+      - "GitHub upload"
+      - "lineage full check completion"
+      - "formal report release"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "S18PAT03"
+    required_files:
+      - "KMFA/metadata/quality/full_regression_check_results.jsonl"
+      - "KMFA/metadata/quality/full_regression_acceptance_manifest.json"
+      - "KMFA/tools/full_regression_acceptance.py"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_full_regression_acceptance.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p2_full_regression_acceptance.py"
+    test_results:
+      - "PASS: five full-regression check categories are recorded with public-safe local validation references."
+    evidence_refs:
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/s18_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/test_results.md"
+    risk: "Regression check metadata is not production lineage completion or business release proof."
+    rollback: "Remove S18-P2 full regression outputs and revert S18-P2 governance rows before S18-P3."
+    target_version: "0.1.0-s18p2-full-regression"
+    completed_version: "0.1.0-s18p2-full-regression"
+  - task_id: "S18PBT02"
+    phase: "S18PB"
+    objective: "确认 18 个 Stage 的 acceptance evidence index 并继承 v1.2 HTML/UI/report 样板验收记录。"
+    scope:
+      - "stage acceptance evidence index"
+      - "HTML UI regression record"
+      - "S18-P2 stage evidence confirmation"
+    non_scope:
+      - "new UI implementation"
+      - "formal report release"
+      - "Stage 18 review"
+      - "GitHub upload"
+      - "raw business data"
+    status: "completed"
+    dependencies:
+      - "S18PBT01"
+    required_files:
+      - "KMFA/metadata/quality/stage_acceptance_evidence_index.jsonl"
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/html_ui_regression_record.md"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p2_full_regression_acceptance.py"
+    test_results:
+      - "PASS: 18 stage acceptance evidence records and 8 core HTML sample references are recorded."
+    evidence_refs:
+      - "KMFA/metadata/quality/stage_acceptance_evidence_index.jsonl"
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/html_ui_regression_record.md"
+    risk: "Stage evidence confirmation does not replace Stage 18 review or GitHub upload."
+    rollback: "Remove S18-P2 stage evidence index and revert S18-P2 governance rows before S18-P3."
+    target_version: "0.1.0-s18p2-full-regression"
+    completed_version: "0.1.0-s18p2-full-regression"
+  - task_id: "S18PBT03"
+    phase: "S18PB"
+    objective: "输出 Go/No-Go 报告并保持质量未过不得交付的 NO_GO 门禁。"
+    scope:
+      - "Go/No-Go report"
+      - "delivery_allowed false gate"
+      - "release blockers"
+    non_scope:
+      - "delivery approval"
+      - "Stage 18 review"
+      - "GitHub upload"
+      - "official report generation"
+      - "external connector"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "S18PBT02"
+    required_files:
+      - "KMFA/metadata/quality/go_no_go_report.json"
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/go_no_go_report.md"
+      - "KMFA/tools/check_s18_p2_full_regression_acceptance.py"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p2_full_regression_acceptance.py"
+    test_results:
+      - "PASS: Go/No-Go report is NO_GO with delivery_allowed=false and GitHub upload blocked."
+    evidence_refs:
+      - "KMFA/metadata/quality/go_no_go_report.json"
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/go_no_go_report.md"
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/machine/s18_p2_manifest.json"
+    risk: "NO_GO is a blocking acceptance result and must not be represented as release readiness."
+    rollback: "Remove S18-P2 Go/No-Go outputs and revert S18-P2 governance rows before S18-P3."
+    target_version: "0.1.0-s18p2-full-regression"
+    completed_version: "0.1.0-s18p2-full-regression"
