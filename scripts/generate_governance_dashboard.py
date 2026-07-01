@@ -175,10 +175,13 @@ def adp_s2pmt07_blocked_next_task(
         or "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_gate
         or "daily operation authorization preflight" in current_alias.lower()
     )
-    daily_operation_preflight_current = (
-        "DAILY-OPERATION-AUTHORIZATION-PREFLIGHT" in current_iteration
-        or "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_gate
-        or "daily operation authorization preflight" in current_alias.lower()
+    daily_operation_blockers = str(matrix.get("s2pmt07_daily_operation_authorization_preflight_blockers") or "")
+    daily_operation_gh_equivalent_repaired = (
+        "github_open_pr_count_zero_api_v1" in current_alias
+        or (
+            "missing_gh_cli" not in daily_operation_blockers
+            and "missing_smtp_secret_env_names" in daily_operation_blockers
+        )
     )
     controlled_real_run_rechecked = (
         "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
@@ -228,14 +231,48 @@ def adp_s2pmt07_blocked_next_task(
         or "real proof capture" in current_alias
     )
     if daily_operation_preflight_current:
+        blocker_summary = (
+            "The reviewed GitHub open PR count equivalent has cleared the gh CLI blocker; "
+            "the remaining production preflight blockers are missing SMTP secret env names "
+            "and OpenAIDatabase session-history archive git artifact hygiene violations."
+            if daily_operation_gh_equivalent_repaired
+            else (
+                "The remaining production preflight blockers are missing gh CLI availability, "
+                "missing SMTP secret env names, and OpenAIDatabase session-history archive "
+                "git artifact hygiene violations."
+            )
+        )
+        unblock_condition = (
+            "Provide required SMTP secret environment names without logging secret values, "
+            "and resolve OpenAIDatabase session-history archive git artifact hygiene "
+            "violations. Maintain github_open_pr_count_zero_api_v1 evidence, "
+            "open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and "
+            "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json evidence. Then "
+            "rerun daily-operation authorization preflight; runtime remains disabled."
+            if daily_operation_gh_equivalent_repaired
+            else (
+                "Make the production preflight pass: provide required runtime command "
+                "availability or reviewed equivalent, required SMTP secret environment names "
+                "without logging secret values, and resolve OpenAIDatabase session-history "
+                "archive git artifact hygiene violations. Maintain open_pr_count=0, "
+                "ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and "
+                "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json evidence. "
+                "Then rerun daily-operation authorization preflight; runtime remains disabled."
+            )
+        )
+        next_task_id = (
+            "S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR"
+            if daily_operation_gh_equivalent_repaired
+            else "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
+        )
         return {
-            "task_id": "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
+            "task_id": next_task_id,
             "status": "blocked",
             "reason": (
                 "DAILY_OPERATION authorization preflight has been run after "
                 "INTEGRATED_PRODUCTION_ACCEPTED, but it remains blocked by the "
-                "nested production preflight. Repair the production preflight "
-                "blockers before requesting persistent DAILY_OPERATION authorization. "
+                f"nested production preflight. {blocker_summary} "
+                "Repair the production preflight blockers before requesting persistent DAILY_OPERATION authorization. "
                 "Current boundary evidence remains open_pr_count=0, "
                 "ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and "
                 "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json present."
@@ -243,15 +280,7 @@ def adp_s2pmt07_blocked_next_task(
             "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
             "owner": "content_owner + engineering_owner + independent_final_reviewer",
             "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
-            "unblock_condition": (
-                "Make the production preflight pass: provide required runtime command "
-                "availability, required SMTP secret environment names without logging "
-                "secret values, and resolve OpenAIDatabase session-history archive git "
-                "artifact hygiene violations. Maintain open_pr_count=0, "
-                "ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and "
-                "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json evidence. "
-                "Then rerun daily-operation authorization preflight; runtime remains disabled."
-            ),
+            "unblock_condition": unblock_condition,
             "stale_candidates": stale_candidates or [],
         }
     if integrated_production_accepted_no_daily_operation:
@@ -504,6 +533,14 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         or "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_gate
         or "daily operation authorization preflight" in current_alias.lower()
     )
+    daily_operation_blockers = str(matrix.get("s2pmt07_daily_operation_authorization_preflight_blockers") or "")
+    daily_operation_gh_equivalent_repaired = (
+        "github_open_pr_count_zero_api_v1" in current_alias
+        or (
+            "missing_gh_cli" not in daily_operation_blockers
+            and "missing_smtp_secret_env_names" in daily_operation_blockers
+        )
+    )
     s2plt02_terminal_delivery_ready = (
         "S2PLT02_TERMINAL_DELIVERY_PROOF_READY" in current_gate
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
@@ -572,6 +609,15 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
         )
     if daily_operation_preflight_current:
+        if daily_operation_gh_equivalent_repaired:
+            return (
+                "A: DAILY_OPERATION authorization preflight has run after "
+                "INTEGRATED_PRODUCTION_ACCEPTED, and github_open_pr_count_zero_api_v1 "
+                "has cleared the gh CLI blocker. production_preflight_passed is still "
+                "false; repair missing SMTP secret env names and OpenAIDatabase "
+                "session-history archive git artifact hygiene violations before "
+                "requesting persistent DAILY_OPERATION authorization. runtime enablement remains disabled."
+            )
         return (
             "A: DAILY_OPERATION authorization preflight has run after "
             "INTEGRATED_PRODUCTION_ACCEPTED, but production_preflight_passed is "
@@ -1289,20 +1335,37 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             or "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_gate_text
             or "daily operation authorization preflight" in str(matrix.get("current_v7_legacy_alias") or "").lower()
         )
-        if daily_operation_preflight_current:
-            owner_decision["review_id"] = "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
-            owner_decision["decision_question"] = (
-                "DAILY_OPERATION 授权预检已运行但阻断；具体阻断来自 production preflight，是否先修复 "
-                "gh CLI、SMTP secret env 名称和 OpenAIDatabase 大文件治理问题，并继续禁止 "
-                "SMTP/scheduler/Release/restore/DAILY_OPERATION。"
+        daily_operation_alias = str(matrix.get("current_v7_legacy_alias") or "")
+        daily_operation_blockers = str(matrix.get("s2pmt07_daily_operation_authorization_preflight_blockers") or "")
+        daily_operation_gh_equivalent_repaired = (
+            "github_open_pr_count_zero_api_v1" in daily_operation_alias
+            or (
+                "missing_gh_cli" not in daily_operation_blockers
+                and "missing_smtp_secret_env_names" in daily_operation_blockers
             )
+        )
+        if daily_operation_preflight_current:
+            owner_decision["review_id"] = next_task["task_id"]
+            if daily_operation_gh_equivalent_repaired:
+                owner_decision["decision_question"] = (
+                    "DAILY_OPERATION 授权预检已重跑但仍阻断；github_open_pr_count_zero_api_v1 已解除 gh CLI 阻断，"
+                    "是否先补齐 SMTP secret env 名称并处理 OpenAIDatabase 大文件治理问题，并继续禁止 "
+                    "SMTP/scheduler/Release/restore/DAILY_OPERATION。"
+                )
+            else:
+                owner_decision["decision_question"] = (
+                    "DAILY_OPERATION 授权预检已运行但阻断；具体阻断来自 production preflight，是否先修复 "
+                    "gh CLI、SMTP secret env 名称和 OpenAIDatabase 大文件治理问题，并继续禁止 "
+                    "SMTP/scheduler/Release/restore/DAILY_OPERATION。"
+                )
             owner_decision["question"] = owner_decision["decision_question"]
             owner_decision["option_a"] = (
                 "先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求或启用持久日常运行。"
             )
             owner_decision["evidence_required"] = (
-                "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json, "
-                "gh CLI availability or reviewed equivalent, ADP_SMTP_HOST/ADP_SMTP_PORT/ADP_SMTP_USERNAME/ADP_SMTP_PASSWORD env names without secret values, "
+                "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json, "
+                "github_open_pr_count_zero_api_v1 reviewed equivalent or gh CLI availability, "
+                "ADP_SMTP_HOST/ADP_SMTP_PORT/ADP_SMTP_USERNAME/ADP_SMTP_PASSWORD env names without secret values, "
                 "and resolved OpenAIDatabase session-history archive git artifact hygiene blockers"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]

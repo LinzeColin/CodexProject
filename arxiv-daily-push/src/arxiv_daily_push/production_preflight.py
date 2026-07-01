@@ -60,6 +60,7 @@ def build_production_preflight(
     generated_at: str,
     env: Mapping[str, str] | None = None,
     command_resolver: CommandResolver | None = None,
+    github_cli_equivalent: Mapping[str, Any] | None = None,
     disk_free_gib: float | None = None,
     memory_total_gib: float | None = None,
     git_scan: Mapping[str, Any] | None = None,
@@ -68,7 +69,7 @@ def build_production_preflight(
     environment = env if env is not None else os.environ
     resolver = command_resolver or shutil.which
 
-    command_gate = _command_gate(resolver)
+    command_gate = _command_gate(resolver, github_cli_equivalent=github_cli_equivalent)
     secret_gate = _secret_gate(environment)
     disk_gate = _disk_gate(root, disk_free_gib=disk_free_gib)
     memory_gate = _memory_gate(memory_total_gib=memory_total_gib)
@@ -138,17 +139,46 @@ def validate_production_preflight(report: Mapping[str, Any]) -> list[str]:
     return errors
 
 
-def _command_gate(resolver: CommandResolver) -> dict[str, Any]:
+def _command_gate(
+    resolver: CommandResolver,
+    *,
+    github_cli_equivalent: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     commands = []
     for command in PRODUCTION_REQUIRED_COMMANDS:
         path = resolver(command)
-        commands.append({"command": command, "available": path is not None, "path_present": path is not None})
-    missing = [item["command"] for item in commands if not item["available"]]
+        equivalent_accepted = _github_cli_equivalent_accepted(command, github_cli_equivalent)
+        command_record = {
+            "command": command,
+            "available": path is not None,
+            "path_present": path is not None,
+        }
+        if equivalent_accepted:
+            command_record.update(
+                {
+                    "equivalent_accepted": True,
+                    "equivalent_id": str(github_cli_equivalent.get("equivalent_id")),
+                    "equivalent_source": str(github_cli_equivalent.get("source")),
+                }
+            )
+        commands.append(command_record)
+    missing = [item["command"] for item in commands if not item["available"] and not item.get("equivalent_accepted")]
     return _gate(
         "required_commands",
         not missing,
         [f"missing production runtime commands: {', '.join(missing)}"] if missing else [],
         {"commands": commands},
+    )
+
+
+def _github_cli_equivalent_accepted(command: str, equivalent: Mapping[str, Any] | None) -> bool:
+    if command != "gh" or not isinstance(equivalent, Mapping):
+        return False
+    return (
+        equivalent.get("equivalent_id") == "github_open_pr_count_zero_api_v1"
+        and equivalent.get("source") in {"github_api", "github_rest_api", "curl_github_api"}
+        and equivalent.get("open_pr_count") == 0
+        and equivalent.get("reviewed") is True
     )
 
 

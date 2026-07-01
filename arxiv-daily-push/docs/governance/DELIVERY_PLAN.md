@@ -21,10 +21,22 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 339
+- task_count: 340
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-01 20:12:13 Australia/Sydney - S2PMT07 daily operation gh equivalent repair
+
+- Task: `S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR`
+- Result: `blocked_daily_operation_preflight_gh_equivalent_repaired_no_runtime_enablement`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_GH_EQUIVALENT_REPAIR.md`; `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`.
+- Gate state: `status=blocked`; `preflight_checks_passed=false`; `failed_checks=production_preflight_passed`; `state_hash=2b8bd06a85516fc1608996a335a579153cd6db1a64eb090691b776f8ea03f361`.
+- Cleared blocker: `github_open_pr_count_zero_api_v1` is accepted as the reviewed equivalent for the missing `gh` CLI command.
+- Remaining blockers: missing SMTP secret env names `ADP_SMTP_HOST`, `ADP_SMTP_PORT`, `ADP_SMTP_USERNAME`, `ADP_SMTP_PASSWORD`; 10 existing `OpenAIDatabase/session_history` archive git artifact hygiene violations.
+- Next required step: `S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR`; repair remaining production preflight blockers before requesting persistent DAILY_OPERATION authorization.
+- Production boundary: Stage 2 accepted evidence remains true, but no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, V7.1 baseline P0/P1 mutation, cross-project OpenAIDatabase deletion, or `DAILY_OPERATION` is introduced by this task.
+- Verification: focused production-preflight/final-gate/CLI/current-state tests plus governance validators are required before commit; semantic extractor is not claimed unless actually rerun.
 
 ## 2026-07-01 19:43:41 Australia/Sydney - S2PMT07 daily operation authorization preflight
 

@@ -15,11 +15,11 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: "S2PMT07 daily operation authorization preflight has been written and validated after Stage 2 integrated production acceptance evidence. It remains blocked because the nested production preflight is not pass: gh CLI is missing, SMTP secret environment names are absent, and existing OpenAIDatabase session-history archives violate the production git artifact hygiene gate. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited."
-  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT
+  global_current_task_meaning: "S2PMT07 daily operation authorization preflight has been rerun after Stage 2 integrated production acceptance evidence. The reviewed github_open_pr_count_zero_api_v1 equivalent has cleared the gh CLI blocker. It remains blocked because SMTP secret environment names are absent, and existing OpenAIDatabase session-history archives violate the production git artifact hygiene gate. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited."
+  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR
   current_gate: DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT
-  next_executable_task: S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR
-  next_required_step: REPAIR_DAILY_OPERATION_PREFLIGHT_PREREQUISITES_BEFORE_OWNER_AUTHORIZATION
+  next_executable_task: S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR
+  next_required_step: REPAIR_SMTP_SECRET_ENV_NAMES_AND_OPENAIDATABASE_ARTIFACT_HYGIENE_BEFORE_OWNER_AUTHORIZATION
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
   email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW
@@ -79,16 +79,16 @@ production_boundary:
   daily_operation_authorization_preflight_written: true
   daily_operation_authorization_preflight_status: blocked
   daily_operation_authorization_preflight_passed: false
-  daily_operation_authorization_preflight_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json
-  daily_operation_authorization_preflight_state_hash: f306ae932dfbbc9f50dd0f465b7d9b125004f81c6dff4a36f7e4062bcb494660
+  daily_operation_authorization_preflight_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json
+  daily_operation_authorization_preflight_state_hash: 2b8bd06a85516fc1608996a335a579153cd6db1a64eb090691b776f8ea03f361
+  daily_operation_authorization_preflight_github_cli_equivalent_id: github_open_pr_count_zero_api_v1
+  daily_operation_authorization_preflight_github_cli_equivalent_accepted: true
   daily_operation_authorization_preflight_failed_checks:
     - production_preflight_passed
   daily_operation_authorization_preflight_blockers:
-    - missing gh CLI
     - missing SMTP secret environment names ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD
     - existing OpenAIDatabase session-history archives exceed production git artifact hygiene limit
   daily_operation_authorization_preflight_blocker_ids:
-    - missing_gh_cli
     - missing_smtp_secret_env_names
     - openai_database_large_archive_git_artifact_hygiene_violations
   daily_operation_authorization_enablement_allowed: false

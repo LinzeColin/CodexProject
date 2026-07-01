@@ -4,8 +4,8 @@
 
 - source_base_commit: `960e9d1a8871bac1b4e482b58a3d673d3c6b635c`
 - source_tree_hash: `cf801941e53c389bcc3ac4456ba54a8b48543f3f`
-- source_snapshot_hash: `sha256:efe04c802b398d7e5a64524bf6eaf705403ba63314ec7883ec60dd33815c8e08`
-- snapshot_event_time: `2026-07-01T19:43:41+10:00`
+- source_snapshot_hash: `sha256:2f7fa9b23fdda39e63d2de74eb708e99dfaeffa9e4b51e4fac0c3db0a9981869`
+- snapshot_event_time: `2026-07-01T20:12:13+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -49,9 +49,9 @@
 - Stage 2 integrated accepted: `true`
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
-- Next executable task: `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`
-- Pending/stale events: `377`
-- Tree-bound events: `8`
+- Next executable task: `S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR`
+- Pending/stale events: `378`
+- Tree-bound events: `9`
 - Commit-bound events: `7`
 - Legacy unbound events: `330`
 - Unresolved fact IDs: `0`

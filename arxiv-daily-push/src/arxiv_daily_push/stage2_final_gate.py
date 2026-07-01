@@ -13542,7 +13542,21 @@ def build_daily_operation_authorization_preflight_state(
     if production_preflight_report is None:
         from arxiv_daily_push.production_preflight import build_production_preflight
 
-        production_preflight_report = build_production_preflight(root, generated_at=generated_at)
+        github_cli_equivalent = (
+            {
+                "equivalent_id": "github_open_pr_count_zero_api_v1",
+                "source": "github_api",
+                "open_pr_count": open_pr_count,
+                "reviewed": True,
+            }
+            if open_pr_count == 0
+            else None
+        )
+        production_preflight_report = build_production_preflight(
+            root,
+            generated_at=generated_at,
+            github_cli_equivalent=github_cli_equivalent,
+        )
     if production_scheduler_plan is None:
         from arxiv_daily_push.production_scheduler import build_production_scheduler_plan
 
