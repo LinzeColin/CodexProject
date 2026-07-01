@@ -703,7 +703,22 @@ def git_commit_and_push(repo_root: Path, push: bool) -> dict[str, Any]:
         "token_usage/current-mac-latest",
         "session_history/current-mac-latest",
     ]
-    run_command(["git", "add", *targets], repo_root)
+    stage_targets = [
+        target
+        for target in targets
+        if (repo_root / target).exists()
+        or subprocess.run(
+            ["git", "ls-files", "--error-unmatch", target],
+            cwd=str(repo_root),
+            text=True,
+            capture_output=True,
+            check=False,
+        ).returncode
+        == 0
+    ]
+    if not stage_targets:
+        return {"committed": False, "pushed": False, "reason": "no_changes"}
+    run_command(["git", "add", *stage_targets], repo_root)
     diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=str(repo_root))
     if diff_result.returncode == 0:
         return {"committed": False, "pushed": False, "reason": "no_changes"}
