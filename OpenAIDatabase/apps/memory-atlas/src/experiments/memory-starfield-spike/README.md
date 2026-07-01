@@ -13,6 +13,14 @@ The spike tests whether the Phase 0.2 visual contract can support a deep-space
 nebula, Flow Field, gravitational disk, Black Hole, Proto-Star and Memory
 Terrain without regressing into an ordinary point-line graph.
 
+## Phase 0.3 Scaffold Continuity
+
+This runnable Stage 1 spike preserves and supersedes the original Phase 0.3
+scaffold evidence for the Memory Starfield workspace: isolated directory,
+README contract, redacted fixture boundary, acceptance criteria and rollback.
+Its existence is not production integration; production must still import this
+directory only through a later explicit integration run.
+
 Open locally through Vite:
 
 ```bash

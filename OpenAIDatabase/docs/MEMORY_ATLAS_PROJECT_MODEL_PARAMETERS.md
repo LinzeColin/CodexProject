@@ -1043,3 +1043,43 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - GitHub main 上传后，Stage 9 交付关闭；后续新需求另开下一阶段。
+
+## 22. Part 1 Stage 0 复审门槛
+
+状态：`part_1_stage_0_review_passed`。
+
+范围：
+
+- Phase 0.1 Scope & Naming Freeze。
+- Phase 0.2 Memory Overview / Memory Starfield / Memory River / Universe State
+  contracts。
+- Phase 0.3 isolated spike scaffold continuity。
+
+验收门槛：
+
+- `validate:part1-stage0` 必须通过。
+- Phase 0.1 必须同时包含首批模块、中文命名、默认入口、隐私边界、不改
+  route/production UI 和 rollback。
+- Phase 0.2 必须同时覆盖 Memory Weather、Black Hole、Proto-Star、Next
+  Actions、Mini Starfield、River Pulse、Presentation / Analysis mode、zoom、
+  brush、theme lanes、pseudo-haptic 和 reduced motion。
+- Phase 0.3 scaffold continuity 必须保留 isolated directory、README
+  contract、redacted fixture boundary、acceptance criteria、rollback，以及
+  production source 不引用 spike 目录的证据。
+- 参数文件必须保留 `product_target: Memory Atlas v1.1.5`、schema marker、
+  validation hints、`raw_private_data_allowed: false`、
+  `plaintext_secrets_allowed: false`、`local_absolute_paths_allowed: false` 和
+  `writeback_allowed: false`。
+
+边界：
+
+- 本 Part 1 复审不进入 Part 2。
+- 本 Part 1 复审不执行整项目复审。
+- 本 Part 1 复审不上传 GitHub main。
+- 本 Part 1 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 1 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 1 复审不新增 direct active-memory writeback。
+
+下一阶段：
+
+- 单独执行 Part 2 复审与修复；所有 part-level 复审完成后再进入整项目复审。

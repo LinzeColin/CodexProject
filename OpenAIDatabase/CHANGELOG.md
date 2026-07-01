@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 1 Stage 0 Review
+
+- Completed the Part 1 review for Phase 0.1 Scope & Naming Freeze, Phase 0.2
+  product/interaction contracts, and Phase 0.3 isolated spike scaffold
+  continuity.
+- Added `validate:part1-stage0` to check the Stage 0 scope freeze, Memory
+  Overview / Starfield / River / Universe State contracts, visualization
+  parameter boundaries, isolated spike fixture safety, production isolation,
+  review documentation and delivery/model records.
+- Added explicit Phase 0.3 scaffold continuity notes to both runnable Stage 1
+  spike README files so the original scaffold evidence remains clear after the
+  prototypes became runnable.
+
+No Part 2 review, whole-project review, GitHub main upload, Cloudflare live
+deploy, Access policy change, raw/private data access, direct writeback,
+production React/Three/D3 integration change, or external account operation was
+added.
+
+Machine-readable boundary summary: Phase 0.3 scaffold continuity; No Part 2
+review; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 9 Whole-Stage Review
 
 - Completed the Stage 9 whole-stage review across Obsidian Graph E Iteration

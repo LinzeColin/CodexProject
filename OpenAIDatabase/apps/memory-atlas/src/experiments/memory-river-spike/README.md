@@ -13,6 +13,14 @@ The spike tests whether the Phase 0.2 interaction contract can support a
 dynamic time river with D3 time scale, zoom, brush, theme lanes, Black Hole
 band, Proto-Star marker, pseudo-haptic feedback and reduced motion.
 
+## Phase 0.3 Scaffold Continuity
+
+This runnable Stage 1 spike preserves and supersedes the original Phase 0.3
+scaffold evidence for the Memory River workspace: isolated directory, README
+contract, redacted fixture boundary, acceptance criteria and rollback. Its
+existence is not production integration; production must still import this
+directory only through a later explicit integration run.
+
 Open locally through Vite:
 
 ```bash
