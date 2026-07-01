@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload，以及 S14-P1 资金计划现金贷款本地验证。S14-P1 只生成 public-safe 资金计划、现金压力、贷款到期和账户余额汇总证据；S14-P2、S14-P3、Stage 14 复审/upload、lineage 和正式报告运行时仍未完成，且当前报告等级仍为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload，以及 S14-P1 资金计划现金贷款和 S14-P2 开票纳税本地验证。S14-P1/S14-P2 只生成 public-safe 资金、现金、贷款、开票和纳税 planning signals；S14-P3、Stage 14 复审/upload、lineage 和正式报告运行时仍未完成，且当前报告等级仍为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -70,6 +70,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S13-P2 回款应收账龄已本地验证完成：`KMFA/tools/collection_receivable_aging.py`、`KMFA/tools/check_s13_p2_collection_receivable_aging.py`、`KMFA/tests/test_collection_receivable_aging.py`、`KMFA/metadata/reports/collection_receivable_aging_manifest.json`、`KMFA/metadata/reports/collection_receivable_aging_source_lanes.jsonl`、`KMFA/metadata/reports/collection_receivable_aging_priority_items.jsonl`、`KMFA/metadata/reports/collection_receivable_aging_responsibility_items.jsonl` 和 `KMFA/stage_artifacts/S13_P2_collection_receivable_aging/` 已生成；覆盖回款表、应收账龄、客户账龄、日记账、开票计划 5 条 source lane，识别 4 类回款/应收问题，生成 4 条优先级事项、4 条责任事项和 1 个 HTML evidence，报告等级显示 D，正式报告、催收/付款/法务动作和经营决策依据继续阻断。
 - S13-P3 跨表复核已本地验证完成：`KMFA/tools/cross_table_review.py`、`KMFA/tools/check_s13_p3_cross_table_review.py`、`KMFA/tests/test_cross_table_review.py`、`KMFA/metadata/reports/cross_table_review_manifest.json`、`KMFA/metadata/reports/cross_table_review_checks.jsonl`、`KMFA/metadata/reports/cross_table_difference_queue.jsonl`、`KMFA/metadata/reports/operating_report_quality_report.json` 和 `KMFA/stage_artifacts/S13_P3_cross_table_review/` 已生成；覆盖项目、客户、金额、时间 4 个跨表复核维度，生成 4 条人工差异队列事项、1 份质量报告和 1 个 HTML evidence，报告等级显示 D，正式报告、经营决策依据和自动差异处理继续阻断。
 - S14-P1 资金计划现金贷款已本地验证完成：`KMFA/tools/fund_cash_loan_plan.py`、`KMFA/tools/check_s14_p1_fund_cash_loan_plan.py`、`KMFA/tests/test_fund_cash_loan_plan.py`、`KMFA/metadata/reports/fund_cash_loan_plan_manifest.json`、`fund_cash_loan_source_lanes.jsonl`、`fund_cash_pressure_signals.jsonl`、`loan_due_alerts.jsonl`、`account_balance_summaries.jsonl` 和 `KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/` 已生成；覆盖账户清单、月度现金、资金计划、贷款明细 4 条 source lane，输出 4 条现金压力、3 条贷款到期提示、3 条账户余额汇总和 1 个 HTML evidence，报告等级显示 D，正式报告、经营决策依据、付款审批、银行操作和贷款管理动作继续阻断。
+- S14-P2 开票纳税已本地验证完成：`KMFA/tools/invoice_tax_plan.py`、`KMFA/tools/check_s14_p2_invoice_tax_plan.py`、`KMFA/tests/test_invoice_tax_plan.py`、`KMFA/metadata/reports/invoice_tax_plan_manifest.json`、`invoice_tax_source_lanes.jsonl`、`invoice_tax_issue_candidates.jsonl`、`invoice_tax_cash_summaries.jsonl` 和 `KMFA/stage_artifacts/S14_P2_invoice_tax_plan/` 已生成；覆盖开票计划、纳税明细、开票纳税资金汇总 3 条 source lane，输出 3 类开票纳税事项、3 条现金汇总和 1 个 HTML evidence，报告等级显示 D，正式报告、经营决策依据、纳税申报和发票开具动作继续阻断。
 
 ## 你现在不能信任什么
 
@@ -78,7 +79,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、Stage 8 upload、Stage 9 upload 或 Stage 10 upload 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
-- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review、Stage 12 upload、S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审、Stage 13 upload 或 S14-P1 资金计划现金贷款等于完整业务系统；lineage full check、正式报告、S14-P2、S14-P3 和 Stage 14 review/upload 仍未完成。
+- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review、Stage 12 upload、S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审、Stage 13 upload、S14-P1 资金计划现金贷款或 S14-P2 开票纳税等于完整业务系统；lineage full check、正式报告、S14-P3 和 Stage 14 review/upload 仍未完成。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -87,4 +88,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S14-P2｜开票纳税`，且必须作为新 run work 重新确认 git/root/status 和 v1.2 task pack / roadmap；不得直接进入 S14-P3、Stage 14 review/upload、lineage full check、正式报告或自动接口。
+下一步只执行 `S14-P3｜政策证据`，且必须作为新 run work 重新确认 git/root/status 和 v1.2 task pack / roadmap；不得直接进入 Stage 14 review/upload、lineage full check、正式报告或自动接口。

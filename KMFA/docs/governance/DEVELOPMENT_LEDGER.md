@@ -1,13 +1,13 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s14p1-fund-cash-loan-plan
+product_version: 0.1.0-s14p2-invoice-tax-plan
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S14`
-- current_phase: `S14-P1｜资金计划现金贷款｜已完成本地验证`
-- current_tasks: `S14PAT01-S14PAT03`
+- current_phase: `S14-P2｜开票纳税｜已完成本地验证`
+- current_tasks: `S14PBT01-S14PBT03`
 - status: `completed_validated_local_only`
 - risk_tier: `T3`
 
@@ -91,18 +91,18 @@ product_version: 0.1.0-s14p1-fund-cash-loan-plan
 | `KMFA-S13-STAGE-REVIEW-20260701` | Stage 13 整体复审本地通过；复跑 S13-P1/P2/P3 validators、`check_s13_stage_review.py`、全量 172 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency；复审步骤未执行 GitHub upload、S14、lineage full check、正式报告、差异关闭或外部接口 | `KMFA/stage_artifacts/S13_STAGE_REVIEW/human/stage13_review_report.md` |
 | `KMFA-S13-GITHUB-UPLOAD-20260701` | Stage 13 final GitHub upload 完成；基于最新 origin/main 复跑 S13 validators、Stage 13 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、dry-run push、push 和 post-push parity；不执行 S14、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md` |
 | `S14PAT01-S14PAT03` | S14-P1 资金计划现金贷款完成本地验证：生成 4 条 public-safe source lane、4 条现金压力信号、3 条贷款到期提示、3 条账户余额汇总、1 个 HTML overview、manifest 和 validator；报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、付款、银行、贷款、开票、税务、Stage 14 review 和 GitHub upload | `KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/human/s14_p1_completion_record.md` |
+| `S14PBT01-S14PBT03` | S14-P2 开票纳税完成本地验证：生成 3 条 public-safe source lane、3 条开票纳税候选、3 条资金汇总、1 个 HTML overview、manifest 和 validator；报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、纳税申报、发票开具、Stage 14 review 和 GitHub upload | `KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/s14_p2_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S14-P2` | 待下一轮 run work 开始；必须保持 S14-P1 的 D 级报告、pending reconciliation、付款/银行/贷款操作和 lineage/formal report 阻断 | `KMFA/docs/governance/roadmap.yaml` |
+| `S14-P3` | 待下一轮 run work 开始；必须保持 S14-P1/S14-P2 的 D 级报告、pending reconciliation、资金/银行/贷款/开票/税务操作和 lineage/formal report 阻断 | `KMFA/docs/governance/roadmap.yaml` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S14-P2 | 尚未开始；S14-P1 只完成 public-safe 资金计划现金贷款 planning signals，不代表开票纳税、政策证据、lineage、正式报告、付款、银行、贷款管理或外部接口已完成 | 下一轮只执行 S14-P2 |
-| S14-P3 | 尚未开始；必须在 S14-P2 完成后单独执行 | 等 S14-P2 完成后再进入 |
+| S14-P3 | 尚未开始；S14-P1/S14-P2 只完成 public-safe 资金、现金、贷款、开票和纳税候选信号，不代表政策证据、lineage、正式报告、付款、银行、贷款管理、纳税申报、发票开具或外部接口已完成 | 下一轮只执行 S14-P3 |
 | Stage 14 review/upload | 尚未开始；必须等 S14-P1/P2/P3 全部完成后再整体复审、修复 findings、再上传 GitHub | 等三个 phase 全部完成后再执行 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

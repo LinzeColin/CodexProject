@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.0-s14p2-invoice-tax-plan - 2026-07-01
+
+- 完成 `S14-P2｜开票纳税` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/invoice_tax_plan.py`、`KMFA/tools/check_s14_p2_invoice_tax_plan.py` 和 `KMFA/tests/test_invoice_tax_plan.py`。
+- 生成 3 条 public-safe source lane：开票计划、纳税明细、开票纳税资金汇总；共 6 个 source refs、30 个字段映射 refs。
+- 输出待开票、已开票未回款、税率异常候选 3 类事项、3 条现金汇总和 1 个蓝色商务风 HTML overview。
+- 报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、纳税申报、发票开具、付款审批、银行操作、贷款管理和业务 release。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、发票号、税务申报材料或 credentials。
+- S14-P2 不执行 S14-P3 政策证据、Stage 14 整体复审、GitHub upload、lineage full check、正式报告、外部 connector 或任何资金/银行/贷款/开票/税务执行动作。
+- 下一轮只能执行 `S14-P3｜政策证据`。
+
 ## 0.1.0-s14p1-fund-cash-loan-plan - 2026-07-01
 
 - 完成 `S14-P1｜资金计划现金贷款` 本地验证，不上传 GitHub。
