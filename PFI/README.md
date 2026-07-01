@@ -30,6 +30,28 @@ Records:
 - `docs/pfi_v024/RUN_CONTRACT.md`
 - `reports/pfi_v024/pre_stage_0/evidence.json`
 
+## v0.2.4 Stage 9 Status
+
+Current run unit: `Stage 9 / Phase 9.1 - 回归规则`.
+
+- Stage 8 GitHub main upload: complete before this run; `HEAD == origin/main == remote main` verified at `ab09727d7c22ea5d7a65868c26526330d528a101`.
+- Phase 8.1 automated acceptance: candidate pass.
+- Phase 8.2 screenshot acceptance: candidate pass.
+- Phase 8.3 manual acceptance: user confirmed by reply `1`.
+- Stage 8 whole-stage review: pass.
+- Stage 8 GitHub main upload: complete after terminal remote verification.
+- Phase 9.1 regression rules: candidate pass.
+- Phase 9.2 delivery freeze: not started.
+- Phase 9.3 user acceptance: not started.
+- Stage 9 whole-stage review: not started.
+- GitHub main upload for Stage 9: not executed in this phase run.
+- App bundle reinstall: not executed.
+- Data logic changes: none.
+- Financial data changes: none.
+- Guardrails covered: old UI signature, 16-entry/legacy alias primary stack, false financial zero, mock/sample/synthetic/fixture/demo/fake financial data, mechanical copy definition, dark console default definition.
+- Current evidence: `reports/pfi_v024/stage_9/phase_9_1/evidence.json`.
+- Next gate: Phase 9.2 delivery freeze only after this phase is accepted or explicitly continued.
+
 ## v0.2.4 Stage 8 Status
 
 Current run unit: `Stage 8 GitHub main upload gate`.
@@ -41,7 +63,6 @@ Current run unit: `Stage 8 GitHub main upload gate`.
 - Stage 8 whole-stage review: pass.
 - Stage 8 whole-stage review pass.
 - Stage 8 GitHub main upload: complete in this gate after terminal remote verification.
-- Stage 9 regression freeze: not started.
 - App bundle reinstall: not executed.
 - Data logic changes: none.
 - Financial data changes: none.
@@ -49,7 +70,6 @@ Current run unit: `Stage 8 GitHub main upload gate`.
 - Screenshot checks passed: app home, localhost home, 10 primary entries, mobile responsive, app/localhost same bundle hash.
 - Current evidence: `reports/pfi_v024/stage_8/github_main_upload/evidence.json`.
 - Review findings fixed: missing whole-stage review gate, top-level status still at Phase 8.3 pending after user reply, missing consolidated Stage 8 evidence surface.
-- Next gate: Stage 9 only after upload verification.
 
 ## v0.2.4 Stage 7 Status
 

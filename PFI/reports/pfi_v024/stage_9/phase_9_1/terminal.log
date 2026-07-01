@@ -1,0 +1,58 @@
+2026-07-01T05:47:35Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_before_phase91=9af0680bf72a367d473bd18944d475f148a65937
+origin_main_before_phase91=9af0680bf72a367d473bd18944d475f148a65937
+
+Source documents:
+AGENTS.md
+PFI/HANDOFF.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+/Users/linzezhang/Downloads/PFI/PFI_v0.2.3_Repair_Roadmap.md
+/Users/linzezhang/Downloads/PFI/PFI_v0.2.3_Repair_TaskPack.zip
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q
+Result: 3 failed before implementation; missing stage_v024_stage9_regression_freeze module and phase_9_1 evidence pack.
+
+Implementation boundary:
+Stage 9 Phase 9.1 regression rules only. Did not execute Phase 9.2 delivery freeze, Phase 9.3 user acceptance, Stage 9 whole-stage review, GitHub main upload, app bundle reinstall, launcher mutation, or financial data changes.
+
+Rebase refresh:
+git log --oneline --decorate --left-right --cherry-pick HEAD...origin/main --
+Result: origin/main advanced by 9af0680b Fix Memory Atlas runtime sync push target.
+git diff --name-only $(git merge-base HEAD origin/main)..origin/main --
+Result: changed OpenAIDatabase paths only; no PFI paths.
+git stash push --include-untracked -m pfi-stage9-phase91-before-memory-sync-rebase
+Result: Saved working directory and index state.
+git rebase origin/main
+Result: Successfully rebased and updated refs/heads/codex/pfi.
+git stash pop
+Result: Restored Stage 9 Phase 9.1 working tree; stash dropped.
+
+Guardrail evaluator:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B - <<'PY'
+from pathlib import Path
+from pfi_v02.stage_v024_stage9_regression_freeze import evaluate_v024_stage9_phase91_guardrails
+print(evaluate_v024_stage9_phase91_guardrails(Path("PFI")).to_dict()["all_guardrails_passed"])
+PY
+Result: True
+
+Final verification is recorded in evidence.json command entries after this pack is generated.
+
+Validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q
+Result: 3 passed in 0.10s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_github_upload_contract.py PFI/tests/test_v024_stage8_whole_review_contract.py -q
+Result: 8 passed in 0.09s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py
+Result: pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_9/phase_9_1/evidence.json
+Result: pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_9/phase_9_1/regression_guardrails.json
+Result: pass
+git diff --check -- PFI
+Result: pass
+changed_files reconciliation
+Result: pass

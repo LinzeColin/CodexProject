@@ -1,0 +1,112 @@
+{
+  "schema": "PFIV024Stage9Phase91RegressionGuardrailsEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 9",
+  "stage_name": "回归防线与交付冻结",
+  "phase_id": "9.1",
+  "phase_name": "回归规则",
+  "status": "candidate_pass",
+  "generated_at": "2026-07-01T15:47:35+10:00",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "guardrail_version": "PFI-V024-STAGE9-PHASE91-REGRESSION-GUARDRAILS",
+  "task_ids": [
+    "T9.1.1",
+    "T9.1.2",
+    "T9.1.3",
+    "T9.1.4"
+  ],
+  "stage_8_github_main_uploaded_required": true,
+  "stage_8_github_main_uploaded_verified": true,
+  "stage_8_upload_evidence": "PFI/reports/pfi_v024/stage_8/github_main_upload/evidence.json",
+  "stage_8_remote_verified_head": "ab09727d7c22ea5d7a65868c26526330d528a101",
+  "phase_9_1_base_origin_main": "9af0680bf72a367d473bd18944d475f148a65937",
+  "regression_guardrails": "PFI/reports/pfi_v024/stage_9/phase_9_1/regression_guardrails.json",
+  "old_ui_signature_test_passed": true,
+  "primary_entry_stack_test_passed": true,
+  "false_zero_test_passed": true,
+  "mock_financial_data_test_passed": true,
+  "mechanical_copy_guardrail_defined": true,
+  "dark_console_default_guardrail_defined": true,
+  "all_guardrails_passed": true,
+  "phase_9_2_started": false,
+  "phase_9_3_started": false,
+  "stage_9_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "commands": [
+    {
+      "cmd": "pytest stage9 phase91 red run",
+      "status": "expected_fail",
+      "detail": "3 failed before implementation: missing stage_v024_stage9_regression_freeze module and phase_9_1 evidence pack"
+    },
+    {
+      "cmd": "pytest stage9 phase91 after guardrail implementation",
+      "status": "expected_fail",
+      "detail": "2 passed, 1 failed while evidence pack was still missing"
+    },
+    {
+      "cmd": "pytest stage9 phase91 after scanner refinement",
+      "status": "expected_fail",
+      "detail": "2 passed, 1 failed while evidence pack was still missing"
+    },
+    {
+      "cmd": "pytest stage9 phase91 regression guardrails",
+      "status": "pass",
+      "detail": "3 passed in 0.10s"
+    },
+    {
+      "cmd": "pytest stage8 upload + whole review regression",
+      "status": "pass",
+      "detail": "8 passed in 0.09s"
+    },
+    {
+      "cmd": "py_compile stage9 module and json evidence checks",
+      "status": "pass",
+      "detail": "py_compile stage_v024_stage9_regression_freeze.py passed; evidence.json and regression_guardrails.json json.tool checks passed"
+    },
+    {
+      "cmd": "changed files reconciliation",
+      "status": "pass",
+      "detail": "changed_files.txt matches git diff plus untracked PFI files"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "no whitespace errors"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_9/phase_9_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_1/regression_guardrails.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_1/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+    "PFI/tests/test_v024_stage9_phase91_regression_guardrails.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 9 Phase 9.2 delivery freeze",
+    "Stage 9 Phase 9.3 user acceptance",
+    "Stage 9 whole-stage review",
+    "Stage 9 GitHub main upload",
+    "final evidence index",
+    "closeout candidate",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}
