@@ -163,6 +163,13 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("## 历史：S2PMT07 S2PLT01 terminal acceptance consumption", page)
         self.assertIn("历史当时结论：S2PLT01 terminal acceptance 已完成；当时 S2PLT04 completion report", page)
         self.assertIn("当前 Stage 2 integrated acceptance 已记录，S3/DAILY_OPERATION 仍未进入", page)
+        self.assertIn("## 历史：S2PLT03 audit-blocker zero-proof sync", page)
+        self.assertIn("## 历史：S2PMT07 S2PLT01 entry precheck zero-proof sync", page)
+        self.assertIn("## 历史：S2PMT07 S2PLT01 replay payload readiness sync", page)
+        self.assertIn("## 历史：S2PMT07 S2PLT01 zero-proof readiness sync", page)
+        self.assertIn("## 历史：S2PLT03 zero-proof resilience readiness audit", page)
+        self.assertIn("历史当时 S2PLT01 blockers", page)
+        self.assertIn("历史当时结论：这只是 nonterminal readiness sync", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
@@ -1275,6 +1282,14 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("当前结论：validator 已准备好 fail-closed 校验未来 artifact", page)
         self.assertNotIn("当前结论：S2PLT01 terminal acceptance 已完成", page)
         self.assertNotIn("当前结论：仍为 `blocked_s2plt04_completion_evidence_latest_nonterminal_refs_synced_no_report_no_production`", page)
+        self.assertNotIn("## 最新 S2PLT03 audit-blocker zero-proof sync", page)
+        self.assertNotIn("## 最新 S2PMT07 S2PLT01 entry precheck zero-proof sync", page)
+        self.assertNotIn("## 最新 S2PMT07 S2PLT01 replay payload readiness sync", page)
+        self.assertNotIn("## 最新 S2PMT07 S2PLT01 zero-proof readiness sync", page)
+        self.assertNotIn("## 最新 S2PLT03 zero-proof resilience readiness audit", page)
+        self.assertNotIn("当前只是 nonterminal readiness sync；不得据此验收 S2PLT01", page)
+        self.assertNotIn("当前只是 nonterminal readiness sync；不得据此验收 S2PLT03", page)
+        self.assertNotIn("当前只是 nonterminal readiness audit 一致性修正；不得据此验收 S2PLT03", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
