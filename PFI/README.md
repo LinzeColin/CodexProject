@@ -30,6 +30,23 @@ Records:
 - `docs/pfi_v024/RUN_CONTRACT.md`
 - `reports/pfi_v024/pre_stage_0/evidence.json`
 
+## v0.2.4 Stage 6 Status
+
+Current run unit: `Stage 6 / Phase 6.1 - 设计系统`.
+
+- Stage 5 GitHub main upload: complete before this run.
+- Phase 6.1: candidate pass.
+- Phase 6.2 motion feedback: not started.
+- Phase 6.3 haptics and settings isolation: not started.
+- Stage 6 whole-stage review: not executed.
+- GitHub main upload: not executed in this run.
+- App bundle reinstall: not executed.
+- Data logic changes: none.
+- Financial data changes: none.
+- Current design system marker: `data-v024-stage6-design-system="phase_6_1"`.
+- Current evidence: `reports/pfi_v024/stage_6/phase_6_1/evidence.json`.
+- Next gate: `Stage 6 / Phase 6.2 - 动效反馈`.
+
 ## v0.2.4 Stage 1 Status
 
 Current run unit: `Stage 1 whole-stage review - 复审并解决暴露问题`.

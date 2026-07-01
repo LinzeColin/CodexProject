@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 6 Phase 6.1 - 2026-07-01
+
+- 完成 `Stage 6 / Phase 6.1 - 设计系统`：建立 v0.2.4 默认浅色 token、状态色、卡片/表格/图表槽和响应式布局覆盖层。
+- `PFI/web/index.html` 锁定 `color-scheme=light`，并新增 `data-v024-stage6-design-system="phase_6_1"`。
+- `PFI/web/styles.css` 新增 `body[data-pfi-target-version="v0.2.4"]` 作用域 token，不进入动效或触感实现。
+- 新增 `PFI/tests/test_v024_stage6_phase61_design_system.py`、`PFI/docs/pfi_v024/STAGE6_DESIGN_SYSTEM.md` 和 `PFI/reports/pfi_v024/stage_6/phase_6_1/` evidence。
+- 本轮不执行 Phase 6.2、Phase 6.3、Stage 6 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 5 GitHub Main Upload - 2026-07-01
 
 - 准备 `Stage 5 GitHub main upload gate`：将 Stage 5 Phase 5.1、Phase 5.2、Phase 5.3 和 whole-stage review package 上传到 GitHub main。
