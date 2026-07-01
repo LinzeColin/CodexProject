@@ -502,7 +502,7 @@ review_status: `stage_6_whole_stage_review_passed`
 
 ## 12. Stage 7.1 视觉验收模型
 
-状态：Stage 7.1 已实现，Stage 7 整体复审未完成。
+状态：Stage 7.1 已实现，Stage 7 整体复审已完成。
 
 模型假设：
 
@@ -586,7 +586,7 @@ review_status: `stage_6_whole_stage_review_passed`
 
 ## 13. Stage 7.2 性能验收模型
 
-状态：Stage 7.2 已实现，Stage 7 整体复审未完成。
+状态：Stage 7.2 已实现，Stage 7 整体复审已完成。
 
 模型假设：
 
@@ -673,7 +673,7 @@ review_status: `stage_6_whole_stage_review_passed`
 
 ## 14. Stage 7.3 隐私与无障碍验收模型
 
-状态：Stage 7.3 已实现，Stage 7 整体复审未完成。
+状态：Stage 7.3 已实现，Stage 7 整体复审已完成。
 
 模型假设：
 
@@ -1345,3 +1345,44 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 8 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 29. Part 8 Stage 7 复审门槛
+
+状态：`part_8_stage_7_review_passed`。
+
+范围：
+
+- Stage 7.1 Visual Acceptance。
+- Stage 7.2 Performance Acceptance。
+- Stage 7.3 Privacy and Accessibility。
+- Stage 7 overall review。
+
+验收门槛：
+
+- `validate:part8-stage7` 必须通过。
+- Stage 7.1 必须保留真实浏览器截图、Galaxy non-empty pixel signal、
+  Memory River 结构验收和 4177 cleanup。
+- Stage 7.2 必须保留 FPS overlay、high/mid FPS thresholds、low-quality
+  non-blank fallback、adaptive quality resume 和 cleanup lifecycle。
+- Stage 7.3 必须保留 release artifact scan、
+  `public_redacted_read_only_visualization`、无 sourcemap、reduced motion 和
+  silent feedback defaults。
+- Stage 7 model parameters must not contain stale whole-stage-incomplete
+  status text。
+- Stage 7 validators、build、visual acceptance、release audit 和 overall
+  acceptance 必须通过。
+
+边界：
+
+- 本 Part 8 复审不进入 Part 9。
+- 本 Part 8 复审不进入 Stage 8。
+- 本 Part 8 复审不执行整项目复审。
+- 本 Part 8 复审不上传 GitHub main。
+- 本 Part 8 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 8 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 8 复审不新增 direct active-memory writeback。
+- 本 Part 8 复审不新增 production runtime feature work。
+
+下一阶段：
+
+- 单独执行 Part 9 复审与修复；所有 part-level 复审完成后再进入整项目复审。
