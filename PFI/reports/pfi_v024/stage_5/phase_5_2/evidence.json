@@ -1,0 +1,105 @@
+{
+  "schema": "PFIV024Stage5Phase52EvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 5",
+  "phase_id": "5.2",
+  "phase_name": "二级页面差异化",
+  "status": "candidate_pass",
+  "generated_at": "2026-07-01T00:32:57Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_before_phase": "8593cee20b8e4a6e3ac8864484accf8fd359ede3",
+    "origin_main_before_phase": "0e205f71ed29091752cf0964212329f873f7d4ca"
+  },
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "phase_5_1_complete": true,
+  "phase_5_2_complete": true,
+  "phase_5_3_started": false,
+  "stage_5_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "primary_entry_count": 10,
+  "total_subpage_count": 45,
+  "min_subpages_per_primary": 4,
+  "route_validation_status": "pass",
+  "title_only_clone_groups": [],
+  "no_forbidden_financial_data": true,
+  "commands": [
+    {
+      "cmd": "pytest stage5 phase52 red run",
+      "status": "expected_fail",
+      "detail": "5 failed: missing stage5Subpages.js, runtime loading, and evidence pack"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage5Subpages.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage5 phase52 after runtime implementation",
+      "status": "partial_pass",
+      "detail": "4 passed, 1 failed because evidence pack was not written yet"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage5Subpages.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_os/app/streamlit_app.py PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py -q",
+      "status": "pass",
+      "detail": "5 passed in 0.15s"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase51_home_rebuild.py PFI/tests/test_v024_stage3_phase32_route_implementation.py -q",
+      "status": "pass",
+      "detail": "9 passed in 0.26s"
+    },
+    {
+      "cmd": "python3 -m json.tool PFI/reports/pfi_v024/stage_5/phase_5_2/evidence.json && python3 -m json.tool PFI/reports/pfi_v024/stage_5/phase_5_2/route_validation.json && git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE5_SUBPAGE_DIFFERENTIATION.md",
+    "PFI/reports/pfi_v024/stage_5/phase_5_2/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_5/phase_5_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_5/phase_5_2/route_validation.json",
+    "PFI/reports/pfi_v024/stage_5/phase_5_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_5/phase_5_2/terminal.log",
+    "PFI/reports/pfi_v024/stage_5/phase_5_2/ux_diff_report.md",
+    "PFI/src/pfi_os/app/streamlit_app.py",
+    "PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py",
+    "PFI/web/app/pages/stage5Subpages.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Phase 5.3 交互状态",
+    "Stage 5 whole-stage review",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "requires_next_phase_instruction": true
+}

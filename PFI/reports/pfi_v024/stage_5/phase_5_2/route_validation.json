@@ -1,0 +1,120 @@
+{
+  "schema": "PFIV024Stage5Phase52RouteValidationV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 5",
+  "phase_id": "5.2",
+  "status": "pass",
+  "primary_entry_count": 10,
+  "workspace_count": 10,
+  "total_subpage_count": 45,
+  "min_subpages_per_primary": 4,
+  "differentiation_fields": [
+    "routeAlias",
+    "stateKey",
+    "title",
+    "layoutKind",
+    "primaryAction",
+    "dataObject"
+  ],
+  "workspace_summaries": {
+    "home": {
+      "subpage_count": 4,
+      "route_count": 4,
+      "state_count": 4,
+      "title_count": 4,
+      "layout_count": 4,
+      "action_count": 4,
+      "data_object_count": 4
+    },
+    "accounts": {
+      "subpage_count": 4,
+      "route_count": 4,
+      "state_count": 4,
+      "title_count": 4,
+      "layout_count": 4,
+      "action_count": 4,
+      "data_object_count": 4
+    },
+    "ledger": {
+      "subpage_count": 4,
+      "route_count": 4,
+      "state_count": 4,
+      "title_count": 4,
+      "layout_count": 4,
+      "action_count": 4,
+      "data_object_count": 4
+    },
+    "investment": {
+      "subpage_count": 4,
+      "route_count": 4,
+      "state_count": 4,
+      "title_count": 4,
+      "layout_count": 4,
+      "action_count": 4,
+      "data_object_count": 4
+    },
+    "consumption": {
+      "subpage_count": 5,
+      "route_count": 5,
+      "state_count": 5,
+      "title_count": 5,
+      "layout_count": 5,
+      "action_count": 5,
+      "data_object_count": 5
+    },
+    "sync": {
+      "subpage_count": 5,
+      "route_count": 5,
+      "state_count": 5,
+      "title_count": 5,
+      "layout_count": 5,
+      "action_count": 5,
+      "data_object_count": 5
+    },
+    "recommendations": {
+      "subpage_count": 4,
+      "route_count": 4,
+      "state_count": 4,
+      "title_count": 4,
+      "layout_count": 4,
+      "action_count": 4,
+      "data_object_count": 4
+    },
+    "insights": {
+      "subpage_count": 5,
+      "route_count": 5,
+      "state_count": 5,
+      "title_count": 5,
+      "layout_count": 5,
+      "action_count": 5,
+      "data_object_count": 5
+    },
+    "market_research": {
+      "subpage_count": 5,
+      "route_count": 5,
+      "state_count": 5,
+      "title_count": 5,
+      "layout_count": 5,
+      "action_count": 5,
+      "data_object_count": 5
+    },
+    "settings": {
+      "subpage_count": 5,
+      "route_count": 5,
+      "state_count": 5,
+      "title_count": 5,
+      "layout_count": 5,
+      "action_count": 5,
+      "data_object_count": 5
+    }
+  },
+  "missing_workspaces": [],
+  "workspaces_below_minimum": [],
+  "duplicate_route_aliases": [],
+  "duplicate_state_keys": [],
+  "missing_stage3_secondary_routes": [],
+  "orphan_stage5_routes": [],
+  "title_only_clone_groups": []
+}
+

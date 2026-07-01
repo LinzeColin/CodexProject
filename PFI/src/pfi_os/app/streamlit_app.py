@@ -966,6 +966,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     routes_path = ROOT / "web" / "app" / "routes.js"
     data_state_path = ROOT / "web" / "app" / "data_state.js"
     stage4_pages_path = ROOT / "web" / "app" / "pages" / "stage4Subpages.js"
+    stage5_pages_path = ROOT / "web" / "app" / "pages" / "stage5Subpages.js"
     home_page_path = ROOT / "web" / "app" / "pages" / "home.js"
     js_path = ROOT / "web" / "app" / "shell.js"
     shell_html = shell_path.read_text(encoding="utf-8")
@@ -977,6 +978,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     routes_js = routes_path.read_text(encoding="utf-8")
     data_state_js = data_state_path.read_text(encoding="utf-8")
     stage4_pages_js = stage4_pages_path.read_text(encoding="utf-8")
+    stage5_pages_js = stage5_pages_path.read_text(encoding="utf-8")
     home_page_js = home_page_path.read_text(encoding="utf-8")
     js = js_path.read_text(encoding="utf-8")
     summary_payload = home_summary if isinstance(home_summary, dict) else empty_homepage_summary()
@@ -1023,17 +1025,23 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     )
     shell_html = shell_html.replace(
         '<script src="./app/routes.js"></script>',
-        "\n".join(
-            (
-                f"<script>{routes_js}</script>",
-                f"<script>{stage4_pages_js}</script>",
-                f"<script>{home_page_js}</script>",
-            )
-        ),
+        f"<script>{routes_js}</script>",
     )
     shell_html = shell_html.replace(
         '<script src="./app/data_state.js"></script>',
         f"<script>{data_state_js}</script>",
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/pages/stage4Subpages.js"></script>',
+        f"<script>{stage4_pages_js}</script>",
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/pages/stage5Subpages.js"></script>',
+        f"<script>{stage5_pages_js}</script>",
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/pages/home.js"></script>',
+        f"<script>{home_page_js}</script>",
     )
     shell_html = shell_html.replace('<script src="./app/shell.js"></script>', f"<script>{js}</script>")
     return shell_html
