@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s14p2-invoice-tax-plan"
+    model_version: "0.1.0-s14p3-policy-evidence-plan"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -144,6 +144,7 @@ models:
       - "FORM-KMFA-REPORT-EXPORT-001"
       - "FORM-KMFA-FUND-CASH-LOAN-PLAN-001"
       - "FORM-KMFA-INVOICE-TAX-PLAN-001"
+      - "FORM-KMFA-POLICY-EVIDENCE-PLAN-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -255,6 +256,13 @@ models:
       - "PARAM-KMFA-534"
       - "PARAM-KMFA-535"
       - "PARAM-KMFA-536"
+      - "PARAM-KMFA-537"
+      - "PARAM-KMFA-538"
+      - "PARAM-KMFA-539"
+      - "PARAM-KMFA-540"
+      - "PARAM-KMFA-541"
+      - "PARAM-KMFA-542"
+      - "PARAM-KMFA-543"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -306,6 +314,8 @@ models:
       - "KMFA/tools/check_s14_p1_fund_cash_loan_plan.py"
       - "KMFA/tools/invoice_tax_plan.py"
       - "KMFA/tools/check_s14_p2_invoice_tax_plan.py"
+      - "KMFA/tools/policy_evidence_plan.py"
+      - "KMFA/tools/check_s14_p3_policy_evidence_plan.py"
       - "KMFA/tools/check_s09_stage_review.py"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md"
@@ -359,6 +369,8 @@ models:
       - "python3 KMFA/tools/check_s14_p1_fund_cash_loan_plan.py"
       - "python3 -m unittest KMFA.tests.test_invoice_tax_plan -q"
       - "python3 KMFA/tools/check_s14_p2_invoice_tax_plan.py"
+      - "python3 -m unittest KMFA.tests.test_policy_evidence_plan -q"
+      - "python3 KMFA/tools/check_s14_p3_policy_evidence_plan.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
@@ -402,6 +414,9 @@ models:
       - "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/s14_p2_completion_record.md"
       - "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/test_results.md"
       - "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/machine/s14_p2_manifest.json"
+      - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/s14_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
+      - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/machine/s14_p3_manifest.json"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

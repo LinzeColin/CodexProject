@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 政策证据</title>
+  <style>
+    :root { --ink:#172033; --muted:#66758a; --line:#d7e3f2; --blue:#2367d1; --navy:#10233f; --soft:#e8f3ff; --warn:#a16207; --stop:#b91c1c; --card:#ffffff; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f5f8fc; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+    header { background:linear-gradient(135deg,var(--navy),#18517f); color:#fff; padding:28px 34px; }
+    .brand { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+    .logo { width:48px; height:48px; border-radius:8px; background:#2563eb; display:flex; align-items:center; justify-content:center; font-weight:800; }
+    h1 { margin:0 0 8px; font-size:28px; letter-spacing:0; }
+    h2 { margin:0 0 10px; font-size:20px; }
+    .sub { color:#dbeafe; line-height:1.65; max-width:980px; }
+    main { max-width:1120px; margin:0 auto; padding:22px; }
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:-34px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:18px; box-shadow:0 12px 26px rgba(15,23,42,.07); }
+    .label { color:var(--muted); font-size:13px; }
+    .num { font-size:24px; font-weight:800; color:var(--blue); margin-top:6px; }
+    .stop { color:var(--stop); }
+    table { width:100%; border-collapse:collapse; margin-top:12px; background:white; border:1px solid var(--line); }
+    th,td { text-align:left; border-bottom:1px solid var(--line); padding:11px 12px; line-height:1.55; }
+    th { background:var(--soft); color:#153e75; }
+    ul { margin:10px 0 0; padding:0; display:grid; grid-template-columns:repeat(5,1fr); gap:10px; list-style:none; }
+    li { border:1px solid var(--line); border-radius:8px; padding:12px; background:#fbfdff; font-weight:700; min-height:78px; }
+    li span { display:block; color:var(--muted); font-size:13px; font-weight:400; margin-top:5px; }
+    .notice { border-left:4px solid var(--warn); background:#fff7ed; padding:12px 14px; line-height:1.65; }
+    @media(max-width:1000px) { .cards, ul { grid-template-columns:1fr; } header, main { padding-left:16px; padding-right:16px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><div class="logo">KM</div><div><strong>KMFA 经营分析系统</strong><div class="sub">S14-P3 · 公开安全 · 政策证据</div></div></div>
+    <h1>KMFA 政策证据</h1>
+    <div class="sub">登记科小、高新、专精特新、小巨人、研发费用五类政策证据目录，只输出证据缺口和风险提示。页面不展示真实材料、金额、税号、人员明细、项目明文或任何申报文件。</div>
+  </header>
+  <main>
+    <section class="cards">
+      <div class="card"><div class="label">报告等级</div><div class="num">报告等级 D</div><div class="label">正式政策结论仍被阻断</div></div>
+      <div class="card"><div class="label">未关闭差异</div><div class="num stop">12 项</div><div class="label">需要 owner 或授权复核</div></div>
+      <div class="card"><div class="label">操作边界</div><div class="num stop">只读</div><div class="label">不输出正式政策资格结论</div></div>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>证据目录</h2>
+      <ul>
+<li>科小<span>4 类证据目录已登记</span></li>
+<li>高新<span>5 类证据目录已登记</span></li>
+<li>专精特新<span>4 类证据目录已登记</span></li>
+<li>小巨人<span>5 类证据目录已登记</span></li>
+<li>研发费用<span>5 类证据目录已登记</span></li>
+      </ul>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>证据缺口</h2>
+      <table>
+        <thead><tr><th>政策方向</th><th>缺口提示</th><th>复核动作</th><th>边界</th></tr></thead>
+        <tbody>
+<tr><td>科小</td><td>企业基础、研发活动和人员证据需人工复核</td><td>provide_or_verify_public_safe_evidence_index</td><td>只输出证据缺口和风险提示</td></tr>
+<tr><td>高新</td><td>知识产权、研发费用、科技人员和高新收入证据链未闭合</td><td>provide_or_verify_public_safe_evidence_index</td><td>只输出证据缺口和风险提示</td></tr>
+<tr><td>专精特新</td><td>专业化、精细化、创新输出和产业链位置材料需补齐</td><td>provide_or_verify_public_safe_evidence_index</td><td>只输出证据缺口和风险提示</td></tr>
+<tr><td>小巨人</td><td>细分市场、创新能力、质量效益和成长合规材料缺口较大</td><td>provide_or_verify_public_safe_evidence_index</td><td>只输出证据缺口和风险提示</td></tr>
+<tr><td>研发费用</td><td>研发项目台账、费用明细、人员工时和成果证据需要闭环</td><td>provide_or_verify_public_safe_evidence_index</td><td>只输出证据缺口和风险提示</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>风险提示</h2>
+      <table>
+        <thead><tr><th>政策方向</th><th>风险等级</th><th>提示</th></tr></thead>
+        <tbody>
+<tr><td>科小</td><td>medium</td><td>避免把结构性证据目录解读为科小资格判断</td></tr>
+<tr><td>高新</td><td>high</td><td>高新准备度不得在证据链未闭合时输出肯定结论</td></tr>
+<tr><td>专精特新</td><td>medium</td><td>专精特新风险提示只能指向材料缺口和复核动作</td></tr>
+<tr><td>小巨人</td><td>high</td><td>小巨人材料要求更高，当前只能提示准备风险</td></tr>
+<tr><td>研发费用</td><td>high</td><td>研发费用证据缺口不得替代税务申报或加计扣除结论</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>使用限制</h2>
+      <div class="notice">S14-P3 只输出证据缺口和风险提示，不输出正式政策资格结论，不生成申报材料，不调用外部接口，不作为经营决策或税务申报依据。</div>
+    </section>
+  </main>
+</body>
+</html>

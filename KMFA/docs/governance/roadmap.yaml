@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S14"
-current_phase_id: "S14PC"
-current_task_id: "S14PCT01-S14PCT03"
-next_gate_id: "KMFA-S14-P3-GATE"
+current_phase_id: "S14_STAGE_REVIEW"
+current_task_id: "KMFA-S14-STAGE-REVIEW"
+next_gate_id: "KMFA-S14-STAGE-REVIEW-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -861,10 +861,10 @@ stages:
               - "KMFA/tools/check_s13_p3_cross_table_review.py"
   - stage_id: "S14"
     name: "资金、开票、纳税与政策证据模块"
-    status: "in_progress_s14p2_completed_local_only"
+    status: "completed_local_only_pending_stage_review"
     estimated_hours: 3
     estimated_pct: 66.6667
-    current_result: "S14-P1 已完成 public-safe 资金计划现金贷款证据，S14-P2 已完成 public-safe 开票纳税证据；S14-P3、Stage 14 review 和 GitHub upload 未执行。"
+    current_result: "S14-P1 已完成 public-safe 资金计划现金贷款证据，S14-P2 已完成 public-safe 开票纳税证据，S14-P3 已完成 public-safe 政策证据缺口和风险提示；Stage 14 review 和 GitHub upload 未执行。"
     evidence_refs:
       - "KMFA/metadata/reports/fund_cash_loan_plan_manifest.json"
       - "KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/human/s14_p1_completion_record.md"
@@ -872,6 +872,9 @@ stages:
       - "KMFA/metadata/reports/invoice_tax_plan_manifest.json"
       - "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/s14_p2_completion_record.md"
       - "KMFA/tools/check_s14_p2_invoice_tax_plan.py"
+      - "KMFA/metadata/reports/policy_evidence_plan_manifest.json"
+      - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/s14_p3_completion_record.md"
+      - "KMFA/tools/check_s14_p3_policy_evidence_plan.py"
     phases:
       - phase_id: "S14PA"
         name: "资金计划现金贷款"
@@ -939,9 +942,35 @@ stages:
               - "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/test_results.md"
       - phase_id: "S14PC"
         name: "政策证据"
-        status: "planned_next"
+        status: "completed_validated_local_only"
         estimated_hours: 1
-        estimated_pct: 0
+        estimated_pct: 100
+        current_result: "已登记科小、高新、专精特新、小巨人、研发费用 5 类 public-safe 政策证据目录，输出 5 条证据缺口、5 条风险提示和 1 个 HTML overview；正式政策资格结论、政策申报、Stage 14 review 和 GitHub upload 均为 false。"
+        evidence_refs:
+          - "KMFA/metadata/reports/policy_evidence_plan_manifest.json"
+          - "KMFA/metadata/reports/policy_evidence_directories.jsonl"
+          - "KMFA/metadata/reports/policy_evidence_gaps.jsonl"
+          - "KMFA/metadata/reports/policy_risk_tips.jsonl"
+          - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/exports/html/policy_evidence_overview.html"
+        tasks:
+          - task_id: "S14PCT01"
+            name: "登记科小、高新、专精特新、小巨人、研发费用证据目录。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/policy_evidence_directories.jsonl"
+              - "KMFA/metadata/reports/policy_evidence_plan_manifest.json"
+          - task_id: "S14PCT02"
+            name: "只输出证据缺口和风险提示。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/policy_evidence_gaps.jsonl"
+              - "KMFA/metadata/reports/policy_risk_tips.jsonl"
+          - task_id: "S14PCT03"
+            name: "不输出正式政策资格结论。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/tools/check_s14_p3_policy_evidence_plan.py"
+              - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
   - stage_id: "S15"
     name: "销售绩效事实与复核清单"
     status: "planned"
