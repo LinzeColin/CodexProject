@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S13P1-FINANCIAL-OPERATING-REPORT"
+as_of_event_id: "EVENT-KMFA-20260701-S13P2-COLLECTION-RECEIVABLE-AGING"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "5f6ff2792c8a879998ac90262b0f0a259107cad0"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S12_UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-01T17:00:00+10:00"
-generator_version: "manual-s13p1-financial-operating-report"
+source_base_commit: "1ed592aeb0f4345fd9287e46111b4abe9a3187da"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13P2_COMMIT"
+snapshot_event_time: "2026-07-01T18:00:00+10:00"
+generator_version: "manual-s13p2-collection-receivable-aging"
 final_commit_binding: "local_commit_pending"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 139
-    total_active_formulas: 34
+    total_active_parameters: 144
+    total_active_formulas: 35
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -353,15 +353,17 @@ dimensions:
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/machine/s13_p1_manifest.json"
       - "KMFA/tools/check_s13_p1_financial_operating_report.py"
+      - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/machine/s13_p2_manifest.json"
+      - "KMFA/tools/check_s13_p2_collection_receivable_aging.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S13P1_COMPLETED_VALIDATED_LOCAL_ONLY"
-  release_gate: "KMFA-S13-P2-GATE"
+  status: "S13P2_COMPLETED_VALIDATED_LOCAL_ONLY"
+  release_gate: "KMFA-S13-P3-GATE"
   blocker_ids:
-    - "S13_P2_NOT_STARTED"
     - "S13_P3_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
