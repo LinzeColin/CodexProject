@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 8 Phase 8.3 - 2026-07-01
+
+- 完成 `Stage 8 / Phase 8.3 - 人工验收`准备包：新增 `manual_acceptance.md`、`defects.md` 和 pending-user-confirmation evidence。
+- 新增 `PFI/tests/test_v024_stage8_phase83_manual_acceptance.py`，补齐 Phase 8.3 当前 phase 合同、人工验收清单、开放项定位和 no-auto-next-stage 边界。
+- 人工验收清单覆盖打开 PFI.app、打开 localhost、10 个一级入口、核心二级页面、浏览器后退/前进、核心指标无假零、报告中心、亮色 UI 和移动端响应式。
+- 记录环境开放项：`/Applications/PFI.app` 当前缺失；`~/Downloads/PFI.app` 在 Phase 8.2 证明存在且指向当前 checkout。本轮不重装 app bundle。
+- 本轮不声明用户确认，不执行 Stage 8 whole-stage review、Stage 9 或 GitHub main upload；不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 8 Phase 8.2 - 2026-07-01
 
 - 完成 `Stage 8 / Phase 8.2 - 截图验收`：真实浏览器采集 app home、localhost home、10 个一级入口、移动端响应式和 `desktop_all_pages.png` 截图索引。
