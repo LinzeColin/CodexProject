@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 7.3 Privacy and Accessibility
+
+- Added explicit Timeline feedback DOM contracts for reduced motion,
+  pseudo-haptic feedback, audio feedback and silent-by-default state.
+- Added `validate:stage7-privacy-accessibility` to run a release artifact
+  privacy scan, verify the public redacted read-only snapshot contract, confirm
+  sourcemaps are absent by default, and test reduced-motion behavior in a real
+  browser.
+- The Stage 7.3 browser gate emulates `prefers-reduced-motion: reduce`,
+  verifies Memory River reduced-motion settings and disabled playback, and
+  confirms pseudo-haptic/audio feedback default off without calling vibration
+  or `AudioContext`.
+- Extended visual acceptance with `stage7_3_privacy_accessibility_ready`.
+
+No Stage 7 whole-stage review, raw/private data access, direct writeback,
+Cloudflare live deploy, GitHub main upload, or external account operation was
+added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 7.2 Performance Acceptance
 
 - Added sampled Galaxy FPS metrics, target/min FPS fields and render tick

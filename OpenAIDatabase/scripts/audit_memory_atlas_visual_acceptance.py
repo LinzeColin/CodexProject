@@ -66,6 +66,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
     stage7_visual_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_visual_acceptance.cjs")
     stage7_performance_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_performance_acceptance.cjs")
+    stage7_privacy_accessibility_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_privacy_accessibility.cjs")
     readme = read_text(repo_root / "README.md")
     atlas_path = repo_root / "data/derived/visualization/memory_atlas.json"
     atlas_source = atlas_path.read_text(encoding="utf-8") if atlas_path.exists() else ""
@@ -450,6 +451,29 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "stage7_2_performance_acceptance_ready",
         "Stage 7.2 has FPS metrics, adaptive quality controls, high/mid/low browser performance gates, cleanup lifecycle hooks, and 4177 cleanup",
         "Stage 7.2 performance metrics, adaptive quality, browser gate, cleanup lifecycle, or port cleanup assertion is missing",
+    )
+    require(
+        checks,
+        '"validate:stage7-privacy-accessibility": "node scripts/validate_stage7_privacy_accessibility.cjs"' in read_text(repo_root / "apps/memory-atlas/package.json")
+        and 'data-feedback-pseudo-haptic={feedbackSettings.pseudoHaptic ? "enabled" : "disabled"}' in app_source
+        and 'data-feedback-audio={feedbackSettings.audio ? "enabled" : "disabled"}' in app_source
+        and 'data-feedback-defaults={feedbackSettings.pseudoHaptic || feedbackSettings.audio ? "opted-in" : "silent-by-default"}' in app_source
+        and 'window.matchMedia?.("(prefers-reduced-motion: reduce)").matches' in app_source
+        and "navigator.vibrate" in app_source
+        and "new window.AudioContext()" in app_source
+        and "runReleasePrivacyAudit" in stage7_privacy_accessibility_source
+        and "inspectPublishArtifact" in stage7_privacy_accessibility_source
+        and "validateReducedMotion" in stage7_privacy_accessibility_source
+        and "validateSilentFeedbackDefaults" in stage7_privacy_accessibility_source
+        and "stage7-privacy-accessibility-report.json" in stage7_privacy_accessibility_source
+        and "reducedMotion: \"reduce\"" in stage7_privacy_accessibility_source
+        and "silent-by-default" in stage7_privacy_accessibility_source
+        and "navigator.vibrate" in stage7_privacy_accessibility_source
+        and "AudioContext" in stage7_privacy_accessibility_source
+        and "assertPortClosed" in stage7_privacy_accessibility_source,
+        "stage7_3_privacy_accessibility_ready",
+        "Stage 7.3 has a publish artifact privacy scan, reduced-motion browser gate, silent feedback defaults, vibration/audio probes, and 4177 cleanup",
+        "Stage 7.3 privacy scan, reduced-motion browser gate, silent feedback defaults, feedback probes, or port cleanup assertion is missing",
     )
     require(
         checks,

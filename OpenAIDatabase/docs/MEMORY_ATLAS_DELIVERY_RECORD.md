@@ -130,6 +130,7 @@ Writeback：
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 6 整体复审；复审确认 6.1 Shared State Store 与 6.2 Inspector/Proposal 均通过，Stage 6 整阶段复审通过，仍未部署 Cloudflare、未读取 raw/private 数据、未直接写回长期记忆，GitHub main 上传需在最终远端检查后执行。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 7.1 Visual Acceptance；新增真实浏览器 `validate:stage7-visual`，自动启动 Vite preview、截图 Galaxy 和 Memory River、验证 Galaxy WebGL 非空像素信号、验证 Memory River 河道/证据层/marker 质量，并确认 4177 关闭后无残留；Stage 7.2 Performance Acceptance、Stage 7.3 Privacy and Accessibility、Stage 7 整体复审和 GitHub main 上传仍未进入。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 7.2 Performance Acceptance；Galaxy WebGL signal 新增 FPS、frame time、quality threshold、adaptive quality decision 和 cleanup lifecycle；Analysis 模式新增 FPS overlay 和 Auto quality toggle；新增 `validate:stage7-performance`，真实浏览器验证 high quality `>=45 FPS`、mid quality `>=30 FPS`、low quality 不空白、Auto 可恢复、unmount 后 RAF/WebGL 资源释放并确认 4177 无残留；Stage 7.3 Privacy and Accessibility、Stage 7 整体复审和 GitHub main 上传仍未进入。
+- 2026-07-01：完成 Memory Atlas v1.1.5 Stage 7.3 Privacy and Accessibility；Timeline feedback 增加 reduced motion、伪触感、音频和 silent-by-default DOM contract；新增 `validate:stage7-privacy-accessibility`，扫描发布产物隐私边界、确认 `memory_atlas.json` 为 public redacted read-only visualization、确认默认无 sourcemap、浏览器 emulation 验证 reduced motion 自动启用并禁用播放、验证伪触感/音频默认关闭且 marker 点击不调用 vibration 或 AudioContext；Stage 7 整体复审和 GitHub main 上传仍未进入。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.1 默认首页实现；`记忆总览` 成为启动板块，左侧导航保留，首页显示 Memory Weather、Universe State 状态卡、Black Hole / Proto-Star 信号和 proposal-only 行动建议；Galaxy 与 Timeline 仍未替换。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.2 首页预览组件；首页新增轻量 `Mini Starfield`、近期主题变化 `River Pulse` 和 `Inspector Deep Link`，点击前同步当前焦点再进入 Galaxy、Timeline 或详情检索；Stage 3 整体复审通过，仍未替换 Galaxy/Timeline、未直接写回长期记忆、未读取 raw/private 数据。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 4.1 Galaxy Rendering Integration；`memory-starfield` 成为 Galaxy 默认生产 renderer，`legacy` 可通过 feature flag 回滚；生产 Galaxy 增加 Flow Field 动态、轨迹线、语义信号标记、quality selector 和低质量 fallback，仍未进入 Stage 4.2 数据映射或 Stage 4.3 交互扩展。
@@ -150,7 +151,6 @@ Writeback：
 
 高优先级：
 
-- Stage 7.3 Privacy and Accessibility：构建产物隐私扫描、reduced motion 支持、反馈默认值和可访问性检查。
 - Stage 7 整体复审：确认 7.1 Visual、7.2 Performance、7.3 Privacy/Accessibility 全部通过后再上传 GitHub main。
 - Timeline 后续增强多阶段聚类摘要、相邻时间段差异解释，以及 evidence layer 碰撞规避和阈值校准。
 - Writeback 增加 agent apply CLI：读取 proposal、冲突检测、写 history、更新 active memory、生成 git rollback commit。

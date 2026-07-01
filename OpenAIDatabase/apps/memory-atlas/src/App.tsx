@@ -1641,6 +1641,9 @@ function TimelineView({
         className="memory-river-interaction-bar"
         data-interaction-mode={interactionMode}
         data-reduced-motion={feedbackSettings.reducedMotion ? "true" : "false"}
+        data-feedback-pseudo-haptic={feedbackSettings.pseudoHaptic ? "enabled" : "disabled"}
+        data-feedback-audio={feedbackSettings.audio ? "enabled" : "disabled"}
+        data-feedback-defaults={feedbackSettings.pseudoHaptic || feedbackSettings.audio ? "opted-in" : "silent-by-default"}
         aria-label="记忆时间河交互设置"
       >
         <div className="river-mode-tabs" role="group" aria-label="记忆时间河交互模式">
@@ -1712,6 +1715,8 @@ function TimelineView({
           data-interaction-mode={interactionMode}
           data-selected-time-range={selectedTimelineRange ? "true" : "false"}
           data-feedback-reduced-motion={feedbackSettings.reducedMotion ? "true" : "false"}
+          data-feedback-pseudo-haptic={feedbackSettings.pseudoHaptic ? "enabled" : "disabled"}
+          data-feedback-audio={feedbackSettings.audio ? "enabled" : "disabled"}
           data-evidence-layers="black-hole-lifecycle proto-star-lifecycle stale-deprecated"
           viewBox="0 0 1000 640"
           role="img"
