@@ -132,6 +132,7 @@ from .stage2_final_gate import (
     build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_validation_state,
     build_integrated_production_acceptance_owner_decision_packet_state,
+    build_integrated_production_acceptance_owner_decision_artifact_gate_state,
     build_integrated_production_acceptance_preflight_state,
     build_integrated_production_acceptance_write_gate_state,
     build_next_agent_handoff_validation_state,
@@ -163,6 +164,7 @@ from .stage2_final_gate import (
     validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
     validate_integrated_production_acceptance_owner_decision_packet_state,
+    validate_integrated_production_acceptance_owner_decision_artifact_gate_state,
     validate_integrated_production_acceptance_preflight_state,
     validate_integrated_production_acceptance_write_gate_state,
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
@@ -1912,6 +1914,31 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON owner decision packet.",
+    )
+
+    integrated_production_owner_decision_artifact = subparsers.add_parser(
+        "validate-integrated-production-acceptance-owner-decision-artifact",
+        help="Validate explicit S2PMT07 owner production-boundary decision evidence without enabling runtime.",
+    )
+    integrated_production_owner_decision_artifact.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing FINAL_ACCEPTANCE_BUNDLE and ADP governance artifacts.",
+    )
+    integrated_production_owner_decision_artifact.add_argument(
+        "--decision-artifact",
+        required=True,
+        help="Path to the owner production-boundary decision JSON artifact.",
+    )
+    integrated_production_owner_decision_artifact.add_argument(
+        "--generated-at",
+        required=True,
+        help="Timestamp to embed in the artifact gate state.",
+    )
+    integrated_production_owner_decision_artifact.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON owner decision artifact gate state.",
     )
 
     integrated_production_write_gate = subparsers.add_parser(
@@ -4914,6 +4941,28 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if not errors else 2
+    if args.command == "validate-integrated-production-acceptance-owner-decision-artifact":
+        report = build_integrated_production_acceptance_owner_decision_artifact_gate_state(
+            generated_at=args.generated_at,
+            repo_root=Path(args.repo_root),
+            decision_artifact_path=Path(args.decision_artifact),
+        )
+        errors = validate_integrated_production_acceptance_owner_decision_artifact_gate_state(report)
+        output = {**report, "owner_decision_artifact_gate_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- owner_production_boundary_decision_recorded: {report.get('owner_production_boundary_decision_recorded')}")
+            print(f"- acceptance_write_gate_allowed: {report.get('acceptance_write_gate_allowed')}")
+            print(f"- next_required_step: {report.get('next_required_step')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in report.get("decision_artifact_validation_errors", []):
+                print(f"- artifact_error: {error}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors and report.get("status") == "pass_owner_decision_artifact_valid_no_runtime_enablement" else 2
     if args.command == "build-integrated-production-acceptance-write-gate":
         report = build_integrated_production_acceptance_write_gate_state(
             generated_at=args.generated_at,

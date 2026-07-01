@@ -13,7 +13,7 @@ The write-gate precheck is ready and validated:
 - `write_gate_precheck_ready=true`
 - `acceptance_write_gate_allowed=false`
 - `failed_checks=[]`
-- `state_hash=8dbaec78b3af9fa55b00f498995b1928399e92063a69b599babb3bed621f2c1d`
+- `state_hash=48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8`
 
 The blocking reasons are intentionally retained:
 

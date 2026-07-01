@@ -21,7 +21,7 @@ so no duplicate SMTP send was attempted in this run:
 
 - Run manifest: `governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json`
 - Runtime report: `/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701/adp-local-runner-report.json`
-- Runtime report sha256: `495d74faa1f9931d85798ca6fdc3de7b6a57874676b25f206ac34fd367ecd2e6`
+- Runtime report sha256: `123d516e640aa6549b32ff50ce927a71adc7a765175f8a16ea6a6f6be50f401e`
 - Pre-run backup: `/Users/linzezhang/.adp/arxiv-daily-push/runs/20260701_before_authorized_controlled_acceptance_20260701T061024Z`
 
 ## Safety Boundary

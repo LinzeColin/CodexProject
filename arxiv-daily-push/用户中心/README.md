@@ -2,19 +2,19 @@
 
 ## 2026-07-01 16:34:41 Australia/Sydney - Acceptance write gate 预检查已准备，但仍等待用户明确决策
 
-- `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE` 已由 CLI 生成并通过 validator：`write_gate_precheck_ready=true`，`failed_checks=[]`，`state_hash=8dbaec78b3af9fa55b00f498995b1928399e92063a69b599babb3bed621f2c1d`。
+- `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE` 已由 CLI 生成并通过 validator：`write_gate_precheck_ready=true`，`failed_checks=[]`，`state_hash=48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8`。
 - 这个 gate 已消费 owner decision packet、final bundle、受控真实运行验收和去重证据，但 `acceptance_write_gate_allowed=false`，因为还没有显式 owner production-boundary acceptance/write decision。
 - 当前仍未记录 owner approval：`owner_production_boundary_decision_recorded=false`，未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`。
 - 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[write gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json) / [owner decision packet 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json) / [受控运行验收清单](../../governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json)。这不是 Stage2/S3 production accepted。
 
-## 2026-07-01 16:10:24 Australia/Sydney - 受控真实运行验收复核已通过，未重复发送
+## 2026-07-01 17:12:07 Australia/Sydney - 受控真实运行验收复核已通过，未重复发送
 
 - 用户授权一次前台真实运行验收：`local-runner daily --allow-smtp-send` 复用 `2026-07-01` 既有 daily input report。
 - 结果：`status=pass`，`sent_mail_count=4/4`，M1/M2/M3/M4 均有真实 sent 证据；本轮 `newly_sent_mail_products=[]`，因为同日 ledger 已有四封 sent refs，所以没有重复补发。
 - 运行后安全状态：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled，无 ADP 后台进程。
 - 这次验收只证明受控前台运行和去重边界；仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`，未启用 `DAILY_OPERATION`，未启用 scheduler/Release/production restore。
-- 证据：[受控运行验收清单](../../governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md) / runtime report sha256 `495d74faa1f9931d85798ca6fdc3de7b6a57874676b25f206ac34fd367ecd2e6`。
+- 证据：[受控运行验收清单](../../governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md) / runtime report sha256 `123d516e640aa6549b32ff50ce927a71adc7a765175f8a16ea6a6f6be50f401e`。
 
 ## 2026-07-01 16:01:30 Australia/Sydney - Owner decision packet 已准备，仍等待用户决策
 

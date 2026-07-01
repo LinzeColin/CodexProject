@@ -111,6 +111,40 @@ S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_BLOCKING_REASONS = (
     "integrated_production_accepted_not_written",
     "daily_operation_not_enabled",
 )
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_TASK_ID = (
+    "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_SCHEMA_VERSION = (
+    "adp.integrated_production_acceptance_owner_decision_artifact.v1"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_DECISION = (
+    "record_owner_production_boundary_decision_evidence_without_enabling_runtime"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REQUIRED_REFS = {
+    "preflight_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json",
+    "owner_decision_packet_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json",
+    "controlled_real_run_manifest_ref": "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json",
+    "write_gate_manifest_ref": "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json",
+}
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_FORBIDDEN_TRUE_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID = (
     "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
 )
@@ -12563,6 +12597,179 @@ def validate_integrated_production_acceptance_owner_decision_packet_state(
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("integrated production owner decision packet state_hash does not match state content")
+    return errors
+
+
+def validate_integrated_production_acceptance_owner_decision_artifact(
+    artifact: Mapping[str, Any],
+) -> list[str]:
+    """Validate explicit owner production-boundary decision evidence without enabling runtime."""
+
+    errors: list[str] = []
+    if artifact.get("schema_version") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_SCHEMA_VERSION:
+        errors.append("owner production-boundary decision artifact schema_version is invalid")
+    if artifact.get("decision_id") != "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701":
+        errors.append("owner production-boundary decision artifact decision_id is invalid")
+    if artifact.get("decision") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_DECISION:
+        errors.append("owner production-boundary decision artifact decision is invalid")
+    if not str(artifact.get("generated_at") or "").strip():
+        errors.append("owner production-boundary decision artifact generated_at is missing")
+    if not str(artifact.get("authorized_by") or "").strip():
+        errors.append("owner production-boundary decision artifact authorized_by is missing")
+    if not str(artifact.get("authorization_text") or "").strip():
+        errors.append("owner production-boundary decision artifact authorization_text is missing")
+    for key, expected in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REQUIRED_REFS.items():
+        if artifact.get(key) != expected:
+            errors.append(f"owner production-boundary decision artifact {key} is invalid")
+    if artifact.get("owner_production_boundary_decision_recorded") is not True:
+        errors.append("owner production-boundary decision artifact must record owner decision")
+    if artifact.get("acceptance_write_gate_allowed") is not True:
+        errors.append("owner production-boundary decision artifact must allow the final write gate")
+    if artifact.get("runtime_enablement_allowed_by_this_decision") is not False:
+        errors.append("owner production-boundary decision artifact must not allow runtime enablement")
+    for flag in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_FORBIDDEN_TRUE_FLAGS:
+        if artifact.get(flag) is not False:
+            errors.append(f"owner production-boundary decision artifact must not claim {flag}")
+    return errors
+
+
+def build_integrated_production_acceptance_owner_decision_artifact_gate_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+    decision_artifact_path: Path | None = None,
+) -> dict[str, Any]:
+    """Build a fail-closed gate over explicit owner production-boundary decision evidence."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    original_artifact_path = Path(decision_artifact_path) if decision_artifact_path else None
+    resolved_artifact_path = original_artifact_path.resolve() if original_artifact_path else None
+    artifact_ref = ""
+    if original_artifact_path:
+        try:
+            artifact_ref = str(resolved_artifact_path.relative_to(root))
+        except ValueError:
+            artifact_ref = str(original_artifact_path)
+    artifact = (
+        _load_json_mapping_artifact(resolved_artifact_path)
+        if resolved_artifact_path and resolved_artifact_path.exists()
+        else None
+    )
+    artifact_errors = (
+        validate_integrated_production_acceptance_owner_decision_artifact(artifact)
+        if artifact
+        else ["owner production-boundary decision artifact is missing"]
+    )
+    owner_decision_recorded = not artifact_errors
+    checks = {
+        "decision_artifact_present": bool(artifact),
+        "decision_artifact_valid": not artifact_errors,
+        "owner_production_boundary_decision_recorded": owner_decision_recorded,
+        "runtime_enablement_not_allowed": bool(artifact)
+        and artifact.get("runtime_enablement_allowed_by_this_decision") is False,
+        "final_acceptance_write_gate_allowed": bool(artifact)
+        and artifact.get("acceptance_write_gate_allowed") is True,
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    status = (
+        "pass_owner_decision_artifact_valid_no_runtime_enablement"
+        if not failed_checks
+        else "blocked_owner_decision_artifact_missing_or_invalid"
+    )
+    state = {
+        "schema_version": "adp.integrated_production_acceptance_owner_decision_artifact_gate.v1",
+        "task_id": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_TASK_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-INTEGRATED-PRODUCTION"],
+        "generated_at": generated_at,
+        "status": status,
+        "scope": "owner_decision_artifact_gate_only_no_runtime_enablement",
+        "decision_artifact_ref": artifact_ref,
+        "decision_artifact_present": bool(artifact),
+        "decision_artifact_validation_errors": artifact_errors,
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": []
+        if not failed_checks
+        else [f"{name}_failed" for name in failed_checks],
+        "next_required_step": (
+            "RUN_FINAL_ACCEPTANCE_WRITE_GATE_WITH_OWNER_DECISION_ARTIFACT"
+            if not failed_checks
+            else "PROVIDE_EXPLICIT_OWNER_PRODUCTION_BOUNDARY_DECISION_ARTIFACT_OR_PAUSE"
+        ),
+        "owner_production_boundary_decision_recorded": owner_decision_recorded,
+        "acceptance_write_gate_allowed": owner_decision_recorded,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_integrated_production_acceptance_owner_decision_artifact_gate_state(
+    state: Mapping[str, Any],
+) -> list[str]:
+    """Validate the owner decision artifact gate state."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != "adp.integrated_production_acceptance_owner_decision_artifact_gate.v1":
+        errors.append("owner decision artifact gate schema_version is invalid")
+    if state.get("task_id") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_TASK_ID:
+        errors.append("owner decision artifact gate task_id is invalid")
+    if state.get("scope") != "owner_decision_artifact_gate_only_no_runtime_enablement":
+        errors.append("owner decision artifact gate scope is invalid")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("owner decision artifact gate failed_checks must match checks")
+    expected_pass = not failed_checks
+    expected_status = (
+        "pass_owner_decision_artifact_valid_no_runtime_enablement"
+        if expected_pass
+        else "blocked_owner_decision_artifact_missing_or_invalid"
+    )
+    if state.get("status") != expected_status:
+        errors.append("owner decision artifact gate status must match checks")
+    if state.get("owner_production_boundary_decision_recorded") is not expected_pass:
+        errors.append("owner decision artifact gate owner decision flag must match checks")
+    if state.get("acceptance_write_gate_allowed") is not expected_pass:
+        errors.append("owner decision artifact gate write allowance must match checks")
+    if expected_pass:
+        if state.get("blocking_reasons") != []:
+            errors.append("passing owner decision artifact gate must not have blocking reasons")
+    else:
+        expected_blocking = [f"{name}_failed" for name in failed_checks]
+        if state.get("blocking_reasons") != expected_blocking:
+            errors.append("blocked owner decision artifact gate blockers must match failed checks")
+    if state.get("next_required_step") not in {
+        "RUN_FINAL_ACCEPTANCE_WRITE_GATE_WITH_OWNER_DECISION_ARTIFACT",
+        "PROVIDE_EXPLICIT_OWNER_PRODUCTION_BOUNDARY_DECISION_ARTIFACT_OR_PAUSE",
+    }:
+        errors.append("owner decision artifact gate next_required_step is invalid")
+    for flag in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_FORBIDDEN_TRUE_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"owner decision artifact gate must not claim {flag}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("owner decision artifact gate state_hash does not match state content")
     return errors
 
 

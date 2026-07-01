@@ -42,7 +42,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("status=blocked_write_gate_owner_decision_required_no_acceptance", current_state)
         self.assertIn("write_gate_precheck_ready=true", current_state)
         self.assertIn("acceptance_write_gate_allowed=false", current_state)
-        self.assertIn("write_gate_state_hash=8dbaec78b3af9fa55b00f498995b1928399e92063a69b599babb3bed621f2c1d", current_state)
+        self.assertIn("write_gate_state_hash=48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8", current_state)
         self.assertIn("Owner packet remains `state_hash=de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289`", current_state)
         self.assertIn("status=pass_controlled_real_run_evidence_rechecked_no_new_send", current_state)
         self.assertIn("sent_mail_count=4/4", current_state)
@@ -128,7 +128,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("integrated_production_acceptance_write_gate_precheck_ready: true", current)
         self.assertIn("integrated_production_acceptance_write_gate_allowed: false", current)
         self.assertIn(
-            "integrated_production_acceptance_write_gate_state_hash: 8dbaec78b3af9fa55b00f498995b1928399e92063a69b599babb3bed621f2c1d",
+            "integrated_production_acceptance_write_gate_state_hash: 48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8",
             current,
         )
         self.assertIn("owner_authorized_controlled_real_run_duplicate_send_avoided: true", current)
