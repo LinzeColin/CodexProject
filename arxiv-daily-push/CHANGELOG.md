@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-01 20:39:16 Australia/Sydney - S2PMT07 daily operation secret and artifact preflight repair
+
+- Added reviewed local-runner SMTP secret key-presence metadata support for production preflight without logging secret values.
+- Scoped production git artifact hygiene to `arxiv-daily-push` for DAILY_OPERATION authorization preflight, so ADP is not blocked by unrelated cross-project OpenAIDatabase archives.
+- Reran the DAILY_OPERATION authorization preflight: `status=blocked_owner_daily_operation_authorization_required`, `preflight_checks_passed=true`, `failed_checks=[]`, `production_preflight_status=pass`, `state_hash=a856ee3d1532d8973e11bb502f76f7320f9816904b52aab64975112c764de55e`.
+- Kept operation disabled: `daily_operation_enabled=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, `release_packaging_enabled=false`, and `production_restore_enabled=false`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_SECRET_ARTIFACT_REPAIR.md`.
+
 ## 2026-07-01 20:12:13 Australia/Sydney - S2PMT07 daily operation gh equivalent repair
 
 - Added a reviewed `github_open_pr_count_zero_api_v1` equivalent for the production preflight `gh` CLI command gate.

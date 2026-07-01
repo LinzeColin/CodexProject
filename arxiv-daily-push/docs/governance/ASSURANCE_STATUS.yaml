@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR"
-source_snapshot_hash: "sha256:2f7fa9b23fdda39e63d2de74eb708e99dfaeffa9e4b51e4fac0c3db0a9981869"
+as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-SECRET-AND-ARTIFACT-REPAIR"
+source_snapshot_hash: "sha256:7b3923de275d4fbcb45ad0955291505f7d2e46bd790d345e50c14787fe452bef"
 source_base_commit: "960e9d1a8871bac1b4e482b58a3d673d3c6b635c"
 source_tree_hash: "cf801941e53c389bcc3ac4456ba54a8b48543f3f"
-snapshot_event_time: "2026-07-01T20:12:13+10:00"
+snapshot_event_time: "2026-07-01T20:39:16+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -58,7 +58,7 @@ dimensions:
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    tree_bound_events: 9
+    tree_bound_events: 10
     commit_bound_events: 7
     legacy_unbound_events: 330
     precommit_pending_events: 40
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT"
+  release_gate: "DAILY_OPERATION_OWNER_AUTHORIZATION_REQUIRED_NO_RUNTIME_ENABLEMENT"
   blocker_ids: []
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
@@ -84,15 +84,15 @@ delivery_readiness:
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR"
+  task_id: "S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION"
   status: "blocked"
-  reason: "DAILY_OPERATION authorization preflight has been run after INTEGRATED_PRODUCTION_ACCEPTED, but it remains blocked by the nested production preflight. The reviewed GitHub open PR count equivalent has cleared the gh CLI blocker; the remaining production preflight blockers are missing SMTP secret env names and OpenAIDatabase session-history archive git artifact hygiene violations. Repair the production preflight blockers before requesting persistent DAILY_OPERATION authorization. Current boundary evidence remains open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json present."
+  reason: "DAILY_OPERATION authorization preflight technical checks now pass after reviewed GitHub open PR evidence, local-runner SMTP secret key-presence evidence, and ADP-scoped git artifact hygiene. Runtime remains disabled; the only remaining blocker is explicit owner authorization for persistent DAILY_OPERATION, plus a separate enablement artifact if approved."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
     - "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"
-  owner: "content_owner + engineering_owner + independent_final_reviewer"
-  human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Provide required SMTP secret environment names without logging secret values, and resolve OpenAIDatabase session-history archive git artifact hygiene violations. Maintain github_open_pr_count_zero_api_v1 evidence, open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json evidence. Then rerun daily-operation authorization preflight; runtime remains disabled."
+  owner: "content_owner + engineering_owner"
+  human_owner_role: "content_owner + engineering_owner"
+  unblock_condition: "Record explicit owner DAILY_OPERATION authorization or keep DAILY_OPERATION disabled. Do not enable SMTP, scheduler, Release, restore, or persistent operation from the preflight artifact alone."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -100,28 +100,28 @@ next_executable_task:
 owner_decision:
   required: true
   decision_id: "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701"
-  review_id: "S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR"
+  review_id: "S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION"
   project_id: "arxiv-daily-push"
-  decision_question: "DAILY_OPERATION 授权预检已重跑但仍阻断；github_open_pr_count_zero_api_v1 已解除 gh CLI 阻断，是否先补齐 SMTP secret env 名称并处理 OpenAIDatabase 大文件治理问题，并继续禁止 SMTP/scheduler/Release/restore/DAILY_OPERATION。"
-  question: "DAILY_OPERATION 授权预检已重跑但仍阻断；github_open_pr_count_zero_api_v1 已解除 gh CLI 阻断，是否先补齐 SMTP secret env 名称并处理 OpenAIDatabase 大文件治理问题，并继续禁止 SMTP/scheduler/Release/restore/DAILY_OPERATION。"
+  decision_question: "DAILY_OPERATION 授权预检技术项已通过；是否记录显式 owner DAILY_OPERATION 持久运行授权，或继续保持 DAILY_OPERATION 关闭。无论选择如何，预检 artifact 本身不得启用 SMTP/scheduler/Release/restore。"
+  question: "DAILY_OPERATION 授权预检技术项已通过；是否记录显式 owner DAILY_OPERATION 持久运行授权，或继续保持 DAILY_OPERATION 关闭。无论选择如何，预检 artifact 本身不得启用 SMTP/scheduler/Release/restore。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY"
-  current_recommendation: "A: DAILY_OPERATION authorization preflight has run after INTEGRATED_PRODUCTION_ACCEPTED, and github_open_pr_count_zero_api_v1 has cleared the gh CLI blocker. production_preflight_passed is still false; repair missing SMTP secret env names and OpenAIDatabase session-history archive git artifact hygiene violations before requesting persistent DAILY_OPERATION authorization. runtime enablement remains disabled."
-  option_a: "先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求或启用持久日常运行。"
+  current_recommendation: "A: DAILY_OPERATION authorization preflight technical checks now pass. The gh CLI blocker is covered by github_open_pr_count_zero_api_v1, SMTP secret key presence is proven by adp_local_runner_env_file_secret_presence_v1 without logging values, and ADP-scoped git artifact hygiene passes. Keep runtime disabled unless the owner explicitly authorizes persistent DAILY_OPERATION in a separate artifact."
+  option_a: "记录显式 DAILY_OPERATION owner 授权后，再由单独 enablement 任务决定是否启用；当前预检不启用运行。"
   option_b: "暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。"
   option_c: "越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。"
   options:
-    - "先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求或启用持久日常运行。"
+    - "记录显式 DAILY_OPERATION owner 授权后，再由单独 enablement 任务决定是否启用；当前预检不启用运行。"
     - "暂停在 final bundle ready 状态，等待 owner 手动决策；不会丢失已通过证据，但会延后 Stop Gate。"
     - "越过生产边界预检直接启用 scheduler/SMTP/Release 或声明 DAILY_OPERATION；禁止。"
   estimated_effort: "P0/P1; production boundary safety review; owner decision; no-production proof verification"
   estimated_cost_or_resource: "local development and GitHub main evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "把已通过的 final bundle 状态与生产边界状态分开，避免重复 S2PLT04，同时阻止误启生产。"
   principal_risks: "将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement"
-  evidence_required: "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json, github_open_pr_count_zero_api_v1 reviewed equivalent or gh CLI availability, ADP_SMTP_HOST/ADP_SMTP_PORT/ADP_SMTP_USERNAME/ADP_SMTP_PASSWORD env names without secret values, and resolved OpenAIDatabase session-history archive git artifact hygiene blockers"
+  evidence_required: "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json, FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json, owner DAILY_OPERATION authorization artifact, open_pr_count=0, ADP_ALLOW_SMTP_SEND=false before enablement, LaunchAgents disabled before enablement, and no background ADP process"
   decision_deadline_or_priority: "P0"
   consequence_of_no_decision: "Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。"
-  unblock_task_id: "S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR"
+  unblock_task_id: "S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION"
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
     - "ACC-S2PL-INTEGRATED-PRODUCTION"

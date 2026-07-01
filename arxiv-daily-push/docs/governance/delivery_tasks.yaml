@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-SECRET-AND-ARTIFACT-REPAIR"
+    phase: "S2PL"
+    objective: "Clear the remaining DAILY_OPERATION technical preflight blockers with local runner SMTP key-presence evidence and ADP-scoped git artifact hygiene while keeping runtime disabled."
+    scope: "Production preflight secret evidence gate, ADP-scoped git artifact hygiene, daily-operation authorization preflight integration, rerun manifest, current-state sync, owner-facing status, three-base summaries, and focused regression tests."
+    non_scope: "No secret value logging, no OpenAIDatabase archive deletion, no DAILY_OPERATION enablement, persistent SMTP permission, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, unrelated project cleanup, or V7.1 historical baseline mutation."
+    status: "blocked"
+    dependencies: ["S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR", "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_SECRET_ARTIFACT_REPAIR.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD production preflight unittest", "TDD final-gate unittest", "live daily-operation authorization preflight CLI", "post-run safety state checks"]
+    test_results: ["TDD red: production preflight rejected secret_env_evidence and git_artifact_scope_roots", "TDD green: production preflight accepts reviewed local-runner SMTP key presence without logging values", "TDD green: ADP-scoped git artifact hygiene ignores unrelated OpenAIDatabase session-history archives while still blocking in-scope large ADP files", "TDD red: daily-operation preflight did not pass local runner env presence or ADP git scope", "TDD green: daily-operation preflight passes local runner secret evidence and ADP git scope", "live preflight status=blocked_owner_daily_operation_authorization_required, state_hash=a856ee3d1532d8973e11bb502f76f7320f9816904b52aab64975112c764de55e", "preflight_checks_passed=true", "failed_checks=[]", "production_preflight_status=pass", "production_preflight_blocking_reasons=[]", "daily_operation_enabled=false", "real_smtp_send_enabled=false", "scheduler_install_enabled=false", "release_packaging_enabled=false", "production_restore_enabled=false"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_SECRET_ARTIFACT_REPAIR.md", "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"]
+    risk: "Future agents could treat a passed technical preflight as DAILY_OPERATION authorization; this task keeps runtime disabled and routes the next step to explicit owner authorization."
+    rollback: "Revert secret_env_evidence, ADP-scoped git artifact hygiene, daily-operation preflight integration, rerun manifest, phase record, current-state sync, owner-facing notes, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR"
     phase: "S2PL"
     objective: "Clear the DAILY_OPERATION production preflight gh CLI blocker with a reviewed GitHub open PR count equivalent while keeping runtime production disabled."

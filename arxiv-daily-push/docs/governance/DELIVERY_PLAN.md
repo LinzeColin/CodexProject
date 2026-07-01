@@ -21,10 +21,22 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 340
+- task_count: 341
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-01 20:39:16 Australia/Sydney - S2PMT07 daily operation secret and artifact repair
+
+- Task: `S2PMT07-DAILY-OPERATION-SECRET-AND-ARTIFACT-REPAIR`
+- Result: `blocked_owner_daily_operation_authorization_required_no_runtime_enablement`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_SECRET_ARTIFACT_REPAIR.md`; `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`.
+- Gate state: `status=blocked_owner_daily_operation_authorization_required`; `preflight_checks_passed=true`; `failed_checks=[]`; `state_hash=a856ee3d1532d8973e11bb502f76f7320f9816904b52aab64975112c764de55e`.
+- Cleared blockers: required SMTP secret key presence is proven by `adp_local_runner_env_file_secret_presence_v1` without logging values; ADP-scoped git artifact hygiene passes and no longer treats unrelated `OpenAIDatabase/session_history` migration archives as ADP runtime blockers.
+- Remaining blocker: explicit owner DAILY_OPERATION authorization is not recorded, and `daily_operation_enabled=false`.
+- Next required step: `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION`; record owner authorization or keep DAILY_OPERATION disabled.
+- Production boundary: Stage 2 accepted evidence remains true, but no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, V7.1 baseline P0/P1 mutation, cross-project OpenAIDatabase deletion, or `DAILY_OPERATION` is introduced by this task.
+- Verification: focused production-preflight/final-gate/current-state tests plus governance validators are required before commit; semantic extractor is not claimed unless actually rerun.
 
 ## 2026-07-01 20:12:13 Australia/Sydney - S2PMT07 daily operation gh equivalent repair
 

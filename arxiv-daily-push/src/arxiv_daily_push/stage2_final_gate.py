@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import subprocess
 from collections.abc import Mapping
@@ -236,6 +237,8 @@ S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_RUNTIME_FORBIDDEN_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PMT07_DAILY_OPERATION_PRODUCTION_PREFLIGHT_GIT_SCOPE_ROOTS = ("arxiv-daily-push",)
+S2PMT07_DAILY_OPERATION_LOCAL_RUNNER_ENV_FILE_REF = "$HOME/.config/arxiv-daily-push/local-runner.env"
 S2PMT07_BLOCKING_REASONS = (
     "reviewer_independence_not_proven",
     "inherited_v7_1_p0_findings_open",
@@ -13520,6 +13523,7 @@ def build_daily_operation_authorization_preflight_state(
     background_adp_process_found: bool | None = None,
     production_preflight_report: Mapping[str, Any] | None = None,
     production_scheduler_plan: Mapping[str, Any] | None = None,
+    local_runner_env_file: Path | None = None,
 ) -> dict[str, Any]:
     """Build the post-acceptance DAILY_OPERATION authorization preflight without enabling runtime."""
 
@@ -13556,6 +13560,8 @@ def build_daily_operation_authorization_preflight_state(
             root,
             generated_at=generated_at,
             github_cli_equivalent=github_cli_equivalent,
+            secret_env_evidence=_local_runner_secret_env_evidence(local_runner_env_file),
+            git_artifact_scope_roots=S2PMT07_DAILY_OPERATION_PRODUCTION_PREFLIGHT_GIT_SCOPE_ROOTS,
         )
     if production_scheduler_plan is None:
         from arxiv_daily_push.production_scheduler import build_production_scheduler_plan
@@ -13584,6 +13590,10 @@ def build_daily_operation_authorization_preflight_state(
             or f"current_iteration: ITER-20260701-ADP-{S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_TASK_ID}"
             in current_pointer_text
             or "current_gate: DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_pointer_text
+            or "next_executable_task: S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION"
+            in current_pointer_text
+            or "current_gate: DAILY_OPERATION_OWNER_AUTHORIZATION_REQUIRED_NO_RUNTIME_ENABLEMENT"
+            in current_pointer_text
         ),
         "integrated_production_acceptance_evidence_present": bool(acceptance),
         "integrated_production_acceptance_evidence_valid": acceptance_valid,
@@ -13789,6 +13799,50 @@ def validate_daily_operation_authorization_preflight_state(state: Mapping[str, A
     if state.get("state_hash") != expected_hash:
         errors.append("daily operation authorization preflight state_hash does not match state content")
     return errors
+
+
+def _local_runner_secret_env_evidence(env_file: Path | None) -> dict[str, Any]:
+    env_path = env_file or _default_local_runner_env_file()
+    present_keys = _local_runner_env_file_present_keys(env_path)
+    env_file_ref = (
+        S2PMT07_DAILY_OPERATION_LOCAL_RUNNER_ENV_FILE_REF
+        if env_file is None
+        else "<provided-local-runner-env-file>"
+    )
+    return {
+        "evidence_id": "adp_local_runner_env_file_secret_presence_v1",
+        "source": "local_runner_env_file",
+        "env_file_ref": env_file_ref,
+        "present_keys": present_keys,
+        "values_logged": False,
+        "reviewed": True,
+        "outside_repo": True,
+    }
+
+
+def _default_local_runner_env_file() -> Path:
+    override = os.environ.get("ADP_LOCAL_ENV_FILE", "").strip()
+    if override:
+        return Path(override).expanduser()
+    return Path.home() / ".config" / "arxiv-daily-push" / "local-runner.env"
+
+
+def _local_runner_env_file_present_keys(env_file: Path) -> list[str]:
+    try:
+        text = env_file.read_text(encoding="utf-8")
+    except OSError:
+        return []
+    present = set()
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key = stripped.split("=", 1)[0].strip()
+        if key.startswith("export "):
+            key = key[len("export ") :].strip()
+        if key in {"ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD"}:
+            present.add(key)
+    return [key for key in ("ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD") if key in present]
 
 
 def build_s2pmt07_precheck_report(*, generated_at: str) -> dict[str, Any]:
