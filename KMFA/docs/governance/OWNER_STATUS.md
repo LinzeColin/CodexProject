@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload、Stage 15 全部 Phase/整体复审/upload、Stage 16 全部 Phase/整体复审/upload，以及 S17-P1 权限与安全、S17-P2 通知提醒本地验证。S17-P2 只锁定 public-safe metadata outbox-only 通知规则、事件和 dispatch log；不发送完整报告正文、不生成报告附件、不保存真实收件地址、不调用外部邮件连接器。S17-P3 运维 SOP、Stage 17 review/upload、lineage 和正式报告运行时仍未完成，现场施工、安全签字、技术签字、开票、催收、法律决策、付款和银行动作均未执行，且当前报告等级仍为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload、Stage 15 全部 Phase/整体复审/upload、Stage 16 全部 Phase/整体复审/upload，以及 S17-P1 权限与安全、S17-P2 通知提醒、S17-P3 运维 SOP 本地验证。S17-P3 只锁定 public-safe metadata-only 运维手册、知识索引和演练日志；不执行 Stage 17 review、不上传 GitHub、不调用 live connector、不做生产恢复或业务动作。Stage 17 review/upload、lineage 和正式报告运行时仍未完成，现场施工、安全签字、技术签字、开票、催收、法律决策、付款和银行动作均未执行，且当前报告等级仍为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -84,6 +84,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S16-P3 客户经营分析已本地验证完成：`KMFA/tools/customer_business_analysis.py`、`KMFA/tools/check_s16_p3_customer_business_analysis.py`、`KMFA/tests/test_customer_business_analysis.py`、`KMFA/metadata/reports/customer_business_analysis_manifest.json`、`customer_analysis_source_lanes.jsonl`、`customer_operating_summaries.jsonl`、`customer_analysis_exception_items.jsonl` 和 `KMFA/stage_artifacts/S16_P3_customer_business_analysis/` 已生成；覆盖客户价值、项目毛利、回款质量和账龄风险 4 个维度；不自动催收、客户联系、法律决策、付款、银行、开票或外部接口。
 - S17-P1 权限与安全已本地验证完成：`KMFA/tools/access_security_policy.py`、`KMFA/tools/check_s17_p1_access_security.py`、`KMFA/tests/test_access_security_policy.py`、`KMFA/metadata/security/access_security_policy_manifest.json`、`role_permission_matrix.jsonl`、`public_repo_sensitive_data_policy.jsonl`、`audit_log_policy.jsonl` 和 `KMFA/stage_artifacts/S17_P1_access_security/` 已生成；覆盖 management、finance、reviewer、readonly 四类角色、15 类敏感材料公开仓库禁入策略和 import/processing/report/export/notification 五类审计动作；通知只定义日志策略，不发送完整报告。
 - S17-P2 通知提醒已本地验证完成：`KMFA/tools/notification_reminders.py`、`KMFA/tools/check_s17_p2_notifications.py`、`KMFA/tests/test_notification_reminders.py`、`KMFA/metadata/notifications/notification_manifest.json`、`notification_rules.jsonl`、`notification_events.jsonl`、`notification_dispatch_log.jsonl` 和 `KMFA/stage_artifacts/S17_P2_notification/` 已生成；覆盖报告生成完成、重大风险、数据源缺失三类提醒；所有 dispatch 仅写 metadata outbox/log。
+- S17-P3 运维与 SOP 已本地验证完成：`KMFA/tools/operations_sop.py`、`KMFA/tools/check_s17_p3_operations_sop.py`、`KMFA/tests/test_operations_sop.py`、`KMFA/metadata/operations/operations_sop_manifest.json`、`operations_runbooks.jsonl`、`finance_sop_knowledge_index.jsonl`、`error_backup_drill_log.jsonl` 和 `KMFA/stage_artifacts/S17_P3_operations_sop/` 已生成；覆盖导入、复核、发布、回滚操作手册、财务 SOP/交接材料知识索引、错误处理和备份恢复演练；只写 metadata/manual SOP，不调用 live connector、不做生产恢复或业务动作。
 
 ## 你现在不能信任什么
 
@@ -95,7 +96,8 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review、Stage 12 upload、S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审、Stage 13 upload、S14-P1 资金计划现金贷款、S14-P2 开票纳税、S14-P3 政策证据、Stage 14 review、Stage 14 upload、S15-P1 绩效事实字段、S15-P2 绩效复核清单、S15-P3 工资项目边界或 Stage 15 review 等于完整业务系统；lineage full check 和正式报告仍未完成。
 - 不能认为 Stage 15 review/upload 已经生成工资计算、奖金审批、薪资导出、最终发放建议、live integration、自动接口或任何可执行薪酬结论。
 - 不能认为 S16-P1/S16-P2/S16-P3 已经允许采购执行、付款审批、付款执行、银行操作、供应商结算、现场施工、安全签字、技术签字、开票、催收、法律决策或正式经营决策；它们只是 public-safe 结构匹配、状态生命周期、客户经营摘要和人工复核候选。
-- 不能认为 S17-P2 已经实现外部邮件投递、完整报告邮件、真实收件地址管理、运维 SOP、备份恢复演练、Stage 17 review 或 GitHub upload；它只建立本地 metadata outbox-only 通知提醒证据。
+- 不能认为 S17-P2 已经实现外部邮件投递、完整报告邮件或真实收件地址管理；它只建立本地 metadata outbox-only 通知提醒证据。
+- 不能认为 S17-P3 已经实现 Stage 17 review、GitHub upload、live connector、生产恢复、外部服务调用或业务执行；它只建立本地 public-safe metadata/manual 运维 SOP 证据。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -104,4 +106,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S17-P3｜运维与SOP`，且必须重新确认 git/root/status、读取 v1.2 task pack / roadmap；不得直接进入 Stage 17 review、GitHub upload、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只执行 `Stage 17 整体复审`，且必须重新确认 git/root/status，复跑 S17-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 diff check；不得直接执行 GitHub upload、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。

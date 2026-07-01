@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s17p2-notification"
+version: "0.1.0-s17p3-operations-sop"
 current_stage: "S17"
-current_phase: "S17PC"
+current_phase: "S17_STAGE_REVIEW"
 current_phase_status: "ready"
-current_stage_status: "in_progress_s17p2_completed_local_only"
+current_stage_status: "completed_local_only_pending_stage_review"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -37,8 +37,15 @@ machine_plane:
   - "metadata/notifications/notification_rules.jsonl"
   - "metadata/notifications/notification_events.jsonl"
   - "metadata/notifications/notification_dispatch_log.jsonl"
+  - "metadata/operations/operations_sop_manifest.json"
+  - "metadata/operations/operations_runbooks.jsonl"
+  - "metadata/operations/finance_sop_knowledge_index.jsonl"
+  - "metadata/operations/error_backup_drill_log.jsonl"
   - "metadata/security/public_repo_sensitive_data_policy.jsonl"
   - "metadata/security/audit_log_policy.jsonl"
+  - "stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md"
+  - "stage_artifacts/S17_P3_operations_sop/human/test_results.md"
+  - "stage_artifacts/S17_P3_operations_sop/machine/s17_p3_manifest.json"
   - "metadata/reports/home_navigation_manifest.json"
   - "metadata/reports/home_navigation_modules.jsonl"
   - "metadata/reports/source_check_board_manifest.json"
@@ -487,9 +494,12 @@ upload_policy:
   stage17_s17p2_completed_validated_local_only: true
   stage17_s17p2_evidence: "KMFA/stage_artifacts/S17_P2_notification/human/s17_p2_completion_record.md"
   stage17_s17p2_manifest: "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json"
+  stage17_s17p3_completed_validated_local_only: true
+  stage17_s17p3_evidence: "KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md"
+  stage17_s17p3_manifest: "KMFA/stage_artifacts/S17_P3_operations_sop/machine/s17_p3_manifest.json"
   stage17_review_required_before_upload: true
   stage17_review_passed: false
   stage17_uploaded_to_github_main: false
-  stage17_blocker: "s17p3_not_started_stage17_review_not_started"
+  stage17_blocker: "stage17_review_not_started"
   next_phase_upload_allowed: false
-  upload_surface: "stage16_uploaded_next_s17p3"
+  upload_surface: "stage16_uploaded_next_stage17_review"

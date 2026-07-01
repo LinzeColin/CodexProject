@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s17p3-operations-sop - 2026-07-01
+
+- 完成 `S17-P3｜运维与 SOP` 本地验证。
+- 新增 `KMFA/tools/operations_sop.py` 和 `KMFA/tools/check_s17_p3_operations_sop.py`，生成并验证导入、复核、发布、回滚四类操作手册。
+- 新增 `KMFA/tests/test_operations_sop.py`，覆盖 metadata-only runbook、财务 SOP/交接材料知识索引、错误处理/备份恢复演练、live connector/生产恢复/业务动作阻断和 scope gate。
+- 新增 `KMFA/metadata/operations/` 下 S17-P3 manifest、operations runbooks、finance SOP knowledge index、error/backup drill log，以及 `KMFA/stage_artifacts/S17_P3_operations_sop/` 证据包。
+- 保持中间 Phase 不上传 GitHub；未执行 Stage 17 review、lineage full check、正式报告、live connector、生产恢复、外部服务调用或业务执行。
+- 下一轮只能执行 `Stage 17 整体复审`。
+
 ## 0.1.0-s17p2-notification - 2026-07-01
 
 - 完成 `S17-P2｜通知` 本地验证。
