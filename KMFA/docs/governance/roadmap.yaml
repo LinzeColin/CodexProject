@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S17"
-current_phase_id: "S17PA"
-current_task_id: "KMFA-S17-P1-GATE"
-next_gate_id: "KMFA-S17-P1-GATE"
+current_phase_id: "S17PB"
+current_task_id: "KMFA-S17-P2-GATE"
+next_gate_id: "KMFA-S17-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1255,9 +1255,61 @@ stages:
               - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
   - stage_id: "S17"
     name: "权限、通知、安全、审计与运维"
-    status: "ready"
+    status: "in_progress_s17p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33
+    stop_conditions:
+      - "原始数据被污染"
+      - "金额精度使用 float"
+      - "0.01 元差异被忽略"
+      - "报告绕过质量等级"
+      - "缺少可追溯证据"
+    stop_gate:
+      gate_id: "KMFA-S17-GATE"
+      pass_criteria:
+        - "S17-P1/P2/P3 验收证据存在"
+        - "Stage 17 整体复审通过"
+        - "复审 findings 已修复"
+      evidence:
+        - "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
+      failure_action: "fix_and_rerun"
+    phases:
+      - phase_id: "S17PA"
+        name: "权限与安全"
+        objective: "建立角色权限矩阵、公开仓库敏感数据禁入策略和导入/处理/报告/导出/通知审计日志策略。"
+        status: "completed_validated_local_only"
+        estimated_hours: 1
+        estimated_pct: 100
+        evidence_refs:
+          - "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md"
+          - "KMFA/stage_artifacts/S17_P1_access_security/human/test_results.md"
+          - "KMFA/stage_artifacts/S17_P1_access_security/machine/s17_p1_manifest.json"
+        tasks:
+          - task_id: "S17PAT01"
+            name: "角色权限覆盖管理层、财务、复核、只读。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/security/role_permission_matrix.jsonl"
+          - task_id: "S17PAT02"
+            name: "敏感数据不提交公开仓库。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl"
+          - task_id: "S17PAT03"
+            name: "日志记录导入、处理、报告、导出、通知。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/security/audit_log_policy.jsonl"
+      - phase_id: "S17PB"
+        name: "通知"
+        status: "ready"
+        estimated_hours: 1
+        estimated_pct: 0
+      - phase_id: "S17PC"
+        name: "运维与SOP"
+        status: "planned"
+        estimated_hours: 1
+        estimated_pct: 0
   - stage_id: "S18"
     name: "回归、压力、稳定验收与后续接入准备"
     status: "planned"

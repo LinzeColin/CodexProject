@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s16-github-upload
+product_version: 0.1.0-s17p1-access-security
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出、Stage 10 整体复审与 GitHub main 上传、S11-P1 public-safe 首页与导航、S11-P2 public-safe 数据源检查板、S11-P3 public-safe 项目成本页面、Stage 11 整体复审与 GitHub main 上传、S12-P1 public-safe 人工处理事件、S12-P2 public-safe 影响预览、S12-P3 public-safe 重跑机制、Stage 12/13/14/15 复审与上传、S16-P1 public-safe 外协采购归集、S16-P2 public-safe 项目状态生命周期、S16-P3 public-safe 客户经营分析、Stage 16 整体复审与 GitHub main 上传。不声明 S17、lineage 完整检查、正式报告生成、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出、Stage 10 整体复审与 GitHub main 上传、S11-P1 public-safe 首页与导航、S11-P2 public-safe 数据源检查板、S11-P3 public-safe 项目成本页面、Stage 11 整体复审与 GitHub main 上传、S12-P1 public-safe 人工处理事件、S12-P2 public-safe 影响预览、S12-P3 public-safe 重跑机制、Stage 12/13/14/15 复审与上传、S16-P1 public-safe 外协采购归集、S16-P2 public-safe 项目状态生命周期、S16-P3 public-safe 客户经营分析、Stage 16 整体复审与 GitHub main 上传、S17-P1 public-safe 权限与安全策略。不声明 S17-P2 通知投递、S17-P3 运维 SOP、Stage 17 整体复审、GitHub upload、lineage 完整检查、正式报告生成、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -117,6 +117,17 @@ product_version: 0.1.0-s16-github-upload
 - fact_level: EXTRACTED
 - evidence: `KMFA/tools/redcircle_postponement_policy.py`, `KMFA/tools/check_s07_p3_redcircle_postponement.py`, `KMFA/metadata/schema_maps/redcircle_postponement_manifest.json`, `KMFA/stage_artifacts/S07_P3_redcircle_postponement_policy/human/s07_p3_completion_record.md`
 - limitation: 只保存 template id、hash/private ref、控制状态和 rollback metadata；不提交红圈原始导出、接口凭证、字段明文、真实业务值，不解锁事实层、lineage、正式报告、UI 或外部接口。
+
+### FORM-KMFA-S17P1-ACCESS-SECURITY-001
+
+- type: deterministic access security governance policy
+- purpose: 锁定 S17-P1 角色权限矩阵、公开仓库敏感材料禁入策略和导入/处理/报告/导出/通知审计日志策略。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/access_security_policy.py`, `KMFA/tools/check_s17_p1_access_security.py`, `KMFA/metadata/security/access_security_policy_manifest.json`, `KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md`
+- required_roles: `management`, `finance`, `reviewer`, `readonly`
+- required_audit_actions: `import`, `processing`, `report`, `export`, `notification`
+- boundary_validation: `KMFA/tests/test_access_security_policy.py`, `KMFA/stage_artifacts/S17_P1_access_security/human/test_results.md`
+- limitation: S17-P1 只定义权限、安全和审计策略；不发送通知、不生成完整报告正文、不执行 S17-P3 SOP、Stage 17 review、GitHub upload 或外部接口。
 
 ### FORM-KMFA-PROJECT-COMPOSITE-KEY-001
 

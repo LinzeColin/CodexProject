@@ -1,0 +1,109 @@
+{
+  "audit_policy_path": "KMFA/metadata/security/audit_log_policy.jsonl",
+  "content_hash": "sha256:ed370b4715bf1f82a1322d00add1d73a8db5b289f4befa9fddff709689edb95b",
+  "evidence_refs": [
+    "KMFA/tools/access_security_policy.py",
+    "KMFA/tools/check_s17_p1_access_security.py",
+    "KMFA/tests/test_access_security_policy.py",
+    "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md",
+    "KMFA/stage_artifacts/S17_P1_access_security/human/test_results.md"
+  ],
+  "generated_at": "2026-07-01T23:55:00+10:00",
+  "manifest_path": "KMFA/metadata/security/access_security_policy_manifest.json",
+  "output_refs": {
+    "audit_policy": "KMFA/metadata/security/audit_log_policy.jsonl",
+    "manifest": "KMFA/metadata/security/access_security_policy_manifest.json",
+    "role_matrix": "KMFA/metadata/security/role_permission_matrix.jsonl",
+    "sensitive_policy": "KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S17_P1_access_security/machine/s17_p1_manifest.json"
+  },
+  "phase": "P1",
+  "policy_version": "KMFA-S17P1-ACCESS-SECURITY-PUBLIC-SAFE-001",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "contract_payroll_tax_material_committed": false,
+    "credential_committed": false,
+    "field_text_committed": false,
+    "private_tabular_material_committed": false,
+    "raw_business_data_committed": false,
+    "source_document_committed": false,
+    "true_customer_project_committed": false,
+    "true_money_committed": false
+  },
+  "quality_gate": {
+    "audit_log_policy_complete": true,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "external_connector_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "lineage_full_check_allowed": false,
+    "notification_delivery_allowed": false,
+    "notification_full_report_body_allowed": false,
+    "phase_completion_upload_allowed": false,
+    "raw_sensitive_public_repo_allowed": false,
+    "release_block_reason": "s17_p1_is_local_access_security_policy_only",
+    "role_permission_matrix_complete": true,
+    "sensitive_public_repo_policy_enforced": true,
+    "stage17_review_allowed": false
+  },
+  "record_type": "s17_p1_stage_manifest",
+  "required_audit_action_types": [
+    "import",
+    "processing",
+    "report",
+    "export",
+    "notification"
+  ],
+  "required_roles": [
+    "management",
+    "finance",
+    "reviewer",
+    "readonly"
+  ],
+  "required_sensitive_policy_categories": [
+    "raw_business_data",
+    "zip_archive",
+    "excel_workbook",
+    "pdf_document",
+    "private_csv",
+    "sqlite_database",
+    "bank_statement",
+    "contract_document",
+    "payroll_salary",
+    "tax_filing",
+    "credential_secret",
+    "field_plaintext",
+    "true_account_identifier",
+    "true_money_amount",
+    "true_customer_or_project_name"
+  ],
+  "role_permission_matrix_path": "KMFA/metadata/security/role_permission_matrix.jsonl",
+  "sensitive_policy_path": "KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl",
+  "stage": "S17",
+  "stage_phase": "S17-P1",
+  "stage_scope": {
+    "business_execution_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "notification_delivery_scope_included": false,
+    "s17_p1_scope_included": true,
+    "s17_p2_scope_included": false,
+    "s17_p3_scope_included": false,
+    "stage17_review_scope_included": false
+  },
+  "status": "completed_validated_local_only",
+  "summary": {
+    "audit_action_type_count": 5,
+    "notification_scope": "log_policy_only_no_delivery_in_s17_p1",
+    "public_repo_safety_status": "enforced_hash_or_ref_only",
+    "role_count": 4,
+    "sensitive_policy_category_count": 15
+  },
+  "taskpack_refs": [
+    "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S17-P1",
+    "KMFA/metadata/stage_status.jsonl:S17PAT01-S17PAT03"
+  ]
+}

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s17p1-access-security - 2026-07-01
+
+- 完成 `S17-P1｜权限与安全` 本地验证。
+- 新增 `KMFA/tools/access_security_policy.py` 和 `KMFA/tools/check_s17_p1_access_security.py`，生成并验证角色权限矩阵、公开仓库敏感材料禁入策略和审计日志策略。
+- 新增 `KMFA/tests/test_access_security_policy.py`，覆盖 management、finance、reviewer、readonly 角色、15 类敏感材料禁入、import/processing/report/export/notification 五类审计动作和 scope gate。
+- 新增 `KMFA/metadata/security/` 下 S17-P1 public-safe manifest、role matrix、sensitive policy、audit policy，以及 `KMFA/stage_artifacts/S17_P1_access_security/` 证据包。
+- 保持中间 Phase 不上传 GitHub；未执行 S17-P2 通知投递、S17-P3 运维 SOP、Stage 17 review、lineage full check、正式报告或外部接口。
+- 下一轮只能执行 `S17-P2｜通知`。
+
 ## 0.1.0-s16-github-upload - 2026-07-01
 
 - 完成 Stage 16 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
