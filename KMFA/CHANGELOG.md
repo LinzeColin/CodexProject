@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s18p1-precision-stress - 2026-07-01
+
+- 完成 `S18-P1｜精度与压力测试` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/precision_stress_validation.py` 和 `KMFA/tools/check_s18_p1_precision_stress.py`，生成并验证 public-safe synthetic 精度/压力测试 artifacts。
+- 新增 `KMFA/tests/test_precision_stress_validation.py`，覆盖金额精度、zero-delta、重复导入、坏文件、缺字段、连续三次一致性、大批量性能预算、错误报告、HTML 样板读取和 scope gate。
+- 新增 `KMFA/metadata/quality/precision_stress_manifest.json`、`precision_stress_scenarios.jsonl`、`precision_stress_import_runs.jsonl`、`precision_stress_error_reports.jsonl` 和 `KMFA/stage_artifacts/S18_P1_precision_stress/` 证据包。
+- S18-P1 只使用 public-safe synthetic metadata；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或接口凭证。
+- 未执行 S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审、GitHub upload、lineage full check、正式报告、OpMe 集成、live connector、生产恢复或业务执行。
+- 下一轮只能执行 `S18-P2｜全量回归和验收`。
+
 ## 0.1.0-s17-github-upload - 2026-07-01
 
 - 完成 Stage 17 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
