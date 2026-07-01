@@ -3,10 +3,10 @@ roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
-current_stage_id: "S16"
-current_phase_id: "S16UPLOAD"
-current_task_id: "KMFA-S16-GITHUB-UPLOAD-GATE"
-next_gate_id: "KMFA-S16-GITHUB-UPLOAD-GATE"
+current_stage_id: "S17"
+current_phase_id: "S17PA"
+current_task_id: "KMFA-S17-P1-GATE"
+next_gate_id: "KMFA-S17-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1103,10 +1103,10 @@ stages:
               - "KMFA/stage_artifacts/S15_P3_salary_boundary/human/test_results.md"
   - stage_id: "S16"
     name: "外协采购、项目状态、客户经营扩展"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S16-P1 外协采购归集、S16-P2 项目状态生命周期、S16-P3 客户经营分析和 Stage 16 整体复审已完成本地验证；GitHub upload 尚未执行。"
+    current_result: "S16-P1 外协采购归集、S16-P2 项目状态生命周期、S16-P3 客户经营分析、Stage 16 整体复审和 final GitHub upload 已完成。"
     evidence_refs:
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/s16_p1_completion_record.md"
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
@@ -1120,6 +1120,8 @@ stages:
       - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
       - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
+      - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
     phases:
       - phase_id: "S16PA"
         name: "外协采购归集"
@@ -1235,9 +1237,25 @@ stages:
             evidence_refs:
               - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
               - "KMFA/tools/check_s16_stage_review.py"
+      - phase_id: "S16UPLOAD"
+        name: "Stage 16 GitHub Upload"
+        status: "uploaded_to_github_main"
+        estimated_hours: 0
+        estimated_pct: 100
+        current_result: "Stage 16 final GitHub upload 完成；基于最新 origin/main rebase Stage 16 栈，复跑 validators、安全扫描、parse checks、diff check、dry-run push、push 和 post-push parity。"
+        evidence_refs:
+          - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md"
+          - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
+        tasks:
+          - task_id: "KMFA-S16-GITHUB-UPLOAD-20260701"
+            name: "上传 Stage 16 reviewed stack 到 GitHub main。"
+            status: "uploaded_to_github_main"
+            evidence_refs:
+              - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md"
+              - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
   - stage_id: "S17"
     name: "权限、通知、安全、审计与运维"
-    status: "planned"
+    status: "ready"
     estimated_hours: 3
     estimated_pct: 0
   - stage_id: "S18"

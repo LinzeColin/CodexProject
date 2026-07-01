@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s16-stage-review"
+    model_version: "0.1.0-s16-github-upload"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -499,6 +499,8 @@ models:
       - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/stage16_review_report.md"
       - "KMFA/stage_artifacts/S16_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
+      - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S16_GITHUB_UPLOAD/machine/stage16_upload_manifest.json"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"
