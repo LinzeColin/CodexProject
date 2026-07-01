@@ -1,0 +1,106 @@
+{
+  "acceptance_id": "ACC-S2PLT02-2D",
+  "artifact_written": false,
+  "blocking_reasons_after_sync": [
+    "real_scheduler_not_proven",
+    "s2plt02_terminal_delivery_proof_artifact_missing",
+    "real_launchd_scheduler_proof_missing"
+  ],
+  "code_changes": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py"
+  ],
+  "controlled_foreground_run": {
+    "date": "2026-07-01",
+    "final_generated_at": "2026-06-30T23:51:34Z",
+    "final_runner_report_sha256": "7413b69865d3529a4217f6e543da1bcb326fbeea16b8b75af304590ab91ef192",
+    "m2_recovery_output_sha256": "7413b69865d3529a4217f6e543da1bcb326fbeea16b8b75af304590ab91ef192",
+    "partial_run_output_sha256": "f4c333c64972b9a394205dcf8616439fef906d7f57eb679f02f2607e71f6448e",
+    "real_smtp_sent": true,
+    "runner_status": "pass",
+    "selected_source_id": "arxiv:2606.30473",
+    "selected_title": "Field Order Should Not Matter: Permutation-Invariant Embedding Model Fine-Tuning for Structured Metadata Retrieval",
+    "sent_mail_count": 4,
+    "sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "smtp_delivery_report_sha256_by_product": {
+      "M1": "2fa48b290cd42aef804cee96e72fbe56a99e240cb68fcc6cee30df471bd83f1f",
+      "M2": "108cb66e354b3a079cf8c2ac808306f8ee38d5f4eee5b273ab1e1334d4af4d2f",
+      "M3": "76133bf4422233f376d0cff95fdb9a01cf9717b2432c7ce1393f8765c5158964",
+      "M4": "9880116d06842abf6d2215f51811b39828894576ee9192cdcbe646d5b4e33aa9"
+    },
+    "status_by_product": {
+      "M1": "sent",
+      "M2": "sent",
+      "M3": "sent",
+      "M4": "sent"
+    }
+  },
+  "current_pointer_changed": false,
+  "current_wait_state": "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW",
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_CONTROLLED_REAL_RUN_20260701_SCHEDULER_ONLY_BLOCKER_SYNC.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py"
+  ],
+  "generated_at": "2026-07-01T09:57:24+10:00",
+  "input_inventory_state_hash": "921338e6c943d0d4e31ce8b18b54cb1e0deff4713913e30fc36c242327b0420b",
+  "integrated_production_accepted": false,
+  "missing_inputs": [
+    "REAL_SCHEDULER_PROOF",
+    "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"
+  ],
+  "observed_real_delivery_days": 2,
+  "observed_real_email_count": 8,
+  "persistent_adp_allow_smtp_send_after_run": false,
+  "plan_state_hash": "56ae67654903caad8006b244e36a606f60a0b3a09db93f01d11327a4da546489",
+  "production_acceptance_allowed": false,
+  "production_acceptance_claimed": false,
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_scheduler_proven": false,
+  "release_packaging_enabled": false,
+  "release_uploaded": false,
+  "remaining_runtime_actions": [
+    "capture_real_launchd_scheduler_proof",
+    "write_and_validate_s2plt02_terminal_delivery_proof_artifact"
+  ],
+  "run_id": "ADP-S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC",
+  "runtime_capture_blockers_after_sync": [
+    "real_launchd_scheduler_proof_missing"
+  ],
+  "s2plt02_accepted": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "blocked_after_controlled_real_run_scheduler_only_sync",
+  "summary": "Owner-authorized foreground run sent 2026-07-01 M1-M4 with content-ledger recovery for M2, then S2PLT02 capture-plan blockers were narrowed to scheduler-only once 2/2 real days and 8/8 real emails were already complete. S2PLT02 remains blocked because real scheduler proof and the reviewed terminal delivery proof artifact are still missing.",
+  "task_id": "S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC",
+  "task_ids": [
+    "S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC",
+    "S2PLT02",
+    "ACC-S2PLT02-2D"
+  ],
+  "terminal_delivery_proof_artifact_present": false,
+  "terminal_evidence_inventory_state_hash": "4cad637ca8542f1a810f8048fc25276a51a17baf5eaf1b14978d3b4c61961c50",
+  "transient_real_smtp_send_enabled_during_foreground_run": true,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "wait_guard_state_hash": "f89312b584b05e5f1c2d5f07f24a5bd6558086fb3473c2e6e715e90b38db78bd",
+  "write_terminal_artifact_allowed": false
+}

@@ -1212,8 +1212,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             plan["terminal_artifact_blocking_reasons"],
         )
         self.assertFalse(plan["runtime_capture_ready"])
-        self.assertIn("adp_allow_smtp_send_false", plan["runtime_capture_blockers"])
-        self.assertIn("real_smtp_secret_env_missing", plan["runtime_capture_blockers"])
+        self.assertIn("real_launchd_scheduler_proof_missing", plan["runtime_capture_blockers"])
+        self.assertNotIn("adp_allow_smtp_send_false", plan["runtime_capture_blockers"])
+        self.assertNotIn("real_smtp_secret_env_missing", plan["runtime_capture_blockers"])
+        self.assertNotIn("second_consecutive_real_m1_m4_smtp_day_missing", plan["runtime_capture_blockers"])
         self.assertNotIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", plan["runtime_capture_blockers"])
         self.assertEqual(
             plan["required_smtp_secret_env_names"],
@@ -5796,9 +5798,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             "capture_real_launchd_scheduler_proof",
             "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
         ])
-        self.assertIn("adp_allow_smtp_send_false", capture_summary["runtime_capture_blockers"])
-        self.assertIn("real_smtp_secret_env_missing", capture_summary["runtime_capture_blockers"])
-        self.assertIn("blocked_candidate_inputs_present", capture_summary["runtime_capture_blockers"])
+        self.assertIn("real_launchd_scheduler_proof_missing", capture_summary["runtime_capture_blockers"])
+        self.assertNotIn("adp_allow_smtp_send_false", capture_summary["runtime_capture_blockers"])
+        self.assertNotIn("real_smtp_secret_env_missing", capture_summary["runtime_capture_blockers"])
+        self.assertNotIn("blocked_candidate_inputs_present", capture_summary["runtime_capture_blockers"])
         capture_window_summary = capture_summary["terminal_capture_window_audit_summary"]
         self.assertEqual(capture_window_summary["status"], "blocked")
         self.assertEqual(capture_window_summary["dry_run_service_dates"], [])
@@ -6339,7 +6342,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "b3ae182f992b17b25e9d12a118aed3600f0f9851b8f64def5bf215fa6bb9a255",
+            "51bf97344b51f5ea20d239ddae44a58dc296cd27df2043a0f1e5756f72582057",
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
@@ -6351,7 +6354,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
             wait_guard["current_wait_state"],
         )
-        self.assertEqual(wait_guard["state_hash"], "6dbbbcf3536f97f872ab7107a365bfc45a105a9e5b1ce59d7f478da973d2439f")
+        self.assertEqual(wait_guard["state_hash"], "1d27db49df778f390fb7ca40c224b17f9a12dcc722c1cacc07bf029406e47764")
         self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(
             wait_guard["allowed_readonly_commands"][0],
@@ -6391,7 +6394,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_terminal_delivery_capture_plan_summary"]["production_acceptance_allowed"],
             wait_guard["production_acceptance_allowed"],
         )
-        self.assertIn(
+        self.assertNotIn(
             "real_smtp_secret_env_missing",
             state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_blockers"],
         )
@@ -6476,7 +6479,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_values_logged"])
         self.assertEqual(state["s2plt02_runtime_readiness_summary"]["status"], "blocked")
         self.assertTrue(state["s2plt02_runtime_readiness_summary"]["real_proof_capture_authorized"])
-        self.assertIn(
+        self.assertNotIn(
             "real_smtp_secret_env_missing",
             state["s2plt02_runtime_readiness_summary"]["runtime_capture_blockers"],
         )

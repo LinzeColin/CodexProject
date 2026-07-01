@@ -4442,6 +4442,28 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         and authorization_validation.get("status") == "pass"
         and not authorization_validation.get("validation_errors")
     )
+    smtp_terminal_inputs_complete = (
+        "SECOND_REAL_DELIVERY_DAY" not in missing_inputs
+        and "EIGHT_REAL_EMAILS" not in missing_inputs
+        and "REAL_SMTP_PROOF" not in missing_inputs
+    )
+    scheduler_only_terminal_capture_remaining = (
+        smtp_terminal_inputs_complete
+        and "REAL_SCHEDULER_PROOF" in missing_inputs
+        and max(S2PLT02_REQUIRED_NATURAL_DAYS - int(inventory.get("observed_real_delivery_days") or 0), 0) == 0
+        and max(S2PLT02_REQUIRED_EMAIL_COUNT - int(inventory.get("observed_real_email_count") or 0), 0) == 0
+    )
+    scheduler_only_runtime_blockers_to_ignore = (
+        {
+            "second_consecutive_real_m1_m4_smtp_day_missing",
+            "adp_allow_smtp_send_false",
+            "real_smtp_secret_env_missing",
+            "daily_run_succeeded_but_smtp_dry_run_not_terminal",
+            "blocked_candidate_inputs_present",
+        }
+        if scheduler_only_terminal_capture_remaining
+        else set()
+    )
     runtime_capture_blockers = [
         str(reason)
         for reason in evidence_inventory.get("blocking_reasons", [])
@@ -4455,6 +4477,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
             "daily_run_succeeded_but_smtp_dry_run_not_terminal",
             "blocked_candidate_inputs_present",
         }
+        and reason not in scheduler_only_runtime_blockers_to_ignore
     ]
     runtime_capture_ready = authorization_valid and not runtime_capture_blockers
     completed_runtime_actions: set[str] = set()
@@ -5027,7 +5050,18 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         errors.append("smtp_secret_env_ready must match missing_smtp_secret_env_names")
     if state.get("smtp_secret_values_logged") is not False:
         errors.append("smtp_secret_values_logged must be false")
-    if expected_missing_secret_names and "real_smtp_secret_env_missing" not in state.get("runtime_capture_blockers", []):
+    smtp_terminal_inputs_complete = (
+        "SECOND_REAL_DELIVERY_DAY" not in state.get("blocked_by_missing_inputs", [])
+        and "EIGHT_REAL_EMAILS" not in state.get("blocked_by_missing_inputs", [])
+        and "REAL_SMTP_PROOF" not in state.get("blocked_by_missing_inputs", [])
+        and int(state.get("remaining_real_delivery_days_for_terminal_proof") or 0) == 0
+        and int(state.get("remaining_real_email_count_for_terminal_proof") or 0) == 0
+    )
+    if (
+        expected_missing_secret_names
+        and not smtp_terminal_inputs_complete
+        and "real_smtp_secret_env_missing" not in state.get("runtime_capture_blockers", [])
+    ):
         errors.append("real_smtp_secret_env_missing blocker is required")
     if state.get("status") == "pass" and state.get("terminal_delivery_proof_ready") is not True:
         errors.append("pass status requires terminal_delivery_proof_ready")
@@ -10586,8 +10620,16 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             errors.append("S2PLT02 runtime readiness summary must not log SMTP secret values")
         if capture_plan_summary.get("smtp_secret_values_logged") is not False:
             errors.append("S2PLT02 capture plan summary must not log SMTP secret values")
+        smtp_terminal_inputs_complete = (
+            "SECOND_REAL_DELIVERY_DAY" not in capture_plan_summary.get("blocked_by_missing_inputs", [])
+            and "EIGHT_REAL_EMAILS" not in capture_plan_summary.get("blocked_by_missing_inputs", [])
+            and "REAL_SMTP_PROOF" not in capture_plan_summary.get("blocked_by_missing_inputs", [])
+            and int(capture_plan_summary.get("remaining_real_delivery_days_for_terminal_proof") or 0) == 0
+            and int(capture_plan_summary.get("remaining_real_email_count_for_terminal_proof") or 0) == 0
+        )
         if (
             capture_plan_summary.get("missing_smtp_secret_env_names")
+            and not smtp_terminal_inputs_complete
             and "real_smtp_secret_env_missing" not in capture_plan_summary.get("runtime_capture_blockers", [])
         ):
             errors.append("S2PLT02 capture plan summary must block on missing real SMTP secret env names")
