@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 8 GitHub Main Upload - 2026-07-01
+
+- 完成 `Stage 8 GitHub main upload gate`：将 Stage 8 Phase 8.1、Phase 8.2、Phase 8.3 和 whole-stage review package rebase 到当前 `origin/main` 后上传。
+- 新增 `PFI/docs/pfi_v024/STAGE8_GITHUB_MAIN_UPLOAD.md`、`PFI/tests/test_v024_stage8_github_upload_contract.py` 和 `PFI/reports/pfi_v024/stage_8/github_main_upload/` evidence。
+- 上传 gate 重新验证 Stage 8 upload contract、whole-stage review、Phase 8.1/8.2/8.3 回归、JSON evidence、py_compile、diff 和 changed-files 对账。
+- 本轮不执行 Stage 9，不重装 app bundle，不修改 launcher C/Info.plist，不写入、清理、删除、补造或改写真实财务数据。
+
 ## v0.2.4 Repair Pack Stage 8 Whole-Stage Review - 2026-07-01
 
 - 完成 `Stage 8 whole-stage review - 复审并解决暴露问题`，复审 Phase 8.1 自动验收、Phase 8.2 截图验收和 Phase 8.3 人工验收确认。
