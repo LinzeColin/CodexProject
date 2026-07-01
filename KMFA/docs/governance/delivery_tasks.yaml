@@ -1538,3 +1538,103 @@ tasks:
     rollback: "Revert the Stage 5 upload evidence/status commit before push, or create a corrective commit if already pushed."
     target_version: "0.1.0-s05-github-upload"
     completed_version: "0.1.0-s05-github-upload"
+  - task_id: "S16PAT01"
+    phase: "S16PA"
+    objective: "将外协费用、采购和付款来源线按项目生成 public-safe 匹配证据。"
+    scope:
+      - "subcontract cost lane"
+      - "procurement register lane"
+      - "supplier payment lane"
+      - "project identity bridge lane"
+    non_scope:
+      - "raw business data"
+      - "procurement execution"
+      - "payment approval or payment execution"
+      - "S16-P2 lifecycle work"
+      - "S16-P3 customer analysis"
+      - "Stage 16 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "KMFA-S15-GITHUB-UPLOAD-20260701"
+    required_files:
+      - "KMFA/tools/subcontract_procurement_aggregation.py"
+      - "KMFA/metadata/reports/subcontract_procurement_aggregation_manifest.json"
+      - "KMFA/metadata/reports/subcontract_procurement_source_lanes.jsonl"
+      - "KMFA/metadata/reports/subcontract_project_matches.jsonl"
+    acceptance_ids:
+      - "ACC-SUBCONTRACT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_subcontract_procurement_aggregation -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p1_subcontract_procurement.py"
+    test_results:
+      - "PASS: source_lanes=4 and project_matches=5 with public-safe refs only."
+    evidence_refs:
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/s16_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/machine/s16_p1_manifest.json"
+    risk: "S16-P1 matching evidence is not a payment or supplier settlement instruction."
+    rollback: "Revert S16-P1 tool, validator, metadata outputs and governance rows before Stage 16 review."
+    target_version: "0.1.0-s16p1-subcontract-procurement"
+    completed_version: "0.1.0-s16p1-subcontract-procurement"
+  - task_id: "S16PAT02"
+    phase: "S16PA"
+    objective: "将未匹配项目的外协采购付款记录进入未归集成本池。"
+    scope:
+      - "unallocated subcontract cost pool"
+      - "manual review status"
+    non_scope:
+      - "automatic project assignment"
+      - "raw amount disclosure"
+      - "business decision release"
+    status: "completed"
+    dependencies:
+      - "S16PAT01"
+    required_files:
+      - "KMFA/metadata/reports/subcontract_unallocated_cost_pool.jsonl"
+    acceptance_ids:
+      - "ACC-SUBCONTRACT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_subcontract_procurement_aggregation -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p1_subcontract_procurement.py"
+    test_results:
+      - "PASS: unallocated_cost_pool=2 and every item remains pending owner review."
+    evidence_refs:
+      - "KMFA/metadata/reports/subcontract_unallocated_cost_pool.jsonl"
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
+    risk: "Unallocated pool records require owner or authorized review before later rerun."
+    rollback: "Remove S16-P1 unallocated pool output and revert S16-P1 governance rows."
+    target_version: "0.1.0-s16p1-subcontract-procurement"
+    completed_version: "0.1.0-s16p1-subcontract-procurement"
+  - task_id: "S16PAT03"
+    phase: "S16PA"
+    objective: "识别重复付款候选和跨项目费用候选，并保持人工复核边界。"
+    scope:
+      - "duplicate payment candidates"
+      - "cross-project cost candidates"
+      - "review-only anomaly queue"
+    non_scope:
+      - "automatic anomaly closure"
+      - "supplier settlement action"
+      - "bank operation"
+      - "formal report"
+    status: "completed"
+    dependencies:
+      - "S16PAT02"
+    required_files:
+      - "KMFA/metadata/reports/subcontract_anomaly_candidates.jsonl"
+      - "KMFA/tools/check_s16_p1_subcontract_procurement.py"
+    acceptance_ids:
+      - "ACC-SUBCONTRACT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_subcontract_procurement_aggregation -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s16_p1_subcontract_procurement.py"
+    test_results:
+      - "PASS: duplicate_payment_candidates=2 and cross_project_candidates=2; execution gates remain false."
+    evidence_refs:
+      - "KMFA/metadata/reports/subcontract_anomaly_candidates.jsonl"
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
+    risk: "Anomaly candidates cannot be used as payment, procurement, bank or business-release instructions."
+    rollback: "Remove S16-P1 anomaly output and revert S16-P1 governance rows."
+    target_version: "0.1.0-s16p1-subcontract-procurement"
+    completed_version: "0.1.0-s16p1-subcontract-procurement"

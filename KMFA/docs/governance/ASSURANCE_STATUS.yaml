@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S15-GITHUB-UPLOAD"
+as_of_event_id: "EVENT-KMFA-20260701-S16P1-SUBCONTRACT-PROCUREMENT"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "7aff82efe2dd83fce940a97868868c13e65a6f1c"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S15_UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-01T23:59:59+10:00"
-generator_version: "manual-s15-github-upload"
-final_commit_binding: "github_upload_commit_pending_before_push"
+source_base_commit: "22f4dbcd434e411363a8f37b6986869f847e7162"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16P1_COMMIT"
+snapshot_event_time: "2026-07-01T23:00:00+10:00"
+generator_version: "manual-s16p1-subcontract-procurement"
+final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 194
-    total_active_formulas: 42
+    total_active_parameters: 202
+    total_active_formulas: 43
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -126,6 +126,7 @@ dimensions:
       - "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/test_results.md"
       - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
       - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -212,6 +213,8 @@ dimensions:
       - "KMFA/tools/check_s14_p3_policy_evidence_plan.py"
       - "KMFA/tools/performance_fact_fields.py"
       - "KMFA/tools/check_s15_p1_performance_fact_fields.py"
+      - "KMFA/tools/subcontract_procurement_aggregation.py"
+      - "KMFA/tools/check_s16_p1_subcontract_procurement.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -399,8 +402,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S15_GITHUB_UPLOAD_COMPLETE_NEXT_S16P1"
-  release_gate: "KMFA-S16-P1-GATE"
+  status: "S16P1_COMPLETED_VALIDATED_LOCAL_ONLY_NEXT_S16P2"
+  release_gate: "KMFA-S16-P2-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"

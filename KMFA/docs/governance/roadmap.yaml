@@ -1103,9 +1103,57 @@ stages:
               - "KMFA/stage_artifacts/S15_P3_salary_boundary/human/test_results.md"
   - stage_id: "S16"
     name: "外协采购、项目状态、客户经营扩展"
-    status: "planned_next"
+    status: "in_progress_s16p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33
+    current_result: "S16-P1 外协采购归集已完成本地验证；S16-P2/S16-P3、Stage 16 review 和 GitHub upload 尚未执行。"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/s16_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/machine/s16_p1_manifest.json"
+    phases:
+      - phase_id: "S16PA"
+        name: "外协采购归集"
+        status: "completed_validated_local_only"
+        estimated_hours: 1
+        estimated_pct: 100
+        current_result: "已生成 4 条 public-safe source lane、5 条项目匹配、2 条未归集成本池、2 条重复付款候选和 2 条跨项目费用候选；不执行采购、付款、银行、Stage 16 review 或 GitHub upload。"
+        evidence_refs:
+          - "KMFA/metadata/reports/subcontract_procurement_aggregation_manifest.json"
+          - "KMFA/metadata/reports/subcontract_procurement_source_lanes.jsonl"
+          - "KMFA/metadata/reports/subcontract_project_matches.jsonl"
+          - "KMFA/metadata/reports/subcontract_unallocated_cost_pool.jsonl"
+          - "KMFA/metadata/reports/subcontract_anomaly_candidates.jsonl"
+          - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
+        tasks:
+          - task_id: "S16PAT01"
+            name: "外协费用、采购、付款按项目匹配。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/subcontract_project_matches.jsonl"
+              - "KMFA/tools/check_s16_p1_subcontract_procurement.py"
+          - task_id: "S16PAT02"
+            name: "未匹配进入未归集成本池。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/subcontract_unallocated_cost_pool.jsonl"
+              - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
+          - task_id: "S16PAT03"
+            name: "识别重复付款和跨项目费用候选。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/subcontract_anomaly_candidates.jsonl"
+              - "KMFA/tools/check_s16_p1_subcontract_procurement.py"
+      - phase_id: "S16PB"
+        name: "项目状态生命周期"
+        status: "planned_next"
+        estimated_hours: 1
+        estimated_pct: 0
+      - phase_id: "S16PC"
+        name: "客户经营分析"
+        status: "planned"
+        estimated_hours: 1
+        estimated_pct: 0
   - stage_id: "S17"
     name: "权限、通知、安全、审计与运维"
     status: "planned"

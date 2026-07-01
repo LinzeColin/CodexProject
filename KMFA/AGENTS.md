@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `S16｜外协采购、项目状态、客户经营扩展`
-- 当前 Phase: `S16-P1｜外协采购归集｜待开始`
+- 当前 Phase: `S16-P2｜项目状态生命周期｜待开始`
 
 ## Execution Rules
 
@@ -38,7 +38,7 @@
 
 ## Current Non-Goals
 
-- Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；下一轮只允许从 S16-P1 开始，不得直接进入 S16-P2/S16-P3、Stage 16 review、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1 已完成 public-safe 外协采购归集本地验证。下一轮只允许从 S16-P2 开始，不得直接进入 S16-P3、Stage 16 review、lineage full check、正式报告、采购执行、付款审批、付款执行、银行操作、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
 - 不把 Stage 12 GitHub upload 视为 lineage full check、差异关闭、正式报告或业务 release。
