@@ -1511,3 +1511,133 @@ Stage 9 整体复审已确认：
 
 - 提交整项目复审后刷新本地 app/runtime，并重新运行 `MEMORY_ATLAS_REQUIRE_LOCAL_APPS=1 validate:whole-project`。
 - 通过后执行 final remote checks；若分支仍落后 `origin/main`，先处理 rebase/merge，再上传 GitHub main。
+
+## 33. v1.1.6 Stage 0 Phase 0.1 中文文本质量门槛
+
+状态：`phase_0_1_contract_created`。
+
+模型假设：
+
+- 中文可读性是 Memory Atlas 的基础可用性门槛；如果用户看不懂标签、说明、证据或 proposal 边界，后续视觉增强不能证明系统可用。
+- 文本质量问题可能来自文件编码、前端渲染、CSS/字体、旧文案或数据快照；不能把不可读问题归因于用户操作。
+- 长摘要和解释性内容必须进入展开层或 Inspector，表格和按钮只承载短标签、状态和动作。
+
+输入：
+
+- Markdown 合同与验收文档。
+- UI 标签、按钮、卡片标题、状态标签、Inspector 标签。
+- 后续浏览器截图与 redacted derived snapshot。
+
+处理方法：
+
+- 先用静态扫描排除替换字符和典型 mojibake。
+- 再用产品合同固定中文主标签、状态标签和 proposal-only 文案。
+- 后续实现阶段使用桌面、平板和移动视口截图验证重叠、截断、横向撑破和表格长句问题。
+
+参数与门槛：
+
+- 文件编码：`UTF-8`。
+- 阻断字符：replacement character `U+FFFD`、Latin-1 残留 `U+00C2/U+00C3`、以及 UTF-8 被错误解码后形成的连续乱码片段。
+- 卡片标题建议长度：`<= 18` 个中文字符。
+- 卡片摘要建议高度：`<= 2` 行；超过后进入展开层或 Inspector。
+- 表格允许内容：短标签、数字、状态、日期、低长度摘要。
+- 表格禁止内容：长段落、公式解释、证据全文、多句行动建议、多层级原因。
+- 建议截图视口：`1440x900`、`768x1024`、`390x844`。
+- proposal-only 提示必须明确：前端只生成调整草案，不直接写入长期记忆。
+
+输出：
+
+- `docs/product/chinese_ui_quality_contract.md`
+- `docs/acceptance/chinese_text_audit.md`
+- 后续实现 phase 的浏览器截图验收记录。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private 数据。
+- 本 phase 不修改核心前端实现或 CSS。
+
+## 34. v1.1.6 Stage 0 Phase 0.2 视觉密度基线门槛
+
+状态：`phase_0_2_contract_created_stage_0_review_passed_pending_upload`。
+
+模型假设：
+
+- Memory Atlas 的核心价值来自可解释视觉结构，不来自列表、表格或普通卡片堆叠。
+- 视觉密度是人工验收门槛，用于阻断明显退化；它不替代后续浏览器截图、交互测试和用户判断。
+- 视觉主区必须承载状态、结构、时间或行动关系；纯装饰背景不能计入视觉化程度。
+
+输入：
+
+- Roadmap v2 Stage 0 Phase 0.2。
+- 记忆总览、记忆星系、记忆时间河、数据导图的产品合同。
+- 后续实现 phase 的桌面、平板和移动截图。
+
+处理方法：
+
+- 对四个核心板块分别定义最低视觉化程度。
+- 为每个板块定义必备视觉主区、失败条件和后续截图矩阵。
+- 使用反退化规则阻断空白画布、列表化、表格化、普通卡片化和无语义装饰化。
+
+参数与门槛：
+
+- `memory_overview_visualization_min = 0.70`
+- `memory_starfield_visualization_min = 0.90`
+- `memory_river_visualization_min = 0.85`
+- `data_map_visualization_min = 0.80`
+- `screenshot_viewports = 1440x900;768x1024;390x844`
+- `required_pages = 记忆总览;记忆星系;记忆时间河;数据导图`
+
+输出：
+
+- `docs/acceptance/visual_density_baseline.md`
+- 后续实现 phase 的截图证据和复审记录。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private 数据。
+- 本 phase 不修改核心前端实现、CSS 或 feature flag。
+
+## 35. v1.1.6 Stage 0 整体复审门槛
+
+状态：`stage_0_review_passed_pending_upload`。
+
+模型假设：
+
+- Stage 0 不能只依赖人工描述；上传前必须有固定 review artifact 和 deterministic validator 证明 Phase 0.1 / 0.2 合同、记录和边界一致。
+- 本复审只验证 C2 合同层，不证明后续浏览器截图、运行时 UI 或最终视觉实现已完成。
+
+输入：
+
+- `docs/product/chinese_ui_quality_contract.md`
+- `docs/acceptance/chinese_text_audit.md`
+- `docs/acceptance/visual_density_baseline.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage0_review.md`
+- Memory Atlas 交付记录、模型参数记录、三文件和 changelog。
+
+处理方法：
+
+- 使用 `validate:v1.1.6-stage0` 检查 Phase 0.1 / 0.2 marker、记录一致性、review 文档、package script 和改动范围。
+- 保持 no runtime UI、no CSS、no raw/private、no direct writeback、no Stage 1、no GitHub main upload in review commit。
+
+参数与门槛：
+
+- `stage0_required_validator = validate:v1.1.6-stage0`
+- `stage0_required_review_doc = docs/reviews/memory_atlas_v1_1_6_stage0_review.md`
+- `stage0_review_status = stage_0_review_passed_pending_upload`
+- `stage0_allowed_change_scope = contracts;acceptance;review;records;validator;package_script`
+
+输出：
+
+- Stage 0 review artifact。
+- Stage 0 validator。
+- 上传前 final remote checks 和 post-integration validation。
+
+边界：
+
+- 本复审不上传 GitHub main。
+- 本复审不部署 Cloudflare，不修改 Access policy。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不新增 direct active-memory writeback。
+- 本复审不新增 production runtime feature work。

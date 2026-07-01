@@ -1,5 +1,46 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 0 Review
+
+- Added `validate:v1.1.6-stage0` to pin the Stage 0 Phase 0.1 / 0.2
+  contracts, records, review artifact, changed-path boundary, and upload gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage0_review.md`.
+- Marked Stage 0 as review-passed and still pending final remote checks and
+  GitHub main upload.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, Stage 1 work, No GitHub main upload, Cloudflare
+deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 0 Phase 0.2
+
+- Added the visual density baseline for Memory Overview, Memory Starfield,
+  Memory River, and Data Map.
+- Defined minimum visualization thresholds, required primary visual regions,
+  failure conditions, screenshot matrix, and anti-regression rules.
+- Registered Stage 0 as locally phase-complete and pending whole-stage review.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, Stage 1 work, No GitHub main upload, Cloudflare
+deployment, or Access policy change was added.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 0 Phase 0.1
+
+- Added the Chinese UI quality contract for UTF-8, mojibake blocking,
+  Chinese-first labels, text length rules, table content boundaries,
+  Inspector readability, proposal-only wording, and low-width viewport
+  expectations.
+- Added the Chinese text audit acceptance document with static text checks and
+  future browser screenshot gates.
+- Registered the v1.1.6 Stage 0 Phase 0.1 record in Memory Atlas delivery and
+  model-parameter documentation.
+
+No runtime UI implementation, CSS change, raw/private data read, direct
+writeback, Stage 0 Phase 0.2 work, No GitHub main upload, Cloudflare
+deployment, or Access policy change was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Whole-Project Review
 
 - Completed the whole-project review after Part 1 through Part 10 review gates
