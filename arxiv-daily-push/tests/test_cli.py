@@ -2380,6 +2380,37 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertFalse(payload["daily_operation_enablement_allowed_by_this_artifact"])
 
+    def test_daily_operation_owner_authorization_decision_json_command_keeps_runtime_disabled(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "daily-operation-owner-authorization-decision",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-07-01T21:20:00+10:00",
+                    "--decision",
+                    "keep_daily_operation_disabled_no_persistent_authorization",
+                    "--json",
+                ]
+            )
+
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["task_id"], "S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION")
+        self.assertEqual(payload["status"], "pass_daily_operation_owner_decision_recorded_keep_disabled")
+        self.assertEqual(payload["daily_operation_owner_decision_validation_errors"], [])
+        self.assertTrue(payload["owner_daily_operation_decision_recorded"])
+        self.assertFalse(payload["owner_daily_operation_authorization_recorded"])
+        self.assertFalse(payload["persistent_daily_operation_authorized"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["release_packaging_enabled"])
+        self.assertFalse(payload["production_restore_enabled"])
+
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {
             "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,

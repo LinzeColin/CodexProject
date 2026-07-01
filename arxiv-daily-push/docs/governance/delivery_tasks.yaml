@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION"
+    phase: "S2PL"
+    objective: "Record the owner DAILY_OPERATION decision as keep-disabled after the technical authorization preflight passed, without granting persistent runtime authorization."
+    scope: "Daily-operation owner decision builder/validator/CLI, decision artifact, run manifest, phase record, CURRENT state, dashboard routing, owner-facing status, three-base summaries, and focused regression tests."
+    non_scope: "No persistent DAILY_OPERATION authorization, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, V7.1 historical baseline mutation, or cross-project cleanup."
+    status: "completed"
+    dependencies: ["S2PMT07-DAILY-OPERATION-SECRET-AND-ARTIFACT-REPAIR", "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"]
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_KEEP_DISABLED.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD final-gate unittest", "TDD CLI unittest", "current-state and user-center regression tests", "post-run safety state checks"]
+    test_results: ["TDD red: missing daily-operation owner decision builder/validator and CLI command", "TDD green: final-gate and CLI command record keep-disabled decision", "decision status=pass_daily_operation_owner_decision_recorded_keep_disabled", "state_hash=803dc436b9c27b99fa82109604184fd8bc028c32eac9a40545e0824ce7f3972b", "owner_daily_operation_decision_recorded=true", "owner_daily_operation_authorization_recorded=false", "persistent_daily_operation_authorized=false", "daily_operation_enabled=false", "real_smtp_send_enabled=false", "scheduler_install_enabled=false", "release_packaging_enabled=false", "production_restore_enabled=false"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_KEEP_DISABLED.md", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json"]
+    risk: "Future agents could treat a keep-disabled owner decision as persistent runtime authorization; this task records the decision while routing any future enablement to a separate explicit authorization gate."
+    rollback: "Revert the owner decision artifact, run manifest, phase record, current-state sync, dashboard/user-facing summaries, and focused tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-SECRET-AND-ARTIFACT-REPAIR"
     phase: "S2PL"
     objective: "Clear the remaining DAILY_OPERATION technical preflight blockers with local runner SMTP key-presence evidence and ADP-scoped git artifact hygiene while keeping runtime disabled."
