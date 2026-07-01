@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE"
+    phase: "S2PL"
+    objective: "Write and validate the Stage 2 INTEGRATED_PRODUCTION_ACCEPTED evidence after the final bundle, P0/P1 zero proof, owner decision, write gate, and controlled real-run evidence passed, without enabling DAILY_OPERATION or runtime production."
+    scope: "Integrated production acceptance evidence artifact, manifest, phase record, CURRENT state, delivery/development ledgers, owner-facing status, root tools, CLI, and focused regression tests."
+    non_scope: "No DAILY_OPERATION enablement, persistent SMTP permission, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, or V7.1 historical baseline mutation."
+    status: "completed"
+    dependencies: ["S2PMT07-OWNER-DECISION-WRITE-GATE-ALLOWED", "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", "S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE", "FINAL_ACCEPTANCE_BUNDLE/manifest.json"]
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_WRITE.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"]
+    test_commands: ["TDD focused final-gate unittest", "TDD focused CLI unittest", "focused governance current-state unittest", "root task pack validation", "acceptance bundle verification", "project governance", "governance sync", "lean render drift", "JSON/YAML/JSONL parse", "git diff --check", "post-run safety state checks"]
+    test_results: ["TDD red: missing integrated production acceptance evidence builder", "TDD green: focused final-gate evidence test OK", "TDD red: missing CLI command", "TDD green: focused CLI evidence command test OK", "acceptance evidence artifact written with state_hash=4b88b2edd8fe2eae7ee63f8b512eb713501805725f5fcdf3fb6363f0df3b5453", "production_acceptance_claimed=true", "integrated_production_accepted=true", "stage2_integrated_production_accepted=true", "daily_operation_enabled=false", "real_smtp_send_enabled=false", "scheduler_install_enabled=false", "release_packaging_enabled=false", "production_restore_enabled=false"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_WRITE.md", "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json", "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"]
+    risk: "Future agents could misread integrated production acceptance as DAILY_OPERATION or persistent SMTP/scheduler permission; this task explicitly keeps runtime enablement false and routes the next task to separate DAILY_OPERATION authorization preflight."
+    rollback: "Revert integrated production acceptance evidence artifact, manifest, phase record, CURRENT sync, root-tool routing, and code/test support; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-OWNER-DECISION-WRITE-GATE-ALLOWED"
     phase: "S2PL"
     objective: "Record the owner production-boundary decision artifact and allow the final acceptance write gate only for evidence writing, without enabling runtime production."

@@ -15,19 +15,19 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: S2PMT07 integrated production acceptance boundary preflight passed all configured checks; the owner decision packet is ready; one owner-authorized controlled foreground real-run acceptance check has passed without duplicate send or persistent enablement; explicit owner production-boundary decision evidence is now recorded in FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json; the final acceptance write gate is allowed only for writing integrated production acceptance evidence while runtime enablement remains forbidden. INTEGRATED_PRODUCTION_ACCEPTED is not yet written, DAILY_OPERATION is not enabled, and SMTP/scheduler/Release/restore remain prohibited.
-  current_iteration: ITER-20260701-ADP-S2PMT07-OWNER-DECISION-WRITE-GATE-ALLOWED
-  current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_ALLOWED_NO_RUNTIME_ENABLEMENT
-  next_executable_task: S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE
-  next_required_step: WRITE_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_NO_RUNTIME_ENABLEMENT
+  global_current_task_meaning: S2PMT07 integrated production acceptance evidence is written and validated in FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json after final bundle readiness, P0/P1 zero proof, independent final review, final command execution, owner decision artifact, write gate, and controlled real-run evidence all passed. This records INTEGRATED_PRODUCTION_ACCEPTED for Stage 2 only; DAILY_OPERATION is not enabled, and SMTP/scheduler/Release/restore remain prohibited until a separate DAILY_OPERATION authorization and preflight pass.
+  current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE
+  current_gate: INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION
+  next_executable_task: S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT
+  next_required_step: REQUEST_DAILY_OPERATION_AUTHORIZATION_AND_PREFLIGHT
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
   email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW
 single_current_contract_rule: Only this file may identify the CURRENT product contract. Workstream next tasks must be named by context and must not replace the product-contract pointer.
 production_boundary:
   stage1_gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED
-  stage2_integrated_production_accepted: false
-  production_acceptance_claimed: false
+  stage2_integrated_production_accepted: true
+  production_acceptance_claimed: true
   daily_operation_enabled: false
   inherited_v7_1_baseline_p0_findings: 8
   inherited_v7_1_baseline_p1_findings: 37
@@ -69,6 +69,13 @@ production_boundary:
   integrated_production_acceptance_owner_decision_artifact_gate_state_hash: b1ce1cd2749ac3712dae378734b39d1354fff8613c5f875536beed44c2746e6a
   integrated_production_acceptance_owner_decision_artifact_gate_manifest: governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json
   integrated_production_acceptance_owner_decision_artifact: FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json
+  integrated_production_acceptance_evidence_written: true
+  integrated_production_acceptance_evidence_status: pass_integrated_production_accepted_evidence_written_no_runtime_enablement
+  integrated_production_acceptance_evidence_artifact: FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json
+  integrated_production_acceptance_evidence_generated_at: "2026-07-01T19:04:10+10:00"
+  integrated_production_acceptance_evidence_state_hash: 4b88b2edd8fe2eae7ee63f8b512eb713501805725f5fcdf3fb6363f0df3b5453
+  integrated_production_acceptance_evidence_manifest: governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-20260701.json
+  integrated_production_acceptance_daily_operation_runtime_enablement_allowed: false
   integrated_production_acceptance_owner_decision_request_ready: true
   integrated_production_acceptance_owner_decision_request_state_hash: b406be2981f67b316df5ceba4469cc8fc3b96364a031c179bca9904f008bd9ea
   integrated_production_acceptance_owner_decision_request_artifact: FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json
@@ -84,9 +91,9 @@ production_boundary:
   no_production_side_effects_proven: true
   final_bundle_missing_items: []
   forbidden_until:
-    - INTEGRATED_PRODUCTION_ACCEPTED written with evidence
-    - production safety preflight remains passing without changing no-production flags
     - DAILY_OPERATION separately authorized after accepted evidence
+    - daily operation safety preflight passes without changing disabled runtime flags
+    - owner explicitly authorizes persistent operation boundary
   forbidden_actions:
     - real_smtp_send
     - automatic_scheduler_install

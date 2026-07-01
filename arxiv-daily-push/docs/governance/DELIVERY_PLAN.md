@@ -21,10 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 337
+- task_count: 338
 - acceptance_count: 128
 
 ## Delivery Tasks
+
+## 2026-07-01 19:04:10 Australia/Sydney - S2PMT07 integrated production acceptance evidence
+
+- Task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE`
+- Result: `pass_stage2_integrated_production_accepted_no_daily_operation`
+- Evidence: `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`; `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_WRITE.md`.
+- Gate state: `integrated_production_accepted=true`; `stage2_integrated_production_accepted=true`; `production_acceptance_claimed=true`; `daily_operation_enabled=false`; `state_hash=4b88b2edd8fe2eae7ee63f8b512eb713501805725f5fcdf3fb6363f0df3b5453`; `failed_checks=[]`.
+- Next required step: `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`, limited to owner DAILY_OPERATION authorization and runtime safety preflight before any persistent operation enablement.
+- Production boundary: no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, V7.1 baseline P0/P1 mutation, or `DAILY_OPERATION` is introduced by this task.
+- Verification: focused final-gate/CLI/current-state/root-tool tests plus governance validators are required before commit; this entry does not claim semantic extractor completion until actually run.
 
 ## 2026-07-01 18:16:00 Australia/Sydney - S2PMT07 owner decision write gate allowed
 

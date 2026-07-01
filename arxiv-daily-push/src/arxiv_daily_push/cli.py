@@ -119,6 +119,7 @@ from .stage2_replay_gate import (
 )
 from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+    S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_ARTIFACT_REF,
     S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS,
     S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
     S2PLT02_REAL_SMTP_REQUIRED_ENV_KEYS,
@@ -135,6 +136,7 @@ from .stage2_final_gate import (
     build_integrated_production_acceptance_owner_decision_packet_state,
     build_integrated_production_acceptance_owner_decision_artifact_gate_state,
     build_integrated_production_acceptance_preflight_state,
+    build_integrated_production_acceptance_evidence_state,
     build_integrated_production_acceptance_write_gate_state,
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
@@ -168,6 +170,7 @@ from .stage2_final_gate import (
     validate_integrated_production_acceptance_owner_decision_packet_state,
     validate_integrated_production_acceptance_owner_decision_artifact_gate_state,
     validate_integrated_production_acceptance_preflight_state,
+    validate_integrated_production_acceptance_evidence_state,
     validate_integrated_production_acceptance_write_gate_state,
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
@@ -1981,6 +1984,36 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON write-gate precheck state.",
+    )
+
+    integrated_production_acceptance_evidence = subparsers.add_parser(
+        "write-integrated-production-acceptance-evidence",
+        help="Build the S2PMT07 integrated production acceptance evidence without runtime enablement.",
+    )
+    integrated_production_acceptance_evidence.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing FINAL_ACCEPTANCE_BUNDLE and ADP governance artifacts.",
+    )
+    integrated_production_acceptance_evidence.add_argument(
+        "--generated-at",
+        required=True,
+        help="Timestamp to embed in the acceptance evidence.",
+    )
+    integrated_production_acceptance_evidence.add_argument(
+        "--artifact-path",
+        default=S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_ARTIFACT_REF,
+        help="Acceptance evidence artifact path to write when --write is set.",
+    )
+    integrated_production_acceptance_evidence.add_argument(
+        "--write",
+        action="store_true",
+        help="Write the acceptance evidence artifact after validation passes.",
+    )
+    integrated_production_acceptance_evidence.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON acceptance evidence state.",
     )
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
@@ -5026,6 +5059,43 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- next_required_step: {report.get('next_required_step')}")
             print(f"- owner_packet_state_hash: {report.get('owner_packet_state_hash')}")
             print(f"- controlled_real_run_status: {report.get('controlled_real_run_status')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors else 2
+    if args.command == "write-integrated-production-acceptance-evidence":
+        repo_root = Path(args.repo_root)
+        report = build_integrated_production_acceptance_evidence_state(
+            generated_at=args.generated_at,
+            repo_root=repo_root,
+        )
+        errors = validate_integrated_production_acceptance_evidence_state(report)
+        artifact_written = False
+        artifact_path = Path(args.artifact_path)
+        resolved_artifact_path = artifact_path if artifact_path.is_absolute() else repo_root / artifact_path
+        if args.write and not errors:
+            resolved_artifact_path.parent.mkdir(parents=True, exist_ok=True)
+            resolved_artifact_path.write_text(
+                json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            artifact_written = True
+        output = {
+            **report,
+            "acceptance_evidence_validation_errors": errors,
+            "artifact_written": artifact_written,
+            "artifact_write_path": str(resolved_artifact_path),
+        }
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- production_acceptance_claimed: {report.get('production_acceptance_claimed')}")
+            print(f"- integrated_production_accepted: {report.get('integrated_production_accepted')}")
+            print(f"- daily_operation_enabled: {report.get('daily_operation_enabled')}")
+            print(f"- next_required_step: {report.get('next_required_step')}")
+            print(f"- artifact_written: {artifact_written}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

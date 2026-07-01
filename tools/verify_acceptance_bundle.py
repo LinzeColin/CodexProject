@@ -50,6 +50,38 @@ def _load_cli_report(root: Path) -> tuple[int, dict[str, Any], str]:
     return completed.returncode, payload, stderr_tail
 
 
+def _integrated_acceptance_state(root: Path) -> dict[str, bool]:
+    path = root / "FINAL_ACCEPTANCE_BUNDLE" / "integrated_production_acceptance.json"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        payload = {}
+    accepted = (
+        payload.get("status")
+        == "pass_integrated_production_accepted_evidence_written_no_runtime_enablement"
+        and payload.get("production_acceptance_claimed") is True
+        and payload.get("integrated_production_accepted") is True
+        and payload.get("stage2_integrated_production_accepted") is True
+    )
+    runtime_enabled = any(
+        payload.get(flag) is True
+        for flag in (
+            "daily_operation_enabled",
+            "real_smtp_send_enabled",
+            "scheduler_install_enabled",
+            "release_packaging_enabled",
+            "production_restore_enabled",
+        )
+    )
+    return {
+        "production_acceptance_claimed": accepted,
+        "integrated_production_accepted": accepted,
+        "stage2_integrated_production_accepted": accepted,
+        "daily_operation_enabled": payload.get("daily_operation_enabled") is True,
+        "runtime_enabled": runtime_enabled,
+    }
+
+
 def build_verification_report(root: Path, required_zero: list[str]) -> dict[str, Any]:
     required_zero_set = {item.upper() for item in required_zero}
     unsupported = sorted(required_zero_set.difference({"P0", "P1"}))
@@ -83,7 +115,8 @@ def build_verification_report(root: Path, required_zero: list[str]) -> dict[str,
         and s2plt04_validation.get("status") == "pass"
         and s2plt04_validation.get("s2plt04_completed_by_report") is True
     )
-    passed = bundle_complete or final_command_prerequisite_ready
+    acceptance = _integrated_acceptance_state(root)
+    passed = (bundle_complete or final_command_prerequisite_ready) and not acceptance["runtime_enabled"]
     return {
         "status": "PASS" if passed else "FAIL",
         "scope": "adp_final_command_prerequisite_root_verification_no_production_side_effects",
@@ -104,9 +137,11 @@ def build_verification_report(root: Path, required_zero: list[str]) -> dict[str,
         "readiness_validation_errors": validation_errors,
         "missing_items": list(payload.get("missing_items", [])),
         "stderr_tail": stderr_tail,
-        "production_acceptance_claimed": False,
-        "integrated_production_accepted": False,
-        "daily_operation_enabled": False,
+        "production_acceptance_claimed": acceptance["production_acceptance_claimed"],
+        "integrated_production_accepted": acceptance["integrated_production_accepted"],
+        "stage2_integrated_production_accepted": acceptance["stage2_integrated_production_accepted"],
+        "daily_operation_enabled": acceptance["daily_operation_enabled"],
+        "runtime_enablement_detected": acceptance["runtime_enabled"],
         "real_smtp_send_enabled": False,
         "scheduler_install_enabled": False,
         "release_packaging_enabled": False,

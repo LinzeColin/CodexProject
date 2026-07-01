@@ -2033,7 +2033,7 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["readiness_validation_errors"], [])
 
-    def test_integrated_production_acceptance_preflight_json_command_blocks_at_owner_decision(self):
+    def test_integrated_production_acceptance_preflight_json_command_fails_closed_after_acceptance(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()
         with redirect_stdout(buffer):
@@ -2061,8 +2061,8 @@ class CliTests(unittest.TestCase):
             )
         self.assertEqual(result, 0)
         payload = json.loads(buffer.getvalue())
-        self.assertEqual(payload["status"], "blocked_owner_decision_required")
-        self.assertTrue(payload["preflight_checks_passed"])
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["preflight_checks_passed"])
         self.assertEqual(payload["next_required_step"], "OWNER_PRODUCTION_BOUNDARY_DECISION")
         self.assertTrue(payload["checks"]["final_bundle_ready"])
         self.assertTrue(payload["checks"]["open_pr_count_zero"])
@@ -2071,7 +2071,7 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["preflight_validation_errors"], [])
 
-    def test_integrated_production_acceptance_owner_decision_packet_json_command_fails_closed_after_decision(self):
+    def test_integrated_production_acceptance_owner_decision_packet_json_command_fails_closed_after_acceptance(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()
         with redirect_stdout(buffer):
@@ -2089,7 +2089,15 @@ class CliTests(unittest.TestCase):
         payload = json.loads(buffer.getvalue())
         self.assertEqual(payload["status"], "blocked")
         self.assertFalse(payload["packet_ready"])
-        self.assertEqual(payload["failed_checks"], ["current_points_to_owner_decision", "owner_decision_not_recorded"])
+        self.assertEqual(
+            payload["failed_checks"],
+            [
+                "current_points_to_owner_decision",
+                "owner_decision_not_recorded",
+                "production_acceptance_not_claimed",
+                "integrated_production_not_accepted",
+            ],
+        )
         self.assertEqual(
             payload["next_required_step"],
             "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_DECISION_OR_PAUSE",
@@ -2217,7 +2225,7 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertEqual(payload["owner_decision_artifact_gate_validation_errors"], [])
 
-    def test_integrated_production_acceptance_write_gate_json_command_allows_valid_owner_decision_without_runtime_enablement(self):
+    def test_integrated_production_acceptance_write_gate_json_command_fails_closed_after_acceptance(self):
         repo_root = Path(__file__).resolve().parents[2]
         self.assertTrue(
             (repo_root / "FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json").exists(),
@@ -2237,15 +2245,21 @@ class CliTests(unittest.TestCase):
             )
         self.assertEqual(result, 0)
         payload = json.loads(buffer.getvalue())
-        self.assertEqual(payload["status"], "pass_write_gate_allowed_owner_decision_recorded_no_runtime_enablement")
-        self.assertTrue(payload["write_gate_precheck_ready"])
-        self.assertTrue(payload["owner_production_boundary_decision_recorded"])
-        self.assertTrue(payload["acceptance_write_gate_allowed"])
-        self.assertEqual(payload["failed_checks"], [])
-        self.assertEqual(payload["blocking_reasons"], [])
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["write_gate_precheck_ready"])
+        self.assertFalse(payload["owner_production_boundary_decision_recorded"])
+        self.assertFalse(payload["acceptance_write_gate_allowed"])
+        self.assertEqual(
+            payload["failed_checks"],
+            ["production_acceptance_not_claimed", "integrated_production_not_accepted"],
+        )
+        self.assertEqual(
+            payload["blocking_reasons"],
+            ["production_acceptance_not_claimed_failed", "integrated_production_not_accepted_failed"],
+        )
         self.assertEqual(
             payload["next_required_step"],
-            "WRITE_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_NO_RUNTIME_ENABLEMENT",
+            "OWNER_MUST_RECORD_EXPLICIT_PRODUCTION_BOUNDARY_ACCEPTANCE_WRITE_DECISION_OR_PAUSE",
         )
         self.assertTrue(payload["checks"]["owner_packet_ready"])
         self.assertTrue(payload["checks"]["owner_decision_artifact_valid"])
@@ -2258,9 +2272,45 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertEqual(payload["write_gate_validation_errors"], [])
+
+    def test_integrated_production_acceptance_evidence_json_command_accepts_without_runtime_enablement(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "write-integrated-production-acceptance-evidence",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-07-01T18:42:00+10:00",
+                    "--json",
+                ]
+            )
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(
+            payload["status"],
+            "pass_integrated_production_accepted_evidence_written_no_runtime_enablement",
+        )
+        self.assertTrue(payload["production_acceptance_claimed"])
+        self.assertTrue(payload["integrated_production_accepted"])
+        self.assertTrue(payload["stage2_integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
         self.assertFalse(payload["release_packaging_enabled"])
         self.assertFalse(payload["production_restore_enabled"])
-        self.assertEqual(payload["write_gate_validation_errors"], [])
+        self.assertEqual(payload["acceptance_evidence_validation_errors"], [])
+        self.assertEqual(
+            payload["next_required_step"],
+            "REQUEST_DAILY_OPERATION_AUTHORIZATION_AND_PREFLIGHT",
+        )
+        self.assertEqual(
+            payload["next_executable_task"],
+            "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
+        )
 
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {

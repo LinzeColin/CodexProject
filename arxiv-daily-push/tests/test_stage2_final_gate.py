@@ -6462,7 +6462,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_s2pmt07_precheck_report(tampered_bundle),
         )
 
-    def test_integrated_production_acceptance_preflight_blocks_on_owner_decision_only(self) -> None:
+    def test_integrated_production_acceptance_preflight_fails_closed_after_acceptance(self) -> None:
         state = build_integrated_production_acceptance_preflight_state(
             generated_at="2026-07-01T16:00:00+10:00",
             open_pr_count=0,
@@ -6472,15 +6472,15 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
 
         self.assertEqual(state["task_id"], "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT")
-        self.assertEqual(state["status"], "blocked_owner_decision_required")
+        self.assertEqual(state["status"], "blocked")
         self.assertEqual(state["scope"], "production_boundary_preflight_only_no_acceptance_no_enablement")
-        self.assertTrue(state["preflight_checks_passed"])
+        self.assertFalse(state["preflight_checks_passed"])
         self.assertEqual(
             state["blocking_reasons"],
             [
-                "owner_production_boundary_decision_missing",
-                "integrated_production_accepted_not_written",
-                "daily_operation_not_enabled",
+                "next_task_is_production_boundary_preflight_failed",
+                "production_acceptance_not_claimed_failed",
+                "integrated_production_not_accepted_failed",
             ],
         )
         self.assertTrue(state["checks"]["final_bundle_ready"])
@@ -6506,7 +6506,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_integrated_production_acceptance_preflight_state(tampered),
         )
 
-    def test_integrated_production_acceptance_owner_decision_packet_fails_closed_after_owner_decision(self) -> None:
+    def test_integrated_production_acceptance_owner_decision_packet_fails_closed_after_acceptance(self) -> None:
         state = build_integrated_production_acceptance_owner_decision_packet_state(
             generated_at="2026-07-01T16:30:00+10:00"
         )
@@ -6515,12 +6515,22 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(state["status"], "blocked")
         self.assertEqual(state["scope"], "owner_decision_packet_only_no_acceptance_no_enablement")
         self.assertFalse(state["packet_ready"])
-        self.assertEqual(state["failed_checks"], ["current_points_to_owner_decision", "owner_decision_not_recorded"])
+        self.assertEqual(
+            state["failed_checks"],
+            [
+                "current_points_to_owner_decision",
+                "owner_decision_not_recorded",
+                "production_acceptance_not_claimed",
+                "integrated_production_not_accepted",
+            ],
+        )
         self.assertEqual(
             state["blocking_reasons"],
             [
                 "current_points_to_owner_decision_failed",
                 "owner_decision_not_recorded_failed",
+                "production_acceptance_not_claimed_failed",
+                "integrated_production_not_accepted_failed",
             ],
         )
         self.assertIn("review_integrated_production_acceptance_preflight_evidence", state["required_owner_actions"])
@@ -6656,18 +6666,24 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_integrated_production_acceptance_owner_decision_artifact(tampered),
         )
 
-    def test_integrated_production_acceptance_write_gate_allows_owner_decision_without_runtime_enablement(self) -> None:
+    def test_integrated_production_acceptance_write_gate_fails_closed_after_acceptance(self) -> None:
         state = build_integrated_production_acceptance_write_gate_state(
             generated_at="2026-07-01T18:16:00+10:00"
         )
 
         self.assertEqual(state["task_id"], S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_TASK_ID)
-        self.assertEqual(state["status"], "pass_write_gate_allowed_owner_decision_recorded_no_runtime_enablement")
+        self.assertEqual(state["status"], "blocked")
         self.assertEqual(state["scope"], S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_SCOPE)
-        self.assertTrue(state["write_gate_precheck_ready"])
-        self.assertTrue(state["acceptance_write_gate_allowed"])
-        self.assertEqual(state["failed_checks"], [])
-        self.assertEqual(state["blocking_reasons"], [])
+        self.assertFalse(state["write_gate_precheck_ready"])
+        self.assertFalse(state["acceptance_write_gate_allowed"])
+        self.assertEqual(
+            state["failed_checks"],
+            ["production_acceptance_not_claimed", "integrated_production_not_accepted"],
+        )
+        self.assertEqual(
+            state["blocking_reasons"],
+            ["production_acceptance_not_claimed_failed", "integrated_production_not_accepted_failed"],
+        )
         self.assertTrue(state["checks"]["owner_packet_manifest_present"])
         self.assertTrue(state["checks"]["owner_packet_ready"])
         self.assertTrue(state["checks"]["owner_packet_does_not_allow_write_gate"])
@@ -6685,7 +6701,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(state["controlled_real_run_historical_sent_mail_products"], ["M1", "M2", "M3", "M4"])
         self.assertEqual(state["controlled_real_run_background_process_count_after"], 0)
         self.assertEqual(state["controlled_real_run_persistent_adp_allow_smtp_send_after"], "false")
-        self.assertTrue(state["owner_production_boundary_decision_recorded"])
+        self.assertFalse(state["owner_production_boundary_decision_recorded"])
         self.assertFalse(state["production_acceptance_claimed"])
         self.assertFalse(state["integrated_production_accepted"])
         self.assertFalse(state["daily_operation_enabled"])
@@ -6694,10 +6710,69 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(validate_integrated_production_acceptance_write_gate_state(state), [])
 
         tampered = json.loads(json.dumps(state))
-        tampered["acceptance_write_gate_allowed"] = False
+        tampered["acceptance_write_gate_allowed"] = True
         self.assertIn(
             "integrated production acceptance write gate write allowance must match checks",
             validate_integrated_production_acceptance_write_gate_state(tampered),
+        )
+
+    def test_integrated_production_acceptance_evidence_write_accepts_stage2_without_runtime_enablement(self) -> None:
+        build_state = getattr(
+            stage2_final_gate_module,
+            "build_integrated_production_acceptance_evidence_state",
+            None,
+        )
+        validate_state = getattr(
+            stage2_final_gate_module,
+            "validate_integrated_production_acceptance_evidence_state",
+            None,
+        )
+        self.assertIsNotNone(build_state, "integrated production acceptance evidence builder must exist")
+        self.assertIsNotNone(validate_state, "integrated production acceptance evidence validator must exist")
+
+        state = build_state(generated_at="2026-07-01T18:42:00+10:00")
+
+        self.assertEqual(
+            state["task_id"],
+            "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE",
+        )
+        self.assertEqual(
+            state["status"],
+            "pass_integrated_production_accepted_evidence_written_no_runtime_enablement",
+        )
+        self.assertTrue(state["production_acceptance_claimed"])
+        self.assertTrue(state["integrated_production_accepted"])
+        self.assertTrue(state["stage2_integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["release_packaging_enabled"])
+        self.assertFalse(state["production_restore_enabled"])
+        self.assertEqual(state["blocking_reasons"], [])
+        self.assertEqual(
+            state["next_required_step"],
+            "REQUEST_DAILY_OPERATION_AUTHORIZATION_AND_PREFLIGHT",
+        )
+        self.assertEqual(
+            state["next_executable_task"],
+            "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
+        )
+        self.assertTrue(state["checks"]["write_gate_allowed"])
+        self.assertTrue(state["checks"]["p0_p1_zero_proof_present"])
+        self.assertTrue(state["checks"]["final_bundle_ready"])
+        self.assertTrue(state["checks"]["controlled_real_run_duplicate_send_avoided"])
+        self.assertEqual(state["controlled_real_run_sent_mail_products"], ["M1", "M2", "M3", "M4"])
+        self.assertEqual(
+            state["acceptance_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json",
+        )
+        self.assertEqual(validate_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["daily_operation_enabled"] = True
+        self.assertIn(
+            "integrated production acceptance evidence must not enable daily_operation_enabled",
+            validate_state(tampered),
         )
 
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:

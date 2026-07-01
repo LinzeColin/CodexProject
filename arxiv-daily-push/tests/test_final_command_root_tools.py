@@ -35,7 +35,7 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertEqual(payload["status"], "PASS")
         self.assertEqual(payload["contract_id"], "ADP-PRODUCT-CONTRACT-V7.2")
         self.assertEqual(payload["task_id"], "S2PMT07")
-        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertTrue(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertEqual([result["status"] for result in payload["command_results"]], ["pass", "pass"])
@@ -65,7 +65,7 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertIsNone(payload["next_executable_task"])
         self.assertEqual(payload["s2plt04_completion_report_status"], "pass")
         self.assertEqual(payload["blocking_reasons"], [])
-        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertTrue(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertFalse(payload["real_smtp_send_enabled"])
 
