@@ -601,7 +601,8 @@ const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
 let runtimeTrendState = null;
 let stage4PagesCatalog = typeof window !== "undefined" ? window.PFI_V023_STAGE4_PAGES || null : null;
-let stage5HomeExperience = typeof window !== "undefined" ? window.PFI_V023_STAGE5_HOME || null : null;
+let stage5HomeExperience =
+  typeof window !== "undefined" ? window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME || null : null;
 let runtimeReadModelState = null;
 let runtimeStage4SyncState = null;
 let runtimeReadModelStatusState = null;
@@ -2770,9 +2771,16 @@ function restoreOwnerHomeWorkflow() {
 }
 
 function applyStage5Phase51Home() {
-  const api = stage5HomeExperience || window.PFI_V023_STAGE5_HOME;
-  if (!api || typeof api.buildStage5HomeViewModel !== "function") return;
-  const view = api.buildStage5HomeViewModel({});
+  const api = stage5HomeExperience || window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME;
+  if (!api) return;
+  const builder = typeof api.buildV024Stage5Phase51HomeViewModel === "function"
+    ? api.buildV024Stage5Phase51HomeViewModel
+    : api.buildStage5HomeViewModel;
+  if (typeof builder !== "function") return;
+  const payload = builder === api.buildV024Stage5Phase51HomeViewModel
+    ? { read_model_status: runtimeReadModelStatusState || readEmbeddedReadModelStatus() || {} }
+    : {};
+  const view = builder(payload);
   WORKSPACES.home.conclusion = ownerVisibleText(
     view.home_conclusion,
     "先看财务状态、数据健康、下一步动作、最近变化，再进入报告。",
@@ -2802,7 +2810,7 @@ function applyStage5Phase51Home() {
     "首页说明",
     "首页信息架构",
     "数据状态",
-    "首页只展示财务状态摘要、数据健康、下一步动作、最近变化和报告入口。",
+    "首页只回答钱、位置、变化、问题、下一步和依据。",
   );
 }
 
@@ -4346,7 +4354,7 @@ function renderFeatureCards(cards) {
     const head = document.createElement("div");
     head.className = "workflow-card-head";
     const title = document.createElement("strong");
-    const titleText = ownerVisibleText(card.title, "功能入口");
+    const titleText = ownerVisibleText(card.title, "任务入口");
     title.textContent = titleText;
     item.setAttribute("aria-label", `${titleText}，${localizeStatus(card.status)}`);
     head.appendChild(title);
@@ -4392,7 +4400,7 @@ function featureOpenControl(card) {
     button.type = "button";
     button.className = "workflow-open";
     button.dataset.featureView = target.view;
-    button.textContent = target.label || "打开功能";
+    button.textContent = target.label || "打开任务";
     return button;
   }
   const button = document.createElement("button");
@@ -4508,9 +4516,9 @@ function runFunctionAction(view, trigger = null) {
   const taskPhase = document.querySelector("#task-phase");
   const jobLabel = document.querySelector("#background-job-label");
   if (taskPhase) taskPhase.textContent = `${detail.title} · 已准备`;
-  if (jobLabel) jobLabel.textContent = `${detail.primaryAction} · 已进入同屏操作面板`;
+  if (jobLabel) jobLabel.textContent = `${detail.primaryAction} · 已进入同屏处理流程`;
   renderFunctionRunner(detail);
-  showToast(`已进入${detail.title}操作面板`);
+  showToast(`已进入${detail.title}处理流程`);
 }
 
 function renderFunctionRunner(detail) {
@@ -4518,7 +4526,7 @@ function renderFunctionRunner(detail) {
   if (!runner) return;
   runner.hidden = false;
   runner.dataset.activeFunction = detail.view;
-  runner.querySelector("[data-function-run-title]").textContent = `${ownerVisibleText(detail.title, "功能")} · 操作面板`;
+  runner.querySelector("[data-function-run-title]").textContent = `${ownerVisibleText(detail.title, "任务")} · 处理流程`;
   runner.querySelector("[data-function-run-summary]").textContent = ownerVisibleText(detail.runSummary, "");
   runner.querySelector("[data-function-run-state]").textContent = "已进入";
 
@@ -4951,7 +4959,7 @@ function buildGlobalSearchIndex() {
       title,
       category: item.category || "结果",
       path: safeUserText(item.path, item.workspace ? workspaceLabel(item.workspace, "工作区") : "PFI"),
-      hint: safeUserText(item.hint, item.view ? "打开功能" : "打开入口"),
+      hint: safeUserText(item.hint, item.view ? "打开任务" : "打开入口"),
       keywords: [item.keywords || "", SEARCH_ALIASES[title] || ""].join(" "),
       numbers: [item.numbers || "", extractNumericTokens([title, item.category, item.path, item.hint, item.keywords].join(" "))].join(" "),
       workspace: item.workspace || "",
@@ -4967,7 +4975,7 @@ function buildGlobalSearchIndex() {
       title,
       category: "一级入口",
       path: button.dataset.routeAlias || workspaceLabel(button.dataset.workspace, "入口"),
-      hint: button.dataset.featureView ? "打开功能" : "打开入口",
+      hint: button.dataset.featureView ? "打开任务" : "打开入口",
       workspace: button.dataset.workspace || "home",
       view: button.dataset.featureView || "",
       routeAlias: button.dataset.routeAlias || "",
@@ -5005,10 +5013,10 @@ function buildGlobalSearchIndex() {
     (workspace.features || []).forEach((card, index) => {
       const target = card.target || featureTarget(card.title);
       add({
-        title: ownerVisibleText(card.title, "功能"),
-        category: "功能",
-        path: `${ownerVisibleText(workspace.label, "工作区")} / ${ownerVisibleText(card.evidence, "功能")}`,
-        hint: target.view ? "打开功能面板" : "打开工作区",
+        title: ownerVisibleText(card.title, "任务"),
+        category: "任务",
+        path: `${ownerVisibleText(workspace.label, "工作区")} / ${ownerVisibleText(card.evidence, "任务")}`,
+        hint: target.view ? "打开处理流程" : "打开工作区",
         workspace: target.workspace || workspaceId,
         view: target.view || "",
         routeAlias: target.routeAlias || defaultRouteAliasForWorkspace(target.workspace || workspaceId),
@@ -5048,9 +5056,9 @@ function buildGlobalSearchIndex() {
     const workspaceId = workspaceForFunctionView(detail);
     add({
       title: detail.title,
-      category: "功能面板",
+      category: "处理流程",
       path: `${WORKSPACE_LABELS[workspaceId] || "PFI"} / ${detail.primaryAction}`,
-      hint: "打开功能面板",
+      hint: "打开处理流程",
       workspace: workspaceId,
       view: detail.view,
       routeAlias: routeAliasForFunctionView(detail),
@@ -5761,8 +5769,8 @@ function loadStage4PagesCatalog() {
 }
 
 function loadStage5HomeExperience() {
-  if (stage5HomeExperience || window.PFI_V023_STAGE5_HOME) {
-    stage5HomeExperience = stage5HomeExperience || window.PFI_V023_STAGE5_HOME;
+  if (stage5HomeExperience || window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME) {
+    stage5HomeExperience = stage5HomeExperience || window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME;
     return Promise.resolve(stage5HomeExperience);
   }
   return new Promise((resolve) => {
@@ -5770,7 +5778,7 @@ function loadStage5HomeExperience() {
     script.src = "./app/pages/home.js";
     script.dataset.stage5HomeLoader = "true";
     script.onload = () => {
-      stage5HomeExperience = window.PFI_V023_STAGE5_HOME || null;
+      stage5HomeExperience = window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME || null;
       resolve(stage5HomeExperience);
     };
     script.onerror = () => resolve(null);
@@ -5781,8 +5789,8 @@ function loadStage5HomeExperience() {
 function bootPFIShell() {
   restoreContext();
   bindEvents();
-  applyHomeSummary(readHomeSummary());
   runtimeReadModelStatusState = readEmbeddedReadModelStatus();
+  applyHomeSummary(readHomeSummary());
   applyV024ReadModelStatusToSurfaces(runtimeReadModelStatusState);
   const params = initialSearchParams();
   const requestedFeature = params.get("view") || readContext().feature_view || "";

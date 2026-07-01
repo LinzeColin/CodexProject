@@ -5,9 +5,12 @@
   }
   if (root) {
     root.PFI_V023_STAGE5_HOME = api;
+    root.PFI_V024_STAGE5_HOME = api;
   }
 })(typeof window !== "undefined" ? window : globalThis, function buildPFIStage5Home() {
   const VERSION = "v0.2.3";
+  const V024_TARGET_VERSION = "v0.2.4";
+  const V024_SOURCE_PACKAGE_VERSION = "v0.2.3-repair";
   const STAGE = "Stage 5";
   const PHASE51_ID = "V023-S5-P5.1";
   const PHASE51_NAME = "首页信息架构";
@@ -16,6 +19,94 @@
   const PHASE53_ID = "V023-S5-P5.3";
   const PHASE53_NAME = "去 AI 痕迹";
   const STAGE62_ID = "V023-S6-P6.2";
+
+  const V024_HOME_QUESTIONS = Object.freeze([
+    Object.freeze({
+      id: "money",
+      title: "钱",
+      prompt: "现在能确认多少钱",
+      routeAlias: "/home?tab=status",
+      targetWorkspace: "home",
+    }),
+    Object.freeze({
+      id: "location",
+      title: "位置",
+      prompt: "钱和状态来自哪里",
+      routeAlias: "/accounts?tab=overview",
+      targetWorkspace: "accounts",
+    }),
+    Object.freeze({
+      id: "change",
+      title: "变化",
+      prompt: "最近真实记录发生了什么",
+      routeAlias: "/reports?tab=monthly",
+      targetWorkspace: "insights",
+    }),
+    Object.freeze({
+      id: "problems",
+      title: "问题",
+      prompt: "哪些指标被真实数据状态阻断",
+      routeAlias: "/sources-upload?tab=sources",
+      targetWorkspace: "sync",
+    }),
+    Object.freeze({
+      id: "next_step",
+      title: "下一步",
+      prompt: "我现在该处理什么",
+      routeAlias: "/sources-upload?tab=sources",
+      targetWorkspace: "sync",
+    }),
+    Object.freeze({
+      id: "evidence",
+      title: "依据",
+      prompt: "这些判断来自哪些真实来源",
+      routeAlias: "/reports?tab=monthly",
+      targetWorkspace: "insights",
+    }),
+  ]);
+
+  const V024_STATUS_ACTION_TARGETS = Object.freeze({
+    not_loaded: Object.freeze({
+      targetWorkspace: "sync",
+      routeAlias: "/sources-upload?tab=upload",
+      reason: "先补齐真实文件或 read model。",
+    }),
+    source_missing: Object.freeze({
+      targetWorkspace: "sync",
+      routeAlias: "/sources-upload?tab=sources",
+      reason: "先挂链对应账户、持仓或来源 read model。",
+    }),
+    path_error: Object.freeze({
+      targetWorkspace: "sync",
+      routeAlias: "/sources-upload?tab=sources",
+      reason: "先检查本机数据目录和来源路径。",
+    }),
+    parse_failed: Object.freeze({
+      targetWorkspace: "sync",
+      routeAlias: "/sources-upload?tab=review",
+      reason: "先处理解析失败的文件、行或字段。",
+    }),
+    outdated_snapshot: Object.freeze({
+      targetWorkspace: "sync",
+      routeAlias: "/sources-upload?tab=history",
+      reason: "先刷新或确认快照日期。",
+    }),
+    permission_denied: Object.freeze({
+      targetWorkspace: "settings",
+      routeAlias: "/settings?tab=data-system",
+      reason: "先检查本机文件权限。",
+    }),
+    calculation_failed: Object.freeze({
+      targetWorkspace: "insights",
+      routeAlias: "/reports?tab=monthly",
+      reason: "先查看公式和输入字段。",
+    }),
+    filtered_empty: Object.freeze({
+      targetWorkspace: "ledger",
+      routeAlias: "/ledger?tab=filter",
+      reason: "先调整筛选或查看数据范围。",
+    }),
+  });
 
   const DISPLAY_VALUE_STATUSES = Object.freeze(["ready", "confirmed_zero"]);
   const STATUS_COPY_ZH = Object.freeze({
@@ -150,6 +241,52 @@
         "Stage 6 核心财务指标 read model 接入",
         "Stage 5 whole-stage review",
         "GitHub main upload for intermediate phase",
+      ]),
+    });
+  }
+
+  function buildV024Stage5Phase51Contract() {
+    return Object.freeze({
+      schema: "PFIV024Stage5Phase51ContractV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: V024_SOURCE_PACKAGE_VERSION,
+      stage: STAGE,
+      phase_id: "5.1",
+      phase_name: "首页重建",
+      current_phase_only: true,
+      max_one_phase_per_run: true,
+      home_question_ids: V024_HOME_QUESTIONS.map((item) => item.id),
+      tasks: Object.freeze([
+        "T5.1.1 首页只保留六个核心问题",
+        "T5.1.2 移除功能面板机械层",
+        "T5.1.3 增加下一步任务流",
+        "T5.1.4 接入数据状态卡",
+      ]),
+      allowed_files: Object.freeze([
+        "PFI/web/index.html",
+        "PFI/web/app/pages/home.js",
+        "PFI/web/app/shell.js",
+        "PFI/tests/test_v024_stage5_phase51_home_rebuild.py",
+        "PFI/docs/pfi_v024/STAGE5_HOME_REBUILD.md",
+        "PFI/reports/pfi_v024/stage_5/phase_5_1/*",
+      ]),
+      validation_commands: Object.freeze([
+        "node --check PFI/web/app/pages/home.js",
+        "node --check PFI/web/app/shell.js",
+        "python3 -m pytest PFI/tests/test_v024_stage5_phase51_home_rebuild.py -q",
+      ]),
+      evidence_files: Object.freeze([
+        "PFI/docs/pfi_v024/STAGE5_HOME_REBUILD.md",
+        "PFI/reports/pfi_v024/stage_5/phase_5_1/evidence.json",
+        "PFI/reports/pfi_v024/stage_5/phase_5_1/changed_files.txt",
+        "PFI/reports/pfi_v024/stage_5/phase_5_1/terminal.log",
+        "PFI/reports/pfi_v024/stage_5/phase_5_1/risk_and_rollback.md",
+      ]),
+      explicitly_not_done: Object.freeze([
+        "Phase 5.2 二级页面差异化",
+        "Phase 5.3 交互状态",
+        "Stage 5 whole-stage review",
+        "GitHub main upload",
       ]),
     });
   }
@@ -309,6 +446,343 @@
       shell_cards: cards.map((card) => [card.label, card.display_value, card.detail]),
       summary_zh: `核心指标 ${readyCount} 项可显示，${cards.length - readyCount} 项保留中文状态。`,
     });
+  }
+
+  function buildV024Stage5Phase51HomeViewModel(input = {}) {
+    const readModelStatus = normalizeV024ReadModelStatus(input.read_model_status || input.readModelStatus || input);
+    const surfaceViews = buildV024SurfaceViews(readModelStatus);
+    const homeSurface = surfaceViews.surfaces?.home || { surface: "home", metrics: [] };
+    const metrics = normalizeV024SurfaceMetrics(homeSurface.metrics || readModelStatus.core_metric_states || []);
+    const sourceSummary = buildV024SourceSummary(readModelStatus);
+    const blockedMetrics = metrics.filter((metricItem) => !canDisplayV024MetricValue(metricItem));
+    const visibleMoney = metrics.filter((metricItem) => canDisplayV024MetricValue(metricItem));
+    const nextTaskFlow = buildV024NextTaskFlow(blockedMetrics);
+    const questions = buildV024QuestionAnswers({
+      metrics,
+      visibleMoney,
+      blockedMetrics,
+      sourceSummary,
+      nextTaskFlow,
+      readModelStatus,
+    });
+
+    return Object.freeze({
+      schema: "PFIV024Stage5Phase51HomeViewV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: V024_SOURCE_PACKAGE_VERSION,
+      stage: STAGE,
+      phase_id: "5.1",
+      phase_name: "首页重建",
+      current_phase_only: true,
+      questions,
+      data_state_cards: Object.freeze([
+        Object.freeze({
+          surface: "home",
+          read_model_hash: readModelStatus.read_model_hash || null,
+          as_of: readModelStatus.as_of || sourceSummary.as_of || null,
+          source_status: sourceSummary.status,
+          metrics,
+        }),
+      ]),
+      next_task_flow: nextTaskFlow,
+      home_conclusion: "先回答钱、位置、变化、问题、下一步和依据，再进入具体页面处理。",
+      home_runtime_label: "当前页面：首页六问",
+      home_cards: metrics.slice(0, 6).map((metricItem) => [
+        metricItem.label,
+        metricItem.display_value,
+        metricItem.display_detail || metricItem.blocking_reason_zh || "真实状态待确认",
+      ]),
+      home_features: questions.map((question) => ({
+        title: question.title,
+        status: question.state,
+        source: question.source,
+        detail: question.answer,
+        target: {
+          workspace: question.targetWorkspace,
+          routeAlias: question.routeAlias,
+          label: question.action_label,
+        },
+      })),
+      home_rows: questions.map((question, index) => [
+        String(index + 1),
+        question.title,
+        question.prompt,
+        question.answer,
+        question.state,
+      ]),
+      home_tasks: nextTaskFlow.length
+        ? nextTaskFlow.slice(0, 6).map((action) => ({
+            title: action.title,
+            detail: action.explanation_zh,
+            status: action.blocked ? "review" : "ready",
+            source_type: action.source_type,
+            routeAlias: action.routeAlias,
+            targetWorkspace: action.targetWorkspace,
+          }))
+        : [
+            {
+              title: "查看依据",
+              detail: sourceSummary.summary,
+              status: "ready",
+              source_type: "read_model_status",
+              routeAlias: "/reports?tab=monthly",
+              targetWorkspace: "insights",
+            },
+          ],
+      source_summary: sourceSummary,
+      explicitly_not_done: Object.freeze([
+        "Phase 5.2 二级页面差异化",
+        "Phase 5.3 交互状态",
+        "Stage 5 whole-stage review",
+        "GitHub main upload",
+      ]),
+    });
+  }
+
+  function buildV024QuestionAnswers(context) {
+    const { metrics, visibleMoney, blockedMetrics, sourceSummary, nextTaskFlow, readModelStatus } = context;
+    const byId = Object.fromEntries(V024_HOME_QUESTIONS.map((question) => [question.id, question]));
+    const moneyAnswer = visibleMoney.length
+      ? `已确认 ${visibleMoney.map((metricItem) => `${metricItem.label} ${metricItem.display_value}`).join("；")}。`
+      : "暂无可直接展示的金额，所有金额保持真实数据状态。";
+    const locationSources = metrics
+      .filter((metricItem) => metricItem.source_id)
+      .map((metricItem) => `${metricItem.label}:${metricItem.source_id}`)
+      .slice(0, 4);
+    const changeRange = sourceSummary.date_range_start && sourceSummary.date_range_end
+      ? `${sourceSummary.date_range_start} 至 ${sourceSummary.date_range_end}`
+      : sourceSummary.as_of || "等待真实记录日期";
+    const problemAnswer = blockedMetrics.length
+      ? blockedMetrics
+          .map((metricItem) => `${metricItem.label}：${metricItem.blocking_reason_zh || metricItem.display_value}`)
+          .join("；")
+      : "当前首页核心状态没有阻断项。";
+    const nextStep = nextTaskFlow[0];
+    const evidenceParts = [
+      sourceSummary.data_root || "MetaDatabase/PFI",
+      sourceSummary.record_count_text,
+      sourceSummary.as_of ? `截至 ${sourceSummary.as_of}` : "",
+      readModelStatus.read_model_hash || "",
+    ].filter(Boolean);
+
+    return Object.freeze([
+      buildV024QuestionCard(byId.money, {
+        state: visibleMoney.length ? "可确认" : "待补齐",
+        source: "Stage 4 read model status",
+        answer: moneyAnswer,
+        action_label: visibleMoney.length ? "查看财务状态" : "查看阻断状态",
+      }),
+      buildV024QuestionCard(byId.location, {
+        state: locationSources.length ? "有来源" : "等待来源",
+        source: "真实来源路径",
+        answer: locationSources.length ? locationSources.join("；") : "等待账户、持仓或流水来源挂链。",
+        action_label: "查看账户",
+      }),
+      buildV024QuestionCard(byId.change, {
+        state: sourceSummary.as_of ? "已记录" : "等待记录",
+        source: "MetaDatabase/PFI",
+        answer: `当前真实记录范围：${changeRange}；${sourceSummary.summary}`,
+        action_label: "查看报告",
+      }),
+      buildV024QuestionCard(byId.problems, {
+        state: blockedMetrics.length ? "有阻断" : "可用",
+        source: "数据状态卡",
+        answer: problemAnswer,
+        action_label: blockedMetrics.length ? "处理来源" : "查看状态",
+      }),
+      buildV024QuestionCard(byId.next_step, {
+        state: nextStep ? "待处理" : "暂无动作",
+        source: nextStep ? nextStep.generated_from : "read_model_status",
+        answer: nextStep ? nextStep.explanation_zh : "没有由当前数据状态生成的待处理动作。",
+        routeAlias: nextStep?.routeAlias || byId.next_step.routeAlias,
+        targetWorkspace: nextStep?.targetWorkspace || byId.next_step.targetWorkspace,
+        action_label: nextStep ? nextStep.title : "查看首页",
+      }),
+      buildV024QuestionCard(byId.evidence, {
+        state: sourceSummary.status === "ready" ? "可追溯" : "待确认",
+        source: sourceSummary.data_root || "MetaDatabase/PFI",
+        answer: evidenceParts.join("；"),
+        action_label: "查看依据",
+      }),
+    ]);
+  }
+
+  function buildV024QuestionCard(question, override = {}) {
+    return Object.freeze({
+      id: question.id,
+      title: question.title,
+      prompt: question.prompt,
+      state: override.state || "待确认",
+      source: override.source || "本机 read model",
+      answer: override.answer || "等待真实状态。",
+      routeAlias: normalizeRouteAlias(override.routeAlias || question.routeAlias),
+      targetWorkspace: override.targetWorkspace || question.targetWorkspace,
+      action_label: override.action_label || "查看",
+    });
+  }
+
+  function normalizeV024ReadModelStatus(payload) {
+    const source = payload && typeof payload === "object" ? payload : {};
+    const api = stage4DataStateApi();
+    if (api && typeof api.normalizeReadModelStatus === "function") {
+      return api.normalizeReadModelStatus(source);
+    }
+    const metrics = Array.isArray(source.core_metric_states) ? source.core_metric_states : [];
+    return {
+      schema: source.schema || "PFIV024Stage4ReadModelStatusV1",
+      read_model_hash: source.read_model_hash || null,
+      as_of: source.as_of || null,
+      source: source.source || {},
+      core_metric_states: metrics,
+    };
+  }
+
+  function buildV024SurfaceViews(readModelStatus) {
+    const api = stage4DataStateApi();
+    if (api && typeof api.buildSurfaceMetricViews === "function") {
+      return api.buildSurfaceMetricViews(readModelStatus);
+    }
+    return {
+      schema: "PFIV024Stage4SurfaceStateViewsV1",
+      surfaces: {
+        home: {
+          surface: "home",
+          read_model_hash: readModelStatus.read_model_hash || null,
+          as_of: readModelStatus.as_of || null,
+          metrics: readModelStatus.core_metric_states || [],
+        },
+      },
+    };
+  }
+
+  function normalizeV024SurfaceMetrics(metrics) {
+    return metrics.map((item) => {
+      const metricItem = item && typeof item === "object" ? item : {};
+      return Object.freeze({
+        metric_id: safeText(metricItem.metric_id, "metric"),
+        label: v024MetricLabel(metricItem.metric_id),
+        value: metricItem.value === undefined ? null : metricItem.value,
+        currency: metricItem.currency === undefined ? "CNY" : metricItem.currency,
+        status: safeText(metricItem.status, "not_loaded"),
+        source_id: metricItem.source_id || null,
+        record_count: metricItem.record_count === undefined ? null : metricItem.record_count,
+        as_of: metricItem.as_of || null,
+        formula_id: metricItem.formula_id || null,
+        confidence: metricItem.confidence === undefined ? null : metricItem.confidence,
+        blocking_reason_zh: metricItem.blocking_reason_zh || metricItem.display_value || "数据状态未知",
+        calculation_state: metricItem.calculation_state || "blocked",
+        display_value: metricItem.display_value || renderV024MetricValue(metricItem),
+        display_detail: metricItem.display_detail || buildV024MetricDetail(metricItem),
+      });
+    });
+  }
+
+  function buildV024SourceSummary(readModelStatus) {
+    const source = readModelStatus.source || {};
+    const recordCount = source.record_count === undefined || source.record_count === null ? null : Number(source.record_count);
+    const recordCountText = Number.isFinite(recordCount) ? `${recordCount} 条真实记录` : "真实记录数待确认";
+    return Object.freeze({
+      status: source.status || "not_loaded",
+      data_root: source.data_root || "MetaDatabase/PFI",
+      record_count: Number.isFinite(recordCount) ? recordCount : null,
+      record_count_text: recordCountText,
+      raw_file_count: source.raw_file_count || null,
+      as_of: source.as_of || readModelStatus.as_of || null,
+      date_range_start: source.date_range?.start || null,
+      date_range_end: source.date_range?.end || null,
+      evidence_hash: source.evidence_hash || null,
+      summary: source.blocking_reason_zh || (source.status === "ready" ? "真实 MetaDatabase/PFI 数据已加载" : "等待真实数据状态。"),
+    });
+  }
+
+  function buildV024NextTaskFlow(blockedMetrics) {
+    return Object.freeze(
+      blockedMetrics.slice(0, 6).map((metricItem) => {
+        const target = V024_STATUS_ACTION_TARGETS[metricItem.status] || V024_STATUS_ACTION_TARGETS.not_loaded;
+        return Object.freeze({
+          action_id: `v024-stage5-phase51-${metricItem.metric_id}`,
+          title: actionTitleForV024Status(metricItem),
+          source_type: "data_status",
+          source_metric_id: metricItem.metric_id,
+          generated_from: `read_model_status:${metricItem.metric_id}:${metricItem.status}`,
+          blocked: metricItem.status !== "filtered_empty",
+          targetWorkspace: target.targetWorkspace,
+          routeAlias: target.routeAlias,
+          explanation_zh: `${metricItem.label}：${metricItem.blocking_reason_zh || metricItem.display_value}。${target.reason}`,
+        });
+      }),
+    );
+  }
+
+  function actionTitleForV024Status(metricItem) {
+    if (metricItem.status === "parse_failed") return `处理${metricItem.label}解析`;
+    if (metricItem.status === "permission_denied") return `检查${metricItem.label}权限`;
+    if (metricItem.status === "outdated_snapshot") return `刷新${metricItem.label}快照`;
+    return `补齐${metricItem.label}`;
+  }
+
+  function renderV024MetricValue(metricItem) {
+    const api = stage4DataStateApi();
+    if (api && typeof api.renderMetricValueZh === "function") {
+      return api.renderMetricValueZh(metricItem);
+    }
+    if (!canDisplayV024MetricValue(metricItem)) {
+      return metricItem.blocking_reason_zh || "数据状态未知";
+    }
+    const currency = metricItem.currency || "CNY";
+    return `${currency} ${Number(metricItem.value).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  }
+
+  function canDisplayV024MetricValue(metricItem) {
+    const api = stage4DataStateApi();
+    if (api && typeof api.canDisplayFinancialValue === "function") {
+      return api.canDisplayFinancialValue(metricItem);
+    }
+    return Boolean(
+      metricItem &&
+        (metricItem.status === "ready" || metricItem.status === "confirmed_zero") &&
+        metricItem.value !== null &&
+        metricItem.value !== undefined,
+    );
+  }
+
+  function buildV024MetricDetail(metricItem) {
+    const parts = [];
+    if (metricItem.source_id) parts.push(metricItem.source_id);
+    if (metricItem.record_count !== null && metricItem.record_count !== undefined) {
+      parts.push(`${metricItem.record_count} 条记录`);
+    }
+    if (metricItem.as_of) parts.push(`截至 ${metricItem.as_of}`);
+    if (metricItem.formula_id) parts.push(metricItem.formula_id);
+    return parts.join(" · ") || metricItem.calculation_state || "状态待确认";
+  }
+
+  function v024MetricLabel(metricId) {
+    const labels = {
+      net_worth_cny: "净资产",
+      cash_balance_cny: "现金余额",
+      investment_market_value_cny: "投资市值",
+      consumption_outflow_cny: "消费总流出",
+      report_summary_status: "报告数据状态",
+    };
+    return labels[metricId] || safeText(metricId, "指标");
+  }
+
+  function stage4DataStateApi() {
+    if (typeof globalThis !== "undefined" && globalThis.PFI_V024_STAGE4_DATA_STATE) {
+      return globalThis.PFI_V024_STAGE4_DATA_STATE;
+    }
+    if (typeof require === "function") {
+      try {
+        return require("../data_state.js");
+      } catch (_error) {
+        return null;
+      }
+    }
+    return null;
   }
 
   function normalizeMetricStates(metrics) {
@@ -604,6 +1078,8 @@
   }
 
   return Object.freeze({
+    buildV024Stage5Phase51Contract,
+    buildV024Stage5Phase51HomeViewModel,
     buildStage5Phase51Contract,
     buildStage5Phase52Contract,
     buildStage5Phase53Contract,

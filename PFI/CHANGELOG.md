@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 5 Phase 5.1 - 2026-07-01
+
+- 完成 `Stage 5 / Phase 5.1 - 首页重建`：首页新增“钱、位置、变化、问题、下一步、依据”六问结构。
+- 新增 `PFI_V024_STAGE5_HOME`、`buildV024Stage5Phase51Contract()` 和 `buildV024Stage5Phase51HomeViewModel()`，读取 Stage 4 `read_model_status` 生成首页数据状态卡与下一步任务流。
+- `PFI/web/index.html` 移除默认 `功能面板 / PFI 功能入口 / 功能已准备 / 进入操作面板` 机械层文案，并加载 `./app/pages/home.js`。
+- `PFI/web/app/shell.js` 优先使用 v0.2.4 首页 API，把 `#pfi-read-model-status` 传给首页模型。
+- 新增 `PFI/tests/test_v024_stage5_phase51_home_rebuild.py`、`PFI/docs/pfi_v024/STAGE5_HOME_REBUILD.md` 和 `PFI/reports/pfi_v024/stage_5/phase_5_1/evidence.json`。
+- 本轮不执行 Phase 5.2、Phase 5.3、Stage 5 whole-stage review 或 GitHub main upload；不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 4 GitHub Main Upload - 2026-07-01
 
 - 完成 `Stage 4 GitHub main upload gate`：将 Stage 4 Phase 4.1、Phase 4.2、Phase 4.3 和 whole-stage review package rebase 到当前 `origin/main` 后上传。

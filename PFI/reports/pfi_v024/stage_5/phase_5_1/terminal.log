@@ -1,0 +1,55 @@
+# PFI v0.2.4 Stage 5 Phase 5.1 Terminal Log
+
+Working tree:
+
+- cwd: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi`
+- git root: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi`
+- branch: `codex/pfi`
+- remote: `git@github.com:LinzeColin/CodexProject.git`
+- head before phase: `1ed592aeb0f4345fd9287e46111b4abe9a3187da`
+- origin/main before phase: `1ed592aeb0f4345fd9287e46111b4abe9a3187da`
+- origin/main after fast-forward during phase: `0e205f71ed29091752cf0964212329f873f7d4ca`
+- head after fast-forward during phase: `0e205f71ed29091752cf0964212329f873f7d4ca`
+- remote update touched `PFI/`: `false`
+
+RED:
+
+```text
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase51_home_rebuild.py -q
+4 failed in 0.16s
+```
+
+Intermediate validation:
+
+```text
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/home.js
+pass
+
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+pass
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase51_home_rebuild.py -q
+3 passed, 1 failed in 0.13s
+```
+
+Final validation:
+
+```text
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/tests/test_v024_stage5_phase51_home_rebuild.py
+pass
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase51_home_rebuild.py -q
+4 passed in 0.12s
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_5/phase_5_1/evidence.json
+pass
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_stage5_home_experience.py -q
+15 passed in 0.48s
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase43_acceptance.py -q
+10 passed in 0.81s
+
+git diff --check -- PFI
+pass
+```

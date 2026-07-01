@@ -1,0 +1,130 @@
+{
+  "schema": "PFIV024Stage5Phase51EvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 5",
+  "phase_id": "5.1",
+  "phase_name": "首页重建",
+  "status": "candidate_pass",
+  "generated_at": "2026-07-01T00:18:53Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_before_phase": "1ed592aeb0f4345fd9287e46111b4abe9a3187da",
+    "origin_main_before_phase": "1ed592aeb0f4345fd9287e46111b4abe9a3187da",
+    "origin_main_after_fast_forward": "0e205f71ed29091752cf0964212329f873f7d4ca",
+    "head_after_fast_forward": "0e205f71ed29091752cf0964212329f873f7d4ca",
+    "remote_update_touched_pfi": false
+  },
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "phase_5_1_complete": true,
+  "phase_5_2_started": false,
+  "phase_5_3_started": false,
+  "stage_5_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "home_question_ids": [
+    "money",
+    "location",
+    "change",
+    "problems",
+    "next_step",
+    "evidence"
+  ],
+  "mechanical_home_layer_removed": true,
+  "stage4_read_model_status_connected": true,
+  "source_summary": {
+    "status": "ready",
+    "data_root": "MetaDatabase/PFI",
+    "record_count": 8815,
+    "raw_file_count": 4,
+    "as_of": "2026-06-03",
+    "read_model_hash": "sha256:89c3bac811ce9e38d78dae3fdb646a12e17d9eadb86ac2c2cc52b3a3642add2a"
+  },
+  "blocked_metric_ids": [
+    "net_worth_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny"
+  ],
+  "ready_metric_ids": [
+    "consumption_outflow_cny",
+    "report_summary_status"
+  ],
+  "no_forbidden_financial_data": true,
+  "commands": [
+    {
+      "cmd": "pytest stage5 phase51 red run",
+      "status": "expected_fail",
+      "detail": "4 failed: missing v0.2.4 home API, static six-question home surface, and evidence pack"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/home.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage5 phase51 after frontend implementation",
+      "status": "partial_pass",
+      "detail": "3 passed, 1 failed because evidence pack was not written yet"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/tests/test_v024_stage5_phase51_home_rebuild.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_phase51_home_rebuild.py -q",
+      "status": "pass",
+      "detail": "4 passed in 0.12s"
+    },
+    {
+      "cmd": "python3 -m json.tool PFI/reports/pfi_v024/stage_5/phase_5_1/evidence.json",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_stage5_home_experience.py -q",
+      "status": "pass",
+      "detail": "15 passed in 0.48s"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase43_acceptance.py -q",
+      "status": "pass",
+      "detail": "10 passed in 0.81s"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/web/app/pages/home.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/web/styles.css",
+    "PFI/tests/test_v024_stage5_phase51_home_rebuild.py",
+    "PFI/docs/pfi_v024/STAGE5_HOME_REBUILD.md",
+    "PFI/reports/pfi_v024/stage_5/phase_5_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_5/phase_5_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_5/phase_5_1/terminal.log",
+    "PFI/reports/pfi_v024/stage_5/phase_5_1/risk_and_rollback.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/README.md",
+    "PFI/HANDOFF.md",
+    "PFI/CHANGELOG.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Phase 5.2 二级页面差异化",
+    "Phase 5.3 交互状态",
+    "Stage 5 whole-stage review",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "requires_next_phase_instruction": true
+}
