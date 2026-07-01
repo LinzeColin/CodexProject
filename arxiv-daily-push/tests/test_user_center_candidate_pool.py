@@ -148,6 +148,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[TRACEABILITY_MATRIX.csv](../docs/governance/TRACEABILITY_MATRIX.csv)", page)
         self.assertIn("[C-010 阶段记录](../docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md)", page)
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
+        self.assertIn("## 历史：S2PLT02 live authorization", page)
+        self.assertIn("历史当时结论：live authorization", page)
+        self.assertIn("历史当时 S2PLT04 复核", page)
+        self.assertIn("production acceptance 当时仍 blocked；当前 Stage 2 integrated acceptance 已记录", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
@@ -1243,6 +1247,14 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("integrated production acceptance 尚未写入", page)
         self.assertIn("当前 Stage 2 integrated acceptance 已记录", page)
         self.assertNotIn("integrated production acceptance 仍未通过", page)
+        self.assertNotIn("当前结论：live authorization", page)
+        self.assertNotIn("当前结论：该 CLI 只让当前 blocked", page)
+        self.assertNotIn(
+            "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
+            "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
+            page,
+        )
+        self.assertNotIn("production acceptance 仍 blocked", page)
         self.assertIn("REQ-ADP-V7-039-P0-CLOSURE-PACKAGE", page)
         self.assertIn("S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE", page)
         self.assertIn("ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json", page)
