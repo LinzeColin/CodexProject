@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload、Stage 15 全部 Phase/整体复审/upload，以及 S16-P1 外协采购归集本地验证。S16-P1 只锁定 public-safe 外协费用、采购、付款匹配、未归集成本池和异常候选证据；lineage 和正式报告运行时仍未完成，且当前报告等级仍为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload、Stage 13 全部 Phase/整体复审/upload、Stage 14 全部 Phase/整体复审/upload、Stage 15 全部 Phase/整体复审/upload，以及 S16-P1 外协采购归集和 S16-P2 项目状态生命周期本地验证。S16-P1/S16-P2 只锁定 public-safe 外协费用、采购、付款匹配、未归集成本池、异常候选、项目生命周期、异常事项和人工 handoff guard 证据；lineage 和正式报告运行时仍未完成，现场施工、安全签字、技术签字、开票、催收、付款和银行动作均未执行，且当前报告等级仍为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -99,4 +99,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S16-P2｜项目状态生命周期`，且必须重新确认 git/root/status、读取 v1.2 task pack / roadmap；不得直接进入 S16-P3、Stage 16 review、GitHub upload、lineage full check、正式报告、采购执行、付款执行、银行操作、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只执行 `S16-P3｜客户经营分析`，且必须重新确认 git/root/status、读取 v1.2 task pack / roadmap；不得直接进入 Stage 16 review、GitHub upload、lineage full check、正式报告、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、工资计算、奖金审批、薪资导出、最终发放或自动接口。

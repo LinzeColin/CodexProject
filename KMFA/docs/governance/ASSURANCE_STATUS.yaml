@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S16P1-SUBCONTRACT-PROCUREMENT"
+as_of_event_id: "EVENT-KMFA-20260701-S16P2-PROJECT-STATUS-LIFECYCLE"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "22f4dbcd434e411363a8f37b6986869f847e7162"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16P1_COMMIT"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16P2_COMMIT"
 snapshot_event_time: "2026-07-01T23:00:00+10:00"
-generator_version: "manual-s16p1-subcontract-procurement"
+generator_version: "manual-s16p2-project-status-lifecycle"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 202
-    total_active_formulas: 43
+    total_active_parameters: 211
+    total_active_formulas: 44
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -127,6 +127,7 @@ dimensions:
       - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
       - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/test_results.md"
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -215,6 +216,7 @@ dimensions:
       - "KMFA/tools/check_s15_p1_performance_fact_fields.py"
       - "KMFA/tools/subcontract_procurement_aggregation.py"
       - "KMFA/tools/check_s16_p1_subcontract_procurement.py"
+      - "KMFA/tools/check_s16_p2_project_status_lifecycle.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -402,8 +404,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S16P1_COMPLETED_VALIDATED_LOCAL_ONLY_NEXT_S16P2"
-  release_gate: "KMFA-S16-P2-GATE"
+  status: "S16P2_COMPLETED_VALIDATED_LOCAL_ONLY_NEXT_S16P3"
+  release_gate: "KMFA-S16-P3-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"

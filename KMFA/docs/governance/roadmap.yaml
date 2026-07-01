@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S16"
-current_phase_id: "S16PA"
-current_task_id: "KMFA-S16-P1-GATE"
-next_gate_id: "KMFA-S16-P1-GATE"
+current_phase_id: "S16PC"
+current_task_id: "KMFA-S16-P3-GATE"
+next_gate_id: "KMFA-S16-P3-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1103,14 +1103,17 @@ stages:
               - "KMFA/stage_artifacts/S15_P3_salary_boundary/human/test_results.md"
   - stage_id: "S16"
     name: "外协采购、项目状态、客户经营扩展"
-    status: "in_progress_s16p1_completed_local_only"
+    status: "in_progress_s16p2_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 33
-    current_result: "S16-P1 外协采购归集已完成本地验证；S16-P2/S16-P3、Stage 16 review 和 GitHub upload 尚未执行。"
+    estimated_pct: 67
+    current_result: "S16-P1 外协采购归集和 S16-P2 项目状态生命周期已完成本地验证；S16-P3、Stage 16 review 和 GitHub upload 尚未执行。"
     evidence_refs:
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/s16_p1_completion_record.md"
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/human/test_results.md"
       - "KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/machine/s16_p1_manifest.json"
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/s16_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/test_results.md"
+      - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/machine/s16_p2_manifest.json"
     phases:
       - phase_id: "S16PA"
         name: "外协采购归集"
@@ -1146,12 +1149,39 @@ stages:
               - "KMFA/tools/check_s16_p1_subcontract_procurement.py"
       - phase_id: "S16PB"
         name: "项目状态生命周期"
-        status: "planned_next"
+        status: "completed_validated_local_only"
         estimated_hours: 1
-        estimated_pct: 0
+        estimated_pct: 100
+        current_result: "已生成 6 条 public-safe 状态来源线、4 条生命周期记录、3 条异常事项和 3 条人工 handoff guard；不执行现场施工、安全签字、技术签字、开票、催收、付款、银行、Stage 16 review 或 GitHub upload。"
+        evidence_refs:
+          - "KMFA/metadata/reports/project_status_lifecycle_manifest.json"
+          - "KMFA/metadata/reports/project_status_source_lanes.jsonl"
+          - "KMFA/metadata/reports/project_lifecycle_records.jsonl"
+          - "KMFA/metadata/reports/project_lifecycle_exception_items.jsonl"
+          - "KMFA/metadata/reports/project_lifecycle_handoff_guards.jsonl"
+          - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/test_results.md"
+        tasks:
+          - task_id: "S16PBT01"
+            name: "接入生产项目状态、开工、完工、结算、开票、回款。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/project_status_source_lanes.jsonl"
+              - "KMFA/tools/check_s16_p2_project_status_lifecycle.py"
+          - task_id: "S16PBT02"
+            name: "生成项目生命周期与异常事项。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/project_lifecycle_records.jsonl"
+              - "KMFA/metadata/reports/project_lifecycle_exception_items.jsonl"
+          - task_id: "S16PBT03"
+            name: "不替代现场施工、安全、技术签字。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/project_lifecycle_handoff_guards.jsonl"
+              - "KMFA/stage_artifacts/S16_P2_project_status_lifecycle/human/s16_p2_completion_record.md"
       - phase_id: "S16PC"
         name: "客户经营分析"
-        status: "planned"
+        status: "planned_next"
         estimated_hours: 1
         estimated_pct: 0
   - stage_id: "S17"
