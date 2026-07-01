@@ -294,6 +294,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("assignment_request_state_hash=8a4596dbb16f55932e36b256fc22852e1f8ca52da22bdd85d6d1c79d23b61c1b", page)
         self.assertIn("closure_decision_request_state_hash=afc1155fafad8c460db5e09eb9890e7408a1e28dd0bf155121bf1a0308529e34", page)
         self.assertIn("cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094", page)
+        self.assertIn("| 历史字段 | `zero_proof_artifact_validation_state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`", page)
+        self.assertIn("当时仍需 S2PLT02 scheduler proof/terminal artifact", page)
 
         self.assertIn("REQ-ADP-V7-068-S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC", page)
@@ -307,6 +309,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("assignment_request_state_hash=7f59ff864ad3a43f24e3b105f13a5aed8802729e8c18482483db8ed78c2921ad", page)
         self.assertIn("closure_decision_request_state_hash=246a736255b77c3a40f74fbdc4431f52367e3d474d4d13156a19ec9b6e7feddf", page)
         self.assertIn("be9cd3bb14da9d57dcaee0168bae396ed95049bf6c261515a5d39959cf3ad461", page)
+        self.assertIn("| 历史字段 | `assignment_validation_state_hash=b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2`", page)
 
         self.assertIn("REQ-ADP-V7-066-S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC", page)
@@ -1352,6 +1355,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| 当前字段 | `allowed_readonly_commands` 已全部通过 CLI parser", page)
         self.assertNotIn("| 当前字段 | `terminal_delivery_input_inventory_summary.state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`", page)
         self.assertNotIn("| 下一步 | `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF`；`next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；历史状态曾缺第二真实日和 8 封真实邮件", page)
+        self.assertNotIn("| 当前字段 | `zero_proof_artifact_validation_state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`", page)
+        self.assertNotIn("| 当前字段 | `assignment_validation_state_hash=b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2`", page)
+        self.assertNotIn("；仍需 S2PLT02 scheduler proof/terminal artifact、independent final closure decision", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
