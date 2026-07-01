@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s17p3-operations-sop`
+- version: `0.1.0-s17-stage-review`
 - current_stage: `S17`
-- current_phase: `Stage 17 整体复审｜待开始`
-- status: `s17p3_completed_validated_local_only`
+- current_phase: `Stage 17 GitHub Upload｜待开始`
+- status: `review_passed_upload_ready_local_only`
 - production_ready: `false`
-- github_upload_ready: `false_stage17_review_not_started`
+- github_upload_ready: `true_stage17_review_passed_local_only`
 
 ## 已完成
 
@@ -115,11 +115,11 @@
 
 ## 未完成
 
-- Stage 17 整体复审和 GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- Stage 17 整体复审已本地通过：`KMFA/stage_artifacts/S17_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；复审确认 S17-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 local-only upload readiness 通过。GitHub upload 尚未执行；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S17-P1 已完成本地权限、安全和审计策略，S17-P2 已完成 metadata outbox-only 通知提醒，S17-P3 已完成 metadata-only 运维 SOP；下一步只能执行 Stage 17 整体复审，不能直接进入 GitHub upload、lineage full check、正式报告、完整报告邮件、外部邮件连接器、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S17-P1 已完成本地权限、安全和审计策略，S17-P2 已完成 metadata outbox-only 通知提醒，S17-P3 已完成 metadata-only 运维 SOP，Stage 17 整体复审已本地通过；下一步只能执行 Stage 17 GitHub upload，不能直接进入 S18、lineage full check、正式报告、完整报告邮件、外部邮件连接器、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

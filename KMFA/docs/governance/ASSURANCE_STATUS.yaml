@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S17P3-OPERATIONS-SOP"
+as_of_event_id: "EVENT-KMFA-20260701-S17-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "25698b30517e07e0655ff842f588d008516bc1d9"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S16_UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-01T23:59:30+10:00"
-generator_version: "manual-s17p3-operations-sop"
+snapshot_event_time: "2026-07-01T23:59:45+10:00"
+generator_version: "manual-s17-stage-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -404,14 +404,18 @@ dimensions:
       - "KMFA/stage_artifacts/S17_P2_notification/machine/s17_p2_manifest.json"
       - "KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md"
       - "KMFA/stage_artifacts/S17_P3_operations_sop/machine/s17_p3_manifest.json"
+      - "KMFA/stage_artifacts/S17_STAGE_REVIEW/human/stage17_review_report.md"
+      - "KMFA/stage_artifacts/S17_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S17_STAGE_REVIEW/machine/stage17_review_manifest.json"
+      - "KMFA/tools/check_s17_stage_review.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S17P3_COMPLETED_VALIDATED_LOCAL_ONLY"
-  release_gate: "KMFA-S17-STAGE-REVIEW-GATE"
+  status: "S17_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
+  release_gate: "KMFA-S17-GITHUB-UPLOAD-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"
