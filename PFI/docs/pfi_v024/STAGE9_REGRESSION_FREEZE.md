@@ -1,7 +1,7 @@
 # PFI v0.2.4 Stage 9 Regression Freeze
 
-本轮只执行：`Stage 9 / Phase 9.1 - 回归规则`。
-本轮不执行 Phase 9.2 交付冻结、不执行 Phase 9.3 用户验收、不执行 Stage 9 whole-stage review、不上传 GitHub main、不重装 app bundle、不修改 launcher C/Info.plist、不写入、清理、删除、补造或改写真实财务数据。
+本轮只执行：`Stage 9 / Phase 9.3 - 用户验收`。
+本轮只准备人工验收清单、reply protocol 和等待用户回复的 evidence；不写验收通过、不执行 Stage 9 whole-stage review、不上传 GitHub main、不进入未来版本、不重装 app bundle、不修改 launcher C/Info.plist、不写入、清理、删除、补造或改写真实财务数据。
 
 ## Phase 9.1 Scope
 
@@ -53,15 +53,34 @@ Phase 9.2 只生成候选交付冻结包，覆盖 roadmap 中的四个任务：
 - `PFI/reports/pfi_v024/stage_9/phase_9_2/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_9/phase_9_2/risk_and_rollback.md`
 
+## Phase 9.3 Scope
+
+Phase 9.3 只输出用户验收材料并停止等待用户回复，覆盖 roadmap 中的三个任务：
+
+- `T9.3.1` 输出人工验收清单。
+- `T9.3.2` 停止等待用户验收。
+- `T9.3.3` 不自动进入未来版本。
+
+当前状态是 `waiting_for_user_acceptance`。本 phase 不把用户确认写成事实，不执行整阶段复审，不执行 GitHub main upload。
+
+## Phase 9.3 Evidence
+
+- `PFI/reports/pfi_v024/stage_9/phase_9_3/manual_acceptance.md`
+- `PFI/reports/pfi_v024/stage_9/phase_9_3/reply_protocol.md`
+- `PFI/reports/pfi_v024/stage_9/phase_9_3/evidence.json`
+- `PFI/reports/pfi_v024/stage_9/phase_9_3/terminal.log`
+- `PFI/reports/pfi_v024/stage_9/phase_9_3/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_9/phase_9_3/risk_and_rollback.md`
+
 ## Non Goals
 
-- 不生成最终 `final_evidence_index.json`。
-- 不写 `closeout_candidate.md`。
-- 不声明用户已验收或交付冻结已确认。
+- 不写验收通过。
+- 不把 Phase 9.3 等待状态写成 Stage 9 最终 closeout。
 - 不执行 Stage 9 whole-stage review。
 - 不上传 GitHub main。
+- 不进入未来版本。
 - 不修改 app bundle、launcher 或真实财务数据。
 
 ## Stop Condition
 
-停止在 `Stage 9 / Phase 9.2 - 交付冻结 candidate pass`。Phase 9.3 必须下一轮再进入。
+停止在 `Stage 9 / Phase 9.3 - 用户验收材料已准备，等待用户回复`。Stage 9 whole-stage review 必须下一轮再进入，且必须有用户明确验收或明确指令。

@@ -1,0 +1,110 @@
+{
+  "schema": "PFIV024Stage9Phase93UserAcceptanceEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "stage": "Stage 9",
+  "stage_name": "回归防线与交付冻结",
+  "phase_id": "9.3",
+  "phase_name": "用户验收",
+  "status": "waiting_for_user_acceptance",
+  "current_phase_only": true,
+  "max_phases_per_run": 1,
+  "phase_9_1_guardrails_verified": true,
+  "phase_9_2_delivery_freeze_verified": true,
+  "manual_acceptance_artifact": "PFI/reports/pfi_v024/stage_9/phase_9_3/manual_acceptance.md",
+  "reply_protocol_artifact": "PFI/reports/pfi_v024/stage_9/phase_9_3/reply_protocol.md",
+  "user_acceptance_claimed": false,
+  "stage_9_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "future_version_started": false,
+  "app_bundle_reinstall_executed": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "source_roadmap": "/Users/linzezhang/Downloads/PFI/PFI_v0.2.3_Repair_Roadmap.md",
+  "source_taskpack": "/Users/linzezhang/Downloads/PFI/PFI_v0.2.3_Repair_TaskPack.zip",
+  "head_before_phase_9_3": "04b48a64f8d8e222e752e095f7e87090d7cfa6e5",
+  "origin_main_before_phase_9_3": "22f4dbcd434e411363a8f37b6986869f847e7162",
+  "ahead_behind_before_phase_9_3": "2 0",
+  "head_after_rebase_before_phase_9_3_commit": "986d50d1b3c06ba704f01ad02dffe63c627d03bd",
+  "origin_main_after_rebase": "58551ef8922f5fd1e5e3c7929b51bd9217e63ebb",
+  "ahead_behind_after_rebase": "3 0",
+  "required_user_reply_options": ["1", "2", "3"],
+  "explicitly_not_done": [
+    "claiming user acceptance",
+    "Stage 9 whole-stage review",
+    "Stage 9 GitHub main upload",
+    "future version work",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/evidence.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/manual_acceptance.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/reply_protocol.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+    "PFI/tests/test_v024_stage9_phase93_user_acceptance.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "validation_commands": [
+    {
+      "cmd": "pytest stage9 phase93 red run",
+      "status": "expected_fail",
+      "detail": "4 failed before implementation: missing build_v024_stage9_phase93_contract, manual acceptance artifacts, evidence pack, and README/HANDOFF wait-state language"
+    },
+    {
+      "cmd": "pytest stage9 phase93 user acceptance",
+      "status": "pass",
+      "detail": "4 passed in 0.07s"
+    },
+    {
+      "cmd": "pytest stage9 phase92 delivery freeze",
+      "status": "pass",
+      "detail": "5 passed in 0.07s"
+    },
+    {
+      "cmd": "pytest stage9 phase91 regression guardrails",
+      "status": "pass",
+      "detail": "3 passed in 0.09s"
+    },
+    {
+      "cmd": "pytest stage8 github upload contract",
+      "status": "pass",
+      "detail": "3 passed in 0.07s"
+    },
+    {
+      "cmd": "py_compile stage9 module and json evidence check",
+      "status": "pass",
+      "detail": "py_compile stage_v024_stage9_regression_freeze.py passed; phase_9_3/evidence.json json.tool check passed"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "no whitespace errors"
+    },
+    {
+      "cmd": "changed files reconciliation",
+      "status": "pass",
+      "detail": "changed_files.txt matches git diff plus untracked PFI files"
+    },
+    {
+      "cmd": "completion phrase scan",
+      "status": "pass",
+      "detail": "no unfinished-command marker, unverified-status marker, final closeout completion marker, user acceptance completion marker, or forbidden Chinese completion phrase in Phase 9.3 scope files"
+    },
+    {
+      "cmd": "post-rebase validation",
+      "status": "pass",
+      "detail": "local Stage 9.1, 9.2, and 9.3 commits rebased onto origin/main 58551ef8922f5fd1e5e3c7929b51bd9217e63ebb; Phase 9.3 validation rerun after rebase"
+    }
+  ]
+}

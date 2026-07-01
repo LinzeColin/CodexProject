@@ -1,0 +1,16 @@
+PFI/CHANGELOG.md
+PFI/HANDOFF.md
+PFI/README.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md
+PFI/reports/pfi_v024/stage_9/phase_9_3/changed_files.txt
+PFI/reports/pfi_v024/stage_9/phase_9_3/evidence.json
+PFI/reports/pfi_v024/stage_9/phase_9_3/manual_acceptance.md
+PFI/reports/pfi_v024/stage_9/phase_9_3/reply_protocol.md
+PFI/reports/pfi_v024/stage_9/phase_9_3/risk_and_rollback.md
+PFI/reports/pfi_v024/stage_9/phase_9_3/terminal.log
+PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py
+PFI/tests/test_v024_stage9_phase93_user_acceptance.py
+PFI/功能清单.md
+PFI/开发记录.md
+PFI/模型参数文件.md
