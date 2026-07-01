@@ -1,0 +1,173 @@
+{
+  "schema": "PFIV024Stage6WholeReviewEvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 6",
+  "review_id": "stage_6_whole_review",
+  "current_run_unit": "Stage 6 whole-stage review",
+  "current_run_only": true,
+  "status": "pass",
+  "stage_6_candidate_complete": true,
+  "stage_6_whole_review_complete": true,
+  "stage_7_started": false,
+  "github_main_uploaded": false,
+  "generated_at": "2026-07-01T02:45:00Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_before_review_commit": "ce538a28379f6c3310815fc805ecf531554c2e0b",
+    "origin_main_observed_during_review": "b2708bff6ef632e82114d89ac886aa5fba7d809c",
+    "local_ahead_origin_main_observed_during_review": 3,
+    "local_behind_origin_main_observed_during_review": 3
+  },
+  "reviewed_phase_ids": [
+    "6.1",
+    "6.2",
+    "6.3"
+  ],
+  "review_inputs": {
+    "phase_6_1": "PFI/reports/pfi_v024/stage_6/phase_6_1/evidence.json",
+    "phase_6_2": "PFI/reports/pfi_v024/stage_6/phase_6_2/evidence.json",
+    "phase_6_3": "PFI/reports/pfi_v024/stage_6/phase_6_3/evidence.json",
+    "phase_6_1_design_token_validation": "PFI/reports/pfi_v024/stage_6/phase_6_1/design_token_validation.json",
+    "phase_6_2_motion_feedback_validation": "PFI/reports/pfi_v024/stage_6/phase_6_2/motion_feedback_validation.json",
+    "phase_6_3_haptic_settings_validation": "PFI/reports/pfi_v024/stage_6/phase_6_3/haptic_settings_validation.json",
+    "browser_validation": "PFI/reports/pfi_v024/stage_6/whole_stage_review/browser_validation.json"
+  },
+  "phase_statuses": {
+    "phase_6_1": "candidate_pass",
+    "phase_6_2": "candidate_pass",
+    "phase_6_3": "candidate_pass"
+  },
+  "acceptance_checks": {
+    "default_light_ui": {
+      "result": "pass",
+      "evidence": "browser_validation default_light_ui=true and desktop_light_home.png generated"
+    },
+    "design_tokens_cover_required_categories": {
+      "result": "pass",
+      "evidence": "phase_6_1 design_token_validation status=pass"
+    },
+    "moderate_state_motion": {
+      "result": "pass",
+      "evidence": "phase_6_2 motion_feedback_validation status=pass and max route transition 220ms"
+    },
+    "haptics_capability_detection_and_disable": {
+      "result": "pass",
+      "evidence": "phase_6_3 haptic_settings_validation uses navigator.vibrate function detection and haptic can_disable=true"
+    },
+    "settings_feedback_isolation": {
+      "result": "pass",
+      "evidence": "browser_validation settings console hidden on home and visible only in settings"
+    },
+    "desktop_phone_preview_absent": {
+      "result": "pass",
+      "evidence": "browser_validation desktop_phone_preview_frame_visible=false"
+    },
+    "no_forbidden_financial_data_added": {
+      "result": "pass",
+      "evidence": "Stage 6 changes are UI contracts, style/runtime feedback, tests, docs, scripts and evidence only"
+    }
+  },
+  "validation_surface": {
+    "primary_entry_count": 10,
+    "desktop_light_home_screenshot": "PFI/reports/pfi_v024/stage_6/whole_stage_review/screenshots/desktop_light_home.png",
+    "mobile_responsive_screenshot": "PFI/reports/pfi_v024/stage_6/whole_stage_review/screenshots/mobile_responsive.png",
+    "settings_feedback_isolation_screenshot": "PFI/reports/pfi_v024/stage_6/whole_stage_review/screenshots/settings_feedback_isolation.png",
+    "browser_validation_status": "pass"
+  },
+  "stop_condition_audit": {
+    "dark_ai_console_style": "absent",
+    "decorative_or_interfering_motion": "absent",
+    "haptics_cannot_be_disabled": "absent",
+    "feedback_console_on_business_pages": "absent"
+  },
+  "review_findings": [
+    {
+      "id": "S6-REVIEW-F1",
+      "severity": "P1",
+      "status": "fixed",
+      "finding": "Stage 6 had no whole-stage review gate or evidence after Phase 6.1/6.2/6.3 candidate pass.",
+      "fix": "Added STAGE6_WHOLE_STAGE_REVIEW.md, whole_stage_review evidence pack, risk/rollback, terminal log, changed files, and contract test.",
+      "verification": "test_v024_stage6_whole_review_contract.py covers artifacts, scope, phase consistency, acceptance checks, stop conditions, findings, and non-upload gate."
+    },
+    {
+      "id": "S6-REVIEW-F2",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Roadmap evidence pack required desktop_light_home.png and mobile_responsive.png, but Phase 6.1-6.3 evidence did not include review-time browser screenshots.",
+      "fix": "Added validate_v024_stage6_whole_review_browser.js and generated desktop, mobile, and settings isolation screenshots.",
+      "verification": "browser_validation.json status=pass, desktop_light_home_screenshot=true, mobile_responsive_screenshot=true, screenshot files exceed 20000 bytes."
+    },
+    {
+      "id": "S6-REVIEW-F3",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Browser validation found computed body background-color was transparent because the v0.2.4 body background used only a gradient shorthand.",
+      "fix": "Added v0.2.4 body background-color fallback after the gradient declaration.",
+      "verification": "browser_validation.json default_light_ui=true and body_background_luminance>=210."
+    },
+    {
+      "id": "S6-REVIEW-F4",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Trend chart canvas still read root CSS variables, so empty chart slots could render with an old dark block despite Stage 6 light tokens.",
+      "fix": "Updated shell.js cssColor() to read body scoped variables before documentElement variables.",
+      "verification": "browser validation screenshot regenerated with light chart slot; Stage 6 visual/browser validation status=pass."
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "pytest stage6 whole review red run",
+      "status": "expected_fail",
+      "detail": "5 failed: missing STAGE6_WHOLE_STAGE_REVIEW.md, browser_validation.json, and whole_stage_review evidence"
+    },
+    {
+      "cmd": "node stage6 whole review browser validation",
+      "status": "pass",
+      "detail": "3 screenshots, status pass"
+    },
+    {
+      "cmd": "pytest stage6 whole review contract",
+      "status": "pass",
+      "detail": "5 passed in 0.06s"
+    },
+    {
+      "cmd": "pytest stage6 phase regression",
+      "status": "pass",
+      "detail": "16 passed in 0.31s"
+    },
+    {
+      "cmd": "pytest stage5 adjacent regression",
+      "status": "pass",
+      "detail": "14 passed in 0.43s"
+    },
+    {
+      "cmd": "node syntax checks",
+      "status": "pass",
+      "detail": "node --check shell.js and validate_v024_stage6_whole_review_browser.js"
+    },
+    {
+      "cmd": "json evidence checks",
+      "status": "pass",
+      "detail": "json.tool evidence.json and browser_validation.json"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "pass"
+    }
+  ],
+  "remaining_gates": [
+    "GitHub main upload"
+  ],
+  "explicitly_not_done": [
+    "Stage 7",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "requires_user_acceptance": true,
+  "no_auto_next_stage": true
+}

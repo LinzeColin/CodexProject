@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 6 Whole-Stage Review - 2026-07-01
+
+- 完成 `Stage 6 whole-stage review - 复审并解决暴露问题`，复审 Phase 6.1 设计系统、Phase 6.2 动效反馈、Phase 6.3 触感与设置隔离。
+- 新增 `PFI/tests/test_v024_stage6_whole_review_contract.py`、`PFI/docs/pfi_v024/STAGE6_WHOLE_STAGE_REVIEW.md` 和 `PFI/reports/pfi_v024/stage_6/whole_stage_review/` evidence。
+- 新增 `PFI/scripts/validate_v024_stage6_whole_review_browser.js`，生成 `desktop_light_home.png`、`mobile_responsive.png` 和 `settings_feedback_isolation.png`。
+- 修复复审暴露的亮色 fallback 问题：v0.2.4 body 增加实体 `background-color`，并让趋势图读取 body scoped token，避免旧 root token 造成深色图表槽。
+- 复审发现 4 项均已 fixed；本轮不执行 GitHub main upload，不进入 Stage 7，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 6 Phase 6.3 - 2026-07-01
 
 - 完成 `Stage 6 / Phase 6.3 - 触感与设置隔离`：新增 haptics capability detection、设置页反馈偏好模型和不支持设备的静默视觉降级。

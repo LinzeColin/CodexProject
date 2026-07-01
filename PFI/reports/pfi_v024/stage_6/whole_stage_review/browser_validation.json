@@ -1,0 +1,77 @@
+{
+  "schema": "PFIV024Stage6WholeReviewBrowserValidationV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 6",
+  "review_id": "stage_6_whole_review",
+  "status": "pass",
+  "source": "http://127.0.0.1:55066/index.html",
+  "playwright_package_path": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.61.1/node_modules/playwright",
+  "primary_entry_count": 10,
+  "primary_workspaces": [
+    "home",
+    "accounts",
+    "ledger",
+    "investment",
+    "consumption",
+    "sync",
+    "recommendations",
+    "insights",
+    "market_research",
+    "settings"
+  ],
+  "default_light_ui": true,
+  "body_background_color": "rgb(248, 251, 255)",
+  "body_background_luminance": 251,
+  "desktop_light_home_screenshot": true,
+  "mobile_responsive_screenshot": true,
+  "mobile_horizontal_overflow_px": 0,
+  "mobile_bottom_nav_visible": true,
+  "desktop_phone_preview_frame_visible": false,
+  "settings_feedback_console_hidden_on_home": true,
+  "settings_feedback_console_visible_on_settings": true,
+  "feedback_toggle_ids": [
+    "haptic",
+    "motion",
+    "sound"
+  ],
+  "haptic_capability_detected": true,
+  "haptic_capability": "supported",
+  "haptic_degrades_visually_when_unsupported": true,
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": [],
+  "server_not_found_paths": [],
+  "screenshots": [
+    {
+      "kind": "desktop_light_home",
+      "file": "desktop_light_home.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "bytes": 703338
+    },
+    {
+      "kind": "mobile_responsive",
+      "file": "mobile_responsive.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 636284
+    },
+    {
+      "kind": "settings_feedback_isolation",
+      "file": "settings_feedback_isolation.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "bytes": 970937
+    }
+  ],
+  "generated_at": "2026-07-01T02:44:30.218Z",
+  "validation_hash": "b1b453acbc230fcb4e18f39175bed66957e3266f8d21318b317134c2707e291f",
+  "failures": []
+}

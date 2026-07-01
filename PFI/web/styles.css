@@ -685,6 +685,7 @@ body[data-pfi-target-version="v0.2.4"] {
   --pfi-shadow: var(--pfi-v024-shadow-card);
   background:
     linear-gradient(180deg, var(--pfi-v024-light-bg) 0%, var(--pfi-v024-surface-soft) 48%, var(--pfi-v024-surface-warm) 100%);
+  background-color: var(--pfi-v024-light-bg);
   color: var(--pfi-v024-text);
   font-family: var(--pfi-v024-font);
 }

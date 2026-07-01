@@ -5621,7 +5621,8 @@ function trendColor(item) {
 }
 
 function cssColor(name, fallback) {
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const scopedValue = document.body ? getComputedStyle(document.body).getPropertyValue(name).trim() : "";
+  const value = scopedValue || getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   return value || fallback;
 }
 
