@@ -2968,7 +2968,7 @@ h3 {
 }
 
 .obsidian-graph-view {
-  grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto auto minmax(0, 1fr);
   overflow: hidden;
 }
 
@@ -3120,6 +3120,42 @@ h3 {
   white-space: nowrap;
 }
 
+.obsidian-local-budget {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 0 16px 10px;
+}
+
+.obsidian-local-budget span {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 26px;
+  border: 1px solid rgba(143, 211, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(143, 211, 255, 0.045);
+  padding: 0 9px;
+}
+
+.obsidian-local-budget b {
+  overflow: hidden;
+  color: #b6b1a6;
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.obsidian-local-budget em {
+  color: #8fd3ff;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+}
+
 .obsidian-scene-shell {
   position: relative;
   min-height: 0;
@@ -3208,6 +3244,20 @@ h3 {
   stroke: rgba(13, 15, 20, 0.94);
   stroke-linejoin: round;
   stroke-width: 4px;
+}
+
+.obsidian-node-label[data-label-rule="selected"],
+.obsidian-node-label[data-label-rule="hover"] {
+  fill: #ffffff;
+}
+
+.obsidian-node-label[data-label-rule="local-neighbor"] {
+  fill: rgba(126, 232, 212, 0.92);
+}
+
+.obsidian-node-label[data-label-rule="zoom-priority"],
+.obsidian-node-label[data-label-rule="hub"] {
+  fill: rgba(214, 219, 224, 0.84);
 }
 
 .obsidian-settings-panel {

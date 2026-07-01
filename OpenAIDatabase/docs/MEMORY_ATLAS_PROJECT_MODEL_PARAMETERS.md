@@ -926,3 +926,44 @@ Stage 8 整体复审已确认：
 下一阶段：
 
 - GitHub main 上传后进入 Stage 9 后续增强迭代。
+
+## 19. Stage 9.1 Obsidian Graph E Iteration 验收模型
+
+状态：`stage_9_1_obsidian_graph_iteration_passed`。
+
+范围：
+
+- 9.1.1 局部图谱优化。
+- 9.1.2 标签阈值优化。
+- 9.1.3 与记忆星系同步。
+
+验收门槛：
+
+- `validate:stage9-obsidian` 必须通过。
+- Obsidian Graph 默认仍可进入 global graph，且默认 label density 不得挤满
+  全图。
+- Local graph 必须有 bounded neighborhood budget，当前阈值为
+  `LOCAL_GRAPH_PRIMARY_NODE_LIMIT = 34`、
+  `LOCAL_GRAPH_SECONDARY_NODE_LIMIT = 52`、
+  `LOCAL_GRAPH_CLUSTER_MEMBER_LIMIT = 42`、
+  `LOCAL_GRAPH_MAX_NODES = 96`。
+- Local Graph Budget 必须暴露 primary、secondary、hidden local neighbor 和
+  label budget evidence。
+- 标签规则必须区分 selected、hover、local-neighbor、zoom-priority、hub 和
+  hidden。
+- Galaxy shared focus 必须通过 `sharedState.focus` 传入 Obsidian Graph；
+  `sourceView == "galaxy"` 且存在 cluster 时，Obsidian 必须显示 bounded local
+  cluster graph。
+- 验证结束后 4177 不得留下 listener。
+
+边界：
+
+- Stage 9.1 不包含 Stage 9.2 Visual Semantics Enrichment。
+- Stage 9.1 不包含 Stage 9 whole-stage review。
+- Stage 9.1 不读取 raw/private/cookie/session/secret 数据。
+- Stage 9.1 不新增 direct active-memory writeback。
+- Stage 9.1 不上传 GitHub main。
+
+下一阶段：
+
+- Stage 9.2 Visual Semantics Enrichment。
