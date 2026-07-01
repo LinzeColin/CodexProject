@@ -15,9 +15,9 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: "S2PMT07 persistent DAILY_OPERATION authorization request packet is ready at FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json. This request is not authorization. FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json still does not exist, so persistent DAILY_OPERATION remains blocked and disabled. SMTP/scheduler/Release/restore remain prohibited until a separate explicit owner authorization artifact and enablement preflight pass."
-  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST
-  current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_READY_NO_RUNTIME_ENABLEMENT
+  global_current_task_meaning: "S2PMT07 persistent DAILY_OPERATION authorization request packet is now bound to origin/main commit 4f72c42ea62275fdd18285cf189070c6aa76bd71 at FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json. This request is not authorization. FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json still does not exist, so persistent DAILY_OPERATION remains blocked and disabled. SMTP/scheduler/Release/restore remain prohibited until a separate explicit owner authorization artifact and enablement preflight pass."
+  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION
+  current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT
   next_executable_task: S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION
   next_required_step: OWNER_DECIDES_WHETHER_TO_CREATE_EXPLICIT_PERSISTENT_DAILY_OPERATION_AUTHORIZATION
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
@@ -123,6 +123,11 @@ production_boundary:
   daily_operation_persistent_authorization_request_enablement_allowed: false
   daily_operation_persistent_authorization_request_owner_authorization_recorded: false
   daily_operation_persistent_authorization_request_generated_at: "2026-07-01T22:22:48+10:00"
+  daily_operation_persistent_authorization_request_mainline_attested: true
+  daily_operation_persistent_authorization_request_mainline_attestation_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION-20260701.json
+  daily_operation_persistent_authorization_request_mainline_attestation_commit: 4f72c42ea62275fdd18285cf189070c6aa76bd71
+  daily_operation_persistent_authorization_request_mainline_attestation_tree_hash: 0f0772e4250330372d58456a355e205327dff933
+  daily_operation_persistent_authorization_request_mainline_attestation_status: pass_persistent_daily_operation_authorization_request_mainline_attested_no_runtime_enablement
   daily_operation_persistent_authorization_artifact: FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json
   daily_operation_persistent_authorization_blocking_reasons:
     - persistent_daily_operation_authorization_missing
