@@ -33,6 +33,26 @@ Phase 9.1 建立防复发规则，覆盖 roadmap 中的四个任务：
 - `PFI/reports/pfi_v024/stage_9/phase_9_1/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_9/phase_9_1/risk_and_rollback.md`
 
+## Phase 9.2 Scope
+
+Phase 9.2 只生成候选交付冻结包，覆盖 roadmap 中的四个任务：
+
+- `T9.2.1` 生成最终 evidence index。
+- `T9.2.2` README 写候选状态。
+- `T9.2.3` 列出未做事项。
+- `T9.2.4` 列出后续风险。
+
+当前候选冻结明确等待 Phase 9.3 用户验收，不声明 Stage 9 已完成最终交付。
+
+## Phase 9.2 Evidence
+
+- `PFI/reports/pfi_v024/stage_9/phase_9_2/final_evidence_index.json`
+- `PFI/reports/pfi_v024/stage_9/phase_9_2/closeout_candidate.md`
+- `PFI/reports/pfi_v024/stage_9/phase_9_2/evidence.json`
+- `PFI/reports/pfi_v024/stage_9/phase_9_2/terminal.log`
+- `PFI/reports/pfi_v024/stage_9/phase_9_2/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_9/phase_9_2/risk_and_rollback.md`
+
 ## Non Goals
 
 - 不生成最终 `final_evidence_index.json`。
@@ -44,4 +64,4 @@ Phase 9.1 建立防复发规则，覆盖 roadmap 中的四个任务：
 
 ## Stop Condition
 
-停止在 `Stage 9 / Phase 9.1 - 回归规则 candidate pass`。Phase 9.2 必须下一轮再进入。
+停止在 `Stage 9 / Phase 9.2 - 交付冻结 candidate pass`。Phase 9.3 必须下一轮再进入。

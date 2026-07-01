@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 9 Phase 9.2 - 2026-07-01
+
+- 完成 `Stage 9 / Phase 9.2 - 交付冻结`候选包：生成最终 evidence index、README 候选状态、未做事项和后续风险。
+- 新增 `PFI/tests/test_v024_stage9_phase92_delivery_freeze.py` 和 `PFI/reports/pfi_v024/stage_9/phase_9_2/` evidence。
+- README 只声明 `Stage 9 delivery freeze candidate`，明确 waiting for Phase 9.3 user acceptance，不声明最终完成。
+- 本轮不执行 Phase 9.3 用户验收、Stage 9 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 9 Phase 9.1 - 2026-07-01
 
 - 完成 `Stage 9 / Phase 9.1 - 回归规则`：建立旧 UI signature、入口堆叠、假零、mock 财务数据回归防线。

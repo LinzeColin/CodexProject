@@ -1,0 +1,134 @@
+{
+  "schema": "PFIV024Stage9Phase92FinalEvidenceIndexV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 9",
+  "phase_id": "9.2",
+  "status": "candidate_pass",
+  "generated_at": "2026-07-01T15:52:06+10:00",
+  "stage_8_github_main_uploaded_verified": true,
+  "stage_8_remote_verified_head": "ab09727d7c22ea5d7a65868c26526330d528a101",
+  "stage_9_phase_9_1_guardrails_passed": true,
+  "phase_9_3_started": false,
+  "user_acceptance_claimed": false,
+  "stage_9_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "screenshot_evidence_count": 14,
+  "terminal_log_count": 45,
+  "evidence": [
+    {
+      "id": "pre_stage_0_context_lock",
+      "stage": "Pre Stage 0",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/pre_stage_0/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/pre_stage_0/terminal.log"
+    },
+    {
+      "id": "stage_0_whole_review",
+      "stage": "Stage 0",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_0/whole_stage_review/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_0/whole_stage_review/terminal.log"
+    },
+    {
+      "id": "stage_1_whole_review",
+      "stage": "Stage 1",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_1/whole_stage_review/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_1/whole_stage_review/terminal.log"
+    },
+    {
+      "id": "stage_2_whole_review",
+      "stage": "Stage 2",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_2/whole_stage_review/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_2/whole_stage_review/terminal.log"
+    },
+    {
+      "id": "stage_3_github_main_upload",
+      "stage": "Stage 3",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_3/github_main_upload/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_3/github_main_upload/terminal.log"
+    },
+    {
+      "id": "stage_4_github_main_upload",
+      "stage": "Stage 4",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_4/github_main_upload/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_4/github_main_upload/terminal.log"
+    },
+    {
+      "id": "stage_5_github_main_upload",
+      "stage": "Stage 5",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_5/github_main_upload/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_5/github_main_upload/terminal.log"
+    },
+    {
+      "id": "stage_6_github_main_upload",
+      "stage": "Stage 6",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_6/github_main_upload/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_6/github_main_upload/terminal.log"
+    },
+    {
+      "id": "stage_7_github_main_upload",
+      "stage": "Stage 7",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_7/github_main_upload/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_7/github_main_upload/terminal.log"
+    },
+    {
+      "id": "stage_8_github_main_upload",
+      "stage": "Stage 8",
+      "status": "pass",
+      "path": "PFI/reports/pfi_v024/stage_8/github_main_upload/evidence.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_8/github_main_upload/terminal.log",
+      "screenshots": "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots"
+    },
+    {
+      "id": "stage_9_phase_9_1_regression_guardrails",
+      "stage": "Stage 9",
+      "phase_id": "9.1",
+      "status": "candidate_pass",
+      "path": "PFI/reports/pfi_v024/stage_9/phase_9_1/evidence.json",
+      "guardrails": "PFI/reports/pfi_v024/stage_9/phase_9_1/regression_guardrails.json",
+      "terminal_log": "PFI/reports/pfi_v024/stage_9/phase_9_1/terminal.log"
+    },
+    {
+      "id": "stage_9_phase_9_2_delivery_freeze",
+      "stage": "Stage 9",
+      "phase_id": "9.2",
+      "status": "candidate_pass",
+      "path": "PFI/reports/pfi_v024/stage_9/phase_9_2/evidence.json",
+      "closeout_candidate": "PFI/reports/pfi_v024/stage_9/phase_9_2/closeout_candidate.md",
+      "terminal_log": "PFI/reports/pfi_v024/stage_9/phase_9_2/terminal.log"
+    }
+  ],
+  "screenshot_evidence": [
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/app_home.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/desktop_all_pages.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/localhost_home.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/mobile_responsive.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_01_home.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_02_accounts.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_03_ledger.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_04_investment.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_05_consumption.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_06_sources_upload.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_07_review.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_08_reports.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_09_market_research.png",
+    "PFI/reports/pfi_v024/stage_8/phase_8_2/screenshots/primary_10_settings.png"
+  ],
+  "explicitly_not_done": [
+    "Stage 9 Phase 9.3 user acceptance",
+    "Stage 9 whole-stage review",
+    "Stage 9 GitHub main upload",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}

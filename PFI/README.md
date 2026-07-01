@@ -32,7 +32,7 @@ Records:
 
 ## v0.2.4 Stage 9 Status
 
-Current run unit: `Stage 9 / Phase 9.1 - 回归规则`.
+Current run unit: `Stage 9 / Phase 9.2 - 交付冻结`.
 
 - Stage 8 GitHub main upload: complete before this run; `HEAD == origin/main == remote main` verified at `ab09727d7c22ea5d7a65868c26526330d528a101`.
 - Phase 8.1 automated acceptance: candidate pass.
@@ -41,7 +41,8 @@ Current run unit: `Stage 9 / Phase 9.1 - 回归规则`.
 - Stage 8 whole-stage review: pass.
 - Stage 8 GitHub main upload: complete after terminal remote verification.
 - Phase 9.1 regression rules: candidate pass.
-- Phase 9.2 delivery freeze: not started.
+- Stage 9 delivery freeze candidate: candidate complete, waiting for Phase 9.3 user acceptance.
+- Phase 9.2 delivery freeze: candidate pass.
 - Phase 9.3 user acceptance: not started.
 - Stage 9 whole-stage review: not started.
 - GitHub main upload for Stage 9: not executed in this phase run.
@@ -49,8 +50,10 @@ Current run unit: `Stage 9 / Phase 9.1 - 回归规则`.
 - Data logic changes: none.
 - Financial data changes: none.
 - Guardrails covered: old UI signature, 16-entry/legacy alias primary stack, false financial zero, mock/sample/synthetic/fixture/demo/fake financial data, mechanical copy definition, dark console default definition.
-- Current evidence: `reports/pfi_v024/stage_9/phase_9_1/evidence.json`.
-- Next gate: Phase 9.2 delivery freeze only after this phase is accepted or explicitly continued.
+- Current evidence: `reports/pfi_v024/stage_9/phase_9_2/evidence.json`.
+- Final evidence index candidate: `reports/pfi_v024/stage_9/phase_9_2/final_evidence_index.json`.
+- Closeout candidate: `reports/pfi_v024/stage_9/phase_9_2/closeout_candidate.md`.
+- Next gate: Phase 9.3 user acceptance only after this phase is accepted or explicitly continued.
 
 ## v0.2.4 Stage 8 Status
 
