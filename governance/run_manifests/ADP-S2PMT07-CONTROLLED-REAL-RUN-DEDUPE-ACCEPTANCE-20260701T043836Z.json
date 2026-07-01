@@ -1,0 +1,73 @@
+{
+  "acceptance_scope": "owner_authorized_single_foreground_controlled_real_run_acceptance",
+  "background_adp_process_found_after_run": false,
+  "current_pointer_changed": false,
+  "daily_input_source": "existing_report",
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "duplicate_real_send_executed_by_this_run": false,
+  "event_id": "EVENT-20260701-ADP-S2PMT07-CONTROLLED-REAL-RUN-DEDUPE-ACCEPTANCE",
+  "evidence_ref": "/tmp/adp_controlled_real_run_20260701T043836Z.json",
+  "foreground_command_only": true,
+  "generated_at": "2026-07-01T14:38:36+10:00",
+  "integrated_production_accepted": false,
+  "launchagents_disabled_after_run": true,
+  "launchagents_enabled_by_this_run": false,
+  "local_runtime_report_generated_at": "2026-07-01T04:38:36Z",
+  "local_runtime_report_sha256": "7e1c0a0a53db5f1adbb947313526c3f0ffda64da66a1d413754a087b5fe934b1",
+  "local_runtime_report_status": "pass",
+  "mail_delivery_summary": {
+    "all_planned_products_sent": true,
+    "delivery_ref_by_product": {
+      "M1": "smtp://message/smtp-delivery:cec442e1da5bdfcf",
+      "M2": "smtp://message/smtp-delivery:b1053c91aec057f1",
+      "M3": "smtp://message/smtp-delivery:98c7dcb43ba2b9d5",
+      "M4": "smtp://message/smtp-delivery:6da07d3691f28db6"
+    },
+    "historical_sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "newly_sent_mail_products": [],
+    "planned_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "planned_send_total": 4,
+    "sent_mail_count": 4,
+    "sent_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "source": "EMAIL_LEARNING_V1_M1_M4_CONTRACT"
+  },
+  "manifest_id": "ADP-S2PMT07-CONTROLLED-REAL-RUN-DEDUPE-ACCEPTANCE-20260701T043836Z",
+  "owner_authorized_one_controlled_real_run": true,
+  "persistent_adp_allow_smtp_send_after_run": false,
+  "production_acceptance_claimed": false,
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_smtp_send_enabled_persistently": false,
+  "release_uploaded": false,
+  "scheduler_enabled_persistently": false,
+  "scheduler_install_enabled": false,
+  "secret_values_logged": false,
+  "service_date": "2026-07-01",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "pass",
+  "summary": "Owner-authorized foreground controlled real-run acceptance was executed with process-local ADP_ALLOW_SMTP_SEND=true and existing 2026-07-01 daily input. The local runner confirmed M1-M4 sent via historical same-day delivery refs and executed no duplicate SMTP sends; persistent ADP_ALLOW_SMTP_SEND remained false and all ADP LaunchAgents remained disabled after the run.",
+  "task_id": "S2PMT07-CONTROLLED-REAL-RUN-DEDUPE-ACCEPTANCE",
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}
