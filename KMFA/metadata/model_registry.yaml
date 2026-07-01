@@ -1,4 +1,4 @@
-version: "0.1.0-s13p2-collection-receivable-aging"
+version: "0.1.0-s13p3-cross-table-review"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -39,6 +39,7 @@ active_formula_ids:
   - "FORM-KMFA-MANUAL-RERUN-MECHANISM-001"
   - "FORM-KMFA-FINANCIAL-OPERATING-REPORT-001"
   - "FORM-KMFA-COLLECTION-RECEIVABLE-AGING-001"
+  - "FORM-KMFA-CROSS-TABLE-REVIEW-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

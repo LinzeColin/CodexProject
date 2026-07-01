@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `S13｜财务经营报表与回款应收扩展`
-- 当前 Phase: `S13-P3｜待开始`
+- 当前 Phase: `Stage 13 整体复审｜待开始`
 
 ## Execution Rules
 
@@ -38,7 +38,7 @@
 
 ## Current Non-Goals
 
-- 不在新的 S13-P3 run work 完成前进入 Stage 13 整体复审或后续 Stage。
+- 不在 Stage 13 整体复审 run work 完成并修复 findings 前进入 GitHub upload 或后续 Stage。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
 - 不把 Stage 12 GitHub upload 视为 lineage full check、差异关闭、正式报告或业务 release。
