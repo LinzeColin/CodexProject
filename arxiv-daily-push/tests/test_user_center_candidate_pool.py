@@ -225,6 +225,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1", page)
         self.assertIn("502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe", page)
         self.assertIn("26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c", page)
+        self.assertIn("| 历史字段 | `allowed_readonly_commands` 已全部通过 CLI parser", page)
+        self.assertIn("| 历史当时下一步 | `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF`", page)
         self.assertIn("REQ-ADP-V7-082-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST", page)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST", page)
         self.assertIn("daily_operation_persistent_enablement_authorization.request.json", page)
@@ -278,6 +280,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4", page)
         self.assertIn("bcb40505ad7244626589c24991dcf05fe775268ce44b5eab3b68444f38cded6e", page)
         self.assertIn("23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c", page)
+        self.assertIn("| 历史字段 | `terminal_delivery_input_inventory_summary.state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`", page)
 
         self.assertIn("REQ-ADP-V7-069-S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-ZERO-PROOF-REQUEST-CONSUMPTION-SYNC", page)
@@ -1346,6 +1349,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| 状态 | `scheduler_proof_ready_terminal_artifact_missing_no_production` |", page)
         self.assertNotIn("| 状态 | `blocked_scheduler_proof_and_terminal_artifact_only_no_production` |", page)
         self.assertNotIn("| 状态 | `blocked_after_evidence_capture_no_production` |", page)
+        self.assertNotIn("| 当前字段 | `allowed_readonly_commands` 已全部通过 CLI parser", page)
+        self.assertNotIn("| 当前字段 | `terminal_delivery_input_inventory_summary.state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`", page)
+        self.assertNotIn("| 下一步 | `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF`；`next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；历史状态曾缺第二真实日和 8 封真实邮件", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
