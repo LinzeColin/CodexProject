@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s13p3-cross-table-review
+product_version: 0.1.0-s13-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S13`
-- current_phase: `Stage 13 整体复审｜待开始`
-- current_tasks: `KMFA-S13-STAGE-REVIEW-20260701`
-- status: `s13p3_completed_validated_local_only_pending_stage_review`
+- current_phase: `Stage 13 GitHub Upload｜待开始`
+- current_tasks: `KMFA-S13-GITHUB-UPLOAD-20260701`
+- status: `stage13_review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -88,16 +88,17 @@ product_version: 0.1.0-s13p3-cross-table-review
 | `S13PAT01-S13PAT03` | S13-P1 财务经营报表完成本地验证：生成 4 条 public-safe 财务经营 source lane、2 条经营周报/月报初稿、2 个 HTML draft、manifest 和 validator；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告和经营决策依据；不执行 S13-P2/S13-P3、Stage 13 review 或 GitHub upload | `KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md` |
 | `S13PBT01-S13PBT03` | S13-P2 回款应收账龄完成本地验证：生成 5 条 public-safe source lane、4 条回款优先级、4 条责任事项、1 个 HTML evidence、manifest 和 validator；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、催收/付款/法务动作和经营决策依据；不执行 S13-P3、Stage 13 review 或 GitHub upload | `KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/s13_p2_completion_record.md` |
 | `S13PCT01-S13PCT03` | S13-P3 跨表复核完成本地验证：生成 4 个 public-safe 跨表复核维度、4 条人工差异队列事项、1 份经营报表质量报告、1 个 HTML evidence、manifest 和 validator；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据和自动差异处理；不执行 Stage 13 review 或 GitHub upload | `KMFA/stage_artifacts/S13_P3_cross_table_review/human/s13_p3_completion_record.md` |
+| `KMFA-S13-STAGE-REVIEW-20260701` | Stage 13 整体复审本地通过；复跑 S13-P1/P2/P3 validators、`check_s13_stage_review.py`、全量 172 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency；复审步骤未执行 GitHub upload、S14、lineage full check、正式报告、差异关闭或外部接口 | `KMFA/stage_artifacts/S13_STAGE_REVIEW/human/stage13_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S13-STAGE-REVIEW-20260701` | Stage 13 整体复审待开始；必须复跑 S13-P1/P2/P3 validators、全量 KMFA tests、治理 validators、raw/secret scan、parse checks 和 evidence consistency；复审完成且 findings 修复前不得 GitHub upload | `KMFA/docs/governance/roadmap.yaml` |
+| `KMFA-S13-GITHUB-UPLOAD-20260701` | Stage 13 GitHub upload gate 待开始；必须基于最新 `origin/main` 复跑 S13 validators、Stage 13 review validator、治理 validators、raw/secret scan、parse checks、dry-run push、push 和 post-push parity；上传 gate 完成前不得进入 S14 | `KMFA/docs/governance/roadmap.yaml` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 13 整体复审 | 尚未开始；S13-P1/S13-P2/S13-P3 只完成 public-safe 初稿、优先级、责任事项、跨表复核和质量报告，不代表 lineage、正式报告或 GitHub upload 已完成 | 下一轮只执行 Stage 13 整体复审 |
+| Stage 13 GitHub Upload | 尚未开始；S13-P1/S13-P2/S13-P3 和 Stage 13 review 只完成 public-safe 初稿、优先级、责任事项、跨表复核、质量报告和本地复审证据，不代表 lineage、正式报告或 GitHub main 已更新 | 下一轮只执行 Stage 13 GitHub upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

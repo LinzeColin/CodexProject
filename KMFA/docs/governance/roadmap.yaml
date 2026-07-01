@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S13"
-current_phase_id: "S13REVIEW"
-current_task_id: "KMFA-S13-STAGE-REVIEW-20260701"
-next_gate_id: "KMFA-S13-STAGE-REVIEW-GATE"
+current_phase_id: "S13UPLOAD"
+current_task_id: "KMFA-S13-GITHUB-UPLOAD-20260701"
+next_gate_id: "KMFA-S13-GITHUB-UPLOAD-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -748,10 +748,10 @@ stages:
       - "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
   - stage_id: "S13"
     name: "财务经营报表与回款应收扩展"
-    status: "completed_local_only_pending_stage_review"
+    status: "review_passed_upload_ready_local_only"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S13-P1 财务经营报表、S13-P2 回款应收账龄和 S13-P3 跨表复核均已本地完成并验证；S13-P3 生成 4 个 public-safe 跨表复核维度、4 条人工差异队列事项、1 份经营报表质量报告和 1 个 HTML evidence，报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据和自动差异处理。"
+    current_result: "S13-P1 财务经营报表、S13-P2 回款应收账龄、S13-P3 跨表复核和 Stage 13 整体复审均已本地完成并验证；Stage 13 review 复跑三个 phase validators、全量 KMFA tests、治理 validators、raw/secret scan、parse checks 和 evidence consistency，报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据和自动差异处理。"
     evidence_refs:
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md"
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
@@ -765,6 +765,10 @@ stages:
       - "KMFA/stage_artifacts/S13_P3_cross_table_review/human/test_results.md"
       - "KMFA/stage_artifacts/S13_P3_cross_table_review/machine/s13_p3_manifest.json"
       - "KMFA/tools/check_s13_p3_cross_table_review.py"
+      - "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/stage13_review_report.md"
+      - "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_STAGE_REVIEW/machine/stage13_review_manifest.json"
+      - "KMFA/tools/check_s13_stage_review.py"
     phases:
       - phase_id: "S13PA"
         name: "财务经营报表"

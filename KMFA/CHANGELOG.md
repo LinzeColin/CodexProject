@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s13-stage-review - 2026-07-01
+
+- 完成 Stage 13 整体复审，本地状态为 `review_passed_upload_ready_local_only`，尚未 push GitHub。
+- 新增 `KMFA/tools/check_s13_stage_review.py`、`KMFA/tests/test_s13_stage_review.py` 和 `KMFA/stage_artifacts/S13_STAGE_REVIEW/` 复审证据包。
+- 复跑并锁定 S13-P1/P2/P3 证据：4 条财务经营 source lane、2 条经营报告初稿、5 条回款应收 source lane、4 条回款优先级、4 条责任事项、4 个跨表复核维度、4 条人工差异队列和 1 份经营报表质量报告。
+- 复审确认报告等级仍为 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据和自动差异处理。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额、真实客户/项目明细或 credentials。
+- Stage 13 review 不执行 GitHub upload、S14、lineage full check、正式报告、差异关闭、外部 connector、开票、付款、银行、税务或法务催收动作。
+- 下一轮只能执行 Stage 13 GitHub upload gate：先对齐最新 `origin/main`，复跑 validators、治理校验、raw/secret scan、parse checks 和 dry-run/push proof。
+
 ## 0.1.0-s13p3-cross-table-review - 2026-07-01
 
 - 完成 `S13-P3｜跨表复核` 本地验证，不上传 GitHub。
