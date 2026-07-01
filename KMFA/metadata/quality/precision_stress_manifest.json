@@ -1,0 +1,106 @@
+{
+  "content_hash": "sha256:7e3444d35c0bf5acd55efb74f2ad79b9d195591387b999621f7cf9c935e01b19",
+  "fact_level": "EXTRACTED",
+  "generated_at": "2026-07-01T23:59:59+10:00",
+  "html_sample_acceptance": {
+    "core_sample_refs": [
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/00_HTML总入口_KMFA_v1_2.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_Resolution_Workbench_v0_4.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_Ring5_Final_Task_Control_Board.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_数据源检查板_v0_5_blue.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_系统首页预览_v4_blue.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_经营分析报告预览_v3_blue.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_阶段三任务控制台预览_v1_0.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_项目成本专题报告预览_v0_6_blue_zero_delta.html"
+    ],
+    "reading_record_ref": "KMFA/stage_artifacts/S18_P1_precision_stress/human/html_sample_reading_record.md",
+    "s18_samples_read": true
+  },
+  "iteration_id": "ITER-20260701-KMFA-S18P1-PRECISION-STRESS",
+  "large_batch": {
+    "elapsed_ms": 348,
+    "failed_file_count": 2,
+    "performance_budget_ms": 500,
+    "performance_result": "passed",
+    "synthetic_file_count": 1200,
+    "test_mode": "public_safe_synthetic_metadata_probe"
+  },
+  "metadata_outputs": {
+    "precision_stress_error_reports": "KMFA/metadata/quality/precision_stress_error_reports.jsonl",
+    "precision_stress_import_runs": "KMFA/metadata/quality/precision_stress_import_runs.jsonl",
+    "precision_stress_manifest": "KMFA/metadata/quality/precision_stress_manifest.json",
+    "precision_stress_scenarios": "KMFA/metadata/quality/precision_stress_scenarios.jsonl"
+  },
+  "phase_id": "S18PA",
+  "policy_version": "KMFA-S18P1-PRECISION-STRESS-PUBLIC-SAFE-001",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_committed": false,
+    "field_text_committed": false,
+    "private_document_committed": false,
+    "private_tabular_material_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_committed": false,
+    "source_document_committed": false,
+    "true_account_committed": false,
+    "true_customer_project_committed": false,
+    "true_money_committed": false
+  },
+  "quality_gate": {
+    "amount_precision_extreme_test_passed": true,
+    "bad_file_error_report_passed": true,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "duplicate_import_idempotency_passed": true,
+    "external_connector_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "html_samples_read_for_s18_acceptance": true,
+    "large_batch_performance_within_budget": true,
+    "lineage_full_check_allowed": false,
+    "metadata_only": true,
+    "missing_field_error_report_passed": true,
+    "phase_completion_upload_allowed": false,
+    "production_restore_allowed": false,
+    "public_safe_synthetic_only": true,
+    "raw_business_data_committed": false,
+    "raw_business_data_used": false,
+    "release_block_reason": "s18_p1_local_precision_stress_only_pending_stage18_review",
+    "s18_p2_scope_included": false,
+    "s18_p3_scope_included": false,
+    "stage18_review_allowed": false,
+    "three_consecutive_imports_consistent": true,
+    "true_money_used": false,
+    "zero_delta_extreme_test_passed": true
+  },
+  "record_type": "s18_p1_precision_stress_manifest",
+  "required_scenario_types": [
+    "amount_precision",
+    "zero_delta",
+    "duplicate_import",
+    "bad_file",
+    "missing_field"
+  ],
+  "stage_artifact_ref": "KMFA/stage_artifacts/S18_P1_precision_stress/machine/s18_p1_manifest.json",
+  "stage_id": "S18",
+  "stage_phase": "S18-P1",
+  "stage_scope": {
+    "business_execution_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s18_p1_scope_included": true,
+    "s18_p2_scope_included": false,
+    "s18_p3_scope_included": false,
+    "stage18_review_scope_included": false
+  },
+  "summary": {
+    "consecutive_import_run_count": 3,
+    "error_report_count": 2,
+    "html_sample_count": 8,
+    "large_batch_file_count": 1200,
+    "scenario_count": 5,
+    "scenario_type_count": 5
+  }
+}

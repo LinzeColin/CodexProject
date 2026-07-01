@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s17-github-upload
+product_version: 0.1.0-s18p1-precision-stress
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S18`
-- current_phase: `S18-P1｜精度与压力测试｜待开始`
-- current_tasks: `KMFA-S18-P1-GATE`
-- status: `stage17_uploaded_to_github_main_s18_p1_pending`
+- current_phase: `S18-P2｜全量回归和验收｜待开始`
+- current_tasks: `KMFA-S18-P2-GATE`
+- status: `s18p1_completed_local_only_s18p2_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -109,16 +109,18 @@ product_version: 0.1.0-s17-github-upload
 | `S17PCT01-S17PCT03` | S17-P3 运维与 SOP 完成本地验证：导入、复核、发布、回滚四类操作手册、财务 SOP/交接材料知识索引、错误处理和备份恢复演练已生成；仅为 public-safe metadata/manual SOP，不执行 live connector、生产恢复、外部服务调用或业务动作 | `KMFA/stage_artifacts/S17_P3_operations_sop/human/s17_p3_completion_record.md` |
 | `KMFA-S17-STAGE-REVIEW-20260701` | Stage 17 整体复审本地通过：复跑 S17-P1/P2/P3 validators、Stage 17 review validator、全量 tests、治理 validator、raw/secret scan、parse checks 和 diff check；未执行 GitHub upload、S18、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/S17_STAGE_REVIEW/human/stage17_review_report.md` |
 | `KMFA-S17-GITHUB-UPLOAD-20260701` | Stage 17 final GitHub upload 完成；基于最新 origin/main rebase Stage 17 栈，复跑 S17 validators、Stage 17 review validator、全量 246 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、diff check、dry-run push、push 和 post-push parity | `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md` |
+| `S18PAT01-S18PAT03` | S18-P1 精度与压力测试本地完成：5 类 public-safe synthetic 场景、3 次连续一致导入、1200 文件 synthetic metadata 性能预算、2 条阻断错误报告和 HTML 样板读取记录已生成；未执行 S18-P2、S18-P3、Stage 18 review 或 GitHub upload | `KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S18-P1-GATE` | 待下一轮 run work 开始；必须读取 v1.2 task pack、HTML/UIUX/报告样板、Stage 17 upload 证据和 S18 roadmap，只执行 S18-P1 精度与压力测试 | `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md` |
+| `KMFA-S18-P2-GATE` | 待下一轮 run work 开始；必须读取 S18-P1 precision stress evidence、v1.2 task pack、HTML/UIUX/报告样板和 S18 roadmap，只执行 S18-P2 全量回归和验收 | `KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S18-P1 精度与压力测试 | 尚未开始；Stage 17 已完成 final GitHub upload | 后续独立 S18-P1 run work |
+| S18-P2 全量回归和验收 | 尚未开始；S18-P1 已完成本地验证，中间 Phase 不上传 GitHub | 后续独立 S18-P2 run work |
+| S18-P3 后续接入准备 | 尚未开始；需等 S18-P2 完成后再处理 | 后续独立 S18-P3 run work |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

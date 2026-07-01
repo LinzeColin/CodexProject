@@ -2165,3 +2165,108 @@ tasks:
     rollback: "Remove S17-P3 drill logs and revert S17-P3 governance rows."
     target_version: "0.1.0-s17p3-operations-sop"
     completed_version: "0.1.0-s17p3-operations-sop"
+  - task_id: "S18PAT01"
+    phase: "S18PA"
+    objective: "建立金额精度、零差异、重复导入、坏文件和缺字段极端场景的 public-safe synthetic 测试集。"
+    scope:
+      - "precision stress scenario metadata"
+      - "public-safe synthetic fixture records"
+      - "S18-P1 manifest"
+    non_scope:
+      - "S18-P2 full regression"
+      - "S18-P3 integration preparation"
+      - "Stage 18 review"
+      - "GitHub upload"
+      - "raw business data"
+      - "formal report release"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "S17PCT03"
+    required_files:
+      - "KMFA/metadata/quality/precision_stress_scenarios.jsonl"
+      - "KMFA/metadata/quality/precision_stress_manifest.json"
+      - "KMFA/tools/precision_stress_validation.py"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_precision_stress_validation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p1_precision_stress.py"
+    test_results:
+      - "PASS: five precision stress scenarios are public-safe, deterministic and scoped to S18-P1."
+    evidence_refs:
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
+    risk: "Synthetic stress evidence is not production data, full regression, Stage 18 review or business release proof."
+    rollback: "Remove S18-P1 precision stress outputs and revert S18-P1 governance rows before S18-P2."
+    target_version: "0.1.0-s18p1-precision-stress"
+    completed_version: "0.1.0-s18p1-precision-stress"
+  - task_id: "S18PAT02"
+    phase: "S18PA"
+    objective: "验证三次连续导入结果一致，且 repeat import 不污染 raw/source metadata。"
+    scope:
+      - "three consecutive import run records"
+      - "stable output hash proof"
+      - "append-only metadata checks"
+    non_scope:
+      - "private source package import"
+      - "live ingestion"
+      - "lineage full check"
+      - "formal report release"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S18PAT01"
+    required_files:
+      - "KMFA/metadata/quality/precision_stress_import_runs.jsonl"
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/machine/s18_p1_manifest.json"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_precision_stress_validation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p1_precision_stress.py"
+    test_results:
+      - "PASS: three consecutive synthetic imports have identical output hash and immutable raw boundary."
+    evidence_refs:
+      - "KMFA/metadata/quality/precision_stress_import_runs.jsonl"
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
+    risk: "Repeat import proof is synthetic and does not certify private production imports."
+    rollback: "Remove S18-P1 import run outputs and revert S18-P1 governance rows before S18-P2."
+    target_version: "0.1.0-s18p1-precision-stress"
+    completed_version: "0.1.0-s18p1-precision-stress"
+  - task_id: "S18PAT03"
+    phase: "S18PA"
+    objective: "建立大批量文件导入性能预算和错误报告阻断证据。"
+    scope:
+      - "large-batch synthetic metadata performance budget"
+      - "bad file and missing field error reports"
+      - "HTML sample reading record"
+    non_scope:
+      - "S18-P2 full regression"
+      - "S18-P3 integration preparation"
+      - "Stage 18 review"
+      - "GitHub upload"
+      - "production performance benchmark"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "S18PAT02"
+    required_files:
+      - "KMFA/metadata/quality/precision_stress_error_reports.jsonl"
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/human/html_sample_reading_record.md"
+      - "KMFA/tools/check_s18_p1_precision_stress.py"
+    acceptance_ids:
+      - "ACC-OPME-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_precision_stress_validation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p1_precision_stress.py"
+    test_results:
+      - "PASS: 1200-file synthetic metadata batch stays under budget and two blocking error reports are recorded."
+    evidence_refs:
+      - "KMFA/metadata/quality/precision_stress_error_reports.jsonl"
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/human/html_sample_reading_record.md"
+    risk: "Large-batch check uses public-safe synthetic metadata and does not certify real production throughput."
+    rollback: "Remove S18-P1 error/performance outputs and revert S18-P1 governance rows before S18-P2."
+    target_version: "0.1.0-s18p1-precision-stress"
+    completed_version: "0.1.0-s18p1-precision-stress"

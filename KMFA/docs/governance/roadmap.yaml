@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S18"
-current_phase_id: "S18_P1"
-current_task_id: "KMFA-S18-P1-GATE"
-next_gate_id: "KMFA-S18-P1-GATE"
+current_phase_id: "S18_P2"
+current_task_id: "KMFA-S18-P2-GATE"
+next_gate_id: "KMFA-S18-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -1387,6 +1387,55 @@ stages:
               - "KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json"
   - stage_id: "S18"
     name: "回归、压力、稳定验收与后续接入准备"
-    status: "planned_pending_s18_p1"
+    status: "in_progress_s18p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33.3333
+    current_result: "S18-P1 精度与压力测试已完成本地验证；下一步只能执行 S18-P2 全量回归和验收。"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
+      - "KMFA/stage_artifacts/S18_P1_precision_stress/machine/s18_p1_manifest.json"
+    phases:
+      - phase_id: "S18PA"
+        name: "精度与压力测试"
+        status: "completed_validated_local_only"
+        estimated_hours: 1
+        estimated_pct: 100
+        current_result: "已完成金额精度、zero-delta、重复导入、坏文件、缺字段、连续三次一致性、大批量 synthetic metadata 性能预算和错误报告测试；S18-P2/S18-P3、Stage 18 review 和 GitHub upload 均未执行。"
+        evidence_refs:
+          - "KMFA/metadata/quality/precision_stress_manifest.json"
+          - "KMFA/metadata/quality/precision_stress_scenarios.jsonl"
+          - "KMFA/metadata/quality/precision_stress_import_runs.jsonl"
+          - "KMFA/metadata/quality/precision_stress_error_reports.jsonl"
+          - "KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md"
+          - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
+          - "KMFA/stage_artifacts/S18_P1_precision_stress/machine/s18_p1_manifest.json"
+        tasks:
+          - task_id: "S18PAT01"
+            name: "金额精度、零差异、重复导入、坏文件、缺字段极限测试。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/quality/precision_stress_scenarios.jsonl"
+              - "KMFA/tools/check_s18_p1_precision_stress.py"
+          - task_id: "S18PAT02"
+            name: "连续三次导入生成结果一致。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/quality/precision_stress_import_runs.jsonl"
+              - "KMFA/stage_artifacts/S18_P1_precision_stress/machine/s18_p1_manifest.json"
+          - task_id: "S18PAT03"
+            name: "大批量文件导入性能和错误报告测试。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/quality/precision_stress_error_reports.jsonl"
+              - "KMFA/stage_artifacts/S18_P1_precision_stress/human/test_results.md"
+      - phase_id: "S18PB"
+        name: "全量回归和验收"
+        status: "pending"
+        estimated_hours: 1
+        estimated_pct: 0
+      - phase_id: "S18PC"
+        name: "后续接入准备"
+        status: "pending"
+        estimated_hours: 1
+        estimated_pct: 0
