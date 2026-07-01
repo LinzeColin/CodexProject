@@ -1,0 +1,217 @@
+{
+  "schema": "PFIV024Stage5WholeReviewBrowserValidationV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 5",
+  "review_id": "stage_5_whole_review",
+  "status": "pass",
+  "source": "http://127.0.0.1:50521/index.html",
+  "playwright_package_path": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright",
+  "primary_entry_count": 10,
+  "primary_workspaces": [
+    "home",
+    "accounts",
+    "ledger",
+    "investment",
+    "consumption",
+    "sync",
+    "recommendations",
+    "insights",
+    "market_research",
+    "settings"
+  ],
+  "primary_labels": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "primary_screenshot_count": 10,
+  "core_secondary_screenshot_count": 10,
+  "stage5_ux_state_visible": true,
+  "visible_state_kinds": [
+    "empty",
+    "error",
+    "loading",
+    "success"
+  ],
+  "click_actions_route_not_toast_only": true,
+  "state_action_targets": [
+    {
+      "state": "loading",
+      "routeAlias": "/settings?tab=data-system",
+      "workspace": "settings"
+    },
+    {
+      "state": "success",
+      "routeAlias": "/settings?tab=data-system",
+      "workspace": "settings"
+    },
+    {
+      "state": "error",
+      "routeAlias": "/settings?tab=data-system",
+      "workspace": "settings"
+    },
+    {
+      "state": "empty",
+      "routeAlias": "/settings?tab=data-system",
+      "workspace": "settings"
+    }
+  ],
+  "history_back_forward_passed": true,
+  "mechanical_terms_visible": [],
+  "server_not_found_paths": [],
+  "http_errors": [],
+  "console_errors": [],
+  "page_errors": [],
+  "screenshots": [
+    {
+      "kind": "primary",
+      "workspace": "home",
+      "routeAlias": "/home?tab=status",
+      "file": "primary_01_home.png",
+      "bytes": 682299
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "home",
+      "routeAlias": "/home?tab=todo",
+      "file": "core_secondary_01_home.png",
+      "bytes": 674232
+    },
+    {
+      "kind": "primary",
+      "workspace": "accounts",
+      "routeAlias": "/accounts?tab=overview",
+      "file": "primary_02_accounts.png",
+      "bytes": 601490
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "accounts",
+      "routeAlias": "/accounts?tab=list",
+      "file": "core_secondary_02_accounts.png",
+      "bytes": 601219
+    },
+    {
+      "kind": "primary",
+      "workspace": "ledger",
+      "routeAlias": "/ledger?tab=list",
+      "file": "primary_03_ledger.png",
+      "bytes": 658542
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "ledger",
+      "routeAlias": "/ledger?tab=filter",
+      "file": "core_secondary_03_ledger.png",
+      "bytes": 658756
+    },
+    {
+      "kind": "primary",
+      "workspace": "investment",
+      "routeAlias": "/investment?tab=overview",
+      "file": "primary_04_investment.png",
+      "bytes": 601063
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "investment",
+      "routeAlias": "/investment?tab=holdings",
+      "file": "core_secondary_04_investment.png",
+      "bytes": 671876
+    },
+    {
+      "kind": "primary",
+      "workspace": "consumption",
+      "routeAlias": "/consumption?tab=overview",
+      "file": "primary_05_consumption.png",
+      "bytes": 630899
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "consumption",
+      "routeAlias": "/consumption?tab=category",
+      "file": "core_secondary_05_consumption.png",
+      "bytes": 625720
+    },
+    {
+      "kind": "primary",
+      "workspace": "sync",
+      "routeAlias": "/sources-upload?tab=upload",
+      "file": "primary_06_sync.png",
+      "bytes": 832050
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "sync",
+      "routeAlias": "/sources-upload?tab=import",
+      "file": "core_secondary_06_sync.png",
+      "bytes": 835899
+    },
+    {
+      "kind": "primary",
+      "workspace": "recommendations",
+      "routeAlias": "/review?tab=list",
+      "file": "primary_07_recommendations.png",
+      "bytes": 604999
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "recommendations",
+      "routeAlias": "/review?tab=detail",
+      "file": "core_secondary_07_recommendations.png",
+      "bytes": 600769
+    },
+    {
+      "kind": "primary",
+      "workspace": "insights",
+      "routeAlias": "/reports?tab=monthly",
+      "file": "primary_08_insights.png",
+      "bytes": 696355
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "insights",
+      "routeAlias": "/reports?tab=quarterly",
+      "file": "core_secondary_08_insights.png",
+      "bytes": 701326
+    },
+    {
+      "kind": "primary",
+      "workspace": "market_research",
+      "routeAlias": "/market-research?tab=market",
+      "file": "primary_09_market_research.png",
+      "bytes": 621580
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "market_research",
+      "routeAlias": "/market-research?tab=research",
+      "file": "core_secondary_09_market_research.png",
+      "bytes": 615305
+    },
+    {
+      "kind": "primary",
+      "workspace": "settings",
+      "routeAlias": "/settings?tab=account",
+      "file": "primary_10_settings.png",
+      "bytes": 939297
+    },
+    {
+      "kind": "core_secondary",
+      "workspace": "settings",
+      "routeAlias": "/settings?tab=data-system",
+      "file": "core_secondary_10_settings.png",
+      "bytes": 975576
+    }
+  ],
+  "generated_at": "2026-07-01T01:23:46.139Z",
+  "validation_hash": "77d97deff88b54426069cae8abd2357b8874423df9362f1e820427f0b7729dab"
+}
