@@ -1,0 +1,48 @@
+2026-07-01T06:05:46Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_before_phase93=04b48a64f8d8e222e752e095f7e87090d7cfa6e5
+origin_main_before_phase93=22f4dbcd434e411363a8f37b6986869f847e7162
+ahead_behind_before_phase93=2 0
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase93_user_acceptance.py -q
+Result: 4 failed before implementation; missing Phase 9.3 contract, manual acceptance artifacts, evidence pack, and README/HANDOFF wait-state language.
+
+Implementation boundary:
+Stage 9 Phase 9.3 user acceptance package only. Did not claim user acceptance, did not execute Stage 9 whole-stage review, did not upload GitHub main, did not start future version work, did not reinstall app bundle, and did not modify real financial data.
+
+Final verification will be appended after validation commands run.
+
+Validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase93_user_acceptance.py -q
+Result: 4 passed in 0.07s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase92_delivery_freeze.py -q
+Result: 5 passed in 0.07s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q
+Result: 3 passed in 0.09s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_github_upload_contract.py -q
+Result: 3 passed in 0.07s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py
+Result: pass
+python3 -m json.tool PFI/reports/pfi_v024/stage_9/phase_9_3/evidence.json
+Result: pass
+git diff --check -- PFI
+Result: pass
+changed_files reconciliation
+Result: pass
+completion phrase scan
+Result: pass
+
+Post-rebase:
+origin_main_after_fetch=58551ef8922f5fd1e5e3c7929b51bd9217e63ebb
+head_after_rebase_before_phase93_commit=986d50d1b3c06ba704f01ad02dffe63c627d03bd
+ahead_behind_after_rebase=3 0
+Rebase reason: origin/main advanced with non-PFI ADP/OpenAIDatabase/Memory Atlas work after Phase 9.3 implementation started. Local Stage 9.1, Stage 9.2, and Stage 9.3 commits were rebased on latest origin/main.
+Post-rebase validation rerun:
+PFI/tests/test_v024_stage9_phase93_user_acceptance.py -q -> 4 passed in 0.09s
+PFI/tests/test_v024_stage9_phase92_delivery_freeze.py -q -> 5 passed in 0.07s
+PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q -> 3 passed in 0.10s
+PFI/tests/test_v024_stage8_github_upload_contract.py -q -> 3 passed in 0.07s
+py_compile/json.tool/git diff --check/changed_files reconciliation/completion phrase scan -> pass

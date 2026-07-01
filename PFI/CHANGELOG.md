@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 9 Phase 9.3 - 2026-07-01
+
+- 完成 `Stage 9 / Phase 9.3 - 用户验收`等待包：生成人工验收清单、reply protocol 和 waiting evidence。
+- 新增 `PFI/tests/test_v024_stage9_phase93_user_acceptance.py` 和 `PFI/reports/pfi_v024/stage_9/phase_9_3/` evidence。
+- README/HANDOFF 只声明 `waiting for user response`，不写验收通过或最终 closeout 完成。
+- 本轮不执行 Stage 9 whole-stage review 或 GitHub main upload，不进入未来版本，不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 9 Phase 9.2 - 2026-07-01
 
 - 完成 `Stage 9 / Phase 9.2 - 交付冻结`候选包：生成最终 evidence index、README 候选状态、未做事项和后续风险。
