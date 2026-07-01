@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s15-stage-review`
-- current_stage: `S15`
-- current_phase: `S15REV｜整体复审｜已完成本地验证`
-- status: `review_passed_upload_ready_local_only`
+- version: `0.1.0-s15-github-upload`
+- current_stage: `S16`
+- current_phase: `S16-P1｜外协采购归集｜待开始`
+- status: `stage15_uploaded_to_github_main_next_s16p1`
 - production_ready: `false`
-- github_upload_ready: `true_review_passed_upload_ready_local_only`
+- github_upload_ready: `false_next_phase_not_reviewed`
 
 ## 已完成
 
@@ -107,14 +107,15 @@
 - S15-P2 绩效复核清单已完成本地验证：`KMFA/tools/performance_review_list.py`、`KMFA/tools/check_s15_p2_performance_review_list.py`、`KMFA/tests/test_performance_review_list.py`、`KMFA/metadata/reports/performance_review_manifest.json`、`KMFA/metadata/reports/performance_fact_table.jsonl`、`KMFA/metadata/reports/performance_review_items.jsonl` 和 `KMFA/stage_artifacts/S15_P2_performance_review_list/` 已生成；只输出 4 条 public-safe 绩效事实行和 16 条异常/人工复核事项，不输出工资、奖金、薪资或最终发放结论。
 - S15-P3 工资项目边界已完成本地验证：`KMFA/tools/performance_salary_boundary.py`、`KMFA/tools/check_s15_p3_salary_boundary.py`、`KMFA/tests/test_performance_salary_boundary.py`、`KMFA/metadata/reports/performance_salary_boundary_manifest.json`、`KMFA/metadata/reports/performance_fact_output_interface_contract.json`、`KMFA/metadata/reports/salary_system_readiness_draft.jsonl` 和 `KMFA/stage_artifacts/S15_P3_salary_boundary/` 已生成；只预留 public-safe 事实输出接口契约和未来读取草案，不创建 live integration、connector、导出、工资计算、奖金审批、薪资导出或最终发放结论。
 - Stage 15 整体复审已本地通过：`KMFA/tools/check_s15_stage_review.py`、`KMFA/tests/test_s15_stage_review.py` 和 `KMFA/stage_artifacts/S15_STAGE_REVIEW/` 已生成；复审复跑 S15-P1/P2/P3 validators、全量 207 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks，未执行 GitHub upload、S16、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终薪酬结论、付款发放或外部接口。
+- Stage 15 final GitHub upload 已完成：`KMFA/stage_artifacts/S15_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S15_GITHUB_UPLOAD/machine/stage15_upload_manifest.json` 已生成，记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
 
 ## 未完成
 
-- Stage 15 GitHub upload 尚未完成；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S15-P1/S15-P2/S15-P3 和 Stage 15 review 仅为 public-safe 绩效字段、事实表、复核事项、工资项目边界和复审证据，不代表工资计算、奖金审批、薪资导出、正式报告或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- S16-P1 尚未开始；lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S15-P1/S15-P2/S15-P3、Stage 15 review 和 Stage 15 upload 仅为 public-safe 绩效字段、事实表、复核事项、工资项目边界、复审和上传证据，不代表工资计算、奖金审批、薪资导出、正式报告或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-14 review/upload 均已完成，S15-P1 performance fact fields、S15-P2 performance review list、S15-P3 salary boundary 和 Stage 15 review 已完成；下一步只能执行 Stage 15 GitHub upload，不能直接进入 S16、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5-15 review/upload 均已完成；下一步只能执行 S16-P1，不能直接进入 S16-P2/S16-P3、Stage 16 review、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

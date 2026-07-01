@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s15-stage-review"
-current_stage: "S15"
-current_phase: "S15UPLOAD"
+version: "0.1.0-s15-github-upload"
+current_stage: "S16"
+current_phase: "S16PA"
 current_phase_status: "planned_next"
-current_stage_status: "review_passed_upload_ready_local_only"
+current_stage_status: "planned_next"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -85,6 +85,8 @@ machine_plane:
   - "stage_artifacts/S15_STAGE_REVIEW/human/stage15_review_report.md"
   - "stage_artifacts/S15_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S15_STAGE_REVIEW/machine/stage15_review_manifest.json"
+  - "stage_artifacts/S15_GITHUB_UPLOAD/human/github_upload_record.md"
+  - "stage_artifacts/S15_GITHUB_UPLOAD/machine/stage15_upload_manifest.json"
   - "stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
   - "stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
@@ -420,7 +422,10 @@ upload_policy:
   stage15_review_passed: true
   stage15_review_evidence: "KMFA/stage_artifacts/S15_STAGE_REVIEW/human/stage15_review_report.md"
   stage15_review_manifest: "KMFA/stage_artifacts/S15_STAGE_REVIEW/machine/stage15_review_manifest.json"
-  stage15_upload_ready_local_only: true
-  stage15_uploaded_to_github_main: false
-  next_phase_upload_allowed: true
-  upload_surface: "stage15_review_passed_next_stage15_upload"
+  stage15_upload_ready_local_only: false
+  stage15_uploaded_to_github_main: true
+  stage15_upload_evidence: "KMFA/stage_artifacts/S15_GITHUB_UPLOAD/human/github_upload_record.md"
+  stage15_upload_manifest: "KMFA/stage_artifacts/S15_GITHUB_UPLOAD/machine/stage15_upload_manifest.json"
+  stage15_blocker: "none_stage15_uploaded"
+  next_phase_upload_allowed: false
+  upload_surface: "stage15_uploaded_next_s16p1"
