@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-post-s18-part5-review-local - 2026-07-02
+
+- 完成 Post-S18 第一阶段 Part 5 本地复审，范围仅为 Stage 13、Stage 14、Stage 15。
+- 新增 `KMFA/tools/check_part5_stages_13_15_review.py`、`KMFA/tests/test_part5_stages_13_15_review.py` 和 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`。
+- 复跑 S13 financial operating/collection/cross-table、S14 fund/invoice/policy、S15 performance/salary-boundary validators、Part 5 review validator、全量 273 个 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check。
+- 本轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
+
 ## 0.1.0-post-s18-part4-review-local - 2026-07-02
 
 - 完成 Post-S18 第一阶段 Part 4 本地复审，范围仅为 Stage 10、Stage 11、Stage 12。
