@@ -11,6 +11,10 @@ REPAIR_LABEL = "PFI v0.2.3 Repair"
 STAGE_ID = "Stage 4"
 PHASE_4_1_ID = "4.1"
 PHASE_4_1_NAME = "状态机定义"
+PHASE_4_2_ID = "4.2"
+PHASE_4_3_ID = "4.3"
+WHOLE_REVIEW_ID = "stage_4_whole_review"
+GITHUB_UPLOAD_ID = "stage_4_github_main_upload"
 DATA_STATE_CONTRACT_VERSION = "PFI-V024-STAGE4-PHASE41-DATA-STATE"
 
 METRIC_DATA_STATUSES = (
@@ -156,6 +160,78 @@ def build_v024_stage4_phase41_contract() -> V024Stage4Phase41Contract:
             "账户/投资/消费/报告共享状态挂链",
             "app bundle reinstall",
             "GitHub main upload",
+        ],
+    )
+
+
+@dataclass(frozen=True)
+class V024Stage4GithubUploadContract:
+    target_version: str
+    source_package_version: str
+    repair_label: str
+    stage_id: str
+    upload_id: str
+    review_id: str
+    reviewed_phase_ids: list[str]
+    data_state_contract_version: str
+    validation_commands: list[str]
+    stage_4_candidate_complete: bool
+    stage_4_review_complete: bool
+    stage_4_complete: bool
+    github_main_uploaded: bool
+    rebased_on_current_origin_main: bool
+    remote_main_verification_required: bool
+    stage_5_started: bool
+    stage_5_allowed_without_user_instruction: bool
+    app_bundle_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+    max_phases_per_run: int
+    explicitly_not_done: list[str]
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage4_github_upload_contract() -> V024Stage4GithubUploadContract:
+    return V024Stage4GithubUploadContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        repair_label=REPAIR_LABEL,
+        stage_id=STAGE_ID,
+        upload_id=GITHUB_UPLOAD_ID,
+        review_id=WHOLE_REVIEW_ID,
+        reviewed_phase_ids=[PHASE_4_1_ID, PHASE_4_2_ID, PHASE_4_3_ID],
+        data_state_contract_version=DATA_STATE_CONTRACT_VERSION,
+        validation_commands=[
+            "git fetch origin main",
+            "git rebase origin/main",
+            "node --check PFI/web/app/data_state.js",
+            "node --check PFI/web/app/shell.js",
+            "pytest stage4 github upload contract",
+            "pytest stage4 whole review and regression",
+            "python3 -m json.tool stage4 upload and browser evidence",
+            "git diff --check -- PFI",
+            "git push origin HEAD:main",
+            "git ls-remote origin refs/heads/main",
+        ],
+        stage_4_candidate_complete=True,
+        stage_4_review_complete=True,
+        stage_4_complete=True,
+        github_main_uploaded=True,
+        rebased_on_current_origin_main=True,
+        remote_main_verification_required=True,
+        stage_5_started=False,
+        stage_5_allowed_without_user_instruction=False,
+        app_bundle_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
+        max_phases_per_run=1,
+        explicitly_not_done=[
+            "Stage 5",
+            "app bundle reinstall",
+            "launcher C or Info.plist changes",
+            "financial data or metric logic changes",
         ],
     )
 

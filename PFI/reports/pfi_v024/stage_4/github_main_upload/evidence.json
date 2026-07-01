@@ -1,0 +1,183 @@
+{
+  "schema": "PFIV024Stage4GithubMainUploadEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 4",
+  "upload_id": "stage_4_github_main_upload",
+  "review_id": "stage_4_whole_review",
+  "status": "pass",
+  "generated_at": "2026-07-01T09:58:32+10:00",
+  "final_validated_at": "2026-07-01T10:03:28+10:00",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "origin_main_before_rebase": "d520e748beae562ffa42cb5edda4d63a44f2f13e",
+    "head_after_rebase_before_upload_gate_commit": "cd96ec1102b0b692b95562339ba921446972eaf0",
+    "local_ahead_origin_main_after_rebase": 4,
+    "local_behind_origin_main_after_rebase": 0,
+    "origin_main_delta_touches_pfi": false,
+    "push_refspec": "HEAD:main"
+  },
+  "completed_gate": "Stage 4 GitHub main upload",
+  "reviewed_phase_ids": [
+    "4.1",
+    "4.2",
+    "4.3"
+  ],
+  "stage_4_candidate_complete": true,
+  "stage_4_review_complete": true,
+  "stage_4_complete": true,
+  "github_main_uploaded": true,
+  "rebased_on_current_origin_main": true,
+  "remote_main_verification_required": true,
+  "remote_main_verified_by_terminal": true,
+  "head_origin_remote_equal_verified": true,
+  "final_hash_record_policy": "Do not embed the self-referential final commit hash in this file; use terminal git rev-parse and git ls-remote output after push.",
+  "stage_5_started": false,
+  "stage_5_allowed_without_user_instruction": false,
+  "no_auto_next_stage": true,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "source_summary": {
+    "status": "ready",
+    "record_count": 8815,
+    "raw_file_count": 4,
+    "as_of": "2026-06-03"
+  },
+  "read_model": {
+    "shared_surfaces": [
+      "home",
+      "accounts",
+      "investment",
+      "consumption",
+      "insights"
+    ],
+    "read_model_hash": "sha256:89c3bac811ce9e38d78dae3fdb646a12e17d9eadb86ac2c2cc52b3a3642add2a",
+    "blocked_metric_ids": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ],
+    "real_confirmed_zero_metric_count": 0
+  },
+  "acceptance_checks": {
+    "stage_4_whole_review_present": true,
+    "core_metric_fields_complete": true,
+    "missing_real_data_no_cny_zero": true,
+    "confirmed_zero_requires_source_time_sample_formula": true,
+    "shared_read_model_across_surfaces": true,
+    "no_mock_fixture_demo_financial_fallback": true,
+    "v024_stage4_regression_passed": true,
+    "remote_main_verification_required_after_push": true
+  },
+  "commands": [
+    {
+      "cmd": "pytest stage4 github upload contract red run",
+      "status": "expected_fail",
+      "detail": "3 failed: missing stage4 github upload contract and evidence pack before implementation"
+    },
+    {
+      "cmd": "git rebase origin/main",
+      "status": "pass",
+      "detail": "rebased 4 local Stage 4 commits onto origin/main d520e748beae562ffa42cb5edda4d63a44f2f13e; remote delta touched OpenAIDatabase only"
+    },
+    {
+      "cmd": "node --check PFI/web/app/data_state.js && node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage4 github upload contract",
+      "status": "pass",
+      "detail": "3 passed"
+    },
+    {
+      "cmd": "pytest stage4 github upload + whole review + regression",
+      "status": "pass",
+      "detail": "28 passed in 1.02s"
+    },
+    {
+      "cmd": "python3 -m json.tool stage4 upload/whole/browser evidence",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    },
+    {
+      "cmd": "git push origin HEAD:main",
+      "status": "pass",
+      "detail": "terminal gate pushed Stage 4 package to GitHub main; final hash verified after push outside this self-referential evidence file"
+    },
+    {
+      "cmd": "git ls-remote origin refs/heads/main",
+      "status": "pass",
+      "detail": "terminal gate verified remote main equals local HEAD after push"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE4_DATA_STATE_MACHINE.md",
+    "PFI/docs/pfi_v024/STAGE4_GITHUB_MAIN_UPLOAD.md",
+    "PFI/docs/pfi_v024/STAGE4_WHOLE_STAGE_REVIEW.md",
+    "PFI/reports/pfi_v024/stage_4/github_main_upload/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_4/github_main_upload/evidence.json",
+    "PFI/reports/pfi_v024/stage_4/github_main_upload/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_4/github_main_upload/terminal.log",
+    "PFI/reports/pfi_v024/stage_4/phase_4_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_4/phase_4_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_4/phase_4_1/terminal.log",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/core_metric_states.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/data_source_scan.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/page_metric_states.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/read_model_status.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_4/phase_4_2/terminal.log",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/browser_validation.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/evidence.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/rendered/stage4_phase43_confirmed_zero_gate.html",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/rendered/stage4_phase43_missing_state.html",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/screenshots/confirmed_zero_gate.png",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/screenshots/data_missing_state.png",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/terminal.log",
+    "PFI/reports/pfi_v024/stage_4/whole_stage_review/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_4/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v024/stage_4/whole_stage_review/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_4/whole_stage_review/terminal.log",
+    "PFI/scripts/validate_v024_stage4_phase43_chrome.py",
+    "PFI/src/pfi_os/app/streamlit_app.py",
+    "PFI/src/pfi_os/application/read_model_status.py",
+    "PFI/src/pfi_v02/stage_v021_runtime_api.py",
+    "PFI/src/pfi_v02/stage_v024_stage4_data_state.py",
+    "PFI/tests/test_v024_stage4_github_upload_contract.py",
+    "PFI/tests/test_v024_stage4_no_mock_financial_data.py",
+    "PFI/tests/test_v024_stage4_phase41_data_state_contract.py",
+    "PFI/tests/test_v024_stage4_phase42_read_model_link.py",
+    "PFI/tests/test_v024_stage4_phase43_acceptance.py",
+    "PFI/tests/test_v024_stage4_whole_review_contract.py",
+    "PFI/web/app/data_state.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 5",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}

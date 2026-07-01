@@ -72,14 +72,14 @@ Stage 1 records:
 
 ## v0.2.4 Stage 4 Status
 
-Current run unit: `Stage 4 whole-stage review - 复审并解决暴露问题`.
+Current run unit: `Stage 4 GitHub main upload gate`.
 
 - Stage 3 GitHub main upload: complete before this run.
 - Phase 4.1: candidate pass.
 - Phase 4.2 read model 挂链: candidate pass.
 - Phase 4.3 验收: candidate pass.
 - Stage 4 whole-stage review: pass.
-- GitHub main upload: not executed in this run.
+- GitHub main upload: complete in this gate after terminal remote verification.
 - Current data state contract: `PFI-V024-STAGE4-PHASE41-DATA-STATE`.
 - Current read model status contract: `PFI-V024-STAGE4-PHASE42-READ-MODEL-STATUS`.
 - Core metric status values: `ready`、`confirmed_zero`、`not_loaded`、`source_missing`、`path_error`、`parse_failed`、`outdated_snapshot`、`permission_denied`、`calculation_failed`、`filtered_empty`.
@@ -93,7 +93,7 @@ Current run unit: `Stage 4 whole-stage review - 复审并解决暴露问题`.
 - Current real production `confirmed_zero` metric count: `0`; Phase 4.3 only proves the display gate with a non-production zero-proof page.
 - Business financial source data changes: none.
 - App bundle changes: none.
-- Next gate: Stage 4 GitHub main upload only after explicit user instruction.
+- Next gate: Stage 5 only after explicit user instruction.
 
 Stage 4 Phase 4.1 records:
 
@@ -140,6 +140,15 @@ Stage 4 whole-stage review records:
 - `reports/pfi_v024/stage_4/whole_stage_review/terminal.log`
 - `reports/pfi_v024/stage_4/whole_stage_review/changed_files.txt`
 - `reports/pfi_v024/stage_4/whole_stage_review/risk_and_rollback.md`
+
+Stage 4 GitHub main upload records:
+
+- `docs/pfi_v024/STAGE4_GITHUB_MAIN_UPLOAD.md`
+- `tests/test_v024_stage4_github_upload_contract.py`
+- `reports/pfi_v024/stage_4/github_main_upload/evidence.json`
+- `reports/pfi_v024/stage_4/github_main_upload/terminal.log`
+- `reports/pfi_v024/stage_4/github_main_upload/changed_files.txt`
+- `reports/pfi_v024/stage_4/github_main_upload/risk_and_rollback.md`
 
 ## v0.2.4 Stage 3 Status
 
