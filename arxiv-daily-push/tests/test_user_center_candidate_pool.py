@@ -202,6 +202,12 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("blocked_after_evidence_capture_no_production", page)
         self.assertIn("observed_real_delivery_days=2/2", page)
         self.assertIn("observed_real_email_count=8/8", page)
+        self.assertIn("| 字段 | 历史当时值 |", page)
+        self.assertIn("| 历史当时缺口 | `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT` |", page)
+        self.assertIn("| 历史当时剩余缺口 | `REAL_SCHEDULER_PROOF`; `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT` |", page)
+        self.assertIn("历史当时状态 | `scheduler_proof_ready_terminal_artifact_missing_no_production`", page)
+        self.assertIn("历史当时状态 | `blocked_scheduler_proof_and_terminal_artifact_only_no_production`", page)
+        self.assertIn("历史当时状态 | `blocked_after_evidence_capture_no_production`", page)
 
         self.assertIn("REQ-ADP-V7-071-S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC", page)
@@ -1335,6 +1341,11 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("当前结论：这是证据链新鲜度同步", page)
         self.assertNotIn("不改变当前 blocked/no-production 状态", page)
         self.assertNotIn("当前剩余阻断以摘要和最新阶段记录为准", page)
+        self.assertNotIn("| 当前缺口 | `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT` |", page)
+        self.assertNotIn("| 剩余缺口 | `REAL_SCHEDULER_PROOF`; `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT` |", page)
+        self.assertNotIn("| 状态 | `scheduler_proof_ready_terminal_artifact_missing_no_production` |", page)
+        self.assertNotIn("| 状态 | `blocked_scheduler_proof_and_terminal_artifact_only_no_production` |", page)
+        self.assertNotIn("| 状态 | `blocked_after_evidence_capture_no_production` |", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
