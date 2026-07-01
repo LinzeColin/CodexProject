@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s14p2-invoice-tax-plan`
+- version: `0.1.0-s14p3-policy-evidence-plan`
 - current_stage: `S14`
-- current_phase: `S14-P2｜开票纳税｜已完成本地验证`
-- status: `in_progress_s14p2_completed_local_only`
+- current_phase: `S14-P3｜政策证据｜已完成本地验证`
+- status: `completed_local_only_pending_stage_review`
 - production_ready: `false`
 - github_upload_ready: `false_phase_completion_no_upload`
 
@@ -101,14 +101,15 @@
 - Stage 13 final GitHub upload 已完成：`KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S13_GITHUB_UPLOAD/machine/stage13_upload_manifest.json` 记录 rebase/validators、安全扫描、dry-run push、push 和 post-push parity。
 - S14-P1 资金计划现金贷款已完成本地验证：`KMFA/tools/fund_cash_loan_plan.py`、`KMFA/tools/check_s14_p1_fund_cash_loan_plan.py`、`KMFA/tests/test_fund_cash_loan_plan.py`、`KMFA/metadata/reports/fund_cash_loan_plan_manifest.json`、`KMFA/metadata/reports/fund_cash_loan_source_lanes.jsonl`、`KMFA/metadata/reports/fund_cash_pressure_signals.jsonl`、`KMFA/metadata/reports/loan_due_alerts.jsonl`、`KMFA/metadata/reports/account_balance_summaries.jsonl` 和 `KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/` 已生成；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、付款审批、银行操作和贷款管理动作。
 - S14-P2 开票纳税已完成本地验证：`KMFA/tools/invoice_tax_plan.py`、`KMFA/tools/check_s14_p2_invoice_tax_plan.py`、`KMFA/tests/test_invoice_tax_plan.py`、`KMFA/metadata/reports/invoice_tax_plan_manifest.json`、`KMFA/metadata/reports/invoice_tax_source_lanes.jsonl`、`KMFA/metadata/reports/invoice_tax_issue_candidates.jsonl`、`KMFA/metadata/reports/invoice_tax_cash_summaries.jsonl` 和 `KMFA/stage_artifacts/S14_P2_invoice_tax_plan/` 已生成；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、纳税申报和发票开具动作。
+- S14-P3 政策证据已完成本地验证：`KMFA/tools/policy_evidence_plan.py`、`KMFA/tools/check_s14_p3_policy_evidence_plan.py`、`KMFA/tests/test_policy_evidence_plan.py`、`KMFA/metadata/reports/policy_evidence_plan_manifest.json`、`KMFA/metadata/reports/policy_evidence_directories.jsonl`、`KMFA/metadata/reports/policy_evidence_gaps.jsonl`、`KMFA/metadata/reports/policy_risk_tips.jsonl` 和 `KMFA/stage_artifacts/S14_P3_policy_evidence_plan/` 已生成；覆盖科小、高新、专精特新、小巨人、研发费用 5 类证据目录，只输出证据缺口和风险提示，不输出正式政策资格结论。
 
 ## 未完成
 
-- S14-P3 政策证据、Stage 14 整体复审、Stage 14 GitHub upload、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S14-P1/S14-P2 仅为 public-safe 资金、现金、贷款、开票和纳税候选证据闭环，不代表正式报告可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
+- Stage 14 整体复审、Stage 14 GitHub upload、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S14-P1/S14-P2/S14-P3 仅为 public-safe 资金、现金、贷款、开票、纳税和政策证据缺口闭环，不代表正式报告、正式政策资格结论或业务系统可发布；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page、Stage 11 review/upload、S12-P1 manual resolution events、S12-P2 impact preview、S12-P3 rerun mechanism、Stage 12 review/upload、S13-P1 financial operating report、S13-P2 collection receivable aging、S13-P3 cross table review、Stage 13 review/upload、S14-P1 fund cash loan plan 和 S14-P2 invoice tax plan 已完成；下一步只能作为新 run work 执行 S14-P3，不能直接进入 Stage 14 review/upload、lineage full check、正式报告或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page、Stage 11 review/upload、S12-P1 manual resolution events、S12-P2 impact preview、S12-P3 rerun mechanism、Stage 12 review/upload、S13-P1 financial operating report、S13-P2 collection receivable aging、S13-P3 cross table review、Stage 13 review/upload、S14-P1 fund cash loan plan、S14-P2 invoice tax plan 和 S14-P3 policy evidence plan 已完成；下一步只能作为新 run work 执行 Stage 14 整体复审，不能直接进入 GitHub upload、lineage full check、正式报告或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

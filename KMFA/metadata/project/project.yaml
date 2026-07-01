@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s14p2-invoice-tax-plan"
+version: "0.1.0-s14p3-policy-evidence-plan"
 current_stage: "S14"
-current_phase: "S14PB"
+current_phase: "S14PC"
 current_phase_status: "completed_validated_local_only"
-current_stage_status: "in_progress_s14p2_completed_local_only"
+current_stage_status: "completed_local_only_pending_stage_review"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -374,11 +374,13 @@ upload_policy:
   stage14_s14p2_completed_validated_local_only: true
   stage14_s14p2_evidence: "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/s14_p2_completion_record.md"
   stage14_s14p2_manifest: "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/machine/s14_p2_manifest.json"
-  stage14_s14p3_completed_validated_local_only: false
+  stage14_s14p3_completed_validated_local_only: true
+  stage14_s14p3_evidence: "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/s14_p3_completion_record.md"
+  stage14_s14p3_manifest: "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/machine/s14_p3_manifest.json"
   stage14_review_required_before_upload: true
   stage14_review_passed: false
   stage14_upload_ready_local_only: false
   stage14_uploaded_to_github_main: false
-  stage14_blocker: "s14p3_stage14_review_github_upload_lineage_formal_report_not_done"
+  stage14_blocker: "stage14_review_github_upload_lineage_formal_report_not_done"
   next_phase_upload_allowed: false
-  upload_surface: "stage14_in_progress_s14p2_completed_local_only_next_run_s14p3"
+  upload_surface: "stage14_all_phases_completed_local_only_next_run_stage14_review"

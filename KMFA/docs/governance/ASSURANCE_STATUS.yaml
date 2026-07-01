@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S14P2-INVOICE-TAX-PLAN"
+as_of_event_id: "EVENT-KMFA-20260701-S14P3-POLICY-EVIDENCE-PLAN"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "dfdf16c98656c4272fa105027dcbf46ba15d37dd"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13_UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-01T23:00:00+10:00"
-generator_version: "manual-s14p2-invoice-tax-plan"
+snapshot_event_time: "2026-07-01T23:30:00+10:00"
+generator_version: "manual-s14p3-policy-evidence-plan"
 final_commit_binding: "local_phase_commit_pending_no_github_upload"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 163
-    total_active_formulas: 38
+    total_active_parameters: 170
+    total_active_formulas: 39
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -124,6 +124,7 @@ dimensions:
       - "KMFA/stage_artifacts/S13_GITHUB_UPLOAD/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/human/test_results.md"
       - "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/test_results.md"
+      - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -206,6 +207,8 @@ dimensions:
       - "KMFA/tools/check_s13_stage_review.py"
       - "KMFA/tools/invoice_tax_plan.py"
       - "KMFA/tools/check_s14_p2_invoice_tax_plan.py"
+      - "KMFA/tools/policy_evidence_plan.py"
+      - "KMFA/tools/check_s14_p3_policy_evidence_plan.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -393,10 +396,10 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S14P1_COMPLETED_LOCAL_ONLY_NO_GITHUB_UPLOAD"
-  release_gate: "KMFA-S14-P2-GATE"
+  status: "S14_P3_COMPLETED_LOCAL_ONLY_NO_STAGE14_REVIEW_OR_GITHUB_UPLOAD"
+  release_gate: "KMFA-S14-STAGE-REVIEW-GATE"
   blocker_ids:
-    - "S14_P2_P3_STAGE14_REVIEW_UPLOAD_NOT_COMPLETE"
+    - "S14_STAGE_REVIEW_UPLOAD_NOT_COMPLETE"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"
     - "REPORT_GRADE_D_BLOCKS_BUSINESS_DECISION"

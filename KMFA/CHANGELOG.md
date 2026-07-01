@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s14p3-policy-evidence-plan - 2026-07-01
+
+- 完成 `S14-P3｜政策证据` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/policy_evidence_plan.py`、`KMFA/tools/check_s14_p3_policy_evidence_plan.py` 和 `KMFA/tests/test_policy_evidence_plan.py`。
+- 登记 5 类 public-safe 政策证据目录：科小、高新、专精特新、小巨人、研发费用；输出 5 条证据缺口、5 条风险提示和 1 个蓝色商务风 HTML overview。
+- 报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、政策资格正式结论、申报提交、纳税申报、发票开具、付款、银行、贷款管理和业务 release。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、发票号、税务申报材料、政策申报材料、政策评分、正式资格结论或 credentials。
+- S14-P3 不执行 Stage 14 整体复审、GitHub upload、lineage full check、正式报告、外部 connector 或任何资金/银行/贷款/开票/税务/政策申报执行动作。
+- Stage 14 三个 phase 已本地完成；下一轮只能执行 `Stage 14 整体复审`。
+
 ## 0.1.0-s14p2-invoice-tax-plan - 2026-07-01
 
 - 完成 `S14-P2｜开票纳税` 本地验证，不上传 GitHub。
