@@ -1,6 +1,6 @@
 # ChatGPT Personalization Export
 
-- generated_at: 2026-06-30T07:12:23Z
+- generated_at: 2026-07-01T05:50:07Z
 - source: OpenAIDatabase redacted derived context
 - raw_private_data_included: false
 - plaintext_secrets_included: false
@@ -17,22 +17,22 @@
 
 ## Preferences And Taste
 
-- OpenAIDatabase 是 durable memory source: GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。 (confidence=high; evidence=6068)
-- 任意 agent personalization: 所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。 (confidence=high; evidence=2671)
-- 真实数据优先: 用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。 (confidence=high; evidence=2515)
-- 默认中文输出: 用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。 (confidence=high; evidence=1345)
-- 报告面向人类 ROI 和成长: 处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。 (confidence=high; evidence=851)
+- OpenAIDatabase 是 durable memory source: GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。 (confidence=high; evidence=272)
+- 任意 agent personalization: 所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。 (confidence=high; evidence=51)
+- 默认中文输出: 用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。 (confidence=high; evidence=19)
+- 真实数据优先: 用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。 (confidence=high; evidence=19)
+- 报告面向人类 ROI 和成长: 处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。 (confidence=high; evidence=12)
 
 ## History And Patterns
 
-- Codex 本地数据 / agent 工作流: 14067
-- 安全边界 / secret / 权限: 12478
-- 高质量交付 / 验证 / CI: 10913
-- GitHub 备份 / durable state: 8598
-- 前端交互 / Three.js / Dashboard: 2800
-- 长期记忆数据库 / RAG: 2295
-- 金融 / trading / 风险边界: 2080
-- Memory Atlas / 记忆可视化: 604
+- Codex 本地数据 / agent 工作流: 324
+- GitHub 备份 / durable state: 289
+- 安全边界 / secret / 权限: 283
+- 高质量交付 / 验证 / CI: 273
+- Memory Atlas / 记忆可视化: 30
+- 长期记忆数据库 / RAG: 11
+- 前端交互 / Three.js / Dashboard: 7
+- 金融 / trading / 风险边界: 5
 
 
 ## Project And Decision Context
@@ -49,5 +49,5 @@
 
 ## Meta Rules
 
-- GitHub secret 边界: GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。 (confidence=high; evidence=12167)
-- 授权边界: 用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。 (confidence=high; evidence=5441)
+- GitHub secret 边界: GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。 (confidence=high; evidence=275)
+- 授权边界: 用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。 (confidence=high; evidence=46)

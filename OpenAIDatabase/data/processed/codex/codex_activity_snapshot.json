@@ -1,112 +1,112 @@
 {
-  "abort_count": 68,
-  "activity_range_end": "2026-06-30",
-  "activity_range_start": "2026-06-03",
+  "abort_count": 6,
+  "activity_range_end": "2026-07-01",
+  "activity_range_start": "2026-06-29",
   "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
-  "day_count": 28,
+  "day_count": 3,
   "error_event_count": 0,
-  "generated_at": "2026-06-30T07:12:22Z",
-  "message_count": 137872,
-  "range_end": "2026-06-30",
-  "range_start": "2026-06-02",
+  "generated_at": "2026-07-01T05:50:06Z",
+  "message_count": 11661,
+  "range_end": "2026-07-01",
+  "range_start": "2026-06-29",
   "recommendation_counts": {
     "memory_added": 0,
     "memory_current": 5,
     "memory_deleted": 0,
-    "memory_modified": 0,
+    "memory_modified": 1,
     "meta_added": 0,
     "meta_current": 2,
     "meta_deleted": 0,
-    "meta_modified": 0
+    "meta_modified": 1
   },
   "schema_version": "codex_activity_snapshot.v1",
-  "session_count": 408,
-  "session_started_range_end": "2026-06-29",
-  "session_started_range_start": "2026-06-02",
+  "session_count": 16,
+  "session_started_range_end": "2026-07-01",
+  "session_started_range_start": "2026-06-29",
   "source": "real_codex_local_data",
-  "tool_call_count": 457620,
+  "tool_call_count": 53580,
   "top_tools": [
     {
-      "count": 201997,
+      "count": 23906,
       "name": "function_call_output"
     },
     {
-      "count": 169829,
+      "count": 21885,
       "name": "exec_command"
     },
     {
-      "count": 25803,
+      "count": 2838,
       "name": "apply_patch"
     },
     {
-      "count": 25802,
+      "count": 2838,
       "name": "custom_tool_call_output"
     },
     {
-      "count": 16852,
-      "name": "write_stdin"
-    },
-    {
-      "count": 6836,
+      "count": 969,
       "name": "update_plan"
     },
     {
-      "count": 1350,
+      "count": 410,
+      "name": "write_stdin"
+    },
+    {
+      "count": 123,
+      "name": "view_image"
+    },
+    {
+      "count": 84,
+      "name": "_search"
+    },
+    {
+      "count": 60,
       "name": "tool_search_call"
     },
     {
-      "count": 1192,
-      "name": "js"
+      "count": 54,
+      "name": "_notion_update_page"
     },
     {
-      "count": 1125,
-      "name": "_fetch_workflow_run_jobs"
+      "count": 52,
+      "name": "get_app_state"
     },
     {
-      "count": 776,
-      "name": "_fetch_commit_workflow_runs"
-    },
-    {
-      "count": 543,
-      "name": "web_search_call"
-    },
-    {
-      "count": 502,
-      "name": "_fetch_file"
+      "count": 47,
+      "name": "get_goal"
     }
   ],
   "top_topics": [
     {
-      "count": 14067,
+      "count": 324,
       "label": "Codex 本地数据 / agent 工作流"
     },
     {
-      "count": 12478,
-      "label": "安全边界 / secret / 权限"
-    },
-    {
-      "count": 10913,
-      "label": "高质量交付 / 验证 / CI"
-    },
-    {
-      "count": 8598,
+      "count": 289,
       "label": "GitHub 备份 / durable state"
     },
     {
-      "count": 2800,
-      "label": "前端交互 / Three.js / Dashboard"
+      "count": 283,
+      "label": "安全边界 / secret / 权限"
     },
     {
-      "count": 2295,
+      "count": 273,
+      "label": "高质量交付 / 验证 / CI"
+    },
+    {
+      "count": 30,
+      "label": "Memory Atlas / 记忆可视化"
+    },
+    {
+      "count": 11,
       "label": "长期记忆数据库 / RAG"
     },
     {
-      "count": 2080,
-      "label": "金融 / trading / 风险边界"
+      "count": 7,
+      "label": "前端交互 / Three.js / Dashboard"
     },
     {
-      "count": 604,
-      "label": "Memory Atlas / 记忆可视化"
+      "count": 5,
+      "label": "金融 / trading / 风险边界"
     }
   ]
 }
