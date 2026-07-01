@@ -34,19 +34,26 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC_BLOCKED_NO_PRODUCTION", current_state)
-        self.assertIn("S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC", current_state)
+        self.assertIn(
+            "S2PLT02_CONTROLLED_REAL_RUN_20260701_SCHEDULER_ONLY_BLOCKER_SYNC_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC", current_state)
+        self.assertIn("real_smtp_sent=true", current_state)
+        self.assertIn("sent_mail_count=4", current_state)
+        self.assertIn("runtime_capture_blockers=real_launchd_scheduler_proof_missing", current_state)
         self.assertIn("observed_real_delivery_days=2/2", current_state)
         self.assertIn("observed_real_email_count=8/8", current_state)
-        self.assertIn("SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS", current_state)
         self.assertIn("REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
-        self.assertIn("c5f9f4678c564d87cd0a4086ca9b059a18ed1122b82bcacc7b7460214476648b", current_state)
-        self.assertIn("09fcf0817f968ae73c43bb834cf73b04b01b22cdc03b8918f4268626f14632cb", current_state)
-        self.assertIn("908415095aca6b4919799233563610daa98439ca294633f32868a6bca2ba0536", current_state)
-        self.assertIn("d694f129dcfdf5b6c695072ae5c88a6d48c1be6c3ff53350c2b437ed8d7049ae", current_state)
-        self.assertIn("59689cb46828a44819d38b8ddbcff873b0867f9292622cd45fc3a47bda956dea", current_state)
-        self.assertIn("ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC-20260701.json", current_state)
-        self.assertIn("PHASE_S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC.md", ledger)
+        self.assertIn("56ae67654903caad8006b244e36a606f60a0b3a09db93f01d11327a4da546489", current_state)
+        self.assertIn("f89312b584b05e5f1c2d5f07f24a5bd6558086fb3473c2e6e715e90b38db78bd", current_state)
+        self.assertIn(
+            "ADP-S2PLT02-CONTROLLED-REAL-RUN-20260701-SCHEDULER-ONLY-BLOCKER-SYNC.json",
+            current_state,
+        )
+        self.assertIn("PHASE_S2PLT02_CONTROLLED_REAL_RUN_20260701_SCHEDULER_ONLY_BLOCKER_SYNC.md", ledger)
+        self.assertIn("Previous terminal scheduler blocker sync remains visible", current_state)
+        self.assertIn("S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC", current_state)
         self.assertIn("Previous controlled real second-day capture remains visible", current_state)
         self.assertIn("S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE", current_state)
 
