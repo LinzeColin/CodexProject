@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 8 Phase 8.1 - 2026-07-01
+
+- 完成 `Stage 8 / Phase 8.1 - 自动验收`：用真实浏览器自动验证 10 个一级入口、核心二级页面、入口版本、真实数据状态和报告中心。
+- 新增 `PFI/src/pfi_v02/stage_v024_stage8_e2e_acceptance.py`、`PFI/scripts/validate_v024_stage8_phase81_e2e_auto.js`、`PFI/tests/test_v024_stage8_phase81_e2e_auto_acceptance.py` 和 `PFI/reports/pfi_v024/stage_8/phase_8_1/` evidence。
+- 自动验收注入 Stage 4 `read_model_status.json` 与 Stage 7 `report_schema.json`，确认 `MetaDatabase/PFI` 8815 条记录、4 个 raw files、非假零阻断状态和 6 类报告中心字段。
+- 本轮不执行 Phase 8.2 截图验收、Phase 8.3 人工验收、Stage 8 whole-stage review、Stage 9 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 7 GitHub Main Upload - 2026-07-01
 
 - 完成 `Stage 7 GitHub main upload gate`：将 Stage 7 Phase 7.1、Phase 7.2、Phase 7.3 和 whole-stage review package 上传到 GitHub main。

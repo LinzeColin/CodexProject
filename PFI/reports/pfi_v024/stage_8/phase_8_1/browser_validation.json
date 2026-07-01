@@ -1,0 +1,23 @@
+{
+  "schema": "PFIV024Stage8Phase81BrowserValidationV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 8",
+  "phase_id": "8.1",
+  "phase_name": "自动验收",
+  "status": "pass",
+  "automated_only": true,
+  "source": "http://127.0.0.1:60381/index.html",
+  "playwright_package_path": "/Users/linzezhang/Documents/Codex/CodexProject/EEI/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright",
+  "route_click_test_passed": true,
+  "entry_version_test_passed": true,
+  "data_state_test_passed": true,
+  "report_center_test_passed": true,
+  "history_back_forward_passed": true,
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": [],
+  "server_not_found_paths": [],
+  "generated_at": "2026-07-01T04:30:04.621Z",
+  "validation_hash": "7cda00553ae32116b2d85fbc2a95e3270fc157f648222c373184c6a1e101b4fc"
+}

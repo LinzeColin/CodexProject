@@ -30,6 +30,24 @@ Records:
 - `docs/pfi_v024/RUN_CONTRACT.md`
 - `reports/pfi_v024/pre_stage_0/evidence.json`
 
+## v0.2.4 Stage 8 Status
+
+Current run unit: `Stage 8 / Phase 8.1 - 自动验收`.
+
+- Stage 7 GitHub main upload: complete before this run.
+- Phase 8.1 automated acceptance: candidate pass.
+- Phase 8.2 screenshot acceptance: not started.
+- Phase 8.3 manual acceptance: not started.
+- Stage 8 whole-stage review: not executed.
+- Stage 8 GitHub main upload: not executed.
+- Stage 9 regression freeze: not started.
+- App bundle reinstall: not executed.
+- Data logic changes: none.
+- Financial data changes: none.
+- Automated checks passed: route click, entry version, data state, report center.
+- Current evidence: `reports/pfi_v024/stage_8/phase_8_1/evidence.json`.
+- Next gate: stop for user acceptance or explicit instruction to enter `Stage 8 Phase 8.2 - 截图验收`.
+
 ## v0.2.4 Stage 7 Status
 
 Current run unit: `Stage 7 GitHub main upload gate`.
