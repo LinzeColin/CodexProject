@@ -165,6 +165,16 @@ def adp_s2pmt07_blocked_next_task(
         or "owner_production_boundary_decision_recorded=true" in current_alias
         or "acceptance_write_gate_allowed=true" in current_alias
     )
+    integrated_production_accepted_no_daily_operation = (
+        bool(matrix.get("stage2_integrated_production_accepted", False))
+        or "INTEGRATED_PRODUCTION_ACCEPTED" in current_gate
+        or "integrated_production_accepted=true" in current_alias
+    ) and not bool(matrix.get("s2pmt07_daily_operation_enabled", False))
+    integrated_production_accepted_no_daily_operation = (
+        bool(matrix.get("stage2_integrated_production_accepted", False))
+        or "INTEGRATED_PRODUCTION_ACCEPTED" in current_gate
+        or "integrated_production_accepted=true" in current_alias
+    ) and not bool(matrix.get("s2pmt07_daily_operation_enabled", False))
     controlled_real_run_rechecked = (
         "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
         or "duplicate_smtp_send_avoided=true" in current_alias
@@ -212,6 +222,25 @@ def adp_s2pmt07_blocked_next_task(
         or "real-proof capture" in current_alias
         or "real proof capture" in current_alias
     )
+    if integrated_production_accepted_no_daily_operation:
+        return {
+            "task_id": "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
+            "status": "blocked",
+            "reason": (
+                "INTEGRATED_PRODUCTION_ACCEPTED evidence is written for Stage 2, "
+                "but DAILY_OPERATION remains disabled. The next action is a separate "
+                "owner authorization and safety preflight for daily operation; SMTP, "
+                "scheduler, Release, and restore remain disabled until that preflight passes."
+            ),
+            "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "Record explicit DAILY_OPERATION authorization, prove disabled runtime flags, "
+                "run the daily-operation preflight, and only then consider persistent operation enablement."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
     if owner_decision_recorded_write_gate_allowed:
         return {
             "task_id": "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE",
@@ -433,6 +462,11 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         or "owner_production_boundary_decision_recorded=true" in current_alias
         or "acceptance_write_gate_allowed=true" in current_alias
     )
+    integrated_production_accepted_no_daily_operation = (
+        bool(matrix.get("stage2_integrated_production_accepted", False))
+        or "INTEGRATED_PRODUCTION_ACCEPTED" in current_gate
+        or "integrated_production_accepted=true" in current_alias
+    ) and not bool(matrix.get("s2pmt07_daily_operation_enabled", False))
     s2plt02_terminal_delivery_ready = (
         "S2PLT02_TERMINAL_DELIVERY_PROOF_READY" in current_gate
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
@@ -499,6 +533,13 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     ):
         capture_window_runtime_clause = (
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
+        )
+    if integrated_production_accepted_no_daily_operation:
+        return (
+            "A: INTEGRATED_PRODUCTION_ACCEPTED evidence is written for Stage 2 and "
+            "runtime enablement remains disabled; next request explicit DAILY_OPERATION "
+            "authorization and run the daily-operation safety preflight before enabling "
+            "SMTP, scheduler, Release, restore, or persistent operation."
         )
     if owner_decision_recorded_write_gate_allowed:
         return (
@@ -1192,7 +1233,29 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             or "owner_production_boundary_decision_recorded=true" in str(matrix.get("current_v7_legacy_alias") or "")
             or "acceptance_write_gate_allowed=true" in str(matrix.get("current_v7_legacy_alias") or "")
         )
-        if owner_decision_recorded_write_gate_allowed:
+        integrated_production_accepted_no_daily_operation = (
+            bool(matrix.get("stage2_integrated_production_accepted", False))
+            or "INTEGRATED_PRODUCTION_ACCEPTED" in current_gate_text
+            or "integrated_production_accepted=true" in str(matrix.get("current_v7_legacy_alias") or "")
+        ) and not bool(matrix.get("s2pmt07_daily_operation_enabled", False))
+        if integrated_production_accepted_no_daily_operation:
+            owner_decision["review_id"] = "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
+            owner_decision["decision_question"] = (
+                "INTEGRATED_PRODUCTION_ACCEPTED 证据已写入；是否进入单独 DAILY_OPERATION 授权预检，并继续禁止 "
+                "SMTP/scheduler/Release/restore，直到该预检通过。"
+            )
+            owner_decision["question"] = owner_decision["decision_question"]
+            owner_decision["option_a"] = (
+                "进入 DAILY_OPERATION 授权预检：先证明持久 SMTP 开关、LaunchAgents、后台进程和运行边界仍安全，"
+                "再由 owner 单独决定是否启用日常运行。"
+            )
+            owner_decision["evidence_required"] = (
+                "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json, daily-operation authorization artifact, "
+                "daily-operation preflight pass, persistent ADP_ALLOW_SMTP_SEND=false before enablement, LaunchAgents disabled before enablement, "
+                "open_pr_count=0, and no background ADP process before enablement"
+            )
+            owner_decision["unblock_task_id"] = next_task["task_id"]
+        elif owner_decision_recorded_write_gate_allowed:
             owner_decision["review_id"] = "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE"
             owner_decision["decision_question"] = (
                 "Owner 生产边界决策证据已记录，acceptance write gate 已允许；是否只写入 "
@@ -1282,11 +1345,25 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "stage2_integrated_production_accepted": bool(
                     matrix.get("stage2_integrated_production_accepted", False)
                 ),
+                "current_zero_proof_open_p0_findings": matrix.get(
+                    "current_zero_proof_open_p0_findings", "UNKNOWN"
+                ),
+                "current_zero_proof_open_p1_findings": matrix.get(
+                    "current_zero_proof_open_p1_findings", "UNKNOWN"
+                ),
+                "baseline_counts_mutated": bool(matrix.get("baseline_counts_mutated", False)),
                 "parallel_shadow_source_task": str(matrix.get("current_v7_shadow_source_task_id") or "UNKNOWN"),
                 "current_v7_task_id": str(matrix.get("current_v7_task_id") or "UNKNOWN"),
             }
         )
-        if int(matrix.get("v7_open_p0_findings") or 0) or int(matrix.get("v7_open_p1_findings") or 0):
+        current_p0 = matrix.get("current_zero_proof_open_p0_findings")
+        current_p1 = matrix.get("current_zero_proof_open_p1_findings")
+        current_zero_known = current_p0 is not None and current_p1 is not None
+        current_zero_open = int(current_p0 or 0) or int(current_p1 or 0)
+        inherited_open = int(matrix.get("v7_open_p0_findings") or 0) or int(
+            matrix.get("v7_open_p1_findings") or 0
+        )
+        if (current_zero_known and current_zero_open) or (not current_zero_known and inherited_open):
             delivery_readiness["blocker_ids"] = list(delivery_readiness["blocker_ids"]) + [
                 "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
             ]
@@ -1660,6 +1737,8 @@ def render_status(item: dict[str, Any]) -> str:
             f"- V7.1 parallel audit: `{delivery.get('v7_parallel_audit', 'UNKNOWN')}`\n"
             f"- V7.1 audit hash: `{delivery.get('v7_parallel_audit_hash', 'UNKNOWN')}`\n"
             f"- Open audit blockers: `P0={delivery.get('open_p0_findings', 'UNKNOWN')} / P1={delivery.get('open_p1_findings', 'UNKNOWN')}`\n"
+            f"- Current zero-proof open findings: `P0={delivery.get('current_zero_proof_open_p0_findings', 'UNKNOWN')} / P1={delivery.get('current_zero_proof_open_p1_findings', 'UNKNOWN')}`\n"
+            f"- Baseline counts mutated: `{str(bool(delivery.get('baseline_counts_mutated'))).lower()}`\n"
             f"- Production-forbidden until: `{delivery.get('production_forbidden_until', 'UNKNOWN')}`\n"
             f"- Stage 2 stop gate: `{delivery.get('stage2_stop_gate', 'UNKNOWN')}`\n"
             f"- Stage 2 integrated accepted: `{stage2_accepted}`\n"

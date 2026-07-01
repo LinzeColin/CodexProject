@@ -36,6 +36,38 @@ def _run_command(root: Path, command: list[str], *, env: dict[str, str] | None =
     }
 
 
+def _integrated_acceptance_state(root: Path) -> dict[str, bool]:
+    path = root / "FINAL_ACCEPTANCE_BUNDLE" / "integrated_production_acceptance.json"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        payload = {}
+    accepted = (
+        payload.get("status")
+        == "pass_integrated_production_accepted_evidence_written_no_runtime_enablement"
+        and payload.get("production_acceptance_claimed") is True
+        and payload.get("integrated_production_accepted") is True
+        and payload.get("stage2_integrated_production_accepted") is True
+    )
+    daily_operation_enabled = payload.get("daily_operation_enabled") is True
+    runtime_enabled = any(
+        payload.get(flag) is True
+        for flag in (
+            "real_smtp_send_enabled",
+            "scheduler_install_enabled",
+            "release_packaging_enabled",
+            "production_restore_enabled",
+        )
+    )
+    return {
+        "production_acceptance_claimed": accepted,
+        "integrated_production_accepted": accepted,
+        "stage2_integrated_production_accepted": accepted,
+        "daily_operation_enabled": daily_operation_enabled,
+        "runtime_enabled": runtime_enabled,
+    }
+
+
 def build_validation_report(root: Path) -> dict[str, Any]:
     project_root = root / "arxiv-daily-push"
     v7_2_root = project_root / "docs" / "pursuing_goal" / "v7_2"
@@ -48,15 +80,18 @@ def build_validation_report(root: Path) -> dict[str, Any]:
     }
     missing_paths = [label for label, path in required_paths.items() if not path.exists()]
     if missing_paths:
+        acceptance = _integrated_acceptance_state(root)
         return {
             "status": "FAIL",
             "scope": "adp_task_pack_root_validation_no_production_side_effects",
             "root": str(root),
             "missing_paths": missing_paths,
             "command_results": [],
-            "production_acceptance_claimed": False,
-            "integrated_production_accepted": False,
-            "daily_operation_enabled": False,
+            "production_acceptance_claimed": acceptance["production_acceptance_claimed"],
+            "integrated_production_accepted": acceptance["integrated_production_accepted"],
+            "stage2_integrated_production_accepted": acceptance["stage2_integrated_production_accepted"],
+            "daily_operation_enabled": acceptance["daily_operation_enabled"],
+            "runtime_enablement_detected": acceptance["runtime_enabled"],
             "real_smtp_send_enabled": False,
             "scheduler_install_enabled": False,
             "release_packaging_enabled": False,
@@ -82,7 +117,13 @@ def build_validation_report(root: Path) -> dict[str, Any]:
             env=env,
         ),
     ]
-    status = "PASS" if all(result["exit_code"] == 0 for result in command_results) else "FAIL"
+    acceptance = _integrated_acceptance_state(root)
+    status = (
+        "PASS"
+        if all(result["exit_code"] == 0 for result in command_results)
+        and not acceptance["runtime_enabled"]
+        else "FAIL"
+    )
     return {
         "status": status,
         "scope": "adp_task_pack_root_validation_no_production_side_effects",
@@ -92,9 +133,11 @@ def build_validation_report(root: Path) -> dict[str, Any]:
         "validated_paths": {label: str(path.relative_to(root)) for label, path in required_paths.items()},
         "missing_paths": [],
         "command_results": command_results,
-        "production_acceptance_claimed": False,
-        "integrated_production_accepted": False,
-        "daily_operation_enabled": False,
+        "production_acceptance_claimed": acceptance["production_acceptance_claimed"],
+        "integrated_production_accepted": acceptance["integrated_production_accepted"],
+        "stage2_integrated_production_accepted": acceptance["stage2_integrated_production_accepted"],
+        "daily_operation_enabled": acceptance["daily_operation_enabled"],
+        "runtime_enablement_detected": acceptance["runtime_enabled"],
         "real_smtp_send_enabled": False,
         "scheduler_install_enabled": False,
         "release_packaging_enabled": False,

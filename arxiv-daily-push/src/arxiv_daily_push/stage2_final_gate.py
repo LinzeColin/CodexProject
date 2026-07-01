@@ -172,6 +172,37 @@ S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_BLOCKING_REASONS = (
 S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_FORBIDDEN_FLAGS = (
     S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_FORBIDDEN_FLAGS
 )
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_TASK_ID = (
+    "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_SCHEMA_VERSION = (
+    "adp.integrated_production_acceptance_evidence.v1"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_ARTIFACT_REF = (
+    "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_SCOPE = (
+    "integrated_production_acceptance_evidence_written_no_runtime_enablement"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_RUNTIME_FORBIDDEN_FLAGS = (
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PMT07_BLOCKING_REASONS = (
     "reviewer_independence_not_proven",
     "inherited_v7_1_p0_findings_open",
@@ -13220,6 +13251,229 @@ def validate_integrated_production_acceptance_write_gate_state(
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("integrated production acceptance write gate state_hash does not match state content")
+    return errors
+
+
+def build_integrated_production_acceptance_evidence_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
+    """Build the integrated production acceptance evidence without runtime enablement."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    write_gate_ref = "governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json"
+    controlled_run_ref = "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"
+    write_gate = _load_json_mapping_artifact(root / write_gate_ref) or {}
+    owner_decision = _load_json_mapping_artifact(
+        root / S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REF
+    )
+    p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(root)
+    final_bundle = build_final_acceptance_bundle_readiness_state(repo_root=root)
+    controlled_run = _load_json_mapping_artifact(root / controlled_run_ref) or {}
+
+    owner_decision_errors = validate_integrated_production_acceptance_owner_decision_artifact(owner_decision)
+    p0_p1_zero_proof_validation = build_p0_p1_zero_proof_artifact_validation_state(p0_p1_zero_proof)
+    controlled_run_result = _mapping(controlled_run.get("controlled_run_result"))
+    duplicate_control = _mapping(controlled_run.get("duplicate_send_control"))
+    post_run_safety = _mapping(controlled_run.get("post_run_safety_state"))
+    production_boundary = _mapping(controlled_run.get("production_boundary"))
+    checks = {
+        "write_gate_manifest_present": bool(write_gate),
+        "write_gate_allowed": write_gate.get("status")
+        == "pass_write_gate_allowed_owner_decision_recorded_no_runtime_enablement"
+        and write_gate.get("acceptance_write_gate_allowed") is True
+        and write_gate.get("blocking_reasons") == [],
+        "owner_decision_artifact_valid": not owner_decision_errors,
+        "p0_p1_zero_proof_present": p0_p1_zero_proof is not None,
+        "p0_p1_zero_proof_valid": p0_p1_zero_proof_validation.get("status") == "pass",
+        "p0_zero_proven": p0_p1_zero_proof_validation.get("p0_zero_proven_by_payload") is True,
+        "p1_zero_proven": p0_p1_zero_proof_validation.get("p1_zero_proven_by_payload") is True,
+        "final_bundle_ready": final_bundle.get("status") == "pass" and final_bundle.get("missing_items") == [],
+        "independent_final_review_passed": _mapping(
+            final_bundle.get("independent_review_signoff_validation")
+        ).get("status")
+        == "pass",
+        "s2plt04_completed": _mapping(final_bundle.get("s2plt04_completion_report_validation")).get("status")
+        == "pass",
+        "final_commands_executed": _mapping(final_bundle.get("final_command_execution_validation")).get(
+            "status"
+        )
+        == "pass",
+        "no_production_side_effects_proven": _mapping(
+            final_bundle.get("no_production_side_effect_attestation_validation")
+        ).get("status")
+        == "pass",
+        "controlled_real_run_manifest_present": bool(controlled_run),
+        "controlled_real_run_status_passed": controlled_run.get("status")
+        == "pass_controlled_real_run_evidence_rechecked_no_new_send",
+        "controlled_real_run_sent_all_four_mail_products": controlled_run_result.get("sent_mail_count") == 4
+        and controlled_run_result.get("planned_send_total") == 4
+        and controlled_run_result.get("sent_mail_products") == list(S2PLT01_REQUIRED_MAIL_PRODUCTS),
+        "controlled_real_run_duplicate_send_avoided": duplicate_control.get("duplicate_smtp_send_avoided")
+        is True,
+        "controlled_real_run_post_smtp_flag_false": post_run_safety.get(
+            "persistent_adp_allow_smtp_send"
+        )
+        == "false",
+        "controlled_real_run_no_background_process_after": post_run_safety.get(
+            "adp_background_process_count_after"
+        )
+        == 0,
+        "controlled_real_run_not_daily_operation_enablement": production_boundary.get(
+            "counts_as_daily_operation_enablement"
+        )
+        is False,
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    accepted = not failed_checks
+    state = {
+        "schema_version": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_SCHEMA_VERSION,
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "task_id": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_TASK_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-INTEGRATED-PRODUCTION"],
+        "generated_at": generated_at,
+        "status": (
+            "pass_integrated_production_accepted_evidence_written_no_runtime_enablement"
+            if accepted
+            else "blocked"
+        ),
+        "scope": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_SCOPE,
+        "acceptance_artifact_ref": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_ARTIFACT_REF,
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": [] if accepted else [f"{name}_failed" for name in failed_checks],
+        "production_acceptance_claimed": accepted,
+        "integrated_production_accepted": accepted,
+        "stage2_integrated_production_accepted": accepted,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "write_gate_manifest_ref": write_gate_ref,
+        "write_gate_state_hash": write_gate.get("state_hash", ""),
+        "owner_decision_artifact_ref": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_ARTIFACT_REF,
+        "owner_decision_artifact_validation_errors": owner_decision_errors,
+        "p0_p1_zero_proof_artifact_ref": S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+        "p0_p1_zero_proof_state_hash": p0_p1_zero_proof_validation.get("state_hash", ""),
+        "final_bundle_manifest_ref": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+        "final_bundle_readiness_state_hash": final_bundle.get("state_hash", ""),
+        "controlled_real_run_manifest_ref": controlled_run_ref,
+        "controlled_real_run_status": controlled_run.get("status", ""),
+        "controlled_real_run_generated_at": controlled_run.get("generated_at", ""),
+        "controlled_real_run_sent_mail_count": controlled_run_result.get("sent_mail_count"),
+        "controlled_real_run_planned_send_total": controlled_run_result.get("planned_send_total"),
+        "controlled_real_run_sent_mail_products": list(controlled_run_result.get("sent_mail_products", [])),
+        "controlled_real_run_newly_sent_mail_products": list(
+            controlled_run_result.get("newly_sent_mail_products", [])
+        ),
+        "controlled_real_run_historical_sent_mail_products": list(
+            controlled_run_result.get("historical_sent_mail_products", [])
+        ),
+        "controlled_real_run_duplicate_send_avoided": duplicate_control.get(
+            "duplicate_smtp_send_avoided"
+        )
+        is True,
+        "controlled_real_run_persistent_adp_allow_smtp_send_after": post_run_safety.get(
+            "persistent_adp_allow_smtp_send"
+        ),
+        "controlled_real_run_background_process_count_after": post_run_safety.get(
+            "adp_background_process_count_after"
+        ),
+        "next_required_step": (
+            "REQUEST_DAILY_OPERATION_AUTHORIZATION_AND_PREFLIGHT"
+            if accepted
+            else "REPAIR_ACCEPTANCE_EVIDENCE_PREREQUISITES_AND_RETRY"
+        ),
+        "next_executable_task": (
+            "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
+            if accepted
+            else S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_TASK_ID
+        ),
+        "daily_operation_runtime_enablement_allowed_by_this_artifact": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_integrated_production_acceptance_evidence_state(
+    state: Mapping[str, Any],
+) -> list[str]:
+    """Validate the integrated production acceptance evidence without allowing runtime enablement."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_SCHEMA_VERSION:
+        errors.append("integrated production acceptance evidence schema_version is invalid")
+    if state.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("integrated production acceptance evidence contract_id is invalid")
+    if state.get("task_id") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_TASK_ID:
+        errors.append("integrated production acceptance evidence task_id is invalid")
+    if state.get("scope") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_SCOPE:
+        errors.append("integrated production acceptance evidence scope is invalid")
+    if state.get("acceptance_artifact_ref") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_ARTIFACT_REF:
+        errors.append("integrated production acceptance evidence artifact ref is invalid")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("integrated production acceptance evidence failed_checks must match checks")
+    expected_accepted = not failed_checks
+    expected_status = (
+        "pass_integrated_production_accepted_evidence_written_no_runtime_enablement"
+        if expected_accepted
+        else "blocked"
+    )
+    if state.get("status") != expected_status:
+        errors.append("integrated production acceptance evidence status must match checks")
+    expected_blockers = [] if expected_accepted else [f"{name}_failed" for name in failed_checks]
+    if state.get("blocking_reasons") != expected_blockers:
+        errors.append("integrated production acceptance evidence blocking_reasons must match checks")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+    ):
+        if state.get(flag) is not expected_accepted:
+            errors.append(f"integrated production acceptance evidence {flag} must match checks")
+    for flag in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_RUNTIME_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"integrated production acceptance evidence must not enable {flag}")
+    expected_next = (
+        "REQUEST_DAILY_OPERATION_AUTHORIZATION_AND_PREFLIGHT"
+        if expected_accepted
+        else "REPAIR_ACCEPTANCE_EVIDENCE_PREREQUISITES_AND_RETRY"
+    )
+    if state.get("next_required_step") != expected_next:
+        errors.append("integrated production acceptance evidence next_required_step is invalid")
+    expected_next_task = (
+        "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
+        if expected_accepted
+        else S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_TASK_ID
+    )
+    if state.get("next_executable_task") != expected_next_task:
+        errors.append("integrated production acceptance evidence next_executable_task is invalid")
+    if state.get("controlled_real_run_sent_mail_products") != list(S2PLT01_REQUIRED_MAIL_PRODUCTS):
+        errors.append("integrated production acceptance evidence must reference M1-M4 controlled-run evidence")
+    if state.get("controlled_real_run_duplicate_send_avoided") is not True:
+        errors.append("integrated production acceptance evidence must preserve duplicate-send protection")
+    if state.get("daily_operation_runtime_enablement_allowed_by_this_artifact") is not False:
+        errors.append("integrated production acceptance evidence must not allow runtime enablement")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("integrated production acceptance evidence state_hash does not match state content")
     return errors
 
 

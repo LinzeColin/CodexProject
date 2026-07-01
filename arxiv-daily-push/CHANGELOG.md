@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-01 19:04:10 Australia/Sydney - S2PMT07 integrated production acceptance evidence
+
+- Wrote and validated `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` with `integrated_production_accepted=true`, `stage2_integrated_production_accepted=true`, and `production_acceptance_claimed=true`.
+- Kept operation disabled: `daily_operation_enabled=false`, persistent `ADP_ALLOW_SMTP_SEND=false`, LaunchAgents disabled, and no SMTP/scheduler/Release/restore was enabled.
+- Updated CURRENT, dynamic governance dashboard, root acceptance tools, owner-facing docs, three-base files, delivery ledger, run manifest, and regression tests for `INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-20260701.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_WRITE.md`.
+
 ## 2026-07-01 14:49:29 Australia/Sydney - S2PMT07 post-final-bundle current-state sync
 
 - Synchronized dynamic governance, owner-facing docs, dashboard routing, and regression tests after `FINAL_ACCEPTANCE_BUNDLE/manifest.json` validated `status=pass` with `missing_items=[]`.
