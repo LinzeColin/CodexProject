@@ -1,0 +1,27 @@
+{
+  "schema": "PFIV024Stage7Phase73AcceptanceGateV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 7",
+  "phase_id": "7.3",
+  "phase_name": "验收",
+  "contract_version": "PFI-V024-STAGE7-PHASE73-ACCEPTANCE",
+  "status": "pass",
+  "visible_report_ids": [
+    "net_worth_report",
+    "cash_report",
+    "investment_report",
+    "consumption_report",
+    "cashflow_report",
+    "data_quality_report"
+  ],
+  "missing_report_ids": [],
+  "data_insufficient_report_test_passed": true,
+  "data_quality_report_generated": true,
+  "blocked_reports_without_full_financial_conclusion": true,
+  "formula_sample_visible": true,
+  "ai_paragraph_report_ids": [],
+  "single_paragraph_report_ids": [],
+  "forbidden_source_terms": [],
+  "financial_conclusion_when_blocked": []
+}

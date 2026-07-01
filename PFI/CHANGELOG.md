@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 7 Phase 7.3 - 2026-07-01
+
+- 完成 `Stage 7 / Phase 7.3 - 验收`：验收报告中心 6 类报告、数据不足报告、公式/参数/样本量/数据范围可见性和反单段 AI 文本退化。
+- `PFI/web/app/pages/reports.js` 新增 `PFI-V024-STAGE7-PHASE73-ACCEPTANCE` 合同和 report acceptance gate。
+- 新增 `PFI/scripts/validate_v024_stage7_phase73_report_acceptance.js`，生成浏览器验收、数据质量 HTML 和 `formula_visibility.png`。
+- 新增 `PFI/tests/test_v024_stage7_phase73_report_acceptance.py` 和 `PFI/reports/pfi_v024/stage_7/phase_7_3/` evidence。
+- 本轮不执行 Stage 7 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 7 Phase 7.2 - 2026-07-01
 
 - 完成 `Stage 7 / Phase 7.2 - 页面展示`：报告中心页面接入 Phase 7.1 报告结构，展示净资产、现金、投资、消费、现金流、数据质量 6 份报告。

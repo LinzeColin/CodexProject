@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>PFI v0.2.4 Stage 7 Phase 7.3 数据质量报告</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #172033; background: #f7f8fb; margin: 0; padding: 32px; }
+    main { max-width: 960px; margin: 0 auto; background: #fff; border: 1px solid #d9dee8; border-radius: 8px; padding: 28px; }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    h2 { margin-top: 24px; font-size: 16px; }
+    p, li { line-height: 1.6; }
+    .meta { color: #526070; }
+    .status { display: inline-block; padding: 4px 8px; border-radius: 4px; background: #e8f4ed; color: #17623b; font-weight: 600; }
+    code { background: #eef1f5; padding: 2px 4px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>数据质量报告</h1>
+    <p class="meta">来源：真实 Stage 4 read model / MetaDatabase/PFI；不写入、不补造、不改写财务数据。</p>
+    <p><span class="status">可用</span></p>
+    <h2>结论</h2>
+    <p>真实 MetaDatabase/PFI 已加载 8815 条记录，仍有 3 个核心指标缺少 read model，先生成数据质量报告。</p>
+    <h2>公式</h2>
+    <p>数据质量 = 真实数据源状态 + 核心指标阻断数量 + 缺口复核入口；阻断项清零前不输出完整财务分析。</p>
+    <h2>参数与样本量</h2>
+    <p>参数：数据源状态=ready；阻断指标数量=3</p>
+    <p>样本量：8,815 条交易，4 个原始文件，0 个账户，0 个持仓</p>
+    <h2>数据范围与置信度</h2>
+    <p>数据范围：2022-06-06 至 2026-06-03</p>
+    <p>置信度：90%</p>
+    <h2>指标来源</h2>
+    <ul><li>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv</li></ul>
+    <h2>缺口与复核入口</h2>
+    <ul><li><strong>net_worth_cny</strong>: 未挂链账户余额与持仓 read model，无法计算净资产</li>
+<li><strong>cash_balance_cny</strong>: 未挂链账户余额 read model，无法计算现金余额</li>
+<li><strong>investment_market_value_cny</strong>: 未挂链持仓市值 read model，无法计算投资市值</li></ul>
+    <p>复核入口：查看数据缺口与复核入口 · /reports?tab=data-quality</p>
+  </main>
+</body>
+</html>
