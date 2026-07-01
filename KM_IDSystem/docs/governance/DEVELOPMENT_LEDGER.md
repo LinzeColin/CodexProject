@@ -1,4 +1,4 @@
-# OpMe_System Development Ledger
+# KM_IDSystem Development Ledger
 
 Product version: `1.0.0`
 Governance spec version: `1.0.0`
@@ -26,10 +26,10 @@ Governance spec version: `1.0.0`
 - Base commit: `9516776`
 - Result commit: `PENDING`
 - Task IDs: `TASK-OPME-A-001`, `TASK-OPME-A-002`
-- Goal: establish OpMe_System governance baseline without changing backend/frontend behavior.
+- Goal: establish KM_IDSystem governance baseline without changing backend/frontend behavior.
 - Model changes: documentation only; 7 models/rules recorded.
 - Parameter changes: documentation only; rule constants and router parameters recorded.
-- Commands: `python scripts/validate_project_governance.py --project OpMe_System`; `python -m pytest tests/test_analysis.py -q`; `python -m pytest tests/test_api.py -q`; `python scripts/validate_project_governance.py --all`; `git diff --check`.
+- Commands: `python scripts/validate_project_governance.py --project KM_IDSystem`; `python -m pytest tests/test_analysis.py -q`; `python -m pytest tests/test_api.py -q`; `python scripts/validate_project_governance.py --all`; `git diff --check`.
 - Test results: OpMe project validator exit 0 with errors 0 warnings 0; `test_analysis.py` exit 0 with 2 passed; `test_api.py` exit 2 because `fastapi` is missing in current environment; all-project validator exit 0 with advisory warnings only outside required projects; diff check exit 0.
 - Rollback: remove `docs/governance` and restore indexes/VERSION/CHANGELOG.
 - Next step: continue with OpenAIDatabase P10.
@@ -43,10 +43,10 @@ Governance spec version: `1.0.0`
 - Base commit: `1fa711b5f480c78b2421d63bd9183939022d9ca0`
 - Result commit: `PENDING`
 - Task IDs: `GOV-SEMANTIC-OPME-001`, `ACC-SEMANTIC-OPME-001`
-- Goal: add machine semantic extractor coverage for OpMe_System rule constants and active formula implementation fingerprints without changing backend/frontend behavior.
+- Goal: add machine semantic extractor coverage for KM_IDSystem rule constants and active formula implementation fingerprints without changing backend/frontend behavior.
 - Model changes: no model behavior change; 7 active formulas now include implementation refs, fingerprints, verification commit, verification time, and evidence hash.
 - Parameter changes: no parameter value change; 49 active parameters now include source selector, extracted value, verification commit, verification time, evidence hash, and machine semantic status.
-- Commands: `python3 scripts/validate_semantic_extractors.py OpMe_System`; `python3 scripts/validate_project_governance.py --project OpMe_System --semantic`; `python3 scripts/validate_project_governance.py --all --semantic --drift-report`; `python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic`; focused governance and OpMe tests.
+- Commands: `python3 scripts/validate_semantic_extractors.py KM_IDSystem`; `python3 scripts/validate_project_governance.py --project KM_IDSystem --semantic`; `python3 scripts/validate_project_governance.py --all --semantic --drift-report`; `python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic`; focused governance and OpMe tests.
 - Test results: semantic extractor exit 0 with 49 parameters and 7 formulas checked; OpMe semantic validator exit 0; all-project semantic drift exit 0; changed-only enforce-sync semantic exit 0; governance tests exit 0 with 50 passed; generated dashboard/status output stable on repeat; OpMe backend tests blocked in current environment by missing `pydantic` and `fastapi`.
 - Success criteria: semantic validator checks 49 parameters and 7 formulas; root validator passes for OpMe in semantic mode; changed-only sync gate passes.
 - Remaining risks: engineering calibration source, prompt/provider policy, and owner signoff evidence remain blocked under `TASK-OPME-B-001`.
@@ -80,18 +80,18 @@ Governance spec version: `1.0.0`
 
 | Command | Result | Evidence |
 |---|---|---|
-| `python scripts/validate_project_governance.py --project OpMe_System` | PASS | exit 0; errors 0 warnings 0 |
+| `python scripts/validate_project_governance.py --project KM_IDSystem` | PASS | exit 0; errors 0 warnings 0 |
 | `python -m pytest tests/test_analysis.py -q` | PASS | exit 0; 2 passed |
 | `python -m pytest tests/test_api.py -q` | BLOCKED | exit 2; `fastapi` missing and dependency install is outside this run |
 | `python scripts/validate_project_governance.py --all` | PASS | exit 0; advisory warnings only outside required projects |
 | `git diff --check` | PASS | exit 0 |
-| `python3 scripts/validate_semantic_extractors.py OpMe_System` | PASS | exit 0; semantic_parameters_checked=49 semantic_formulas_checked=7 |
-| `python3 scripts/validate_project_governance.py --project OpMe_System --semantic` | PASS | exit 0; errors 0 warnings 0 |
+| `python3 scripts/validate_semantic_extractors.py KM_IDSystem` | PASS | exit 0; semantic_parameters_checked=49 semantic_formulas_checked=7 |
+| `python3 scripts/validate_project_governance.py --project KM_IDSystem --semantic` | PASS | exit 0; errors 0 warnings 0 |
 | `python3 scripts/validate_project_governance.py --all --semantic --drift-report` | PASS | exit 0; errors 0 warnings 0 |
 | `python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic` | PASS | exit 0; errors 0 warnings 0 |
 | `python3 -m pytest tests/governance/test_project_governance_validator.py -q` | PASS | exit 0; 50 passed |
 | `PYTHONPATH=. python3 -m pytest tests/test_analysis.py -q` | BLOCKED | exit 2; `pydantic` missing in current environment |
 | `PYTHONPATH=. python3 -m pytest tests/test_api.py -q` | BLOCKED | exit 2; `fastapi` missing in current environment |
-| `python -B -m unittest OpMe_System.backend.tests.test_lifecycle_contract -q` | PASS | exit 0; 4 lifecycle contract tests |
-| `bash -n OpMe_System/scripts/run_local_services.sh OpMe_System/scripts/stop_local_services.sh OpMe_System/scripts/smoke_test.sh OpMe_System/scripts/dev.sh` | PASS | exit 0 |
-| `python -B -m py_compile OpMe_System/backend/app/core/config.py OpMe_System/backend/app/services/db.py OpMe_System/backend/tests/test_lifecycle_contract.py` | PASS | exit 0 |
+| `python -B -m unittest KM_IDSystem.backend.tests.test_lifecycle_contract -q` | PASS | exit 0; 4 lifecycle contract tests |
+| `bash -n KM_IDSystem/scripts/run_local_services.sh KM_IDSystem/scripts/stop_local_services.sh KM_IDSystem/scripts/smoke_test.sh KM_IDSystem/scripts/dev.sh` | PASS | exit 0 |
+| `python -B -m py_compile KM_IDSystem/backend/app/core/config.py KM_IDSystem/backend/app/services/db.py KM_IDSystem/backend/tests/test_lifecycle_contract.py` | PASS | exit 0 |
