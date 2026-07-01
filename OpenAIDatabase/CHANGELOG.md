@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 6 Whole-Stage Review
+
+- Completed the Stage 6 whole-stage review across Shared State Store and
+  Inspector/Proposal.
+- Added `validate:stage6` to keep Stage 6 phase reviews, package validators,
+  visual acceptance hooks, model parameters, changelog and delivery-record
+  status aligned.
+- Confirmed the reviewed Stage 6 state keeps typed selection/filter/time-range
+  focus sync across Home, Galaxy, Timeline, Inspector and ROI Dashboard, and
+  keeps Inspector writeback proposal-only with Debug fields default-closed.
+
+No ingestion, raw/private data access, direct writeback, agent apply CLI,
+Cloudflare live deploy, GitHub main upload, or external account operation was
+added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 6.2 Inspector and Proposal
 
 - Added the Inspector explanation panel with human-readable summary, model
