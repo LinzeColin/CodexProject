@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 7.2 Performance Acceptance
+
+- Added sampled Galaxy FPS metrics, target/min FPS fields and render tick
+  telemetry to the WebGL acceptance signal.
+- Added an Analysis-mode FPS overlay and an adaptive quality toggle. Adaptive
+  quality starts from `mid`, can downgrade or upgrade by sustained FPS, and
+  manual `high` / `mid` / `low` selection remains the rollback path.
+- Added cleanup lifecycle evidence for Galaxy unmount, including RAF cancel,
+  renderer disposal, WebGL context loss, and explicit no Worker/AudioContext
+  resources.
+- Added `validate:stage7-performance` to run a real-browser production
+  preview check for high quality `>=45 FPS`, mid quality `>=30 FPS`, low
+  quality non-blank fallback, adaptive quality resume and 4177 cleanup.
+- Extended visual acceptance with `stage7_2_performance_acceptance_ready`.
+
+No Stage 7.3 privacy/accessibility gate, Stage 7 whole-stage review, raw/private
+data access, direct writeback, Cloudflare live deploy, GitHub main upload, or
+external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 7.1 Visual Acceptance
 
 - Added a real-browser Stage 7.1 visual acceptance gate that starts Vite

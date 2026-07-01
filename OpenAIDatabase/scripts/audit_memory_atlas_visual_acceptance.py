@@ -65,6 +65,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
     stage7_visual_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_visual_acceptance.cjs")
+    stage7_performance_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_performance_acceptance.cjs")
     readme = read_text(repo_root / "README.md")
     atlas_path = repo_root / "data/derived/visualization/memory_atlas.json"
     atlas_source = atlas_path.read_text(encoding="utf-8") if atlas_path.exists() else ""
@@ -428,6 +429,27 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "stage7_1_visual_acceptance_ready",
         "Stage 7.1 has a real-browser visual acceptance gate for non-empty Galaxy canvas pixels, starfield screenshot quality, Memory River screenshot quality, and 4177 cleanup",
         "Stage 7.1 visual acceptance browser gate, screenshots, pixel checks, Memory River checks, or cleanup assertion is missing",
+    )
+    require(
+        checks,
+        '"validate:stage7-performance": "node scripts/validate_stage7_performance_acceptance.cjs"' in read_text(repo_root / "apps/memory-atlas/package.json")
+        and "fps: latestPerformanceSnapshot.fps" in galaxy_source
+        and "averageFrameMs: latestPerformanceSnapshot.averageFrameMs" in galaxy_source
+        and "adaptiveQualityEnabled: latestPerformanceSnapshot.adaptiveQualityEnabled" in galaxy_source
+        and "__memoryAtlasGalaxyLifecycle" in galaxy_source
+        and "renderer.forceContextLoss()" in galaxy_source
+        and "className=\"galaxy-performance-overlay\"" in galaxy_source
+        and ".galaxy-performance-overlay" in css_source
+        and "highMinFps: 45" in stage7_performance_source
+        and "midMinFps: 30" in stage7_performance_source
+        and "validateInitialAdaptiveOverlay" in stage7_performance_source
+        and "validateLowQualityFallback" in stage7_performance_source
+        and "validateCleanupHooks" in stage7_performance_source
+        and "stage7-performance-report.json" in stage7_performance_source
+        and "assertPortClosed" in stage7_performance_source,
+        "stage7_2_performance_acceptance_ready",
+        "Stage 7.2 has FPS metrics, adaptive quality controls, high/mid/low browser performance gates, cleanup lifecycle hooks, and 4177 cleanup",
+        "Stage 7.2 performance metrics, adaptive quality, browser gate, cleanup lifecycle, or port cleanup assertion is missing",
     )
     require(
         checks,

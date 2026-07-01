@@ -52,6 +52,10 @@ interface PointerState {
 
 interface GalaxySignal {
   frame: number;
+  renderTicks: number;
+  fps: number;
+  averageFrameMs: number;
+  sampleSeconds: number;
   lit: number;
   alpha: number;
   max: number;
@@ -75,12 +79,42 @@ interface GalaxySignal {
   cameraDistance: number;
   rendererMode: GalaxyRendererMode;
   quality: StarfieldQuality;
+  targetFps: number;
+  minFps: number;
+  adaptiveQualityEnabled: boolean;
+  adaptiveQualityDecision: AdaptiveQualityDecision;
   flowFieldStrength: number;
   flowPaused: boolean;
   starfieldMode: StarfieldViewMode;
   terrainFeatureCount: number;
   parameterSource: string;
   fallbackMode: "webgl" | "low-quality" | "legacy";
+}
+
+type AdaptiveQualityDecision = "hold" | "downgrade-to-mid" | "downgrade-to-low" | "upgrade-to-mid" | "upgrade-to-high";
+
+interface GalaxyPerformanceSnapshot {
+  fps: number;
+  averageFrameMs: number;
+  sampleSeconds: number;
+  quality: StarfieldQuality;
+  targetFps: number;
+  minFps: number;
+  adaptiveQualityEnabled: boolean;
+  adaptiveQualityDecision: AdaptiveQualityDecision;
+}
+
+interface GalaxyLifecycleSignal {
+  mountedAt: number;
+  disposedAt: number | null;
+  activeRaf: boolean;
+  rafCancelled: boolean;
+  rendererDisposed: boolean;
+  webglContextLost: boolean;
+  workersClosed: boolean;
+  audioContextClosed: boolean;
+  frameAtDispose: number | null;
+  renderTicksAtDispose: number | null;
 }
 
 interface SceneNode {
@@ -147,6 +181,7 @@ declare global {
   interface Window {
     __memoryAtlasGalaxySignal?: () => GalaxySignal;
     __memoryAtlasGalaxyDebugTargets?: () => Array<{ id: string; x: number; y: number; linkedCount: number }>;
+    __memoryAtlasGalaxyLifecycle?: GalaxyLifecycleSignal;
   }
 }
 
@@ -158,6 +193,14 @@ const MAX_PULSE_NEIGHBORS = MAX_FOCUS_VISIBLE_NEIGHBORS;
 const GALAXY_ARM_COLORS = ["#bcdfff", "#d7e8ff", "#a7ecff", "#e5d6ff", "#c8f7e7", "#f7c8dd"];
 const GALAXY_ARM_COUNT = 6;
 const STARFIELD_QUALITY_SETTINGS = MEMORY_STARFIELD_PARAMS.qualitySettings;
+const STAGE7_PERFORMANCE_THRESHOLDS = {
+  highMinFps: 45,
+  midMinFps: 30,
+  adaptiveUpgradeFps: 52,
+  sampleWindowMs: 1200,
+  adaptiveWarmupMs: 2400,
+  adaptiveCooldownMs: 4200,
+};
 const MEMORY_TERRAIN_ORDER: MemoryTerrainType[] = ["ridge", "shoreline", "valley", "basin", "fault-line"];
 const MEMORY_TERRAIN_VISUALS: Record<MemoryTerrainType, { label: string; explanation: string; color: string; opacity: number }> = {
   ridge: {
@@ -192,6 +235,59 @@ const MEMORY_TERRAIN_VISUALS: Record<MemoryTerrainType, { label: string; explana
   },
 };
 
+function performanceMinFps(quality: StarfieldQuality): number {
+  if (quality === "high") return STAGE7_PERFORMANCE_THRESHOLDS.highMinFps;
+  if (quality === "mid") return STAGE7_PERFORMANCE_THRESHOLDS.midMinFps;
+  return 1;
+}
+
+function createPerformanceSnapshot(
+  quality: StarfieldQuality,
+  adaptiveQualityEnabled: boolean,
+  fps = 0,
+  averageFrameMs = 0,
+  sampleSeconds = 0,
+  adaptiveQualityDecision: AdaptiveQualityDecision = "hold",
+): GalaxyPerformanceSnapshot {
+  return {
+    fps: Number(fps.toFixed(1)),
+    averageFrameMs: Number(averageFrameMs.toFixed(2)),
+    sampleSeconds: Number(sampleSeconds.toFixed(2)),
+    quality,
+    targetFps: MEMORY_STARFIELD_PARAMS.performance.desktopTargetFps,
+    minFps: performanceMinFps(quality),
+    adaptiveQualityEnabled,
+    adaptiveQualityDecision,
+  };
+}
+
+function nextAdaptiveQualityDecision(
+  quality: StarfieldQuality,
+  fps: number,
+  elapsedMs: number,
+  msSinceLastChange: number,
+): { decision: AdaptiveQualityDecision; nextQuality: StarfieldQuality | null } {
+  if (
+    elapsedMs < STAGE7_PERFORMANCE_THRESHOLDS.adaptiveWarmupMs
+    || msSinceLastChange < STAGE7_PERFORMANCE_THRESHOLDS.adaptiveCooldownMs
+  ) {
+    return { decision: "hold", nextQuality: null };
+  }
+  if (quality === "high" && fps < STAGE7_PERFORMANCE_THRESHOLDS.highMinFps) {
+    return { decision: "downgrade-to-mid", nextQuality: "mid" };
+  }
+  if (quality === "mid" && fps < STAGE7_PERFORMANCE_THRESHOLDS.midMinFps) {
+    return { decision: "downgrade-to-low", nextQuality: "low" };
+  }
+  if (quality === "low" && fps >= STAGE7_PERFORMANCE_THRESHOLDS.highMinFps) {
+    return { decision: "upgrade-to-mid", nextQuality: "mid" };
+  }
+  if (quality === "mid" && fps >= STAGE7_PERFORMANCE_THRESHOLDS.adaptiveUpgradeFps) {
+    return { decision: "upgrade-to-high", nextQuality: "high" };
+  }
+  return { decision: "hold", nextQuality: null };
+}
+
 export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelectNode }: GalaxySceneProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const nebulaCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -203,9 +299,12 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   const flowFieldStrengthRef = useRef(1);
   const flowPausedRef = useRef(false);
   const starfieldModeRef = useRef<StarfieldViewMode>("presentation");
+  const adaptiveQualityEnabledRef = useRef(true);
   const [renderError, setRenderError] = useState("");
   const [hoverPreview, setHoverPreview] = useState<HoverPreview | null>(null);
   const [starfieldQuality, setStarfieldQuality] = useState<StarfieldQuality>("mid");
+  const [adaptiveQualityEnabled, setAdaptiveQualityEnabled] = useState(true);
+  const [performanceSnapshot, setPerformanceSnapshot] = useState<GalaxyPerformanceSnapshot>(() => createPerformanceSnapshot("mid", true));
   const [flowFieldStrength, setFlowFieldStrength] = useState(1);
   const [flowPaused, setFlowPaused] = useState(false);
   const [starfieldMode, setStarfieldMode] = useState<StarfieldViewMode>("presentation");
@@ -256,6 +355,16 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   useEffect(() => {
     starfieldModeRef.current = starfieldMode;
   }, [starfieldMode]);
+
+  useEffect(() => {
+    adaptiveQualityEnabledRef.current = adaptiveQualityEnabled;
+    setPerformanceSnapshot((snapshot) => ({
+      ...snapshot,
+      adaptiveQualityEnabled,
+      quality: starfieldQuality,
+      minFps: performanceMinFps(starfieldQuality),
+    }));
+  }, [adaptiveQualityEnabled, starfieldQuality]);
 
   useEffect(() => {
     const canvas = containerRef.current?.querySelector<HTMLCanvasElement>(".galaxy-webgl-canvas");
@@ -310,6 +419,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     renderer.domElement.dataset.nebulaTexture = "spiral-dust-cloud";
     renderer.domElement.dataset.rendererMode = rendererMode;
     renderer.domElement.dataset.quality = rendererMode === "memory-starfield" ? starfieldQuality : "legacy";
+    renderer.domElement.dataset.adaptiveQuality = rendererMode === "memory-starfield" && adaptiveQualityEnabledRef.current ? "enabled" : "manual";
     renderer.domElement.dataset.flowField = rendererMode === "memory-starfield" ? "enabled" : "legacy-off";
     renderer.domElement.dataset.flowFrozen = rendererMode === "memory-starfield" && flowPaused ? "true" : "false";
     renderer.domElement.dataset.starfieldMode = rendererMode === "memory-starfield" ? starfieldMode : "legacy";
@@ -645,8 +755,27 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     const cameraTargetLookAt = new Vector3(0, 0, 0);
     const focusWorldPosition = new Vector3();
     const baseLookAt = new Vector3(0, 0, 0);
+    const performanceStartedAt = performance.now();
+    let lastFpsSampleAt = performanceStartedAt;
+    let lastFpsSampleTick = 0;
+    let lastQualityChangeAt = performanceStartedAt;
+    let latestPerformanceSnapshot = createPerformanceSnapshot(starfieldQuality, adaptiveQualityEnabledRef.current);
+    const lifecycleSignal: GalaxyLifecycleSignal = {
+      mountedAt: Date.now(),
+      disposedAt: null,
+      activeRaf: true,
+      rafCancelled: false,
+      rendererDisposed: false,
+      webglContextLost: false,
+      workersClosed: true,
+      audioContextClosed: true,
+      frameAtDispose: null,
+      renderTicksAtDispose: null,
+    };
     let frame = 0;
+    let renderTicks = 0;
     let raf = 0;
+    window.__memoryAtlasGalaxyLifecycle = lifecycleSignal;
 
     function readGalaxySignal(): GalaxySignal {
       const gl = renderer.getContext();
@@ -676,6 +805,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       }
       return {
         frame,
+        renderTicks,
+        fps: latestPerformanceSnapshot.fps,
+        averageFrameMs: latestPerformanceSnapshot.averageFrameMs,
+        sampleSeconds: latestPerformanceSnapshot.sampleSeconds,
         lit,
         alpha,
         max,
@@ -699,6 +832,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         cameraDistance: Number(camera.position.length().toFixed(3)),
         rendererMode,
         quality: starfieldQuality,
+        targetFps: latestPerformanceSnapshot.targetFps,
+        minFps: latestPerformanceSnapshot.minFps,
+        adaptiveQualityEnabled: latestPerformanceSnapshot.adaptiveQualityEnabled,
+        adaptiveQualityDecision: latestPerformanceSnapshot.adaptiveQualityDecision,
         flowFieldStrength: Number(flowFieldStrengthRef.current.toFixed(2)),
         flowPaused: flowPausedRef.current,
         starfieldMode: starfieldModeRef.current,
@@ -918,7 +1055,45 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       camera.lookAt(cameraLookAt);
     }
 
+    function samplePerformance(now: number) {
+      const sampleMs = now - lastFpsSampleAt;
+      if (sampleMs < STAGE7_PERFORMANCE_THRESHOLDS.sampleWindowMs) return;
+
+      const sampleTicks = renderTicks - lastFpsSampleTick;
+      const sampleSeconds = sampleMs / 1000;
+      const fps = sampleTicks > 0 ? sampleTicks / sampleSeconds : 0;
+      const averageFrameMs = sampleTicks > 0 ? sampleMs / sampleTicks : 0;
+      const elapsedMs = now - performanceStartedAt;
+      const adaptiveQualityEnabled = rendererMode === "memory-starfield" && adaptiveQualityEnabledRef.current;
+      const { decision, nextQuality } = adaptiveQualityEnabled
+        ? nextAdaptiveQualityDecision(starfieldQuality, fps, elapsedMs, now - lastQualityChangeAt)
+        : { decision: "hold" as AdaptiveQualityDecision, nextQuality: null };
+
+      latestPerformanceSnapshot = createPerformanceSnapshot(
+        starfieldQuality,
+        adaptiveQualityEnabled,
+        fps,
+        averageFrameMs,
+        sampleSeconds,
+        decision,
+      );
+      renderer.domElement.dataset.fps = String(latestPerformanceSnapshot.fps);
+      renderer.domElement.dataset.averageFrameMs = String(latestPerformanceSnapshot.averageFrameMs);
+      renderer.domElement.dataset.adaptiveQuality = adaptiveQualityEnabled ? "enabled" : "manual";
+      renderer.domElement.dataset.adaptiveDecision = decision;
+      setPerformanceSnapshot(latestPerformanceSnapshot);
+
+      if (nextQuality && nextQuality !== starfieldQuality) {
+        lastQualityChangeAt = now;
+        setStarfieldQuality(nextQuality);
+      }
+      lastFpsSampleAt = now;
+      lastFpsSampleTick = renderTicks;
+    }
+
     function render() {
+      const now = performance.now();
+      renderTicks += 1;
       const frozen = rendererMode === "memory-starfield" && flowPausedRef.current;
       if (!frozen) frame += 1;
       const autoMotion = prefersReducedMotion || frozen ? 0 : 0.0016;
@@ -934,6 +1109,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       renderer.clear(true, true, true);
       renderer.render(scene, camera);
       renderer.domElement.dataset.frame = String(frame);
+      samplePerformance(now);
       raf = window.requestAnimationFrame(render);
     }
 
@@ -1047,6 +1223,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
 
     return () => {
       window.cancelAnimationFrame(raf);
+      lifecycleSignal.activeRaf = false;
+      lifecycleSignal.rafCancelled = true;
       observer.disconnect();
       endDrag();
       renderer.domElement.removeEventListener("pointerdown", onPointerDown);
@@ -1085,6 +1263,16 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       for (const nodeMaterial of nodeMaterials) nodeMaterial.dispose();
       selectedMarkerMaterial.dispose();
       renderer.dispose();
+      lifecycleSignal.rendererDisposed = true;
+      try {
+        renderer.forceContextLoss();
+        lifecycleSignal.webglContextLost = true;
+      } catch {
+        lifecycleSignal.webglContextLost = false;
+      }
+      lifecycleSignal.disposedAt = Date.now();
+      lifecycleSignal.frameAtDispose = frame;
+      lifecycleSignal.renderTicksAtDispose = renderTicks;
       renderer.domElement.remove();
       if (window.__memoryAtlasGalaxySignal === readGalaxySignal) {
         delete window.__memoryAtlasGalaxySignal;
@@ -1105,6 +1293,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   }
 
   function updateStarfieldQuality(nextQuality: StarfieldQuality) {
+    setAdaptiveQualityEnabled(false);
     setStarfieldQuality(nextQuality);
   }
 
@@ -1118,6 +1307,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       data-renderer-mode={rendererMode}
       data-starfield-mode={starfieldMode}
       data-starfield-quality={starfieldQuality}
+      data-adaptive-quality={adaptiveQualityEnabled ? "enabled" : "manual"}
+      data-galaxy-fps={performanceSnapshot.fps}
       ref={containerRef}
     >
       {renderError ? <canvas className="nebula-canvas" ref={nebulaCanvasRef} aria-hidden="true" /> : null}
@@ -1157,6 +1348,18 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
                 </button>
               ))}
             </div>
+          ) : null}
+          {rendererMode === "memory-starfield" ? (
+            <button
+              aria-label={adaptiveQualityEnabled ? "Disable Adaptive Quality" : "Enable Adaptive Quality"}
+              aria-pressed={adaptiveQualityEnabled}
+              className="galaxy-adaptive-quality-toggle"
+              title={adaptiveQualityEnabled ? "Disable Adaptive Quality" : "Enable Adaptive Quality"}
+              type="button"
+              onClick={() => setAdaptiveQualityEnabled((enabled) => !enabled)}
+            >
+              Auto
+            </button>
           ) : null}
           {rendererMode === "memory-starfield" ? (
             <label className="galaxy-flow-control" title="Flow Field strength">
@@ -1208,6 +1411,26 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
           <button aria-label="重置银河视角" title="重置视角" type="button" onClick={resetGalaxyView}>
             <RotateCcw size={16} />
           </button>
+        </div>
+      ) : null}
+      {rendererMode === "memory-starfield" && starfieldMode === "analysis" ? (
+        <div className="galaxy-performance-overlay" data-performance-overlay="true" aria-label="Galaxy performance metrics">
+          <div>
+            <strong>{Math.round(performanceSnapshot.fps)}</strong>
+            <span>FPS</span>
+          </div>
+          <div>
+            <strong>{performanceSnapshot.quality.toUpperCase()}</strong>
+            <span>{performanceSnapshot.adaptiveQualityEnabled ? "AUTO" : "MANUAL"}</span>
+          </div>
+          <div>
+            <strong>{performanceSnapshot.averageFrameMs.toFixed(1)}ms</strong>
+            <span>FRAME</span>
+          </div>
+          <div>
+            <strong>{performanceSnapshot.minFps}</strong>
+            <span>MIN</span>
+          </div>
         </div>
       ) : null}
       {rendererMode === "memory-starfield" && starfieldMode === "analysis" ? (
