@@ -4,7 +4,7 @@
 
 ## 当前目标
 
-v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线，并已按 v1.2 重新走完 Stage 1。Stage 2、Stage 3、Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10、Stage 11、Stage 12、Stage 13、Stage 14、Stage 15、Stage 16 和 Stage 17 均已完成本地实现、验证、整体复审和 GitHub main 上传。S18-P1 精度与压力测试已在 canonical worktree 完成本地验证：新增 `KMFA/tools/precision_stress_validation.py`、`KMFA/tools/check_s18_p1_precision_stress.py`、`KMFA/tests/test_precision_stress_validation.py`、`KMFA/metadata/quality/precision_stress_*` 和 `KMFA/stage_artifacts/S18_P1_precision_stress/`。本轮未执行 S18-P2、S18-P3、Stage 18 review、GitHub upload、lineage full check、正式报告、外部邮件连接器、完整报告邮件正文、报告附件、live connector、生产恢复、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。下一轮只能作为新 run work 执行 `S18-P2｜全量回归和验收`。
+v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线，并已按 v1.2 重新走完 Stage 1。Stage 2、Stage 3、Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9、Stage 10、Stage 11、Stage 12、Stage 13、Stage 14、Stage 15、Stage 16 和 Stage 17 均已完成本地实现、验证、整体复审和 GitHub main 上传。S18-P1 精度与压力测试已在 canonical worktree 完成本地验证；S18-P2 全量回归和验收已完成本地验证：新增 `KMFA/tools/full_regression_acceptance.py`、`KMFA/tools/check_s18_p2_full_regression_acceptance.py`、`KMFA/tests/test_full_regression_acceptance.py`、`KMFA/metadata/quality/full_regression_*`、`KMFA/metadata/quality/stage_acceptance_evidence_index.jsonl`、`KMFA/metadata/quality/go_no_go_report.json` 和 `KMFA/stage_artifacts/S18_P2_full_regression_acceptance/`。S18-P2 Go/No-Go 结论为 `NO_GO`，`delivery_allowed=false`。本轮未执行 S18-P3、Stage 18 review、GitHub upload、lineage full check、正式报告、外部邮件连接器、完整报告邮件正文、报告附件、live connector、生产恢复、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。下一轮只能作为新 run work 执行 `S18-P3｜后续接入准备`。
 
 ## 当前状态
 

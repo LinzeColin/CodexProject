@@ -1,0 +1,101 @@
+{
+  "content_hash": "sha256:69717a72e06c30ca414d534dee4c6e8b1464df43349ef33f81f4a4480c782125",
+  "fact_level": "EXTRACTED",
+  "generated_at": "2026-07-01T23:59:59+10:00",
+  "go_no_go": {
+    "blocker_count": 5,
+    "decision": "NO_GO",
+    "delivery_allowed": false
+  },
+  "html_sample_acceptance": {
+    "core_sample_refs": [
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/00_HTML总入口_KMFA_v1_2.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_Resolution_Workbench_v0_4.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_Ring5_Final_Task_Control_Board.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_数据源检查板_v0_5_blue.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_系统首页预览_v4_blue.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_经营分析报告预览_v3_blue.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_阶段三任务控制台预览_v1_0.html",
+      "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_项目成本专题报告预览_v0_6_blue_zero_delta.html"
+    ],
+    "reading_record_ref": "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/html_ui_regression_record.md",
+    "s18_samples_read": true
+  },
+  "iteration_id": "ITER-20260701-KMFA-S18P2-FULL-REGRESSION",
+  "metadata_outputs": {
+    "full_regression_acceptance_manifest": "KMFA/metadata/quality/full_regression_acceptance_manifest.json",
+    "full_regression_check_results": "KMFA/metadata/quality/full_regression_check_results.jsonl",
+    "go_no_go_report": "KMFA/metadata/quality/go_no_go_report.json",
+    "stage_acceptance_evidence_index": "KMFA/metadata/quality/stage_acceptance_evidence_index.jsonl"
+  },
+  "phase_id": "S18PB",
+  "policy_version": "KMFA-S18P2-FULL-REGRESSION-ACCEPTANCE-001",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_committed": false,
+    "field_text_committed": false,
+    "private_document_committed": false,
+    "private_tabular_material_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_committed": false,
+    "source_document_committed": false,
+    "true_account_committed": false,
+    "true_customer_project_committed": false,
+    "true_money_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "external_connector_allowed": false,
+    "github_upload_allowed": false,
+    "go_no_go_report_generated": true,
+    "lineage_check_ran": true,
+    "lineage_full_check_complete": false,
+    "maximum_report_grade": "D",
+    "no_omission_check_passed": true,
+    "official_report_release_allowed": false,
+    "phase_completion_upload_allowed": false,
+    "production_restore_allowed": false,
+    "quality_not_passed_must_not_deliver": true,
+    "raw_business_data_committed": false,
+    "raw_business_data_used": false,
+    "release_block_reason": "no_go_lineage_full_check_and_official_report_release_not_complete",
+    "s09_pending_reconciliation_count": 12,
+    "s18_p3_scope_included": false,
+    "schema_check_passed": true,
+    "stage18_review_allowed": false,
+    "stage_evidence_confirmed": true,
+    "ui_check_passed": true,
+    "zero_delta_check_ran": true,
+    "zero_delta_or_difference_queue_gate_passed": true
+  },
+  "record_type": "s18_p2_full_regression_acceptance_manifest",
+  "required_check_categories": [
+    "no_omission",
+    "zero_delta",
+    "schema",
+    "lineage",
+    "ui"
+  ],
+  "stage_artifact_ref": "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/machine/s18_p2_manifest.json",
+  "stage_id": "S18",
+  "stage_phase": "S18-P2",
+  "stage_scope": {
+    "business_execution_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s18_p1_scope_included": false,
+    "s18_p2_scope_included": true,
+    "s18_p3_scope_included": false,
+    "stage18_review_scope_included": false
+  },
+  "summary": {
+    "blocker_count": 5,
+    "check_category_count": 5,
+    "go_no_go_decision": "NO_GO",
+    "html_sample_count": 8,
+    "stage_evidence_count": 18
+  }
+}

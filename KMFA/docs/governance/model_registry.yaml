@@ -81,7 +81,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s18p1-precision-stress"
+    model_version: "0.1.0-s18p2-full-regression"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -92,6 +92,7 @@ models:
       - "FORM-KMFA-S17P2-NOTIFICATION-001"
       - "FORM-KMFA-S17P3-OPERATIONS-SOP-001"
       - "FORM-KMFA-S18P1-PRECISION-STRESS-001"
+      - "FORM-KMFA-S18P2-FULL-REGRESSION-ACCEPTANCE-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -122,6 +123,14 @@ models:
       - "PARAM-KMFA-615"
       - "PARAM-KMFA-616"
       - "PARAM-KMFA-617"
+      - "PARAM-KMFA-618"
+      - "PARAM-KMFA-619"
+      - "PARAM-KMFA-620"
+      - "PARAM-KMFA-621"
+      - "PARAM-KMFA-622"
+      - "PARAM-KMFA-623"
+      - "PARAM-KMFA-624"
+      - "PARAM-KMFA-625"
     inputs:
       - "user objective"
       - "KMFA TaskPack and Roadmap"
@@ -136,6 +145,7 @@ models:
       - "S17-P3 operations SOP metadata-only gate"
       - "S17 stage review upload-ready local gate"
       - "S18-P1 precision stress local gate"
+      - "S18-P2 full regression acceptance NO_GO local gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
@@ -148,6 +158,8 @@ models:
       - "KMFA/tools/check_s17_stage_review.py"
       - "KMFA/tools/precision_stress_validation.py"
       - "KMFA/tools/check_s18_p1_precision_stress.py"
+      - "KMFA/tools/full_regression_acceptance.py"
+      - "KMFA/tools/check_s18_p2_full_regression_acceptance.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
@@ -156,6 +168,7 @@ models:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p2_notifications.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_stage_review.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p1_precision_stress.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p2_full_regression_acceptance.py"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
@@ -171,6 +184,8 @@ models:
       - "KMFA/stage_artifacts/S17_STAGE_REVIEW/machine/stage17_review_manifest.json"
       - "KMFA/stage_artifacts/S18_P1_precision_stress/human/s18_p1_completion_record.md"
       - "KMFA/stage_artifacts/S18_P1_precision_stress/machine/s18_p1_manifest.json"
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/human/s18_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/machine/s18_p2_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"

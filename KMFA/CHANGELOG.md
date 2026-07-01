@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.0-s18p2-full-regression - 2026-07-01
+
+- 完成 `S18-P2｜全量回归和验收` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/full_regression_acceptance.py` 和 `KMFA/tools/check_s18_p2_full_regression_acceptance.py`，生成并验证 public-safe 全量回归验收 artifacts。
+- 新增 `KMFA/tests/test_full_regression_acceptance.py`，覆盖五类检查、18 个 Stage evidence、Go/No-Go、scope gate、public-safe 禁止词和 CLI validator。
+- 新增 `KMFA/metadata/quality/full_regression_acceptance_manifest.json`、`full_regression_check_results.jsonl`、`stage_acceptance_evidence_index.jsonl`、`go_no_go_report.json` 和 `KMFA/stage_artifacts/S18_P2_full_regression_acceptance/` 证据包。
+- S18-P2 Go/No-Go 结论为 `NO_GO`，`delivery_allowed=false`、`github_upload_allowed=false`，因为 lineage full check、正式报告发布、S18-P3 和 Stage 18 review 仍未完成。
+- S18-P2 只使用 public-safe metadata/evidence；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或接口凭证。
+- 未执行 S18-P3 后续接入准备、Stage 18 整体复审、GitHub upload、lineage full check、正式报告、OpMe 集成、live connector、生产恢复或业务执行。
+- 下一轮只能执行 `S18-P3｜后续接入准备`。
+
 ## 0.1.0-s18p1-precision-stress - 2026-07-01
 
 - 完成 `S18-P1｜精度与压力测试` 本地验证，不上传 GitHub。

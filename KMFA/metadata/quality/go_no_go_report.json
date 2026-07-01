@@ -1,0 +1,33 @@
+{
+  "blocked_check_categories": [
+    "lineage"
+  ],
+  "blocker_ids": [
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "S09_PENDING_RECONCILIATION_12",
+    "S18_P3_PENDING",
+    "STAGE18_REVIEW_PENDING"
+  ],
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "decision_reason": "quality gates remain intentionally blocked until lineage full check, official report release and S18-P3 are complete",
+  "delivery_allowed": false,
+  "external_connector_allowed": false,
+  "github_upload_allowed": false,
+  "next_required_phase": "S18-P3",
+  "official_report_release_allowed": false,
+  "passed_check_categories": [
+    "no_omission",
+    "zero_delta",
+    "schema",
+    "ui"
+  ],
+  "phase_id": "S18PB",
+  "policy_version": "KMFA-S18P2-FULL-REGRESSION-ACCEPTANCE-001",
+  "quality_not_passed_must_not_deliver": true,
+  "record_type": "s18_p2_go_no_go_report",
+  "stage_id": "S18",
+  "stage_phase": "S18-P2"
+}

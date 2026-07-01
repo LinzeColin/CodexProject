@@ -1,4 +1,4 @@
-version: "0.1.0-s18p1-precision-stress"
+version: "0.1.0-s18p2-full-regression"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -53,6 +53,7 @@ active_formula_ids:
   - "FORM-KMFA-S17P2-NOTIFICATION-001"
   - "FORM-KMFA-S17P3-OPERATIONS-SOP-001"
   - "FORM-KMFA-S18P1-PRECISION-STRESS-001"
+  - "FORM-KMFA-S18P2-FULL-REGRESSION-ACCEPTANCE-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"
