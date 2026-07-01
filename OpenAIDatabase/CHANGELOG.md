@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 4 Stage 3 Review
+
+- Completed the Part 4 review for Stage 3.1 / 3.2 / Stage 3 overall: Home
+  Information Architecture, Preview Widgets, and whole-stage Home Default Page
+  review.
+- Added `validate:part4-stage3` to verify the Stage 3 phase reviews, current
+  Home runtime markers, visual acceptance hooks, production experiment
+  isolation, TypeScript / Vite build, and visual and overall acceptance audits.
+- Confirmed the Home board remains the default entry, exposes Memory Weather,
+  Black Hole, Proto-Star, proposal-only actions, Mini Starfield, River Pulse
+  and Inspector Deep Link without adding new runtime work in this review.
+
+No Part 5 review, whole-project review, GitHub main upload, Cloudflare live
+deploy, Access policy change, raw/private data access, direct writeback,
+production runtime feature work, or external account operation was added.
+
+Machine-readable boundary summary: Stage 3.1 / 3.2 / Stage 3 overall; No Part
+5 review; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 3 Stage 2 Review
 
 - Completed the Part 3 review for Phase 2.1 / 2.2 / 2.3: Default Home
