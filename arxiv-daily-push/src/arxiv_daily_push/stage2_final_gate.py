@@ -59,6 +59,39 @@ S2PMT07_FORBIDDEN_PASS_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_TASK_ID = (
+    "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_SCOPE = (
+    "production_boundary_preflight_only_no_acceptance_no_enablement"
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS = (
+    "daily",
+    "health",
+    "watchdog",
+)
+S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_FORBIDDEN_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PMT07_BLOCKING_REASONS = (
     "reviewer_independence_not_proven",
     "inherited_v7_1_p0_findings_open",
@@ -12150,6 +12183,182 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("final acceptance bundle readiness state_hash does not match state content")
+    return errors
+
+
+def build_integrated_production_acceptance_preflight_state(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+    open_pr_count: int | None = None,
+    adp_allow_smtp_send: bool | None = None,
+    launchagent_disabled_states: Mapping[str, bool] | None = None,
+    background_adp_process_found: bool | None = None,
+) -> dict[str, Any]:
+    """Build the post-final-bundle production-boundary preflight state without enabling production."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    final_bundle = build_final_acceptance_bundle_readiness_state(repo_root=root)
+    try:
+        current_pointer_text = (
+            root / "arxiv-daily-push" / "docs" / "pursuing_goal" / "CURRENT.yaml"
+        ).read_text(encoding="utf-8")
+    except OSError:
+        current_pointer_text = ""
+    zero_proof = _mapping(final_bundle.get("p0_p1_zero_proof_readiness"))
+    no_production_attestation = _mapping(final_bundle.get("no_production_side_effect_attestation_validation"))
+    final_command = _mapping(final_bundle.get("final_command_execution_validation"))
+    independent_signoff = _mapping(final_bundle.get("independent_review_signoff_validation"))
+    launchagent_disabled_states = dict(launchagent_disabled_states or {})
+    launchagents_disabled = all(
+        launchagent_disabled_states.get(label) is True
+        for label in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS
+    )
+    checks = {
+        "current_product_contract_v7_2": "version: ADP-PRODUCT-CONTRACT-V7.2" in current_pointer_text,
+        "next_task_is_production_boundary_preflight": (
+            f"next_executable_task: {S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_TASK_ID}"
+            in current_pointer_text
+        ),
+        "final_bundle_ready": final_bundle.get("status") == "pass"
+        and final_bundle.get("missing_items") == [],
+        "p0_p1_zero_proof_passed": zero_proof.get("status") == "pass"
+        and zero_proof.get("observed_open_p0_findings") == 0
+        and zero_proof.get("observed_open_p1_findings") == 0,
+        "no_production_attestation_passed": no_production_attestation.get("status") == "pass",
+        "final_commands_executed": final_command.get("status") == "pass",
+        "independent_review_passed": independent_signoff.get("status") == "pass",
+        "production_acceptance_not_claimed": "production_acceptance_claimed: false" in current_pointer_text,
+        "integrated_production_not_accepted": (
+            "stage2_integrated_production_accepted: false" in current_pointer_text
+        ),
+        "daily_operation_not_enabled": "daily_operation_enabled: false" in current_pointer_text,
+        "open_pr_count_zero": open_pr_count == 0,
+        "persistent_adp_allow_smtp_send_false": adp_allow_smtp_send is False,
+        "launchagents_disabled": launchagents_disabled,
+        "no_background_adp_process": background_adp_process_found is False,
+    }
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    blocking_reasons = []
+    if failed_checks:
+        blocking_reasons.extend(f"{name}_failed" for name in failed_checks)
+    else:
+        blocking_reasons.extend(
+            [
+                "owner_production_boundary_decision_missing",
+                "integrated_production_accepted_not_written",
+                "daily_operation_not_enabled",
+            ]
+        )
+    preflight_checks_passed = not failed_checks
+    state = {
+        "schema_version": "adp.integrated_production_acceptance_preflight.v1",
+        "task_id": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_TASK_ID,
+        "acceptance_ids": [S2PMT07_ACCEPTANCE_ID, "ACC-S2PL-INTEGRATED-PRODUCTION"],
+        "generated_at": generated_at,
+        "status": "blocked_owner_decision_required" if preflight_checks_passed else "blocked",
+        "scope": S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_SCOPE,
+        "preflight_checks_passed": preflight_checks_passed,
+        "checks": checks,
+        "failed_checks": failed_checks,
+        "blocking_reasons": blocking_reasons,
+        "next_required_step": "OWNER_PRODUCTION_BOUNDARY_DECISION",
+        "owner_decision_required": True,
+        "owner_decision_id": "DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701",
+        "open_pr_count": open_pr_count,
+        "adp_allow_smtp_send": adp_allow_smtp_send,
+        "launchagent_disabled_states": launchagent_disabled_states,
+        "background_adp_process_found": background_adp_process_found,
+        "final_bundle_readiness_state_hash": final_bundle.get("state_hash"),
+        "final_bundle_manifest_validation_state_hash": _mapping(
+            final_bundle.get("final_acceptance_bundle_manifest_validation")
+        ).get("state_hash"),
+        "final_bundle_missing_items": list(final_bundle.get("missing_items", [])),
+        "p0_p1_zero_proof_state_hash": zero_proof.get("state_hash"),
+        "no_production_attestation_state_hash": no_production_attestation.get("state_hash"),
+        "final_command_execution_state_hash": final_command.get("state_hash"),
+        "independent_review_signoff_state_hash": independent_signoff.get("state_hash"),
+        "final_acceptance_bundle_readiness": final_bundle,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_integrated_production_acceptance_preflight_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the production-boundary preflight state without allowing production enablement."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != "adp.integrated_production_acceptance_preflight.v1":
+        errors.append("integrated production acceptance preflight schema_version is invalid")
+    if state.get("task_id") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_TASK_ID:
+        errors.append("integrated production acceptance preflight task_id is invalid")
+    if state.get("scope") != S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_SCOPE:
+        errors.append("integrated production acceptance preflight scope is invalid")
+    if state.get("status") not in {"blocked_owner_decision_required", "blocked"}:
+        errors.append("integrated production acceptance preflight status is invalid")
+    checks = _mapping(state.get("checks"))
+    failed_checks = [name for name, passed in checks.items() if passed is not True]
+    if state.get("failed_checks") != failed_checks:
+        errors.append("integrated production acceptance preflight failed_checks must match checks")
+    expected_preflight_passed = not failed_checks
+    if state.get("preflight_checks_passed") is not expected_preflight_passed:
+        errors.append("integrated production acceptance preflight pass flag must match checks")
+    expected_status = "blocked_owner_decision_required" if expected_preflight_passed else "blocked"
+    if state.get("status") != expected_status:
+        errors.append("integrated production acceptance preflight status must match check result")
+    if expected_preflight_passed:
+        expected_blocking = [
+            "owner_production_boundary_decision_missing",
+            "integrated_production_accepted_not_written",
+            "daily_operation_not_enabled",
+        ]
+        if state.get("blocking_reasons") != expected_blocking:
+            errors.append("integrated production acceptance preflight blocking_reasons must stop at owner decision")
+    else:
+        expected_blocking = [f"{name}_failed" for name in failed_checks]
+        if state.get("blocking_reasons") != expected_blocking:
+            errors.append("integrated production acceptance preflight blocking_reasons must match failed checks")
+    if state.get("next_required_step") != "OWNER_PRODUCTION_BOUNDARY_DECISION":
+        errors.append("integrated production acceptance preflight next_required_step is invalid")
+    if state.get("owner_decision_required") is not True:
+        errors.append("integrated production acceptance preflight must require owner decision")
+    for label in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS:
+        if label not in _mapping(state.get("launchagent_disabled_states")):
+            errors.append(f"launchagent_disabled_states must include {label}")
+    final_bundle = _mapping(state.get("final_acceptance_bundle_readiness"))
+    if validate_final_acceptance_bundle_readiness_state(final_bundle):
+        errors.append("integrated production acceptance preflight final bundle readiness is invalid")
+    if state.get("final_bundle_readiness_state_hash") != final_bundle.get("state_hash"):
+        errors.append("integrated production acceptance preflight final bundle hash must match nested readiness")
+    for flag in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(
+                f"integrated production acceptance preflight must not claim {flag}"
+            )
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("integrated production acceptance preflight state_hash does not match state content")
     return errors
 
 
