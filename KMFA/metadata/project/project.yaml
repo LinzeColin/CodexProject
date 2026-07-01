@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s15p2-performance-review-list"
+version: "0.1.0-s15p3-salary-boundary"
 current_stage: "S15"
-current_phase: "S15PC"
+current_phase: "S15REV"
 current_phase_status: "planned_next"
-current_stage_status: "in_progress_s15p2_completed_local_only"
+current_stage_status: "completed_local_only_pending_stage_review"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -76,6 +76,12 @@ machine_plane:
   - "stage_artifacts/S15_P2_performance_review_list/human/s15_p2_completion_record.md"
   - "stage_artifacts/S15_P2_performance_review_list/human/test_results.md"
   - "stage_artifacts/S15_P2_performance_review_list/machine/s15_p2_manifest.json"
+  - "metadata/reports/performance_salary_boundary_manifest.json"
+  - "metadata/reports/performance_fact_output_interface_contract.json"
+  - "metadata/reports/salary_system_readiness_draft.jsonl"
+  - "stage_artifacts/S15_P3_salary_boundary/human/s15_p3_completion_record.md"
+  - "stage_artifacts/S15_P3_salary_boundary/human/test_results.md"
+  - "stage_artifacts/S15_P3_salary_boundary/machine/s15_p3_manifest.json"
   - "stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md"
   - "stage_artifacts/S11_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
@@ -404,5 +410,11 @@ upload_policy:
   stage14_upload_evidence: "KMFA/stage_artifacts/S14_GITHUB_UPLOAD/human/github_upload_record.md"
   stage14_upload_manifest: "KMFA/stage_artifacts/S14_GITHUB_UPLOAD/machine/stage14_upload_manifest.json"
   stage14_blocker: "none_stage14_uploaded"
+  stage15_s15p3_completed_validated_local_only: true
+  stage15_s15p3_evidence: "KMFA/stage_artifacts/S15_P3_salary_boundary/human/s15_p3_completion_record.md"
+  stage15_s15p3_manifest: "KMFA/stage_artifacts/S15_P3_salary_boundary/machine/s15_p3_manifest.json"
+  stage15_review_required_before_upload: true
+  stage15_review_passed: false
+  stage15_uploaded_to_github_main: false
   next_phase_upload_allowed: false
-  upload_surface: "stage14_uploaded_to_github_main_next_run_s15_p1"
+  upload_surface: "stage15_completed_local_only_next_stage15_review"
