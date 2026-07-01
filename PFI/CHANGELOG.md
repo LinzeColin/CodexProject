@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 5 Whole-Stage Review - 2026-07-01
+
+- 完成 `Stage 5 whole-stage review - 复审并解决暴露问题`，复审 Phase 5.1 首页、Phase 5.2 二级页面差异化、Phase 5.3 交互状态。
+- 新增 `PFI/tests/test_v024_stage5_whole_review_contract.py`、`PFI/docs/pfi_v024/STAGE5_WHOLE_STAGE_REVIEW.md` 和 `PFI/reports/pfi_v024/stage_5/whole_stage_review/` evidence。
+- 新增 `PFI/scripts/validate_v024_stage5_whole_review_browser.js`，生成 10 个一级入口和 10 个核心二级页面截图，browser validation 为 pass。
+- 修复静态浏览器验收中可选 `/api/read-model-status` 404：`index.html` 关闭静态可选 fetch，Streamlit runtime 显式启用 `readModelStatusApi`。
+- 复审发现 3 项均已 fixed：缺少 whole-stage review gate、缺少截图覆盖、静态 runtime 可选 endpoint 404。
+- 本轮不执行 GitHub main upload，不进入 Stage 6，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 5 Phase 5.3 - 2026-07-01
 
 - 完成 `Stage 5 / Phase 5.3 - 交互状态`：45 个二级业务页面均有 `loading / success / error / empty` 四态。

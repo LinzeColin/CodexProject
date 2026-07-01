@@ -989,6 +989,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     read_model_status_json = json.dumps(read_model_status_payload, ensure_ascii=False).replace("</", "<\\/")
     runtime_payload = {
         "apiBaseUrl": runtime_api_base_url,
+        "readModelStatusApi": True,
         "projectRoot": str(ROOT),
         **build_v024_stage2_entry_runtime_metadata(ROOT),
     }

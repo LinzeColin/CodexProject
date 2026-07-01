@@ -1,0 +1,160 @@
+{
+  "schema": "PFIV024Stage5WholeReviewEvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 5",
+  "review_id": "stage_5_whole_review",
+  "current_run_unit": "Stage 5 whole-stage review",
+  "current_run_only": true,
+  "status": "pass",
+  "stage_5_candidate_complete": true,
+  "stage_5_whole_review_complete": true,
+  "stage_6_started": false,
+  "github_main_uploaded": false,
+  "generated_at": "2026-07-01T01:17:17Z",
+  "final_validated_at": "2026-07-01T01:24:04Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_before_review": "b7c7b5b6f28389f7012c6702f2c9e0cb822e5c40",
+    "origin_main_before_review": "bb195504ff65d54533ede164d2212608c6972906",
+    "local_ahead_origin_main_before_review": 3,
+    "local_behind_origin_main_before_review": 0
+  },
+  "reviewed_phase_ids": [
+    "5.1",
+    "5.2",
+    "5.3"
+  ],
+  "review_inputs": {
+    "phase_5_1": "PFI/reports/pfi_v024/stage_5/phase_5_1/evidence.json",
+    "phase_5_2": "PFI/reports/pfi_v024/stage_5/phase_5_2/evidence.json",
+    "phase_5_3": "PFI/reports/pfi_v024/stage_5/phase_5_3/evidence.json",
+    "phase_5_2_route_validation": "PFI/reports/pfi_v024/stage_5/phase_5_2/route_validation.json",
+    "phase_5_3_ux_validation": "PFI/reports/pfi_v024/stage_5/phase_5_3/ux_state_validation.json",
+    "phase_5_3_history_validation": "PFI/reports/pfi_v024/stage_5/phase_5_3/history_validation.json",
+    "browser_validation": "PFI/reports/pfi_v024/stage_5/whole_stage_review/browser_validation.json"
+  },
+  "phase_statuses": {
+    "phase_5_1": "candidate_pass",
+    "phase_5_2": "candidate_pass",
+    "phase_5_3": "candidate_pass"
+  },
+  "acceptance_checks": {
+    "homepage_answers_six_questions": {
+      "result": "pass",
+      "evidence": "PFI_V024_STAGE5_HOME and Phase 5.1 evidence: money/location/change/problems/next_step/evidence"
+    },
+    "mechanical_home_layer_removed": {
+      "result": "pass",
+      "evidence": "index.html/shell.js scan and browser_validation mechanical_terms_visible=[]"
+    },
+    "ten_primary_entries_preserved": {
+      "result": "pass",
+      "evidence": "browser_validation primary_entry_count=10"
+    },
+    "each_primary_has_three_or_more_distinct_subpages": {
+      "result": "pass",
+      "evidence": "phase_5_2 route_validation: 45 pages, min_subpages_per_primary=4"
+    },
+    "secondary_pages_not_title_only_clones": {
+      "result": "pass",
+      "evidence": "phase_5_2 route_validation title_only_clone_groups=[]"
+    },
+    "every_page_has_primary_action_and_four_states": {
+      "result": "pass",
+      "evidence": "phase_5_3 ux_state_validation: missing_state_pages=[], total_page_count=45"
+    },
+    "click_actions_are_real_routes_not_toast_only": {
+      "result": "pass",
+      "evidence": "browser_validation click_actions_route_not_toast_only=true"
+    },
+    "browser_screenshots_cover_primary_and_core_secondary_pages": {
+      "result": "pass",
+      "evidence": "browser_validation: primary_screenshot_count=10, core_secondary_screenshot_count=10"
+    },
+    "no_forbidden_financial_data_added": {
+      "result": "pass",
+      "evidence": "Stage 5 changes are UI contracts/evidence only; no user financial data mutation or synthetic financial metrics"
+    }
+  },
+  "validation_surface": {
+    "total_subpage_count": 45,
+    "ux_state_page_count": 45,
+    "history_route_count": 45,
+    "primary_entry_count": 10,
+    "primary_screenshot_count": 10,
+    "core_secondary_screenshot_count": 10,
+    "browser_validation_status": "pass"
+  },
+  "review_findings": [
+    {
+      "id": "S5-REVIEW-F1",
+      "severity": "P1",
+      "status": "fixed",
+      "finding": "Stage 5 had no whole-stage review gate or evidence after Phase 5.1/5.2/5.3 candidate pass.",
+      "fix": "Added STAGE5_WHOLE_STAGE_REVIEW.md, whole_stage_review evidence pack, risk/rollback, terminal log, and contract test.",
+      "verification": "test_v024_stage5_whole_review_contract.py covers artifacts, scope, phase consistency, acceptance checks, findings, and non-upload gate."
+    },
+    {
+      "id": "S5-REVIEW-F2",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Roadmap pass gate required screenshots for each primary entry and core secondary pages, but Phase 5.1-5.3 did not include review-time screenshot coverage.",
+      "fix": "Added validate_v024_stage5_whole_review_browser.js and generated 20 screenshots under whole_stage_review/screenshots.",
+      "verification": "browser_validation.json status=pass, primary_screenshot_count=10, core_secondary_screenshot_count=10, screenshot files all exceed 20000 bytes."
+    },
+    {
+      "id": "S5-REVIEW-F3",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Static browser validation produced a console 404 for optional /api/read-model-status when the default local runtime lacked that endpoint.",
+      "fix": "Added readModelStatusApi runtime flag: static index disables the optional fetch, Streamlit inline runtime enables it when embedding a real app API base.",
+      "verification": "browser_validation.json has http_errors=[], console_errors=[], page_errors=[]."
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "pytest stage5 whole review red run",
+      "status": "expected_fail",
+      "detail": "5 failed: missing STAGE5_WHOLE_STAGE_REVIEW.md, browser_validation.json, and whole_stage_review evidence"
+    },
+    {
+      "cmd": "node stage5 whole review browser validation",
+      "status": "pass",
+      "detail": "20 screenshots, status pass"
+    },
+    {
+      "cmd": "pytest stage5 whole review contract",
+      "status": "pass",
+      "detail": "6 passed in 0.07s"
+    },
+    {
+      "cmd": "pytest stage5 phase regression",
+      "status": "pass",
+      "detail": "20 passed in 0.47s"
+    },
+    {
+      "cmd": "pytest stage3/stage4 regression",
+      "status": "pass",
+      "detail": "15 passed in 0.97s"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "pass"
+    }
+  ],
+  "remaining_gates": [
+    "GitHub main upload"
+  ],
+  "explicitly_not_done": [
+    "Stage 6",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "requires_user_acceptance": true,
+  "no_auto_next_stage": true
+}

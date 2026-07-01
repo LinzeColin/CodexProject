@@ -1,0 +1,68 @@
+2026-07-01 Australia/Sydney
+
+Repo:
+- cwd: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+- branch: codex/pfi
+- remote: git@github.com:LinzeColin/CodexProject.git
+- head before review: b7c7b5b6f28389f7012c6702f2c9e0cb822e5c40
+- origin/main before review: bb195504ff65d54533ede164d2212608c6972906
+- ahead/behind before review: 3/0
+
+Remote sync:
+- origin/main advanced by two non-PFI ADP commits during review, then by five non-PFI KMFA commits before commit.
+- Rebased codex/pfi Phase 5.1/5.2/5.3 commits onto dfdf16c98656c4272fa105027dcbf46ba15d37dd, then onto bb195504ff65d54533ede164d2212608c6972906.
+- Restored Stage 5 whole-review WIP after each rebase; branch returned to ahead 3 / behind 0 before final validation.
+
+Review findings:
+- S5-REVIEW-F1 fixed: added Stage 5 whole-stage review gate and evidence.
+- S5-REVIEW-F2 fixed: added review-time browser screenshot coverage, 10 primary screenshots and 10 core secondary screenshots.
+- S5-REVIEW-F3 fixed: static browser validation no longer produces optional /api/read-model-status 404.
+
+Commands run:
+- PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/tests/test_v024_stage5_whole_review_contract.py
+  - pass
+- PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_whole_review_contract.py -q
+  - RED before implementation: 5 failed, missing whole-stage review artifacts and browser validation.
+- /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/scripts/validate_v024_stage5_whole_review_browser.js
+  - pass
+- PLAYWRIGHT_PACKAGE_PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright node PFI/scripts/validate_v024_stage5_whole_review_browser.js
+  - initial run: fail, http_errors included /api/read-model-status 404
+  - after shell/runtime config fix: pass, screenshots=20
+- /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+  - pass
+- PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_os/app/streamlit_app.py
+  - pass
+
+Final validation:
+- /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/scripts/validate_v024_stage5_whole_review_browser.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+  - pass
+- PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_os/app/streamlit_app.py PFI/tests/test_v024_stage5_whole_review_contract.py
+  - pass
+- PLAYWRIGHT_PACKAGE_PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.61.0/node_modules/playwright /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node PFI/scripts/validate_v024_stage5_whole_review_browser.js
+  - pass; screenshots=20
+- PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage5_whole_review_contract.py PFI/tests/test_v024_stage5_phase51_home_rebuild.py PFI/tests/test_v024_stage5_phase52_subpage_differentiation.py PFI/tests/test_v024_stage5_phase53_interaction_states.py -q
+  - 20 passed in 0.47s
+- PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage3_phase32_route_implementation.py PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase43_acceptance.py -q
+  - 15 passed in 0.97s
+- python3 -m json.tool PFI/reports/pfi_v024/stage_5/whole_stage_review/evidence.json
+  - pass
+- python3 -m json.tool PFI/reports/pfi_v024/stage_5/whole_stage_review/browser_validation.json
+  - pass
+- git diff --check -- PFI
+  - pass
+
+Post-rebase final validation at 2026-07-01T01:24:04Z:
+- node --check PFI/scripts/validate_v024_stage5_whole_review_browser.js
+  - pass
+- node --check PFI/web/app/shell.js
+  - pass
+- py_compile streamlit_app.py and test_v024_stage5_whole_review_contract.py
+  - pass
+- browser validation
+  - pass; screenshots=20
+- Stage 5 whole-review plus phase regression
+  - 20 passed in 0.52s
+- Stage 3/4 adjacent regression
+  - 15 passed in 1.01s
+- screenshot file count
+  - 20

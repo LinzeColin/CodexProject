@@ -2057,6 +2057,10 @@ function runtimeApiUrl(path) {
   return `${PFI_RUNTIME_API_BASE_URL}${cleanPath}`;
 }
 
+function shouldFetchRuntimeReadModelStatus() {
+  return RUNTIME_CONFIG.readModelStatusApi === true;
+}
+
 async function runtimeApiJson(path, options = {}) {
   const response = await fetch(runtimeApiUrl(path), {
     ...options,
@@ -2081,10 +2085,17 @@ async function refreshRuntimeTrends(options = {}) {
     } catch (_syncError) {
       runtimeStage4SyncState = null;
     }
-    try {
-      runtimeReadModelStatusState = await runtimeApiJson("/api/read-model-status");
-    } catch (_statusError) {
-      runtimeReadModelStatusState = readEmbeddedReadModelStatus();
+    const embeddedReadModelStatus = readEmbeddedReadModelStatus();
+    if (embeddedReadModelStatus) {
+      runtimeReadModelStatusState = embeddedReadModelStatus;
+    } else if (shouldFetchRuntimeReadModelStatus()) {
+      try {
+        runtimeReadModelStatusState = await runtimeApiJson("/api/read-model-status");
+      } catch (_statusError) {
+        runtimeReadModelStatusState = null;
+      }
+    } else {
+      runtimeReadModelStatusState = null;
     }
     applyOperationalReadModel(runtimeReadModelState);
     applyV024ReadModelStatusToSurfaces(runtimeReadModelStatusState);
