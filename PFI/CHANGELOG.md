@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 4 GitHub Main Upload - 2026-07-01
+
+- 完成 `Stage 4 GitHub main upload gate`：将 Stage 4 Phase 4.1、Phase 4.2、Phase 4.3 和 whole-stage review package rebase 到当前 `origin/main` 后上传。
+- 新增 `PFI/docs/pfi_v024/STAGE4_GITHUB_MAIN_UPLOAD.md`、`PFI/tests/test_v024_stage4_github_upload_contract.py` 和 `PFI/reports/pfi_v024/stage_4/github_main_upload/evidence.json`。
+- 上传 gate 重新验证 Stage 4 非假零、read model 挂链、whole-stage review、JS syntax、JSON evidence 和 diff。
+- 本轮不执行 Stage 5，不重装 app bundle，不修改 launcher C/Info.plist，不写入、清理、删除、补造或改写真实财务数据。
+
 ## v0.2.4 Repair Pack Stage 4 Whole-Stage Review - 2026-07-01
 
 - 完成 `Stage 4 whole-stage review - 复审并解决暴露问题`，复审 Phase 4.1 状态机、Phase 4.2 read model 挂链、Phase 4.3 非假零验收。

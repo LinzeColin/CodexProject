@@ -1,0 +1,37 @@
+Stage 4 GitHub main upload RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_github_upload_contract.py -q
+result=expected red, 3 failed: missing build_v024_stage4_github_upload_contract and stage_4/github_main_upload evidence pack
+
+REMOTE BASELINE:
+git fetch origin main
+result=pass
+
+git diff --name-status faba66e0f082bc84c8163d5fc8759811c56f4cc3..origin/main -- PFI
+result=pass, no output; remote delta did not touch PFI
+
+git rebase origin/main
+result=pass, rebased 4 local Stage 4 commits onto origin/main d520e748beae562ffa42cb5edda4d63a44f2f13e
+
+PRE-PUSH VALIDATION 2026-07-01T10:03:28+1000:
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data_state.js
+result=pass
+
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage4_data_state.py PFI/tests/test_v024_stage4_github_upload_contract.py
+result=pass
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage4_github_upload_contract.py PFI/tests/test_v024_stage4_whole_review_contract.py PFI/tests/test_v024_stage4_phase43_acceptance.py PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_stage4_phase41_data_state_contract.py PFI/tests/test_v024_stage4_no_mock_financial_data.py -q
+result=pass, 28 passed in 1.02s
+
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/github_main_upload/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/whole_stage_review/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_4/phase_4_3/browser_validation.json
+result=pass
+
+git diff --check -- PFI
+result=pass
+
+REMOTE PUSH VERIFICATION:
+To be completed after committing this upload gate.

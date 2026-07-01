@@ -1,7 +1,7 @@
 # PFI v0.2.4 Stage 4 Data State Machine
 
-当前已完成：`Stage 4 whole-stage review - 复审并解决暴露问题`。
-GitHub main upload 尚未执行。
+当前已完成：`Stage 4 GitHub main upload gate`。
+Stage 4 reviewed package 已上传 GitHub main，最终以 terminal remote hash 验证为准。
 
 ## Scope
 
@@ -31,7 +31,13 @@ Stage 4 whole-stage review 复审该合同：
 - 每个核心指标都有 `status`、`source_id`、`as_of`、`record_count` 和 `calculation_state`。
 - 首页、账户、投资、消费和报告共享同一 `read_model_hash`。
 - Phase 4.3 browser validation 和两张截图纳入整阶段验收。
-- 复审发现 3 项均已 fixed；GitHub main upload 仍为未执行。
+- 复审发现 3 项均已 fixed；GitHub main upload 已在后续独立 gate 执行。
+
+Stage 4 GitHub main upload gate 上传该合同：
+
+- Stage 4 package rebase 到当前 `origin/main` 后再验证。
+- 上传后必须验证 `HEAD == origin/main == remote main`。
+- 本 gate 不重装 app bundle，不写入真实财务数据，不进入 Stage 5。
 
 ## Status Values
 
@@ -81,5 +87,4 @@ Stage 4 whole-stage review 复审该合同：
 ## Remaining Non Goals
 
 - 不重装 app bundle。
-- 不上传 GitHub main。
 - 不进入 Stage 5。
