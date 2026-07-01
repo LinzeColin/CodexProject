@@ -1,0 +1,120 @@
+{
+  "artifact_refs": {
+    "collection_receivable_aging_manifest": "KMFA/metadata/reports/collection_receivable_aging_manifest.json",
+    "collection_receivable_aging_priority_items": "KMFA/metadata/reports/collection_receivable_aging_priority_items.jsonl",
+    "collection_receivable_aging_responsibility_items": "KMFA/metadata/reports/collection_receivable_aging_responsibility_items.jsonl",
+    "collection_receivable_aging_source_lanes": "KMFA/metadata/reports/collection_receivable_aging_source_lanes.jsonl",
+    "completion_record": "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/s13_p2_completion_record.md",
+    "priority_html_draft": "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/exports/html/collection_receivable_aging_priority.html",
+    "stage_manifest": "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/machine/s13_p2_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/test_results.md",
+    "validator": "KMFA/tools/check_s13_p2_collection_receivable_aging.py"
+  },
+  "content_hash": "sha256:a25572215dcc393f214094c79ff9c3ea884e538f79b5d0210c563e8151ccdc09",
+  "formula_version": "FORM-KMFA-COLLECTION-RECEIVABLE-AGING-001",
+  "generated_at": "2026-07-01T18:00:00+10:00",
+  "html_template_version": "HTML-KMFA-S13P2-BLUE-PRIORITY-v1",
+  "limitations": [
+    "S13-P2 只生成回款应收账龄公开安全优先级和责任事项草案。",
+    "本 phase 不生成正式催收清单、不执行跨表复核、不触发开票、付款、银行、税务或法务动作。",
+    "存在 12 条 pending owner 或授权复核差异时，报告等级显示为 D，经营决策依据继续阻断。"
+  ],
+  "mapping_version": "MAP-KMFA-S13P2-PUBLIC-SAFE-v1",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "pdf_file_committed": false,
+    "private_ref_committed_in_s13p2_outputs": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "real_account_number_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "collection_receivable_priority_draft_allowed": true,
+    "complete_trusted_report_display_allowed": false,
+    "derived_amount_calculation_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "invoice_operation_allowed": false,
+    "legal_collection_decision_allowed": false,
+    "payment_or_bank_operation_allowed": false,
+    "pending_reconciliation_count": 12,
+    "phase_completion_upload_allowed": false,
+    "quality_grade_bypass_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "draft_only_pending_s13p3_lineage_and_unclosed_reconciliation",
+    "report_grade_bypass_allowed": false,
+    "report_grade_visible": "D",
+    "responsibility_item_draft_allowed": true,
+    "s13_p1_scope_reopen_allowed": false,
+    "s13_p3_scope_allowed": false,
+    "stage13_review_allowed": false,
+    "tax_filing_allowed": false
+  },
+  "record_type": "collection_receivable_aging_manifest",
+  "report_version": "RPT-KMFA-S13P2-COLLECTION-RECEIVABLE-AGING-001",
+  "required_issue_types": [
+    "invoiced_not_collected",
+    "completed_not_settled",
+    "settled_not_invoiced",
+    "overdue_receivable"
+  ],
+  "required_source_lanes": [
+    "collection_table",
+    "receivable_aging",
+    "customer_aging",
+    "journal",
+    "invoice_plan"
+  ],
+  "runtime_status": "public_safe_collection_receivable_aging_priority_created_formal_actions_blocked",
+  "schema_version": "kmfa.collection_receivable_aging_manifest.v1",
+  "source_taskpack_refs": {
+    "roadmap_s13_p2": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S13-P2",
+    "taskpack_stage13": "KMFA/taskpack/v1_2/01_KMFA_Codex_TaskPack_v1_2_FULL.md:Stage13"
+  },
+  "stage_phase": "S13-P2",
+  "stage_scope": {
+    "complete_trusted_report_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "legal_collection_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "payment_or_bank_operation_scope_included": false,
+    "s13_p1_financial_operating_report_scope_included": false,
+    "s13_p2_collection_receivable_aging_scope_included": true,
+    "s13_p3_cross_table_review_scope_included": false,
+    "s13_p3_scope_included": false,
+    "stage13_review_scope_included": false,
+    "tax_filing_scope_included": false
+  },
+  "summary": {
+    "business_decision_basis_count": 0,
+    "collection_action_count": 0,
+    "field_mapping_count": 25,
+    "formal_report_count": 0,
+    "html_draft_count": 1,
+    "legal_collection_decision_count": 0,
+    "payment_or_bank_operation_count": 0,
+    "pending_reconciliation_count": 12,
+    "priority_item_count": 4,
+    "report_grade_visible": "D",
+    "required_issue_type_count": 4,
+    "responsibility_item_count": 4,
+    "source_count": 5,
+    "source_lane_count": 5
+  },
+  "upstream_metadata_refs": {
+    "finance_field_candidates": "source_ref://KMFA/S07-P1/finance_field_candidates",
+    "finance_support_source_registry": "source_ref://KMFA/S07-P1/finance_support_source_registry",
+    "project_scope_reconciliation": "source_ref://KMFA/S09-P3/scope_reconciliation",
+    "report_grade_runtime": "source_ref://KMFA/S10-P2/report_grade_runtime",
+    "wps_export_source_registry": "source_ref://KMFA/S07-P2/wps_export_source_registry",
+    "wps_field_mappings": "source_ref://KMFA/S07-P2/wps_field_mappings"
+  }
+}

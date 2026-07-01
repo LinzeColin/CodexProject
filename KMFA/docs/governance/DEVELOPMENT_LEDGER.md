@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s13p1-financial-operating-report
+product_version: 0.1.0-s13p2-collection-receivable-aging
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S13`
-- current_phase: `S13-P2｜待开始`
-- current_tasks: `S13PAT01-S13PAT03`
-- status: `s13p1_completed_validated_local_only`
+- current_phase: `S13-P3｜待开始`
+- current_tasks: `S13PCT01-S13PCT03`
+- status: `s13p2_completed_validated_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -86,17 +86,17 @@ product_version: 0.1.0-s13p1-financial-operating-report
 | `KMFA-S12-STAGE-REVIEW-20260701` | Stage 12 整体复审本地通过；复跑 S12-P1/P2/P3 validators、`check_s12_stage_review.py`、全量 152 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency；修复 HANDOFF stale next-step finding；复审步骤未执行 GitHub upload、S13、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md` |
 | `KMFA-S12-GITHUB-UPLOAD-20260701` | Stage 12 final GitHub upload 完成；基于最新 origin/main rebase Stage 12 栈，复跑 S12 validators、Stage 12 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、dry-run push、push 和 post-push parity | `KMFA/stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md` |
 | `S13PAT01-S13PAT03` | S13-P1 财务经营报表完成本地验证：生成 4 条 public-safe 财务经营 source lane、2 条经营周报/月报初稿、2 个 HTML draft、manifest 和 validator；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告和经营决策依据；不执行 S13-P2/S13-P3、Stage 13 review 或 GitHub upload | `KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md` |
+| `S13PBT01-S13PBT03` | S13-P2 回款应收账龄完成本地验证：生成 5 条 public-safe source lane、4 条回款优先级、4 条责任事项、1 个 HTML evidence、manifest 和 validator；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、催收/付款/法务动作和经营决策依据；不执行 S13-P3、Stage 13 review 或 GitHub upload | `KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/s13_p2_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S13PBT01-S13PBT03` | S13-P2 回款应收账龄待开始；下一轮必须重新确认 git root、branch、remote、HEAD、status，并读取 v1.2 task pack / roadmap；不得直接进入 S13-P3、Stage 13 review、lineage full check、正式报告或外部接口 | `KMFA/docs/governance/roadmap.yaml` |
+| `S13PCT01-S13PCT03` | S13-P3 跨表复核待开始；下一轮必须重新确认 git root、branch、remote、HEAD、status，并读取 v1.2 task pack / roadmap、S13-P1/S13-P2 evidence；不得直接进入 Stage 13 review、lineage full check、正式报告或外部接口 | `KMFA/docs/governance/roadmap.yaml` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S13-P2 回款应收账龄 | 尚未开始；S13-P1 只完成 public-safe 财务经营报表初稿，不代表回款应收、跨表复核、lineage 或正式报告已实现 | 下一轮只执行 S13-P2 |
-| S13-P3 跨表复核 | 尚未开始；必须等待 S13-P2 完成并本地验证 | S13-P2 后执行 |
+| S13-P3 跨表复核 | 尚未开始；S13-P1/S13-P2 只完成 public-safe 初稿、优先级和责任事项，不代表跨表复核、lineage 或正式报告已实现 | 下一轮只执行 S13-P3 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

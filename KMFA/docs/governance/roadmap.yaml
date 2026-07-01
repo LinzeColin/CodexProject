@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S13"
-current_phase_id: "S13PB"
-current_task_id: "S13PBT01"
-next_gate_id: "KMFA-S13-P2-GATE"
+current_phase_id: "S13PC"
+current_task_id: "S13PCT01"
+next_gate_id: "KMFA-S13-P3-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -748,15 +748,19 @@ stages:
       - "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
   - stage_id: "S13"
     name: "财务经营报表与回款应收扩展"
-    status: "in_progress_s13p1_completed_local_only"
+    status: "in_progress_s13p2_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 33
-    current_result: "S13-P1 财务经营报表已本地完成并验证；生成 4 条 public-safe source lane、2 条经营周报/月报初稿和 2 个 HTML draft，报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告和经营决策依据。"
+    estimated_pct: 66
+    current_result: "S13-P1 财务经营报表和 S13-P2 回款应收账龄已本地完成并验证；S13-P2 生成 5 条 public-safe source lane、4 条回款优先级、4 条责任事项和 1 个 HTML evidence，报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、催收/付款/法务动作和经营决策依据。"
     evidence_refs:
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md"
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/machine/s13_p1_manifest.json"
       - "KMFA/tools/check_s13_p1_financial_operating_report.py"
+      - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/s13_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/machine/s13_p2_manifest.json"
+      - "KMFA/tools/check_s13_p2_collection_receivable_aging.py"
     phases:
       - phase_id: "S13PA"
         name: "财务经营报表"
@@ -789,12 +793,36 @@ stages:
               - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
       - phase_id: "S13PB"
         name: "回款应收账龄"
-        status: "planned_next"
+        status: "completed_validated_local_only"
         estimated_hours: 1
-        estimated_pct: 0
+        estimated_pct: 100
+        current_result: "已接入回款表、应收账龄、客户账龄、日记账、开票计划，并输出回款优先级和责任事项。"
+        evidence_refs:
+          - "KMFA/metadata/reports/collection_receivable_aging_manifest.json"
+          - "KMFA/metadata/reports/collection_receivable_aging_source_lanes.jsonl"
+          - "KMFA/metadata/reports/collection_receivable_aging_priority_items.jsonl"
+          - "KMFA/metadata/reports/collection_receivable_aging_responsibility_items.jsonl"
+          - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/exports/html/collection_receivable_aging_priority.html"
+        tasks:
+          - task_id: "S13PBT01"
+            name: "接入回款表、应收账龄、客户账龄、日记账、开票计划。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/collection_receivable_aging_source_lanes.jsonl"
+          - task_id: "S13PBT02"
+            name: "识别已开票未回款、完工未结算、结算未开票、超期应收。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/collection_receivable_aging_priority_items.jsonl"
+          - task_id: "S13PBT03"
+            name: "输出回款优先级和责任事项。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/collection_receivable_aging_responsibility_items.jsonl"
+              - "KMFA/tools/check_s13_p2_collection_receivable_aging.py"
       - phase_id: "S13PC"
         name: "跨表复核"
-        status: "planned"
+        status: "planned_next"
         estimated_hours: 1
         estimated_pct: 0
   - stage_id: "S14"

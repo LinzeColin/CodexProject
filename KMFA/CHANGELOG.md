@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s13p2-collection-receivable-aging - 2026-07-01
+
+- 完成 `S13-P2｜回款应收账龄` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/collection_receivable_aging.py`、`KMFA/tools/check_s13_p2_collection_receivable_aging.py` 和 `KMFA/tests/test_collection_receivable_aging.py`。
+- 生成 5 条 public-safe source lane：回款表、应收账龄、客户账龄、日记账、开票计划；共 5 个 source refs、25 个字段映射 refs。
+- 生成 4 类问题草案：已开票未回款、完工未结算、结算未开票、超期应收；输出 4 条回款优先级和 4 条责任事项，并生成 1 个蓝色商务风 HTML evidence。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、字段明文、真实金额、真实账号、真实客户/项目明细或 credentials。
+- S13-P2 不执行 S13-P3 跨表复核、Stage 13 整体复审、GitHub upload、lineage full check、正式报告、外部 connector、开票、付款、银行、税务或法务催收动作。
+- 下一轮只能执行 `S13-P3｜跨表复核`。
+
 ## 0.1.0-s13p1-financial-operating-report - 2026-07-01
 
 - 完成 `S13-P1｜财务经营报表` 本地验证，不上传 GitHub。
