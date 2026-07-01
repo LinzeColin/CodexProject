@@ -33,5 +33,12 @@ result=pass
 git diff --check -- PFI
 result=pass
 
-REMOTE PUSH VERIFICATION:
-To be completed after committing this upload gate.
+REMOTE PUSH VERIFICATION POLICY:
+This committed log cannot embed its own final remote hash without changing the
+commit hash. Close the upload gate with terminal-only verification after push:
+git push origin HEAD:main
+git fetch origin main
+git ls-remote origin refs/heads/main
+git rev-parse HEAD
+git rev-parse origin/main
+git rev-list --left-right --count HEAD...origin/main
