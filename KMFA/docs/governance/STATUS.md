@@ -7,8 +7,8 @@
 - project_id: `KMFA`
 - version: `0.1.0-s18-github-upload`
 - current_stage: `S18`
-- current_phase: `Stage 18 GitHub Upload｜已完成`
-- status: `s18_github_uploaded_no_go`
+- current_phase: `Post-S18 Part 1 Review｜Stages 1-3 本地完成`
+- status: `post_s18_part1_review_passed_local_only_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_stage18_uploaded`
 
@@ -34,6 +34,7 @@
 - S03-P3 源优先级已完成：`KMFA/tools/source_priority.py` 支持源类别优先级、同源失效重跑事件和跨源差异队列 metadata。
 - Stage 3 整体复审已通过：`KMFA/stage_artifacts/S03_STAGE_REVIEW/`。
 - Stage 3 已整体上传 GitHub main，reviewed content commit `39b0eef52424a12b6c0c8ad368bd878b46300be4`。
+- Post-S18 Part 1 已完成 Stage 1-3 本地复审，证据位于 `KMFA/stage_artifacts/PART1_STAGES_01_03_REVIEW/`；本轮未执行 GitHub upload、Stage 4-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
 - S04-P1 金额工具已完成本地验证：`KMFA/tools/amount_tools.py` 支持金额标准化到整数分，`KMFA/tools/check_no_float_money.py` 阻断业务金额 float 用法。
 - S04-P2 字段标准化已完成本地验证：`KMFA/tools/field_standardization.py` 支持字段别名、日期、期间、主体、项目、客户/对手方和合同编号标准化，缺字段进入 metadata 质量状态。
 - S04-P3 基础工具测试已完成本地验证：`KMFA/tests/test_basic_tool_boundaries.py` 覆盖 22 个合成边界用例，`KMFA/tools/generate_tool_test_report.py` 可生成 JSON/Markdown 工具函数测试报告。

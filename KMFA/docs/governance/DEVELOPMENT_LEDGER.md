@@ -6,9 +6,9 @@ product_version: 0.1.0-s18-github-upload
 
 - project_id: `KMFA`
 - current_stage: `S18`
-- current_phase: `Post-Stage 18｜Lineage/Report Gate Pending`
-- current_tasks: `KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE`
-- status: `s18_github_uploaded_no_go`
+- current_phase: `Post-S18 Part 1 Review｜Stages 1-3 本地完成`
+- current_tasks: `KMFA-PART1-STAGES-01-03-REVIEW-20260702`
+- status: `post_s18_part1_review_passed_local_only_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -114,16 +114,18 @@ product_version: 0.1.0-s18-github-upload
 | `S18PCT01-S18PCT03` | S18-P3 后续接入准备本地完成：红圈、金蝶、WPS 三类只读 future connector 方案、OpMe 轻入口/状态索引方案和 6 条下一阶段 backlog 已生成；未执行 Stage 18 review、GitHub upload、live connector 或 OpMe 深度耦合 | `KMFA/stage_artifacts/S18_P3_integration_preparation/human/s18_p3_completion_record.md` |
 | `KMFA-S18-STAGE-REVIEW-20260701` | Stage 18 整体复审本地通过：复跑 S18-P1/P2/P3 validators、Stage 18 review validator、全量 tests、治理 validator、raw/secret scan、parse checks 和 diff check；review-level Go/No-Go 仍为 `NO_GO`，未执行 GitHub upload、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行 | `KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md` |
 | `KMFA-S18-GITHUB-UPLOAD-20260701` | Stage 18 final GitHub upload 完成；基于最新 origin/main rebase Stage 18 栈，复跑 S18 validators、Stage 18 review validator、全量 268 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、diff check、dry-run push、push 和 post-push parity；不执行 lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行 | `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md` |
+| `KMFA-PART1-STAGES-01-03-REVIEW-20260702` | Post-S18 第一阶段 Part 1 本地复审通过：复审 Stage 1-3，复跑 no-omission、required HTML、metadata protocol、immutability、report grade gate、S03 tests、Part 1 review validator、全量 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；未执行 GitHub upload、Stage 4-18 复审、整体项目复审、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/PART1_STAGES_01_03_REVIEW/human/part1_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | Stage 18 upload 已完成；当前没有已授权的下一开发 phase | `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md` |
+| 无 | Part 1 review 已完成；下一 run work 只允许执行 Part 2（Stages 4-6）本地复审 | `KMFA/stage_artifacts/PART1_STAGES_01_03_REVIEW/human/part1_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
+| Post-S18 Part 2 Review | 尚未执行；本轮只完成 Part 1（Stages 1-3） | 下一轮只复审并修复 Stages 4-6，不上传 GitHub |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
