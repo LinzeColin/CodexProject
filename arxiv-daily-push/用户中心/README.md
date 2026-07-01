@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-## 2026-07-02 07:27:44 Australia/Sydney - 当前阅读规则
+## 2026-07-02 07:40:30 Australia/Sydney - 当前阅读规则
 
 - 当前事实：Stage 2 integrated acceptance 已记录并保持 `true`；S3/DAILY_OPERATION 不进入，`daily_operation_enabled=false`。
 - 本页 2026-07-01 19:04 以前关于 S2PLT02、S2PLT03、S2PLT04、final bundle 缺口的记录只作历史追溯，不得用来回退当前 Stage 2 accepted 事实。
@@ -539,7 +539,7 @@
 - 不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
 - 2026-06-29 23:05:25 Australia/Sydney：已补齐 S2PLT02 授权模板 `FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json`；该模板当时不等于 live 授权，当前 live 授权以上方 2026-06-30 记录为准。
-- 2026-06-30 07:41:53 Australia/Sydney：已写入并校验 S2PLT02 live authorization artifact；下一步为 `S2PLT02_TERMINAL_DELIVERY_PROOF`，但 S2PLT02/S2PMT07/production acceptance 仍未通过。
+- 2026-06-30 07:41:53 Australia/Sydney：已写入并校验 S2PLT02 live authorization artifact；当时下一步为 `S2PLT02_TERMINAL_DELIVERY_PROOF`，且当时 S2PLT02/S2PMT07/production acceptance 尚未通过；当前 Stage 2 integrated acceptance 已记录，仍未进入的是 S3/DAILY_OPERATION。
 
 
 
