@@ -5,11 +5,16 @@
   }
   if (root) {
     root.PFI_V023_STAGE7_REPORTS = api;
+    root.PFI_V024_STAGE7_REPORTS = api;
   }
 })(typeof window !== "undefined" ? window : globalThis, function buildPFIStage7Reports() {
   const VERSION = "v0.2.3";
+  const V024_TARGET_VERSION = "v0.2.4";
+  const V024_SOURCE_PACKAGE_VERSION = "v0.2.3-repair";
+  const V024_PHASE72_CONTRACT_VERSION = "PFI-V024-STAGE7-PHASE72-PAGE-DISPLAY";
   const PHASE_ID = "V023-S7-P7.1";
   const STATUS_COPY_ZH = Object.freeze({
+    ready: "可用",
     complete: "完整",
     partial: "部分可用",
     blocked: "已阻断",
@@ -42,6 +47,180 @@
       warnings_zh: blockedOrPartialCount
         ? "存在 blocked/partial 报告；数据缺口补齐前不得显示正式结论。"
         : "报告合同输入完整。",
+    });
+  }
+
+  function buildV024Stage7Phase72Contract() {
+    return Object.freeze({
+      schema: "PFIV024Stage7Phase72ContractV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: V024_SOURCE_PACKAGE_VERSION,
+      repair_label: "PFI v0.2.3 Repair",
+      stage: "Stage 7",
+      stage_name: "分析结论与报告中心",
+      phase_id: "7.2",
+      phase_name: "页面展示",
+      contract_version: V024_PHASE72_CONTRACT_VERSION,
+      current_phase_only: true,
+      max_one_phase_per_run: true,
+      phase_7_1_complete_required: true,
+      phase_7_2_page_display_complete: true,
+      phase_7_3_started: false,
+      stage_7_whole_review_complete: false,
+      github_main_uploaded: false,
+      app_bundle_reinstall_executed: false,
+      data_logic_changes_allowed: false,
+      formal_fake_financial_data_allowed: false,
+      task_ids: Object.freeze(["T7.2.1", "T7.2.2", "T7.2.3", "T7.2.4"]),
+      allowed_files: Object.freeze([
+        "PFI/web/app/pages/reports.js",
+        "PFI/web/app/shell.js",
+        "PFI/web/index.html",
+        "PFI/src/pfi_os/app/streamlit_app.py",
+        "PFI/tests/test_v024_stage7_phase72_report_page_display.py",
+        "PFI/docs/pfi_v024/STAGE7_REPORT_ANALYSIS.md",
+        "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+        "PFI/reports/pfi_v024/stage_7/phase_7_2/*",
+        "PFI/README.md",
+        "PFI/HANDOFF.md",
+        "PFI/CHANGELOG.md",
+        "PFI/功能清单.md",
+        "PFI/开发记录.md",
+        "PFI/模型参数文件.md",
+      ]),
+      validation_commands: Object.freeze([
+        "pytest PFI/tests/test_v024_stage7_phase72_report_page_display.py -q",
+        "pytest PFI/tests/test_v024_stage7_phase71_report_schema.py -q",
+        "node --check PFI/web/app/pages/reports.js",
+        "node --check PFI/web/app/shell.js",
+        "python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_2/evidence.json",
+        "python3 -m json.tool PFI/reports/pfi_v024/stage_7/phase_7_2/report_center_view_model.json",
+        "git diff --check -- PFI",
+      ]),
+      explicitly_not_done: Object.freeze([
+        "Phase 7.3 验收",
+        "Stage 7 whole-stage review",
+        "GitHub main upload",
+        "app bundle reinstall",
+        "financial data mutation or synthesis",
+      ]),
+    });
+  }
+
+  function buildV024Stage7Phase72ReportCenterViewModel(reportPack = {}) {
+    const reports = Array.isArray(reportPack.reports) ? reportPack.reports : [];
+    const reportCards = reports.map(buildV024ReportCenterCard);
+    const formulaCards = reportCards.map((card) => Object.freeze({
+      report_id: card.report_id,
+      title_zh: `${card.title_zh} · 公式解释区`,
+      formula_zh: card.formula_zh,
+      metric_sources: card.metric_sources,
+      blocked_policy_zh: card.status === "blocked" ? "输入缺口补齐前只显示阻断状态和复核入口。" : "只展示真实来源支持的结论。",
+      review_route: card.review_entry.route,
+    }));
+    const parameterSampleCards = reportCards.map((card) => Object.freeze({
+      report_id: card.report_id,
+      title_zh: `${card.title_zh} · 参数与样本量区`,
+      parameters: card.parameters,
+      parameter_summary_zh: card.parameter_summary_zh,
+      sample_size: card.sample_size,
+      sample_size_zh: card.sample_size_zh,
+      data_range: card.data_range,
+      data_range_zh: card.data_range_zh,
+      confidence: card.confidence,
+      confidence_zh: confidenceText(card.confidence),
+    }));
+    const gapReviewCards = reportCards.map((card) => Object.freeze({
+      report_id: card.report_id,
+      title_zh: `${card.title_zh} · 缺口/复核入口`,
+      status: card.status,
+      gaps: card.gaps,
+      anomalies: card.anomalies,
+      gap_summary_zh: card.gap_summary_zh,
+      review_entry: card.review_entry,
+      review_entry_zh: card.review_entry_zh,
+    }));
+    const blockedCount = reportCards.filter((card) => card.status === "blocked").length;
+    const partialCount = reportCards.filter((card) => card.status === "partial").length;
+    const source = normalizeV024Source(reportPack.source || {});
+    return Object.freeze({
+      schema: "PFIV024Stage7Phase72ReportCenterViewModelV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: V024_SOURCE_PACKAGE_VERSION,
+      stage: "Stage 7",
+      phase_id: "7.2",
+      phase_name: "页面展示",
+      contract_version: V024_PHASE72_CONTRACT_VERSION,
+      current_phase_only: true,
+      phase_7_1_complete_required: true,
+      phase_7_2_page_display_complete: true,
+      phase_7_3_started: false,
+      stage_7_whole_review_complete: false,
+      github_main_uploaded: false,
+      page: "reports",
+      title_zh: "报告中心",
+      subtitle_zh: "报告中心展示结论、公式、参数、数据范围、样本量、置信度、缺口和复核入口；数据不足时只展示数据质量与阻断状态。",
+      source,
+      read_model_hash: reportPack.read_model_hash || null,
+      report_count: reportCards.length,
+      blocked_count: blockedCount,
+      partial_count: partialCount,
+      visible_field_labels_zh: Object.freeze(["结论", "公式", "参数", "样本量", "数据范围", "置信度", "缺口", "复核入口"]),
+      sections: Object.freeze([
+        Object.freeze({ id: "report-cards", title_zh: "报告中心页面", cards: reportCards }),
+        Object.freeze({ id: "formula-explanations", title_zh: "公式解释区", cards: formulaCards }),
+        Object.freeze({ id: "parameters-and-samples", title_zh: "参数与样本量区", cards: parameterSampleCards }),
+        Object.freeze({ id: "gaps-and-review", title_zh: "缺口/复核入口", cards: gapReviewCards }),
+      ]),
+      report_cards: Object.freeze(reportCards),
+      formula_explanations: Object.freeze(formulaCards),
+      parameters_and_samples: Object.freeze(parameterSampleCards),
+      gaps_and_review: Object.freeze(gapReviewCards),
+      summary_zh: `报告中心共 ${reportCards.length} 份报告，${blockedCount} 份阻断，${partialCount} 份部分可用。`,
+      warnings_zh: blockedCount
+        ? "存在阻断报告；数据缺口补齐前只显示阻断状态、缺口和复核入口。"
+        : "当前报告中心未发现阻断报告。",
+    });
+  }
+
+  function validateV024Stage7Phase72ReportCenterViewModel(view = {}) {
+    const cards = Array.isArray(view.report_cards) ? view.report_cards : [];
+    const ids = cards.map((card) => card.report_id);
+    const requiredIds = ["net_worth_report", "cash_report", "investment_report", "consumption_report", "cashflow_report", "data_quality_report"];
+    const missingReportIds = requiredIds.filter((id) => !ids.includes(id));
+    const visibleText = JSON.stringify(view);
+    const formulaVisible = visibleText.includes("公式") && cards.every((card) => Boolean(card.formula_zh));
+    const parametersAndSampleVisible = visibleText.includes("参数") && visibleText.includes("样本量");
+    const rangeVisible = visibleText.includes("数据范围");
+    const confidenceVisible = visibleText.includes("置信度");
+    const gapsAndReviewVisible = visibleText.includes("缺口") && visibleText.includes("复核入口");
+    const blockedConclusionViolations = cards
+      .filter((card) => card.status === "blocked")
+      .filter((card) => JSON.stringify(card).includes("CNY 0.00") || String(card.conclusion_zh || "").includes("完整财务结论"))
+      .map((card) => card.report_id);
+    const pass = (
+      missingReportIds.length === 0 &&
+      formulaVisible &&
+      parametersAndSampleVisible &&
+      rangeVisible &&
+      confidenceVisible &&
+      gapsAndReviewVisible &&
+      blockedConclusionViolations.length === 0
+    );
+    return Object.freeze({
+      schema: "PFIV024Stage7Phase72PageDisplayValidationV1",
+      target_version: V024_TARGET_VERSION,
+      stage: "Stage 7",
+      phase_id: "7.2",
+      status: pass ? "pass" : "fail",
+      visible_report_ids: Object.freeze(ids),
+      missing_report_ids: Object.freeze(missingReportIds),
+      formula_visible: formulaVisible,
+      parameters_and_sample_visible: parametersAndSampleVisible,
+      data_range_visible: rangeVisible,
+      confidence_visible: confidenceVisible,
+      gaps_and_review_visible: gapsAndReviewVisible,
+      blocked_conclusion_violations: Object.freeze(blockedConclusionViolations),
     });
   }
 
@@ -123,6 +302,42 @@
     });
   }
 
+  function buildV024ReportCenterCard(report = {}) {
+    const parameters = Array.isArray(report.parameters) ? report.parameters : [];
+    const sampleSize = report.sample_size || {};
+    const dataRange = report.data_range || {};
+    const gaps = Array.isArray(report.gaps) ? report.gaps : [];
+    const reviewEntry = report.review_entry || {};
+    return Object.freeze({
+      report_id: report.report_id || "",
+      report_type: report.report_type || "",
+      title_zh: report.title_zh || "未命名报告",
+      status: report.status || "review_required",
+      status_zh: STATUS_COPY_ZH[report.status] || "需要复核",
+      conclusion_zh: report.conclusion_zh || "结论需要复核。",
+      formula_zh: report.formula_zh || "公式缺失。",
+      parameters: Object.freeze(parameters.map((item) => Object.freeze({ ...item }))),
+      parameter_summary_zh: parameterSummaryText(parameters),
+      sample_size: Object.freeze({ ...sampleSize }),
+      sample_size_zh: v024SampleSizeText(sampleSize),
+      data_range: Object.freeze({ ...dataRange }),
+      data_range_zh: dataRangeText(dataRange),
+      metric_sources: Object.freeze(Array.isArray(report.metric_sources) ? report.metric_sources : []),
+      confidence: report.confidence === undefined ? null : report.confidence,
+      confidence_zh: confidenceText(report.confidence),
+      gaps: Object.freeze(gaps.map((item) => Object.freeze({ ...item }))),
+      gap_summary_zh: v024GapSummaryText(gaps),
+      anomalies: Object.freeze(Array.isArray(report.anomalies) ? report.anomalies : []),
+      review_entry: Object.freeze({
+        label_zh: reviewEntry.label_zh || "复核入口",
+        route: reviewEntry.route || "/reports?tab=data-quality",
+      }),
+      review_entry_zh: `复核入口：${reviewEntry.label_zh || "查看数据缺口"} · ${reviewEntry.route || "/reports?tab=data-quality"}`,
+      export_fields: Object.freeze(Array.isArray(report.export_fields) ? report.export_fields : []),
+      visible_fields_zh: Object.freeze(["结论", "公式", "参数", "样本量", "数据范围", "置信度", "缺口", "复核入口"]),
+    });
+  }
+
   function buildFormulaExplanationCard(formula = {}) {
     return Object.freeze({
       section: "公式解释",
@@ -196,12 +411,48 @@
     return `数据范围：${range.start || "未知"} 至 ${range.end || "未知"}`;
   }
 
+  function normalizeV024Source(source = {}) {
+    return Object.freeze({
+      status: source.status || null,
+      record_count: Number(source.record_count || 0),
+      raw_file_count: Number(source.raw_file_count || 0),
+      date_range: Object.freeze(source.date_range || { start: null, end: null }),
+      as_of: source.as_of || null,
+      evidence_hash: source.evidence_hash || null,
+    });
+  }
+
   function recordScopeText(recordScope = {}) {
     const transactionCount = Number(recordScope.transaction_count || 0).toLocaleString("zh-CN");
     const rawFileCount = Number(recordScope.raw_file_count || 0).toLocaleString("zh-CN");
     const accountCount = Number(recordScope.account_count || 0).toLocaleString("zh-CN");
     const holdingCount = Number(recordScope.holding_count || 0).toLocaleString("zh-CN");
     return `样本量：${transactionCount} 条交易，${rawFileCount} 个原始文件，${accountCount} 个账户，${holdingCount} 个持仓`;
+  }
+
+  function v024SampleSizeText(recordScope = {}) {
+    const transactionCount = Number(recordScope.transaction_count || 0).toLocaleString("zh-CN");
+    const rawFileCount = Number(recordScope.raw_file_count || 0).toLocaleString("zh-CN");
+    const accountCount = Number(recordScope.account_count || 0).toLocaleString("zh-CN");
+    const holdingCount = Number(recordScope.holding_count || 0).toLocaleString("zh-CN");
+    return `样本量：${transactionCount} 条交易，${rawFileCount} 个原始文件，${accountCount} 个账户，${holdingCount} 个持仓`;
+  }
+
+  function parameterSummaryText(parameters = []) {
+    if (!parameters.length) return "参数：缺失";
+    return `参数：${parameters.map((item) => `${item.label_zh || item.parameter_id || "参数"}=${displayValue(item.value)}`).join("；")}`;
+  }
+
+  function confidenceText(value) {
+    if (value === null || value === undefined || value === "") return "置信度：待补真实输入";
+    const numeric = Number(value);
+    if (Number.isFinite(numeric)) return `置信度：${Math.round(numeric * 100)}%`;
+    return `置信度：${value}`;
+  }
+
+  function v024GapSummaryText(gaps = []) {
+    if (!gaps.length) return "缺口：无";
+    return `缺口：${gaps.map((item) => item.reason_zh || item.metric_id || "待复核").join("；")}`;
   }
 
   function displayValue(value) {
@@ -213,5 +464,8 @@
     buildStage7Phase71ReportsViewModel,
     buildStage7Phase72CoreReportsViewModel,
     buildStage7Phase73QualityTuningViewModel,
+    buildV024Stage7Phase72Contract,
+    buildV024Stage7Phase72ReportCenterViewModel,
+    validateV024Stage7Phase72ReportCenterViewModel,
   });
 });

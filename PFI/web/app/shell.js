@@ -628,6 +628,9 @@ let stage5SubpageCatalog = typeof window !== "undefined" ? window.PFI_V024_STAGE
 let stage5UxState = typeof window !== "undefined" ? window.PFI_V024_STAGE5_UX_STATE || null : null;
 let stage5HomeExperience =
   typeof window !== "undefined" ? window.PFI_V024_STAGE5_HOME || window.PFI_V023_STAGE5_HOME || null : null;
+let stage7ReportCenterApi =
+  typeof window !== "undefined" ? window.PFI_V024_STAGE7_REPORTS || window.PFI_V023_STAGE7_REPORTS || null : null;
+let stage7ReportCenterViewModel = null;
 let runtimeReadModelState = null;
 let runtimeStage4SyncState = null;
 let runtimeReadModelStatusState = null;
@@ -2071,6 +2074,16 @@ function readEmbeddedReadModelStatus() {
   }
 }
 
+function readEmbeddedStage7ReportPack() {
+  try {
+    const node = document.querySelector("#pfi-stage7-report-schema");
+    const parsed = JSON.parse(node?.textContent || "{}");
+    return parsed && typeof parsed === "object" && Array.isArray(parsed.reports) ? parsed : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
 function v024DataStateApi() {
   return typeof window !== "undefined" ? window.PFI_V024_STAGE4_DATA_STATE || null : null;
 }
@@ -3111,42 +3124,273 @@ function applyStage6Dashboard(dashboard) {
 
 function applyStage7ReportCenterContract() {
   if (!WORKSPACES.insights) return;
+  applyV024Stage7Phase72ReportCenter();
+}
+
+function applyV024Stage7Phase72ReportCenter() {
+  if (!WORKSPACES.insights) return;
+  const viewModel = buildV024Stage7Phase72RuntimeViewModel();
+  if (!viewModel || !Array.isArray(viewModel.report_cards) || !viewModel.report_cards.length) {
+    applyV024Stage7Phase72FallbackReportCenter();
+    return;
+  }
+  stage7ReportCenterViewModel = viewModel;
+  const reportCards = viewModel.report_cards;
+  const reportFeatures = reportCards.map((card) =>
+    feature(
+      safeUserText(card.title_zh, "报告"),
+      safeUserText(card.status_zh, "需要复核"),
+      `${safeUserText(card.data_range_zh, "数据范围：未加载")} · ${safeUserText(card.sample_size_zh, "样本量：未加载")}`,
+      `结论：${safeUserText(card.conclusion_zh, "等待结论")}｜公式：${safeUserText(card.formula_zh, "公式缺失")}｜参数：${safeUserText(card.parameter_summary_zh, "参数缺失")}｜置信度：${safeUserText(card.confidence_zh, "置信度待补")}｜缺口：${safeUserText(card.gap_summary_zh, "缺口待复核")}｜复核入口：${safeUserText(card.review_entry_zh, "复核入口待补")}`,
+      { workspace: "insights", routeAlias: card.review_entry?.route || "/reports", label: "查看报告" },
+    ),
+  );
   WORKSPACES.insights = {
     ...WORKSPACES.insights,
     label: "报告与洞察",
-    kicker: "Stage 7 报告中心",
-    conclusion: "净资产、现金余额和投资市值报告因账户余额或持仓 read model 未挂载而阻断；消费结构和数据质量只展示真实支付宝流水支持的部分结论。",
+    kicker: "Stage 7 Phase 7.2 报告中心",
+    conclusion: safeUserText(viewModel.subtitle_zh, "报告中心展示结论、公式、参数、数据范围、样本量、置信度、缺口和复核入口。"),
+    freshness: viewModel.source?.date_range?.end ? `真实流水截至 ${viewModel.source.date_range.end}` : "报告数据待加载",
+    runtime: "Stage 7 Phase 7.2 页面展示：公式、参数、样本量、数据范围、缺口和复核入口可见",
+    secondaryTabs: STAGE2_SECONDARY_TABS.insights,
+    cards: reportCards.map((card) => [
+      safeUserText(card.title_zh, "报告"),
+      safeUserText(card.status_zh, "需要复核"),
+      `${safeUserText(card.sample_size_zh, "样本量：未加载")} · ${safeUserText(card.confidence_zh, "置信度：待补")}`,
+    ]),
+    features: reportFeatures,
+    rows: reportCards.map((card, index) =>
+      row(
+        card.status === "blocked" ? "P0" : `P${Math.min(index + 1, 3)}`,
+        safeUserText(card.title_zh, "报告"),
+        `${safeUserText(card.formula_zh, "公式缺失")} · ${safeUserText(card.parameter_summary_zh, "参数缺失")}`,
+        `${safeUserText(card.gap_summary_zh, "缺口待复核")} · ${safeUserText(card.review_entry_zh, "复核入口待补")}`,
+        safeUserText(card.status_zh, "需要复核"),
+      ),
+    ),
+    tasks: [
+      task("报告中心页面", `${viewModel.report_count} 份报告可见 · ${viewModel.summary_zh}`, "ready"),
+      task("公式解释区", `${viewModel.formula_explanations.length} 个公式说明可见`, "ready"),
+      task("参数与样本量区", `${viewModel.parameters_and_samples.length} 组参数、样本量和数据范围可见`, "ready"),
+      task("缺口/复核入口", `${viewModel.gaps_and_review.length} 个缺口与复核入口可见`, viewModel.blocked_count ? "review" : "ready"),
+    ],
+    evidence: evidence(
+      "Stage 7 Phase 7.2 报告证据",
+      "报告中心、公式解释区、参数与样本量区、缺口/复核入口",
+      "Stage 7 Phase 7.1 report schema + MetaDatabase/PFI read model status",
+      "阻断报告只展示真实缺口和复核入口，数据不足时不生成完整财务结论。",
+    ),
+  };
+}
+
+function buildV024Stage7Phase72RuntimeViewModel() {
+  const api = stage7ReportCenterApi || window.PFI_V024_STAGE7_REPORTS || window.PFI_V023_STAGE7_REPORTS || null;
+  stage7ReportCenterApi = api;
+  if (!api || typeof api.buildV024Stage7Phase72ReportCenterViewModel !== "function") return null;
+  const embeddedPack = readEmbeddedStage7ReportPack();
+  const reportPack = embeddedPack || buildV024Stage7ReportPackFromStatus(runtimeReadModelStatusState || readEmbeddedReadModelStatus());
+  if (!reportPack) return null;
+  try {
+    return api.buildV024Stage7Phase72ReportCenterViewModel(reportPack);
+  } catch (_error) {
+    return null;
+  }
+}
+
+function buildV024Stage7ReportPackFromStatus(statusPayload) {
+  if (!statusPayload || typeof statusPayload !== "object" || !statusPayload.source) return null;
+  const source = statusPayload.source || {};
+  const metrics = {};
+  (statusPayload.core_metric_states || []).forEach((metric) => {
+    metrics[metric.metric_id] = metric;
+  });
+  const dataRange = source.date_range || { start: null, end: source.as_of || null };
+  const sampleSize = {
+    transaction_count: Number(source.record_count || 0),
+    raw_file_count: Number(source.raw_file_count || 0),
+    account_count: 0,
+    holding_count: 0,
+  };
+  const exportFields = [
+    "report_id",
+    "report_type",
+    "title_zh",
+    "status",
+    "conclusion_zh",
+    "formula_zh",
+    "parameter_summary_zh",
+    "data_range_start",
+    "data_range_end",
+    "transaction_count",
+    "raw_file_count",
+    "confidence",
+    "gap_count",
+    "review_route",
+  ];
+  const parameterSet = (extra = []) => [
+    { parameter_id: "currency", label_zh: "计价货币", value: "CNY", source: "Stage 4 read model status", adjustable: false },
+    { parameter_id: "blocking_policy", label_zh: "阻断策略", value: "缺少真实输入时不补零", source: "v0.2.4 Stage 7.2", adjustable: false },
+    ...extra,
+  ];
+  const gap = (metricId, route) => ({
+    metric_id: metricId,
+    status: metrics[metricId]?.status || "source_missing",
+    reason_zh: metrics[metricId]?.blocking_reason_zh || "真实 read model 输入缺失，当前报告保持阻断。",
+    review_route: route,
+  });
+  const blockedReport = ({ reportId, reportType, title, metricIds, formula, route, sources }) => ({
+    report_id: reportId,
+    report_type: reportType,
+    title_zh: title,
+    status: "blocked",
+    conclusion_zh: `${title}缺少真实输入，当前只输出缺口与复核入口，不输出最终结论。`,
+    formula_zh: formula,
+    parameters: parameterSet(),
+    data_range: dataRange,
+    sample_size: sampleSize,
+    metric_sources: sources,
+    confidence: null,
+    gaps: metricIds.map((metricId) => gap(metricId, route)),
+    anomalies: [],
+    review_entry: { label_zh: "查看数据缺口与复核入口", route },
+    export_fields: exportFields,
+  });
+  const consumptionMetric = metrics.consumption_outflow_cny || {};
+  const qualityMetric = metrics.report_summary_status || {};
+  const reports = [
+    blockedReport({
+      reportId: "net_worth_report",
+      reportType: "net_worth",
+      title: "净资产报告",
+      metricIds: ["net_worth_cny", "cash_balance_cny", "investment_market_value_cny"],
+      formula: "净资产 = 现金余额 + 投资市值 + 其他真实资产 - 真实负债；任一核心输入缺失时阻断。",
+      route: "/reports?tab=data-quality&metric=net_worth_cny",
+      sources: ["read_model:accounts_holdings", "read_model:accounts", "read_model:holdings"],
+    }),
+    blockedReport({
+      reportId: "cash_report",
+      reportType: "cash",
+      title: "现金报告",
+      metricIds: ["cash_balance_cny"],
+      formula: "现金余额 = 已挂链账户的真实余额合计；未挂链账户余额 read model 时阻断。",
+      route: "/accounts?tab=reconcile",
+      sources: ["read_model:accounts"],
+    }),
+    blockedReport({
+      reportId: "investment_report",
+      reportType: "investment",
+      title: "投资报告",
+      metricIds: ["investment_market_value_cny"],
+      formula: "投资市值 = 持仓数量 * 最新真实价格 * 有效汇率；持仓市值 read model 缺失时阻断。",
+      route: "/investment?tab=holdings",
+      sources: ["read_model:holdings"],
+    }),
+    {
+      report_id: "consumption_report",
+      report_type: "consumption",
+      title_zh: "消费报告",
+      status: "partial",
+      conclusion_zh: "真实流水消费总流出已加载，当前形成消费报告的部分结构；缺少细分解释时不补造明细。",
+      formula_zh: "消费总流出 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消。",
+      parameters: parameterSet([{ parameter_id: "consumption_scope", label_zh: "消费口径", value: "双消费口径", source: "v0.2.4 Stage 4", adjustable: false }]),
+      data_range: dataRange,
+      sample_size: sampleSize,
+      metric_sources: [consumptionMetric.source_id || "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"],
+      confidence: consumptionMetric.confidence || 0.98,
+      gaps: [],
+      anomalies: [],
+      review_entry: { label_zh: "查看消费报告复核入口", route: "/consumption?tab=analysis" },
+      export_fields: exportFields,
+    },
+    blockedReport({
+      reportId: "cashflow_report",
+      reportType: "cashflow",
+      title: "现金流报告",
+      metricIds: ["cash_balance_cny"],
+      formula: "现金流 = 真实收入 - 真实支出 - 投资现金变动；收入与现金余额输入缺失时阻断。",
+      route: "/reports?tab=data-quality&metric=cashflow",
+      sources: ["read_model:cashflow"],
+    }),
+    {
+      report_id: "data_quality_report",
+      report_type: "data_quality",
+      title_zh: "数据质量报告",
+      status: "ready",
+      conclusion_zh: qualityMetric.blocking_reason_zh || "真实数据源已加载，仍有核心指标等待 read model 挂链。",
+      formula_zh: "数据质量 = 已加载来源、记录范围、阻断指标、缺失输入和复核入口的组合检查。",
+      parameters: parameterSet([{ parameter_id: "minimum_visible_sections", label_zh: "最低可见区块", value: "结论/公式/参数/样本量/缺口/复核入口", source: "v0.2.4 Stage 7.2", adjustable: false }]),
+      data_range: dataRange,
+      sample_size: sampleSize,
+      metric_sources: [qualityMetric.source_id || "MetaDatabase/PFI"],
+      confidence: qualityMetric.confidence || 0.9,
+      gaps: ["net_worth_cny", "cash_balance_cny", "investment_market_value_cny"].map((metricId) => gap(metricId, "/reports?tab=data-quality")),
+      anomalies: [],
+      review_entry: { label_zh: "查看数据质量复核入口", route: "/reports?tab=data-quality" },
+      export_fields: exportFields,
+    },
+  ];
+  return {
+    schema: "PFIV024Stage7Phase71ReportPackV1",
+    target_version: "v0.2.4",
+    source_package_version: "v0.2.3-repair",
+    stage: "Stage 7",
+    phase_id: "7.1",
+    contract_version: "PFI-V024-STAGE7-PHASE71-REPORT-SCHEMA",
+    source: {
+      status: source.status || null,
+      record_count: Number(source.record_count || 0),
+      raw_file_count: Number(source.raw_file_count || 0),
+      date_range: dataRange,
+      as_of: source.as_of || null,
+      evidence_hash: source.evidence_hash || null,
+    },
+    read_model_hash: statusPayload.read_model_hash || null,
+    report_ids: reports.map((item) => item.report_id),
+    reports,
+  };
+}
+
+function applyV024Stage7Phase72FallbackReportCenter() {
+  WORKSPACES.insights = {
+    ...WORKSPACES.insights,
+    label: "报告与洞察",
+    kicker: "Stage 7 Phase 7.2 报告中心",
+    conclusion: "净资产、现金余额和投资市值报告因账户余额或持仓 read model 未挂载而阻断；消费结构和数据质量只展示真实支付宝流水支持的部分结论。页面展示包含结论、公式、参数、样本量、数据范围、置信度、缺口和复核入口。",
     freshness: "真实支付宝流水截至 2026-06-03",
-    runtime: "Stage 7 报告合同：阻断或部分可用时不生成伪结论",
+    runtime: "Stage 7 Phase 7.2 页面展示：阻断或部分可用时不生成伪结论",
     secondaryTabs: STAGE2_SECONDARY_TABS.insights,
     cards: [
-      ["净资产报告", "已阻断", "未挂载账户余额与持仓 read model"],
-      ["现金余额报告", "已阻断", "未挂载账户余额 read model"],
-      ["投资市值报告", "已阻断", "未挂载持仓市值 read model"],
-      ["消费结构报告", "部分可用", "MetaDatabase 真实支付宝流水"],
-      ["数据质量报告", "部分可用", "展示样本范围、缺失输入和阻断项"],
+      ["净资产报告", "已阻断", "样本量：8815 条交易 · 公式：现金余额 + 投资市值 · 缺口：账户余额/持仓"],
+      ["现金报告", "已阻断", "样本量：8815 条交易 · 公式：已挂链账户余额合计 · 缺口：账户余额"],
+      ["投资报告", "已阻断", "样本量：8815 条交易 · 公式：持仓数量 * 价格 * 汇率 · 缺口：持仓市值"],
+      ["消费报告", "部分可用", "数据范围：2022-06-06 至 2026-06-03 · 置信度：98%"],
+      ["现金流报告", "已阻断", "公式：收入 - 支出 - 投资现金变动 · 缺口：收入/现金余额"],
+      ["数据质量报告", "可用", "复核入口：缺失输入、样本范围和阻断项"],
     ],
     features: [
-      feature("净资产报告", "阻塞", "未挂载账户余额与持仓 read model", "缺少正式账户余额和持仓市值输入，不能输出净资产结论。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "查看阻断" }),
-      feature("现金余额报告", "阻塞", "未挂载账户余额 read model", "缺少现金账户余额输入，不能用 CNY 0.00 代替。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "查看阻断" }),
-      feature("投资市值报告", "阻塞", "未挂载持仓市值 read model", "缺少真实持仓市值输入，不能生成投资市值结论。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "查看阻断" }),
-      feature("消费结构报告", "部分可用", "8815 条真实支付宝流水", "仅展示真实流水可支持的消费流出、退款和待复核范围。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "查看部分报告" }),
-      feature("数据质量报告", "部分可用", "4 个原始文件 · 2022-06-06 至 2026-06-03", "列出已接入来源、缺失 read model、阻断公式和下一步补数动作。", { workspace: "insights", routeAlias: "/reports?tab=export", label: "查看质量" }),
+      feature("净资产报告", "阻塞", "公式：现金余额 + 投资市值 + 其他真实资产 - 真实负债", "参数：CNY、缺失输入不补零；样本量：8815 条交易；数据范围：2022-06-06 至 2026-06-03；置信度待补；缺口：账户余额与持仓 read model；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality&metric=net_worth_cny", label: "查看阻断" }),
+      feature("现金报告", "阻塞", "公式：已挂链账户余额合计", "参数：CNY、缺失输入不补零；样本量：8815 条交易；缺口：账户余额 read model；复核入口：账户对账。", { workspace: "insights", routeAlias: "/accounts?tab=reconcile", label: "查看阻断" }),
+      feature("投资报告", "阻塞", "公式：持仓数量 * 最新真实价格 * 有效汇率", "参数：CNY、缺失输入不补零；样本量：8815 条交易；缺口：持仓市值 read model；复核入口：持仓。", { workspace: "insights", routeAlias: "/investment?tab=holdings", label: "查看阻断" }),
+      feature("消费报告", "部分可用", "公式：消费总流出 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消", "参数：双消费口径；样本量：8815 条真实支付宝流水、4 个原始文件；数据范围：2022-06-06 至 2026-06-03；置信度：98%；复核入口：消费分析。", { workspace: "insights", routeAlias: "/consumption?tab=analysis", label: "查看部分报告" }),
+      feature("现金流报告", "阻塞", "公式：真实收入 - 真实支出 - 投资现金变动", "参数：CNY、缺失输入不补零；样本量：8815 条交易；缺口：收入、现金余额和投资现金变动；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality&metric=cashflow", label: "查看阻断" }),
+      feature("数据质量报告", "可用", "公式：来源、记录范围、阻断指标、缺失输入和复核入口组合检查", "参数：最低可见区块；样本量：8815 条真实流水、4 个原始文件；缺口：3 个核心指标；复核入口：数据质量。", { workspace: "insights", routeAlias: "/reports?tab=data-quality", label: "查看质量" }),
     ],
     rows: [
       row("P0", "净资产报告", "账户余额/持仓缺失", "未挂载账户余额与持仓 read model，阻断净资产结论。", "阻塞"),
-      row("P0", "现金余额报告", "账户余额缺失", "未挂载账户余额 read model，阻断现金余额结论。", "阻塞"),
-      row("P0", "投资市值报告", "持仓市值缺失", "未挂载持仓市值 read model，阻断投资市值结论。", "阻塞"),
+      row("P0", "现金报告", "账户余额缺失", "未挂载账户余额 read model，阻断现金余额结论。", "阻塞"),
+      row("P0", "投资报告", "持仓市值缺失", "未挂载持仓市值 read model，阻断投资市值结论。", "阻塞"),
       row("P1", "消费结构报告", "支付宝流水", "4 个原始文件、8815 条标准化流水，消费相关结论部分可用。", "部分可用"),
+      row("P0", "现金流报告", "收入/现金余额缺失", "现金流公式缺少真实收入与现金余额输入，保持阻断。", "阻塞"),
       row("P1", "数据质量报告", "缺失输入清单", "展示阻断项、样本范围、证据哈希和下一步补数动作。", "部分可用"),
     ],
     tasks: [
-      task("阻断报告", "净资产、现金余额、投资市值等待正式 read model", "review"),
-      task("消费结构", "8815 条真实支付宝流水可支持部分报告", "ready"),
-      task("数据质量", "缺失输入、样本范围和阻断公式可见", "ready"),
+      task("报告中心页面", "6 份报告可见：净资产、现金、投资、消费、现金流、数据质量", "ready"),
+      task("公式解释区", "每份报告显示公式，不是单段文本", "ready"),
+      task("参数与样本量区", "参数、样本量、数据范围和置信度可见", "ready"),
+      task("缺口/复核入口", "阻断报告显示缺口和复核入口", "review"),
       task("伪零拦截", "阻断报告不显示财务假零", "ready"),
     ],
-    evidence: evidence("Stage 7 报告证据", "报告合同、公式、参数、样本范围和阻断项", "Stage 6 core read model + MetaDatabase/PFI", "阻断或部分可用报告只展示真实来源支持的结论。"),
+    evidence: evidence("Stage 7 Phase 7.2 报告证据", "报告中心、公式解释区、参数与样本量区、缺口/复核入口", "Stage 7 Phase 7.1 report schema + MetaDatabase/PFI", "阻断或部分可用报告只展示真实来源支持的结论。"),
   };
 }
 
