@@ -1,0 +1,40 @@
+{
+  "schema": "PFIV024Stage6Phase62MotionValidationV1",
+  "status": "pass",
+  "target_version": "v0.2.4",
+  "phase_id": "6.2",
+  "page_transition": {
+    "duration_ms": 180,
+    "max_duration_ms": 220,
+    "route_state_attribute": "data-v024-route-transition",
+    "css_animation": "pfi-v024-page-enter"
+  },
+  "loading_skeleton": {
+    "delay_ms": 300,
+    "css_selector": ".v024-skeleton-row",
+    "animation": "pfi-v024-skeleton-sheen"
+  },
+  "feedback_state_count": 5,
+  "feedback_states": [
+    "loading",
+    "progress",
+    "success",
+    "error",
+    "blocked"
+  ],
+  "report_generation_progress": {
+    "schema": "PFIV024Stage6Phase62ReportProgressV1",
+    "step_count": 4,
+    "progress_attribute": "data-v024-report-progress"
+  },
+  "reduced_motion": {
+    "supported": true,
+    "selectors": [
+      "@media (prefers-reduced-motion: reduce)",
+      "body.reduce-motion"
+    ]
+  },
+  "phase_6_3_haptics_settings_started": false,
+  "business_pages_feedback_console_added": false,
+  "financial_data_changes_made": false
+}

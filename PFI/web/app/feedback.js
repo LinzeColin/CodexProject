@@ -8,6 +8,8 @@
   }
 })(typeof window !== "undefined" ? window : globalThis, function buildPFIStage9Feedback() {
   const VERSION = "v0.2.3";
+  const V024_TARGET_VERSION = "v0.2.4";
+  const STAGE6_PHASE62_ID = "6.2";
   const PHASE92_ID = "V023-S9-P9.2";
   const PHASE93_ID = "V023-S9-P9.3";
 
@@ -68,6 +70,154 @@
       pattern_ms: Object.freeze([60, 30, 60]),
     }),
   ]);
+
+  const V024_PHASE62_FEEDBACK_STATES = Object.freeze([
+    Object.freeze({
+      state: "loading",
+      label_zh: "正在加载",
+      action_zh: "显示骨架屏和当前步骤，避免空白等待。",
+      aria_live: "polite",
+      max_motion_ms: 180,
+      css_selector: '[data-v024-motion-state="loading"]',
+    }),
+    Object.freeze({
+      state: "progress",
+      label_zh: "正在处理",
+      action_zh: "显示保存、刷新或报告生成的进度状态。",
+      aria_live: "polite",
+      max_motion_ms: 180,
+      css_selector: '[data-v024-motion-state="progress"]',
+    }),
+    Object.freeze({
+      state: "success",
+      label_zh: "已完成",
+      action_zh: "用轻量视觉确认保留下一步入口。",
+      aria_live: "polite",
+      max_motion_ms: 180,
+      css_selector: '[data-v024-motion-state="success"]',
+    }),
+    Object.freeze({
+      state: "error",
+      label_zh: "处理失败",
+      action_zh: "高亮失败原因和可重试动作。",
+      aria_live: "assertive",
+      max_motion_ms: 200,
+      css_selector: '[data-v024-motion-state="error"]',
+    }),
+    Object.freeze({
+      state: "blocked",
+      label_zh: "已阻断",
+      action_zh: "说明缺失数据、路径或权限阻断，不补造结果。",
+      aria_live: "assertive",
+      max_motion_ms: 200,
+      css_selector: '[data-v024-motion-state="blocked"]',
+    }),
+  ]);
+
+  function buildStage6Phase62MotionContract() {
+    return Object.freeze({
+      schema: "PFIV024Stage6Phase62MotionContractV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: "v0.2.3-repair",
+      stage: "Stage 6",
+      phase_id: STAGE6_PHASE62_ID,
+      phase_name: "动效反馈",
+      current_phase_only: true,
+      max_one_phase_per_run: true,
+      task_ids: Object.freeze(["T6.2.1", "T6.2.2", "T6.2.3", "T6.2.4"]),
+      stage_contract: Object.freeze({
+        phase_6_1_complete: true,
+        phase_6_2_complete: true,
+        phase_6_3_started: false,
+        stage_6_whole_review_complete: false,
+        github_main_uploaded: false,
+      }),
+      changed_in_this_phase: Object.freeze([
+        "PFI/web/index.html",
+        "PFI/web/styles.css",
+        "PFI/web/app/shell.js",
+        "PFI/web/app/feedback.js",
+        "PFI/tests/test_v024_stage6_phase62_motion_feedback.py",
+        "PFI/docs/pfi_v024/STAGE6_MOTION_FEEDBACK.md",
+        "PFI/reports/pfi_v024/stage_6/phase_6_2/*",
+      ]),
+      explicitly_not_done: Object.freeze([
+        "Phase 6.3 haptics and settings isolation",
+        "Stage 6 whole-stage review",
+        "GitHub main upload",
+        "App bundle reinstall",
+        "Financial data mutation or synthesis",
+      ]),
+    });
+  }
+
+  function buildStage6Phase62ReportProgressViewModel() {
+    return Object.freeze({
+      schema: "PFIV024Stage6Phase62ReportProgressV1",
+      target_version: V024_TARGET_VERSION,
+      stage: "Stage 6",
+      phase_id: STAGE6_PHASE62_ID,
+      title_zh: "报告生成进度",
+      steps: Object.freeze([
+        Object.freeze({
+          step_id: "scope",
+          label_zh: "准备报告范围",
+          state: "loading",
+          detail_zh: "确认报告类型、时间范围、账户和数据对象。",
+        }),
+        Object.freeze({
+          step_id: "data_status",
+          label_zh: "检查真实数据状态",
+          state: "blocked",
+          detail_zh: "识别未加载、来源缺失、过期快照、路径错误和需要复核状态。",
+        }),
+        Object.freeze({
+          step_id: "formula_parameters",
+          label_zh: "计算公式与参数",
+          state: "loading",
+          detail_zh: "展示公式、参数、数据范围和样本量，不补齐缺失财务值。",
+        }),
+        Object.freeze({
+          step_id: "reviewable_output",
+          label_zh: "生成可复核结果",
+          state: "success",
+          detail_zh: "输出结论、缺口、异常项和下一步动作。",
+        }),
+      ]),
+    });
+  }
+
+  function buildStage6Phase62MotionFeedbackModel() {
+    return Object.freeze({
+      schema: "PFIV024Stage6Phase62MotionFeedbackModelV1",
+      target_version: V024_TARGET_VERSION,
+      source_package_version: "v0.2.3-repair",
+      stage: "Stage 6",
+      phase_id: STAGE6_PHASE62_ID,
+      phase_name: "动效反馈",
+      page_transition: Object.freeze({
+        duration_ms: 180,
+        max_duration_ms: 220,
+        easing: "cubic-bezier(0.2, 0, 0, 1)",
+        route_state_attribute: "data-v024-route-transition",
+        enter_value: "enter",
+        exit_value: "exit",
+      }),
+      loading_skeleton: Object.freeze({
+        css_selector: ".v024-skeleton-row",
+        delay_ms: 300,
+        purpose_zh: "加载超过 300ms 时显示结构骨架，避免空白页面。",
+      }),
+      feedback_states: V024_PHASE62_FEEDBACK_STATES,
+      report_generation_progress: buildStage6Phase62ReportProgressViewModel(),
+      reduced_motion: Object.freeze({
+        supported: true,
+        selectors: Object.freeze(["@media (prefers-reduced-motion: reduce)", "body.reduce-motion"]),
+        disables: Object.freeze(["page transition", "skeleton sheen", "progress step pulse"]),
+      }),
+      phase_6_3_haptics_settings_started: false,
+    });
+  }
 
   function buildStage9Phase92Contract() {
     return Object.freeze({
@@ -269,6 +419,9 @@
   }
 
   return Object.freeze({
+    buildStage6Phase62MotionContract,
+    buildStage6Phase62MotionFeedbackModel,
+    buildStage6Phase62ReportProgressViewModel,
     buildStage9Phase92Contract,
     buildStage9Phase92FeedbackModel,
     buildStage9Phase93Contract,

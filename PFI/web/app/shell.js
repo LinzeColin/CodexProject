@@ -156,11 +156,24 @@ const FEEDBACK_SLA_MS = {
   background: 10000,
 };
 const FEEDBACK_STATES = {
+  loading: "加载中",
   progress: "进行中",
   success: "成功",
   failure: "失败",
+  error: "错误",
+  blocked: "已阻断",
 };
-const FEEDBACK_STATE_ORDER = ["progress", "success", "failure"];
+const FEEDBACK_STATE_ORDER = ["loading", "progress", "success", "failure", "error", "blocked"];
+const PFI_V024_STAGE6_MOTION_CONTRACT = Object.freeze({
+  schema: "PFIV024Stage6Phase62RuntimeMotionContractV1",
+  targetVersion: "v0.2.4",
+  stage: "Stage 6",
+  phase: "6.2",
+  pageTransitionMs: 180,
+  maxMotionMs: 220,
+  routeTransitionAttribute: "data-v024-route-transition",
+});
+window.PFI_V024_STAGE6_MOTION_CONTRACT = PFI_V024_STAGE6_MOTION_CONTRACT;
 const FEEDBACK_HUB_LANES = {
   visual: "视觉状态轨道",
   haptic: "触感强度",
@@ -2408,6 +2421,8 @@ function setActionFeedback(state, message, options = {}) {
   const body = feedback.querySelector("[data-action-feedback-message]");
   feedback.hidden = false;
   feedback.dataset.feedbackState = normalizedState;
+  feedback.dataset.v024MotionState = normalizedState;
+  feedback.dataset.v024FeedbackPhase = "6.2";
   feedback.dataset.feedbackUpdatedAt = new Date().toISOString();
   if (options.serial !== undefined) {
     feedback.dataset.feedbackSerial = String(options.serial);
@@ -4146,6 +4161,7 @@ function renderWorkspace(workspaceId, options = {}) {
   main.dataset.stage4SubpageRoute = stage4Subpage?.routeAlias || "";
   main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none";
   main.setAttribute("data-stage5-history-ready", routeForState ? "true" : "false");
+  applyV024Stage6RouteTransition(main, "enter");
   const settingsConsole = document.querySelector("[data-settings-feedback-console]");
   if (settingsConsole) settingsConsole.hidden = workspaceId !== "settings";
   applyStage5Phase53HomeSurfacePolicy(workspaceId);
@@ -4178,6 +4194,19 @@ function renderWorkspace(workspaceId, options = {}) {
 
   if (!options.silent) showToast(`已切换到${workspace.label}`);
   if (!options.preserveFocus) main.focus({ preventScroll: true });
+}
+
+function applyV024Stage6RouteTransition(main, state = "enter") {
+  if (!main || !feedbackRuntimeState.motion || document.body.classList.contains("reduce-motion")) return;
+  if (state === "exit") {
+    main.dataset.v024RouteTransition = "exit";
+  } else {
+    main.dataset.v024RouteTransition = "enter";
+  }
+  main.dataset.v024RouteTransitionPhase = "6.2";
+  window.setTimeout(() => {
+    delete main.dataset.v024RouteTransition;
+  }, PFI_V024_STAGE6_MOTION_CONTRACT.maxMotionMs);
 }
 
 function syncMobileTabs(workspaceId) {
@@ -5365,23 +5394,51 @@ function runCachedRefresh() {
   const taskPhase = document.querySelector("#task-phase");
   const jobLabel = document.querySelector("#background-job-label");
   if (errorBanner) errorBanner.hidden = true;
+  if (skeleton) {
+    skeleton.classList.add("v024-skeleton-row");
+    skeleton.dataset.v024SkeletonState = "queued";
+  }
+  if (taskPhase) {
+    taskPhase.dataset.v024ReportProgress = "phase_6_2";
+    taskPhase.dataset.progressState = "loading";
+  }
+  if (jobLabel) {
+    jobLabel.dataset.v024ReportProgress = "phase_6_2";
+    jobLabel.dataset.progressState = "loading";
+  }
   setActionFeedback("progress", "正在刷新缓存切片");
 
   window.setTimeout(() => {
-    if (skeleton) skeleton.hidden = false;
+    if (skeleton) {
+      skeleton.hidden = false;
+      skeleton.dataset.v024SkeletonState = "loading";
+    }
   }, FEEDBACK_SLA_MS.skeleton);
 
   window.setTimeout(() => {
-    if (taskPhase) taskPhase.textContent = "第 2/3 步 · 正在读取缓存证据";
+    if (taskPhase) {
+      taskPhase.textContent = "第 2/3 步 · 正在读取缓存证据";
+      taskPhase.dataset.progressState = "loading";
+    }
   }, FEEDBACK_SLA_MS.stepped);
 
   window.setTimeout(() => {
-    if (jobLabel) jobLabel.textContent = `后台任务 PFI-${Date.now()} · 可离开页面`;
+    if (jobLabel) {
+      jobLabel.textContent = `后台任务 PFI-${Date.now()} · 可离开页面`;
+      jobLabel.dataset.progressState = "loading";
+    }
   }, FEEDBACK_SLA_MS.background);
 
   window.setTimeout(() => {
-    if (skeleton) skeleton.hidden = true;
-    if (taskPhase) taskPhase.textContent = "第 3/3 步 · 缓存切片已准备";
+    if (skeleton) {
+      skeleton.hidden = true;
+      skeleton.dataset.v024SkeletonState = "success";
+    }
+    if (taskPhase) {
+      taskPhase.textContent = "第 3/3 步 · 缓存切片已准备";
+      taskPhase.dataset.progressState = "success";
+    }
+    if (jobLabel) jobLabel.dataset.progressState = "success";
     showToast("缓存切片已刷新", "success");
   }, 1350);
 }
