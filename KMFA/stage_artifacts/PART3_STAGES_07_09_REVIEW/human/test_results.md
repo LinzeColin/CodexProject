@@ -1,0 +1,29 @@
+# KMFA Part 3 Review Test Results
+
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s07_p1_finance_file_adapter.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s07_p2_wps_file_adapter.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s07_p3_redcircle_postponement.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s08_p1_project_composite_key.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s08_p2_business_entity_model.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s08_p3_entity_matching_quality.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s09_p1_project_cost_fact_layer.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s09_p2_margin_cash_margin.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s09_p3_scope_reconciliation.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s09_stage_review.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_finance_file_adapter KMFA.tests.test_wps_file_adapter KMFA.tests.test_redcircle_postponement_policy KMFA.tests.test_project_composite_key KMFA.tests.test_business_entity_model KMFA.tests.test_entity_matching_quality KMFA.tests.test_project_cost_fact_layer KMFA.tests.test_project_margin_cash_margin KMFA.tests.test_project_scope_reconciliation -q`: PASS, 31 tests.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_part3_stages_07_09_review.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_part3_stages_07_09_review -q`: PASS, 1 test.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s KMFA/tests -q`: PASS, 271 tests.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_required_html.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/metadata_protocol_check.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/immutability_policy_check.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_report_grade_gate.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/lean_governance.py validate --project KMFA`: PASS, errors=0, warnings=0.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_project_governance.py --project KMFA`: PASS, errors=0, warnings=0.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_governance_sync.py --changed-only --enforce-sync`: PASS, errors=0, warnings=0.
+- YAML parse check: PASS.
+- JSON/JSONL/CSV parse check: PASS.
+- Raw/private path scan: PASS.
+- High-signal secret scan: PASS.
+- `git diff --check -- KMFA scripts`: PASS.
