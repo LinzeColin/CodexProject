@@ -1,11 +1,11 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE"
-source_snapshot_hash: "sha256:ca90d1300a2fc280c08b00a39a658f174dec8e807ed2e6323f82244a854ca80c"
-source_base_commit: "960e9d1a8871bac1b4e482b58a3d673d3c6b635c"
-source_tree_hash: "cf801941e53c389bcc3ac4456ba54a8b48543f3f"
-snapshot_event_time: "2026-07-01T21:37:03+10:00"
+as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION"
+source_snapshot_hash: "sha256:4ed71ab1eb0bd357749d8d9fb605cd6ca50b9954e955759667f1ea3c2f721ecc"
+source_base_commit: "f8e34c0ce3919945ca055dd781332128c72dfc4a"
+source_tree_hash: "21090213e25901ab8342dbd710c64da57bd619b7"
+snapshot_event_time: "2026-07-01T21:59:44+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+final_commit_binding: "COMMIT_BOUND:f8e34c0ce3919945ca055dd781332128c72dfc4a"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -59,14 +59,14 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 12
-    commit_bound_events: 7
+    commit_bound_events: 8
     legacy_unbound_events: 330
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_NO_RUNTIME_ENABLEMENT"
+  release_gate: "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT"
   blocker_ids: []
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"

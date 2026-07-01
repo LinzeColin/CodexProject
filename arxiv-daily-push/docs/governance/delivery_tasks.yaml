@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION"
+    phase: "S2PL"
+    objective: "Bind the already-pushed persistent DAILY_OPERATION authorization gate to mainline evidence without authorizing or enabling runtime production."
+    scope: "Mainline attestation manifest, phase record, CURRENT/VERSION_MATRIX state, owner-facing status, three-base summaries, traceability, and regression tests."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, V7.1 historical baseline mutation, or cross-project cleanup."
+    status: "completed"
+    dependencies: ["S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_GATE_MAINLINE_ATTESTATION.md", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD current-state unittest", "focused governance current-state and user-center tests", "post-run safety state checks"]
+    test_results: ["TDD red: mainline attestation manifest missing", "TDD green target: attestation manifest exists and keeps runtime flags false", "binding_status=commit_bound", "result_commit=f8e34c0ce3919945ca055dd781332128c72dfc4a", "result_tree_hash=21090213e25901ab8342dbd710c64da57bd619b7", "persistent_daily_operation_authorization_missing=true", "daily_operation_enabled=false", "new_smtp_run_executed_by_this_attestation=false"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_GATE_MAINLINE_ATTESTATION.md", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json", "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json", "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"]
+    risk: "Future agents could treat a precommit gate artifact as unbound or stale; this task binds it to mainline while preserving the missing persistent authorization blocker."
+    rollback: "Revert the mainline attestation manifest, phase record, current-state sync, owner-facing notes, event entries, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
     phase: "S2PL"
     objective: "Validate the persistent DAILY_OPERATION authorization gate and block safely when the explicit owner persistent authorization artifact is missing."

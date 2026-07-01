@@ -21,10 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 343
+- task_count: 344
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-01 21:59:44 Australia/Sydney - S2PMT07 persistent DAILY_OPERATION authorization gate mainline attestation
+
+- Task: `S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION`
+- Result: `pass_persistent_daily_operation_authorization_gate_mainline_attested_no_runtime_enablement`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_GATE_MAINLINE_ATTESTATION.md`; `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json`; `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json`.
+- Bound mainline: `commit=f8e34c0ce3919945ca055dd781332128c72dfc4a`; `tree=21090213e25901ab8342dbd710c64da57bd619b7`.
+- Attested gate state: `status=blocked_persistent_daily_operation_authorization_missing`; `state_hash=f9ef81e7a07bca57e11876e2a53d3d18e9148d6da7c8919002ce6cfb55f8ef61`; missing artifact `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`.
+- Boundary: this attestation does not create persistent authorization, does not send SMTP, and does not enable scheduler, Release, production restore, or DAILY_OPERATION. `daily_operation_enabled=false`; `new_smtp_run_executed_by_this_attestation=false`.
+- Next required step: `OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION`; do not run enablement until a separate explicit owner authorization artifact exists and a separate enablement preflight passes.
+- Verification: TDD red exists for missing manifest; focused/full validation must pass before commit.
 
 ## 2026-07-01 21:37:03 Australia/Sydney - S2PMT07 persistent DAILY_OPERATION authorization gate
 

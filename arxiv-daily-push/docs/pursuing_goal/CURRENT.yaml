@@ -15,9 +15,9 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: "S2PMT07 persistent DAILY_OPERATION authorization gate has run and is blocked because FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json does not exist. The prior one-time controlled real run and keep-disabled owner decision do not authorize persistent DAILY_OPERATION. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited until a separate explicit owner authorization artifact and enablement preflight pass."
-  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE
-  current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_NO_RUNTIME_ENABLEMENT
+  global_current_task_meaning: "S2PMT07 persistent DAILY_OPERATION authorization gate has run, is blocked because FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json does not exist, and is now mainline-attested at governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json. The prior one-time controlled real run and keep-disabled owner decision do not authorize persistent DAILY_OPERATION. DAILY_OPERATION is still not enabled, and SMTP/scheduler/Release/restore remain prohibited until a separate explicit owner authorization artifact and enablement preflight pass."
+  current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION
+  current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT
   next_executable_task: S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION
   next_required_step: OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
@@ -109,6 +109,11 @@ production_boundary:
   daily_operation_persistent_authorization_gate_artifact: FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json
   daily_operation_persistent_authorization_gate_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json
   daily_operation_persistent_authorization_gate_state_hash: f9ef81e7a07bca57e11876e2a53d3d18e9148d6da7c8919002ce6cfb55f8ef61
+  daily_operation_persistent_authorization_gate_mainline_attested: true
+  daily_operation_persistent_authorization_gate_mainline_attestation_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json
+  daily_operation_persistent_authorization_gate_mainline_attestation_commit: f8e34c0ce3919945ca055dd781332128c72dfc4a
+  daily_operation_persistent_authorization_gate_mainline_attestation_tree_hash: 21090213e25901ab8342dbd710c64da57bd619b7
+  daily_operation_persistent_authorization_gate_mainline_attestation_status: pass_persistent_daily_operation_authorization_gate_mainline_attested_no_runtime_enablement
   daily_operation_persistent_authorization_artifact: FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json
   daily_operation_persistent_authorization_blocking_reasons:
     - persistent_daily_operation_authorization_missing

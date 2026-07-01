@@ -75,6 +75,85 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("No DAILY_OPERATION, standing SMTP permission, scheduler enable/install, Release, or production restore is claimed", current_state)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", current_state)
 
+    def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
+        manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/"
+            / "ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json"
+        )
+        self.assertTrue(manifest_path.exists(), "persistent authorization gate mainline attestation must exist")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        current = (ADP_ROOT / "docs/pursuing_goal/CURRENT.yaml").read_text(encoding="utf-8")
+        readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+        ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
+        owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
+
+        self.assertEqual(
+            manifest["task_id"],
+            "S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION",
+        )
+        self.assertEqual(
+            manifest["result"],
+            "pass_persistent_daily_operation_authorization_gate_mainline_attested_no_runtime_enablement",
+        )
+        self.assertEqual(manifest["binding_status"], "commit_bound")
+        self.assertRegex(manifest["result_commit"], r"^[0-9a-f]{40}$")
+        self.assertRegex(manifest["result_tree_hash"], r"^[0-9a-f]{40}$")
+        self.assertEqual(
+            manifest["attested_gate_artifact"],
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json",
+        )
+        self.assertEqual(manifest["attested_gate_status"], "blocked_persistent_daily_operation_authorization_missing")
+        self.assertEqual(
+            manifest["attested_gate_state_hash"],
+            "f9ef81e7a07bca57e11876e2a53d3d18e9148d6da7c8919002ce6cfb55f8ef61",
+        )
+        self.assertTrue(manifest["persistent_daily_operation_authorization_missing"])
+        self.assertFalse(manifest["persistent_daily_operation_authorized"])
+        self.assertFalse(manifest["daily_operation_enabled"])
+        self.assertFalse(manifest["real_smtp_send_enabled"])
+        self.assertFalse(manifest["scheduler_enabled"])
+        self.assertFalse(manifest["scheduler_install_enabled"])
+        self.assertFalse(manifest["release_packaging_enabled"])
+        self.assertFalse(manifest["production_restore_enabled"])
+        self.assertFalse(manifest["new_smtp_run_executed_by_this_attestation"])
+        self.assertIn(
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+            manifest["evidence_refs"],
+        )
+
+        self.assertIn(
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION",
+            current,
+        )
+        self.assertIn(
+            "current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT",
+            current,
+        )
+        self.assertIn("daily_operation_persistent_authorization_gate_mainline_attested: true", current)
+        self.assertIn(
+            "daily_operation_persistent_authorization_gate_mainline_attestation_manifest: governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json",
+            current,
+        )
+        self.assertIn("daily_operation_persistent_authorization_gate_mainline_attestation_commit:", current)
+        self.assertIn("daily_operation_enabled: false", current)
+        self.assertIn("persistent_daily_operation_authorization_missing", current)
+
+        self.assertIn("持久 DAILY_OPERATION 授权门 mainline 证据已绑定", readme)
+        self.assertIn("ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json", readme)
+        self.assertIn("持久 DAILY_OPERATION 授权门 mainline 证据已绑定", decisions)
+        self.assertIn("daily_operation_enabled=false", decisions)
+        self.assertIn("- source_base_commit: `f8e34c0ce3919945ca055dd781332128c72dfc4a`", owner_status)
+        self.assertIn("- source_tree_hash: `21090213e25901ab8342dbd710c64da57bd619b7`", owner_status)
+        self.assertIn('source_base_commit: "f8e34c0ce3919945ca055dd781332128c72dfc4a"', assurance)
+        self.assertIn('source_tree_hash: "21090213e25901ab8342dbd710c64da57bd619b7"', assurance)
+        self.assertIn(
+            "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION",
+            ledger,
+        )
+
     def test_owner_and_assurance_route_to_persistent_authorization_missing_gate(self) -> None:
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
@@ -82,7 +161,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
 
         self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', assurance)
         self.assertIn("next_task_id: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`", owner_status)
-        self.assertIn('release_gate: "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_NO_RUNTIME_ENABLEMENT"', assurance)
+        self.assertIn(
+            'release_gate: "DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT"',
+            assurance,
+        )
         self.assertIn("stage2_integrated_production_accepted: true", assurance)
         self.assertIn("current_zero_proof_open_p0_findings: 0", assurance)
         self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
@@ -137,8 +219,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(manifest["scheduler_enabled"])
         self.assertFalse(manifest["release_packaging_enabled"])
         self.assertFalse(manifest["production_restore_enabled"])
-        self.assertIn("- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`", owner_status)
-        self.assertIn('final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"', assurance)
+        self.assertIn("- final_commit_binding: `COMMIT_BOUND:f8e34c0ce3919945ca055dd781332128c72dfc4a`", owner_status)
+        self.assertIn('final_commit_binding: "COMMIT_BOUND:f8e34c0ce3919945ca055dd781332128c72dfc4a"', assurance)
         self.assertRegex(owner_status, r"- source_base_commit: `[0-9a-f]{40}`")
         self.assertRegex(owner_status, r"- source_tree_hash: `[0-9a-f]{40}`")
         self.assertRegex(assurance, r'(?m)^source_base_commit: "[0-9a-f]{40}"$')
@@ -158,10 +240,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION",
             current,
         )
-        self.assertIn("current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_NO_RUNTIME_ENABLEMENT", current)
+        self.assertIn(
+            "current_gate: DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT",
+            current,
+        )
         self.assertIn("next_executable_task: S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", current)
         self.assertIn("next_required_step: OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION", current)
         self.assertIn("daily_operation_persistent_authorization_gate_written: true", current)
@@ -323,10 +408,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- active_formula_count: `{active_formulas.group(1)}`", summary)
         self.assertIn(f"- active_parameter_count: `{active_parameters.group(1)}`", summary)
         self.assertIn(
-            "- current_task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`",
+            "- current_task: `S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION`",
             summary,
         )
-        self.assertIn("- next_gate: `DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_NO_RUNTIME_ENABLEMENT`", summary)
+        self.assertIn(
+            "- next_gate: `DAILY_OPERATION_PERSISTENT_AUTHORIZATION_MISSING_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`",
+            summary,
+        )
         self.assertIn("persistent DAILY_OPERATION authorization gate blocked", summary)
         self.assertIn("persistent_daily_operation_authorized=false", summary)
         self.assertIn("daily_operation_enabled=false", summary)
