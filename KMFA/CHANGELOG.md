@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s15-github-upload - 2026-07-01
+
+- 完成 Stage 15 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `7aff82efe2dd83fce940a97868868c13e65a6f1c` rebase Stage 15 栈，并复跑 S15-P1/P2/P3 validators、Stage 15 review validator、全量 207 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。
+- 新增 `KMFA/stage_artifacts/S15_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S15_GITHUB_UPLOAD/machine/stage15_upload_manifest.json`。
+- 上传范围只包含 public-safe 绩效事实字段、绩效事实表、异常/人工复核事项、工资项目边界契约/读取草案、Stage 15 review 和 upload proof；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实人员明细、薪资材料、合同、税务申报材料或接口凭证。
+- Stage 15 upload 不实现 S16、lineage full check、正式报告、外部 connector、工资计算、奖金审批、薪资导出、最终发放、付款执行或业务 release。
+- 下一轮只能作为新 run work 从 `S16-P1｜外协采购归集` 开始，且必须重新执行 git/root/status 检查并读取 v1.2 task pack / roadmap。
+
 ## 0.1.0-s15-stage-review - 2026-07-01
 
 - 完成 `Stage 15 整体复审` 本地验证，不上传 GitHub。
