@@ -1,5 +1,11 @@
 # ADP 用户中心
 
+## 2026-07-02 06:52:05 Australia/Sydney - MVP 准备与复审修补入口已补齐
+
+- 新增当前 MVP 准备入口：[MVP 准备与复审修补](./MVP准备与复审修补.md)。
+- 该页明确：本轮不进入 S3/DAILY_OPERATION；Stage 2 accepted 只作为已验收证据，不能替代持久 DAILY_OPERATION 授权。
+- 后续复审修补默认只做 GitHub 用户中心、证据链、测试和治理同步的小范围修复；继续保持 `daily_operation_enabled=false`、`ADP_ALLOW_SMTP_SEND=false`、LaunchAgents disabled。
+
 ## 2026-07-02 00:01:37 Australia/Sydney - S3/DAILY_OPERATION 当前交接页已补齐
 
 - 新增当前后验收交接页：[S3 DAILY_OPERATION 下一 Agent 先读](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md)。
