@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 332
+- task_count: 333
 - acceptance_count: 128
 
 ## Delivery Tasks
+
+## 2026-07-01 16:52:40 Australia/Sydney - S2PMT07 write-gate mainline attestation
+
+- Task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION`
+- Result: `pass_mainline_commit_bound_attestation_no_production_enablement`
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-MAINLINE-ATTESTATION-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_WRITE_GATE_MAINLINE_ATTESTATION.md`; `governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json`; `governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json`.
+- Mainline binding: `result_commit=e85ec4b49c959cf6dbc0effa385df45fa8d468a2`; `result_tree_hash=5dc9d74c67407d69800cd86c652f833d2082f3ad`; `binding_status=commit_bound`.
+- Controlled run boundary: no new SMTP command was executed by this attestation; existing evidence remains `sent_mail_count=4/4`, `newly_sent_mail_products=[]`, `historical_sent_mail_products=M1,M2,M3,M4`, and `duplicate_smtp_send_avoided=true`.
+- Production boundary: `owner_production_boundary_decision_recorded=false`, `integrated_production_accepted=false`, `daily_operation_enabled=false`, persistent `ADP_ALLOW_SMTP_SEND=false`, LaunchAgents disabled, and no Stage2/S3 production acceptance is claimed.
 
 ## 2026-07-01 16:34:41 Australia/Sydney - S2PMT07 integrated production acceptance write gate
 
