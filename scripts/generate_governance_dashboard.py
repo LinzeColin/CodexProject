@@ -157,6 +157,10 @@ def adp_s2pmt07_blocked_next_task(
         or "INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_gate
         or "production-boundary preflight passed" in current_alias.lower()
     )
+    controlled_real_run_rechecked = (
+        "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
+        or "duplicate_smtp_send_avoided=true" in current_alias
+    )
     completion_report_is_next = (
         "S2PLT04-COMPLETION-REPORT" in current_iteration
         or "S2PLT04_COMPLETION_REPORT" in current_gate
@@ -201,13 +205,23 @@ def adp_s2pmt07_blocked_next_task(
         or "real proof capture" in current_alias
     )
     if production_boundary_preflight_ready:
+        controlled_run_clause = (
+            " Owner-authorized controlled foreground real-run acceptance recheck passed "
+            "without duplicate SMTP and with persistent ADP_ALLOW_SMTP_SEND=false; this is "
+            "evidence, not DAILY_OPERATION."
+            if controlled_real_run_rechecked
+            else ""
+        )
         return {
             "task_id": "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION",
             "status": "blocked",
             "reason": (
                 "The S2PMT07 production-boundary preflight checks passed with final bundle ready, "
+                "owner decision packet ready, "
                 "open_pr_count=0, ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and no background "
-                "ADP process. The remaining action is owner production-boundary decision evidence "
+                "ADP process."
+                + controlled_run_clause
+                + " The remaining action is owner production-boundary decision evidence "
                 "before any INTEGRATED_PRODUCTION_ACCEPTED write or DAILY_OPERATION enablement."
             ),
             "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-INTEGRATED-PRODUCTION"],
@@ -379,6 +393,10 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         or "INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT" in current_gate
         or "production-boundary preflight passed" in current_alias.lower()
     )
+    controlled_real_run_rechecked = (
+        "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
+        or "duplicate_smtp_send_avoided=true" in current_alias
+    )
     s2plt02_terminal_delivery_ready = (
         "S2PLT02_TERMINAL_DELIVERY_PROOF_READY" in current_gate
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
@@ -447,10 +465,17 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
         )
     if production_boundary_preflight_ready:
+        controlled_run_sentence = (
+            "Owner-authorized controlled foreground real-run acceptance recheck passed without duplicate SMTP; "
+            "treat it only as evidence, not DAILY_OPERATION; "
+            if controlled_real_run_rechecked
+            else ""
+        )
         return (
             "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat "
             "the integrated production acceptance preflight as passed no-production evidence; "
-            "record owner production-boundary decision evidence next, and do not enable "
+            + controlled_run_sentence
+            + "record owner production-boundary decision evidence next, and do not enable "
             "SMTP, scheduler, Release, restore, DAILY_OPERATION, or write "
             "INTEGRATED_PRODUCTION_ACCEPTED automatically."
         )

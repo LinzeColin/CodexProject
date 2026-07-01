@@ -15,9 +15,9 @@ previous_read_only_contract:
   policy: read_only_history_baseline
 current_pointer_registry:
   global_current_task: S2PMT07
-  global_current_task_meaning: S2PMT07 integrated production acceptance boundary preflight passed all configured checks; the current blocker is owner production-boundary decision evidence before any INTEGRATED_PRODUCTION_ACCEPTED write or DAILY_OPERATION enablement.
-  current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT
-  current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_BLOCKED_OWNER_DECISION_NO_PRODUCTION_ACCEPTANCE
+  global_current_task_meaning: S2PMT07 integrated production acceptance boundary preflight passed all configured checks; the owner decision packet is ready; one owner-authorized controlled foreground real-run acceptance check has passed without duplicate send or persistent enablement; the current blocker is still explicit production acceptance/write evidence before any INTEGRATED_PRODUCTION_ACCEPTED write or DAILY_OPERATION enablement.
+  current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET
+  current_gate: S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_OWNER_DECISION_PACKET_READY_BLOCKED_NO_PRODUCTION_ACCEPTANCE
   next_executable_task: S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION
   next_required_step: OWNER_PRODUCTION_BOUNDARY_DECISION
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
@@ -45,6 +45,21 @@ production_boundary:
   integrated_production_acceptance_preflight_passed: true
   integrated_production_acceptance_preflight_state_hash: 6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5
   integrated_production_acceptance_preflight_manifest: governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json
+  integrated_production_acceptance_owner_decision_packet_ready: true
+  integrated_production_acceptance_owner_decision_packet_state_hash: de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289
+  integrated_production_acceptance_owner_decision_packet_manifest: governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json
+  owner_authorized_controlled_real_run_acceptance_passed: true
+  owner_authorized_controlled_real_run_acceptance_manifest: governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json
+  owner_authorized_controlled_real_run_acceptance_generated_at: "2026-07-01T16:10:24+10:00"
+  owner_authorized_controlled_real_run_duplicate_send_avoided: true
+  owner_authorized_controlled_real_run_newly_sent_mail_products: []
+  owner_authorized_controlled_real_run_historical_sent_mail_products:
+    - M1
+    - M2
+    - M3
+    - M4
+  owner_authorized_controlled_real_run_post_smtp_flag: false
+  owner_authorized_controlled_real_run_background_process_count_after: 0
   owner_production_boundary_decision_recorded: false
   s2plt04_completed: true
   independent_final_review_passed: true
