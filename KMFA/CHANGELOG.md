@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s18-github-upload - 2026-07-01
+
+- 完成 Stage 18 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `acddc0d36150c072606afad9f91846967cbb4de3` rebase Stage 18 栈，并复跑 S18-P1/P2/P3 validators、Stage 18 review validator、全量 268 个 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks 和 diff check。
+- 新增 `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json`。
+- 上传范围只包含 public-safe 精度压力、全量回归验收、后续接入准备、Stage 18 review 和 upload proof；未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实金额、真实账号、真实客户/项目名称、银行流水、合同、薪资、税务申报材料或接口凭证。
+- Stage 18 upload 不实现 lineage full check、正式报告、完整报告邮件、live connector、OpMe 深度耦合、生产恢复、外部服务调用或业务 release。
+- 后续只能另开独立目标确认 lineage/report gate 范围，不得跳过 `NO_GO`、D 级报告和 pending reconciliation 阻断进入业务执行。
+
 ## 0.1.0-s18-stage-review - 2026-07-01
 
 - 完成 `Stage 18 整体复审` 本地验证，不上传 GitHub。

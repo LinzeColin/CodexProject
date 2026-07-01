@@ -2516,3 +2516,48 @@ tasks:
     rollback: "Remove S18_STAGE_REVIEW artifacts and revert Stage 18 review governance rows before retrying the review gate."
     target_version: "0.1.0-s18-stage-review"
     completed_version: "0.1.0-s18-stage-review"
+  - task_id: "KMFA-S18-GITHUB-UPLOAD-20260701"
+    phase: "S18_GITHUB_UPLOAD"
+    objective: "完成 Stage 18 final GitHub upload gate。"
+    scope:
+      - "latest origin/main rebase"
+      - "S18-P1/P2/P3 validators"
+      - "Stage 18 review validator"
+      - "full KMFA unit tests"
+      - "governance validators"
+      - "required HTML and no-omission gates"
+      - "raw/private and secret scans"
+      - "parse checks, diff check, dry-run push, push and parity proof"
+    non_scope:
+      - "lineage full check completion"
+      - "formal report release"
+      - "full report email"
+      - "live connector"
+      - "OpMe deep coupling"
+      - "production restore"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-S18-STAGE-REVIEW-20260701"
+    required_files:
+      - "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json"
+    acceptance_ids:
+      - "ACC-S18-GITHUB-UPLOAD"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s KMFA/tests -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_governance_sync.py --changed-only --enforce-sync"
+      - "git push --dry-run origin HEAD:main"
+      - "git push origin HEAD:main"
+      - "git rev-parse HEAD origin/main"
+    test_results:
+      - "PASS: Stage 18 upload gate validators, governance checks, raw/secret scans, dry-run push, push and post-push parity passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S18_GITHUB_UPLOAD/machine/stage18_upload_manifest.json"
+    risk: "Stage 18 upload proves public-safe GitHub main parity only and does not authorize lineage full check completion, formal reports, live connectors or business execution."
+    rollback: "Revert the Stage 18 upload evidence/governance commit and push a corrective commit only if upload evidence is invalid."
+    target_version: "0.1.0-s18-github-upload"
+    completed_version: "0.1.0-s18-github-upload"
