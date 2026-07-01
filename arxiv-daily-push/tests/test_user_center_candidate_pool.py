@@ -196,6 +196,17 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("pass_owner_selected_option_a_keep_daily_operation_disabled_after_request_no_runtime_enablement", page)
         self.assertIn("d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4", page)
         self.assertIn("owner_selected_option=A", page)
+        self.assertIn(
+            "REQ-ADP-V7-085-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
+            page,
+        )
+        self.assertIn("S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION", page)
+        self.assertIn("ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION-20260701.json", page)
+        self.assertIn("PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTATION.md", page)
+        self.assertIn("pass_owner_option_a_after_request_mainline_attested_keep_disabled_no_runtime_enablement", page)
+        self.assertIn("90b297a55451b691c3e0270cfaa64e5d58c5a519", page)
+        self.assertIn("d92ec4a0cd884641263c7979f7a5c625229ae83c", page)
+        self.assertIn("ce1545e7d9f9c3fd8af016f802a830bc2d2370e92843c14bdf47dc7d32c0e82d", page)
 
         self.assertIn("REQ-ADP-V7-070-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC", page)

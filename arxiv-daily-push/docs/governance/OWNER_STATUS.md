@@ -78,13 +78,13 @@ Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPE
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT`
+- release_gate: `DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`
 - tree_bound_events: `13`
-- commit_bound_events: `9`
+- commit_bound_events: `10`
 - legacy_unbound_events: `331`
 - precommit_pending_events: `40`
 - pending_or_stale_events: `383`
@@ -95,13 +95,13 @@ Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPE
 
 ## 16. 技术元数据
 
-- source_base_commit: `4f72c42ea62275fdd18285cf189070c6aa76bd71`
-- source_tree_hash: `0f0772e4250330372d58456a355e205327dff933`
-- source_snapshot_hash: `sha256:c1976ace1731497ba84521d3d735829791cfb9bf4408d28fb1cc5adec7d9f1a2`
-- snapshot_event_time: `2026-07-01T23:14:53+10:00`
+- source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
+- source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
+- source_snapshot_hash: `sha256:033ab10f50060a676c5c3f1f4bf9b935d93bacfde538dad81e89f7762f3f282b`
+- snapshot_event_time: `2026-07-01T23:35:39+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT`
+- phase/gate: `S2PL / DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`
 
 ## 17. Next Unique Task
 

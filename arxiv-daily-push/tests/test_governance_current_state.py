@@ -35,7 +35,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT", current_state)
+        self.assertIn(
+            "DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT",
+            current_state,
+        )
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST", current_state)
         self.assertIn("ready_owner_persistent_daily_operation_authorization_request_no_runtime_enablement", current_state)
         self.assertIn("request_only=true", current_state)
@@ -131,11 +134,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         )
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
             current,
         )
         self.assertIn(
-            "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT",
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT",
             current,
         )
         self.assertIn("daily_operation_persistent_authorization_request_ready: true", current)
@@ -214,11 +217,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(manifest["new_smtp_run_executed_by_this_attestation"])
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
             current,
         )
         self.assertIn(
-            "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT",
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT",
             current,
         )
         self.assertIn("daily_operation_persistent_authorization_request_mainline_attested: true", current)
@@ -231,12 +234,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("持久 DAILY_OPERATION 授权请求包 mainline 证据已绑定", decisions)
         self.assertIn("request_only=true", decisions)
         self.assertIn("DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT", roadmap)
-        self.assertIn("- source_base_commit: `4f72c42ea62275fdd18285cf189070c6aa76bd71`", owner_status)
-        self.assertIn("- source_tree_hash: `0f0772e4250330372d58456a355e205327dff933`", owner_status)
-        self.assertIn("- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`", owner_status)
-        self.assertIn('source_base_commit: "4f72c42ea62275fdd18285cf189070c6aa76bd71"', assurance)
-        self.assertIn('source_tree_hash: "0f0772e4250330372d58456a355e205327dff933"', assurance)
-        self.assertIn('final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"', assurance)
+        self.assertIn("- source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
+        self.assertIn("- source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`", owner_status)
+        self.assertIn("- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
+        self.assertIn('source_base_commit: "90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
+        self.assertIn('source_tree_hash: "d92ec4a0cd884641263c7979f7a5c625229ae83c"', assurance)
+        self.assertIn('final_commit_binding: "COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
         self.assertIn(
             "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION",
             ledger,
@@ -282,11 +285,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(auth_artifact.exists(), "option A must not create persistent DAILY_OPERATION authorization")
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
             current,
         )
         self.assertIn(
-            "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT",
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT",
             current,
         )
         self.assertIn("next_required_step: DAILY_OPERATION_REMAINS_DISABLED_UNTIL_EXPLICIT_OWNER_AUTHORIZATION", current)
@@ -298,8 +301,82 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("owner 已选择 A：继续禁用 DAILY_OPERATION", readme)
         self.assertIn("owner 已选择 A：继续禁用 DAILY_OPERATION", decisions)
         self.assertIn("DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT", roadmap)
+        self.assertIn("DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT", roadmap)
         self.assertIn(
             "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
+            ledger,
+        )
+
+    def test_owner_option_a_mainline_attestation_keeps_daily_operation_disabled(self) -> None:
+        manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/"
+            / "ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION-20260701.json"
+        )
+        self.assertTrue(manifest_path.exists(), "owner option A mainline attestation must exist")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        current = (ADP_ROOT / "docs/pursuing_goal/CURRENT.yaml").read_text(encoding="utf-8")
+        readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+        roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
+        ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
+        owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
+        auth_artifact = REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"
+
+        self.assertEqual(
+            manifest["task_id"],
+            "S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
+        )
+        self.assertEqual(
+            manifest["result"],
+            "pass_owner_option_a_after_request_mainline_attested_keep_disabled_no_runtime_enablement",
+        )
+        self.assertEqual(manifest["binding_status"], "commit_bound")
+        self.assertEqual(manifest["result_commit"], "90b297a55451b691c3e0270cfaa64e5d58c5a519")
+        self.assertEqual(manifest["result_tree_hash"], "d92ec4a0cd884641263c7979f7a5c625229ae83c")
+        self.assertEqual(manifest["owner_selected_option"], "A")
+        self.assertEqual(manifest["decision"], "keep_daily_operation_disabled_no_persistent_authorization")
+        self.assertEqual(
+            manifest["attested_decision_manifest_sha256"],
+            "ce1545e7d9f9c3fd8af016f802a830bc2d2370e92843c14bdf47dc7d32c0e82d",
+        )
+        self.assertEqual(
+            manifest["decision_state_hash"],
+            "d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4",
+        )
+        self.assertTrue(manifest["persistent_authorization_artifact_absent"])
+        self.assertFalse(manifest["persistent_daily_operation_authorized"])
+        self.assertFalse(manifest["daily_operation_enabled"])
+        self.assertFalse(manifest["real_smtp_send_enabled"])
+        self.assertFalse(manifest["scheduler_enabled"])
+        self.assertFalse(manifest["scheduler_install_enabled"])
+        self.assertFalse(manifest["release_packaging_enabled"])
+        self.assertFalse(manifest["production_restore_enabled"])
+        self.assertFalse(auth_artifact.exists(), "mainline attestation must not create persistent authorization")
+
+        self.assertIn(
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
+            current,
+        )
+        self.assertIn(
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT",
+            current,
+        )
+        self.assertIn("daily_operation_owner_option_a_after_request_mainline_attested: true", current)
+        self.assertIn("daily_operation_persistent_authorization_owner_decision_after_request_mainline_attestation_commit: 90b297a55451b691c3e0270cfaa64e5d58c5a519", current)
+        self.assertIn("daily_operation_persistent_authorization_owner_decision_after_request_mainline_attestation_tree_hash: d92ec4a0cd884641263c7979f7a5c625229ae83c", current)
+        self.assertIn("daily_operation_enabled: false", current)
+
+        self.assertIn("owner A 决策 mainline 证据已绑定", readme)
+        self.assertIn("owner A 决策 mainline 证据已绑定", decisions)
+        self.assertIn("DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT", roadmap)
+        self.assertIn("- source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
+        self.assertIn("- source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`", owner_status)
+        self.assertIn('source_base_commit: "90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
+        self.assertIn('source_tree_hash: "d92ec4a0cd884641263c7979f7a5c625229ae83c"', assurance)
+        self.assertIn(
+            "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
             ledger,
         )
 
@@ -311,7 +388,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', assurance)
         self.assertIn("next_task_id: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`", owner_status)
         self.assertIn(
-            'release_gate: "DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT"',
+            'release_gate: "DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT"',
             assurance,
         )
         self.assertIn("stage2_integrated_production_accepted: true", assurance)
@@ -372,13 +449,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(manifest["scheduler_enabled"])
         self.assertFalse(manifest["release_packaging_enabled"])
         self.assertFalse(manifest["production_restore_enabled"])
-        self.assertIn("- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`", owner_status)
-        self.assertIn('final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"', assurance)
+        self.assertIn("- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
+        self.assertIn('final_commit_binding: "COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
         self.assertRegex(owner_status, r"- source_base_commit: `[0-9a-f]{40}`")
         self.assertRegex(owner_status, r"- source_tree_hash: `[0-9a-f]{40}`")
         self.assertRegex(assurance, r'(?m)^source_base_commit: "[0-9a-f]{40}"$')
         self.assertRegex(assurance, r'(?m)^source_tree_hash: "[0-9a-f]{40}"$')
         self.assertNotIn(f"- final_commit_binding: `COMMIT_BOUND:{result_commit}`", owner_status)
+        self.assertIn("- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
         self.assertIn("owner_production_boundary_decision_recorded: true", current)
         self.assertIn("integrated_production_acceptance_write_gate_allowed: true", current)
         self.assertIn("integrated_production_acceptance_owner_decision_request_write_gate_allowed: false", current)
@@ -393,11 +471,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
             current,
         )
         self.assertIn(
-            "current_gate: DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT",
+            "current_gate: DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT",
             current,
         )
         self.assertIn("next_executable_task: S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", current)
@@ -581,14 +659,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- active_formula_count: `{active_formulas.group(1)}`", summary)
         self.assertIn(f"- active_parameter_count: `{active_parameters.group(1)}`", summary)
         self.assertIn(
-            "- current_task: `S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED`",
+            "- current_task: `S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION`",
             summary,
         )
         self.assertIn(
-            "- next_gate: `DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT`",
+            "- next_gate: `DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`",
             summary,
         )
-        self.assertIn("owner selected A_KEEP_DISABLED after request", summary)
+        self.assertIn("owner A keep-disabled decision mainline-bound", summary)
         self.assertIn("persistent_daily_operation_authorized=false", summary)
         self.assertIn("daily_operation_enabled=false", summary)
 

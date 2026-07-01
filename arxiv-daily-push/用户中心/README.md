@@ -1,5 +1,14 @@
 # ADP 用户中心
 
+## 2026-07-01 23:35:39 Australia/Sydney - owner A 决策 mainline 证据已绑定
+
+- `S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION` 已把 owner A keep-disabled 决策绑定到 GitHub mainline：`binding_status=commit_bound`。
+- 绑定 commit 为 `90b297a55451b691c3e0270cfaa64e5d58c5a519`，tree 为 `d92ec4a0cd884641263c7979f7a5c625229ae83c`。
+- 被绑定决策仍是 `owner_selected_option=A`、`decision=keep_daily_operation_disabled_no_persistent_authorization`、`state_hash=d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4`。
+- 真正的持久授权文件仍不存在：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。因此 `persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`。
+- 运行边界保持关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；本轮未启用 SMTP、scheduler、Release、production restore 或 DAILY_OPERATION。
+- 证据：[owner A mainline 证据清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION-20260701.json) / [owner A mainline 阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTATION.md) / [被回应的 request-only 授权请求包](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json)。
+
 ## 2026-07-01 23:14:53 Australia/Sydney - owner 已选择 A：继续禁用 DAILY_OPERATION
 
 - `S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED` 已记录 owner 对持久 DAILY_OPERATION 授权请求的回应：`owner_selected_option=A`。
@@ -404,7 +413,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 428 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 429 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |

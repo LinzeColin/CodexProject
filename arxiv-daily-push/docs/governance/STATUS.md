@@ -2,19 +2,19 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `4f72c42ea62275fdd18285cf189070c6aa76bd71`
-- source_tree_hash: `0f0772e4250330372d58456a355e205327dff933`
-- source_snapshot_hash: `sha256:c1976ace1731497ba84521d3d735829791cfb9bf4408d28fb1cc5adec7d9f1a2`
-- snapshot_event_time: `2026-07-01T23:14:53+10:00`
+- source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
+- source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
+- source_snapshot_hash: `sha256:033ab10f50060a676c5c3f1f4bf9b935d93bacfde538dad81e89f7762f3f282b`
+- snapshot_event_time: `2026-07-01T23:35:39+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`
 
 ## Current State
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT`
+- Phase/Gate: `S2PL / DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `DAILY_OPERATION_OWNER_DECISION_RECORDED_KEEP_DISABLED_AFTER_REQUEST_NO_RUNTIME_ENABLEMENT`
+- Release gate: `DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -52,6 +52,6 @@
 - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
 - Pending/stale events: `383`
 - Tree-bound events: `13`
-- Commit-bound events: `9`
+- Commit-bound events: `10`
 - Legacy unbound events: `331`
 - Unresolved fact IDs: `0`
