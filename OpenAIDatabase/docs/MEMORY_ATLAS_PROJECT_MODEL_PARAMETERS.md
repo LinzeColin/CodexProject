@@ -1256,3 +1256,49 @@ Stage 9 整体复审已确认：
 下一阶段：
 
 - 单独执行 Part 6 复审与修复；所有 part-level 复审完成后再进入整项目复审。
+
+## 27. Part 6 Stage 5 复审门槛
+
+状态：`part_6_stage_5_review_passed`。
+
+范围：
+
+- Stage 5.1 River Rendering。
+- Stage 5.2 River Interaction。
+- Stage 5.3 Evidence Layers。
+- Stage 5 overall review。
+
+验收门槛：
+
+- `validate:part6-stage5` 必须通过。
+- Stage 5.1 必须保留 `memory-river` default Timeline renderer、legacy
+  rollback flag、UTC time scale、Macro/Meso/Micro river lanes、theme/project/
+  category lane grouping、black-hole/proto-star/event markers。
+- Stage 5.2 必须保留 Pan/Brush interaction、selected range overlay、Home /
+  Galaxy / Interaction Lens selected-range sync、hover/click redacted event
+  card、click lock、Inspector sync、Reduced Motion、pseudo-haptic/audio off by
+  default 的安全反馈边界。
+- Stage 5.3 必须保留 black-hole lifecycle band、proto-star lifecycle growth
+  path、stale/deprecated cooling fade layer，并继续只使用 redacted derived
+  signals。
+- Stage 5 overall review 必须继续证明 Stage 5.1 / 5.2 / 5.3 均通过、
+  release audit、visual acceptance、overall acceptance、安全边界和 4177 cleanup
+  已验证。
+- Memory River rendering、interaction、evidence、stage5 validators、
+  TypeScript/Vite build、release audit、visual acceptance、overall acceptance
+  必须通过。
+
+边界：
+
+- 本 Part 6 复审不进入 Part 7。
+- 本 Part 6 复审不进入 Stage 6。
+- 本 Part 6 复审不执行整项目复审。
+- 本 Part 6 复审不上传 GitHub main。
+- 本 Part 6 复审不部署 Cloudflare，不修改 Access policy。
+- 本 Part 6 复审不读取 raw/private/cookie/session/secret 数据。
+- 本 Part 6 复审不新增 direct active-memory writeback。
+- 本 Part 6 复审不新增 production runtime feature work。
+
+下一阶段：
+
+- 单独执行 Part 7 复审与修复；所有 part-level 复审完成后再进入整项目复审。

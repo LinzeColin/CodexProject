@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Part 6 Stage 5 Review
+
+- Completed the Part 6 review for Stage 5.1 / 5.2 / 5.3 / Stage 5 overall:
+  River Rendering, River Interaction, Evidence Layers, and whole-stage Memory
+  River production integration review.
+- Added `validate:part6-stage5` to verify the Stage 5 phase reviews, current
+  Memory River runtime markers, visual acceptance hooks, production experiment
+  isolation, Memory River phase validators, TypeScript / Vite build, release
+  audit, and visual and overall acceptance audits.
+- Updated `validate_memory_river_interaction.mjs` to accept the current
+  `TimelineTimeRangeSelection = SharedTimelineTimeRangeSelection` alias while
+  preserving the selected-range sync contract.
+- Confirmed the Timeline board keeps `memory-river` as the default renderer,
+  preserves legacy rollback, uses UTC date scaling, exposes Macro/Meso/Micro
+  river lanes, supports Pan/Brush, redacted event cards, safe feedback defaults,
+  and renders black-hole lifecycle, proto-star lifecycle and stale/deprecated
+  evidence layers without adding new runtime work in this review.
+
+No Part 7 review, Stage 6 review, whole-project review, GitHub main upload,
+Cloudflare live deploy, Access policy change, raw/private data access, direct
+writeback, production runtime feature work, or external account operation was
+added.
+
+Machine-readable boundary summary: Stage 5.1 / 5.2 / 5.3 / Stage 5 overall; No
+Part 7 review; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.5 Part 5 Stage 4 Review
 
 - Completed the Part 5 review for Stage 4.1 / 4.2 / 4.3 / Stage 4 overall:
