@@ -2699,3 +2699,47 @@ tasks:
     rollback: "Remove PART3_STAGES_07_09_REVIEW artifacts, Part 3 validator/test and related governance rows before rerunning the Part 3 review gate."
     target_version: "0.1.0-post-s18-part3-review-local"
     completed_version: "0.1.0-post-s18-part3-review-local"
+  - task_id: "KMFA-PART4-STAGES-10-12-REVIEW-20260702"
+    phase: "POST_S18_PART4_REVIEW"
+    objective: "完成 Post-S18 第一阶段 Part 4 本地复审，范围仅为 Stage 10-12。"
+    scope:
+      - "Stage 10 report templates, report grade runtime and report export evidence"
+      - "Stage 11 home navigation, source check board and project cost page evidence"
+      - "Stage 12 manual resolution events, impact preview and rerun mechanism evidence"
+      - "Part 4 review validator and evidence manifest"
+      - "governance validators, parse checks, raw/private and secret scans"
+    non_scope:
+      - "Stage 13-18 review"
+      - "whole-project final review"
+      - "GitHub upload"
+      - "lineage full check"
+      - "formal report release"
+      - "live connector"
+      - "production restore"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-PART3-STAGES-07-09-REVIEW-20260702"
+    required_files:
+      - "KMFA/tools/check_part4_stages_10_12_review.py"
+      - "KMFA/tests/test_part4_stages_10_12_review.py"
+      - "KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/human/part4_review_report.md"
+      - "KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/machine/part4_review_manifest.json"
+    acceptance_ids:
+      - "ACC-POST-S18-PART4-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_report_templates KMFA.tests.test_report_grade_runtime KMFA.tests.test_report_export_runtime KMFA.tests.test_s10_stage_review KMFA.tests.test_home_navigation_runtime KMFA.tests.test_source_check_board_runtime KMFA.tests.test_project_cost_page_runtime KMFA.tests.test_s11_stage_review KMFA.tests.test_manual_resolution_events KMFA.tests.test_manual_impact_preview KMFA.tests.test_manual_rerun_mechanism KMFA.tests.test_s12_stage_review KMFA.tests.test_part4_stages_10_12_review -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_part4_stages_10_12_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s KMFA/tests -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_governance_sync.py --changed-only --enforce-sync"
+    test_results:
+      - "PASS: Part 4 review gates, full KMFA tests, governance validators, parse checks, raw/private path scan, high-signal secret scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/human/part4_review_report.md"
+      - "KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/machine/part4_review_manifest.json"
+    risk: "Part 4 review proves only Stage 10-12 post-S18 local review status and does not authorize Stage 13-18 review, whole-project final review, GitHub upload, lineage full check, formal reports or business execution."
+    rollback: "Remove PART4_STAGES_10_12_REVIEW artifacts, Part 4 validator/test and related governance rows before rerunning the Part 4 review gate."
+    target_version: "0.1.0-post-s18-part4-review-local"
+    completed_version: "0.1.0-post-s18-part4-review-local"

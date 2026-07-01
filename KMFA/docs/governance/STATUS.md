@@ -7,8 +7,8 @@
 - project_id: `KMFA`
 - version: `0.1.0-s18-github-upload`
 - current_stage: `S18`
-- current_phase: `Post-S18 Part 3 Review｜Stages 7-9 本地完成`
-- status: `post_s18_part3_review_passed_local_only_no_go`
+- current_phase: `Post-S18 Part 4 Review｜Stages 10-12 本地完成`
+- status: `post_s18_part4_review_passed_local_only_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_stage18_uploaded`
 
@@ -37,6 +37,7 @@
 - Post-S18 Part 1 已完成 Stage 1-3 本地复审，证据位于 `KMFA/stage_artifacts/PART1_STAGES_01_03_REVIEW/`；本轮未执行 GitHub upload、Stage 4-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
 - Post-S18 Part 2 已完成 Stage 4-6 本地复审，证据位于 `KMFA/stage_artifacts/PART2_STAGES_04_06_REVIEW/`；本轮未执行 GitHub upload、Stage 7-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
 - Post-S18 Part 3 已完成 Stage 7-9 本地复审，证据位于 `KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/`；本轮未执行 GitHub upload、Stage 10-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
+- Post-S18 Part 4 已完成 Stage 10-12 本地复审，证据位于 `KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/`；本轮未执行 GitHub upload、Stage 13-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
 - S04-P1 金额工具已完成本地验证：`KMFA/tools/amount_tools.py` 支持金额标准化到整数分，`KMFA/tools/check_no_float_money.py` 阻断业务金额 float 用法。
 - S04-P2 字段标准化已完成本地验证：`KMFA/tools/field_standardization.py` 支持字段别名、日期、期间、主体、项目、客户/对手方和合同编号标准化，缺字段进入 metadata 质量状态。
 - S04-P3 基础工具测试已完成本地验证：`KMFA/tests/test_basic_tool_boundaries.py` 覆盖 22 个合成边界用例，`KMFA/tools/generate_tool_test_report.py` 可生成 JSON/Markdown 工具函数测试报告。
@@ -125,7 +126,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- Post-S18 Part 4 Review 尚未执行；下一轮只能复审 Stages 10-12，不上传 GitHub。
+- Post-S18 Part 5 Review 尚未执行；下一轮只能复审 Stages 13-15，不上传 GitHub。
 
 ## 阻塞条件
 
