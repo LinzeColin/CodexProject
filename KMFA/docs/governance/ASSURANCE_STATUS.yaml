@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S14P3-POLICY-EVIDENCE-PLAN"
+as_of_event_id: "EVENT-KMFA-20260701-S15P1-PERFORMANCE-FACT-FIELDS"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "dfdf16c98656c4272fa105027dcbf46ba15d37dd"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13_UPLOAD_COMMIT"
 snapshot_event_time: "2026-07-01T23:30:00+10:00"
-generator_version: "manual-s14p3-policy-evidence-plan"
+generator_version: "manual-s15p1-performance-fact-fields"
 final_commit_binding: "local_phase_commit_pending_no_github_upload"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 170
-    total_active_formulas: 39
+    total_active_parameters: 176
+    total_active_formulas: 40
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -125,6 +125,7 @@ dimensions:
       - "KMFA/stage_artifacts/S14_P1_fund_cash_loan_plan/human/test_results.md"
       - "KMFA/stage_artifacts/S14_P2_invoice_tax_plan/human/test_results.md"
       - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
+      - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -209,6 +210,8 @@ dimensions:
       - "KMFA/tools/check_s14_p2_invoice_tax_plan.py"
       - "KMFA/tools/policy_evidence_plan.py"
       - "KMFA/tools/check_s14_p3_policy_evidence_plan.py"
+      - "KMFA/tools/performance_fact_fields.py"
+      - "KMFA/tools/check_s15_p1_performance_fact_fields.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -396,8 +399,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S14_UPLOADED_TO_GITHUB_MAIN_S15_NOT_STARTED"
-  release_gate: "KMFA-S15-P1-GATE"
+  status: "S15P1_COMPLETED_VALIDATED_LOCAL_ONLY_NEXT_S15P2"
+  release_gate: "KMFA-S15-P2-GATE"
   blocker_ids:
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"

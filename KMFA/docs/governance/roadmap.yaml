@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S15"
-current_phase_id: "S15PA"
-current_task_id: "KMFA-S15-P1-GATE"
-next_gate_id: "KMFA-S15-P1-GATE"
+current_phase_id: "S15PB"
+current_task_id: "KMFA-S15-P2-GATE"
+next_gate_id: "KMFA-S15-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -979,9 +979,60 @@ stages:
               - "KMFA/stage_artifacts/S14_P3_policy_evidence_plan/human/test_results.md"
   - stage_id: "S15"
     name: "销售绩效事实与复核清单"
-    status: "planned"
+    status: "in_progress_s15p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33.3333
+    current_result: "S15-P1 已完成 public-safe 绩效事实字段定义、source binding 和缺失/未锁定字段人工复核标记；S15-P2 绩效复核清单、S15-P3 工资边界、Stage 15 review 和 GitHub upload 未执行。"
+    evidence_refs:
+      - "KMFA/metadata/reports/performance_fact_fields_manifest.json"
+      - "KMFA/metadata/reports/performance_fact_field_definitions.jsonl"
+      - "KMFA/metadata/reports/performance_fact_field_bindings.jsonl"
+      - "KMFA/metadata/reports/performance_fact_manual_review_fields.jsonl"
+      - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/s15_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/machine/s15_p1_manifest.json"
+      - "KMFA/tools/check_s15_p1_performance_fact_fields.py"
+    phases:
+      - phase_id: "S15PA"
+        name: "绩效事实字段"
+        status: "completed_validated_local_only"
+        estimated_hours: 1
+        estimated_pct: 100
+        current_result: "已建立 6 个 public-safe 绩效事实字段、6 条绑定和 4 个人工复核字段；不输出绩效事实表、复核清单、工资或奖金结论。"
+        evidence_refs:
+          - "KMFA/metadata/reports/performance_fact_fields_manifest.json"
+          - "KMFA/metadata/reports/performance_fact_field_definitions.jsonl"
+          - "KMFA/metadata/reports/performance_fact_field_bindings.jsonl"
+          - "KMFA/metadata/reports/performance_fact_manual_review_fields.jsonl"
+          - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/test_results.md"
+        tasks:
+          - task_id: "S15PAT01"
+            name: "接入开票金额、毛利率、结算速度、回款速度、审计偏差、客情费率。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/performance_fact_field_definitions.jsonl"
+              - "KMFA/metadata/reports/performance_fact_field_bindings.jsonl"
+          - task_id: "S15PAT02"
+            name: "绑定项目成本事实和回款事实。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/performance_fact_field_bindings.jsonl"
+              - "KMFA/tools/check_s15_p1_performance_fact_fields.py"
+          - task_id: "S15PAT03"
+            name: "字段缺失时标记人工复核。"
+            status: "completed_validated_local_only"
+            evidence_refs:
+              - "KMFA/metadata/reports/performance_fact_manual_review_fields.jsonl"
+              - "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/test_results.md"
+      - phase_id: "S15PB"
+        name: "绩效复核清单"
+        status: "planned_next"
+        estimated_hours: 1
+        estimated_pct: 0
+      - phase_id: "S15PC"
+        name: "与工资项目边界"
+        status: "planned"
+        estimated_hours: 1
+        estimated_pct: 0
   - stage_id: "S16"
     name: "外协采购、项目状态、客户经营扩展"
     status: "planned"

@@ -1,0 +1,122 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/s15_p1_completion_record.md",
+    "performance_fact_field_bindings": "KMFA/metadata/reports/performance_fact_field_bindings.jsonl",
+    "performance_fact_field_definitions": "KMFA/metadata/reports/performance_fact_field_definitions.jsonl",
+    "performance_fact_fields_manifest": "KMFA/metadata/reports/performance_fact_fields_manifest.json",
+    "performance_fact_manual_review_fields": "KMFA/metadata/reports/performance_fact_manual_review_fields.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S15_P1_performance_fact_fields/machine/s15_p1_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S15_P1_performance_fact_fields/human/test_results.md",
+    "validator": "KMFA/tools/check_s15_p1_performance_fact_fields.py"
+  },
+  "content_hash": "sha256:2aa32e82a61d3f446c27ff7fe5ca903a4c0a2ec746a5fea6dcbb6623f4b21038",
+  "fact_fields_version": "FACT-KMFA-S15P1-PERFORMANCE-FIELDS-PUBLIC-SAFE-001",
+  "formula_version": "FORM-KMFA-S15P1-PERFORMANCE-FACT-FIELD-SLOTS-001",
+  "generated_at": "2026-07-01T23:30:00+10:00",
+  "limitations": [
+    "S15-P1 只锁定绩效事实字段定义、source binding 和缺失/未锁定字段人工复核标记。",
+    "本 phase 不输出绩效事实表、不输出异常项目复核清单、不计算工资或奖金。",
+    "所有字段值只保留 public-safe hash/ref/status，不提交真实金额、比例、日期、人员或客户项目明文。"
+  ],
+  "mapping_version": "MAP-KMFA-S15P1-PUBLIC-SAFE-v1",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "payroll_or_salary_data_committed": false,
+    "pdf_file_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "true_money_amount_committed": false
+  },
+  "quality_gate": {
+    "abnormal_project_review_list_allowed": false,
+    "bonus_approval_allowed": false,
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "manual_review_marker_allowed": true,
+    "payment_execution_allowed": false,
+    "payroll_export_allowed": false,
+    "performance_fact_field_binding_allowed": true,
+    "performance_fact_table_output_allowed": false,
+    "phase_completion_upload_allowed": false,
+    "public_numeric_value_display_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "performance_fact_fields_only_pending_s15_p2_review_list_s15_p3_salary_boundary_stage_review_and_upload",
+    "report_grade_visible": "D",
+    "s15_p2_allowed": false,
+    "s15_p3_allowed": false,
+    "salary_calculation_allowed": false,
+    "stage15_review_allowed": false,
+    "wage_calculation_allowed": false
+  },
+  "record_type": "performance_fact_fields_manifest",
+  "required_manual_review_fields": [
+    "settlement_speed",
+    "collection_speed",
+    "audit_variance",
+    "customer_relationship_rate"
+  ],
+  "required_performance_fact_fields": [
+    "invoice_amount",
+    "gross_margin_rate",
+    "settlement_speed",
+    "collection_speed",
+    "audit_variance",
+    "customer_relationship_rate"
+  ],
+  "runtime_status": "public_safe_performance_fact_field_bindings_created_review_required_fields_marked",
+  "schema_version": "kmfa.performance_fact_fields_manifest.v1",
+  "source_taskpack_refs": {
+    "roadmap_s15_p1": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S15-P1",
+    "taskpack_req": "KMFA/taskpack/v1_2/01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md:REQ-P1-011"
+  },
+  "stage_phase": "S15-P1",
+  "stage_scope": {
+    "bonus_approval_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "payment_execution_scope_included": false,
+    "payroll_export_scope_included": false,
+    "s15_p1_performance_fact_fields_scope_included": true,
+    "s15_p2_review_list_scope_included": false,
+    "s15_p3_salary_boundary_scope_included": false,
+    "salary_system_scope_included": false,
+    "stage15_review_scope_included": false
+  },
+  "summary": {
+    "abnormal_project_review_list_count": 0,
+    "bonus_approval_count": 0,
+    "collection_priority_item_count": 4,
+    "cross_table_difference_count": 4,
+    "field_binding_count": 6,
+    "field_definition_count": 6,
+    "invoice_issue_candidate_count": 3,
+    "manual_review_field_count": 4,
+    "margin_record_count": 4,
+    "payroll_export_count": 0,
+    "performance_fact_table_count": 0,
+    "project_cost_fact_record_count": 4,
+    "report_grade_visible": "D",
+    "salary_calculation_count": 0
+  },
+  "upstream_metadata_refs": {
+    "collection_receivable_aging_manifest": "KMFA/metadata/reports/collection_receivable_aging_manifest.json",
+    "collection_receivable_aging_priority_items": "KMFA/metadata/reports/collection_receivable_aging_priority_items.jsonl",
+    "cross_table_difference_queue": "KMFA/metadata/reports/cross_table_difference_queue.jsonl",
+    "cross_table_review_manifest": "KMFA/metadata/reports/cross_table_review_manifest.json",
+    "invoice_tax_issue_candidates": "KMFA/metadata/reports/invoice_tax_issue_candidates.jsonl",
+    "invoice_tax_plan_manifest": "KMFA/metadata/reports/invoice_tax_plan_manifest.json",
+    "project_cost_fact_manifest": "KMFA/metadata/reports/project_cost_fact_layer_manifest.json",
+    "project_cost_fact_records": "KMFA/metadata/lineage/project_cost_fact_records.jsonl",
+    "project_margin_cash_margin_manifest": "KMFA/metadata/reports/project_margin_cash_margin_manifest.json",
+    "project_margin_cash_margin_records": "KMFA/metadata/lineage/project_margin_cash_margin_records.jsonl"
+  }
+}

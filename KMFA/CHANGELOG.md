@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s15p1-performance-fact-fields - 2026-07-01
+
+- 完成 `S15-P1｜绩效事实字段` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/performance_fact_fields.py`、`KMFA/tools/check_s15_p1_performance_fact_fields.py` 和 `KMFA/tests/test_performance_fact_fields.py`。
+- 建立 6 个 public-safe 绩效事实字段定义和 6 条 source binding：开票金额、毛利率、结算速度、回款速度、审计偏差、客情费率。
+- 对结算速度、回款速度、审计偏差、客情费率标记人工复核；本 phase 不输出绩效事实表或异常项目复核清单。
+- 报告等级继续显示 D；正式报告、经营决策依据、工资计算、奖金审批、薪资导出、付款执行、Stage 15 review 和 GitHub upload 均保持阻断。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、来源表头明文、真实金额、真实人员/客户/项目明细、薪资税务材料或 credentials。
+- 下一轮只能执行 `S15-P2｜绩效复核清单`。
+
 ## 0.1.0-s14-github-upload - 2026-07-01
 
 - 完成 Stage 14 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。

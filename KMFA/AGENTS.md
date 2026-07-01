@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `S14｜资金、开票、纳税与政策证据模块`
-- 当前 Phase: `S14-P1｜资金计划现金贷款｜已完成本地验证`
+- 当前 Stage: `S15｜销售绩效事实与复核清单`
+- 当前 Phase: `S15-P1｜绩效事实字段｜已完成本地验证`
 
 ## Execution Rules
 
@@ -38,7 +38,7 @@
 
 ## Current Non-Goals
 
-- 本轮 S14-P1 只完成资金计划、现金压力、贷款到期和账户余额汇总的 public-safe 证据；不得进入 S14-P2、S14-P3、Stage 14 review、GitHub upload、lineage full check、正式报告或外部接口。
+- S15-P1 已完成绩效事实字段定义、字段绑定和缺失/未锁定字段人工复核标记；下一轮只允许执行 S15-P2，不得直接进入 S15-P3、Stage 15 review、GitHub upload、lineage full check、正式报告、工资计算、奖金审批、薪资导出或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
 - 不把 Stage 12 GitHub upload 视为 lineage full check、差异关闭、正式报告或业务 release。
