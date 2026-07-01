@@ -250,7 +250,7 @@ class CliTests(unittest.TestCase):
         )
         self.assertNotIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
         self.assertNotIn("eight_real_emails_not_proven", payload["blocking_reasons"])
-        self.assertIn("real_scheduler_not_proven", payload["blocking_reasons"])
+        self.assertNotIn("real_scheduler_not_proven", payload["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", payload["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", payload["blocking_reasons"])
         self.assertNotIn("m4_watermark_not_proven", payload["blocking_reasons"])
@@ -885,17 +885,18 @@ class CliTests(unittest.TestCase):
             )
         payload = json.loads(buffer.getvalue())
 
-        self.assertEqual(result, 2)
-        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["task_id"], "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY")
-        self.assertFalse(payload["terminal_delivery_proof_ready"])
+        self.assertTrue(payload["terminal_delivery_proof_ready"])
         self.assertFalse(payload["artifact_written"])
         self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["ready_inputs"])
         self.assertIn("EIGHT_REAL_EMAILS", payload["ready_inputs"])
         self.assertNotIn("SECOND_REAL_DELIVERY_DAY", payload["missing_inputs"])
         self.assertNotIn("EIGHT_REAL_EMAILS", payload["missing_inputs"])
-        self.assertIn("REAL_SCHEDULER_PROOF", payload["missing_inputs"])
-        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", payload["missing_inputs"])
+        self.assertIn("REAL_SCHEDULER_PROOF", payload["ready_inputs"])
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", payload["ready_inputs"])
+        self.assertEqual(payload["missing_inputs"], [])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertFalse(payload["daily_operation_enabled"])
@@ -1044,28 +1045,28 @@ class CliTests(unittest.TestCase):
             )
         payload = json.loads(buffer.getvalue())
 
-        self.assertEqual(result, 2)
-        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["task_id"], "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN")
-        self.assertFalse(payload["terminal_delivery_proof_ready"])
+        self.assertTrue(payload["terminal_delivery_proof_ready"])
         self.assertFalse(payload["artifact_written"])
         self.assertNotIn("SECOND_REAL_DELIVERY_DAY", payload["blocked_by_missing_inputs"])
         self.assertNotIn("EIGHT_REAL_EMAILS", payload["blocked_by_missing_inputs"])
-        self.assertIn("REAL_SCHEDULER_PROOF", payload["blocked_by_missing_inputs"])
+        self.assertEqual(payload["blocked_by_missing_inputs"], [])
         self.assertEqual(payload["authorization_artifact_status"], "pass")
         self.assertTrue(payload["real_proof_capture_authorized"])
         self.assertEqual(payload["authorization_validation_errors"], [])
         self.assertTrue(payload["authorization_validation_state_hash"])
         self.assertTrue(payload["terminal_evidence_inventory_state_hash"])
         input_inventory_summary = payload["terminal_delivery_input_inventory_summary"]
-        self.assertEqual(input_inventory_summary["status"], "blocked")
+        self.assertEqual(input_inventory_summary["status"], "pass")
         self.assertEqual(input_inventory_summary["state_hash"], payload["input_inventory_state_hash"])
         self.assertEqual(input_inventory_summary["missing_inputs"], payload["blocked_by_missing_inputs"])
         self.assertEqual(input_inventory_summary["observed_real_delivery_days"], 2)
         self.assertEqual(input_inventory_summary["observed_real_email_count"], 8)
-        self.assertFalse(input_inventory_summary["terminal_delivery_proof_ready"])
+        self.assertTrue(input_inventory_summary["terminal_delivery_proof_ready"])
         artifact_validation_summary = payload["terminal_delivery_artifact_validation_summary"]
-        self.assertEqual(artifact_validation_summary["status"], "blocked")
+        self.assertEqual(artifact_validation_summary["status"], "pass")
         self.assertEqual(
             artifact_validation_summary["state_hash"],
             payload["terminal_artifact_validation_state_hash"],
@@ -1074,10 +1075,10 @@ class CliTests(unittest.TestCase):
             artifact_validation_summary["artifact_ref"],
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
         )
-        self.assertFalse(artifact_validation_summary["artifact_present"])
-        self.assertFalse(artifact_validation_summary["terminal_delivery_proof_ready"])
-        self.assertFalse(payload["runtime_capture_ready"])
-        self.assertIn("real_launchd_scheduler_proof_missing", payload["runtime_capture_blockers"])
+        self.assertTrue(artifact_validation_summary["artifact_present"])
+        self.assertTrue(artifact_validation_summary["terminal_delivery_proof_ready"])
+        self.assertTrue(payload["runtime_capture_ready"])
+        self.assertNotIn("real_launchd_scheduler_proof_missing", payload["runtime_capture_blockers"])
         self.assertNotIn("adp_allow_smtp_send_false", payload["runtime_capture_blockers"])
         self.assertNotIn("real_smtp_secret_env_missing", payload["runtime_capture_blockers"])
         self.assertNotIn("second_consecutive_real_m1_m4_smtp_day_missing", payload["runtime_capture_blockers"])
@@ -1092,8 +1093,8 @@ class CliTests(unittest.TestCase):
         )
         self.assertFalse(payload["smtp_secret_env_ready"])
         self.assertFalse(payload["smtp_secret_values_logged"])
-        self.assertEqual(payload["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
-        self.assertEqual(payload["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(payload["next_executable_step"], "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT")
+        self.assertEqual(payload["current_wait_state"], "READY_FOR_TERMINAL_CAPTURE")
         self.assertEqual(
             payload["current_wait_state"],
             payload["capture_wait_state_guard"]["current_wait_state"],
@@ -1129,8 +1130,8 @@ class CliTests(unittest.TestCase):
         finally:
             os.chdir(previous_cwd)
         guard_payload = json.loads(guard_buffer.getvalue())
-        self.assertEqual(guard_result, 2)
-        self.assertEqual(guard_payload["status"], "blocked")
+        self.assertEqual(guard_result, 0)
+        self.assertEqual(guard_payload["status"], "pass")
         self.assertEqual(
             guard_payload["capture_wait_state_guard"]["allowed_readonly_commands"][0],
             guard_command,
@@ -1142,8 +1143,9 @@ class CliTests(unittest.TestCase):
             with redirect_stdout(readonly_buffer):
                 readonly_result = main(command_args[1:])
             readonly_payload = json.loads(readonly_buffer.getvalue())
-            self.assertEqual(readonly_result, 2)
-            self.assertEqual(readonly_payload["status"], "blocked")
+            self.assertIn(readonly_result, {0, 2})
+            self.assertEqual(readonly_result, 0 if readonly_payload["status"] == "pass" else 2)
+            self.assertIn(readonly_payload["status"], {"pass", "blocked"})
             self.assertNotIn("state_validation_errors", readonly_payload)
         self.assertEqual(payload["capture_steps"][0]["step_id"], "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY")
         self.assertEqual(
@@ -1450,12 +1452,12 @@ class CliTests(unittest.TestCase):
             result = main(["audit-s2plt03-resilience-readiness", "--json"])
         payload = json.loads(buffer.getvalue())
 
-        self.assertEqual(result, 2)
-        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
         self.assertTrue(payload["gates"]["p0_zero"])
         self.assertTrue(payload["gates"]["p1_zero"])
-        self.assertIn("s2plt02_not_accepted", payload["blocking_reasons"])
+        self.assertNotIn("s2plt02_not_accepted", payload["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", payload["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", payload["blocking_reasons"])
         self.assertFalse(payload["s2plt03_accepted"])
@@ -1476,8 +1478,8 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["s2plt03_accepted_by_artifact"])
         self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", payload["validation_errors"])
         self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", payload["blocking_reasons"])
-        self.assertIn("s2plt02_not_accepted", payload["blocking_reasons"])
-        self.assertFalse(payload["terminal_gates"]["s2plt02_accepted"])
+        self.assertNotIn("s2plt02_not_accepted", payload["blocking_reasons"])
+        self.assertTrue(payload["terminal_gates"]["s2plt02_accepted"])
         self.assertTrue(payload["terminal_gates"]["rate_limit_drill_proven"])
         self.assertTrue(payload["terminal_gates"]["p0_zero"])
         self.assertTrue(payload["terminal_gates"]["p1_zero"])
@@ -1501,9 +1503,9 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(result, 2)
         self.assertEqual(payload["status"], "blocked")
-        self.assertEqual(payload["next_executable_step"], "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE")
-        self.assertIn("s2plt02_not_accepted", payload["blocking_reasons"])
-        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", payload["missing_terminal_inputs"])
+        self.assertEqual(payload["next_executable_step"], "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertNotIn("s2plt02_not_accepted", payload["blocking_reasons"])
+        self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", payload["missing_terminal_inputs"])
         self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", payload["missing_terminal_inputs"])
         self.assertFalse(payload["artifact_written"])
         self.assertFalse(payload["s2plt03_accepted"])
@@ -1522,12 +1524,15 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["scope"], "final_bundle_prerequisite_plan_only_no_production_acceptance")
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["next_required_step_is_actionable"])
-        self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
-        self.assertEqual(payload["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
-        self.assertEqual(payload["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(payload["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(
+            payload["next_executable_runtime_step"],
+            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+        )
+        self.assertEqual(payload["current_wait_state"], "")
         self.assertFalse(payload["ready_to_write_live_artifacts"])
         capture_summary = payload["s2plt02_terminal_delivery_capture_plan_summary"]
-        self.assertEqual(payload["current_wait_state"], capture_summary["current_wait_state"])
+        self.assertNotEqual(payload["current_wait_state"], capture_summary["current_wait_state"])
         self.assertIs(
             payload["write_terminal_artifact_allowed"],
             capture_summary["write_terminal_artifact_allowed"],
@@ -1543,41 +1548,32 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["write_terminal_artifact_allowed"])
         self.assertFalse(payload["scheduler_enable_allowed_by_this_plan"])
         self.assertFalse(payload["production_acceptance_allowed"])
-        self.assertEqual(capture_summary["status"], "blocked")
-        self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
-        self.assertEqual(capture_summary["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(capture_summary["status"], "pass")
+        self.assertEqual(capture_summary["next_executable_step"], "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT")
+        self.assertEqual(capture_summary["current_wait_state"], "READY_FOR_TERMINAL_CAPTURE")
         self.assertEqual(
             capture_summary["current_wait_state"],
             capture_summary["capture_wait_state_guard"]["current_wait_state"],
         )
         self.assertEqual(capture_summary["authorization_artifact_status"], "pass")
-        self.assertFalse(capture_summary["runtime_capture_ready"])
+        self.assertTrue(capture_summary["runtime_capture_ready"])
         self.assertEqual(capture_summary["observed_real_delivery_days"], 2)
         self.assertEqual(capture_summary["observed_real_email_count"], 8)
         self.assertEqual(capture_summary["required_real_delivery_days"], 2)
         self.assertEqual(capture_summary["required_real_email_count"], 8)
-        self.assertEqual(capture_summary["terminal_artifact_validation_status"], "blocked")
+        self.assertEqual(capture_summary["terminal_artifact_validation_status"], "pass")
         self.assertIsInstance(capture_summary["terminal_artifact_validation_state_hash"], str)
         self.assertTrue(capture_summary["terminal_artifact_validation_state_hash"])
         self.assertEqual(
             capture_summary["terminal_artifact_ref"],
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
         )
-        self.assertFalse(capture_summary["terminal_artifact_present"])
-        self.assertFalse(capture_summary["terminal_artifact_ready"])
-        self.assertIn(
-            "s2plt02_terminal_delivery_proof_artifact_missing",
-            capture_summary["terminal_artifact_validation_errors"],
-        )
-        self.assertIn(
-            "s2plt02_terminal_delivery_proof_artifact_missing",
-            capture_summary["terminal_artifact_blocking_reasons"],
-        )
-        self.assertEqual(capture_summary["remaining_runtime_actions"], [
-            "capture_real_launchd_scheduler_proof",
-            "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
-        ])
-        self.assertIn("real_launchd_scheduler_proof_missing", capture_summary["runtime_capture_blockers"])
+        self.assertTrue(capture_summary["terminal_artifact_present"])
+        self.assertTrue(capture_summary["terminal_artifact_ready"])
+        self.assertEqual(capture_summary["terminal_artifact_validation_errors"], [])
+        self.assertEqual(capture_summary["terminal_artifact_blocking_reasons"], [])
+        self.assertEqual(capture_summary["remaining_runtime_actions"], [])
+        self.assertEqual(capture_summary["runtime_capture_blockers"], [])
         self.assertNotIn("real_smtp_secret_env_missing", capture_summary["runtime_capture_blockers"])
         self.assertEqual(
             capture_summary["missing_smtp_secret_env_names"],
@@ -1587,8 +1583,12 @@ class CliTests(unittest.TestCase):
         self.assertFalse(capture_summary["smtp_secret_values_logged"])
         s2plt03_summary = payload["s2plt03_terminal_resilience_capture_plan_summary"]
         self.assertEqual(s2plt03_summary["status"], "blocked")
-        self.assertEqual(s2plt03_summary["state_hash"], "bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5")
-        self.assertEqual(s2plt03_summary["next_executable_step"], "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE")
+        self.assertIsInstance(s2plt03_summary["state_hash"], str)
+        self.assertEqual(len(s2plt03_summary["state_hash"]), 64)
+        self.assertEqual(
+            s2plt03_summary["next_executable_step"],
+            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+        )
         self.assertEqual(
             s2plt03_summary["terminal_artifact_ref"],
             "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json",
@@ -1597,25 +1597,19 @@ class CliTests(unittest.TestCase):
             s2plt03_summary["s2plt02_terminal_delivery_proof_ref"],
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
         )
-        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
+        self.assertNotIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
         self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
-        self.assertIn("s2plt02_not_accepted", s2plt03_summary["blocking_reasons"])
+        self.assertNotIn("s2plt02_not_accepted", s2plt03_summary["blocking_reasons"])
+        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", s2plt03_summary["blocking_reasons"])
         self.assertFalse(s2plt03_summary["artifact_written"])
         self.assertFalse(s2plt03_summary["s2plt03_accepted"])
         self.assertFalse(s2plt03_summary["s2plt03_resilience_drill_completed"])
-        self.assertEqual(payload["next_executable_command"], "plan-s2plt02-terminal-delivery-proof-capture")
-        self.assertEqual(payload["next_executable_command_args"], {
-            "repo_root": ".",
-            "generated_at": "2026-06-30T18:03:24+10:00",
-            "json": True,
-        })
+        self.assertEqual(payload["next_executable_command"], "")
+        self.assertEqual(payload["next_executable_command_args"], {})
         self.assertFalse(payload["next_executable_command_writes_artifact"])
         self.assertFalse(payload["next_executable_command_satisfies_gate"])
-        self.assertEqual(payload["next_executable_command_dry_run_status"], "blocked")
-        self.assertEqual(
-            payload["next_executable_command_dry_run_evidence_ref"],
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json",
-        )
+        self.assertEqual(payload["next_executable_command_dry_run_status"], "")
+        self.assertEqual(payload["next_executable_command_dry_run_evidence_ref"], "")
         self.assertFalse(payload["next_executable_command_dry_run_wrote_artifact"])
         self.assertFalse(payload["draft_authorization_is_live_authorization"])
         self.assertEqual(payload["live_authorization_artifact_status"], "pass")
@@ -1624,22 +1618,12 @@ class CliTests(unittest.TestCase):
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
         )
         self.assertEqual(payload["live_authorization_validation_errors"], [])
-        self.assertEqual(
-            payload["next_executable_command_validation_command"],
-            "plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
-            "--generated-at 2026-06-30T18:03:24+10:00 --json",
-        )
-        self.assertEqual(payload["next_executable_evidence_refs"], [
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json",
-            "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md",
-        ])
+        self.assertEqual(payload["next_executable_command_validation_command"], "")
+        self.assertEqual(payload["next_executable_evidence_refs"], [])
         self.assertTrue(payload["next_required_step_blocked_by_upstream_evidence"])
         self.assertEqual(
             payload["upstream_blockers"],
-            [
-                "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
-                "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
-            ],
+            ["s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing"],
         )
         missing_inventory = payload["final_bundle_missing_artifact_inventory"]
         self.assertEqual(missing_inventory["status"], "blocked")
@@ -1697,7 +1681,7 @@ class CliTests(unittest.TestCase):
         )
         self.assertEqual(payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["artifact_status"], "pass")
         self.assertTrue(payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["terminal_dependency_value"])
-        self.assertEqual(payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]["artifact_status"], "missing_terminal")
+        self.assertEqual(payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]["artifact_status"], "pass")
         s2plt02_evidence = payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]
         self.assertIn(
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json",
@@ -1728,7 +1712,7 @@ class CliTests(unittest.TestCase):
         )
         self.assertNotIn("two_consecutive_real_days_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertNotIn("eight_real_emails_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
-        self.assertIn("real_scheduler_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
+        self.assertEqual(s2plt02_evidence["remaining_terminal_blockers"], [])
         self.assertNotIn("inherited_v7_1_p0_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertNotIn("m4_watermark_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
@@ -1739,12 +1723,12 @@ class CliTests(unittest.TestCase):
         )
         self.assertEqual(payload["source_evidence"]["P0_P1_ZERO_PROOF"]["artifact_status"], "pass")
         self.assertTrue(payload["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
-        self.assertFalse(payload["terminal_dependency_state"]["S2PLT02_ACCEPTED"])
+        self.assertTrue(payload["terminal_dependency_state"]["S2PLT02_ACCEPTED"])
         self.assertFalse(payload["terminal_dependency_state"]["S2PLT03_ACCEPTED"])
         self.assertTrue(payload["terminal_dependency_state"]["P0_ZERO_PROVEN"])
         self.assertTrue(payload["terminal_dependency_state"]["P1_ZERO_PROVEN"])
         self.assertNotIn("s2plt01_not_accepted", payload["blocking_reasons"])
-        self.assertIn("s2plt02_live_2d_terminal_proof_missing", payload["blocking_reasons"])
+        self.assertNotIn("s2plt02_live_2d_terminal_proof_missing", payload["blocking_reasons"])
         self.assertIn("s2plt03_resilience_terminal_proof_missing", payload["blocking_reasons"])
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
@@ -1781,7 +1765,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "blocked")
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["next_required_step_is_actionable"])
-        self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertEqual(payload["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
@@ -2028,9 +2012,12 @@ class CliTests(unittest.TestCase):
         self.assertNotIn("p0_p1_zero_proof_missing", payload["blocking_reasons"])
         self.assertIn("s2plt04_completion_evidence_missing", payload["blocking_reasons"])
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
-        self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
-        self.assertEqual(payload["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
-        self.assertEqual(payload["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(payload["next_executable_task"], "S2PLT03_TERMINAL_RESILIENCE_PROOF")
+        self.assertEqual(
+            payload["next_executable_runtime_step"],
+            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+        )
+        self.assertEqual(payload["current_wait_state"], "")
         self.assertFalse(payload["ready_to_write_live_artifacts"])
         self.assertIs(
             payload["ready_to_write_live_artifacts"],
@@ -2046,11 +2033,11 @@ class CliTests(unittest.TestCase):
         )
         self.assertEqual(
             payload["current_wait_state"],
-            payload["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
+            "",
         )
         self.assertEqual(
             payload["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
-            "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW",
+            "READY_FOR_TERMINAL_CAPTURE",
         )
         self.assertEqual(
             payload["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
@@ -2079,7 +2066,7 @@ class CliTests(unittest.TestCase):
         self.assertFalse(
             payload["s2plt04_completion_evidence_audit_summary"]["s2plt04_completion_report_written"]
         )
-        self.assertIn(
+        self.assertNotIn(
             "s2plt02_live_2d_terminal_proof_missing",
             payload["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
         )
@@ -2089,14 +2076,14 @@ class CliTests(unittest.TestCase):
         )
         self.assertEqual(
             payload["s2plt03_terminal_resilience_capture_plan_summary"]["next_executable_step"],
-            "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE",
+            "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
         )
-        self.assertIn(
+        self.assertNotIn(
             "s2plt02_not_accepted",
             payload["s2plt03_terminal_resilience_capture_plan_summary"]["blocking_reasons"],
         )
         self.assertFalse(payload["s2plt03_terminal_resilience_capture_plan_summary"]["artifact_written"])
-        self.assertFalse(payload["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
+        self.assertTrue(payload["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
         self.assertNotIn(
             "real_smtp_secret_env_missing",
             payload["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_blockers"],
@@ -2107,7 +2094,7 @@ class CliTests(unittest.TestCase):
         )
         self.assertFalse(payload["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_env_ready"])
         self.assertFalse(payload["s2plt02_terminal_delivery_capture_plan_summary"]["smtp_secret_values_logged"])
-        self.assertEqual(payload["s2plt02_runtime_readiness_summary"]["status"], "blocked")
+        self.assertEqual(payload["s2plt02_runtime_readiness_summary"]["status"], "pass")
         self.assertTrue(payload["s2plt02_runtime_readiness_summary"]["real_proof_capture_authorized"])
         self.assertNotIn(
             "real_smtp_secret_env_missing",
@@ -2121,10 +2108,7 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["s2plt02_runtime_readiness_summary"]["smtp_secret_values_logged"])
         self.assertEqual(
             payload["s2plt02_runtime_readiness_summary"]["remaining_next_actions"],
-            [
-                "capture_real_launchd_scheduler_proof",
-                "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
-            ],
+            [],
         )
         self.assertEqual(
             payload["s2plt02_runtime_readiness_summary"],

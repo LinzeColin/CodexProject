@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PLT02-TERMINAL-DELIVERY-PROOF",
+  "parent_task_id": "S2PMT07",
+  "acceptance_id": "ACC-S2PLT02-2D",
+  "generated_at": "2026-07-01T12:16:04+10:00",
+  "status": "pass",
+  "scope": "s2plt02_terminal_delivery_proof_artifact_write_and_validation_no_production_acceptance",
+  "decision": "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
+  "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+  "artifact_validation_status": "pass",
+  "artifact_validation_state_hash": "fa02f1ea5f652b90c84381f97538edf25c8fdd3574fc1eb6ed00e3b09f75d756",
+  "acceptance_hash": "2c784298d2b3a42792d400f590afe3688da91f0f2c4c519c4f8890a81c06c2ef",
+  "terminal_gates": {
+    "s2plt01_accepted": true,
+    "two_consecutive_real_days": true,
+    "eight_real_emails_sent": true,
+    "no_duplicate_emails": true,
+    "m4_watermark_correct": true,
+    "real_scheduler_proven": true,
+    "real_smtp_proven": true,
+    "p0_zero": true,
+    "p1_zero": true
+  },
+  "service_dates": [
+    "2026-06-29",
+    "2026-06-30"
+  ],
+  "observed_email_count": 8,
+  "mail_products_by_service_date": {
+    "2026-06-29": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "2026-06-30": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ]
+  },
+  "independent_terminal_review": {
+    "decision": "PASS",
+    "reviewer_id": "codex-adp-s2plt02-terminal-delivery-proof-final-review",
+    "agent_path": "019f1b70-1510-79a3-97b9-34d27eb34fe4",
+    "blocking_findings": [],
+    "recommended_next_action": "write_FINAL_ACCEPTANCE_BUNDLE_s2plt02_terminal_delivery_proof_json_without_stage2_or_s3_production_acceptance"
+  },
+  "controlled_real_run_request": {
+    "owner_authorized_single_controlled_real_run": true,
+    "attempted_in_this_run": true,
+    "attempted_command": "local-runner preflight --require-smtp",
+    "blocked_before_send": true,
+    "blocking_reason": "missing required SMTP environment keys for real local send: ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD",
+    "secret_values_logged": false,
+    "background_scheduler_started": false,
+    "persistent_launchagent_enablement_changed": false,
+    "real_smtp_sent_in_this_run": false
+  },
+  "evidence_refs": [
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260629.json",
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260630.json",
+    "governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260630.md",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md"
+  ],
+  "remaining_blockers_after_this_artifact": [
+    "S2PLT03_TERMINAL_RESILIENCE_PROOF",
+    "S2PLT04_COMPLETION_REPORT",
+    "FINAL_COMMAND_EXECUTION",
+    "NEXT_AGENT_HANDOFF",
+    "INDEPENDENT_REVIEW_SIGNOFF",
+    "FINAL_ACCEPTANCE_BUNDLE_MANIFEST"
+  ],
+  "no_production_side_effects": {
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "stage2_integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent_in_this_run": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_uploaded": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "production_queue_mutated": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  }
+}
