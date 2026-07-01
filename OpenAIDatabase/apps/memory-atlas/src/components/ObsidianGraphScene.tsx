@@ -2,6 +2,7 @@ import { Eye, EyeOff, Minus, Pause, Play, Plus, RotateCcw, Settings } from "luci
 import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent, WheelEvent as ReactWheelEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { normalizeMemoryTier } from "../data/atlas";
+import type { SharedAtlasFocusState } from "../state/sharedAtlasState";
 import type { AtlasEdge, AtlasNode } from "../types";
 
 interface ObsidianDeltaStats {
@@ -16,9 +17,13 @@ interface ObsidianGraphSceneProps {
   nodes: AtlasNode[];
   edges: AtlasEdge[];
   selectedNode: AtlasNode | null;
+  sharedFocus: SharedAtlasFocusState;
   deltaStats: ObsidianDeltaStats;
   onSelectNode: (node: AtlasNode) => void;
 }
+
+type ObsidianLocalMode = "global" | "node" | "cluster";
+type ObsidianLabelRule = "selected" | "hover" | "local-neighbor" | "zoom-priority" | "hub" | "hidden";
 
 interface ObsidianSettings {
   showTags: boolean;
@@ -45,6 +50,7 @@ interface ObsidianNodeDatum {
   depth: number;
   visibleAt: number;
   groupLabel: string;
+  labelPriority: number;
 }
 
 interface ObsidianEdgeDatum {
@@ -79,7 +85,14 @@ interface ObsidianDataset {
   groups: Array<{ label: string; color: string; count: number; query: string }>;
   totalBeforeLimit: number;
   hiddenByLimit: number;
+  hiddenByLocalBudget: number;
   orphanCount: number;
+  localMode: ObsidianLocalMode;
+  focusClusterId: string | null;
+  primaryNeighborCount: number;
+  secondaryNeighborCount: number;
+  labelBudget: number;
+  zoomLabelBudget: number;
 }
 
 interface ViewTransform {
@@ -108,9 +121,17 @@ const VIEWBOX_WIDTH = 1000;
 const VIEWBOX_HEIGHT = 600;
 const MAX_OBSIDIAN_NODES = 260;
 const MAX_OBSIDIAN_EDGES = 780;
+const LOCAL_GRAPH_PRIMARY_NODE_LIMIT = 34;
+const LOCAL_GRAPH_SECONDARY_NODE_LIMIT = 52;
+const LOCAL_GRAPH_CLUSTER_MEMBER_LIMIT = 42;
+const LOCAL_GRAPH_MAX_NODES = 96;
+const GLOBAL_LABEL_BUDGET = 18;
+const LOCAL_LABEL_BUDGET = 30;
+const ZOOM_LABEL_BUDGET = 62;
 
-export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onSelectNode }: ObsidianGraphSceneProps) {
+export function ObsidianGraphScene({ nodes, edges, selectedNode, sharedFocus, deltaStats, onSelectNode }: ObsidianGraphSceneProps) {
   const [localOnly, setLocalOnly] = useState(false);
+  const [autoClusterFocus, setAutoClusterFocus] = useState(true);
   const [depth, setDepth] = useState(1);
   const [query, setQuery] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -124,10 +145,19 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const panStartRef = useRef<{ pointerId: number; clientX: number; clientY: number; x: number; y: number } | null>(null);
+  const lastGalaxyClusterFocusRef = useRef("");
+
+  const galaxyClusterFocus = sharedFocus.sourceView === "galaxy" && Boolean(sharedFocus.clusterId);
+  const galaxyClusterFocusKey = galaxyClusterFocus ? `${sharedFocus.clusterId}:${sharedFocus.nodeId ?? ""}` : "";
+  useEffect(() => {
+    if (!galaxyClusterFocusKey || galaxyClusterFocusKey === lastGalaxyClusterFocusRef.current) return;
+    lastGalaxyClusterFocusRef.current = galaxyClusterFocusKey;
+    setAutoClusterFocus(true);
+  }, [galaxyClusterFocusKey]);
 
   const dataset = useMemo(
-    () => buildObsidianDataset(nodes, edges, selectedNode, localOnly, depth, query, settings),
-    [nodes, edges, selectedNode, localOnly, depth, query, settings],
+    () => buildObsidianDataset(nodes, edges, selectedNode, localOnly || (autoClusterFocus && galaxyClusterFocus), depth, query, settings, sharedFocus),
+    [nodes, edges, selectedNode, localOnly, autoClusterFocus, galaxyClusterFocus, depth, query, settings, sharedFocus],
   );
   const graph = useObsidianForceGraph(dataset.nodes, dataset.edges, settings);
 
@@ -243,6 +273,16 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
     graph.reset();
   }
 
+  function showGlobalGraph() {
+    setLocalOnly(false);
+    setAutoClusterFocus(false);
+  }
+
+  function showLocalGraph() {
+    setLocalOnly(true);
+    setAutoClusterFocus(true);
+  }
+
   function updateSetting<K extends keyof ObsidianSettings>(key: K, value: ObsidianSettings[K]) {
     setSettings((current) => ({ ...current, [key]: value }));
   }
@@ -266,7 +306,14 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
   }
 
   return (
-    <div className="visual-workspace obsidian-map obsidian-graph-view" ref={containerRef}>
+    <div
+      className="visual-workspace obsidian-map obsidian-graph-view"
+      ref={containerRef}
+      data-local-graph-mode={dataset.localMode}
+      data-galaxy-cluster-focus={dataset.focusClusterId ?? ""}
+      data-hidden-local-neighbors={dataset.hiddenByLocalBudget}
+      data-label-budget={dataset.labelBudget}
+    >
       <div className="surface-heading compact">
         <div>
           <p className="eyebrow">Obsidian 图谱</p>
@@ -277,8 +324,8 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
 
       <div className="obsidian-topbar" aria-label="Obsidian 图谱工具栏">
         <div className="obsidian-mode-tabs">
-          <button className={!localOnly ? "segmented active" : "segmented"} onClick={() => setLocalOnly(false)} type="button">全局图</button>
-          <button className={localOnly ? "segmented active" : "segmented"} onClick={() => setLocalOnly(true)} type="button">局部图</button>
+          <button className={dataset.localMode === "global" ? "segmented active" : "segmented"} onClick={showGlobalGraph} type="button">全局图</button>
+          <button className={dataset.localMode !== "global" ? "segmented active" : "segmented"} onClick={showLocalGraph} type="button">局部图</button>
           <label className="obsidian-depth-control">
             深度
             <input min={1} max={4} step={1} type="range" value={depth} onChange={(event) => setDepth(Number(event.target.value))} />
@@ -302,10 +349,16 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
       </div>
 
       <div className="obsidian-status-strip" aria-label="图谱状态">
-        <span><b>{localOnly ? "局部图" : "全局图"}</b><em>{localOnly && selectedNode ? `${displayNodeLabel(selectedNode)} · ${depth} 层` : "全部可见关系"}</em></span>
+        <span><b>{dataset.localMode === "cluster" ? "星系同步" : dataset.localMode === "node" ? "局部图" : "全局图"}</b><em>{dataset.localMode !== "global" && selectedNode ? `${displayNodeLabel(selectedNode)} · ${depth} 层` : "全部可见关系"}</em></span>
         <span><b>筛选</b><em>{query.trim() || "无搜索词"}</em></span>
         <span><b>增量</b><em>{formatDelta(deltaStats.deltaCount, deltaStats.deltaRate)}</em></span>
         <span><b>隐藏</b><em>{dataset.hiddenByLimit} 个超限节点 / {dataset.orphanCount} 个孤立节点</em></span>
+      </div>
+      <div className="obsidian-local-budget" aria-label="Local Graph Budget">
+        <span><b>Primary</b><em>{dataset.primaryNeighborCount}</em></span>
+        <span><b>Secondary</b><em>{dataset.secondaryNeighborCount}</em></span>
+        <span><b>Local Hidden</b><em>{dataset.hiddenByLocalBudget}</em></span>
+        <span><b>Label Budget</b><em>{dataset.labelBudget}/{dataset.zoomLabelBudget}</em></span>
       </div>
       <div className="obsidian-focus-connectivity" aria-label="Focus - Connectivity">
         <div>
@@ -372,7 +425,15 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
                 const selected = item.node.id === selectedNode?.id;
                 const hovered = item.node.id === hoveredNodeId;
                 const related = !activeFocusId || activeNeighborhood.has(item.node.id);
-                const labelVisible = selected || hovered || view.k >= settings.textFadeThreshold || item.degree >= 10;
+                const labelRule = labelVisibilityRule(item, {
+                  selected,
+                  hovered,
+                  related,
+                  zoom: view.k,
+                  dataset,
+                  settings,
+                });
+                const labelVisible = labelRule !== "hidden";
                 return (
                   <g
                     key={item.node.id}
@@ -415,7 +476,7 @@ export function ObsidianGraphScene({ nodes, edges, selectedNode, deltaStats, onS
                     <circle className="obsidian-node-aura" r={item.r * 2.25} fill={item.color} opacity={selected || hovered ? 0.2 : 0.08} />
                     <circle className="obsidian-node-core" r={item.r} fill={item.color} />
                     {labelVisible && (
-                      <text className="obsidian-node-label" x={item.r + 7} y="4">
+                      <text className="obsidian-node-label" data-label-rule={labelRule} x={item.r + 7} y="4">
                         {item.label}
                       </text>
                     )}
@@ -714,8 +775,10 @@ function buildObsidianDataset(
   depth: number,
   query: string,
   settings: ObsidianSettings,
+  sharedFocus: SharedAtlasFocusState,
 ): ObsidianDataset {
-  const localIds = localOnly && selectedNode ? expandGraphIds(selectedNode.id, edges, depth) : new Set(nodes.map((node) => node.id));
+  const localPlan = localOnly ? buildLocalGraphPlan(nodes, edges, selectedNode, depth, sharedFocus) : null;
+  const localIds = localPlan?.ids ?? new Set(nodes.map((node) => node.id));
   const normalizedQuery = query.trim().toLowerCase();
   let candidates = nodes.filter((node) => localIds.has(node.id));
 
@@ -767,6 +830,7 @@ function buildObsidianDataset(
   const depthByNode = localOnly && selectedNode ? graphDepthMap(selectedNode.id, filteredEdges, depth) : new Map<string, number>();
   const visibleAt = creationOrderMap(candidates);
 
+  const labelRank = labelPriorityMap(candidates, degree);
   const graphNodes = candidates.map((node): ObsidianNodeDatum => {
     const nodeDegree = degree.get(node.id) ?? 0;
     return {
@@ -778,8 +842,10 @@ function buildObsidianDataset(
       depth: depthByNode.get(node.id) ?? 0,
       visibleAt: visibleAt.get(node.id) ?? 1,
       groupLabel: groupLabelFor(node),
+      labelPriority: labelRank.get(node.id) ?? candidates.length,
     };
   });
+  const localMode = localPlan?.mode ?? "global";
 
   return {
     nodes: graphNodes,
@@ -794,7 +860,95 @@ function buildObsidianDataset(
     groups: buildGroups(graphNodes),
     totalBeforeLimit,
     hiddenByLimit: Math.max(0, totalBeforeLimit - graphNodes.length),
+    hiddenByLocalBudget: localPlan?.hiddenByLocalBudget ?? 0,
     orphanCount,
+    localMode,
+    focusClusterId: localPlan?.focusClusterId ?? null,
+    primaryNeighborCount: localPlan?.primaryNeighborCount ?? 0,
+    secondaryNeighborCount: localPlan?.secondaryNeighborCount ?? 0,
+    labelBudget: localMode === "global" ? GLOBAL_LABEL_BUDGET : LOCAL_LABEL_BUDGET,
+    zoomLabelBudget: ZOOM_LABEL_BUDGET,
+  };
+}
+
+function buildLocalGraphPlan(
+  nodes: AtlasNode[],
+  edges: AtlasEdge[],
+  selectedNode: AtlasNode | null,
+  depth: number,
+  sharedFocus: SharedAtlasFocusState,
+): {
+  ids: Set<string>;
+  mode: ObsidianLocalMode;
+  focusClusterId: string | null;
+  hiddenByLocalBudget: number;
+  primaryNeighborCount: number;
+  secondaryNeighborCount: number;
+} {
+  const focusId = selectedNode?.id ?? sharedFocus.nodeId;
+  const focusClusterId = sharedFocus.clusterId ?? selectedNodeClusterId(selectedNode);
+  const mode: ObsidianLocalMode = sharedFocus.sourceView === "galaxy" && focusClusterId ? "cluster" : "node";
+  if (!focusId && !focusClusterId) {
+    return { ids: new Set(nodes.slice(0, LOCAL_GRAPH_MAX_NODES).map((node) => node.id)), mode: "node", focusClusterId: null, hiddenByLocalBudget: Math.max(0, nodes.length - LOCAL_GRAPH_MAX_NODES), primaryNeighborCount: 0, secondaryNeighborCount: 0 };
+  }
+
+  const byId = new Map(nodes.map((node) => [node.id, node]));
+  const selectedIds = new Set<string>();
+  const primary = new Set<string>();
+  const secondary = new Set<string>();
+  const clusterMembers = new Set<string>();
+
+  if (focusId) selectedIds.add(focusId);
+  if (focusClusterId) {
+    for (const node of nodes) {
+      if (clusterIdForObsidianNode(node) === focusClusterId) clusterMembers.add(node.id);
+    }
+  }
+
+  if (focusId) {
+    for (const edge of edges) {
+      if (edge.source === focusId) primary.add(edge.target);
+      if (edge.target === focusId) primary.add(edge.source);
+    }
+  }
+  if (depth > 1) {
+    for (const edge of edges) {
+      if (primary.has(edge.source) && edge.target !== focusId) secondary.add(edge.target);
+      if (primary.has(edge.target) && edge.source !== focusId) secondary.add(edge.source);
+    }
+  }
+
+  const ids = new Set<string>();
+  const addRanked = (source: Set<string>, limit: number) => {
+    rankedNodeIds(Array.from(source), byId, edges, selectedNode).slice(0, limit).forEach((id) => ids.add(id));
+  };
+
+  selectedIds.forEach((id) => ids.add(id));
+  addRanked(clusterMembers, mode === "cluster" ? LOCAL_GRAPH_CLUSTER_MEMBER_LIMIT : Math.floor(LOCAL_GRAPH_CLUSTER_MEMBER_LIMIT / 2));
+  addRanked(primary, LOCAL_GRAPH_PRIMARY_NODE_LIMIT);
+  addRanked(secondary, depth > 2 ? LOCAL_GRAPH_SECONDARY_NODE_LIMIT : Math.floor(LOCAL_GRAPH_SECONDARY_NODE_LIMIT / 2));
+
+  const overflow = new Set([...selectedIds, ...clusterMembers, ...primary, ...secondary]);
+  for (const id of Array.from(ids)) overflow.delete(id);
+  if (ids.size > LOCAL_GRAPH_MAX_NODES) {
+    const ranked = rankedNodeIds(Array.from(ids), byId, edges, selectedNode).slice(0, LOCAL_GRAPH_MAX_NODES);
+    const kept = new Set(ranked);
+    return {
+      ids: kept,
+      mode,
+      focusClusterId,
+      hiddenByLocalBudget: Math.max(overflow.size, ids.size - kept.size),
+      primaryNeighborCount: primary.size,
+      secondaryNeighborCount: secondary.size,
+    };
+  }
+  return {
+    ids,
+    mode,
+    focusClusterId,
+    hiddenByLocalBudget: overflow.size,
+    primaryNeighborCount: primary.size,
+    secondaryNeighborCount: secondary.size,
   };
 }
 
@@ -906,6 +1060,25 @@ function buildFocusConnectivity(focusId: string | null, nodes: ObsidianSimNode[]
   };
 }
 
+function labelVisibilityRule(
+  item: ObsidianSimNode,
+  context: {
+    selected: boolean;
+    hovered: boolean;
+    related: boolean;
+    zoom: number;
+    dataset: ObsidianDataset;
+    settings: ObsidianSettings;
+  },
+): ObsidianLabelRule {
+  if (context.selected) return "selected";
+  if (context.hovered) return "hover";
+  if (context.dataset.localMode !== "global" && context.related && item.depth <= 1 && item.labelPriority < context.dataset.labelBudget) return "local-neighbor";
+  if (context.zoom >= context.settings.textFadeThreshold && item.labelPriority < context.dataset.zoomLabelBudget) return "zoom-priority";
+  if (item.degree >= 12 && item.labelPriority < Math.floor(context.dataset.labelBudget * 0.7)) return "hub";
+  return "hidden";
+}
+
 function degreeMap(edges: Array<AtlasEdge | ObsidianEdgeDatum>): Map<string, number> {
   const counts = new Map<string, number>();
   for (const edge of edges) {
@@ -951,6 +1124,48 @@ function creationOrderMap(nodes: AtlasNode[]): Map<string, number> {
   const sorted = [...nodes].sort((a, b) => (a.date ?? "9999").localeCompare(b.date ?? "9999"));
   const denominator = Math.max(1, sorted.length - 1);
   return new Map(sorted.map((node, index) => [node.id, index / denominator]));
+}
+
+function labelPriorityMap(nodes: AtlasNode[], degree: Map<string, number>): Map<string, number> {
+  return new Map(
+    [...nodes]
+      .sort((a, b) => {
+        const selectedKindDiff = kindRank(a.kind) - kindRank(b.kind);
+        const degreeDiff = (degree.get(b.id) ?? 0) - (degree.get(a.id) ?? 0);
+        if (degreeDiff !== 0) return degreeDiff;
+        if (selectedKindDiff !== 0) return selectedKindDiff;
+        return (b.metrics?.roi?.leverage_score ?? 0) - (a.metrics?.roi?.leverage_score ?? 0);
+      })
+      .map((node, index) => [node.id, index]),
+  );
+}
+
+function rankedNodeIds(ids: string[], byId: Map<string, AtlasNode>, edges: AtlasEdge[], selectedNode: AtlasNode | null): string[] {
+  const degree = degreeMap(edges);
+  return ids
+    .filter((id) => byId.has(id))
+    .sort((a, b) => {
+      if (a === selectedNode?.id) return -1;
+      if (b === selectedNode?.id) return 1;
+      const nodeA = byId.get(a);
+      const nodeB = byId.get(b);
+      const clusterA = nodeA && selectedNode ? clusterIdForObsidianNode(nodeA) === selectedNodeClusterId(selectedNode) : false;
+      const clusterB = nodeB && selectedNode ? clusterIdForObsidianNode(nodeB) === selectedNodeClusterId(selectedNode) : false;
+      if (clusterA !== clusterB) return clusterA ? -1 : 1;
+      const degreeDiff = (degree.get(b) ?? 0) - (degree.get(a) ?? 0);
+      if (degreeDiff !== 0) return degreeDiff;
+      return kindRank(nodeA?.kind ?? "timeline_event") - kindRank(nodeB?.kind ?? "timeline_event");
+    });
+}
+
+function selectedNodeClusterId(node: AtlasNode | null): string | null {
+  return node ? clusterIdForObsidianNode(node) : null;
+}
+
+function clusterIdForObsidianNode(node: AtlasNode): string | null {
+  if (node.visual?.cluster) return node.visual.cluster;
+  if (node.kind === "theme") return node.id.replace(/^theme:/, "");
+  return null;
 }
 
 function buildGroups(nodes: ObsidianNodeDatum[]) {

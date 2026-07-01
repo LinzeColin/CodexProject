@@ -1133,6 +1133,28 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     )
     require(
         checks,
+        '"validate:stage9-obsidian": "node scripts/validate_stage9_obsidian_iteration.cjs"' in read_text(repo_root / "apps/memory-atlas/package.json")
+        and "LOCAL_GRAPH_PRIMARY_NODE_LIMIT" in obsidian_source
+        and "LOCAL_GRAPH_SECONDARY_NODE_LIMIT" in obsidian_source
+        and "LOCAL_GRAPH_CLUSTER_MEMBER_LIMIT" in obsidian_source
+        and "buildLocalGraphPlan" in obsidian_source
+        and 'sharedFocus.sourceView === "galaxy"' in obsidian_source
+        and "data-local-graph-mode" in obsidian_source
+        and "data-galaxy-cluster-focus" in obsidian_source
+        and "data-hidden-local-neighbors" in obsidian_source
+        and "data-label-budget" in obsidian_source
+        and "labelVisibilityRule" in obsidian_source
+        and "data-label-rule" in obsidian_source
+        and "Local Graph Budget" in obsidian_source
+        and "sharedFocus={sharedState.focus}" in app_source
+        and ".obsidian-local-budget" in css_source
+        and '.obsidian-node-label[data-label-rule="local-neighbor"]' in css_source,
+        "stage9_1_obsidian_graph_iteration_ready",
+        "Stage 9.1 Obsidian Graph adds bounded local graph neighborhoods, zoom/focus label rules, and Galaxy cluster shared-focus synchronization",
+        "Stage 9.1 Obsidian Graph local budget, label rules, Galaxy shared-focus sync, styles, or validator script are missing",
+    )
+    require(
+        checks,
         "WebGL 正常时不叠加 HTML 点层" in readme
         and "不透明 WebGL 背景" in readme
         and "WebGL 内部程序化星云纹理" in readme

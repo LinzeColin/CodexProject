@@ -985,7 +985,7 @@ function ViewRouter({
     return <RoiDashboard atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
   }
   if (activeView === "obsidian") {
-    return <ObsidianGraph nodes={slice.graphNodes} edges={slice.graphEdges} selectedNode={selectedNode} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
+    return <ObsidianGraph nodes={slice.graphNodes} edges={slice.graphEdges} selectedNode={selectedNode} sharedState={sharedState} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
   }
   if (activeView === "timeline") {
     return (
@@ -1399,18 +1399,20 @@ function ObsidianGraph({
   nodes,
   edges,
   selectedNode,
+  sharedState,
   deltaStats,
   onSelectNode,
 }: {
   nodes: AtlasNode[];
   edges: AtlasEdge[];
   selectedNode: AtlasNode | null;
+  sharedState: SharedAtlasState;
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
 }) {
   return (
     <Suspense fallback={<div className="galaxy-loading">正在载入 Obsidian 动态图谱...</div>}>
-      <ObsidianGraphScene nodes={nodes} edges={edges} selectedNode={selectedNode} deltaStats={deltaStats} onSelectNode={onSelectNode} />
+      <ObsidianGraphScene nodes={nodes} edges={edges} selectedNode={selectedNode} sharedFocus={sharedState.focus} deltaStats={deltaStats} onSelectNode={onSelectNode} />
     </Suspense>
   );
 }

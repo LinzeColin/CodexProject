@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 9.1 Obsidian Graph E Iteration
+
+- Added bounded local graph neighborhoods for Obsidian Graph so high-connectivity
+  focus nodes expose primary/secondary/local-hidden budget evidence without
+  flooding the scene.
+- Added label visibility rules for selected, hover, local-neighbor, zoom-priority
+  and hub states so default labels stay sparse while focused neighborhoods stay
+  readable.
+- Synced Galaxy cluster focus into Obsidian Graph through shared focus state so
+  a Galaxy-selected cluster opens as a bounded local cluster graph.
+- Added `validate:stage9-obsidian` and visual acceptance coverage for Stage 9.1.
+
+No Stage 9.2 visual semantics enrichment, Stage 9 whole-stage review,
+Cloudflare live deploy, Access policy change, raw/private data access, direct
+writeback, or external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 8 Whole-Stage Review
 
 - Completed the Stage 8 whole-stage review across Local App Packaging and
