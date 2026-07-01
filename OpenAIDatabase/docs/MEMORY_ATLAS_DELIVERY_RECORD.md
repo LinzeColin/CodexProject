@@ -208,3 +208,86 @@ Writeback：
 - 任何发布目录包含 raw export、secret、cookie/session/auth。
 - Timeline/Contribution/Galaxy 等关键视觉板块退化为静态列表或空白画布。
 - 本地 app runtime manifest 与当前 git HEAD 不一致。
+
+## 8. Memory Atlas v1.1.6 修补包记录
+
+### Stage 0 Phase 0.1：Encoding & Text Audit
+
+状态：`phase_0_1_contract_created`。
+
+本 phase 是 v1.1.6 修补包的第一轮，只建立中文编码与文本可读性合同，不替换 UI、不修 CSS、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/chinese_ui_quality_contract.md`
+- `docs/acceptance/chinese_text_audit.md`
+
+本 phase 解决的缺口：
+
+- 乱码与 mojibake 缺少阻断验收。
+- 中文主标签、按钮、卡片、Inspector 标签缺少统一规范。
+- 表格、按钮、卡片承载长句导致不可读的风险缺少合同约束。
+- proposal-only 行为需要在用户界面明确说明“不直接写入长期记忆”。
+- 低宽度视口的中文溢出、重叠和横向撑破需要进入验收清单。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 0 Phase 0.1。
+- Stage 0 Phase 0.2 `Visual Readability Baseline` 已在后续 phase 单独完成。
+- Stage 1-10 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不上传 GitHub main；整 Stage 0 完成、复审并修复后再进入上传流程。
+
+下一步：
+
+- Stage 0 两个 phase 均完成后进行 Stage 0 整体复审，修复复审发现的问题，再准备 GitHub main 上传。
+
+### Stage 0 Phase 0.2：Visual Readability Baseline
+
+状态：`phase_0_2_contract_created_stage_0_review_passed_pending_upload`。
+
+本 phase 是 v1.1.6 修补包的第二轮，只建立页面视觉密度基线和截图验收矩阵，不替换 UI、不启动浏览器、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/acceptance/visual_density_baseline.md`
+
+本 phase 冻结的视觉门槛：
+
+- 记忆总览视觉化程度 `>= 70%`。
+- 记忆星系视觉化程度 `>= 90%`。
+- 记忆时间河视觉化程度 `>= 85%`。
+- 数据导图视觉化程度 `>= 80%`。
+
+本 phase 解决的缺口：
+
+- 每个板块必须有默认视觉主区，不能只有列表和卡片。
+- 记忆星系不得退回普通点线图、随机粒子或普通 Obsidian Graph。
+- 记忆时间河不得退回日期列表、表格或静态散点。
+- 数据导图必须呈现来源、主题、资产、行动四层结构。
+- 后续实现 phase 必须补桌面、平板、移动截图证据，不能只口头说明。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 0 Phase 0.2。
+- Stage 0 的 Phase 0.1 / 0.2 均已本地完成，Stage 0 整体复审已通过。
+- Stage 1-10 未进入。
+- 不上传 GitHub main；需等 Stage 0 复审通过并解决复审暴露问题后再做上传。
+
+复审修复：
+
+- 复审发现 Phase 0.1 / 0.2 有静态检查和记录，但缺少固定的 Stage 0
+  review artifact 与 deterministic validator。
+- 已新增 `docs/reviews/memory_atlas_v1_1_6_stage0_review.md`。
+- 已新增 `validate:v1.1.6-stage0`，用于固定 Phase 0.1 / 0.2 合同、记录、
+  review 文档、改动范围和边界。
+
+Stage 0 整体复审状态：`stage_0_review_passed_pending_upload`。
+
+下一步：
+
+- 执行 final remote checks。
+- 只 staging 本轮 Stage 0 相关文件，不 staging `.DS_Store`。
+- commit 后处理 `origin/main` behind 状态。
+- 重新运行 `validate:v1.1.6-stage0` 和可用治理检查。
+- 上传 GitHub main。
