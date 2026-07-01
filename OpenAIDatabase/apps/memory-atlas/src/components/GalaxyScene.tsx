@@ -170,11 +170,34 @@ interface TerrainSummaryRow {
   explanation: string;
   count: number;
   sampleLabels: string[];
+  semanticRole: string;
+  intensity: number;
+  averageRoi: number;
+  capabilitySignal: string;
 }
 
 interface TerrainSummary {
   total: number;
   rows: TerrainSummaryRow[];
+  semanticCoverage: number;
+  dominantLabel: string;
+  analysisNote: string;
+}
+
+interface GalaxyRoiGradientRow {
+  id: string;
+  label: string;
+  count: number;
+  averageRoi: number;
+  intensity: number;
+}
+
+interface GalaxyRoiGradientSummary {
+  averageRoi: number;
+  highValueCount: number;
+  capabilityGrowthCount: number;
+  rows: GalaxyRoiGradientRow[];
+  note: string;
 }
 
 declare global {
@@ -323,6 +346,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   const terrainSummary = useMemo(
     () => buildTerrainSummary(renderNodes, degreeById, latestNodeTime),
     [degreeById, latestNodeTime, renderNodes],
+  );
+  const roiGradientSummary = useMemo(
+    () => buildGalaxyRoiGradientSummary(renderNodes),
+    [renderNodes],
   );
   const selectedNeighborhood = useMemo(
     () => selectedNode ? buildFocusedNeighborhood(selectedNode.id, edges, renderableNodeIds) : emptyFocusedNeighborhood(""),
@@ -1434,10 +1461,15 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         </div>
       ) : null}
       {rendererMode === "memory-starfield" && starfieldMode === "analysis" ? (
-        <div className="galaxy-terrain-panel" aria-label="Memory Terrain analysis panel">
+        <div
+          className="galaxy-terrain-panel"
+          data-memory-terrain-v2="analysis-only"
+          data-terrain-semantic-coverage={terrainSummary.semanticCoverage.toFixed(2)}
+          aria-label="Memory Terrain v2 analysis panel"
+        >
           <div className="terrain-panel-heading">
-            <strong><Layers size={14} /> Memory Terrain</strong>
-            <span>{terrainSummary.total.toLocaleString()} mapped features</span>
+            <strong><Layers size={14} /> Memory Terrain v2</strong>
+            <span>{terrainSummary.total.toLocaleString()} mapped features · {terrainSummary.dominantLabel}</span>
           </div>
           <div className="terrain-formula-grid" aria-label="Starfield formula summary">
             <div>
@@ -1452,14 +1484,25 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
               <b>flow</b>
               <span>{flowPaused ? "frozen for reading" : "animated by interaction density"}</span>
             </div>
+            <div>
+              <b>terrain</b>
+              <span>{terrainSummary.analysisNote}</span>
+            </div>
           </div>
           <div className="terrain-row-list">
             {terrainSummary.rows.map((row) => (
-              <div className="terrain-row" data-terrain-type={row.type} key={row.type}>
+              <div
+                className="terrain-row"
+                data-terrain-type={row.type}
+                data-terrain-v2-role={row.semanticRole}
+                data-terrain-intensity={row.intensity.toFixed(2)}
+                key={row.type}
+                style={{ "--terrain-intensity": `${Math.round(row.intensity * 100)}%` } as CSSProperties}
+              >
                 <b>{row.label}</b>
-                <span>{row.count.toLocaleString()} nodes</span>
+                <span>{row.count.toLocaleString()} nodes · ROI {formatScore(row.averageRoi)}</span>
                 <em>{row.explanation}</em>
-                <small>{row.sampleLabels.length ? row.sampleLabels.join(" / ") : "No current sample"}</small>
+                <small>{row.capabilitySignal} · {row.sampleLabels.length ? row.sampleLabels.join(" / ") : "No current sample"}</small>
               </div>
             ))}
           </div>
@@ -1471,6 +1514,32 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
                 : "Select a cluster to inspect focus, neighbors and formula context"}
             </span>
           </div>
+        </div>
+      ) : null}
+      {rendererMode === "memory-starfield" && starfieldMode === "analysis" ? (
+        <div
+          className="galaxy-roi-gradient-panel"
+          data-roi-gradient="galaxy-analysis"
+          aria-label="ROI capability gradient overlay"
+        >
+          <div className="terrain-panel-heading">
+            <strong>ROI Capability Gradient</strong>
+            <span>{roiGradientSummary.highValueCount.toLocaleString()} high-value · avg {formatScore(roiGradientSummary.averageRoi)}</span>
+          </div>
+          <div className="galaxy-roi-gradient-strip" aria-label="Galaxy ROI gradient by semantic bucket">
+            {roiGradientSummary.rows.map((row) => (
+              <span
+                data-roi-gradient-row={row.id}
+                key={row.id}
+                style={{ "--roi-intensity": `${Math.round(row.intensity * 100)}%` } as CSSProperties}
+                title={`${row.label} · ${row.count} nodes · ROI ${formatScore(row.averageRoi)}`}
+              >
+                <b>{row.label}</b>
+                <em>{formatScore(row.averageRoi)}</em>
+              </span>
+            ))}
+          </div>
+          <small>{roiGradientSummary.note}</small>
         </div>
       ) : null}
       {hoverPreview && !renderError ? (
@@ -1729,23 +1798,111 @@ function buildTerrainSummary(nodes: AtlasNode[], degreeById: Map<string, number>
   const rows = MEMORY_TERRAIN_ORDER.map((terrainType) => {
     const nodesForTerrain = grouped.get(terrainType) ?? [];
     const visual = terrainVisualStyle(terrainType);
+    const averageRoi = averageRoiScore(nodesForTerrain);
+    const intensity = clamp(nodes.length ? nodesForTerrain.length / Math.max(1, nodes.length * 0.18) : 0, 0, 1);
     return {
       type: terrainType,
       label: visual.label,
       explanation: visual.explanation,
       count: nodesForTerrain.length,
-      sampleLabels: nodesForTerrain.slice(0, 2).map((node) => galaxyPreviewTitle(node)),
+      sampleLabels: nodesForTerrain
+        .sort((a, b) => (b.metrics?.roi?.leverage_score ?? 0) - (a.metrics?.roi?.leverage_score ?? 0))
+        .slice(0, 2)
+        .map((node) => galaxyPreviewTitle(node)),
+      semanticRole: terrainSemanticRole(terrainType),
+      intensity,
+      averageRoi,
+      capabilitySignal: terrainCapabilitySignal(terrainType, nodesForTerrain.length, averageRoi),
     };
   });
 
+  const dominantRow = [...rows].sort((a, b) => b.count - a.count || b.averageRoi - a.averageRoi)[0];
+  const mappedCount = rows.reduce((sum, row) => sum + row.count, 0);
   return {
-    total: rows.reduce((sum, row) => sum + row.count, 0),
+    total: mappedCount,
     rows,
+    semanticCoverage: nodes.length ? mappedCount / nodes.length : 0,
+    dominantLabel: dominantRow?.count ? dominantRow.label : "no dominant terrain",
+    analysisNote: `${formatScore(nodes.length ? mappedCount / nodes.length : 0)} mapped · analysis-only rollback`,
   };
 }
 
 function terrainVisualStyle(terrainType: MemoryTerrainType): { label: string; explanation: string; color: string; opacity: number } {
   return MEMORY_TERRAIN_VISUALS[terrainType];
+}
+
+function terrainSemanticRole(terrainType: MemoryTerrainType): string {
+  if (terrainType === "ridge") return "capability-anchor";
+  if (terrainType === "shoreline") return "emerging-boundary";
+  if (terrainType === "valley") return "underdeveloped-memory";
+  if (terrainType === "basin") return "low-value-loop";
+  return "conflict-review-zone";
+}
+
+function terrainCapabilitySignal(terrainType: MemoryTerrainType, count: number, averageRoi: number): string {
+  if (!count) return "no active semantic signal";
+  if (terrainType === "ridge") return averageRoi >= 0.6 ? "strong capability anchor" : "capability anchor needs reinforcement";
+  if (terrainType === "shoreline") return "emerging work boundary";
+  if (terrainType === "valley") return "inactive area for pruning or evidence";
+  if (terrainType === "basin") return "candidate for compression";
+  return "requires contradiction review";
+}
+
+function buildGalaxyRoiGradientSummary(nodes: AtlasNode[]): GalaxyRoiGradientSummary {
+  const rows = [
+    {
+      id: "core-capability",
+      label: "Core",
+      nodes: nodes.filter((node) => normalizeMemoryTier(node.memory_tier) === "核心画像"),
+    },
+    {
+      id: "project-decision",
+      label: "Project",
+      nodes: nodes.filter((node) => node.category === "project_context" || node.category === "decision" || node.kind === "project" || node.kind === "decision"),
+    },
+    {
+      id: "workflow-action",
+      label: "Workflow",
+      nodes: nodes.filter((node) => node.category === "workflow" || node.metrics?.roi?.recommended_action === "use"),
+    },
+    {
+      id: "review-compress",
+      label: "Review",
+      nodes: nodes.filter((node) => /review|stale|needs/i.test(`${node.metrics?.roi?.recommended_action ?? ""} ${node.metrics?.roi?.staleness_status ?? ""}`)),
+    },
+  ].map((row) => {
+    const averageRoi = averageRoiScore(row.nodes);
+    return {
+      id: row.id,
+      label: row.label,
+      count: row.nodes.length,
+      averageRoi,
+      intensity: clamp(averageRoi * 0.72 + Math.min(1, row.nodes.length / Math.max(1, nodes.length * 0.18)) * 0.28, 0, 1),
+    };
+  });
+  const averageRoi = averageRoiScore(nodes);
+  const highValueCount = nodes.filter((node) => (node.metrics?.roi?.leverage_score ?? 0) >= MEMORY_STARFIELD_PARAMS.mapping.terrain.ridgeRoiThreshold).length;
+  const capabilityGrowthCount = nodes.filter((node) => {
+    const text = `${node.label} ${node.statement ?? ""} ${node.source_label ?? ""}`;
+    return (node.metrics?.roi?.leverage_score ?? 0) >= 0.54 || /机会|增长|下一步|project|decision|workflow|capability/i.test(text);
+  }).length;
+  return {
+    averageRoi,
+    highValueCount,
+    capabilityGrowthCount,
+    rows,
+    note: `${capabilityGrowthCount.toLocaleString()} growth-capable signals are shown as an analysis overlay; Presentation mode stays uncluttered.`,
+  };
+}
+
+function averageRoiScore(nodes: AtlasNode[]): number {
+  if (!nodes.length) return 0;
+  return nodes.reduce((sum, node) => sum + (node.metrics?.roi?.leverage_score ?? 0), 0) / nodes.length;
+}
+
+function formatScore(value: number | undefined): string {
+  if (typeof value !== "number" || !Number.isFinite(value)) return "0.00";
+  return value.toFixed(2);
 }
 
 function latestNodeTimestamp(nodes: AtlasNode[]): number {

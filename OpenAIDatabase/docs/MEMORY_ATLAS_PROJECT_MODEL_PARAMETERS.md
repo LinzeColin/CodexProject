@@ -967,3 +967,43 @@ Stage 8 整体复审已确认：
 下一阶段：
 
 - Stage 9.2 Visual Semantics Enrichment。
+
+## 20. Stage 9.2 Visual Semantics Enrichment 验收模型
+
+状态：`stage_9_2_visual_semantics_enrichment_passed`。
+
+范围：
+
+- 9.2.1 Memory Terrain v2。
+- 9.2.2 Memory Weather v2。
+- 9.2.3 ROI Visual Gradient。
+
+验收门槛：
+
+- `validate:stage9-visual-semantics` 必须通过。
+- Home 必须显示 Memory Weather v2，并暴露 stability、momentum、risk、
+  opportunity、confidence 和 signal list；状态判断只能来自现有
+  `DeltaStats`、topic rows、black-hole/proto-star 节点和 redacted derived
+  nodes。
+- Galaxy `memory-starfield` 的 Analysis Mode 必须显示
+  `data-memory-terrain-v2="analysis-only"`、terrain semantic role、coverage、
+  intensity、sample evidence 和 ROI Capability Gradient；Presentation Mode
+  不承载这些分析面板。
+- Memory River 必须显示 `data-roi-gradient="capability-growth"`，并把
+  `leverage_score` 与 capability-growth event 合成 12 段 ROI gradient band。
+- 浏览器验证必须覆盖 Home、Galaxy、Timeline 三面，且 actionable
+  console/network error 为 0；`/__memory_atlas_heartbeat` 本地运行探针 404
+  不计入资源失败。
+- 验证结束后 4177 不得留下 listener。
+
+边界：
+
+- Stage 9.2 不包含 Stage 9 whole-stage review。
+- Stage 9.2 不上传 GitHub main。
+- Stage 9.2 不部署 Cloudflare，不修改 Access policy。
+- Stage 9.2 不读取 raw/private/cookie/session/secret 数据。
+- Stage 9.2 不新增 direct active-memory writeback。
+
+下一阶段：
+
+- Stage 9 整体复审与修复；通过后再做 GitHub main 上传。

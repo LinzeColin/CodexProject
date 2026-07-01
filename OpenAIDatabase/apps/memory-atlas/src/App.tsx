@@ -204,10 +204,31 @@ interface MemoryRiverEvidenceLayer {
   segments: MemoryRiverEvidenceSegment[];
 }
 
+interface MemoryRiverRoiGradientBand {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  score: number;
+  color: string;
+  label: string;
+}
+
+interface MemoryRiverRoiGradient {
+  label: string;
+  signal: string;
+  averageRoiScore: number;
+  highLeverageCount: number;
+  capabilityGrowthCount: number;
+  bands: MemoryRiverRoiGradientBand[];
+}
+
 interface MemoryRiverLayout {
   levels: MemoryRiverLevelBand[];
   lanes: MemoryRiverLane[];
   evidenceLayers: MemoryRiverEvidenceLayer[];
+  roiGradient: MemoryRiverRoiGradient;
   markers: MemoryRiverMarker[];
   levelCounts: Record<MemoryRiverLevel, number>;
 }
@@ -298,6 +319,18 @@ interface HomeAction {
   priority: string;
   targetView: ViewKey;
   node: AtlasNode | null;
+}
+
+interface MemoryWeatherV2 {
+  label: string;
+  summary: string;
+  tone: HomeSignalCard["tone"];
+  stabilityScore: number;
+  momentumScore: number;
+  riskScore: number;
+  opportunityScore: number;
+  confidenceScore: number;
+  signals: string[];
 }
 
 interface MiniStarfieldPoint {
@@ -1077,10 +1110,26 @@ function HomeOverviewView({
         <small>{sharedState.focus.home.clusterId ?? "无主题"} · r{sharedState.sync.revision}</small>
       </section>
       <section className="home-primary-band" aria-label="当前认知状态">
-        <article className={`home-weather-panel ${model.weatherTone}`}>
-          <span>Memory Weather</span>
-          <strong>{model.weatherLabel}</strong>
-          <p>{model.weatherNote}</p>
+        <article
+          className={`home-weather-panel ${model.weatherV2.tone}`}
+          data-memory-weather-v2="true"
+          data-weather-confidence={model.weatherV2.confidenceScore.toFixed(2)}
+          data-weather-risk={model.weatherV2.riskScore.toFixed(2)}
+        >
+          <span>Memory Weather v2</span>
+          <strong>{model.weatherV2.label}</strong>
+          <p>{model.weatherV2.summary}</p>
+          <dl className="home-weather-v2-scores" aria-label="Memory Weather v2 scoring signals">
+            <div><dt>Stable</dt><dd>{formatScore(model.weatherV2.stabilityScore)}</dd></div>
+            <div><dt>Momentum</dt><dd>{formatScore(model.weatherV2.momentumScore)}</dd></div>
+            <div><dt>Risk</dt><dd>{formatScore(model.weatherV2.riskScore)}</dd></div>
+            <div><dt>Opportunity</dt><dd>{formatScore(model.weatherV2.opportunityScore)}</dd></div>
+          </dl>
+          <ul className="home-weather-v2-signals">
+            {model.weatherV2.signals.map((signal) => (
+              <li key={signal}>{signal}</li>
+            ))}
+          </ul>
         </article>
         <div className="home-weather-metrics">
           <Metric label="主导主题" value={model.topicRows[0]?.count ?? 0} />
@@ -1719,7 +1768,8 @@ function TimelineView({
           data-feedback-reduced-motion={feedbackSettings.reducedMotion ? "true" : "false"}
           data-feedback-pseudo-haptic={feedbackSettings.pseudoHaptic ? "enabled" : "disabled"}
           data-feedback-audio={feedbackSettings.audio ? "enabled" : "disabled"}
-          data-evidence-layers="black-hole-lifecycle proto-star-lifecycle stale-deprecated"
+          data-evidence-layers="black-hole-lifecycle proto-star-lifecycle stale-deprecated roi-gradient"
+          data-roi-gradient="capability-growth"
           viewBox="0 0 1000 640"
           role="img"
           aria-label="记忆时间河 Macro Meso Micro UTC 河道"
@@ -1748,6 +1798,24 @@ function TimelineView({
           {display.densityBars.map((band) => (
             <rect className="timeline-density-backdrop" height={band.height} key={band.key} width={band.width} x={band.x} y={band.y} />
           ))}
+          <g className="memory-river-roi-gradient" data-roi-gradient="capability-growth">
+            <title>{`${riverDisplay.roiGradient.label} · ${riverDisplay.roiGradient.signal}`}</title>
+            {riverDisplay.roiGradient.bands.map((band) => (
+              <rect
+                data-roi-gradient-band={band.id}
+                fill={band.color}
+                height={band.height}
+                key={band.id}
+                width={band.width}
+                x={band.x}
+                y={band.y}
+              >
+                <title>{band.label}</title>
+              </rect>
+            ))}
+            <text x="82" y="92">{riverDisplay.roiGradient.label}</text>
+            <text x="82" y="108">{riverDisplay.roiGradient.signal}</text>
+          </g>
           {display.ticks.map((tick) => (
             <g key={tick.label}>
               <line x1={tick.x} x2={tick.x} y1="58" y2="552" stroke="rgba(244,241,232,0.08)" />
@@ -3855,6 +3923,7 @@ function buildHomeOverviewModel(
   weatherLabel: string;
   weatherNote: string;
   weatherTone: HomeSignalCard["tone"];
+  weatherV2: MemoryWeatherV2;
   topicRows: Array<{ label: string; count: number }>;
   tierRows: Array<{ label: string; count: number }>;
   categoryRows: Array<{ label: string; count: number }>;
@@ -3882,6 +3951,7 @@ function buildHomeOverviewModel(
   const protoStarNodes = memoryNodes.filter((node) => isProtoStarCandidate(node, recentStart, latest));
   const decliningRows = findDecliningTopicRows(recentNodes, olderComparableNodes);
   const weather = homeWeatherFor(deltaStats, staleNodes.length, protoStarNodes.length);
+  const weatherV2 = buildMemoryWeatherV2(memoryNodes, deltaStats, staleNodes, protoStarNodes, topicRows, decliningRows);
   const topTopic = topicRows[0] ?? { label: "暂无主题", count: 0 };
   const risingTopic = topRows(countBy(recentNodes, (node) => compactThemeLabel(humanThemeLabel(node)) || "近期主题"), 1)[0] ?? {
     label: "暂无近期增量",
@@ -3901,6 +3971,7 @@ function buildHomeOverviewModel(
     weatherLabel: weather.label,
     weatherNote: weather.note,
     weatherTone: weather.tone,
+    weatherV2,
     topicRows,
     tierRows,
     categoryRows,
@@ -4167,6 +4238,62 @@ function homeWeatherFor(
     label: "晴朗",
     note: "当前主题和增量相对稳定，可以从主导主题进入 ROI、时间线或 Summary 复核。",
     tone: "weather",
+  };
+}
+
+function buildMemoryWeatherV2(
+  memoryNodes: AtlasNode[],
+  deltaStats: DeltaStats,
+  staleNodes: AtlasNode[],
+  protoStarNodes: AtlasNode[],
+  topicRows: Array<{ label: string; count: number }>,
+  decliningRows: Array<{ label: string; count: number }>,
+): MemoryWeatherV2 {
+  const total = Math.max(1, memoryNodes.length);
+  const dominantShare = (topicRows[0]?.count ?? 0) / total;
+  const rawMomentum = deltaStats.deltaRate === null
+    ? deltaStats.deltaCount / Math.max(12, deltaStats.recentCount + deltaStats.previousCount)
+    : deltaStats.deltaRate;
+  const momentumScore = clamp(0.5 + rawMomentum * 0.42, 0, 1);
+  const riskScore = clamp(staleNodes.length / Math.max(12, total * 0.08), 0, 1);
+  const opportunityScore = clamp(protoStarNodes.length / Math.max(6, total * 0.035), 0, 1);
+  const volatilityPenalty = clamp(Math.abs(deltaStats.deltaCount) / Math.max(18, deltaStats.recentCount + deltaStats.previousCount), 0, 0.65);
+  const stabilityScore = clamp(0.72 + dominantShare * 0.16 - riskScore * 0.28 - volatilityPenalty, 0, 1);
+  const confidenceScore = clamp(Math.log10(total + 10) / 3 + (deltaStats.latestDate ? 0.1 : 0), 0, 1);
+  let label = "平稳晴朗";
+  let tone: HomeSignalCard["tone"] = "weather";
+  if (riskScore >= 0.72 && opportunityScore >= 0.72) {
+    label = "高能高压";
+    tone = "rising";
+  } else if (riskScore >= 0.72 && momentumScore < 0.48) {
+    label = "高压整理";
+    tone = "black-hole";
+  } else if (opportunityScore >= 0.72 && momentumScore >= 0.5) {
+    label = "机会上升";
+    tone = "proto-star";
+  } else if (momentumScore < 0.38) {
+    label = "低温收缩";
+    tone = "declining";
+  } else if (stabilityScore >= 0.68 && riskScore < 0.55) {
+    label = "稳态上升";
+    tone = "rising";
+  }
+  const dominant = topicRows[0]?.label ?? "暂无主导主题";
+  const cooling = decliningRows[0]?.label ?? "无明显冷却主题";
+  return {
+    label,
+    tone,
+    stabilityScore,
+    momentumScore,
+    riskScore,
+    opportunityScore,
+    confidenceScore,
+    summary: `${dominant} 是主导气候；风险 ${formatScore(riskScore)}，机会 ${formatScore(opportunityScore)}，稳定性 ${formatScore(stabilityScore)}。`,
+    signals: [
+      `delta ${formatSigned(deltaStats.deltaCount)} / latest ${deltaStats.latestDate || "unknown"}`,
+      `${protoStarNodes.length.toLocaleString()} proto-star vs ${staleNodes.length.toLocaleString()} black-hole`,
+      `cooling: ${cooling}`,
+    ],
   };
 }
 
@@ -5245,7 +5372,7 @@ function buildMemoryRiverLayout(events: TimelineDisplayEvent[], cursorX: number)
       id: `river-marker-${event.id}`,
       kind,
       event,
-      title: `${event.utcDate} UTC · ${kind === "black-hole" ? "Black Hole" : kind === "proto-star" ? "Proto-Star" : "Memory Event"} · ${event.source.label}`,
+      title: `${event.utcDate} UTC · ${kind === "black-hole" ? "Black Hole" : kind === "proto-star" ? "Proto-Star" : "Memory Event"} · ROI ${formatScore(event.node?.metrics?.roi?.leverage_score)} · ${event.source.label}`,
       x: Math.max(86, Math.min(954, event.x)),
       y: (lane?.y ?? 300) + (stableUnit(`${event.id}:${level}`, "memory-river-marker-y") - 0.5) * 26,
       radius: kind === "black-hole" ? Math.max(6, event.radius + 2) : kind === "proto-star" ? Math.max(5, event.radius + 1) : event.radius,
@@ -5253,14 +5380,69 @@ function buildMemoryRiverLayout(events: TimelineDisplayEvent[], cursorX: number)
   });
   const visibleLanes = lanes.length ? lanes : buildEmptyMemoryRiverLanes(levelSpecs, cursorX);
   const evidenceLayers = buildMemoryRiverEvidenceLayers(events, laneLookup, visibleLanes);
+  const roiGradient = buildMemoryRiverRoiGradient(events);
 
   return {
     levels: levelSpecs.map(({ level, note, y }) => ({ level, note, y })),
     lanes: visibleLanes,
     evidenceLayers,
+    roiGradient,
     markers,
     levelCounts,
   };
+}
+
+function buildMemoryRiverRoiGradient(events: TimelineDisplayEvent[]): MemoryRiverRoiGradient {
+  const bandCount = 12;
+  const bandWidth = MEMORY_RIVER_WIDTH / bandCount;
+  const bands: MemoryRiverRoiGradientBand[] = [];
+  const scoredEvents = events.map((event) => ({
+    event,
+    roi: event.node?.metrics?.roi?.leverage_score ?? 0,
+    capability: isCapabilityGrowthEvent(event),
+  }));
+  for (let index = 0; index < bandCount; index += 1) {
+    const x = MEMORY_RIVER_MIN_X + index * bandWidth;
+    const right = x + bandWidth;
+    const inBand = scoredEvents.filter(({ event }) => event.x >= x && event.x < right);
+    const averageRoi = inBand.length ? inBand.reduce((sum, item) => sum + item.roi, 0) / inBand.length : 0;
+    const capabilityCount = inBand.filter((item) => item.capability).length;
+    const score = clamp(averageRoi * 0.74 + Math.min(1, capabilityCount / 4) * 0.26, 0, 1);
+    bands.push({
+      id: `roi-gradient-${index}`,
+      x: x + 1,
+      y: 112,
+      width: Math.max(2, bandWidth - 2),
+      height: 402,
+      score,
+      color: roiGradientColor(score),
+      label: `${index + 1}/${bandCount} · ROI ${formatScore(averageRoi)} · capability ${capabilityCount.toLocaleString()}`,
+    });
+  }
+  const averageRoiScore = scoredEvents.length ? scoredEvents.reduce((sum, item) => sum + item.roi, 0) / scoredEvents.length : 0;
+  const highLeverageCount = scoredEvents.filter((item) => item.roi >= 0.54).length;
+  const capabilityGrowthCount = scoredEvents.filter((item) => item.capability).length;
+  return {
+    label: `ROI gradient · avg ${formatScore(averageRoiScore)}`,
+    signal: `${highLeverageCount.toLocaleString()} high leverage / ${capabilityGrowthCount.toLocaleString()} capability-growth events`,
+    averageRoiScore,
+    highLeverageCount,
+    capabilityGrowthCount,
+    bands,
+  };
+}
+
+function isCapabilityGrowthEvent(event: TimelineDisplayEvent): boolean {
+  const roi = event.node?.metrics?.roi?.leverage_score ?? 0;
+  const text = `${event.source.label} ${event.node?.statement ?? ""}`;
+  return roi >= 0.54 || event.source.category === "decision" || event.source.category === "project_context" || /机会|增长|下一步|能力|capability|workflow/i.test(text);
+}
+
+function roiGradientColor(score: number): string {
+  if (score >= 0.72) return `rgba(126, 232, 212, ${0.11 + score * 0.12})`;
+  if (score >= 0.48) return `rgba(143, 211, 255, ${0.09 + score * 0.1})`;
+  if (score > 0) return `rgba(199, 167, 255, ${0.07 + score * 0.08})`;
+  return "rgba(244, 241, 232, 0.025)";
 }
 
 function buildMemoryRiverEvidenceLayers(
