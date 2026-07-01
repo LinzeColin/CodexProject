@@ -1,0 +1,50 @@
+$ python tools/verify_acceptance_bundle.py --require-zero P0 P1
+{
+  "status": "PASS",
+  "scope": "adp_final_command_prerequisite_root_verification_no_production_side_effects",
+  "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+  "task_id": "S2PMT07",
+  "required_zero": [
+    "P0",
+    "P1"
+  ],
+  "unsupported_required_zero": [],
+  "zero_checks": {
+    "P0": true,
+    "P1": true
+  },
+  "missing_required_zero": [],
+  "bundle_validator_exit_code": 2,
+  "bundle_status": "blocked",
+  "bundle_complete": false,
+  "final_command_prerequisite_ready": true,
+  "next_required_step": "FINAL_COMMAND_EXECUTION",
+  "next_executable_task": "FINAL_COMMAND_EXECUTION",
+  "s2plt04_completion_report_status": "pass",
+  "blocking_reasons": [
+    "final_acceptance_bundle_manifest_missing",
+    "independent_review_signoff_missing",
+    "independent_final_command_execution_missing",
+    "next_agent_handoff_missing",
+    "final_acceptance_bundle_manifest_validation_blocked",
+    "independent_review_signoff_validation_blocked",
+    "final_command_execution_validation_blocked",
+    "next_agent_handoff_validation_blocked"
+  ],
+  "readiness_validation_errors": [],
+  "missing_items": [
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "HANDOFF/00_下一Agent先读.md"
+  ],
+  "stderr_tail": "",
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false
+}
+EXIT_CODE=0

@@ -40,7 +40,7 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertEqual([result["status"] for result in payload["command_results"]], ["pass", "pass"])
 
-    def test_verify_acceptance_bundle_root_tool_fails_closed_until_bundle_complete(self) -> None:
+    def test_verify_acceptance_bundle_root_tool_accepts_final_command_prerequisites(self) -> None:
         completed = subprocess.run(
             [sys.executable, "tools/verify_acceptance_bundle.py", "--require-zero", "P0", "P1"],
             cwd=REPO_ROOT,
@@ -51,15 +51,20 @@ class FinalCommandRootToolTests(unittest.TestCase):
             check=False,
         )
 
-        self.assertEqual(completed.returncode, 2)
+        self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout[-2000:])
         payload = json.loads(completed.stdout)
-        self.assertEqual(payload["status"], "FAIL")
+        self.assertEqual(payload["status"], "PASS")
         self.assertEqual(payload["required_zero"], ["P0", "P1"])
         self.assertEqual(payload["missing_required_zero"], [])
         self.assertTrue(payload["zero_checks"]["P0"])
         self.assertTrue(payload["zero_checks"]["P1"])
-        self.assertEqual(payload["bundle_status"], "blocked")
-        self.assertIn("final_acceptance_bundle_manifest_missing", payload["blocking_reasons"])
+        self.assertEqual(payload["bundle_status"], "pass")
+        self.assertTrue(payload["bundle_complete"])
+        self.assertFalse(payload["final_command_prerequisite_ready"])
+        self.assertIsNone(payload["next_required_step"])
+        self.assertIsNone(payload["next_executable_task"])
+        self.assertEqual(payload["s2plt04_completion_report_status"], "pass")
+        self.assertEqual(payload["blocking_reasons"], [])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertFalse(payload["real_smtp_send_enabled"])

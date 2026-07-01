@@ -1,9 +1,17 @@
 # ADP 用户中心
 
-## 2026-07-01 11:24:30 Australia/Sydney - S2PLT02 真实 scheduler proof 已捕获，仍未生产验收
+## 2026-07-01 14:21:58 Australia/Sydney - Final bundle artifact chain 已收口，仍不等于生产验收
+
+- `FINAL_ACCEPTANCE_BUNDLE/manifest.json` 已生成并通过 final bundle validator；`missing_items=[]`，S2PLT04 completion report、final command execution、next-agent handoff 和 independent signoff 已进入最终包。
+- 本轮只做一次受控前台真实运行验收：M1/M2/M3/M4 当日计划为 `4/4` 已发送证据，运行复用历史发送证据，`newly_sent_mail_products=[]`，没有重复补发。
+- 运行后持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents 均 disabled；未启用后台 scheduler、Release、production restore 或 daily operation。
+- 当前下一步不是再写 S2PLT04/final bundle 缺失件，也不是启用生产；下一步是复审最终包、维持禁止生产开关，并继续 owner/production gate 决策链。
+- 证据：[最终验收包 manifest](../../FINAL_ACCEPTANCE_BUNDLE/manifest.json) / [本轮运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-CONTROLLED-RUN-COMPLETION-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_CONTROLLED_RUN_COMPLETION.md)。这不是 `INTEGRATED_PRODUCTION_ACCEPTED`、`DAILY_OPERATION`、SMTP/scheduler/Release/production accepted。
+
+## 2026-07-01 11:24:30 Australia/Sydney - 历史：S2PLT02 真实 scheduler proof 已捕获，仍未生产验收
 
 - S2PLT02 当前真实邮件证据已达 `2/2` 天、`8/8` 封；真实 scheduler proof 也已在受控 launchd/no-SMTP 窗口中通过验证。
-- 当前下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF`；剩余缺口是 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，不能跳到 S2PLT03/S2PLT04/final bundle。
+- 当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF`；当时剩余缺口是 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，不能跳到 S2PLT03/S2PLT04/final bundle。当前最新状态见上方 2026-07-01 14:21:58 记录。
 - 本次 scheduler proof run 未发送 SMTP，未启用持久 scheduler，未拉取 live arXiv；运行后 LaunchAgents disabled，ADP 进程数 `0`，持久 `ADP_ALLOW_SMTP_SEND=false`。
 - 证据：[scheduler proof](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json) / [proof validation](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-VALIDATION-20260701.json) / [capture audit pass](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-PASS-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_PASS.md)。这不是 SMTP/scheduler/Release/production accepted。
 
@@ -228,7 +236,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-07-01 12:59:53 Australia/Sydney
+更新时间：2026-07-01 14:22:32 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
