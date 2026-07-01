@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S13P3-CROSS-TABLE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260701-S13-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "0e205f71ed29091752cf0964212329f873f7d4ca"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13P3_COMMIT"
-snapshot_event_time: "2026-07-01T19:00:00+10:00"
-generator_version: "manual-s13p3-cross-table-review"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S13_REVIEW_COMMIT"
+snapshot_event_time: "2026-07-01T20:00:00+10:00"
+generator_version: "manual-s13-stage-review"
 final_commit_binding: "local_commit_pending"
 dimensions:
   structural_completeness:
@@ -120,6 +120,7 @@ dimensions:
       - "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
       - "KMFA/stage_artifacts/S13_P2_collection_receivable_aging/human/test_results.md"
       - "KMFA/stage_artifacts/S13_P3_cross_table_review/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -199,6 +200,7 @@ dimensions:
       - "KMFA/tools/check_s13_p2_collection_receivable_aging.py"
       - "KMFA/tools/cross_table_review.py"
       - "KMFA/tools/check_s13_p3_cross_table_review.py"
+      - "KMFA/tools/check_s13_stage_review.py"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -374,16 +376,20 @@ dimensions:
       - "KMFA/stage_artifacts/S13_P3_cross_table_review/human/test_results.md"
       - "KMFA/stage_artifacts/S13_P3_cross_table_review/machine/s13_p3_manifest.json"
       - "KMFA/tools/check_s13_p3_cross_table_review.py"
+      - "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/stage13_review_report.md"
+      - "KMFA/stage_artifacts/S13_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S13_STAGE_REVIEW/machine/stage13_review_manifest.json"
+      - "KMFA/tools/check_s13_stage_review.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S13P3_COMPLETED_VALIDATED_LOCAL_ONLY_PENDING_STAGE_REVIEW"
-  release_gate: "KMFA-S13-STAGE-REVIEW-GATE"
+  status: "STAGE13_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
+  release_gate: "KMFA-S13-GITHUB-UPLOAD-GATE"
   blocker_ids:
-    - "STAGE_13_REVIEW_NOT_STARTED"
+    - "STAGE_13_GITHUB_UPLOAD_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
     - "S09_PENDING_RECONCILIATION_12"
     - "REPORT_GRADE_D_BLOCKS_BUSINESS_DECISION"

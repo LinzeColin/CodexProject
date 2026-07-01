@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s13p3-cross-table-review`
+- version: `0.1.0-s13-stage-review`
 - current_stage: `S13`
-- current_phase: `Stage 13 整体复审｜待开始`
-- status: `s13p3_completed_validated_local_only_pending_stage_review`
+- current_phase: `Stage 13 GitHub Upload｜待开始`
+- status: `stage13_review_passed_upload_ready_local_only`
 - production_ready: `false`
-- github_upload_ready: `false_pending_stage13_review`
+- github_upload_ready: `true_local_only_pending_stage13_upload`
 
 ## 已完成
 
@@ -97,14 +97,15 @@
 - S13-P1 财务经营报表已完成本地验证：`KMFA/tools/financial_operating_report.py` 生成 4 条 public-safe 财务经营 source lane、2 条经营周报/月报初稿、2 个 HTML draft、manifest 和 validator；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告和经营决策依据。
 - S13-P2 回款应收账龄已完成本地验证：`KMFA/tools/collection_receivable_aging.py` 生成 5 条 public-safe source lane、4 条回款优先级事项、4 条责任事项、1 个 HTML evidence、manifest 和 validator；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、催收/付款/法务动作和经营决策依据。
 - S13-P3 跨表复核已完成本地验证：`KMFA/tools/cross_table_review.py` 生成 4 个 public-safe 跨表复核维度、4 条人工差异队列事项、1 份经营报表质量报告和 1 个 HTML evidence；报告等级显示 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据和自动差异处理。
+- Stage 13 整体复审已本地通过：`KMFA/stage_artifacts/S13_STAGE_REVIEW/` 记录 S13-P1/P2/P3 validators、`KMFA/tools/check_s13_stage_review.py`、全量 172 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 public-safe 证据一致性；复审未执行 GitHub upload、S14、lineage full check、正式报告、差异关闭或外部接口。
 
 ## 未完成
 
-- Stage 13 整体复审、Stage 13 upload、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S13-P1/S13-P2/S13-P3 均仅为 public-safe 本地验证产物，S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
+- Stage 13 GitHub upload、lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S13-P1/S13-P2/S13-P3 和 Stage 13 整体复审均仅为 public-safe 本地验证产物，S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录，不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page、Stage 11 review/upload、S12-P1 manual resolution events、S12-P2 impact preview、S12-P3 rerun mechanism、Stage 12 review、Stage 12 final GitHub upload、S13-P1 financial operating report、S13-P2 collection receivable aging 和 S13-P3 cross table review 已完成；下一步只能作为新 run work 执行 Stage 13 整体复审，不能直接进入 GitHub upload、lineage full check、正式报告或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload、S09-P1 project cost fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page、Stage 11 review/upload、S12-P1 manual resolution events、S12-P2 impact preview、S12-P3 rerun mechanism、Stage 12 review、Stage 12 final GitHub upload、S13-P1 financial operating report、S13-P2 collection receivable aging、S13-P3 cross table review 和 Stage 13 review 已完成；下一步只能作为新 run work 执行 Stage 13 GitHub upload gate，不能直接进入 S14、lineage full check、正式报告或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
