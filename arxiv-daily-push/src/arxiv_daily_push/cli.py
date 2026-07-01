@@ -138,6 +138,7 @@ from .stage2_final_gate import (
     build_integrated_production_acceptance_preflight_state,
     build_integrated_production_acceptance_evidence_state,
     build_integrated_production_acceptance_write_gate_state,
+    build_daily_operation_authorization_preflight_state,
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
@@ -172,6 +173,7 @@ from .stage2_final_gate import (
     validate_integrated_production_acceptance_preflight_state,
     validate_integrated_production_acceptance_evidence_state,
     validate_integrated_production_acceptance_write_gate_state,
+    validate_daily_operation_authorization_preflight_state,
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_real_proof_capture_readiness_state,
@@ -2015,6 +2017,66 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print JSON acceptance evidence state.",
     )
+
+    daily_operation_preflight = subparsers.add_parser(
+        "daily-operation-authorization-preflight",
+        help="Build the post-acceptance DAILY_OPERATION authorization preflight without enabling runtime.",
+    )
+    daily_operation_preflight.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing FINAL_ACCEPTANCE_BUNDLE and ADP governance artifacts.",
+    )
+    daily_operation_preflight.add_argument(
+        "--generated-at",
+        required=True,
+        help="Timestamp to embed in the daily-operation preflight evidence.",
+    )
+    daily_operation_preflight.add_argument(
+        "--open-pr-count",
+        type=int,
+        required=True,
+        help="Current GitHub open PR count captured by the caller.",
+    )
+    daily_operation_preflight.add_argument(
+        "--adp-allow-smtp-send",
+        type=parse_cli_bool,
+        required=True,
+        help="Current persistent ADP_ALLOW_SMTP_SEND value, true or false.",
+    )
+    daily_operation_preflight.add_argument(
+        "--launchagent-daily-disabled",
+        type=parse_cli_bool,
+        required=True,
+        help="Whether com.linze.adp.local.daily is disabled.",
+    )
+    daily_operation_preflight.add_argument(
+        "--launchagent-health-disabled",
+        type=parse_cli_bool,
+        required=True,
+        help="Whether com.linze.adp.local.health is disabled.",
+    )
+    daily_operation_preflight.add_argument(
+        "--launchagent-watchdog-disabled",
+        type=parse_cli_bool,
+        required=True,
+        help="Whether com.linze.adp.local.watchdog is disabled.",
+    )
+    daily_operation_preflight.add_argument(
+        "--background-adp-process-found",
+        type=parse_cli_bool,
+        required=True,
+        help="Whether a background ADP process was found by the caller.",
+    )
+    daily_operation_preflight.add_argument(
+        "--production-preflight-report",
+        help="Optional production preflight JSON report to consume instead of rebuilding it.",
+    )
+    daily_operation_preflight.add_argument(
+        "--production-scheduler-plan",
+        help="Optional production scheduler plan JSON to consume instead of rebuilding it.",
+    )
+    daily_operation_preflight.add_argument("--json", action="store_true", help="Print JSON preflight state.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -5096,6 +5158,46 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- daily_operation_enabled: {report.get('daily_operation_enabled')}")
             print(f"- next_required_step: {report.get('next_required_step')}")
             print(f"- artifact_written: {artifact_written}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors else 2
+    if args.command == "daily-operation-authorization-preflight":
+        production_preflight_report = (
+            load_json_mapping(args.production_preflight_report)
+            if args.production_preflight_report
+            else None
+        )
+        production_scheduler_plan = (
+            load_json_mapping(args.production_scheduler_plan)
+            if args.production_scheduler_plan
+            else None
+        )
+        report = build_daily_operation_authorization_preflight_state(
+            generated_at=args.generated_at,
+            repo_root=Path(args.repo_root),
+            open_pr_count=args.open_pr_count,
+            adp_allow_smtp_send=args.adp_allow_smtp_send,
+            launchagent_disabled_states={
+                "daily": args.launchagent_daily_disabled,
+                "health": args.launchagent_health_disabled,
+                "watchdog": args.launchagent_watchdog_disabled,
+            },
+            background_adp_process_found=args.background_adp_process_found,
+            production_preflight_report=production_preflight_report,
+            production_scheduler_plan=production_scheduler_plan,
+        )
+        errors = validate_daily_operation_authorization_preflight_state(report)
+        output = {**report, "daily_operation_preflight_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- preflight_checks_passed: {report.get('preflight_checks_passed')}")
+            print(f"- next_required_step: {report.get('next_required_step')}")
+            print(f"- daily_operation_enabled: {report.get('daily_operation_enabled')}")
+            print(f"- daily_operation_enablement_allowed_by_this_artifact: {report.get('daily_operation_enablement_allowed_by_this_artifact')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

@@ -4,8 +4,8 @@
 
 - source_base_commit: `960e9d1a8871bac1b4e482b58a3d673d3c6b635c`
 - source_tree_hash: `cf801941e53c389bcc3ac4456ba54a8b48543f3f`
-- source_snapshot_hash: `sha256:e87ff08c0a8b9a983c296c661e37d1e86618b22a11eb469572162cd76f86057c`
-- snapshot_event_time: `2026-07-01T19:04:10+10:00`
+- source_snapshot_hash: `sha256:efe04c802b398d7e5a64524bf6eaf705403ba63314ec7883ec60dd33815c8e08`
+- snapshot_event_time: `2026-07-01T19:43:41+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION`
+- Phase/Gate: `S2PL / DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION`
+- Release gate: `DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,10 +48,10 @@
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `true`
 - Next governance task: `S2PMT07`
-- Parallel shadow source task: `NONE_UNTIL_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT`
+- Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`
-- Pending/stale events: `376`
-- Tree-bound events: `7`
+- Pending/stale events: `377`
+- Tree-bound events: `8`
 - Commit-bound events: `7`
 - Legacy unbound events: `330`
 - Unresolved fact IDs: `0`

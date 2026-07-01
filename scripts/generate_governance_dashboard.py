@@ -170,11 +170,16 @@ def adp_s2pmt07_blocked_next_task(
         or "INTEGRATED_PRODUCTION_ACCEPTED" in current_gate
         or "integrated_production_accepted=true" in current_alias
     ) and not bool(matrix.get("s2pmt07_daily_operation_enabled", False))
-    integrated_production_accepted_no_daily_operation = (
-        bool(matrix.get("stage2_integrated_production_accepted", False))
-        or "INTEGRATED_PRODUCTION_ACCEPTED" in current_gate
-        or "integrated_production_accepted=true" in current_alias
-    ) and not bool(matrix.get("s2pmt07_daily_operation_enabled", False))
+    daily_operation_preflight_current = (
+        "DAILY-OPERATION-AUTHORIZATION-PREFLIGHT" in current_iteration
+        or "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_gate
+        or "daily operation authorization preflight" in current_alias.lower()
+    )
+    daily_operation_preflight_current = (
+        "DAILY-OPERATION-AUTHORIZATION-PREFLIGHT" in current_iteration
+        or "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_gate
+        or "daily operation authorization preflight" in current_alias.lower()
+    )
     controlled_real_run_rechecked = (
         "controlled foreground real-run acceptance recheck passed" in current_alias.lower()
         or "duplicate_smtp_send_avoided=true" in current_alias
@@ -222,6 +227,33 @@ def adp_s2pmt07_blocked_next_task(
         or "real-proof capture" in current_alias
         or "real proof capture" in current_alias
     )
+    if daily_operation_preflight_current:
+        return {
+            "task_id": "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
+            "status": "blocked",
+            "reason": (
+                "DAILY_OPERATION authorization preflight has been run after "
+                "INTEGRATED_PRODUCTION_ACCEPTED, but it remains blocked by the "
+                "nested production preflight. Repair the production preflight "
+                "blockers before requesting persistent DAILY_OPERATION authorization. "
+                "Current boundary evidence remains open_pr_count=0, "
+                "ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and "
+                "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json present."
+            ),
+            "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "Make the production preflight pass: provide required runtime command "
+                "availability, required SMTP secret environment names without logging "
+                "secret values, and resolve OpenAIDatabase session-history archive git "
+                "artifact hygiene violations. Maintain open_pr_count=0, "
+                "ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, and "
+                "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json evidence. "
+                "Then rerun daily-operation authorization preflight; runtime remains disabled."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
     if integrated_production_accepted_no_daily_operation:
         return {
             "task_id": "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
@@ -467,6 +499,11 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         or "INTEGRATED_PRODUCTION_ACCEPTED" in current_gate
         or "integrated_production_accepted=true" in current_alias
     ) and not bool(matrix.get("s2pmt07_daily_operation_enabled", False))
+    daily_operation_preflight_current = (
+        "DAILY-OPERATION-AUTHORIZATION-PREFLIGHT" in current_iteration
+        or "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_gate
+        or "daily operation authorization preflight" in current_alias.lower()
+    )
     s2plt02_terminal_delivery_ready = (
         "S2PLT02_TERMINAL_DELIVERY_PROOF_READY" in current_gate
         or "S2PLT02 terminal delivery proof artifact passed" in current_alias
@@ -533,6 +570,15 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
     ):
         capture_window_runtime_clause = (
             " S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary,"
+        )
+    if daily_operation_preflight_current:
+        return (
+            "A: DAILY_OPERATION authorization preflight has run after "
+            "INTEGRATED_PRODUCTION_ACCEPTED, but production_preflight_passed is "
+            "false. Repair missing gh CLI availability, missing SMTP secret env names, "
+            "and OpenAIDatabase session-history archive git artifact hygiene violations "
+            "before requesting persistent DAILY_OPERATION "
+            "authorization. runtime enablement remains disabled."
         )
     if integrated_production_accepted_no_daily_operation:
         return (
@@ -1238,7 +1284,29 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             or "INTEGRATED_PRODUCTION_ACCEPTED" in current_gate_text
             or "integrated_production_accepted=true" in str(matrix.get("current_v7_legacy_alias") or "")
         ) and not bool(matrix.get("s2pmt07_daily_operation_enabled", False))
-        if integrated_production_accepted_no_daily_operation:
+        daily_operation_preflight_current = (
+            "DAILY-OPERATION-AUTHORIZATION-PREFLIGHT" in current_iteration_text
+            or "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT" in current_gate_text
+            or "daily operation authorization preflight" in str(matrix.get("current_v7_legacy_alias") or "").lower()
+        )
+        if daily_operation_preflight_current:
+            owner_decision["review_id"] = "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
+            owner_decision["decision_question"] = (
+                "DAILY_OPERATION 授权预检已运行但阻断；具体阻断来自 production preflight，是否先修复 "
+                "gh CLI、SMTP secret env 名称和 OpenAIDatabase 大文件治理问题，并继续禁止 "
+                "SMTP/scheduler/Release/restore/DAILY_OPERATION。"
+            )
+            owner_decision["question"] = owner_decision["decision_question"]
+            owner_decision["option_a"] = (
+                "先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求或启用持久日常运行。"
+            )
+            owner_decision["evidence_required"] = (
+                "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json, "
+                "gh CLI availability or reviewed equivalent, ADP_SMTP_HOST/ADP_SMTP_PORT/ADP_SMTP_USERNAME/ADP_SMTP_PASSWORD env names without secret values, "
+                "and resolved OpenAIDatabase session-history archive git artifact hygiene blockers"
+            )
+            owner_decision["unblock_task_id"] = next_task["task_id"]
+        elif integrated_production_accepted_no_daily_operation:
             owner_decision["review_id"] = "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
             owner_decision["decision_question"] = (
                 "INTEGRATED_PRODUCTION_ACCEPTED 证据已写入；是否进入单独 DAILY_OPERATION 授权预检，并继续禁止 "

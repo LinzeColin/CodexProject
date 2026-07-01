@@ -6775,6 +6775,97 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_state(tampered),
         )
 
+    def test_daily_operation_authorization_preflight_blocks_when_production_preflight_blocked(self) -> None:
+        build_state = getattr(
+            stage2_final_gate_module,
+            "build_daily_operation_authorization_preflight_state",
+            None,
+        )
+        validate_state = getattr(
+            stage2_final_gate_module,
+            "validate_daily_operation_authorization_preflight_state",
+            None,
+        )
+        self.assertIsNotNone(build_state, "daily operation authorization preflight builder must exist")
+        self.assertIsNotNone(validate_state, "daily operation authorization preflight validator must exist")
+
+        state = build_state(
+            generated_at="2026-07-01T20:30:00+10:00",
+            open_pr_count=0,
+            adp_allow_smtp_send=False,
+            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            background_adp_process_found=False,
+            production_preflight_report={
+                "status": "blocked",
+                "production_run_allowed": False,
+                "blocking_reasons": ["missing required secret environment keys: ADP_SMTP_HOST"],
+            },
+            production_scheduler_plan={
+                "status": "pass",
+                "scheduler_contract_ready": True,
+                "blocking_reasons": [],
+            },
+        )
+
+        self.assertEqual(state["task_id"], "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT")
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["preflight_checks_passed"])
+        self.assertTrue(state["checks"]["integrated_production_acceptance_evidence_valid"])
+        self.assertTrue(state["checks"]["stage2_integrated_production_accepted"])
+        self.assertTrue(state["checks"]["daily_operation_currently_disabled"])
+        self.assertFalse(state["checks"]["production_preflight_passed"])
+        self.assertIn("production_preflight_passed_failed", state["blocking_reasons"])
+        self.assertEqual(
+            state["next_required_step"],
+            "REPAIR_DAILY_OPERATION_PREFLIGHT_PREREQUISITES_BEFORE_OWNER_AUTHORIZATION",
+        )
+        self.assertTrue(state["production_acceptance_claimed"])
+        self.assertTrue(state["integrated_production_accepted"])
+        self.assertTrue(state["stage2_integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["daily_operation_enablement_allowed_by_this_artifact"])
+        self.assertEqual(validate_state(state), [])
+
+    def test_daily_operation_authorization_preflight_stops_at_owner_authorization_when_ready(self) -> None:
+        state = stage2_final_gate_module.build_daily_operation_authorization_preflight_state(
+            generated_at="2026-07-01T20:35:00+10:00",
+            open_pr_count=0,
+            adp_allow_smtp_send=False,
+            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            background_adp_process_found=False,
+            production_preflight_report={
+                "status": "pass",
+                "production_run_allowed": True,
+                "blocking_reasons": [],
+            },
+            production_scheduler_plan={
+                "status": "pass",
+                "scheduler_contract_ready": True,
+                "blocking_reasons": [],
+            },
+        )
+
+        self.assertEqual(state["status"], "blocked_owner_daily_operation_authorization_required")
+        self.assertTrue(state["preflight_checks_passed"])
+        self.assertEqual(state["failed_checks"], [])
+        self.assertEqual(
+            state["blocking_reasons"],
+            ["owner_daily_operation_authorization_missing", "daily_operation_not_enabled"],
+        )
+        self.assertEqual(state["next_required_step"], "OWNER_DAILY_OPERATION_AUTHORIZATION_REQUIRED")
+        self.assertTrue(state["owner_daily_operation_authorization_required"])
+        self.assertFalse(state["owner_daily_operation_authorization_recorded"])
+        self.assertFalse(state["daily_operation_enablement_allowed_by_this_artifact"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertEqual(
+            stage2_final_gate_module.validate_daily_operation_authorization_preflight_state(state),
+            [],
+        )
+
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:
         blocker = "independent_final_command_execution_missing"
         report = build_s2pmt07_precheck_report(generated_at="2026-06-27T02:59:04+10:00")

@@ -1,5 +1,14 @@
 # ADP 用户中心
 
+## 2026-07-01 19:43:41 Australia/Sydney - DAILY_OPERATION 授权预检已运行但阻断
+
+- `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT` 已生成并通过 state validator；结果为 `status=blocked`，不是日常运行启用。
+- 失败检查：`production_preflight_passed`。具体阻断：missing `gh` CLI；缺 `ADP_SMTP_HOST`、`ADP_SMTP_PORT`、`ADP_SMTP_USERNAME`、`ADP_SMTP_PASSWORD` 这四个 SMTP secret env 名称；既有 `OpenAIDatabase/session_history` archive 文件触发 production git artifact hygiene blocker。
+- Stage 2 integrated acceptance 仍保持：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
+- DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- 默认下一步：先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求 persistent DAILY_OPERATION 授权。
+- 证据：[预检清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
+
 ## 2026-07-01 19:04:10 Australia/Sydney - INTEGRATED_PRODUCTION_ACCEPTED 已写入，DAILY_OPERATION 仍未启用
 
 - `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 已写入并通过校验：`status=pass_integrated_production_accepted_evidence_written_no_runtime_enablement`。
@@ -294,7 +303,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-07-01 19:28:39 Australia/Sydney
+更新时间：2026-07-01 20:01:04 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -320,7 +329,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 419 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 420 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |

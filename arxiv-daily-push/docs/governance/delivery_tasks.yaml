@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"
+    phase: "S2PL"
+    objective: "Run the first post-INTEGRATED_PRODUCTION_ACCEPTED DAILY_OPERATION authorization preflight without enabling runtime production."
+    scope: "Daily-operation preflight builder/validator/CLI, run manifest, phase record, CURRENT state, owner-facing status, three-base summaries, and focused regression tests."
+    non_scope: "No DAILY_OPERATION enablement, persistent SMTP permission, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, V7 contract mutation, unrelated OpenAIDatabase file deletion, or V7.1 historical baseline mutation."
+    status: "blocked"
+    dependencies: ["S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE", "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"]
+    required_files: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD focused final-gate unittest", "TDD focused CLI unittest", "live daily-operation authorization preflight CLI", "post-run safety state checks"]
+    test_results: ["TDD red: missing daily operation authorization preflight builder/validator", "TDD green: stage2 final gate tests OK", "TDD red: missing CLI command", "TDD green: CLI tests OK", "live preflight status=blocked, state_hash=f306ae932dfbbc9f50dd0f465b7d9b125004f81c6dff4a36f7e4062bcb494660", "failed_checks=production_preflight_passed", "production preflight blockers: missing gh CLI; missing SMTP secret env names; 10 existing OpenAIDatabase session-history archive git artifact hygiene violations", "daily_operation_enabled=false", "real_smtp_send_enabled=false", "scheduler_install_enabled=false", "release_packaging_enabled=false", "production_restore_enabled=false"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md", "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json"]
+    risk: "Future agents could treat Stage2 integrated acceptance as authorization for persistent daily operation; this preflight keeps runtime disabled and exposes concrete production preflight blockers."
+    rollback: "Revert the daily-operation preflight builder/validator/CLI, manifest, phase record, current-state sync, owner-facing notes, and tests; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE"
     phase: "S2PL"
     objective: "Write and validate the Stage 2 INTEGRATED_PRODUCTION_ACCEPTED evidence after the final bundle, P0/P1 zero proof, owner decision, write gate, and controlled real-run evidence passed, without enabling DAILY_OPERATION or runtime production."

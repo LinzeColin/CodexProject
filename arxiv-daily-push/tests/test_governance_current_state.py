@@ -31,37 +31,39 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_records_integrated_acceptance_without_daily_operation(self) -> None:
+    def test_current_state_records_daily_operation_preflight_blocked_without_runtime_enablement(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION", current_state)
-        self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE", current_state)
-        self.assertIn("status=pass_integrated_production_accepted_evidence_written_no_runtime_enablement", current_state)
+        self.assertIn("DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT", current_state)
+        self.assertIn("S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT", current_state)
+        self.assertIn("status=blocked", current_state)
+        self.assertIn("preflight_checks_passed=false", current_state)
+        self.assertIn("failed_checks=production_preflight_passed", current_state)
+        self.assertIn("state_hash=f306ae932dfbbc9f50dd0f465b7d9b125004f81c6dff4a36f7e4062bcb494660", current_state)
+        self.assertIn("missing `gh` CLI", current_state)
+        self.assertIn("ADP_SMTP_HOST", current_state)
+        self.assertIn("OpenAIDatabase/session_history", current_state)
         self.assertIn("integrated_production_accepted=true", current_state)
         self.assertIn("stage2_integrated_production_accepted=true", current_state)
         self.assertIn("production_acceptance_claimed=true", current_state)
         self.assertIn("integrated_production_acceptance_state_hash=4b88b2edd8fe2eae7ee63f8b512eb713501805725f5fcdf3fb6363f0df3b5453", current_state)
         self.assertIn("integrated_production_acceptance.json", current_state)
-        self.assertIn("owner_production_boundary_decision.json", current_state)
-        self.assertIn("write_gate_state_hash=565fb28fab914f9dc6a79fa0dd0144556516a5c3b0d22de5dddefc3e0d95c89b", current_state)
-        self.assertIn("controlled foreground real-run evidence", current_state)
-        self.assertIn("P0/P1 zero proof", current_state)
-        self.assertIn("failed_checks=[]", current_state)
         self.assertIn("daily_operation_enabled=false", current_state)
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", current_state)
         self.assertIn("LaunchAgents disabled", current_state)
-        self.assertIn("S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT", current_state)
+        self.assertIn("no background ADP process", current_state)
         self.assertIn("No DAILY_OPERATION, standing SMTP permission, scheduler enable/install, Release, or production restore is claimed", current_state)
+        self.assertIn("S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR", current_state)
 
-    def test_owner_and_assurance_route_to_daily_operation_preflight_after_acceptance(self) -> None:
+    def test_owner_and_assurance_route_to_daily_operation_preflight_repair_after_block(self) -> None:
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
         self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"', assurance)
         self.assertIn("next_task_id: `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`", owner_status)
-        self.assertIn('release_gate: "INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION"', assurance)
+        self.assertIn('release_gate: "DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT"', assurance)
         self.assertIn("stage2_integrated_production_accepted: true", assurance)
         self.assertIn("current_zero_proof_open_p0_findings: 0", assurance)
         self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
@@ -70,7 +72,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", assurance)
         self.assertIn("LaunchAgents disabled", assurance)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json", assurance)
-        self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED 证据已写入", owner_status)
+        self.assertIn("DAILY_OPERATION 授权预检已运行但阻断", owner_status)
+        self.assertIn("missing gh CLI", owner_status)
+        self.assertIn("missing SMTP secret env names", owner_status)
+        self.assertIn("OpenAIDatabase session-history archive git artifact hygiene violations", owner_status)
         self.assertIn("DAILY_OPERATION 授权预检", owner_status)
         self.assertIn("runtime enablement remains disabled", owner_status)
         self.assertNotIn('task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"', assurance)
@@ -79,6 +84,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn('task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE"', assurance)
         self.assertIn("owner_decision_recorded_write_gate_allowed", generator)
         self.assertIn("integrated_production_accepted_no_daily_operation", generator)
+        self.assertIn("daily_operation_preflight_current", generator)
         self.assertIn("production_boundary_preflight_ready", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", generator)
@@ -133,12 +139,24 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
 
         self.assertIn(
-            "current_iteration: ITER-20260701-ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE",
+            "current_iteration: ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT",
             current,
         )
-        self.assertIn("current_gate: INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION", current)
-        self.assertIn("next_executable_task: S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT", current)
-        self.assertIn("next_required_step: REQUEST_DAILY_OPERATION_AUTHORIZATION_AND_PREFLIGHT", current)
+        self.assertIn("current_gate: DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT", current)
+        self.assertIn("next_executable_task: S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR", current)
+        self.assertIn("next_required_step: REPAIR_DAILY_OPERATION_PREFLIGHT_PREREQUISITES_BEFORE_OWNER_AUTHORIZATION", current)
+        self.assertIn("daily_operation_authorization_preflight_written: true", current)
+        self.assertIn("daily_operation_authorization_preflight_status: blocked", current)
+        self.assertIn("daily_operation_authorization_preflight_passed: false", current)
+        self.assertIn(
+            "daily_operation_authorization_preflight_state_hash: f306ae932dfbbc9f50dd0f465b7d9b125004f81c6dff4a36f7e4062bcb494660",
+            current,
+        )
+        self.assertIn("production_preflight_passed", current)
+        self.assertIn("missing_gh_cli", current)
+        self.assertIn("missing_smtp_secret_env_names", current)
+        self.assertIn("openai_database_large_archive_git_artifact_hygiene_violations", current)
+        self.assertIn("daily_operation_authorization_enablement_allowed: false", current)
         self.assertIn("integrated_production_acceptance_preflight_passed: true", current)
         self.assertIn(
             "integrated_production_acceptance_preflight_state_hash: 6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5",
@@ -209,23 +227,27 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("inherited_v7_1_baseline_p1_findings: 37", current)
         self.assertIn("stage2_integrated_production_accepted: true", current)
         self.assertIn("daily_operation_enabled: false", current)
-        self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED 证据已写入", decisions)
+        self.assertIn("DAILY_OPERATION 授权预检已运行但阻断", decisions)
+        self.assertIn("production_preflight_passed", decisions)
+        self.assertIn("修复 `gh` CLI 可用性", decisions)
+        self.assertIn("补齐 SMTP secret env 名称", decisions)
+        self.assertIn("OpenAIDatabase/session_history", decisions)
         self.assertIn("integrated_production_acceptance.json", decisions)
         self.assertIn("stage2_integrated_production_accepted=true", decisions)
-        self.assertIn("进入 `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`", decisions)
-        self.assertIn("受控真实运行验收已完成", decisions)
-        self.assertIn("newly_sent_mail_products=[]", decisions)
+        self.assertIn("不得请求 persistent DAILY_OPERATION 授权", decisions)
         self.assertIn("不得自动启用 SMTP/scheduler/Release/restore/DAILY_OPERATION", decisions)
-        self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED 已写入", readme)
+        self.assertIn("DAILY_OPERATION 授权预检已运行但阻断", readme)
+        self.assertIn("missing `gh` CLI", readme)
+        self.assertIn("ADP_SMTP_HOST", readme)
+        self.assertIn("OpenAIDatabase/session_history", readme)
         self.assertIn("integrated_production_acceptance.json", readme)
         self.assertIn("DAILY_OPERATION 仍未启用", readme)
-        self.assertIn("受控真实运行验收复核已通过", readme)
-        self.assertIn("Production-boundary preflight 已通过", readme)
         self.assertIn("S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT", readme)
-        self.assertIn("受控真实运行验收", roadmap)
-        self.assertIn("integrated production acceptance evidence", roadmap)
-        self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED_NO_DAILY_OPERATION", roadmap)
-        self.assertIn("Production-boundary preflight 已通过", roadmap)
+        self.assertIn("DAILY_OPERATION 授权预检已运行但阻断", roadmap)
+        self.assertIn("DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_BLOCKED_NO_RUNTIME_ENABLEMENT", roadmap)
+        self.assertIn("missing gh CLI", roadmap)
+        self.assertIn("missing SMTP secret env names", roadmap)
+        self.assertIn("OpenAIDatabase session-history", roadmap)
         self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED", roadmap)
 
     def test_three_base_model_parameter_summary_matches_governance_counts(self) -> None:
@@ -244,11 +266,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- active_formula_count: `{active_formulas.group(1)}`", summary)
         self.assertIn(f"- active_parameter_count: `{active_parameters.group(1)}`", summary)
         self.assertIn(
-            "- current_task: `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE`",
+            "- current_task: `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`",
             summary,
         )
-        self.assertIn("- next_gate: `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`", summary)
-        self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED evidence is written", summary)
+        self.assertIn("- next_gate: `S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR`", summary)
+        self.assertIn("DAILY_OPERATION authorization preflight is blocked by production_preflight_passed", summary)
+        self.assertIn("missing_gh_cli", summary)
         self.assertIn("DAILY_OPERATION remains disabled", summary)
 
 
