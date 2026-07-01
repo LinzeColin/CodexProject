@@ -1553,6 +1553,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("也不得把这条历史 false 状态回写成当前 Stage 2 结论", decisions)
         self.assertIn("## 历史默认下一步（2026-06-30 语境）", decisions)
         self.assertIn("历史：当时 Stage2 Stop Gate 仍未跨越", decisions)
+        self.assertIn("历史：Owner 决策已记录，当时下一步只允许写最终验收证据", decisions)
+        self.assertIn("| 当时结论 | 当时默认动作 | 验收证据 |", decisions)
+        self.assertIn("历史：当时默认下一步是等待真实 SMTP/scheduler 捕获窗口", decisions)
+        historical_decisions = decisions.split(
+            "## 2026-07-01 18:16:00 Australia/Sydney - 历史：",
+            1,
+        )[1]
+        self.assertNotIn("| 当前结论 | 默认动作 | 验收证据 |", historical_decisions)
+        self.assertNotIn("## 2026-07-01 05:42:34 Australia/Sydney - 默认下一步仍是", historical_decisions)
+        self.assertNotIn("## 2026-07-01 00:13:52 Australia/Sydney - 默认下一步仍是", historical_decisions)
         self.assertNotIn("多来源、多邮件、多复习行动收益链路仍在推进", roadmap)
         self.assertNotIn("这是正式生产前的最终预检查", roadmap)
         self.assertNotIn("补齐复习行动收益每日快照", roadmap)
