@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 6 Phase 6.2 - 2026-07-01
+
+- 完成 `Stage 6 / Phase 6.2 - 动效反馈`：新增页面切换、加载骨架、成功/失败/阻断反馈和报告生成进度的轻量动效。
+- `PFI/web/app/feedback.js` 新增 v0.2.4 Phase 6.2 motion contract、feedback model 和 report progress model。
+- `PFI/web/app/shell.js` 写入 `data-v024-route-transition`、`data-v024-motion-state`、`data-v024-report-progress` 等运行态标记。
+- `PFI/web/styles.css` 新增 `PFI v0.2.4 Stage 6 Phase 6.2 motion feedback` 样式块，并支持 reduced motion。
+- 新增 `PFI/tests/test_v024_stage6_phase62_motion_feedback.py`、`PFI/docs/pfi_v024/STAGE6_MOTION_FEEDBACK.md` 和 `PFI/reports/pfi_v024/stage_6/phase_6_2/` evidence。
+- 本轮不执行 Phase 6.3、Stage 6 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 6 Phase 6.1 - 2026-07-01
 
 - 完成 `Stage 6 / Phase 6.1 - 设计系统`：建立 v0.2.4 默认浅色 token、状态色、卡片/表格/图表槽和响应式布局覆盖层。
