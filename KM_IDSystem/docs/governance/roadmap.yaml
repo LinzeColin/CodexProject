@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE010"
-current_phase_id: "IDS-STAGE010-P1"
-current_task_id: "IDS-V0_1-STAGE010-P1"
-next_gate_id: "IDS-STAGE010-P2-GATE"
+current_phase_id: "IDS-STAGE010-P2"
+current_task_id: "IDS-V0_1-STAGE010-P2"
+next_gate_id: "IDS-STAGE010-P3-GATE"
 total_estimated_hours: 77
-completed_estimated_hours: 72
+completed_estimated_hours: 74
 stages:
   -
     stage_id: "S5"
@@ -2139,6 +2139,9 @@ stages:
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/scripts/check_local_path_contract.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE2_LOCAL_PATH_CONTRACT.md"
     phases:
       -
         phase_id: "IDS-STAGE010-P1"
@@ -2192,7 +2195,7 @@ stages:
         phase_id: "IDS-STAGE010-P2"
         name: "实现、接入与最小可运行切片"
         objective: "实现或记录只读本地路径合同、状态枚举、路径角色和安全模式接口。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "缺少 Phase 1 边界证据"
           - "路径检查器会创建、移动、删除或修改 IDS_DATA_ROOT、source、processed、backup、manifest 或 report 内容"
@@ -2200,18 +2203,21 @@ stages:
           - "在客户操作流暴露机器端细节"
         stop_gate:
           gate_id: "IDS-STAGE010-P2-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "source_uri、processed、backup、manifest、report export 和 UNKNOWN 风险有最小可运行检查"
             - "机器端细节只进入 IDS 系统运营入口"
             - "不会在缺失 IDS_DATA_ROOT 或路径阻断时创建猜测的大数据目录或派生产物"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/scripts/check_local_path_contract.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE2_LOCAL_PATH_CONTRACT.md"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE010-P2"
             name: "本地路径合同最小切片"
             objective: "按 Phase 1 边界建立 source_uri、processed、backup、manifest、report export、路径状态和安全模式的最小可验证切片。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "2.60%"
             dependencies:
@@ -2219,11 +2225,16 @@ stages:
             acceptance_ids:
               - "ACC-STAGE-010"
             test_commands:
+              - "RED: python3 -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+              - "GREEN: python3 -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
               - "local path contract focused test"
               - "source_uri and output path contract test"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-010 Phase 2 adds KM_IDSystem/scripts/check_local_path_contract.py and focused tests. RED run failed as expected because the script was missing: 6 failures. GREEN run passed: Ran 6 tests in 0.086s OK. The implementation normalizes file:// source_uri, classifies source readiness, processed/backup/manifest/report export roles, composes STAGE-007/008/009 root/drive/storage states, maps unsafe storage/root states into Phase 1 path-contract states, and returns no-write/no-scan/no-output/no-manifest/no-backup guard fields. It does not start services, install dependencies, create IDS_DATA_ROOT, create data/reports/outputs, open/hash source files, recursively scan external-drive contents, write manifests, copy backups, push, open PR, merge, or enter Phase 3."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_local_path_contract.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE2_LOCAL_PATH_CONTRACT.md"
             risk: "路径检查器写入真实路径、生成派生产物、递归扫描外接盘、复制备份或把机器诊断暴露给客户操作流。"
             rollback: "Revert IDS-STAGE010-P2 implementation-slice changes."
       -
