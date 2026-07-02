@@ -7129,6 +7129,17 @@ class Stage2FinalGateTests(unittest.TestCase):
 
         self.assertTrue(template_path.exists())
         self.assertIn("daily_operation_persistent_enablement_authorization.template.json", template_index)
+        self.assertIn("Stage 2 final-bundle live artifacts already exist", template_index)
+        self.assertIn(
+            "The only current blocked live artifact path is "
+            "`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`",
+            template_index,
+        )
+        self.assertNotIn("Live artifact paths remain blocked:", template_index)
+        self.assertNotIn("- `FINAL_ACCEPTANCE_BUNDLE/manifest.json`", template_index)
+        self.assertNotIn("- `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`", template_index)
+        self.assertNotIn("Current S2PLT02/S2PLT03/S2PLT04/S2PMT07 gates remain blocked", template_index)
+        self.assertIn("These templates do not change Stage 2 integrated acceptance", template_index)
         self.assertFalse(
             (REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json").exists()
         )

@@ -1,20 +1,15 @@
 # S2PMT07 Final Bundle Artifact Templates
 
-These files are templates only. They do not satisfy S2PMT07 readiness and must
-not be copied into the live artifact paths until the named external evidence is
-real, independently reviewed, hash-bound, and validated.
+These files are templates only. They do not override the current live artifact
+state, and they must not be copied into live artifact paths unless the named
+external evidence is real, independently reviewed, hash-bound, and validated.
 
-Live artifact paths remain blocked:
+Stage 2 final-bundle live artifacts already exist and have been consumed by
+the current Stage 2 integrated acceptance evidence. Historical final-bundle
+templates remain useful only as schema examples; they must not be used to
+roll current acceptance state backward.
 
-- `FINAL_ACCEPTANCE_BUNDLE/manifest.json`
-- `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`
-- `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json`
-- `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`
-- `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`
-- `FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml`
-- `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`
-- `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`
-- `HANDOFF/00_下一Agent先读.md`
+The only current blocked live artifact path is `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`.
 
 `manifest.template.json` is a final-bundle manifest skeleton only. It must not
 be copied to `FINAL_ACCEPTANCE_BUNDLE/manifest.json` unless every required
@@ -40,6 +35,7 @@ authorization text are replaced with current owner evidence, all runtime
 prechecks are still disabled, and the separate DAILY_OPERATION readiness /
 enablement gates are rerun.
 
-Current S2PLT02/S2PLT03/S2PLT04/S2PMT07 gates remain blocked. These templates
-do not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, or
-INTEGRATED_PRODUCTION_ACCEPTED.
+Current S3/DAILY_OPERATION remains blocked until the explicit persistent
+authorization artifact exists and the separate readiness / enablement gates
+pass. These templates do not enable SMTP, scheduler, Release, restore, or
+DAILY_OPERATION. These templates do not change Stage 2 integrated acceptance.
