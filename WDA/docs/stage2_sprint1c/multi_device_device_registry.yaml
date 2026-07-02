@@ -1,0 +1,63 @@
+schema_version: "wda.stage2.sprint1c.multi_device_registry.v1"
+run_id: "wda_stage2_sprint1c_multi_device_census_20260702"
+generated_at: "2026-07-02T15:35:52+10:00"
+raw_gate_decision: "Conditional Investigation"
+message_readability_status: "not_proven"
+raw_gate_go_status: "not_go"
+scope_guardrails:
+  - "used provided output zip packages only"
+  - "did not scan WeChat source directories"
+  - "did not decrypt, extract keys, bypass protected stores, open DB schemas, or parse message content"
+  - "did not upload raw data"
+devices:
+  - device_role_id: "new_computer"
+    user_label: "新电脑"
+    sprint1c_role: "WDA Control Plane / compute / RAG / Web / WDA_HOME host"
+    input_package: "/Users/linzezhang/Downloads/新电脑.zip"
+    input_package_bytes: 487261
+    input_kind: "provided output package; no source directory scan"
+    internal_scan_run_id: "wda_s2_s1b_20260702T1503_AEST"
+    internal_device_id: "device_001_mac_local_xinwechat"
+    internal_device_label: "Mac local WeChat container - normalized from Sprint 1 Module 1-2"
+    os_name: "macOS"
+    os_version: "15.1"
+    cpu_arch: "arm64"
+    wechat_client_name: "WeChat"
+    wechat_version: "4.1.10"
+    wechat_build: "268880"
+    classified_path_count: 5265
+    total_stat_size_bytes: 3922516803
+    account_bucket_count: 24
+    live_db_candidate_rows: 295
+    live_db_candidate_file_rows: 270
+    candidate_db_inventory_rows: 270
+    backupfiles_candidate_rows: 4
+    backupfiles_file_rows: 2
+  - device_role_id: "old_computer"
+    user_label: "旧电脑"
+    sprint1c_role: "highest-value data source candidate; not heavy compute/RAG host"
+    input_package: "/Users/linzezhang/Downloads/旧电脑.zip"
+    input_package_bytes: 12066367
+    input_kind: "provided output package; no source directory scan"
+    internal_scan_run_id: "multi_device_raw_census_20260702_150352"
+    internal_device_id: "current_mac_wechat_20260702"
+    internal_device_label: "Current Mac WeChat local container"
+    os_name: "macOS"
+    os_version: "26.5.1"
+    cpu_arch: "arm64"
+    wechat_client_name: "WeChat"
+    wechat_version: "4.1.11"
+    wechat_build: "269077"
+    classified_path_count: 128088
+    total_stat_size_bytes: 47153168850
+    account_bucket_count: 7
+    live_db_candidate_rows: 362
+    live_db_candidate_file_rows: 317
+    candidate_db_inventory_rows: 239
+    backupfiles_candidate_rows: 4
+    backupfiles_file_rows: 0
+recommendation:
+  data_source_priority: "old_computer"
+  control_plane_host: "new_computer"
+  rag_host: "new_computer"
+  do_not_copy_entire_old_cache: true

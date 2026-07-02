@@ -1,0 +1,23 @@
+comparison_key,new_rows,new_size_bytes,old_rows,old_size_bytes,old_minus_new_rows,old_minus_new_size_bytes,notes
+TOTAL_live_db_candidates_from_source_classification,295,82682640,362,1059583808,67,976901168,includes directories and DB-adjacent rows flagged live DB
+TOTAL_live_db_candidate_files_from_source_classification,270,82674704,317,1059570144,47,976895440,file rows only
+TOTAL_candidate_db_inventory_rows,270,82674704,239,1053213152,-31,970538448,from multi_device_candidate_db_inventory.csv
+app_data/radium db,138,10371968,11,18546192,-127,8174224,candidate DB family/category; no schema opened
+db_storage/MMKV,8,131072,13,212992,5,81920,candidate DB family/category; no schema opened
+db_storage/bizchat,3,102672,9,266784,6,164112,candidate DB family/category; no schema opened
+db_storage/contact,6,23244800,18,41564680,12,18319880,candidate DB family/category; no schema opened
+db_storage/emoticon,3,1740344,9,1075328,6,-665016,candidate DB family/category; no schema opened
+db_storage/favorite,6,591832,18,4650104,12,4058272,candidate DB family/category; no schema opened
+db_storage/general,3,4871848,9,10955624,6,6083776,candidate DB family/category; no schema opened
+db_storage/hardlink,3,1308344,9,12145864,6,10837520,candidate DB family/category; no schema opened
+db_storage/head_image,3,5045760,9,21767896,6,16722136,candidate DB family/category; no schema opened
+db_storage/message,80,30251008,99,894590528,19,864339520,candidate DB family/category; no schema opened
+db_storage/migrate,0,0,3,61440,3,61440,candidate DB family/category; no schema opened
+db_storage/session,8,4440064,10,3067112,2,-1372952,candidate DB family/category; no schema opened
+db_storage/sns,3,472440,9,44013696,6,43541256,candidate DB family/category; no schema opened
+db_storage/solitaire,3,36864,4,102400,1,65536,candidate DB family/category; no schema opened
+protected_key_info_db_excluded,3,65688,9,192512,6,126824,candidate DB family/category; no schema opened
+PATH_FAMILY_msg/file,195,3360645510,6295,35591327442,6100,32230681932,path-family comparison from source classification; no content parsed
+PATH_FAMILY_msg/attach,2527,129511957,113823,7531258214,111296,7401746257,path-family comparison from source classification; no content parsed
+PATH_FAMILY_msg/video,23,640040,2427,2101450219,2404,2100810179,path-family comparison from source classification; no content parsed
+PATH_FAMILY_db_storage/message,81,30253632,140,900476960,59,870223328,path-family comparison from source classification; no content parsed
