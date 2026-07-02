@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3-s03-stage-review - 2026-07-02
+
+- 完成 `v0.1.3 Stage 3｜整体复审` 本地验证：复跑 S03-P1 文件型导入登记、S03-P2 数据源检查矩阵、S03-P3 源优先级与差异队列入口 validators 和 Stage 3 review validator，确认三个 phase 均为 PASS，review findings open/fixed 均为 0。
+- 新增 `KMFA/tools/v013_s03_stage_review.py`、`KMFA/tools/check_v013_s03_stage_review.py`、`KMFA/tests/test_v013_s03_stage_review.py` 和 `KMFA/stage_artifacts/V013_S03_STAGE_REVIEW/`。
+- 复审锁定当前 data quality=`Q2`、report grade=`D`、release permission=`blocked`，正式报告、经营决策依据、delivery、business execution 继续阻断。
+- Stage 3 review 工具本身不直接枚举或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；依赖 validator 链会只读复跑既有 S02 raw-readiness 检查，但不修改、删除、移动、重命名、覆盖或写入 raw 目录。
+- 公开证据不包含 raw 文件名、raw hash、ZIP member 名、sheet 名、字段/表头明文、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 执行 `v0.1.3 Stage 3 GitHub upload` 或用户明确指定的单一 phase。
+
 ## 0.1.3-s03p3-source-priority - 2026-07-02
 
 - 完成 `v0.1.3 S03-P3｜源优先级与差异队列入口` 本地验证：基于既有 `source_priority.py` 能力，使用合成 metadata 重放 9 级来源优先级、同源不一致失效重跑事件和跨源差异人工复核队列。
