@@ -87,13 +87,13 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
   status: "blocked_persistent_daily_operation_authorization_missing"
-  reason: "DAILY_OPERATION owner decision is recorded as keep-disabled. Persistent DAILY_OPERATION is not authorized; runtime remains disabled until a separate explicit owner authorization and enablement artifact exists."
+  reason: "DAILY_OPERATION owner 决策已记录为保持禁用。持久 DAILY_OPERATION 未授权；在单独显式 owner 授权和 enablement artifact 存在前，运行时必须保持禁用。"
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
     - "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"
   owner: "content_owner + engineering_owner"
   human_owner_role: "content_owner + engineering_owner"
-  unblock_condition: "Provide explicit owner authorization for persistent DAILY_OPERATION in a new artifact, then run a separate enablement preflight. Do not enable SMTP, scheduler, Release, restore, or persistent operation from the keep-disabled decision."
+  unblock_condition: "如 owner 明确授权持久 DAILY_OPERATION，必须写入新的显式授权 artifact，再运行单独 enablement preflight。不得从 keep-disabled 决策推导出 SMTP、scheduler、Release、restore 或持久运行权限。"
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -107,7 +107,7 @@ owner_decision:
   question: "DAILY_OPERATION owner decision 已记录为保持禁用；是否提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，或继续保持 DAILY_OPERATION 禁用。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_PRODUCTION_BOUNDARY_PREFLIGHT_ONLY"
-  current_recommendation: "A: DAILY_OPERATION owner decision is recorded as keep-disabled. Persistent DAILY_OPERATION is not authorized; keep runtime disabled unless the owner later provides a separate explicit persistent DAILY_OPERATION authorization and a new enablement artifact passes."
+  current_recommendation: "A：DAILY_OPERATION owner 决策已记录为保持禁用。持久 DAILY_OPERATION 未授权；除非 owner 之后提供单独显式持久 DAILY_OPERATION 授权并通过新的 enablement artifact，否则继续保持运行时禁用。"
   option_a: "继续保持 DAILY_OPERATION 禁用；不启用 SMTP、scheduler、Release 或 production restore。"
   option_b: "若 owner 明确授权持久 DAILY_OPERATION，则先写新的授权 artifact FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，再跑单独 enablement gate。"
   option_c: "禁止把 keep-disabled artifact 当作运行授权并启用生产。"
@@ -119,7 +119,7 @@ owner_decision:
   estimated_cost_or_resource: "local development and GitHub main evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "把已通过的 final bundle 状态与生产边界状态分开，避免重复 S2PLT04，同时阻止误启生产。"
   principal_risks: "将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement"
-  evidence_required: "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+  evidence_required: "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, 若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json, ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like，LaunchAgents disabled，open_pr_count=0，且无后台 ADP 进程"
   decision_deadline_or_priority: "P0"
   consequence_of_no_decision: "Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DAILY_OPERATION 不得进入。"
   unblock_task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
