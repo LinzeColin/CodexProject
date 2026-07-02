@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 15:23:30 Australia/Sydney
+更新时间：2026-07-02 15:54:22 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -92,6 +92,13 @@
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），计划应发 4 封；受控发送证据不代表 S3/DAILY_OPERATION 已进入。
 
 ## 最近治理与历史记录
+
+## 2026-07-02 15:54:22 Australia/Sydney - 当前治理 SMTP 原始值证据口径已同步
+
+- 当前 `OWNER_STATUS`、`ASSURANCE_STATUS`、当前状态测试和治理生成器中的 SMTP 边界证据，统一使用 `ADP_ALLOW_SMTP_SEND` 原始值口径。
+- 当前允许的安全状态仍是 `UNSET` 或 false-like；truthy 必须停止并回报。
+- 下方 2026-07-01 历史记录里出现的 `ADP_ALLOW_SMTP_SEND=false`，只表示当时运行证据或当时环境事实，不是当前要求必须存在一个持久显式 `false` 环境变量。
+- 本轮仍不授权 S3/DAILY_OPERATION，不启用 SMTP、scheduler、Release 或 production restore；缺显式持久授权 artifact 时继续保持 `daily_operation_enabled=false`。
 
 ## 2026-07-02 15:07:43 Australia/Sydney - 后台进程扫描停止门已同步到路线图
 
