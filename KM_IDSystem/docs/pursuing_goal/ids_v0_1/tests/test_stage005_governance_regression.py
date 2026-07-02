@@ -215,12 +215,57 @@ next_gate_id: "IDS-STAGE011-P4-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage011_phase4_closeout_completion(self):
+        module = self._load_module()
+        batch_text = """
+status: "uploaded_to_github_main"
+upload_gate:
+  push_allowed: false
+  gate_task_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-011:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-012"
+    current_task_id: "IDS-V0_1-STAGE011-P4"
+    acceptance_status: "local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE011"
+current_phase_id: "IDS-STAGE011-P4"
+current_task_id: "IDS-V0_1-STAGE011-P4"
+next_gate_id: "IDS-STAGE012-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_changed_path_policy_allows_stage011_phase2_files(self):
         module = self._load_module()
         allowed_paths = [
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE2_SAFE_MODE_BASELINE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE3_SCENARIO_VALIDATION.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py",
             "KM_IDSystem/scripts/check_safe_mode_baseline.py",
         ]
