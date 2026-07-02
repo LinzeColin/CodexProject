@@ -688,6 +688,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("real_proof_capture_authorized=false", page)
         self.assertIn("218cfe1712e9020e02cea37b4f1982c4c959bca29462d6b73e8aec7308e8444c", page)
         self.assertIn("76b9533077ad56d270a70a12b53af80936875795728d7399a48c6af976e37fa2", page)
+        self.assertIn("| 历史当时 matching hash | `authorization_artifact_status=pass`", page)
+        self.assertIn("| 历史当时 stale hash | `authorization_artifact_status=blocked`", page)
         self.assertIn("authorization_artifact_status=pass", page)
         self.assertIn("authorization_validation_errors=[]", page)
         self.assertIn("real_proof_capture_authorized=true", page)
@@ -762,6 +764,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("launchctl_disabled_file_status=missing", page)
         self.assertIn("b43760c8150155bb0f40e627cdec97443451bfad63e1257b08d1fd572dccda39", page)
         self.assertIn("d2f12b5f3fbe439fdd0b2d420706700f5a0aa6b3d9ba691da67f2ffe4758d117", page)
+        self.assertIn("| 历史字段 | `launchctl_disabled_file_missing`", page)
+        self.assertIn("| 历史当时正常只读库存 | `state_hash=d2f12b5f3fbe439fdd0b2d420706700f5a0aa6b3d9ba691da67f2ffe4758d117`", page)
         self.assertIn(
             "REQ-ADP-V7-042-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN",
             page,
@@ -780,6 +784,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "blocked_s2plt03_capture_plan_waiting_for_s2plt02_terminal_acceptance_no_production",
             page,
         )
+        self.assertIn("| 历史字段 | `state_hash=bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5`", page)
+        self.assertIn("| 历史当时已完成输入 | `LOCAL_RESILIENCE_DRILL`", page)
+        self.assertIn("| 历史当时剩余缺口 | `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`、`S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT`", page)
         self.assertIn(
             "REQ-ADP-V7-041-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC",
             page,
@@ -798,6 +805,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("codex-subthread-independent-final-reviewer", page)
         self.assertIn("b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", page)
         self.assertIn("f12f50fe2d474010ab3f93023759872593bdbb3ad65bfbf645287f21a76ef2a3", page)
+        self.assertIn("| 历史字段 | `assignment_present=true`，`independent_final_reviewer_assigned_by_payload=true`", page)
+        self.assertIn("| 历史当时最终包状态 | `final_bundle_readiness_state_hash=f12f50fe2d474010ab3f93023759872593bdbb3ad65bfbf645287f21a76ef2a3`", page)
         self.assertIn("REQ-ADP-V7-041-S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json", page)
@@ -957,6 +966,12 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("94bd3841adf70c44e10963ad94da2dd3b57b68152882639ca2637997bdbf1ca1", page)
         self.assertIn("observed_natural_days=1/2", page)
         self.assertIn("observed_email_count=4/8", page)
+        self.assertIn("| 历史字段 | `state_hash=a9179f2a386c23d6efb0495659f434a3991736ce7a10ec6e234659a4e6a0accf`", page)
+        self.assertIn("| 历史当时邮件计数 | `observed_candidate_dry_run_email_count=8`", page)
+        self.assertIn("| 历史当时授权状态 | `authorization_artifact_status=pass`", page)
+        self.assertIn("| 历史当时已完成动作 | `obtain_explicit_owner_authorization_for_real_smtp_scheduler`", page)
+        self.assertIn("| 历史当时可用终态输入 | 5 项 |", page)
+        self.assertIn("| 历史当时被阻断候选 | 2026-06-29、2026-06-30；均为 dry-run，0 封真实发送 |", page)
         self.assertIn("REQ-ADP-V7-040-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION", page)
         self.assertIn("S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION", page)
         self.assertIn("ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION-20260629.json", page)
@@ -1454,6 +1469,21 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| remaining runtime actions | `capture_second_consecutive_real_m1_m4_smtp_day", page)
         self.assertNotIn("| runtime blockers | `second_consecutive_real_m1_m4_smtp_day_missing", page)
         self.assertNotIn("| 当前计数 | 真实发送日 `1/2`，真实邮件 `4/8`", page)
+        self.assertNotIn("| matching hash | `authorization_artifact_status=pass`", page)
+        self.assertNotIn("| stale hash | `authorization_artifact_status=blocked`", page)
+        self.assertNotIn("| 当前字段 | `state_hash=bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5`", page)
+        self.assertNotIn("| 已完成输入 | `LOCAL_RESILIENCE_DRILL`", page)
+        self.assertNotIn("| 当前字段 | `launchctl_disabled_file_missing`", page)
+        self.assertNotIn("| 正常只读库存 | `state_hash=d2f12b5f3fbe439fdd0b2d420706700f5a0aa6b3d9ba691da67f2ffe4758d117`", page)
+        self.assertNotIn("| 当前字段 | `assignment_present=true`", page)
+        self.assertNotIn("| 最终包状态 | `final_bundle_readiness_state_hash=f12f50fe2d474010ab3f93023759872593bdbb3ad65bfbf645287f21a76ef2a3`", page)
+        self.assertNotIn("| 当前字段 | `state_hash=a9179f2a386c23d6efb0495659f434a3991736ce7a10ec6e234659a4e6a0accf`", page)
+        self.assertNotIn("| 邮件计数 | `observed_candidate_dry_run_email_count=8`", page)
+        self.assertNotIn("| 授权状态 | `authorization_artifact_status=pass`", page)
+        self.assertNotIn("| 已完成动作 | `obtain_explicit_owner_authorization_for_real_smtp_scheduler`", page)
+        self.assertNotIn("| 可用终态输入 | 5 项 |", page)
+        self.assertNotIn("| 被阻断候选 | 2026-06-29、2026-06-30；均为 dry-run，0 封真实发送 |", page)
+        self.assertNotIn("| 剩余缺口 | 第二真实日", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
