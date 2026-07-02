@@ -354,8 +354,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertEqual(len(table_rows), len(generated_rows))
         self.assertIn("本页是 GitHub 浅层用户中心里的报告/邮件预览索引", page)
         self.assertIn("不是完整报告正文", page)
+        self.assertIn("30 条只是已生成报告或邮件预览状态子集", page)
+        self.assertIn("邮件预览只表示模板渲染预览已生成，不等于真实 SMTP 发送", page)
+        self.assertIn("本页不能作为 S3/DAILY_OPERATION、scheduler、Release 或 production restore 启用证据", page)
+        self.assertIn("总候选池仍以 299 条为准", page)
+        self.assertIn("未生成报告候选 269 条", page)
         self.assertIn("| 序号 | 锚点 | 领域代码 | 标题 / 条目 | 状态 | 候选日期 | 证据 |", page)
         self.assertNotIn("| 原始定位 |", page)
+        self.assertNotIn("SMTP 已发送", page)
+        self.assertNotIn("DAILY_OPERATION 已进入", page)
+        self.assertNotIn("完整报告正文已公开", page)
         self.assertEqual(page.count("[CONTENT_LEDGER.csv](../docs/owner/CONTENT_LEDGER.csv)"), len(generated_rows) + 1)
 
     def test_learning_snapshot_summary_pages_do_not_revert_to_pending_after_daily_snapshot(self):
