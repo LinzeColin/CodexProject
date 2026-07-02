@@ -992,6 +992,48 @@ Machine-readable boundary summary: No production UI; No production build; No raw
 - Stage 10 Phase 1 完成后，另起 bounded run 执行 Stage 10 整体复审。
 - Stage 10 整体复审通过前，不执行最终 GitHub main 上传。
 
+### Stage 10 整体复审
+
+Stage 10 状态：`stage_10_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S10-REVIEW`。
+
+本复审覆盖 Stage 10 Phase 1 Final Acceptance Readiness，并把
+`validate:whole-project` 作为强证据门槛复跑。复审确认 Part 1-10 validators、
+production frontend build、OpenAIDatabase Python compile、unittest discovery、
+visual acceptance、release audit、overall acceptance、offline Cloudflare Pages +
+Access preflight、Roadmap v2 final acceptance runtime/audit coverage、canonical
+remote 和 GitHub upload boundary 均通过。本复审不新增 production runtime
+feature work，不读取 raw/private，不直接写长期记忆，不写 proposal，不执行 agent
+apply，不部署 Cloudflare，不修改 Access policy，不上传 GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage10_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10.cjs`
+- `validate:v1.1.6-stage10`
+
+验收边界：
+
+- Stage 10 Phase 1 readiness contract、acceptance、validator 和 records 必须一致。
+- `validate:whole-project` 必须返回 PASS。
+- Stage 10 review artifact、delivery、feature、development、model parameter、
+  changelog 和 package script 必须一致。
+- 当前 OpenAIDatabase 改动必须限制在 Stage 10 review artifact、validator、
+  package script 和记录文件。
+- 本 review 不 production runtime feature work、不安装本地 app、不部署 Cloudflare、
+  不修改 Access policy、不读取 raw/private、不直接写长期记忆、不写 proposal、
+  不执行 agent apply、不上传 GitHub main。
+
+Machine-readable boundary summary: No production runtime feature work; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一 gate：
+
+- 执行 final upload gate：fetch/integrate、重跑 Stage 10 validators 和
+  `validate:whole-project`、检查 clean tracked tree、canonical remote、push target
+  和 final remote ancestry。
+- final upload gate 未通过前，不上传 GitHub main。
+
 ### Stage 6 整体复审
 
 Stage 6 状态：`stage_6_review_passed_pending_github_main_upload`。

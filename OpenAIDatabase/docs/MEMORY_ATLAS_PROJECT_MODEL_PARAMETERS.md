@@ -3134,6 +3134,59 @@ Stage 9 整体复审已确认：
 - 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 phase 不执行 Stage 10 整体复审，不执行 GitHub main 上传。
 
+## 67. v1.1.6 Stage 10 整体复审门槛
+
+状态：`stage_10_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 10 Phase 1 readiness 合同已经完成。
+- Stage 10 整体复审必须复跑 `validate:whole-project`，把最终验收 readiness 的七类 surface 转化为可验证 evidence gate。
+- Stage 10 review 通过不等于 GitHub main 上传已经执行。
+
+输入：
+
+- `docs/product/memory_atlas_final_acceptance_readiness_contract.md`
+- `docs/acceptance/memory_atlas_final_acceptance_readiness_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage10_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs`
+
+处理方法：
+
+- 检查 Stage 10 Phase 1 readiness 合同、验收、validator 和记录是否一致。
+- 执行 `validate:whole-project`，确认 production build、unittest、visual acceptance、release audit、overall acceptance、offline Cloudflare preflight、roadmap final acceptance coverage、canonical remote 和 upload boundary 均通过。
+- 检查 Stage 10 review artifact、delivery、feature、development、model parameter、changelog 和 package script 是否登记 `MA-V116-S10-REVIEW`。
+- 检查当前改动范围是否只包含 Stage 10 review artifact、validator、package script 和记录。
+- 使用 `validate:v1.1.6-stage10` 固定本 review 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S10-REVIEW-001 stage10_required_validator = validate:v1.1.6-stage10`
+- `PARAM-MA-V116-S10-REVIEW-002 stage10_review_status = stage_10_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S10-REVIEW-003 stage10_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage10_review.md`
+- `PARAM-MA-V116-S10-REVIEW-004 stage10_required_whole_project_gate = validate:whole-project`
+- `PARAM-MA-V116-S10-REVIEW-005 stage10_allowed_change_scope = records;reviews;validators;package_script`
+- `PARAM-MA-V116-S10-REVIEW-006 stage10_next_gate = final GitHub main upload gate`
+- `PARAM-MA-V116-S10-REVIEW-007 upload_boundary = no_github_main_upload_in_stage10_review`
+
+输出：
+
+- Stage 10 review artifact。
+- Stage 10 stage-level validator。
+- Stage 10 review package script。
+- Stage 10 review governance records。
+
+边界：
+
+- 本 review 不新增 production runtime feature work。
+- 本 review 不修改 production UI、CSS、路由、导航、feature flag 或 app shell。
+- 本 review 不安装本地 app，不部署 Cloudflare，不修改 Access policy。
+- 本 review 不读取 raw/private/cookie/session/secret 数据。
+- 本 review 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 review 不执行 GitHub main 上传。
+
 ## 63. v1.1.6 Stage 9 Phase 3 Data Map C3 隔离原型参数
 
 状态：`phase_9_3_data_map_c3_spike_ready_pending_stage_review`。
