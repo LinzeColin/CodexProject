@@ -74,6 +74,33 @@ def _markdown_anchors(path: Path) -> set[str]:
 
 
 class UserCenterCandidatePoolTests(unittest.TestCase):
+    def test_three_base_files_explain_smtp_false_like_history_before_audit_log(self):
+        pages = [
+            ROOT / "功能清单.md",
+            ROOT / "开发记录.md",
+            ROOT / "模型参数文件.md",
+        ]
+        for page_path in pages:
+            text = page_path.read_text(encoding="utf-8")
+            self.assertIn("## 当前阅读规则", text, page_path.name)
+            self.assertLess(text.index("## 当前阅读规则"), text.index("## 2026-"), page_path.name)
+            self.assertIn("Stage 2 integrated acceptance 已记录", text, page_path.name)
+            self.assertIn("不进入 S3/DAILY_OPERATION", text, page_path.name)
+            self.assertIn(
+                "历史记录中的 `ADP_ALLOW_SMTP_SEND=false` 只表示当时 false-like 运行证据",
+                text,
+                page_path.name,
+            )
+            self.assertIn(
+                "当前安全边界仍只接受 `ADP_ALLOW_SMTP_SEND` 原始值为 `UNSET` 或 false-like",
+                text,
+                page_path.name,
+            )
+
+        feature_list = (ROOT / "功能清单.md").read_text(encoding="utf-8")
+        self.assertIn("历史当时本机 SMTP 发送授权为 false-like", feature_list)
+        self.assertNotIn("本机 SMTP 发送授权必须为 `ADP_ALLOW_SMTP_SEND=false`", feature_list)
+
     def test_owner_facing_mvp_run_contract_wording_uses_next_round(self):
         pages = [
             *USER_CENTER.glob("*.md"),
