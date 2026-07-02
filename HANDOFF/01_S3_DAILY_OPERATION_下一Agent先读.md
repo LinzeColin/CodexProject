@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 11:27:29 Australia/Sydney
+更新时间：2026-07-02 11:39:13 Australia/Sydney
 
 ## 当前结论
 
@@ -74,7 +74,14 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_sync PYTHONPAT
 
 ```bash
 test ! -e FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json
-printf 'ADP_ALLOW_SMTP_SEND=%s\n' "${ADP_ALLOW_SMTP_SEND:-false}"
+ADP_ALLOW_SMTP_SEND_VALUE="${ADP_ALLOW_SMTP_SEND-UNSET}"
+printf 'ADP_ALLOW_SMTP_SEND=%s\n' "$ADP_ALLOW_SMTP_SEND_VALUE"
+case "$ADP_ALLOW_SMTP_SEND_VALUE" in
+  1|true|TRUE|yes|YES|on|ON)
+    printf 'blocked: ADP_ALLOW_SMTP_SEND is truthy\n' >&2
+    exit 1
+    ;;
+esac
 launchctl print-disabled gui/$(id -u) | rg 'com\.linze\.adp\.local\.(daily|health|watchdog)'
 ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|adp' | rg -v 'rg -i|pytest|unittest|validate|zsh -lc|exec_command' || true
 OPEN_PR_COUNT=$(
@@ -85,4 +92,4 @@ printf 'open_pr_count=%s\n' "$OPEN_PR_COUNT"
 test "$OPEN_PR_COUNT" = "0"
 ```
 
-预期：授权 artifact 不存在；`ADP_ALLOW_SMTP_SEND=false`；三个 ADP LaunchAgents disabled；无 ADP 后台进程；`open_pr_count=0`。若 open PR 结果为 `UNKNOWN` 或非 0，停止并回报，不得当作通过。
+预期：授权 artifact 不存在；`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like；三个 ADP LaunchAgents disabled；无 ADP 后台进程；`open_pr_count=0`。若 `ADP_ALLOW_SMTP_SEND` 为 truthy，或 open PR 结果为 `UNKNOWN` / 非 0，停止并回报，不得当作通过。
