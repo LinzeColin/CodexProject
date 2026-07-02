@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE005"
-current_phase_id: "IDS-STAGE005-P2"
-current_task_id: "IDS-V0_1-STAGE005-P2"
-next_gate_id: "IDS-STAGE005-P3-GATE"
+current_phase_id: "IDS-STAGE005-P3"
+current_task_id: "IDS-V0_1-STAGE005-P3"
+next_gate_id: "IDS-STAGE005-P4-GATE"
 total_estimated_hours: 47
-completed_estimated_hours: 44
+completed_estimated_hours: 46
 stages:
   -
     stage_id: "S5"
@@ -1094,6 +1094,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE2_GOVERNANCE_REGRESSION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE3_VALIDATION_SCAN.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
     phases:
       -
@@ -1189,25 +1190,28 @@ stages:
         phase_id: "IDS-STAGE005-P3"
         name: "仓库治理回归验证专项验证与异常场景"
         objective: "验证 README、governance、脚本、测试、路径引用、secrets 和本地数据边界。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "未完成 Phase 2 验证切片"
           - "无法证明治理回归验证覆盖实际路径"
           - "扫描证据不足"
         stop_gate:
           gate_id: "IDS-STAGE005-P3-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "README、governance、脚本、测试和路径引用检查已运行"
             - "客户可见显示面仍使用 IDS / Industrial Data System"
             - "未触碰 raw data、secrets、runtime 输出或依赖目录"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE3_VALIDATION_SCAN.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE005-P3"
             name: "仓库治理回归专项验证"
             objective: "验证 STAGE-005 回归切片的覆盖范围、异常场景和边界。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "4.26%"
             dependencies:
@@ -1219,8 +1223,11 @@ stages:
               - "customer-visible output scan"
               - "secret and runtime boundary scan"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-005 Phase 3 validation reran the STAGE-005 unittest with 3 tests OK and the governance-regression validator with valid=true, issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], tracked_forbidden_runtime_files=[], and unexpected_changed_paths=[]. The STAGE-004 legacy-name validator returned valid=true with active_display_debt=0. Active context scan found 7 classified legacy refs, customer-visible context hits=0, unclassified active/customer-visible hits=0. Script syntax and Python compile checks passed. Path-reference scan checked 59 refs, classified 13 forbidden/generated/wildcard refs as allowed non-tracked boundaries, and found 0 broken refs. Secret scan found 11 raw marker hits and 0 actual credential hits. No runtime code, raw data, reports, outputs, dependencies, external projects, GitHub push, or PR was modified."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE3_VALIDATION_SCAN.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "验证未区分本项目真实回归和 sparse 根治理缺失。"
             rollback: "Revert IDS-STAGE005-P3 validation/evidence-only changes."
       -

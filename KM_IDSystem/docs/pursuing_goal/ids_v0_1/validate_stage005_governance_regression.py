@@ -191,6 +191,43 @@ def _text_checks(root: Path, tracked_paths: list[str]) -> dict[str, int]:
     return hits
 
 
+def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
+    phase2_completed = '      - "Phase 2"' in batch_text
+    current_task_allowed = (
+        'current_task_id: "IDS-V0_1-STAGE005-P2"' in batch_text
+        or 'current_task_id: "IDS-V0_1-STAGE005-P3"' in batch_text
+    )
+    next_phase_allowed = (
+        'next_phase: "Phase 3"' in batch_text
+        or 'next_phase: "Phase 4"' in batch_text
+    )
+    current_phase_allowed = (
+        'current_phase_id: "IDS-STAGE005-P2"' in roadmap_text
+        or 'current_phase_id: "IDS-STAGE005-P3"' in roadmap_text
+    )
+    current_roadmap_task_allowed = (
+        'current_task_id: "IDS-V0_1-STAGE005-P2"' in roadmap_text
+        or 'current_task_id: "IDS-V0_1-STAGE005-P3"' in roadmap_text
+    )
+    next_gate_allowed = (
+        'next_gate_id: "IDS-STAGE005-P3-GATE"' in roadmap_text
+        or 'next_gate_id: "IDS-STAGE005-P4-GATE"' in roadmap_text
+    )
+    return {
+        "stage005_in_progress": 'STAGE-005:\n    status: "in_progress"' in batch_text,
+        "phase2_completed": phase2_completed,
+        "current_task_allowed": current_task_allowed,
+        "next_phase_allowed": next_phase_allowed,
+        "push_locked": "push_allowed: false" in batch_text,
+        "current_stage005": 'current_stage_id: "IDS-STAGE005"' in roadmap_text,
+        "current_phase_allowed": current_phase_allowed,
+        "current_roadmap_task_allowed": current_roadmap_task_allowed,
+        "next_gate_allowed": next_gate_allowed,
+        "roadmap_phase2_completed": 'phase_id: "IDS-STAGE005-P2"' in roadmap_text
+        and 'status: "passed_with_local_evidence"' in roadmap_text,
+    }
+
+
 def build_report(root: Path | None = None) -> dict:
     root = (root or Path(__file__).resolve().parents[3]).resolve()
     repo_root = _repo_root(root)
@@ -223,21 +260,7 @@ def build_report(root: Path | None = None) -> dict:
     readme_text = (root / "README.md").read_text(encoding="utf-8")
     handoff_text = (root / "docs/HANDOFF.md").read_text(encoding="utf-8")
 
-    batch_checks = {
-        "stage005_in_progress": 'STAGE-005:\n    status: "in_progress"' in batch_text,
-        "phase2_completed": '      - "Phase 2"' in batch_text,
-        "current_task_p2": 'current_task_id: "IDS-V0_1-STAGE005-P2"' in batch_text,
-        "next_phase_p3": 'next_phase: "Phase 3"' in batch_text,
-        "push_locked": "push_allowed: false" in batch_text,
-    }
-    roadmap_checks = {
-        "current_stage005": 'current_stage_id: "IDS-STAGE005"' in roadmap_text,
-        "current_phase_p2": 'current_phase_id: "IDS-STAGE005-P2"' in roadmap_text,
-        "current_task_p2": 'current_task_id: "IDS-V0_1-STAGE005-P2"' in roadmap_text,
-        "next_gate_p3": 'next_gate_id: "IDS-STAGE005-P3-GATE"' in roadmap_text,
-        "phase2_completed": 'phase_id: "IDS-STAGE005-P2"' in roadmap_text
-        and 'status: "passed_with_local_evidence"' in roadmap_text,
-    }
+    phase_state_checks = evaluate_phase_state(batch_text, roadmap_text)
     owner_text_checks = {
         "readme_current_name": CURRENT_PRODUCT_NAME in readme_text,
         "handoff_current_name": CURRENT_PRODUCT_NAME in handoff_text,
@@ -259,10 +282,8 @@ def build_report(root: Path | None = None) -> dict:
         issues.append("forbidden runtime path changed")
     if unexpected_changed_paths:
         issues.append("unexpected KM_IDSystem path changed")
-    if not all(batch_checks.values()):
-        issues.append("batch upload lock is not at STAGE-005 Phase 2")
-    if not all(roadmap_checks.values()):
-        issues.append("roadmap is not at STAGE-005 Phase 2")
+    if not all(phase_state_checks.values()):
+        issues.append("phase state is not at or beyond STAGE-005 Phase 2")
     if not all(owner_text_checks.values()):
         issues.append("owner-facing identity or legacy policy text is missing")
     if any(count == 0 for count in surface_counts.values()):
@@ -274,7 +295,7 @@ def build_report(root: Path | None = None) -> dict:
     return {
         "acceptance_id": ACCEPTANCE_ID,
         "accepted_name_hits": accepted_name_hits,
-        "batch_checks": batch_checks,
+        "phase_state_checks": phase_state_checks,
         "changed_paths": changed_paths,
         "event_json_errors": event_json_errors,
         "forbidden_changed_paths": forbidden_changed_paths,
@@ -282,7 +303,6 @@ def build_report(root: Path | None = None) -> dict:
         "missing_event_ids": missing_event_ids,
         "missing_required_files": missing_required_files,
         "owner_text_checks": owner_text_checks,
-        "roadmap_checks": roadmap_checks,
         "stage": STAGE,
         "surface_counts": surface_counts,
         "tracked_forbidden_runtime_files": tracked_forbidden_runtime_files,
