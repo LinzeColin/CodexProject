@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE013"
-current_phase_id: "IDS-STAGE013-P3"
-current_task_id: "IDS-V0_1-STAGE013-P3"
-next_gate_id: "IDS-STAGE013-P4-GATE"
-total_estimated_hours: 100
-completed_estimated_hours: 99
+current_phase_id: "IDS-STAGE013-P4"
+current_task_id: "IDS-V0_1-STAGE013-P4"
+next_gate_id: "IDS-STAGE014-P1-GATE"
+total_estimated_hours: 102
+completed_estimated_hours: 101
 stages:
   -
     stage_id: "S5"
@@ -2953,8 +2953,8 @@ stages:
       - "引入虚拟 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
       - "在 STAGE-011..020 未完成、复审和修复前上传 GitHub main"
     stop_gate:
-      gate_id: "IDS-STAGE013-P3-GATE"
-      status: "passed_with_local_evidence"
+      gate_id: "IDS-STAGE013-P4-GATE"
+      status: "passed_no_github_upload_until_batch_complete"
       pass_conditions:
         - "P0 taskpack source 和 STAGE-013 execution index 已绑定"
         - "文件指纹字段 source_uri、sha256、size、mtime、extension、mime、first_seen_at 已定义"
@@ -2964,15 +2964,18 @@ stages:
         - "重复输入保持幂等，不产生重复 manifest candidate"
         - "缺失、阻断或不可读文件进入显式失败状态"
         - "Phase 3 覆盖同文件同 hash、同名不同 hash、同 hash 不同路径、重复导入无 persistence、原始 hash 稳定"
+        - "Phase 4 记录 metadata-only manifest candidate、duplicate/conflict report、unsupported states、whole-stage review、rollback 和中文 owner feedback"
         - "Phase 1 未读取、列出、hash、打开、复制、移动、删除或修改真实原始资料或 IDS_MetaData 内容"
         - "Phase 2 阻断 IDS_MetaData 路径后才会进行存在检查、hash 或文件读取"
         - "Phase 3 只使用 tracked governance docs 和临时结构副本，不读 IDS_MetaData 内容"
+        - "Phase 4 未写 manifest/database、未创建 document/chunk/job、未进入 STAGE-014"
         - "BATCH011_020_UPLOAD_LOCK.yaml 仍保持 push_allowed=false"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE2_FILE_FINGERPRINT_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/scripts/check_file_fingerprint.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE4_CLOSEOUT.md"
@@ -3139,3 +3142,55 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果把 Phase 3 scenario report 当作生产导入结果，可能绕过 Phase 4 交付证据、回滚和十阶段上传门。"
             rollback: "Revert IDS-STAGE013-P3 script, test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, manifests, evidence ledgers, audit logs, delivered reports, runtime data, app entries, GitHub state, or Phase 4."
+      -
+        phase_id: "IDS-STAGE013-P4"
+        name: "文件指纹引擎交付证据、回滚与中文反馈"
+        objective: "关闭 STAGE-013，记录 metadata-only manifest candidate、duplicate/conflict/unsupported summary、原文件保护证明、whole-stage review、rollback 和中文 owner feedback。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1-3 未全部完成"
+          - "closeout 需要读取、列出、hash、打开、复制、移动、删除或修改 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "closeout 写 manifest/database/document/chunk/job、生成 runtime 输出、上传 GitHub 或进入 STAGE-014"
+          - "复审发现 fingerprint 字段、幂等、重复/冲突、hash 稳定或 raw-data boundary 仍有未解决阻断"
+        stop_gate:
+          gate_id: "IDS-STAGE013-P4-GATE"
+          status: "passed_no_github_upload_until_batch_complete"
+          pass_conditions:
+            - "STAGE013_PHASE4_CLOSEOUT.md 记录交付证据、whole-stage review、rollback 和中文 owner feedback"
+            - "metadata-only manifest candidate 示例不写 manifest 文件"
+            - "duplicate/conflict/unsupported summary 明确不创建 document/chunk/job"
+            - "原文件保护证明覆盖 hash stability 和 no-side-effect guardrails"
+            - "Stage005 governance regression 接受 STAGE-013 completed_local 当前态"
+            - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false，STAGE-014..020 仍 pending"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE013-P4"
+            name: "文件指纹引擎 closeout"
+            objective: "完成 STAGE-013 本地关闭和整 stage 复审，保留 batch 011-020 上传锁，不进入 STAGE-014。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.96%"
+            dependencies:
+              - "IDS-V0_1-STAGE013-P3"
+            acceptance_ids:
+              - "ACC-STAGE-013"
+            test_commands:
+              - "RED: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py -q"
+              - "GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py -q"
+              - "Stage013 focused: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py -q"
+              - "Stage005 validator report"
+              - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "py_compile check_file_fingerprint.py and Stage005 validator"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+            test_results: "TDD RED failed as expected: Stage005 governance regression ran 19 tests with 1 failure because IDS-V0_1-STAGE013-P4/local_passed and next_stage STAGE-014 were not accepted. GREEN passed after validator extension and closeout evidence updates: Stage005 governance regression ran 19 OK. Stage013 focused tests ran 6 OK. Stage005 validator returned valid=true, issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], and unexpected_changed_paths=[]. Full v0.1 pursuing-goal discover ran 70 OK; py_compile passed for check_file_fingerprint.py and Stage005 validator; events JSONL parse passed; git diff --check passed. Semantic validate returned rc=1 with 29 known sparse/root/registered-project diagnostics and no KM_IDSystem project regression. Exact old underscored task-id marker scan returned no hits; remaining legacy path/name hits are stale-path, migration-policy, and compatibility-scan references. Whole-stage review fixed missing P4 closeout evidence, Stage005 terminal-state acceptance, roadmap/batch P3 state, and explicit no-upload/raw-data-boundary restatement. No raw metadata content read, service start, dependency install, manifest/database write, document/chunk/job creation, runtime output, external API call, GitHub upload, PR, merge, app reinstall, STAGE-014 work, or IDS_MetaData content touch was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+              - "KM_IDSystem/scripts/check_file_fingerprint.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py"
+            risk: "如果把 closeout 当作 GitHub upload gate 或生产导入授权，可能绕过 10-stage batch gate 或文件指纹只读合同。"
+            rollback: "Revert IDS-STAGE013-P4 closeout, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, manifests, evidence ledgers, audit logs, delivered reports, runtime data, app entries, GitHub state, or STAGE-014."
