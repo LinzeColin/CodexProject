@@ -1,5 +1,7 @@
 import csv
+import importlib.util
 import re
+import tempfile
 import unicodedata
 import unittest
 import urllib.parse
@@ -31,6 +33,7 @@ B001_INSTALL_LIFECYCLE_PAGE = USER_CENTER / "自动唤醒安装生命周期扫�
 LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件.md"
+TIMESTAMP_SCRIPT = ROOT / "scripts" / "update_user_center_timestamps.py"
 SUMMARY_PAGES = (
     USER_CENTER / "README.md",
     USER_CENTER / "邮件发送与队列状态.md",
@@ -72,6 +75,17 @@ def _markdown_anchors(path: Path) -> set[str]:
         seen[base] = count + 1
         anchors.add(base if count == 0 else f"{base}-{count}")
     return anchors
+
+
+def _load_timestamp_script_module():
+    spec = importlib.util.spec_from_file_location(
+        "update_user_center_timestamps",
+        TIMESTAMP_SCRIPT,
+    )
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    return module
 
 
 class UserCenterCandidatePoolTests(unittest.TestCase):
@@ -118,6 +132,29 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
                     first_content_line.startswith("## "),
                     f"{page_path.name}: first content after 更新时间 must explain page purpose",
                 )
+
+    def test_timestamp_validator_rejects_missing_purpose_intro_before_first_section(self):
+        module = _load_timestamp_script_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            page = Path(tmpdir) / "bad.md"
+            page.write_text(
+                "\n".join(
+                    [
+                        "# 测试页",
+                        "",
+                        "更新时间：2026-07-02 21:44:04 Australia/Sydney",
+                        "",
+                        "## 直接进入段落",
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            errors = module.validate_timestamp(page, module.datetime.now(module.TIMEZONE))
+        self.assertTrue(
+            any("expected purpose intro before first section" in error for error in errors),
+            errors,
+        )
 
     def test_three_base_files_explain_smtp_false_like_history_before_audit_log(self):
         pages = [
