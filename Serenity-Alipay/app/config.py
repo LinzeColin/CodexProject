@@ -59,7 +59,7 @@ class Settings:
     min_candidate_nav_history_months: int = 24
     min_candidate_nav_history_span_days: int = 730
     opend_auto_start_enabled: bool = True
-    opend_keep_auto_started: bool = False
+    opend_keep_auto_started: bool = True
     opend_wait_seconds: float = 45.0
     candidate_universe_auto_expand_enabled: bool = True
     candidate_universe_live_fetch_enabled: bool = False
@@ -90,7 +90,7 @@ class Settings:
             mail_send_enabled=_bool_env("SERENITY_MAIL_SEND_ENABLED", False),
             secret_storage_enabled=_bool_env("SERENITY_SECRET_STORAGE_ENABLED", False),
             opend_auto_start_enabled=_bool_env("SERENITY_OPEND_AUTO_START", True),
-            opend_keep_auto_started=_bool_env("SERENITY_OPEND_KEEP_AUTO_STARTED", False),
+            opend_keep_auto_started=_bool_env("SERENITY_OPEND_KEEP_AUTO_STARTED", True),
             opend_wait_seconds=_float_env("SERENITY_OPEND_WAIT_SECONDS", 45.0),
             candidate_universe_auto_expand_enabled=_bool_env("SERENITY_CANDIDATE_UNIVERSE_AUTO_EXPAND", True),
             candidate_universe_live_fetch_enabled=_bool_env("SERENITY_FUND_UNIVERSE_LIVE_FETCH", True),
