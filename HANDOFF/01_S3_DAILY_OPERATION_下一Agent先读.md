@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 11:39:13 Australia/Sydney
+更新时间：2026-07-02 11:48:04 Australia/Sydney
 
 ## 当前结论
 
@@ -33,7 +33,7 @@
 
 - `persistent_daily_operation_authorized=false`
 - `daily_operation_enabled=false`
-- `ADP_ALLOW_SMTP_SEND=false`
+- `ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like；truthy 必须停止
 - `real_smtp_send_enabled=false`
 - `scheduler_install_enabled=false`
 - `release_packaging_enabled=false`
