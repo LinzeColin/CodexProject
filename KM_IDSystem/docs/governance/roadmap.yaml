@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE017"
-current_phase_id: "IDS-STAGE017-P2"
-current_task_id: "IDS-V0_1-STAGE017-P2"
-next_gate_id: "IDS-STAGE017-P3-GATE"
-total_estimated_hours: 130
-completed_estimated_hours: 129
+current_phase_id: "IDS-STAGE017-P3"
+current_task_id: "IDS-V0_1-STAGE017-P3"
+next_gate_id: "IDS-STAGE017-P4-GATE"
+total_estimated_hours: 132
+completed_estimated_hours: 131
 stages:
   -
     stage_id: "S5"
@@ -4090,3 +4090,64 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果 Phase 2 helper 被误接为生产 scanner 或持久化导入，会导致 raw metadata 被读取、原始资料被污染或重复 document/chunk/job/index/import/manifest 被写入。"
             rollback: "Revert IDS-STAGE017-P2 helper, focused test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, runtime data, app entries, GitHub state, or Phase 3."
+      -
+        phase_id: "IDS-STAGE017-P3"
+        name: "原始资料回归测试专项验证与异常场景"
+        objective: "验证 same-file/same-hash、same-name/different-hash、same-hash/different-path、matching resume checkpoint、offline drive、hash drift、duplicate import no-persistence 和 original hash stability。"
+        status: "completed"
+        stop_conditions:
+          - "STAGE-017 Phase 2 未完成"
+          - "验证需要读取、扫描、复制、hash、打开、移动、删除、修改或 dump IDS_MetaData 原始数据库内容"
+          - "验证需要写入 runtime database、manifest、index、document/chunk/job、报告、outputs 或外部 API"
+          - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "一次 run 进入 Phase 4"
+        stop_gate:
+          gate_id: "IDS-STAGE017-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage017 scenario report 覆盖 same-file/same-hash、same-name/different-hash、same-hash/different-path、matching resume checkpoint、offline drive、checkpoint hash drift、duplicate import no-persistence、original hash stable"
+            - "duplicate import no-persistence 的 document/chunk/job/index/import/manifest/duplicate/evidence/audit/report/database deltas 均为 0"
+            - "原始 tracked governance source 的 before/after SHA-256 和 size 保持一致"
+            - "Stage005 governance regression 已接受 IDS-V0_1-STAGE017-P3 当前态"
+            - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false，未进入 Phase 4"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE017-P3"
+            name: "原始资料回归测试 scenario report"
+            objective: "在不写数据库、manifest、index、document、chunk、job 或运行输出的前提下，为原始资料回归测试生成可测试的 Phase 3 场景报告。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.52%"
+            dependencies:
+              - "IDS-V0_1-STAGE017-P2"
+              - "IDS-V0_1-STAGE016-P4"
+              - "IDS-V0_1-STAGE015-P4"
+              - "IDS-V0_1-STAGE014-P4"
+              - "IDS-V0_1-STAGE013-P4"
+              - "IDS-V0_1-STAGE012-P4"
+            acceptance_ids:
+              - "ACC-STAGE-017"
+            test_commands:
+              - "RED/GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage017_original_regression.py -q"
+              - "RED/GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py -q"
+              - "Stage005 validator report"
+              - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "py_compile Stage017 helper and Stage005 validator"
+              - "events JSONL parse"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+              - "old underscored task-id variant scan"
+            test_results: "Focused Stage017 RED failed as expected with 9 tests and 1 error because build_stage017_scenario_report did not exist. Focused Stage017 GREEN passed 9 tests after adding the scenario report. Stage005 RED failed as expected with 34 tests and 1 failure because IDS-V0_1-STAGE017-P3 was not yet accepted by the governance state machine. Stage005 intermediate RED failed as expected with 34 tests and 1 failure because STAGE017_PHASE3_SCENARIO_VALIDATION.md was missing as required evidence. Stage005 GREEN passed 34 tests. Stage005 validator returned valid=true with issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], and unexpected_changed_paths=[]. Full IDS v0.1 pursuing-goal discover passed 116 tests. py_compile passed for check_original_regression.py and the Stage005 validator. events JSONL parse returned events_jsonl_ok. bundled render --project KM_IDSystem --write updated owner files; bundled check-render returned drift_count=0 and reference_issue_count=0. git diff --check passed. exact old underscored task-id variant scan returned no hits. Legacy path/name hits remain historical migration-policy, stale-path, do-not-revive, or scanner-rule references only. semantic validate remains diagnostic-only with 29 known sparse root-governance or registered-project missing paths and no new KM_IDSystem semantic error. Phase 3 did not read, list, hash, open, copy, move, delete, modify, dump, scan, or commit IDS_MetaData raw metadata content. No service start, dependency install, production scanner, manifest/database/index/import writer, document/chunk/job creation, runtime output, external API call, GitHub upload, PR, merge, app reinstall, or Phase 4 work was performed."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_original_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage017_original_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE2_REGRESSION_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果 Phase 3 scenario report 被误读为生产扫描或持久化导入授权，会导致 raw metadata 被读取、原始资料被污染或重复 document/chunk/job/index/import/manifest 被写入。"
+            rollback: "Revert IDS-STAGE017-P3 helper/test additions, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, runtime data, app entries, GitHub state, or Phase 4."

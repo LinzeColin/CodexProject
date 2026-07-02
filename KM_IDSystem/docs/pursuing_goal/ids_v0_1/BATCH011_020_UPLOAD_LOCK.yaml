@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T19:23:34Z"
+updated_at_utc: "2026-07-02T19:33:14Z"
 status: "in_progress_no_github_upload"
 
 repository:
@@ -181,14 +181,16 @@ stage_progress:
     completed_phases:
       - "Phase 1"
       - "Phase 2"
-    next_phase: "Phase 3"
-    current_task_id: "IDS-V0_1-STAGE017-P2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE017-P3"
     acceptance_id: "ACC-STAGE-017"
-    acceptance_status: "phase2_regression_slice_complete"
+    acceptance_status: "phase3_scenario_validation_complete"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE2_REGRESSION_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE3_SCENARIO_VALIDATION.md"
       - "KM_IDSystem/scripts/check_original_regression.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage017_original_regression.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_PHASE4_CLOSEOUT.md"
@@ -212,5 +214,5 @@ stage_progress:
     evidence_refs: []
 
 decision:
-  current_run: "STAGE-017 Phase 2 completed locally with a metadata-only original-material regression preflight for explicit file:// inputs, repeated scan, resume checkpoint, offline drive, hash drift, and blocked-source states; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, app entries are reinstalled, and batch-gated."
-  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 through STAGE-016 complete locally and STAGE-017 Phase 1-2 complete locally; STAGE-017 Phase 3-4 and STAGE-018..020 remain pending."
+  current_run: "STAGE-017 Phase 3 completed locally with scenario validation for same-file/same-hash, same-name/different-hash, same-hash/different-path, matching resume checkpoint, offline drive, checkpoint hash drift, duplicate import no-persistence, and original hash stability; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, app entries are reinstalled, and batch-gated."
+  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 through STAGE-016 complete locally and STAGE-017 Phase 1-3 complete locally; STAGE-017 Phase 4 and STAGE-018..020 remain pending."
