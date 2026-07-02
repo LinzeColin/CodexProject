@@ -892,6 +892,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("open PR 由 enablement preflight 自动观察为 0", mvp_prep)
         self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp_prep)
         self.assertNotIn("## 09 推荐第一轮 Run Contract", mvp_prep)
+        self.assertIn(
+            "目标测试、project governance、governance sync、`python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1`、生产边界复核",
+            mvp_prep,
+        )
+        self.assertNotIn("`verify_acceptance_bundle --require-zero P0 P1`", mvp_prep)
         self.assertIn("MVP 准备与复审修补](./MVP准备与复审修补.md)", readme)
         self.assertRegex(
             readme,
