@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 1
+
+- Added `docs/product/memory_starfield_c3_spike_contract.md` to define the
+  Memory Starfield C3 isolated prototype contract for Stage 9 Phase 1.
+- Added `docs/acceptance/memory_starfield_c3_spike_acceptance.md`.
+- Added `validate:v1.1.6-stage9-phase1`.
+- Added v1.1.6 continuity notes to
+  `apps/memory-atlas/src/experiments/memory-starfield-spike/README.md`.
+- Stage 9 Phase 1 status:
+  `phase_9_1_memory_starfield_c3_spike_ready_pending_stage_review`.
+
+No production integration, runtime UI change, CSS change, browser screenshot
+run, production build, local app install, installer run, Cloudflare live
+deploy, Access policy change, raw/private data read, direct writeback, agent
+apply, Stage 9 review, Stage 10 work or No GitHub main upload was added.
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 8 Review
 
 - Added `validate:v1.1.6-stage8` to pin Stage 8 Phase 1 contract,
