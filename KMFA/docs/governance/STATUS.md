@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s02-stage-review`
-- current_stage: `S02`
-- current_phase: `v0.1.3 Stage 2｜整体复审`
-- status: `local_s02_stage_review_passed_no_go_overall_upload_deferred`
+- version: `0.1.3-s03p1-file-import-register`
+- current_stage: `S03`
+- current_phase: `v0.1.3 S03-P1｜文件型导入登记`
+- status: `local_s03p1_file_import_register_passed_no_go_overall_upload_deferred`
 - production_ready: `false`
 - github_upload_ready: `false_overall_completion_upload_deferred`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -51,6 +51,7 @@
 - v0.1.3 S02-P2 raw mapping/value matching readiness 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S02_P2_RAW_MAPPING_READINESS/`；只读解析 raw ZIP/XLSX 容器和表结构，公开证据只记录 raw_files=5、zip_openable=3、workbooks_parseable=25、sheets_seen=4198 等聚合计数；私有 schema/header/mapping diagnostic 位于 git-ignored `KMFA/.codex_private_runtime/`，value matching 仍为 `blocked_authorized_mapping_required`，本轮未执行 raw row-value extraction、Stage 2 review、GitHub upload、正式报告或业务执行。
 - v0.1.3 S02-P3 data quality/error gate 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S02_P3_DATA_QUALITY_ERROR_GATE/`；基于 S02-P1/S02-P2 public-safe manifest 和 Q0-Q5/A-D/report release gate policy，当前锁定为 data quality `Q2`、report grade `D`、release permission `blocked`；本 phase 未读取 raw 目录，未执行 raw value matching、Stage 2 review、GitHub upload、正式报告、lineage full check 或业务执行。
 - v0.1.3 Stage 2 整体复审已本地完成，证据位于 `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/`；复审复跑 S02-P1/S02-P2/S02-P3 validators 和 Stage 2 review validator，确认 phase_results 全部 PASS、findings_open=0、findings_fixed=0，继续保持 data quality `Q2`、report grade `D`、release permission `blocked`；本轮未执行 GitHub upload、S03-P1、raw value matching、正式报告、lineage full check 或业务执行。
+- v0.1.3 S03-P1 文件型导入登记已本地完成，证据位于 `KMFA/stage_artifacts/V013_S03_P1_FILE_IMPORT_REGISTER/`；本 phase 使用临时合成文件重放文件登记、metadata 必需字段、zip traversal 防护和 WPS/OLE 提示，未读取或写入 raw data inbox，未公开 raw 文件名、raw hash、字段/表头明文、row values 或业务值，未执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - 项目级 raw data boundary 已锁定：`/Users/linzezhang/Downloads/KMFA_MetaData` 是用户本机 KMFA 财务原始数据入口，Codex 只能只读读取，不得修改、删除、移动或向该目录写入；Codex 生成的私有诊断和额外文件只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
@@ -143,7 +144,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 Stage 2 整体复审已本地完成；下一轮只能执行 `v0.1.3 S03-P1` 或用户明确指定的单一 phase，不得跳到 GitHub upload、正式报告、lineage full check、raw value matching、live connector 或业务执行；GitHub upload 延后到整体完成 gate。
+- v0.1.3 S03-P1 已本地完成；下一轮只能执行 `v0.1.3 S03-P2` 或用户明确指定的单一 phase，不得跳到 S03-P3、Stage 3 review、GitHub upload、正式报告、lineage full check、raw value matching、live connector 或业务执行；GitHub upload 延后到整体完成 gate。
 
 ## 阻塞条件
 

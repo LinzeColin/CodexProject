@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s03p1-file-import-register - 2026-07-02
+
+- 完成 `v0.1.3 S03-P1｜文件型导入登记` 本地验证：基于既有 `file_import_register.py` 能力，使用临时合成文件重放 `zip/xlsx/xls/csv/pdf` 登记、metadata 必需字段、zip traversal 防护和 WPS/OLE 提示。
+- 新增 `KMFA/tools/v013_s03_p1_file_import_register.py`、`KMFA/tools/check_v013_s03_p1_file_import_register.py`、`KMFA/tests/test_v013_s03_p1_file_import_register.py` 和 `KMFA/stage_artifacts/V013_S03_P1_FILE_IMPORT_REGISTER/`。
+- 本 phase 不读取或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，公开证据只记录能力、状态、布尔门禁和 validator 结果，不公开 raw 文件名、raw hash、ZIP member 名、sheet 名、字段/表头明文、row values 或业务值。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S03-P2` 或用户明确指定的单一 phase。
+
 ## 0.1.3-s02-stage-review - 2026-07-02
 
 - 完成 `v0.1.3 Stage 2｜整体复审` 本地验证：复跑 S02-P1 raw readiness、S02-P2 raw mapping readiness、S02-P3 data quality/error gate 和 Stage 2 review validator，确认三个 phase 均为 PASS，review findings open/fixed 均为 0。

@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260702-V013-S02-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260702-V013-S03-P1-FILE-IMPORT-REGISTER"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "54219915c038e645327f6f4d57787227c205a142"
+source_base_commit: "c7388ae5683af60ec925801bd6cb7f2c03bc7b0e"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S18UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-02T17:02:47+10:00"
-generator_version: "manual-v013-s02-stage-review"
+snapshot_event_time: "2026-07-02T17:20:00+10:00"
+generator_version: "manual-v013-s03p1-file-import-register"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 362
+    total_active_parameters: 370
     total_active_formulas: 52
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
@@ -73,6 +73,8 @@ dimensions:
       - "KMFA/tools/check_s06_p3_validation_evidence.py"
       - "KMFA/stage_artifacts/V013_S02_P3_DATA_QUALITY_ERROR_GATE/human/test_results.md"
       - "KMFA/tools/check_v013_s02_p3_data_quality_error_gate.py"
+      - "KMFA/stage_artifacts/V013_S03_P1_FILE_IMPORT_REGISTER/human/test_results.md"
+      - "KMFA/tools/check_v013_s03_p1_file_import_register.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
@@ -139,6 +141,7 @@ dimensions:
       - "KMFA/tools/check_report_grade_gate.py"
       - "KMFA/tools/check_required_html.py"
       - "KMFA/tools/file_import_register.py"
+      - "KMFA/tools/check_v013_s03_p1_file_import_register.py"
       - "KMFA/tools/source_check_matrix.py"
       - "KMFA/tools/source_priority.py"
       - "KMFA/tools/amount_tools.py"
