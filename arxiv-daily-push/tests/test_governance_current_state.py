@@ -957,6 +957,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("runtime_observation_mode=auto_observed", model_params)
         self.assertIn("open_pr_observation_mode=auto_observed", model_params)
         self.assertIn("adp_allow_smtp_send_environment_raw", model_params)
+        self.assertIn("open_pr_observation_errors", mvp_prep)
+        self.assertIn("runtime_observation_errors", mvp_prep)
+        self.assertIn("具体错误", mvp_prep)
+        self.assertIn("open_pr_observation_errors_promoted_to_blocking_reasons=true", model_params)
+        self.assertIn("runtime_observation_errors_promoted_to_blocking_reasons=true", model_params)
 
 
 if __name__ == "__main__":

@@ -295,6 +295,48 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertIsNone(count)
         self.assertEqual(errors, ["open_pr_count_observation_failed"])
 
+    def test_verify_daily_operation_enablement_preflight_surfaces_observation_errors_as_blockers(self) -> None:
+        tool = load_enablement_preflight_tool()
+        labels = {
+            "com.linzezhang.adp.daily": True,
+            "com.linzezhang.adp.health": True,
+            "com.linzezhang.adp.watchdog": True,
+        }
+        stdout = io.StringIO()
+
+        with (
+            mock.patch.object(
+                tool,
+                "_observe_open_pr_count",
+                return_value=(None, ["open_pr_count_observation_failed"]),
+            ),
+            mock.patch.object(
+                tool,
+                "observe_runtime_boundary",
+                return_value=(labels, None, ["background_process_observation_failed"]),
+            ),
+            mock.patch("sys.stdout", stdout),
+        ):
+            exit_code = tool.main(
+                [
+                    "--root",
+                    str(REPO_ROOT),
+                    "--generated-at",
+                    "2026-07-02T21:05:00+10:00",
+                    "--adp-allow-smtp-send",
+                    "UNSET",
+                ]
+            )
+
+        self.assertEqual(exit_code, 2)
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(payload["open_pr_observation_errors"], ["open_pr_count_observation_failed"])
+        self.assertEqual(payload["runtime_observation_errors"], ["background_process_observation_failed"])
+        self.assertIn("open_pr_count_not_zero_or_unknown", payload["blocking_reasons"])
+        self.assertIn("open_pr_count_observation_failed", payload["blocking_reasons"])
+        self.assertIn("background_adp_process_count_not_zero_or_unknown", payload["blocking_reasons"])
+        self.assertIn("background_process_observation_failed", payload["blocking_reasons"])
+
     def test_verify_daily_operation_enablement_preflight_truthy_smtp_env_overrides_false_like_argument(self) -> None:
         tool = load_enablement_preflight_tool()
         labels = {
