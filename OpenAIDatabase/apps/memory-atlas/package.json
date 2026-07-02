@@ -49,6 +49,7 @@
     "validate:v1.1.6-stage9-phase2": "node scripts/validate_memory_atlas_v1_1_6_stage9_phase2.cjs",
     "validate:v1.1.6-stage9-phase3": "node scripts/validate_memory_atlas_v1_1_6_stage9_phase3.cjs",
     "validate:v1.1.6-stage9-phase4": "node scripts/validate_memory_atlas_v1_1_6_stage9_phase4.cjs",
+    "validate:v1.1.6-stage9": "node scripts/validate_memory_atlas_v1_1_6_stage9.cjs",
     "validate:memory-river-evidence": "node scripts/validate_memory_river_evidence_layers.mjs",
     "validate:memory-river-interaction": "node scripts/validate_memory_river_interaction.mjs",
     "validate:memory-river-rendering": "node scripts/validate_memory_river_rendering.mjs",

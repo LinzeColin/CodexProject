@@ -3024,6 +3024,64 @@ Stage 9 整体复审已确认：
 - 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
 
+## 65. v1.1.6 Stage 9 整体复审门槛
+
+状态：`stage_9_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Stage 9 复审通过只表示四个 C3 原型 phase 与 Universe State fixture
+  continuity 已被 deterministic validator 和 review artifact 固定。
+- Stage 9 复审不替换 production Galaxy、Timeline、Data Map 或 shared-state
+  runtime integration。
+
+输入：
+
+- `docs/product/memory_starfield_c3_spike_contract.md`
+- `docs/product/memory_river_c3_spike_contract.md`
+- `docs/product/data_map_c3_spike_contract.md`
+- `docs/product/universe_state_fixture_continuity_contract.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage9_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9.cjs`
+
+处理方法：
+
+- 检查 Stage 9 Phase 1-4 合同、验收和 validator 是否齐全。
+- 检查 production `src` 是否没有引用 Stage 9 isolated experiments。
+- 检查 review artifact、delivery、feature、development、model parameter、
+  changelog 和 package script 是否一致。
+- 使用 `validate:v1.1.6-stage9` 固定 review artifact、记录、改动范围和
+  GitHub main 上传前边界。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9-REVIEW-001 stage9_required_validator = validate:v1.1.6-stage9`
+- `PARAM-MA-V116-S9-REVIEW-002 stage9_review_status = stage_9_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S9-REVIEW-003 stage9_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage9_review.md`
+- `PARAM-MA-V116-S9-REVIEW-004 stage9_allowed_change_scope = records;reviews;validators;package_script`
+- `PARAM-MA-V116-S9-REVIEW-005 stage9_next_gate = GitHub main upload before Stage 10`
+- `PARAM-MA-V116-S9-REVIEW-006 upload_boundary = no_stage10_until_stage9_upload_verified`
+
+输出：
+
+- Stage 9 review artifact。
+- Stage 9 stage-level validator。
+- Stage 9 review package script。
+- Stage 9 review governance records。
+
+边界：
+
+- 本 review 不修改 production UI、CSS、路由、导航、feature flag 或 app shell。
+- 本 review 不导入 experiment 到 app shell。
+- 本 review 不修改 Universe State score formula、parameter YAML、input fixture、
+  sample 或 schema。
+- 本 review 不运行 production build、installer、本地 app install、browser screenshot
+  或 Cloudflare deploy。
+- 本 review 不读取 raw/private/cookie/session/secret 数据。
+- 本 review 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 review 不进入 Stage 10，不执行 GitHub main 上传。
+
 ## 63. v1.1.6 Stage 9 Phase 3 Data Map C3 隔离原型参数
 
 状态：`phase_9_3_data_map_c3_spike_ready_pending_stage_review`。
