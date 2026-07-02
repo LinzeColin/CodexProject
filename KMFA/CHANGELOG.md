@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s02p2-raw-mapping-readiness - 2026-07-02
+
+- 完成 `v0.1.3 S02-P2｜raw mapping/value matching readiness` 本地验证：只读解析 `/Users/linzezhang/Downloads/KMFA_MetaData` 的 ZIP/XLSX 容器和表结构，公开证据仅记录 raw_files=5、zip_openable=3、zip_member_count=95、workbooks_seen=48、workbooks_parseable=25、sheets_seen=4198 等聚合计数。
+- 新增 `KMFA/tools/v013_s02_p2_raw_mapping_readiness.py`、`KMFA/tools/check_v013_s02_p2_raw_mapping_readiness.py`、`KMFA/tests/test_v013_s02_p2_raw_mapping_readiness.py` 和 `KMFA/stage_artifacts/V013_S02_P2_RAW_MAPPING_READINESS/`。
+- 私有 schema/header/mapping diagnostic 只写入 `KMFA/.codex_private_runtime/v013_s02_p2_raw_mapping_readiness/`；公开仓库不包含 raw 文件名、ZIP member 名、sheet 名、field/header 明文、row values、raw hash 或业务值。
+- 本 phase 将 raw value matching 锁定为 `blocked_authorized_mapping_required`：S02-P2 只建立私有 schema/header readiness，不抽取 row value；值级对账仍需后续 owner/授权语义映射和专用 parser phase。
+- 本轮不执行 S02-P3、Stage 2 整体复审、GitHub upload、rebase、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+
 ## 0.1.3-s02p1-raw-readiness - 2026-07-02
 
 - 完成 `v0.1.3 S02-P1｜raw 数据只读清单与准备度` 本地验证：只读扫描 `/Users/linzezhang/Downloads/KMFA_MetaData`，确认 raw 目录存在且可读，当前公开汇总为 5 个文件、总大小 62788056 bytes、扩展名计数 `.xlsx=2` 和 `.zip=3`。
