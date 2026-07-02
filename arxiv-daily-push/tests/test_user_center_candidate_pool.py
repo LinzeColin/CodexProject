@@ -21,6 +21,7 @@ CANDIDATE_POOL_PAGE = USER_CENTER / "截至今日候选池.md"
 DATA_SOURCE_PAGE = USER_CENTER / "数据源与板块健康.md"
 REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
 TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
+FINAL_BUNDLE_STATUS_PAGE = USER_CENTER / "最终验收包与S3阻断.md"
 RESTORE_PATH_SAFETY_PAGE = USER_CENTER / "恢复路径安全扫描.md"
 RESTORE_ATOMIC_REPLACEMENT_PAGE = USER_CENTER / "恢复原子替换扫描.md"
 OUTBOX_DELIVERY_PAGE = USER_CENTER / "事务发件箱与消息ID扫描.md"
@@ -2241,6 +2242,56 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             self.assertNotIn("| Stage 2 | 尚未正式生产通过 |", text)
             self.assertNotIn("是否现在宣称 Stage 2 生产通过 | 不接受", text)
             self.assertNotIn("Final bundle 已公开 S2PLT03 capture plan summary，但它仍 blocked", text)
+
+    def test_final_bundle_status_page_is_owner_visible_and_current(self):
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+        one_look = (USER_CENTER / "一看三查.md").read_text(encoding="utf-8")
+        roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
+
+        self.assertTrue(FINAL_BUNDLE_STATUS_PAGE.exists())
+        page = FINAL_BUNDLE_STATUS_PAGE.read_text(encoding="utf-8")
+        self.assertRegex(
+            page,
+            r"^# 最终验收包与 S3 阻断\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n",
+        )
+        for text in (readme, one_look, roadmap):
+            self.assertIn("[最终验收包与 S3 阻断](./最终验收包与S3阻断.md)", text)
+
+        required_links = (
+            "[final bundle manifest](../../FINAL_ACCEPTANCE_BUNDLE/manifest.json)",
+            "[P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)",
+            "[S2PLT04 completion report](../../FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json)",
+            "[Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)",
+            "[DAILY_OPERATION 授权门](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json)",
+            "[S3 handoff](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md)",
+            "[CURRENT.yaml](../docs/pursuing_goal/CURRENT.yaml)",
+        )
+        for link in required_links:
+            self.assertIn(link, page)
+
+        required_facts = (
+            "final bundle | `status=pass` / `missing_items=[]`",
+            "P0/P1 zero-proof | `P0=0` / `P1=0`",
+            "S2PLT04 | `S2PLT04_COMPLETED_NO_PRODUCTION_ACCEPTANCE`",
+            "Stage 2 integrated acceptance | `stage2_integrated_production_accepted=true`",
+            "DAILY_OPERATION | `daily_operation_enabled=false`",
+            "persistent_daily_operation_authorization_missing",
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+            "不得把 final bundle pass、zero-proof 或 S2PLT04 完成解读成 S3/DAILY_OPERATION 已进入",
+        )
+        for fact in required_facts:
+            self.assertIn(fact, page)
+
+        forbidden_facts = (
+            "| S3/DAILY_OPERATION | 已进入",
+            "当前状态 | S3/DAILY_OPERATION 已进入",
+            "daily_operation_enabled=true",
+            "real_smtp_send_enabled=true",
+            "scheduler_install_enabled=true",
+            "Release 已上传",
+        )
+        for fact in forbidden_facts:
+            self.assertNotIn(fact, page)
 
     def test_user_center_exposes_board_data_source_catalog(self):
         controls = load_owner_controls(CONTROLS)
