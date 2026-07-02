@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE015"
-current_phase_id: "IDS-STAGE015-P1"
-current_task_id: "IDS-V0_1-STAGE015-P1"
-next_gate_id: "IDS-STAGE015-P2-GATE"
-total_estimated_hours: 112
-completed_estimated_hours: 111
+current_phase_id: "IDS-STAGE015-P2"
+current_task_id: "IDS-V0_1-STAGE015-P2"
+next_gate_id: "IDS-STAGE015-P3-GATE"
+total_estimated_hours: 114
+completed_estimated_hours: 113
 stages:
   -
     stage_id: "S5"
@@ -3455,20 +3455,23 @@ stages:
       - "引入虚拟 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
       - "在 STAGE-011..020 未完成、复审和修复前上传 GitHub main"
     stop_gate:
-      gate_id: "IDS-STAGE015-P1-GATE"
+      gate_id: "IDS-STAGE015-P2-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
         - "P0 taskpack source 和 STAGE-015 execution index 已绑定"
         - "重复文件检测字段 source_uri、sha256、file_size、mtime、first_seen_at 已定义"
         - "00_ORIGINAL_RAW_DATA 默认只读、不移动、不删除、不覆盖"
-        - "重复检测只作为 metadata comparison 合同，不复制 raw payload"
-        - "同 hash 不同路径、同名不同 hash、重复批量导入、版本冲突和失败状态已定义"
-        - "Phase 1 未读取、列出、hash、打开、复制、移动、删除或修改真实原始资料或 IDS_MetaData 内容"
-        - "Phase 1 未写 duplicate ledger、manifest/database、未创建 document/chunk/job、未进入 Phase 2"
+        - "重复检测已实现 metadata-only 最小切片，不复制 raw payload"
+        - "同 hash 不同路径、同名不同 hash、重复批量导入、版本冲突和失败状态可由 explicit input 报告"
+        - "Phase 2 未读取、列出、hash、打开、复制、移动、删除或修改 IDS_MetaData 原始数据库内容"
+        - "Phase 2 未写 duplicate ledger、manifest/database、未创建 document/chunk/job、未进入 Phase 3"
         - "BATCH011_020_UPLOAD_LOCK.yaml 仍保持 push_allowed=false"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE015_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE015_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE015_PHASE2_DUPLICATE_SLICE.md"
+        - "KM_IDSystem/scripts/check_duplicate_files.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage015_duplicate_detection.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE014_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE4_CLOSEOUT.md"
@@ -3525,3 +3528,58 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果把重复检测合同误读为生产去重授权，后续可能删除、移动、覆盖原始文件或写入未受控 duplicate ledger/database。"
             rollback: "Revert IDS-STAGE015-P1 contract, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, persisted manifests, evidence ledgers, audit logs, delivered reports, runtime data, app entries, GitHub state, or Phase 2."
+      -
+        phase_id: "IDS-STAGE015-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现 metadata-only 重复文件检测最小切片，继承 STAGE-013 指纹和 STAGE-014 manifest 边界，在 explicit file:// 输入上分类重复、冲突、重复导入和异常状态。"
+        status: "completed"
+        stop_conditions:
+          - "STAGE-015 Phase 1 未完成"
+          - "实现需要递归扫描、读取 raw metadata、读取 IDS_MetaData 内容、写 runtime 输出、写 duplicate ledger/database、创建 document/chunk/job 或调用外部 API"
+          - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "一次 run 进入 Phase 3"
+        stop_gate:
+          gate_id: "IDS-STAGE015-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "explicit local file:// 输入可产生 metadata-only duplicate identity/report"
+            - "same hash different path 和 same basename different hash 均有显式状态"
+            - "repeated batch import 幂等且 document/chunk/job/duplicate 写入 delta 均为 0"
+            - "missing/blocked/IDS_MetaData 输入产生显式 failure state"
+            - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false，未进入 Phase 3"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE015-P2"
+            name: "重复文件 metadata-only 最小接口"
+            objective: "在不写数据库、manifest、duplicate ledger 或运行输出的前提下，实现可测试的重复文件 metadata comparison 切片。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.75%"
+            dependencies:
+              - "IDS-V0_1-STAGE015-P1"
+              - "IDS-V0_1-STAGE014-P4"
+              - "IDS-V0_1-STAGE013-P4"
+            acceptance_ids:
+              - "ACC-STAGE-015"
+            test_commands:
+              - "RED: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage015_duplicate_detection.py -q"
+              - "GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage015_duplicate_detection.py -q"
+              - "RED/GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py -q"
+              - "Stage005 validator report"
+              - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "py_compile duplicate script and Stage005 validator"
+              - "events JSONL parse"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+              - "old underscored task-id variant scan"
+            test_results: "Focused RED failed as expected with 7 Stage015 tests because check_duplicate_files.py did not exist. Focused GREEN passed 7 Stage015 tests after implementing metadata-only duplicate detection. Stage005 RED failed as expected with 25 tests and 4 failures because the validator had not yet accepted IDS-V0_1-STAGE015-P2, the new focused test, or the new duplicate-check script path. Stage005 GREEN passed 25 tests. Stage005 validator returned valid=true with issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], and unexpected_changed_paths=[]. Full v0.1 pursuing-goal discover passed 89 tests. py_compile passed for check_duplicate_files.py and Stage005 validator. events JSONL parse returned events_jsonl_ok. check-render returned drift_count=0 and reference_issue_count=0. git diff --check passed. old underscored task-id variant scan returned no hits. semantic validate remains diagnostic-only with 29 known sparse root or registered-project missing paths and no new KM_IDSystem semantic error. Legacy path/name hits remain stale-path, migration-policy, compatibility-scan, or do-not-revive references only. Phase 2 did not read, list, hash, open, copy, move, delete, modify, dump, scan, or commit IDS_MetaData raw metadata content. No service start, dependency install, duplicate ledger/database write, document/chunk/job creation, runtime output, external API call, GitHub upload, PR, merge, app reinstall, or Phase 3 work was performed."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_duplicate_files.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage015_duplicate_detection.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE015_PHASE2_DUPLICATE_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果后续把 metadata-only 报告误接到生产删除、合并或覆盖动作，会破坏只读原始资料边界。"
+            rollback: "Revert IDS-STAGE015-P2 script, focused test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, duplicate ledgers, persisted manifests, databases, reports, runtime data, app entries, GitHub state, or Phase 3."
