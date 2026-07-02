@@ -1,5 +1,17 @@
 # Codex Setup for Governed Development
 
+## Owner 首屏
+
+- 用途：提供 CodexProject 的治理框架启动文档，确保 agent 与 owner 使用同一套可复现约定。
+- 当前事实源：`AGENTS.md`、`docs/governance/STANDARD.md`、以及本仓库治理脚本/工作流。
+- 当前状态：本文件已覆盖 review-3 约束、个人化配置路径和治理流程入口；`S6PB-GATE` 已记录为 `in progress`（受任务链影响可能再更新）。
+- 下一步：先确认 `~/.codex/config.toml` 与 `./.codex/config.template.toml` 映射关系，再运行
+  `python3 scripts/governance_setup_doctor.py --json` 做本机可复现性自检。
+- 不要改：
+  - 用户级私人配置文件（如 `~/.codex/config.toml`）
+  - 未经过 Task Pack 授权的生产或部署路径
+- 未知：是否已同步最新 GitHub branch protection 与 CI 保护证据需依赖可核验的认证输出。
+
 This repository stores the review-3 governance framework in GitHub. Local Codex
 Personalization and `~/.codex/config.toml` remain user-level settings, but the
 canonical wording is backed up here so agents can reproduce the setup.
