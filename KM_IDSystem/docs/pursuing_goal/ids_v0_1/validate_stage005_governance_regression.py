@@ -32,6 +32,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/governance/roadmap.yaml",
     "KM_IDSystem/docs/governance/events.jsonl",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
@@ -68,6 +69,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE005-P2-20260702-001",
     "EVT-IDS-V0_1-STAGE005-P3-20260702-001",
     "EVT-IDS-V0_1-STAGE005-P4-20260702-001",
+    "EVT-IDS-V0_1-BATCH-001-010-IDS-METADATA-BOUNDARY-20260702-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -82,6 +84,8 @@ FORBIDDEN_RUNTIME_PREFIXES = (
 ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
     "KM_IDSystem/docs/governance/roadmap.yaml",
     "KM_IDSystem/docs/governance/events.jsonl",
     "KM_IDSystem/功能清单.md",
@@ -203,6 +207,13 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"' in roadmap_text
         and 'next_gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"' in roadmap_text
     )
+    batch_uploaded_to_main = (
+        'status: "uploaded_to_github_main"' in batch_text
+        and 'merged_sha: "2d418ccba1e16bcb940387c6e8152668fc2dccaf"' in batch_text
+        and 'current_task_id: "IDS-V0_1-BATCH-001-010-MAIN-MERGED"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE011-P1-GATE"' in roadmap_text
+    )
+    batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
         'STAGE-005:\n    status: "in_progress"' in batch_text
@@ -222,33 +233,54 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         'current_phase_id: "IDS-STAGE005-P2"' in roadmap_text
         or 'current_phase_id: "IDS-STAGE005-P3"' in roadmap_text
         or 'current_phase_id: "IDS-STAGE005-P4"' in roadmap_text
-        or batch_upload_gate_active
+        or batch_terminal_state
     )
     current_roadmap_task_allowed = (
         'current_task_id: "IDS-V0_1-STAGE005-P2"' in roadmap_text
         or 'current_task_id: "IDS-V0_1-STAGE005-P3"' in roadmap_text
         or 'current_task_id: "IDS-V0_1-STAGE005-P4"' in roadmap_text
-        or batch_upload_gate_active
+        or batch_terminal_state
     )
     next_gate_allowed = (
         'next_gate_id: "IDS-STAGE005-P3-GATE"' in roadmap_text
         or 'next_gate_id: "IDS-STAGE005-P4-GATE"' in roadmap_text
         or 'next_gate_id: "IDS-STAGE006-P1-GATE"' in roadmap_text
-        or batch_upload_gate_active
+        or batch_terminal_state
     )
     return {
         "stage005_active_or_complete": stage005_active_or_complete,
         "phase2_completed": phase2_completed,
         "current_task_allowed": current_task_allowed,
         "next_phase_allowed": next_phase_allowed,
-        "push_locked": "push_allowed: false" in batch_text or batch_upload_gate_active,
+        "push_locked": "push_allowed: false" in batch_text or batch_terminal_state,
         "current_stage005": 'current_stage_id: "IDS-STAGE005"' in roadmap_text
-        or batch_upload_gate_active,
+        or batch_terminal_state,
         "current_phase_allowed": current_phase_allowed,
         "current_roadmap_task_allowed": current_roadmap_task_allowed,
         "next_gate_allowed": next_gate_allowed,
         "roadmap_phase2_completed": 'phase_id: "IDS-STAGE005-P2"' in roadmap_text
         and 'status: "passed_with_local_evidence"' in roadmap_text,
+    }
+
+
+def evaluate_data_boundary(root_lock_text: str, batch_text: str, boundary_text: str) -> dict[str, bool]:
+    raw_root = "/Users/linzezhang/Downloads/IDS_MetaData"
+    boundary_ref = "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+    combined = "\n".join((root_lock_text, batch_text, boundary_text))
+    boundary_mutation_ban = (
+        "do not modify" in boundary_text
+        or "must not create, edit, delete, move" in boundary_text
+        or "Raw directory content modified: `no`" in boundary_text
+    )
+    return {
+        "raw_root_recorded": raw_root in combined,
+        "boundary_ref_recorded": boundary_ref in root_lock_text and boundary_ref in batch_text,
+        "read_only_policy_recorded": "read-only" in combined and boundary_mutation_ban,
+        "raw_content_not_committed": "raw database content is not committed" in root_lock_text
+        and "Raw directory content copied into GitHub: `no`" in boundary_text,
+        "real_data_only_policy_recorded": "real_data_only_policy" in root_lock_text
+        and "Real Data Only Policy" in boundary_text
+        and "fake business data" in combined,
     }
 
 
@@ -280,11 +312,18 @@ def build_report(root: Path | None = None) -> dict:
     batch_text = (root / "docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml").read_text(
         encoding="utf-8"
     )
+    root_lock_text = (root / "docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml").read_text(
+        encoding="utf-8"
+    )
+    boundary_text = (
+        root / "docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+    ).read_text(encoding="utf-8")
     roadmap_text = (root / "docs/governance/roadmap.yaml").read_text(encoding="utf-8")
     readme_text = (root / "README.md").read_text(encoding="utf-8")
     handoff_text = (root / "docs/HANDOFF.md").read_text(encoding="utf-8")
 
     phase_state_checks = evaluate_phase_state(batch_text, roadmap_text)
+    data_boundary_checks = evaluate_data_boundary(root_lock_text, batch_text, boundary_text)
     owner_text_checks = {
         "readme_current_name": CURRENT_PRODUCT_NAME in readme_text,
         "handoff_current_name": CURRENT_PRODUCT_NAME in handoff_text,
@@ -308,6 +347,8 @@ def build_report(root: Path | None = None) -> dict:
         issues.append("unexpected KM_IDSystem path changed")
     if not all(phase_state_checks.values()):
         issues.append("phase state is not within the accepted STAGE-005 Phase 2-4 progression")
+    if not all(data_boundary_checks.values()):
+        issues.append("IDS metadata raw data boundary or real-data-only policy is incomplete")
     if not all(owner_text_checks.values()):
         issues.append("owner-facing identity or legacy policy text is missing")
     if any(count == 0 for count in surface_counts.values()):
@@ -322,6 +363,7 @@ def build_report(root: Path | None = None) -> dict:
         "phase_state_checks": phase_state_checks,
         "changed_paths": changed_paths,
         "event_json_errors": event_json_errors,
+        "data_boundary_checks": data_boundary_checks,
         "forbidden_changed_paths": forbidden_changed_paths,
         "issues": issues,
         "missing_event_ids": missing_event_ids,

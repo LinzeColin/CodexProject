@@ -2,9 +2,9 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE010"
-current_phase_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
-current_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
-next_gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"
+current_phase_id: "IDS-V0_1-BATCH-001-010-MAIN-MERGED"
+current_task_id: "IDS-V0_1-BATCH-001-010-MAIN-MERGED"
+next_gate_id: "IDS-STAGE011-P1-GATE"
 total_estimated_hours: 77
 completed_estimated_hours: 77
 stages:
@@ -2349,16 +2349,18 @@ stages:
     stage_id: "IDS-V0_1-BATCH-001-010"
     name: "STAGE-001..010 批次上传门"
     person_goal: "十个 Stage 完成并解决复审问题后，作为一个批次上传到 GitHub main。"
-    status: "local_batch_upload_gate_passed_pending_github_merge"
+    status: "uploaded_to_github_main"
     stop_conditions:
       - "任一 STAGE-001..010 本地验收或证据缺失"
       - "focused test、validator、render、diff 或 changed-scope 检查失败"
       - "GitHub 仍有 open PR/issue"
       - "远端 main 与本地分支分叉且尝试直接覆盖 main"
       - "需要展开无关项目目录才能上传"
+      - "尝试读取、扫描、复制、改写或删除 /Users/linzezhang/Downloads/IDS_MetaData 原始数据库内容"
+      - "引入虚拟 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
     stop_gate:
       gate_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
-      status: "passed_locally_pending_github_merge"
+      status: "passed_remote_merged"
       pass_conditions:
         - "STAGE-001..010 均有 4 个 phase 完成记录"
         - "ACC-STAGE-001..010 均本地通过"
@@ -2366,33 +2368,39 @@ stages:
         - "batch gate 验证通过"
         - "通过 PR 合并而非直接覆盖 diverged main"
         - "合并后无 open PR/issue"
+        - "main、local branch 和 remote feature branch 指向同一 merge SHA"
+        - "/Users/linzezhang/Downloads/IDS_MetaData 被记录为只读真实数据库源路径，且 raw content 未提交到 GitHub"
+        - "IDS runtime corpus、database-backed content、analytics inputs、reports、indexes、manifests 和 committed examples 只允许使用真实用户批准数据"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml"
         - "KM_IDSystem/docs/governance/events.jsonl"
     phases:
       -
         phase_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
         name: "批次上传门与 GitHub main 合并"
         objective: "验证 STAGE-001..010 的本地证据、测试和远端状态后，把该 10-stage 批次合并进 GitHub main tree。"
-        status: "local_gate_passed_pending_github_merge"
+        status: "uploaded_to_github_main"
         stop_conditions:
           - "本地 batch gate 未通过"
           - "GitHub PR 创建或合并失败"
           - "合并后仍有 open PR/issue"
         stop_gate:
           gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"
-          status: "pending_remote_merge"
+          status: "passed_remote_merged"
           pass_conditions:
             - "GitHub PR merged into main"
             - "No open PRs or issues remain"
             - "Local worktree is clean after upload"
+            - "origin/main and HEAD match"
         tasks:
           -
             task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
             name: "STAGE-001..010 批次上传门"
             objective: "完成 10-stage 批次上传前验证、PR/merge 路径选择和无遗留 PR/issue 检查。"
-            status: "local_gate_passed_pending_github_merge"
+            status: "uploaded_to_github_main"
             estimated_hours: 1
             total_hours_percent: "1.30%"
             dependencies:
@@ -2411,15 +2419,18 @@ stages:
             test_commands:
               - "batch lock completion and evidence-ref check"
               - "GitHub open PR/issue precheck"
+              - "test -d /Users/linzezhang/Downloads/IDS_MetaData"
               - "focused STAGE-001..010 unittests and validators"
               - "check-render --project KM_IDSystem"
               - "git diff --check"
               - "semantic validate diagnostic"
-            test_results: "Local batch gate precheck passed: STAGE-001..010 each have four completed phases and existing evidence refs; GitHub connector returned no open PRs and no open issues at gate start. origin/main and the local batch branch are diverged, so this gate requires PR merge rather than direct push to main. Gate validation exposed two non-product issues: system Python 3.9 cannot run backend tests that use Python 3.10 union syntax, and the Stage005 governance-regression validator did not yet allow the later batch-upload current state. A RED test was added for the batch gate state and the validator was minimally extended; GREEN run passed 5 tests. Final local validation passed: bundled Python focused batch tests ran 49 tests OK; ProductMetaDatabase and STAGE-003/004/005 validators returned valid=true; check-render returned drift_count=0; changed-scope and git diff --check passed; STAGE-010 CLI smoke returned PATH_CONTRACT_OK and scenario smoke returned overall_valid=true. Semantic validate remains a sparse-worktree diagnostic with the known 28 root/other-project missing-path errors and no KM_IDSystem semantic error. Remote merge evidence is produced by this run before final completion is claimed."
+            test_results: "Local batch gate precheck passed: STAGE-001..010 each have four completed phases and existing evidence refs; GitHub connector returned no open PRs and no open issues at gate start. origin/main and the local batch branch were diverged, so this gate used PR merge rather than direct push to main. Gate validation exposed non-product issues: system Python 3.9 cannot run backend tests that use Python 3.10 union syntax, and the Stage005 governance-regression validator did not yet allow the later batch-upload and post-merge terminal current states. RED tests were added for both states and the validator was minimally extended; final GREEN run passed 7 tests and validator returned valid=true. After user instruction, /Users/linzezhang/Downloads/IDS_MetaData was recorded as the local read-only real metadata database root, with a no raw-content commit/no scan/no modify policy and a real-data-only policy forbidding fake IDS business data, fake database rows, fake source documents, and fabricated evidence; existence check returned IDS_METADATA_ROOT_EXISTS and raw content was not read or changed. Final local validation passed: bundled Python focused batch tests ran 51 tests OK; ProductMetaDatabase and STAGE-003/004/005 validators returned valid=true; check-render returned drift_count=0; changed-scope and git diff --check passed; STAGE-010 CLI smoke returned PATH_CONTRACT_OK and scenario smoke returned overall_valid=true. Semantic validate remains a sparse-worktree diagnostic with return code 1, 29 known root/registered-project missing-path errors, and no KM_IDSystem semantic error. PR #270 merged into main at 2d418ccba1e16bcb940387c6e8152668fc2dccaf; post-merge open PRs=0 and open issues=0; local HEAD and origin/main match."
             evidence_refs:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml"
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
-            risk: "直接推送覆盖 diverged main，或在 GitHub PR/issue 未清理时进入 STAGE-011。"
-            rollback: "If upload fails before merge, close the PR or keep the blocker explicit and revert this gate commit locally if needed."
+            risk: "直接推送覆盖 diverged main，或在 GitHub PR/issue 未清理时进入 STAGE-011；误读、扫描、复制、改写或删除 IDS_MetaData 原始数据库；引入虚拟 IDS 业务数据或伪造证据。"
+            rollback: "If upload fails before merge, close the PR or keep the blocker explicit and revert this gate commit locally if needed. Reverting the IDS_MetaData boundary must only revert GitHub-tracked governance references and must not touch /Users/linzezhang/Downloads/IDS_MetaData."

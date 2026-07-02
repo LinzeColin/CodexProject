@@ -7,6 +7,7 @@
 - Gate checked at UTC: `2026-07-02T10:29:44Z`
 - Target repository: `LinzeColin/CodexProject`
 - Target branch: `main`
+- IDS metadata raw root: `/Users/linzezhang/Downloads/IDS_MetaData`
 
 ## Goal
 
@@ -25,6 +26,7 @@ and does not expand the sparse worktree.
 | Owner render | Passed. Must remain `drift_count=0` before upload. | `scripts/lean_governance.py check-render --project KM_IDSystem` |
 | Changed scope | Passed locally before this gate. This gate only touches `KM_IDSystem/` governance/evidence and owner files. | `git status`, changed-scope check |
 | GitHub open PR/issue precheck | Passed at gate start. GitHub connector returned no open PRs and no open issues for `LinzeColin/CodexProject`. | GitHub connector search |
+| IDS metadata raw data boundary | Passed. `/Users/linzezhang/Downloads/IDS_MetaData` exists locally and is recorded as a read-only real-data source path; raw database content was not read, scanned, copied, modified, or committed. | `IDS_METADATA_RAW_DATA_BOUNDARY.md`; `test -d /Users/linzezhang/Downloads/IDS_MetaData` |
 
 ## Remote Main Strategy
 
@@ -64,25 +66,30 @@ Before GitHub upload, run the focused batch validation:
 |---|---|---|---|
 | `BATCH001-010-GATE-F1` | Medium | The first batch test run used system Python 3.9, which cannot import backend code using Python 3.10 union type syntax such as `Path | None`. This is a runtime selection issue, not a product regression. | Rerun Python tests with the bundled Codex Python runtime for Python 3.10+ compatibility. |
 | `BATCH001-010-GATE-F2` | Medium | `validate_stage005_governance_regression.py` only allowed Stage005 Phase 2-4 current-state markers and rejected the later legal batch upload gate. | Added a RED test for the completed batch upload gate state, then minimally extended the validator whitelist for `IDS-V0_1-BATCH-001-010-UPLOAD-GATE` and the new gate evidence file. GREEN run: `Ran 5 tests ... OK`. |
+| `BATCH001-010-GATE-F3` | Medium | After PR #270 merged, the same validator needed to accept the terminal `IDS-V0_1-BATCH-001-010-MAIN-MERGED` state. | Added a RED test for the uploaded batch terminal state, then extended the same whitelist to require `uploaded_to_github_main`, the merge SHA, and `IDS-STAGE011-P1-GATE`. GREEN run: `Ran 6 tests ... OK`; validator returned `valid=true`. |
+| `BATCH001-010-GATE-F4` | High | The user identified `/Users/linzezhang/Downloads/IDS_MetaData` as the local real database root and prohibited raw data mutation/deletion plus fake IDS data. | Added a GitHub-tracked raw data boundary record, updated the v0.1 root lock and batch lock, and extended STAGE-005 governance regression coverage to require the path, read-only policy, and real-data-only rule. Raw directory content was not read, scanned, copied, modified, or committed. |
 
 ## Final Local Validation Evidence
 
 - bundled Python focused batch tests:
   - command: `python3 -B -m unittest` with STAGE-001 backend tests,
     ProductMetaDatabase tests, and STAGE-003 through STAGE-010 v0.1 tests.
-  - result: `Ran 49 tests ... OK`
+  - result: `Ran 51 tests ... OK`
 - validators:
   - `product_meta_database/validate_product_meta_database.py`: `valid=true`
   - `validate_stage003_finance_meta_rename.py`: `valid=true`
   - `validate_stage004_legacy_name_scan.py`: `valid=true`
   - `validate_stage005_governance_regression.py`: `valid=true`
+  - post-merge Stage005 validator terminal-state check: `Ran 7 tests ... OK`
+  - raw data boundary regression check: `IDS_METADATA_ROOT_EXISTS`; boundary
+    path and real-data-only policy are tracked in governance
 - owner render:
   - bundled Python `scripts/lean_governance.py check-render --project KM_IDSystem`
     returned `drift_count=0`.
 - changed-scope check:
   - changed files are limited to this gate artifact, batch lock, Stage005
-    validator/test forward-compatibility fix, roadmap, events, and the three
-    owner files.
+    validator/test forward-compatibility fix, IDS metadata boundary/root lock,
+    roadmap, events, and the three owner files.
 - formatting:
   - `git diff --check` passed.
 - STAGE-010 local path smoke:
@@ -91,8 +98,22 @@ Before GitHub upload, run the focused batch validation:
   - scenario smoke: `overall_valid=true`
 - semantic governance diagnostic:
   - sync validation: `errors=0`, `warnings=0`
-  - semantic validation: known 28 sparse-worktree/root/other-project missing
-    errors; no `KM_IDSystem` semantic error was reported.
+  - semantic validation: return code `1` with 29 known sparse-worktree/root/
+    registered-project missing errors and zero `KM_IDSystem` semantic errors.
+
+## Remote Merge Evidence
+
+- PR: `https://github.com/LinzeColin/CodexProject/pull/270`
+- PR title: `IDS v0.1 STAGE-001..010 batch upload`
+- PR head before merge: `812c2ef30d2eba87c9b2f72cdf2597e79b7ff11f`
+- GitHub merge SHA: `2d418ccba1e16bcb940387c6e8152668fc2dccaf`
+- Merge result: `merged=true`
+- Post-merge local `HEAD`: `2d418ccb`
+- Post-merge `origin/main`: `2d418ccb`
+- Post-merge `origin/codex/ids-v0-1-stages-001-010`: `2d418ccb`
+- Post-merge open PRs in `LinzeColin/CodexProject`: `0`
+- Post-merge open issues in `LinzeColin/CodexProject`: `0`
+- Verified at UTC: `2026-07-02T10:40:24Z`
 
 ## Stop Conditions
 
@@ -106,9 +127,9 @@ Before GitHub upload, run the focused batch validation:
 
 ## Decision
 
-Local batch gate is allowed to proceed to GitHub upload in this run after the
-validation plan passes. `STAGE-011` remains blocked until the GitHub main upload
-is verified and there are no open PRs or issues left behind.
+`STAGE-001..010` was uploaded to GitHub `main` through PR #270 and verified at
+merge SHA `2d418ccba1e16bcb940387c6e8152668fc2dccaf`. No open PRs or issues
+remain after the merge. `STAGE-011` is the next allowed development stage.
 
 ## Rollback
 

@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.root_lock.v1"
 lock_id: "IDS-V0_1-STAGE0-ROOT-LOCK"
 created_at_utc: "2026-07-02T03:50:35Z"
-updated_at_utc: "2026-07-02T04:13:24Z"
-status: "stage0_phase4_local_closeout_ready_for_github_upload"
+updated_at_utc: "2026-07-02T10:48:44Z"
+status: "stage001_010_uploaded_with_ids_metadata_boundary"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -93,8 +93,10 @@ stage_execution_rules:
     - "P0 taskpack stage file for the selected Stage"
   forbidden_actions:
     - "do not submit real raw materials"
+    - "do not fabricate IDS business data, database rows, source documents, corpus records, reports, or evidence"
     - "do not submit secrets, API keys, database passwords, or cloud credentials"
     - "do not move, delete, overwrite, or clean 00_ORIGINAL_RAW_DATA"
+    - "do not move, delete, overwrite, clean, dump, or scan /Users/linzezhang/Downloads/IDS_MetaData"
     - "do not use old product names for new UI, reports, or formal docs"
     - "do not claim tests passed without real command output"
     - "do not implement v0.2+ features during v0.1"
@@ -111,6 +113,10 @@ stage_execution_rules:
 
 data_and_api_policy:
   ids_data_root: "5TB external drive IDS_DATA_ROOT; not stored in GitHub"
+  ids_metadata_raw_root: "/Users/linzezhang/Downloads/IDS_MetaData"
+  ids_metadata_raw_root_record: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  ids_metadata_raw_root_policy: "read-only; path is tracked in GitHub governance; raw database content is not committed, copied, scanned, moved, deleted, or modified"
+  real_data_only_policy: "IDS runtime corpus, database-backed content, analytics inputs, reports, indexes, manifests, and committed examples must use real user-approved data; fake business data and fabricated evidence are forbidden"
   original_raw_data_policy: "read-only by default; no move/delete/overwrite"
   github_storage_policy: "code, schema, manifest templates, taskpack governance, and small fixtures only"
   external_api_policy_default: "denied"
