@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2E message-level data route decision after real artifact discovery failure.
+Execute WDA Stage 2 Sprint 2F official/user-readable artifact acquisition contract.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is message-level data route decision, not raw message reading
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, and Sprint 2E route decision artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is readable artifact acquisition contract, not raw message reading
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, and Sprint 2F acquisition contract artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -19,6 +19,7 @@ Execute WDA Stage 2 Sprint 2E message-level data route decision after real artif
 - Latest Sprint 2C outputs: `WDA/docs/stage2_sprint2c_readable_artifact_contract/`
 - Latest Sprint 2D outputs: `WDA/docs/stage2_sprint2d_real_artifact_discovery/`
 - Latest Sprint 2E outputs: `WDA/docs/stage2_sprint2e_message_data_route_decision/`
+- Latest Sprint 2F outputs: `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Raw Gate: `Conditional Investigation`; message readability not proven; Raw Gate is not Go
 
@@ -44,6 +45,9 @@ Execute WDA Stage 2 Sprint 2E message-level data route decision after real artif
 - WDA still lacks message-level readable input; future conversion requires a separate approved sprint and a selected readable candidate.
 - Sprint 2E chooses the next direction as official/user-readable artifact route selection and acquisition contract; it does not execute acquisition or import.
 - Third-party adapter work is research-only backup; high-risk raw adapter work remains rejected under the current boundary.
+- Sprint 2F approves the official/user-readable artifact acquisition route and fixes the future intake storage root at `/Users/linzezhang/Downloads/WDA_MetaData/stage2_inputs/owner_authorized_readable_artifacts/`.
+- Sprint 2F does not create `messages.jsonl`, import real message data, or implement RAG/Web/Matrix.
+- Sprint 2G is the only next executable step, and only if the user provides or approves a real owner-authorized readable artifact.
 
 ## Files To Read First
 
@@ -80,6 +84,10 @@ Execute WDA Stage 2 Sprint 2E message-level data route decision after real artif
 - `WDA/docs/stage2_sprint2e_message_data_route_decision/README.md`
 - `WDA/docs/stage2_sprint2e_message_data_route_decision/route_options_matrix.md`
 - `WDA/docs/stage2_sprint2e_message_data_route_decision/recommended_next_step.md`
+- `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/README.md`
+- `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/artifact_storage_contract.md`
+- `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/artifact_validation_gate.md`
+- `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/next_sprint2g_sample_intake_validation_plan.md`
 
 ## Validation
 
@@ -151,6 +159,17 @@ Latest Sprint 2E route decision:
 - RAG/Web/Matrix: blocked
 - Raw Gate: `Conditional Investigation`
 
+Latest Sprint 2F acquisition contract:
+
+- Required acquisition-contract outputs present: true
+- Hard drive required: false
+- `messages.jsonl` created: false
+- Real message data imported: false
+- Approved future storage root: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_inputs/owner_authorized_readable_artifacts/`
+- Accepted future file types: `.jsonl`, `.json`, `.csv`, `.txt`, `.md`, `.html`, `.zip`
+- Next executable step: Sprint 2G sample intake validation, only if user provides or approves a real owner-authorized readable artifact
+- Raw Gate: `Conditional Investigation`
+
 ## Next Step
 
-Run Sprint 2F only if explicitly approved. Sprint 2F should select the official/user-readable artifact acquisition route and define owner authorization/local storage/validation stop conditions. Do not implement acquisition, import, third-party tools, protected DB probes, raw upload, or RAG/Web/Matrix until a later approved sprint.
+Run Sprint 2G only if explicitly approved and only after the user provides or approves a real owner-authorized readable artifact under the approved storage root. Sprint 2G should validate manifest/checksums/file types/schema shape first. Do not decrypt, extract keys, bypass protected stores, open `key_info`/login/MMKV/KVDB/key-value stores, run third-party export/decrypt tools, upload raw data, or implement RAG/Web/Matrix.
