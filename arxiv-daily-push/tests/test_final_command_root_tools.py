@@ -123,6 +123,74 @@ class FinalCommandRootToolTests(unittest.TestCase):
         )
         self.assertEqual(payload["validation_errors"], [])
 
+    def test_verify_daily_operation_enablement_preflight_root_tool_fails_closed_without_authorization(self) -> None:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "tools/verify_daily_operation_enablement_preflight.py",
+                "--generated-at",
+                "2026-07-02T19:40:00+10:00",
+                "--open-pr-count",
+                "0",
+                "--adp-allow-smtp-send",
+                "UNSET",
+                "--launchagent-daily-disabled",
+                "true",
+                "--launchagent-health-disabled",
+                "true",
+                "--launchagent-watchdog-disabled",
+                "true",
+                "--background-adp-process-count",
+                "0",
+            ],
+            cwd=REPO_ROOT,
+            env=self._env(),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout[-2000:])
+        payload = json.loads(completed.stdout)
+        self.assertEqual(payload["status"], "FAIL")
+        self.assertEqual(
+            payload["scope"],
+            "adp_s3_daily_operation_enablement_preflight_fail_closed_no_runtime_enablement",
+        )
+        self.assertFalse(payload["enablement_preflight_ready"])
+        self.assertFalse(payload["daily_operation_ready"])
+        self.assertFalse(payload["persistent_daily_operation_authorized"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["release_packaging_enabled"])
+        self.assertFalse(payload["production_restore_enabled"])
+        self.assertFalse(payload["runtime_enablement_detected"])
+        self.assertEqual(
+            payload["blocking_reasons"],
+            ["persistent_daily_operation_authorization_missing"],
+        )
+        self.assertEqual(payload["readiness_status"], "FAIL")
+        self.assertFalse(payload["checks"]["daily_operation_readiness_passed"])
+        self.assertTrue(payload["checks"]["open_pr_count_zero"])
+        self.assertTrue(payload["checks"]["adp_allow_smtp_send_false_like"])
+        self.assertTrue(payload["checks"]["launchagents_disabled"])
+        self.assertTrue(payload["checks"]["background_adp_process_count_zero"])
+        self.assertEqual(
+            payload["launchagent_disabled_states"],
+            {
+                "com.linzezhang.adp.daily": True,
+                "com.linzezhang.adp.health": True,
+                "com.linzezhang.adp.watchdog": True,
+            },
+        )
+        self.assertEqual(payload["background_adp_process_count"], 0)
+        self.assertEqual(
+            payload["authorization_artifact"],
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
