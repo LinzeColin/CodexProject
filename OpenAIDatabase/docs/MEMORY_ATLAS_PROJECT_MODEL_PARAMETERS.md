@@ -2722,3 +2722,50 @@ Stage 9 整体复审已确认：
 - 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
 - 本 phase 不导入 experiment 目录，不切换 feature flag default。
 - 本 phase 不进入 Stage 7 整体复审，不进入 Stage 8-10，不执行 GitHub main 上传。
+
+## 58. v1.1.6 Stage 7 整体复审门槛
+
+状态：`stage_7_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 7 只有在 Phase 7.1 的合同、验收、validator 和记录均一致时，才允许进入 GitHub main upload gate。
+- Stage 7 复审通过不等于运行时 UI、浏览器截图、runtime Memory Starfield、真实 WebGL/fallback canvas、Search/River focus handoff 或 agent apply 已完成。
+- Stage 7 复审不得读取 raw/private/cookie/session/secret，不得执行 direct writeback，不得进入 Stage 8。
+
+输入：
+
+- `docs/product/memory_starfield_rebuild_contract.md`
+- `docs/acceptance/memory_starfield_rebuild_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage7_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage7_phase1.cjs`
+
+处理方法：
+
+- 检查 Stage 7 Phase 1 合同、验收和 validator 是否覆盖记忆星系重做所需视觉层、交互、字段和失败条件。
+- 检查 Stage 7 review artifact 是否覆盖 Phase 7.1、边界、风险和 Stage 8 前上传 gate。
+- 检查 delivery、feature、development、model parameter、changelog 和 package script 是否一致。
+- 固定 `validate:v1.1.6-stage7` 为 Stage 8 前的必跑 gate。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S7-REVIEW-001 stage7_required_validator = validate:v1.1.6-stage7`
+- `PARAM-MA-V116-S7-REVIEW-002 stage7_review_status = stage_7_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S7-REVIEW-003 stage7_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage7_review.md`
+- `PARAM-MA-V116-S7-REVIEW-004 stage7_allowed_change_scope = contracts;acceptance;records;reviews;validators;package_script`
+- `PARAM-MA-V116-S7-REVIEW-005 stage7_next_gate = GitHub main upload before Stage 8`
+- `PARAM-MA-V116-S7-REVIEW-006 upload_boundary = no_stage8_until_stage7_upload_verified`
+
+输出：
+
+- Stage 7 review artifact。
+- Stage 7 stage-level validator。
+- Stage 7 review records。
+
+边界：
+
+- 本复审不实现运行时 Memory Starfield。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由或 feature flag。
+- 本复审不导入 experiment 目录，不切换 feature flag default。
+- 本复审不进入 Stage 8；GitHub main upload 只在 final remote checks 通过后执行。

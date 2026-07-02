@@ -1013,3 +1013,30 @@ Machine-readable boundary summary: No runtime UI; No raw/private data read; No d
 
 - 进入 Stage 7 整体复审，补 review artifact 和 stage-level validator，并解决复审暴露的问题。
 - Stage 7 整体复审未执行前，不上传 GitHub main。
+
+### Stage 7 整体复审
+
+Stage 7 状态：`stage_7_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S7-REVIEW`。
+
+本复审覆盖 v1.1.6 Stage 7 Phase 1 Memory Starfield Rebuild Contract，只确认
+`memory_starfield_rebuild_contract` 合同、验收、validator、review artifact、
+package script 和治理记录一致。不实现运行时 UI、不修改 CSS、不实现 Memory
+Starfield runtime、不导入 experiment 目录、不切换 feature flag、不读取
+raw/private 数据、不直接写长期记忆、不执行 agent apply、不进入 Stage 8、不上传
+GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage7_review.md`
+- `validate:v1.1.6-stage7`
+
+验收边界：
+
+- Stage 7 复审通过不表示 runtime Memory Starfield、浏览器截图、WebGL/fallback
+  canvas、真实 Search/River focus handoff 或 agent apply 已完成。
+- Stage 8 未进入。
+- GitHub main upload 只在 final remote checks 通过后执行。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
