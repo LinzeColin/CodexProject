@@ -2,20 +2,21 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2B-C raw data route decision after the schema-only read-only probe.
+Execute WDA Stage 2 Sprint 2C owner-authorized readable artifact intake contract.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is raw-route decision after copied candidate DB schema-only probing, not raw message reading
-- Implementation status: Sprint 2B-A/2B-B/2B-C artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is readable artifact intake contract definition, not raw message reading
+- Implementation status: Sprint 2B-A/2B-B/2B-C and Sprint 2C contract artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
 - Latest Sprint 2B-B outputs: `WDA/docs/stage2_sprint2b_schema_probe/`
 - Latest Sprint 2B-C outputs: `WDA/docs/stage2_sprint2b_route_decision/`
+- Latest Sprint 2C outputs: `WDA/docs/stage2_sprint2c_readable_artifact_contract/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Raw Gate: `Conditional Investigation`; message readability not proven; Raw Gate is not Go
 
@@ -36,6 +37,8 @@ Execute WDA Stage 2 Sprint 2B-C raw data route decision after the schema-only re
 - Sprint 2B-B read-only SQLite probe found 0 plain SQLite schema-open successes across 91 main candidates; all 91 remained `not_plain_sqlite_or_encrypted_unknown` under the approved safe path.
 - Sprint 2B-C route decision recommends an owner-authorized readable artifact intake contract as the next route; it does not execute that route.
 - WDA RAG/Web/Matrix data-dependent implementation remains blocked until a safe, authorized message-level import path exists.
+- Sprint 2C defines the readable artifact contract only; it does not create `messages.jsonl`, validate a real artifact, or implement RAG/Web/Matrix.
+- Future Sprint 2D should validate a small owner-authorized sample artifact only if the user provides or approves one.
 
 ## Files To Read First
 
@@ -61,6 +64,10 @@ Execute WDA Stage 2 Sprint 2B-C raw data route decision after the schema-only re
 - `WDA/docs/stage2_sprint2b_route_decision/README.md`
 - `WDA/docs/stage2_sprint2b_route_decision/raw_gate_decision.md`
 - `WDA/docs/stage2_sprint2b_route_decision/recommended_next_route.md`
+- `WDA/docs/stage2_sprint2c_readable_artifact_contract/README.md`
+- `WDA/docs/stage2_sprint2c_readable_artifact_contract/readable_artifact_contract.md`
+- `WDA/docs/stage2_sprint2c_readable_artifact_contract/import_manifest_schema.md`
+- `WDA/docs/stage2_sprint2c_readable_artifact_contract/next_sprint2d_validation_plan.md`
 
 ## Validation
 
@@ -99,6 +106,15 @@ Latest Sprint 2B-C decision:
 - Recommended next route: owner-authorized readable artifact intake contract
 - Raw Gate: `Conditional Investigation`
 
+Latest Sprint 2C contract:
+
+- Required contract outputs present: true
+- Hard drive required: false
+- `messages.jsonl` produced: false
+- Contract files defined: `import_manifest.json`, `messages.jsonl`, `conversations.jsonl`, `contacts.jsonl`, `media_index.csv`
+- Next executable step: validate a small owner-authorized sample artifact only if the user provides or approves one
+- Raw Gate: `Conditional Investigation`
+
 ## Next Step
 
-Run Sprint 2C only if explicitly approved. Recommended next step is to define an owner-authorized readable artifact intake contract. Keep the gate narrow: do not attempt SQLCipher keys, protected-store bypass, `key_info`/MMKV/login-store opening, third-party WeChat export/decrypt tools, message/contact row selection, or message parsing from protected DB bundles.
+Run Sprint 2D only if explicitly approved and only after the user provides or approves a small owner-authorized readable sample artifact. Keep the gate narrow: validate manifest/checksums/schema shape only first; do not attempt SQLCipher keys, protected-store bypass, `key_info`/MMKV/login-store opening, third-party WeChat export/decrypt tools, message/contact row selection from protected DB bundles, or RAG/Web/Matrix implementation.
