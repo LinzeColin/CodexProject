@@ -49,6 +49,7 @@ worktree 根目录：/Users/linzezhang/Documents/Codex/main_worktree/CodexProjec
 | `EEI` | `EEI` | https://github.com/LinzeColin/CodexProject/tree/main/EEI |
 | `FIFA` | `FIFA` | https://github.com/LinzeColin/CodexProject/FIFA |
 | `KM_IDSystem` | `KM_IDSystem` | https://github.com/LinzeColin/CodexProject/tree/main/KM_IDSystem |
+| `WDA` | `WDA` | https://github.com/LinzeColin/CodexProject/tree/main/WDA |
 | `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
 | `MetaDatabase` | `MetaDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/MetaDatabase |
 | `KMFA` | `KMFA` | https://github.com/LinzeColin/CodexProject/tree/main/KMFA |

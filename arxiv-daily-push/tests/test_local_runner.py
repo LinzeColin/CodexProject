@@ -151,7 +151,7 @@ def write_user_center_sync_inputs(root: Path, state: Path) -> None:
                     "",
                     "| 项目 | 当前值 |",
                     "|---|---|",
-                    "| 今日已发送 / 总应发送 | 2 / 待确认 |",
+                    "| 受控发送证据 / 计划应发 | 2 / 待确认 |",
                     "",
                 ]
             ),
@@ -261,8 +261,8 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertIn("| 今日到期复习 | 1 项 |", (root / USER_CENTER_LEARNING_PAGE).read_text(encoding="utf-8"))
             for mail_status_page in USER_CENTER_MAIL_STATUS_PAGES:
                 page_text = (root / mail_status_page).read_text(encoding="utf-8")
-                self.assertIn("| 今日已发送 / 总应发送 | 2 / 4 |", page_text)
-                self.assertIn("计划来源：Email V1 每日 3+1（M1, M2, M3, M4）", page_text)
+                self.assertIn("| 受控发送证据 / 计划应发 | 2 / 4 |", page_text)
+                self.assertIn("计划来源：Email V1 每日 3+1（M1, M2, M3, M4），计划应发 4 封", page_text)
             self.assertFalse(validate_local_runner_report(report))
 
     def test_local_daily_real_smtp_requires_secret_env_names_and_does_not_log_values(self) -> None:
@@ -377,7 +377,7 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertTrue(any("-- M4 --" in subject for subject in subjects))
             for mail_status_page in USER_CENTER_MAIL_STATUS_PAGES:
                 page_text = (root / mail_status_page).read_text(encoding="utf-8")
-                self.assertIn("| 今日已发送 / 总应发送 | 4 / 4 |", page_text)
+                self.assertIn("| 受控发送证据 / 计划应发 | 4 / 4 |", page_text)
 
     def test_local_daily_real_smtp_skips_already_sent_products_and_catches_up_missing_products(self) -> None:
         class FakeSMTP:
@@ -446,7 +446,7 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertTrue(any("-- M4 --" in subject for subject in subjects))
             for mail_status_page in USER_CENTER_MAIL_STATUS_PAGES:
                 page_text = (root / mail_status_page).read_text(encoding="utf-8")
-                self.assertIn("| 今日已发送 / 总应发送 | 4 / 4 |", page_text)
+                self.assertIn("| 受控发送证据 / 计划应发 | 4 / 4 |", page_text)
 
     def test_local_daily_can_reuse_existing_daily_input_report_for_catch_up_without_live_fetch(self) -> None:
         class FakeSMTP:
