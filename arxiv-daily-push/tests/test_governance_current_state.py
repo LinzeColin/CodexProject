@@ -100,6 +100,40 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             ledger,
         )
 
+    def test_owner_decision_page_marks_superseded_daily_operation_blockers_as_historical(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn("persistent_daily_operation_authorization_missing", decisions)
+        self.assertIn(
+            "历史：gh 等价证据已修复，当时仍有 SMTP 与大文件治理阻断",
+            decisions,
+        )
+        self.assertIn(
+            "当时阻断 1（后续已由 secret / artifact repair 消费）：缺 SMTP secret env 名称",
+            decisions,
+        )
+        self.assertIn(
+            "当时阻断 2（非当前 ADP 阻断）：既有 `OpenAIDatabase/session_history` archive",
+            decisions,
+        )
+        self.assertIn(
+            "历史：DAILY_OPERATION 授权预检已运行但当时阻断",
+            decisions,
+        )
+        self.assertIn(
+            "当时阻断 2（后续已由 secret / artifact repair 消费）：缺 SMTP secret env 名称",
+            decisions,
+        )
+        self.assertIn(
+            "当时阻断 3（非当前 ADP 阻断）：既有 `OpenAIDatabase/session_history` archive",
+            decisions,
+        )
+
+        self.assertNotIn("剩余阻断 1：缺 SMTP secret env 名称", decisions)
+        self.assertNotIn("剩余阻断 2：既有 `OpenAIDatabase/session_history` archive", decisions)
+        self.assertNotIn("| 阻断 2：缺 SMTP secret env 名称", decisions)
+        self.assertNotIn("| 阻断 3：既有 `OpenAIDatabase/session_history` archive", decisions)
+
     def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
         manifest_path = (
             REPO_ROOT
