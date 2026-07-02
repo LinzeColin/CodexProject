@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s01-stage-review - 2026-07-02
+
+- 完成 `v0.1.3 Stage 1｜整体复审` 本地验证：复跑 S01-P1 当前状态复核、S01-P2 范围冻结、S01-P3 防遗漏门禁和 Stage 1 review validator，确认三个 phase 均为 PASS。
+- 新增 `KMFA/tools/check_v013_s01_stage_review.py`、`KMFA/tests/test_v013_s01_stage_review.py` 和 `KMFA/stage_artifacts/V013_S01_STAGE_REVIEW/` 证据包，锁定 findings_open=0、findings_fixed=0、github_upload=false、delivery_allowed=false、formal_report_allowed=false、business_execution_allowed=false。
+- 继承当前 `NO_GO` blockers：0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级 report runtime 继续阻断正式报告、经营决策依据、release claim 和 delivery claim。
+- 本轮只执行 Stage 1 整体复审，不执行 GitHub upload、rebase、S02、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+- `/Users/linzezhang/Downloads/KMFA_MetaData` 仍为只读 raw boundary；本轮不读取该目录内容，不修改、删除、移动或提交其中任何文件。
+
 ## 0.1.3-s01p3-no-omission-gate - 2026-07-02
 
 - 完成 `v0.1.3 S01-P3｜防遗漏门禁复跑` 本地验证：复跑正式 `KMFA/tools/no_omission_check.py`，确认 requirements=20、P0=9、P1=8、stage_status_records=549、task_records=162。
