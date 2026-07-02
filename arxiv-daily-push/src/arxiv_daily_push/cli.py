@@ -1887,19 +1887,19 @@ def build_parser() -> argparse.ArgumentParser:
         "--launchagent-daily-disabled",
         type=parse_cli_bool,
         required=True,
-        help="Whether com.linze.adp.local.daily is disabled.",
+        help="Whether com.linzezhang.adp.daily is disabled or not loaded.",
     )
     integrated_production_preflight.add_argument(
         "--launchagent-health-disabled",
         type=parse_cli_bool,
         required=True,
-        help="Whether com.linze.adp.local.health is disabled.",
+        help="Whether com.linzezhang.adp.health is disabled or not loaded.",
     )
     integrated_production_preflight.add_argument(
         "--launchagent-watchdog-disabled",
         type=parse_cli_bool,
         required=True,
-        help="Whether com.linze.adp.local.watchdog is disabled.",
+        help="Whether com.linzezhang.adp.watchdog is disabled or not loaded.",
     )
     integrated_production_preflight.add_argument(
         "--background-adp-process-found",
@@ -2054,19 +2054,19 @@ def build_parser() -> argparse.ArgumentParser:
         "--launchagent-daily-disabled",
         type=parse_cli_bool,
         required=True,
-        help="Whether com.linze.adp.local.daily is disabled.",
+        help="Whether com.linzezhang.adp.daily is disabled or not loaded.",
     )
     daily_operation_preflight.add_argument(
         "--launchagent-health-disabled",
         type=parse_cli_bool,
         required=True,
-        help="Whether com.linze.adp.local.health is disabled.",
+        help="Whether com.linzezhang.adp.health is disabled or not loaded.",
     )
     daily_operation_preflight.add_argument(
         "--launchagent-watchdog-disabled",
         type=parse_cli_bool,
         required=True,
-        help="Whether com.linze.adp.local.watchdog is disabled.",
+        help="Whether com.linzezhang.adp.watchdog is disabled or not loaded.",
     )
     daily_operation_preflight.add_argument(
         "--background-adp-process-found",
@@ -5131,9 +5131,9 @@ def main(argv: list[str] | None = None) -> int:
             open_pr_count=args.open_pr_count,
             adp_allow_smtp_send=args.adp_allow_smtp_send,
             launchagent_disabled_states={
-                "daily": args.launchagent_daily_disabled,
-                "health": args.launchagent_health_disabled,
-                "watchdog": args.launchagent_watchdog_disabled,
+                "com.linzezhang.adp.daily": args.launchagent_daily_disabled,
+                "com.linzezhang.adp.health": args.launchagent_health_disabled,
+                "com.linzezhang.adp.watchdog": args.launchagent_watchdog_disabled,
             },
             background_adp_process_found=args.background_adp_process_found,
         )
@@ -5294,9 +5294,9 @@ def main(argv: list[str] | None = None) -> int:
             open_pr_count=args.open_pr_count,
             adp_allow_smtp_send=args.adp_allow_smtp_send,
             launchagent_disabled_states={
-                "daily": args.launchagent_daily_disabled,
-                "health": args.launchagent_health_disabled,
-                "watchdog": args.launchagent_watchdog_disabled,
+                "com.linzezhang.adp.daily": args.launchagent_daily_disabled,
+                "com.linzezhang.adp.health": args.launchagent_health_disabled,
+                "com.linzezhang.adp.watchdog": args.launchagent_watchdog_disabled,
             },
             background_adp_process_found=args.background_adp_process_found,
             production_preflight_report=production_preflight_report,
