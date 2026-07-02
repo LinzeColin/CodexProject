@@ -1920,6 +1920,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "全量内容记录",
             "内容记录全量",
             "当前运行队列",
+            "今日已发送 / 总应发送",
         )
         for path in SUMMARY_PAGES:
             with self.subTest(path=path.name):
@@ -1953,6 +1954,14 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertEqual(roadmap.count("更新时间："), 1)
         self.assertIn("Stage 2 最终门 | 已通过 Stage 2 integrated acceptance", one_look)
         self.assertIn("S3 / DAILY_OPERATION | 不进入；保持禁用", one_look)
+        self.assertIn("受控发送证据 / 计划应发 | 4 / 4", readme)
+        self.assertIn("受控发送证据 / 计划应发 | 4 / 4", one_look)
+        self.assertIn("受控发送证据 / 计划应发 | 4 / 4", mail_overview)
+        self.assertIn("这不是今日后台自动发送结果", readme)
+        self.assertIn("这不是今日后台自动发送结果", one_look)
+        self.assertNotIn("今日已发送 / 总应发送", readme)
+        self.assertNotIn("今日已发送 / 总应发送", one_look)
+        self.assertNotIn("今日已发送 / 总应发送", mail_overview)
         self.assertIn("宣称 S3/DAILY_OPERATION 已进入 | 不可以", one_look)
         self.assertIn("Stage 2 integrated acceptance | 已记录并保持 `true`", decisions)
         self.assertIn("是否现在宣称 Stage 2 integrated acceptance 已记录 | 接受", decisions)
@@ -2044,7 +2053,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("这是历史当时的第二真实日捕获边界", mail_status)
         self.assertIn("当前事实以本页顶部阅读规则为准", readme)
         self.assertIn("当前事实以本页顶部阅读规则为准", decisions)
-        self.assertIn("这不代表 S3/DAILY_OPERATION 已进入", readme)
+        self.assertIn("也不代表 S3/DAILY_OPERATION 已进入", readme)
         self.assertIn("当前不进入 S3/DAILY_OPERATION", one_look)
         self.assertIn("不进入 S3/DAILY_OPERATION", mvp)
         self.assertIn("## 2026-07-02 11:11:20 Australia/Sydney - 最终验收包 JSON 字段阅读规则", roadmap)
