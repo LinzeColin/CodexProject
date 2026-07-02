@@ -1,5 +1,28 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 7 Phase 1
+
+- Added `docs/product/memory_starfield_rebuild_contract.md` to define the
+  Memory Starfield Rebuild Contract, including `memory_starfield`,
+  `nebula_field`, `flow_field`, `trajectory_trails`, `gravity_sources`,
+  `black_hole_core`, `proto_star_cloud`, `memory_terrain_layer`,
+  `cluster_constellations`, search/river jumps, Inspector handoff and
+  reduced-motion requirements.
+- Added `docs/acceptance/memory_starfield_rebuild_acceptance.md`.
+- Added `validate:v1.1.6-stage7-phase1`.
+- Contract title: Memory Starfield Rebuild Contract.
+- Registered `MA-V116-S7P01` in delivery, feature, development and model
+  parameter records.
+- Stage 7 Phase 1 status: `phase_7_1_contract_created_pending_stage_review`.
+
+No runtime UI implementation, CSS change, browser screenshot run, Memory
+Starfield runtime implementation, experiment directory import, feature flag
+default switch, raw/private data read, direct writeback, agent apply, Stage 7
+review, Stage 8/9/10 work, No GitHub main upload, Cloudflare deployment, or
+Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 6 Review
 
 - Added `validate:v1.1.6-stage6` to pin Stage 6 Phase 1 contract,

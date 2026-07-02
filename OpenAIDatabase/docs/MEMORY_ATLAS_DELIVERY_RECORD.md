@@ -973,3 +973,43 @@ Machine-readable boundary summary: No runtime UI; No raw/private data read; No d
 - 执行 Stage 1-5 final upload gate：fetch/integrate、重跑 Stage 1-5 validators、
   可用 governance checks、确认 changed files、避免 staging `.DS_Store`。
 - final upload gate 未通过前，不上传 GitHub main。
+
+### Stage 7 Phase 1：Memory Starfield Rebuild Contract
+
+Stage 7 Phase 1 状态：`phase_7_1_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S7P01`。
+
+本 phase 是 v1.1.6 修补包进入“记忆星系重做”的第一轮，只定义
+`memory_starfield_rebuild_contract` 合同、验收、validator 和治理记录一致性。
+它把普通 dots-and-lines、node-link graph、Obsidian-like graph 或 chart-like
+network 明确列为未来实现失败条件，要求未来实现必须展示
+`memory_starfield`、`nebula_field`、`flow_field`、`trajectory_trails`、
+`gravity_sources`、`black_hole_core`、`proto_star_cloud`、
+`memory_terrain_layer`、`cluster_constellations` 和
+`ambient_depth_particles`，并支持 orbit pan/zoom、hover card、click
+Inspector、focus cluster、Search 2.0 跳转、Memory River 跳转、Presentation /
+Analysis 模式、keyboard navigation 和 reduced motion。
+
+新增产物：
+
+- `docs/product/memory_starfield_rebuild_contract.md`
+- `docs/acceptance/memory_starfield_rebuild_acceptance.md`
+- `validate:v1.1.6-stage7-phase1`
+
+验收边界：
+
+- 默认只有点、只有边线、普通 Obsidian Graph、缺少星云、缺少流场、缺少轨迹、
+  缺少引力源、缺少黑洞、缺少新生星云、缺少记忆地形层、缺少 Inspector 交接、
+  WebGL/fallback 空白或 reduced motion 被忽略，均为未来实现失败条件。
+- Stage 7 Phase 1 通过不表示 runtime Memory Starfield、浏览器截图或真实交互已完成。
+- 不实现运行时 UI，不修改 CSS，不导入 experiment 目录，不切换 feature flag，
+  不读取 raw/private 数据，不直接写长期记忆，不执行 agent apply，不进入 Stage 7
+  整体复审，不进入 Stage 8-10，不上传 GitHub main。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 进入 Stage 7 整体复审，补 review artifact 和 stage-level validator，并解决复审暴露的问题。
+- Stage 7 整体复审未执行前，不上传 GitHub main。
