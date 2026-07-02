@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE019"
-current_phase_id: "IDS-STAGE019-P1"
-current_task_id: "IDS-V0_1-STAGE019-P1"
-next_gate_id: "IDS-STAGE019-P2-GATE"
-total_estimated_hours: 144
-completed_estimated_hours: 144
+current_phase_id: "IDS-STAGE019-P2"
+current_task_id: "IDS-V0_1-STAGE019-P2"
+next_gate_id: "IDS-STAGE019-P3-GATE"
+total_estimated_hours: 146
+completed_estimated_hours: 146
 stages:
   -
     stage_id: "S5"
@@ -4502,19 +4502,21 @@ stages:
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
       - "一次 run 完成超过一个 phase"
     stop_gate:
-      gate_id: "IDS-STAGE019-P2-GATE"
+      gate_id: "IDS-STAGE019-P3-GATE"
       status: "open"
       pass_conditions:
-        - "Phase 1 已定义导入风险估算器输入、输出、风险项、成本项和确认状态"
-        - "Phase 1 已确认只读 metadata-only 边界，不解析正文、不修改原始文件"
-        - "Phase 1 已定义 owner 确认后才进入批量处理"
+        - "Phase 2 已实现 metadata-only 导入风险估算器 helper 和 CLI JSON contract"
+        - "Phase 2 已输出风险、成本、优先级建议和 human_product_entrance_payload"
+        - "Phase 2 证明不解析正文、不启动 OCR/Embedding/index/import、不写 runtime 输出"
         - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false"
     acceptance:
       acceptance_id: "ACC-STAGE-019"
-      status: "phase1_scope_boundary_complete"
+      status: "phase2_risk_estimator_slice_complete"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_PHASE2_RISK_ESTIMATOR_SLICE.md"
+        - "KM_IDSystem/scripts/check_import_risk_estimator.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_import_risk_estimator.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
     phases:
@@ -4573,3 +4575,58 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果 Phase 1 合同被误读为生产风险估算器或批量导入授权，后续可能读取 raw metadata、解析正文、启动 OCR/Embedding/index/import 或污染原始资料。"
             rollback: "Revert IDS-STAGE019-P1 entry/scope evidence, focused test, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, runtime data, app entries, GitHub state, or Phase 2."
+      -
+        phase_id: "IDS-STAGE019-P2"
+        name: "导入风险估算器 metadata-only 最小切片"
+        objective: "实现导入风险估算器 helper 和 CLI，基于 metadata-only preflight 输出识别高风险文件、超大文件、可疑压缩包、未知格式和空间不足风险，并生成风险、成本、优先级和人类产品入口摘要。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 2 读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "Phase 2 解析正文、启动 OCR、Embedding、index、import、report 或 database 写入"
+          - "Phase 2 生成 runtime output、manifest、evidence ledger、audit log、document/chunk/job/index/import row"
+          - "Phase 2 使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "一次 run 进入 Phase 3"
+        validation:
+          commands:
+            - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage019_import_risk_estimator"
+            - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+            - "Stage005 validator report"
+            - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+            - "py_compile check_import_risk_estimator.py, Stage005 validator, and Stage019 focused test"
+            - "events JSONL parse"
+            - "check-render --project KM_IDSystem"
+            - "git diff --check"
+            - "semantic validate diagnostic"
+          pass_conditions:
+            - "Stage019 focused tests pass"
+            - "Stage005 governance regression accepts STAGE019-P2"
+            - "roadmap、batch lock、event log 和 owner rendered files 指向 Phase 2，且上传闸门关闭"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE019-P2"
+            name: "导入风险估算器最小可运行切片"
+            objective: "提供 metadata-only risk estimator helper 和 CLI，用于 owner 在导入前评估高风险、超大、压缩包、未知格式、空间不足、成本、优先级和确认状态。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.37%"
+            dependencies:
+              - "IDS-V0_1-STAGE019-P1"
+            acceptance_ids:
+              - "ACC-STAGE-019"
+            test_commands:
+              - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage019_import_risk_estimator"
+              - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "Stage005 validator report"
+              - "Full IDS v0.1 pursuing-goal discover"
+              - "check-render --project KM_IDSystem"
+              - "semantic validate diagnostic"
+            test_results: "Stage019 Phase2 RED failed as expected with 7 tests and 4 failures because the focused tests required check_import_risk_estimator.py and STAGE019_PHASE2_RISK_ESTIMATOR_SLICE.md, which did not yet exist. Stage005 Phase2 RED failed as expected with 41 tests and 2 failures because the Stage005 validator did not yet accept the Phase2 script path or IDS-V0_1-STAGE019-P2 governance state. Stage019 focused GREEN passed 7 tests after adding the metadata-only risk estimator helper, CLI contract, and evidence file. Stage005 intermediate RED failed as expected with 41 tests and 1 failure because the required Phase2 event was not yet recorded. Stage005 GREEN passed 41 tests after synchronizing batch lock, roadmap, and event log. Stage005 validator returned valid=true with issues=[], missing_required_files=[], missing_event_ids=[], event_json_errors=[], forbidden_changed_paths=[], and unexpected_changed_paths=[]. Full IDS v0.1 pursuing-goal discover passed 140 tests. py_compile passed for check_import_risk_estimator.py, the Stage005 validator, and the Stage019 focused test. events JSONL parse returned events_jsonl_ok. bundled render --project KM_IDSystem --write updated owner files; bundled check-render returned drift_count=0 and reference_issue_count=0. git diff --check passed. exact old underscored task-id variant scan returned no hits. newly changed diff did not introduce legacy pre-rename project path spellings. semantic validate remains diagnostic-only with 29 known sparse root-governance or registered-project missing paths and no new KM_IDSystem semantic error. Phase 2 did not read, list, hash, open, copy, move, delete, modify, dump, scan, or commit IDS_MetaData raw metadata content. No UI runtime change, screenshot, PDF, JSON output file, production report, runtime output, recursive scan beyond the Stage018 safe preflight helper, body parser, OCR, Embedding, index builder, importer, report writer, manifest/database/evidence/audit/runtime writer, document/chunk/job creation, service start, dependency install, external API call, GitHub upload, PR, merge, app reinstall, or Phase 3 work was performed."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_import_risk_estimator.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_PHASE2_RISK_ESTIMATOR_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_import_risk_estimator.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果 Phase 2 helper 被误当成生产导入风险引擎，可能绕过 owner confirmation、读取 raw metadata、解析正文或写入持久化产物。"
+            rollback: "Revert IDS-STAGE019-P2 helper, focused tests, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, app entries, GitHub state, or Phase 3."
