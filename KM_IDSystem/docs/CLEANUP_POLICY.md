@@ -21,7 +21,7 @@ These are recoverable and should not be kept in the local workspace after backup
 
 ## Keep If Needed For Current Demo
 
-- `data/wuhan_kaiming.sqlite`
+- `data/wuhan_kaiming.sqlite`（legacy runtime SQLite 文件名）
 - latest PDF reports under `reports/`
 
 If disk pressure is more important than immediate demo readiness, regenerate them with:
@@ -29,4 +29,3 @@ If disk pressure is more important than immediate demo readiness, regenerate the
 ```bash
 PYTHONPATH=backend python scripts/generate_sample_reports.py
 ```
-

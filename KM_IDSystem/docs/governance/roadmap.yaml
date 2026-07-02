@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE001"
-current_phase_id: "IDS-STAGE001-P2"
-current_task_id: "IDS-V0_1-STAGE001-P2"
-next_gate_id: "IDS-STAGE001-P3-GATE"
+current_phase_id: "IDS-STAGE001-P3"
+current_task_id: "IDS-V0_1-STAGE001-P3"
+next_gate_id: "IDS-STAGE001-P4-GATE"
 total_estimated_hours: 21
-completed_estimated_hours: 18
+completed_estimated_hours: 20
 stages:
   -
     stage_id: "S5"
@@ -371,24 +371,27 @@ stages:
         phase_id: "IDS-STAGE001-P3"
         name: "IDS 产品命名合同专项验证与异常场景"
         objective: "扫描客户可见文案，验证旧产品名不再用于新 UI、报告和正式文档，并确认未触碰真实资料、secrets 或本地数据目录。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "未完成 Phase 2 实现"
           - "无法区分历史 alias 与新正式显示名"
           - "扫描证据不足"
         stop_gate:
           gate_id: "IDS-STAGE001-P3-GATE"
-          status: "pending"
+          status: "passed_with_non_blocking_company_context_review_item"
           pass_conditions:
             - "引用扫描结果存在"
             - "README、治理文件、测试路径和脚本引用没有断裂"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE3_VALIDATION_SCAN.md"
+            - "KM_IDSystem/backend/tests/test_lifecycle_contract.py"
+            - "KM_IDSystem/backend/tests/test_stage001_naming_contract.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE001-P3"
             name: "STAGE-001 命名合同专项验证"
             objective: "验证新正式显示名不再使用旧产品名，并确认历史 alias 仅出现在允许上下文。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "9.52%"
             dependencies:
@@ -398,9 +401,14 @@ stages:
             test_commands:
               - "customer-visible naming scan"
               - "README/governance/script reference validation"
+              - "python3 -m unittest KM_IDSystem/backend/tests/test_lifecycle_contract.py -q"
+              - "python3 -m unittest KM_IDSystem/backend/tests/test_stage001_naming_contract.py -q"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "Project-file legacy scan covered 86 KM_IDSystem files, classified 560 legacy hits, found 0 active blockers and 1 non-blocking company-context review item; lifecycle test ran 5 tests OK after native launcher path and stop script executable fixes; naming contract test ran 2 tests OK; script/native syntax, check-render, marker, scope, and diff checks passed. Full semantic validate remains blocked by sparse worktree omissions, so no unrelated project expansion was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE3_VALIDATION_SCAN.md"
+              - "KM_IDSystem/backend/tests/test_lifecycle_contract.py"
+              - "KM_IDSystem/backend/tests/test_stage001_naming_contract.py"
             risk: "扫描过窄导致旧正式显示名残留，或把允许的历史 alias 误判为阻断。"
             rollback: "Revert IDS-STAGE001-P3 validation/evidence-only changes."
       -
