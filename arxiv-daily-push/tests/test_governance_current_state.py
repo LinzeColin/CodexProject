@@ -345,6 +345,33 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_transition_rows_as_current_work(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        expected_historical_rows = (
+            "历史当时 S2PLT04 evidence audit 已通过，但 completion report 尚未写入；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT04 audit `state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f`，`completion_report_ready=false`",
+            "历史当时 S2PLT01 与 P0/P1 zero-proof 已可作为输入，但 S2PLT02/S2PLT03 仍未 accepted；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 P0/P1 zero-proof 已 pass 但 final bundle 仍 incomplete；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT03 capture plan `state_hash=bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5`",
+            "历史当时 S2PLT03 仍 `artifact_written=false`、`s2plt03_accepted=false`、`s2plt03_resilience_drill_completed=false`",
+        )
+        for phrase in expected_historical_rows:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, decisions)
+
+        forbidden_phrases = (
+            "| S2PLT04 evidence audit 已通过，但 completion report 尚未写入 | 默认下一步 `S2PLT04_COMPLETION_REPORT` |",
+            "| S2PLT04 audit `state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f`，`completion_report_ready=false`",
+            "| S2PLT01 与 P0/P1 zero-proof 已可作为输入，但 S2PLT02/S2PLT03 仍未 accepted | 保持 S2PLT04、manifest、handoff、signoff、final command 和 production stop gate 阻断 |",
+            "| P0/P1 zero-proof 已 pass 但 final bundle 仍 incomplete | 继续先做 S2PLT02 terminal delivery proof",
+            "| S2PLT03 capture plan `state_hash=bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5`，`next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE` | 保留 local drill",
+            "| S2PLT03 仍 `artifact_written=false`、`s2plt03_accepted=false`、`s2plt03_resilience_drill_completed=false` | 保持 S2PLT02、S2PLT03、S2PLT04、final command、handoff、signoff、manifest 和 production stop gate 阻断 |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_owner_decision_page_does_not_reopen_zero_proof_request_consumption_as_current_gap(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
 
