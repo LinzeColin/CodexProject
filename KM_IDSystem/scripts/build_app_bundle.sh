@@ -75,6 +75,6 @@ clear_bundle_xattrs "$APP_DIR"
 if /usr/bin/codesign --force --deep --sign - "$APP_DIR" >/dev/null; then
   clear_bundle_xattrs "$APP_DIR"
 else
-  echo "Warning: app bundle signing failed; installing .command launcher remains supported." >&2
+  echo "Warning: app bundle signing failed; macOS may require manual approval for the app." >&2
 fi
 echo "$APP_DIR"

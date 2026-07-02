@@ -5,6 +5,9 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[4]
 VALIDATOR = ROOT / "docs" / "pursuing_goal" / "ids_v0_1" / "validate_stage005_governance_regression.py"
+APP_ENTRY_INSTALLER = ROOT / "scripts" / "install_app_entries.sh"
+APP_ENTRY_DIAGNOSTIC = ROOT / "scripts" / "diagnose_app_entry.sh"
+APP_BUNDLE_BUILDER = ROOT / "scripts" / "build_app_bundle.sh"
 
 
 class Stage005GovernanceRegressionTests(unittest.TestCase):
@@ -16,6 +19,31 @@ class Stage005GovernanceRegressionTests(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         return module
+
+    def test_app_entry_install_policy_is_app_only_without_command_launchers(self):
+        self.assertTrue(APP_ENTRY_INSTALLER.is_file(), f"missing installer: {APP_ENTRY_INSTALLER}")
+        self.assertTrue(APP_ENTRY_DIAGNOSTIC.is_file(), f"missing diagnostic: {APP_ENTRY_DIAGNOSTIC}")
+        self.assertTrue(APP_BUNDLE_BUILDER.is_file(), f"missing builder: {APP_BUNDLE_BUILDER}")
+
+        scripts = {
+            "installer": APP_ENTRY_INSTALLER.read_text(encoding="utf-8"),
+            "diagnostic": APP_ENTRY_DIAGNOSTIC.read_text(encoding="utf-8"),
+            "builder": APP_BUNDLE_BUILDER.read_text(encoding="utf-8"),
+        }
+
+        forbidden_terms = [
+            ".command",
+            "COMMAND_NAME",
+            "COMMAND_PATHS",
+            "DOWNLOADS_COMMAND",
+            "APPLICATIONS_COMMAND",
+            "write_command_launcher",
+            "command launcher",
+        ]
+        for script_name, text in scripts.items():
+            for term in forbidden_terms:
+                with self.subTest(script=script_name, term=term):
+                    self.assertNotIn(term, text)
 
     def test_phase2_report_validates_current_governance_surface(self):
         module = self._load_module()
@@ -2530,6 +2558,64 @@ next_gate_id: "IDS-STAGE022-P1-GATE"
           status: "passed_with_local_evidence"
         phase_id: "IDS-STAGE021-P4"
           status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage022_phase1_data_priority_queue_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE022-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE022-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE022"
+current_phase_id: "IDS-STAGE022-P1"
+current_task_id: "IDS-V0_1-STAGE022-P1"
+next_gate_id: "IDS-STAGE022-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
 """
 
         checks = module.evaluate_phase_state(batch_text, roadmap_text)
