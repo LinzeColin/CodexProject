@@ -267,6 +267,93 @@ def build_report(
     }
 
 
+def build_phase3_scenario_report(
+    *,
+    online_path: str,
+    offline_path: str,
+    permission_denied_path: str,
+    path_changed_current: str,
+    path_changed_expected: str,
+    storage_total_bytes: int,
+    storage_ok_free_bytes: int,
+    storage_low_free_bytes: int,
+    storage_high_used_free_bytes: int,
+    min_free_gib: int = 100,
+    warn_free_gib: int = 200,
+    max_used_percent: int = 85,
+) -> dict[str, Any]:
+    """Build a deterministic Phase 3 scenario matrix without mutating storage."""
+
+    external_drive_scenarios = {
+        "online": evaluate_ids_data_root(online_path),
+        "offline": evaluate_ids_data_root(offline_path),
+        "reconnected": evaluate_ids_data_root(online_path, previous_state="OFFLINE"),
+        "permission_denied": evaluate_ids_data_root(permission_denied_path),
+        "path_changed": evaluate_ids_data_root(
+            path_changed_current,
+            expected_path=path_changed_expected,
+        ),
+    }
+    storage_scenarios = {
+        "ok": evaluate_storage_budget(
+            total_bytes=storage_total_bytes,
+            free_bytes=storage_ok_free_bytes,
+            min_free_gib=min_free_gib,
+            warn_free_gib=warn_free_gib,
+            max_used_percent=max_used_percent,
+        ),
+        "low_free_space": evaluate_storage_budget(
+            total_bytes=storage_total_bytes,
+            free_bytes=storage_low_free_bytes,
+            min_free_gib=min_free_gib,
+            warn_free_gib=warn_free_gib,
+            max_used_percent=max_used_percent,
+        ),
+        "high_waterline": evaluate_storage_budget(
+            total_bytes=storage_total_bytes,
+            free_bytes=storage_high_used_free_bytes,
+            min_free_gib=min_free_gib,
+            warn_free_gib=warn_free_gib,
+            max_used_percent=max_used_percent,
+        ),
+    }
+    expected_external_states = {
+        "online": "ONLINE",
+        "offline": "OFFLINE",
+        "reconnected": "RECONNECTED",
+        "permission_denied": "PERMISSION_DENIED",
+        "path_changed": "PATH_CHANGED",
+    }
+    expected_storage_states = {
+        "ok": "OK",
+        "low_free_space": "BLOCKED",
+        "high_waterline": "BLOCKED",
+    }
+    external_valid = all(
+        external_drive_scenarios[name]["state"] == state
+        for name, state in expected_external_states.items()
+    )
+    storage_valid = all(
+        storage_scenarios[name]["state"] == state
+        for name, state in expected_storage_states.items()
+    )
+
+    return {
+        "schema_version": "ids.stage006.phase3_scenarios.v1",
+        "stage": "STAGE-006",
+        "acceptance_id": "ACC-STAGE-006",
+        "entrance": OPERATIONS_ENTRANCE,
+        "customer_visible": False,
+        "external_drive_scenarios": external_drive_scenarios,
+        "storage_scenarios": storage_scenarios,
+        "safe_mode_pauses": PAUSED_WORKFLOWS[:],
+        "overall_valid": external_valid and storage_valid,
+        "does_not_start_services": True,
+        "does_not_create_ids_data_root": True,
+        "does_not_scan_external_drive_contents": True,
+    }
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Read-only IDS macOS/Docker/storage baseline check."
