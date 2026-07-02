@@ -8,9 +8,21 @@
 #include <time.h>
 #include <unistd.h>
 
-static const char *PROJECT_DIR = "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-wuhan";
-static const char *RUN_SCRIPT = "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-wuhan/scripts/run_local_services.sh";
-static const char *LOG_FILE = "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-wuhan/data/app_entry.log";
+#ifndef IDS_PROJECT_DIR
+#define IDS_PROJECT_DIR "."
+#endif
+
+#ifndef IDS_RUN_SCRIPT
+#define IDS_RUN_SCRIPT "./scripts/run_local_services.sh"
+#endif
+
+#ifndef IDS_LOG_FILE
+#define IDS_LOG_FILE "./data/app_entry.log"
+#endif
+
+static const char *PROJECT_DIR = IDS_PROJECT_DIR;
+static const char *RUN_SCRIPT = IDS_RUN_SCRIPT;
+static const char *LOG_FILE = IDS_LOG_FILE;
 
 static void write_log(const char *message) {
   FILE *file = fopen(LOG_FILE, "a");
@@ -45,7 +57,10 @@ int main(void) {
     write_log("setsid failed");
   }
 
-  chdir(PROJECT_DIR);
+  if (chdir(PROJECT_DIR) != 0) {
+    write_log("chdir failed");
+    return 1;
+  }
   int null_fd = open("/dev/null", O_RDWR);
   if (null_fd >= 0) {
     dup2(null_fd, STDIN_FILENO);
@@ -64,4 +79,3 @@ int main(void) {
   write_log("exec failed");
   return 127;
 }
-

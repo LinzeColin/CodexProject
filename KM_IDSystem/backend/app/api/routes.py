@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api")
 
 @router.get("/health")
 def health() -> dict:
-    return {"status": "ok", "service": "wuhan-kaiming-assistant"}
+    return {"status": "ok", "service": "ids-industrial-data-system"}
 
 
 @router.post("/cases", response_model=AnalysisCase)
@@ -95,4 +95,3 @@ def get_models() -> list:
 @router.put("/settings/models", response_model=List[ModelProviderConfig])
 def put_models(configs: List[ModelProviderConfig]) -> list:
     return db.replace_model_configs([item.model_dump() for item in configs])
-

@@ -1,18 +1,18 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE0"
-current_phase_id: "IDS-STAGE0-P4"
-current_task_id: "IDS-V0_1-STAGE0-P4"
-next_gate_id: "IDS-STAGE0-GATE"
-total_estimated_hours: 15
-completed_estimated_hours: 15
+current_stage_id: "IDS-STAGE010"
+current_phase_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+current_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+next_gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"
+total_estimated_hours: 77
+completed_estimated_hours: 77
 stages:
   -
     stage_id: "S5"
     name: "项目迁移与三文件重建"
     person_goal: "逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。"
-    status: "in_progress"
+    status: "completed"
     stop_conditions:
       - "一次 PR 同时迁移多个项目"
       - "无证据事实被写入 VERIFIED"
@@ -260,3 +260,2166 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE4_CLOSEOUT.md"
             risk: "远端 CI、认证或 sparse validation 限制阻断 main upload。"
             rollback: "Close or revert Stage 0 PR if merge evidence cannot be satisfied."
+  -
+    stage_id: "IDS-STAGE001"
+    name: "IDS 产品命名合同"
+    person_goal: "统一 IDS / Industrial Data System 产品命名，禁止新 UI、报告和正式文档继续使用旧产品名。"
+    status: "completed"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "旧产品名被用于新 UI、报告或正式文档显示名"
+      - "修改范围超出 STAGE-001"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+      - "触碰真实原始资料、secrets、本地数据、reports、outputs 或依赖目录"
+    stop_gate:
+      gate_id: "IDS-STAGE001-GATE"
+      status: "local_passed_pending_10_stage_batch_upload"
+      pass_conditions:
+        - "Phase 1 明确范围、输入输出、允许/禁止路径和 legacy name policy"
+        - "Phase 2 完成最小命名实现切片"
+        - "Phase 3 提供旧名扫描和异常场景验证"
+        - "Phase 4 生成 ACC 证据、回滚说明和中文反馈"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE4_CLOSEOUT.md"
+    phases:
+      -
+        phase_id: "IDS-STAGE001-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认 STAGE-001 的仓库治理边界、允许修改文件、禁止修改文件、受影响路径和旧名称保留政策。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图执行命名替换实现"
+          - "边界没有覆盖 README、governance、roadmap、脚本、测试或文档路径"
+          - "旧名称保留政策不明确"
+        stop_gate:
+          gate_id: "IDS-STAGE001-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Phase 1 边界文件存在"
+            - "001-010 批次上传锁存在且禁止未满 10 stages 推送"
+            - "render 检查无中文入口漂移"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE001-P1"
+            name: "STAGE-001 命名合同边界确认"
+            objective: "在不做命名实现的前提下，记录 STAGE-001 的输入、输出、允许路径、禁止路径、legacy name policy 和 001-010 批次上传规则。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "4.76%"
+            dependencies:
+              - "IDS-V0_1-STAGE0-P4"
+            acceptance_ids:
+              - "ACC-STAGE-001"
+            test_commands:
+              - "check-render --project KM_IDSystem"
+              - "Stage001 Phase1 marker check"
+              - "Changed scope check"
+              - "git status --short --branch"
+            test_results: "check-render drift_count=0; Stage001 Phase1 marker check passed; events JSONL parse passed; changed scope remained under KM_IDSystem/; git diff --check passed; full semantic validate remains blocked by sparse worktree missing root governance schemas/workflows/hooks and unrelated registered project paths, so no unrelated project expansion was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把范围确认误扩大为全量命名替换，或在 10-stage 批次完成前过早上传。"
+            rollback: "Revert IDS-STAGE001-P1 files and rendered governance entries only."
+      -
+        phase_id: "IDS-STAGE001-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "按最小变更原则完成仓库治理或命名变更，同步相关引用，不引入运行时代码耦合。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "修改无关运行逻辑"
+          - "删除历史迁移说明"
+        stop_gate:
+          gate_id: "IDS-STAGE001-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "最小命名实现切片完成"
+            - "迁移说明和回滚说明保留"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE2_NAMING_IMPLEMENTATION.md"
+            - "KM_IDSystem/backend/tests/test_stage001_naming_contract.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE001-P2"
+            name: "STAGE-001 命名合同最小实现切片"
+            objective: "按 Phase 1 边界完成最小命名变更并同步相关引用，不引入运行时代码耦合。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "9.52%"
+            dependencies:
+              - "IDS-V0_1-STAGE001-P1"
+            acceptance_ids:
+              - "ACC-STAGE-001"
+            test_commands:
+              - "focused naming implementation validation"
+              - "python3 -m unittest KM_IDSystem/backend/tests/test_stage001_naming_contract.py -q"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "Red scan failed before implementation on active old product names; after implementation focused naming scan returned stage001_phase2_naming_contract_scan_ok; stdlib unittest ran 2 tests and returned OK. Final render/scope checks are recorded in this run."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE2_NAMING_IMPLEMENTATION.md"
+              - "KM_IDSystem/backend/tests/test_stage001_naming_contract.py"
+            risk: "命名实现范围过大、误改历史证据或运行逻辑。"
+            rollback: "Revert IDS-STAGE001-P2 implementation slice only."
+      -
+        phase_id: "IDS-STAGE001-P3"
+        name: "IDS 产品命名合同专项验证与异常场景"
+        objective: "扫描客户可见文案，验证旧产品名不再用于新 UI、报告和正式文档，并确认未触碰真实资料、secrets 或本地数据目录。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 实现"
+          - "无法区分历史 alias 与新正式显示名"
+          - "扫描证据不足"
+        stop_gate:
+          gate_id: "IDS-STAGE001-P3-GATE"
+          status: "passed_with_non_blocking_company_context_review_item"
+          pass_conditions:
+            - "引用扫描结果存在"
+            - "README、治理文件、测试路径和脚本引用没有断裂"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE3_VALIDATION_SCAN.md"
+            - "KM_IDSystem/backend/tests/test_lifecycle_contract.py"
+            - "KM_IDSystem/backend/tests/test_stage001_naming_contract.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE001-P3"
+            name: "STAGE-001 命名合同专项验证"
+            objective: "验证新正式显示名不再使用旧产品名，并确认历史 alias 仅出现在允许上下文。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "9.52%"
+            dependencies:
+              - "IDS-V0_1-STAGE001-P2"
+            acceptance_ids:
+              - "ACC-STAGE-001"
+            test_commands:
+              - "customer-visible naming scan"
+              - "README/governance/script reference validation"
+              - "Codex bundled python -m unittest KM_IDSystem/backend/tests/test_lifecycle_contract.py -q"
+              - "Codex bundled python -m unittest KM_IDSystem/backend/tests/test_stage001_naming_contract.py -q"
+              - "check-render --project KM_IDSystem"
+            test_results: "Project-file legacy scan covered 86 KM_IDSystem files, classified 560 legacy hits, found 0 active blockers and 1 non-blocking company-context review item; lifecycle test ran 5 tests OK after native launcher path and stop script executable fixes; naming contract test ran 2 tests OK; script/native syntax, check-render, marker, scope, and diff checks passed. Full semantic validate remains blocked by sparse worktree omissions, so no unrelated project expansion was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE3_VALIDATION_SCAN.md"
+              - "KM_IDSystem/backend/tests/test_lifecycle_contract.py"
+              - "KM_IDSystem/backend/tests/test_stage001_naming_contract.py"
+            risk: "扫描过窄导致旧正式显示名残留，或把允许的历史 alias 误判为阻断。"
+            rollback: "Revert IDS-STAGE001-P3 validation/evidence-only changes."
+      -
+        phase_id: "IDS-STAGE001-P4"
+        name: "IDS 产品命名合同交付证据、回滚与中文反馈"
+        objective: "提交变更文件清单、引用扫描结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 扫描未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE001-P4-GATE"
+          status: "passed_no_github_upload_until_batch_complete"
+          pass_conditions:
+            - "ACC-STAGE-001 证据完整"
+            - "本 Stage 可回滚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE4_CLOSEOUT.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE001-P4"
+            name: "STAGE-001 交付证据与回滚"
+            objective: "生成 ACC-STAGE-001 证据、引用扫描结果、legacy alias 保留原因、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "4.76%"
+            dependencies:
+              - "IDS-V0_1-STAGE001-P3"
+            acceptance_ids:
+              - "ACC-STAGE-001"
+            test_commands:
+              - "STAGE-001 closeout checklist"
+              - "Codex bundled python -m unittest KM_IDSystem/backend/tests/test_lifecycle_contract.py -q"
+              - "Codex bundled python -m unittest KM_IDSystem/backend/tests/test_stage001_naming_contract.py -q"
+              - "project-file legacy scan"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-001 closeout evidence exists; Codex bundled Python lifecycle test ran 5 tests OK; Codex bundled Python naming contract test ran 2 tests OK; project-file legacy scan covered 87 KM_IDSystem files, classified 564 legacy hits, found 0 active blockers and 1 non-blocking company-context review item; script/native syntax, check-render, marker, scope, and diff checks passed. Full semantic validate remains blocked by sparse worktree omissions, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE4_CLOSEOUT.md"
+            risk: "在 STAGE-001 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE001-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE002"
+    name: "新建 ProductMetaDatabase"
+    person_goal: "新建 ProductMetaDatabase，承载产品 schema、manifest template、治理规则和 taskpack 输入，不承载 500GB 原始资料。"
+    status: "completed"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "把 ProductMetaDatabase 做成原始资料仓库或外部盘镜像"
+      - "提交真实原始资料、secrets、本地数据、reports、outputs 或依赖目录"
+      - "提前实施 schema migration 且没有回滚路径"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE002-GATE"
+      status: "local_passed_pending_10_stage_batch_upload"
+      pass_conditions:
+        - "Phase 1 明确 ProductMetaDatabase 的控制面边界、允许路径和禁止路径"
+        - "Phase 2 完成最小可运行、可解析、可回滚的 metadata skeleton"
+        - "Phase 3 验证 schema、manifest、治理规则和 taskpack 输入引用没有断裂"
+        - "Phase 4 生成 ACC 证据、回滚说明和中文反馈"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE2_METADATA_SKELETON.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE3_VALIDATION_SCAN.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/product_meta_database/README.md"
+        - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE002-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认 ProductMetaDatabase 的仓库治理边界、允许修改文件、禁止修改文件、输入输出和 legacy name policy。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图创建数据库实现或 schema migration"
+          - "边界没有覆盖 product schema、manifest template、治理规则和 taskpack 输入"
+          - "没有明确禁止原始资料、secrets、runtime 输出和无关项目路径"
+        stop_gate:
+          gate_id: "IDS-STAGE002-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 002 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary file defines ProductMetaDatabase allowed and forbidden paths"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE002-P1"
+            name: "ProductMetaDatabase 边界确认"
+            objective: "在不创建实现的前提下，记录 STAGE-002 的输入、输出、允许路径、禁止路径、legacy name policy 和 001-010 批次上传规则。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "3.57%"
+            dependencies:
+              - "IDS-V0_1-STAGE001-P4"
+            acceptance_ids:
+              - "ACC-STAGE-002"
+            test_commands:
+              - "Stage002 Phase1 marker check"
+              - "events JSONL parse"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-002 Phase 1 boundary artifacts prepared; Stage 002 taskpack SHA check returned stage002_taskpack_sha_ok; marker and JSONL check returned stage002_phase1_marker_jsonl_ok events=14; check-render returned drift_count=0; changed scope and git diff --check passed; no ProductMetaDatabase implementation directory was created in Phase 1. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把范围确认误扩大为 ProductMetaDatabase 实现，或把原始资料/外部盘内容纳入 Git。"
+            rollback: "Revert IDS-STAGE002-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE002-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "按最小变更原则建立 ProductMetaDatabase 的可解析 metadata skeleton，不引入运行时代码耦合或真实资料。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "引入真实资料、secrets、runtime 输出或外部 API 依赖"
+          - "schema migration 无法回滚"
+        stop_gate:
+          gate_id: "IDS-STAGE002-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "ProductMetaDatabase skeleton exists"
+            - "schema、manifest template、治理规则和 taskpack 输入可被本地测试解析"
+            - "README 和回滚说明存在"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE2_METADATA_SKELETON.md"
+            - "KM_IDSystem/product_meta_database/README.md"
+            - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
+            - "KM_IDSystem/product_meta_database/tests/test_contract.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE002-P2"
+            name: "ProductMetaDatabase 最小 metadata skeleton"
+            objective: "建立小型、可解析、可回滚的 ProductMetaDatabase metadata skeleton。"
+            status: "completed"
+            estimated_hours: 3
+            total_hours_percent: "10.71%"
+            dependencies:
+              - "IDS-V0_1-STAGE002-P1"
+            acceptance_ids:
+              - "ACC-STAGE-002"
+            test_commands:
+              - "TDD red: Codex bundled python -m unittest KM_IDSystem/product_meta_database/tests/test_contract.py -q"
+              - "ProductMetaDatabase parser/contract test"
+              - "Codex bundled python -B KM_IDSystem/product_meta_database/validate_product_meta_database.py"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+            test_results: "TDD red failed with 2 expected errors before implementation because validate_product_meta_database.py was missing. After implementation, Codex bundled Python unittest ran 2 tests OK; validator returned valid=true, issues=[], external_api_policy=denied, raw_material_policy=forbidden, forbidden_markers=[], forbidden_runtime_paths_present=false, and six future lineage fields. check-render returned drift_count=0; marker/JSONL returned stage002_phase2_marker_jsonl_ok events=15; changed-scope and git diff --check passed; no ProductMetaDatabase __pycache__ remained. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE2_METADATA_SKELETON.md"
+              - "KM_IDSystem/product_meta_database/README.md"
+              - "KM_IDSystem/product_meta_database/schemas/product_metadata.schema.json"
+              - "KM_IDSystem/product_meta_database/manifest_templates/product_manifest.template.json"
+              - "KM_IDSystem/product_meta_database/governance_rules/product_metadata_rules.json"
+              - "KM_IDSystem/product_meta_database/taskpack_inputs/stage002_product_metadata_input.json"
+              - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
+              - "KM_IDSystem/product_meta_database/tests/test_contract.py"
+            risk: "metadata skeleton 过早绑定运行时数据库、原始资料或未来 Stage 的索引实现。"
+            rollback: "Revert ProductMetaDatabase skeleton files and rendered governance entries."
+      -
+        phase_id: "IDS-STAGE002-P3"
+        name: "新建 ProductMetaDatabase 专项验证与异常场景"
+        objective: "验证 ProductMetaDatabase skeleton 没有断裂引用、没有旧显示名阻断、没有触碰真实资料或本地数据目录。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 skeleton"
+          - "无法证明 metadata contract 可解析"
+          - "扫描证据不足"
+        stop_gate:
+          gate_id: "IDS-STAGE002-P3-GATE"
+          status: "passed_with_non_blocking_company_context_review_item"
+          pass_conditions:
+            - "schema、manifest template、治理规则和 taskpack 输入引用验证通过"
+            - "legacy alias 已分类且没有新正式显示名阻断"
+            - "未触碰 raw data、secrets、runtime 输出或依赖目录"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE3_VALIDATION_SCAN.md"
+            - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
+            - "KM_IDSystem/product_meta_database/tests/test_contract.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE002-P3"
+            name: "ProductMetaDatabase 专项验证"
+            objective: "验证 STAGE-002 实现切片的引用、边界和异常场景。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "7.14%"
+            dependencies:
+              - "IDS-V0_1-STAGE002-P2"
+            acceptance_ids:
+              - "ACC-STAGE-002"
+            test_commands:
+              - "ProductMetaDatabase contract validation"
+              - "legacy name scan"
+              - "secret and runtime boundary scan"
+              - "changed scope check"
+              - "check-render --project KM_IDSystem"
+            test_results: "Codex bundled Python ProductMetaDatabase unittest ran 2 tests OK; validator returned valid=true, issues=[], external_api_policy=denied, raw_material_policy=forbidden, forbidden_markers=[], forbidden_runtime_paths_present=false, and all required contract references resolved. Classified project legacy scan covered 92 text files, found 529 classified legacy hits, 0 ProductMetaDatabase legacy hits, 1 non-blocking company-context review item, and 0 active blockers. Strict secret scan found 0 hits, tracked runtime files under forbidden runtime folders = 0, and forbidden ProductMetaDatabase directories = 0. check-render returned drift_count=0; marker/JSONL returned stage002_phase3_marker_jsonl_ok events=16; changed-scope and git diff --check passed. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE3_VALIDATION_SCAN.md"
+              - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
+              - "KM_IDSystem/product_meta_database/tests/test_contract.py"
+            risk: "验证只检查 marker，未覆盖 schema/manifest/rule/taskpack 输入引用。"
+            rollback: "Revert IDS-STAGE002-P3 validation/evidence-only changes."
+      -
+        phase_id: "IDS-STAGE002-P4"
+        name: "新建 ProductMetaDatabase 交付证据、回滚与中文反馈"
+        objective: "提交变更文件清单、引用扫描结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 扫描未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE002-P4-GATE"
+          status: "passed_no_github_upload_until_batch_complete"
+          pass_conditions:
+            - "ACC-STAGE-002 证据完整"
+            - "本 Stage 可回滚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE002-P4"
+            name: "STAGE-002 交付证据与回滚"
+            objective: "生成 ACC-STAGE-002 证据、引用扫描结果、legacy alias 保留原因、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "3.57%"
+            dependencies:
+              - "IDS-V0_1-STAGE002-P3"
+            acceptance_ids:
+              - "ACC-STAGE-002"
+            test_commands:
+              - "STAGE-002 closeout checklist"
+              - "ProductMetaDatabase final contract validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-002 whole-stage review passed: P1/P2/P3/P4 evidence exists; Codex bundled Python ProductMetaDatabase unittest ran 2 tests OK; validator returned valid=true, issues=[], external_api_policy=denied, raw_material_policy=forbidden, forbidden_markers=[], forbidden_runtime_paths_present=false; ProductMetaDatabase legacy hits=0; ProductMetaDatabase actual secret hits excluding policy marker definitions=0; forbidden runtime dirs=0; active blockers=0; one non-blocking company/source prompt context item remains in model_router.py. check-render returned drift_count=0; marker/JSONL/scope check returned stage002_phase4_marker_jsonl_scope_ok=True; git diff --check passed. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "在 STAGE-002 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE002-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE003"
+    name: "MetaDatabase 更名为 FinanceMetaDatabase"
+    person_goal: "将 MetaDatabase 一次性更名为 FinanceMetaDatabase，并更新引用、迁移说明和回滚说明。"
+    status: "completed"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "把 ProductMetaDatabase 误当成本 Stage 改名目标"
+      - "提交真实原始资料、secrets、本地数据、reports、outputs 或依赖目录"
+      - "schema migration 无法回滚"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE003-GATE"
+      status: "local_passed_pending_10_stage_batch_upload"
+      pass_conditions:
+        - "Phase 1 明确独立 MetaDatabase 改名边界和 ProductMetaDatabase 排除规则"
+        - "Phase 2 完成最小可回滚引用迁移"
+        - "Phase 3 验证独立旧名引用、断裂引用、secrets 和 runtime 边界"
+        - "Phase 4 生成 ACC 证据、回滚说明和中文反馈"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE3_VALIDATION_SCAN.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE003-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认独立 MetaDatabase 到 FinanceMetaDatabase 的改名边界、允许路径、禁止路径和 ProductMetaDatabase 排除规则。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图执行实际改名"
+          - "未区分 ProductMetaDatabase 和独立 MetaDatabase"
+          - "没有明确禁止 raw data、secrets、runtime 输出和无关项目路径"
+        stop_gate:
+          gate_id: "IDS-STAGE003-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 003 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary file defines standalone MetaDatabase target and ProductMetaDatabase exclusion"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE003-P1"
+            name: "FinanceMetaDatabase 改名边界确认"
+            objective: "在不执行改名的前提下，记录 STAGE-003 的输入、输出、允许路径、禁止路径、ProductMetaDatabase 排除规则和 001-010 批次上传规则。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "2.86%"
+            dependencies:
+              - "IDS-V0_1-STAGE002-P4"
+            acceptance_ids:
+              - "ACC-STAGE-003"
+            test_commands:
+              - "Stage003 Phase1 marker check"
+              - "events JSONL parse"
+              - "standalone MetaDatabase reference classification"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-003 Phase 1 boundary artifacts prepared; P0 STAGE-003 taskpack SHA check returned stage003_taskpack_sha_ok=True; baseline standalone MetaDatabase/FinanceMetaDatabase hits before Phase 1 artifacts = 5; baseline ProductMetaDatabase substring hits = 109; post-artifact marker/JSONL/scope check returned stage003_phase1_marker_jsonl_scope_ok=True with 18 parsed events; post-artifact standalone MetaDatabase/FinanceMetaDatabase hits = 67 and ProductMetaDatabase substring hits = 151; check-render returned drift_count=0; changed-scope and git diff --check passed; no product_meta_database, runtime output, dependency, raw-data, backend, frontend, script, or app_bundle path was modified. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把 ProductMetaDatabase 子串误替换为 FinanceMetaDatabase，破坏 STAGE-002 已验收合同。"
+            rollback: "Revert IDS-STAGE003-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE003-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "按最小变更原则完成独立 MetaDatabase 到 FinanceMetaDatabase 的引用迁移，不引入运行时代码耦合。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "试图重命名 ProductMetaDatabase"
+          - "引入真实资料、secrets、runtime 输出或外部 API 依赖"
+        stop_gate:
+          gate_id: "IDS-STAGE003-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "独立旧名引用迁移完成"
+            - "迁移说明和回滚说明存在"
+            - "ProductMetaDatabase 合同未被误改"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE003-P2"
+            name: "FinanceMetaDatabase 最小引用迁移"
+            objective: "完成小型、可审计、可回滚的独立 MetaDatabase 引用迁移。"
+            status: "completed"
+            estimated_hours: 3
+            total_hours_percent: "8.57%"
+            dependencies:
+              - "IDS-V0_1-STAGE003-P1"
+            acceptance_ids:
+              - "ACC-STAGE-003"
+            test_commands:
+              - "TDD red: Codex bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py -q"
+              - "standalone MetaDatabase migration test"
+              - "ProductMetaDatabase exclusion check"
+              - "check-render --project KM_IDSystem"
+            test_results: "TDD red failed with 1 expected error before implementation because validate_stage003_finance_meta_rename.py was missing. After implementation, Codex bundled Python unittest ran 1 test OK; validate_stage003_finance_meta_rename.py returned valid=true, issues=[], runtime_target_hits=[], product_meta_path_touched=[], finance_meta_hits=66, standalone_old_hits=53, and product_meta_hits=166 after final governance render. ProductMetaDatabase unittest ran 2 tests OK and ProductMetaDatabase validator returned valid=true, issues=[]. STAGE-002 migration wording now points to STAGE-003 FinanceMetaDatabase authority; ProductMetaDatabase contract files were not modified. check-render returned drift_count=0; marker/JSONL/scope check returned stage003_phase2_marker_jsonl_scope_ok=True; git diff --check passed. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
+            risk: "替换过宽导致 ProductMetaDatabase 或历史证据失真。"
+            rollback: "Revert IDS-STAGE003-P2 migration changes."
+      -
+        phase_id: "IDS-STAGE003-P3"
+        name: "MetaDatabase 更名为 FinanceMetaDatabase 专项验证与异常场景"
+        objective: "验证独立 MetaDatabase 旧名引用、FinanceMetaDatabase 新名引用、ProductMetaDatabase 排除规则和 runtime 边界。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 最小迁移"
+          - "无法证明 ProductMetaDatabase 未被误改"
+          - "扫描证据不足"
+        stop_gate:
+          gate_id: "IDS-STAGE003-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "独立旧名引用已分类"
+            - "ProductMetaDatabase 排除规则验证通过"
+            - "未触碰 raw data、secrets、runtime 输出或依赖目录"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE3_VALIDATION_SCAN.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE003-P3"
+            name: "FinanceMetaDatabase 专项验证"
+            objective: "验证 STAGE-003 改名切片的引用、边界和异常场景。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "5.71%"
+            dependencies:
+              - "IDS-V0_1-STAGE003-P2"
+            acceptance_ids:
+              - "ACC-STAGE-003"
+            test_commands:
+              - "standalone legacy name scan"
+              - "ProductMetaDatabase exclusion scan"
+              - "secret and runtime boundary scan"
+              - "check-render --project KM_IDSystem"
+            test_results: "STAGE-003 Phase 3 validation scan covered 103 project text files; standalone MetaDatabase hits=62, FinanceMetaDatabase hits=69, ProductMetaDatabase hits=174, runtime standalone/finance hits=0, active blockers=0. Raw secret-pattern hits=4 were classified as policy/schema text or validation-report self-reference, actual credential hits=0; tracked runtime files under forbidden output/dependency/data folders=0; no product_meta_database files changed. STAGE-003 validator remained valid=true with issues=[], runtime_target_hits=[], product_meta_path_touched=[], finance_meta_hits=74, standalone_old_hits=62, product_meta_hits=180. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE3_VALIDATION_SCAN.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
+            risk: "验证只检查 marker，未覆盖实际引用和 ProductMetaDatabase 排除规则。"
+            rollback: "Revert IDS-STAGE003-P3 validation/evidence-only changes."
+      -
+        phase_id: "IDS-STAGE003-P4"
+        name: "MetaDatabase 更名为 FinanceMetaDatabase 交付证据、回滚与中文反馈"
+        objective: "提交变更文件清单、引用扫描结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 扫描未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE003-P4-GATE"
+          status: "passed_no_github_upload_until_batch_complete"
+          pass_conditions:
+            - "ACC-STAGE-003 证据完整"
+            - "本 Stage 可回滚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE003-P4"
+            name: "STAGE-003 交付证据与回滚"
+            objective: "生成 ACC-STAGE-003 证据、引用扫描结果、legacy alias 保留原因、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "2.86%"
+            dependencies:
+              - "IDS-V0_1-STAGE003-P3"
+            acceptance_ids:
+              - "ACC-STAGE-003"
+            test_commands:
+              - "STAGE-003 closeout checklist"
+              - "FinanceMetaDatabase final reference validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-003 Phase 4 closeout records ACC-STAGE-003 evidence, whole-stage review, changed-file summary, legacy alias retention reasons, ProductMetaDatabase exclusion, rollback steps, Chinese owner feedback, and the no-upload stop line. Fresh final validation reran STAGE-003 unittest, STAGE-003 validator, ProductMetaDatabase unittest, ProductMetaDatabase validator, check-render, marker/JSONL/scope check, and git diff --check; semantic validate remains a sparse-worktree diagnostic and no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "在 STAGE-003 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE003-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE004"
+    name: "旧名称引用扫描"
+    person_goal: "扫描旧名称引用并限制其只出现在 legacy migration note 或历史说明中。"
+    status: "completed"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "把 ProductMetaDatabase 或 FinanceMetaDatabase 误判为旧名称债务"
+      - "未分类 legacy evidence 就执行替换"
+      - "提交真实原始资料、secrets、本地数据、reports、outputs 或依赖目录"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE004-GATE"
+      status: "local_passed_pending_10_stage_batch_upload"
+      pass_conditions:
+        - "Phase 1 明确旧名称扫描家族、允许上下文和禁止路径"
+        - "Phase 2 形成最小可运行扫描切片或治理合同"
+        - "Phase 3 完成旧名称引用分类、异常场景和 secrets/runtime 边界验证"
+        - "Phase 4 生成 ACC 证据、回滚说明和中文反馈"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE2_LEGACY_NAME_SCAN.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE3_VALIDATION_SCAN.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage004_legacy_name_scan.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE004-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认旧名称引用扫描的名称家族、允许上下文、禁止路径和后续验证计划。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图执行实际替换"
+          - "未区分 legacy evidence、compatibility path 和 active display-name debt"
+          - "没有明确禁止 raw data、secrets、runtime 输出和无关项目路径"
+        stop_gate:
+          gate_id: "IDS-STAGE004-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 004 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary file defines old-name families and false-positive exclusions"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE004-P1"
+            name: "旧名称引用扫描边界确认"
+            objective: "在不执行替换的前提下，记录 STAGE-004 的旧名称家族、输入、输出、允许路径、禁止路径和 001-010 批次上传规则。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "2.44%"
+            dependencies:
+              - "IDS-V0_1-STAGE003-P4"
+            acceptance_ids:
+              - "ACC-STAGE-004"
+            test_commands:
+              - "P0 STAGE-004 taskpack SHA check"
+              - "tracked legacy-name baseline scan"
+              - "Stage004 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-004 Phase 1 boundary artifacts prepared. P0 STAGE-004 taskpack SHA-256 is 0e265f600726b8922eebf22151908bf69a4672240faa38fddb45278b290f2f8c. Baseline tracked text scan covered 101 files and found 900 old-name family hits across 44 paths, including 39 runtime-context references that require later classification rather than blind replacement. Phase 1 did not modify runtime code, ProductMetaDatabase, FinanceMetaDatabase, raw data, reports, outputs, dependencies, or external projects. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "未分类 legacy context 就批量替换，破坏历史证据、测试、兼容路径或已验收子系统。"
+            rollback: "Revert IDS-STAGE004-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE004-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "按最小变更原则形成旧名称扫描工具或治理合同，不引入运行时代码耦合。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "试图一次性清理所有 legacy evidence"
+          - "引入真实资料、secrets、runtime 输出或外部 API 依赖"
+        stop_gate:
+          gate_id: "IDS-STAGE004-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "旧名称扫描切片可重复运行"
+            - "allowed legacy context 与 active debt 分类可审计"
+            - "ProductMetaDatabase 和 FinanceMetaDatabase false positive 被排除"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE2_LEGACY_NAME_SCAN.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage004_legacy_name_scan.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage004_legacy_name_scan.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE004-P2"
+            name: "旧名称引用扫描最小切片"
+            objective: "建立小型、可审计、可回滚的旧名称扫描与分类切片。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "4.88%"
+            dependencies:
+              - "IDS-V0_1-STAGE004-P1"
+            acceptance_ids:
+              - "ACC-STAGE-004"
+            test_commands:
+              - "legacy-name scan validator test"
+              - "false-positive exclusion test"
+              - "check-render --project KM_IDSystem"
+            test_results: "TDD red failed with 2 expected errors before implementation because validate_stage004_legacy_name_scan.py was missing. After implementation, Codex bundled Python unittest ran 2 tests OK; validate_stage004_legacy_name_scan.py returned valid=true, issues=[], files_scanned=103, legacy_name_hits=956, allowed_legacy_context=956, active_display_debt=0, unique_paths_with_legacy_hits=46, and forbidden_changed_paths=[]. ProductMetaDatabase and FinanceMetaDatabase are accepted false-positive exclusions, not old-name debt. No runtime code, ProductMetaDatabase, FinanceMetaDatabase contract, raw data, reports, outputs, dependencies, external projects, GitHub push, or PR was modified."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE2_LEGACY_NAME_SCAN.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage004_legacy_name_scan.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage004_legacy_name_scan.py"
+            risk: "扫描器把历史证据或兼容路径当成新产品显示名。"
+            rollback: "Revert IDS-STAGE004-P2 scan-slice changes."
+      -
+        phase_id: "IDS-STAGE004-P3"
+        name: "旧名称引用扫描专项验证与异常场景"
+        objective: "验证旧名称引用分类、客户可见文案、runtime 边界、secrets 和本地数据边界。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 扫描切片"
+          - "无法证明旧名称引用被正确分类"
+          - "扫描证据不足"
+        stop_gate:
+          gate_id: "IDS-STAGE004-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "旧名称引用已分类"
+            - "新正式显示面不使用旧名称"
+            - "未触碰 raw data、secrets、runtime 输出或依赖目录"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE3_VALIDATION_SCAN.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage004_legacy_name_scan.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage004_legacy_name_scan.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE004-P3"
+            name: "旧名称引用专项验证"
+            objective: "验证 STAGE-004 扫描切片的覆盖范围、异常场景和边界。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "4.88%"
+            dependencies:
+              - "IDS-V0_1-STAGE004-P2"
+            acceptance_ids:
+              - "ACC-STAGE-004"
+            test_commands:
+              - "legacy-name classification scan"
+              - "customer-visible output scan"
+              - "secret and runtime boundary scan"
+              - "check-render --project KM_IDSystem"
+            test_results: "STAGE-004 Phase 3 validation reran the focused unittest with 2 tests OK and the legacy-name validator with valid=true, issues=[], files_scanned=106, legacy_name_hits=1000, allowed_legacy_context=1000, active_display_debt=0, and forbidden_changed_paths=[]. Active context scan found 7 legacy refs, all classified; customer-visible context scan found 2 legacy refs, all classified. Secret scan found 8 raw pattern hits, all classified as schema text, SQL field names, policy marker definitions, or validation-report self-reference; actual credential hits=0. Tracked forbidden runtime-output files=0. No runtime code, ProductMetaDatabase, FinanceMetaDatabase contract, raw data, reports, outputs, dependencies, external projects, GitHub push, or PR was modified."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE3_VALIDATION_SCAN.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage004_legacy_name_scan.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage004_legacy_name_scan.py"
+            risk: "验证只检查 marker，未覆盖实际引用和 false-positive exclusion。"
+            rollback: "Revert IDS-STAGE004-P3 validation/evidence-only changes."
+      -
+        phase_id: "IDS-STAGE004-P4"
+        name: "旧名称引用扫描交付证据、回滚与中文反馈"
+        objective: "提交变更文件清单、引用扫描结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 扫描未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE004-P4-GATE"
+          status: "passed_no_github_upload_until_batch_complete"
+          pass_conditions:
+            - "ACC-STAGE-004 证据完整"
+            - "本 Stage 可回滚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE004-P4"
+            name: "STAGE-004 交付证据与回滚"
+            objective: "生成 ACC-STAGE-004 证据、引用扫描结果、legacy alias 保留原因、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "2.44%"
+            dependencies:
+              - "IDS-V0_1-STAGE004-P3"
+            acceptance_ids:
+              - "ACC-STAGE-004"
+            test_commands:
+              - "STAGE-004 closeout checklist"
+              - "legacy-name final reference validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-004 Phase 4 closeout records ACC-STAGE-004 evidence, whole-stage review, changed-file summary, final scan decision, legacy alias retention reasons, rollback steps, Chinese owner feedback, and the no-upload stop line. Fresh final validation reran the STAGE-004 unittest, legacy-name validator, active/customer-visible scan, secret/runtime boundary scan, check-render, marker/JSONL/scope check, and git diff --check; semantic validate remains a sparse-worktree diagnostic and no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE004_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage004_legacy_name_scan.py"
+            risk: "在 STAGE-004 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE004-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE005"
+    name: "仓库治理回归验证"
+    person_goal: "验证一次性仓库治理没有破坏 README、governance、脚本、测试和路径引用。"
+    status: "completed"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "缺少 STAGE-001..004 的本地 evidence 链"
+      - "把 sparse-worktree 根治理缺失误修为展开无关项目"
+      - "提交真实原始资料、secrets、本地数据、reports、outputs 或依赖目录"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE005-GATE"
+      status: "local_passed_pending_10_stage_batch_upload"
+      pass_conditions:
+        - "Phase 1 明确仓库治理回归验证范围、输入输出和禁止路径"
+        - "Phase 2 形成最小可运行回归验证切片或治理合同"
+        - "Phase 3 完成 README、governance、脚本、测试、路径引用和 secrets/runtime 边界验证"
+        - "Phase 4 生成 ACC 证据、回滚说明和中文反馈"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE2_GOVERNANCE_REGRESSION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE3_VALIDATION_SCAN.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE005-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认仓库治理回归验证的目标表面、允许路径、禁止路径、输入输出和后续验证计划。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图实现验证器或修改运行时代码"
+          - "未区分 KM_IDSystem 内真实回归和 sparse-worktree 根治理缺失"
+          - "没有明确禁止 raw data、secrets、runtime 输出和无关项目路径"
+        stop_gate:
+          gate_id: "IDS-STAGE005-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 005 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary file defines governance regression surfaces and forbidden paths"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE005-P1"
+            name: "仓库治理回归验证边界确认"
+            objective: "在不实现验证器的前提下，记录 STAGE-005 的治理回归验证表面、输入、输出、允许路径、禁止路径和 001-010 批次上传规则。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "2.13%"
+            dependencies:
+              - "IDS-V0_1-STAGE004-P4"
+            acceptance_ids:
+              - "ACC-STAGE-005"
+            test_commands:
+              - "P0 STAGE-005 taskpack SHA check"
+              - "tracked governance regression surface baseline"
+              - "Stage005 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-005 Phase 1 boundary artifacts prepared. P0 STAGE-005 taskpack SHA-256 is 7b3d826fb04ed557667e5b25f9d4c4bf301ede24e102cd602ef7ebac602b2716. Baseline tracked KM_IDSystem file count is 113, including README, handoff, governance, pursuing-goal contracts, scripts, backend tests, backend app, frontend, app_bundle, and ProductMetaDatabase contract surfaces. Phase 1 did not implement a validator, modify runtime code, touch raw data, reports, outputs, dependencies, or external projects. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把 sparse-worktree 的根治理缺失当成本项目回归修复，导致读取或展开无关项目。"
+            rollback: "Revert IDS-STAGE005-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE005-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "按最小变更原则形成仓库治理回归验证工具或治理合同，不引入运行时代码耦合。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "试图 broad cleanup 或展开无关项目"
+          - "引入真实资料、secrets、runtime 输出或外部 API 依赖"
+        stop_gate:
+          gate_id: "IDS-STAGE005-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "治理回归验证切片可重复运行"
+            - "README、governance、脚本、测试和路径引用检查可审计"
+            - "sparse-worktree 诊断与 KM_IDSystem 回归失败被区分"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE2_GOVERNANCE_REGRESSION.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE005-P2"
+            name: "仓库治理回归验证最小切片"
+            objective: "建立小型、可审计、可回滚的仓库治理回归验证切片。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "4.26%"
+            dependencies:
+              - "IDS-V0_1-STAGE005-P1"
+            acceptance_ids:
+              - "ACC-STAGE-005"
+            test_commands:
+              - "governance regression validator test"
+              - "path-reference invariant test"
+              - "check-render --project KM_IDSystem"
+            test_results: "TDD red failed with 2 expected failures before implementation because validate_stage005_governance_regression.py was missing. After implementation, Codex bundled Python unittest ran 2 tests OK; validate_stage005_governance_regression.py returned valid=true, issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], tracked_forbidden_runtime_files=[], and unexpected_changed_paths=[]. The validator covers required file presence, event JSONL parsing, stage-chain events, batch-upload lock, roadmap current task, owner-facing current name and legacy policy, no tracked runtime-output files, accepted-name preservation, and sparse-worktree diagnostic classification. No runtime code, raw data, reports, outputs, dependencies, external projects, GitHub push, or PR was modified."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE2_GOVERNANCE_REGRESSION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "验证器只检查 marker，未覆盖真实路径引用和 JSONL/批次锁结构。"
+            rollback: "Revert IDS-STAGE005-P2 validation-slice changes."
+      -
+        phase_id: "IDS-STAGE005-P3"
+        name: "仓库治理回归验证专项验证与异常场景"
+        objective: "验证 README、governance、脚本、测试、路径引用、secrets 和本地数据边界。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 验证切片"
+          - "无法证明治理回归验证覆盖实际路径"
+          - "扫描证据不足"
+        stop_gate:
+          gate_id: "IDS-STAGE005-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "README、governance、脚本、测试和路径引用检查已运行"
+            - "客户可见显示面仍使用 IDS / Industrial Data System"
+            - "未触碰 raw data、secrets、runtime 输出或依赖目录"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE3_VALIDATION_SCAN.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE005-P3"
+            name: "仓库治理回归专项验证"
+            objective: "验证 STAGE-005 回归切片的覆盖范围、异常场景和边界。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "4.26%"
+            dependencies:
+              - "IDS-V0_1-STAGE005-P2"
+            acceptance_ids:
+              - "ACC-STAGE-005"
+            test_commands:
+              - "README/governance/script/test/path-reference scan"
+              - "customer-visible output scan"
+              - "secret and runtime boundary scan"
+              - "check-render --project KM_IDSystem"
+            test_results: "STAGE-005 Phase 3 validation reran the STAGE-005 unittest with 3 tests OK and the governance-regression validator with valid=true, issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], tracked_forbidden_runtime_files=[], and unexpected_changed_paths=[]. The STAGE-004 legacy-name validator returned valid=true with active_display_debt=0. Active context scan found 7 classified legacy refs, customer-visible context hits=0, unclassified active/customer-visible hits=0. Script syntax and Python compile checks passed. Path-reference scan checked 59 refs, classified 13 forbidden/generated/wildcard refs as allowed non-tracked boundaries, and found 0 broken refs. Secret scan found 11 raw marker hits and 0 actual credential hits. No runtime code, raw data, reports, outputs, dependencies, external projects, GitHub push, or PR was modified."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE3_VALIDATION_SCAN.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "验证未区分本项目真实回归和 sparse 根治理缺失。"
+            rollback: "Revert IDS-STAGE005-P3 validation/evidence-only changes."
+      -
+        phase_id: "IDS-STAGE005-P4"
+        name: "仓库治理回归验证交付证据、回滚与中文反馈"
+        objective: "提交变更文件清单、回归验证结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 扫描未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE005-P4-GATE"
+          status: "passed_no_github_upload_until_batch_complete"
+          pass_conditions:
+            - "ACC-STAGE-005 证据完整"
+            - "本 Stage 可回滚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE005-P4"
+            name: "STAGE-005 交付证据与回滚"
+            objective: "生成 ACC-STAGE-005 证据、回归验证结果、legacy alias 保留原因、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "2.13%"
+            dependencies:
+              - "IDS-V0_1-STAGE005-P3"
+            acceptance_ids:
+              - "ACC-STAGE-005"
+            test_commands:
+              - "STAGE-005 closeout checklist"
+              - "governance regression final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-005 Phase 4 closeout records ACC-STAGE-005 evidence, whole-stage review, changed-file summary, final governance-regression decision, retained legacy alias reasons, rollback steps, Chinese owner feedback, and the no-upload stop line. Fresh final validation reran the STAGE-005 unittest, governance-regression validator, STAGE-004 legacy-name validator, check-render, marker/JSONL/scope check, and git diff --check; semantic validate remains a sparse-worktree diagnostic and no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            risk: "在 STAGE-005 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE005-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE006"
+    name: "macOS M2 Max Docker 基线"
+    person_goal: "建立 macOS + M2 Max + Docker Desktop / Docker Compose 的 IDS v0.1 运行基线。"
+    status: "in_progress"
+    stop_conditions:
+      - "需要真实资料但没有 fixture 或 owner 授权样本"
+      - "可能删除、移动、覆盖原始文件"
+      - "schema migration 无法回滚"
+      - "测试失败且原因不明"
+      - "修改范围超出本 Stage"
+      - "并行开发导致共享文件冲突"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE006-GATE"
+      status: "local_passed_pending_10_stage_batch_upload"
+      pass_conditions:
+        - "Phase 1 明确 macOS、Docker、IDS_DATA_ROOT、内置盘和移动硬盘边界"
+        - "Phase 2 形成最小运行环境、路径检测、状态枚举或存储预算切片"
+        - "Phase 3 验证移动硬盘在线、离线、重连、权限异常和路径变化场景"
+        - "Phase 4 输出环境检查、路径检查、存储预算、可恢复状态和回滚说明"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE2_ENVIRONMENT_BASELINE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/scripts/check_environment_baseline.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE006-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认 macOS、Docker、IDS_DATA_ROOT、内置盘、移动硬盘、冷热数据和安全模式边界。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图启动 Docker、安装依赖或实现检测器"
+          - "写入、扫描或修改外接盘 IDS_DATA_ROOT 内容"
+          - "创建 data、reports、outputs、.venv、node_modules 或 dist"
+          - "没有定义移动硬盘离线、重连、权限异常和路径变化规则"
+        stop_gate:
+          gate_id: "IDS-STAGE006-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 006 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary file records read-only macOS/Docker/internal-disk facts"
+            - "Phase 1 boundary defines hot data, cold data, GitHub metadata, removable-drive states, and safe-mode rules"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE006-P1"
+            name: "macOS M2 Max Docker 基线边界确认"
+            objective: "在不启动 Docker、不实现检测器、不写入外接盘的前提下，记录 STAGE-006 的本机环境、Docker、IDS_DATA_ROOT、冷热数据、安全模式和可拔插移动硬盘边界。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.89%"
+            dependencies:
+              - "IDS-V0_1-STAGE005-P4"
+            acceptance_ids:
+              - "ACC-STAGE-006"
+            test_commands:
+              - "P0 STAGE-006 taskpack SHA check"
+              - "read-only macOS/Docker/internal-disk baseline commands"
+              - "Stage006 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-006 Phase 1 boundary artifacts prepared. P0 STAGE-006 taskpack SHA-256 is 00486235919499e8b0d9a17cc6241167779738bc5fb832d1fad9e547e32acafb. Read-only baseline found macOS 15.1 build 24B83, arm64, Apple M2 Max, Docker CLI 29.6.1, Docker Compose v5.1.4, and root filesystem 926Gi size with 758Gi available. Phase 1 did not start Docker, install dependencies, implement a detector, write to IDS_DATA_ROOT, scan external-drive contents, create runtime data, touch reports or outputs, or push to GitHub because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把本机环境基线误扩大为 Docker runtime 实现、外接盘扫描或大文件存储操作。"
+            rollback: "Revert IDS-STAGE006-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE006-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现或记录运行环境、路径检测、状态枚举和存储预算接口。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "在客户操作流暴露机器端细节"
+          - "引入真实资料、secrets、runtime 输出或依赖目录"
+        stop_gate:
+          gate_id: "IDS-STAGE006-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "路径、空间、水位线和离线状态有最小可运行检查或可执行合同"
+            - "机器端细节只进入 IDS 系统运营入口"
+            - "不会在缺失 IDS_DATA_ROOT 时创建猜测的大数据目录"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE2_ENVIRONMENT_BASELINE.md"
+            - "KM_IDSystem/scripts/check_environment_baseline.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage006_environment_baseline.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE006-P2"
+            name: "macOS Docker 基线最小切片"
+            objective: "按 Phase 1 边界建立运行环境、路径检测、状态枚举和存储预算的最小可验证切片。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "3.77%"
+            dependencies:
+              - "IDS-V0_1-STAGE006-P1"
+            acceptance_ids:
+              - "ACC-STAGE-006"
+            test_commands:
+              - "environment/path detector focused test"
+              - "storage budget or state enum contract test"
+              - "check-render --project KM_IDSystem"
+            test_results: "TDD red failed with 5 expected failures before implementation because scripts/check_environment_baseline.py was missing. After implementation, Codex bundled Python unittest ran 5 tests OK; script smoke returned entrance=IDS 系统运营入口, customer_visible=false, ids_data_root.state=NOT_CONFIGURED, ids_data_root.safe_mode=true, internal_storage.state=OK, does_not_start_services=true, and does_not_create_ids_data_root=true. py_compile passed. No Docker service, backend/frontend service, dependency install, IDS_DATA_ROOT write, external-drive content scan, runtime data, reports, outputs, GitHub push, or PR was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE2_ENVIRONMENT_BASELINE.md"
+              - "KM_IDSystem/scripts/check_environment_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage006_environment_baseline.py"
+            risk: "检测器写入真实路径、启动服务或把机器诊断暴露给客户操作流。"
+            rollback: "Revert IDS-STAGE006-P2 implementation-slice changes."
+      -
+        phase_id: "IDS-STAGE006-P3"
+        name: "macOS M2 Max Docker 基线专项验证与异常场景"
+        objective: "验证移动硬盘在线、离线、重连、权限异常、路径变化和安全模式场景。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 最小切片"
+          - "无法模拟异常场景且没有明确降级证据"
+          - "验证需要真实资料写入或外接盘内容扫描"
+        stop_gate:
+          gate_id: "IDS-STAGE006-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "在线、离线、重连、权限异常和路径变化有证据或明确 deferred gate"
+            - "内置盘高水位保护有证据"
+            - "安全模式会暂停大批量导入、OCR、Embedding 和索引重建"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/scripts/check_environment_baseline.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage006_environment_baseline.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE006-P3"
+            name: "macOS Docker 基线异常场景验证"
+            objective: "验证 STAGE-006 最小切片的环境、路径、空间和安全模式异常场景。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "3.77%"
+            dependencies:
+              - "IDS-V0_1-STAGE006-P2"
+            acceptance_ids:
+              - "ACC-STAGE-006"
+            test_commands:
+              - "external-drive state scenario checks"
+              - "storage-waterline scenario checks"
+              - "safe-mode pause scenario checks"
+              - "check-render --project KM_IDSystem"
+            test_results: "TDD red failed with 2 expected errors because build_phase3_scenario_report did not exist. After implementation, Codex bundled Python unittest ran 7 tests OK; py_compile passed. Phase 3 covers ONLINE, OFFLINE, RECONNECTED, PERMISSION_DENIED, PATH_CHANGED, low-free-space BLOCKED, high-waterline BLOCKED, and safe-mode pause list for bulk_import, OCR, Embedding, index_rebuild, batch_report_generation, and raw_material_cleanup. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, external-drive content scan, runtime data, reports, outputs, GitHub push, or PR was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/scripts/check_environment_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage006_environment_baseline.py"
+            risk: "异常验证误触碰真实原始资料或不可回滚地改变本地运行状态。"
+            rollback: "Revert IDS-STAGE006-P3 validation/evidence changes."
+      -
+        phase_id: "IDS-STAGE006-P4"
+        name: "macOS M2 Max Docker 基线交付证据、回滚与中文反馈"
+        objective: "输出环境检查、路径检查、存储预算、状态恢复和回滚说明。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 场景验证未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE006-P4-GATE"
+          status: "passed_no_github_upload_until_batch_complete"
+          pass_conditions:
+            - "ACC-STAGE-006 证据完整"
+            - "可恢复和不可恢复状态清楚"
+            - "默认配置和回滚步骤清楚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            - "KM_IDSystem/scripts/check_environment_baseline.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE006-P4"
+            name: "STAGE-006 交付证据与回滚"
+            objective: "生成 ACC-STAGE-006 证据、环境检查结果、路径检查结果、存储预算说明、状态恢复说明、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.89%"
+            dependencies:
+              - "IDS-V0_1-STAGE006-P3"
+            acceptance_ids:
+              - "ACC-STAGE-006"
+            test_commands:
+              - "STAGE-006 closeout checklist"
+              - "macOS Docker baseline final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-006 Phase 4 closeout records ACC-STAGE-006 evidence, whole-stage review, changed-file summary, final environment/path/storage decision, recoverable and non-recoverable states, default configuration, rollback steps, Chinese owner feedback, and the no-upload stop line. Fresh final validation reran the STAGE-006 unittest, CLI smoke, Phase 3 scenario smoke, script py_compile, check-render, marker/JSONL/scope check, and git diff --check; semantic validate remains a sparse-worktree diagnostic and no unrelated project expansion was performed. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, external-drive content scan, runtime data, reports, outputs, GitHub push, PR, or merge was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/scripts/check_environment_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage006_environment_baseline.py"
+            risk: "在 STAGE-006 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE006-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE007"
+    name: "IDS_DATA_ROOT 检测"
+    person_goal: "识别移动硬盘中的 IDS_DATA_ROOT，并验证 00-99 目录结构完整。"
+    status: "in_progress"
+    stop_conditions:
+      - "需要真实资料但没有 fixture 或 owner 授权样本"
+      - "可能删除、移动、覆盖原始文件"
+      - "schema migration 无法回滚"
+      - "测试失败且原因不明"
+      - "修改范围超出本 Stage"
+      - "并行开发导致共享文件冲突"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE007-GATE"
+      status: "local_passed_pending_10_stage_batch_upload"
+      pass_conditions:
+        - "Phase 1 明确 IDS_DATA_ROOT、内置盘、移动硬盘、00-99 目录合同和安全模式边界"
+        - "Phase 2 形成最小只读 IDS_DATA_ROOT 检测和顶层目录结构验证切片"
+        - "Phase 3 验证在线、离线、重连、权限异常、路径变化、缺失目录和重复目录场景"
+        - "Phase 4 输出路径检查、目录结构验证、可恢复状态和回滚说明"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE2_IDS_DATA_ROOT_DETECTOR.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/scripts/detect_ids_data_root.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE007-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认 IDS_DATA_ROOT 检测、00-99 目录结构、内置盘、移动硬盘、冷热数据和安全模式边界。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图实现检测器、创建 00-99 目录或扫描外接盘内容"
+          - "写入、扫描或修改外接盘 IDS_DATA_ROOT 内容"
+          - "创建 data、reports、outputs、.venv、node_modules 或 dist"
+          - "没有定义 00-99 目录完整性规则和异常状态"
+        stop_gate:
+          gate_id: "IDS-STAGE007-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 007 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary records read-only macOS/Docker/internal-disk/IDS_DATA_ROOT facts"
+            - "Phase 1 boundary defines top-level 00-99 directory completeness, missing, duplicate, malformed, permission, and safe-mode rules"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE007-P1"
+            name: "IDS_DATA_ROOT 检测边界确认"
+            objective: "在不实现检测器、不创建目录、不扫描外接盘内容的前提下，记录 STAGE-007 的 IDS_DATA_ROOT、00-99 目录结构、安全模式和可拔插移动硬盘边界。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.69%"
+            dependencies:
+              - "IDS-V0_1-STAGE006-P4"
+            acceptance_ids:
+              - "ACC-STAGE-007"
+            test_commands:
+              - "P0 STAGE-007 taskpack SHA check"
+              - "read-only macOS/Docker/internal-disk/IDS_DATA_ROOT baseline commands"
+              - "Stage007 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-007 Phase 1 boundary artifacts prepared. P0 STAGE-007 taskpack SHA-256 is 1bdbb53699df9dffd53c88d74ac6ec1385852a4bebccdb0e780cc47f537bd458. Read-only baseline found macOS 15.1 build 24B83, arm64, Apple M2 Max, Docker CLI 29.6.1, Docker Compose v5.1.4, root filesystem 926Gi size with 758Gi available, and no IDS_DATA_ROOT configured in this shell. Phase 1 did not start Docker, install dependencies, implement a detector, create 00-99 directories, write to IDS_DATA_ROOT, scan external-drive contents, create runtime data, touch reports or outputs, or push to GitHub because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把 IDS_DATA_ROOT 边界确认误扩大为真实外接盘扫描、目录创建或数据导入。"
+            rollback: "Revert IDS-STAGE007-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE007-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现或记录只读 IDS_DATA_ROOT 检测、状态枚举和 00-99 顶层目录结构验证接口。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "检测器会创建、移动、删除或修改 IDS_DATA_ROOT 内容"
+          - "在客户操作流暴露机器端细节"
+        stop_gate:
+          gate_id: "IDS-STAGE007-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "路径、权限、顶层 00-99 slot 完整性和异常状态有最小可运行检查"
+            - "机器端细节只进入 IDS 系统运营入口"
+            - "不会在缺失 IDS_DATA_ROOT 时创建猜测的大数据目录"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE2_IDS_DATA_ROOT_DETECTOR.md"
+            - "KM_IDSystem/scripts/detect_ids_data_root.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage007_ids_data_root_detector.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE007-P2"
+            name: "IDS_DATA_ROOT 只读检测最小切片"
+            objective: "按 Phase 1 边界建立 IDS_DATA_ROOT 配置、路径、权限、00-99 顶层目录 slot 和安全模式的最小可验证切片。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "3.39%"
+            dependencies:
+              - "IDS-V0_1-STAGE007-P1"
+            acceptance_ids:
+              - "ACC-STAGE-007"
+            test_commands:
+              - "IDS_DATA_ROOT detector focused test"
+              - "00-99 slot structure contract test"
+              - "check-render --project KM_IDSystem"
+            test_results: "TDD red failed with 5 expected failures before implementation because scripts/detect_ids_data_root.py was missing. After implementation, Codex bundled Python unittest ran 5 tests OK; detector covers NOT_CONFIGURED, PATH_CHANGED, ROOT_ABSENT, ROOT_NOT_DIRECTORY, ROOT_PERMISSION_DENIED, MALFORMED_TOP_LEVEL_ENTRY, DUPLICATE_NUMERIC_SLOT, MISSING_NUMERIC_SLOTS, STRUCTURE_COMPLETE, and UNKNOWN. CLI smoke returns operations-only JSON with customer_visible=false, state=NOT_CONFIGURED, safe_mode=true, does_not_create_ids_data_root=true, and does_not_scan_recursively=true. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, recursive external-drive content scan, 00-99 directory creation, runtime data, reports, outputs, GitHub push, or PR was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE2_IDS_DATA_ROOT_DETECTOR.md"
+              - "KM_IDSystem/scripts/detect_ids_data_root.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage007_ids_data_root_detector.py"
+            risk: "检测器写入真实路径、递归扫描外接盘或把机器诊断暴露给客户操作流。"
+            rollback: "Revert IDS-STAGE007-P2 implementation-slice changes."
+      -
+        phase_id: "IDS-STAGE007-P3"
+        name: "IDS_DATA_ROOT 检测专项验证与异常场景"
+        objective: "验证移动硬盘在线、离线、重连、权限异常、路径变化、目录缺失、目录重复和安全模式场景。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 最小切片"
+          - "无法模拟异常场景且没有明确降级证据"
+          - "验证需要真实资料写入或外接盘内容扫描"
+        stop_gate:
+          gate_id: "IDS-STAGE007-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "在线、离线、重连、权限异常、路径变化、缺失目录和重复目录有证据或明确 deferred gate"
+            - "00_ORIGINAL_RAW_DATA 保持只读合同"
+            - "安全模式会暂停大批量导入、OCR、Embedding、索引和清理"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/scripts/detect_ids_data_root.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage007_ids_data_root_detector.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE007-P3"
+            name: "IDS_DATA_ROOT 异常场景验证"
+            objective: "验证 STAGE-007 最小切片的路径、权限、目录结构和安全模式异常场景。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "3.39%"
+            dependencies:
+              - "IDS-V0_1-STAGE007-P2"
+            acceptance_ids:
+              - "ACC-STAGE-007"
+            test_commands:
+              - "external-drive state scenario checks"
+              - "00-99 slot structure scenario checks"
+              - "safe-mode pause scenario checks"
+              - "check-render --project KM_IDSystem"
+            test_results: "TDD red failed with 2 expected errors before implementation because previous_state support and build_stage007_scenario_report were missing. After implementation, Codex bundled Python unittest ran 7 tests OK. Scenario report covers STRUCTURE_COMPLETE, ROOT_ABSENT, RECONNECTED, ROOT_PERMISSION_DENIED, PATH_CHANGED, ROOT_NOT_DIRECTORY, MISSING_NUMERIC_SLOTS, DUPLICATE_NUMERIC_SLOT, MALFORMED_TOP_LEVEL_ENTRY, low-free-space BLOCKED, high-waterline BLOCKED, and safe-mode pause list for bulk_import, recursive_directory_scanning, raw_material_cleanup, OCR, Embedding, index_rebuild, and batch_report_generation. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, recursive external-drive content scan, 00-99 directory creation, runtime data, reports, outputs, GitHub push, or PR was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/scripts/detect_ids_data_root.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage007_ids_data_root_detector.py"
+            risk: "异常验证误触碰真实原始资料或不可回滚地改变本地运行状态。"
+            rollback: "Revert IDS-STAGE007-P3 validation/evidence changes."
+      -
+        phase_id: "IDS-STAGE007-P4"
+        name: "IDS_DATA_ROOT 检测交付证据、回滚与中文反馈"
+        objective: "输出路径检查、00-99 目录结构验证、状态恢复和回滚说明。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 场景验证未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE007-P4-GATE"
+          status: "passed_no_github_upload_until_batch_complete"
+          pass_conditions:
+            - "ACC-STAGE-007 证据完整"
+            - "可恢复和不可恢复状态清楚"
+            - "默认配置和回滚步骤清楚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            - "KM_IDSystem/scripts/detect_ids_data_root.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE007-P4"
+            name: "STAGE-007 交付证据与回滚"
+            objective: "生成 ACC-STAGE-007 证据、路径检查结果、00-99 目录结构验证结果、状态恢复说明、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.69%"
+            dependencies:
+              - "IDS-V0_1-STAGE007-P3"
+            acceptance_ids:
+              - "ACC-STAGE-007"
+            test_commands:
+              - "STAGE-007 closeout checklist"
+              - "IDS_DATA_ROOT detector final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-007 Phase 4 closeout records ACC-STAGE-007 evidence, whole-stage review, changed-file summary, path and 00-99 structure evidence, recoverable and non-recoverable states, default configuration, rollback steps, Chinese owner feedback, and the no-upload stop line. Fresh final validation reran the STAGE-007 unittest, STAGE-006 regression unittest, CLI smoke, Phase 3 scenario smoke, script py_compile, check-render, marker/JSONL/scope check, and git diff --check; semantic validate remains a sparse-worktree diagnostic and no unrelated project expansion was performed. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, recursive external-drive content scan, 00-99 directory creation, runtime data, reports, outputs, GitHub push, PR, or merge was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/scripts/detect_ids_data_root.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage007_ids_data_root_detector.py"
+            risk: "在 STAGE-007 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE007-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE008"
+    name: "可拔插移动硬盘状态机"
+    person_goal: "处理移动硬盘在线、离线、重新接入、路径变化和权限异常。"
+    status: "completed"
+    stop_conditions:
+      - "需要真实资料但没有 fixture 或 owner 授权样本"
+      - "可能删除、移动、覆盖原始文件"
+      - "schema migration 无法回滚"
+      - "测试失败且原因不明"
+      - "修改范围超出本 Stage"
+      - "并行开发导致共享文件冲突"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE008-GATE"
+      status: "passed_with_local_evidence"
+      pass_conditions:
+        - "Phase 1 明确可拔插移动硬盘状态机、内置盘、移动硬盘、冷热数据和安全模式边界"
+        - "Phase 2 形成最小只读状态机、路径检测、状态枚举和存储预算切片"
+        - "Phase 3 验证在线、离线、重连、权限异常、路径变化和安全模式场景"
+        - "Phase 4 输出环境检查、路径检查、存储预算、可恢复状态和回滚说明"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE2_REMOVABLE_DRIVE_STATE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/scripts/check_removable_drive_state.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE008-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认可拔插移动硬盘状态机、IDS_DATA_ROOT、内置盘、移动硬盘、冷热数据和安全模式边界。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图实现状态机、启动服务或扫描外接盘内容"
+          - "写入、扫描或修改外接盘 IDS_DATA_ROOT 内容"
+          - "创建 data、reports、outputs、.venv、node_modules 或 dist"
+          - "没有定义在线、离线、重连、路径变化、权限异常和安全模式转移规则"
+        stop_gate:
+          gate_id: "IDS-STAGE008-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 008 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary records read-only macOS/Docker/internal-disk/IDS_DATA_ROOT facts"
+            - "Phase 1 boundary defines removable-drive lifecycle states, transition rules, recovery requirements, and safe-mode rules"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE008-P1"
+            name: "可拔插移动硬盘状态机边界确认"
+            objective: "在不实现状态机、不启动服务、不扫描外接盘内容的前提下，记录 STAGE-008 的在线、离线、重连、路径变化、权限异常、安全模式和恢复边界。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.54%"
+            dependencies:
+              - "IDS-V0_1-STAGE007-P4"
+            acceptance_ids:
+              - "ACC-STAGE-008"
+            test_commands:
+              - "P0 STAGE-008 taskpack SHA check"
+              - "read-only macOS/Docker/internal-disk/IDS_DATA_ROOT baseline commands"
+              - "Stage008 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-008 Phase 1 boundary artifacts prepared. P0 STAGE-008 taskpack SHA-256 is 5cd56ca188c4e13215d08b0281a412c877e3e02209b2c00e4f3ff1c943f2d357. Read-only baseline found macOS 15.1 build 24B83, arm64, Apple M2 Max, Docker CLI 29.6.1, Docker Compose v5.1.4, root filesystem 926Gi size with 758Gi available, and no IDS_DATA_ROOT configured in this shell. Existing STAGE-007 detector smoke returned state=NOT_CONFIGURED, safe_mode=true, customer_visible=false, does_not_create_ids_data_root=true, and does_not_scan_recursively=true. Phase 1 did not start Docker, install dependencies, implement a state machine, write to IDS_DATA_ROOT, scan external-drive contents, create runtime data, touch reports or outputs, or push to GitHub because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把可拔插移动硬盘状态机边界确认误扩大为真实外接盘扫描、自动恢复、目录创建或数据导入。"
+            rollback: "Revert IDS-STAGE008-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE008-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现或记录只读可拔插移动硬盘状态机、路径检测、状态枚举和存储预算接口。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "状态机会创建、移动、删除或修改 IDS_DATA_ROOT 内容"
+          - "在客户操作流暴露机器端细节"
+        stop_gate:
+          gate_id: "IDS-STAGE008-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "在线、离线、重连、路径变化、权限异常和存储预算有最小可运行检查"
+            - "机器端细节只进入 IDS 系统运营入口"
+            - "重连不会自动恢复大批量导入、OCR、Embedding、索引或清理"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE2_REMOVABLE_DRIVE_STATE.md"
+            - "KM_IDSystem/scripts/check_removable_drive_state.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE008-P2"
+            name: "可拔插移动硬盘状态机最小切片"
+            objective: "按 Phase 1 边界建立可拔插移动硬盘状态、路径、权限、存储预算和安全模式的最小可验证切片。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "3.08%"
+            dependencies:
+              - "IDS-V0_1-STAGE008-P1"
+            acceptance_ids:
+              - "ACC-STAGE-008"
+            test_commands:
+              - "removable-drive state-machine focused test"
+              - "path/permission/storage state contract test"
+              - "check-render --project KM_IDSystem"
+            test_results: "STAGE-008 Phase 2 added a read-only removable-drive lifecycle state machine and focused unittest. TDD red run before implementation produced Ran 5 tests and FAILED (failures=5) because the script did not exist. Green run after implementation and CLI import-path fix produced Ran 5 tests and OK. The slice maps not configured, offline, reconnected, path changed, permission denied, structure invalid, storage blocked, and online validated states. It does not start services, create IDS_DATA_ROOT, create 00-99 directories, recursively scan external-drive contents, write to IDS_DATA_ROOT, auto-resume import/OCR/Embedding/indexing/report jobs, expose machine diagnostics to the customer flow, push to GitHub, open a PR, or merge."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE2_REMOVABLE_DRIVE_STATE.md"
+              - "KM_IDSystem/scripts/check_removable_drive_state.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
+            risk: "状态机写入真实路径、递归扫描外接盘、自动恢复作业或把机器诊断暴露给客户操作流。"
+            rollback: "Revert IDS-STAGE008-P2 implementation-slice changes."
+      -
+        phase_id: "IDS-STAGE008-P3"
+        name: "可拔插移动硬盘状态机专项验证与异常场景"
+        objective: "验证移动硬盘在线、离线、重连、权限异常、路径变化和安全模式场景。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 最小切片"
+          - "无法模拟异常场景且没有明确降级证据"
+          - "验证需要真实资料写入或外接盘内容扫描"
+        stop_gate:
+          gate_id: "IDS-STAGE008-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "在线、离线、重连、权限异常和路径变化有证据或明确 deferred gate"
+            - "内置盘高水位保护有证据"
+            - "安全模式会暂停大批量导入、OCR、Embedding、索引和清理"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/scripts/check_removable_drive_state.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE008-P3"
+            name: "可拔插移动硬盘状态机异常场景验证"
+            objective: "验证 STAGE-008 最小切片的状态转移、路径、权限、空间和安全模式异常场景。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "3.08%"
+            dependencies:
+              - "IDS-V0_1-STAGE008-P2"
+            acceptance_ids:
+              - "ACC-STAGE-008"
+            test_commands:
+              - "online/offline/reconnect transition scenario checks"
+              - "path-change/permission/storage scenario checks"
+              - "safe-mode pause scenario checks"
+              - "check-render --project KM_IDSystem"
+            test_results: "STAGE-008 Phase 3 added deterministic scenario validation for online, offline, reconnected, permission denied, path changed, structure invalid, low free space, high waterline, and safe-mode pause scenarios. TDD red run before implementation produced Ran 6 tests and FAILED (errors=1) because build_stage008_scenario_report did not exist. Green run after implementation produced Ran 6 tests and OK. The validation uses temporary directories and synthetic byte counts only; it does not create real IDS_DATA_ROOT, create missing 00-99 directories, recursively scan external-drive contents, start services, write runtime data, auto-resume jobs, push to GitHub, open a PR, or merge."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/scripts/check_removable_drive_state.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
+            risk: "异常验证误触碰真实原始资料或不可回滚地改变本地运行状态。"
+            rollback: "Revert IDS-STAGE008-P3 validation/evidence changes."
+      -
+        phase_id: "IDS-STAGE008-P4"
+        name: "可拔插移动硬盘状态机交付证据、回滚与中文反馈"
+        objective: "输出环境检查、路径检查、存储预算、状态恢复和回滚说明。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 场景验证未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE008-P4-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "ACC-STAGE-008 证据完整"
+            - "可恢复和不可恢复状态清楚"
+            - "默认配置和回滚步骤清楚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            - "KM_IDSystem/scripts/check_removable_drive_state.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE008-P4"
+            name: "STAGE-008 交付证据与回滚"
+            objective: "生成 ACC-STAGE-008 证据、环境检查结果、路径检查结果、存储预算说明、状态恢复说明、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.54%"
+            dependencies:
+              - "IDS-V0_1-STAGE008-P3"
+            acceptance_ids:
+              - "ACC-STAGE-008"
+            test_commands:
+              - "STAGE-008 closeout checklist"
+              - "removable-drive state-machine final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-008 Phase 4 records ACC-STAGE-008 closeout evidence, whole-stage review, environment/path/storage evidence, state-transition evidence, recoverable and non-recoverable states, default configuration, rollback steps, Chinese owner feedback, and the no-upload stop line. Final validation reran STAGE-008, STAGE-007, and STAGE-006 unittests, STAGE-008 CLI smoke, STAGE-007 path smoke, STAGE-006 environment/storage smoke, STAGE-008 scenario smoke, py_compile, check-render, marker/scope/JSONL checks, and git diff --check. Semantic validate remains a sparse-worktree diagnostic only. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, recursive external-drive content scan, 00-99 directory creation, runtime data, reports, outputs, GitHub push, PR, or merge was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/scripts/check_removable_drive_state.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
+            risk: "在 STAGE-008 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE008-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE009"
+    name: "存储预算基线"
+    person_goal: "建立 800GB 内置盘与 5TB 移动硬盘的存储预算，防止任务写满本机。"
+    status: "completed"
+    stop_conditions:
+      - "需要真实资料但没有 fixture 或 owner 授权样本"
+      - "可能删除、移动、覆盖原始文件"
+      - "schema migration 无法回滚"
+      - "测试失败且原因不明"
+      - "修改范围超出本 Stage"
+      - "并行开发导致共享文件冲突"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE009-GATE"
+      status: "open"
+      pass_conditions:
+        - "Phase 1 明确内置盘、移动硬盘、冷热数据、存储预算、水位线和安全模式边界"
+        - "Phase 2 形成最小只读存储预算、状态枚举和水位线检查切片"
+        - "Phase 3 验证 OK、WARN、BLOCKED、UNKNOWN、高水位线和无边界派生产物场景"
+        - "Phase 4 输出环境检查、路径检查、存储预算、可恢复状态和回滚说明"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE2_STORAGE_BUDGET_BASELINE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE4_CLOSEOUT.md"
+    phases:
+      -
+        phase_id: "IDS-STAGE009-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认 macOS、Docker、IDS_DATA_ROOT、内置盘、移动硬盘、冷热数据和存储预算安全模式边界。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图实现预算检查器、启动服务或生成派生产物"
+          - "写入、扫描或修改外接盘 IDS_DATA_ROOT 内容"
+          - "创建 data、reports、outputs、.venv、node_modules、OCR 输出、Embedding 输出或索引"
+          - "没有定义 OK、WARN、BLOCKED、UNKNOWN、水位线和无边界派生产物规则"
+        stop_gate:
+          gate_id: "IDS-STAGE009-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 009 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary records read-only macOS/Docker/internal-disk/IDS_DATA_ROOT facts"
+            - "Phase 1 boundary defines internal hot data, external cold data, GitHub metadata, storage budget states, thresholds, and safe-mode rules"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE009-P1"
+            name: "存储预算基线边界确认"
+            objective: "在不实现预算检查器、不启动服务、不写入本机派生产物或外接盘的前提下，记录 STAGE-009 的内置盘、移动硬盘、冷热数据、阈值、水位线、安全模式和无边界派生产物边界。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.41%"
+            dependencies:
+              - "IDS-V0_1-STAGE008-P4"
+            acceptance_ids:
+              - "ACC-STAGE-009"
+            test_commands:
+              - "P0 STAGE-009 taskpack SHA check"
+              - "read-only macOS/Docker/internal-disk/IDS_DATA_ROOT baseline commands"
+              - "Stage009 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-009 Phase 1 boundary artifacts prepared. P0 STAGE-009 taskpack SHA-256 is 490671d6372dd185fa829ce4a7ea05d25b6ae311feb92a986571cbdb2a567099. Read-only baseline found macOS 15.1 build 24B83, arm64, Apple M2 Max, Docker CLI 29.6.1, Docker Compose v5.1.4, root filesystem 926Gi size with 630Gi available, and no IDS_DATA_ROOT configured in this shell. Existing STAGE-006 storage smoke returned internal_storage.state=OK with free_gib=300.0, min_free_gib=100, warn_free_gib=200, max_used_percent=85, and does_not_start_services=true. Existing STAGE-008 state-machine smoke returned state=NOT_CONFIGURED, safe_mode=true, auto_resume=false, storage_state=OK, customer_visible=false, and does_not_create_ids_data_root=true. Phase 1 did not start Docker, install dependencies, implement a budget checker, write to IDS_DATA_ROOT, scan external-drive contents, create runtime data, reports, outputs, embeddings, indexes, or push to GitHub because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把存储预算边界确认误扩大为真实预算检查器、派生产物生成、外接盘扫描或大文件存储操作。"
+            rollback: "Revert IDS-STAGE009-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE009-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现或记录只读存储预算、状态枚举、水位线和安全模式接口。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "预算检查器会创建、移动、删除或修改 IDS_DATA_ROOT 内容"
+          - "预算检查器会生成无边界本地派生产物"
+          - "在客户操作流暴露机器端细节"
+        stop_gate:
+          gate_id: "IDS-STAGE009-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "OK、WARN、BLOCKED、UNKNOWN 和无边界派生产物风险有最小可运行检查"
+            - "机器端细节只进入 IDS 系统运营入口"
+            - "不会在缺失 IDS_DATA_ROOT 或预算阻断时创建猜测的大数据目录或派生产物"
+          evidence_refs:
+            - "KM_IDSystem/scripts/check_storage_budget.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage009_storage_budget.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE2_STORAGE_BUDGET_BASELINE.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE009-P2"
+            name: "存储预算基线最小切片"
+            objective: "按 Phase 1 边界建立内置盘、移动硬盘、派生产物、水位线和安全模式的最小可验证切片。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "2.82%"
+            dependencies:
+              - "IDS-V0_1-STAGE009-P1"
+            acceptance_ids:
+              - "ACC-STAGE-009"
+            test_commands:
+              - "storage budget focused test"
+              - "waterline and unbounded-output contract test"
+              - "check-render --project KM_IDSystem"
+            test_results: "Implemented read-only Stage 009 storage-budget preflight. TDD RED first failed because KM_IDSystem/scripts/check_storage_budget.py was missing. GREEN focused unittest passed with 4 tests covering BUDGET_OK, BUDGET_WARN, BUDGET_BLOCKED_LOW_FREE, BUDGET_BLOCKED_HIGH_WATERLINE, BUDGET_UNKNOWN, EXTERNAL_ROOT_NOT_READY, UNBOUNDED_OUTPUT_RISK, operations-only flags, and CLI JSON contract. The script composes STAGE-007 internal storage guard and STAGE-008 removable-drive state, keeps diagnostics in IDS 系统运营入口, returns customer_visible=false, and does not start services, create IDS_DATA_ROOT, recursively scan external-drive contents, generate outputs, or write runtime data."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_storage_budget.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage009_storage_budget.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE2_STORAGE_BUDGET_BASELINE.md"
+            risk: "预算检查器写入真实路径、生成派生产物、递归扫描外接盘或把机器诊断暴露给客户操作流。"
+            rollback: "Revert IDS-STAGE009-P2 implementation-slice changes."
+      -
+        phase_id: "IDS-STAGE009-P3"
+        name: "存储预算基线专项验证与异常场景"
+        objective: "验证存储预算 OK、WARN、BLOCKED、UNKNOWN、高水位线、无边界派生产物和安全模式场景。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 最小切片"
+          - "无法模拟异常场景且没有明确降级证据"
+          - "验证需要真实资料写入、派生产物生成或外接盘内容扫描"
+        stop_gate:
+          gate_id: "IDS-STAGE009-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "OK、WARN、BLOCKED、UNKNOWN 和高水位线有证据或明确 deferred gate"
+            - "无边界派生产物风险会阻断任务"
+            - "安全模式会暂停大批量导入、OCR、Embedding、索引和清理"
+          evidence_refs:
+            - "KM_IDSystem/scripts/check_storage_budget.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage009_storage_budget.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE3_SCENARIO_VALIDATION.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE009-P3"
+            name: "存储预算基线异常场景验证"
+            objective: "验证 STAGE-009 最小切片的空间、水位线、无边界派生产物和安全模式异常场景。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "2.82%"
+            dependencies:
+              - "IDS-V0_1-STAGE009-P2"
+            acceptance_ids:
+              - "ACC-STAGE-009"
+            test_commands:
+              - "storage OK/WARN/BLOCKED/UNKNOWN scenario checks"
+              - "unbounded-output-risk scenario checks"
+              - "safe-mode pause scenario checks"
+              - "check-render --project KM_IDSystem"
+            test_results: "Implemented deterministic Phase 3 scenario matrix for STAGE-009 storage budget validation. TDD RED first failed because build_stage009_scenario_report was missing. GREEN focused unittest passed with 5 tests covering OK, WARN, low-free blocked, high-waterline blocked, UNKNOWN, external-root-not-ready, missing output cap, planned output exceeding budget, safe-mode pauses, and operations-only flags. Scenario validation uses temporary directories and synthetic byte counts only; it does not start services, create IDS_DATA_ROOT, recursively scan external-drive contents, generate outputs, or write runtime data."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_storage_budget.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage009_storage_budget.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE3_SCENARIO_VALIDATION.md"
+            risk: "异常验证误触碰真实原始资料、生成大文件或不可回滚地改变本地运行状态。"
+            rollback: "Revert IDS-STAGE009-P3 validation/evidence changes."
+      -
+        phase_id: "IDS-STAGE009-P4"
+        name: "存储预算基线交付证据、回滚与中文反馈"
+        objective: "输出环境检查、路径检查、存储预算、水位线、状态恢复和回滚说明。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 场景验证未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE009-P4-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "ACC-STAGE-009 证据完整"
+            - "可恢复和不可恢复状态清楚"
+            - "默认配置和回滚步骤清楚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            - "KM_IDSystem/docs/governance/events.jsonl"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE009-P4"
+            name: "STAGE-009 交付证据与回滚"
+            objective: "生成 ACC-STAGE-009 证据、环境检查结果、路径检查结果、存储预算说明、水位线说明、状态恢复说明、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.41%"
+            dependencies:
+              - "IDS-V0_1-STAGE009-P3"
+            acceptance_ids:
+              - "ACC-STAGE-009"
+            test_commands:
+              - "STAGE-009 closeout checklist"
+              - "storage budget final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-009 Phase 4 closeout records whole-stage review, environment/path/storage/waterline evidence, recoverable and non-recoverable states, default configuration, rollback, Chinese owner feedback, and the no-upload stop line. Fresh validation includes Stage009 focused unittest, Stage006/007/008 regressions, STAGE-009 CLI smoke, scenario smoke overall_valid=true, static no-write/no-scan boundary search, py_compile, check-render drift_count=0, marker/scope/JSONL checks, git diff --check, and semantic governance diagnostic with only the known 28 sparse-worktree/root/unrelated-project errors."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/governance/events.jsonl"
+            risk: "在 STAGE-009 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE009-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE010"
+    name: "本地路径合同"
+    person_goal: "定义 file:// source_uri、processed path、backup path、manifest path 和报告导出路径规范。"
+    status: "local_passed_pending_10_stage_batch_upload"
+    stop_conditions:
+      - "需要真实资料但没有 fixture 或 owner 授权样本"
+      - "可能删除、移动、覆盖原始文件"
+      - "schema migration 无法回滚"
+      - "测试失败且原因不明"
+      - "修改范围超出本 Stage"
+      - "并行开发导致共享文件冲突"
+    stop_gate:
+      gate_id: "IDS-STAGE010-GATE"
+      status: "passed_after_whole_stage_review"
+      pass_conditions:
+        - "Phase 1 明确 file:// source_uri、processed path、backup path、manifest path、报告导出路径和安全模式边界"
+        - "Phase 2 形成最小只读本地路径合同、状态枚举和路径检查切片"
+        - "Phase 3 验证在线、离线、重连、权限异常、路径变化和无边界派生产物场景"
+        - "Phase 4 输出环境检查、路径检查、存储预算、可恢复状态和回滚说明"
+        - "整阶段复审已验证 P0 来源、Phase 1-4 证据、只读脚本、场景覆盖、no-side-effect 边界和无上传状态"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/scripts/check_local_path_contract.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE2_LOCAL_PATH_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_STAGE_REVIEW.md"
+    phases:
+      -
+        phase_id: "IDS-STAGE010-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认 macOS、Docker、IDS_DATA_ROOT、内置盘、移动硬盘、file:// source_uri、processed、backup、manifest、report export 和本地路径安全模式边界。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图实现路径检查器、启动服务或生成派生产物"
+          - "写入、扫描或修改外接盘 IDS_DATA_ROOT 内容"
+          - "创建 processed、backup、manifest、reports、outputs、data、.venv、node_modules、OCR 输出、Embedding 输出或索引"
+          - "没有定义 source_uri、processed、backup、manifest、report export 和安全模式边界"
+        stop_gate:
+          gate_id: "IDS-STAGE010-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 010 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary records read-only macOS/Docker/internal-disk/IDS_DATA_ROOT facts"
+            - "Phase 1 boundary defines source URI, processed path, backup path, manifest path, report export path, storage/root dependencies, and safe-mode rules"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete, reviewed, and repaired"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE010-P1"
+            name: "本地路径合同边界确认"
+            objective: "在不实现路径检查器、不启动服务、不写入本机派生产物或外接盘的前提下，记录 STAGE-010 的 file:// source_uri、processed path、backup path、manifest path、报告导出路径、阈值、安全模式和无边界派生产物边界。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.30%"
+            dependencies:
+              - "IDS-V0_1-STAGE009-P4"
+            acceptance_ids:
+              - "ACC-STAGE-010"
+            test_commands:
+              - "P0 STAGE-010 taskpack SHA check"
+              - "read-only macOS/Docker/internal-disk/IDS_DATA_ROOT/storage budget baseline commands"
+              - "Stage010 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-010 Phase 1 boundary artifacts prepared. P0 STAGE-010 taskpack stage SHA-256 is b459c6cac1b79be5a2904308236be2e41356adadfce9bf6a6f5febd27e3fa0a6. Stage execution index maps STAGE-010 to D02-S005, ACC-STAGE-010, and stages/STAGE-010_本地路径合同.md. Read-only baseline found macOS 15.1 build 24B83, arm64, Apple M2 Max, root filesystem 926Gi size with 577Gi available, and no IDS_DATA_ROOT configured in this shell. Existing STAGE-006/007/008/009 smokes provide environment, IDS_DATA_ROOT, removable-drive, and storage-budget source states. Phase 1 did not start Docker, install dependencies, implement a path checker, write to IDS_DATA_ROOT, scan external-drive contents, create runtime data, manifests, reports, outputs, backups, processed artifacts, embeddings, indexes, or push to GitHub because STAGE-001..010 is not complete, reviewed, and repaired."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把本地路径合同边界确认误扩大为真实路径检查器、派生产物生成、外接盘扫描、备份复制或 manifest/report 写入。"
+            rollback: "Revert IDS-STAGE010-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE010-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现或记录只读本地路径合同、状态枚举、路径角色和安全模式接口。"
+        status: "completed"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "路径检查器会创建、移动、删除或修改 IDS_DATA_ROOT、source、processed、backup、manifest 或 report 内容"
+          - "路径检查器会生成无边界本地派生产物"
+          - "在客户操作流暴露机器端细节"
+        stop_gate:
+          gate_id: "IDS-STAGE010-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "source_uri、processed、backup、manifest、report export 和 UNKNOWN 风险有最小可运行检查"
+            - "机器端细节只进入 IDS 系统运营入口"
+            - "不会在缺失 IDS_DATA_ROOT 或路径阻断时创建猜测的大数据目录或派生产物"
+          evidence_refs:
+            - "KM_IDSystem/scripts/check_local_path_contract.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE2_LOCAL_PATH_CONTRACT.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE010-P2"
+            name: "本地路径合同最小切片"
+            objective: "按 Phase 1 边界建立 source_uri、processed、backup、manifest、report export、路径状态和安全模式的最小可验证切片。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "2.60%"
+            dependencies:
+              - "IDS-V0_1-STAGE010-P1"
+            acceptance_ids:
+              - "ACC-STAGE-010"
+            test_commands:
+              - "RED: python3 -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+              - "GREEN: python3 -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+              - "local path contract focused test"
+              - "source_uri and output path contract test"
+              - "check-render --project KM_IDSystem"
+            test_results: "STAGE-010 Phase 2 adds KM_IDSystem/scripts/check_local_path_contract.py and focused tests. RED run failed as expected because the script was missing: 6 failures. GREEN run passed: Ran 6 tests in 0.086s OK. The implementation normalizes file:// source_uri, classifies source readiness, processed/backup/manifest/report export roles, composes STAGE-007/008/009 root/drive/storage states, maps unsafe storage/root states into Phase 1 path-contract states, and returns no-write/no-scan/no-output/no-manifest/no-backup guard fields. It does not start services, install dependencies, create IDS_DATA_ROOT, create data/reports/outputs, open/hash source files, recursively scan external-drive contents, write manifests, copy backups, push, open PR, merge, or enter Phase 3."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_local_path_contract.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE2_LOCAL_PATH_CONTRACT.md"
+            risk: "路径检查器写入真实路径、生成派生产物、递归扫描外接盘、复制备份或把机器诊断暴露给客户操作流。"
+            rollback: "Revert IDS-STAGE010-P2 implementation-slice changes."
+      -
+        phase_id: "IDS-STAGE010-P3"
+        name: "本地路径合同专项验证与异常场景"
+        objective: "验证移动硬盘在线、离线、重新接入、权限异常、路径变化、无边界派生产物和安全模式场景。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 最小切片"
+          - "无法模拟异常场景且没有明确降级证据"
+          - "验证需要真实资料写入、派生产物生成、备份复制、manifest 写入或外接盘内容扫描"
+        stop_gate:
+          gate_id: "IDS-STAGE010-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "在线、离线、重连、权限异常和路径变化有证据或明确 deferred gate"
+            - "无边界 processed、backup、manifest、report export 风险会阻断任务"
+            - "安全模式会暂停大批量导入、OCR、Embedding、索引、备份、manifest 和报告导出"
+          evidence_refs:
+            - "KM_IDSystem/scripts/check_local_path_contract.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE3_SCENARIO_VALIDATION.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE010-P3"
+            name: "本地路径合同异常场景验证"
+            objective: "验证 STAGE-010 最小切片的路径、权限、离线、派生产物和安全模式异常场景。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "2.60%"
+            dependencies:
+              - "IDS-V0_1-STAGE010-P2"
+            acceptance_ids:
+              - "ACC-STAGE-010"
+            test_commands:
+              - "RED: python3 -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+              - "GREEN: python3 -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+              - "local path online/offline/reconnected/permission/path-changed scenario checks"
+              - "unbounded-output-path-risk scenario checks"
+              - "safe-mode pause scenario checks"
+              - "check-render --project KM_IDSystem"
+            test_results: "STAGE-010 Phase 3 adds build_stage010_scenario_report() and focused scenario assertions. RED run failed as expected with AttributeError because the scenario report function was missing. GREEN run passed: Ran 7 tests in 0.151s OK. The scenario matrix covers online, offline root, reconnected root, permission denied root, path changed root, missing source, invalid source URI, low free space, planned output exceeding budget, processed relative path, backup inside source, manifest bad extension, report export missing, and safe-mode pause coverage for bulk import, OCR, Embedding, index rebuild, backup, manifest, report export, and batch report generation. It uses temporary directories and synthetic byte counts only, and does not start services, install dependencies, create IDS_DATA_ROOT, create data/reports/outputs, open/hash/copy source files, recursively scan external-drive contents, write manifests, copy backups, push, open PR, merge, or enter Phase 4."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_local_path_contract.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage010_local_path_contract.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE3_SCENARIO_VALIDATION.md"
+            risk: "异常验证误触碰真实原始资料、复制备份、写 manifest/report、生成大文件或不可回滚地改变本地运行状态。"
+            rollback: "Revert IDS-STAGE010-P3 validation/evidence changes."
+      -
+        phase_id: "IDS-STAGE010-P4"
+        name: "本地路径合同交付证据、回滚与中文反馈"
+        objective: "输出环境检查、路径检查、存储预算、路径合同、状态恢复和回滚说明。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 场景验证未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 或未完成批次复审修复时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE010-P4-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "ACC-STAGE-010 证据完整"
+            - "可恢复和不可恢复状态清楚"
+            - "默认配置和回滚步骤清楚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成、复审并修复"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            - "KM_IDSystem/docs/governance/events.jsonl"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE010-P4"
+            name: "STAGE-010 交付证据与回滚"
+            objective: "生成 ACC-STAGE-010 证据、环境检查结果、路径检查结果、存储预算说明、路径合同说明、状态恢复说明、回滚步骤和中文反馈。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.30%"
+            dependencies:
+              - "IDS-V0_1-STAGE010-P3"
+            acceptance_ids:
+              - "ACC-STAGE-010"
+            test_commands:
+              - "STAGE-010 closeout checklist"
+              - "local path contract final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "STAGE-010 Phase 4 records ACC-STAGE-010 closeout evidence, environment/path/storage/path-contract evidence, recoverable and non-recoverable states, default configuration notes, rollback steps, Chinese owner feedback, and the no-upload stop line. This phase intentionally does not run the separate whole-stage review/fix pass and does not upload to GitHub. Fresh validation is recorded in STAGE010_PHASE4_CLOSEOUT.md."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/governance/events.jsonl"
+            risk: "在 STAGE-010 完成后误推送未复审修复的 10-stage 批次。"
+            rollback: "Revert IDS-STAGE010-P4 closeout-only changes."
+    review:
+      review_id: "IDS-STAGE010-REVIEW"
+      task_id: "IDS-V0_1-STAGE010-REVIEW"
+      status: "completed"
+      reviewed_at_utc: "2026-07-02T10:19:33Z"
+      acceptance_ids:
+        - "ACC-STAGE-010"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_STAGE_REVIEW.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/governance/events.jsonl"
+      test_results: "STAGE-010 whole-stage review verified the P0 taskpack binding, Phase 1-4 evidence, read-only local path contract implementation, scenario coverage, no-side-effect boundary, owner/governance render path, and no-upload state. Focused STAGE-010 unittest passed 7 tests, STAGE-006..009 regression unittests passed 25 tests, py_compile passed, CLI smoke returned PATH_CONTRACT_OK with guardrails true, scenario smoke returned overall_valid=true, static no-side-effect scan found no production write/delete/recursive-scan calls, check-render returned drift_count=0, changed-scope check passed, and git diff --check passed. Semantic validate remains a sparse-worktree diagnostic with the known 28 root/other-project missing-path errors and no KM_IDSystem semantic error. No runtime code fix was required; only governance/evidence closure was updated. GitHub upload remains deferred to the separate STAGE-001..010 batch upload gate."
+      decision: "ACC-STAGE-010 locally reviewed and passed; no GitHub upload in this run."
+  -
+    stage_id: "IDS-V0_1-BATCH-001-010"
+    name: "STAGE-001..010 批次上传门"
+    person_goal: "十个 Stage 完成并解决复审问题后，作为一个批次上传到 GitHub main。"
+    status: "local_batch_upload_gate_passed_pending_github_merge"
+    stop_conditions:
+      - "任一 STAGE-001..010 本地验收或证据缺失"
+      - "focused test、validator、render、diff 或 changed-scope 检查失败"
+      - "GitHub 仍有 open PR/issue"
+      - "远端 main 与本地分支分叉且尝试直接覆盖 main"
+      - "需要展开无关项目目录才能上传"
+    stop_gate:
+      gate_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+      status: "passed_locally_pending_github_merge"
+      pass_conditions:
+        - "STAGE-001..010 均有 4 个 phase 完成记录"
+        - "ACC-STAGE-001..010 均本地通过"
+        - "STAGE-010 整阶段复审已完成"
+        - "batch gate 验证通过"
+        - "通过 PR 合并而非直接覆盖 diverged main"
+        - "合并后无 open PR/issue"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/governance/events.jsonl"
+    phases:
+      -
+        phase_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+        name: "批次上传门与 GitHub main 合并"
+        objective: "验证 STAGE-001..010 的本地证据、测试和远端状态后，把该 10-stage 批次合并进 GitHub main tree。"
+        status: "local_gate_passed_pending_github_merge"
+        stop_conditions:
+          - "本地 batch gate 未通过"
+          - "GitHub PR 创建或合并失败"
+          - "合并后仍有 open PR/issue"
+        stop_gate:
+          gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"
+          status: "pending_remote_merge"
+          pass_conditions:
+            - "GitHub PR merged into main"
+            - "No open PRs or issues remain"
+            - "Local worktree is clean after upload"
+        tasks:
+          -
+            task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+            name: "STAGE-001..010 批次上传门"
+            objective: "完成 10-stage 批次上传前验证、PR/merge 路径选择和无遗留 PR/issue 检查。"
+            status: "local_gate_passed_pending_github_merge"
+            estimated_hours: 1
+            total_hours_percent: "1.30%"
+            dependencies:
+              - "IDS-V0_1-STAGE010-REVIEW"
+            acceptance_ids:
+              - "ACC-STAGE-001"
+              - "ACC-STAGE-002"
+              - "ACC-STAGE-003"
+              - "ACC-STAGE-004"
+              - "ACC-STAGE-005"
+              - "ACC-STAGE-006"
+              - "ACC-STAGE-007"
+              - "ACC-STAGE-008"
+              - "ACC-STAGE-009"
+              - "ACC-STAGE-010"
+            test_commands:
+              - "batch lock completion and evidence-ref check"
+              - "GitHub open PR/issue precheck"
+              - "focused STAGE-001..010 unittests and validators"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+            test_results: "Local batch gate precheck passed: STAGE-001..010 each have four completed phases and existing evidence refs; GitHub connector returned no open PRs and no open issues at gate start. origin/main and the local batch branch are diverged, so this gate requires PR merge rather than direct push to main. Gate validation exposed two non-product issues: system Python 3.9 cannot run backend tests that use Python 3.10 union syntax, and the Stage005 governance-regression validator did not yet allow the later batch-upload current state. A RED test was added for the batch gate state and the validator was minimally extended; GREEN run passed 5 tests. Final local validation passed: bundled Python focused batch tests ran 49 tests OK; ProductMetaDatabase and STAGE-003/004/005 validators returned valid=true; check-render returned drift_count=0; changed-scope and git diff --check passed; STAGE-010 CLI smoke returned PATH_CONTRACT_OK and scenario smoke returned overall_valid=true. Semantic validate remains a sparse-worktree diagnostic with the known 28 root/other-project missing-path errors and no KM_IDSystem semantic error. Remote merge evidence is produced by this run before final completion is claimed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "直接推送覆盖 diverged main，或在 GitHub PR/issue 未清理时进入 STAGE-011。"
+            rollback: "If upload fails before merge, close the PR or keep the blocker explicit and revert this gate commit locally if needed."

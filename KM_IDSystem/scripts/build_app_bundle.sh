@@ -2,10 +2,10 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_NAME="Wuhan Kaiming OpMe.app"
+APP_NAME="IDS Industrial Data System.app"
 APP_SOURCE="$ROOT_DIR/app_bundle/native_launcher.c"
 APP_DIR="$ROOT_DIR/app_bundle/$APP_NAME"
-EXECUTABLE="WuhanKaimingOpMe"
+EXECUTABLE="IDSIndustrialDataSystem"
 ICON_FILE="OpMeIcon.icns"
 ICON_SOURCE="$ROOT_DIR/app_bundle/assets/$ICON_FILE"
 
@@ -31,7 +31,12 @@ if [ ! -f "$ICON_SOURCE" ]; then
     echo "Warning: $ICON_SOURCE is missing and .venv/bin/python is unavailable." >&2
   fi
 fi
-/usr/bin/clang "$APP_SOURCE" -o "$APP_DIR/Contents/MacOS/$EXECUTABLE"
+compile_flags=(
+  "-DIDS_PROJECT_DIR=\"$ROOT_DIR\""
+  "-DIDS_RUN_SCRIPT=\"$ROOT_DIR/scripts/run_local_services.sh\""
+  "-DIDS_LOG_FILE=\"$ROOT_DIR/data/app_entry.log\""
+)
+/usr/bin/clang "${compile_flags[@]}" "$APP_SOURCE" -o "$APP_DIR/Contents/MacOS/$EXECUTABLE"
 chmod +x "$APP_DIR/Contents/MacOS/$EXECUTABLE"
 if [ -f "$ICON_SOURCE" ]; then
   cp "$ICON_SOURCE" "$APP_DIR/Contents/Resources/$ICON_FILE"
@@ -47,11 +52,11 @@ cat > "$APP_DIR/Contents/Info.plist" <<EOF
   <key>CFBundleIconFile</key>
   <string>OpMeIcon</string>
   <key>CFBundleIdentifier</key>
-  <string>com.linze.opme.wuhan-kaiming.native</string>
+  <string>com.linze.ids.industrial-data-system.native</string>
   <key>CFBundleName</key>
-  <string>Wuhan Kaiming OpMe</string>
+  <string>IDS Industrial Data System</string>
   <key>CFBundleDisplayName</key>
-  <string>Wuhan Kaiming OpMe</string>
+  <string>IDS Industrial Data System</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>

@@ -111,10 +111,10 @@ export default function App() {
     <main className="app-shell">
       <aside className="sidebar">
         <div className="brand-block">
-          <div className="brand-mark">KM</div>
+          <div className="brand-mark">IDS</div>
           <div>
-            <h1>武汉开明</h1>
-            <p>智能工业运维助手</p>
+            <h1>IDS</h1>
+            <p>Industrial Data System</p>
           </div>
         </div>
         <nav className="nav-list">
@@ -130,7 +130,7 @@ export default function App() {
       <section className="main-panel">
         <header className="topbar">
           <div>
-            <p className="eyebrow">Web + PDF 运维控制台</p>
+            <p className="eyebrow">IDS / Industrial Data System 控制台</p>
             <h2>{NAV.find(([key]) => key === active)?.[1] || "总览"}</h2>
           </div>
           <div className="topbar-actions">
@@ -382,4 +382,3 @@ function SettingsPage({ models, setModels, onSave, busy }) {
     </section>
   );
 }
-
