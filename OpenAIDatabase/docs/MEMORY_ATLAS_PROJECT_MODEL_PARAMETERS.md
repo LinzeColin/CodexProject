@@ -2966,6 +2966,64 @@ Stage 9 整体复审已确认：
 - 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
 
+## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
+
+状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Phase 9.4 固定既有 Universe State generator spike 的 fixture continuity，不改 score formula、parameter YAML、input fixture、sample 或 schema。
+- Universe State fixture 必须继续为 Overview、Starfield、River、Data Map、Inspector 和 ROI 提供 redacted shared semantic state。
+
+输入：
+
+- `apps/memory-atlas/src/experiments/universe-state-generator-spike/README.md`
+- `apps/memory-atlas/src/models/universeState.ts`
+- `apps/memory-atlas/src/utils/universeStateScores.ts`
+- `apps/memory-atlas/src/fixtures/universe_state.input.fixture.json`
+- `apps/memory-atlas/src/fixtures/universe_state.sample.json`
+- `apps/memory-atlas/src/fixtures/universe_state.schema.json`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/scripts/validate_universe_state_spike.mjs`
+- `docs/product/universe_state_fixture_continuity_contract.md`
+- `docs/acceptance/universe_state_fixture_continuity_acceptance.md`
+
+处理方法：
+
+- 检查 Universe State 文件是否齐全。
+- 运行 `validate:universe-state-spike` 验证 deterministic sample、schema、score functions、parameter drift 和 privacy scan。
+- 检查 input fixture 和 sample 是否保持 raw/private、plaintext secrets、local absolute paths 和 writeback 标志为 false。
+- 检查 sample 是否保留 memory_weather、dominant/rising/declining/conflict、black_holes、proto_stars、stale_orbits、memory_terrain、river_pulse、mini_starfield、recommended_next_actions、consumer_map 和 diagnostics。
+- 检查 generated next actions 是否保持 `proposal_only=true`。
+- 检查 production `src` 是否没有引用 `experiments/universe-state-generator-spike`。
+- 使用 `validate:v1.1.6-stage9-phase4` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9P04-001 stage9_phase4_contract_id = universe_state_fixture_continuity_contract`
+- `PARAM-MA-V116-S9P04-002 stage9_phase4_fixture_surface = universeState.ts;universeStateScores.ts;universe_state.input.fixture.json;universe_state.sample.json;universe_state.schema.json;model_parameters.universe_state.yaml;validate_universe_state_spike.mjs`
+- `PARAM-MA-V116-S9P04-003 stage9_phase4_required_features = redacted_fixture_adapter;deterministic_sample_generation;schema_validation;parameter_drift_gate;black_hole_score;proto_star_score;stale_score;memory_weather;memory_terrain;river_pulse;mini_starfield;consumer_map;proposal_only_actions;privacy_status`
+- `PARAM-MA-V116-S9P04-004 stage9_phase4_fixture_safety = rawPrivateDataIncluded:false;plaintextSecretsIncluded:false;localAbsolutePathsIncluded:false;writebackAllowed:false;proposalOnly:true`
+- `PARAM-MA-V116-S9P04-005 stage9_phase4_isolation_boundary = no_production_experiment_import;no_route;no_navigation;no_feature_flag_default;no_direct_writeback;no_proposal_write`
+- `PARAM-MA-V116-S9P04-006 stage9_phase4_required_validator = validate:v1.1.6-stage9-phase4;validate:universe-state-spike`
+
+输出：
+
+- Stage 9 Phase 4 产品合同。
+- Stage 9 Phase 4 验收文件。
+- Stage 9 Phase 4 validator。
+- Universe State generator spike README v1.1.6 continuity note。
+
+边界：
+
+- 本 phase 不修改 production app shell、路由、导航、feature flag 或 runtime UI。
+- 本 phase 不修改 Universe State score formula、parameter YAML、input fixture、sample 或 schema。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
+
 ## 63. v1.1.6 Stage 9 Phase 3 Data Map C3 隔离原型参数
 
 状态：`phase_9_3_data_map_c3_spike_ready_pending_stage_review`。
