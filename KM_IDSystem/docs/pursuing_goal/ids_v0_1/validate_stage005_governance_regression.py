@@ -93,6 +93,8 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE2_PREFLIGHT_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE3_SCENARIO_VALIDATION.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py",
@@ -101,6 +103,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage016_import_idempotency.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage017_original_regression.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_import_preflight.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_import_risk_estimator.py",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
     "KM_IDSystem/scripts/check_file_fingerprint.py",
     "KM_IDSystem/scripts/check_manifest_generation.py",
@@ -127,6 +130,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE018-P2-20260702-001",
     "EVT-IDS-V0_1-STAGE018-P3-20260702-001",
     "EVT-IDS-V0_1-STAGE018-P4-20260702-001",
+    "EVT-IDS-V0_1-STAGE019-P1-20260702-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -166,6 +170,7 @@ ALLOWED_CHANGED_PREFIXES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_",
@@ -176,6 +181,7 @@ ALLOWED_CHANGED_PREFIXES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage016_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage017_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
     "KM_IDSystem/scripts/check_file_fingerprint.py",
 )
@@ -551,6 +557,14 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-STAGE018-P4"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE019-P1-GATE"' in roadmap_text
     )
+    stage019_phase1_active = (
+        'current_task_id: "IDS-V0_1-STAGE019-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_complete"' in batch_text
+        and 'current_stage_id: "IDS-STAGE019"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE019-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE019-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE019-P2-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -585,6 +599,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or stage018_phase2_active
         or stage018_phase3_active
         or stage018_phase4_closeout
+        or stage019_phase1_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
