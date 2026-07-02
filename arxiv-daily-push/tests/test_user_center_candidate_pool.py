@@ -1855,6 +1855,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("SMTP 发送开关原始值复核", readme)
         self.assertIn("不能把未设置的环境变量默认写成显式 `false`", readme)
         self.assertIn("当前允许的安全状态是 `UNSET` 或 false-like", readme)
+        self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", readme)
+        self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", decisions)
         self.assertIn("open PR 边界复核 fallback 已同步到停止门", readme)
         self.assertIn("只有明确得到 `open_pr_count=0` 才能通过", readme)
         self.assertIn("本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线", mvp)
