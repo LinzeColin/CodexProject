@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 11:48:04 Australia/Sydney
+更新时间：2026-07-02 15:00:53 Australia/Sydney
 
 ## 当前结论
 
@@ -83,7 +83,7 @@ case "$ADP_ALLOW_SMTP_SEND_VALUE" in
     ;;
 esac
 launchctl print-disabled gui/$(id -u) | rg 'com\.linze\.adp\.local\.(daily|health|watchdog)'
-ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|adp' | rg -v 'rg -i|pytest|unittest|validate|zsh -lc|exec_command' || true
+ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|CodexProject.*arxiv-daily-push' | rg -v 'rg -i|pytest|unittest|validate|zsh -lc|exec_command' || true
 OPEN_PR_COUNT=$(
   curl -fsSL -H 'User-Agent: codex-adp-open-pr-check' 'https://github.com/LinzeColin/CodexProject/pulls?q=is%3Apr+is%3Aopen' |
   python3 -c 'import re,sys; html=sys.stdin.read(); m=re.search(r">\s*([0-9,]+)\s+Open\s*<", html); print(m.group(1).replace(",","") if m else "UNKNOWN")'
@@ -92,4 +92,4 @@ printf 'open_pr_count=%s\n' "$OPEN_PR_COUNT"
 test "$OPEN_PR_COUNT" = "0"
 ```
 
-预期：授权 artifact 不存在；`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like；三个 ADP LaunchAgents disabled；无 ADP 后台进程；`open_pr_count=0`。若 `ADP_ALLOW_SMTP_SEND` 为 truthy，或 open PR 结果为 `UNKNOWN` / 非 0，停止并回报，不得当作通过。
+预期：授权 artifact 不存在；`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like；三个 ADP LaunchAgents disabled；无 ADP 后台进程；`open_pr_count=0`。后台进程扫描只匹配 ADP runner/module/path 信号，不使用裸 `adp` 子串，避免把普通工作树路径或 shell 命令误判为运行中。若 `ADP_ALLOW_SMTP_SEND` 为 truthy，或 open PR 结果为 `UNKNOWN` / 非 0，停止并回报，不得当作通过。

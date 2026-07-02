@@ -715,6 +715,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", handoff)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like", handoff)
         self.assertIn("若 `ADP_ALLOW_SMTP_SEND` 为 truthy", handoff)
+        self.assertIn(
+            "ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|CodexProject.*arxiv-daily-push'",
+            handoff,
+        )
+        self.assertIn("后台进程扫描只匹配 ADP runner/module/path 信号，不使用裸 `adp` 子串", handoff)
+        self.assertNotIn("ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|adp'", handoff)
         self.assertIn("open_pr_count=0", handoff)
         self.assertIn("User-Agent: codex-adp-open-pr-check", handoff)
         self.assertIn("https://github.com/LinzeColin/CodexProject/pulls?q=is%3Apr+is%3Aopen", handoff)
@@ -765,6 +771,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", mvp_prep)
         self.assertIn("daily_operation_enabled=false", mvp_prep)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like", mvp_prep)
+        self.assertIn("后台进程扫描只匹配 ADP runner/module/path，不使用裸 `adp` 子串", mvp_prep)
         self.assertIn("GitHub `origin/main` 的干净隔离工作树", mvp_prep)
         self.assertIn("本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线", mvp_prep)
         self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp_prep)
