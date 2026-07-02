@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 20:34:58 Australia/Sydney
+更新时间：2026-07-02 22:02:27 Australia/Sydney
 
 ## 当前结论
 
@@ -76,11 +76,13 @@
 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_current PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_bundle PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json
 python3 tools/verify_acceptance_bundle.py --require-zero P0 P1
-python3 tools/verify_daily_operation_readiness.py
-python3 tools/verify_daily_operation_enablement_preflight.py
+python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2
+python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2
 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push
 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_governance_sync.py
 ```
+
+预期：`verify_daily_operation_readiness.py` 和 `verify_daily_operation_enablement_preflight.py` 的命令本体都输出 `status=FAIL` / exit 2；随后 shell 断言分别输出 `EXPECTED_READINESS_EXIT=2` 和 `EXPECTED_PREFLIGHT_EXIT=2` 并通过。若任一命令返回 0 或其他非 2 exit code，停止并回报，不得为了让命令变绿而放宽 DAILY_OPERATION 门。
 
 ## 安全边界复核
 

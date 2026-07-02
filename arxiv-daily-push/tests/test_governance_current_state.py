@@ -944,6 +944,18 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn(expected_task, text)
             self.assertIn("persistent_daily_operation_authorization_missing", text)
         self.assertIn("status=FAIL / exit 2", handoff)
+        self.assertIn(
+            'python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
+            handoff,
+        )
+        self.assertIn(
+            'python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
+            handoff,
+        )
+        self.assertNotIn(
+            "python3 tools/verify_daily_operation_readiness.py\npython3 tools/verify_daily_operation_enablement_preflight.py",
+            handoff,
+        )
         self.assertIn("open_pr_observation_mode=auto_observed", handoff)
         self.assertNotIn("--open-pr-count 0", handoff)
         self.assertNotIn("--adp-allow-smtp-send UNSET", handoff)
