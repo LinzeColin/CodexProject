@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-03 04:07:17 Australia/Sydney
+更新时间：2026-07-03 04:39:44 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -9,6 +9,7 @@
 | 问题 | 当前结论 | 你该怎么处理 |
 |---|---|---|
 | 受控发送证据 / 计划应发 | 4 / 4 | M1-M4 均有历史或受控真实发送证据；这不是今日后台自动发送结果，也不代表 S3/DAILY_OPERATION 已进入 |
+| 一次受控真实运行窗口 | 一次受控真实运行窗口只允许临时切换 `ADP_ALLOW_SMTP_SEND`；窗口结束后必须恢复为 `UNSET` 或 false-like，并重新运行 enablement preflight，并确认仍 `status=FAIL / exit 2` | 不得把一次受控真实运行当作持久 DAILY_OPERATION 授权 |
 | MVP 准备与复审修补 | [MVP 准备与复审修补](./MVP准备与复审修补.md) | 后续默认只做复审、修补、用户中心可读性、证据同步和测试补强 |
 | 邮件发送模板 | [Email V1 学习邮件模板界面预览](./邮件模板预览.md) | 先看用户真实会看到的版式，再看源码和模板规则证据 |
 | 截至今日总候选池 | [299 条总候选记录](./截至今日候选池.md)；候选队列前20精选已列分数 | 总候选池来源是 `docs/owner/CONTENT_LEDGER.csv`，前20精选是按公开评分抽取的阅读入口 |
@@ -18,7 +19,7 @@
 | 最终验收包与 S3 阻断 | [最终验收包与 S3 阻断](./最终验收包与S3阻断.md) | 一页核对 final bundle、P0/P1 zero-proof、S2PLT04、Stage 2 acceptance 和 DAILY_OPERATION 当前阻断 |
 | S3 root 执行根 | 正确 root 必须 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`；错误 root 为 `codexproject_repo_root_invalid` | 复制 S3 复核命令后还要核对这些 JSON 字段，不能只看 exit 2 |
 
-当前阅读规则：历史 S2PLT02 terminal delivery proof 缺口已被 final bundle 和 Stage 2 integrated acceptance 消费；旧历史段落只能作为当时证据链阅读，不得恢复为当前 S3/DAILY_OPERATION 缺口。当前唯一持久运行阻断仍是缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。
+当前阅读规则：历史 S2PLT02 terminal delivery proof 缺口已被 final bundle 和 Stage 2 integrated acceptance 消费；旧历史段落只能作为当时证据链阅读，不得恢复为当前 S3/DAILY_OPERATION 缺口。当前唯一持久运行阻断仍是缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。一次受控真实运行只说明受控窗口内的证据，窗口结束后必须回到 `UNSET` 或 false-like，并保持 readiness / enablement preflight fail-closed。
 
 ## 一看三查
 
