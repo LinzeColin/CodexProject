@@ -6468,7 +6468,11 @@ class Stage2FinalGateTests(unittest.TestCase):
             generated_at="2026-07-01T16:00:00+10:00",
             open_pr_count=0,
             adp_allow_smtp_send=False,
-            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            launchagent_disabled_states={
+                "com.linzezhang.adp.daily": True,
+                "com.linzezhang.adp.health": True,
+                "com.linzezhang.adp.watchdog": True,
+            },
             background_adp_process_found=False,
         )
 
@@ -6794,7 +6798,11 @@ class Stage2FinalGateTests(unittest.TestCase):
             generated_at="2026-07-01T20:30:00+10:00",
             open_pr_count=0,
             adp_allow_smtp_send=False,
-            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            launchagent_disabled_states={
+                "com.linzezhang.adp.daily": True,
+                "com.linzezhang.adp.health": True,
+                "com.linzezhang.adp.watchdog": True,
+            },
             background_adp_process_found=False,
             production_preflight_report={
                 "status": "blocked",
@@ -6815,6 +6823,15 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["checks"]["stage2_integrated_production_accepted"])
         self.assertTrue(state["checks"]["daily_operation_currently_disabled"])
         self.assertFalse(state["checks"]["production_preflight_passed"])
+        self.assertEqual(
+            set(state["launchagent_disabled_states"]),
+            {
+                "com.linzezhang.adp.daily",
+                "com.linzezhang.adp.health",
+                "com.linzezhang.adp.watchdog",
+            },
+        )
+        self.assertNotIn("daily", state["launchagent_disabled_states"])
         self.assertIn("production_preflight_passed_failed", state["blocking_reasons"])
         self.assertEqual(
             state["next_required_step"],
@@ -6834,7 +6851,11 @@ class Stage2FinalGateTests(unittest.TestCase):
             generated_at="2026-07-01T20:35:00+10:00",
             open_pr_count=0,
             adp_allow_smtp_send=False,
-            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            launchagent_disabled_states={
+                "com.linzezhang.adp.daily": True,
+                "com.linzezhang.adp.health": True,
+                "com.linzezhang.adp.watchdog": True,
+            },
             background_adp_process_found=False,
             production_preflight_report={
                 "status": "pass",
@@ -6885,7 +6906,11 @@ class Stage2FinalGateTests(unittest.TestCase):
                     generated_at="2026-07-01T21:10:00+10:00",
                     open_pr_count=0,
                     adp_allow_smtp_send=False,
-                    launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+                    launchagent_disabled_states={
+                        "com.linzezhang.adp.daily": True,
+                        "com.linzezhang.adp.health": True,
+                        "com.linzezhang.adp.watchdog": True,
+                    },
                     background_adp_process_found=False,
                 )
 
@@ -6936,7 +6961,11 @@ class Stage2FinalGateTests(unittest.TestCase):
                         generated_at="2026-07-01T22:20:00+10:00",
                         open_pr_count=0,
                         adp_allow_smtp_send=False,
-                        launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+                        launchagent_disabled_states={
+                            "com.linzezhang.adp.daily": True,
+                            "com.linzezhang.adp.health": True,
+                            "com.linzezhang.adp.watchdog": True,
+                        },
                         background_adp_process_found=False,
                         local_runner_env_file=env_file,
                     )
