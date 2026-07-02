@@ -1,5 +1,12 @@
 # ADP 用户中心
 
+## 2026-07-02 11:11:20 Australia/Sydney - 最终验收包 JSON 字段阅读规则
+
+- `FINAL_ACCEPTANCE_BUNDLE/manifest.json`、`no_production_side_effects.json`、`owner_production_boundary_decision.json`、`p0_p1_zero_proof.json` 等 JSON 里的 `closure_state` 或 `no_production_side_effects` 字段，只保留该 artifact 写入时的 no-production / closure-state 证据语境。
+- 这些字段中出现的 `integrated_production_accepted=false` 或 `stage2_integrated_production_accepted=false`，不得用来回退当前 Stage 2 accepted 事实。
+- 当前 Stage 2 accepted 事实以 `arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml` 和 [integrated_production_acceptance.json](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json) 为准。
+- 当前仍未进入的是 S3/DAILY_OPERATION：缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`，继续保持 `daily_operation_enabled=false`。
+
 ## 2026-07-02 10:39:44 Australia/Sydney - 当前阅读规则
 
 - 当前事实：Stage 2 integrated acceptance 已记录并保持 `true`；S3/DAILY_OPERATION 不进入，`daily_operation_enabled=false`。
@@ -406,7 +413,7 @@
 - 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
-更新时间：2026-07-02 07:27:44 Australia/Sydney
+更新时间：2026-07-02 11:11:20 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
