@@ -293,6 +293,27 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_zero_proof_request_consumption_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 request 状态已移除 `p0_p1_zero_proof_artifact_missing`，但 final readiness 仍 blocked",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 final readiness `cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094` 仍 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+
+        forbidden_phrases = (
+            "| request 状态已移除 `p0_p1_zero_proof_artifact_missing`，但 final readiness 仍 blocked |",
+            "| 当前 final readiness `cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094` 仍 blocked |",
+            "| 当前 final readiness `cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094` 仍 blocked | 维持 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；不得声明 Stage2/S3 production accepted |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
