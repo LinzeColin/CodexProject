@@ -7,7 +7,7 @@
 - 复审确认 phase_results=`S04-P1/S04-P2/S04-P3 PASS`、findings_open=0、findings_fixed=0、data quality=`Q2`、report grade=`D`、release permission=`blocked`。
 - 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；S04-P2 前序 accidental raw listing deviation 继续作为已记录且临时文件已删除的 closed deviation 保留。
 - 公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
-- 本轮不执行 GitHub upload、Stage 5、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 执行 `v0.1.3 Stage 4 GitHub upload gate` 或用户明确指定的单一 phase。
+- 本轮不执行 GitHub upload、Stage 5、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一轮只能按独立 run 执行 `v0.1.3 S05-P1` 或用户明确指定的单一 phase。
 
 ## 0.1.3-s04p3-basic-tool-report - 2026-07-02
 

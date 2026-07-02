@@ -9,14 +9,14 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.3 S04｜金额精度、字段标准化与基础工具`
-- 当前 Phase: `v0.1.3 Stage 4 整体复审已本地完成；下一步只能 Stage 4 GitHub upload gate`
+- 当前 Phase: `v0.1.3 Stage 4 整体复审已本地完成；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；下一步只能独立进入 v0.1.3 S05-P1 或用户明确指定的单一 phase`
 
 ## Execution Rules
 
 - 每次 pursuing goal 只处理一个 Stage。
 - 每次 run work 最多解决一个 Phase。
 - 中间 Phase 完成不上传 GitHub。
-- 只有整个 Stage 完成、Stage 复审完成、复审问题修复完成后，才允许整体上传 GitHub。
+- v1.3 本轮目标下，GitHub main upload 统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得按单个 Stage 做 GitHub upload gate。
 - 时间是资源参考，不是质量豁免；质量门禁通过可以提前交付，未通过不得交付。
 - 后续开发基线必须读取 `KMFA/taskpack/v1_2/`；涉及 UI、报告、前端或验收时必须读取 `20_HTML_UIUX_报告预览/`。
 

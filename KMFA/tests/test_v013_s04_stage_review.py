@@ -19,7 +19,8 @@ class TestV013S04StageReview(unittest.TestCase):
         self.assertTrue(result["stage_review_performed"])
         self.assertEqual(result["open_review_finding_count"], 0)
         self.assertEqual(result["fixed_review_finding_count"], 0)
-        self.assertTrue(result["github_upload_ready_next_gate"])
+        self.assertFalse(result["github_upload_ready_next_gate"])
+        self.assertTrue(result["github_upload_deferred_until_stage10_batch"])
         self.assertFalse(result["github_upload_performed"])
         self.assertFalse(result["delivery_allowed"])
         self.assertFalse(result["formal_report_allowed"])
@@ -33,7 +34,8 @@ class TestV013S04StageReview(unittest.TestCase):
         self.assertEqual(result["current_data_quality_grade"], "Q2")
         self.assertEqual(result["current_report_grade"], "D")
         self.assertEqual(result["release_permission"], "blocked")
-        self.assertIn("Stage 4 GitHub upload", result["next_required_step"])
+        self.assertIn("S05-P1", result["next_required_step"])
+        self.assertIn("Stages 1-10", result["next_required_step"])
         self.assertIn("separate run", result["next_required_step"])
 
 

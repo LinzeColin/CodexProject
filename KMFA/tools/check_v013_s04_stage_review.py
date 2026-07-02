@@ -121,8 +121,16 @@ def validate_v013_s04_stage_review(manifest_path: Path = MANIFEST_PATH) -> dict[
     require(manifest.get("review_scope") == REVIEW_SCOPE, "review scope mismatch")
     require(manifest.get("status") == "passed_local_stage_review_upload_deferred", "status mismatch")
     require(manifest.get("stage_review_performed") is True, "stage review must be performed")
-    require(manifest.get("github_upload_ready_next_gate") is True, "GitHub upload must be ready only for the next gate")
+    require(manifest.get("github_upload_ready_next_gate") is False, "GitHub upload must be deferred until Stage 1-10 batch")
+    require(
+        manifest.get("github_upload_deferred_until_stage10_batch") is True,
+        "GitHub upload must be explicitly deferred until Stage 1-10 batch",
+    )
     require(manifest.get("github_upload_performed") is False, "GitHub upload must not be performed")
+    require(
+        manifest.get("github_upload_status") == "not_uploaded_deferred_until_stage10_batch",
+        "GitHub upload status must be not uploaded and batch deferred",
+    )
     require(manifest.get("delivery_allowed") is False, "delivery_allowed must remain false")
     require(manifest.get("formal_report_allowed") is False, "formal_report_allowed must remain false")
     require(manifest.get("business_decision_basis_allowed") is False, "business decision basis must remain false")
@@ -268,6 +276,7 @@ def validate_v013_s04_stage_review(manifest_path: Path = MANIFEST_PATH) -> dict[
         "s04_p3_dependency_validated": manifest["s04_p3_dependency_validated"],
         "stage_review_performed": manifest["stage_review_performed"],
         "github_upload_ready_next_gate": manifest["github_upload_ready_next_gate"],
+        "github_upload_deferred_until_stage10_batch": manifest["github_upload_deferred_until_stage10_batch"],
         "github_upload_performed": manifest["github_upload_performed"],
         "delivery_allowed": manifest["delivery_allowed"],
         "formal_report_allowed": manifest["formal_report_allowed"],

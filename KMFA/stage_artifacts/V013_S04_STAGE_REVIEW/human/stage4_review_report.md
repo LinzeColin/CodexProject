@@ -8,8 +8,10 @@
 - current_data_quality_grade: `Q2`
 - current_report_grade: `D`
 - release_permission: `blocked`
-- github_upload_ready_next_gate: `true`
+- github_upload_ready_next_gate: `false`
+- github_upload_deferred_until_stage10_batch: `true`
 - github_upload_performed: `false`
+- github_upload_status: `not_uploaded_deferred_until_stage10_batch`
 - formal_report_allowed: `false`
 - business_decision_basis_allowed: `false`
 - raw_value_matching_performed: `false`
@@ -63,4 +65,4 @@ It does not contain raw filenames, raw hashes, sheet names, ZIP member names, fi
 
 ## Next Step
 
-Proceed to v0.1.3 Stage 4 GitHub upload as a separate run after this local review commit; do not run Stage 5, raw value matching, lineage full check, formal report release, live connector, or business execution in the Stage 4 review run.
+Proceed to v0.1.3 S05-P1 as a separate run. GitHub main upload is deferred until v0.1.3 Stages 1-10 are complete, the whole Stage 1-10 review passes, and review findings are fixed; do not run GitHub upload, raw value matching, lineage full check, formal report release, live connector, or business execution in the Stage 4 review run.
