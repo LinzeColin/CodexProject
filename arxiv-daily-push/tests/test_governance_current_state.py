@@ -1393,6 +1393,18 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             roadmap,
         )
 
+    def test_roadmap_does_not_treat_smtp_secret_metadata_as_current_enablement_pass(self) -> None:
+        roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "| 历史技术前置项 | 2026-07-01 20:39 SMTP secret key-presence metadata 与 ADP scoped git artifact hygiene 曾被接受 | 只记录 secret key 名称，不记录 secret value；当前仍不能据此授权 SMTP、scheduler、Release、restore 或 DAILY_OPERATION；必须以 enablement preflight `status=FAIL / exit 2` 和 `persistent_daily_operation_authorization_missing` 为当前口径 |",
+            roadmap,
+        )
+        self.assertNotIn(
+            "| 已通过前置项 | SMTP secret key-presence metadata 已被接受，且 ADP scoped git artifact hygiene 已通过 | 只记录 secret key 名称，不记录 secret value；跨项目 OpenAIDatabase archive 不再由 ADP 预检误阻断 |",
+            roadmap,
+        )
+
     def test_three_base_model_parameter_summary_matches_governance_counts(self) -> None:
         model_spec = (ADP_ROOT / "docs/governance/MODEL_SPEC.md").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
