@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-001-010"
 created_at_utc: "2026-07-02T04:29:53Z"
-updated_at_utc: "2026-07-02T09:17:57Z"
+updated_at_utc: "2026-07-02T09:24:25Z"
 status: "local_in_progress"
 
 repository:
@@ -181,20 +181,22 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
   STAGE-009:
-    status: "in_progress"
+    status: "completed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
-    next_phase: "Phase 4"
-    current_task_id: "IDS-V0_1-STAGE009-P3"
+      - "Phase 4"
+    next_stage: "STAGE-010"
+    current_task_id: "IDS-V0_1-STAGE009-P4"
     acceptance_id: "ACC-STAGE-009"
-    acceptance_status: "phase3_scenario_validation_complete"
+    acceptance_status: "local_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE2_STORAGE_BUDGET_BASELINE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/scripts/check_storage_budget.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage009_storage_budget.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
@@ -202,5 +204,5 @@ stage_progress:
     status: "not_started"
 
 decision:
-  current_run: "Completed only STAGE-009 Phase 3 locally; STAGE-009 is in progress and batch upload remains locked."
+  current_run: "Completed only STAGE-009 Phase 4 locally; STAGE-009 is locally complete and batch upload remains locked."
   no_upload_reason: "The user requires one GitHub main upload only after each completed and repaired 10-Stage batch."
