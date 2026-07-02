@@ -1,6 +1,7 @@
 import csv
 import re
 import unittest
+import urllib.parse
 from pathlib import Path
 
 from arxiv_daily_push.owner_controls import load_owner_controls
@@ -43,6 +44,24 @@ def _section(text: str, start_heading: str, end_heading: str) -> str:
 
 
 class UserCenterCandidatePoolTests(unittest.TestCase):
+    def test_owner_facing_local_markdown_links_resolve_to_existing_files(self):
+        pages = [REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", *USER_CENTER.glob("*.md")]
+        missing = []
+        for page_path in pages:
+            text = page_path.read_text(encoding="utf-8")
+            for match in re.finditer(r"\[[^\]]+\]\(([^)]+)\)", text):
+                href = match.group(1).strip()
+                if href.startswith(("http://", "https://", "mailto:", "#")):
+                    continue
+                href_without_anchor = href.split("#", 1)[0]
+                if not href_without_anchor:
+                    continue
+                target = (page_path.parent / urllib.parse.unquote(href_without_anchor)).resolve()
+                if not target.exists():
+                    missing.append(f"{page_path.relative_to(REPO_ROOT)} -> {href}")
+
+        self.assertEqual(missing, [])
+
     def test_total_candidate_pool_page_matches_content_ledger_row_count(self):
         ledger_rows = list(csv.DictReader(LEDGER.read_text(encoding="utf-8").splitlines()))
         page = CANDIDATE_POOL_PAGE.read_text(encoding="utf-8")
