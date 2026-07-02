@@ -2502,6 +2502,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "DAILY_OPERATION | `daily_operation_enabled=false`",
             "persistent_daily_operation_authorization_missing",
             "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+            "S2PLT04 completion report 的 `S2PLT04_COMPLETED_NO_PRODUCTION_ACCEPTANCE` 是该 report 写入时的 no-production 状态码",
+            "不得把该状态码读成当前 Stage 2 integrated acceptance 未写入、未保持或需要回退",
             "不得把 final bundle pass、zero-proof 或 S2PLT04 完成解读成 S3/DAILY_OPERATION 已进入",
             "一次受控真实运行验收只说明受控窗口内的发送证据，不会生成或替代持久 DAILY_OPERATION 授权",
             "一次受控真实运行窗口只允许临时切换 `ADP_ALLOW_SMTP_SEND`",
