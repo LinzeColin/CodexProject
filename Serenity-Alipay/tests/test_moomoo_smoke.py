@@ -85,6 +85,21 @@ def test_discover_workbenches_prefers_user_applications_moomoo_opend_gui(monkeyp
     assert probes[0].moomoo_opend_app_path == str(gui_app)
 
 
+def test_discover_workbenches_finds_system_applications_moomoo_opend(monkeypatch, tmp_path: Path):
+    fake_applications = tmp_path / "Applications"
+    opend_app = fake_applications / "moomoo_OpenD.app"
+    opend_app.mkdir(parents=True)
+    fake_home = tmp_path / "home"
+    settings = Settings.load(tmp_path / "workspace")
+
+    monkeypatch.setattr(Path, "home", lambda: fake_home)
+    monkeypatch.setattr("app.core.moomoo_smoke.SYSTEM_APPLICATION_DIRS", [fake_applications])
+
+    probes = discover_workbenches(settings, include_user_codex=False)
+
+    assert probes[0].moomoo_opend_app_path == str(opend_app)
+
+
 def test_moomoo_smoke_reports_latest_login_failure_hint(monkeypatch, tmp_path: Path):
     fake_home = tmp_path / "home"
     log_dir = fake_home / ".com.moomoo.OpenD" / "Log"

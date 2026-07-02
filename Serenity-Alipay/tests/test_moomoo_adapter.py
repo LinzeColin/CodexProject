@@ -67,6 +67,10 @@ def test_healthcheck_does_not_request_cleanup_before_socket_ready(monkeypatch, t
     )
 
     monkeypatch.setattr("app.core.moomoo_lifecycle.ensure_opend", lambda *args, **kwargs: lifecycle)
+    monkeypatch.setattr(
+        "socket.create_connection",
+        lambda *args, **kwargs: (_ for _ in ()).throw(OSError("fake socket still unavailable")),
+    )
 
     result = healthcheck(settings=settings, auto_start_opend=True, keep_auto_started_opend=False)
 
