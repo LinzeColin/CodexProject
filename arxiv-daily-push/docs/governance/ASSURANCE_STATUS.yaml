@@ -65,9 +65,10 @@ dimensions:
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "BLOCKED_PRECHECK"
+  status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"
   release_gate: "DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT"
-  blocker_ids: []
+  blocker_ids:
+    - "persistent_daily_operation_authorization_missing"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
   v7_roadmap_hash: "7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1"
@@ -85,7 +86,7 @@ delivery_readiness:
   current_v7_task_id: "S2PMT07"
 next_executable_task:
   task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
-  status: "blocked"
+  status: "blocked_persistent_daily_operation_authorization_missing"
   reason: "DAILY_OPERATION owner decision is recorded as keep-disabled. Persistent DAILY_OPERATION is not authorized; runtime remains disabled until a separate explicit owner authorization and enablement artifact exists."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
@@ -120,7 +121,7 @@ owner_decision:
   principal_risks: "将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement"
   evidence_required: "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
   decision_deadline_or_priority: "P0"
-  consequence_of_no_decision: "Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。"
+  consequence_of_no_decision: "Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DAILY_OPERATION 不得进入。"
   unblock_task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
