@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 3
+
+- Added isolated `data-map-spike` prototype files under
+  `apps/memory-atlas/src/experiments/data-map-spike/`.
+- Added `docs/product/data_map_c3_spike_contract.md` to define the Data Map C3
+  isolated prototype contract for Stage 9 Phase 3.
+- Added `docs/acceptance/data_map_c3_spike_acceptance.md`.
+- Added `validate:v1.1.6-stage9-phase3`.
+- Stage 9 Phase 3 status:
+  `phase_9_3_data_map_c3_spike_ready_pending_stage_review`.
+
+Machine-readable boundary summary: No production integration; No raw/private
+data read; No direct writeback; No GitHub main upload.
+
+No production Data Map replacement, route, navigation, feature flag default,
+production build, browser screenshot run, local app install, Cloudflare deploy,
+Access policy change, raw/private data read, direct writeback, proposal write,
+agent apply, Stage 9 review, Stage 10 work or No GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 2
 
 - Added `docs/product/memory_river_c3_spike_contract.md` to define the Memory
