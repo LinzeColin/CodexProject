@@ -465,6 +465,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("terminal_proof_real_email_count_after_current_capture_window=4", page)
         self.assertIn("remaining_real_delivery_days_for_terminal_proof=1", page)
         self.assertIn("remaining_real_email_count_for_terminal_proof=4", page)
+        self.assertIn("| 历史字段 | prerequisite plan `state_hash=fb04c0b2582c24bdecf9d6d33658f25139ab8cf656cd6e22c69f01e5a3e1c419`", page)
+        self.assertIn("| 历史当时 capture-window 新增 | `current_capture_window_real_delivery_days_added=0`", page)
+        self.assertIn("| 历史当时 terminal proof 差距 | `terminal_proof_real_delivery_days_after_current_capture_window=1`", page)
 
         self.assertIn("REQ-ADP-V7-058-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD", page)
@@ -505,6 +508,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("counts_toward_s2plt02_terminal_proof=false", page)
         self.assertIn("launchagent_runtime_state_unknown", page)
         self.assertIn("launchagents_loaded_but_disabled_not_terminal_scheduler_proof", page)
+        self.assertIn("| 历史字段 | prerequisite plan `state_hash=9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144`", page)
+        self.assertIn("| 历史当时 dry-run 口径 | `dry_run_service_dates=2026-06-29;2026-06-30`", page)
+        self.assertIn("| 历史当时 scheduler 口径 | final-bundle summary `launchagent_runtime_state_unknown`", page)
         self.assertIn("REQ-ADP-V7-055-S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY", page)
         self.assertIn(
@@ -519,6 +525,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("s2plt04_completion_report_written=false", page)
         self.assertIn("completion_report_ready=false", page)
         self.assertIn("s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing", page)
+        self.assertIn("| 历史字段 | prerequisite plan `state_hash=b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4`", page)
+        self.assertIn("| 历史当时 S2PLT04 report | `completion_report_ready=false`", page)
+        self.assertIn("| 历史当时阻断原因 | `s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing`", page)
         self.assertIn("REQ-ADP-V7-054-S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY", page)
         self.assertIn(
@@ -537,6 +546,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("production_acceptance_claimed=false", page)
         self.assertIn("integrated_production_accepted=false", page)
         self.assertIn("当前 Stage 2 integrated acceptance 已记录，见顶部阅读规则", page)
+        self.assertIn("| 历史字段 | prerequisite plan `state_hash=6036321e310edadb57834353b45c08a632100caab1f61dfd00fa7c108a57b05f`", page)
+        self.assertIn("| 历史当时 zero-proof | `current_zero_proof_counts=P0=0;P1=0`", page)
+        self.assertIn("| 历史当时剩余阻断 | S2PLT02 terminal delivery proof", page)
         self.assertIn("REQ-ADP-V7-053-S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY", page)
         self.assertIn(
@@ -555,6 +567,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("terminal_artifact_ready=false", page)
         self.assertIn("terminal_artifact_validation_errors=s2plt02_terminal_delivery_proof_artifact_missing", page)
         self.assertIn("terminal_artifact_blocking_reasons=s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven", page)
+        self.assertIn("| 历史字段 | prerequisite plan `state_hash=084c08ec36f925dedb7ecb3488874a23d82090e124b0a791ecd34a998691e54c`", page)
+        self.assertIn("| 历史当时 Artifact validation | `terminal_artifact_validation_status=blocked`", page)
+        self.assertIn("| 历史当时 Artifact 阻断原因 | `terminal_artifact_blocking_reasons=s2plt02_terminal_delivery_proof_artifact_missing", page)
         self.assertIn("REQ-ADP-V7-052-S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC", page)
         self.assertIn(
@@ -1397,6 +1412,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| 缺失 live refs | `FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", page)
         self.assertNotIn("| 阻断 live refs | `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`", page)
         self.assertNotIn("| 禁止动作 | `write_live_next_agent_handoff`", page)
+        self.assertNotIn("| 当前字段 | prerequisite plan `state_hash=fb04c0b2582c24bdecf9d6d33658f25139ab8cf656cd6e22c69f01e5a3e1c419`", page)
+        self.assertNotIn("| 当前字段 | prerequisite plan `state_hash=9f564e7fab8d69c12102143f2aed4a015b5ecff5eb8b9862f3ebc9d37f909144`", page)
+        self.assertNotIn("| 当前字段 | prerequisite plan `state_hash=b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4`", page)
+        self.assertNotIn("| 当前字段 | prerequisite plan `state_hash=6036321e310edadb57834353b45c08a632100caab1f61dfd00fa7c108a57b05f`", page)
+        self.assertNotIn("| 当前字段 | prerequisite plan `state_hash=084c08ec36f925dedb7ecb3488874a23d82090e124b0a791ecd34a998691e54c`", page)
+        self.assertNotIn("| 当前 capture-window 新增 | `current_capture_window_real_delivery_days_added=0`", page)
+        self.assertNotIn("| terminal proof 当前差距 | `terminal_proof_real_delivery_days_after_current_capture_window=1`", page)
+        self.assertNotIn("| 当前 zero-proof | `current_zero_proof_counts=P0=0;P1=0`", page)
+        self.assertNotIn("| 剩余阻断 | S2PLT02 terminal delivery proof、S2PLT03 terminal resilience proof", page)
+        self.assertNotIn("| Artifact validation | `terminal_artifact_validation_status=blocked`", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
