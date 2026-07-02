@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE020"
-current_phase_id: "IDS-STAGE020-P1"
-current_task_id: "IDS-V0_1-STAGE020-P1"
-next_gate_id: "IDS-STAGE020-P2-GATE"
-total_estimated_hours: 152
-completed_estimated_hours: 152
+current_phase_id: "IDS-STAGE020-P2"
+current_task_id: "IDS-V0_1-STAGE020-P2"
+next_gate_id: "IDS-STAGE020-P3-GATE"
+total_estimated_hours: 154
+completed_estimated_hours: 154
 stages:
   -
     stage_id: "S5"
@@ -4756,19 +4756,23 @@ stages:
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
       - "一次 run 完成超过一个 phase"
     stop_gate:
-      gate_id: "IDS-STAGE020-P2-GATE"
+      gate_id: "IDS-STAGE020-P3-GATE"
       status: "open"
       pass_conditions:
         - "Phase 1 明确导入成本估算器输入目录、输出摘要、风险项、成本项和确认状态"
         - "Phase 1 确认预检只读取元信息，不解析正文、不修改原始文件"
         - "Phase 1 定义 owner 确认后才进入批量处理"
+        - "Phase 2 完成 metadata-only 成本估算 helper 和 CLI JSON contract"
+        - "Phase 2 将预检成本摘要展示给人类产品入口"
         - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false"
     acceptance:
       acceptance_id: "ACC-STAGE-020"
-      status: "phase1_scope_boundary_complete"
+      status: "phase2_cost_estimator_slice_complete"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE2_COST_ESTIMATOR_SLICE.md"
+        - "KM_IDSystem/scripts/check_import_cost_estimator.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage020_import_cost_estimator.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
     phases:
@@ -4827,3 +4831,58 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果 Phase 1 合同被误读为生产成本估算器或批量导入授权，后续可能读取 raw metadata、解析正文、启动 OCR/Embedding/index/import、调用外部 API 或写入持久化产物。"
             rollback: "Revert IDS-STAGE020-P1 entry/scope evidence, focused test, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, app entries, GitHub state, or Phase 2."
+      -
+        phase_id: "IDS-STAGE020-P2"
+        name: "导入成本估算器 metadata-only 最小切片"
+        objective: "实现导入成本估算器 helper 和 CLI，基于 metadata-only preflight/risk 输出估算文件数量、格式、大小、压缩包、扫描件、OCR 页数、Embedding token、外部 API 成本、索引体积、本机空间压力，并生成风险、成本、优先级和人类产品入口摘要。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 2 读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "Phase 2 解析正文、启动 OCR、Embedding、index、import、report、external API 或 database 写入"
+          - "Phase 2 生成 runtime output、manifest、evidence ledger、audit log、document/chunk/job/index/import row"
+          - "Phase 2 使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "一次 run 进入 Phase 3"
+        validation:
+          commands:
+            - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage020_import_cost_estimator"
+            - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+            - "Stage005 validator report"
+            - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+            - "py_compile check_import_cost_estimator.py, Stage005 validator, and Stage020 focused test"
+            - "events JSONL parse"
+            - "check-render --project KM_IDSystem"
+            - "git diff --check"
+            - "semantic validate diagnostic"
+          pass_conditions:
+            - "Stage020 focused tests pass"
+            - "Stage005 governance regression accepts STAGE020-P2"
+            - "roadmap、batch lock、event log 和 owner rendered files 指向 Phase 2，且上传闸门关闭"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE020-P2"
+            name: "导入成本估算器最小可运行切片"
+            objective: "提供 metadata-only cost estimator helper 和 CLI，用于 owner 在导入前评估 Embedding token、外部 API 成本、OCR 页数、索引体积、本机空间压力、风险、成本、优先级和确认状态。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.30%"
+            dependencies:
+              - "IDS-V0_1-STAGE020-P1"
+            acceptance_ids:
+              - "ACC-STAGE-020"
+            test_commands:
+              - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage020_import_cost_estimator"
+              - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "Stage005 validator report"
+              - "Full IDS v0.1 pursuing-goal discover"
+              - "check-render --project KM_IDSystem"
+              - "semantic validate diagnostic"
+            test_results: "Stage020 Phase2 RED failed as expected with 7 tests and 4 failures because check_import_cost_estimator.py and STAGE020_PHASE2_COST_ESTIMATOR_SLICE.md did not yet exist. Stage005 Phase2 RED failed as expected with 2 failures because IDS-V0_1-STAGE020-P2 governance state and check_import_cost_estimator.py changed path were not yet accepted. Stage020 focused GREEN passed 7 tests after adding the metadata-only cost estimator helper, CLI contract, and Phase2 evidence. Stage005 GREEN passed 45 tests. Stage005 validator returned valid=true with issues=[], missing_required_files=[], missing_event_ids=[], event_json_errors=[], forbidden_changed_paths=[], unexpected_changed_paths=[], and raw data boundary checks true. Full IDS v0.1 pursuing-goal discover passed 157 tests. py_compile passed for check_import_cost_estimator.py, Stage020 focused test, Stage005 validator, and Stage005 regression test. events JSONL parse returned events_jsonl_ok count=91. bundled render --project KM_IDSystem --write updated owner files; bundled check-render returned drift_count=0 and reference_issue_count=0. git diff --check passed. exact old underscored task-id variant scan returned no hits. newly changed diff did not introduce legacy pre-rename project path spellings. semantic validate remains diagnostic-only with 29 known sparse root-governance or registered-project missing paths and no new KM_IDSystem semantic error. Phase 2 did not read, list, hash, open, copy, move, delete, modify, dump, scan, or commit IDS_MetaData raw metadata content. No Phase 3 scenario validation, save/cancel/split/skip workflow validation, UI runtime change, screenshot, PDF, JSON output file, production cost report, runtime output, body parser, OCR, Embedding, index builder, importer, report writer, manifest/database/evidence/audit/runtime writer, document/chunk/job creation, service start, dependency install, external API call, GitHub upload, PR, merge, or app reinstall was performed."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_import_cost_estimator.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE2_COST_ESTIMATOR_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage020_import_cost_estimator.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果 Phase 2 helper 被误当成生产导入成本引擎，可能绕过 owner confirmation、读取 raw metadata、解析正文、启动 OCR/Embedding/index/import、调用外部 API 或写入持久化产物。"
+            rollback: "Revert IDS-STAGE020-P2 helper, focused tests, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, app entries, GitHub state, or Phase 3."
