@@ -58,6 +58,8 @@ REQUIRED_FILES = (
     "KM_IDSystem/scripts/check_safe_mode_baseline.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE3_SCENARIO_VALIDATION.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py",
     "KM_IDSystem/scripts/run_local_services.sh",
     "KM_IDSystem/scripts/smoke_test.sh",
@@ -102,6 +104,7 @@ ALLOWED_CHANGED_PATHS = {
 ALLOWED_CHANGED_PREFIXES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_",
@@ -247,12 +250,21 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-STAGE011-P4"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE012-P1-GATE"' in roadmap_text
     )
+    stage012_phase1_active = (
+        'current_task_id: "IDS-V0_1-STAGE012-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_complete"' in batch_text
+        and 'current_stage_id: "IDS-STAGE012"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE012-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE012-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE012-P2-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
         or stage011_phase2_active
         or stage011_phase3_active
         or stage011_phase4_closeout
+        or stage012_phase1_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
@@ -266,6 +278,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
     )
     next_phase_allowed = (
         'next_phase: "Phase 3"' in batch_text
+        or 'next_phase: "Phase 2"' in batch_text
         or 'next_phase: "Phase 4"' in batch_text
         or 'next_stage: "STAGE-006"' in batch_text
         or 'next_stage: "STAGE-012"' in batch_text
