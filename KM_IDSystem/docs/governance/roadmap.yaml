@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE008"
-current_phase_id: "IDS-STAGE008-P1"
-current_task_id: "IDS-V0_1-STAGE008-P1"
-next_gate_id: "IDS-STAGE008-P2-GATE"
+current_phase_id: "IDS-STAGE008-P2"
+current_task_id: "IDS-V0_1-STAGE008-P2"
+next_gate_id: "IDS-STAGE008-P3-GATE"
 total_estimated_hours: 65
-completed_estimated_hours: 60
+completed_estimated_hours: 62
 stages:
   -
     stage_id: "S5"
@@ -1719,6 +1719,9 @@ stages:
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE2_REMOVABLE_DRIVE_STATE.md"
+        - "KM_IDSystem/scripts/check_removable_drive_state.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
     phases:
       -
         phase_id: "IDS-STAGE008-P1"
@@ -1772,25 +1775,28 @@ stages:
         phase_id: "IDS-STAGE008-P2"
         name: "实现、接入与最小可运行切片"
         objective: "实现或记录只读可拔插移动硬盘状态机、路径检测、状态枚举和存储预算接口。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "缺少 Phase 1 边界证据"
           - "状态机会创建、移动、删除或修改 IDS_DATA_ROOT 内容"
           - "在客户操作流暴露机器端细节"
         stop_gate:
           gate_id: "IDS-STAGE008-P2-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "在线、离线、重连、路径变化、权限异常和存储预算有最小可运行检查"
             - "机器端细节只进入 IDS 系统运营入口"
             - "重连不会自动恢复大批量导入、OCR、Embedding、索引或清理"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE2_REMOVABLE_DRIVE_STATE.md"
+            - "KM_IDSystem/scripts/check_removable_drive_state.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE008-P2"
             name: "可拔插移动硬盘状态机最小切片"
             objective: "按 Phase 1 边界建立可拔插移动硬盘状态、路径、权限、存储预算和安全模式的最小可验证切片。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "3.08%"
             dependencies:
@@ -1801,8 +1807,11 @@ stages:
               - "removable-drive state-machine focused test"
               - "path/permission/storage state contract test"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-008 Phase 2 added a read-only removable-drive lifecycle state machine and focused unittest. TDD red run before implementation produced Ran 5 tests and FAILED (failures=5) because the script did not exist. Green run after implementation and CLI import-path fix produced Ran 5 tests and OK. The slice maps not configured, offline, reconnected, path changed, permission denied, structure invalid, storage blocked, and online validated states. It does not start services, create IDS_DATA_ROOT, create 00-99 directories, recursively scan external-drive contents, write to IDS_DATA_ROOT, auto-resume import/OCR/Embedding/indexing/report jobs, expose machine diagnostics to the customer flow, push to GitHub, open a PR, or merge."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE2_REMOVABLE_DRIVE_STATE.md"
+              - "KM_IDSystem/scripts/check_removable_drive_state.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
             risk: "状态机写入真实路径、递归扫描外接盘、自动恢复作业或把机器诊断暴露给客户操作流。"
             rollback: "Revert IDS-STAGE008-P2 implementation-slice changes."
       -
