@@ -982,6 +982,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("open_pr_observation_errors", mvp_prep)
         self.assertIn("runtime_observation_errors", mvp_prep)
         self.assertIn("具体错误", mvp_prep)
+        self.assertIn("## 10 下一轮最小验证命令", mvp_prep)
+        self.assertIn("以下命令必须从 CodexProject 仓库根目录运行", mvp_prep)
+        self.assertIn("不要给这些 root tools 追加 `--json`", mvp_prep)
+        self.assertIn("python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1", mvp_prep)
+        self.assertIn(
+            'python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
+            mvp_prep,
+        )
+        self.assertIn(
+            'python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
+            mvp_prep,
+        )
+        self.assertNotIn("tools/verify_acceptance_bundle.py --root . --require-zero P0 P1 --json", mvp_prep)
+        self.assertNotIn("tools/verify_daily_operation_readiness.py --root . --json", mvp_prep)
+        self.assertNotIn("tools/verify_daily_operation_enablement_preflight.py --root . --json", mvp_prep)
         self.assertIn("open_pr_observation_errors_promoted_to_blocking_reasons=true", model_params)
         self.assertIn("runtime_observation_errors_promoted_to_blocking_reasons=true", model_params)
         for owner_text in (handoff, final_bundle_status, readme, one_look, decisions, roadmap):
