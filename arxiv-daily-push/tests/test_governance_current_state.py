@@ -1382,6 +1382,23 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("persistent_daily_operation_authorized=false", roadmap)
         self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED", roadmap)
 
+    def test_v72_current_pointer_registry_does_not_reopen_old_final_gate_precheck(self) -> None:
+        registry = (
+            ADP_ROOT / "docs/pursuing_goal/v7_2/machine_readable/current_pointer_registry_v7_2.yaml"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("task_id: S2PMT07", registry)
+        self.assertIn("Stage 2 integrated acceptance remains recorded", registry)
+        self.assertIn("persistent DAILY_OPERATION remains disabled", registry)
+        self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", registry)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", registry)
+        self.assertIn("SMTP/scheduler/Release/restore remain prohibited", registry)
+        self.assertNotIn("S2PMT07 final gate precheck is the current global Stage2 entry", registry)
+        self.assertNotIn(
+            "blocked until inherited V7.1 P0/P1 are zero, S2PLT04 is complete",
+            registry,
+        )
+
     def test_roadmap_does_not_treat_historical_daily_operation_preflight_as_current_enablement_pass(self) -> None:
         roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
 
