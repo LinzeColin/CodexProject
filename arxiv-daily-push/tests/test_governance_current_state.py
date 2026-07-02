@@ -134,6 +134,29 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn("| 阻断 2：缺 SMTP secret env 名称", decisions)
         self.assertNotIn("| 阻断 3：既有 `OpenAIDatabase/session_history` archive", decisions)
 
+    def test_owner_decision_page_does_not_reopen_pre_acceptance_final_bundle_gaps(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn("Stage 2 final-bundle live artifacts 已存在并已被 integrated acceptance 消费", decisions)
+        self.assertIn(
+            "当前只剩 S3/DAILY_OPERATION 持久授权 artifact 缺失",
+            decisions,
+        )
+        self.assertIn("历史当时 final bundle readiness 为 blocked", decisions)
+        self.assertIn("历史当时 `live_artifact_write_guard` 为 blocked", decisions)
+        self.assertIn("历史当时 live `FINAL_ACCEPTANCE_BUNDLE/manifest.json` 仍缺失", decisions)
+
+        forbidden_phrases = (
+            "Final bundle readiness 仍为 blocked，缺 `manifest.json`",
+            "保持 `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`、`FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`、`HANDOFF/00_下一Agent先读.md`、`FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml`、`FINAL_ACCEPTANCE_BUNDLE/manifest.json` 不写入",
+            "`FINAL_ACCEPTANCE_BUNDLE/manifest.json`、`s2plt04_completion_report.json`、`independent_review_signoff.yaml`、`final_command_execution.json` 和 `HANDOFF/00_下一Agent先读.md` 仍缺",
+            "live `FINAL_ACCEPTANCE_BUNDLE/manifest.json` 仍缺失，final bundle/S2PMT07 不因此通过",
+            "validate-final-acceptance-bundle --repo-root . --json` 仍 blocked",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
         manifest_path = (
             REPO_ROOT
