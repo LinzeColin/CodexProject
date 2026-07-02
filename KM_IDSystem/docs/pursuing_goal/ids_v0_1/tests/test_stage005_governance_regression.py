@@ -64,6 +64,36 @@ class Stage005GovernanceRegressionTests(unittest.TestCase):
             )
         )
 
+    def test_phase_state_allows_phase3_after_phase2_completion(self):
+        module = self._load_module()
+        batch_text = """
+  STAGE-005:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P3"
+    acceptance_status: "phase3_validation_complete"
+upload_gate:
+  push_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE005"
+current_phase_id: "IDS-STAGE005-P3"
+current_task_id: "IDS-V0_1-STAGE005-P3"
+next_gate_id: "IDS-STAGE005-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
 
 if __name__ == "__main__":
     unittest.main()
