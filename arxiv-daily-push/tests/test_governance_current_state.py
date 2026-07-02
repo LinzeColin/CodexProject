@@ -946,6 +946,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("persistent_daily_operation_authorization_missing", text)
         self.assertIn("status=FAIL / exit 2", handoff)
         self.assertIn(
+            "以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
+            handoff,
+        )
+        self.assertIn(
             'python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
             handoff,
         )

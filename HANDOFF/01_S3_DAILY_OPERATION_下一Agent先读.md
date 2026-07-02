@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 22:08:44 Australia/Sydney
+更新时间：2026-07-02 22:30:51 Australia/Sydney
 
 ## 当前结论
 
@@ -71,6 +71,8 @@
 没有第 1 步时，后续只能做只读复核、证据同步或 owner-facing handoff，不得推进 DAILY_OPERATION。
 
 ## 最小复核命令
+
+以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径。
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_current PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q
