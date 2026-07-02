@@ -93,6 +93,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
                     page_path.name,
                 )
 
+    def test_owner_first_status_pages_explain_purpose_before_dated_sections(self):
+        expected_intros = {
+            USER_CENTER / "关键结论与用户决策.md": "本页把当前 ADP 状态翻译成用户能直接决策的结论。",
+            USER_CENTER
+            / "邮件发送与队列状态.md": "本页是 GitHub 上的邮件状态入口，只回答邮件发送、邮件模板和候选池三个问题。真实发送以 SMTP / 运行证据为准；本页负责把证据翻译成可读、可追踪、可长期更新的状态。",
+        }
+        for page_path, intro in expected_intros.items():
+            with self.subTest(page=page_path.name):
+                text = page_path.read_text(encoding="utf-8")
+                lines = text.splitlines()
+                self.assertEqual(lines[3], "", page_path.name)
+                self.assertEqual(lines[4], intro, page_path.name)
+                self.assertLess(text.index(intro), text.index("## 2026-"), page_path.name)
+
     def test_three_base_files_explain_smtp_false_like_history_before_audit_log(self):
         pages = [
             ROOT / "功能清单.md",
