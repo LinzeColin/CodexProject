@@ -1043,6 +1043,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"| 覆盖命令 | `{preflight_command}` |", roadmap)
         self.assertNotIn("| 覆盖命令 | `tools/verify_daily_operation_readiness.py`", roadmap)
         self.assertNotIn("| 覆盖命令 | `tools/verify_daily_operation_enablement_preflight.py`", roadmap)
+        self.assertIn(f"| S3 root 执行根 | 正确 root 必须显示 `repo_root_valid=true`", one_look)
+        self.assertIn(f"`{readiness_command}` / `{preflight_command}`", one_look)
+        self.assertIn(f"| Root 执行根 | 正确 CodexProject 仓库根必须", final_bundle_status)
+        self.assertIn(f"`{readiness_command}` / `{preflight_command}`", final_bundle_status)
+        self.assertIn(f"| Root 执行根校验 | 正确 CodexProject 仓库根必须输出", handoff)
+        self.assertIn(f"`{readiness_command}` / `{preflight_command}`", handoff)
+        for owner_copy_guidance_text in (readme, one_look, final_bundle_status, handoff):
+            self.assertNotIn(
+                "复制 `tools/verify_daily_operation_readiness.py` 或 `tools/verify_daily_operation_enablement_preflight.py`",
+                owner_copy_guidance_text,
+            )
+            self.assertNotIn(
+                "| `tools/verify_daily_operation_readiness.py` / `tools/verify_daily_operation_enablement_preflight.py` |",
+                owner_copy_guidance_text,
+            )
         for current_guidance_text in (handoff, mvp_prep, decisions, roadmap):
             self.assertIn(
                 acceptance_bundle_command,

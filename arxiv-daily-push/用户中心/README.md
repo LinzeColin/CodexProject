@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-03 00:05:49 Australia/Sydney
+更新时间：2026-07-03 00:12:03 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -121,7 +121,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 ## 2026-07-02 23:06:15 Australia/Sydney - S3 root validation 第一入口同步
 
 - S3 handoff 和最终验收包页已有 root validation 说明；本页现在同步为第一入口口径。
-- 后续复制 `tools/verify_daily_operation_readiness.py` 或 `tools/verify_daily_operation_enablement_preflight.py` 后，必须同时核对 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`。
+- 后续复制 `python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2` 或 `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` 后，必须同时核对 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`。
 - 若输出 `codexproject_repo_root_invalid`，先修正执行目录或 `--root`；这不是持久授权缺失，也不是 S3/DAILY_OPERATION 状态变化。
 - 本轮仍只做 MVP 准备与复审修补，不创建持久授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。
 
