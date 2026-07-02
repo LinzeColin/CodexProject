@@ -32,10 +32,13 @@ owner-editable DAILY_OPERATION authorization template only. It deliberately sets
 `template_only=true` and `explicit_persistent_daily_operation_authorization=false`,
 so copying it unchanged to
 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`
-must remain invalid. It may only be converted into a live authorization artifact
-after the owner explicitly authorizes persistent DAILY_OPERATION in the current
-thread, all runtime prechecks are still disabled, and the separate
-DAILY_OPERATION readiness / enablement gates are rerun.
+must remain invalid. A partially edited copy is still invalid if it preserves
+placeholder `generated_at` or `authorization_text` values. It may only be
+converted into a live authorization artifact after the owner explicitly
+authorizes persistent DAILY_OPERATION in the current thread, the timestamp and
+authorization text are replaced with current owner evidence, all runtime
+prechecks are still disabled, and the separate DAILY_OPERATION readiness /
+enablement gates are rerun.
 
 Current S2PLT02/S2PLT03/S2PLT04/S2PMT07 gates remain blocked. These templates
 do not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, or

@@ -7144,6 +7144,26 @@ class Stage2FinalGateTests(unittest.TestCase):
             stage2_final_gate_module._validate_persistent_daily_operation_authorization_artifact(payload),
         )
 
+    def test_daily_operation_persistent_authorization_rejects_partially_edited_template(self) -> None:
+        template_path = (
+            REPO_ROOT
+            / "FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json"
+        )
+        payload = json.loads(template_path.read_text(encoding="utf-8"))
+        payload["template_only"] = False
+        payload["explicit_persistent_daily_operation_authorization"] = True
+
+        errors = stage2_final_gate_module._validate_persistent_daily_operation_authorization_artifact(payload)
+
+        self.assertIn(
+            "persistent daily operation authorization artifact generated_at must be a real timestamp",
+            errors,
+        )
+        self.assertIn(
+            "persistent daily operation authorization artifact authorization_text must be explicit owner evidence",
+            errors,
+        )
+
     def test_daily_operation_persistent_authorization_request_is_request_only(self) -> None:
         build_state = getattr(
             stage2_final_gate_module,
