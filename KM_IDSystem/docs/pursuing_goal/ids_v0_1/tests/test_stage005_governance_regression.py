@@ -1851,6 +1851,101 @@ next_gate_id: "IDS-STAGE018-P2-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage018_phase2_import_preflight_scanner_slice(self):
+        module = self._load_module()
+        batch_text = """
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-011:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+  STAGE-012:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+  STAGE-013:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+  STAGE-014:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+  STAGE-015:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+  STAGE-016:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-017"
+  STAGE-017:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-018"
+  STAGE-018:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE018-P2"
+    acceptance_status: "phase2_preflight_slice_complete"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE018"
+current_phase_id: "IDS-STAGE018-P2"
+current_task_id: "IDS-V0_1-STAGE018-P2"
+next_gate_id: "IDS-STAGE018-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE018-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE018-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_changed_path_policy_allows_stage011_phase2_files(self):
         module = self._load_module()
         allowed_paths = [
@@ -1888,6 +1983,8 @@ next_gate_id: "IDS-STAGE018-P2-GATE"
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE1_SCOPE_BOUNDARY.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE2_PREFLIGHT_SLICE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_import_preflight.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage017_original_regression.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage016_import_idempotency.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage015_duplicate_detection.py",
@@ -1902,6 +1999,7 @@ next_gate_id: "IDS-STAGE018-P2-GATE"
             "KM_IDSystem/scripts/check_duplicate_files.py",
             "KM_IDSystem/scripts/check_import_idempotency.py",
             "KM_IDSystem/scripts/check_original_regression.py",
+            "KM_IDSystem/scripts/check_import_preflight.py",
         ]
 
         for path in allowed_paths:
