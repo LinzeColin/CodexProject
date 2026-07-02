@@ -2434,6 +2434,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "persistent_daily_operation_authorization_missing",
             "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
             "不得把 final bundle pass、zero-proof 或 S2PLT04 完成解读成 S3/DAILY_OPERATION 已进入",
+            "一次受控真实运行验收只说明受控窗口内的发送证据，不会生成或替代持久 DAILY_OPERATION 授权",
+            "不得把 request 包、模板或一次受控真实运行当作 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`",
             "以下命令必须从 CodexProject 仓库根目录运行；`tools/`、`scripts/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
             "不要给这些 root tools 追加 `--json`",
             "python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1",
