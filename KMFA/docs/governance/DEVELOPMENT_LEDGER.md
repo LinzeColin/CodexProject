@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s04-stage-review
+product_version: 0.1.3-s05p1-a0-file-registration
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S04`
-- current_phase: `v0.1.3 Stage 4｜整体复审`
-- current_tasks: `KMFA-V013-S04-STAGE-REVIEW-20260702`
-- status: `local_s04_stage_review_passed_upload_deferred_until_stage10_batch`
+- current_stage: `S05`
+- current_phase: `v0.1.3 S05-P1｜A0 文件登记 replay`
+- current_tasks: `KMFA-V013-S05-P1-A0-FILE-REGISTRATION-20260702`
+- status: `local_s05_p1_completed_upload_deferred_until_stage10_batch_private_source_mismatch`
 - risk_tier: `T3`
 
 ## Completed
@@ -140,12 +140,13 @@ product_version: 0.1.3-s04-stage-review
 | `KMFA-V013-S04-P2-FIELD-STANDARDIZATION-20260702` | v0.1.3 S04-P2 字段标准化 replay 本地通过：重放 6 个 canonical fields、32 条 alias dictionary、6/6 字段标准化 case 和 5 条缺失/异常质量状态；记录 accidental raw listing 已清理，未修改 raw 目录，未执行 S04-P3、Stage 4 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/human/field_standardization_report.md` |
 | `KMFA-V013-S04-P3-BASIC-TOOL-REPORT-20260702` | v0.1.3 S04-P3 基础工具测试报告 replay 本地通过：重放 22/22 个 synthetic boundary cases、11 个金额 case 和 11 个日期/期间 case，并生成 JSON/Markdown 工具函数测试报告；未读取或写入 raw data inbox，未执行 Stage 4 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S04_P3_BASIC_TOOL_REPORT/human/basic_tool_report_replay_report.md` |
 | `KMFA-V013-S04-STAGE-REVIEW-20260702` | v0.1.3 Stage 4 整体复审本地通过：复跑 S04-P1/S04-P2/S04-P3 validators 和 Stage 4 review validator，phase_results 全部 PASS，findings_open=0，findings_fixed=0；GitHub main 未上传且延期到 Stage 1-10 批量上传 gate；未读取或写入 raw data inbox，未执行 Stage 5、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S04_STAGE_REVIEW/human/stage4_review_report.md` |
+| `KMFA-V013-S05-P1-A0-FILE-REGISTRATION-20260702` | v0.1.3 S05-P1 A0 文件登记 replay 本地通过：A0 inventory=9、PDF 类=8、Excel 类=1、Q3 machine candidates=9、Q4/Q5=0；本机 A0 private zip 可打开且聚合结构匹配，但整包 hash/size 与登记 source package 不匹配，因此 public member SHA256 未回填；未提交 raw 文件名、raw hash、ZIP member name、sheet name、字段明文、row values 或业务值；未执行 S05-P2、Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/human/a0_file_registration_replay_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 Stage 4 整体复审完成后，下一步只能另起 run 执行 v0.1.3 S05-P1 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S04_STAGE_REVIEW/human/test_results.md` |
+| 无 | v0.1.3 S05-P1 完成后，下一步只能另起 run 执行 v0.1.3 S05-P2 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/human/test_results.md` |
 
 ## Not Completed
 

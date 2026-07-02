@@ -9,14 +9,14 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s04-stage-review`
-- 当前已完成: `v0.1.3 Stage 4｜整体复审`
-- 证据目录: `KMFA/stage_artifacts/V013_S04_STAGE_REVIEW/`
-- 复审结论: Stage 4 review generator、validator、新单测、S04-P1/S04-P2/S04-P3 validators、既有基础工具 tests 和治理 validator 均 PASS；phase_results=`S04-P1/S04-P2/S04-P3 PASS`，findings_open=0，findings_fixed=0；data quality=`Q2`，report grade=`D`，release permission=`blocked`，`github_upload_performed=false`，`github_upload_status=not_uploaded_deferred_until_stage10_batch`。
-- upload policy: 侧聊纠正后已撤销本地 Stage 4 upload gate 产物；GitHub main 未上传。v1.3 GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得按单个 Stage 做 GitHub upload gate。当前本地分支曾 rebase 到较新的 `origin/main`，但未 push。
-- raw boundary: 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。S04-P2 前序 accidental raw listing deviation 仍作为已记录、临时文件已删除的 closed deviation 保留；该目录属于用户财务原始数据目录，后续 Codex 只能在明确 phase 需要时只读读取，不能在该目录内生成额外文件。
-- 未执行: GitHub main upload、Stage 5、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 S05-P1` 或用户明确指定的单一 phase；不得执行 GitHub upload、raw value matching、正式报告或业务动作。
+- 当前版本: `0.1.3-s05p1-a0-file-registration`
+- 当前已完成: `v0.1.3 S05-P1｜A0 文件登记 replay`
+- 证据目录: `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/`
+- 复审结论: S05-P1 generator、validator、新单测、legacy A0 registration validator 和 S04 Stage review dependency validator 均 PASS；A0 file total=`9`、PDF 类=`8`、Excel 类=`1`、Q3 machine candidates=`9`、Q4 locked=`0`、Q5 formal report allowed=`0`；data quality=`Q2`，report grade=`D`，release permission=`blocked`，`github_upload_performed=false`，`github_upload_deferred_until_stage10_batch=true`。
+- upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4 或 Stage 5 单独 upload 作为 active next step。
+- raw boundary: 本轮按 S05-P1 明确需求只读检查 `/Users/linzezhang/Downloads/KMFA_MetaData` 中 A0 private zip 的聚合结构，并确认 raw inbox 未修改、删除、移动、重命名、覆盖或写入生成文件。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值；真实 package/member diagnostic 仅写入 git-ignored `KMFA/.codex_private_runtime/`。本地 private zip 可打开，聚合成员计数为 9、PDF 类 8、Excel 类 1，但整包 hash/size 与已登记 source package 不匹配，因此没有执行 public member SHA256 回填。
+- 未执行: S05-P2、Stage 5 整体复审、GitHub main upload、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S05-P2` 或用户明确指定的单一 phase；不得执行 GitHub upload、Stage 5 整体复审、raw value matching、正式报告或业务动作。
 
 ## 持久本机 raw boundary
 
@@ -69,11 +69,11 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - Stage 4 复审修复了 `功能清单.md` 中 `FEAT-KMFA-016` 金额工具详情缺口。
 - Stage 4 final GitHub upload 已生成证据：`KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S04_STAGE_REVIEW/machine/stage4_upload_manifest.json`。
 - `S05-P1` 已完成本地实现与验证：新增 `KMFA/tools/a0_file_register.py`、`KMFA/tools/check_a0_file_registration.py`、`KMFA/tests/test_a0_file_register.py`、`KMFA/metadata/baseline/a0_file_manifest.json`、`KMFA/metadata/baseline/a0_project_candidates.jsonl` 和 `KMFA/stage_artifacts/S05_P1_a0_file_registration/`。
-- S05-P1 只登记 `销售绩效考核.zip` 的公开安全 source package SHA256、8 个 PDF + 1 个 Excel inventory 记录、legacy 指纹、Q3 机器候选和 Q4 未锁定状态；未抽取字段值、未生成 A0 字段级黄金基准、未做 zero-delta、事实层、报告或 UI。
-- S05-P1 执行时未提供可验证私有 `销售绩效考核.zip`，所以成员级 `member_sha256` 仍为 `pending_private_zip_unavailable`；S05-P2 后续私有审计发现本机 zip 整包 hash/size 与登记 source package 不匹配，因此不能回填 S05-P1 member SHA256，也没有把 legacy CRC/指纹伪装成 SHA256。
+- S05-P1 只登记 A0 private source package 的公开安全 source package SHA256、8 个 PDF + 1 个 Excel inventory 记录、legacy 指纹、Q3 机器候选和 Q4 未锁定状态；未抽取字段值、未生成 A0 字段级黄金基准、未做 zero-delta、事实层、报告或 UI。
+- S05-P1 执行时未提供可验证私有 A0 source package，所以成员级 `member_sha256` 仍为 `pending_private_zip_unavailable`；S05-P2 后续私有审计发现本机 zip 整包 hash/size 与登记 source package 不匹配，因此不能回填 S05-P1 member SHA256，也没有把 legacy CRC/指纹伪装成 SHA256。
 - `S05-P2` 已生成 public-safe 字段合同和候选结构：新增 `KMFA/tools/a0_golden_fixture.py`、`KMFA/tools/check_a0_golden_fixture.py`、`KMFA/tests/test_a0_golden_fixture.py`、`KMFA/metadata/baseline/a0_golden_fixture_manifest.json`、`KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl` 和 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/`。
 - S05-P2 当前生成 5 个字段合同和 45 条字段候选：合同额、支出合计、毛利、毛利率、成本分类；每条候选都有 private raw/normalized value ref、source anchor 状态和 Q3/Q4/Q5 门禁。
-- 本机提供的 `销售绩效考核.zip` 整包 hash/size 与登记 source package 不匹配；过滤 macOS 隐藏文件后 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配。当前只据此和 Ring4 前序提取包执行 hash-only 部分回填，不把整包标记为 source package 匹配。
+- 本机提供的 A0 private source package 整包 hash/size 与登记 source package 不匹配；过滤 macOS 隐藏文件后 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配。当前只据此和 Ring4 前序提取包执行 hash-only 部分回填，不把整包标记为 source package 匹配。
 - S05-P2 已将 8 个 PDF 候选的 40 条字段记录为 hash/source anchor recorded；1 个 Excel 候选的 5 条字段仍为 `pending_private_source_unavailable`；未提交 raw/normalized 字段值、私有 CSV、zip、PDF 或 Excel。
 - S05-P2 已新增 Excel 候选机器复核记录：Excel workbook 更像交叉来源汇总/支持材料，不得机器合成为单一 A0 项目基准，不得生成占位 hash，不得进入 Q4/Q5；证据在 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md`。
 - S05-P2 已新增 Excel owner 决策包：允许 `provide_private_field_mapping`、`downgrade_to_cross_source_support` 或 `keep_pending` 三类决策；证据在 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md`。
@@ -386,4 +386,4 @@ git diff --check -- README.md governance/projects.yaml KMFA
 
 ## 下一步
 
-下一步只能另起 run work 执行 `v0.1.3 S05-P1` 或用户明确指定的单一 phase；GitHub main upload 必须等 v1.3 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。本地 Stage 4 upload gate 产物已撤销/改正为 not_uploaded/deferred，GitHub main 未上传；不得把旧 Stage 4 upload gate 作为 active next step，也不得推进 raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。
+下一步只能另起 run work 执行 `v0.1.3 S05-P2` 或用户明确指定的单一 phase；GitHub main upload 必须等 v1.3 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。本地 Stage 4 upload gate 产物已撤销/改正为 not_uploaded/deferred，GitHub main 未上传；不得把旧 Stage 4 upload gate 作为 active next step，也不得推进 raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。
