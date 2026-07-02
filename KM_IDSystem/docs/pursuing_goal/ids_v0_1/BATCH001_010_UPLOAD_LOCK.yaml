@@ -1,0 +1,62 @@
+schema_version: "ids.v0_1.batch_upload_lock.v1"
+batch_id: "IDS-V0_1-BATCH-001-010"
+created_at_utc: "2026-07-02T04:29:53Z"
+updated_at_utc: "2026-07-02T04:32:16Z"
+status: "local_in_progress"
+
+repository:
+  owner_repo: "LinzeColin/CodexProject"
+  worktree_path: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS"
+  target_project_path: "KM_IDSystem"
+  local_branch: "codex/ids-v0-1-stages-001-010"
+  upstream_policy: "do_not_push_until_batch_complete_reviewed_and_repaired"
+
+scope:
+  version: "v0.1"
+  stage_range: "STAGE-001..STAGE-010"
+  acceptance_range: "ACC-STAGE-001..ACC-STAGE-010"
+  source_index: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
+
+upload_gate:
+  push_allowed: false
+  required_before_push:
+    - "STAGE-001 through STAGE-010 all completed."
+    - "Each completed Stage has durable local evidence."
+    - "Every tenth-stage review finding is fixed or explicitly deferred with a stop gate."
+    - "check-render --project KM_IDSystem returns drift_count=0."
+    - "Changed scope remains inside KM_IDSystem/ and allowed governance roots."
+    - "No open blocker tied to raw data, secrets, local generated data, or sparse-worktree expansion."
+  github_target: "main"
+
+stage_progress:
+  STAGE-001:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE001-P1"
+    acceptance_id: "ACC-STAGE-001"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE1_SCOPE_BOUNDARY.md"
+  STAGE-002:
+    status: "not_started"
+  STAGE-003:
+    status: "not_started"
+  STAGE-004:
+    status: "not_started"
+  STAGE-005:
+    status: "not_started"
+  STAGE-006:
+    status: "not_started"
+  STAGE-007:
+    status: "not_started"
+  STAGE-008:
+    status: "not_started"
+  STAGE-009:
+    status: "not_started"
+  STAGE-010:
+    status: "not_started"
+
+decision:
+  current_run: "Completed only STAGE-001 Phase 1 locally."
+  no_upload_reason: "The user requires one GitHub main upload only after each completed and repaired 10-Stage batch."
