@@ -999,6 +999,20 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn("tools/verify_daily_operation_enablement_preflight.py --root . --json", mvp_prep)
         self.assertIn("open_pr_observation_errors_promoted_to_blocking_reasons=true", model_params)
         self.assertIn("runtime_observation_errors_promoted_to_blocking_reasons=true", model_params)
+        for command_owner_text in (readme, final_bundle_status):
+            self.assertIn("不要给这些 root tools 追加 `--json`", command_owner_text)
+            self.assertIn("python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1", command_owner_text)
+            self.assertIn(
+                'python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
+                command_owner_text,
+            )
+            self.assertIn(
+                'python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
+                command_owner_text,
+            )
+            self.assertNotIn("tools/verify_acceptance_bundle.py --root . --require-zero P0 P1 --json", command_owner_text)
+            self.assertNotIn("tools/verify_daily_operation_readiness.py --root . --json", command_owner_text)
+            self.assertNotIn("tools/verify_daily_operation_enablement_preflight.py --root . --json", command_owner_text)
         for owner_text in (handoff, final_bundle_status, readme, one_look, decisions, roadmap):
             self.assertIn("repo_root_valid=true", owner_text)
             self.assertIn("root_validation_errors=[]", owner_text)

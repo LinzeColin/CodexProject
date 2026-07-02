@@ -195,9 +195,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "`ADP_ALLOW_SMTP_SEND` 原始值只接受 `UNSET` 或 false-like",
             "当前 MVP 准备只做复审修补、证据同步和防回归补强，不进入 S3/DAILY_OPERATION",
             "以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
-            "python3 tools/verify_acceptance_bundle.py --require-zero P0 P1",
-            'python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
-            'python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
+            "不要给这些 root tools 追加 `--json`",
+            "python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1",
+            'python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
+            'python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
         )
         for phrase in required_phrases:
             with self.subTest(phrase=phrase):
@@ -208,6 +209,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "Stage 2 多来源正式生产 | 未通过",
             "Stage 2 正式生产仍未通过",
             "Stage 2 来源正式生产推广",
+            "tools/verify_acceptance_bundle.py --root . --require-zero P0 P1 --json",
+            "tools/verify_daily_operation_readiness.py --root . --json",
+            "tools/verify_daily_operation_enablement_preflight.py --root . --json",
         )
         for phrase in forbidden_phrases:
             with self.subTest(phrase=phrase):
@@ -2365,18 +2369,27 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "persistent_daily_operation_authorization_missing",
             "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
             "不得把 final bundle pass、zero-proof 或 S2PLT04 完成解读成 S3/DAILY_OPERATION 已进入",
-            "以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
+            "以下命令必须从 CodexProject 仓库根目录运行；`tools/`、`scripts/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
+            "不要给这些 root tools 追加 `--json`",
+            "python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1",
         )
         for fact in required_facts:
             self.assertIn(fact, page)
         self.assertIn(
-            'python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
+            'python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
+            page,
+        )
+        self.assertIn(
+            'python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
             page,
         )
         self.assertNotIn(
             "```bash\npython3 tools/verify_acceptance_bundle.py --require-zero P0 P1\npython3 tools/verify_daily_operation_enablement_preflight.py\n```",
             page,
         )
+        self.assertNotIn("tools/verify_acceptance_bundle.py --root . --require-zero P0 P1 --json", page)
+        self.assertNotIn("tools/verify_daily_operation_readiness.py --root . --json", page)
+        self.assertNotIn("tools/verify_daily_operation_enablement_preflight.py --root . --json", page)
 
         forbidden_facts = (
             "| S3/DAILY_OPERATION | 已进入",
