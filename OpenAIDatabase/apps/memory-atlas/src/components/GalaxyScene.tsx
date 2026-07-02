@@ -33,7 +33,10 @@ import {
 } from "../config/memoryStarfieldParameters";
 import type { GalaxyRendererMode } from "../config/visualFlags";
 import { normalizeMemoryTier } from "../data/atlas";
+import { zhCNCopy } from "../i18n/zh-CN";
 import type { AtlasEdge, AtlasNode } from "../types";
+
+const uiCopy = zhCNCopy;
 
 interface GalaxySceneProps {
   nodes: AtlasNode[];
@@ -1608,9 +1611,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         </div>
       </div>
       {renderError ? (
-        <div className="galaxy-fallback" title={renderError}>
-          <strong>WebGL 不可用</strong>
-          <span>已启用静态星云 fallback，仍可点击星体查看记忆；也可通过 Galaxy feature flag 回到 Legacy。</span>
+        <div className="galaxy-fallback" data-memory-atlas-error-state="webgl-unavailable" title={renderError}>
+          <strong>{uiCopy.states.webglUnavailableTitle}</strong>
+          <span>{uiCopy.states.webglUnavailableDescription}</span>
+          <small>{uiCopy.states.webglUnavailableAction}</small>
         </div>
       ) : null}
     </div>

@@ -4,6 +4,7 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  CircleHelp,
   Cloud,
   Crosshair,
   Download,
@@ -53,6 +54,9 @@ import {
   type SharedAtlasState,
   type SharedTimelineTimeRangeSelection,
 } from "./state/sharedAtlasState";
+import { EmptyState } from "./components/EmptyState";
+import { ErrorState } from "./components/ErrorState";
+import { MemoryAtlasHelpPanel } from "./components/help/MemoryAtlasHelpPanel";
 import { zhCNCopy } from "./i18n/zh-CN";
 
 const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) => ({ default: module.GalaxyScene })));
@@ -570,6 +574,7 @@ export function App() {
   const [selectedContributionPeriod, setSelectedContributionPeriod] = useState<ContributionPeriodDetail | null>(null);
   const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
   const [loadError, setLoadError] = useState("");
+  const [helpOpen, setHelpOpen] = useState(false);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>(() => ({
     runStartedAt: new Date(),
     snapshotLoadedAt: null,
@@ -742,6 +747,10 @@ export function App() {
     }
     dispatchSharedState({ type: "switch_view", view, source: activeView });
   }, [activeView]);
+  const openHelpView = useCallback((view: ViewKey) => {
+    switchView(view);
+    setHelpOpen(false);
+  }, [switchView]);
   const focusSelectedTheme = useCallback(() => {
     const theme = selectedNode?.visual?.cluster;
     if (!theme) return;
@@ -834,19 +843,29 @@ export function App() {
             <p className="eyebrow">{uiCopy.app.topbarEyebrow}</p>
             <h1>{selectedTitle}</h1>
           </div>
-          <div className="stat-strip" aria-label="星图总览">
-            <Metric label={uiCopy.metrics.memory} value={scopedAtlas.overview.active_memory_count} />
-            <Metric label={uiCopy.metrics.nodes} value={scopedAtlas.overview.node_count} />
-            <Metric label={uiCopy.metrics.edges} value={scopedAtlas.overview.edge_count} />
-            <Metric label={uiCopy.metrics.activity} value={scopedAtlas.overview.conversation_count} />
+          <div className="topbar-actions">
+            <div className="stat-strip" aria-label="星图总览">
+              <Metric label={uiCopy.metrics.memory} value={scopedAtlas.overview.active_memory_count} />
+              <Metric label={uiCopy.metrics.nodes} value={scopedAtlas.overview.node_count} />
+              <Metric label={uiCopy.metrics.edges} value={scopedAtlas.overview.edge_count} />
+              <Metric label={uiCopy.metrics.activity} value={scopedAtlas.overview.conversation_count} />
+            </div>
+            <button className="help-launch-button" onClick={() => setHelpOpen(true)} title={uiCopy.help.buttonLabel} type="button">
+              <CircleHelp size={17} />
+              <span>{uiCopy.help.buttonLabel}</span>
+            </button>
           </div>
         </header>
 
         {loadState === "error" ? (
-          <div className="load-banner" role="alert">
-            <strong>{uiCopy.states.loadFailedTitle}</strong>
-            <span>{loadError}</span>
-          </div>
+          <ErrorState
+            compact
+            className="load-banner"
+            dataState="load-failed-banner"
+            description={uiCopy.states.loadFailedDescription}
+            details={loadError}
+            title={uiCopy.states.loadFailedTitle}
+          />
         ) : null}
 
         <section className="controls" aria-label={uiCopy.filters.ariaLabel}>
@@ -931,11 +950,14 @@ export function App() {
               nodeMap={nodeMap}
               selectedNode={selectedNode}
               loadState={loadState}
+              loadError={loadError}
               timelineTimeRange={timelineTimeRange}
               onSelectNode={handleSelectNode}
               onSelectContributionPeriod={handleSelectContributionPeriod}
               onSelectTimelineRange={handleSelectTimelineRange}
               onClearTimelineRange={clearTimelineRange}
+              onResetFilters={resetFilters}
+              onShowHelp={() => setHelpOpen(true)}
               onSwitchView={switchView}
             />
           </section>
@@ -947,6 +969,7 @@ export function App() {
             )
           ) : null}
         </div>
+        <MemoryAtlasHelpPanel copy={uiCopy.help} onClose={() => setHelpOpen(false)} onSelectView={openHelpView} open={helpOpen} />
       </main>
     </div>
   );
@@ -961,11 +984,14 @@ function ViewRouter({
   nodeMap,
   selectedNode,
   loadState,
+  loadError,
   timelineTimeRange,
   onSelectNode,
   onSelectContributionPeriod,
   onSelectTimelineRange,
   onClearTimelineRange,
+  onResetFilters,
+  onShowHelp,
   onSwitchView,
 }: {
   activeView: ViewKey;
@@ -976,16 +1002,54 @@ function ViewRouter({
   nodeMap: Map<string, AtlasNode>;
   selectedNode: AtlasNode | null;
   loadState: "loading" | "ready" | "error";
+  loadError: string;
   timelineTimeRange: TimelineTimeRangeSelection | null;
   onSelectNode: (node: AtlasNode) => void;
   onSelectContributionPeriod: (detail: ContributionPeriodDetail) => void;
   onSelectTimelineRange: (range: TimelineTimeRangeSelection) => void;
   onClearTimelineRange: () => void;
+  onResetFilters: () => void;
+  onShowHelp: () => void;
   onSwitchView: (view: ViewKey) => void;
 }) {
   if (loadState === "loading") {
     return <div className="galaxy-loading">{uiCopy.states.loadingGalaxy}</div>;
   }
+  if (loadState === "error") {
+    return (
+      <ErrorState
+        dataState="load-failed"
+        description={uiCopy.states.loadFailedDescription}
+        details={loadError}
+        title={uiCopy.states.loadFailedTitle}
+      />
+    );
+  }
+
+  const emptyState = viewEmptyState(atlas, slice);
+  if (emptyState === "empty-atlas") {
+    return (
+      <EmptyState
+        actionLabel={uiCopy.states.emptyAtlasAction}
+        dataState="empty-atlas"
+        description={uiCopy.states.emptyAtlasDescription}
+        onAction={onShowHelp}
+        title={uiCopy.states.emptyAtlasTitle}
+      />
+    );
+  }
+  if (emptyState === "no-filtered-results") {
+    return (
+      <EmptyState
+        actionLabel={uiCopy.states.noFilteredResultsAction}
+        dataState="no-filtered-results"
+        description={uiCopy.states.noFilteredResultsDescription}
+        onAction={onResetFilters}
+        title={uiCopy.states.noFilteredResultsTitle}
+      />
+    );
+  }
+
   if (activeView === "home") {
     return (
       <HomeOverviewView
@@ -1056,6 +1120,17 @@ function ViewRouter({
     return <SummaryIterationView atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} />;
   }
   return <SearchReview atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
+}
+
+function viewEmptyState(atlas: MemoryAtlas, slice: FilteredAtlasSlice): "empty-atlas" | "no-filtered-results" | null {
+  if (slice.memoryNodes.length || slice.graphNodes.length) return null;
+  if (slice.filterActive) return "no-filtered-results";
+  const hasSnapshotData =
+    atlas.nodes.length > 0 ||
+    atlas.edges.length > 0 ||
+    atlas.timeline.length > 0 ||
+    atlas.overview.active_memory_count > 0;
+  return hasSnapshotData ? null : "empty-atlas";
 }
 
 function HomeOverviewView({
@@ -3289,6 +3364,16 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
         <span>{uiCopy.proposal.safetyNoDirectMutation}</span>
         <span>{uiCopy.proposal.safetyNeedsApply}</span>
       </div>
+      {!editable ? (
+        <ErrorState
+          compact
+          className="proposal-unavailable-state"
+          dataState="proposal-not-writable"
+          description={uiCopy.states.proposalUnavailableDescription}
+          details={uiCopy.states.proposalUnavailableAction}
+          title={uiCopy.states.proposalUnavailableTitle}
+        />
+      ) : null}
       <div className="writeback-diff-grid" aria-label="当前草稿差异">
         <div><span>{uiCopy.proposal.diffLength}</span><strong>{draftDiff.length_delta > 0 ? "+" : ""}{draftDiff.length_delta}</strong></div>
         <div><span>{uiCopy.proposal.diffSegments}</span><strong>{draftDiff.changed_segments}</strong></div>

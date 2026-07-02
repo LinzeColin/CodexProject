@@ -3073,6 +3073,63 @@ Stage 9 整体复审已确认：
 - Stage 0 Phase 0.1 product contract。
 - Stage 0 Phase 0.1 acceptance checklist。
 - Chinese UI copy registry。
+- Stage 0 Phase 0.1 deterministic validator。
+
+## 70. v1.1.7 Stage 0 Phase 0.2 Usage Help And Empty/Error States
+
+状态：`phase_0_2_usage_help_completed_pending_stage0_review`。
+
+验收 ID：`ACC-MA-V117-S0P02`。
+
+模型假设：
+
+- Stage 0 Phase 0.2 只解决系统使用说明和关键空错态，不证明截图验收、真实
+  WebGL 失败模拟、Stage 0.3 明细字段合同或 Stage 0 整体复审。
+- Help 面板先覆盖 3 分钟使用路径、Presentation / Analysis、Inspector、
+  Proposal-only 和 Search Review 关键读法。
+- 空错态覆盖 empty-atlas、no-filtered-results、load-failed、webgl-unavailable
+  和 proposal-not-writable；它们解释下一步，但不自动写 memory 或 proposal。
+
+输入：
+
+- `apps/memory-atlas/src/components/help/MemoryAtlasHelpPanel.tsx`
+- `apps/memory-atlas/src/components/EmptyState.tsx`
+- `apps/memory-atlas/src/components/ErrorState.tsx`
+- `apps/memory-atlas/src/i18n/types.ts`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/GalaxyScene.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_atlas_v1_1_7_stage0_phase2_usage_help_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase2_usage_help_acceptance.md`
+- `docs/product/memory_atlas_usage_guide.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase2.cjs`
+
+处理方法：
+
+- 检查 Help panel 是否含 3-minute path、读法说明和 workflow notes。
+- 检查 ViewRouter 是否覆盖 empty atlas、no filtered results 和 load failed。
+- 检查 GalaxyScene 是否给 WebGL unavailable 中文恢复路径。
+- 检查 proposal 不可写时是否解释 writeback policy 不满足安全条件。
+- 使用 `validate:v1.1.7-stage0-phase2` 固定本 phase 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S0P02-001 stage0_phase2_contract_id = memory_atlas_v1_1_7_stage0_phase2_usage_help_contract`
+- `PARAM-MA-V117-S0P02-002 stage0_phase2_status = phase_0_2_usage_help_completed_pending_stage0_review`
+- `PARAM-MA-V117-S0P02-003 stage0_phase2_usage_path = 看状态;看建议;看证据;调整 proposal;搜索复盘;导出或回滚`
+- `PARAM-MA-V117-S0P02-004 stage0_phase2_state_cases = empty-atlas;no-filtered-results;load-failed;webgl-unavailable;proposal-not-writable`
+- `PARAM-MA-V117-S0P02-005 stage0_phase2_help_modes = Presentation;Analysis;Inspector;Proposal-only;Search Review`
+- `PARAM-MA-V117-S0P02-006 stage0_phase2_text_scan_scope = apps/memory-atlas/src;docs/product;docs/acceptance;package.json;records`
+- `PARAM-MA-V117-S0P02-007 stage0_phase2_required_validator = validate:v1.1.7-stage0-phase2`
+
+输出：
+
+- Stage 0 Phase 0.2 product contract。
+- Stage 0 Phase 0.2 acceptance checklist。
+- Memory Atlas usage guide。
+- Help panel and empty/error state components。
+- Stage 0 Phase 0.2 deterministic validator。
 - Runtime copy usage for critical surfaces。
 - Chinese layout tolerance CSS。
 - Stage 0 Phase 0.1 deterministic validator。
