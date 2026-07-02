@@ -867,9 +867,49 @@ Machine-readable boundary summary: No production integration; No raw/private dat
 
 下一步：
 
-- Stage 9 Phase 4 应进入 Universe State fixture continuity 或下一个 Roadmap v2
-  C3 原型收口。
+- Stage 9 Phase 4 已进入 Universe State fixture continuity。
 - Stage 9 整体复审未执行前，不上传 GitHub main。
+
+### Stage 9 Phase 4：Universe State Fixture Continuity
+
+Stage 9 Phase 4 状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。
+
+任务 ID：`MA-V116-S9P04`。
+
+本 phase 是 v1.1.6 修补包 C3 隔离原型的第四轮，只固定既有 Universe
+State generator spike 的 fixture continuity，不修改 score formula、parameter
+YAML、input fixture、sample、schema 或 production integration，不进入 Stage 9
+整体复审。
+
+新增产物：
+
+- `docs/product/universe_state_fixture_continuity_contract.md`
+- `docs/acceptance/universe_state_fixture_continuity_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9_phase4.cjs`
+- `validate:v1.1.6-stage9-phase4`
+
+验收边界：
+
+- spike 必须保留 redacted fixture adapter、deterministic sample generation、
+  schema validation、parameter drift gate、black_hole_score、proto_star_score、
+  stale_score、memory_weather、memory_terrain、river_pulse、mini_starfield、
+  consumer_map、proposal-only actions 和 privacy_status。
+- `validate:universe-state-spike` 必须通过，证明 deterministic sample、schema、
+  score checks、parameter drift 和 privacy scan。
+- input fixture 与 sample 必须保持 raw/private、plaintext secrets、local
+  absolute paths 和 writeback 标志为 false。
+- production `src` 不得 import 或 reference
+  `experiments/universe-state-generator-spike`。
+- 本 phase 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期
+  记忆、不写 proposal、不上传 GitHub main。
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- Stage 9 四个 C3 原型 phase 已完成；下一轮应执行 Stage 9 整体复审。
+- Stage 9 整体复审通过并修复复审问题前，不上传 GitHub main。
 
 ### Stage 6 整体复审
 
