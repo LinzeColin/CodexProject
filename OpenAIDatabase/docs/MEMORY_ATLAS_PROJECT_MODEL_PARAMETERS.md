@@ -2914,3 +2914,54 @@ Stage 9 整体复审已确认：
 - 本 phase 不读取 raw/private/cookie/session/secret 数据。
 - 本 phase 不直接写长期记忆，不执行 agent apply。
 - 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
+
+## 62. v1.1.6 Stage 9 Phase 2 记忆时间河 C3 隔离原型参数
+
+状态：`phase_9_2_memory_river_c3_spike_ready_pending_stage_review`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Phase 9.2 只固定 `memory-river-spike` 的独立原型证据、fixture 安全、production isolation 和治理记录。
+- 既有 v1.1.5 spike 可作为 v1.1.6 修补包原型基础，但必须补 v1.1.6 continuity、validator 和 no-production-import gate。
+
+输入：
+
+- `apps/memory-atlas/src/experiments/memory-river-spike/README.md`
+- `apps/memory-atlas/src/experiments/memory-river-spike/index.html`
+- `apps/memory-atlas/src/experiments/memory-river-spike/main.ts`
+- `apps/memory-atlas/src/experiments/memory-river-spike/fixture.ts`
+- `docs/product/memory_river_c3_spike_contract.md`
+- `docs/acceptance/memory_river_c3_spike_acceptance.md`
+
+处理方法：
+
+- 检查 spike 文件是否齐全。
+- 检查 main source 是否保留 D3 UTC scale、zoom、brush、theme lanes、event pulses、Black Hole band、Proto-Star marker、hover card、reduced motion 和 smoke hook。
+- 检查 fixture 是否保持 raw/private、plaintext secrets、local absolute paths 和 writeback 标志为 false。
+- 检查 production `src` 是否没有引用 `memory-river-spike`。
+- 使用 `validate:v1.1.6-stage9-phase2` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9P02-001 stage9_phase2_contract_id = memory_river_c3_spike_contract`
+- `PARAM-MA-V116-S9P02-002 stage9_phase2_spike_path = apps/memory-atlas/src/experiments/memory-river-spike`
+- `PARAM-MA-V116-S9P02-003 stage9_phase2_required_features = d3_time_scale;zoom_pan;brush_selection;theme_lanes;black_hole_band;proto_star_marker;event_pulses;hover_card;reduced_motion;smoke_status_hook`
+- `PARAM-MA-V116-S9P02-004 stage9_phase2_fixture_safety = rawPrivateDataIncluded:false;plaintextSecretsIncluded:false;localAbsolutePathsIncluded:false;writebackAllowed:false`
+- `PARAM-MA-V116-S9P02-005 stage9_phase2_isolation_boundary = no_production_import;no_route;no_navigation;no_feature_flag_default;no_direct_writeback;no_proposal_write`
+- `PARAM-MA-V116-S9P02-006 stage9_phase2_required_validator = validate:v1.1.6-stage9-phase2`
+
+输出：
+
+- Stage 9 Phase 2 产品合同。
+- Stage 9 Phase 2 验收文件。
+- Stage 9 Phase 2 validator。
+- Memory River spike README v1.1.6 continuity note。
+
+边界：
+
+- 本 phase 不修改 production Timeline、路由、导航、feature flag 或 app shell。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。

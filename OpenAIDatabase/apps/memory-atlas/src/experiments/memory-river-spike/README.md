@@ -160,6 +160,39 @@ This Stage 1 spike is accepted when:
    zoom `2.06x`, reduced motion `true`, and all source safety flags `false`.
 10. Port cleanup passed for TCP `5173` and `4177`.
 
+## v1.1.6 Stage 9 Phase 2 Continuity
+
+- Task ID: `MA-V116-S9P02`
+- Contract ID: `memory_river_c3_spike_contract`
+- Status: `phase_9_2_memory_river_c3_spike_ready_pending_stage_review`
+- Validator: `validate:v1.1.6-stage9-phase2`
+
+This v1.1.6 phase keeps the existing runnable Memory River spike as C3 isolated
+prototype evidence. The phase verifies static prototype coverage, redacted
+fixture safety, production isolation and governance continuity only.
+
+Required preserved signals:
+
+1. D3 UTC scale, zoom, brush and date-range readout.
+2. Theme lanes, event pulses, Black Hole bands and Proto-Star markers.
+3. Hover card, reduced-motion control and hidden smoke status hook.
+4. Fixture flags: `rawPrivateDataIncluded=false`,
+   `plaintextSecretsIncluded=false`, `localAbsolutePathsIncluded=false` and
+   `writebackAllowed=false`.
+
+Boundaries:
+
+- No production integration.
+- No production Timeline replacement.
+- No production route, navigation item or feature flag default.
+- No raw/private/cookie/session/secret data read.
+- No direct writeback or proposal write.
+- No production build, browser screenshot run, installer, local app rebuild,
+  Cloudflare deploy or Access policy change.
+- No Stage 9 review.
+- No Stage 10 work.
+- No GitHub main upload.
+
 ## Rollback
 
 Delete `apps/memory-atlas/src/experiments/memory-river-spike/` and remove the

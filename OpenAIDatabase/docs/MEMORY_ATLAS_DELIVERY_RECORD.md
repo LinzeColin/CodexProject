@@ -790,7 +790,43 @@ Machine-readable boundary summary: No production integration; No raw/private dat
 
 下一步：
 
-- Stage 9 Phase 2 应进入 Memory River C3 Spike 或下一个 Roadmap v2 C3 原型。
+- Stage 9 Phase 2 已进入 Memory River C3 Spike。
+- Stage 9 整体复审未执行前，不上传 GitHub main。
+
+### Stage 9 Phase 2：Memory River C3 Spike
+
+Stage 9 Phase 2 状态：`phase_9_2_memory_river_c3_spike_ready_pending_stage_review`。
+
+任务 ID：`MA-V116-S9P02`。
+
+本 phase 是 v1.1.6 修补包 C3 隔离原型的第二轮，只固定
+`memory-river-spike` 作为记忆时间河的独立原型证据，不替换 production
+Timeline，不导入 experiment，不进入 Stage 9 整体复审。
+
+新增产物：
+
+- `docs/product/memory_river_c3_spike_contract.md`
+- `docs/acceptance/memory_river_c3_spike_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9_phase2.cjs`
+- `validate:v1.1.6-stage9-phase2`
+
+验收边界：
+
+- spike 必须保留 D3 UTC time scale、zoom/pan、brush selection、theme
+  lanes、event pulses、Black Hole band、Proto-Star marker、hover card、
+  reduced-motion control 和 smoke status hook。
+- `fixture.ts` 必须保持 raw/private、plaintext secrets、local absolute path
+  和 writeback 标志为 false。
+- production `src` 不得 import 或 reference `memory-river-spike`。
+- 本 phase 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期
+  记忆、不写 proposal、不上传 GitHub main。
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- Stage 9 Phase 3 应进入 Data Map C3 Spike 或下一个 Roadmap v2 C3 原型。
 - Stage 9 整体复审未执行前，不上传 GitHub main。
 
 ### Stage 6 整体复审

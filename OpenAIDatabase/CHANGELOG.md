@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 2
+
+- Added `docs/product/memory_river_c3_spike_contract.md` to define the Memory
+  River C3 isolated prototype contract for Stage 9 Phase 2.
+- Added `docs/acceptance/memory_river_c3_spike_acceptance.md`.
+- Added `validate:v1.1.6-stage9-phase2`.
+- Updated `memory-river-spike/README.md` with v1.1.6 Stage 9 Phase 2
+  continuity, safety and no-upload boundaries.
+- Stage 9 Phase 2 status:
+  `phase_9_2_memory_river_c3_spike_ready_pending_stage_review`.
+
+Machine-readable boundary summary: No production integration; No raw/private
+data read; No direct writeback; No GitHub main upload.
+
+No production Timeline replacement, route, navigation, feature flag default,
+production build, browser screenshot run, local app install, Cloudflare deploy,
+Access policy change, raw/private data read, direct writeback, proposal write,
+agent apply, Stage 9 review, Stage 10 work or No GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 1
 
 - Added `docs/product/memory_starfield_c3_spike_contract.md` to define the
