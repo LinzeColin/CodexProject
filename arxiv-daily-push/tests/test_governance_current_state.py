@@ -742,6 +742,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("open PR 边界复核 fallback 已同步到停止门", readme)
         self.assertIn("SMTP 发送开关原始值复核", readme)
         self.assertIn("后台进程扫描停止门已同步到路线图", readme)
+        self.assertIn("当前治理 SMTP 原始值证据口径已同步", readme)
+        self.assertIn("当前 `OWNER_STATUS`、`ASSURANCE_STATUS`、当前状态测试和治理生成器中的 SMTP 边界证据", readme)
+        self.assertIn("下方 2026-07-01 历史记录里出现的 `ADP_ALLOW_SMTP_SEND=false`，只表示当时运行证据或当时环境事实", readme)
+        self.assertIn("不是当前要求必须存在一个持久显式 `false` 环境变量", readme)
+        self.assertLess(
+            readme.index("当前治理 SMTP 原始值证据口径已同步"),
+            readme.index("owner A 决策 mainline 证据已绑定"),
+        )
         self.assertIn("只匹配 ADP runner/module/path 信号", readme)
         self.assertIn("禁止使用裸 `adp` 子串作为进程扫描匹配项", readme)
         self.assertIn("不能把未设置的环境变量默认写成显式 `false`", readme)
