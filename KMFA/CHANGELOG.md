@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s05p1-a0-file-registration - 2026-07-02
+
+- 完成 `v0.1.3 S05-P1｜A0 文件登记 replay` 本地验证：基于既有 A0 文件登记清单，锁定 9 个 public-safe A0 inventory records、8 个 PDF 类记录、1 个 Excel 类记录和 9 个 Q3 机器候选。
+- 新增 `KMFA/tools/v013_s05_p1_a0_file_registration.py`、`KMFA/tools/check_v013_s05_p1_a0_file_registration.py`、`KMFA/tests/test_v013_s05_p1_a0_file_registration.py` 和 `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/`。
+- 本 phase 按明确需求只读检查本机 raw inbox 中 A0 private zip 的聚合结构：本地可打开，聚合成员计数为 9、PDF 类 8、Excel 类 1；整包 hash/size 与已登记 source package 不匹配，因此不执行 public member SHA256 回填。
+- 公开证据不包含 raw zip 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料；真实 package/member diagnostic 仅写入 git-ignored `KMFA/.codex_private_runtime/`。
+- 本轮不执行 S05-P2、Stage 5 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s04-stage-review - 2026-07-02
 
 - 完成 `v0.1.3 Stage 4｜整体复审` 本地验证：复跑 S04-P1 金额精度、S04-P2 字段标准化、S04-P3 基础工具测试报告 validators，并新增 Stage 4 review validator、单测和证据目录。
@@ -844,7 +852,7 @@
 
 - 对 `S05-P2｜字段级黄金基准` 执行本地私有 hash-only 部分回填，不上传 GitHub。
 - 使用仓库外私有 CSV 回填 8 个 PDF A0 候选的 40 条字段候选 hash/source anchor；1 个 Excel 候选的 5 条字段候选继续 pending。
-- 记录审计结论：本机提供的 `销售绩效考核.zip` 整包 hash/size 与登记 source package 不匹配，但 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配；Ring4 前序包 hash 匹配登记值。
+- 记录审计结论：本机提供的 A0 private source package 整包 hash/size 与登记 source package 不匹配，但 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配；Ring4 前序包 hash 匹配登记值。
 - 新增 S05-P2 private backfill public-safe 证据；公开仓库仍不提交 raw PDF/Excel/zip、私有 CSV、真实字段 raw value 或 normalized value。
 - 保持 S05-P2 未完成、S05-P3 权威锁定未开始、Stage 5 复审和 GitHub upload 不允许。
 
@@ -859,9 +867,9 @@
 ## 0.1.0-s05p1 - 2026-06-30
 
 - 完成 `S05-P1｜A0 文件登记` 的 public-safe 登记和本地验证，不上传 GitHub。
-- 新增 `KMFA/tools/a0_file_register.py` 和 `KMFA/tools/check_a0_file_registration.py`，登记 `销售绩效考核.zip` source package SHA256、8 个 PDF、1 个 Excel、legacy inventory 指纹和 Q3/Q4 状态。
+- 新增 `KMFA/tools/a0_file_register.py` 和 `KMFA/tools/check_a0_file_registration.py`，登记 A0 private source package SHA256、8 个 PDF、1 个 Excel、legacy inventory 指纹和 Q3/Q4 状态。
 - 新增 `KMFA/tests/test_a0_file_register.py`、`KMFA/metadata/baseline/a0_file_manifest.json`、`KMFA/metadata/baseline/a0_project_candidates.jsonl` 和 S05-P1 证据包。
-- 私有 `销售绩效考核.zip` 未找到，成员级 SHA256 显式记录为 pending，不用 legacy CRC/指纹冒充 SHA256。
+- 私有 A0 source package 未找到，成员级 SHA256 显式记录为 pending，不用 legacy CRC/指纹冒充 SHA256。
 - 保持字段级黄金基准、S05-P3 权威锁定、zero-delta、事实层、报告、UI 和 GitHub upload 为未完成。
 
 ## Stage 4 Review - 2026-06-29
