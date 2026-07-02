@@ -2044,6 +2044,11 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("禁止使用裸 `adp` 子串作为进程扫描匹配项", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", readme)
         self.assertIn("用户中心历史 SMTP 开关口径已清理", readme)
+        self.assertIn("项目根 README Stage2/S3 边界已同步", readme)
+        self.assertIn("[项目根 README](../README.md)", readme)
+        self.assertIn("Stage 2 integrated acceptance 已记录并保持，S3/DAILY_OPERATION 未进入", readme)
+        self.assertIn("本机/launchd 只作为历史与受控运行证据来源", readme)
+        self.assertIn("根 README、用户中心和三基现在使用同一安全边界", readme)
         self.assertIn("本页历史记录不再把当前安全边界写成必须存在“持久显式 false”环境变量", readme)
         self.assertIn("历史运行条目只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前复核仍只接受 `UNSET` 或 false-like", readme)
         self.assertIn("当前治理 SMTP 原始值证据口径已同步", readme)
@@ -2051,6 +2056,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("不是当前要求必须存在一个持久显式 `false` 环境变量", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like", readme)
         self.assertNotIn("持久 `ADP_ALLOW_SMTP_SEND=false`", readme)
+        self.assertLess(
+            readme.index("项目根 README Stage2/S3 边界已同步"),
+            readme.index("用户中心历史 SMTP 开关口径已清理"),
+        )
         self.assertLess(
             readme.index("当前治理 SMTP 原始值证据口径已同步"),
             readme.index("owner A 决策 mainline 证据已绑定"),
