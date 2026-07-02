@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3-s04-stage-review - 2026-07-02
+
+- 完成 `v0.1.3 Stage 4｜整体复审` 本地验证：复跑 S04-P1 金额精度、S04-P2 字段标准化、S04-P3 基础工具测试报告 validators，并新增 Stage 4 review validator、单测和证据目录。
+- 新增 `KMFA/tools/v013_s04_stage_review.py`、`KMFA/tools/check_v013_s04_stage_review.py`、`KMFA/tests/test_v013_s04_stage_review.py` 和 `KMFA/stage_artifacts/V013_S04_STAGE_REVIEW/`。
+- 复审确认 phase_results=`S04-P1/S04-P2/S04-P3 PASS`、findings_open=0、findings_fixed=0、data quality=`Q2`、report grade=`D`、release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；S04-P2 前序 accidental raw listing deviation 继续作为已记录且临时文件已删除的 closed deviation 保留。
+- 公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 GitHub upload、Stage 5、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 执行 `v0.1.3 Stage 4 GitHub upload gate` 或用户明确指定的单一 phase。
+
 ## 0.1.3-s04p3-basic-tool-report - 2026-07-02
 
 - 完成 `v0.1.3 S04-P3｜基础工具测试报告 replay` 本地验证：复用既有 `generate_tool_test_report.py` 和 synthetic public-safe boundary cases，锁定金额、日期、期间基础工具测试报告。
