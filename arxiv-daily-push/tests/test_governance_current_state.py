@@ -533,10 +533,20 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "历史当时不发送 SMTP、不启用 scheduler；当时 S2PLT02 terminal proof 和 S2PLT04 completion report 尚未写入",
             mail_status,
         )
+        self.assertIn(
+            "历史当时 readiness 已识别 live 授权：`authorization_artifact_status=pass`、`real_proof_capture_authorized=true`",
+            mail_status,
+        )
+        self.assertIn(
+            "历史当时 S2PLT02 evidence inventory 已把 2026-06-29/2026-06-30 标成 blocked dry-run candidates",
+            mail_status,
+        )
         self.assertNotIn(
             "当前仍不发送 SMTP、不启用 scheduler；S2PLT02 terminal proof 和 S2PLT04 completion report 仍未写入。",
             mail_status,
         )
+        self.assertNotIn("当前 readiness 已识别 live 授权", mail_status)
+        self.assertNotIn("当前 S2PLT02 evidence inventory 已把", mail_status)
 
     def test_user_center_readme_does_not_reopen_consumed_s2plt02_gaps(self) -> None:
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
@@ -553,10 +563,15 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "历史当时仍是 `1/2` 真实日、`4/8` 真实邮件",
             readme,
         )
+        self.assertIn(
+            "历史当时 S2PLT02 真实邮件证据已达 `2/2` 天、`8/8` 封",
+            readme,
+        )
         forbidden_phrases = (
             "- `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 仍缺失/未就绪",
             "当前仍是 `1/2` 真实日、`4/8` 真实邮件。",
             "仍要先等真实 SMTP/scheduler 捕获窗口，清除第二真实 M1-M4 SMTP 日、8 封真实邮件、真实 scheduler proof 和 terminal proof artifact 缺口。",
+            "S2PLT02 当前真实邮件证据已达",
         )
         for phrase in forbidden_phrases:
             with self.subTest(phrase=phrase):
