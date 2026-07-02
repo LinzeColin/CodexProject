@@ -1,0 +1,38 @@
+{
+  "template_id": "ids-product-manifest-template-v0_1",
+  "product_id": "IDS",
+  "product_name": "IDS / Industrial Data System",
+  "subsystem": "ProductMetaDatabase",
+  "stage": "STAGE-002",
+  "acceptance_id": "ACC-STAGE-002",
+  "version_scope": "v0.1",
+  "schema_ref": "schemas/product_metadata.schema.json",
+  "governance_rules_ref": "governance_rules/product_metadata_rules.json",
+  "taskpack_input_ref": "taskpack_inputs/stage002_product_metadata_input.json",
+  "storage_policy": {
+    "github_storage": "small_contracts_only",
+    "raw_material_policy": "forbidden",
+    "external_api_policy": "denied",
+    "forbidden_runtime_paths": [
+      "data/",
+      "reports/",
+      "outputs/",
+      "frontend/node_modules/",
+      ".venv/"
+    ]
+  },
+  "lineage_placeholders": {
+    "source_documents": [],
+    "document_chunks": [],
+    "evidence_refs": [],
+    "audit_events": [],
+    "index_versions": [],
+    "report_snapshots": []
+  },
+  "operator_notes": [
+    "This template is static metadata only.",
+    "Do not store raw source materials in ProductMetaDatabase.",
+    "Do not store credentials or external API payloads in ProductMetaDatabase."
+  ]
+}
+

@@ -13,7 +13,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 BACKEND_ROOT = PROJECT_ROOT / "backend"
 
 
-class OpMeLifecycleContractTests(unittest.TestCase):
+class IDSLifecycleContractTests(unittest.TestCase):
     def test_shell_scripts_are_lf_and_parse_under_bash(self) -> None:
         scripts = [
             PROJECT_ROOT / "scripts" / "run_local_services.sh",
@@ -59,6 +59,18 @@ class OpMeLifecycleContractTests(unittest.TestCase):
                 self.assertIn("依赖未安装", script)
                 self.assertIn("python3 -m venv .venv", script)
                 self.assertIn("npm install", script)
+
+    def test_native_launcher_gets_current_project_paths_from_build_script(self) -> None:
+        source = (PROJECT_ROOT / "app_bundle" / "native_launcher.c").read_text(encoding="utf-8")
+        build_script = (PROJECT_ROOT / "scripts" / "build_app_bundle.sh").read_text(encoding="utf-8")
+
+        self.assertNotIn("/Users/linzezhang/Documents/Codex/2026-06-04", source)
+        self.assertIn("IDS_PROJECT_DIR", source)
+        self.assertIn("IDS_RUN_SCRIPT", source)
+        self.assertIn("IDS_LOG_FILE", source)
+        self.assertIn("-DIDS_PROJECT_DIR=", build_script)
+        self.assertIn("-DIDS_RUN_SCRIPT=", build_script)
+        self.assertIn("-DIDS_LOG_FILE=", build_script)
 
     def test_stop_script_removes_stale_pid_files_without_touching_user_data(self) -> None:
         stop_script = (PROJECT_ROOT / "scripts" / "stop_local_services.sh").read_text(encoding="utf-8")

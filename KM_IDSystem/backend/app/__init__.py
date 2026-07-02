@@ -1,2 +1,1 @@
-"""Wuhan Kaiming industrial operations assistant backend."""
-
+"""IDS / Industrial Data System backend."""

@@ -58,11 +58,11 @@ stop_pid_file() {
   cmdline="$(pid_cmdline "$pid")"
   cwd="$(pid_cwd "$pid")"
   if [[ "$cmdline" != *"$ROOT_DIR"* && "$cwd" != "$ROOT_DIR"* ]]; then
-    log "$name pid $pid does not match OpMe launcher ownership; leaving process running"
+    log "$name pid $pid does not match IDS launcher ownership; leaving process running"
     return 1
   fi
   if [[ "$cmdline" != *"$marker"* ]]; then
-    log "$name pid $pid does not match OpMe launcher ownership; leaving process running"
+    log "$name pid $pid does not match IDS launcher ownership; leaving process running"
     return 1
   fi
 
