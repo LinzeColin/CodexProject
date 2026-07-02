@@ -100,6 +100,12 @@ def count_requirements() -> dict[str, int]:
     }
 
 
+def is_baseline_status_record(record: dict[str, Any]) -> bool:
+    record_type = str(record.get("record_type") or "")
+    phase_id = str(record.get("phase_id") or "")
+    return not (record_type.startswith("v013_") or phase_id.startswith("V013_"))
+
+
 def count_stage_status() -> dict[str, int]:
     if not STAGE_STATUS.exists():
         raise ValidationError(f"missing stage status registry: {STAGE_STATUS}")
@@ -111,6 +117,8 @@ def count_stage_status() -> dict[str, int]:
         value = json.loads(line)
         if not isinstance(value, dict):
             raise ValidationError(f"{STAGE_STATUS}:{line_no} must contain a JSON object")
+        if not is_baseline_status_record(value):
+            continue
         records.append(value)
         if value.get("record_type") == "task" and value.get("task_id"):
             task_ids.add(str(value["task_id"]))
