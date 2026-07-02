@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE001"
-current_phase_id: "IDS-STAGE001-P3"
-current_task_id: "IDS-V0_1-STAGE001-P3"
-next_gate_id: "IDS-STAGE001-P4-GATE"
+current_phase_id: "IDS-STAGE001-P4"
+current_task_id: "IDS-V0_1-STAGE001-P4"
+next_gate_id: "IDS-STAGE002-P1-GATE"
 total_estimated_hours: 21
-completed_estimated_hours: 20
+completed_estimated_hours: 21
 stages:
   -
     stage_id: "S5"
@@ -264,7 +264,7 @@ stages:
     stage_id: "IDS-STAGE001"
     name: "IDS 产品命名合同"
     person_goal: "统一 IDS / Industrial Data System 产品命名，禁止新 UI、报告和正式文档继续使用旧产品名。"
-    status: "in_progress"
+    status: "completed"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
       - "旧产品名被用于新 UI、报告或正式文档显示名"
@@ -273,7 +273,7 @@ stages:
       - "触碰真实原始资料、secrets、本地数据、reports、outputs 或依赖目录"
     stop_gate:
       gate_id: "IDS-STAGE001-GATE"
-      status: "open"
+      status: "local_passed_pending_10_stage_batch_upload"
       pass_conditions:
         - "Phase 1 明确范围、输入输出、允许/禁止路径和 legacy name policy"
         - "Phase 2 完成最小命名实现切片"
@@ -283,6 +283,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE4_CLOSEOUT.md"
     phases:
       -
         phase_id: "IDS-STAGE001-P1"
@@ -401,8 +402,8 @@ stages:
             test_commands:
               - "customer-visible naming scan"
               - "README/governance/script reference validation"
-              - "python3 -m unittest KM_IDSystem/backend/tests/test_lifecycle_contract.py -q"
-              - "python3 -m unittest KM_IDSystem/backend/tests/test_stage001_naming_contract.py -q"
+              - "Codex bundled python -m unittest KM_IDSystem/backend/tests/test_lifecycle_contract.py -q"
+              - "Codex bundled python -m unittest KM_IDSystem/backend/tests/test_stage001_naming_contract.py -q"
               - "check-render --project KM_IDSystem"
             test_results: "Project-file legacy scan covered 86 KM_IDSystem files, classified 560 legacy hits, found 0 active blockers and 1 non-blocking company-context review item; lifecycle test ran 5 tests OK after native launcher path and stop script executable fixes; naming contract test ran 2 tests OK; script/native syntax, check-render, marker, scope, and diff checks passed. Full semantic validate remains blocked by sparse worktree omissions, so no unrelated project expansion was performed."
             evidence_refs:
@@ -415,25 +416,26 @@ stages:
         phase_id: "IDS-STAGE001-P4"
         name: "IDS 产品命名合同交付证据、回滚与中文反馈"
         objective: "提交变更文件清单、引用扫描结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "Phase 3 扫描未完成"
           - "仍有阻断问题未解决"
           - "试图在未满 10 stages 时推送 GitHub PR"
         stop_gate:
           gate_id: "IDS-STAGE001-P4-GATE"
-          status: "pending"
+          status: "passed_no_github_upload_until_batch_complete"
           pass_conditions:
             - "ACC-STAGE-001 证据完整"
             - "本 Stage 可回滚"
             - "不上传 GitHub，直到 STAGE-001..010 批次完成"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE4_CLOSEOUT.md"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE001-P4"
             name: "STAGE-001 交付证据与回滚"
             objective: "生成 ACC-STAGE-001 证据、引用扫描结果、legacy alias 保留原因、回滚步骤和中文反馈。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 1
             total_hours_percent: "4.76%"
             dependencies:
@@ -442,9 +444,13 @@ stages:
               - "ACC-STAGE-001"
             test_commands:
               - "STAGE-001 closeout checklist"
+              - "Codex bundled python -m unittest KM_IDSystem/backend/tests/test_lifecycle_contract.py -q"
+              - "Codex bundled python -m unittest KM_IDSystem/backend/tests/test_stage001_naming_contract.py -q"
+              - "project-file legacy scan"
               - "check-render --project KM_IDSystem"
               - "git status --short --branch"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-001 closeout evidence exists; Codex bundled Python lifecycle test ran 5 tests OK; Codex bundled Python naming contract test ran 2 tests OK; project-file legacy scan covered 87 KM_IDSystem files, classified 564 legacy hits, found 0 active blockers and 1 non-blocking company-context review item; script/native syntax, check-render, marker, scope, and diff checks passed. Full semantic validate remains blocked by sparse worktree omissions, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE4_CLOSEOUT.md"
             risk: "在 STAGE-001 完成后误推送未满 10 stages 的批次。"
             rollback: "Revert IDS-STAGE001-P4 closeout-only changes."
