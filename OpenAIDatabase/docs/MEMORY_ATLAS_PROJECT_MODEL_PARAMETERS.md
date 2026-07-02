@@ -2966,6 +2966,69 @@ Stage 9 整体复审已确认：
 - 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
 
+## 68. v1.1.7 Pre Stage 0 Gap Remediation Upgrade Package
+
+状态：`pre_stage_0_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- v1.1.6 Stage 10 review 是 v1.1.7 的 baseline，不在本 pre-stage 重写。
+- v1.1.7 必须先把 Roadmap v2 gap remediation 转成 Stage 0-10 执行映射、
+  验收矩阵、no-runtime/no-raw-private/no-direct-writeback 边界和一次性 GitHub
+  main 上传 gate。
+- Roadmap v2 Stage 11 release/rollback 在用户指定的 Stage 0-10 体系下并入
+  Stage 10 final hardening/upload gate，除非后续 owner decision 重新拆分。
+
+输入：
+
+- `docs/product/memory_atlas_v1_1_7_gap_remediation_upgrade_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_pre_stage0_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_7_pre_stage0_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_pre_stage0.cjs`
+- `docs/reviews/memory_atlas_v1_1_6_stage10_review.md`
+
+处理方法：
+
+- 检查 v1.1.7 pre-stage 合同是否覆盖 Roadmap v2 gap remediation source、Stage
+  0-10 stage map、required acceptance matrix、non-goals、rollback 和 one-time
+  upload gate。
+- 检查 acceptance 文件是否明确 deferred proof 和 no-runtime/no-raw-private 边界。
+- 检查 review artifact、delivery、feature、development、model parameter、
+  changelog 和 package script 是否登记 `MA-V117-PRESTAGE0` 与
+  `ACC-MA-V117-PRESTAGE0`。
+- 检查当前改动范围是否只包含 pre-stage 合同、验收、review、validator、package
+  script 和记录。
+- 使用 `validate:v1.1.7-pre-stage0` 固定本 pre-stage 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V117-PRESTAGE0-001 pre_stage0_contract_id = memory_atlas_v1_1_7_gap_remediation_upgrade_contract`
+- `PARAM-MA-V117-PRESTAGE0-002 pre_stage0_status = pre_stage_0_review_passed_pending_github_main_upload`
+- `PARAM-MA-V117-PRESTAGE0-003 pre_stage0_required_surfaces = Chinese readability;Usage path;Suggested actions;Tier assets;Topic categories;Proposal-only editing;Search 2.0;Review workflow;Summary iteration;Data Map 2.0;Memory River;Memory Starfield;Safety;Performance;Rollback`
+- `PARAM-MA-V117-PRESTAGE0-004 pre_stage0_stage_map = Pre Stage 0;Stage 0;Stage 1;Stage 2;Stage 3;Stage 4;Stage 5;Stage 6;Stage 7;Stage 8;Stage 9;Stage 10`
+- `PARAM-MA-V117-PRESTAGE0-005 pre_stage0_allowed_change_scope = product_contract;acceptance;review;validator;package_script;records`
+- `PARAM-MA-V117-PRESTAGE0-006 pre_stage0_required_validator = validate:v1.1.7-pre-stage0`
+- `PARAM-MA-V117-PRESTAGE0-007 pre_stage0_upload_boundary = one_time_github_main_upload_after_validation_clean_tree_fetch_and_canonical_remote`
+
+输出：
+
+- v1.1.7 pre-stage product contract。
+- v1.1.7 pre-stage acceptance checklist。
+- v1.1.7 pre-stage review artifact。
+- v1.1.7 pre-stage deterministic validator。
+- v1.1.7 pre-stage governance records。
+
+边界：
+
+- 本 pre-stage 不修改 production UI、CSS、路由、导航、feature flag 或 app shell。
+- 本 pre-stage 不运行 production build、installer、本地 app install、browser
+  screenshot 或 Cloudflare deploy。
+- 本 pre-stage 不修改 Access policy。
+- 本 pre-stage 不读取 raw/private/cookie/session/secret 数据。
+- 本 pre-stage 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 pre-stage 不执行 Stage 0 implementation。
+- 本 pre-stage review artifact 不执行 GitHub main 上传。
+
 ## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
 
 状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。
