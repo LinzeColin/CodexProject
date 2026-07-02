@@ -1,0 +1,17 @@
+domain,candidate_rows,total_size_bytes,plain_sqlite_possible,encrypted_or_sqlcipher_likely,wcdb_or_unknown,companion_file,sensitive_skip,non_db_payload,sqlite_header,sqlite_wal_header,non_sqlite_header,empty_file,not_read_sensitive_skip,db_like_extension_rows,wal_rows,shm_rows,recommended_next_action
+db_storage/message,137,900472384,0,21,50,66,0,0,0,20,104,13,0,21,33,33,eligible_for_sprint2b_schema_probe_if_approved
+mmkv_or_key_value,46,6078464,0,0,0,0,46,0,0,0,0,0,46,0,0,0,exclude_or_manifest_only
+db_storage/MMKV,36,589824,0,0,0,0,36,0,0,0,0,0,36,0,0,0,exclude_or_manifest_only
+db_storage/contact,23,41609736,0,6,5,12,0,0,0,4,17,2,0,6,6,6,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/session,20,3120360,0,3,11,6,0,0,0,2,17,1,0,3,3,3,eligible_for_sprint2b_schema_probe_if_approved
+app_data/radium_db,19,18546192,7,2,0,10,0,0,7,2,2,8,0,9,10,0,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/favorite,18,4650104,0,6,0,12,0,0,0,4,12,2,0,6,6,6,eligible_for_sprint2b_schema_probe_if_approved
+protected_key_info_or_login,13,193232,0,0,0,0,13,0,0,0,0,0,13,3,3,3,exclude_or_manifest_only
+db_storage/bizchat,9,266784,0,3,0,6,0,0,0,2,6,1,0,3,3,3,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/emoticon,9,1075328,0,3,0,6,0,0,0,2,6,1,0,3,3,3,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/general,9,10955624,0,3,0,6,0,0,0,2,6,1,0,3,3,3,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/hardlink,9,12145864,0,3,0,6,0,0,0,2,6,1,0,3,3,3,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/head_image,9,21767896,0,3,0,6,0,0,0,3,6,0,0,3,3,3,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/sns,9,44013696,0,3,0,6,0,0,0,2,6,1,0,3,3,3,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/solitaire,4,102400,0,2,0,2,0,0,0,0,3,1,0,2,1,1,eligible_for_sprint2b_schema_probe_if_approved
+db_storage/migrate,3,61440,0,1,0,2,0,0,0,0,2,1,0,1,1,1,eligible_for_sprint2b_schema_probe_if_approved
