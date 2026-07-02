@@ -37,8 +37,9 @@ TASK_ID = "KMFA-V013-S04-STAGE-REVIEW-20260702"
 SCHEMA_VERSION = "kmfa.v013_s04_stage_review.v1"
 REVIEW_SCOPE = "v013_s04_stage_review_only"
 NEXT_REQUIRED_STEP = (
-    "Proceed to v0.1.3 Stage 4 GitHub upload as a separate run after this local review commit; "
-    "do not run Stage 5, raw value matching, lineage full check, formal report release, live connector, "
+    "Proceed to v0.1.3 S05-P1 as a separate run. GitHub main upload is deferred until v0.1.3 "
+    "Stages 1-10 are complete, the whole Stage 1-10 review passes, and review findings are fixed; "
+    "do not run GitHub upload, raw value matching, lineage full check, formal report release, live connector, "
     "or business execution in the Stage 4 review run."
 )
 
@@ -92,9 +93,10 @@ def build_manifest() -> dict[str, Any]:
         "remote": git_output(["remote", "get-url", "origin"]),
         "status": "passed_local_stage_review_upload_deferred",
         "stage_review_performed": True,
-        "github_upload_ready_next_gate": True,
+        "github_upload_ready_next_gate": False,
+        "github_upload_deferred_until_stage10_batch": True,
         "github_upload_performed": False,
-        "github_upload_status": "not_pushed",
+        "github_upload_status": "not_uploaded_deferred_until_stage10_batch",
         "delivery_allowed": False,
         "formal_report_allowed": False,
         "business_decision_basis_allowed": False,
@@ -227,8 +229,10 @@ def write_report(manifest: dict[str, Any]) -> None:
         f"- current_data_quality_grade: `{manifest['current_data_quality_grade']}`",
         f"- current_report_grade: `{manifest['current_report_grade']}`",
         f"- release_permission: `{manifest['release_permission']}`",
-        "- github_upload_ready_next_gate: `true`",
+        "- github_upload_ready_next_gate: `false`",
+        "- github_upload_deferred_until_stage10_batch: `true`",
         "- github_upload_performed: `false`",
+        "- github_upload_status: `not_uploaded_deferred_until_stage10_batch`",
         "- formal_report_allowed: `false`",
         "- business_decision_basis_allowed: `false`",
         "- raw_value_matching_performed: `false`",

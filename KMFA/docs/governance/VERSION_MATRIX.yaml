@@ -1,7 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 product_version: "0.1.3-s04-stage-review"
-product_version_status: "local_s04_stage_review_passed_upload_ready_next_gate"
+product_version_status: "local_s04_stage_review_passed_upload_deferred_until_stage10_batch"
 version_file_value: "0.1.0-post-s18-final-no-go-backup-upload"
 schema_version: "1.0.0"
 model_versions:

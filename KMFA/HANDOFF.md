@@ -12,10 +12,11 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - 当前版本: `0.1.3-s04-stage-review`
 - 当前已完成: `v0.1.3 Stage 4｜整体复审`
 - 证据目录: `KMFA/stage_artifacts/V013_S04_STAGE_REVIEW/`
-- 复审结论: Stage 4 review generator、validator、新单测、S04-P1/S04-P2/S04-P3 validators、既有基础工具 tests 和治理 validator 均 PASS；phase_results=`S04-P1/S04-P2/S04-P3 PASS`，findings_open=0，findings_fixed=0；data quality=`Q2`，report grade=`D`，release permission=`blocked`，`github_upload_ready_next_gate=true`，`github_upload_performed=false`。
+- 复审结论: Stage 4 review generator、validator、新单测、S04-P1/S04-P2/S04-P3 validators、既有基础工具 tests 和治理 validator 均 PASS；phase_results=`S04-P1/S04-P2/S04-P3 PASS`，findings_open=0，findings_fixed=0；data quality=`Q2`，report grade=`D`，release permission=`blocked`，`github_upload_performed=false`，`github_upload_status=not_uploaded_deferred_until_stage10_batch`。
+- upload policy: 侧聊纠正后已撤销本地 Stage 4 upload gate 产物；GitHub main 未上传。v1.3 GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得按单个 Stage 做 GitHub upload gate。当前本地分支曾 rebase 到较新的 `origin/main`，但未 push。
 - raw boundary: 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。S04-P2 前序 accidental raw listing deviation 仍作为已记录、临时文件已删除的 closed deviation 保留；该目录属于用户财务原始数据目录，后续 Codex 只能在明确 phase 需要时只读读取，不能在该目录内生成额外文件。
-- 未执行: GitHub upload、Stage 5、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 Stage 4 GitHub upload gate`；不得在 Stage 4 review run 内上传 GitHub、执行 Stage 5、raw value matching、正式报告或业务动作。
+- 未执行: GitHub main upload、Stage 5、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S05-P1` 或用户明确指定的单一 phase；不得执行 GitHub upload、raw value matching、正式报告或业务动作。
 
 ## 持久本机 raw boundary
 
@@ -385,4 +386,4 @@ git diff --check -- README.md governance/projects.yaml KMFA
 
 ## 下一步
 
-下一步只能执行 `v0.1.3 Stage 4 GitHub upload gate`：先确认 git root、branch、remote、HEAD、status，再复跑 Stage 4 review validator、S04-P1/S04-P2/S04-P3 validators、治理 validator、raw/private/secret scan、diff check，并生成 upload evidence/local commit/push proof。不得在 upload gate 内推进 Stage 5、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；当前仍不得宣称 release、delivery、正式报告或业务可用。
+下一步只能另起 run work 执行 `v0.1.3 S05-P1` 或用户明确指定的单一 phase；GitHub main upload 必须等 v1.3 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。本地 Stage 4 upload gate 产物已撤销/改正为 not_uploaded/deferred，GitHub main 未上传；不得把旧 Stage 4 upload gate 作为 active next step，也不得推进 raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。
