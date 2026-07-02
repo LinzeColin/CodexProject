@@ -1027,6 +1027,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             'release_gate: "DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT"',
             assurance,
         )
+        self.assertIn('status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"', assurance)
+        self.assertIn('blocker_ids:\n    - "persistent_daily_operation_authorization_missing"', assurance)
+        self.assertIn('status: "blocked_persistent_daily_operation_authorization_missing"', assurance)
+        self.assertIn("交付状态为 `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`", owner_status)
+        self.assertIn("- delivery_readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`", owner_status)
+        self.assertIn("唯一当前阻断是缺少显式 owner 持久 DAILY_OPERATION 授权 artifact", owner_status)
+        self.assertNotIn("交付状态为 `BLOCKED_PRECHECK`", owner_status)
+        self.assertNotIn("- delivery_readiness: `BLOCKED_PRECHECK`", owner_status)
         self.assertIn("stage2_integrated_production_accepted: true", assurance)
         self.assertIn("current_zero_proof_open_p0_findings: 0", assurance)
         self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
