@@ -2392,6 +2392,35 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             self.assertNotIn("是否现在宣称 Stage 2 生产通过 | 不接受", text)
             self.assertNotIn("Final bundle 已公开 S2PLT03 capture plan summary，但它仍 blocked", text)
 
+    def test_key_decisions_marks_1904_daily_operation_prefight_as_historical_consumed(self):
+        decisions = (USER_CENTER / "关键结论与用户决策.md").read_text(encoding="utf-8")
+        section = _section(
+            decisions,
+            "## 2026-07-01 19:04:10 Australia/Sydney - ",
+            "## 2026-07-01 18:16:00 Australia/Sydney - ",
+        )
+
+        self.assertIn(
+            "## 2026-07-01 19:04:10 Australia/Sydney - 历史：INTEGRATED_PRODUCTION_ACCEPTED 证据已写入，当时默认下一步是 DAILY_OPERATION 授权预检",
+            section,
+        )
+        self.assertIn("历史当时默认下一步是 DAILY_OPERATION 授权预检", section)
+        self.assertIn(
+            "当前已由后续 DAILY_OPERATION owner 决策、持久授权门和 owner A mainline 证据消费",
+            section,
+        )
+        self.assertIn("当前默认动作仍是 MVP 复审修补、证据同步和测试补强", section)
+        self.assertIn("不得把 2026-07-01 19:04 的授权预检行恢复成当前默认下一步", section)
+        self.assertIn("当前实际阻断只剩持久 DAILY_OPERATION 授权 artifact 缺失", section)
+        self.assertNotIn(
+            "## 2026-07-01 19:04:10 Australia/Sydney - INTEGRATED_PRODUCTION_ACCEPTED 证据已写入，默认下一步是 DAILY_OPERATION 授权预检",
+            decisions,
+        )
+        self.assertNotIn(
+            "| Stage 2 integrated production acceptance 已写入：`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true` | 进入 `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`；先做 DAILY_OPERATION 授权和安全预检 |",
+            decisions,
+        )
+
     def test_user_center_readme_historical_s2plt02_s2plt03_entries_do_not_reopen_current_work(self):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
