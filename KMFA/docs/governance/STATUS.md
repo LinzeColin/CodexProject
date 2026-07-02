@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s06p1-zero-delta-replay`
+- version: `0.1.3-s06p2-difference-queue-replay`
 - current_stage: `S06`
-- current_phase: `v0.1.3 S06-P1 zero-delta validator replay`
-- status: `local_s06p1_zero_delta_replay_passed_upload_deferred_until_stage10_batch_no_go`
+- current_phase: `v0.1.3 S06-P2 cross-source difference queue replay`
+- status: `local_s06p2_difference_queue_replay_passed_upload_deferred_until_stage10_batch_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_stage1_10_batch_gate`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -64,6 +64,7 @@
 - v0.1.3 S05-P3 权威基准锁定 replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/`；本 phase 只重放既有 public-safe S05-P3 aggregate authority baseline metadata 和 validator 结果，确认 baseline version=`KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK`、content hash=`sha256:dbb55ffb4e3608e49dbcf91e97fc0f19395a8269ff7c8f4d5c3f8ca398c03670`、authority records=45、Q5 locked fields=40、excluded fields=5；`formal_report_allowed=false`、`stage5_review_performed=false`、`github_upload_performed=false`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未公开 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values 或业务值，未执行 Stage 5 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - v0.1.3 Stage 5 整体复审已本地完成，证据位于 `KMFA/stage_artifacts/V013_S05_STAGE_REVIEW/`；复审复跑 S05-P1/S05-P2/S05-P3 replay validators 和 Stage 5 review validator，确认 phase_results 全部 PASS、open findings=0、fixed findings=0、authority records=45、Q5 locked fields=40、excluded fields=5、data quality=`Q2`、report grade=`D`、release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P1、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - v0.1.3 S06-P1 zero-delta validator replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P1_ZERO_DELTA_REPLAY/`；本 phase 复用既有 `zero_delta_validator.py` 和 public-safe synthetic/taskpack fixture，确认 8 次字段比较全部零差异通过、pass mismatch_count=0，并验证 0.01 元/1 分差异必须失败且生成 mismatch report。`metadata_quality_written=false`、`difference_queue_created=false`、`stage6_review_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P2、S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
+- v0.1.3 S06-P2 cross-source difference queue replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/`；本 phase 复用既有 `cross_source_difference_queue.py` 和 public-safe synthetic PDF/Excel conflict fixture，确认 PDF/Excel 同项目同字段 1 分差异进入人工队列，禁止自动修正、平均、四舍五入掩盖和自动选边，未关闭差异阻断 A 级报告。`metadata_quality_written=false`、`source_difference_queue_metadata_written=false`、`stage6_review_performed=false`、`s06_p3_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - 项目级 raw data boundary 已锁定：`/Users/linzezhang/Downloads/KMFA_MetaData` 是用户本机 KMFA 财务原始数据入口，Codex 只能只读读取，不得修改、删除、移动或向该目录写入；Codex 生成的私有诊断和额外文件只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。

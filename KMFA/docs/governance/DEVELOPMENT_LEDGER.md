@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s06p1-zero-delta-replay
+product_version: 0.1.3-s06p2-difference-queue-replay
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S06`
-- current_phase: `v0.1.3 S06-P1 zero-delta validator replay`
-- current_tasks: `KMFA-V013-S06-P1-ZERO-DELTA-REPLAY-20260703`
-- status: `local_s06p1_zero_delta_replay_passed_upload_deferred_until_stage10_batch_no_go`
+- current_phase: `v0.1.3 S06-P2 cross-source difference queue replay`
+- current_tasks: `KMFA-V013-S06-P2-DIFFERENCE-QUEUE-REPLAY-20260703`
+- status: `local_s06p2_difference_queue_replay_passed_upload_deferred_until_stage10_batch_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -50,6 +50,7 @@ product_version: 0.1.3-s06p1-zero-delta-replay
 | `S5PCT01-S5PCT03` | S05-P3 A0 authority baseline lock 完成本地验证：40 条 PDF 字段锁定为 Q5 calculation baseline，5 条 Excel 字段排除为 cross-source support only | `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md` |
 | `KMFA-V013-S05-STAGE-REVIEW-20260703` | v0.1.3 Stage 5 整体复审本地通过，S05-P1/S05-P2/S05-P3 replay validators 全部 PASS，GitHub upload 延期到 Stage 1-10 batch gate | `KMFA/stage_artifacts/V013_S05_STAGE_REVIEW/human/stage5_review_report.md` |
 | `KMFA-V013-S06-P1-ZERO-DELTA-REPLAY-20260703` | v0.1.3 S06-P1 zero-delta validator replay 本地通过，public-safe 8 次字段比较零差异通过，1 分差异失败并生成 mismatch report；未执行 S06-P2、Stage 6 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S06_P1_ZERO_DELTA_REPLAY/human/zero_delta_replay_report.md` |
+| `KMFA-V013-S06-P2-DIFFERENCE-QUEUE-REPLAY-20260703` | v0.1.3 S06-P2 cross-source difference queue replay 本地通过，public-safe PDF/Excel 同项目同字段 1 分差异进入人工队列，禁止自动修正、平均、四舍五入掩盖和自动选边，未关闭差异阻断 A 级报告；未执行 S06-P3、Stage 6 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/human/difference_queue_replay_report.md` |
 | `KMFA-S05-STAGE-REVIEW-20260630` | Stage 5 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
 | `KMFA-S05-GITHUB-UPLOAD-20260630` | Stage 5 final GitHub upload 已完成 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` |
 | `S6PAT01-S6PAT03` | S06-P1 零差异校验器完成本地验证：逐字段比较整数分，任意 1 分差异失败并生成 public-safe mismatch report | `KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md` |
@@ -150,7 +151,7 @@ product_version: 0.1.3-s06p1-zero-delta-replay
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S05-P3 完成后，下一步只能另起 run 执行 v0.1.3 Stage 5 整体复审或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/human/test_results.md` |
+| 无 | v0.1.3 S06-P2 完成后，下一步只能另起 run 执行 v0.1.3 S06-P3 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/human/test_results.md` |
 
 ## Not Completed
 
@@ -159,4 +160,4 @@ product_version: 0.1.3-s06p1-zero-delta-replay
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S05-P3 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 Stage 5 整体复审或用户明确指定的单一 phase |
+| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S06-P2 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S06-P3 或用户明确指定的单一 phase |
