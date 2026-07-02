@@ -18,6 +18,52 @@ from typing import Any
 
 AUTHORIZATION_ARTIFACT_REF = "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"
 GATE_ARTIFACT_REF = "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json"
+REQUIRED_CWD = "CodexProject repository root"
+ROOT_VALIDATION_FAILURE = "codexproject_repo_root_invalid"
+REQUIRED_ROOT_PATHS = (
+    "arxiv-daily-push/src",
+    "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml",
+    GATE_ARTIFACT_REF,
+)
+
+
+def _validate_repo_root(root: Path) -> tuple[bool, list[str], list[str]]:
+    missing_paths = [path for path in REQUIRED_ROOT_PATHS if not (root / path).exists()]
+    errors = [ROOT_VALIDATION_FAILURE] if missing_paths else []
+    return not errors, missing_paths, errors
+
+
+def _build_invalid_root_report(root: Path, generated: str, missing_paths: list[str], errors: list[str]) -> dict[str, Any]:
+    authorization_artifact = root / AUTHORIZATION_ARTIFACT_REF
+    return {
+        "status": "FAIL",
+        "scope": "adp_s3_daily_operation_readiness_fail_closed_no_runtime_enablement",
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "task_id": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
+        "generated_at": generated,
+        "repo_root": str(root),
+        "required_cwd": REQUIRED_CWD,
+        "repo_root_valid": False,
+        "root_validation_errors": errors,
+        "required_paths_missing": missing_paths,
+        "daily_operation_ready": False,
+        "gate_status": None,
+        "blocking_reasons": errors,
+        "validation_errors": errors,
+        "next_required_step": "RUN_FROM_CODEXPROJECT_REPOSITORY_ROOT",
+        "next_executable_task": None,
+        "authorization_artifact": AUTHORIZATION_ARTIFACT_REF,
+        "authorization_artifact_exists": authorization_artifact.is_file(),
+        "gate_artifact": GATE_ARTIFACT_REF,
+        "persistent_daily_operation_authorized": False,
+        "daily_operation_enablement_allowed_by_this_artifact": False,
+        "runtime_enablement_detected": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+    }
 
 
 def _load_stage2_gate(root: Path):
@@ -38,6 +84,9 @@ def _load_stage2_gate(root: Path):
 def build_readiness_report(root: Path, generated_at: str | None = None) -> dict[str, Any]:
     generated = generated_at or datetime.now(timezone.utc).isoformat()
     authorization_artifact = root / AUTHORIZATION_ARTIFACT_REF
+    repo_root_valid, missing_paths, root_errors = _validate_repo_root(root)
+    if not repo_root_valid:
+        return _build_invalid_root_report(root, generated, missing_paths, root_errors)
     build_state, validate_state = _load_stage2_gate(root)
     gate = build_state(
         generated_at=generated,
@@ -71,7 +120,10 @@ def build_readiness_report(root: Path, generated_at: str | None = None) -> dict[
         "task_id": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
         "generated_at": generated,
         "repo_root": str(root),
-        "required_cwd": "CodexProject repository root",
+        "required_cwd": REQUIRED_CWD,
+        "repo_root_valid": True,
+        "root_validation_errors": [],
+        "required_paths_missing": [],
         "daily_operation_ready": daily_operation_ready,
         "gate_status": gate.get("status"),
         "blocking_reasons": blocking_reasons,
