@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 19:43:10 Australia/Sydney
+更新时间：2026-07-02 19:56:39 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -93,6 +93,13 @@
 
 ## 最近治理与历史记录
 
+## 2026-07-02 19:56:39 Australia/Sydney - Enablement preflight 默认自动观察 open PR count
+
+- `tools/verify_daily_operation_enablement_preflight.py` 现在默认只读观察 GitHub open PR count、真实 LaunchAgent 标签和后台 ADP 进程，输出 `open_pr_observation_mode=auto_observed` 与 `runtime_observation_mode=auto_observed`。
+- 后续 agent 不应手填 `--open-pr-count 0`、`--launchagent-*-disabled true` 或 `--background-adp-process-count 0` 来替代真实观察；观察失败、`UNKNOWN` 或非 0 必须阻断。
+- 当前真正授权 artifact 仍缺：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。
+- 本轮仍只做 MVP 准备与复审修补，不创建持久授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。
+
 ## 2026-07-02 19:43:10 Australia/Sydney - 持久授权半改模板仍无效
 
 - `daily_operation_persistent_enablement_authorization.template.json` 不能复制成 live artifact 使用；半改模板仍无效。
@@ -102,8 +109,8 @@
 
 ## 2026-07-02 19:33:55 Australia/Sydney - Enablement preflight 默认自动观察运行边界
 
-- `tools/verify_daily_operation_enablement_preflight.py` 现在默认自动观察真实 LaunchAgent 标签和后台 ADP 进程，输出 `runtime_observation_mode=auto_observed`。
-- 后续 agent 不需要也不应手填 `--launchagent-*-disabled true` 或 `--background-adp-process-count 0` 来替代真实观察。
+- `tools/verify_daily_operation_enablement_preflight.py` 现在默认自动观察 GitHub open PR count、真实 LaunchAgent 标签和后台 ADP 进程，输出 `open_pr_observation_mode=auto_observed` 与 `runtime_observation_mode=auto_observed`。
+- 后续 agent 不需要也不应手填 `--open-pr-count 0`、`--launchagent-*-disabled true` 或 `--background-adp-process-count 0` 来替代真实观察。
 - 当前缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`，所以该 gate 仍必须 `status=FAIL / exit 2`，不得启用 S3/DAILY_OPERATION。
 - 本轮仍只做 MVP 准备与复审修补，不创建持久授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。
 
