@@ -30,14 +30,20 @@ def current_timestamp() -> str:
 
 
 def replace_or_insert_timestamp(text: str, timestamp_line: str) -> str:
-    lines = text.splitlines()
-    for index, line in enumerate(lines):
-        if line.startswith("更新时间：") or line.startswith("更新时间来源："):
-            lines[index] = timestamp_line
-            return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+    lines = [
+        line
+        for line in text.splitlines()
+        if not (line.startswith("更新时间：") or line.startswith("更新时间来源："))
+    ]
 
-    insert_at = 1 if lines and lines[0].startswith("# ") else 0
-    lines[insert_at:insert_at] = ["", timestamp_line]
+    if lines and lines[0].startswith("# "):
+        if len(lines) == 1:
+            lines.append("")
+        elif lines[1] != "":
+            lines.insert(1, "")
+        lines.insert(2, timestamp_line)
+    else:
+        lines.insert(0, timestamp_line)
     return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
 
 
@@ -47,6 +53,11 @@ def validate_timestamp(path: Path, now: datetime) -> list[str]:
     timestamp_lines = [line for line in lines if line.startswith("更新时间")]
     if len(timestamp_lines) != 1:
         return [f"{path}: expected exactly one 更新时间 line, found {len(timestamp_lines)}"]
+
+    if not lines or not lines[0].startswith("# "):
+        return [f"{path}: expected first line to be an H1 heading"]
+    if len(lines) < 3 or lines[1] != "" or not lines[2].startswith("更新时间"):
+        return [f"{path}: expected 更新时间 line immediately under H1"]
 
     match = TIMESTAMP_RE.match(timestamp_lines[0])
     if not match:

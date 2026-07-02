@@ -75,6 +75,24 @@ def _markdown_anchors(path: Path) -> set[str]:
 
 
 class UserCenterCandidatePoolTests(unittest.TestCase):
+    def test_user_center_pages_show_timestamp_immediately_under_h1(self):
+        for page_path in sorted(USER_CENTER.glob("*.md")):
+            with self.subTest(page=page_path.name):
+                lines = page_path.read_text(encoding="utf-8").splitlines()
+                self.assertGreaterEqual(len(lines), 3)
+                self.assertTrue(lines[0].startswith("# "), page_path.name)
+                self.assertEqual(lines[1], "", page_path.name)
+                self.assertRegex(
+                    lines[2],
+                    r"^更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney$",
+                    page_path.name,
+                )
+                self.assertEqual(
+                    sum(1 for line in lines if line.startswith("更新时间")),
+                    1,
+                    page_path.name,
+                )
+
     def test_three_base_files_explain_smtp_false_like_history_before_audit_log(self):
         pages = [
             ROOT / "功能清单.md",
