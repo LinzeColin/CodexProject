@@ -107,6 +107,18 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
                 self.assertEqual(lines[4], intro, page_path.name)
                 self.assertLess(text.index(intro), text.index("## 2026-"), page_path.name)
 
+    def test_user_center_pages_explain_purpose_before_first_section(self):
+        for page_path in sorted(USER_CENTER.glob("*.md")):
+            with self.subTest(page=page_path.name):
+                lines = page_path.read_text(encoding="utf-8").splitlines()
+                first_content_line = next(
+                    line for line in lines[3:] if line.strip()
+                )
+                self.assertFalse(
+                    first_content_line.startswith("## "),
+                    f"{page_path.name}: first content after 更新时间 must explain page purpose",
+                )
+
     def test_three_base_files_explain_smtp_false_like_history_before_audit_log(self):
         pages = [
             ROOT / "功能清单.md",
