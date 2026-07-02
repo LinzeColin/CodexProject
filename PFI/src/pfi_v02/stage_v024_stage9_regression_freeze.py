@@ -185,6 +185,37 @@ class V024Stage9Phase93Contract:
 
 
 @dataclass(frozen=True)
+class V024Stage9WholeReviewContract:
+    target_version: str
+    source_package_version: str
+    repair_label: str
+    stage: str
+    stage_name: str
+    review_id: str
+    current_run_unit: str
+    current_run_only: bool
+    reviewed_phase_ids: list[str]
+    phase_9_1_required: bool
+    phase_9_2_required: bool
+    phase_9_3_required: bool
+    phase_9_3_user_confirmation_required: bool
+    user_confirmation_source: str
+    required_artifacts: list[str]
+    allowed_files: list[str]
+    validation_commands: list[str]
+    evidence_files: list[str]
+    github_main_uploaded: bool
+    future_version_started: bool
+    app_bundle_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+    explicitly_not_done: list[str]
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class V024Stage9Phase91Evaluation:
     schema: str
     target_version: str
@@ -409,6 +440,72 @@ def build_v024_stage9_phase93_contract() -> V024Stage9Phase93Contract:
             "claiming user acceptance",
             "Stage 9 whole-stage review",
             "Stage 9 GitHub main upload",
+            "future version work",
+            "app bundle reinstall",
+            "financial data mutation or synthesis",
+        ],
+    )
+
+
+def build_v024_stage9_whole_review_contract() -> V024Stage9WholeReviewContract:
+    return V024Stage9WholeReviewContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        repair_label=REPAIR_LABEL,
+        stage=STAGE,
+        stage_name=STAGE_NAME,
+        review_id="stage_9_whole_review",
+        current_run_unit="Stage 9 whole-stage review",
+        current_run_only=True,
+        reviewed_phase_ids=[PHASE_9_1_ID, PHASE_9_2_ID, PHASE_9_3_ID],
+        phase_9_1_required=True,
+        phase_9_2_required=True,
+        phase_9_3_required=True,
+        phase_9_3_user_confirmation_required=True,
+        user_confirmation_source="chat_reply_1",
+        required_artifacts=[
+            "STAGE9_WHOLE_STAGE_REVIEW.md",
+            "evidence.json",
+            "terminal.log",
+            "changed_files.txt",
+            "risk_and_rollback.md",
+        ],
+        allowed_files=[
+            "PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+            "PFI/tests/test_v024_stage9_whole_review_contract.py",
+            "PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md",
+            "PFI/docs/pfi_v024/STAGE9_WHOLE_STAGE_REVIEW.md",
+            "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+            "PFI/reports/pfi_v024/stage_9/whole_stage_review/*",
+            "PFI/README.md",
+            "PFI/HANDOFF.md",
+            "PFI/CHANGELOG.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/模型参数文件.md",
+        ],
+        validation_commands=[
+            "python3 -m pytest PFI/tests/test_v024_stage9_whole_review_contract.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage9_phase93_user_acceptance.py PFI/tests/test_v024_stage9_phase92_delivery_freeze.py PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage8_github_upload_contract.py -q",
+            "python3 -m py_compile PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+            "python3 -m json.tool PFI/reports/pfi_v024/stage_9/whole_stage_review/evidence.json",
+            "git diff --check -- PFI",
+        ],
+        evidence_files=[
+            "PFI/docs/pfi_v024/STAGE9_WHOLE_STAGE_REVIEW.md",
+            "PFI/reports/pfi_v024/stage_9/whole_stage_review/evidence.json",
+            "PFI/reports/pfi_v024/stage_9/whole_stage_review/terminal.log",
+            "PFI/reports/pfi_v024/stage_9/whole_stage_review/changed_files.txt",
+            "PFI/reports/pfi_v024/stage_9/whole_stage_review/risk_and_rollback.md",
+        ],
+        github_main_uploaded=False,
+        future_version_started=False,
+        app_bundle_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
+        explicitly_not_done=[
+            "GitHub main upload",
             "future version work",
             "app bundle reinstall",
             "financial data mutation or synthesis",

@@ -32,7 +32,7 @@ Records:
 
 ## v0.2.4 Stage 9 Status
 
-Current run unit: `Stage 9 / Phase 9.3 - 用户验收`.
+Current run unit: `Stage 9 whole-stage review - 复审并解决暴露问题`.
 
 - Stage 8 GitHub main upload: complete before this run; `HEAD == origin/main == remote main` verified at `ab09727d7c22ea5d7a65868c26526330d528a101`.
 - Phase 8.1 automated acceptance: candidate pass.
@@ -45,9 +45,12 @@ Current run unit: `Stage 9 / Phase 9.3 - 用户验收`.
 - Phase 9.2 historical wording: Stage 9 delivery freeze candidate, waiting for Phase 9.3 user acceptance.
 - Phase 9.2 delivery freeze: candidate pass.
 - Phase 9.2 historical stop condition: Phase 9.3 user acceptance: not started.
+- Stage 9 / Phase 9.3 - 用户验收: historical acceptance package ready, waiting for user response.
 - Phase 9.3 user acceptance package: ready; waiting for user response.
-- User acceptance claimed: no.
-- Stage 9 whole-stage review: not started.
+- Phase 9.3 historical stop condition: Stage 9 whole-stage review: not started.
+- Phase 9.3 user confirmation source: chat reply `1`.
+- Stage 9 whole-stage review: pass.
+- Stage 9 whole-stage review pass.
 - GitHub main upload for Stage 9: not executed in this phase run.
 - Future version work: not started.
 - App bundle reinstall: not executed.
@@ -60,7 +63,8 @@ Current run unit: `Stage 9 / Phase 9.3 - 用户验收`.
 - Phase 9.3 manual acceptance: `reports/pfi_v024/stage_9/phase_9_3/manual_acceptance.md`.
 - Phase 9.3 reply protocol: `reports/pfi_v024/stage_9/phase_9_3/reply_protocol.md`.
 - Current Phase 9.3 evidence: `reports/pfi_v024/stage_9/phase_9_3/evidence.json`.
-- Next gate: wait for user reply; Stage 9 whole-stage review may only run in a later run after explicit confirmation or instruction.
+- Stage 9 whole-stage review evidence: `reports/pfi_v024/stage_9/whole_stage_review/evidence.json`.
+- Next gate: Stage 9 GitHub main upload gate.
 
 ## v0.2.4 Stage 8 Status
 

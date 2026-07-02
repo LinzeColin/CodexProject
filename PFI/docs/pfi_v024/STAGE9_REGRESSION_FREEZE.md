@@ -1,7 +1,7 @@
 # PFI v0.2.4 Stage 9 Regression Freeze
 
-本轮只执行：`Stage 9 / Phase 9.3 - 用户验收`。
-本轮只准备人工验收清单、reply protocol 和等待用户回复的 evidence；不写验收通过、不执行 Stage 9 whole-stage review、不上传 GitHub main、不进入未来版本、不重装 app bundle、不修改 launcher C/Info.plist、不写入、清理、删除、补造或改写真实财务数据。
+本轮只执行：`Stage 9 whole-stage review - 复审并解决暴露问题`。
+本轮只复审 Stage 9 三个 phase、记录用户回复 `1` 作为 Phase 9.3 确认来源，并生成 whole-stage review evidence；不上传 GitHub main、不进入未来版本、不重装 app bundle、不修改 launcher C/Info.plist、不写入、清理、删除、补造或改写真实财务数据。
 
 ## Phase 9.1 Scope
 
@@ -72,15 +72,28 @@ Phase 9.3 只输出用户验收材料并停止等待用户回复，覆盖 roadma
 - `PFI/reports/pfi_v024/stage_9/phase_9_3/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_9/phase_9_3/risk_and_rollback.md`
 
+## Stage 9 Whole-stage Review
+
+Stage 9 Whole-stage Review 复审 Phase 9.1、9.2、9.3，并把用户回复 `1` 作为 Phase 9.3 确认来源。
+
+Stage 9 whole-stage review pass。
+
+Evidence:
+
+- `PFI/docs/pfi_v024/STAGE9_WHOLE_STAGE_REVIEW.md`
+- `PFI/reports/pfi_v024/stage_9/whole_stage_review/evidence.json`
+- `PFI/reports/pfi_v024/stage_9/whole_stage_review/terminal.log`
+- `PFI/reports/pfi_v024/stage_9/whole_stage_review/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_9/whole_stage_review/risk_and_rollback.md`
+
 ## Non Goals
 
 - 不写验收通过。
-- 不把 Phase 9.3 等待状态写成 Stage 9 最终 closeout。
-- 不执行 Stage 9 whole-stage review。
+- 不把 whole-stage review 写成 GitHub upload complete。
 - 不上传 GitHub main。
 - 不进入未来版本。
 - 不修改 app bundle、launcher 或真实财务数据。
 
 ## Stop Condition
 
-停止在 `Stage 9 / Phase 9.3 - 用户验收材料已准备，等待用户回复`。Stage 9 whole-stage review 必须下一轮再进入，且必须有用户明确验收或明确指令。
+停止在 `Stage 9 whole-stage review pass`。GitHub main upload 必须下一轮再进入。
