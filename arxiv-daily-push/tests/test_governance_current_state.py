@@ -218,6 +218,31 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_terminal_count_split_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 capture-window 新增真实天数 `0`、新增真实邮件 `0`，`8` 封 dry-run 被拒计入 terminal proof",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 terminal proof 数量口径为 `1/2` 天、`4/8` 封；当前这些数量缺口已被 final bundle 和 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 S2PLT03、S2PLT04、final bundle 仍依赖 S2PLT02 terminal proof；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+
+        forbidden_phrases = (
+            "| 当前 capture-window 新增真实天数 `0`、新增真实邮件 `0`，`8` 封 dry-run 被拒计入 terminal proof |",
+            "| terminal proof 仍只达到 `1/2` 天、`4/8` 封 |",
+            "| S2PLT03、S2PLT04、final bundle 仍依赖 S2PLT02 terminal proof |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
