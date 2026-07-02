@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3-s04p2-field-standardization - 2026-07-02
+
+- 完成 `v0.1.3 S04-P2｜字段标准化 replay` 本地验证：基于既有 `field_standardization.py`，使用 synthetic public-safe values 重放日期、期间、主体、项目、客户/对手方和合同编号 6 个 canonical fields。
+- 新增 `KMFA/tools/v013_s04_p2_field_standardization.py`、`KMFA/tools/check_v013_s04_p2_field_standardization.py`、`KMFA/tests/test_v013_s04_p2_field_standardization.py` 和 `KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/`。
+- 本 phase 验证 alias_dictionary_rows=32、standardization_cases=6/6、quality_statuses=5；缺失/异常字段进入质量状态，`field_skipped_silently=false`。
+- 本轮记录一次 accidental raw directory listing；临时输出文件已删除，未修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 S04-P3、Stage 4 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S04-P3` 或用户明确指定的单一 phase。
+
 ## 0.1.3-s04p1-amount-precision - 2026-07-02
 
 - 完成 `v0.1.3 S04-P1｜金额精度与 no-float replay` 本地验证：基于既有 `amount_tools.py` 和 `check_no_float_money.py`，使用 synthetic public-safe values 重放 9 个金额标准化 case、9 个异常拒绝 case、forbidden-float fixture scan 和全仓 no-float scan。

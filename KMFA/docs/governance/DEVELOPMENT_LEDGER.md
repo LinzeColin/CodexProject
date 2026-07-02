@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s04p1-amount-precision
+product_version: 0.1.3-s04p2-field-standardization
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S04`
-- current_phase: `v0.1.3 S04-P1｜金额精度与 no-float replay`
-- current_tasks: `KMFA-V013-S04-P1-AMOUNT-PRECISION-20260702`
-- status: `local_s04_p1_completed_no_go_upload_deferred`
+- current_phase: `v0.1.3 S04-P2｜字段标准化 replay`
+- current_tasks: `KMFA-V013-S04-P2-FIELD-STANDARDIZATION-20260702`
+- status: `local_s04_p2_completed_no_go_upload_deferred`
 - risk_tier: `T3`
 
 ## Completed
@@ -137,12 +137,13 @@ product_version: 0.1.3-s04p1-amount-precision
 | `KMFA-V013-S03-P3-SOURCE-PRIORITY-20260702` | v0.1.3 S03-P3 源优先级与差异队列入口本地通过：重放 9 级来源优先级、同源失效重跑事件和跨源差异人工复核队列；未读取或写入 raw data inbox，未执行 Stage 3 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S03_P3_SOURCE_PRIORITY/human/source_priority_report.md` |
 | `KMFA-V013-S03-STAGE-REVIEW-20260702` | v0.1.3 Stage 3 整体复审本地通过：复跑 S03-P1/S03-P2/S03-P3 validators 和 Stage 3 review validator，phase_results 全部 PASS，findings_open=0，继续锁定 Q2/D/blocked；未执行 GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S03_STAGE_REVIEW/human/stage3_review_report.md` |
 | `KMFA-V013-S04-P1-AMOUNT-PRECISION-20260702` | v0.1.3 S04-P1 金额精度与 no-float replay 本地通过：重放 9 个金额标准化 case、9 个异常拒绝 case、forbidden-float fixture scan 和全仓 no-float scan；未读取 raw data inbox，未执行 S04-P2、S04-P3、Stage 4 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/human/amount_precision_report.md` |
+| `KMFA-V013-S04-P2-FIELD-STANDARDIZATION-20260702` | v0.1.3 S04-P2 字段标准化 replay 本地通过：重放 6 个 canonical fields、32 条 alias dictionary、6/6 字段标准化 case 和 5 条缺失/异常质量状态；记录 accidental raw listing 已清理，未修改 raw 目录，未执行 S04-P3、Stage 4 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/human/field_standardization_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S04-P1 金额精度与 no-float replay 已本地完成；下一步只能另起 run 执行 S04-P2 字段标准化 replay 或用户明确指定的单一 phase；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/human/test_results.md` |
+| 无 | v0.1.3 S04-P2 字段标准化 replay 已本地完成；下一步只能另起 run 执行 S04-P3 基础工具测试报告 replay 或用户明确指定的单一 phase；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/human/test_results.md` |
 
 ## Not Completed
 
@@ -151,4 +152,4 @@ product_version: 0.1.3-s04p1-amount-precision
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| GitHub main upload | 当前 active goal 要求 stage 1-10 整体完成后再一次性上传 main；本轮 S04-P1 不执行 upload | 继续按单 phase 推进 `v0.1.3 S04-P2`；不得跳到正式报告、raw value matching、lineage full check 或业务执行 |
+| GitHub main upload | 当前 active goal 要求 stage 完成、整体复审和 findings 修复后再上传；本轮 S04-P2 不执行 upload | 继续按单 phase 推进 `v0.1.3 S04-P3`；不得跳到正式报告、raw value matching、lineage full check 或业务执行 |

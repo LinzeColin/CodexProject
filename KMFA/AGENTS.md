@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.3 S04｜金额精度、字段标准化与基础工具`
-- 当前 Phase: `S04-P1 金额精度与 no-float replay 已本地完成；下一步只能 S04-P2 字段标准化 replay`
+- 当前 Phase: `S04-P2 字段标准化 replay 已本地完成；下一步只能 S04-P3 基础工具测试报告 replay`
 
 ## Execution Rules
 
