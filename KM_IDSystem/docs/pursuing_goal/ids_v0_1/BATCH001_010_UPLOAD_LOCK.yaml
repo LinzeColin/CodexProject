@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-001-010"
 created_at_utc: "2026-07-02T04:29:53Z"
-updated_at_utc: "2026-07-02T05:47:51Z"
+updated_at_utc: "2026-07-02T05:54:35Z"
 status: "local_in_progress"
 
 repository:
@@ -69,14 +69,16 @@ stage_progress:
     completed_phases:
       - "Phase 1"
       - "Phase 2"
-    next_phase: "Phase 3"
-    current_task_id: "IDS-V0_1-STAGE003-P2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE003-P3"
     acceptance_id: "ACC-STAGE-003"
-    acceptance_status: "phase2_reference_migration_complete"
+    acceptance_status: "phase3_validation_complete"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE3_VALIDATION_SCAN.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
   STAGE-004:
@@ -95,5 +97,5 @@ stage_progress:
     status: "not_started"
 
 decision:
-  current_run: "Completed only STAGE-003 Phase 2 locally; STAGE-003 is in progress and batch upload remains locked."
+  current_run: "Completed only STAGE-003 Phase 3 locally; STAGE-003 is in progress and batch upload remains locked."
   no_upload_reason: "The user requires one GitHub main upload only after each completed and repaired 10-Stage batch."

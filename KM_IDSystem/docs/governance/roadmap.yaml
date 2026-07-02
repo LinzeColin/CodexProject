@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE002"
-current_phase_id: "IDS-STAGE003-P2"
-current_task_id: "IDS-V0_1-STAGE003-P2"
-next_gate_id: "IDS-STAGE003-P3-GATE"
+current_phase_id: "IDS-STAGE003-P3"
+current_task_id: "IDS-V0_1-STAGE003-P3"
+next_gate_id: "IDS-STAGE003-P4-GATE"
 total_estimated_hours: 35
-completed_estimated_hours: 32
+completed_estimated_hours: 34
 stages:
   -
     stage_id: "S5"
@@ -688,6 +688,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE3_VALIDATION_SCAN.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
     phases:
       -
@@ -784,25 +785,28 @@ stages:
         phase_id: "IDS-STAGE003-P3"
         name: "MetaDatabase 更名为 FinanceMetaDatabase 专项验证与异常场景"
         objective: "验证独立 MetaDatabase 旧名引用、FinanceMetaDatabase 新名引用、ProductMetaDatabase 排除规则和 runtime 边界。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "未完成 Phase 2 最小迁移"
           - "无法证明 ProductMetaDatabase 未被误改"
           - "扫描证据不足"
         stop_gate:
           gate_id: "IDS-STAGE003-P3-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "独立旧名引用已分类"
             - "ProductMetaDatabase 排除规则验证通过"
             - "未触碰 raw data、secrets、runtime 输出或依赖目录"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE3_VALIDATION_SCAN.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE003-P3"
             name: "FinanceMetaDatabase 专项验证"
             objective: "验证 STAGE-003 改名切片的引用、边界和异常场景。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "5.71%"
             dependencies:
@@ -814,8 +818,11 @@ stages:
               - "ProductMetaDatabase exclusion scan"
               - "secret and runtime boundary scan"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-003 Phase 3 validation scan covered 103 project text files; standalone MetaDatabase hits=62, FinanceMetaDatabase hits=69, ProductMetaDatabase hits=174, runtime standalone/finance hits=0, active blockers=0. Raw secret-pattern hits=4 were classified as policy/schema text or validation-report self-reference, actual credential hits=0; tracked runtime files under forbidden output/dependency/data folders=0; no product_meta_database files changed. STAGE-003 validator remained valid=true with issues=[], runtime_target_hits=[], product_meta_path_touched=[], finance_meta_hits=74, standalone_old_hits=62, product_meta_hits=180. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE3_VALIDATION_SCAN.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
             risk: "验证只检查 marker，未覆盖实际引用和 ProductMetaDatabase 排除规则。"
             rollback: "Revert IDS-STAGE003-P3 validation/evidence-only changes."
       -
