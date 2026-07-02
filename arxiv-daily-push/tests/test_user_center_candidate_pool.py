@@ -429,6 +429,40 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         )
         self.assertNotIn("最新状态已解除 missing gh CLI 当前阻断", page)
 
+    def test_traceability_chain_marks_request_and_gate_authorization_history_as_consumed(self):
+        page = TRACEABILITY_CHAIN_PAGE.read_text(encoding="utf-8")
+        sections = {
+            "request_mainline": _section(
+                page,
+                "## 2026-07-01 22:51:19 Australia/Sydney - ",
+                "## 2026-07-01 22:22:48 Australia/Sydney - ",
+            ),
+            "request_ready": _section(
+                page,
+                "## 2026-07-01 22:22:48 Australia/Sydney - ",
+                "## 2026-07-01 21:59:44 Australia/Sydney - ",
+            ),
+            "gate_mainline": _section(
+                page,
+                "## 2026-07-01 21:59:44 Australia/Sydney - ",
+                "## 2026-07-01 21:10:04 Australia/Sydney - ",
+            ),
+        }
+
+        for label, section in sections.items():
+            with self.subTest(section=label):
+                self.assertIn("历史：", section)
+                self.assertIn("| 字段 | 当时值 |", section)
+                self.assertIn("历史当时状态", section)
+                self.assertIn("当前已由 23:35 owner A keep-disabled mainline 证据消费", section)
+                self.assertNotIn("| 字段 | 当前值 |", section)
+                self.assertNotIn("| 当前状态 |", section)
+                self.assertNotIn("| 下一步 | owner 决定是否创建新的显式", section)
+                self.assertNotIn(
+                    "| 下一步 | 只有 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 存在并通过单独 enablement preflight，才能继续持久 DAILY_OPERATION 启用 |",
+                    section,
+                )
+
     def test_traceability_chain_page_exposes_all_matrix_rows_as_clickable_links(self):
         matrix_rows = list(csv.DictReader(TRACEABILITY_MATRIX.read_text(encoding="utf-8").splitlines()))
         page = TRACEABILITY_CHAIN_PAGE.read_text(encoding="utf-8")
