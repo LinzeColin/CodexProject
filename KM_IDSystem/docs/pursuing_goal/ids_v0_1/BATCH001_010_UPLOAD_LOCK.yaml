@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-001-010"
 created_at_utc: "2026-07-02T04:29:53Z"
-updated_at_utc: "2026-07-02T04:54:05Z"
+updated_at_utc: "2026-07-02T05:03:30Z"
 status: "local_in_progress"
 
 repository:
@@ -46,7 +46,16 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE3_VALIDATION_SCAN.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_PHASE4_CLOSEOUT.md"
   STAGE-002:
-    status: "not_started"
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE002-P1"
+    acceptance_id: "ACC-STAGE-002"
+    acceptance_status: "phase1_boundary_complete"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE1_SCOPE_BOUNDARY.md"
   STAGE-003:
     status: "not_started"
   STAGE-004:
@@ -65,5 +74,5 @@ stage_progress:
     status: "not_started"
 
 decision:
-  current_run: "Completed only STAGE-001 Phase 4 locally; STAGE-001 is complete, but batch upload remains locked."
+  current_run: "Completed only STAGE-002 Phase 1 locally; STAGE-002 is in progress and batch upload remains locked."
   no_upload_reason: "The user requires one GitHub main upload only after each completed and repaired 10-Stage batch."
