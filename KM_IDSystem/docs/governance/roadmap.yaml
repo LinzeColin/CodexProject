@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE008"
-current_phase_id: "IDS-STAGE008-P4"
-current_task_id: "IDS-V0_1-STAGE008-P4"
-next_gate_id: "IDS-STAGE009-P1-GATE"
-total_estimated_hours: 65
-completed_estimated_hours: 65
+current_stage_id: "IDS-STAGE009"
+current_phase_id: "IDS-STAGE009-P1"
+current_task_id: "IDS-V0_1-STAGE009-P1"
+next_gate_id: "IDS-STAGE009-P2-GATE"
+total_estimated_hours: 71
+completed_estimated_hours: 66
 stages:
   -
     stage_id: "S5"
@@ -1907,3 +1907,191 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage008_removable_drive_state.py"
             risk: "在 STAGE-008 完成后误推送未满 10 stages 的批次。"
             rollback: "Revert IDS-STAGE008-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE009"
+    name: "存储预算基线"
+    person_goal: "建立 800GB 内置盘与 5TB 移动硬盘的存储预算，防止任务写满本机。"
+    status: "in_progress"
+    stop_conditions:
+      - "需要真实资料但没有 fixture 或 owner 授权样本"
+      - "可能删除、移动、覆盖原始文件"
+      - "schema migration 无法回滚"
+      - "测试失败且原因不明"
+      - "修改范围超出本 Stage"
+      - "并行开发导致共享文件冲突"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE009-GATE"
+      status: "open"
+      pass_conditions:
+        - "Phase 1 明确内置盘、移动硬盘、冷热数据、存储预算、水位线和安全模式边界"
+        - "Phase 2 形成最小只读存储预算、状态枚举和水位线检查切片"
+        - "Phase 3 验证 OK、WARN、BLOCKED、UNKNOWN、高水位线和无边界派生产物场景"
+        - "Phase 4 输出环境检查、路径检查、存储预算、可恢复状态和回滚说明"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE1_SCOPE_BOUNDARY.md"
+    phases:
+      -
+        phase_id: "IDS-STAGE009-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认 macOS、Docker、IDS_DATA_ROOT、内置盘、移动硬盘、冷热数据和存储预算安全模式边界。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图实现预算检查器、启动服务或生成派生产物"
+          - "写入、扫描或修改外接盘 IDS_DATA_ROOT 内容"
+          - "创建 data、reports、outputs、.venv、node_modules、OCR 输出、Embedding 输出或索引"
+          - "没有定义 OK、WARN、BLOCKED、UNKNOWN、水位线和无边界派生产物规则"
+        stop_gate:
+          gate_id: "IDS-STAGE009-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 009 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary records read-only macOS/Docker/internal-disk/IDS_DATA_ROOT facts"
+            - "Phase 1 boundary defines internal hot data, external cold data, GitHub metadata, storage budget states, thresholds, and safe-mode rules"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE009-P1"
+            name: "存储预算基线边界确认"
+            objective: "在不实现预算检查器、不启动服务、不写入本机派生产物或外接盘的前提下，记录 STAGE-009 的内置盘、移动硬盘、冷热数据、阈值、水位线、安全模式和无边界派生产物边界。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.41%"
+            dependencies:
+              - "IDS-V0_1-STAGE008-P4"
+            acceptance_ids:
+              - "ACC-STAGE-009"
+            test_commands:
+              - "P0 STAGE-009 taskpack SHA check"
+              - "read-only macOS/Docker/internal-disk/IDS_DATA_ROOT baseline commands"
+              - "Stage009 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-009 Phase 1 boundary artifacts prepared. P0 STAGE-009 taskpack SHA-256 is 490671d6372dd185fa829ce4a7ea05d25b6ae311feb92a986571cbdb2a567099. Read-only baseline found macOS 15.1 build 24B83, arm64, Apple M2 Max, Docker CLI 29.6.1, Docker Compose v5.1.4, root filesystem 926Gi size with 630Gi available, and no IDS_DATA_ROOT configured in this shell. Existing STAGE-006 storage smoke returned internal_storage.state=OK with free_gib=300.0, min_free_gib=100, warn_free_gib=200, max_used_percent=85, and does_not_start_services=true. Existing STAGE-008 state-machine smoke returned state=NOT_CONFIGURED, safe_mode=true, auto_resume=false, storage_state=OK, customer_visible=false, and does_not_create_ids_data_root=true. Phase 1 did not start Docker, install dependencies, implement a budget checker, write to IDS_DATA_ROOT, scan external-drive contents, create runtime data, reports, outputs, embeddings, indexes, or push to GitHub because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把存储预算边界确认误扩大为真实预算检查器、派生产物生成、外接盘扫描或大文件存储操作。"
+            rollback: "Revert IDS-STAGE009-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE009-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现或记录只读存储预算、状态枚举、水位线和安全模式接口。"
+        status: "not_started"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "预算检查器会创建、移动、删除或修改 IDS_DATA_ROOT 内容"
+          - "预算检查器会生成无边界本地派生产物"
+          - "在客户操作流暴露机器端细节"
+        stop_gate:
+          gate_id: "IDS-STAGE009-P2-GATE"
+          status: "pending"
+          pass_conditions:
+            - "OK、WARN、BLOCKED、UNKNOWN 和无边界派生产物风险有最小可运行检查"
+            - "机器端细节只进入 IDS 系统运营入口"
+            - "不会在缺失 IDS_DATA_ROOT 或预算阻断时创建猜测的大数据目录或派生产物"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE009-P2"
+            name: "存储预算基线最小切片"
+            objective: "按 Phase 1 边界建立内置盘、移动硬盘、派生产物、水位线和安全模式的最小可验证切片。"
+            status: "not_started"
+            estimated_hours: 2
+            total_hours_percent: "2.82%"
+            dependencies:
+              - "IDS-V0_1-STAGE009-P1"
+            acceptance_ids:
+              - "ACC-STAGE-009"
+            test_commands:
+              - "storage budget focused test"
+              - "waterline and unbounded-output contract test"
+              - "check-render --project KM_IDSystem"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "预算检查器写入真实路径、生成派生产物、递归扫描外接盘或把机器诊断暴露给客户操作流。"
+            rollback: "Revert IDS-STAGE009-P2 implementation-slice changes."
+      -
+        phase_id: "IDS-STAGE009-P3"
+        name: "存储预算基线专项验证与异常场景"
+        objective: "验证存储预算 OK、WARN、BLOCKED、UNKNOWN、高水位线、无边界派生产物和安全模式场景。"
+        status: "not_started"
+        stop_conditions:
+          - "未完成 Phase 2 最小切片"
+          - "无法模拟异常场景且没有明确降级证据"
+          - "验证需要真实资料写入、派生产物生成或外接盘内容扫描"
+        stop_gate:
+          gate_id: "IDS-STAGE009-P3-GATE"
+          status: "pending"
+          pass_conditions:
+            - "OK、WARN、BLOCKED、UNKNOWN 和高水位线有证据或明确 deferred gate"
+            - "无边界派生产物风险会阻断任务"
+            - "安全模式会暂停大批量导入、OCR、Embedding、索引和清理"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE009-P3"
+            name: "存储预算基线异常场景验证"
+            objective: "验证 STAGE-009 最小切片的空间、水位线、无边界派生产物和安全模式异常场景。"
+            status: "not_started"
+            estimated_hours: 2
+            total_hours_percent: "2.82%"
+            dependencies:
+              - "IDS-V0_1-STAGE009-P2"
+            acceptance_ids:
+              - "ACC-STAGE-009"
+            test_commands:
+              - "storage OK/WARN/BLOCKED/UNKNOWN scenario checks"
+              - "unbounded-output-risk scenario checks"
+              - "safe-mode pause scenario checks"
+              - "check-render --project KM_IDSystem"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "异常验证误触碰真实原始资料、生成大文件或不可回滚地改变本地运行状态。"
+            rollback: "Revert IDS-STAGE009-P3 validation/evidence changes."
+      -
+        phase_id: "IDS-STAGE009-P4"
+        name: "存储预算基线交付证据、回滚与中文反馈"
+        objective: "输出环境检查、路径检查、存储预算、水位线、状态恢复和回滚说明。"
+        status: "not_started"
+        stop_conditions:
+          - "Phase 3 场景验证未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE009-P4-GATE"
+          status: "pending"
+          pass_conditions:
+            - "ACC-STAGE-009 证据完整"
+            - "可恢复和不可恢复状态清楚"
+            - "默认配置和回滚步骤清楚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE009-P4"
+            name: "STAGE-009 交付证据与回滚"
+            objective: "生成 ACC-STAGE-009 证据、环境检查结果、路径检查结果、存储预算说明、水位线说明、状态恢复说明、回滚步骤和中文反馈。"
+            status: "not_started"
+            estimated_hours: 1
+            total_hours_percent: "1.41%"
+            dependencies:
+              - "IDS-V0_1-STAGE009-P3"
+            acceptance_ids:
+              - "ACC-STAGE-009"
+            test_commands:
+              - "STAGE-009 closeout checklist"
+              - "storage budget final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "在 STAGE-009 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE009-P4 closeout-only changes."
