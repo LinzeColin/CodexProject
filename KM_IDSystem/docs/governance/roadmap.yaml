@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE018"
-current_phase_id: "IDS-STAGE018-P2"
-current_task_id: "IDS-V0_1-STAGE018-P2"
-next_gate_id: "IDS-STAGE018-P3-GATE"
-total_estimated_hours: 138
-completed_estimated_hours: 138
+current_phase_id: "IDS-STAGE018-P3"
+current_task_id: "IDS-V0_1-STAGE018-P3"
+next_gate_id: "IDS-STAGE018-P4-GATE"
+total_estimated_hours: 140
+completed_estimated_hours: 140
 stages:
   -
     stage_id: "S5"
@@ -4236,21 +4236,23 @@ stages:
       - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
       - "解析正文、启动 OCR、Embedding、index、import、report、runtime database 或写 manifest/database/document/chunk/job"
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
-      - "一次 run 进入 Phase 3"
+      - "一次 run 进入 Phase 4"
     stop_gate:
-      gate_id: "IDS-STAGE018-P2-GATE"
+      gate_id: "IDS-STAGE018-P3-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
         - "entry contract 记录 P0 taskpack 映射、stage SHA、阶段边界和验收边界"
         - "Phase 1 scope boundary 定义 input directory、output summary、risk items、cost items 和 confirmation states"
         - "Phase 2 helper 可输出文件数量、体积、格式、压缩包、扫描件、OCR/Embedding 工作量、风险、成本和优先级建议"
+        - "Phase 3 scenario validation 覆盖空目录、小目录、大目录、移动硬盘断开、压缩包、空间不足、保存、取消、分批和跳过高风险文件"
         - "预检只读显式 file:// metadata、不递归扫描、不解析正文、不修改原始文件、不启动 OCR/Embedding/index/import"
         - "owner confirmation 后才允许未来批量处理"
-        - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false，未进入 Phase 3"
+        - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false，未进入 Phase 4"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE2_PREFLIGHT_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/scripts/check_import_preflight.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_import_preflight.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE4_CLOSEOUT.md"
@@ -4371,3 +4373,61 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果 Phase 2 helper 被误当成生产导入器，可能绕过 owner confirmation、读取 raw metadata、解析正文或写入持久化产物。"
             rollback: "Revert IDS-STAGE018-P2 helper, focused tests, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, app entries, GitHub state, or Phase 3."
+      -
+        phase_id: "IDS-STAGE018-P3"
+        name: "导入预检扫描器专项验证与异常场景"
+        objective: "验证空目录、小目录、大目录、断开移动硬盘、压缩包、空间不足、保存、取消、分批和跳过高风险文件场景，并证明预检不会启动实际解析、OCR、Embedding 或索引。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 3 读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "Phase 3 启动正文解析、OCR、Embedding、index、import，或写入生产 manifest/database/evidence/audit/report/runtime 输出"
+          - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "一次 run 进入 Phase 4"
+        stop_gate:
+          gate_id: "IDS-STAGE018-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "scenario report schema 为 ids.stage018.import_preflight.scenario_validation.v1"
+            - "场景覆盖 empty_directory、small_directory、large_directory、offline_drive、archive_present、insufficient_space"
+            - "operator decision plan 支持 save、cancel、split 和 skip high-risk，且 helper 不持久化结果"
+            - "processing guard 证明 parse/OCR/Embedding/index/import jobs 均为 0"
+            - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false，未进入 Phase 4"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/scripts/check_import_preflight.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_import_preflight.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE018-P3"
+            name: "导入预检 scanner 场景验证"
+            objective: "用 metadata-only 测试场景证明预检结果可保存、可取消、可分批、可跳过高风险文件，且不会启动真实处理链路。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.43%"
+            dependencies:
+              - "IDS-V0_1-STAGE018-P2"
+            acceptance_ids:
+              - "ACC-STAGE-018"
+            test_commands:
+              - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage018_import_preflight"
+              - "RED/GREEN: bundled python -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "Stage005 validator report"
+              - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "py_compile check_import_preflight.py and Stage005 validator"
+              - "events JSONL parse"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+              - "old underscored task-id variant scan"
+            test_results: "Stage018 Phase3 RED failed as expected with 8 tests and 3 errors because build_stage018_scenario_report and build_operator_decision_plan did not exist. Stage018 Phase3 GREEN passed 8 tests. Stage005 Phase3 RED failed as expected with 38 tests and 1 failure because IDS-V0_1-STAGE018-P3 was not yet accepted by the governance state machine. Stage005 intermediate RED failed as expected with 38 tests and 1 failure because STAGE018_PHASE3_SCENARIO_VALIDATION.md and the required event were missing. Stage005 GREEN passed 38 tests. Stage005 validator returned valid=true with issues=[], missing_required_files=[], missing_event_ids=[], event_json_errors=[], forbidden_changed_paths=[], and unexpected_changed_paths=[]. Full IDS v0.1 pursuing-goal discover passed 128 tests. py_compile passed for check_import_preflight.py and Stage005 validator. events JSONL parse returned events_jsonl_ok. bundled render --project KM_IDSystem --write updated owner files; bundled check-render returned drift_count=0 and reference_issue_count=0. git diff --check passed. exact old underscored task-id variant scan returned no hits. New Phase3 files did not introduce legacy pre-rename project path spellings. semantic validate remains diagnostic-only with 29 known sparse root-governance or registered-project missing paths and no new KM_IDSystem semantic error. Phase 3 did not read, list, hash, open, copy, move, delete, modify, dump, scan, or commit IDS_MetaData raw metadata content. No production preflight report, screenshot, runtime output, recursive scan, body parser, OCR, Embedding, index builder, importer, report writer, manifest/database/evidence/audit/runtime writer, document/chunk/job creation, service start, dependency install, external API call, GitHub upload, PR, merge, app reinstall, or Phase 4 work was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/scripts/check_import_preflight.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_import_preflight.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE2_PREFLIGHT_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果场景验证被误认为生产导入授权，可能绕过 owner confirmation、创建生产报告或启动处理链路。"
+            rollback: "Revert IDS-STAGE018-P3 scenario helper additions, focused tests, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, app entries, GitHub state, or Phase 4."
