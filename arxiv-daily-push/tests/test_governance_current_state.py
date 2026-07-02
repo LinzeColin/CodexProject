@@ -770,6 +770,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp_prep)
         self.assertNotIn("## 09 推荐第一轮 Run Contract", mvp_prep)
         self.assertIn("MVP 准备与复审修补](./MVP准备与复审修补.md)", readme)
+        self.assertRegex(
+            readme,
+            r"^# ADP 用户中心\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n\n这里是 ADP 在 GitHub 上的唯一中文用户入口",
+        )
+        self.assertEqual(readme.count("更新时间："), 1)
+        self.assertLess(readme.index("## 总览"), readme.index("## 最近治理与历史记录"))
+        self.assertLess(readme.index("## 一看三查"), readme.index("## 最近治理与历史记录"))
         self.assertIn("MVP Run Contract README 入口同步", readme)
         self.assertIn("看后续复审修补的范围、停止条件、验收标准和下一轮 Run Contract 模板", readme)
         self.assertNotIn("看后续复审修补的范围、停止条件、验收标准和第一轮 Run Contract", readme)
