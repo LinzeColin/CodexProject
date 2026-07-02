@@ -25,6 +25,7 @@ REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
 TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
 FINAL_BUNDLE_STATUS_PAGE = USER_CENTER / "最终验收包与S3阻断.md"
 MAIL_TEMPLATE_PREVIEW_PAGE = USER_CENTER / "邮件模板预览.md"
+REVIEW_ACTION_ROI_PAGE = USER_CENTER / "复习行动与收益.md"
 RESTORE_PATH_SAFETY_PAGE = USER_CENTER / "恢复路径安全扫描.md"
 RESTORE_ATOMIC_REPLACEMENT_PAGE = USER_CENTER / "恢复原子替换扫描.md"
 OUTBOX_DELIVERY_PAGE = USER_CENTER / "事务发件箱与消息ID扫描.md"
@@ -363,13 +364,19 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         one_check_three = (USER_CENTER / "一看三查.md").read_text(encoding="utf-8")
 
         self.assertIn("本表已由 2026-06-28 本地恢复补发运行写入", snapshot_page)
-        self.assertIn("| 今日到期复习 | 0 项 |", snapshot_page)
-        self.assertIn("| 今日 15 分钟行动 | 1 项 |", snapshot_page)
+        self.assertIn("| 服务日 | 2026-06-28 | 本地恢复补发运行 |", snapshot_page)
+        self.assertIn("| 到期复习 | 0 项 |", snapshot_page)
+        self.assertIn("| 15 分钟行动 | 1 项 |", snapshot_page)
         self.assertIn("| 新增能力资产 | 1 项 |", snapshot_page)
-        self.assertIn("复习行动与收益](./复习行动与收益.md) 已显示字段、证据链和 2026-06-28 今日快照数字", readme)
-        self.assertIn("复习行动与收益](./复习行动与收益.md) 已有 GitHub 展示位、证据链和 2026-06-28 今日快照数字", one_check_three)
+        self.assertIn("复习行动与收益](./复习行动与收益.md) 已显示字段、证据链和 2026-06-28 服务日快照数字", readme)
+        self.assertIn("复习行动与收益](./复习行动与收益.md) 已有 GitHub 展示位、证据链和 2026-06-28 服务日快照数字", one_check_three)
+        self.assertIn("当前页面数字不是当前自然日持续生产日报", readme)
+        self.assertIn("当前页面数字不是当前自然日持续生产日报", one_check_three)
         self.assertNotIn("今日快照待写入", readme)
         self.assertNotIn("今日快照待写入", one_check_three)
+        self.assertNotIn("2026-06-28 今日快照数字", readme)
+        self.assertNotIn("2026-06-28 今日快照数字", one_check_three)
+        self.assertNotIn("2026-06-28 今日真实数量", one_check_three)
         self.assertNotIn("仍需真实运行写入的数字", one_check_three)
         self.assertNotIn("当前仓库没有可作为今日真实数字的持久化日报", one_check_three)
 
@@ -2552,6 +2559,29 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "数据源同步完成即可启用 DAILY_OPERATION",
             "daily_operation_enabled=true",
             "scheduler_install_enabled=true",
+        )
+        for fact in forbidden_facts:
+            self.assertNotIn(fact, page)
+
+    def test_review_action_roi_page_marks_snapshot_as_as_of_not_current_daily_operation(self):
+        page = REVIEW_ACTION_ROI_PAGE.read_text(encoding="utf-8")
+
+        required_facts = (
+            "最近已写入运行快照",
+            "快照服务日 | 2026-06-28",
+            "本页当前数字不是当前自然日持续生产日报",
+            "不证明 S3/DAILY_OPERATION 已进入",
+            "下一次真实运行必须覆盖本页快照或显示 blocked/degraded",
+        )
+        for fact in required_facts:
+            self.assertIn(fact, page)
+
+        forbidden_facts = (
+            "今日真实数量",
+            "## 今日快照",
+            "今日数量已经写入",
+            "正式生产每日运行",
+            "daily_operation_enabled=true",
         )
         for fact in forbidden_facts:
             self.assertNotIn(fact, page)
