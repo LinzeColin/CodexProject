@@ -2459,6 +2459,32 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             request_mainline + request_ready,
         )
 
+    def test_roadmap_marks_persistent_authorization_gate_mainline_as_historical_consumed(self):
+        roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
+        gate_mainline = _section(
+            roadmap,
+            "## 2026-07-01 21:59:44 Australia/Sydney - ",
+            "## 当前最新结论",
+        )
+
+        self.assertIn(
+            "## 2026-07-01 21:59:44 Australia/Sydney - 历史：持久 DAILY_OPERATION 授权门 mainline 证据已绑定",
+            gate_mainline,
+        )
+        self.assertIn("| 项目 | 当时值 |", gate_mainline)
+        self.assertIn("历史当时门", gate_mainline)
+        self.assertIn("当前已由 23:35 owner A keep-disabled mainline 证据消费", gate_mainline)
+        self.assertIn("不得把授权门 mainline 绑定恢复成当前启用路径或默认下一步", gate_mainline)
+        self.assertNotIn(
+            "## 2026-07-01 21:59:44 Australia/Sydney - 持久 DAILY_OPERATION 授权门 mainline 证据已绑定",
+            roadmap,
+        )
+        self.assertNotIn("| 项目 | 当前值 |", gate_mainline)
+        self.assertNotIn(
+            "| 下一步 | 等待 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`；缺失时不得启用 SMTP/scheduler/Release/restore/DAILY_OPERATION |",
+            gate_mainline,
+        )
+
     def test_user_center_readme_historical_s2plt02_s2plt03_entries_do_not_reopen_current_work(self):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
