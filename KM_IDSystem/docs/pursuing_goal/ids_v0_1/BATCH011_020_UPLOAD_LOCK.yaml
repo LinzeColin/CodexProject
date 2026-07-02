@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T22:10:49Z"
-status: "reviewed_ready_for_upload_no_github_upload"
+updated_at_utc: "2026-07-02T22:21:49Z"
+status: "local_batch_upload_gate_passed_pending_github_merge"
 review_task_id: "IDS-V0_1-BATCH-011-020-REVIEW-GATE"
 review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_REVIEW_GATE.md"
 
@@ -27,7 +27,7 @@ data_boundary:
   local_existence_check: "IDS_METADATA_ROOT_EXISTS"
 
 upload_gate:
-  push_allowed: false
+  push_allowed: true
   review_gate: "BATCH011_020_REVIEW_GATE"
   required_before_push:
     - "STAGE-011 through STAGE-020 all completed."
@@ -277,5 +277,5 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_run: "BATCH011_020_REVIEW_GATE reviews STAGE-011..020 local completion evidence, records repair findings, preserves IDS_MetaData as a read-only real-data boundary, and prepares the next upload gate; no raw metadata content access, GitHub upload, PR, merge, app reinstall, or STAGE-021 work is performed."
-  no_upload_reason: "Batch STAGE-011..020 is locally reviewed but GitHub upload remains blocked until IDS-V0_1-BATCH-011-020-UPLOAD-GATE explicitly runs push/PR/merge, app-entry reinstall, and app/local/GitHub parity verification."
+  current_run: "BATCH011_020_UPLOAD_GATE passed local pre-push checks and may push the reviewed STAGE-011..020 batch branch, create a PR targeting main, merge the PR, reinstall app entries, and verify app/local/GitHub parity; no raw metadata content access or STAGE-021 work is performed."
+  no_upload_reason: "NONE for this gate. Direct HEAD:main push remains prohibited because origin/main and this branch are diverged; upload must proceed through PR and GitHub merge."

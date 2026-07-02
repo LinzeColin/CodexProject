@@ -2678,6 +2678,76 @@ next_gate_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_batch011_020_upload_gate_evidence_records_github_main_strategy(self):
+        upload_gate = ROOT / "docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md"
+
+        self.assertTrue(upload_gate.exists(), f"missing upload gate: {upload_gate}")
+
+        text = upload_gate.read_text(encoding="utf-8")
+        required_markers = [
+            "IDS-V0_1-BATCH-011-020-UPLOAD-GATE",
+            "STAGE-011..STAGE-020",
+            "BATCH011_020_REVIEW_GATE.md",
+            "BATCH011_020_UPLOAD_LOCK.yaml",
+            "GitHub open PR/issue precheck",
+            "push_allowed=true",
+            "PR targeting `main`",
+            "No STAGE-021",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "raw database content was not read",
+            "app entry reinstall",
+        ]
+
+        for marker in required_markers:
+            with self.subTest(marker=marker):
+                self.assertIn(marker, text)
+
+    def test_phase_state_allows_batch011_020_upload_gate_pending_github_merge(self):
+        module = self._load_module()
+        batch_text = """
+status: "local_batch_upload_gate_passed_pending_github_merge"
+upload_gate:
+  push_allowed: true
+  review_gate: "BATCH011_020_REVIEW_GATE"
+  gate_task_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md"
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-020:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-021"
+    current_task_id: "IDS-V0_1-STAGE020-P4"
+    acceptance_status: "local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE020"
+current_phase_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
+current_task_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
+next_gate_id: "IDS-V0_1-BATCH-011-020-GITHUB-MERGE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-V0_1-BATCH-011-020-REVIEW-GATE"
+          status: "passed_no_github_upload_until_upload_gate"
+        phase_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
+          status: "passed_pending_github_merge"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_phase_state_allows_completed_batch_upload_gate_after_stage005(self):
         module = self._load_module()
         batch_text = """
