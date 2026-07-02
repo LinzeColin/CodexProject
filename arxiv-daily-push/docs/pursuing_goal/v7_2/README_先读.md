@@ -6,6 +6,8 @@ V7.2 是 V7.1 的窄补丁合同，不覆盖、不删除、不改写 `docs/pursu
 
 - CURRENT 产品合同：`ADP-PRODUCT-CONTRACT-V7.2`
 - 父级历史合同：`ADP-PRODUCT-CONTRACT-V7.1`
+- Stage 2 integrated acceptance 已记录并保持；当前事实以 `docs/pursuing_goal/CURRENT.yaml`、`FINAL_ACCEPTANCE_BUNDLE/manifest.json` 和 `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 为准。
+- S3/DAILY_OPERATION 仍未进入；当前实际阻断只剩 `persistent_daily_operation_authorization_missing`，即 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 不存在。
 - V1.1 输入包：`arxiv_email_learning_v1_1_codex_task_pack.zip`
 - V1.1 输入 hash：`8edbae035da904fe7b465142f90c64f1690a9d36fb24d2a5100fd699e6592eff`
 - V7.1/V1.1 再审查报告 hash：`dac6bcab86e9e7dd04da0cb069fe2443517b56d52fce0cdd3ce3686e2f2b6d1b`
@@ -23,9 +25,9 @@ V7.2 是 V7.1 的窄补丁合同，不覆盖、不删除、不改写 `docs/pursu
 - 不修改邮件生产代码。
 - 不修改公共 Schema。
 - 不修改数据源 connector、queue、database、scheduler、SMTP、Release、backup/restore 或 3+1 编排。
-- 不宣称 `STAGE2_PRODUCTION_ACCEPTED`、`D2_SOURCE_DOMAIN_ACCEPTED` 或 `INTEGRATED_PRODUCTION_ACCEPTED`。
-- 不阻塞无共享文件冲突的 Stage2 Shadow 数据源开发。
+- V7.2 baseline publication 本身不等于 S3/DAILY_OPERATION，也不授权 SMTP、scheduler、Release、restore 或持久运行。
+- 无共享文件冲突的 Stage2 Shadow 数据源开发如需继续，必须先以 `CURRENT.yaml` 和当前 S3 授权边界重新确认，不得绕过持久授权缺失门。
 
 ## 下一任务
 
-Email V1 T01-T05 已完成并合入 main，当前状态为 `EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`。无共享合同文件冲突、无公共 Schema/生产副作用的 Stage2 Shadow 数据源开发可继续；当前全局任务仍是 `S2PCT02`。
+Email V1 T01-T05 已完成并合入 main，当前状态为 `EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`。当前全局入口仍是 `S2PMT07`，下一可执行任务是 `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`。在新的显式 owner 持久授权 artifact 出现前，只能继续 MVP 复审修补、fail-closed 复核和证据同步，不得启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION。
