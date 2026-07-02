@@ -83,6 +83,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("no background ADP process", current_state)
         self.assertIn("No DAILY_OPERATION, standing SMTP permission, scheduler enable/install, Release, or production restore is claimed", current_state)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", current_state)
+        self.assertIn("`ADP_ALLOW_SMTP_SEND` raw value is `UNSET` or false-like", ledger)
+        self.assertIn("foreground process `ADP_ALLOW_SMTP_SEND` was false-like", ledger)
+        self.assertNotIn(
+            "Boundary: `integrated_production_accepted=true` remains recorded, but "
+            "`daily_operation_enabled=false`, persistent `ADP_ALLOW_SMTP_SEND=false`",
+            ledger,
+        )
+        self.assertNotIn(
+            "Runtime boundary: persistent `ADP_ALLOW_SMTP_SEND=false`, daily/health/watchdog LaunchAgents disabled",
+            ledger,
+        )
+        self.assertNotIn(
+            "no background ADP process after closeout, persistent `ADP_ALLOW_SMTP_SEND=false`, "
+            "process `ADP_ALLOW_SMTP_SEND=false`",
+            ledger,
+        )
 
     def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
         manifest_path = (
