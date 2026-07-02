@@ -6468,7 +6468,11 @@ class Stage2FinalGateTests(unittest.TestCase):
             generated_at="2026-07-01T16:00:00+10:00",
             open_pr_count=0,
             adp_allow_smtp_send=False,
-            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            launchagent_disabled_states={
+                "com.linzezhang.adp.daily": True,
+                "com.linzezhang.adp.health": True,
+                "com.linzezhang.adp.watchdog": True,
+            },
             background_adp_process_found=False,
         )
 
@@ -6794,7 +6798,11 @@ class Stage2FinalGateTests(unittest.TestCase):
             generated_at="2026-07-01T20:30:00+10:00",
             open_pr_count=0,
             adp_allow_smtp_send=False,
-            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            launchagent_disabled_states={
+                "com.linzezhang.adp.daily": True,
+                "com.linzezhang.adp.health": True,
+                "com.linzezhang.adp.watchdog": True,
+            },
             background_adp_process_found=False,
             production_preflight_report={
                 "status": "blocked",
@@ -6815,6 +6823,15 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["checks"]["stage2_integrated_production_accepted"])
         self.assertTrue(state["checks"]["daily_operation_currently_disabled"])
         self.assertFalse(state["checks"]["production_preflight_passed"])
+        self.assertEqual(
+            set(state["launchagent_disabled_states"]),
+            {
+                "com.linzezhang.adp.daily",
+                "com.linzezhang.adp.health",
+                "com.linzezhang.adp.watchdog",
+            },
+        )
+        self.assertNotIn("daily", state["launchagent_disabled_states"])
         self.assertIn("production_preflight_passed_failed", state["blocking_reasons"])
         self.assertEqual(
             state["next_required_step"],
@@ -6834,7 +6851,11 @@ class Stage2FinalGateTests(unittest.TestCase):
             generated_at="2026-07-01T20:35:00+10:00",
             open_pr_count=0,
             adp_allow_smtp_send=False,
-            launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+            launchagent_disabled_states={
+                "com.linzezhang.adp.daily": True,
+                "com.linzezhang.adp.health": True,
+                "com.linzezhang.adp.watchdog": True,
+            },
             background_adp_process_found=False,
             production_preflight_report={
                 "status": "pass",
@@ -6885,7 +6906,11 @@ class Stage2FinalGateTests(unittest.TestCase):
                     generated_at="2026-07-01T21:10:00+10:00",
                     open_pr_count=0,
                     adp_allow_smtp_send=False,
-                    launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+                    launchagent_disabled_states={
+                        "com.linzezhang.adp.daily": True,
+                        "com.linzezhang.adp.health": True,
+                        "com.linzezhang.adp.watchdog": True,
+                    },
                     background_adp_process_found=False,
                 )
 
@@ -6936,7 +6961,11 @@ class Stage2FinalGateTests(unittest.TestCase):
                         generated_at="2026-07-01T22:20:00+10:00",
                         open_pr_count=0,
                         adp_allow_smtp_send=False,
-                        launchagent_disabled_states={"daily": True, "health": True, "watchdog": True},
+                        launchagent_disabled_states={
+                            "com.linzezhang.adp.daily": True,
+                            "com.linzezhang.adp.health": True,
+                            "com.linzezhang.adp.watchdog": True,
+                        },
                         background_adp_process_found=False,
                         local_runner_env_file=env_file,
                     )
@@ -7087,6 +7116,52 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(
             "daily operation persistent authorization gate must not enable scheduler_install_enabled",
             validate_state(tampered),
+        )
+
+    def test_daily_operation_persistent_authorization_template_is_not_live_authorization(self) -> None:
+        template_path = (
+            REPO_ROOT
+            / "FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json"
+        )
+        template_index = (REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertTrue(template_path.exists())
+        self.assertIn("daily_operation_persistent_enablement_authorization.template.json", template_index)
+        self.assertFalse(
+            (REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json").exists()
+        )
+
+        payload = json.loads(template_path.read_text(encoding="utf-8"))
+        self.assertTrue(payload["template_only"])
+        self.assertFalse(payload["explicit_persistent_daily_operation_authorization"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertIn(
+            "persistent daily operation authorization artifact must be explicit",
+            stage2_final_gate_module._validate_persistent_daily_operation_authorization_artifact(payload),
+        )
+
+    def test_daily_operation_persistent_authorization_rejects_partially_edited_template(self) -> None:
+        template_path = (
+            REPO_ROOT
+            / "FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json"
+        )
+        payload = json.loads(template_path.read_text(encoding="utf-8"))
+        payload["template_only"] = False
+        payload["explicit_persistent_daily_operation_authorization"] = True
+
+        errors = stage2_final_gate_module._validate_persistent_daily_operation_authorization_artifact(payload)
+
+        self.assertIn(
+            "persistent daily operation authorization artifact generated_at must be a real timestamp",
+            errors,
+        )
+        self.assertIn(
+            "persistent daily operation authorization artifact authorization_text must be explicit owner evidence",
+            errors,
         )
 
     def test_daily_operation_persistent_authorization_request_is_request_only(self) -> None:

@@ -2067,6 +2067,15 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["checks"]["final_bundle_ready"])
         self.assertTrue(payload["checks"]["open_pr_count_zero"])
         self.assertTrue(payload["checks"]["persistent_adp_allow_smtp_send_false"])
+        self.assertEqual(
+            set(payload["launchagent_disabled_states"]),
+            {
+                "com.linzezhang.adp.daily",
+                "com.linzezhang.adp.health",
+                "com.linzezhang.adp.watchdog",
+            },
+        )
+        self.assertNotIn("daily", payload["launchagent_disabled_states"])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["preflight_validation_errors"], [])
@@ -2379,6 +2388,15 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertFalse(payload["daily_operation_enablement_allowed_by_this_artifact"])
+        self.assertEqual(
+            set(payload["launchagent_disabled_states"]),
+            {
+                "com.linzezhang.adp.daily",
+                "com.linzezhang.adp.health",
+                "com.linzezhang.adp.watchdog",
+            },
+        )
+        self.assertNotIn("daily", payload["launchagent_disabled_states"])
 
     def test_daily_operation_owner_authorization_decision_json_command_keeps_runtime_disabled(self):
         repo_root = Path(__file__).resolve().parents[2]

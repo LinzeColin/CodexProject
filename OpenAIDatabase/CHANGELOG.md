@@ -1,5 +1,243 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Pre Stage 0
+
+- Added `docs/product/memory_atlas_v1_1_7_gap_remediation_upgrade_contract.md`.
+- Added `docs/acceptance/memory_atlas_v1_1_7_pre_stage0_acceptance.md`.
+- Added `docs/reviews/memory_atlas_v1_1_7_pre_stage0_review.md`.
+- Added `validate:v1.1.7-pre-stage0` to pin the v1.1.7 gap remediation
+  upgrade package, Stage 0-10 stage map, acceptance matrix, baseline boundary,
+  record alignment, changed-path boundary and final one-time GitHub main upload
+  gate.
+- Registered `MA-V117-PRESTAGE0` / `ACC-MA-V117-PRESTAGE0` with status
+  `pre_stage_0_review_passed_pending_github_main_upload`.
+
+No production runtime feature work, production React/CSS/route change, feature
+flag default switch, raw/private data read, direct writeback, proposal write,
+agent apply, production build, browser screenshot, local app install,
+Cloudflare live deploy, Access policy change or GitHub main upload was added by
+the pre-stage review artifact.
+
+Machine-readable boundary summary: No production runtime feature work; No
+raw/private data read; No direct writeback; No GitHub main upload in review
+artifact.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 10 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_6_stage10_review.md`.
+- Added `validate:v1.1.6-stage10` to pin Stage 10 Phase 1 readiness,
+  whole-project final acceptance evidence, review artifact, records,
+  changed-path boundary and final upload gate.
+- Re-ran `validate:whole-project` as Stage 10 review evidence; it returned
+  `PASS` with production build, 49 unittest checks, visual acceptance, release
+  audit, overall acceptance and offline Cloudflare preflight.
+- Marked Stage 10 as review-passed and pending GitHub main upload.
+- Stage 10 review status: `stage_10_review_passed_pending_github_main_upload`.
+
+No production runtime feature work, production React/CSS/route change, feature
+flag default switch, browser screenshot run, local app install, Cloudflare live
+deploy, Access policy change, raw/private data read, direct writeback, proposal
+write, agent apply, GitHub main upload, or live deploy was added by the review
+itself.
+
+Machine-readable boundary summary: No production runtime feature work; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 10 Phase 1
+
+- Added `docs/product/memory_atlas_final_acceptance_readiness_contract.md`.
+- Added `docs/acceptance/memory_atlas_final_acceptance_readiness_acceptance.md`.
+- Added `validate:v1.1.6-stage10-phase1` to pin the Stage 10 final
+  acceptance readiness contract, acceptance file, records, uploaded-baseline
+  ancestry check, changed-file boundary and runtime non-goals.
+- Marked Stage 10 Phase 1 as
+  `phase_10_1_final_acceptance_readiness_contract_created_pending_stage_review`.
+
+No production UI, CSS, route, app shell, feature flag default, production build,
+browser screenshot run, local app install, Cloudflare live deploy, Access policy
+change, raw/private data read, direct writeback, proposal write, agent apply,
+Stage 10 review, GitHub main upload, or live deploy was added.
+
+Machine-readable boundary summary: No production UI; No production build; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 9 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_6_stage9_review.md`.
+- Added `validate:v1.1.6-stage9` to pin Stage 9 Phase 1 through Phase 4
+  contracts, acceptance files, validators, review artifact, production
+  isolation, changed-path boundary and final upload gate.
+- Marked Stage 9 as review-passed and pending GitHub main upload; Stage 10
+  must start in a separate bounded run after upload verification.
+- Stage 9 review status: `stage_9_review_passed_pending_github_main_upload`.
+
+No production integration, production UI implementation, CSS change, feature
+flag default switch, experiment import into the app shell, score formula
+change, Universe State parameter YAML/input fixture/sample/schema mutation,
+browser screenshot run, production build, local app install, Cloudflare live
+deploy, Access policy change, raw/private data read, direct writeback,
+proposal write, agent apply, Stage 10 work, No GitHub main upload, or live
+deploy was added by the review itself.
+
+Machine-readable boundary summary: No production integration; No production UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 4
+
+- Added `docs/product/universe_state_fixture_continuity_contract.md` to define
+  the Universe State fixture continuity contract for Stage 9 Phase 4.
+- Added `docs/acceptance/universe_state_fixture_continuity_acceptance.md`.
+- Added `validate:v1.1.6-stage9-phase4`.
+- Updated `universe-state-generator-spike/README.md` with v1.1.6 Stage 9
+  Phase 4 continuity, safety and no-upload boundaries.
+- Reused `validate:universe-state-spike` as the required deterministic
+  generator, schema, parameter drift and privacy gate.
+- Stage 9 Phase 4 status:
+  `phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`.
+
+Machine-readable boundary summary: No production integration; No raw/private
+data read; No direct writeback; No GitHub main upload.
+
+No score formula change, parameter YAML change, fixture/sample/schema mutation,
+production integration, route, navigation, feature flag default, production
+build, browser screenshot run, local app install, Cloudflare deploy, Access
+policy change, raw/private data read, direct writeback, proposal write, agent
+apply, Stage 9 review, Stage 10 work or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 3
+
+- Added isolated `data-map-spike` prototype files under
+  `apps/memory-atlas/src/experiments/data-map-spike/`.
+- Added `docs/product/data_map_c3_spike_contract.md` to define the Data Map C3
+  isolated prototype contract for Stage 9 Phase 3.
+- Added `docs/acceptance/data_map_c3_spike_acceptance.md`.
+- Added `validate:v1.1.6-stage9-phase3`.
+- Stage 9 Phase 3 status:
+  `phase_9_3_data_map_c3_spike_ready_pending_stage_review`.
+
+Machine-readable boundary summary: No production integration; No raw/private
+data read; No direct writeback; No GitHub main upload.
+
+No production Data Map replacement, route, navigation, feature flag default,
+production build, browser screenshot run, local app install, Cloudflare deploy,
+Access policy change, raw/private data read, direct writeback, proposal write,
+agent apply, Stage 9 review, Stage 10 work or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 2
+
+- Added `docs/product/memory_river_c3_spike_contract.md` to define the Memory
+  River C3 isolated prototype contract for Stage 9 Phase 2.
+- Added `docs/acceptance/memory_river_c3_spike_acceptance.md`.
+- Added `validate:v1.1.6-stage9-phase2`.
+- Updated `memory-river-spike/README.md` with v1.1.6 Stage 9 Phase 2
+  continuity, safety and no-upload boundaries.
+- Stage 9 Phase 2 status:
+  `phase_9_2_memory_river_c3_spike_ready_pending_stage_review`.
+
+Machine-readable boundary summary: No production integration; No raw/private
+data read; No direct writeback; No GitHub main upload.
+
+No production Timeline replacement, route, navigation, feature flag default,
+production build, browser screenshot run, local app install, Cloudflare deploy,
+Access policy change, raw/private data read, direct writeback, proposal write,
+agent apply, Stage 9 review, Stage 10 work or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 9 Phase 1
+
+- Added `docs/product/memory_starfield_c3_spike_contract.md` to define the
+  Memory Starfield C3 isolated prototype contract for Stage 9 Phase 1.
+- Added `docs/acceptance/memory_starfield_c3_spike_acceptance.md`.
+- Added `validate:v1.1.6-stage9-phase1`.
+- Added v1.1.6 continuity notes to
+  `apps/memory-atlas/src/experiments/memory-starfield-spike/README.md`.
+- Stage 9 Phase 1 status:
+  `phase_9_1_memory_starfield_c3_spike_ready_pending_stage_review`.
+
+No production integration, runtime UI change, CSS change, browser screenshot
+run, production build, local app install, installer run, Cloudflare live
+deploy, Access policy change, raw/private data read, direct writeback, agent
+apply, Stage 9 review, Stage 10 work or No GitHub main upload was added.
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 8 Review
+
+- Added `validate:v1.1.6-stage8` to pin Stage 8 Phase 1 contract,
+  acceptance, records, review artifact, changed-path boundary and final upload
+  gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage8_review.md`.
+- Marked Stage 8 as review-passed and pending GitHub main upload; Stage 9 must
+  start in a separate bounded run after upload verification.
+- Stage 8 review status: `stage_8_review_passed_pending_github_main_upload`.
+
+No runtime UI implementation, CSS change, browser screenshot run, production
+build, local app install, installer run, app bundle mutation, Cloudflare live
+deploy, Access policy change, external account operation, raw/private data
+read, direct writeback, agent apply, Stage 9 work, No GitHub main upload, or
+live deploy was added by the review itself.
+
+Machine-readable boundary summary: No runtime UI implementation; No production build; No raw/private data read; No direct writeback; No GitHub main upload; No live deploy.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 8 Phase 1
+
+- Added `docs/product/memory_atlas_release_rollback_contract.md` to define the
+  Release Rollback Contract, including local app bundle targets, runtime
+  manifest, redacted static artifact, offline Cloudflare preflight, live deploy
+  authorization gate, rollback matrix, proposal-only writeback gate and cleanup
+  guard.
+- Added `docs/acceptance/memory_atlas_release_rollback_acceptance.md`.
+- Added `validate:v1.1.6-stage8-phase1`.
+- Contract title: Release Rollback Contract.
+- Registered `MA-V116-S8P01` in delivery, feature, development and model
+  parameter records.
+- Stage 8 Phase 1 status: `phase_8_1_contract_created_pending_stage_review`.
+
+No runtime UI implementation, CSS change, browser screenshot run, production
+build, local app install, installer run, Cloudflare live deploy, Access policy
+change, external account operation, raw/private data read, direct writeback,
+agent apply, Stage 8 review, Stage 9/10 work, No GitHub main upload, or live
+deploy was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload; No live deploy.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 7 Review
+
+- Added `validate:v1.1.6-stage7` to pin Stage 7 Phase 1 contract,
+  acceptance, records, review artifact, changed-path boundary and final upload
+  gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage7_review.md`.
+- Marked Stage 7 as review-passed and pending GitHub main upload; Stage 8 must
+  start in a separate bounded run after upload verification.
+- Stage 7 review status: `stage_7_review_passed_pending_github_main_upload`.
+
+No runtime UI implementation, CSS change, browser screenshot run, Memory
+Starfield runtime implementation, experiment directory import, feature flag
+default switch, raw/private data read, direct writeback, agent apply, Stage 8
+work, No GitHub main upload, Cloudflare deployment, or Access policy change was
+added by the review itself.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 7 Phase 1
+
+- Added `docs/product/memory_starfield_rebuild_contract.md` to define the
+  Memory Starfield Rebuild Contract, including `memory_starfield`,
+  `nebula_field`, `flow_field`, `trajectory_trails`, `gravity_sources`,
+  `black_hole_core`, `proto_star_cloud`, `memory_terrain_layer`,
+  `cluster_constellations`, search/river jumps, Inspector handoff and
+  reduced-motion requirements.
+- Added `docs/acceptance/memory_starfield_rebuild_acceptance.md`.
+- Added `validate:v1.1.6-stage7-phase1`.
+- Contract title: Memory Starfield Rebuild Contract.
+- Registered `MA-V116-S7P01` in delivery, feature, development and model
+  parameter records.
+- Stage 7 Phase 1 status: `phase_7_1_contract_created_pending_stage_review`.
+
+No runtime UI implementation, CSS change, browser screenshot run, Memory
+Starfield runtime implementation, experiment directory import, feature flag
+default switch, raw/private data read, direct writeback, agent apply, Stage 7
+review, Stage 8/9/10 work, No GitHub main upload, Cloudflare deployment, or
+Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 6 Review
 
 - Added `validate:v1.1.6-stage6` to pin Stage 6 Phase 1 contract,

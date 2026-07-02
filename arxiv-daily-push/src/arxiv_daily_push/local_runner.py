@@ -57,6 +57,8 @@ REVIEW_REPORT_FILENAME = "stage2_s2pjt02_review_schedule_report.json"
 ACTION_ROI_REPORT_FILENAME = "stage2_s2pjt03_action_asset_roi_ledger_report.json"
 USER_CENTER_PENDING_VALUE = "待今日运行快照写入"
 USER_CENTER_PENDING_PLANNED_SEND_TOTAL = "待确认"
+USER_CENTER_CONTROLLED_SEND_LABEL = "受控发送证据 / 计划应发"
+USER_CENTER_LEGACY_SEND_LABEL = "今日已发送 / 总应发送"
 USER_CENTER_SCORE_DETAIL_GATE_ID = "adp-user-center-six-factor-score-detail-gate-v1"
 USER_CENTER_SNAPSHOT_FIELDS = (
     "今日到期复习",
@@ -1180,7 +1182,10 @@ def _replace_user_center_planned_send_total(
         raise ValueError("planned mail delivery summary missing planned total or products")
     lines = text.splitlines()
     changed = False
-    row_re = re.compile(r"^(?P<prefix>\| 今日已发送 / 总应发送 \| )(?P<value>[^|]+)(?P<suffix>\|.*)$")
+    row_re = re.compile(
+        r"^\| (?P<label>今日已发送 / 总应发送|受控发送证据 / 计划应发) \| "
+        r"(?P<value>[^|]+)(?P<suffix>\|.*)$"
+    )
     for index, line in enumerate(lines):
         match = row_re.match(line)
         if not match:
@@ -1192,16 +1197,29 @@ def _replace_user_center_planned_send_total(
                 sent_part = "0"
         else:
             sent_part = str(max(0, int(sent_mail_count)))
-        lines[index] = f"{match.group('prefix')}{sent_part} / {planned_total} {match.group('suffix').lstrip()}"
+        lines[index] = f"| {USER_CENTER_CONTROLLED_SEND_LABEL} | {sent_part} / {planned_total} {match.group('suffix').lstrip()}"
         changed = True
     if not changed:
-        raise ValueError("mail status page missing 今日已发送 / 总应发送 row")
+        raise ValueError("mail status page missing controlled send summary row")
     updated = "\n".join(lines) + ("\n" if text.endswith("\n") else "")
-    marker = f"计划来源：Email V1 每日 3+1（{planned_products}），总应发送 {planned_total} 封；这不是 Stage 2 生产验收通过声明。"
+    marker = (
+        f"计划来源：Email V1 每日 3+1（{planned_products}），计划应发 {planned_total} 封；"
+        "受控发送证据不代表 S3/DAILY_OPERATION 已进入。"
+    )
+    updated = updated.replace(
+        f"计划来源：Email V1 每日 3+1（{planned_products}），总应发送 {planned_total} 封；这不是 Stage 2 生产验收通过声明。",
+        marker,
+    )
+    updated = updated.replace(
+        f"计划来源：Email V1 每日 3+1（{planned_products}），总应发送 {planned_total} 封；这不是 S3/DAILY_OPERATION 已进入声明。",
+        marker,
+    )
     if marker not in updated:
         updated = updated.rstrip() + "\n\n" + marker + "\n"
     if USER_CENTER_PENDING_PLANNED_SEND_TOTAL in "\n".join(
-        line for line in updated.splitlines() if "今日已发送 / 总应发送" in line
+        line
+        for line in updated.splitlines()
+        if USER_CENTER_CONTROLLED_SEND_LABEL in line or USER_CENTER_LEGACY_SEND_LABEL in line
     ):
         raise ValueError("mail status page still contains pending planned send total")
     return updated

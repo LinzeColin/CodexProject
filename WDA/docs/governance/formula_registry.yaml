@@ -1,0 +1,7 @@
+schema_version: "codexproject.formula_registry.v1"
+project_id: "WDA"
+formulas: []
+not_applicable:
+  status: "not_applicable"
+  reason: "WDA has no approved formulas during bootstrap."
+  evidence_ref: "EVID-WDA-BOOTSTRAP-001"

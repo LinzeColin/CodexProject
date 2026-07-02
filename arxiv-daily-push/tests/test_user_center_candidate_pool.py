@@ -74,6 +74,59 @@ def _markdown_anchors(path: Path) -> set[str]:
 
 
 class UserCenterCandidatePoolTests(unittest.TestCase):
+    def test_three_base_files_explain_smtp_false_like_history_before_audit_log(self):
+        pages = [
+            ROOT / "功能清单.md",
+            ROOT / "开发记录.md",
+            ROOT / "模型参数文件.md",
+        ]
+        for page_path in pages:
+            text = page_path.read_text(encoding="utf-8")
+            self.assertIn("## 当前阅读规则", text, page_path.name)
+            self.assertLess(text.index("## 当前阅读规则"), text.index("## 2026-"), page_path.name)
+            self.assertIn("Stage 2 integrated acceptance 已记录", text, page_path.name)
+            self.assertIn("不进入 S3/DAILY_OPERATION", text, page_path.name)
+            self.assertIn(
+                "历史记录中的 `ADP_ALLOW_SMTP_SEND=false` 只表示当时 false-like 运行证据",
+                text,
+                page_path.name,
+            )
+            self.assertIn(
+                "当前安全边界仍只接受 `ADP_ALLOW_SMTP_SEND` 原始值为 `UNSET` 或 false-like",
+                text,
+                page_path.name,
+            )
+
+        feature_list = (ROOT / "功能清单.md").read_text(encoding="utf-8")
+        self.assertIn("历史当时本机 SMTP 发送授权为 false-like", feature_list)
+        self.assertNotIn("本机 SMTP 发送授权必须为 `ADP_ALLOW_SMTP_SEND=false`", feature_list)
+
+    def test_project_readme_records_stage2_and_s3_boundary(self):
+        readme = PROJECT_README.read_text(encoding="utf-8")
+
+        required_phrases = (
+            "[用户中心](./用户中心/README.md)",
+            "Stage 2 integrated acceptance 已记录",
+            "S3/DAILY_OPERATION | 未进入；`daily_operation_enabled=false`",
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+            "本机/launchd 只作为历史与受控运行证据来源",
+            "`ADP_ALLOW_SMTP_SEND` 原始值只接受 `UNSET` 或 false-like",
+            "当前 MVP 准备只做复审修补、证据同步和防回归补强，不进入 S3/DAILY_OPERATION",
+        )
+        for phrase in required_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, readme)
+
+        forbidden_phrases = (
+            "本机运行策略 | 本机加本地 Codex 运行器",
+            "Stage 2 多来源正式生产 | 未通过",
+            "Stage 2 正式生产仍未通过",
+            "Stage 2 来源正式生产推广",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, readme)
+
     def test_owner_facing_mvp_run_contract_wording_uses_next_round(self):
         pages = [
             *USER_CENTER.glob("*.md"),
@@ -1920,6 +1973,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "全量内容记录",
             "内容记录全量",
             "当前运行队列",
+            "今日已发送 / 总应发送",
         )
         for path in SUMMARY_PAGES:
             with self.subTest(path=path.name):
@@ -1936,6 +1990,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
         mvp = (USER_CENTER / "MVP准备与复审修补.md").read_text(encoding="utf-8")
         mail_status = (USER_CENTER / "邮件发送与队列状态.md").read_text(encoding="utf-8")
+        s3_handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         candidate_pool = CANDIDATE_POOL_PAGE.read_text(encoding="utf-8")
         mail_overview = _section(mail_status, "## 总览", "## 邮件发送模板")
 
@@ -1953,10 +2008,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertEqual(roadmap.count("更新时间："), 1)
         self.assertIn("Stage 2 最终门 | 已通过 Stage 2 integrated acceptance", one_look)
         self.assertIn("S3 / DAILY_OPERATION | 不进入；保持禁用", one_look)
+        self.assertIn("受控发送证据 / 计划应发 | 4 / 4", readme)
+        self.assertIn("受控发送证据 / 计划应发 | 4 / 4", one_look)
+        self.assertIn("受控发送证据 / 计划应发 | 4 / 4", mail_overview)
+        self.assertIn("这不是今日后台自动发送结果", readme)
+        self.assertIn("这不是今日后台自动发送结果", one_look)
+        self.assertNotIn("今日已发送 / 总应发送", readme)
+        self.assertNotIn("今日已发送 / 总应发送", one_look)
+        self.assertNotIn("今日已发送 / 总应发送", mail_overview)
         self.assertIn("宣称 S3/DAILY_OPERATION 已进入 | 不可以", one_look)
         self.assertIn("Stage 2 integrated acceptance | 已记录并保持 `true`", decisions)
         self.assertIn("是否现在宣称 Stage 2 integrated acceptance 已记录 | 接受", decisions)
         self.assertIn("是否现在宣称 S3/DAILY_OPERATION 已进入 | 不接受", decisions)
+        self.assertNotIn("| 邮件应发 / 已发 | 计划应发来自 Email V1 每日 3+1 计划；受控发送证据来自真实 SMTP / 运行证据 | 已发只由真实发送证据增加；预览生成不计入已发 | S3/DAILY_OPERATION 已进入 |", candidate_pool)
+        self.assertIn("不是 S3/DAILY_OPERATION 进入证据", candidate_pool)
         self.assertIn("Stage 2 integrated acceptance | `stage2_integrated_production_accepted=true`", roadmap)
         self.assertIn("DAILY_OPERATION | `daily_operation_enabled=false`", roadmap)
         self.assertIn("Stage 2 accepted 后的 MVP 复审修补", roadmap)
@@ -1978,28 +2043,86 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("SMTP 发送开关原始值复核", readme)
         self.assertIn("不能把未设置的环境变量默认写成显式 `false`", readme)
         self.assertIn("当前允许的安全状态是 `UNSET` 或 false-like", readme)
+        self.assertIn("后台进程扫描停止门已同步到路线图", readme)
+        self.assertIn("S3 LaunchAgent 标签停止门已同步", readme)
+        self.assertIn("禁止使用裸 `adp` 子串作为进程扫描匹配项", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", readme)
+        self.assertIn("用户中心历史 SMTP 开关口径已清理", readme)
+        self.assertIn("项目根 README Stage2/S3 边界已同步", readme)
+        self.assertIn("[项目根 README](../README.md)", readme)
+        self.assertIn("Stage 2 integrated acceptance 已记录并保持，S3/DAILY_OPERATION 未进入", readme)
+        self.assertIn("本机/launchd 只作为历史与受控运行证据来源", readme)
+        self.assertIn("根 README、用户中心和三基现在使用同一安全边界", readme)
+        self.assertIn("本页历史记录不再把当前安全边界写成必须存在“持久显式 false”环境变量", readme)
+        self.assertIn("历史运行条目只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前复核仍只接受 `UNSET` 或 false-like", readme)
+        self.assertIn("当前治理 SMTP 原始值证据口径已同步", readme)
+        self.assertIn("下方 2026-07-01 历史记录只保留“当时 false-like”的运行证据或环境事实", readme)
+        self.assertIn("不是当前要求必须存在一个持久显式 `false` 环境变量", readme)
+        self.assertIn("`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like", readme)
+        self.assertNotIn("持久 `ADP_ALLOW_SMTP_SEND=false`", readme)
+        self.assertLess(
+            readme.index("项目根 README Stage2/S3 边界已同步"),
+            readme.index("用户中心历史 SMTP 开关口径已清理"),
+        )
+        self.assertLess(
+            readme.index("当前治理 SMTP 原始值证据口径已同步"),
+            readme.index("owner A 决策 mainline 证据已绑定"),
+        )
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", decisions)
+        self.assertIn("历史 SMTP 开关口径已清理", decisions)
+        self.assertIn(
+            "历史行只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前执行入口仍只接受 `UNSET` 或 false-like",
+            decisions,
+        )
         self.assertIn("继续按原始值复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like", decisions)
         self.assertIn(
             "按当前入口原始值规则复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like",
             decisions,
         )
+        self.assertIn(
+            "在受控窗口按授权切换 `ADP_ALLOW_SMTP_SEND`，并在收口后回到 `UNSET` 或 false-like",
+            decisions,
+        )
+        self.assertIn(
+            "也不得把这类历史 false-like 状态回写成当前 Stage 2 结论",
+            decisions,
+        )
         self.assertNotIn("继续保持持久 `ADP_ALLOW_SMTP_SEND=false`", decisions)
         self.assertNotIn("保持 `ADP_ALLOW_SMTP_SEND=false`，三个 ADP LaunchAgent disabled", decisions)
-        self.assertIn("open PR 边界复核 fallback 已同步到停止门", readme)
+        self.assertNotIn("当时保持 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("当时维持 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("先清除 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertIn("open PR 边界已改为 enablement preflight 自动观察", readme)
         self.assertIn("只有明确得到 `open_pr_count=0` 才能通过", readme)
+        self.assertIn("open_pr_observation_mode=auto_observed", mvp)
         self.assertIn("本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线", mvp)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like", mvp)
         self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp)
         self.assertNotIn("## 09 推荐第一轮 Run Contract", mvp)
-        self.assertIn("GitHub pulls HTML fallback", mvp)
+        self.assertIn("默认通过 `tools/verify_daily_operation_enablement_preflight.py` 自动观察 GitHub open PR count", mvp)
         self.assertIn("若结果为 `UNKNOWN` 或非 0，不得当作通过", mvp)
-        self.assertIn("open PR 必须用 GitHub pulls HTML fallback 得到 0", mvp)
-        self.assertIn("open PR 边界复核 fallback", roadmap)
+        self.assertIn("open PR 由 enablement preflight 自动观察为 0", mvp)
+        self.assertIn("open PR 自动观察停止门", roadmap)
+        self.assertIn("GitHub API 自动观察", roadmap)
+        self.assertIn("HTML fallback 只允许作为降级审计补充", roadmap)
         self.assertIn("SMTP 发送开关原始值停止门", roadmap)
+        self.assertIn("后台进程扫描停止门", roadmap)
+        self.assertIn("只能匹配 ADP runner/module/path 信号", roadmap)
+        self.assertIn("不得使用裸 `adp` 子串作为进程扫描匹配项", roadmap)
         self.assertIn("只接受 `UNSET` 或 false-like", roadmap)
         self.assertIn("`1`、`true`、`yes`、`on` 等 truthy 必须停止并回报", roadmap)
+        self.assertIn("LaunchAgent 标签停止门", roadmap)
+        for label in ("com.linzezhang.adp.daily", "com.linzezhang.adp.health", "com.linzezhang.adp.watchdog"):
+            self.assertIn(label, readme)
+            self.assertIn(label, roadmap)
+            self.assertIn(label, mvp)
+            self.assertIn(label, s3_handoff)
+        self.assertIn("旧 `com.linze.adp.local.*` 只属于历史记录，不得作为当前 S3 safety check 或通过依据", readme)
+        self.assertIn("旧 `com.linze.adp.local.*` 只属于历史运行记录，不得作为当前 S3 safety check 或通过依据", roadmap)
+        self.assertIn("旧 `com.linze.adp.local.*` 不得作为当前通过依据", mvp)
+        self.assertIn('launchctl print "gui/$(id -u)/$label"', s3_handoff)
+        self.assertIn("blocked: %s is loaded", s3_handoff)
+        self.assertNotIn("launchctl print-disabled gui/$(id -u) | rg 'com\\.linze\\.adp\\.local\\.(daily|health|watchdog)'", s3_handoff)
         self.assertIn("## 历史：S2PLT02 terminal proof evidence inventory", mail_status)
         self.assertIn("## 历史：S2PLT02 terminal capture window audit CLI", mail_status)
         self.assertIn("## 历史：S2PLT02 terminal delivery 输入清单", mail_status)
@@ -2039,7 +2162,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("这是历史当时的第二真实日捕获边界", mail_status)
         self.assertIn("当前事实以本页顶部阅读规则为准", readme)
         self.assertIn("当前事实以本页顶部阅读规则为准", decisions)
-        self.assertIn("这不代表 S3/DAILY_OPERATION 已进入", readme)
+        self.assertIn("也不代表 S3/DAILY_OPERATION 已进入", readme)
         self.assertIn("当前不进入 S3/DAILY_OPERATION", one_look)
         self.assertIn("不进入 S3/DAILY_OPERATION", mvp)
         self.assertIn("## 2026-07-02 11:11:20 Australia/Sydney - 最终验收包 JSON 字段阅读规则", roadmap)
@@ -2049,6 +2172,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("- 当前阅读规则", readme)
         self.assertIn("- 当前阅读规则", decisions)
         self.assertIn("- 当前邮件状态阅读规则", mail_status)
+        self.assertIn("邮件状态历史 SMTP 开关口径已清理", mail_status)
+        self.assertIn("历史运行条目只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前复核仍只接受 `UNSET` 或 false-like", mail_status)
+        self.assertIn("运行后 `ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like", mail_status)
+        self.assertNotIn("运行后持久 `ADP_ALLOW_SMTP_SEND=false`", mail_status)
         self.assertIn("Stage 2 integrated acceptance | 已记录并保持 `true`", mail_overview)
         self.assertIn("Final bundle / S2PLT02 状态 | S2PLT02/S2PLT03/S2PLT04 已进入 final bundle", mail_overview)
         self.assertIn("DAILY_OPERATION | 未进入；缺显式 owner 持久授权 artifact", mail_overview)
@@ -2057,6 +2184,11 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("当前实际阻断只剩 S3/DAILY_OPERATION 持久授权缺失", decisions)
         self.assertIn("历史当时生产验收尚未写入", decisions)
         self.assertIn("也不得把这条历史 false 状态回写成当前 Stage 2 结论", decisions)
+        self.assertIn("历史 SMTP 开关口径已清理", decisions)
+        self.assertIn("当时 `ADP_ALLOW_SMTP_SEND` 为 false-like", decisions)
+        self.assertNotIn("当时保持 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("当时维持 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("先清除 `ADP_ALLOW_SMTP_SEND=false`", decisions)
         self.assertIn("## 历史默认下一步（2026-06-30 语境）", decisions)
         self.assertIn("历史：当时 Stage2 Stop Gate 仍未跨越", decisions)
         self.assertIn("历史：Owner 决策已记录，当时下一步只允许写最终验收证据", decisions)

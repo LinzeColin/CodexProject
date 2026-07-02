@@ -18,6 +18,21 @@ from pathlib import Path
 from typing import Any
 
 
+DAILY_OPERATION_GATE_REF = "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json"
+DAILY_OPERATION_AUTHORIZATION_REF = (
+    "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"
+)
+
+
+def _load_json_artifact(root: Path, relative_path: str) -> dict[str, Any]:
+    path = root / relative_path
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        payload = {}
+    return payload if isinstance(payload, dict) else {}
+
+
 def _load_cli_report(root: Path) -> tuple[int, dict[str, Any], str]:
     project_root = root / "arxiv-daily-push"
     env = {
@@ -51,11 +66,7 @@ def _load_cli_report(root: Path) -> tuple[int, dict[str, Any], str]:
 
 
 def _integrated_acceptance_state(root: Path) -> dict[str, bool]:
-    path = root / "FINAL_ACCEPTANCE_BUNDLE" / "integrated_production_acceptance.json"
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        payload = {}
+    payload = _load_json_artifact(root, "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json")
     accepted = (
         payload.get("status")
         == "pass_integrated_production_accepted_evidence_written_no_runtime_enablement"
@@ -79,6 +90,53 @@ def _integrated_acceptance_state(root: Path) -> dict[str, bool]:
         "stage2_integrated_production_accepted": accepted,
         "daily_operation_enabled": payload.get("daily_operation_enabled") is True,
         "runtime_enabled": runtime_enabled,
+    }
+
+
+def _daily_operation_authorization_state(root: Path) -> dict[str, Any]:
+    payload = _load_json_artifact(root, DAILY_OPERATION_GATE_REF)
+    if not payload:
+        return {
+            "daily_operation_authorization_ready": False,
+            "daily_operation_gate_status": "missing",
+            "daily_operation_blocking_reasons": [
+                "daily_operation_persistent_enablement_authorization_gate_missing"
+            ],
+            "daily_operation_next_required_step": "RUN_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_GATE",
+            "daily_operation_next_executable_task": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
+            "daily_operation_persistent_authorization_artifact": DAILY_OPERATION_AUTHORIZATION_REF,
+            "daily_operation_gate_artifact": DAILY_OPERATION_GATE_REF,
+        }
+
+    blocking_reasons = list(payload.get("blocking_reasons", []))
+    ready = (
+        payload.get("persistent_daily_operation_authorized") is True
+        and payload.get("daily_operation_enablement_allowed_by_this_artifact") is True
+        and not blocking_reasons
+        and payload.get("real_smtp_send_enabled") is not True
+        and payload.get("scheduler_install_enabled") is not True
+        and payload.get("release_packaging_enabled") is not True
+        and payload.get("production_restore_enabled") is not True
+    )
+    if not ready and not blocking_reasons:
+        failed_checks = [
+            str(check)
+            for check in payload.get("failed_checks", [])
+            if isinstance(check, str) and check
+        ]
+        blocking_reasons = failed_checks or ["daily_operation_authorization_not_ready"]
+
+    return {
+        "daily_operation_authorization_ready": ready,
+        "daily_operation_gate_status": payload.get("status"),
+        "daily_operation_blocking_reasons": blocking_reasons,
+        "daily_operation_next_required_step": payload.get("next_required_step"),
+        "daily_operation_next_executable_task": payload.get("next_executable_task"),
+        "daily_operation_persistent_authorization_artifact": payload.get(
+            "persistent_authorization_artifact_ref",
+            DAILY_OPERATION_AUTHORIZATION_REF,
+        ),
+        "daily_operation_gate_artifact": payload.get("gate_artifact_ref", DAILY_OPERATION_GATE_REF),
     }
 
 
@@ -116,6 +174,7 @@ def build_verification_report(root: Path, required_zero: list[str]) -> dict[str,
         and s2plt04_validation.get("s2plt04_completed_by_report") is True
     )
     acceptance = _integrated_acceptance_state(root)
+    daily_operation = _daily_operation_authorization_state(root)
     passed = (bundle_complete or final_command_prerequisite_ready) and not acceptance["runtime_enabled"]
     return {
         "status": "PASS" if passed else "FAIL",
@@ -134,6 +193,7 @@ def build_verification_report(root: Path, required_zero: list[str]) -> dict[str,
         "next_executable_task": next_executable_task,
         "s2plt04_completion_report_status": s2plt04_validation.get("status"),
         "blocking_reasons": blocking_reasons,
+        **daily_operation,
         "readiness_validation_errors": validation_errors,
         "missing_items": list(payload.get("missing_items", [])),
         "stderr_tail": stderr_tail,

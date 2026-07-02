@@ -2675,3 +2675,628 @@ Stage 9 整体复审已确认：
 - 本复审不读取 raw/private/cookie/session/secret 数据。
 - 本复审不修改核心前端实现、CSS、路由或 feature flag。
 - 本复审不进入 Stage 7；GitHub main upload 只在 final remote checks 通过后执行。
+
+## 57. v1.1.6 Stage 7 Phase 1 记忆星系重做参数
+
+状态：`phase_7_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 现有 Galaxy 不能继续作为 v1.1.6 记忆星系的最终可用性答案；Stage 7 必须将普通 node-link graph、dots-and-lines 和 Obsidian-like graph 设为失败条件。
+- 记忆星系必须让用户看见主题引力、星云、流场、轨迹、黑洞风险、新生机会和记忆地形层如何共同解释当前记忆状态。
+- 本 phase 只定义合同和验收，不实现 runtime Memory Starfield，不导入 experiment 目录，不切换 feature flag，不读取 raw/private/cookie/session/secret，不执行 direct writeback。
+
+输入：
+
+- `docs/product/memory_starfield_rebuild_contract.md`
+- `docs/acceptance/memory_starfield_rebuild_acceptance.md`
+- Roadmap v2 记忆星系要求：星云、流场、轨迹、引力源、黑洞、新生星云、记忆地形层、非普通 Obsidian Graph、Search/River/Inspector 交接和 reduced motion。
+
+处理方法：
+
+- 固定 Memory Starfield rebuild 的视觉层和交互层。
+- 固定 starfield item 必备字段和 Inspector/proposal handoff。
+- 固定 dots-only、nodes-and-edges-only、Obsidian-like、chart-like、missing nebula、missing flow field、missing trajectories、missing gravity、missing lifecycle markers、blank fallback、raw/private hover card 和 ignored reduced motion 为失败条件。
+- 使用 `validate:v1.1.6-stage7-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S7P01-001 stage7_phase1_contract_id = memory_starfield_rebuild_contract`
+- `PARAM-MA-V116-S7P01-002 stage7_phase1_required_layers = memory_starfield;nebula_field;flow_field;trajectory_trails;gravity_sources;black_hole_core;proto_star_cloud;memory_terrain_layer;cluster_constellations;ambient_depth_particles`
+- `PARAM-MA-V116-S7P01-003 stage7_phase1_required_interactions = orbit_pan_zoom;hover_card;click_inspector;focus_cluster;jump_from_search;jump_from_river;presentation_analysis_toggle;keyboard_navigation;reduced_motion`
+- `PARAM-MA-V116-S7P01-004 stage7_phase1_required_item_fields = starfield_item_id;item_type;theme_id;theme_label;topic_state;gravity_mass;orbit_radius;trajectory_refs;terrain_value;importance;confidence;evidence_count;evidence_refs;source_scope;linked_river_range;linked_asset_ids;linked_action_ids;inspector_link;proposal_hint`
+- `PARAM-MA-V116-S7P01-005 stage7_phase1_failure_conditions = dots_only;nodes_and_edges_only;obsidian_like_graph;chart_like_network;missing_nebula;missing_flow_field;missing_trajectories;missing_gravity_sources;missing_black_hole;missing_proto_star;missing_memory_terrain;missing_inspector_handoff;blank_fallback;raw_private_hover_card;reduced_motion_ignored`
+- `PARAM-MA-V116-S7P01-006 stage7_phase1_status = phase_7_1_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S7P01-007 stage7_phase1_required_validator = validate:v1.1.6-stage7-phase1`
+
+输出：
+
+- Stage 7 Phase 1 产品合同。
+- Stage 7 Phase 1 验收文件。
+- Stage 7 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不导入 experiment 目录，不切换 feature flag default。
+- 本 phase 不进入 Stage 7 整体复审，不进入 Stage 8-10，不执行 GitHub main 上传。
+
+## 58. v1.1.6 Stage 7 整体复审门槛
+
+状态：`stage_7_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 7 只有在 Phase 7.1 的合同、验收、validator 和记录均一致时，才允许进入 GitHub main upload gate。
+- Stage 7 复审通过不等于运行时 UI、浏览器截图、runtime Memory Starfield、真实 WebGL/fallback canvas、Search/River focus handoff 或 agent apply 已完成。
+- Stage 7 复审不得读取 raw/private/cookie/session/secret，不得执行 direct writeback，不得进入 Stage 8。
+
+输入：
+
+- `docs/product/memory_starfield_rebuild_contract.md`
+- `docs/acceptance/memory_starfield_rebuild_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage7_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage7_phase1.cjs`
+
+处理方法：
+
+- 检查 Stage 7 Phase 1 合同、验收和 validator 是否覆盖记忆星系重做所需视觉层、交互、字段和失败条件。
+- 检查 Stage 7 review artifact 是否覆盖 Phase 7.1、边界、风险和 Stage 8 前上传 gate。
+- 检查 delivery、feature、development、model parameter、changelog 和 package script 是否一致。
+- 固定 `validate:v1.1.6-stage7` 为 Stage 8 前的必跑 gate。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S7-REVIEW-001 stage7_required_validator = validate:v1.1.6-stage7`
+- `PARAM-MA-V116-S7-REVIEW-002 stage7_review_status = stage_7_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S7-REVIEW-003 stage7_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage7_review.md`
+- `PARAM-MA-V116-S7-REVIEW-004 stage7_allowed_change_scope = contracts;acceptance;records;reviews;validators;package_script`
+- `PARAM-MA-V116-S7-REVIEW-005 stage7_next_gate = GitHub main upload before Stage 8`
+- `PARAM-MA-V116-S7-REVIEW-006 upload_boundary = no_stage8_until_stage7_upload_verified`
+
+输出：
+
+- Stage 7 review artifact。
+- Stage 7 stage-level validator。
+- Stage 7 review records。
+
+边界：
+
+- 本复审不实现运行时 Memory Starfield。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由或 feature flag。
+- 本复审不导入 experiment 目录，不切换 feature flag default。
+- 本复审不进入 Stage 8；GitHub main upload 只在 final remote checks 通过后执行。
+
+## 59. v1.1.6 Stage 8 Phase 1 发布、本地 App 与回滚安全参数
+
+状态：`phase_8_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Stage 8 必须先冻结发布、本地 App 和回滚安全合同，再允许任何 production build、installer、browser、Cloudflare 或 Access 操作。
+- 发布安全必须区分 local pass、offline preflight pass 和 live deploy complete，不能把外部授权缺失包装成完成。
+- 本 phase 只定义合同和验收，不运行 installer，不 build，不部署 Cloudflare，不修改 Access policy，不读取 raw/private/cookie/session/secret，不执行 direct writeback。
+
+输入：
+
+- `docs/product/memory_atlas_release_rollback_contract.md`
+- `docs/acceptance/memory_atlas_release_rollback_acceptance.md`
+- v1.1.5 Stage 8 经验：Local App Packaging、Release Safety、offline Cloudflare Pages + Access preflight、rollback matrix、runtime manifest 和 cleanup guard。
+
+处理方法：
+
+- 固定 local app、runtime manifest、redacted release artifact、Cloudflare preflight、live deploy authorization、rollback matrix、proposal-only writeback 和 cleanup guard。
+- 固定 release item 必备字段和 owner gate。
+- 固定 stale runtime manifest、stale local app、raw/private release artifact、unauthorized Cloudflare deploy、unauthorized Access policy change、missing rollback path、weakened proposal-only boundary、unclean transient output 和 premature GitHub upload 为失败条件。
+- 使用 `validate:v1.1.6-stage8-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S8P01-001 stage8_phase1_contract_id = memory_atlas_release_rollback_contract`
+- `PARAM-MA-V116-S8P01-002 stage8_phase1_required_surfaces = local_app_bundle;runtime_manifest;redacted_static_artifact;cloudflare_preflight;live_deploy_authorization_gate;rollback_matrix;proposal_only_writeback_gate;cleanup_guard`
+- `PARAM-MA-V116-S8P01-003 stage8_phase1_rollback_matrix = memory_starfield;memory_river;data_map_2_0;search_review_workflows;proposal_queue;local_app_runtime;cloudflare_release`
+- `PARAM-MA-V116-S8P01-004 stage8_phase1_required_item_fields = release_item_id;surface;artifact_path;git_commit;snapshot_generated_at;source_scope;build_mode;audit_status;rollback_path;fallback_mode;owner_gate;evidence_refs;risk_level;inspector_link;proposal_hint`
+- `PARAM-MA-V116-S8P01-005 stage8_phase1_failure_conditions = stale_runtime_manifest;stale_local_app;raw_private_release_artifact;unauthorized_cloudflare_deploy;unauthorized_access_policy_change;missing_rollback_path;weakened_proposal_only_boundary;unclean_transient_output;premature_github_upload`
+- `PARAM-MA-V116-S8P01-006 stage8_phase1_status = phase_8_1_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S8P01-007 stage8_phase1_required_validator = validate:v1.1.6-stage8-phase1`
+
+输出：
+
+- Stage 8 Phase 1 产品合同。
+- Stage 8 Phase 1 验收文件。
+- Stage 8 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback、部署脚本或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不运行 installer，不执行 production build，不部署 Cloudflare，不修改 Access policy。
+- 本 phase 不进入 Stage 8 整体复审，不进入 Stage 9-10，不执行 GitHub main 上传。
+
+## 60. v1.1.6 Stage 8 整体复审门槛
+
+状态：`stage_8_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 8 只有在 Phase 8.1 的合同、验收、validator 和记录均一致时，才允许进入 GitHub main upload gate。
+- Stage 8 复审通过不等于 production build、本地 App 安装、runtime manifest、release artifact audit、Cloudflare preflight 或 live deploy 已完成。
+- Stage 8 复审不得读取 raw/private/cookie/session/secret，不得执行 direct writeback，不得运行 installer/build/deploy，不得进入 Stage 9。
+
+输入：
+
+- `docs/product/memory_atlas_release_rollback_contract.md`
+- `docs/acceptance/memory_atlas_release_rollback_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage8_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage8_phase1.cjs`
+
+处理方法：
+
+- 检查 Stage 8 Phase 1 合同、验收和 validator 是否覆盖本地 App、runtime manifest、redacted static artifact、Cloudflare preflight、授权门槛、rollback matrix、proposal-only gate 和 cleanup guard。
+- 检查 Stage 8 review artifact 是否覆盖 Phase 8.1、边界、风险和 Stage 9 前上传 gate。
+- 检查 delivery、feature、development、model parameter、changelog 和 package script 是否一致。
+- 固定 `validate:v1.1.6-stage8` 为 Stage 9 前的必跑 gate。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S8-REVIEW-001 stage8_required_validator = validate:v1.1.6-stage8`
+- `PARAM-MA-V116-S8-REVIEW-002 stage8_review_status = stage_8_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S8-REVIEW-003 stage8_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage8_review.md`
+- `PARAM-MA-V116-S8-REVIEW-004 stage8_allowed_change_scope = contracts;acceptance;records;reviews;validators;package_script`
+- `PARAM-MA-V116-S8-REVIEW-005 stage8_next_gate = GitHub main upload before Stage 9`
+- `PARAM-MA-V116-S8-REVIEW-006 upload_boundary = no_stage9_until_stage8_upload_verified`
+
+输出：
+
+- Stage 8 review artifact。
+- Stage 8 stage-level validator。
+- Stage 8 review records。
+
+边界：
+
+- 本复审不实现运行时发布流程。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由或 feature flag。
+- 本复审不运行 installer，不执行 production build，不部署 Cloudflare，不修改 Access policy。
+- 本复审不进入 Stage 9；GitHub main upload 只在 final remote checks 通过后执行。
+
+## 61. v1.1.6 Stage 9 Phase 1 记忆星系 C3 隔离原型参数
+
+状态：`phase_9_1_memory_starfield_c3_spike_ready_pending_stage_review`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Phase 9.1 只固定 `memory-starfield-spike` 的独立原型证据、fixture 安全、production isolation 和治理记录。
+- 既有 v1.1.5 spike 可作为 v1.1.6 修补包原型基础，但必须补 v1.1.6 continuity、validator 和 no-production-import gate。
+
+输入：
+
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/README.md`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/index.html`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/main.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/fixture.ts`
+- `docs/product/memory_starfield_c3_spike_contract.md`
+- `docs/acceptance/memory_starfield_c3_spike_acceptance.md`
+
+处理方法：
+
+- 检查 spike 文件是否齐全。
+- 检查 main source 是否保留 Three.js、particle LOD、nebula dust、Flow Field、gravity disk、Black Hole、Proto-Star、hover card、reduced motion 和 smoke hook。
+- 检查 fixture 是否保持 raw/private、plaintext secrets 和 local absolute paths 标志为 false。
+- 检查 production `src` 是否没有引用 `memory-starfield-spike`。
+- 使用 `validate:v1.1.6-stage9-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9P01-001 stage9_phase1_contract_id = memory_starfield_c3_spike_contract`
+- `PARAM-MA-V116-S9P01-002 stage9_phase1_spike_path = apps/memory-atlas/src/experiments/memory-starfield-spike`
+- `PARAM-MA-V116-S9P01-003 stage9_phase1_required_features = three_js_canvas;particle_lod;nebula_dust;flow_field;gravity_disk;black_hole_marker;proto_star_marker;memory_terrain_signal;hover_card;smoke_status_hook`
+- `PARAM-MA-V116-S9P01-004 stage9_phase1_fixture_safety = rawPrivateDataIncluded:false;plaintextSecretsIncluded:false;localAbsolutePathsIncluded:false`
+- `PARAM-MA-V116-S9P01-005 stage9_phase1_isolation_boundary = no_production_import;no_route;no_navigation;no_feature_flag_default;no_direct_writeback`
+- `PARAM-MA-V116-S9P01-006 stage9_phase1_required_validator = validate:v1.1.6-stage9-phase1`
+
+输出：
+
+- Stage 9 Phase 1 产品合同。
+- Stage 9 Phase 1 验收文件。
+- Stage 9 Phase 1 validator。
+- Memory Starfield spike README v1.1.6 continuity note。
+
+边界：
+
+- 本 phase 不修改 production Galaxy、路由、导航、feature flag 或 app shell。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不执行 agent apply。
+- 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
+
+## 62. v1.1.6 Stage 9 Phase 2 记忆时间河 C3 隔离原型参数
+
+状态：`phase_9_2_memory_river_c3_spike_ready_pending_stage_review`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Phase 9.2 只固定 `memory-river-spike` 的独立原型证据、fixture 安全、production isolation 和治理记录。
+- 既有 v1.1.5 spike 可作为 v1.1.6 修补包原型基础，但必须补 v1.1.6 continuity、validator 和 no-production-import gate。
+
+输入：
+
+- `apps/memory-atlas/src/experiments/memory-river-spike/README.md`
+- `apps/memory-atlas/src/experiments/memory-river-spike/index.html`
+- `apps/memory-atlas/src/experiments/memory-river-spike/main.ts`
+- `apps/memory-atlas/src/experiments/memory-river-spike/fixture.ts`
+- `docs/product/memory_river_c3_spike_contract.md`
+- `docs/acceptance/memory_river_c3_spike_acceptance.md`
+
+处理方法：
+
+- 检查 spike 文件是否齐全。
+- 检查 main source 是否保留 D3 UTC scale、zoom、brush、theme lanes、event pulses、Black Hole band、Proto-Star marker、hover card、reduced motion 和 smoke hook。
+- 检查 fixture 是否保持 raw/private、plaintext secrets、local absolute paths 和 writeback 标志为 false。
+- 检查 production `src` 是否没有引用 `memory-river-spike`。
+- 使用 `validate:v1.1.6-stage9-phase2` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9P02-001 stage9_phase2_contract_id = memory_river_c3_spike_contract`
+- `PARAM-MA-V116-S9P02-002 stage9_phase2_spike_path = apps/memory-atlas/src/experiments/memory-river-spike`
+- `PARAM-MA-V116-S9P02-003 stage9_phase2_required_features = d3_time_scale;zoom_pan;brush_selection;theme_lanes;black_hole_band;proto_star_marker;event_pulses;hover_card;reduced_motion;smoke_status_hook`
+- `PARAM-MA-V116-S9P02-004 stage9_phase2_fixture_safety = rawPrivateDataIncluded:false;plaintextSecretsIncluded:false;localAbsolutePathsIncluded:false;writebackAllowed:false`
+- `PARAM-MA-V116-S9P02-005 stage9_phase2_isolation_boundary = no_production_import;no_route;no_navigation;no_feature_flag_default;no_direct_writeback;no_proposal_write`
+- `PARAM-MA-V116-S9P02-006 stage9_phase2_required_validator = validate:v1.1.6-stage9-phase2`
+
+输出：
+
+- Stage 9 Phase 2 产品合同。
+- Stage 9 Phase 2 验收文件。
+- Stage 9 Phase 2 validator。
+- Memory River spike README v1.1.6 continuity note。
+
+边界：
+
+- 本 phase 不修改 production Timeline、路由、导航、feature flag 或 app shell。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
+
+## 68. v1.1.7 Pre Stage 0 Gap Remediation Upgrade Package
+
+状态：`pre_stage_0_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- v1.1.6 Stage 10 review 是 v1.1.7 的 baseline，不在本 pre-stage 重写。
+- v1.1.7 必须先把 Roadmap v2 gap remediation 转成 Stage 0-10 执行映射、
+  验收矩阵、no-runtime/no-raw-private/no-direct-writeback 边界和一次性 GitHub
+  main 上传 gate。
+- Roadmap v2 Stage 11 release/rollback 在用户指定的 Stage 0-10 体系下并入
+  Stage 10 final hardening/upload gate，除非后续 owner decision 重新拆分。
+
+输入：
+
+- `docs/product/memory_atlas_v1_1_7_gap_remediation_upgrade_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_pre_stage0_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_7_pre_stage0_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_pre_stage0.cjs`
+- `docs/reviews/memory_atlas_v1_1_6_stage10_review.md`
+
+处理方法：
+
+- 检查 v1.1.7 pre-stage 合同是否覆盖 Roadmap v2 gap remediation source、Stage
+  0-10 stage map、required acceptance matrix、non-goals、rollback 和 one-time
+  upload gate。
+- 检查 acceptance 文件是否明确 deferred proof 和 no-runtime/no-raw-private 边界。
+- 检查 review artifact、delivery、feature、development、model parameter、
+  changelog 和 package script 是否登记 `MA-V117-PRESTAGE0` 与
+  `ACC-MA-V117-PRESTAGE0`。
+- 检查当前改动范围是否只包含 pre-stage 合同、验收、review、validator、package
+  script 和记录。
+- 使用 `validate:v1.1.7-pre-stage0` 固定本 pre-stage 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V117-PRESTAGE0-001 pre_stage0_contract_id = memory_atlas_v1_1_7_gap_remediation_upgrade_contract`
+- `PARAM-MA-V117-PRESTAGE0-002 pre_stage0_status = pre_stage_0_review_passed_pending_github_main_upload`
+- `PARAM-MA-V117-PRESTAGE0-003 pre_stage0_required_surfaces = Chinese readability;Usage path;Suggested actions;Tier assets;Topic categories;Proposal-only editing;Search 2.0;Review workflow;Summary iteration;Data Map 2.0;Memory River;Memory Starfield;Safety;Performance;Rollback`
+- `PARAM-MA-V117-PRESTAGE0-004 pre_stage0_stage_map = Pre Stage 0;Stage 0;Stage 1;Stage 2;Stage 3;Stage 4;Stage 5;Stage 6;Stage 7;Stage 8;Stage 9;Stage 10`
+- `PARAM-MA-V117-PRESTAGE0-005 pre_stage0_allowed_change_scope = product_contract;acceptance;review;validator;package_script;records`
+- `PARAM-MA-V117-PRESTAGE0-006 pre_stage0_required_validator = validate:v1.1.7-pre-stage0`
+- `PARAM-MA-V117-PRESTAGE0-007 pre_stage0_upload_boundary = one_time_github_main_upload_after_validation_clean_tree_fetch_and_canonical_remote`
+
+输出：
+
+- v1.1.7 pre-stage product contract。
+- v1.1.7 pre-stage acceptance checklist。
+- v1.1.7 pre-stage review artifact。
+- v1.1.7 pre-stage deterministic validator。
+- v1.1.7 pre-stage governance records。
+
+边界：
+
+- 本 pre-stage 不修改 production UI、CSS、路由、导航、feature flag 或 app shell。
+- 本 pre-stage 不运行 production build、installer、本地 app install、browser
+  screenshot 或 Cloudflare deploy。
+- 本 pre-stage 不修改 Access policy。
+- 本 pre-stage 不读取 raw/private/cookie/session/secret 数据。
+- 本 pre-stage 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 pre-stage 不执行 Stage 0 implementation。
+- 本 pre-stage review artifact 不执行 GitHub main 上传。
+
+## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
+
+状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Phase 9.4 固定既有 Universe State generator spike 的 fixture continuity，不改 score formula、parameter YAML、input fixture、sample 或 schema。
+- Universe State fixture 必须继续为 Overview、Starfield、River、Data Map、Inspector 和 ROI 提供 redacted shared semantic state。
+
+输入：
+
+- `apps/memory-atlas/src/experiments/universe-state-generator-spike/README.md`
+- `apps/memory-atlas/src/models/universeState.ts`
+- `apps/memory-atlas/src/utils/universeStateScores.ts`
+- `apps/memory-atlas/src/fixtures/universe_state.input.fixture.json`
+- `apps/memory-atlas/src/fixtures/universe_state.sample.json`
+- `apps/memory-atlas/src/fixtures/universe_state.schema.json`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/scripts/validate_universe_state_spike.mjs`
+- `docs/product/universe_state_fixture_continuity_contract.md`
+- `docs/acceptance/universe_state_fixture_continuity_acceptance.md`
+
+处理方法：
+
+- 检查 Universe State 文件是否齐全。
+- 运行 `validate:universe-state-spike` 验证 deterministic sample、schema、score functions、parameter drift 和 privacy scan。
+- 检查 input fixture 和 sample 是否保持 raw/private、plaintext secrets、local absolute paths 和 writeback 标志为 false。
+- 检查 sample 是否保留 memory_weather、dominant/rising/declining/conflict、black_holes、proto_stars、stale_orbits、memory_terrain、river_pulse、mini_starfield、recommended_next_actions、consumer_map 和 diagnostics。
+- 检查 generated next actions 是否保持 `proposal_only=true`。
+- 检查 production `src` 是否没有引用 `experiments/universe-state-generator-spike`。
+- 使用 `validate:v1.1.6-stage9-phase4` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9P04-001 stage9_phase4_contract_id = universe_state_fixture_continuity_contract`
+- `PARAM-MA-V116-S9P04-002 stage9_phase4_fixture_surface = universeState.ts;universeStateScores.ts;universe_state.input.fixture.json;universe_state.sample.json;universe_state.schema.json;model_parameters.universe_state.yaml;validate_universe_state_spike.mjs`
+- `PARAM-MA-V116-S9P04-003 stage9_phase4_required_features = redacted_fixture_adapter;deterministic_sample_generation;schema_validation;parameter_drift_gate;black_hole_score;proto_star_score;stale_score;memory_weather;memory_terrain;river_pulse;mini_starfield;consumer_map;proposal_only_actions;privacy_status`
+- `PARAM-MA-V116-S9P04-004 stage9_phase4_fixture_safety = rawPrivateDataIncluded:false;plaintextSecretsIncluded:false;localAbsolutePathsIncluded:false;writebackAllowed:false;proposalOnly:true`
+- `PARAM-MA-V116-S9P04-005 stage9_phase4_isolation_boundary = no_production_experiment_import;no_route;no_navigation;no_feature_flag_default;no_direct_writeback;no_proposal_write`
+- `PARAM-MA-V116-S9P04-006 stage9_phase4_required_validator = validate:v1.1.6-stage9-phase4;validate:universe-state-spike`
+
+输出：
+
+- Stage 9 Phase 4 产品合同。
+- Stage 9 Phase 4 验收文件。
+- Stage 9 Phase 4 validator。
+- Universe State generator spike README v1.1.6 continuity note。
+
+边界：
+
+- 本 phase 不修改 production app shell、路由、导航、feature flag 或 runtime UI。
+- 本 phase 不修改 Universe State score formula、parameter YAML、input fixture、sample 或 schema。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
+
+## 65. v1.1.6 Stage 9 整体复审门槛
+
+状态：`stage_9_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Stage 9 复审通过只表示四个 C3 原型 phase 与 Universe State fixture
+  continuity 已被 deterministic validator 和 review artifact 固定。
+- Stage 9 复审不替换 production Galaxy、Timeline、Data Map 或 shared-state
+  runtime integration。
+
+输入：
+
+- `docs/product/memory_starfield_c3_spike_contract.md`
+- `docs/product/memory_river_c3_spike_contract.md`
+- `docs/product/data_map_c3_spike_contract.md`
+- `docs/product/universe_state_fixture_continuity_contract.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage9_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9.cjs`
+
+处理方法：
+
+- 检查 Stage 9 Phase 1-4 合同、验收和 validator 是否齐全。
+- 检查 production `src` 是否没有引用 Stage 9 isolated experiments。
+- 检查 review artifact、delivery、feature、development、model parameter、
+  changelog 和 package script 是否一致。
+- 使用 `validate:v1.1.6-stage9` 固定 review artifact、记录、改动范围和
+  GitHub main 上传前边界。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9-REVIEW-001 stage9_required_validator = validate:v1.1.6-stage9`
+- `PARAM-MA-V116-S9-REVIEW-002 stage9_review_status = stage_9_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S9-REVIEW-003 stage9_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage9_review.md`
+- `PARAM-MA-V116-S9-REVIEW-004 stage9_allowed_change_scope = records;reviews;validators;package_script`
+- `PARAM-MA-V116-S9-REVIEW-005 stage9_next_gate = GitHub main upload before Stage 10`
+- `PARAM-MA-V116-S9-REVIEW-006 upload_boundary = no_stage10_until_stage9_upload_verified`
+
+输出：
+
+- Stage 9 review artifact。
+- Stage 9 stage-level validator。
+- Stage 9 review package script。
+- Stage 9 review governance records。
+
+边界：
+
+- 本 review 不修改 production UI、CSS、路由、导航、feature flag 或 app shell。
+- 本 review 不导入 experiment 到 app shell。
+- 本 review 不修改 Universe State score formula、parameter YAML、input fixture、
+  sample 或 schema。
+- 本 review 不运行 production build、installer、本地 app install、browser screenshot
+  或 Cloudflare deploy。
+- 本 review 不读取 raw/private/cookie/session/secret 数据。
+- 本 review 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 review 不进入 Stage 10，不执行 GitHub main 上传。
+
+## 66. v1.1.6 Stage 10 Phase 1 Final Acceptance Readiness 参数
+
+状态：`phase_10_1_final_acceptance_readiness_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Stage 10 必须在 Stage 9 上传验证完成后开始。
+- Phase 10.1 只建立最终验收 readiness 合同，不执行 Stage 10 整体复审。
+- 最终验收必须把 Roadmap v2 的可用性、解释性、可修改性、中文可读性、搜索复盘、Data Map、Memory River、Memory Starfield、隐私和上传边界收束到同一 evidence matrix。
+
+输入：
+
+- `docs/product/memory_atlas_final_acceptance_readiness_contract.md`
+- `docs/acceptance/memory_atlas_final_acceptance_readiness_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10_phase1.cjs`
+- Stage 0-9 validators and records
+
+处理方法：
+
+- 检查最终验收 readiness 合同是否覆盖 roadmap v2 final acceptance、validator chain、visual evidence、release safety、privacy/writeback、upload readiness 和 governance sync。
+- 检查 acceptance 文件是否说明本 phase 只证明合同与记录一致，不证明最终视觉、浏览器截图、local app packaging、production build、Cloudflare preflight 或 Stage 10 review 完成。
+- 检查 package script、delivery、feature、development、model parameter 和 changelog 是否登记 `MA-V116-S10P01`。
+- 检查当前改动范围是否只包含 Stage 10 Phase 1 合同、验收、validator、package script 和记录。
+- 使用 `validate:v1.1.6-stage10-phase1` 固定本 phase 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S10P01-001 stage10_phase1_contract_id = memory_atlas_final_acceptance_readiness_contract`
+- `PARAM-MA-V116-S10P01-002 stage10_phase1_status = phase_10_1_final_acceptance_readiness_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S10P01-003 stage10_phase1_required_surfaces = roadmap_v2_final_acceptance_matrix;validator_chain;visual_evidence_matrix;release_safety_matrix;privacy_writeback_matrix;upload_readiness_matrix;governance_sync_matrix`
+- `PARAM-MA-V116-S10P01-004 stage10_phase1_required_validator = validate:v1.1.6-stage10-phase1`
+- `PARAM-MA-V116-S10P01-005 stage10_phase1_allowed_change_scope = records;product_contract;acceptance_contract;validator;package_script`
+- `PARAM-MA-V116-S10P01-006 stage10_phase1_entry_condition = stage9_upload_verified_and_origin_main_included`
+- `PARAM-MA-V116-S10P01-007 stage10_phase1_next_gate = Stage 10 review`
+
+输出：
+
+- Stage 10 Phase 1 final acceptance readiness contract。
+- Stage 10 Phase 1 acceptance file。
+- Stage 10 Phase 1 deterministic validator。
+- Stage 10 Phase 1 governance records。
+
+边界：
+
+- 本 phase 不修改 production UI、CSS、路由、导航、feature flag 或 app shell。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot
+  或 Cloudflare deploy。
+- 本 phase 不修改 Access policy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不执行 Stage 10 整体复审，不执行 GitHub main 上传。
+
+## 67. v1.1.6 Stage 10 整体复审门槛
+
+状态：`stage_10_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 10 Phase 1 readiness 合同已经完成。
+- Stage 10 整体复审必须复跑 `validate:whole-project`，把最终验收 readiness 的七类 surface 转化为可验证 evidence gate。
+- Stage 10 review 通过不等于 GitHub main 上传已经执行。
+
+输入：
+
+- `docs/product/memory_atlas_final_acceptance_readiness_contract.md`
+- `docs/acceptance/memory_atlas_final_acceptance_readiness_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage10_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs`
+
+处理方法：
+
+- 检查 Stage 10 Phase 1 readiness 合同、验收、validator 和记录是否一致。
+- 执行 `validate:whole-project`，确认 production build、unittest、visual acceptance、release audit、overall acceptance、offline Cloudflare preflight、roadmap final acceptance coverage、canonical remote 和 upload boundary 均通过。
+- 检查 Stage 10 review artifact、delivery、feature、development、model parameter、changelog 和 package script 是否登记 `MA-V116-S10-REVIEW`。
+- 检查当前改动范围是否只包含 Stage 10 review artifact、validator、package script 和记录。
+- 使用 `validate:v1.1.6-stage10` 固定本 review 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S10-REVIEW-001 stage10_required_validator = validate:v1.1.6-stage10`
+- `PARAM-MA-V116-S10-REVIEW-002 stage10_review_status = stage_10_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S10-REVIEW-003 stage10_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage10_review.md`
+- `PARAM-MA-V116-S10-REVIEW-004 stage10_required_whole_project_gate = validate:whole-project`
+- `PARAM-MA-V116-S10-REVIEW-005 stage10_allowed_change_scope = records;reviews;validators;package_script`
+- `PARAM-MA-V116-S10-REVIEW-006 stage10_next_gate = final GitHub main upload gate`
+- `PARAM-MA-V116-S10-REVIEW-007 upload_boundary = no_github_main_upload_in_stage10_review`
+
+输出：
+
+- Stage 10 review artifact。
+- Stage 10 stage-level validator。
+- Stage 10 review package script。
+- Stage 10 review governance records。
+
+边界：
+
+- 本 review 不新增 production runtime feature work。
+- 本 review 不修改 production UI、CSS、路由、导航、feature flag 或 app shell。
+- 本 review 不安装本地 app，不部署 Cloudflare，不修改 Access policy。
+- 本 review 不读取 raw/private/cookie/session/secret 数据。
+- 本 review 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 review 不执行 GitHub main 上传。
+
+## 63. v1.1.6 Stage 9 Phase 3 Data Map C3 隔离原型参数
+
+状态：`phase_9_3_data_map_c3_spike_ready_pending_stage_review`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Phase 9.3 创建 `data-map-spike` 的独立原型证据、fixture 安全、production isolation 和治理记录。
+- Data Map 2.0 必须解释 source -> topic -> asset -> action，不得退化为 static structure diagram、plain table 或不可解释 node-link graph。
+
+输入：
+
+- `apps/memory-atlas/src/experiments/data-map-spike/README.md`
+- `apps/memory-atlas/src/experiments/data-map-spike/index.html`
+- `apps/memory-atlas/src/experiments/data-map-spike/main.ts`
+- `apps/memory-atlas/src/experiments/data-map-spike/fixture.ts`
+- `docs/product/data_map_c3_spike_contract.md`
+- `docs/acceptance/data_map_c3_spike_acceptance.md`
+
+处理方法：
+
+- 检查 spike 文件是否齐全。
+- 检查 main source 是否保留 source/topic/asset/action 四层、三类 edge、data_to_action_flow、map_card 字段、Inspector/Search/Review handoff、proposal-only 状态、reduced motion 和 smoke hook。
+- 检查 fixture 是否保持 raw/private、plaintext secrets、local absolute paths 和 writeback 标志为 false，`proposalOnly` 为 true。
+- 检查 production `src` 是否没有引用 `data-map-spike`。
+- 使用 `validate:v1.1.6-stage9-phase3` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9P03-001 stage9_phase3_contract_id = data_map_c3_spike_contract`
+- `PARAM-MA-V116-S9P03-002 stage9_phase3_spike_path = apps/memory-atlas/src/experiments/data-map-spike`
+- `PARAM-MA-V116-S9P03-003 stage9_phase3_required_features = source_layer;topic_layer;asset_layer;action_layer;source_to_topic_edges;topic_to_asset_edges;asset_to_action_edges;data_to_action_flow;map_card;open_inspector;jump_to_search;jump_to_review;proposal_candidate;reduced_motion;smoke_status_hook`
+- `PARAM-MA-V116-S9P03-004 stage9_phase3_fixture_safety = rawPrivateDataIncluded:false;plaintextSecretsIncluded:false;localAbsolutePathsIncluded:false;writebackAllowed:false;proposalOnly:true`
+- `PARAM-MA-V116-S9P03-005 stage9_phase3_isolation_boundary = no_production_import;no_route;no_navigation;no_feature_flag_default;no_direct_writeback;no_proposal_write`
+- `PARAM-MA-V116-S9P03-006 stage9_phase3_required_validator = validate:v1.1.6-stage9-phase3`
+
+输出：
+
+- Stage 9 Phase 3 Data Map spike 原型文件。
+- Stage 9 Phase 3 产品合同。
+- Stage 9 Phase 3 验收文件。
+- Stage 9 Phase 3 validator。
+
+边界：
+
+- 本 phase 不修改 production Data Guide / Data Map、路由、导航、feature flag 或 app shell。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。

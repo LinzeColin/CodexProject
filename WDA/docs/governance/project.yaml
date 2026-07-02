@@ -1,0 +1,41 @@
+schema_version: "codexproject.project.v1"
+project_id: "WDA"
+project_name: "WDA"
+summary: "WDA is a newly created CodexProject project shell. The product purpose, users, workflows, data boundaries, model/formula applicability, and delivery scope are not defined yet."
+version: "0.0.0"
+fact_level: "PROPOSED"
+owner_role: "product_owner + engineering_owner"
+current_status: "definition_pending"
+limitations:
+  -
+    statement: "WDA has no approved product scope, runtime code, data contract, model contract, or production readiness claim yet."
+    fact_level: "PROPOSED"
+    evidence_refs:
+      - "EVID-WDA-BOOTSTRAP-001"
+    unknown_task_ids:
+      - "WDA-STAGE0-P1"
+features:
+  -
+    feature_id: "FEAT-WDA-BOOTSTRAP-001"
+    name: "Project bootstrap and governance shell"
+    description: "Establish a clean single-project worktree, root governance registration, and owner-readable project entrypoints."
+    status: "active"
+    fact_level: "PROPOSED"
+    model_ids: []
+    parameter_ids: []
+    code_refs:
+      - "WDA/README.md"
+      - "WDA/AGENTS.md"
+    test_refs:
+      - "scripts/lean_governance.py check-render --project WDA"
+    evidence_refs:
+      - "EVID-WDA-BOOTSTRAP-001"
+models: []
+formulas: []
+parameters: []
+evidence_refs:
+  -
+    evidence_id: "EVID-WDA-BOOTSTRAP-001"
+    kind: "bootstrap"
+    ref: "WDA project shell created in CodexProject worktree"
+    fact_level: "PROPOSED"
