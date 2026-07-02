@@ -87,6 +87,11 @@ projects:
     ci_mode: "required"
     migration:
       version: "lean-v2"
+  - project_id: "WDA"
+    path: "WDA"
+    ci_mode: "required"
+    migration:
+      version: "lean-v2"
   - project_id: "OpenAIDatabase"
     path: "OpenAIDatabase"
     ci_mode: "required"
