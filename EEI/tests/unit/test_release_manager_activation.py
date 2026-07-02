@@ -30,20 +30,29 @@ def test_release_manager_preflight_is_fail_closed_for_repository_state() -> None
         is False
     )
     assert payload["gate_statuses"]["operator_soak"]["operator_4h"] == "PASS"
-    assert payload["gate_statuses"]["operator_soak"]["status"] == "PARTIAL_OPERATOR_EVIDENCE"
-    assert payload["gate_statuses"]["operator_soak"]["operator_24h"] == "MISSING"
+    assert payload["gate_statuses"]["operator_soak"]["operator_24h"] == "PASS"
+    assert (
+        payload["gate_statuses"]["operator_soak"]["status"]
+        == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
+    )
+    assert (
+        payload["gate_statuses"]["operator_soak"]["release_gate_closed_by_validator"]
+        is False
+    )
     heartbeat = payload["gate_statuses"]["operator_soak_background_heartbeat"]
-    assert heartbeat["status"] == "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED"
+    assert heartbeat["status"] == "BACKGROUND_SOAK_COMPLETE_READY_FOR_EVIDENCE_VALIDATION"
+    assert heartbeat["progress_status"] == "COMPLETE_READY_FOR_EVIDENCE_VALIDATION"
     assert heartbeat["counts_as_release_ready"] is False
     assert heartbeat["release_gate_closed_by_background_heartbeat"] is False
-    assert isinstance(heartbeat["windows_completed"], int)
+    assert heartbeat["windows_completed"] == 288
+    assert heartbeat["windows_failed"] == 0
     assert "operator_soak_heartbeat" in payload["source_files"]
     assert "background heartbeat reports" in next(
         gate["reason"]
         for gate in payload["missing_gates"]
         if gate["gate_id"] == "A209_24h_operator_soak"
     )
-    assert "1 failed" in next(
+    assert "288/288 windows, 0 failed" in next(
         gate["reason"]
         for gate in payload["missing_gates"]
         if gate["gate_id"] == "A209_24h_operator_soak"
