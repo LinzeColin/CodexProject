@@ -182,6 +182,42 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_early_final_bundle_runtime_gaps(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 `plan-final-bundle-prerequisites` 为 blocked，但已给出 `next_executable_command=plan-s2plt02-terminal-delivery-proof-capture`",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 S2PLT02 capture command dry-run 仍 `blocked`",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 `plan-final-bundle-prerequisites` 与 `validate-final-acceptance-bundle` 都 blocked",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 `validate-final-acceptance-bundle` 为 blocked",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 `plan-final-bundle-prerequisites` 为 blocked，`next_required_step=S2PLT04_COMPLETION_REPORT`",
+            decisions,
+        )
+        forbidden_phrases = (
+            "| `plan-final-bundle-prerequisites` 当前 blocked",
+            "| S2PLT02 capture command dry-run 仍 `blocked`",
+            "| `plan-final-bundle-prerequisites` 与 `validate-final-acceptance-bundle` 当前都 blocked",
+            "剩余 runtime actions 是 `capture_second_consecutive_real_m1_m4_smtp_day`",
+            "；当前只有 `1/2` 真实发送日、`4/8` 真实邮件",
+            "| `validate-final-acceptance-bundle` 当前 blocked",
+            "| `plan-final-bundle-prerequisites` 当前 blocked，`next_required_step=S2PLT04_COMPLETION_REPORT`",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
