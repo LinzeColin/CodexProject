@@ -366,6 +366,30 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("完整报告正文已公开", page)
         self.assertEqual(page.count("[CONTENT_LEDGER.csv](../docs/owner/CONTENT_LEDGER.csv)"), len(generated_rows) + 1)
 
+    def test_mail_status_history_section_is_not_current_daily_send_report(self):
+        page = (USER_CENTER / "邮件发送与队列状态.md").read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+        one_check_three = (USER_CENTER / "一看三查.md").read_text(encoding="utf-8")
+        history_section = _section(page, "## 历史发送记录", "## 截至今日总候选池")
+        history_rows = re.findall(r"^\| 20\d{2}-\d{2}-\d{2} \|", history_section, flags=re.MULTILINE)
+
+        self.assertEqual(len(history_rows), 15)
+        self.assertIn("历史发送记录不是当前自然日持续生产日报", history_section)
+        self.assertIn("服务日期表示邮件归属服务日，实际时间表示当时发送、补发、阻断或跳过发生时间", history_section)
+        self.assertIn("已发送只表示该历史行有 SMTP 证据或受控发送证据", history_section)
+        self.assertIn("不得用 15 条历史记录推导当前自然日已发送 15 封", history_section)
+        self.assertIn("不得把历史发送记录当作 DAILY_OPERATION 当前已启用", history_section)
+        self.assertIn("历史发送记录 | 15 条历史/受控/阻断记录；不是当前自然日发送日报", page)
+        self.assertIn("历史发送记录只作历史/受控/阻断证据索引", readme)
+        self.assertIn("历史发送记录只作历史/受控/阻断证据索引", one_check_three)
+        for forbidden in (
+            "历史发送记录 = 当前自然日发送日报",
+            "历史发送记录证明 DAILY_OPERATION 已启用",
+            "历史发送记录就是今日发送日报",
+        ):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, page)
+
     def test_learning_snapshot_summary_pages_do_not_revert_to_pending_after_daily_snapshot(self):
         snapshot_page = (USER_CENTER / "复习行动与收益.md").read_text(encoding="utf-8")
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")

@@ -1,6 +1,6 @@
 # 事务发件箱与消息ID扫描
 
-更新时间：2026-07-03 06:02:32 Australia/Sydney
+更新时间：2026-07-03 06:09:57 Australia/Sydney
 
 本页是 P0 `A-003` 的 GitHub 浅层历史/局部证据入口。它只说明事务发件箱、消息 ID、发送 claim 和 SMTP accepted-before-commit crash window 的证据；本页自身不单独关闭 P0，不发送 SMTP，不启用 scheduler，不授权 S3/DAILY_OPERATION。当前 Stage 2 acceptance、P0/P1 zero-proof 和最终包状态以 final bundle 证据为准。
 
