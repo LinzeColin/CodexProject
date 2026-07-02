@@ -2020,6 +2020,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("Stage 2 integrated acceptance | 已记录并保持 `true`", decisions)
         self.assertIn("是否现在宣称 Stage 2 integrated acceptance 已记录 | 接受", decisions)
         self.assertIn("是否现在宣称 S3/DAILY_OPERATION 已进入 | 不接受", decisions)
+        self.assertNotIn("| 邮件应发 / 已发 | 计划应发来自 Email V1 每日 3+1 计划；受控发送证据来自真实 SMTP / 运行证据 | 已发只由真实发送证据增加；预览生成不计入已发 | S3/DAILY_OPERATION 已进入 |", candidate_pool)
+        self.assertIn("不是 S3/DAILY_OPERATION 进入证据", candidate_pool)
         self.assertIn("Stage 2 integrated acceptance | `stage2_integrated_production_accepted=true`", roadmap)
         self.assertIn("DAILY_OPERATION | `daily_operation_enabled=false`", roadmap)
         self.assertIn("Stage 2 accepted 后的 MVP 复审修补", roadmap)
