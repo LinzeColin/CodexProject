@@ -2,18 +2,16 @@
 
 Governance spec version: `2.0.0-lean-transition`
 
-## Purpose
+## 目的
 
-CodexProject governance must preserve accurate owner-useful project truth while
-reducing agent context, CI latency, token cost, generated Git noise, and
-duplicate synchronization. Root `AGENTS.md` is the permanent execution contract;
-this standard defines the machine rules, field contracts, sync rules, and
-acceptance gates behind it.
+CodexProject governance 的目标是保留准确、对 owner 有用的项目事实，同时降低
+agent context、CI latency、token cost、generated Git noise、以及 duplicate
+synchronization。根目录 `AGENTS.md` 是永久执行契约；本标准定义其背后的 machine
+rules、field contracts、sync rules、acceptance gates。
 
-## Project Contract
+## 项目契约
 
-Every active registered project must have these exact project-root human entry
-files:
+每个 active registered project 都必须在项目根目录拥有以下 exact human entry files：
 
 - `功能清单.md`
 - `开发记录.md`
@@ -21,18 +19,16 @@ files:
 - `VERSION`
 - `CHANGELOG.md`
 
-The three Chinese files are complete human views, not aliases, compatibility
-indexes, or links to `docs/governance/`.
+这三份中文文件是完整 human views，不是 aliases、compatibility indexes、或指向
+`docs/governance/` 的 link pages。
 
-中文优先，默认全局中文 applies across the whole repository and every
-registered project. Unless the owner or a stricter project-specific contract
-explicitly requests another language, governance summaries, PR descriptions,
-CI-facing summaries, owner-facing documents, and project human-entry files use
-Chinese by default. Technical identifiers, code symbols, file paths, API names,
-and exact quoted source text may remain in their original language when that
-preserves accuracy.
+中文优先、默认全局中文适用于整个仓库和每个 registered project。除非 owner 或更严格的
+project-specific contract 明确要求其他语言，governance summaries、PR descriptions、
+CI-facing summaries、owner-facing documents、project human-entry files 默认使用中文。
+为保证准确性，technical identifiers、code symbols、file paths、API names、exact
+quoted source text 可以保留原语言。
 
-The Lean v2 canonical fact target for each project is:
+每个项目的 Lean v2 canonical fact target 是：
 
 - `docs/governance/project.yaml`
 - `docs/governance/roadmap.yaml`
@@ -40,15 +36,12 @@ The Lean v2 canonical fact target for each project is:
 - `VERSION`
 - `CHANGELOG.md`
 
-`governance/schemas/project.schema.json` defines the Lean v2 project fact
-contract. It must be able to carry features, models, assumptions, formulas,
-parameters, strategies, validation records, and evidence references with
-explicit fact levels. `UNKNOWN` remains a first-class fact level and must not be
-collapsed into verified truth.
+`governance/schemas/project.schema.json` 定义 Lean v2 project fact contract。它必须能承载
+features、models、assumptions、formulas、parameters、strategies、validation records、
+以及带显式 fact levels 的 evidence references。`UNKNOWN` 是一等 fact level，不能被折叠成 verified truth。
 
-During migration, existing v1 registries and status files remain governance
-truth. Do not delete, archive, or rewrite them until the project has passed its
-Lean v2 migration gate.
+迁移期间，existing v1 registries 和 status files 仍是 governance truth。在项目通过 Lean v2
+migration gate 前，不要 delete、archive、或 rewrite 它们。
 
 ## Roadmap Contract
 

@@ -6,35 +6,34 @@
 
 ## 永久规则
 
-- Every active project must be registered in `governance/projects.yaml`.
-- Active projects must expose project-root `功能清单.md`, `开发记录.md`,
-  and `模型参数文件.md`. They must stay complete Chinese human entries, not
-  English aliases, redirects, compatibility indexes, or link-only pages.
-- `开发记录.md` must directly contain the full Roadmap: Stage -> Phase ->
-  Task, valid task ID, hours, percentages, Stop Conditions, Stop Gates,
-  Acceptance, evidence, rollback, and current result.
-- `docs/pursuing_goal/**/V*_ROOT_LOCK.yaml`, when present, is the strongest
-  project contract below this file; stage gates are not production acceptance.
-- Canonical facts should converge to `docs/governance/project.yaml`,
-  `docs/governance/roadmap.yaml`, `docs/governance/events.jsonl`, `VERSION`,
-  and `CHANGELOG.md`. Derived views, dashboards, ledgers, manifests, and
-  owner summaries preserve truth but must not become duplicate editable facts.
-- One Codex run handles one project, one Roadmap task ID, and one Acceptance ID
-  by default. Do not scan unrelated directories.
-- Use `T0`-`T3` routing from `docs/governance/STANDARD.md`. Default to
-  `T0`/`T1`; upgrade model, formula, parameter, schema, safety, release,
-  legal, privacy, money, payroll, deletion, live delivery, or production work
-  to `T2`/`T3`. Never let ordinary `T0`/`T1` fast paths bypass `T2`/`T3`.
-- Before implementation, state files to read/modify, tests, risks, rollback,
-  stop conditions, and the single Acceptance target.
-- Do not invent formulas, parameters, versions, test results, owner decisions,
-  incidents, or evidence. `UNKNOWN` must link to a concrete Roadmap task.
-- For `arxiv-daily-push`, source or board add/delete/rename/enable/disable
-  must follow its source/board user-center sync gate; config/code-only changes
-  are not complete.
-- GitHub source-of-truth: persistent product changes must be committed and
-  pushed to `LinzeColin/CodexProject`; local apps/caches/WAL/SHM/recovery
-  folders are not product roots.
+- 所有 active project 都必须注册在 `governance/projects.yaml`。
+- Active projects 必须在项目根目录暴露 `功能清单.md`、`开发记录.md`、
+  `模型参数文件.md`。这三份文件必须保持完整中文 human entries，不能变成
+  English aliases、redirects、compatibility indexes、或 link-only pages。
+- `开发记录.md` 必须直接包含完整 Roadmap：Stage -> Phase -> Task、有效 task ID、
+  hours、percentages、Stop Conditions、Stop Gates、Acceptance、evidence、rollback、
+  以及 current result。
+- `docs/pursuing_goal/**/V*_ROOT_LOCK.yaml` 存在时，是本文件之下最强的项目契约；
+  stage gates 不等于 production acceptance。
+- Canonical facts 应收敛到 `docs/governance/project.yaml`、
+  `docs/governance/roadmap.yaml`、`docs/governance/events.jsonl`、`VERSION`、
+  `CHANGELOG.md`。Derived views、dashboards、ledgers、manifests、owner summaries
+  可以保留事实，但不得变成重复可编辑事实源。
+- 默认一个 Codex run 只处理一个 project、一个 Roadmap task ID、一个 Acceptance ID。
+  不要扫描无关目录。
+- 使用 `docs/governance/STANDARD.md` 中的 `T0`-`T3` 路由。默认 `T0`/`T1`；
+  model、formula、parameter、schema、safety、release、legal、privacy、money、
+  payroll、deletion、live delivery、production work 必须升级到 `T2`/`T3`。
+  不得让普通 `T0`/`T1` fast path 绕过 `T2`/`T3`。
+- 实施前必须说明将读取/修改的文件、测试、风险、rollback、stop conditions、
+  以及唯一 Acceptance target。
+- 不得编造 formulas、parameters、versions、test results、owner decisions、
+  incidents、或 evidence。`UNKNOWN` 必须链接到具体 Roadmap task。
+- `arxiv-daily-push` 的 source 或 board add/delete/rename/enable/disable 必须遵守
+  source/board user-center sync gate；config/code-only changes 不算完成。
+- GitHub source-of-truth：持久 product changes 必须 commit 并 push 到
+  `LinzeColin/CodexProject`；local apps/caches/WAL/SHM/recovery folders 不是
+  product roots。
 
 ## Run Modes
 
