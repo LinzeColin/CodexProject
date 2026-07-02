@@ -153,6 +153,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE020-P4-20260702-001",
     "EVT-IDS-V0_1-BATCH-011-020-REVIEW-GATE-20260702-001",
     "EVT-IDS-V0_1-BATCH-011-020-UPLOAD-GATE-20260702-001",
+    "EVT-IDS-V0_1-BATCH-011-020-MAIN-MERGED-20260702-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -674,6 +675,18 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"' in roadmap_text
         and 'next_gate_id: "IDS-V0_1-BATCH-011-020-GITHUB-MERGE"' in roadmap_text
     )
+    batch011_020_uploaded_to_main = (
+        'status: "uploaded_to_github_main"' in batch_text
+        and 'gate_task_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"' in batch_text
+        and 'github_pr: "https://github.com/LinzeColin/CodexProject/pull/271"' in batch_text
+        and 'merged_sha: "61fcb5295c6e0046059eba236c4cedbdaa2f2fed"' in batch_text
+        and 'post_merge_open_prs: 0' in batch_text
+        and 'post_merge_open_issues: 0' in batch_text
+        and 'current_stage_id: "IDS-STAGE020"' in roadmap_text
+        and 'current_phase_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE021-P1-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -718,6 +731,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or stage020_phase4_closeout
         or batch011_020_reviewed_pending_upload
         or batch011_020_upload_gate_active
+        or batch011_020_uploaded_to_main
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (

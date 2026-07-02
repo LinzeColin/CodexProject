@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T22:21:49Z"
-status: "local_batch_upload_gate_passed_pending_github_merge"
+updated_at_utc: "2026-07-02T22:29:29Z"
+status: "uploaded_to_github_main"
 review_task_id: "IDS-V0_1-BATCH-011-020-REVIEW-GATE"
 review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_REVIEW_GATE.md"
 
@@ -42,6 +42,18 @@ upload_gate:
   gate_task_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
   gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md"
   remote_strategy: "after the ten-stage batch gate only: push branch, create PR to main, merge PR, reinstall app entries, verify app/local/GitHub parity, verify no open PRs or issues"
+  github_pr: "https://github.com/LinzeColin/CodexProject/pull/271"
+  merged_sha: "61fcb5295c6e0046059eba236c4cedbdaa2f2fed"
+  post_merge_open_prs: 0
+  post_merge_open_issues: 0
+  app_entry_reinstall:
+    status: "installed"
+    verified_at_utc: "2026-07-02T22:29:29Z"
+    downloads_app: "/Users/linzezhang/Downloads/IDS Industrial Data System.app"
+    applications_app: "/Applications/IDS Industrial Data System.app"
+    downloads_command: "/Users/linzezhang/Downloads/IDS Industrial Data System.command"
+    applications_command: "/Applications/IDS Industrial Data System.command"
+    launcher_root_dir: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem"
 
 stage_progress:
   STAGE-011:
@@ -277,5 +289,5 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_run: "BATCH011_020_UPLOAD_GATE passed local pre-push checks and may push the reviewed STAGE-011..020 batch branch, create a PR targeting main, merge the PR, reinstall app entries, and verify app/local/GitHub parity; no raw metadata content access or STAGE-021 work is performed."
-  no_upload_reason: "NONE for this gate. Direct HEAD:main push remains prohibited because origin/main and this branch are diverged; upload must proceed through PR and GitHub merge."
+  current_run: "Completed STAGE-011..020 batch upload to GitHub main through PR #271, merge SHA 61fcb5295c6e0046059eba236c4cedbdaa2f2fed, then reinstalled app entries pointing at the KM_IDS/KM_IDSystem worktree and verified no open PRs or issues remain."
+  no_upload_reason: "NONE. Upload completed; STAGE-021 is the next development stage but was not started in this gate."
