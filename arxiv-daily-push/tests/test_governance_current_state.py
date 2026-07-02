@@ -729,6 +729,16 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("当前允许的安全状态是 `UNSET` 或 false-like", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", decisions)
+        self.assertIn(
+            "继续按原始值复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like",
+            decisions,
+        )
+        self.assertIn(
+            "按当前入口原始值规则复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like",
+            decisions,
+        )
+        self.assertNotIn("继续保持持久 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("保持 `ADP_ALLOW_SMTP_SEND=false`，三个 ADP LaunchAgent disabled", decisions)
         self.assertIn("只有明确得到 `open_pr_count=0` 才能通过", readme)
         self.assertIn("`UNKNOWN`、非 0、命令失败或无法解析都必须停止并回报", readme)
         self.assertIn("open PR 边界复核 fallback", roadmap)

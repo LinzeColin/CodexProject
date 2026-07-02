@@ -1947,6 +1947,13 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("当前允许的安全状态是 `UNSET` 或 false-like", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", decisions)
+        self.assertIn("继续按原始值复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like", decisions)
+        self.assertIn(
+            "按当前入口原始值规则复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like",
+            decisions,
+        )
+        self.assertNotIn("继续保持持久 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("保持 `ADP_ALLOW_SMTP_SEND=false`，三个 ADP LaunchAgent disabled", decisions)
         self.assertIn("open PR 边界复核 fallback 已同步到停止门", readme)
         self.assertIn("只有明确得到 `open_pr_count=0` 才能通过", readme)
         self.assertIn("本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线", mvp)
