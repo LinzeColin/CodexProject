@@ -218,6 +218,31 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_top_level_wait_state_rows_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        expected_historical_rows = (
+            "历史当时 prerequisite plan `67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232` 与 final readiness `cfcd3d70c0cca7f0a5a8bc3804f599001e585a65dc80fed0cecc75996c6798ee` 均 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 prerequisite plan `d95f0afad934a6692635960d48cda963074840c0615f9bafe1fb023ff9c4f612` 与 final validator `0c032d9c804410f2b4ffe11cb52b00e91500fd7790d1eac533154650625b3c6e` 均 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 prerequisite plan `256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320` 与 final validator `494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67` 均 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 prerequisite plan `2ee61c653d48b74f03505221adf6e37039d9cd4339b5554ba145dd02f9ec6198` 与 final validator `3ba4d2fdcc2ea9bfc268f7f579ce8e8e4e3458ee6c69400e157571906ba16b29` 均 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 plan `447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04` 与 final `45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048` 均 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+        )
+        for phrase in expected_historical_rows:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, decisions)
+
+        forbidden_phrases = (
+            "| 当前 prerequisite plan `67fd78529ab74d520477820d588053c5796db88322a6affa111f278a203d5232` 与 final readiness `cfcd3d70c0cca7f0a5a8bc3804f599001e585a65dc80fed0cecc75996c6798ee` 均 blocked |",
+            "| 当前 prerequisite plan `d95f0afad934a6692635960d48cda963074840c0615f9bafe1fb023ff9c4f612` 与 final validator `0c032d9c804410f2b4ffe11cb52b00e91500fd7790d1eac533154650625b3c6e` 均 blocked |",
+            "| 当前 prerequisite plan `256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320` 与 final validator `494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67` 均 blocked |",
+            "| 当前 prerequisite plan `2ee61c653d48b74f03505221adf6e37039d9cd4339b5554ba145dd02f9ec6198` 与 final validator `3ba4d2fdcc2ea9bfc268f7f579ce8e8e4e3458ee6c69400e157571906ba16b29` 均 blocked |",
+            "| 当前 plan `447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04` 与 final `45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048` 均 blocked |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_owner_decision_page_does_not_reopen_terminal_count_split_as_current_gap(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
 
