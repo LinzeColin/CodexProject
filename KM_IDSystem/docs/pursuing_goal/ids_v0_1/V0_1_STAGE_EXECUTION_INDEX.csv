@@ -1,0 +1,169 @@
+stage,local_code,title,version,domain_code,domain,entrance,acceptance_id,parallel,parallel_note,estimated_hours,file
+STAGE-001,D01-S001,IDS 产品命名合同,v0.1,D01,一次性仓库治理与产品命名,IDS 系统运营入口,ACC-STAGE-001,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-001_IDS产品命名合同.md
+STAGE-002,D01-S002,新建 ProductMetaDatabase,v0.1,D01,一次性仓库治理与产品命名,IDS 系统运营入口,ACC-STAGE-002,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,6-14 小时,stages/STAGE-002_新建ProductMetaDatabase.md
+STAGE-003,D01-S003,MetaDatabase 更名为 FinanceMetaDatabase,v0.1,D01,一次性仓库治理与产品命名,IDS 系统运营入口,ACC-STAGE-003,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,6-14 小时,stages/STAGE-003_MetaDatabase更名为FinanceMetaDatabase.md
+STAGE-004,D01-S004,旧名称引用扫描,v0.1,D01,一次性仓库治理与产品命名,IDS 系统运营入口,ACC-STAGE-004,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-004_旧名称引用扫描.md
+STAGE-005,D01-S005,仓库治理回归验证,v0.1,D01,一次性仓库治理与产品命名,IDS 系统运营入口,ACC-STAGE-005,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-005_仓库治理回归验证.md
+STAGE-006,D02-S001,macOS M2 Max Docker 基线,v0.1,D02,本地运行环境与存储根目录,IDS 系统运营入口,ACC-STAGE-006,是,可与 STAGE-001~005 的仓库治理并行；至少在 STAGE-030 前完成。,4-12 小时,stages/STAGE-006_macOSM2MaxDocker基线.md
+STAGE-007,D02-S002,IDS_DATA_ROOT 检测,v0.1,D02,本地运行环境与存储根目录,IDS 系统运营入口,ACC-STAGE-007,是,可与 STAGE-001~005 的仓库治理并行；至少在 STAGE-030 前完成。,4-12 小时,stages/STAGE-007_IDS_DATA_ROOT检测.md
+STAGE-008,D02-S003,可拔插移动硬盘状态机,v0.1,D02,本地运行环境与存储根目录,IDS 系统运营入口,ACC-STAGE-008,是,可与 STAGE-001~005 的仓库治理并行；至少在 STAGE-030 前完成。,4-12 小时,stages/STAGE-008_可拔插移动硬盘状态机.md
+STAGE-009,D02-S004,存储预算基线,v0.1,D02,本地运行环境与存储根目录,IDS 系统运营入口,ACC-STAGE-009,是,可与 STAGE-001~005 的仓库治理并行；至少在 STAGE-030 前完成。,4-12 小时,stages/STAGE-009_存储预算基线.md
+STAGE-010,D02-S005,本地路径合同,v0.1,D02,本地运行环境与存储根目录,IDS 系统运营入口,ACC-STAGE-010,是,可与 STAGE-001~005 的仓库治理并行；至少在 STAGE-030 前完成。,6-14 小时,stages/STAGE-010_本地路径合同.md
+STAGE-011,D02-S006,安全模式基线,v0.1,D02,本地运行环境与存储根目录,IDS 系统运营入口,ACC-STAGE-011,是,可与 STAGE-001~005 的仓库治理并行；至少在 STAGE-030 前完成。,6-14 小时,stages/STAGE-011_安全模式基线.md
+STAGE-012,D03-S001,原始资料只读合同,v0.1,D03,原始资料保护与文件身份,IDS 系统运营入口,ACC-STAGE-012,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-012_原始资料只读合同.md
+STAGE-013,D03-S002,文件指纹引擎,v0.1,D03,原始资料保护与文件身份,IDS 系统运营入口,ACC-STAGE-013,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-013_文件指纹引擎.md
+STAGE-014,D03-S003,Manifest 生成,v0.1,D03,原始资料保护与文件身份,IDS 系统运营入口,ACC-STAGE-014,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-014_Manifest生成.md
+STAGE-015,D03-S004,重复文件检测,v0.1,D03,原始资料保护与文件身份,IDS 系统运营入口,ACC-STAGE-015,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-015_重复文件检测.md
+STAGE-016,D03-S005,导入幂等键,v0.1,D03,原始资料保护与文件身份,IDS 系统运营入口,ACC-STAGE-016,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,6-14 小时,stages/STAGE-016_导入幂等键.md
+STAGE-017,D03-S006,原始资料回归测试,v0.1,D03,原始资料保护与文件身份,IDS 系统运营入口,ACC-STAGE-017,是,可与 STAGE-024 的压缩包威胁模型、STAGE-152 的黄金测试集准备并行；至少在 STAGE-037 前完成。,6-14 小时,stages/STAGE-017_原始资料回归测试.md
+STAGE-018,D04-S001,导入预检扫描器,v0.1,D04,导入预检与数据优先级,人类产品入口 + IDS 系统运营入口,ACC-STAGE-018,是,可与 STAGE-024 的压缩包威胁模型、STAGE-152 的黄金测试集准备并行；至少在 STAGE-037 前完成。,4-12 小时,stages/STAGE-018_导入预检扫描器.md
+STAGE-019,D04-S002,导入风险估算器,v0.1,D04,导入预检与数据优先级,人类产品入口 + IDS 系统运营入口,ACC-STAGE-019,是,可与 STAGE-024 的压缩包威胁模型、STAGE-152 的黄金测试集准备并行；至少在 STAGE-037 前完成。,4-12 小时,stages/STAGE-019_导入风险估算器.md
+STAGE-020,D04-S003,导入成本估算器,v0.1,D04,导入预检与数据优先级,人类产品入口 + IDS 系统运营入口,ACC-STAGE-020,是,可与 STAGE-024 的压缩包威胁模型、STAGE-152 的黄金测试集准备并行；至少在 STAGE-037 前完成。,4-12 小时,stages/STAGE-020_导入成本估算器.md
+STAGE-021,D04-S004,预检确认 UI,v0.1,D04,导入预检与数据优先级,人类产品入口 + IDS 系统运营入口,ACC-STAGE-021,是,可与 STAGE-024 的压缩包威胁模型、STAGE-152 的黄金测试集准备并行；至少在 STAGE-037 前完成。,4-12 小时,stages/STAGE-021_预检确认UI.md
+STAGE-022,D04-S005,数据优先级队列,v0.1,D04,导入预检与数据优先级,人类产品入口 + IDS 系统运营入口,ACC-STAGE-022,是,可与 STAGE-024 的压缩包威胁模型、STAGE-152 的黄金测试集准备并行；至少在 STAGE-037 前完成。,4-12 小时,stages/STAGE-022_数据优先级队列.md
+STAGE-023,D04-S006,预检场景测试,v0.1,D04,导入预检与数据优先级,人类产品入口 + IDS 系统运营入口,ACC-STAGE-023,是,可与 STAGE-024 的压缩包威胁模型、STAGE-152 的黄金测试集准备并行；至少在 STAGE-037 前完成。,6-14 小时,stages/STAGE-023_预检场景测试.md
+STAGE-024,D05-S001,压缩包威胁模型,v0.1,D05,自动解压与压缩包安全,IDS 系统运营入口,ACC-STAGE-024,是,除安全解压引擎外，可与 STAGE-018~023 的导入预检工作并行；至少在 STAGE-045 前完成。,4-8 小时,stages/STAGE-024_压缩包威胁模型.md
+STAGE-025,D05-S002,安全解压引擎,v0.1,D05,自动解压与压缩包安全,IDS 系统运营入口,ACC-STAGE-025,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-025_安全解压引擎.md
+STAGE-026,D05-S003,压缩包 Manifest,v0.1,D05,自动解压与压缩包安全,IDS 系统运营入口,ACC-STAGE-026,是,除安全解压引擎外，可与 STAGE-018~023 的导入预检工作并行；至少在 STAGE-045 前完成。,4-12 小时,stages/STAGE-026_压缩包Manifest.md
+STAGE-027,D05-S004,解压文件重新入库,v0.1,D05,自动解压与压缩包安全,IDS 系统运营入口,ACC-STAGE-027,是,除安全解压引擎外，可与 STAGE-018~023 的导入预检工作并行；至少在 STAGE-045 前完成。,4-12 小时,stages/STAGE-027_解压文件重新入库.md
+STAGE-028,D05-S005,压缩包对抗测试,v0.1,D05,自动解压与压缩包安全,IDS 系统运营入口,ACC-STAGE-028,是,除安全解压引擎外，可与 STAGE-018~023 的导入预检工作并行；至少在 STAGE-045 前完成。,4-12 小时,stages/STAGE-028_压缩包对抗测试.md
+STAGE-029,D05-S006,压缩包清理白名单,v0.1,D05,自动解压与压缩包安全,IDS 系统运营入口,ACC-STAGE-029,是,除安全解压引擎外，可与 STAGE-018~023 的导入预检工作并行；至少在 STAGE-045 前完成。,4-12 小时,stages/STAGE-029_压缩包清理白名单.md
+STAGE-030,D06-S001,PostgreSQL 控制面启动,v0.1,D06,PostgreSQL 控制面,IDS 系统运营入口,ACC-STAGE-030,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-030_PostgreSQL控制面启动.md
+STAGE-031,D06-S002,Schema 迁移安全,v0.1,D06,PostgreSQL 控制面,IDS 系统运营入口,ACC-STAGE-031,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-031_Schema迁移安全.md
+STAGE-032,D06-S003,数据库连接与连接池基线,v0.1,D06,PostgreSQL 控制面,IDS 系统运营入口,ACC-STAGE-032,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-032_数据库连接与连接池基线.md
+STAGE-033,D06-S004,数据库体积护栏,v0.1,D06,PostgreSQL 控制面,IDS 系统运营入口,ACC-STAGE-033,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-033_数据库体积护栏.md
+STAGE-034,D06-S005,数据保留表,v0.1,D06,PostgreSQL 控制面,IDS 系统运营入口,ACC-STAGE-034,是,可在不修改同一批共享文件的前提下，与相邻上游/测试准备 Stage 并行；至少在本 Domain 下游集成 Stage 前完成。,4-12 小时,stages/STAGE-034_数据保留表.md
+STAGE-035,D06-S006,数据库恢复冒烟测试,v0.1,D06,PostgreSQL 控制面,IDS 系统运营入口,ACC-STAGE-035,是,可在不修改同一批共享文件的前提下，与相邻上游/测试准备 Stage 并行；至少在本 Domain 下游集成 Stage 前完成。,4-8 小时,stages/STAGE-035_数据库恢复冒烟测试.md
+STAGE-036,D06-S007,数据库质量约束,v0.1,D06,PostgreSQL 控制面,IDS 系统运营入口,ACC-STAGE-036,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-036_数据库质量约束.md
+STAGE-037,D07-S001,任务状态模型,v0.1,D07,任务编排与机器控制,IDS 系统运营入口,ACC-STAGE-037,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-037_任务状态模型.md
+STAGE-038,D07-S002,Worker 队列基线,v0.1,D07,任务编排与机器控制,IDS 系统运营入口,ACC-STAGE-038,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-038_Worker队列基线.md
+STAGE-039,D07-S003,重试与死信策略,v0.1,D07,任务编排与机器控制,IDS 系统运营入口,ACC-STAGE-039,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-039_重试与死信策略.md
+STAGE-040,D07-S004,反压策略,v0.1,D07,任务编排与机器控制,IDS 系统运营入口,ACC-STAGE-040,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-040_反压策略.md
+STAGE-041,D07-S005,锁注册与竞态控制,v0.1,D07,任务编排与机器控制,IDS 系统运营入口,ACC-STAGE-041,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-041_锁注册与竞态控制.md
+STAGE-042,D07-S006,自动运行、暂停、恢复与关闭,v0.1,D07,任务编排与机器控制,IDS 系统运营入口,ACC-STAGE-042,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-042_自动运行、暂停、恢复与关闭.md
+STAGE-043,D07-S007,Worker 崩溃恢复,v0.1,D07,任务编排与机器控制,IDS 系统运营入口,ACC-STAGE-043,是,可在不修改同一批共享文件的前提下，与相邻上游/测试准备 Stage 并行；至少在本 Domain 下游集成 Stage 前完成。,4-12 小时,stages/STAGE-043_Worker崩溃恢复.md
+STAGE-044,D07-S008,半成品输出清理,v0.1,D07,任务编排与机器控制,IDS 系统运营入口,ACC-STAGE-044,是,可在不修改同一批共享文件的前提下，与相邻上游/测试准备 Stage 并行；至少在本 Domain 下游集成 Stage 前完成。,4-12 小时,stages/STAGE-044_半成品输出清理.md
+STAGE-045,D08-S001,文件类型检测,v0.1,D08,解析器路由,IDS 系统运营入口,ACC-STAGE-045,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-045_文件类型检测.md
+STAGE-046,D08-S002,解析器路由合同,v0.1,D08,解析器路由,IDS 系统运营入口,ACC-STAGE-046,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-046_解析器路由合同.md
+STAGE-047,D08-S003,解析器输出合同,v0.1,D08,解析器路由,IDS 系统运营入口,ACC-STAGE-047,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-047_解析器输出合同.md
+STAGE-048,D08-S004,解析器失败降级链,v0.1,D08,解析器路由,IDS 系统运营入口,ACC-STAGE-048,是,可与 STAGE-057~062 的表格样例准备并行；至少在 STAGE-063 前完成。,4-12 小时,stages/STAGE-048_解析器失败降级链.md
+STAGE-049,D08-S005,差异化解析器评估,v0.1,D08,解析器路由,IDS 系统运营入口,ACC-STAGE-049,是,可与 STAGE-057~062 的表格样例准备并行；至少在 STAGE-063 前完成。,12-24 小时,stages/STAGE-049_差异化解析器评估.md
+STAGE-050,D08-S006,解析阶段提示注入标记,v0.1,D08,解析器路由,IDS 系统运营入口,ACC-STAGE-050,是,可与 STAGE-057~062 的表格样例准备并行；至少在 STAGE-063 前完成。,4-12 小时,stages/STAGE-050_解析阶段提示注入标记.md
+STAGE-051,D09-S001,OCR 队列基线,v0.1,D09,OCR 管线,IDS 系统运营入口,ACC-STAGE-051,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-051_OCR队列基线.md
+STAGE-052,D09-S002,中英文 OCR 合同,v0.1,D09,OCR 管线,IDS 系统运营入口,ACC-STAGE-052,是,可与 STAGE-057~062 的表格样例准备并行；至少在 STAGE-063 前完成。,4-12 小时,stages/STAGE-052_中英文OCR合同.md
+STAGE-053,D09-S003,按页 OCR 输出,v0.1,D09,OCR 管线,IDS 系统运营入口,ACC-STAGE-053,是,可与 STAGE-057~062 的表格样例准备并行；至少在 STAGE-063 前完成。,4-12 小时,stages/STAGE-053_按页OCR输出.md
+STAGE-054,D09-S004,低置信度复核路由,v0.1,D09,OCR 管线,IDS 系统运营入口,ACC-STAGE-054,是,可与 STAGE-057~062 的表格样例准备并行；至少在 STAGE-063 前完成。,4-12 小时,stages/STAGE-054_低置信度复核路由.md
+STAGE-055,D09-S005,OCR 回归语料,v0.1,D09,OCR 管线,IDS 系统运营入口,ACC-STAGE-055,是,可与 STAGE-057~062 的表格样例准备并行；至少在 STAGE-063 前完成。,4-8 小时,stages/STAGE-055_OCR回归语料.md
+STAGE-056,D09-S006,OCR 缓存保留策略,v0.1,D09,OCR 管线,IDS 系统运营入口,ACC-STAGE-056,是,可与 STAGE-057~062 的表格样例准备并行；至少在 STAGE-063 前完成。,4-12 小时,stages/STAGE-056_OCR缓存保留策略.md
+STAGE-057,D10-S001,XLSX/CSV 接入合同,v0.1,D10,结构化数据与表格事实库,IDS 系统运营入口,ACC-STAGE-057,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-057_XLSX_CSV接入合同.md
+STAGE-058,D10-S002,表格 Schema 推断,v0.1,D10,结构化数据与表格事实库,IDS 系统运营入口,ACC-STAGE-058,是,可与 STAGE-051~056 的 OCR 样例和回归语料准备并行；至少在 STAGE-083 前完成。,12-24 小时,stages/STAGE-058_表格Schema推断.md
+STAGE-059,D10-S003,事实抽取基线,v0.1,D10,结构化数据与表格事实库,IDS 系统运营入口,ACC-STAGE-059,是,可与 STAGE-051~056 的 OCR 样例和回归语料准备并行；至少在 STAGE-083 前完成。,12-24 小时,stages/STAGE-059_事实抽取基线.md
+STAGE-060,D10-S004,表格到 RAG 摘要,v0.1,D10,结构化数据与表格事实库,IDS 系统运营入口,ACC-STAGE-060,是,可与 STAGE-051~056 的 OCR 样例和回归语料准备并行；至少在 STAGE-083 前完成。,4-12 小时,stages/STAGE-060_表格到RAG摘要.md
+STAGE-061,D10-S005,结构化数据质量测试,v0.1,D10,结构化数据与表格事实库,IDS 系统运营入口,ACC-STAGE-061,是,可与 STAGE-051~056 的 OCR 样例和回归语料准备并行；至少在 STAGE-083 前完成。,12-24 小时,stages/STAGE-061_结构化数据质量测试.md
+STAGE-062,D10-S006,表格证据绑定,v0.1,D10,结构化数据与表格事实库,IDS 系统运营入口,ACC-STAGE-062,是,可与 STAGE-051~056 的 OCR 样例和回归语料准备并行；至少在 STAGE-083 前完成。,4-12 小时,stages/STAGE-062_表格证据绑定.md
+STAGE-063,D11-S001,章节感知切块,v0.1,D11,Chunking 与语义资产,IDS 系统运营入口,ACC-STAGE-063,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-063_章节感知切块.md
+STAGE-064,D11-S002,Chunk 身份与版本,v0.1,D11,Chunking 与语义资产,IDS 系统运营入口,ACC-STAGE-064,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-064_Chunk身份与版本.md
+STAGE-065,D11-S003,工程语义资产分类,v0.1,D11,Chunking 与语义资产,IDS 系统运营入口,ACC-STAGE-065,是,可与 STAGE-119~123 的质量门禁设计并行；至少在 STAGE-083 前完成。,12-24 小时,stages/STAGE-065_工程语义资产分类.md
+STAGE-066,D11-S004,Chunk 覆盖率指标,v0.1,D11,Chunking 与语义资产,IDS 系统运营入口,ACC-STAGE-066,是,可与 STAGE-119~123 的质量门禁设计并行；至少在 STAGE-083 前完成。,4-12 小时,stages/STAGE-066_Chunk覆盖率指标.md
+STAGE-067,D11-S005,切块质量回归,v0.1,D11,Chunking 与语义资产,IDS 系统运营入口,ACC-STAGE-067,是,可与 STAGE-119~123 的质量门禁设计并行；至少在 STAGE-083 前完成。,4-12 小时,stages/STAGE-067_切块质量回归.md
+STAGE-068,D11-S006,质量降级而非只判失败,v0.1,D11,Chunking 与语义资产,IDS 系统运营入口,ACC-STAGE-068,是,可与 STAGE-119~123 的质量门禁设计并行；至少在 STAGE-083 前完成。,4-12 小时,stages/STAGE-068_质量降级而非只判失败.md
+STAGE-069,D12-S001,外部 API 策略继承,v0.1,D12,Embedding 与外部 API 策略,IDS 系统运营入口,ACC-STAGE-069,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-069_外部API策略继承.md
+STAGE-070,D12-S002,Embedding 队列与缓存,v0.1,D12,Embedding 与外部 API 策略,IDS 系统运营入口,ACC-STAGE-070,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-070_Embedding队列与缓存.md
+STAGE-071,D12-S003,Embedding 成本治理器,v0.1,D12,Embedding 与外部 API 策略,IDS 系统运营入口,ACC-STAGE-071,是,可与 STAGE-148~151 的审计与安全基线并行；至少在 STAGE-083 前完成。,12-24 小时,stages/STAGE-071_Embedding成本治理器.md
+STAGE-072,D12-S004,Embedding 模型版本,v0.1,D12,Embedding 与外部 API 策略,IDS 系统运营入口,ACC-STAGE-072,是,可与 STAGE-148~151 的审计与安全基线并行；至少在 STAGE-083 前完成。,4-12 小时,stages/STAGE-072_Embedding模型版本.md
+STAGE-073,D12-S005,Embedding 审计测试,v0.1,D12,Embedding 与外部 API 策略,IDS 系统运营入口,ACC-STAGE-073,是,可与 STAGE-148~151 的审计与安全基线并行；至少在 STAGE-083 前完成。,4-8 小时,stages/STAGE-073_Embedding审计测试.md
+STAGE-074,D12-S006,本地 Embedding 兜底合同,v0.1,D12,Embedding 与外部 API 策略,IDS 系统运营入口,ACC-STAGE-074,是,可与 STAGE-148~151 的审计与安全基线并行；至少在 STAGE-083 前完成。,4-12 小时,stages/STAGE-074_本地Embedding兜底合同.md
+STAGE-075,D12-S007,外部 API 覆盖授权审计,v0.1,D12,Embedding 与外部 API 策略,IDS 系统运营入口,ACC-STAGE-075,是,可与 STAGE-148~151 的审计与安全基线并行；至少在 STAGE-083 前完成。,4-12 小时,stages/STAGE-075_外部API覆盖授权审计.md
+STAGE-076,D13-S001,索引版本 Schema,v0.1,D13,索引版本与检索不中断,IDS 系统运营入口,ACC-STAGE-076,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-076_索引版本Schema.md
+STAGE-077,D13-S002,后台索引构建,v0.1,D13,索引版本与检索不中断,IDS 系统运营入口,ACC-STAGE-077,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-077_后台索引构建.md
+STAGE-078,D13-S003,索引冒烟测试,v0.1,D13,索引版本与检索不中断,IDS 系统运营入口,ACC-STAGE-078,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-078_索引冒烟测试.md
+STAGE-079,D13-S004,索引原子切换,v0.1,D13,索引版本与检索不中断,IDS 系统运营入口,ACC-STAGE-079,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-079_索引原子切换.md
+STAGE-080,D13-S005,索引回滚,v0.1,D13,索引版本与检索不中断,IDS 系统运营入口,ACC-STAGE-080,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-080_索引回滚.md
+STAGE-081,D13-S006,影子索引合同,v0.1,D13,索引版本与检索不中断,IDS 系统运营入口,ACC-STAGE-081,是,可与 STAGE-119~123 的数据质量测试设计并行；至少在 STAGE-089 前完成。,12-24 小时,stages/STAGE-081_影子索引合同.md
+STAGE-082,D13-S007,旧索引保留策略,v0.1,D13,索引版本与检索不中断,IDS 系统运营入口,ACC-STAGE-082,是,可与 STAGE-119~123 的数据质量测试设计并行；至少在 STAGE-089 前完成。,4-12 小时,stages/STAGE-082_旧索引保留策略.md
+STAGE-083,D14-S001,关键词检索基线,v0.1,D14,混合检索,IDS 系统运营入口,ACC-STAGE-083,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-083_关键词检索基线.md
+STAGE-084,D14-S002,向量检索基线,v0.1,D14,混合检索,IDS 系统运营入口,ACC-STAGE-084,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-084_向量检索基线.md
+STAGE-085,D14-S003,元数据过滤,v0.1,D14,混合检索,IDS 系统运营入口,ACC-STAGE-085,是,可与 STAGE-119~123 的数据质量测试设计并行；至少在 STAGE-089 前完成。,4-12 小时,stages/STAGE-085_元数据过滤.md
+STAGE-086,D14-S004,混合排序,v0.1,D14,混合检索,IDS 系统运营入口,ACC-STAGE-086,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-086_混合排序.md
+STAGE-087,D14-S005,检索轨迹,v0.1,D14,混合检索,IDS 系统运营入口,ACC-STAGE-087,是,可与 STAGE-119~123 的数据质量测试设计并行；至少在 STAGE-089 前完成。,4-12 小时,stages/STAGE-087_检索轨迹.md
+STAGE-088,D14-S006,检索结果有效性门禁,v0.1,D14,混合检索,IDS 系统运营入口,ACC-STAGE-088,是,可与 STAGE-119~123 的数据质量测试设计并行；至少在 STAGE-089 前完成。,12-24 小时,stages/STAGE-088_检索结果有效性门禁.md
+STAGE-089,D15-S001,证据账本 Schema,v0.1,D15,证据账本与可信等级,IDS 系统运营入口,ACC-STAGE-089,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-089_证据账本Schema.md
+STAGE-090,D15-S002,从检索捕获证据,v0.1,D15,证据账本与可信等级,IDS 系统运营入口,ACC-STAGE-090,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-090_从检索捕获证据.md
+STAGE-091,D15-S003,证据缺口处理,v0.1,D15,证据账本与可信等级,IDS 系统运营入口,ACC-STAGE-091,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-091_证据缺口处理.md
+STAGE-092,D15-S004,证据风险评分,v0.1,D15,证据账本与可信等级,IDS 系统运营入口,ACC-STAGE-092,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-092_证据风险评分.md
+STAGE-093,D15-S005,证据可信等级 A/B/C/D/E,v0.1,D15,证据账本与可信等级,IDS 系统运营入口,ACC-STAGE-093,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-093_证据可信等级A_B_C_D_E.md
+STAGE-094,D15-S006,证据撤回,v0.1,D15,证据账本与可信等级,IDS 系统运营入口,ACC-STAGE-094,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-094_证据撤回.md
+STAGE-095,D15-S007,证据回归测试,v0.1,D15,证据账本与可信等级,IDS 系统运营入口,ACC-STAGE-095,是,可与 STAGE-119~123、STAGE-152~157 的测试设计并行；至少在 STAGE-105 前完成。,4-8 小时,stages/STAGE-095_证据回归测试.md
+STAGE-096,D15-S008,知识库投毒防护,v0.1,D15,证据账本与可信等级,IDS 系统运营入口,ACC-STAGE-096,是,可与 STAGE-119~123、STAGE-152~157 的测试设计并行；至少在 STAGE-105 前完成。,12-24 小时,stages/STAGE-096_知识库投毒防护.md
+STAGE-097,D16-S001,回答合同,v0.1,D16,RAG 回答层与安全,IDS 系统运营入口,ACC-STAGE-097,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-097_回答合同.md
+STAGE-098,D16-S002,Prompt 版本化,v0.1,D16,RAG 回答层与安全,IDS 系统运营入口,ACC-STAGE-098,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-098_Prompt版本化.md
+STAGE-099,D16-S003,内部依据与外部增强分离,v0.1,D16,RAG 回答层与安全,IDS 系统运营入口,ACC-STAGE-099,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-099_内部依据与外部增强分离.md
+STAGE-100,D16-S004,无内部依据策略,v0.1,D16,RAG 回答层与安全,IDS 系统运营入口,ACC-STAGE-100,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-100_无内部依据策略.md
+STAGE-101,D16-S005,RAG 可复现,v0.1,D16,RAG 回答层与安全,IDS 系统运营入口,ACC-STAGE-101,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,12-24 小时,stages/STAGE-101_RAG可复现.md
+STAGE-102,D16-S006,文档内提示注入防护,v0.1,D16,RAG 回答层与安全,IDS 系统运营入口,ACC-STAGE-102,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-102_文档内提示注入防护.md
+STAGE-103,D16-S007,模型输出权限门禁,v0.1,D16,RAG 回答层与安全,IDS 系统运营入口,ACC-STAGE-103,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,12-24 小时,stages/STAGE-103_模型输出权限门禁.md
+STAGE-104,D16-S008,RAG 负向测试,v0.1,D16,RAG 回答层与安全,IDS 系统运营入口,ACC-STAGE-104,是,可与 STAGE-119~123、STAGE-152~157 的测试设计并行；至少在 STAGE-105 前完成。,4-8 小时,stages/STAGE-104_RAG负向测试.md
+STAGE-105,D17-S001,报告证据绑定,v0.1,D17,报告交付,人类产品入口 + IDS 系统运营入口,ACC-STAGE-105,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-105_报告证据绑定.md
+STAGE-106,D17-S002,外部增强意见章节,v0.1,D17,报告交付,人类产品入口 + IDS 系统运营入口,ACC-STAGE-106,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,4-12 小时,stages/STAGE-106_外部增强意见章节.md
+STAGE-107,D17-S003,人工确认事项章节,v0.1,D17,报告交付,人类产品入口 + IDS 系统运营入口,ACC-STAGE-107,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,4-12 小时,stages/STAGE-107_人工确认事项章节.md
+STAGE-108,D17-S004,报告快照,v0.1,D17,报告交付,人类产品入口 + IDS 系统运营入口,ACC-STAGE-108,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-108_报告快照.md
+STAGE-109,D17-S005,报告影响分析,v0.1,D17,报告交付,人类产品入口 + IDS 系统运营入口,ACC-STAGE-109,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,12-24 小时,stages/STAGE-109_报告影响分析.md
+STAGE-110,D17-S006,报告质量评分,v0.1,D17,报告交付,人类产品入口 + IDS 系统运营入口,ACC-STAGE-110,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,12-24 小时,stages/STAGE-110_报告质量评分.md
+STAGE-111,D17-S007,报告重新生成队列,v0.1,D17,报告交付,人类产品入口 + IDS 系统运营入口,ACC-STAGE-111,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,4-12 小时,stages/STAGE-111_报告重新生成队列.md
+STAGE-112,D17-S008,报告导出审计,v0.1,D17,报告交付,人类产品入口 + IDS 系统运营入口,ACC-STAGE-112,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,4-12 小时,stages/STAGE-112_报告导出审计.md
+STAGE-113,D18-S001,复核队列 Schema,v0.1,D18,人工复核队列,人类产品入口 + IDS 系统运营入口,ACC-STAGE-113,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-113_复核队列Schema.md
+STAGE-114,D18-S002,复核工作流,v0.1,D18,人工复核队列,人类产品入口 + IDS 系统运营入口,ACC-STAGE-114,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-114_复核工作流.md
+STAGE-115,D18-S003,复核 UI,v0.1,D18,人工复核队列,人类产品入口 + IDS 系统运营入口,ACC-STAGE-115,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,4-12 小时,stages/STAGE-115_复核UI.md
+STAGE-116,D18-S004,复核审计,v0.1,D18,人工复核队列,人类产品入口 + IDS 系统运营入口,ACC-STAGE-116,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,4-12 小时,stages/STAGE-116_复核审计.md
+STAGE-117,D18-S005,复核结果进入证据体系,v0.1,D18,人工复核队列,人类产品入口 + IDS 系统运营入口,ACC-STAGE-117,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,12-24 小时,stages/STAGE-117_复核结果进入证据体系.md
+STAGE-118,D18-S006,冲突资料复核队列,v0.1,D18,人工复核队列,人类产品入口 + IDS 系统运营入口,ACC-STAGE-118,是,可与 STAGE-127~135 的人类入口 UI 设计并行；至少在 STAGE-157 前完成。,4-12 小时,stages/STAGE-118_冲突资料复核队列.md
+STAGE-119,D19-S001,Manifest 质量测试,v0.1,D19,数据质量门禁,IDS 系统运营入口,ACC-STAGE-119,是,可与对应能力域的实现 Stage 并行设计测试；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-119_Manifest质量测试.md
+STAGE-120,D19-S002,解析质量测试,v0.1,D19,数据质量门禁,IDS 系统运营入口,ACC-STAGE-120,是,可与对应能力域的实现 Stage 并行设计测试；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-120_解析质量测试.md
+STAGE-121,D19-S003,Chunk 质量测试,v0.1,D19,数据质量门禁,IDS 系统运营入口,ACC-STAGE-121,是,可与对应能力域的实现 Stage 并行设计测试；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-121_Chunk质量测试.md
+STAGE-122,D19-S004,证据质量测试,v0.1,D19,数据质量门禁,IDS 系统运营入口,ACC-STAGE-122,是,可与对应能力域的实现 Stage 并行设计测试；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-122_证据质量测试.md
+STAGE-123,D19-S005,质量门禁 UI,v0.1,D19,数据质量门禁,IDS 系统运营入口,ACC-STAGE-123,是,可与对应能力域的实现 Stage 并行设计测试；至少在 STAGE-168 前完成。,4-12 小时,stages/STAGE-123_质量门禁UI.md
+STAGE-124,D20-S001,血缘 Schema,v0.1,D20,血缘与溯源,IDS 系统运营入口,ACC-STAGE-124,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-124_血缘Schema.md
+STAGE-125,D20-S002,血缘查询 API,v0.1,D20,血缘与溯源,IDS 系统运营入口,ACC-STAGE-125,是,可与对应能力域的实现 Stage 并行设计测试；至少在 STAGE-168 前完成。,4-12 小时,stages/STAGE-125_血缘查询API.md
+STAGE-126,D20-S003,血缘回归测试,v0.1,D20,血缘与溯源,IDS 系统运营入口,ACC-STAGE-126,是,可与对应能力域的实现 Stage 并行设计测试；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-126_血缘回归测试.md
+STAGE-127,D21-S001,人类入口导航,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-127,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-127_人类入口导航.md
+STAGE-128,D21-S002,数据源中心 UI,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-128,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-128_数据源中心UI.md
+STAGE-129,D21-S003,资料台账 UI,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-129,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-129_资料台账UI.md
+STAGE-130,D21-S004,知识检索 UI,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-130,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-130_知识检索UI.md
+STAGE-131,D21-S005,报告中心 UI,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-131,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-131_报告中心UI.md
+STAGE-132,D21-S006,客户信任看板,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-132,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,12-24 小时,stages/STAGE-132_客户信任看板.md
+STAGE-133,D21-S007,下一步建议面板,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-133,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,12-24 小时,stages/STAGE-133_下一步建议面板.md
+STAGE-134,D21-S008,中文 UX 状态字典,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-134,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,4-12 小时,stages/STAGE-134_中文UX状态字典.md
+STAGE-135,D21-S009,机器状态到人类状态映射,v0.1,D21,人类产品入口 UI/UX,人类产品入口,ACC-STAGE-135,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,12-24 小时,stages/STAGE-135_机器状态到人类状态映射.md
+STAGE-136,D22-S001,运营入口导航,v0.1,D22,IDS 系统运营入口,IDS 系统运营入口,ACC-STAGE-136,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-136_运营入口导航.md
+STAGE-137,D22-S002,机器控制看板,v0.1,D22,IDS 系统运营入口,IDS 系统运营入口,ACC-STAGE-137,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-137_机器控制看板.md
+STAGE-138,D22-S003,数据治理看板,v0.1,D22,IDS 系统运营入口,IDS 系统运营入口,ACC-STAGE-138,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-138_数据治理看板.md
+STAGE-139,D22-S004,运行可靠看板,v0.1,D22,IDS 系统运营入口,IDS 系统运营入口,ACC-STAGE-139,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,8-16 小时,stages/STAGE-139_运行可靠看板.md
+STAGE-140,D22-S005,质量与发布门禁看板,v0.1,D22,IDS 系统运营入口,IDS 系统运营入口,ACC-STAGE-140,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,12-24 小时,stages/STAGE-140_质量与发布门禁看板.md
+STAGE-141,D22-S006,支持诊断包 UI,v0.1,D22,IDS 系统运营入口,IDS 系统运营入口,ACC-STAGE-141,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,12-24 小时,stages/STAGE-141_支持诊断包UI.md
+STAGE-142,D22-S007,运营安全模式控制,v0.1,D22,IDS 系统运营入口,IDS 系统运营入口,ACC-STAGE-142,是,可在后端契约稳定后并行推进；至少在 STAGE-157 前完成端到端走查所需页面。,12-24 小时,stages/STAGE-142_运营安全模式控制.md
+STAGE-143,D23-S001,元数据备份,v0.1,D23,备份恢复,IDS 系统运营入口,ACC-STAGE-143,是,可与 STAGE-030~036 的数据库控制面并行设计；至少在 Tier 2 数据批量处理前完成。,8-16 小时,stages/STAGE-143_元数据备份.md
+STAGE-144,D23-S002,Manifest 备份,v0.1,D23,备份恢复,IDS 系统运营入口,ACC-STAGE-144,是,可与 STAGE-030~036 的数据库控制面并行设计；至少在 Tier 2 数据批量处理前完成。,4-12 小时,stages/STAGE-144_Manifest备份.md
+STAGE-145,D23-S003,索引 Manifest 导出,v0.1,D23,备份恢复,IDS 系统运营入口,ACC-STAGE-145,是,可与 STAGE-030~036 的数据库控制面并行设计；至少在 Tier 2 数据批量处理前完成。,4-12 小时,stages/STAGE-145_索引Manifest导出.md
+STAGE-146,D23-S004,恢复测试,v0.1,D23,备份恢复,IDS 系统运营入口,ACC-STAGE-146,是,可与 STAGE-030~036 的数据库控制面并行设计；至少在 Tier 2 数据批量处理前完成。,12-24 小时,stages/STAGE-146_恢复测试.md
+STAGE-147,D23-S005,备份 UI,v0.1,D23,备份恢复,IDS 系统运营入口,ACC-STAGE-147,是,可与 STAGE-030~036 的数据库控制面并行设计；至少在 Tier 2 数据批量处理前完成。,4-12 小时,stages/STAGE-147_备份UI.md
+STAGE-148,D24-S001,审计事件 Schema,v0.1,D24,安全与审计,IDS 系统运营入口,ACC-STAGE-148,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,8-16 小时,stages/STAGE-148_审计事件Schema.md
+STAGE-149,D24-S002,外部 API 审计,v0.1,D24,安全与审计,IDS 系统运营入口,ACC-STAGE-149,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-149_外部API审计.md
+STAGE-150,D24-S003,危险操作确认,v0.1,D24,安全与审计,IDS 系统运营入口,ACC-STAGE-150,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-12 小时,stages/STAGE-150_危险操作确认.md
+STAGE-151,D24-S004,Secret 处理基线,v0.1,D24,安全与审计,IDS 系统运营入口,ACC-STAGE-151,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-12 小时,stages/STAGE-151_Secret处理基线.md
+STAGE-152,D25-S001,黄金测试集,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-152,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-152_黄金测试集.md
+STAGE-153,D25-S002,场景测试框架,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-153,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-153_场景测试框架.md
+STAGE-154,D25-S003,结果有效性门禁,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-154,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-154_结果有效性门禁.md
+STAGE-155,D25-S004,禁止行为测试,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-155,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-155_禁止行为测试.md
+STAGE-156,D25-S005,竞态场景测试,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-156,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-156_竞态场景测试.md
+STAGE-157,D25-S006,端到端流程测试,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-157,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-157_端到端流程测试.md
+STAGE-158,D25-S007,性能测试基线,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-158,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,12-24 小时,stages/STAGE-158_性能测试基线.md
+STAGE-159,D25-S008,长稳测试基线,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-159,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,12-24 小时,stages/STAGE-159_长稳测试基线.md
+STAGE-160,D25-S009,UI/UX 走查,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-160,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-160_UI_UX走查.md
+STAGE-161,D25-S010,交叉验证报告,v0.1,D25,测试、压测与发布验证,IDS 系统运营入口,ACC-STAGE-161,是,可作为横切质量工作与相关实现 Stage 并行推进；至少在 STAGE-168 前完成。,4-8 小时,stages/STAGE-161_交叉验证报告.md
+STAGE-162,D26-S001,Codex Stage 模板,v0.1,D26,Codex 执行治理与 v0.1 验收,IDS 系统运营入口,ACC-STAGE-162,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-162_CodexStage模板.md
+STAGE-163,D26-S002,Acceptance ID 索引,v0.1,D26,Codex 执行治理与 v0.1 验收,IDS 系统运营入口,ACC-STAGE-163,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-163_AcceptanceID索引.md
+STAGE-164,D26-S003,允许文件与停止条件,v0.1,D26,Codex 执行治理与 v0.1 验收,IDS 系统运营入口,ACC-STAGE-164,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-164_允许文件与停止条件.md
+STAGE-165,D26-S004,并行执行策略,v0.1,D26,Codex 执行治理与 v0.1 验收,IDS 系统运营入口,ACC-STAGE-165,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-165_并行执行策略.md
+STAGE-166,D26-S005,开发防偏差控制,v0.1,D26,Codex 执行治理与 v0.1 验收,IDS 系统运营入口,ACC-STAGE-166,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-166_开发防偏差控制.md
+STAGE-167,D26-S006,发布包基线,v0.1,D26,Codex 执行治理与 v0.1 验收,IDS 系统运营入口,ACC-STAGE-167,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-167_发布包基线.md
+STAGE-168,D26-S007,v0.1 最终验收门禁,v0.1,D26,Codex 执行治理与 v0.1 验收,IDS 系统运营入口,ACC-STAGE-168,否,本 Stage 涉及共享契约、状态机、数据库、索引、证据、报告或执行规则，建议单独完成后再进入下游。,4-8 小时,stages/STAGE-168_v0.1最终验收门禁.md

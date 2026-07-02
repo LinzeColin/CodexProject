@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "S5"
-current_phase_id: "S5PA"
-current_task_id: "S5PAT03"
-next_gate_id: "S5PA-GATE-IN-PROGRESS"
-total_estimated_hours: 5
-completed_estimated_hours: 5
+current_stage_id: "IDS-STAGE0"
+current_phase_id: "IDS-STAGE0-P4"
+current_task_id: "IDS-V0_1-STAGE0-P4"
+next_gate_id: "IDS-STAGE0-GATE"
+total_estimated_hours: 15
+completed_estimated_hours: 15
 stages:
   -
     stage_id: "S5"
@@ -32,7 +32,7 @@ stages:
         phase_id: "S5PA"
         name: "模型密集项目迁移"
         objective: "优先处理模型、策略和参数复杂度高的项目。"
-        status: "in_progress"
+        status: "completed"
         stop_conditions:
           - "上一项目未通过 Gate"
           - "批量脚本产生无证据事实"
@@ -68,3 +68,195 @@ stages:
               - "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json"
             risk: "范围扩张、事实失真或治理回归"
             rollback: "Revert only this task commit; retain the read-only audit evidence."
+  -
+    stage_id: "IDS-STAGE0"
+    name: "IDS v0.1 Stage 0 执行根锁"
+    person_goal: "在进入 STAGE-001 前，先锁定 IDS v0.1 的资料优先级、当前 worktree 路径、执行边界、停止条件和后续阶段入口。"
+    status: "completed"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "绕过 v0.1-only 主资料而使用 full/v2 文件覆盖当前范围"
+      - "复活 opme-system 或 OpMe_System 作为主动开发路径"
+      - "触碰真实原始资料、secrets 或 00_ORIGINAL_RAW_DATA"
+    stop_gate:
+      gate_id: "IDS-STAGE0-GATE"
+      status: "local_passed_pending_remote_evidence"
+      pass_conditions:
+        - "Stage 0 四个 phase 均完成并复审"
+        - "STAGE-001 可从本地 root lock 与 P0 taskpack 进入"
+        - "Stage 0 已上传并合并到 GitHub main，且无遗留 PR/issue"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE1_SOURCE_PRIORITY.md"
+    phases:
+      -
+        phase_id: "IDS-STAGE0-P1"
+        name: "root lock and source priority"
+        objective: "记录 P0 v0.1-only 主资料、当前 KM_IDS/KM_IDSystem 路径映射、v0.1-only 范围、v0.2+ 非执行规则和停止条件。"
+        status: "completed"
+        stop_conditions:
+          - "P0 文件 hash 无法复现"
+          - "taskpack stage index 不是 STAGE-001 至 STAGE-168"
+          - "项目路径不是 KM_IDSystem"
+          - "完整 governance validate 因 sparse worktree 要求展开其他项目"
+        stop_gate:
+          gate_id: "IDS-STAGE0-P1-GATE"
+          status: "passed_with_sparse_validate_limitation"
+          pass_conditions:
+            - "P0 文件 hash 已记录"
+            - "taskpack stage index 168 条无缺口"
+            - "Stage0 root lock 和 source priority 文档存在"
+            - "render 检查无中文入口漂移"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE1_SOURCE_PRIORITY.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE0-P1"
+            name: "锁定 IDS v0.1 主资料与执行根"
+            objective: "在不进入 STAGE-001 的前提下，建立 Stage 0 Phase 1 可验证、可回滚、可继续的执行合同。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "28.57%"
+            dependencies:
+              - "S5PAT03"
+            acceptance_ids:
+              - "ACC-IDS-V0_1-STAGE0-P1"
+            test_commands:
+              - "python3 standard-library hash and zip stage-index verification"
+              - "bundled python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "bundled python3 -B scripts/lean_governance.py validate --project KM_IDSystem --semantic"
+              - "bundled python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main"
+              - "git status --short --branch"
+            test_results: "hash/index/marker checks passed; check-render drift_count=0; validate commands blocked by sparse worktree missing root schemas, root workflows/hooks, and unrelated registered projects, so no unrelated project expansion was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE1_SOURCE_PRIORITY.md"
+            risk: "旧 OpMe/KM_IDSystem 事实被误写为 IDS 已完成事实；v0.2+ 未来框架被误执行；真实资料或 secrets 被误纳入 Git。"
+            rollback: "Revert IDS-STAGE0-P1 changes only; do not touch runtime data, reports, backend/frontend behavior, or historical governance evidence."
+      -
+        phase_id: "IDS-STAGE0-P2"
+        name: "stage execution index and governance bridge"
+        objective: "建立 STAGE-001 至 STAGE-168 的本地执行索引和 governance bridge，使下轮可进入 STAGE-001 而不读取无关项目。"
+        status: "completed"
+        stop_conditions:
+          - "试图执行 STAGE-001 的实现内容"
+          - "索引与 P0 taskpack 机器索引不一致"
+          - "把 full/v2 参考文件提升为 P0"
+        stop_gate:
+          gate_id: "IDS-STAGE0-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "本地 Stage index 可追溯到 P0 zip machine index"
+            - "STAGE-001 入口合同可由 root lock 和 stage 文件组成"
+            - "不产生真实数据、依赖目录或报告输出"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.json"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_ENTRY_CONTRACT.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE0-P2"
+            name: "建立 IDS v0.1 stage execution index"
+            objective: "把 P0 taskpack 的 168 个 Stage 变成项目内可追溯的轻量执行索引和 STAGE-001 入口桥接。"
+            status: "completed"
+            estimated_hours: 3
+            total_hours_percent: "20.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE0-P1"
+            acceptance_ids:
+              - "ACC-IDS-V0_1-STAGE0-P2"
+            test_commands:
+              - "stage index consistency check against P0 taskpack"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "Generated CSV/JSON execution index and STAGE-001 bridge from P0 taskpack; local consistency checks passed for 168 stages, STAGE-001..STAGE-168, no gaps; bundled python check-render returned drift_count=0 after canonical render."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.json"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE2_STAGE_EXECUTION_INDEX.md"
+            risk: "索引复制过大、偏离 P0 taskpack、或误开始 STAGE-001 实现。"
+            rollback: "Revert IDS-STAGE0-P2 files only."
+      -
+        phase_id: "IDS-STAGE0-P3"
+        name: "review and gap repair"
+        objective: "对 Stage 0 产物做复审，修复 root lock、source priority、stage index 和验证记录暴露的问题。"
+        status: "completed"
+        stop_conditions:
+          - "复审发现 Stage 0 合同无法约束 STAGE-001"
+          - "复审发现 validation evidence 不足以支撑进入 STAGE-001"
+        stop_gate:
+          gate_id: "IDS-STAGE0-P3-GATE"
+          status: "passed_with_carried_sparse_validate_limitation"
+          pass_conditions:
+            - "Stage 0 复审问题已修复或明确延期"
+            - "进入 STAGE-001 的最小读写范围明确"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE3_REVIEW.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE0-P3"
+            name: "Stage 0 复审与修复"
+            objective: "复审 Stage 0 合同并解决暴露问题。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "13.33%"
+            dependencies:
+              - "IDS-V0_1-STAGE0-P2"
+            acceptance_ids:
+              - "ACC-IDS-V0_1-STAGE0-P3"
+            test_commands:
+              - "Stage 0 review checklist"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "P1/P2 artifacts reviewed; local CSV equals P0 taskpack machine index; STAGE-001 bridge binds ACC-STAGE-001 and P0 file hash; events JSONL parses; check-render drift_count=0; sparse validate limitation and GitHub main upload remain carried to P4."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE3_REVIEW.md"
+            risk: "复审流于形式或遗漏 sparse validation 限制。"
+            rollback: "Revert IDS-STAGE0-P3 repair-only changes."
+      -
+        phase_id: "IDS-STAGE0-P4"
+        name: "stage closeout and GitHub main upload"
+        objective: "完成 Stage 0 关闭、提交、推送、PR/merge 到 main，并确认无遗留 PR/issue。"
+        status: "completed"
+        stop_conditions:
+          - "Stage 0 前三 phase 未完成"
+          - "本地验证或复审仍有未解决阻断"
+          - "GitHub main parity 无法证明"
+        stop_gate:
+          gate_id: "IDS-STAGE0-P4-GATE"
+          status: "local_passed_pending_remote_evidence"
+          pass_conditions:
+            - "Stage 0 commit 已进入 origin/main"
+            - "PR 已合并且无遗留 PR/issue"
+            - "本地分支和 main tree 状态已报告"
+          evidence_refs:
+            - "GitHub PR/merge evidence"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE4_CLOSEOUT.md"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE0-P4"
+            name: "Stage 0 closeout and main upload"
+            objective: "把完整 Stage 0 上传并合并到 GitHub main tree。"
+            status: "completed"
+            estimated_hours: 3
+            total_hours_percent: "20.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE0-P3"
+            acceptance_ids:
+              - "ACC-IDS-V0_1-STAGE0-P4"
+            test_commands:
+              - "final Stage 0 validation"
+              - "git status --short --branch"
+              - "GitHub PR/issue check"
+            test_results: "Local closeout evidence prepared; final remote evidence is produced by the subsequent P4 git/GitHub commands in this run."
+            evidence_refs:
+              - "GitHub merge evidence"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE4_CLOSEOUT.md"
+            risk: "远端 CI、认证或 sparse validation 限制阻断 main upload。"
+            rollback: "Close or revert Stage 0 PR if merge evidence cannot be satisfied."

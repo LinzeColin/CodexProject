@@ -1,0 +1,232 @@
+schema_version: "ids.v0_1.root_lock.v1"
+lock_id: "IDS-V0_1-STAGE0-ROOT-LOCK"
+created_at_utc: "2026-07-02T03:50:35Z"
+updated_at_utc: "2026-07-02T04:13:24Z"
+status: "stage0_phase4_local_closeout_ready_for_github_upload"
+
+repository:
+  owner_repo: "LinzeColin/CodexProject"
+  worktree_path: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS"
+  git_root: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS"
+  branch: "codex/KM_IDS"
+  target_project_path: "KM_IDSystem"
+  stale_paths:
+    - path: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/opme-system"
+      handling: "do_not_use; renamed worktree no longer exists locally"
+    - path: "OpMe_System"
+      handling: "legacy taskpack/source alias only; do not create or revive"
+
+product_identity:
+  product_id: "IDS"
+  product_name: "IDS / Industrial Data System"
+  current_version_scope: "v0.1"
+  implementation_stage_range: "STAGE-001..STAGE-168"
+  stage0_scope: "execution contract, source priority, path mapping, stop gates"
+  legacy_project_id: "KM_IDSystem"
+  legacy_display_name_policy: "old names may appear only in migration notes, historical evidence, or compatibility explanations"
+
+source_priority:
+  primary_v0_1_sources:
+    - priority: "P0"
+      kind: "usage_instructions"
+      path: "/Users/linzezhang/Downloads/RAG IDS/v0.1/IDS_Codex使用说明_v0_1_only_中文修订版.txt"
+      sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
+      bytes: 2814
+    - priority: "P0"
+      kind: "roadmap"
+      path: "/Users/linzezhang/Downloads/RAG IDS/v0.1/IDS_Codex开发Roadmap_v0_1_only_中文修订版.txt"
+      sha256: "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
+      bytes: 64170
+    - priority: "P0"
+      kind: "taskpack_zip"
+      path: "/Users/linzezhang/Downloads/RAG IDS/v0.1/IDS_Taskpack_v0_1_only_中文修订版.zip"
+      sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
+      bytes: 378965
+      stage_index_sha256: "f767fa0ccf751b96d18d91602f8d8118637eff545d879d05800d9b5e44784b03"
+      stage_count: 168
+      stage_min: "STAGE-001"
+      stage_max: "STAGE-168"
+      stage_gaps: []
+  reference_only_sources:
+    - path: "/Users/linzezhang/Downloads/RAG IDS/v0.1/IDS_Codex_Development_Roadmap_Final_CN_v2.txt"
+      handling: "reference only; do not override P0 v0.1-only files"
+    - path: "/Users/linzezhang/Downloads/RAG IDS/v0.1/IDS_Codex_Usage_Instructions_Final_CN_v2.txt"
+      handling: "reference only; do not override P0 v0.1-only files"
+    - path: "/Users/linzezhang/Downloads/RAG IDS/v0.1/IDS_Taskpack_Final_CN_v2.zip"
+      handling: "reference only; do not override P0 v0.1-only files"
+    - path: "/Users/linzezhang/Downloads/RAG IDS/v0.1/IDS_Taskpack_Final.zip"
+      handling: "reference only; use only to resolve explicit gaps"
+
+version_routing:
+  v0_1:
+    stages: "STAGE-001..STAGE-168"
+    execution_policy: "implement one provided Pursuing Goal at a time"
+  v0_2:
+    stages: "STAGE-169..STAGE-193"
+    execution_policy: "future framework only during v0.1"
+  v0_3:
+    stages: "STAGE-194..STAGE-213"
+    execution_policy: "future framework only during v0.1"
+  v0_4:
+    stages: "STAGE-214..STAGE-228"
+    execution_policy: "future framework only during v0.1"
+  v0_5:
+    stages: "STAGE-229..STAGE-243"
+    execution_policy: "future framework only during v0.1"
+  v1_0:
+    stages: "STAGE-244..STAGE-258"
+    execution_policy: "future framework only during v0.1"
+  v1_5:
+    stages: "STAGE-259..STAGE-268"
+    execution_policy: "future framework only during v0.1"
+  v2_0_plus:
+    stages: "STAGE-269..STAGE-278"
+    execution_policy: "future framework only during v0.1"
+
+stage_execution_rules:
+  run_granularity: "one run may complete at most one phase"
+  stage_granularity: "one Codex task handles one Stage and one Acceptance ID unless explicitly widened"
+  required_stage_input:
+    - "AGENTS.md"
+    - "KM_IDSystem/AGENTS.md"
+    - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml"
+    - "P0 taskpack stage file for the selected Stage"
+  forbidden_actions:
+    - "do not submit real raw materials"
+    - "do not submit secrets, API keys, database passwords, or cloud credentials"
+    - "do not move, delete, overwrite, or clean 00_ORIGINAL_RAW_DATA"
+    - "do not use old product names for new UI, reports, or formal docs"
+    - "do not claim tests passed without real command output"
+    - "do not implement v0.2+ features during v0.1"
+  parallel_policy:
+    default: "do_not_parallelize"
+    allowed_only_when_stage_file_says: "建议并行度：是"
+    never_parallelize_shared_files:
+      - "schema"
+      - "migration"
+      - "shared frontend shell"
+      - "route"
+      - "deploy scripts"
+      - "root governance"
+
+data_and_api_policy:
+  ids_data_root: "5TB external drive IDS_DATA_ROOT; not stored in GitHub"
+  original_raw_data_policy: "read-only by default; no move/delete/overwrite"
+  github_storage_policy: "code, schema, manifest templates, taskpack governance, and small fixtures only"
+  external_api_policy_default: "denied"
+  external_api_policy_allowed_values:
+    - "denied"
+    - "summary_only"
+    - "full_text_allowed"
+
+future_compatibility_constraints:
+  - "v0.1 schemas must keep room for source/document/chunk/evidence/audit/index/report lineage."
+  - "v0.1 job status must not block future high-concurrency upload, index rebuild, and long-running worker hardening."
+  - "v0.1 UI routes must preserve separate human product entrance and IDS operations entrance."
+  - "v0.1 evidence references must distinguish internal source evidence, evidence_gap, and external enhancement."
+  - "v0.1 naming must use IDS / Industrial Data System for new customer-visible surfaces."
+
+stage0_phases:
+  - phase_id: "STAGE0-P1"
+    name: "root lock and source priority"
+    status: "completed"
+    acceptance: "P0 sources, path mapping, v0.1-only scope, and stop gates are recorded."
+  - phase_id: "STAGE0-P2"
+    name: "stage execution index and governance bridge"
+    status: "completed"
+    acceptance: "STAGE-001..168 can be selected from a durable local index without reading unrelated projects."
+  - phase_id: "STAGE0-P3"
+    name: "review and gap repair"
+    status: "completed"
+    acceptance: "Stage 0 review findings are fixed or explicitly deferred with stop gates."
+  - phase_id: "STAGE0-P4"
+    name: "stage closeout and GitHub main upload"
+    status: "local_closeout_ready_for_github_upload"
+    acceptance: "Stage 0 is committed, pushed, merged to main, and no residual PR/issue remains."
+
+validation_plan:
+  phase1:
+    - "python3 standard-library hash and zip stage-index verification"
+    - "bundled python check-render --project KM_IDSystem"
+    - "bundled python validate --project KM_IDSystem --semantic"
+    - "bundled python validate --changed-only --enforce-sync --semantic --base-ref origin/main"
+    - "git status --short --branch"
+  phase2:
+    - "Generate local CSV/JSON execution index from P0 taskpack machine index."
+    - "Generate STAGE-001 entry contract from P0 taskpack stage file metadata."
+    - "Compare local generated index against P0 taskpack machine index."
+    - "Run check-render --project KM_IDSystem after canonical roadmap render."
+    - "Confirm changed scope excludes runtime code, data, reports, dependencies, and raw materials."
+validation_results:
+  phase1:
+    passed:
+      - "P0 file SHA-256 values recorded with Python standard library."
+      - "Taskpack machine stage index verified: 168 rows, STAGE-001..STAGE-168, no gaps."
+      - "Stage 0 root lock and source priority files exist under KM_IDSystem/docs/pursuing_goal/ids_v0_1/."
+      - "check-render --project KM_IDSystem returned drift_count=0 after canonical roadmap render."
+    blocked_by_sparse_worktree:
+      - "validate --project KM_IDSystem --semantic fails because this sparse worktree lacks root governance schemas, root workflow/hook files, and unrelated registered project directories."
+      - "validate --changed-only --enforce-sync --semantic --base-ref origin/main fails because origin/main diff includes historical KM_IDSystem/root changes outside this phase plus the same sparse root/project omissions."
+    decision: "Do not expand unrelated projects for Phase 1; carry sparse validate limitation to Stage 0 review."
+  phase2:
+    passed:
+      - "Generated V0_1_STAGE_EXECUTION_INDEX.csv from P0 taskpack machine index."
+      - "Generated V0_1_STAGE_EXECUTION_INDEX.json with provenance, rules, domain summary, and 168 Stage records."
+      - "Generated STAGE001_ENTRY_CONTRACT.md for STAGE-001 / ACC-STAGE-001 without executing product implementation."
+      - "Generated STAGE0_PHASE2_STAGE_EXECUTION_INDEX.md as the human-readable Phase 2 evidence summary."
+      - "Local index checks passed: 168 rows, STAGE-001..STAGE-168, no gaps, first and final stage matched P0 taskpack."
+    generated_artifacts:
+      - path: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
+        sha256: "2e0088153cd1e13a09d9aebd09a1bd0c8c7162acd0788360d45f5c7320af1e9a"
+      - path: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.json"
+        sha256: "d9e2f12ea3148be984c029f12e0f6ddff187486fad4dc54c72f56c5168619678"
+      - path: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE001_ENTRY_CONTRACT.md"
+        sha256: "525c49aeb363df2d3a513d2042854089d465c55c94ce58b5e18dadc76736930b"
+      - path: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE2_STAGE_EXECUTION_INDEX.md"
+        sha256: "d5e392ac7e4087e68b55908820756cc1ee1462c789a35f67938a5358fd4ada2e"
+    decision: "P2 is complete with local evidence; next run is P3 review and gap repair."
+  phase3:
+    passed:
+      - "Reviewed P1/P2 root lock, source priority, stage execution index, STAGE-001 entry bridge, roadmap/events, and rendered Chinese entry files."
+      - "Confirmed local CSV equals P0 taskpack machine index: 168 rows, STAGE-001..STAGE-168, no gaps."
+      - "Confirmed STAGE001_ENTRY_CONTRACT.md binds ACC-STAGE-001 and the P0 stage file hash."
+      - "Confirmed events.jsonl parses as JSONL and check-render returns drift_count=0."
+      - "Confirmed changed scope remains limited to Stage 0 governance/docs and rendered Chinese entry files."
+    findings:
+      - id: "P3-F1"
+        severity: "none"
+        summary: "P0 taskpack index and local execution index are consistent."
+        resolution: "No change needed."
+      - id: "P3-F2"
+        severity: "none"
+        summary: "STAGE-001 entry bridge is ready for the next stage but Stage 0 does not execute it."
+        resolution: "No change needed."
+      - id: "P3-F3"
+        severity: "none"
+        summary: "Rendered Chinese entry files are in sync with canonical roadmap/events."
+        resolution: "No change needed."
+      - id: "P3-F4"
+        severity: "minor"
+        summary: "Stage 0 review lacked a durable review artifact before P3."
+        resolution: "Added STAGE0_PHASE3_REVIEW.md."
+      - id: "P3-F5"
+        severity: "carried"
+        summary: "Full governance validate remains blocked by sparse worktree omissions."
+        resolution: "Carry to P4; do not expand unrelated projects during Stage 0."
+      - id: "P3-F6"
+        severity: "carried"
+        summary: "Stage 0 is not yet committed, uploaded, merged, or proven clean on GitHub main."
+        resolution: "P4 is responsible for closeout and main upload."
+    generated_artifacts:
+      - path: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE3_REVIEW.md"
+        sha256: "6e38bf762b1018f398ed7ebbf392bc71f6b5242037bc009ac3a2de2417347744"
+    decision: "P3 is complete with local review evidence; next run is P4 closeout and GitHub main upload."
+  phase4:
+    passed:
+      - "Stage 0 P1, P2, and P3 local evidence exists and was reviewed."
+      - "P4 closeout file records final local validation plan, sparse validation limitation, rollback, and GitHub upload requirements."
+      - "Stage 0 local evidence is ready for commit, push, PR, and merge."
+    generated_artifacts:
+      - path: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE0_PHASE4_CLOSEOUT.md"
+        sha256: "ee993ef86e18a80def1e514d2d6572b9c95e23e6288f228ac54901b4585a4fd1"
+    decision: "Proceed to commit and GitHub main upload; final remote parity is external evidence from the P4 run."
