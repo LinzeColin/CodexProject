@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 20:10:42 Australia/Sydney
+更新时间：2026-07-02 20:34:58 Australia/Sydney
 
 ## 当前结论
 
@@ -84,6 +84,8 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_sync PYTHONPAT
 
 ## 安全边界复核
 
+安全边界复核主路径：先运行 `python3 tools/verify_daily_operation_enablement_preflight.py`，读取自动观察到的 `open_pr_observation_mode=auto_observed`、`open_pr_count`、`adp_allow_smtp_send_environment_raw`、LaunchAgent 和后台进程结果。下方 shell 只作为人工补充复核；open PR 人工 HTML fallback 只允许作为降级审计补充，不得替代 enablement preflight root gate。
+
 ```bash
 test ! -e FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json
 ADP_ALLOW_SMTP_SEND_VALUE="${ADP_ALLOW_SMTP_SEND-UNSET}"
@@ -102,12 +104,12 @@ for label in com.linzezhang.adp.daily com.linzezhang.adp.health com.linzezhang.a
   printf '%s not_loaded\n' "$label"
 done
 ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|CodexProject.*arxiv-daily-push' | rg -v 'rg -i|pytest|unittest|validate|zsh -lc|exec_command' || true
-OPEN_PR_COUNT=$(
+FALLBACK_PR_COUNT=$(
   curl -fsSL -H 'User-Agent: codex-adp-open-pr-check' 'https://github.com/LinzeColin/CodexProject/pulls?q=is%3Apr+is%3Aopen' |
   python3 -c 'import re,sys; html=sys.stdin.read(); m=re.search(r">\s*([0-9,]+)\s+Open\s*<", html); print(m.group(1).replace(",","") if m else "UNKNOWN")'
 )
-printf 'open_pr_count=%s\n' "$OPEN_PR_COUNT"
-test "$OPEN_PR_COUNT" = "0"
+printf 'fallback_open_pr_count=%s\n' "$FALLBACK_PR_COUNT"
+test "$FALLBACK_PR_COUNT" = "0"
 ```
 
-预期：授权 artifact 不存在；真实环境 `ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like；enablement preflight 输出 `open_pr_observation_mode=auto_observed`、`adp_allow_smtp_send_environment_raw` 和 `runtime_observation_mode=auto_observed`；`com.linzezhang.adp.daily`、`com.linzezhang.adp.health`、`com.linzezhang.adp.watchdog` 三个真实 ADP LaunchAgent 标签均未加载或保持 disabled；旧 `com.linze.adp.local.*` 仅为历史标签口径，不得作为当前复核通过依据；无 ADP 后台进程；`open_pr_count=0`。后台进程扫描只匹配 ADP runner/module/path 信号，不使用裸 `adp` 子串，避免把普通工作树路径或 shell 命令误判为运行中。若 `ADP_ALLOW_SMTP_SEND` 为 truthy（按真实环境值判断）、任一真实 LaunchAgent 标签已加载，或 open PR 结果为 `UNKNOWN` / 非 0，停止并回报，不得当作通过。
+预期：授权 artifact 不存在；真实环境 `ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like；enablement preflight 输出 `open_pr_observation_mode=auto_observed`、`adp_allow_smtp_send_environment_raw` 和 `runtime_observation_mode=auto_observed`；`com.linzezhang.adp.daily`、`com.linzezhang.adp.health`、`com.linzezhang.adp.watchdog` 三个真实 ADP LaunchAgent 标签均未加载或保持 disabled；旧 `com.linze.adp.local.*` 仅为历史标签口径，不得作为当前复核通过依据；无 ADP 后台进程；root gate 自动观察 `open_pr_count=0`，人工补充 fallback 输出 `fallback_open_pr_count=0`。后台进程扫描只匹配 ADP runner/module/path 信号，不使用裸 `adp` 子串，避免把普通工作树路径或 shell 命令误判为运行中。若 `ADP_ALLOW_SMTP_SEND` 为 truthy（按真实环境值判断）、任一真实 LaunchAgent 标签已加载，或 open PR 结果为 `UNKNOWN` / 非 0，停止并回报，不得当作通过。
