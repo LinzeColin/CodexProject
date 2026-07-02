@@ -295,6 +295,39 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertIsNone(count)
         self.assertEqual(errors, ["open_pr_count_observation_failed"])
 
+    def test_verify_daily_operation_enablement_preflight_truthy_smtp_env_overrides_false_like_argument(self) -> None:
+        tool = load_enablement_preflight_tool()
+        labels = {
+            "com.linzezhang.adp.daily": True,
+            "com.linzezhang.adp.health": True,
+            "com.linzezhang.adp.watchdog": True,
+        }
+        stdout = io.StringIO()
+
+        with (
+            mock.patch.object(tool, "_observe_open_pr_count", return_value=(0, [])),
+            mock.patch.object(tool, "observe_runtime_boundary", return_value=(labels, 0, [])),
+            mock.patch.dict(os.environ, {"ADP_ALLOW_SMTP_SEND": "true"}),
+            mock.patch("sys.stdout", stdout),
+        ):
+            exit_code = tool.main(
+                [
+                    "--root",
+                    str(REPO_ROOT),
+                    "--generated-at",
+                    "2026-07-02T20:50:00+10:00",
+                    "--adp-allow-smtp-send",
+                    "UNSET",
+                ]
+            )
+
+        self.assertEqual(exit_code, 2)
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(payload["adp_allow_smtp_send_raw"], "UNSET")
+        self.assertEqual(payload["adp_allow_smtp_send_environment_raw"], "true")
+        self.assertFalse(payload["checks"]["adp_allow_smtp_send_false_like"])
+        self.assertIn("adp_allow_smtp_send_truthy_or_unknown", payload["blocking_reasons"])
+
 
 if __name__ == "__main__":
     unittest.main()

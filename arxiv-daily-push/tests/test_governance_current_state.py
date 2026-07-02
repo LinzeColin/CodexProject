@@ -935,14 +935,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("status=FAIL / exit 2", handoff)
         self.assertIn("open_pr_observation_mode=auto_observed", handoff)
         self.assertNotIn("--open-pr-count 0", handoff)
+        self.assertNotIn("--adp-allow-smtp-send UNSET", handoff)
+        self.assertIn("adp_allow_smtp_send_environment_raw", handoff)
         self.assertIn("runtime_observation_mode=auto_observed", handoff)
         self.assertNotIn("--launchagent-daily-disabled true", handoff)
         self.assertNotIn("--background-adp-process-count 0", handoff)
         self.assertIn("readiness + open PR + SMTP flag + LaunchAgent + background process", mvp_prep)
-        self.assertIn("默认自动观察 open PR count、LaunchAgent 和后台进程", mvp_prep)
+        self.assertIn("默认自动观察 open PR count、ADP_ALLOW_SMTP_SEND 环境值、LaunchAgent 和后台进程", mvp_prep)
         self.assertIn("enablement_preflight_ready=false", model_params)
         self.assertIn("runtime_observation_mode=auto_observed", model_params)
         self.assertIn("open_pr_observation_mode=auto_observed", model_params)
+        self.assertIn("adp_allow_smtp_send_environment_raw", model_params)
 
 
 if __name__ == "__main__":

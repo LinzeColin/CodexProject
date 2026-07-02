@@ -185,7 +185,8 @@ def build_enablement_preflight_report(
 ) -> dict[str, Any]:
     generated = generated_at or datetime.now(timezone.utc).isoformat()
     readiness = _load_readiness_report(root, generated)
-    raw_smtp_send = os.environ.get("ADP_ALLOW_SMTP_SEND", "UNSET") if adp_allow_smtp_send is None else adp_allow_smtp_send
+    environment_smtp_send = os.environ.get("ADP_ALLOW_SMTP_SEND", "UNSET")
+    raw_smtp_send = environment_smtp_send if adp_allow_smtp_send is None else adp_allow_smtp_send
     runtime_flags = {
         "daily_operation_enabled": readiness.get("daily_operation_enabled") is True,
         "real_smtp_send_enabled": readiness.get("real_smtp_send_enabled") is True,
@@ -199,7 +200,7 @@ def build_enablement_preflight_report(
             readiness.get("status") == "PASS" and readiness.get("daily_operation_ready") is True
         ),
         "open_pr_count_zero": open_pr_count == 0,
-        "adp_allow_smtp_send_false_like": _is_false_like(raw_smtp_send),
+        "adp_allow_smtp_send_false_like": _is_false_like(raw_smtp_send) and _is_false_like(environment_smtp_send),
         "launchagents_disabled": all(launchagent_disabled_states.get(label) is True for label in REQUIRED_LAUNCHAGENTS),
         "background_adp_process_count_zero": background_adp_process_count == 0,
         "runtime_enablement_absent": not runtime_enablement_detected,
@@ -241,6 +242,7 @@ def build_enablement_preflight_report(
         "open_pr_observation_mode": open_pr_observation_mode,
         "open_pr_observation_errors": open_pr_observation_errors or [],
         "adp_allow_smtp_send_raw": raw_smtp_send,
+        "adp_allow_smtp_send_environment_raw": environment_smtp_send,
         "launchagent_disabled_states": {label: launchagent_disabled_states.get(label) is True for label in REQUIRED_LAUNCHAGENTS},
         "background_adp_process_count": background_adp_process_count,
         "runtime_observation_mode": runtime_observation_mode,
