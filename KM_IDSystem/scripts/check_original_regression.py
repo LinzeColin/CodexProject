@@ -392,6 +392,283 @@ def evaluate_original_material_regression(
     )
 
 
+def _same_file_same_hash(
+    same_file_uri: str,
+    *,
+    first_seen_at: str,
+    scan_checked_at: str,
+) -> dict[str, Any]:
+    report = evaluate_original_material_regression(
+        source_uris=[same_file_uri, same_file_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    return {
+        "scenario_id": "same_file_same_hash",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "REGRESSION_REPEAT_SCAN"
+            and report["duplicate_input_count"] == 1
+            and report["regression_record_count"] == 1
+        ),
+        "duplicate_input_count": report["duplicate_input_count"],
+        "regression_record_count": report["regression_record_count"],
+        "duplicate_registration_blocked_count": report["duplicate_registration_blocked_count"],
+        "import_write_delta": report["import_write_delta"],
+    }
+
+
+def _same_name_different_hash(
+    left_uri: str,
+    right_uri: str,
+    *,
+    first_seen_at: str,
+    scan_checked_at: str,
+) -> dict[str, Any]:
+    report = evaluate_original_material_regression(
+        source_uris=[left_uri, right_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    return {
+        "scenario_id": "same_name_different_hash",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "REGRESSION_DUPLICATE_REGISTRATION_BLOCKED"
+            and report["key_conflict_count"] == 1
+            and report["version_conflict_count"] == 1
+        ),
+        "key_conflict_count": report["key_conflict_count"],
+        "version_conflict_count": report["version_conflict_count"],
+        "regression_record_count": report["regression_record_count"],
+        "import_write_delta": report["import_write_delta"],
+    }
+
+
+def _same_hash_different_path(
+    left_uri: str,
+    right_uri: str,
+    *,
+    first_seen_at: str,
+    scan_checked_at: str,
+) -> dict[str, Any]:
+    report = evaluate_original_material_regression(
+        source_uris=[left_uri, right_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    return {
+        "scenario_id": "same_hash_different_path",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "REGRESSION_DUPLICATE_REGISTRATION_BLOCKED"
+            and report["duplicate_content_count"] == 1
+        ),
+        "duplicate_content_count": report["duplicate_content_count"],
+        "regression_record_count": report["regression_record_count"],
+        "import_write_delta": report["import_write_delta"],
+    }
+
+
+def _matching_resume_checkpoint(
+    same_file_uri: str,
+    *,
+    first_seen_at: str,
+    scan_checked_at: str,
+) -> dict[str, Any]:
+    initial = evaluate_original_material_regression(
+        source_uris=[same_file_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    checkpoint = initial["checkpoint_candidates"][0]
+    report = evaluate_original_material_regression(
+        source_uris=[same_file_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+        resume_requested=True,
+        resume_checkpoint=checkpoint,
+        resume_token=checkpoint["resume_token"],
+    )
+    return {
+        "scenario_id": "matching_resume_checkpoint",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "REGRESSION_RESUME_PENDING"
+            and report["resume_valid"]
+            and report["checkpoint_comparison"]["matches"]
+        ),
+        "resume_valid": report["resume_valid"],
+        "checkpoint_error_count": report["checkpoint_error_count"],
+        "hash_drift_count": report["hash_drift_count"],
+        "document_delta": report["document_delta"],
+        "import_write_delta": report["import_write_delta"],
+    }
+
+
+def _offline_drive(same_file_uri: str, *, first_seen_at: str, scan_checked_at: str) -> dict[str, Any]:
+    report = evaluate_original_material_regression(
+        source_uris=[same_file_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+        drive_state="offline",
+    )
+    return {
+        "scenario_id": "offline_drive",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "REGRESSION_DRIVE_OFFLINE"
+            and not report["stage016_evaluated"]
+            and report["regression_record_count"] == 0
+        ),
+        "stage016_evaluated": report["stage016_evaluated"],
+        "regression_record_count": report["regression_record_count"],
+        "rejected_input_count": report["rejected_input_count"],
+    }
+
+
+def _checkpoint_hash_drift(
+    same_file_uri: str,
+    *,
+    first_seen_at: str,
+    scan_checked_at: str,
+) -> dict[str, Any]:
+    initial = evaluate_original_material_regression(
+        source_uris=[same_file_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    checkpoint = dict(initial["checkpoint_candidates"][0])
+    checkpoint["sha256"] = "0" * 64
+    report = evaluate_original_material_regression(
+        source_uris=[same_file_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+        resume_requested=True,
+        resume_checkpoint=checkpoint,
+        resume_token=checkpoint["resume_token"],
+    )
+    return {
+        "scenario_id": "checkpoint_hash_drift",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "REGRESSION_HASH_DRIFT"
+            and not report["resume_valid"]
+            and report["hash_drift_count"] == 1
+        ),
+        "resume_valid": report["resume_valid"],
+        "hash_drift_count": report["hash_drift_count"],
+        "mismatched_fields": report["checkpoint_comparison"]["mismatched_fields"],
+        "document_delta": report["document_delta"],
+        "index_delta": report["index_delta"],
+    }
+
+
+def _duplicate_import_no_persistence(same_file_uri: str, *, first_seen_at: str, scan_checked_at: str) -> dict[str, Any]:
+    report = evaluate_original_material_regression(
+        source_uris=[same_file_uri, same_file_uri],
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    deltas = {key: report[key] for key in ZERO_DELTAS}
+    return {
+        "scenario_id": "duplicate_import_no_persistence",
+        "state": report["overall_state"],
+        "valid": report["overall_state"] == "REGRESSION_REPEAT_SCAN"
+        and all(value == 0 for value in deltas.values()),
+        "regression_record_count": report["regression_record_count"],
+        "duplicate_input_count": report["duplicate_input_count"],
+        **deltas,
+    }
+
+
+def build_stage017_scenario_report(
+    *,
+    same_file_uri: str,
+    same_name_left_uri: str,
+    same_name_right_uri: str,
+    same_hash_left_uri: str,
+    same_hash_right_uri: str,
+    first_seen_at: str | None = None,
+    scan_checked_at: str | None = None,
+) -> dict[str, Any]:
+    """Validate Phase 3 original-material regression scenarios without side effects."""
+
+    first_seen_at = first_seen_at or _utc_now()
+    scan_checked_at = scan_checked_at or _utc_now()
+    stage016 = _load_stage016_module()
+    stage015 = stage016._load_stage015_module()
+    stage013 = stage015._load_stage013_module()
+    source_path = stage013._path_from_uri(same_file_uri)
+    before_sha256 = stage013._hash_file(source_path)
+    before_size = source_path.stat().st_size
+
+    same_file = _same_file_same_hash(
+        same_file_uri,
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    same_name = _same_name_different_hash(
+        same_name_left_uri,
+        same_name_right_uri,
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    same_hash = _same_hash_different_path(
+        same_hash_left_uri,
+        same_hash_right_uri,
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    resume = _matching_resume_checkpoint(
+        same_file_uri,
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    offline = _offline_drive(
+        same_file_uri,
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    drift = _checkpoint_hash_drift(
+        same_file_uri,
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+    no_persistence = _duplicate_import_no_persistence(
+        same_file_uri,
+        first_seen_at=first_seen_at,
+        scan_checked_at=scan_checked_at,
+    )
+
+    after_sha256 = stage013._hash_file(source_path)
+    after_size = source_path.stat().st_size
+    hash_stable = {
+        "scenario_id": "original_hash_stable",
+        "state": "REGRESSION_HASH_STABLE" if before_sha256 == after_sha256 else "REGRESSION_HASH_DRIFT",
+        "valid": before_sha256 == after_sha256 and before_size == after_size,
+        "before_sha256": before_sha256,
+        "after_sha256": after_sha256,
+        "before_size": before_size,
+        "after_size": after_size,
+        "hash_unchanged": before_sha256 == after_sha256,
+        "size_unchanged": before_size == after_size,
+    }
+
+    scenarios = [same_file, same_name, same_hash, resume, offline, drift, no_persistence, hash_stable]
+    report: dict[str, Any] = {
+        "schema_version": "ids.stage017.original_regression_scenarios.v1",
+        "stage": "STAGE-017",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-017",
+        "entrance": OPERATIONS_ENTRANCE,
+        "overall_valid": all(scenario["valid"] for scenario in scenarios),
+        "scenarios": scenarios,
+    }
+    report.update(NO_SIDE_EFFECT_FLAGS)
+    return report
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Build a metadata-only Stage 017 original-material regression report."
