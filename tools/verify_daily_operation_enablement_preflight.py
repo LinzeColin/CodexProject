@@ -211,12 +211,15 @@ def build_enablement_preflight_report(
         blocking_reasons.extend(str(reason) for reason in readiness.get("blocking_reasons", []) if reason)
     if not checks["open_pr_count_zero"]:
         blocking_reasons.append("open_pr_count_not_zero_or_unknown")
+        blocking_reasons.extend(open_pr_observation_errors or [])
     if not checks["adp_allow_smtp_send_false_like"]:
         blocking_reasons.append("adp_allow_smtp_send_truthy_or_unknown")
     if not checks["launchagents_disabled"]:
         blocking_reasons.append("launchagents_not_all_disabled_or_unknown")
+        blocking_reasons.extend(runtime_observation_errors or [])
     if not checks["background_adp_process_count_zero"]:
         blocking_reasons.append("background_adp_process_count_not_zero_or_unknown")
+        blocking_reasons.extend(runtime_observation_errors or [])
     if not checks["runtime_enablement_absent"]:
         blocking_reasons.append("runtime_enablement_detected")
     blocking_reasons = _unique_reasons(blocking_reasons or ["daily_operation_enablement_preflight_not_satisfied"])
