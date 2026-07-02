@@ -74,6 +74,28 @@ def _markdown_anchors(path: Path) -> set[str]:
 
 
 class UserCenterCandidatePoolTests(unittest.TestCase):
+    def test_owner_facing_mvp_run_contract_wording_uses_next_round(self):
+        pages = [
+            *USER_CENTER.glob("*.md"),
+            ROOT / "功能清单.md",
+            ROOT / "开发记录.md",
+            ROOT / "模型参数文件.md",
+        ]
+        forbidden_phrases = (
+            "第一轮 Run Contract",
+            "推荐第一轮 Run Contract",
+            "旧“第一轮”",
+            "停留在“第一轮”",
+        )
+        offenders = []
+        for page_path in pages:
+            text = page_path.read_text(encoding="utf-8")
+            for phrase in forbidden_phrases:
+                if phrase in text:
+                    offenders.append(f"{page_path.relative_to(REPO_ROOT)} contains {phrase}")
+
+        self.assertEqual(offenders, [])
+
     def test_owner_facing_pages_do_not_use_local_absolute_paths_as_evidence(self):
         pages = [
             *USER_CENTER.glob("*.md"),
