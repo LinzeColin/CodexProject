@@ -78,11 +78,27 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("integrated_production_acceptance_state_hash=4b88b2edd8fe2eae7ee63f8b512eb713501805725f5fcdf3fb6363f0df3b5453", current_state)
         self.assertIn("integrated_production_acceptance.json", current_state)
         self.assertIn("daily_operation_enabled=false", current_state)
-        self.assertIn("ADP_ALLOW_SMTP_SEND=false", current_state)
+        self.assertIn("ADP_ALLOW_SMTP_SEND` raw value is `UNSET` or false-like", current_state)
         self.assertIn("LaunchAgents disabled", current_state)
         self.assertIn("no background ADP process", current_state)
         self.assertIn("No DAILY_OPERATION, standing SMTP permission, scheduler enable/install, Release, or production restore is claimed", current_state)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", current_state)
+        self.assertIn("`ADP_ALLOW_SMTP_SEND` raw value is `UNSET` or false-like", ledger)
+        self.assertIn("foreground process `ADP_ALLOW_SMTP_SEND` was false-like", ledger)
+        self.assertNotIn(
+            "Boundary: `integrated_production_accepted=true` remains recorded, but "
+            "`daily_operation_enabled=false`, persistent `ADP_ALLOW_SMTP_SEND=false`",
+            ledger,
+        )
+        self.assertNotIn(
+            "Runtime boundary: persistent `ADP_ALLOW_SMTP_SEND=false`, daily/health/watchdog LaunchAgents disabled",
+            ledger,
+        )
+        self.assertNotIn(
+            "no background ADP process after closeout, persistent `ADP_ALLOW_SMTP_SEND=false`, "
+            "process `ADP_ALLOW_SMTP_SEND=false`",
+            ledger,
+        )
 
     def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
         manifest_path = (
@@ -396,7 +412,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
         self.assertIn("baseline_counts_mutated: false", assurance)
         self.assertIn("open_pr_count=0", assurance)
-        self.assertIn("ADP_ALLOW_SMTP_SEND=false", assurance)
+        self.assertIn("ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like", assurance)
+        self.assertNotIn(
+            "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0",
+            assurance,
+        )
         self.assertIn("LaunchAgents disabled", assurance)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json", assurance)
         self.assertIn("DAILY_OPERATION owner decision is recorded as keep-disabled", assurance)
@@ -417,6 +437,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("daily_operation_persistent_authorization_request_ready", generator)
         self.assertIn("daily_operation_persistent_authorization_missing", generator)
         self.assertIn("production_boundary_preflight_ready", generator)
+        self.assertIn("ADP_SMTP_SEND_RAW_VALUE_EVIDENCE", generator)
+        self.assertIn("ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like", generator)
+        self.assertNotIn(
+            "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process",
+            generator,
+        )
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", generator)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", generator)
@@ -674,6 +700,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+        mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
         one_look = (ADP_ROOT / "用户中心/一看三查.md").read_text(encoding="utf-8")
         roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
         mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
@@ -712,9 +739,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn('ADP_ALLOW_SMTP_SEND_VALUE="${ADP_ALLOW_SMTP_SEND-UNSET}"', handoff)
         self.assertIn("printf 'ADP_ALLOW_SMTP_SEND=%s\\n' \"$ADP_ALLOW_SMTP_SEND_VALUE\"", handoff)
         self.assertIn('blocked: ADP_ALLOW_SMTP_SEND is truthy', handoff)
+        for label in ("com.linzezhang.adp.daily", "com.linzezhang.adp.health", "com.linzezhang.adp.watchdog"):
+            self.assertIn(label, handoff)
+        self.assertIn('for label in com.linzezhang.adp.daily com.linzezhang.adp.health com.linzezhang.adp.watchdog; do', handoff)
+        self.assertIn('launchctl print "gui/$(id -u)/$label"', handoff)
+        self.assertIn("blocked: %s is loaded", handoff)
+        self.assertIn("旧 `com.linze.adp.local.*` 只属于历史记录，不得作为当前 S3 safety check", handoff)
+        self.assertNotIn("launchctl print-disabled gui/$(id -u) | rg 'com\\.linze\\.adp\\.local\\.(daily|health|watchdog)'", handoff)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", handoff)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like", handoff)
         self.assertIn("若 `ADP_ALLOW_SMTP_SEND` 为 truthy", handoff)
+        self.assertIn(
+            "ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|CodexProject.*arxiv-daily-push'",
+            handoff,
+        )
+        self.assertIn("后台进程扫描只匹配 ADP runner/module/path 信号，不使用裸 `adp` 子串", handoff)
+        self.assertNotIn("ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|adp'", handoff)
         self.assertIn("open_pr_count=0", handoff)
         self.assertIn("User-Agent: codex-adp-open-pr-check", handoff)
         self.assertIn("https://github.com/LinzeColin/CodexProject/pulls?q=is%3Apr+is%3Aopen", handoff)
@@ -723,12 +763,61 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn("https://api.github.com/repos/LinzeColin/CodexProject/pulls?state=open", handoff)
         self.assertIn("HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", readme)
         self.assertIn("HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", decisions)
-        self.assertIn("open PR 边界复核 fallback 已同步到停止门", readme)
+        self.assertIn("open PR 边界已改为 enablement preflight 自动观察", readme)
         self.assertIn("SMTP 发送开关原始值复核", readme)
+        self.assertIn("后台进程扫描停止门已同步到路线图", readme)
+        self.assertIn("S3 LaunchAgent 标签停止门已同步", readme)
+        self.assertIn("S3 机器预检标签已同步", readme)
+        self.assertIn("root verifier 已显示 S3 阻断原因", readme)
+        self.assertIn("DAILY_OPERATION 专用 root gate 已补齐", readme)
+        self.assertIn("持久授权模板已补齐但默认无效", readme)
+        self.assertIn("半改模板仍无效", readme)
+        self.assertIn("占位时间和占位授权文本必须替换为当前 owner 明确授权证据", readme)
+        self.assertIn("机器 gate 输出同样使用真实 LaunchAgent 标签", handoff)
+        self.assertIn("daily_operation_authorization_ready=false", handoff)
+        self.assertIn("daily_operation_blocking_reasons", handoff)
+        self.assertIn("tools/verify_daily_operation_readiness.py", handoff)
+        self.assertIn("daily_operation_persistent_enablement_authorization.template.json", handoff)
+        self.assertIn("保留占位 `generated_at` 或 `authorization_text` 仍必须无效", handoff)
+        self.assertIn("S3 机器预检标签停止门", roadmap)
+        self.assertIn("root verifier S3 阻断字段", roadmap)
+        self.assertIn("DAILY_OPERATION fail-closed root gate", roadmap)
+        self.assertIn("持久授权模板停止门", roadmap)
+        self.assertIn("半改模板", roadmap)
+        self.assertIn("短 key 只允许验证历史 artifact", mvp_prep)
+        self.assertIn("root verifier PASS 被误读为 S3 可启用", mvp_prep)
+        self.assertIn("当前非零退出是正确阻断", mvp_prep)
+        self.assertIn("持久授权模板被误当 live artifact", mvp_prep)
+        self.assertIn("保留占位时间或占位授权文本", mvp_prep)
+        self.assertIn("旧 `com.linze.adp.local.*` 只属于历史记录，不得作为当前 S3 safety check 或通过依据", readme)
+        self.assertIn("用户中心历史 SMTP 开关口径已清理", readme)
+        self.assertIn("本页历史记录不再把当前安全边界写成必须存在“持久显式 false”环境变量", readme)
+        self.assertIn("历史运行条目只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前复核仍只接受 `UNSET` 或 false-like", readme)
+        self.assertIn("当前治理 SMTP 原始值证据口径已同步", readme)
+        self.assertIn("当前 `OWNER_STATUS`、`ASSURANCE_STATUS`、当前状态测试和治理生成器中的 SMTP 边界证据", readme)
+        self.assertIn("下方 2026-07-01 历史记录只保留“当时 false-like”的运行证据或环境事实", readme)
+        self.assertIn("不是当前要求必须存在一个持久显式 `false` 环境变量", readme)
+        self.assertIn("`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like", readme)
+        self.assertNotIn("持久 `ADP_ALLOW_SMTP_SEND=false`", readme)
+        self.assertIn("邮件状态历史 SMTP 开关口径已清理", mail_status)
+        self.assertIn("历史运行条目只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前复核仍只接受 `UNSET` 或 false-like", mail_status)
+        self.assertIn("运行后 `ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like", mail_status)
+        self.assertNotIn("运行后持久 `ADP_ALLOW_SMTP_SEND=false`", mail_status)
+        self.assertLess(
+            readme.index("当前治理 SMTP 原始值证据口径已同步"),
+            readme.index("owner A 决策 mainline 证据已绑定"),
+        )
+        self.assertIn("只匹配 ADP runner/module/path 信号", readme)
+        self.assertIn("禁止使用裸 `adp` 子串作为进程扫描匹配项", readme)
         self.assertIn("不能把未设置的环境变量默认写成显式 `false`", readme)
         self.assertIn("当前允许的安全状态是 `UNSET` 或 false-like", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", decisions)
+        self.assertIn("历史 SMTP 开关口径已清理", decisions)
+        self.assertIn(
+            "历史行只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前执行入口仍只接受 `UNSET` 或 false-like",
+            decisions,
+        )
         self.assertIn(
             "继续按原始值复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like",
             decisions,
@@ -737,12 +826,34 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "按当前入口原始值规则复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like",
             decisions,
         )
+        self.assertIn(
+            "在受控窗口按授权切换 `ADP_ALLOW_SMTP_SEND`，并在收口后回到 `UNSET` 或 false-like",
+            decisions,
+        )
+        self.assertIn(
+            "也不得把这类历史 false-like 状态回写成当前 Stage 2 结论",
+            decisions,
+        )
         self.assertNotIn("继续保持持久 `ADP_ALLOW_SMTP_SEND=false`", decisions)
         self.assertNotIn("保持 `ADP_ALLOW_SMTP_SEND=false`，三个 ADP LaunchAgent disabled", decisions)
+        self.assertNotIn("当时保持 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("当时维持 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("先清除 `ADP_ALLOW_SMTP_SEND=false`", decisions)
         self.assertIn("只有明确得到 `open_pr_count=0` 才能通过", readme)
         self.assertIn("`UNKNOWN`、非 0、命令失败或无法解析都必须停止并回报", readme)
-        self.assertIn("open PR 边界复核 fallback", roadmap)
+        self.assertIn("open PR 自动观察停止门", roadmap)
+        self.assertIn("GitHub API 自动观察", roadmap)
+        self.assertIn("HTML fallback 只允许作为降级审计补充", roadmap)
         self.assertIn("SMTP 发送开关原始值停止门", roadmap)
+        self.assertIn("后台进程扫描停止门", roadmap)
+        self.assertIn("LaunchAgent 标签停止门", roadmap)
+        for label in ("com.linzezhang.adp.daily", "com.linzezhang.adp.health", "com.linzezhang.adp.watchdog"):
+            self.assertIn(label, roadmap)
+            self.assertIn(label, mvp_prep)
+        self.assertIn("S3/MVP 安全边界复核必须检查后台进程，但只能匹配 ADP runner/module/path 信号", roadmap)
+        self.assertIn("旧 `com.linze.adp.local.*` 只属于历史运行记录，不得作为当前 S3 safety check 或通过依据", roadmap)
+        self.assertIn("不得使用裸 `adp` 子串作为进程扫描匹配项", roadmap)
+        self.assertIn("命中真实 `arxiv_daily_push`、`arxiv-daily-push`、`local_runner` 或 `CodexProject.*arxiv-daily-push` 运行进程时必须停止并回报", roadmap)
         self.assertIn("S3/MVP 安全边界复核必须显示 `ADP_ALLOW_SMTP_SEND` 原始值", roadmap)
         self.assertIn("只接受 `UNSET` 或 false-like", roadmap)
         self.assertIn("`1`、`true`、`yes`、`on` 等 truthy 必须停止并回报", roadmap)
@@ -765,8 +876,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", mvp_prep)
         self.assertIn("daily_operation_enabled=false", mvp_prep)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like", mvp_prep)
+        self.assertIn("旧 `com.linze.adp.local.*` 不得作为当前通过依据", mvp_prep)
+        self.assertIn("后台进程扫描只匹配 ADP runner/module/path，不使用裸 `adp` 子串", mvp_prep)
         self.assertIn("GitHub `origin/main` 的干净隔离工作树", mvp_prep)
         self.assertIn("本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线", mvp_prep)
+        self.assertIn("默认通过 `tools/verify_daily_operation_enablement_preflight.py` 自动观察 GitHub open PR count", mvp_prep)
+        self.assertIn("open_pr_observation_mode=auto_observed", mvp_prep)
+        self.assertIn("open PR 由 enablement preflight 自动观察为 0", mvp_prep)
         self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp_prep)
         self.assertNotIn("## 09 推荐第一轮 Run Contract", mvp_prep)
         self.assertIn("MVP 准备与复审修补](./MVP准备与复审修补.md)", readme)
@@ -806,6 +922,35 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("handoff_source_baseline=bccc600959e6bf478c8fc71f8c2e90c13c455d1f", model_params)
         self.assertIn("handoff_first_main_commit=91f22b876b05f373229ef4bf5de2e67bdb927c0b", model_params)
         self.assertNotIn("current_main=bccc600959e6bf478c8fc71f8c2e90c13c455d1f", model_params)
+
+    def test_daily_operation_enablement_preflight_root_gate_is_owner_readable(self) -> None:
+        handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
+        mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
+        feature_list = (ADP_ROOT / "功能清单.md").read_text(encoding="utf-8")
+        dev_record = (ADP_ROOT / "开发记录.md").read_text(encoding="utf-8")
+        model_params = (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8")
+        root_tool = "tools/verify_daily_operation_enablement_preflight.py"
+        expected_task = "S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT"
+
+        self.assertTrue((REPO_ROOT / root_tool).exists(), "enablement preflight root tool must exist")
+        for text in (handoff, mvp_prep, feature_list, dev_record, model_params):
+            self.assertIn(root_tool, text)
+            self.assertIn(expected_task, text)
+            self.assertIn("persistent_daily_operation_authorization_missing", text)
+        self.assertIn("status=FAIL / exit 2", handoff)
+        self.assertIn("open_pr_observation_mode=auto_observed", handoff)
+        self.assertNotIn("--open-pr-count 0", handoff)
+        self.assertNotIn("--adp-allow-smtp-send UNSET", handoff)
+        self.assertIn("adp_allow_smtp_send_environment_raw", handoff)
+        self.assertIn("runtime_observation_mode=auto_observed", handoff)
+        self.assertNotIn("--launchagent-daily-disabled true", handoff)
+        self.assertNotIn("--background-adp-process-count 0", handoff)
+        self.assertIn("readiness + open PR + SMTP flag + LaunchAgent + background process", mvp_prep)
+        self.assertIn("默认自动观察 open PR count、ADP_ALLOW_SMTP_SEND 环境值、LaunchAgent 和后台进程", mvp_prep)
+        self.assertIn("enablement_preflight_ready=false", model_params)
+        self.assertIn("runtime_observation_mode=auto_observed", model_params)
+        self.assertIn("open_pr_observation_mode=auto_observed", model_params)
+        self.assertIn("adp_allow_smtp_send_environment_raw", model_params)
 
 
 if __name__ == "__main__":

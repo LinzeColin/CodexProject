@@ -56,13 +56,13 @@ Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPE
 
 ## 10. Current Blockers
 
-1. FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process
+1. FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like, LaunchAgents disabled, open_pr_count=0, and no background ADP process
 2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process
+- evidence_required: FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like, LaunchAgents disabled, open_pr_count=0, and no background ADP process
 - principal_risks: 将 final bundle ready 误读为 INTEGRATED_PRODUCTION_ACCEPTED、DAILY_OPERATION、真实 SMTP 自动发送、scheduler install 或 Release enablement
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 

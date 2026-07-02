@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Map Spike</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #05070b;
+        color: #eef6ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(180deg, #071019 0%, #05070b 100%);
+      }
+
+      #app {
+        position: fixed;
+        inset: 116px 392px 18px 18px;
+      }
+
+      .topbar,
+      .inspector,
+      .controls {
+        border: 1px solid rgba(221, 239, 255, 0.18);
+        background: rgba(6, 11, 18, 0.78);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(14px);
+      }
+
+      .topbar {
+        position: fixed;
+        z-index: 4;
+        left: 18px;
+        right: 392px;
+        top: 18px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: end;
+        min-height: 82px;
+        padding: 14px 16px;
+      }
+
+      .eyebrow {
+        margin: 0 0 4px;
+        color: #8fd3ff;
+        font-size: 11px;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.2;
+        letter-spacing: 0;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(72px, 1fr));
+        gap: 7px;
+        min-width: 390px;
+      }
+
+      .metric {
+        min-width: 0;
+        padding: 8px 9px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .metric span {
+        display: block;
+        color: #aab8c8;
+        font-size: 10px;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+      }
+
+      .controls {
+        position: fixed;
+        z-index: 5;
+        top: 18px;
+        right: 18px;
+        display: grid;
+        gap: 8px;
+        width: 356px;
+        padding: 13px;
+      }
+
+      .controls label {
+        display: grid;
+        gap: 5px;
+        color: #dcecff;
+        font-size: 12px;
+      }
+
+      .controls select,
+      .controls input {
+        accent-color: #8fd3ff;
+      }
+
+      .inspector {
+        position: fixed;
+        z-index: 4;
+        top: 162px;
+        right: 18px;
+        bottom: 18px;
+        width: 356px;
+        padding: 15px;
+        overflow: auto;
+      }
+
+      .inspector h2 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        letter-spacing: 0;
+      }
+
+      .inspector > p {
+        margin: 0 0 12px;
+        color: #c4d6e8;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .inspector-meta {
+        display: grid;
+        gap: 7px;
+      }
+
+      .inspector-meta p {
+        display: grid;
+        gap: 3px;
+        margin: 0;
+        padding: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .inspector-meta span {
+        color: #93a9bf;
+        font-size: 10px;
+      }
+
+      .inspector-meta strong {
+        overflow-wrap: anywhere;
+        color: #eef6ff;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .data-map-surface {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 16px;
+        width: 100%;
+        height: 100%;
+      }
+
+      .edge-canvas {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .map-layer {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        align-content: start;
+        gap: 10px;
+        min-width: 0;
+        padding: 10px;
+        border: 1px solid rgba(221, 239, 255, 0.14);
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .layer-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        align-items: center;
+        color: #dcecff;
+        font-size: 12px;
+      }
+
+      .layer-header strong {
+        display: inline-grid;
+        place-items: center;
+        min-width: 24px;
+        min-height: 24px;
+        border: 1px solid rgba(143, 211, 255, 0.26);
+        color: #8fd3ff;
+      }
+
+      .map-card {
+        display: grid;
+        gap: 7px;
+        width: 100%;
+        min-height: 132px;
+        padding: 11px;
+        border: 1px solid rgba(221, 239, 255, 0.18);
+        background: rgba(8, 14, 23, 0.94);
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .map-card[data-selected="true"] {
+        border-color: rgba(247, 207, 107, 0.8);
+        box-shadow: inset 0 0 0 1px rgba(247, 207, 107, 0.36), 0 12px 36px rgba(0, 0, 0, 0.26);
+      }
+
+      .card-type {
+        color: #8fd3ff;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+
+      .map-card strong {
+        overflow-wrap: anywhere;
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      .card-summary {
+        color: #c4d6e8;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .card-metrics,
+      .handoffs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .card-metrics span,
+      .handoffs i {
+        padding: 3px 5px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.05);
+        color: #b8c9da;
+        font-size: 10px;
+        font-style: normal;
+      }
+
+      .trend-rising {
+        border-left: 3px solid #7ee8d4;
+      }
+
+      .trend-stable {
+        border-left: 3px solid #8fd3ff;
+      }
+
+      .trend-conflict {
+        border-left: 3px solid #f28f8f;
+      }
+
+      .trend-stale,
+      .trend-declining {
+        border-left: 3px solid #b9a8ff;
+      }
+
+      .flow-edge {
+        fill: none;
+        stroke: rgba(221, 239, 255, 0.72);
+      }
+
+      .source_to_topic_edges {
+        stroke: #8fd3ff;
+      }
+
+      .topic_to_asset_edges {
+        stroke: #7ee8d4;
+      }
+
+      .asset_to_action_edges {
+        stroke: #f7cf6b;
+      }
+
+      body:not([data-reduced-motion="true"]) .flow-edge {
+        stroke-dasharray: 8 10;
+        animation: edge-flow 7s linear infinite;
+      }
+
+      body[data-mode="presentation"] .card-summary,
+      body[data-mode="presentation"] .handoffs {
+        display: none;
+      }
+
+      #smokeStatus {
+        position: fixed;
+        left: -9999px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+
+      @keyframes edge-flow {
+        from {
+          stroke-dashoffset: 0;
+        }
+        to {
+          stroke-dashoffset: -72;
+        }
+      }
+
+      @media (max-width: 980px) {
+        body {
+          overflow: auto;
+        }
+
+        #app {
+          position: relative;
+          inset: auto;
+          margin: 156px 14px 16px;
+          min-height: 720px;
+        }
+
+        .topbar,
+        .controls,
+        .inspector {
+          position: relative;
+          inset: auto;
+          width: auto;
+          margin: 14px;
+        }
+
+        .topbar {
+          grid-template-columns: 1fr;
+        }
+
+        .metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          min-width: 0;
+        }
+
+        .data-map-surface {
+          grid-template-columns: 1fr;
+        }
+
+        .edge-canvas {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body data-mode="analysis" data-reduced-motion="false">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Data Map 2.0 / C3 isolated spike</p>
+        <h1>来源到主题、资产、行动的可解释导图</h1>
+      </div>
+      <div class="metrics" aria-label="Data Map metrics">
+        <div class="metric"><span>layers</span><strong id="layerCount">0</strong></div>
+        <div class="metric"><span>cards</span><strong id="cardCount">0</strong></div>
+        <div class="metric"><span>edges</span><strong id="edgeCount">0</strong></div>
+        <div class="metric"><span>selected</span><strong id="selectedReadout">none</strong></div>
+      </div>
+    </header>
+
+    <aside class="controls" aria-label="Data Map controls">
+      <label>
+        Mode
+        <select id="modeControl">
+          <option value="analysis" selected>Analysis</option>
+          <option value="presentation">Presentation</option>
+        </select>
+      </label>
+      <label>
+        <input id="reducedMotionControl" type="checkbox" />
+        Reduced motion
+      </label>
+    </aside>
+
+    <main id="app" aria-label="Data Map Spike"></main>
+
+    <aside class="inspector" aria-label="Data Map inspector">
+      <p class="eyebrow">Inspector handoff</p>
+      <h2 id="inspectorTitle">Select a card</h2>
+      <p id="inspectorSummary">Hover or focus a map card to inspect evidence, action count and proposal-only status.</p>
+      <div id="inspectorMeta" class="inspector-meta"></div>
+    </aside>
+
+    <pre id="smokeStatus" aria-hidden="true"></pre>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -681,6 +681,393 @@ Stage 3 Phase 1 状态：`phase_3_1_contract_created_pending_stage_review`。
 
 Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
 
+## v1.1.7 Pre Stage 0：Gap Remediation Upgrade Package
+
+状态：`pre_stage_0_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V117-PRESTAGE0`。
+
+验收 ID：`ACC-MA-V117-PRESTAGE0`。
+
+本 pre-stage 固定 v1.1.7 gap remediation 升级包，只确认 Roadmap v2 gap
+remediation 输入、v1.1.6 Stage 10 baseline、Stage 0-10 执行映射、验收矩阵、
+review artifact、validator、记录一致性、改动范围和一次性 GitHub main 上传
+gate。不实现运行时 UI、不修改 CSS/路由、不切换 feature flag、不读取
+raw/private 数据、不直接写长期记忆、不写 proposal、不执行 agent apply、不
+build、不截图、不安装本地 app、不部署 Cloudflare、不修改 Access policy。
+
+新增产物：
+
+- `docs/product/memory_atlas_v1_1_7_gap_remediation_upgrade_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_pre_stage0_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_7_pre_stage0_review.md`
+- `validate:v1.1.7-pre-stage0`
+
+验收边界：
+
+- Pre Stage 0 通过不表示 Stage 0 runtime remediation、浏览器截图、FPS、Memory
+  Starfield、Memory River、Data Map 2.0、Search 2.0、Review / Summary /
+  Iteration 或 Summary iteration 已完成。
+- Stage 0 尚未开始。
+- GitHub main 上传只允许在 `validate:v1.1.7-pre-stage0`、`git diff --check
+  -- OpenAIDatabase`、clean tracked tree、fetch/integrate 和 canonical remote
+  确认后一次性执行。
+
+Machine-readable boundary summary: No production runtime feature work; No raw/private data read; No direct writeback; No GitHub main upload in review artifact.
+
+### Stage 8 Phase 1：Release Rollback Contract
+
+Stage 8 Phase 1 状态：`phase_8_1_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S8P01`。
+
+本 phase 是 v1.1.6 修补包进入“发布、本地 App 与回滚安全”的第一轮，只定义
+`memory_atlas_release_rollback_contract` 合同、验收、validator 和治理记录一致性。
+它把本地 macOS app、runtime manifest、redacted static artifact、offline
+Cloudflare preflight、live deploy authorization gate、rollback matrix、
+proposal-only writeback gate 和 cleanup guard 固定为后续发布实现的阻断门槛。
+
+新增产物：
+
+- `docs/product/memory_atlas_release_rollback_contract.md`
+- `docs/acceptance/memory_atlas_release_rollback_acceptance.md`
+- `validate:v1.1.6-stage8-phase1`
+
+验收边界：
+
+- 运行时 manifest 指向旧 commit、本地 app 服务旧数据、release artifact 包含
+  raw/private/cookie/session/secret、未授权 Cloudflare deploy、未授权 Access policy
+  change、缺少 Memory Starfield/Memory River rollback path、proposal-only 边界被削弱、
+  临时产物无 cleanup 证据或 GitHub upload 先于 final validation，均为未来实现失败条件。
+- Stage 8 Phase 1 通过不表示 production build、local app install、Cloudflare live
+  deploy、Access policy change、浏览器截图或真实 release audit 已完成。
+- 不实现运行时 UI，不修改 CSS，不运行 installer，不执行 production build，不部署
+  Cloudflare，不修改 Access policy，不读取 raw/private 数据，不直接写长期记忆，不执行
+  agent apply，不进入 Stage 8 整体复审，不进入 Stage 9-10，不上传 GitHub main。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload; No live deploy.
+
+下一步：
+
+- 进入 Stage 8 整体复审，补 review artifact 和 stage-level validator，并解决复审暴露的问题。
+- Stage 8 整体复审未执行前，不上传 GitHub main。
+
+### Stage 8 整体复审
+
+Stage 8 复审状态：`stage_8_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S8-REVIEW`。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage8_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage8.cjs`
+- `validate:v1.1.6-stage8`
+
+复审结论：
+
+- Phase 8.1 Release Rollback Contract、验收、validator 和记录一致。
+- Stage 8 缺少 deterministic whole-stage validator 与 review artifact 的缺口已修复。
+- Stage 8 已通过整体复审，等待 GitHub main upload gate。
+
+复审边界：
+
+- No runtime UI。
+- No CSS change。
+- No browser screenshot run。
+- No production build。
+- No installer run。
+- No local app install or rebuild。
+- No app bundle or runtime cache mutation。
+- No Cloudflare live deploy。
+- No Access policy change。
+- No raw/private data read。
+- No direct writeback。
+- No GitHub main upload。
+
+下一 gate：
+
+- 先执行 final remote checks、`validate:v1.1.6-stage8-phase1`、
+  `validate:v1.1.6-stage8`、项目级 acceptance audit 和 diff check。
+- 再上传 canonical GitHub main tree。
+
+### Stage 9 Phase 1：Memory Starfield C3 Spike
+
+Stage 9 Phase 1 状态：`phase_9_1_memory_starfield_c3_spike_ready_pending_stage_review`。
+
+任务 ID：`MA-V116-S9P01`。
+
+本 phase 是 v1.1.6 修补包进入 C3 隔离原型的第一轮，只固定
+`memory-starfield-spike` 作为记忆星系的独立原型证据，不替换 production Galaxy，
+不导入 experiment，不进入 Stage 9 整体复审。
+
+新增产物：
+
+- `docs/product/memory_starfield_c3_spike_contract.md`
+- `docs/acceptance/memory_starfield_c3_spike_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9_phase1.cjs`
+- `validate:v1.1.6-stage9-phase1`
+
+验收边界：
+
+- spike 必须保留 Three.js canvas、particle LOD、nebula dust、Flow Field、
+  gravitational disk、Black Hole marker、Proto-Star marker、Memory Terrain
+  cluster、hover card、reduced-motion control 和 smoke status hook。
+- `fixture.ts` 必须保持 raw/private、plaintext secrets 和 local absolute path
+  标志为 false。
+- production `src` 不得 import 或 reference `memory-starfield-spike`。
+- 本 phase 不 production integration、不 build、不运行浏览器截图、不安装本地 app、
+  不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期记忆、
+  不上传 GitHub main。
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No Stage 10 work; No GitHub main upload.
+
+下一步：
+
+- Stage 9 Phase 2 已进入 Memory River C3 Spike。
+- Stage 9 整体复审未执行前，不上传 GitHub main。
+
+### Stage 9 Phase 2：Memory River C3 Spike
+
+Stage 9 Phase 2 状态：`phase_9_2_memory_river_c3_spike_ready_pending_stage_review`。
+
+任务 ID：`MA-V116-S9P02`。
+
+本 phase 是 v1.1.6 修补包 C3 隔离原型的第二轮，只固定
+`memory-river-spike` 作为记忆时间河的独立原型证据，不替换 production
+Timeline，不导入 experiment，不进入 Stage 9 整体复审。
+
+新增产物：
+
+- `docs/product/memory_river_c3_spike_contract.md`
+- `docs/acceptance/memory_river_c3_spike_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9_phase2.cjs`
+- `validate:v1.1.6-stage9-phase2`
+
+验收边界：
+
+- spike 必须保留 D3 UTC time scale、zoom/pan、brush selection、theme
+  lanes、event pulses、Black Hole band、Proto-Star marker、hover card、
+  reduced-motion control 和 smoke status hook。
+- `fixture.ts` 必须保持 raw/private、plaintext secrets、local absolute path
+  和 writeback 标志为 false。
+- production `src` 不得 import 或 reference `memory-river-spike`。
+- 本 phase 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期
+  记忆、不写 proposal、不上传 GitHub main。
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- Stage 9 Phase 3 已进入 Data Map C3 Spike。
+- Stage 9 整体复审未执行前，不上传 GitHub main。
+
+### Stage 9 Phase 3：Data Map C3 Spike
+
+Stage 9 Phase 3 状态：`phase_9_3_data_map_c3_spike_ready_pending_stage_review`。
+
+任务 ID：`MA-V116-S9P03`。
+
+本 phase 是 v1.1.6 修补包 C3 隔离原型的第三轮，创建
+`data-map-spike` 作为 Data Map 2.0 的独立原型证据，不替换 production Data
+Guide / Data Map，不导入 experiment，不进入 Stage 9 整体复审。
+
+新增产物：
+
+- `apps/memory-atlas/src/experiments/data-map-spike/README.md`
+- `apps/memory-atlas/src/experiments/data-map-spike/index.html`
+- `apps/memory-atlas/src/experiments/data-map-spike/main.ts`
+- `apps/memory-atlas/src/experiments/data-map-spike/fixture.ts`
+- `docs/product/data_map_c3_spike_contract.md`
+- `docs/acceptance/data_map_c3_spike_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9_phase3.cjs`
+- `validate:v1.1.6-stage9-phase3`
+
+验收边界：
+
+- spike 必须保留 source_layer、topic_layer、asset_layer、action_layer、
+  source_to_topic_edges、topic_to_asset_edges、asset_to_action_edges、
+  data_to_action_flow、map_card 字段、Inspector/Search/Review handoff、
+  proposal-only 状态、reduced-motion control 和 smoke status hook。
+- `fixture.ts` 必须保持 raw/private、plaintext secrets、local absolute path
+  和 writeback 标志为 false，`proposalOnly` 为 true。
+- production `src` 不得 import 或 reference `data-map-spike`。
+- 本 phase 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期
+  记忆、不写 proposal、不上传 GitHub main。
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- Stage 9 Phase 4 已进入 Universe State fixture continuity。
+- Stage 9 整体复审未执行前，不上传 GitHub main。
+
+### Stage 9 Phase 4：Universe State Fixture Continuity
+
+Stage 9 Phase 4 状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。
+
+任务 ID：`MA-V116-S9P04`。
+
+本 phase 是 v1.1.6 修补包 C3 隔离原型的第四轮，只固定既有 Universe
+State generator spike 的 fixture continuity，不修改 score formula、parameter
+YAML、input fixture、sample、schema 或 production integration，不进入 Stage 9
+整体复审。
+
+新增产物：
+
+- `docs/product/universe_state_fixture_continuity_contract.md`
+- `docs/acceptance/universe_state_fixture_continuity_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9_phase4.cjs`
+- `validate:v1.1.6-stage9-phase4`
+
+验收边界：
+
+- spike 必须保留 redacted fixture adapter、deterministic sample generation、
+  schema validation、parameter drift gate、black_hole_score、proto_star_score、
+  stale_score、memory_weather、memory_terrain、river_pulse、mini_starfield、
+  consumer_map、proposal-only actions 和 privacy_status。
+- `validate:universe-state-spike` 必须通过，证明 deterministic sample、schema、
+  score checks、parameter drift 和 privacy scan。
+- input fixture 与 sample 必须保持 raw/private、plaintext secrets、local
+  absolute paths 和 writeback 标志为 false。
+- production `src` 不得 import 或 reference
+  `experiments/universe-state-generator-spike`。
+- 本 phase 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期
+  记忆、不写 proposal、不上传 GitHub main。
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- Stage 9 四个 C3 原型 phase 已完成；下一轮应执行 Stage 9 整体复审。
+- Stage 9 整体复审通过并修复复审问题前，不上传 GitHub main。
+
+### Stage 9 整体复审
+
+Stage 9 状态：`stage_9_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S9-REVIEW`。
+
+本复审覆盖 Stage 9 Phase 1 Memory Starfield C3 Spike、Phase 2 Memory River
+C3 Spike、Phase 3 Data Map C3 Spike 与 Phase 4 Universe State Fixture
+Continuity。复审只固定四个 C3 隔离原型 phase 的合同、验收、validator、
+production isolation、review artifact、package script 和治理记录一致性，不替换
+production Galaxy / Timeline / Data Map，不导入 experiment 到 app shell，不修改
+Universe State score formula、parameter YAML、input fixture、sample 或 schema，不进入
+Stage 10。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage9_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9.cjs`
+- `validate:v1.1.6-stage9`
+
+验收边界：
+
+- Stage 9 Phase 1-4 validator 均必须通过。
+- `validate:universe-state-spike` 必须通过。
+- Stage 9 review artifact、delivery、feature、development、model parameter、
+  changelog 和 package script 必须一致。
+- production `src` 不得 import 或 reference Stage 9 isolated experiments。
+- 本 review 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期
+  记忆、不写 proposal、不执行 agent apply、不上传 GitHub main。
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一 gate：
+
+- 先执行 final remote checks、Stage 9 phase validators、
+  `validate:universe-state-spike`、`validate:v1.1.6-stage9`、项目级
+  acceptance audit 和 diff check。
+- 再上传 canonical GitHub main tree。
+- Stage 10 必须在 Stage 9 上传验证完成后另起 bounded run。
+
+### Stage 10 Phase 1 Final Acceptance Readiness
+
+Stage 10 Phase 1 状态：
+`phase_10_1_final_acceptance_readiness_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S10P01`。
+
+本 phase 在 Stage 9 上传验证后建立最终验收 readiness 合同，只定义后续 Stage
+10 review 必须证明的 roadmap v2 final acceptance、validator chain、visual
+evidence、release safety、privacy/writeback、upload readiness 和 governance
+sync 七类门槛。不执行整项目复审，不修改 production UI，不运行 production build，
+不安装本地 app，不运行浏览器截图，不部署 Cloudflare，不上传 GitHub main。
+
+新增产物：
+
+- `docs/product/memory_atlas_final_acceptance_readiness_contract.md`
+- `docs/acceptance/memory_atlas_final_acceptance_readiness_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10_phase1.cjs`
+- `validate:v1.1.6-stage10-phase1`
+
+验收边界：
+
+- Stage 10 Phase 1 contract 和 acceptance 文件必须存在并覆盖七类最终验收
+  readiness surface。
+- `validate:v1.1.6-stage10-phase1` 必须通过。
+- 当前分支必须包含 `origin/main`，证明 Stage 10 从 Stage 9 上传后的 baseline
+  开始。
+- 当前 OpenAIDatabase 改动必须限制在 Stage 10 Phase 1 合同、验收、validator、
+  package script 和记录文件。
+- 本 phase 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写
+  长期记忆、不写 proposal、不执行 agent apply、不上传 GitHub main。
+
+Machine-readable boundary summary: No production UI; No production build; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- Stage 10 Phase 1 完成后，另起 bounded run 执行 Stage 10 整体复审。
+- Stage 10 整体复审通过前，不执行最终 GitHub main 上传。
+
+### Stage 10 整体复审
+
+Stage 10 状态：`stage_10_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S10-REVIEW`。
+
+本复审覆盖 Stage 10 Phase 1 Final Acceptance Readiness，并把
+`validate:whole-project` 作为强证据门槛复跑。复审确认 Part 1-10 validators、
+production frontend build、OpenAIDatabase Python compile、unittest discovery、
+visual acceptance、release audit、overall acceptance、offline Cloudflare Pages +
+Access preflight、Roadmap v2 final acceptance runtime/audit coverage、canonical
+remote 和 GitHub upload boundary 均通过。本复审不新增 production runtime
+feature work，不读取 raw/private，不直接写长期记忆，不写 proposal，不执行 agent
+apply，不部署 Cloudflare，不修改 Access policy，不上传 GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage10_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10.cjs`
+- `validate:v1.1.6-stage10`
+
+验收边界：
+
+- Stage 10 Phase 1 readiness contract、acceptance、validator 和 records 必须一致。
+- `validate:whole-project` 必须返回 PASS。
+- Stage 10 review artifact、delivery、feature、development、model parameter、
+  changelog 和 package script 必须一致。
+- 当前 OpenAIDatabase 改动必须限制在 Stage 10 review artifact、validator、
+  package script 和记录文件。
+- 本 review 不 production runtime feature work、不安装本地 app、不部署 Cloudflare、
+  不修改 Access policy、不读取 raw/private、不直接写长期记忆、不写 proposal、
+  不执行 agent apply、不上传 GitHub main。
+
+Machine-readable boundary summary: No production runtime feature work; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一 gate：
+
+- 执行 final upload gate：fetch/integrate、重跑 Stage 10 validators 和
+  `validate:whole-project`、检查 clean tracked tree、canonical remote、push target
+  和 final remote ancestry。
+- final upload gate 未通过前，不上传 GitHub main。
+
 ### Stage 6 整体复审
 
 Stage 6 状态：`stage_6_review_passed_pending_github_main_upload`。
@@ -973,3 +1360,70 @@ Machine-readable boundary summary: No runtime UI; No raw/private data read; No d
 - 执行 Stage 1-5 final upload gate：fetch/integrate、重跑 Stage 1-5 validators、
   可用 governance checks、确认 changed files、避免 staging `.DS_Store`。
 - final upload gate 未通过前，不上传 GitHub main。
+
+### Stage 7 Phase 1：Memory Starfield Rebuild Contract
+
+Stage 7 Phase 1 状态：`phase_7_1_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S7P01`。
+
+本 phase 是 v1.1.6 修补包进入“记忆星系重做”的第一轮，只定义
+`memory_starfield_rebuild_contract` 合同、验收、validator 和治理记录一致性。
+它把普通 dots-and-lines、node-link graph、Obsidian-like graph 或 chart-like
+network 明确列为未来实现失败条件，要求未来实现必须展示
+`memory_starfield`、`nebula_field`、`flow_field`、`trajectory_trails`、
+`gravity_sources`、`black_hole_core`、`proto_star_cloud`、
+`memory_terrain_layer`、`cluster_constellations` 和
+`ambient_depth_particles`，并支持 orbit pan/zoom、hover card、click
+Inspector、focus cluster、Search 2.0 跳转、Memory River 跳转、Presentation /
+Analysis 模式、keyboard navigation 和 reduced motion。
+
+新增产物：
+
+- `docs/product/memory_starfield_rebuild_contract.md`
+- `docs/acceptance/memory_starfield_rebuild_acceptance.md`
+- `validate:v1.1.6-stage7-phase1`
+
+验收边界：
+
+- 默认只有点、只有边线、普通 Obsidian Graph、缺少星云、缺少流场、缺少轨迹、
+  缺少引力源、缺少黑洞、缺少新生星云、缺少记忆地形层、缺少 Inspector 交接、
+  WebGL/fallback 空白或 reduced motion 被忽略，均为未来实现失败条件。
+- Stage 7 Phase 1 通过不表示 runtime Memory Starfield、浏览器截图或真实交互已完成。
+- 不实现运行时 UI，不修改 CSS，不导入 experiment 目录，不切换 feature flag，
+  不读取 raw/private 数据，不直接写长期记忆，不执行 agent apply，不进入 Stage 7
+  整体复审，不进入 Stage 8-10，不上传 GitHub main。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 进入 Stage 7 整体复审，补 review artifact 和 stage-level validator，并解决复审暴露的问题。
+- Stage 7 整体复审未执行前，不上传 GitHub main。
+
+### Stage 7 整体复审
+
+Stage 7 状态：`stage_7_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S7-REVIEW`。
+
+本复审覆盖 v1.1.6 Stage 7 Phase 1 Memory Starfield Rebuild Contract，只确认
+`memory_starfield_rebuild_contract` 合同、验收、validator、review artifact、
+package script 和治理记录一致。不实现运行时 UI、不修改 CSS、不实现 Memory
+Starfield runtime、不导入 experiment 目录、不切换 feature flag、不读取
+raw/private 数据、不直接写长期记忆、不执行 agent apply、不进入 Stage 8、不上传
+GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage7_review.md`
+- `validate:v1.1.6-stage7`
+
+验收边界：
+
+- Stage 7 复审通过不表示 runtime Memory Starfield、浏览器截图、WebGL/fallback
+  canvas、真实 Search/River focus handoff 或 agent apply 已完成。
+- Stage 8 未进入。
+- GitHub main upload 只在 final remote checks 通过后执行。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.

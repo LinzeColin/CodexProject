@@ -8,9 +8,9 @@ import os
 import re
 import subprocess
 from collections.abc import Mapping
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from arxiv_daily_push.stage2_lease_fencing import build_m4_cycle_watermark
 from arxiv_daily_push.stage2_replay_gate import (
@@ -67,9 +67,14 @@ S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_SCOPE = (
     "production_boundary_preflight_only_no_acceptance_no_enablement"
 )
 S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS = (
-    "daily",
-    "health",
-    "watchdog",
+    "com.linzezhang.adp.daily",
+    "com.linzezhang.adp.health",
+    "com.linzezhang.adp.watchdog",
+)
+S2PMT07_HISTORICAL_CONTROLLED_RUN_LAUNCHAGENT_LABELS = (
+    "com.linze.adp.local.daily",
+    "com.linze.adp.local.health",
+    "com.linze.adp.local.watchdog",
 )
 S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_FORBIDDEN_FLAGS = (
     "production_acceptance_claimed",
@@ -214,6 +219,11 @@ S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_SCOPE = (
     "daily_operation_authorization_preflight_only_no_runtime_enablement"
 )
 S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_REQUIRED_LAUNCHAGENTS = (
+    "com.linzezhang.adp.daily",
+    "com.linzezhang.adp.health",
+    "com.linzezhang.adp.watchdog",
+)
+S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_LEGACY_LAUNCHAGENT_KEYS = (
     "daily",
     "health",
     "watchdog",
@@ -12560,8 +12570,11 @@ def validate_integrated_production_acceptance_preflight_state(state: Mapping[str
         errors.append("integrated production acceptance preflight next_required_step is invalid")
     if state.get("owner_decision_required") is not True:
         errors.append("integrated production acceptance preflight must require owner decision")
-    for label in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS:
-        if label not in _mapping(state.get("launchagent_disabled_states")):
+    if not _launchagent_states_cover_any_label_group(
+        _mapping(state.get("launchagent_disabled_states")),
+        (S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS,),
+    ):
+        for label in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS:
             errors.append(f"launchagent_disabled_states must include {label}")
     final_bundle = _mapping(state.get("final_acceptance_bundle_readiness"))
     if validate_final_acceptance_bundle_readiness_state(final_bundle):
@@ -13172,9 +13185,12 @@ def build_integrated_production_acceptance_write_gate_state(
             "persistent_adp_allow_smtp_send"
         )
         == "false",
-        "controlled_real_run_launchagents_disabled_after": all(
-            launchagents_after.get(f"com.linze.adp.local.{label}") is True
-            for label in S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS
+        "controlled_real_run_launchagents_disabled_after": _launchagent_states_mark_disabled_for_any_label_group(
+            launchagents_after,
+            (
+                S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT_REQUIRED_LAUNCHAGENTS,
+                S2PMT07_HISTORICAL_CONTROLLED_RUN_LAUNCHAGENT_LABELS,
+            ),
         ),
         "controlled_real_run_no_background_process_after": post_run_safety.get(
             "adp_background_process_count_after"
@@ -13849,8 +13865,14 @@ def validate_daily_operation_authorization_preflight_state(state: Mapping[str, A
     ):
         if state.get(flag) is not True:
             errors.append(f"daily operation authorization preflight must preserve accepted {flag}")
-    for label in S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_REQUIRED_LAUNCHAGENTS:
-        if label not in _mapping(state.get("launchagent_disabled_states")):
+    if not _launchagent_states_cover_any_label_group(
+        _mapping(state.get("launchagent_disabled_states")),
+        (
+            S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_REQUIRED_LAUNCHAGENTS,
+            S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_LEGACY_LAUNCHAGENT_KEYS,
+        ),
+    ):
+        for label in S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_REQUIRED_LAUNCHAGENTS:
             errors.append(f"launchagent_disabled_states must include {label}")
     for flag in S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT_RUNTIME_FORBIDDEN_FLAGS:
         if state.get(flag) is not False:
@@ -14045,12 +14067,27 @@ def _validate_persistent_daily_operation_authorization_artifact(artifact: Mappin
         errors.append("persistent daily operation authorization artifact task_id is invalid")
     if artifact.get("decision") != S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_DECISION:
         errors.append("persistent daily operation authorization artifact decision is invalid")
+    if artifact.get("template_only") is True:
+        errors.append("persistent daily operation authorization artifact must not be template_only")
     if artifact.get("explicit_persistent_daily_operation_authorization") is not True:
         errors.append("persistent daily operation authorization artifact must be explicit")
+    generated_at = str(artifact.get("generated_at", "")).strip()
+    if not generated_at or generated_at.startswith("REPLACE_WITH_"):
+        errors.append("persistent daily operation authorization artifact generated_at must be a real timestamp")
+    else:
+        try:
+            datetime.fromisoformat(generated_at.replace("Z", "+00:00"))
+        except ValueError:
+            errors.append("persistent daily operation authorization artifact generated_at must be a real timestamp")
     if artifact.get("authorization_scope") != "persistent_daily_operation_enablement":
         errors.append("persistent daily operation authorization artifact authorization_scope is invalid")
     if artifact.get("authorized_by") not in {"owner", "owner/coordinator"}:
         errors.append("persistent daily operation authorization artifact authorized_by is invalid")
+    authorization_text = str(artifact.get("authorization_text", "")).strip()
+    if not authorization_text or authorization_text.startswith("REPLACE_WITH_"):
+        errors.append(
+            "persistent daily operation authorization artifact authorization_text must be explicit owner evidence"
+        )
     for flag in S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_FORBIDDEN_FLAGS:
         if artifact.get(flag) is not False:
             errors.append(f"persistent daily operation authorization artifact must not enable {flag}")
@@ -14620,6 +14657,20 @@ def validate_s2pmt07_precheck_report(report: Mapping[str, Any]) -> list[str]:
 
 def _mapping(value: Any) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
+
+
+def _launchagent_states_cover_any_label_group(
+    states: Mapping[str, Any],
+    label_groups: Sequence[Sequence[str]],
+) -> bool:
+    return any(all(label in states for label in label_group) for label_group in label_groups)
+
+
+def _launchagent_states_mark_disabled_for_any_label_group(
+    states: Mapping[str, Any],
+    label_groups: Sequence[Sequence[str]],
+) -> bool:
+    return any(all(states.get(label) is True for label in label_group) for label_group in label_groups)
 
 
 def _list_of_mappings(value: Any) -> list[Mapping[str, Any]]:

@@ -1,0 +1,2 @@
+requirement_id,model_id,assumption_id,formula_id,parameter_id,task_id,acceptance_id,code_ref,test_ref,evidence_ref,status
+REQ-WDA-BOOTSTRAP-001,NOT_APPLICABLE,ASM-WDA-BOOTSTRAP-001,NOT_APPLICABLE,NOT_APPLICABLE,WDA-STAGE0-P1,ACC-WDA-STAGE0-P1,WDA/README.md,scripts/lean_governance.py check-render --project WDA,EVID-WDA-BOOTSTRAP-001,in_progress
