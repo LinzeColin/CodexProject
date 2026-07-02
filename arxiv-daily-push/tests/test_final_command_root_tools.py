@@ -124,6 +124,9 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertIn("authorization_artifact_exists", payload)
         self.assertEqual(payload["repo_root"], str(REPO_ROOT))
         self.assertEqual(payload["required_cwd"], "CodexProject repository root")
+        self.assertTrue(payload["repo_root_valid"])
+        self.assertEqual(payload["root_validation_errors"], [])
+        self.assertEqual(payload["required_paths_missing"], [])
         self.assertFalse(payload["authorization_artifact_exists"])
         self.assertFalse(payload["daily_operation_ready"])
         self.assertFalse(payload["persistent_daily_operation_authorized"])
@@ -143,6 +146,37 @@ class FinalCommandRootToolTests(unittest.TestCase):
             "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
         )
         self.assertEqual(payload["validation_errors"], [])
+
+    def test_verify_daily_operation_readiness_root_tool_fails_closed_for_project_subdir_root(self) -> None:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "tools/verify_daily_operation_readiness.py",
+                "--root",
+                "arxiv-daily-push",
+                "--generated-at",
+                "2026-07-02T23:00:00+10:00",
+            ],
+            cwd=REPO_ROOT,
+            env=self._env(),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout[-2000:])
+        self.assertEqual(completed.stderr, "")
+        payload = json.loads(completed.stdout)
+        self.assertEqual(payload["status"], "FAIL")
+        self.assertEqual(payload["repo_root"], str(REPO_ROOT / "arxiv-daily-push"))
+        self.assertEqual(payload["required_cwd"], "CodexProject repository root")
+        self.assertFalse(payload["repo_root_valid"])
+        self.assertIn("codexproject_repo_root_invalid", payload["root_validation_errors"])
+        self.assertIn("codexproject_repo_root_invalid", payload["blocking_reasons"])
+        self.assertIn("arxiv-daily-push/src", payload["required_paths_missing"])
+        self.assertFalse(payload["authorization_artifact_exists"])
+        self.assertFalse(payload["daily_operation_ready"])
 
     def test_verify_daily_operation_enablement_preflight_root_tool_fails_closed_without_authorization(self) -> None:
         completed = subprocess.run(
@@ -180,6 +214,9 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertIn("authorization_artifact_exists", payload)
         self.assertEqual(payload["repo_root"], str(REPO_ROOT))
         self.assertEqual(payload["required_cwd"], "CodexProject repository root")
+        self.assertTrue(payload["repo_root_valid"])
+        self.assertEqual(payload["root_validation_errors"], [])
+        self.assertEqual(payload["required_paths_missing"], [])
         self.assertFalse(payload["authorization_artifact_exists"])
         self.assertEqual(
             payload["scope"],
@@ -217,6 +254,55 @@ class FinalCommandRootToolTests(unittest.TestCase):
             payload["authorization_artifact"],
             "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
         )
+
+    def test_verify_daily_operation_enablement_preflight_root_tool_fails_closed_for_project_subdir_root(self) -> None:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "tools/verify_daily_operation_enablement_preflight.py",
+                "--root",
+                "arxiv-daily-push",
+                "--generated-at",
+                "2026-07-02T23:05:00+10:00",
+                "--open-pr-count",
+                "0",
+                "--adp-allow-smtp-send",
+                "UNSET",
+                "--launchagent-daily-disabled",
+                "true",
+                "--launchagent-health-disabled",
+                "true",
+                "--launchagent-watchdog-disabled",
+                "true",
+                "--background-adp-process-count",
+                "0",
+            ],
+            cwd=REPO_ROOT,
+            env=self._env(),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout[-2000:])
+        self.assertEqual(completed.stderr, "")
+        payload = json.loads(completed.stdout)
+        self.assertEqual(payload["status"], "FAIL")
+        self.assertEqual(payload["repo_root"], str(REPO_ROOT / "arxiv-daily-push"))
+        self.assertEqual(payload["required_cwd"], "CodexProject repository root")
+        self.assertFalse(payload["repo_root_valid"])
+        self.assertIn("codexproject_repo_root_invalid", payload["root_validation_errors"])
+        self.assertIn("codexproject_repo_root_invalid", payload["blocking_reasons"])
+        self.assertIn("arxiv-daily-push/src", payload["required_paths_missing"])
+        self.assertFalse(payload["authorization_artifact_exists"])
+        self.assertFalse(payload["enablement_preflight_ready"])
+        self.assertFalse(payload["daily_operation_ready"])
+        self.assertFalse(payload["checks"]["daily_operation_readiness_passed"])
+        self.assertTrue(payload["checks"]["open_pr_count_zero"])
+        self.assertTrue(payload["checks"]["adp_allow_smtp_send_false_like"])
+        self.assertTrue(payload["checks"]["launchagents_disabled"])
+        self.assertTrue(payload["checks"]["background_adp_process_count_zero"])
 
     def test_verify_daily_operation_enablement_preflight_observes_runtime_by_default(self) -> None:
         completed = subprocess.run(

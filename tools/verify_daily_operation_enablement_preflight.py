@@ -20,6 +20,14 @@ from typing import Any
 
 
 AUTHORIZATION_ARTIFACT_REF = "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"
+GATE_ARTIFACT_REF = "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json"
+REQUIRED_CWD = "CodexProject repository root"
+ROOT_VALIDATION_FAILURE = "codexproject_repo_root_invalid"
+REQUIRED_ROOT_PATHS = (
+    "arxiv-daily-push/src",
+    "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml",
+    GATE_ARTIFACT_REF,
+)
 GITHUB_OPEN_PULLS_API_URL = "https://api.github.com/repos/LinzeColin/CodexProject/pulls?state=open&per_page=100"
 REQUIRED_LAUNCHAGENTS = (
     "com.linzezhang.adp.daily",
@@ -59,6 +67,12 @@ def _parse_bool(value: str, *, arg_name: str) -> bool:
 def _is_false_like(value: str | None) -> bool:
     raw = "UNSET" if value is None else value
     return raw.strip().lower() in FALSE_LIKE_VALUES
+
+
+def _validate_repo_root(root: Path) -> tuple[bool, list[str], list[str]]:
+    missing_paths = [path for path in REQUIRED_ROOT_PATHS if not (root / path).exists()]
+    errors = [ROOT_VALIDATION_FAILURE] if missing_paths else []
+    return not errors, missing_paths, errors
 
 
 def _load_readiness_report(root: Path, generated_at: str | None) -> dict[str, Any]:
@@ -185,9 +199,74 @@ def build_enablement_preflight_report(
 ) -> dict[str, Any]:
     generated = generated_at or datetime.now(timezone.utc).isoformat()
     authorization_artifact = root / AUTHORIZATION_ARTIFACT_REF
-    readiness = _load_readiness_report(root, generated)
+    repo_root_valid, missing_paths, root_errors = _validate_repo_root(root)
     environment_smtp_send = os.environ.get("ADP_ALLOW_SMTP_SEND", "UNSET")
     raw_smtp_send = environment_smtp_send if adp_allow_smtp_send is None else adp_allow_smtp_send
+    if not repo_root_valid:
+        checks = {
+            "daily_operation_readiness_passed": False,
+            "open_pr_count_zero": open_pr_count == 0,
+            "adp_allow_smtp_send_false_like": _is_false_like(raw_smtp_send) and _is_false_like(environment_smtp_send),
+            "launchagents_disabled": all(
+                launchagent_disabled_states.get(label) is True for label in REQUIRED_LAUNCHAGENTS
+            ),
+            "background_adp_process_count_zero": background_adp_process_count == 0,
+            "runtime_enablement_absent": True,
+        }
+        blocking_reasons: list[str] = []
+        blocking_reasons.extend(root_errors)
+        if not checks["open_pr_count_zero"]:
+            blocking_reasons.append("open_pr_count_not_zero_or_unknown")
+            blocking_reasons.extend(open_pr_observation_errors or [])
+        if not checks["adp_allow_smtp_send_false_like"]:
+            blocking_reasons.append("adp_allow_smtp_send_truthy_or_unknown")
+        if not checks["launchagents_disabled"]:
+            blocking_reasons.append("launchagents_not_all_disabled_or_unknown")
+            blocking_reasons.extend(runtime_observation_errors or [])
+        if not checks["background_adp_process_count_zero"]:
+            blocking_reasons.append("background_adp_process_count_not_zero_or_unknown")
+            blocking_reasons.extend(runtime_observation_errors or [])
+        return {
+            "status": "FAIL",
+            "scope": "adp_s3_daily_operation_enablement_preflight_fail_closed_no_runtime_enablement",
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "task_id": "S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT",
+            "generated_at": generated,
+            "repo_root": str(root),
+            "required_cwd": REQUIRED_CWD,
+            "repo_root_valid": False,
+            "root_validation_errors": root_errors,
+            "required_paths_missing": missing_paths,
+            "enablement_preflight_ready": False,
+            "checks": checks,
+            "blocking_reasons": _unique_reasons(blocking_reasons),
+            "readiness_status": "FAIL",
+            "readiness_blocking_reasons": root_errors,
+            "daily_operation_ready": False,
+            "persistent_daily_operation_authorized": False,
+            "authorization_artifact": AUTHORIZATION_ARTIFACT_REF,
+            "authorization_artifact_exists": authorization_artifact.is_file(),
+            "next_required_step": "RUN_FROM_CODEXPROJECT_REPOSITORY_ROOT",
+            "next_executable_task": None,
+            "open_pr_count": open_pr_count,
+            "open_pr_observation_mode": open_pr_observation_mode,
+            "open_pr_observation_errors": open_pr_observation_errors or [],
+            "adp_allow_smtp_send_raw": raw_smtp_send,
+            "adp_allow_smtp_send_environment_raw": environment_smtp_send,
+            "launchagent_disabled_states": {
+                label: launchagent_disabled_states.get(label) is True for label in REQUIRED_LAUNCHAGENTS
+            },
+            "background_adp_process_count": background_adp_process_count,
+            "runtime_observation_mode": runtime_observation_mode,
+            "runtime_observation_errors": runtime_observation_errors or [],
+            "runtime_enablement_detected": False,
+            "daily_operation_enabled": False,
+            "real_smtp_send_enabled": False,
+            "scheduler_install_enabled": False,
+            "release_packaging_enabled": False,
+            "production_restore_enabled": False,
+        }
+    readiness = _load_readiness_report(root, generated)
     runtime_flags = {
         "daily_operation_enabled": readiness.get("daily_operation_enabled") is True,
         "real_smtp_send_enabled": readiness.get("real_smtp_send_enabled") is True,
@@ -233,7 +312,10 @@ def build_enablement_preflight_report(
         "task_id": "S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT",
         "generated_at": generated,
         "repo_root": str(root),
-        "required_cwd": "CodexProject repository root",
+        "required_cwd": REQUIRED_CWD,
+        "repo_root_valid": True,
+        "root_validation_errors": [],
+        "required_paths_missing": [],
         "enablement_preflight_ready": enablement_preflight_ready,
         "checks": checks,
         "blocking_reasons": [] if enablement_preflight_ready else blocking_reasons,
