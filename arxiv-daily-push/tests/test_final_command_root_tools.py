@@ -1,14 +1,29 @@
 from __future__ import annotations
 
+import importlib.util
+import io
 import json
 import os
 import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def load_enablement_preflight_tool():
+    spec = importlib.util.spec_from_file_location(
+        "verify_daily_operation_enablement_preflight",
+        REPO_ROOT / "tools" / "verify_daily_operation_enablement_preflight.py",
+    )
+    if spec is None or spec.loader is None:
+        raise RuntimeError("could not load verify_daily_operation_enablement_preflight.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class FinalCommandRootToolTests(unittest.TestCase):
@@ -230,6 +245,55 @@ class FinalCommandRootToolTests(unittest.TestCase):
             payload["blocking_reasons"],
             ["persistent_daily_operation_authorization_missing"],
         )
+
+    def test_verify_daily_operation_enablement_preflight_observes_open_pr_count_by_default(self) -> None:
+        tool = load_enablement_preflight_tool()
+        labels = {
+            "com.linzezhang.adp.daily": True,
+            "com.linzezhang.adp.health": True,
+            "com.linzezhang.adp.watchdog": True,
+        }
+        stdout = io.StringIO()
+
+        with (
+            mock.patch.object(tool, "_observe_open_pr_count", return_value=(0, [])),
+            mock.patch.object(tool, "observe_runtime_boundary", return_value=(labels, 0, [])),
+            mock.patch("sys.stdout", stdout),
+        ):
+            exit_code = tool.main(
+                [
+                    "--root",
+                    str(REPO_ROOT),
+                    "--generated-at",
+                    "2026-07-02T20:35:00+10:00",
+                    "--adp-allow-smtp-send",
+                    "UNSET",
+                ]
+            )
+
+        self.assertEqual(exit_code, 2)
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(payload["open_pr_count"], 0)
+        self.assertEqual(payload["open_pr_observation_mode"], "auto_observed")
+        self.assertEqual(payload["open_pr_observation_errors"], [])
+        self.assertTrue(payload["checks"]["open_pr_count_zero"])
+        self.assertEqual(
+            payload["blocking_reasons"],
+            ["persistent_daily_operation_authorization_missing"],
+        )
+
+    def test_verify_daily_operation_enablement_preflight_open_pr_observation_timeout_is_fail_closed(self) -> None:
+        tool = load_enablement_preflight_tool()
+
+        with mock.patch.object(
+            tool.subprocess,
+            "run",
+            side_effect=subprocess.TimeoutExpired(cmd=["/usr/bin/curl"], timeout=20),
+        ):
+            count, errors = tool._observe_open_pr_count()
+
+        self.assertIsNone(count)
+        self.assertEqual(errors, ["open_pr_count_observation_failed"])
 
 
 if __name__ == "__main__":

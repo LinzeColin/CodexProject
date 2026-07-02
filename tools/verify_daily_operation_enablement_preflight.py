@@ -20,6 +20,7 @@ from typing import Any
 
 
 AUTHORIZATION_ARTIFACT_REF = "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json"
+GITHUB_OPEN_PULLS_API_URL = "https://api.github.com/repos/LinzeColin/CodexProject/pulls?state=open&per_page=100"
 REQUIRED_LAUNCHAGENTS = (
     "com.linzezhang.adp.daily",
     "com.linzezhang.adp.health",
@@ -125,6 +126,40 @@ def observe_runtime_boundary() -> tuple[dict[str, bool], int | None, list[str]]:
     return launchagent_states, process_count, _unique_reasons(errors)
 
 
+def _observe_open_pr_count() -> tuple[int | None, list[str]]:
+    curl = Path("/usr/bin/curl")
+    if not curl.exists():
+        return None, ["open_pr_count_observation_tool_missing"]
+    try:
+        completed = subprocess.run(
+            [
+                str(curl),
+                "-sSfL",
+                "-H",
+                "Accept: application/vnd.github+json",
+                "-H",
+                "User-Agent: codex-adp-open-pr-check",
+                GITHUB_OPEN_PULLS_API_URL,
+            ],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=20,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None, ["open_pr_count_observation_failed"]
+    if completed.returncode != 0:
+        return None, ["open_pr_count_observation_failed"]
+    try:
+        payload = json.loads(completed.stdout)
+    except json.JSONDecodeError:
+        return None, ["open_pr_count_observation_json_invalid"]
+    if not isinstance(payload, list):
+        return None, ["open_pr_count_observation_payload_invalid"]
+    return len(payload), []
+
+
 def _unique_reasons(reasons: list[str]) -> list[str]:
     seen: set[str] = set()
     unique: list[str] = []
@@ -145,6 +180,8 @@ def build_enablement_preflight_report(
     background_adp_process_count: int | None = None,
     runtime_observation_mode: str = "provided",
     runtime_observation_errors: list[str] | None = None,
+    open_pr_observation_mode: str = "provided",
+    open_pr_observation_errors: list[str] | None = None,
 ) -> dict[str, Any]:
     generated = generated_at or datetime.now(timezone.utc).isoformat()
     readiness = _load_readiness_report(root, generated)
@@ -201,6 +238,8 @@ def build_enablement_preflight_report(
         "next_required_step": readiness.get("next_required_step"),
         "next_executable_task": readiness.get("next_executable_task"),
         "open_pr_count": open_pr_count,
+        "open_pr_observation_mode": open_pr_observation_mode,
+        "open_pr_observation_errors": open_pr_observation_errors or [],
         "adp_allow_smtp_send_raw": raw_smtp_send,
         "launchagent_disabled_states": {label: launchagent_disabled_states.get(label) is True for label in REQUIRED_LAUNCHAGENTS},
         "background_adp_process_count": background_adp_process_count,
@@ -215,7 +254,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", default=".", help="CodexProject repository root.")
     parser.add_argument("--generated-at", default=None, help="Optional timestamp for deterministic reports.")
-    parser.add_argument("--open-pr-count", type=int, default=None, help="Observed GitHub open PR count.")
+    parser.add_argument(
+        "--open-pr-count",
+        type=int,
+        default=None,
+        help="Observed GitHub open PR count. Defaults to a read-only GitHub API observation.",
+    )
     parser.add_argument(
         "--adp-allow-smtp-send",
         default=None,
@@ -274,15 +318,24 @@ def main(argv: list[str] | None = None) -> int:
         observation_mode = "auto_observed"
     else:
         observation_mode = "mixed"
+    if args.open_pr_count is None:
+        open_pr_count, open_pr_errors = _observe_open_pr_count()
+        open_pr_observation_mode = "auto_observed"
+    else:
+        open_pr_count = args.open_pr_count
+        open_pr_errors = []
+        open_pr_observation_mode = "provided"
     report = build_enablement_preflight_report(
         Path(args.root).resolve(),
         generated_at=args.generated_at,
-        open_pr_count=args.open_pr_count,
+        open_pr_count=open_pr_count,
         adp_allow_smtp_send=args.adp_allow_smtp_send,
         launchagent_disabled_states=launchagent_states,
         background_adp_process_count=process_count,
         runtime_observation_mode=observation_mode,
         runtime_observation_errors=observation_errors,
+        open_pr_observation_mode=open_pr_observation_mode,
+        open_pr_observation_errors=open_pr_errors,
     )
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if report["status"] == "PASS" else 2
