@@ -143,6 +143,11 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("不进入；`daily_operation_enabled=false`", page)
         self.assertIn("2026-07-01 19:04 以前的 S2PLT02、S2PLT03、S2PLT04、final bundle", page)
         self.assertIn("不得用来回退 Stage 2 integrated acceptance", page)
+        self.assertIn(
+            "| 全量表状态列 | `全量追踪链` 的 `状态` 是每条历史证据/任务记录的原始审计结果",
+            page,
+        )
+        self.assertIn("旧 `blocked_*` 只说明该行当时状态，不等于当前系统仍 blocked", page)
         self.assertIn("只能做 MVP 复审修补、证据链可读性、用户中心同步和测试补强", page)
         self.assertIn("[final bundle manifest](../../FINAL_ACCEPTANCE_BUNDLE/manifest.json)", page)
         self.assertIn("[TRACEABILITY_MATRIX.csv](../docs/governance/TRACEABILITY_MATRIX.csv)", page)
@@ -190,6 +195,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("当前返回 `status=pass`、`manifest_present=true`、`bundle_items_complete=true`", page)
         self.assertIn("当前返回 `status=pass`、`command_execution_present=true`", page)
         self.assertIn("不授权 S3/DAILY_OPERATION，也不启用 SMTP/scheduler/Release/restore", page)
+        self.assertIn("## 全量追踪链阅读规则", page)
+        self.assertIn(
+            "| 表格用途 | 用于从需求、任务、验收、代码、测试跳转到运行证据；不是当前生产状态总览 |",
+            page,
+        )
+        self.assertIn("| 状态列 | `状态` 保留每条记录写入时的原始审计结果", page)
+        self.assertIn(
+            "| S3 边界 | `DAILY_OPERATION` 仍未进入；缺显式持久授权 artifact 时不得启用 SMTP/scheduler/Release/restore |",
+            page,
+        )
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
