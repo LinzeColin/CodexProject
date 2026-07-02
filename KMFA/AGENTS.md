@@ -24,6 +24,8 @@
 
 - 禁止提交原始敏感经营数据、银行流水、合同、工资、税务申报、账号密码、token、API key。
 - 公开仓库只允许保存结构、hash、manifest、状态、证据索引、脱敏 fixture 和治理记录。
+- 本机 KMFA raw data inbox 固定为 `/Users/linzezhang/Downloads/KMFA_MetaData`；该目录属于用户原始财务数据，只读，不得修改、删除、移动、重命名、覆盖或写入生成文件。
+- Codex 私有 inventory、schema/header diagnostic、mapping diagnostic、scratch files 或本地报告只能写入项目受控且 Git 忽略的位置，例如 `KMFA/.codex_private_runtime/`，或另一个明确加入 `.gitignore` 的额外工作目录。
 - `90_用户原始上传数据_仅本地私有_禁止提交GitHub/` 只允许作为本地私有源包存在；公开仓库只保存其 SHA256 登记和禁止提交规则。
 - metadata 只保存索引、hash、状态、证据，不保存明文敏感数据。
 - 前端后续只允许写控制事件、字段映射规则、项目匹配确认、差异处理意见、人工确认记录、备注和报告发布审批。

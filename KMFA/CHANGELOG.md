@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-raw-data-boundary-policy - 2026-07-02
+
+- 登记项目级 raw data inbox：`/Users/linzezhang/Downloads/KMFA_MetaData` 是用户本机 KMFA 财务原始数据目录。
+- 明确该目录对 Codex 只读；不得修改、删除、移动、重命名、覆盖或写入生成文件。
+- 新增 `KMFA/docs/governance/RAW_DATA_BOUNDARY.md`，并同步 `KMFA/AGENTS.md`、`KMFA/HANDOFF.md` 和 `KMFA/docs/governance/STATUS.md`。
+- Codex 私有 inventory、schema/header diagnostic、mapping diagnostic、scratch files 或本地报告只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
+- 本次仅更新项目级治理记忆和 GitHub 备份策略，不执行 S02-P3、Stage 2 review、raw value matching、lineage full check、正式报告、外部接口或业务动作。
+
 ## 0.1.3-s02p2-raw-mapping-readiness - 2026-07-02
 
 - 完成 `v0.1.3 S02-P2｜raw mapping/value matching readiness` 本地验证：只读解析 `/Users/linzezhang/Downloads/KMFA_MetaData` 的 ZIP/XLSX 容器和表结构，公开证据仅记录 raw_files=5、zip_openable=3、zip_member_count=95、workbooks_seen=48、workbooks_parseable=25、sheets_seen=4198 等聚合计数。
