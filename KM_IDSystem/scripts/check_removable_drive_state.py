@@ -162,6 +162,117 @@ def evaluate_removable_drive_state(
     }
 
 
+def build_stage008_scenario_report(
+    *,
+    online_root: str,
+    offline_root: str,
+    reconnected_root: str,
+    permission_denied_root: str,
+    path_changed_current: str,
+    path_changed_expected: str,
+    structure_invalid_root: str,
+    storage_total_bytes: int,
+    storage_ok_free_bytes: int,
+    storage_low_free_bytes: int,
+    storage_high_used_free_bytes: int,
+) -> dict[str, Any]:
+    """Build a deterministic Phase 3 scenario matrix from caller-owned paths."""
+
+    scenarios = {
+        "online": evaluate_removable_drive_state(
+            online_root,
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_ok_free_bytes,
+        ),
+        "offline": evaluate_removable_drive_state(
+            offline_root,
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_ok_free_bytes,
+        ),
+        "reconnected": evaluate_removable_drive_state(
+            reconnected_root,
+            previous_state="OFFLINE",
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_ok_free_bytes,
+        ),
+        "permission_denied": evaluate_removable_drive_state(
+            permission_denied_root,
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_ok_free_bytes,
+        ),
+        "path_changed": evaluate_removable_drive_state(
+            path_changed_current,
+            expected_path=path_changed_expected,
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_ok_free_bytes,
+        ),
+        "structure_invalid": evaluate_removable_drive_state(
+            structure_invalid_root,
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_ok_free_bytes,
+        ),
+    }
+    storage_scenarios = {
+        "ok": evaluate_removable_drive_state(
+            online_root,
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_ok_free_bytes,
+        ),
+        "low_free_space": evaluate_removable_drive_state(
+            online_root,
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_low_free_bytes,
+        ),
+        "high_waterline": evaluate_removable_drive_state(
+            online_root,
+            storage_total_bytes=storage_total_bytes,
+            storage_free_bytes=storage_high_used_free_bytes,
+        ),
+    }
+    expected_drive_states = {
+        "online": "ONLINE_VALIDATED",
+        "offline": "OFFLINE",
+        "reconnected": "RECONNECTED_NEEDS_REVALIDATION",
+        "permission_denied": "PERMISSION_DENIED",
+        "path_changed": "PATH_CHANGED",
+        "structure_invalid": "STRUCTURE_INVALID",
+    }
+    expected_storage_states = {
+        "ok": "ONLINE_VALIDATED",
+        "low_free_space": "STORAGE_BLOCKED",
+        "high_waterline": "STORAGE_BLOCKED",
+    }
+    drive_valid = all(
+        scenarios[name]["state"] == state
+        for name, state in expected_drive_states.items()
+    )
+    storage_valid = all(
+        storage_scenarios[name]["state"] == state
+        for name, state in expected_storage_states.items()
+    )
+    safe_mode_valid = all(
+        workflow in scenarios["offline"]["paused_workflows"]
+        for workflow in PAUSED_WORKFLOWS
+    )
+
+    return {
+        "schema_version": "ids.stage008.phase3_scenarios.v1",
+        "stage": "STAGE-008",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-008",
+        "entrance": OPERATIONS_ENTRANCE,
+        "customer_visible": False,
+        "overall_valid": drive_valid and storage_valid and safe_mode_valid,
+        "removable_drive_scenarios": scenarios,
+        "storage_scenarios": storage_scenarios,
+        "safe_mode_pauses": PAUSED_WORKFLOWS[:],
+        "does_not_start_services": True,
+        "does_not_create_ids_data_root": True,
+        "does_not_scan_recursively": True,
+        "does_not_scan_external_drive_contents": True,
+    }
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Read-only IDS removable-drive lifecycle state check."
