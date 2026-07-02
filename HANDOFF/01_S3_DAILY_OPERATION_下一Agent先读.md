@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 18:49:38 Australia/Sydney
+更新时间：2026-07-02 19:12:39 Australia/Sydney
 
 ## 当前结论
 
@@ -18,6 +18,7 @@
 | 持久授权模板 | 存在，但默认无效、不能替代授权 | `FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json` |
 | root verifier S3 阻断输出 | `daily_operation_authorization_ready=false`，`daily_operation_blocking_reasons=["persistent_daily_operation_authorization_missing"]` | `tools/verify_acceptance_bundle.py --require-zero P0 P1` |
 | DAILY_OPERATION 专用 root gate | 当前必须 `status=FAIL` / exit 2 | `tools/verify_daily_operation_readiness.py` |
+| DAILY_OPERATION enablement preflight root gate | 当前必须 `status=FAIL / exit 2`，`enablement_preflight_ready=false`，阻断原因为 `persistent_daily_operation_authorization_missing` | `tools/verify_daily_operation_enablement_preflight.py` |
 
 ## 不要误读
 
@@ -28,6 +29,7 @@
 - 一次受控真实运行验收、final bundle pass、Stage 2 integrated acceptance 都不等于持久 DAILY_OPERATION 授权。
 - `tools/verify_acceptance_bundle.py --require-zero P0 P1` 的 `status=PASS` 只证明 final bundle / zero-proof / no-production root gate 通过；必须同时读取 `daily_operation_authorization_ready=false` 和 `daily_operation_blocking_reasons`，不得把 root PASS 当作 S3/DAILY_OPERATION 可启用。
 - `tools/verify_daily_operation_readiness.py` 是 S3/DAILY_OPERATION 专用 fail-closed root gate；缺持久授权 artifact 时必须返回 `status=FAIL` 和 exit 2。该非零退出是正确阻断，不是验证故障。
+- `tools/verify_daily_operation_enablement_preflight.py` 是 `S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT` 的只读组合门；它只汇总 readiness + open PR + SMTP flag + LaunchAgent + background process，不创建授权、不启用运行。当前缺持久授权时同样必须返回 `status=FAIL / exit 2`。
 - `FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json` 只是 owner-editable 模板，默认 `template_only=true` 且 `explicit_persistent_daily_operation_authorization=false`；复制不改必须无效，不得当作持久授权 artifact。
 - 当前 S3 安全边界必须检查真实 LaunchAgent 标签：`com.linzezhang.adp.daily`、`com.linzezhang.adp.health`、`com.linzezhang.adp.watchdog`。旧 `com.linze.adp.local.*` 只属于历史记录，不得作为当前 S3 safety check。
 - 当前 `daily-operation-authorization-preflight` 与 `integrated-production-acceptance-preflight` 机器 gate 输出同样使用真实 LaunchAgent 标签；历史 artifact 只读兼容旧 label，不得反推当前命令继续使用旧 label。
@@ -63,7 +65,7 @@
 
 1. 创建显式授权 artifact：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。
 2. 运行 `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION` gate。
-3. 运行单独 enablement preflight。
+3. 运行单独 enablement preflight：`S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT` / `tools/verify_daily_operation_enablement_preflight.py`。
 4. 继续验证 `ADP_ALLOW_SMTP_SEND`、LaunchAgents、open PR count、后台进程和 no duplicate-send guard。
 
 没有第 1 步时，后续只能做只读复核、证据同步或 owner-facing handoff，不得推进 DAILY_OPERATION。
@@ -75,6 +77,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_current PYTHON
 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_bundle PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json
 python3 tools/verify_acceptance_bundle.py --require-zero P0 P1
 python3 tools/verify_daily_operation_readiness.py
+python3 tools/verify_daily_operation_enablement_preflight.py --open-pr-count 0 --adp-allow-smtp-send UNSET --launchagent-daily-disabled true --launchagent-health-disabled true --launchagent-watchdog-disabled true --background-adp-process-count 0
 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push
 PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_governance_sync.py
 ```

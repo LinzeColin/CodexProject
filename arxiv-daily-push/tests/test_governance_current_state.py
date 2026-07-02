@@ -913,6 +913,27 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("handoff_first_main_commit=91f22b876b05f373229ef4bf5de2e67bdb927c0b", model_params)
         self.assertNotIn("current_main=bccc600959e6bf478c8fc71f8c2e90c13c455d1f", model_params)
 
+    def test_daily_operation_enablement_preflight_root_gate_is_owner_readable(self) -> None:
+        handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
+        mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
+        feature_list = (ADP_ROOT / "功能清单.md").read_text(encoding="utf-8")
+        dev_record = (ADP_ROOT / "开发记录.md").read_text(encoding="utf-8")
+        model_params = (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8")
+        root_tool = "tools/verify_daily_operation_enablement_preflight.py"
+        expected_task = "S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT"
+
+        self.assertTrue((REPO_ROOT / root_tool).exists(), "enablement preflight root tool must exist")
+        for text in (handoff, mvp_prep, feature_list, dev_record, model_params):
+            self.assertIn(root_tool, text)
+            self.assertIn(expected_task, text)
+            self.assertIn("persistent_daily_operation_authorization_missing", text)
+        self.assertIn("status=FAIL / exit 2", handoff)
+        self.assertIn("--open-pr-count", handoff)
+        self.assertIn("--launchagent-daily-disabled", handoff)
+        self.assertIn("--background-adp-process-count", handoff)
+        self.assertIn("readiness + open PR + SMTP flag + LaunchAgent + background process", mvp_prep)
+        self.assertIn("enablement_preflight_ready=false", model_params)
+
 
 if __name__ == "__main__":
     unittest.main()
