@@ -9,14 +9,14 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s06p2-difference-queue-replay`
-- 当前已完成: `v0.1.3 S06-P2｜cross-source difference queue replay`
-- 证据目录: `KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/`
-- 复审结论: S06-P2 generator、validator、新单测、S06-P1 dependency validator 和 legacy S06-P2 queue/gate validator 均 PASS；public-safe PDF/Excel 同项目同字段冲突进入人工差异队列，queue_item_count=`1`，difference_cents=`1`，`auto_correction_allowed=false`，`averaging_allowed=false`，`rounding_mask_allowed=false`，`auto_selection_allowed=false`，`report_grade_a_allowed=false`，`maximum_report_grade=B`，`hard_block_reason=unresolved_critical_difference`。`metadata_quality_written=false`，`source_difference_queue_metadata_written=false`，`stage6_review_performed=false`，`s06_p3_performed=false`，`github_upload_performed=false`，`github_upload_deferred_until_stage10_batch=true`，data quality=`Q2`，report grade=`D`，release permission=`blocked`，`formal_report_allowed=false`。
+- 当前版本: `0.1.3-s06p3-validation-evidence-replay`
+- 当前已完成: `v0.1.3 S06-P3｜validation evidence replay`
+- 证据目录: `KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/`
+- 复审结论: S06-P3 generator、validator、新单测、S06-P1 dependency validator、S06-P2 dependency validator 和 legacy S06-P3 validation evidence validator 均 PASS；已将 S06-P1/S06-P2 public-safe 结果输出为 `zero_delta_result.json`、sanitized `mismatch_report.csv`、`project_validation_status.jsonl`，并追加写入 metadata/quality public-safe records。`metadata_quality_written=true`，`project_status_count=2`，`blocked_project_status_count=2`，`metadata_zero_delta_records_written=1`，`metadata_data_quality_records_written=2`，`metadata_source_difference_records_written=1`，`metadata_mismatch_rows_written=1`，`q5_allowed_count=0`，`report_grade_a_allowed_count=0`，hard blocks=`unresolved_critical_difference, zero_delta_failed`，`stage6_review_performed=false`，`github_upload_performed=false`，`github_upload_deferred_until_stage10_batch=true`，data quality=`Q4`，report grade=`D`，release permission=`blocked`，`formal_report_allowed=false`。
 - upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4 或 Stage 5 单独 upload 作为 active next step。
-- raw boundary: 本轮 S06-P2 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只使用 public-safe synthetic PDF/Excel conflict fixture 重放既有 difference queue/gate。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或真实业务值；未新增 private diagnostic。
-- 未执行: S06-P3、Stage 6 整体复审、GitHub main upload、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 S06-P3` 或用户明确指定的单一 phase；不得执行 Stage 6 review、GitHub upload、raw value matching、正式报告或业务动作。
+- raw boundary: 本轮 S06-P3 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只消费 v0.1.3 S06-P1/S06-P2 public-safe synthetic evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值或 Excel 原值；未新增 private diagnostic。
+- 未执行: Stage 6 整体复审、GitHub main upload、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 Stage 6 整体复审` 或用户明确指定的单一 phase；不得执行 GitHub upload、raw value matching、正式报告或业务动作。
 
 ## 持久本机 raw boundary
 
