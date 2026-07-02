@@ -17,6 +17,22 @@ DEFAULT_EMBEDDING_PRICE_PER_1K_TOKENS = 0.00002
 DEFAULT_EXTERNAL_API_PRICE_PER_CALL = 0.001
 DEFAULT_OCR_PRICE_PER_PAGE = 0.002
 DEFAULT_INDEX_BYTES_PER_TOKEN = 6
+REQUIRED_PHASE3_SCENARIOS = {
+    "empty_directory",
+    "small_directory",
+    "large_directory",
+    "offline_drive",
+    "archive_present",
+    "insufficient_space",
+}
+PROCESSING_GUARD_ZEROES = {
+    "actual_parse_jobs_started": 0,
+    "actual_ocr_jobs_started": 0,
+    "actual_embedding_jobs_started": 0,
+    "actual_index_jobs_started": 0,
+    "actual_import_jobs_started": 0,
+    "actual_external_api_calls_started": 0,
+}
 NO_PERSISTENCE_DELTAS = {
     "document_delta": 0,
     "chunk_delta": 0,
@@ -246,6 +262,18 @@ def _human_product_entrance_payload(report: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _is_high_risk_candidate(record: dict[str, Any]) -> bool:
+    skip_tags = {"suspicious_archive", "scanned_document", "unknown_format"}
+    return bool(skip_tags.intersection(set(record.get("risk_tags", []))))
+
+
+def _chunk_records(records: list[dict[str, Any]], batch_size: int) -> list[list[dict[str, Any]]]:
+    if not records:
+        return []
+    size = max(1, batch_size)
+    return [records[index : index + size] for index in range(0, len(records), size)]
+
+
 def evaluate_import_cost_estimate(
     *,
     source_uris: list[str | None] | tuple[str | None, ...] | None,
@@ -344,6 +372,120 @@ def evaluate_import_cost_estimate(
         "no_persistence_deltas": dict(NO_PERSISTENCE_DELTAS),
     }
     report["human_product_entrance_payload"] = _human_product_entrance_payload(report)
+    report.update(NO_SIDE_EFFECT_FLAGS)
+    return report
+
+
+def build_cost_owner_decision_plan(cost_report: dict[str, Any], *, batch_size: int = 50) -> dict[str, Any]:
+    """Create an owner-decision plan without persisting or processing imports."""
+
+    candidate_files = list(cost_report.get("candidate_files", []))
+    high_risk_files = [record for record in candidate_files if _is_high_risk_candidate(record)]
+    kept_files = [record for record in candidate_files if not _is_high_risk_candidate(record)]
+    batches = _chunk_records(candidate_files, batch_size)
+    serialized = json.dumps(cost_report, ensure_ascii=False, sort_keys=True)
+    no_persistence = dict(NO_PERSISTENCE_DELTAS)
+    return {
+        "schema_version": "ids.stage020.import_cost_estimator.owner_decision.v1",
+        "stage": "STAGE-020",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-020",
+        "entrance": ENTRANCE,
+        "source_cost_state": cost_report.get("overall_state"),
+        "supported_owner_actions": [
+            "save_for_owner_review",
+            "cancel_without_side_effects",
+            "split_into_batches",
+            "skip_high_risk_files",
+        ],
+        "save_contract": {
+            "state": "COST_RESULT_SERIALIZABLE",
+            "can_save_result": True,
+            "persisted_by_helper": False,
+            "serialized_bytes": len(serialized.encode("utf-8")),
+            "owner_selected_path_required": True,
+        },
+        "cancel_contract": {"state": "COST_CANCEL_READY", **no_persistence},
+        "batch_plan": {
+            "can_split": len(batches) > 1,
+            "batch_size": max(1, batch_size),
+            "batch_count": len(batches),
+            "batches": [
+                {
+                    "batch_index": index + 1,
+                    "file_count": len(batch),
+                    "total_size_bytes": sum(int(record.get("file_size", 0)) for record in batch),
+                    "files": batch,
+                }
+                for index, batch in enumerate(batches)
+            ],
+        },
+        "skip_high_risk_plan": {
+            "can_skip_high_risk_files": True,
+            "high_risk_file_count": len(high_risk_files),
+            "kept_file_count": len(kept_files),
+            "skipped_files": high_risk_files,
+            "kept_files": kept_files,
+        },
+        "no_persistence_deltas": no_persistence,
+    }
+
+
+def build_stage020_scenario_report(
+    *,
+    scenario_sources: dict[str, dict[str, Any]],
+    estimated_at: str | None = None,
+    batch_size: int = 50,
+    oversized_file_threshold_bytes: int = DEFAULT_OVERSIZED_FILE_THRESHOLD_BYTES,
+) -> dict[str, Any]:
+    """Validate Stage 020 cost-estimator scenarios using metadata-only inputs."""
+
+    estimated_at = estimated_at or _utc_now()
+    scenario_results: dict[str, dict[str, Any]] = {}
+    for scenario_id in sorted(scenario_sources):
+        scenario = scenario_sources[scenario_id]
+        cost_estimate = evaluate_import_cost_estimate(
+            source_uris=scenario.get("source_uris"),
+            estimated_at=estimated_at,
+            drive_state=scenario.get("drive_state", "online"),
+            available_space_bytes=scenario.get("available_space_bytes"),
+            oversized_file_threshold_bytes=scenario.get(
+                "oversized_file_threshold_bytes", oversized_file_threshold_bytes
+            ),
+            embedding_price_per_1k_tokens=scenario.get(
+                "embedding_price_per_1k_tokens", DEFAULT_EMBEDDING_PRICE_PER_1K_TOKENS
+            ),
+            external_api_price_per_call=scenario.get(
+                "external_api_price_per_call", DEFAULT_EXTERNAL_API_PRICE_PER_CALL
+            ),
+            ocr_price_per_page=scenario.get("ocr_price_per_page", DEFAULT_OCR_PRICE_PER_PAGE),
+            index_bytes_per_token=scenario.get("index_bytes_per_token", DEFAULT_INDEX_BYTES_PER_TOKEN),
+        )
+        scenario_results[scenario_id] = {
+            "scenario_id": scenario_id,
+            "cost_estimate": cost_estimate,
+            "owner_decision_plan": build_cost_owner_decision_plan(cost_estimate, batch_size=batch_size),
+        }
+
+    required_scenarios_covered = REQUIRED_PHASE3_SCENARIOS.issubset(set(scenario_results))
+    report: dict[str, Any] = {
+        "schema_version": "ids.stage020.import_cost_estimator.scenario_validation.v1",
+        "stage": "STAGE-020",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-020",
+        "entrance": ENTRANCE,
+        "customer_visible": True,
+        "validation_state": (
+            "SCENARIO_VALIDATION_PASSED" if required_scenarios_covered else "SCENARIO_VALIDATION_PARTIAL"
+        ),
+        "estimated_at": estimated_at,
+        "scenario_count": len(scenario_results),
+        "required_scenarios": sorted(REQUIRED_PHASE3_SCENARIOS),
+        "required_scenarios_covered": required_scenarios_covered,
+        "scenario_results": scenario_results,
+        "processing_guard": dict(PROCESSING_GUARD_ZEROES),
+        "no_persistence_deltas": dict(NO_PERSISTENCE_DELTAS),
+    }
     report.update(NO_SIDE_EFFECT_FLAGS)
     return report
 
