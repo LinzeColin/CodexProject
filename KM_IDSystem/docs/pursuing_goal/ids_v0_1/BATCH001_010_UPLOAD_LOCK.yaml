@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-001-010"
 created_at_utc: "2026-07-02T04:29:53Z"
-updated_at_utc: "2026-07-02T06:39:05Z"
+updated_at_utc: "2026-07-02T06:47:25Z"
 status: "local_in_progress"
 
 repository:
@@ -106,13 +106,17 @@ stage_progress:
     status: "in_progress"
     completed_phases:
       - "Phase 1"
-    next_phase: "Phase 2"
-    current_task_id: "IDS-V0_1-STAGE005-P1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE005-P2"
     acceptance_id: "ACC-STAGE-005"
-    acceptance_status: "phase1_boundary_complete"
+    acceptance_status: "phase2_validation_slice_complete"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE2_GOVERNANCE_REGRESSION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
   STAGE-006:
     status: "not_started"
   STAGE-007:
@@ -125,5 +129,5 @@ stage_progress:
     status: "not_started"
 
 decision:
-  current_run: "Completed only STAGE-005 Phase 1 locally; STAGE-005 is in progress and batch upload remains locked."
+  current_run: "Completed only STAGE-005 Phase 2 locally; STAGE-005 is in progress and batch upload remains locked."
   no_upload_reason: "The user requires one GitHub main upload only after each completed and repaired 10-Stage batch."

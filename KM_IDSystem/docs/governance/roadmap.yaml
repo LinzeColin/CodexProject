@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE005"
-current_phase_id: "IDS-STAGE005-P1"
-current_task_id: "IDS-V0_1-STAGE005-P1"
-next_gate_id: "IDS-STAGE005-P2-GATE"
+current_phase_id: "IDS-STAGE005-P2"
+current_task_id: "IDS-V0_1-STAGE005-P2"
+next_gate_id: "IDS-STAGE005-P3-GATE"
 total_estimated_hours: 47
-completed_estimated_hours: 42
+completed_estimated_hours: 44
 stages:
   -
     stage_id: "S5"
@@ -1093,6 +1093,8 @@ stages:
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE2_GOVERNANCE_REGRESSION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
     phases:
       -
         phase_id: "IDS-STAGE005-P1"
@@ -1144,25 +1146,28 @@ stages:
         phase_id: "IDS-STAGE005-P2"
         name: "实现、接入与最小可运行切片"
         objective: "按最小变更原则形成仓库治理回归验证工具或治理合同，不引入运行时代码耦合。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "缺少 Phase 1 边界证据"
           - "试图 broad cleanup 或展开无关项目"
           - "引入真实资料、secrets、runtime 输出或外部 API 依赖"
         stop_gate:
           gate_id: "IDS-STAGE005-P2-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "治理回归验证切片可重复运行"
             - "README、governance、脚本、测试和路径引用检查可审计"
             - "sparse-worktree 诊断与 KM_IDSystem 回归失败被区分"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE2_GOVERNANCE_REGRESSION.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE005-P2"
             name: "仓库治理回归验证最小切片"
             objective: "建立小型、可审计、可回滚的仓库治理回归验证切片。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "4.26%"
             dependencies:
@@ -1173,8 +1178,11 @@ stages:
               - "governance regression validator test"
               - "path-reference invariant test"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "TDD red failed with 2 expected failures before implementation because validate_stage005_governance_regression.py was missing. After implementation, Codex bundled Python unittest ran 2 tests OK; validate_stage005_governance_regression.py returned valid=true, issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], tracked_forbidden_runtime_files=[], and unexpected_changed_paths=[]. The validator covers required file presence, event JSONL parsing, stage-chain events, batch-upload lock, roadmap current task, owner-facing current name and legacy policy, no tracked runtime-output files, accepted-name preservation, and sparse-worktree diagnostic classification. No runtime code, raw data, reports, outputs, dependencies, external projects, GitHub push, or PR was modified."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE2_GOVERNANCE_REGRESSION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "验证器只检查 marker，未覆盖真实路径引用和 JSONL/批次锁结构。"
             rollback: "Revert IDS-STAGE005-P2 validation-slice changes."
       -
