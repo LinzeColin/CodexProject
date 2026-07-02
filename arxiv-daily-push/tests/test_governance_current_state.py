@@ -243,6 +243,36 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_capture_window_summary_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 2026-06-29/2026-06-30 daily run succeeded 但为 dry-run",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 8 封真实邮件未证明；当前这些 capture-window 缺口已被 final bundle 和 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时真实 scheduler proof 未证明；当前不作为 S3/MVP 默认下一步",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 缺失；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+
+        forbidden_phrases = (
+            "| 2026-06-29/2026-06-30 daily run succeeded 但为 dry-run | 不把这两天计入 S2PLT02 terminal proof；继续等待真实第二个连续 M1-M4 SMTP 日 |",
+            "| 8 封真实邮件未证明 | 保持 `real_sent_candidate_email_count=0` 与 `dry_run_email_count=8` 的分离口径 |",
+            "| 真实 scheduler proof 未证明 | 保持 launchd loaded-but-disabled 为非终态 scheduler proof |",
+            "| `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 缺失 | 不写 S2PLT03/S2PLT04/final bundle；先完成 S2PLT02 terminal proof artifact 验证 |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
