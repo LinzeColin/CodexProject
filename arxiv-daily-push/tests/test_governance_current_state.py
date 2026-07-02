@@ -896,7 +896,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp_prep)
         self.assertNotIn("## 09 推荐第一轮 Run Contract", mvp_prep)
         self.assertIn(
-            "目标测试、project governance、governance sync、`python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1`、生产边界复核",
+            '目标测试、project governance、governance sync、`python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1`、`python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2`',
             mvp_prep,
         )
         self.assertNotIn("`verify_acceptance_bundle --require-zero P0 P1`", mvp_prep)
@@ -1023,6 +1023,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             ("Enablement preflight", preflight_command),
             ("Root 执行根", readiness_command),
             ("Root 执行根", preflight_command),
+            ("生产边界", preflight_command),
             ("S3 readiness", readiness_command),
             ("S3 enablement preflight", preflight_command),
         ):
@@ -1038,6 +1039,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "| `tools/verify_daily_operation_readiness.py` / `tools/verify_daily_operation_enablement_preflight.py` |",
             mvp_prep,
         )
+        self.assertNotIn("S3 handoff 安全边界复核", mvp_prep)
+        self.assertNotIn("、生产边界复核；", mvp_prep)
+        self.assertIn(f"、`{preflight_command}`；", mvp_prep)
         self.assertIn(f"| 覆盖命令 | `{readiness_command}` / `{preflight_command}` |", roadmap)
         self.assertIn(f"| 覆盖命令 | `{readiness_command}` |", roadmap)
         self.assertIn(f"| 覆盖命令 | `{preflight_command}` |", roadmap)
