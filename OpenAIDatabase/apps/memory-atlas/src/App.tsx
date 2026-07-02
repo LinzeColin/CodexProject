@@ -53,21 +53,24 @@ import {
   type SharedAtlasState,
   type SharedTimelineTimeRangeSelection,
 } from "./state/sharedAtlasState";
+import { zhCNCopy } from "./i18n/zh-CN";
 
 const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) => ({ default: module.GalaxyScene })));
 const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene").then((module) => ({ default: module.ObsidianGraphScene })));
 
+const uiCopy = zhCNCopy;
+
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
-  { key: "home", label: "记忆总览", icon: Home },
-  { key: "galaxy", label: "银河星云", icon: Orbit },
-  { key: "notion", label: "数据导图", icon: Blocks },
-  { key: "roi", label: "ROI 仪表盘", icon: LayoutDashboard },
-  { key: "obsidian", label: "Obsidian 图谱", icon: Network },
-  { key: "timeline", label: "时间轴", icon: CalendarDays },
-  { key: "contribution", label: "贡献网格", icon: Activity },
-  { key: "wordcloud", label: "词云洞察", icon: Cloud },
-  { key: "search", label: "搜索与复盘", icon: Search },
-  { key: "summary", label: "总结与迭代", icon: RefreshCw },
+  { key: "home", label: uiCopy.navigation.views.home, icon: Home },
+  { key: "galaxy", label: uiCopy.navigation.views.galaxy, icon: Orbit },
+  { key: "notion", label: uiCopy.navigation.views.notion, icon: Blocks },
+  { key: "roi", label: uiCopy.navigation.views.roi, icon: LayoutDashboard },
+  { key: "obsidian", label: uiCopy.navigation.views.obsidian, icon: Network },
+  { key: "timeline", label: uiCopy.navigation.views.timeline, icon: CalendarDays },
+  { key: "contribution", label: uiCopy.navigation.views.contribution, icon: Activity },
+  { key: "wordcloud", label: uiCopy.navigation.views.wordcloud, icon: Cloud },
+  { key: "search", label: uiCopy.navigation.views.search, icon: Search },
+  { key: "summary", label: uiCopy.navigation.views.summary, icon: RefreshCw },
 ];
 
 const visualFocusViews: ViewKey[] = ["home", "galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"];
@@ -504,11 +507,11 @@ const heatLevelAnchors = [0, 0.16, 0.34, 0.54, 0.74, 0.93] as const;
 const emptyHeatColor = "#0f1116";
 
 const writebackActionLabels: Record<WritebackAction, string> = {
-  update_statement: "更新记忆表述",
-  add_context: "补充长期上下文",
-  change_tier: "调整层级/分类",
-  flag_conflict: "标记冲突或过时",
-  rollback_to_version: "生成回滚提案",
+  update_statement: uiCopy.proposal.actions.update_statement,
+  add_context: uiCopy.proposal.actions.add_context,
+  change_tier: uiCopy.proposal.actions.change_tier,
+  flag_conflict: uiCopy.proposal.actions.flag_conflict,
+  rollback_to_version: uiCopy.proposal.actions.rollback_to_version,
 };
 
 async function clearTransientBrowserState(): Promise<void> {
@@ -780,22 +783,22 @@ export function App() {
 
   const generatedAt = atlas.overview.generated_at
     ? new Date(atlas.overview.generated_at).toLocaleString("zh-CN")
-    : "尚未载入";
-  const loadedAt = runtimeState.snapshotLoadedAt ? runtimeState.snapshotLoadedAt.toLocaleString("zh-CN") : "读取中";
+    : uiCopy.states.notLoaded;
+  const loadedAt = runtimeState.snapshotLoadedAt ? runtimeState.snapshotLoadedAt.toLocaleString("zh-CN") : uiCopy.states.loading;
   const runtimeStatus = `${runtimeState.lifecycle} / ${runtimeState.serverMode}`;
-  const selectedTitle = views.find((view) => view.key === activeView)?.label ?? "记忆星图";
+  const selectedTitle = views.find((view) => view.key === activeView)?.label ?? uiCopy.app.fallbackTitle;
   const wideView = visualFocusViews.includes(activeView);
   const workspaceClassName = wideView ? `workspace visual-focus-workspace ${activeView}-workspace` : "workspace";
   const showSideInspector = activeView === "contribution" || !wideView;
 
   return (
     <div className="app-shell">
-      <aside className="sidebar" aria-label="记忆星图导航">
+      <aside className="sidebar" aria-label={uiCopy.app.navigationAria}>
         <div className="brand">
           <GitBranch size={22} />
           <div>
-            <strong>记忆星图</strong>
-            <span>OpenAIDatabase</span>
+            <strong>{uiCopy.app.brandTitle}</strong>
+            <span>{uiCopy.app.productName}</span>
           </div>
         </div>
         <nav className="nav-list">
@@ -816,11 +819,11 @@ export function App() {
           })}
         </nav>
         <div className="sidebar-footer">
-          <span>快照生成时间</span>
+          <span>{uiCopy.app.snapshotGeneratedAt}</span>
           <strong>{generatedAt}</strong>
-          <span>本次读取时间</span>
+          <span>{uiCopy.app.snapshotLoadedAt}</span>
           <strong>{loadedAt}</strong>
-          <span>运行状态</span>
+          <span>{uiCopy.app.runtimeStatus}</span>
           <strong>{runtimeStatus}</strong>
         </div>
       </aside>
@@ -828,35 +831,35 @@ export function App() {
       <main className={workspaceClassName}>
         <header className="topbar">
           <div>
-            <p className="eyebrow">本地记忆 / 使用行为 / 后续动作</p>
+            <p className="eyebrow">{uiCopy.app.topbarEyebrow}</p>
             <h1>{selectedTitle}</h1>
           </div>
           <div className="stat-strip" aria-label="星图总览">
-            <Metric label="记忆" value={scopedAtlas.overview.active_memory_count} />
-            <Metric label="节点" value={scopedAtlas.overview.node_count} />
-            <Metric label="连接" value={scopedAtlas.overview.edge_count} />
-            <Metric label="活动" value={scopedAtlas.overview.conversation_count} />
+            <Metric label={uiCopy.metrics.memory} value={scopedAtlas.overview.active_memory_count} />
+            <Metric label={uiCopy.metrics.nodes} value={scopedAtlas.overview.node_count} />
+            <Metric label={uiCopy.metrics.edges} value={scopedAtlas.overview.edge_count} />
+            <Metric label={uiCopy.metrics.activity} value={scopedAtlas.overview.conversation_count} />
           </div>
         </header>
 
         {loadState === "error" ? (
           <div className="load-banner" role="alert">
-            <strong>星图读取失败</strong>
+            <strong>{uiCopy.states.loadFailedTitle}</strong>
             <span>{loadError}</span>
           </div>
         ) : null}
 
-        <section className="controls" aria-label="星图筛选器">
+        <section className="controls" aria-label={uiCopy.filters.ariaLabel}>
           <label className="search-box">
             <Search size={18} />
             <input
               value={filters.query}
               onChange={(event) => updateFilters((current) => ({ ...current, query: event.target.value }))}
-            placeholder="搜索主题、项目、记忆、规则"
+              placeholder={uiCopy.filters.searchPlaceholder}
             />
           </label>
           <label className="select-filter source-filter">
-            <span>分析对象</span>
+            <span>{uiCopy.filters.sourceLabel}</span>
             <select
               value={filters.source}
               onChange={(event) =>
@@ -877,21 +880,21 @@ export function App() {
             </select>
           </label>
           <SelectFilter
-            label="层级"
+            label={uiCopy.filters.tierLabel}
             value={filters.tier}
             options={tiers}
             onChange={(value) => updateFilters((current) => ({ ...current, tier: value }))}
           />
           <SelectFilter
-            label="分类"
+            label={uiCopy.filters.categoryLabel}
             value={filters.category}
             options={categories}
             onChange={(value) => updateFilters((current) => ({ ...current, category: value }))}
           />
           <label className="select-filter">
-            <span>主题</span>
+            <span>{uiCopy.filters.topicLabel}</span>
             <select value={filters.theme} onChange={(event) => updateFilters((current) => ({ ...current, theme: event.target.value }))}>
-              <option value="all">全部</option>
+              <option value="all">{uiCopy.filters.allOption}</option>
               {themeOptions.map((theme) => (
                 <option key={theme.id} value={theme.id}>
                   {theme.label}
@@ -981,7 +984,7 @@ function ViewRouter({
   onSwitchView: (view: ViewKey) => void;
 }) {
   if (loadState === "loading") {
-    return <div className="galaxy-loading">正在载入记忆星图...</div>;
+    return <div className="galaxy-loading">{uiCopy.states.loadingGalaxy}</div>;
   }
   if (activeView === "home") {
     return (
@@ -1099,15 +1102,15 @@ function HomeOverviewView({
     >
       <div className="surface-heading compact">
         <div>
-          <p className="eyebrow">记忆总览 / Universe State / 下一步行动</p>
-          <h2>打开后先判断当前认知天气、主题趋势、机会、风险和建议动作</h2>
+          <p className="eyebrow">{uiCopy.overview.eyebrow}</p>
+          <h2>{uiCopy.overview.title}</h2>
         </div>
-        <span>{timelineRangeSummary(timelineTimeRange) ?? `${nodes.length.toLocaleString()} 条筛选记忆 · 默认入口`}</span>
+        <span>{timelineRangeSummary(timelineTimeRange) ?? `${nodes.length.toLocaleString()} 条筛选记忆 · ${uiCopy.overview.defaultEntry}`}</span>
       </div>
       <section className="home-shared-focus-strip" aria-label="共享焦点">
         <span>Universe State</span>
-        <strong>{selectedNode ? humanNodeDisplayTitle(selectedNode) : "暂无焦点"}</strong>
-        <small>{sharedState.focus.home.clusterId ?? "无主题"} · r{sharedState.sync.revision}</small>
+        <strong>{selectedNode ? humanNodeDisplayTitle(selectedNode) : uiCopy.overview.defaultFocus}</strong>
+        <small>{sharedState.focus.home.clusterId ?? uiCopy.overview.noTopic} · r{sharedState.sync.revision}</small>
       </section>
       <section className="home-primary-band" aria-label="当前认知状态">
         <article
@@ -1116,7 +1119,7 @@ function HomeOverviewView({
           data-weather-confidence={model.weatherV2.confidenceScore.toFixed(2)}
           data-weather-risk={model.weatherV2.riskScore.toFixed(2)}
         >
-          <span>Memory Weather v2</span>
+          <span>{uiCopy.overview.weatherTitle}</span>
           <strong>{model.weatherV2.label}</strong>
           <p>{model.weatherV2.summary}</p>
           <dl className="home-weather-v2-scores" aria-label="Memory Weather v2 scoring signals">
@@ -1147,17 +1150,17 @@ function HomeOverviewView({
           </article>
         ))}
       </section>
-      <section className="home-preview-grid" aria-label="记忆总览预览组件">
+      <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria}>
         <button
           className="home-preview-card mini-starfield-preview"
           onClick={() => jumpToPreview(model.miniStarfieldFocus, "galaxy")}
           type="button"
         >
           <div className="panel-title-row">
-            <h3>Mini Starfield</h3>
-            <span>点击进入记忆星系</span>
+            <h3>{uiCopy.overview.miniStarfieldTitle}</h3>
+            <span>{uiCopy.overview.miniStarfieldAction}</span>
           </div>
-          <svg viewBox="0 0 420 190" role="img" aria-label="轻量记忆星系预览">
+          <svg viewBox="0 0 420 190" role="img" aria-label={uiCopy.overview.miniStarfieldAria}>
             <defs>
               <radialGradient id="homeStarfieldGlow" cx="50%" cy="50%" r="60%">
                 <stop offset="0%" stopColor="rgba(126, 232, 212, 0.38)" />
@@ -1183,8 +1186,8 @@ function HomeOverviewView({
           type="button"
         >
           <div className="panel-title-row">
-            <h3>River Pulse</h3>
-            <span>点击进入时间河</span>
+            <h3>{uiCopy.overview.riverPulseTitle}</h3>
+            <span>{uiCopy.overview.riverPulseAction}</span>
           </div>
           <div className="river-pulse-lanes" aria-label="近期主题增强和衰退">
             {model.riverPulseSegments.map((segment) => (
@@ -1195,13 +1198,13 @@ function HomeOverviewView({
               </div>
             ))}
           </div>
-          <small>近 30 天对比上一观察窗，显示主题增强/衰退方向。</small>
+          <small>{uiCopy.overview.riverPulseNote}</small>
         </button>
       </section>
       <section className="home-action-panel" aria-label="下一步行动建议">
         <div className="panel-title-row">
-          <h3>Next Best Actions</h3>
-          <span>proposal-only，不直接写长期记忆</span>
+          <h3>{uiCopy.overview.nextBestActionsTitle}</h3>
+          <span>{uiCopy.overview.proposalOnlyLabel}</span>
         </div>
         <div className="home-action-list">
           {model.actions.map((action) => (
@@ -1215,8 +1218,8 @@ function HomeOverviewView({
       </section>
       <section className="home-inspector-panel" aria-label="Inspector Deep Link">
         <div className="panel-title-row">
-          <h3>Inspector Deep Link</h3>
-          <span>点击后同步焦点和详情面板</span>
+          <h3>{uiCopy.overview.inspectorTitle}</h3>
+          <span>{uiCopy.overview.inspectorHint}</span>
         </div>
         <div className="home-inspector-link-list">
           {model.inspectorLinks.map((link) => (
@@ -1228,9 +1231,9 @@ function HomeOverviewView({
         </div>
       </section>
       <section className="home-topic-strip" aria-label="主导主题趋势">
-        <MiniBarList title="主导主题" rows={model.topicRows} />
-        <MiniBarList title="记忆层级" rows={model.tierRows} />
-        <MiniBarList title="语义分类" rows={model.categoryRows} />
+        <MiniBarList title={uiCopy.overview.dominantTopics} rows={model.topicRows} />
+        <MiniBarList title={uiCopy.overview.memoryTiers} rows={model.tierRows} />
+        <MiniBarList title={uiCopy.overview.semanticCategories} rows={model.categoryRows} />
       </section>
     </div>
   );
@@ -2908,8 +2911,8 @@ function NodeInspector({
         data-shared-focus-node=""
         data-shared-cluster=""
       >
-        <h2>选择一个节点</h2>
-        <p>点击星体、关系图、时间轴事件或搜索结果查看记忆详情。</p>
+        <h2>{uiCopy.inspector.emptyTitle}</h2>
+        <p>{uiCopy.inspector.emptyDescription}</p>
         <HumanOverviewPanel nodes={overviewNodes} deltaStats={buildDeltaStats(atlas, memoryNodes)} compact />
       </aside>
     );
@@ -2932,7 +2935,7 @@ function NodeInspector({
       <p className="human-node-subtitle">{humanNode.subtitle}</p>
       <section className="human-node-card">
         <div className="human-node-section">
-          <strong>这条记忆说明了什么</strong>
+          <strong>{uiCopy.inspector.meaningTitle}</strong>
           <ul>
             {humanNode.meaning.map((item, index) => (
               <li key={`meaning-${index}-${item}`}>{item}</li>
@@ -2940,11 +2943,11 @@ function NodeInspector({
           </ul>
         </div>
         <div className="human-node-section">
-          <strong>为什么重要</strong>
+          <strong>{uiCopy.inspector.impactTitle}</strong>
           <p>{humanNode.impact}</p>
         </div>
         <div className="human-node-section">
-          <strong>未来应该怎么用</strong>
+          <strong>{uiCopy.inspector.futureUseTitle}</strong>
           <ul>
             {humanNode.futureUse.map((item, index) => (
               <li key={`future-${index}-${item}`}>{item}</li>
@@ -2952,7 +2955,7 @@ function NodeInspector({
           </ul>
         </div>
         <div className="human-node-section">
-          <strong>相关主题</strong>
+          <strong>{uiCopy.inspector.relatedTopicsTitle}</strong>
           <div className="human-node-topics">
             {humanNode.topics.map((topic, index) => (
               <span key={`topic-${index}-${topic}`}>{topic}</span>
@@ -2974,13 +2977,13 @@ function NodeInspector({
         onClick={() => setDebugOpen((open) => !open)}
       >
         <Search size={15} />
-        {debugOpen ? "隐藏 Debug" : "显示 Debug"}
+        {debugOpen ? uiCopy.inspector.debugHide : uiCopy.inspector.debugShow}
       </button>
       {debugOpen ? (
         <section id="inspector-debug-panel" className="agent-structured-fields inspector-debug-panel" data-debug-panel="true">
           <div className="panel-title-row">
-            <h3>Debug / Agent Inspector</h3>
-            <span>默认隐藏</span>
+            <h3>{uiCopy.inspector.debugTitle}</h3>
+            <span>{uiCopy.inspector.debugDefaultHidden}</span>
           </div>
           <div className="agent-field-grid">
             <section>
@@ -2994,7 +2997,7 @@ function NodeInspector({
           </div>
           {node.statement ? (
             <div className="raw-summary-inline">
-              <strong>低敏数据库摘要</strong>
+              <strong>{uiCopy.inspector.lowSensitivitySummary}</strong>
               <p>{node.statement}</p>
             </div>
           ) : null}
@@ -3019,8 +3022,8 @@ function InspectorExplanationPanel({ explanation }: { explanation: InspectorExpl
   return (
     <section className="inspector-explanation-panel" data-raw-display="false" aria-label="解释面板">
       <div className="panel-title-row">
-        <h3>解释面板</h3>
-        <span>公式 / 证据</span>
+        <h3>{uiCopy.inspector.explanationTitle}</h3>
+        <span>{uiCopy.inspector.explanationMeta}</span>
       </div>
       <p>{explanation.summary}</p>
       <div className="inspector-formula-grid" aria-label="公式与参数">
@@ -3277,24 +3280,22 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
       data-proposal-schema={policy.proposal_schema_version || "memory_change_proposal.v1"}
     >
       <div className="panel-title-row">
-        <h3>写回提案</h3>
-        <span>{nodeProposals.length} 版</span>
+        <h3>{uiCopy.proposal.panelTitle}</h3>
+        <span>{nodeProposals.length} {uiCopy.proposal.versionSuffix}</span>
       </div>
-      <p>
-        前端只生成版本化提案；不直接修改主动记忆库。后续受控代理写库前必须重新读库、做冲突检查并生成可回滚历史。
-      </p>
+      <p>{uiCopy.proposal.description}</p>
       <div className="writeback-safety-strip" aria-label="proposal-only safety contract">
-        <span>只生成提案 JSON</span>
-        <span>不直接改主动记忆</span>
-        <span>需代理/人工应用</span>
+        <span>{uiCopy.proposal.safetyProposalOnly}</span>
+        <span>{uiCopy.proposal.safetyNoDirectMutation}</span>
+        <span>{uiCopy.proposal.safetyNeedsApply}</span>
       </div>
       <div className="writeback-diff-grid" aria-label="当前草稿差异">
-        <div><span>长度变化</span><strong>{draftDiff.length_delta > 0 ? "+" : ""}{draftDiff.length_delta}</strong></div>
-        <div><span>变更片段</span><strong>{draftDiff.changed_segments}</strong></div>
-        <div><span>回滚单位</span><strong>{policy.rollback_unit || "per_memory_version"}</strong></div>
+        <div><span>{uiCopy.proposal.diffLength}</span><strong>{draftDiff.length_delta > 0 ? "+" : ""}{draftDiff.length_delta}</strong></div>
+        <div><span>{uiCopy.proposal.diffSegments}</span><strong>{draftDiff.changed_segments}</strong></div>
+        <div><span>{uiCopy.proposal.rollbackUnit}</span><strong>{policy.rollback_unit || "per_memory_version"}</strong></div>
       </div>
       <label>
-        动作
+        {uiCopy.proposal.actionLabel}
         <select value={action} onChange={(event) => setAction(event.target.value as WritebackAction)} disabled={!editable}>
           {(Object.keys(writebackActionLabels) as WritebackAction[]).map((key) => (
             <option key={key} value={key}>{writebackActionLabels[key]}</option>
@@ -3302,7 +3303,7 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
         </select>
       </label>
       <label>
-        建议写回内容
+        {uiCopy.proposal.draftLabel}
         <textarea
           value={draftText}
           onChange={(event) => setDraftText(event.target.value)}
@@ -3311,41 +3312,41 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
         />
       </label>
       <label>
-        原因 / 证据 / 回滚说明
+        {uiCopy.proposal.reasonLabel}
         <textarea
           value={reason}
           onChange={(event) => setReason(event.target.value)}
           disabled={!editable}
           rows={3}
-          placeholder="说明为什么要更新、依据是什么、是否会覆盖旧结论。"
+          placeholder={uiCopy.proposal.reasonPlaceholder}
         />
       </label>
       <div className="writeback-actions">
         <button type="button" onClick={saveProposal} disabled={!editable || !draftText.trim()}>
           <Save size={15} />
-          保存 JSON 提案
+          {uiCopy.proposal.buttons.save}
         </button>
         <button type="button" onClick={exportLatest} disabled={!latest}>
           <Download size={15} />
-          导出最新
+          {uiCopy.proposal.buttons.exportLatest}
         </button>
         <button type="button" onClick={exportProposalHistory} disabled={!nodeProposals.length}>
           <GitBranch size={15} />
-          导出版本链
+          {uiCopy.proposal.buttons.exportHistory}
         </button>
         <button type="button" onClick={rollbackDraft} disabled={!previous}>
           <RotateCcw size={15} />
-          载入上一版
+          {uiCopy.proposal.buttons.loadPrevious}
         </button>
         <button type="button" onClick={createRollbackProposal} disabled={!latest}>
           <RotateCcw size={15} />
-          生成回滚提案
+          {uiCopy.proposal.buttons.createRollback}
         </button>
       </div>
       <details className="writeback-json-preview">
         <summary>
           <GitBranch size={14} />
-          JSON 提案预览
+          {uiCopy.proposal.buttons.jsonPreview}
         </summary>
         <pre>{proposalJsonPreview}</pre>
       </details>
@@ -3366,8 +3367,8 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
       ) : null}
       <small>
         {latest
-          ? `最新版本 ${latest.version.revision} · ${new Date(latest.created_at).toLocaleString("zh-CN")} · 待受控代理应用`
-          : "尚无本地提案版本"}
+          ? `${uiCopy.proposal.latestVersionPrefix} ${latest.version.revision} · ${new Date(latest.created_at).toLocaleString("zh-CN")} · 待受控代理应用`
+          : uiCopy.proposal.emptyVersion}
       </small>
     </section>
   );
@@ -3515,7 +3516,7 @@ function SelectFilter({
     <label className="select-filter">
       <span>{label}</span>
       <select value={value} onChange={(event) => onChange(event.target.value)}>
-        <option value="all">全部</option>
+        <option value="all">{uiCopy.filters.allOption}</option>
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

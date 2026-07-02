@@ -3029,6 +3029,62 @@ Stage 9 整体复审已确认：
 - 本 pre-stage 不执行 Stage 0 implementation。
 - 本 pre-stage review artifact 不执行 GitHub main 上传。
 
+## 69. v1.1.7 Stage 0 Phase 0.1 Chinese Display Foundation
+
+状态：`phase_0_1_chinese_display_foundation_completed_pending_stage0_review`。
+
+验收 ID：`ACC-MA-V117-S0P01`。
+
+模型假设：
+
+- Stage 0 Phase 0.1 只建立中文显示基础，不证明截图验收、Help 面板、空状态工作流或 Stage 0 整体复审。
+- 中文 copy registry 先覆盖 app shell、navigation、filters、states、overview、Inspector 和 proposal 的关键路径，后续 phase 可继续迁移其余硬编码文案。
+- UTF-8 scan 是静态 gate，不替代浏览器截图。
+
+输入：
+
+- `apps/memory-atlas/src/i18n/types.ts`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase1_chinese_display_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase1.cjs`
+
+处理方法：
+
+- 扫描 selected Memory Atlas text surfaces，确认无 U+FFFD、common mojibake、null bytes、trailing whitespace 和 invalid JSON。
+- 检查 `ChineseUiCopy` 类型和 `zhCNCopy` registry 是否覆盖必备组。
+- 检查 `App.tsx` 是否在 navigation、filters、load state、overview、Inspector 和 proposal 关键路径使用 registry。
+- 检查 `styles.css` 是否包含中文字体 fallback 和长文本布局容错。
+- 使用 `validate:v1.1.7-stage0-phase1` 固定本 phase 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S0P01-001 stage0_phase1_contract_id = memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract`
+- `PARAM-MA-V117-S0P01-002 stage0_phase1_status = phase_0_1_chinese_display_foundation_completed_pending_stage0_review`
+- `PARAM-MA-V117-S0P01-003 stage0_phase1_registry_groups = app;navigation;metrics;filters;states;overview;inspector;proposal`
+- `PARAM-MA-V117-S0P01-004 stage0_phase1_text_scan_scope = apps/memory-atlas/src;docs/product;docs/acceptance;config/visualization;data/derived/visualization/memory_atlas.json;records`
+- `PARAM-MA-V117-S0P01-005 stage0_phase1_layout_tolerance = Chinese font fallback;overflow-wrap:anywhere;word-break:normal;line-break:loose;min-width:0`
+- `PARAM-MA-V117-S0P01-006 stage0_phase1_required_validator = validate:v1.1.7-stage0-phase1`
+
+输出：
+
+- Stage 0 Phase 0.1 product contract。
+- Stage 0 Phase 0.1 acceptance checklist。
+- Chinese UI copy registry。
+- Runtime copy usage for critical surfaces。
+- Chinese layout tolerance CSS。
+- Stage 0 Phase 0.1 deterministic validator。
+
+边界：
+
+- 本 phase 不实现 Help 面板、空/错误状态工作流或明细可见性合同。
+- 本 phase 不运行 production build、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不执行 GitHub main 上传。
+
 ## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
 
 状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。
