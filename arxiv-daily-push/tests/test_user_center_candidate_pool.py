@@ -2535,6 +2535,27 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[数据源与板块健康](./数据源与板块健康.md)", key_decisions)
         self.assertIn("[数据源与板块健康](用户中心/数据源与板块健康.md)", model_params)
 
+    def test_data_source_page_keeps_s3_daily_operation_fail_closed_boundary(self):
+        page = DATA_SOURCE_PAGE.read_text(encoding="utf-8")
+
+        required_facts = (
+            "数据源或板块新增、启用、停用只改变来源目录和用户中心展示，不创建或替代持久 DAILY_OPERATION 授权",
+            "缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 时，来源扩展完成也必须保持 `daily_operation_enabled=false`",
+            "来源/板块变更后仍必须运行 enablement preflight，并确认 `status=FAIL / exit 2`",
+            "不得把 Stage 2 影子来源、规划来源或来源目录同步写成 S3/DAILY_OPERATION 已进入",
+        )
+        for fact in required_facts:
+            self.assertIn(fact, page)
+
+        forbidden_facts = (
+            "来源扩展完成即进入 S3/DAILY_OPERATION",
+            "数据源同步完成即可启用 DAILY_OPERATION",
+            "daily_operation_enabled=true",
+            "scheduler_install_enabled=true",
+        )
+        for fact in forbidden_facts:
+            self.assertNotIn(fact, page)
+
     def test_future_source_changes_are_bound_to_user_center_sync_gate(self):
         root_agents = ROOT_AGENTS.read_text(encoding="utf-8")
         agents = PROJECT_AGENTS.read_text(encoding="utf-8")
