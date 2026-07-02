@@ -97,6 +97,8 @@ def _map_safe_mode_state(local_path: dict[str, Any], index_state: str, api_budge
         return "SAFE_MODE_REVALIDATION_REQUIRED"
     if removable_state == "PERMISSION_DENIED":
         return "SAFE_MODE_PERMISSION_DENIED"
+    if removable_state == "STORAGE_BLOCKED":
+        return "SAFE_MODE_STORAGE_BLOCKED"
     if storage_state in {
         "BUDGET_BLOCKED_LOW_FREE",
         "BUDGET_BLOCKED_HIGH_WATERLINE",
@@ -192,6 +194,209 @@ def evaluate_safe_mode_baseline(
         "index_state": normalized_index,
         "api_budget_state": normalized_api,
         "local_path_contract": local_path,
+        "does_not_start_services": True,
+        "does_not_create_ids_data_root": True,
+        "does_not_scan_recursively": True,
+        "does_not_scan_external_drive_contents": True,
+        "does_not_open_source_files": True,
+        "does_not_hash_source_files": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_generate_outputs": True,
+        "does_not_write_runtime_data": True,
+        "does_not_write_manifests": True,
+        "does_not_copy_backups": True,
+        "does_not_call_external_apis": True,
+    }
+
+
+def _operations_only(report: dict[str, Any]) -> bool:
+    return all(
+        report.get(flag) is True
+        for flag in [
+            "does_not_start_services",
+            "does_not_create_ids_data_root",
+            "does_not_scan_recursively",
+            "does_not_scan_external_drive_contents",
+            "does_not_open_source_files",
+            "does_not_hash_source_files",
+            "does_not_read_raw_metadata",
+            "does_not_generate_outputs",
+            "does_not_write_runtime_data",
+            "does_not_write_manifests",
+            "does_not_copy_backups",
+            "does_not_call_external_apis",
+        ]
+    )
+
+
+def build_stage011_scenario_report(
+    *,
+    valid_source_uri: str,
+    online_root: str,
+    offline_root: str,
+    reconnected_root: str,
+    permission_denied_root: str,
+    path_changed_current: str,
+    path_changed_expected: str,
+    processed_path: str,
+    backup_path: str,
+    manifest_path: str,
+    report_export_path: str,
+    storage_total_bytes: int,
+    storage_ok_free_bytes: int,
+    storage_low_free_bytes: int,
+    planned_output_ok_bytes: int,
+    planned_output_too_large_bytes: int,
+    invalid_source_uri: str,
+) -> dict[str, Any]:
+    """Build deterministic Phase 3 safe-mode scenarios without side effects."""
+
+    common = {
+        "source_uri": valid_source_uri,
+        "processed_path": processed_path,
+        "backup_path": backup_path,
+        "manifest_path": manifest_path,
+        "report_export_path": report_export_path,
+        "internal_total_bytes": storage_total_bytes,
+        "internal_free_bytes": storage_ok_free_bytes,
+        "planned_output_bytes": planned_output_ok_bytes,
+        "job_kind": "bounded_preflight",
+        "index_state": "OK",
+        "api_budget_state": "OK",
+    }
+    scenarios = {
+        "clear": evaluate_safe_mode_baseline(
+            ids_data_root=online_root,
+            **common,
+        ),
+        "drive_offline": evaluate_safe_mode_baseline(
+            ids_data_root=offline_root,
+            **common,
+        ),
+        "drive_reconnected": evaluate_safe_mode_baseline(
+            ids_data_root=reconnected_root,
+            previous_state="OFFLINE",
+            **common,
+        ),
+        "permission_denied": evaluate_safe_mode_baseline(
+            ids_data_root=permission_denied_root,
+            **common,
+        ),
+        "path_changed": evaluate_safe_mode_baseline(
+            ids_data_root=path_changed_current,
+            expected_path=path_changed_expected,
+            **common,
+        ),
+        "storage_low_free": evaluate_safe_mode_baseline(
+            ids_data_root=online_root,
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_low_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            job_kind="bounded_preflight",
+            index_state="OK",
+            api_budget_state="OK",
+        ),
+        "unbounded_output_missing_cap": evaluate_safe_mode_baseline(
+            ids_data_root=online_root,
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=None,
+            job_kind="embedding",
+            index_state="OK",
+            api_budget_state="OK",
+        ),
+        "path_blocked": evaluate_safe_mode_baseline(
+            ids_data_root=online_root,
+            source_uri=invalid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            job_kind="bounded_preflight",
+            index_state="OK",
+            api_budget_state="OK",
+        ),
+        "index_failed": evaluate_safe_mode_baseline(
+            ids_data_root=online_root,
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            job_kind="bounded_preflight",
+            index_state="FAILED",
+            api_budget_state="OK",
+        ),
+        "api_budget_exceeded": evaluate_safe_mode_baseline(
+            ids_data_root=online_root,
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            job_kind="bounded_preflight",
+            index_state="OK",
+            api_budget_state="EXCEEDED",
+        ),
+    }
+    expected_states = {
+        "clear": "SAFE_MODE_CLEAR",
+        "drive_offline": "SAFE_MODE_DRIVE_OFFLINE",
+        "drive_reconnected": "SAFE_MODE_REVALIDATION_REQUIRED",
+        "permission_denied": "SAFE_MODE_PERMISSION_DENIED",
+        "path_changed": "SAFE_MODE_REVALIDATION_REQUIRED",
+        "storage_low_free": "SAFE_MODE_STORAGE_BLOCKED",
+        "unbounded_output_missing_cap": "SAFE_MODE_STORAGE_BLOCKED",
+        "path_blocked": "SAFE_MODE_PATH_BLOCKED",
+        "index_failed": "SAFE_MODE_INDEX_FAILED",
+        "api_budget_exceeded": "SAFE_MODE_API_BUDGET_EXCEEDED",
+    }
+    scenario_states = {name: report["state"] for name, report in scenarios.items()}
+    blocked_names = [name for name, state in expected_states.items() if state != "SAFE_MODE_CLEAR"]
+    blocked_valid = all(scenarios[name]["safe_mode"] for name in blocked_names)
+    pause_valid = all(
+        workflow in scenarios["drive_offline"]["paused_workflows"]
+        for workflow in PAUSED_WORKFLOWS
+    )
+    no_auto_resume_valid = all(not scenarios[name]["auto_resume"] for name in scenarios)
+    operations_only_valid = all(_operations_only(report) for report in scenarios.values())
+
+    return {
+        "schema_version": "ids.stage011.phase3_scenarios.v1",
+        "stage": "STAGE-011",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-011",
+        "entrance": OPERATIONS_ENTRANCE,
+        "customer_visible": False,
+        "overall_valid": (
+            scenario_states == expected_states
+            and blocked_valid
+            and pause_valid
+            and no_auto_resume_valid
+            and operations_only_valid
+        ),
+        "scenario_states": scenario_states,
+        "safe_mode_scenarios": scenarios,
+        "safe_mode_pauses": PAUSED_WORKFLOWS[:],
         "does_not_start_services": True,
         "does_not_create_ids_data_root": True,
         "does_not_scan_recursively": True,
