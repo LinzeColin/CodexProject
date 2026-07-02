@@ -255,6 +255,162 @@ def evaluate_duplicate_files(
     }
 
 
+def _same_name_different_hash(
+    left_uri: str,
+    right_uri: str,
+    *,
+    first_seen_at: str,
+    duplicate_checked_at: str,
+) -> dict[str, Any]:
+    report = evaluate_duplicate_files(
+        source_uris=[left_uri, right_uri],
+        first_seen_at=first_seen_at,
+        duplicate_checked_at=duplicate_checked_at,
+    )
+    return {
+        "scenario_id": "same_name_different_hash",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "DUPLICATE_SAME_NAME_DIFFERENT_HASH"
+            and report["same_name_different_hash_count"] == 1
+            and report["version_conflict_count"] == 1
+        ),
+        "same_name_different_hash_count": report["same_name_different_hash_count"],
+        "version_conflict_count": report["version_conflict_count"],
+        "identity_count": report["identity_count"],
+        "duplicate_write_delta": report["duplicate_write_delta"],
+    }
+
+
+def _same_hash_different_path(
+    left_uri: str,
+    right_uri: str,
+    *,
+    first_seen_at: str,
+    duplicate_checked_at: str,
+) -> dict[str, Any]:
+    report = evaluate_duplicate_files(
+        source_uris=[left_uri, right_uri],
+        first_seen_at=first_seen_at,
+        duplicate_checked_at=duplicate_checked_at,
+    )
+    return {
+        "scenario_id": "same_hash_different_path",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "DUPLICATE_SAME_HASH_DIFFERENT_PATH"
+            and report["same_hash_different_path_count"] == 1
+        ),
+        "duplicate_content_count": report["same_hash_different_path_count"],
+        "identity_count": report["identity_count"],
+        "duplicate_write_delta": report["duplicate_write_delta"],
+    }
+
+
+def build_stage015_scenario_report(
+    *,
+    same_file_uri: str,
+    same_name_left_uri: str,
+    same_name_right_uri: str,
+    same_hash_left_uri: str,
+    same_hash_right_uri: str,
+    first_seen_at: str | None = None,
+    duplicate_checked_at: str | None = None,
+) -> dict[str, Any]:
+    """Validate Phase 3 duplicate scenarios without persistence side effects."""
+
+    first_seen_at = first_seen_at or _utc_now()
+    duplicate_checked_at = duplicate_checked_at or _utc_now()
+    stage013 = _load_stage013_module()
+    source_path = stage013._path_from_uri(same_file_uri)
+    before_sha256 = stage013._hash_file(source_path)
+    before_size = source_path.stat().st_size
+
+    same_file = evaluate_duplicate_files(
+        source_uris=[same_file_uri, same_file_uri],
+        first_seen_at=first_seen_at,
+        duplicate_checked_at=duplicate_checked_at,
+    )
+    same_file_scenario = {
+        "scenario_id": "same_file_same_hash",
+        "state": same_file["overall_state"],
+        "valid": (
+            same_file["overall_state"] == "DUPLICATE_BATCH_REPEAT"
+            and same_file["duplicate_input_count"] == 1
+            and same_file["identity_count"] == 1
+        ),
+        "duplicate_input_count": same_file["duplicate_input_count"],
+        "identity_count": same_file["identity_count"],
+        "duplicate_write_delta": same_file["duplicate_write_delta"],
+    }
+
+    same_name = _same_name_different_hash(
+        same_name_left_uri,
+        same_name_right_uri,
+        first_seen_at=first_seen_at,
+        duplicate_checked_at=duplicate_checked_at,
+    )
+    same_hash = _same_hash_different_path(
+        same_hash_left_uri,
+        same_hash_right_uri,
+        first_seen_at=first_seen_at,
+        duplicate_checked_at=duplicate_checked_at,
+    )
+    duplicate_import = {
+        "scenario_id": "duplicate_import_no_persistence",
+        "state": same_file["overall_state"],
+        "valid": (
+            same_file_scenario["valid"]
+            and same_file["document_delta"] == 0
+            and same_file["chunk_delta"] == 0
+            and same_file["job_delta"] == 0
+            and same_file["duplicate_write_delta"] == 0
+            and same_file["manifest_write_delta"] == 0
+        ),
+        "document_delta": same_file["document_delta"],
+        "chunk_delta": same_file["chunk_delta"],
+        "job_delta": same_file["job_delta"],
+        "duplicate_write_delta": same_file["duplicate_write_delta"],
+        "manifest_write_delta": same_file["manifest_write_delta"],
+        "identity_count": same_file["identity_count"],
+        "duplicate_input_count": same_file["duplicate_input_count"],
+    }
+
+    after_sha256 = stage013._hash_file(source_path)
+    after_size = source_path.stat().st_size
+    hash_stable = {
+        "scenario_id": "original_hash_stable",
+        "state": "DUPLICATE_READY" if before_sha256 == after_sha256 else "DUPLICATE_UNKNOWN",
+        "valid": before_sha256 == after_sha256 and before_size == after_size,
+        "before_sha256": before_sha256,
+        "after_sha256": after_sha256,
+        "before_size": before_size,
+        "after_size": after_size,
+        "hash_unchanged": before_sha256 == after_sha256,
+        "size_unchanged": before_size == after_size,
+    }
+
+    scenarios = [same_file_scenario, same_name, same_hash, duplicate_import, hash_stable]
+    return {
+        "schema_version": "ids.stage015.duplicate_scenarios.v1",
+        "stage": "STAGE-015",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-015",
+        "entrance": OPERATIONS_ENTRANCE,
+        "overall_valid": all(scenario["valid"] for scenario in scenarios),
+        "scenarios": scenarios,
+        "does_not_scan_recursively": True,
+        "does_not_move_originals": True,
+        "does_not_delete_originals": True,
+        "does_not_overwrite_originals": True,
+        "does_not_write_duplicate_ledger": True,
+        "does_not_write_database": True,
+        "does_not_create_documents_chunks_jobs": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_call_external_apis": True,
+    }
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Build a metadata-only Stage 015 duplicate-file detection report."
