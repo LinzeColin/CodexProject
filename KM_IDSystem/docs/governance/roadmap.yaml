@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE020"
-current_phase_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"
-current_task_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"
-next_gate_id: "IDS-STAGE021-P1-GATE"
+current_stage_id: "IDS-STAGE021"
+current_phase_id: "IDS-STAGE021-P1"
+current_task_id: "IDS-V0_1-STAGE021-P1"
+next_gate_id: "IDS-STAGE021-P2-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 158
+completed_estimated_hours: 160
 stages:
   -
     stage_id: "S5"
@@ -5179,3 +5179,70 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果终态证据被误当成下一阶段开发，可能绕过 STAGE-021 的单 phase run contract；如果 raw data boundary 被误读，可能触碰 IDS_MetaData 原始数据库。"
             rollback: "Correct or revert this terminal evidence through a targeted GitHub main commit only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, or STAGE-021."
+  -
+    stage_id: "IDS-STAGE021"
+    name: "预检确认 UI"
+    person_goal: "在人类产品入口显示预检结果，让 owner 决定继续、暂停、分批或排除。"
+    status: "in_progress"
+    stop_conditions:
+      - "STAGE-011..020 main upload evidence 不完整"
+      - "一次 run 完成超过一个 phase"
+      - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+      - "解析正文、启动 OCR、Embedding、index、import、report、runtime database 或写 manifest/database/document/chunk/job"
+      - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+      - "执行 GitHub upload、PR、merge 或 app reinstall"
+    stop_gate:
+      gate_id: "IDS-STAGE021-P1-GATE"
+      status: "passed_with_local_evidence"
+      pass_conditions:
+        - "Phase 1 定义预检确认 UI 的输入目录、输出摘要、风险项、成本项和确认状态"
+        - "Phase 1 确认预检确认 UI 只读取元信息，不解析正文、不修改原始文件"
+        - "Phase 1 定义 owner 确认后才进入批量处理"
+        - "BATCH021_030_UPLOAD_LOCK.yaml 创建并保持 push_allowed=false"
+    acceptance:
+      acceptance_id: "ACC-STAGE-021"
+      status: "phase1_scope_boundary_defined"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage021_preflight_confirmation_ui.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE021-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "定义预检确认 UI 的 metadata-only 输入、owner-facing 输出、风险项、成本项、确认状态、owner decision options 和 no-processing/raw-data 边界。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "实现 UI 组件、route、backend endpoint、state reducer 或 persistence"
+          - "生成 screenshot、PDF、JSON output、runtime output 或 production preflight report"
+          - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "进入 Phase 2 或执行 GitHub upload/app reinstall"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE021-P1"
+            name: "预检确认 UI 合同与边界"
+            objective: "记录 STAGE-021 Phase 1 entry contract、scope boundary、BATCH021_030 batch lock、focused test 和 governance regression 状态。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.25%"
+            dependencies:
+              - "IDS-V0_1-BATCH-011-020-MAIN-MERGED"
+            acceptance_ids:
+              - "ACC-STAGE-021"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage021_preflight_confirmation_ui -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage021_phase1_preflight_confirmation_ui_boundary -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+            test_results: "RED/GREEN complete: Stage021 Phase1 RED ran 4 tests with 4 failures because STAGE021_ENTRY_CONTRACT.md, STAGE021_PHASE1_SCOPE_BOUNDARY.md, and BATCH021_030_UPLOAD_LOCK.yaml did not exist. Stage005 state RED failed as expected because IDS-STAGE021-P1 was not accepted by the governance state machine. GREEN passed with Stage021 focused tests 4 OK and Stage005 targeted state test 1 OK after adding entry/scope evidence, BATCH021_030 no-upload lock, roadmap/event records, and validator state. Final local validation passed: Stage005 governance regression ran 53 tests OK; Stage005 validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, or raw data boundary gaps; full IDS v0.1 pursuing-goal discover ran 174 tests OK; py_compile passed for Stage005 validator, Stage005 regression test, and Stage021 focused test. Owner files were rendered with bundled Python. The run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit IDS_MetaData raw metadata content; did not implement UI/backend/runtime behavior, create screenshots/PDF/JSON/runtime output, start services, install dependencies, call external APIs, push to GitHub, create or merge a PR, reinstall app entries, or enter Phase 2."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage021_preflight_confirmation_ui.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            risk: "如果 Phase 1 合同被误当成 UI 实现，可能绕过真实预检确认、owner decision audit、raw data boundary 和后续 Phase 2 TDD；如果 raw data boundary 被误读，可能触碰 IDS_MetaData 原始数据库。"
+            rollback: "Revert STAGE021 entry/scope evidence, BATCH021_030_UPLOAD_LOCK.yaml, focused tests, Stage005 validator/test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, GitHub state, or Phase 2 artifacts."

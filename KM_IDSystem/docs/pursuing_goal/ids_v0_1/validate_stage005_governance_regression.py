@@ -36,6 +36,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_REVIEW_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
@@ -105,6 +106,8 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE2_COST_ESTIMATOR_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE3_SCENARIO_VALIDATION.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py",
@@ -115,6 +118,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_import_preflight.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_import_risk_estimator.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage020_import_cost_estimator.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage021_preflight_confirmation_ui.py",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
     "KM_IDSystem/scripts/check_file_fingerprint.py",
     "KM_IDSystem/scripts/check_manifest_generation.py",
@@ -154,6 +158,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-BATCH-011-020-REVIEW-GATE-20260702-001",
     "EVT-IDS-V0_1-BATCH-011-020-UPLOAD-GATE-20260702-001",
     "EVT-IDS-V0_1-BATCH-011-020-MAIN-MERGED-20260702-001",
+    "EVT-IDS-V0_1-STAGE021-P1-20260702-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -171,6 +176,7 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_REVIEW_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
     "KM_IDSystem/scripts/check_safe_mode_baseline.py",
@@ -181,6 +187,9 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/scripts/check_import_preflight.py",
     "KM_IDSystem/scripts/check_import_risk_estimator.py",
     "KM_IDSystem/scripts/check_import_cost_estimator.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage021_preflight_confirmation_ui.py",
     "KM_IDSystem/docs/governance/roadmap.yaml",
     "KM_IDSystem/docs/governance/events.jsonl",
     "KM_IDSystem/功能清单.md",
@@ -687,6 +696,17 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE021-P1-GATE"' in roadmap_text
     )
+    stage021_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE021-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE021"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE021-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE021-P2-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -732,6 +752,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or batch011_020_reviewed_pending_upload
         or batch011_020_upload_gate_active
         or batch011_020_uploaded_to_main
+        or stage021_phase1_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
@@ -842,6 +863,7 @@ def build_report(root: Path | None = None) -> dict:
     batch_paths = [
         root / "docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
         root / "docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml",
+        root / "docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
     ]
     batch_text = "\n".join(
         path.read_text(encoding="utf-8")
