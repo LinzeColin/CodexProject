@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 19:33:55 Australia/Sydney
+更新时间：2026-07-02 19:43:10 Australia/Sydney
 
 ## 当前结论
 
@@ -30,7 +30,7 @@
 - `tools/verify_acceptance_bundle.py --require-zero P0 P1` 的 `status=PASS` 只证明 final bundle / zero-proof / no-production root gate 通过；必须同时读取 `daily_operation_authorization_ready=false` 和 `daily_operation_blocking_reasons`，不得把 root PASS 当作 S3/DAILY_OPERATION 可启用。
 - `tools/verify_daily_operation_readiness.py` 是 S3/DAILY_OPERATION 专用 fail-closed root gate；缺持久授权 artifact 时必须返回 `status=FAIL` 和 exit 2。该非零退出是正确阻断，不是验证故障。
 - `tools/verify_daily_operation_enablement_preflight.py` 是 `S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT` 的只读组合门；它只汇总 readiness + open PR + SMTP flag + LaunchAgent + background process，不创建授权、不启用运行。默认命令会自动观察 LaunchAgent 和后台 ADP 进程，输出 `runtime_observation_mode=auto_observed`；当前缺持久授权时同样必须返回 `status=FAIL / exit 2`。
-- `FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json` 只是 owner-editable 模板，默认 `template_only=true` 且 `explicit_persistent_daily_operation_authorization=false`；复制不改必须无效，不得当作持久授权 artifact。
+- `FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json` 只是 owner-editable 模板，默认 `template_only=true` 且 `explicit_persistent_daily_operation_authorization=false`；复制不改必须无效，不得当作持久授权 artifact。半改模板也不能通过：保留占位 `generated_at` 或 `authorization_text` 仍必须无效，必须替换为当前 owner 明确授权证据。
 - 当前 S3 安全边界必须检查真实 LaunchAgent 标签：`com.linzezhang.adp.daily`、`com.linzezhang.adp.health`、`com.linzezhang.adp.watchdog`。旧 `com.linze.adp.local.*` 只属于历史记录，不得作为当前 S3 safety check。
 - 当前 `daily-operation-authorization-preflight` 与 `integrated-production-acceptance-preflight` 机器 gate 输出同样使用真实 LaunchAgent 标签；历史 artifact 只读兼容旧 label，不得反推当前命令继续使用旧 label。
 - 不要为了追逐当前提交号重复改写本页；只有 S3/DAILY_OPERATION 事实、授权状态或证据路径变化时才更新。

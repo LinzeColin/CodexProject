@@ -8,7 +8,7 @@ import os
 import re
 import subprocess
 from collections.abc import Mapping
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -14067,12 +14067,27 @@ def _validate_persistent_daily_operation_authorization_artifact(artifact: Mappin
         errors.append("persistent daily operation authorization artifact task_id is invalid")
     if artifact.get("decision") != S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_DECISION:
         errors.append("persistent daily operation authorization artifact decision is invalid")
+    if artifact.get("template_only") is True:
+        errors.append("persistent daily operation authorization artifact must not be template_only")
     if artifact.get("explicit_persistent_daily_operation_authorization") is not True:
         errors.append("persistent daily operation authorization artifact must be explicit")
+    generated_at = str(artifact.get("generated_at", "")).strip()
+    if not generated_at or generated_at.startswith("REPLACE_WITH_"):
+        errors.append("persistent daily operation authorization artifact generated_at must be a real timestamp")
+    else:
+        try:
+            datetime.fromisoformat(generated_at.replace("Z", "+00:00"))
+        except ValueError:
+            errors.append("persistent daily operation authorization artifact generated_at must be a real timestamp")
     if artifact.get("authorization_scope") != "persistent_daily_operation_enablement":
         errors.append("persistent daily operation authorization artifact authorization_scope is invalid")
     if artifact.get("authorized_by") not in {"owner", "owner/coordinator"}:
         errors.append("persistent daily operation authorization artifact authorized_by is invalid")
+    authorization_text = str(artifact.get("authorization_text", "")).strip()
+    if not authorization_text or authorization_text.startswith("REPLACE_WITH_"):
+        errors.append(
+            "persistent daily operation authorization artifact authorization_text must be explicit owner evidence"
+        )
     for flag in S2PMT07_DAILY_OPERATION_PERSISTENT_ENABLEMENT_AUTHORIZATION_FORBIDDEN_FLAGS:
         if artifact.get(flag) is not False:
             errors.append(f"persistent daily operation authorization artifact must not enable {flag}")
