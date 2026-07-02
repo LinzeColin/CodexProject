@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE002"
-current_phase_id: "IDS-STAGE002-P1"
-current_task_id: "IDS-V0_1-STAGE002-P1"
-next_gate_id: "IDS-STAGE002-P2-GATE"
+current_phase_id: "IDS-STAGE002-P2"
+current_task_id: "IDS-V0_1-STAGE002-P2"
+next_gate_id: "IDS-STAGE002-P3-GATE"
 total_estimated_hours: 28
-completed_estimated_hours: 22
+completed_estimated_hours: 25
 stages:
   -
     stage_id: "S5"
@@ -476,6 +476,9 @@ stages:
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE2_METADATA_SKELETON.md"
+        - "KM_IDSystem/product_meta_database/README.md"
+        - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
     phases:
       -
         phase_id: "IDS-STAGE002-P1"
@@ -526,25 +529,29 @@ stages:
         phase_id: "IDS-STAGE002-P2"
         name: "实现、接入与最小可运行切片"
         objective: "按最小变更原则建立 ProductMetaDatabase 的可解析 metadata skeleton，不引入运行时代码耦合或真实资料。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "缺少 Phase 1 边界证据"
           - "引入真实资料、secrets、runtime 输出或外部 API 依赖"
           - "schema migration 无法回滚"
         stop_gate:
           gate_id: "IDS-STAGE002-P2-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "ProductMetaDatabase skeleton exists"
             - "schema、manifest template、治理规则和 taskpack 输入可被本地测试解析"
             - "README 和回滚说明存在"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE2_METADATA_SKELETON.md"
+            - "KM_IDSystem/product_meta_database/README.md"
+            - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
+            - "KM_IDSystem/product_meta_database/tests/test_contract.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE002-P2"
             name: "ProductMetaDatabase 最小 metadata skeleton"
             objective: "建立小型、可解析、可回滚的 ProductMetaDatabase metadata skeleton。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 3
             total_hours_percent: "10.71%"
             dependencies:
@@ -552,11 +559,21 @@ stages:
             acceptance_ids:
               - "ACC-STAGE-002"
             test_commands:
+              - "TDD red: Codex bundled python -m unittest KM_IDSystem/product_meta_database/tests/test_contract.py -q"
               - "ProductMetaDatabase parser/contract test"
+              - "Codex bundled python -B KM_IDSystem/product_meta_database/validate_product_meta_database.py"
               - "check-render --project KM_IDSystem"
               - "changed scope check"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "TDD red failed with 2 expected errors before implementation because validate_product_meta_database.py was missing. After implementation, Codex bundled Python unittest ran 2 tests OK; validator returned valid=true, issues=[], external_api_policy=denied, raw_material_policy=forbidden, forbidden_markers=[], forbidden_runtime_paths_present=false, and six future lineage fields. check-render returned drift_count=0; marker/JSONL returned stage002_phase2_marker_jsonl_ok events=15; changed-scope and git diff --check passed; no ProductMetaDatabase __pycache__ remained. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE2_METADATA_SKELETON.md"
+              - "KM_IDSystem/product_meta_database/README.md"
+              - "KM_IDSystem/product_meta_database/schemas/product_metadata.schema.json"
+              - "KM_IDSystem/product_meta_database/manifest_templates/product_manifest.template.json"
+              - "KM_IDSystem/product_meta_database/governance_rules/product_metadata_rules.json"
+              - "KM_IDSystem/product_meta_database/taskpack_inputs/stage002_product_metadata_input.json"
+              - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
+              - "KM_IDSystem/product_meta_database/tests/test_contract.py"
             risk: "metadata skeleton 过早绑定运行时数据库、原始资料或未来 Stage 的索引实现。"
             rollback: "Revert ProductMetaDatabase skeleton files and rendered governance entries."
       -

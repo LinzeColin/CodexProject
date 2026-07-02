@@ -1,0 +1,24 @@
+{
+  "input_id": "ids-v0_1-stage002-product-meta-input",
+  "source": "P0 v0.1 taskpack",
+  "product_id": "IDS",
+  "subsystem": "ProductMetaDatabase",
+  "stage": "STAGE-002",
+  "local_code": "D01-S002",
+  "title": "New ProductMetaDatabase",
+  "acceptance_id": "ACC-STAGE-002",
+  "version_scope": "v0.1",
+  "domain": "D01 - one-time repository governance and product naming",
+  "entrance": "IDS operations entrance",
+  "parallel": "no",
+  "pursuing_goal": "Create ProductMetaDatabase for product schema, manifest templates, governance rules, and taskpack inputs without carrying 500GB raw materials.",
+  "p0_stage_file": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-002_新建ProductMetaDatabase.md",
+  "p0_stage_sha256": "96ead22acfbfee4b111d6b19d9fb10318ba8acdd837ec5e8f9f55570adc30403",
+  "phase": "Phase 2",
+  "phase_scope": [
+    "Create a small static metadata skeleton.",
+    "Keep the skeleton parseable with standard-library validation.",
+    "Do not introduce runtime database coupling, backend routes, frontend routes, external APIs, raw data, or secrets."
+  ],
+  "next_phase": "Phase 3 validation and exception scenarios"
+}
