@@ -12,6 +12,14 @@ V7.2 是 V7.1 的窄补丁合同，不覆盖、不删除、不改写 `docs/pursu
 - V1.1 输入 hash：`8edbae035da904fe7b465142f90c64f1690a9d36fb24d2a5100fd699e6592eff`
 - V7.1/V1.1 再审查报告 hash：`dac6bcab86e9e7dd04da0cb069fe2443517b56d52fce0cdd3ce3686e2f2b6d1b`
 
+## 如何阅读 baseline 文件
+
+- `V7_2_ROOT_LOCK.yaml`、`machine_readable/roadmap_v7_2.yaml` 和 `machine_readable/product_contract_v7_2.yaml` 是 V7.2 baseline 发布快照，不是后续 S2PMT07 / S3 状态机的唯一当前态来源。
+- baseline 发布快照不能反向覆盖 `CURRENT.yaml`、`HANDOFF/00_下一Agent先读.md`、`HANDOFF/01_当前状态与唯一下一任务.md` 或 `FINAL_ACCEPTANCE_BUNDLE/` 中已经记录的当前事实。
+- 若 baseline 文件中仍能看到 `production_accepted: false`、`S2PMT07_FINAL_GATE_PRECHECK_BLOCKED` 或 `NONE_WHILE_S2PMT07_BLOCKED`，只能解释 V7.2 baseline 发布时的历史 stop-gate 条件，不能据此回退 Stage 2 integrated acceptance，也不能据此重开已消费的 Stage2 Shadow 或 final-gate precheck 工作。
+- 当前读取顺序：`CURRENT.yaml` -> `HANDOFF/00_下一Agent先读.md` -> `HANDOFF/01_当前状态与唯一下一任务.md` -> `FINAL_ACCEPTANCE_BUNDLE/` -> baseline 文件。
+- 缺持久授权 artifact 时只能继续 MVP 复审修补、fail-closed 复核和证据同步；不得启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION。
+
 ## V7.2 改变什么
 
 1. 合并 V7.1 的有效系统要求和 V1.1 的邮件学习前台要求。

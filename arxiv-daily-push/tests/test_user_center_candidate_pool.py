@@ -130,6 +130,22 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("不宣称 `STAGE2_PRODUCTION_ACCEPTED`", readme)
         self.assertNotIn("不宣称 `INTEGRATED_PRODUCTION_ACCEPTED`", readme)
 
+    def test_v72_readme_marks_baseline_files_as_non_current_status_sources(self):
+        readme = V72_README.read_text(encoding="utf-8")
+
+        for phrase in (
+            "`V7_2_ROOT_LOCK.yaml`、`machine_readable/roadmap_v7_2.yaml` 和 `machine_readable/product_contract_v7_2.yaml` 是 V7.2 baseline 发布快照",
+            "baseline 发布快照不能反向覆盖 `CURRENT.yaml`",
+            "`production_accepted: false`、`S2PMT07_FINAL_GATE_PRECHECK_BLOCKED` 或 `NONE_WHILE_S2PMT07_BLOCKED`",
+            "只能解释 V7.2 baseline 发布时的历史 stop-gate 条件",
+            "当前读取顺序：`CURRENT.yaml` -> `HANDOFF/00_下一Agent先读.md` -> `HANDOFF/01_当前状态与唯一下一任务.md` -> `FINAL_ACCEPTANCE_BUNDLE/` -> baseline 文件",
+            "缺持久授权 artifact 时只能继续 MVP 复审修补、fail-closed 复核和证据同步",
+        ):
+            self.assertIn(phrase, readme)
+
+        self.assertNotIn("baseline 文件覆盖 CURRENT.yaml", readme)
+        self.assertNotIn("roadmap_v7_2.yaml 当前阻断 S2PMT07_FINAL_GATE_PRECHECK_BLOCKED", readme)
+
     def test_user_center_pages_show_timestamp_immediately_under_h1(self):
         for page_path in sorted(USER_CENTER.glob("*.md")):
             with self.subTest(page=page_path.name):
