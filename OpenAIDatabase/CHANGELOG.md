@@ -21,6 +21,28 @@ No Cloudflare live deploy, Access policy mutation, memoryatlas.linzezhang.com pu
 - Restored proM2 MacData Chinese report artifacts to Markdown `.md` files for latest, draft, and final reports per owner instruction.
 
 No API key, token, password, cookie, session, Keychain item, shell history, full environment dump, `.env` raw content, Time Machine data, or iCloud data is collected.
+## Unreleased - Memory Atlas v1.1.7 Stage 0 Phase 1
+
+- Added `docs/product/memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract.md`.
+- Added `docs/acceptance/memory_atlas_v1_1_7_stage0_phase1_chinese_display_acceptance.md`.
+- Added `apps/memory-atlas/src/i18n/types.ts` and `apps/memory-atlas/src/i18n/zh-CN.ts`.
+- Added `validate:v1.1.7-stage0-phase1` to scan selected UTF-8 text surfaces,
+  verify the Chinese UI copy registry, confirm runtime registry usage and check
+  Chinese font/layout tolerance.
+- Updated `App.tsx` to consume the registry for navigation, filters, load
+  states, overview, Inspector and proposal labels.
+- Updated `styles.css` with Chinese font fallback and long-text layout
+  tolerance.
+- Registered `MA-V117-S0P01` / `ACC-MA-V117-S0P01` with status
+  `phase_0_1_chinese_display_foundation_completed_pending_stage0_review`.
+
+No Help panel, empty/error workflow implementation, detail visibility workbench,
+browser screenshot, production build, local app install, Cloudflare deploy,
+Access policy change, raw/private data read, direct writeback, proposal write,
+agent apply or GitHub main upload was added.
+
+Machine-readable boundary summary: No raw/private data read; No direct
+writeback; No proposal write; No GitHub main upload.
 
 ## Unreleased - Memory Atlas v1.1.7 Pre Stage 0
 

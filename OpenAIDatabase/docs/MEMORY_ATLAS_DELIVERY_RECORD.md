@@ -715,6 +715,39 @@ build、不截图、不安装本地 app、不部署 Cloudflare、不修改 Acces
 
 Machine-readable boundary summary: No production runtime feature work; No raw/private data read; No direct writeback; No GitHub main upload in review artifact.
 
+## v1.1.7 Stage 0 Phase 0.1：Chinese Display Foundation
+
+状态：`phase_0_1_chinese_display_foundation_completed_pending_stage0_review`。
+
+任务 ID：`MA-V117-S0P01`。
+
+验收 ID：`ACC-MA-V117-S0P01`。
+
+本 phase 建立中文显示基础，包括 UTF-8/Unicode 静态扫描、中文 UI copy
+registry、关键运行时文案接入、中文字体 fallback 和长中文布局容错。不做 Help
+面板、不做空/错误状态工作流、不做明细可见性合同、不截图、不 build、不安装本地
+app、不部署 Cloudflare、不读取 raw/private 数据、不直接写长期记忆、不写 proposal、
+不执行 agent apply、不上传 GitHub main。
+
+新增/更新产物：
+
+- `apps/memory-atlas/src/i18n/types.ts`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase1_chinese_display_acceptance.md`
+- `validate:v1.1.7-stage0-phase1`
+
+验收边界：
+
+- Phase 0.1 通过不表示浏览器截图、Help 面板、空/错误状态工作流或 Stage 0
+  整体复审已完成。
+- Stage 0 Phase 0.2 和 Phase 0.3 未进入。
+- Stage 0-8 全部完成前不上传 GitHub main。
+
+Machine-readable boundary summary: No raw/private data read; No direct writeback; No proposal write; No GitHub main upload.
+
 ### Stage 8 Phase 1：Release Rollback Contract
 
 Stage 8 Phase 1 状态：`phase_8_1_contract_created_pending_stage_review`。

@@ -1,7 +1,11 @@
 :root {
   color-scheme: dark;
+  --memory-atlas-font-family:
+    Inter, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Noto Sans CJK SC",
+    "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    var(--memory-atlas-font-family);
   background: #101014;
   color: #f4f1e8;
   font-synthesis: none;
@@ -22,12 +26,61 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
+  font-family: var(--memory-atlas-font-family);
+  min-width: 0;
 }
 
 button {
   cursor: pointer;
+}
+
+:where(
+  .app-shell,
+  .workspace,
+  .topbar,
+  .controls,
+  .view-surface,
+  .inspector,
+  .home-overview-view,
+  .human-node-card,
+  .writeback-panel,
+  .search-review,
+  .panel-title-row,
+  .mini-bar-list
+) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-break: loose;
+}
+
+:where(
+  button,
+  .nav-item,
+  .home-preview-card,
+  .home-action-list button,
+  .home-inspector-link-list button,
+  .writeback-actions button
+) {
+  min-width: 0;
+}
+
+:where(
+  button span,
+  button strong,
+  button small,
+  .panel-title-row span,
+  .human-node-section p,
+  .human-node-section li,
+  .writeback-panel p,
+  .writeback-panel small,
+  .inspector dd
+) {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .app-shell {
