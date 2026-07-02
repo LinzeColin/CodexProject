@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-post-s18-lineage-report-gate-local`
+- version: `0.1.0-post-s18-final-no-go-backup-upload`
 - current_stage: `S18`
-- current_phase: `Post-S18 Lineage / Report Gate｜NO_GO owner scope required`
-- status: `blocked_no_go_owner_scope_required`
+- current_phase: `Post-S18 Final GitHub Backup｜NO_GO governance backup only`
+- status: `uploaded_no_go_governance_backup_only_release_blocked`
 - production_ready: `false`
-- github_upload_ready: `no_go_governance_backup_only_after_rebase_and_validators`
+- github_upload_ready: `final_no_go_governance_backup_evidence_generated_push_proof_required`
 
 ## 已完成
 
@@ -39,6 +39,7 @@
 - Post-S18 Part 3 已完成 Stage 7-9 本地复审，证据位于 `KMFA/stage_artifacts/PART3_STAGES_07_09_REVIEW/`；本轮未执行 GitHub upload、Stage 10-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
 - Post-S18 Part 4 已完成 Stage 10-12 本地复审，证据位于 `KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/`；本轮未执行 GitHub upload、Stage 13-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
 - Post-S18 Lineage / Report Gate 已完成本地阻断证据，证据位于 `KMFA/stage_artifacts/LINEAGE_REPORT_GATE/`；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据和 release/delivery claim。
+- Post-S18 Final GitHub Backup 证据已生成，证据位于 `KMFA/stage_artifacts/FINAL_GITHUB_BACKUP/`；该上传只能作为 `NO_GO governance backup only`，不改变 `delivery_allowed=false`。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
 - Post-S18 Whole Project Final Review 已完成本地复审和 findings 修复，证据位于 `KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/`；当前全项目 Go/No-Go 仍为 `NO_GO`，`delivery_allowed=false`。

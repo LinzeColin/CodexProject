@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-post-s18-lineage-report-gate-local
+product_version: 0.1.0-post-s18-final-no-go-backup-upload
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S18`
-- current_phase: `Post-S18 Lineage / Report Gate｜blocked NO_GO owner scope required`
-- current_tasks: `KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE-20260702`
-- status: `lineage_report_gate_blocked_no_go_owner_scope_required`
+- current_phase: `Post-S18 Final GitHub Backup｜NO_GO governance backup only`
+- current_tasks: `KMFA-FINAL-GITHUB-BACKUP-NO-GO-20260702`
+- status: `uploaded_no_go_governance_backup_only_release_blocked`
 - risk_tier: `T3`
 
 ## Completed
@@ -122,17 +122,18 @@ product_version: 0.1.0-post-s18-lineage-report-gate-local
 | `KMFA-PART5-STAGES-13-15-REVIEW-20260702` | Post-S18 第一阶段 Part 5 本地复审通过：复审 Stage 13-15，复跑 S13 financial operating/collection/cross-table、S14 fund/invoice/policy、S15 performance/salary-boundary validators、Part 5 review validator、全量 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、薪资/付款或业务执行 | `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/human/part5_review_report.md` |
 | `KMFA-PART6-STAGES-16-18-REVIEW-20260702` | Post-S18 第一阶段 Part 6 本地复审通过：复审 Stage 16-18，复跑 S16 subcontract/project/customer、S17 access/notification/operations、S18 precision/regression/integration validators、Part 6 review validator、全量 KMFA tests、治理 validators、parse checks、raw/private scan、secret scan 和 diff check；未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行 | `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/human/part6_review_report.md` |
 | `KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE-20260702` | Post-S18 lineage/report gate 本地锁定为 blocked：0 条 actual field/metric/report lineage rows、12 条 pending reconciliation、2 条 D 级报告 runtime 继续阻断正式报告、经营决策依据、release claim 和 delivery claim；未执行 GitHub upload、backup、lineage full check completion、正式报告或业务执行 | `KMFA/stage_artifacts/LINEAGE_REPORT_GATE/human/lineage_report_gate_report.md` |
+| `KMFA-FINAL-GITHUB-BACKUP-NO-GO-20260702` | Post-S18 final GitHub backup/upload 证据已生成：本次只能作为 NO_GO governance backup only；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告继续阻断 release、delivery、正式报告和业务执行 | `KMFA/stage_artifacts/FINAL_GITHUB_BACKUP/human/github_backup_upload_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | Lineage / Report Gate 已完成；下一 run work 只能执行 NO_GO governance backup/upload gate，或先由 owner 提供授权范围来处理 lineage/reconciliation 阻断 | `KMFA/stage_artifacts/LINEAGE_REPORT_GATE/human/lineage_report_gate_report.md` |
+| 无 | Final NO_GO governance backup/upload evidence 已完成；release、delivery、正式报告和业务执行仍被 lineage/report/reconciliation gate 阻断 | `KMFA/stage_artifacts/FINAL_GITHUB_BACKUP/human/github_backup_upload_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
-| GitHub final backup/upload under NO_GO | 尚未执行；本轮只完成 lineage/report gate blocked 证据 | 下一轮如上传，必须标记为 NO_GO governance backup only，并先 rebase、复跑 validators、安全扫描和 push proof |
+| release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

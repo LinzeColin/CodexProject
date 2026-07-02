@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-post-s18-final-no-go-backup-upload - 2026-07-02
+
+- 新增 `KMFA-FINAL-GITHUB-BACKUP-NO-GO-20260702` final backup/upload 证据，明确本次上传仅为 `NO_GO governance backup only`。
+- 新增 `KMFA/tools/check_final_no_go_backup_upload.py`、`KMFA/tests/test_final_no_go_backup_upload.py` 和 `KMFA/stage_artifacts/FINAL_GITHUB_BACKUP/`。
+- 基于 `origin/main` `54219915c038e645327f6f4d57787227c205a142` 完成 rebase；当前仍保持 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告阻断。
+- 本轮不执行正式报告、release、delivery、live connector、OpMe 深度耦合、生产恢复或业务动作。
+
 ## 0.1.0-post-s18-lineage-report-gate-local - 2026-07-02
 
 - 新增 `KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE-20260702` 本地 gate 证据，明确当前只能保持 `NO_GO`。

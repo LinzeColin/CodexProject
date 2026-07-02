@@ -4,7 +4,7 @@
 
 ## 当前目标
 
-v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。Stage 1-18 均已完成本地实现、验证、整体复审和 GitHub main 上传；Post-S18 Part 1-6 已在 canonical worktree 本地通过并生成 validator/evidence/local-governance 记录。Post-S18 第二阶段全项目本地复审已完成：新增 task pack zero-delta synthetic fixture、lineage completeness 阻断 validator、whole-project final review validator 和当前全项目 Go/No-Go。当前 `STAGE18_GITHUB_UPLOAD_PENDING` 已从最新全项目 Go/No-Go blocker 中移除并记录为 resolved，但项目仍为 `NO_GO`，`delivery_allowed=false`。随后已独立完成 KMFA worktree cleanup：只保留 canonical `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`，确认无遗留 `kmfa-s*` worktree，删除空旧目录 `/Users/linzezhang/Documents/KMFA v0.1`。本轮已独立锁定 Lineage / Report Gate：0 条 actual lineage rows、2 条 D 级 report runtime、12 条 pending reconciliation 继续阻断正式报告、经营决策依据、release claim 和 delivery claim。本轮未执行 GitHub upload、backup、lineage full check completion、正式报告、live connector、OpMe 深度耦合、生产恢复或业务动作。
+v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。Stage 1-18 均已完成本地实现、验证、整体复审和 GitHub main 上传；Post-S18 Part 1-6 已在 canonical worktree 本地通过并生成 validator/evidence/local-governance 记录。Post-S18 第二阶段全项目本地复审已完成：新增 task pack zero-delta synthetic fixture、lineage completeness 阻断 validator、whole-project final review validator 和当前全项目 Go/No-Go。当前 `STAGE18_GITHUB_UPLOAD_PENDING` 已从最新全项目 Go/No-Go blocker 中移除并记录为 resolved，但项目仍为 `NO_GO`，`delivery_allowed=false`。随后已独立完成 KMFA worktree cleanup：只保留 canonical `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`，确认无遗留 `kmfa-s*` worktree，删除空旧目录 `/Users/linzezhang/Documents/KMFA v0.1`。Lineage / Report Gate 已独立锁定：0 条 actual lineage rows、2 条 D 级 report runtime、12 条 pending reconciliation 继续阻断正式报告、经营决策依据、release claim 和 delivery claim。Final GitHub backup evidence 已按 `NO_GO governance backup only` 生成并基于最新 `origin/main` rebase；本轮仍未执行 lineage full check completion、正式报告、live connector、OpMe 深度耦合、生产恢复或业务动作。
 
 ## 当前状态
 
@@ -17,6 +17,7 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - Post-S18 Whole Project Final Review 已本地通过且 delivery 仍为 `NO_GO`：新增 `KMFA/tools/check_lineage_completeness.py`、`KMFA/tools/check_whole_project_final_review.py`、`KMFA/tests/test_lineage_completeness.py`、`KMFA/tests/test_whole_project_final_review.py` 和 `KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/`；全量 KMFA unittest 当前为 276 tests。
 - KMFA worktree cleanup 已本地完成：新增 `KMFA/tools/check_worktree_cleanup.py` 和 `KMFA/stage_artifacts/WORKTREE_CLEANUP/`；只保留 canonical KMFA sparse worktree；旧 `/Users/linzezhang/Documents/KMFA v0.1` 为空目录骨架，已用 `rmdir` 删除；没有可迁移 KMFA 变更，也没有 raw/private 数据迁入公开仓库。
 - Lineage / Report Gate 已本地锁定为 `blocked_no_go_owner_scope_required`：新增 `KMFA/tools/check_lineage_report_gate.py`、`KMFA/tests/test_lineage_report_gate.py`、`KMFA/metadata/quality/lineage_report_release_gate_review.json` 和 `KMFA/stage_artifacts/LINEAGE_REPORT_GATE/`；validator 复算 0 条 actual lineage rows、2 条 D 级 report runtime、12 条 pending reconciliation 和 `delivery_allowed=false`。
+- Final GitHub Backup 证据已生成：新增 `KMFA/tools/check_final_no_go_backup_upload.py`、`KMFA/tests/test_final_no_go_backup_upload.py` 和 `KMFA/stage_artifacts/FINAL_GITHUB_BACKUP/`；只允许 `NO_GO governance backup only`，不允许 release、delivery、正式报告或业务执行。
 - 已修复复审 findings：`TASKPACK_ZERO_DELTA_FIXTURE_MISSING`、`LINEAGE_COMPLETENESS_VALIDATOR_MISSING`、`CURRENT_GO_NO_GO_STALE_STAGE18_UPLOAD_BLOCKER`。
 - `S01-P1` 已在前序工作目录完成，只读计划证据已迁移到 `KMFA/stage_artifacts/S01_P1_read_only_plan/`。
 - `S01-P2` 已创建项目根、三中文入口、模型参数文件、Lean v2 与 v1 兼容治理文件、metadata 草案。
@@ -366,4 +367,4 @@ git diff --check -- README.md governance/projects.yaml KMFA
 
 ## 下一步
 
-下一步建议执行 `KMFA-FINAL-GITHUB-BACKUP-UPLOAD-NO_GO-GOVERNANCE-ONLY`：仅做 NO_GO governance backup/upload，不得宣称 release、delivery、正式报告或业务可用；执行前必须 rebase `origin/main`，复跑 validators、治理验证、raw/secret scan、diff check、dry-run push、push 和 post-push parity。
+下一步若 final backup commit 已 push 且 post-push parity 已通过，则只能进入 owner/授权范围问题：补齐 full field/metric/report lineage rows，关闭或正式延期 12 条 pending reconciliation，并重新执行 report grade/export/formal report release gate。当前仍不得宣称 release、delivery、正式报告或业务可用。
