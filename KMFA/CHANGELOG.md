@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s02p1-raw-readiness - 2026-07-02
+
+- 完成 `v0.1.3 S02-P1｜raw 数据只读清单与准备度` 本地验证：只读扫描 `/Users/linzezhang/Downloads/KMFA_MetaData`，确认 raw 目录存在且可读，当前公开汇总为 5 个文件、总大小 62788056 bytes、扩展名计数 `.xlsx=2` 和 `.zip=3`。
+- 新增 `KMFA/tools/v013_s02_p1_raw_readiness.py`、`KMFA/tools/check_v013_s02_p1_raw_readiness.py`、`KMFA/tests/test_v013_s02_p1_raw_readiness.py` 和 `KMFA/stage_artifacts/V013_S02_P1_RAW_READINESS/` 证据包。
+- 私有清单和本地诊断只写入 `KMFA/.codex_private_runtime/v013_s02_p1_raw_inventory/`，该目录已被 `KMFA/.gitignore` 忽略；公开证据不包含 raw 文件名、raw 文件哈希、字段明文、表头、行值或业务金额。
+- 本 phase 不执行 raw value matching；原因是 S02-P1 只做 inventory/readiness，值级对账需要后续授权 parser/mapping phase。
+- 本轮不执行 Stage 2 整体复审、GitHub upload、rebase、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行；后续 GitHub upload 统一延后到整体完成 gate。
+
 ## 0.1.3-s01-stage-review - 2026-07-02
 
 - 完成 `v0.1.3 Stage 1｜整体复审` 本地验证：复跑 S01-P1 当前状态复核、S01-P2 范围冻结、S01-P3 防遗漏门禁和 Stage 1 review validator，确认三个 phase 均为 PASS。
