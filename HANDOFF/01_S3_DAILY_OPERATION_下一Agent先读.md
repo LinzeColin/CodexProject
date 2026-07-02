@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 23:48:12 Australia/Sydney
+更新时间：2026-07-03 00:12:03 Australia/Sydney
 
 ## 当前结论
 
@@ -17,9 +17,9 @@
 | 持久授权 artifact | 缺失 | `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` |
 | 持久授权模板 | 存在，但默认无效、不能替代授权 | `FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json` |
 | root verifier S3 阻断输出 | `daily_operation_authorization_ready=false`，`daily_operation_blocking_reasons=["persistent_daily_operation_authorization_missing"]` | `python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1` |
-| DAILY_OPERATION 专用 root gate | 当前必须 `status=FAIL` / exit 2 | `tools/verify_daily_operation_readiness.py` |
-| DAILY_OPERATION enablement preflight root gate | 当前必须 `status=FAIL / exit 2`，`enablement_preflight_ready=false`，阻断原因为 `persistent_daily_operation_authorization_missing` | `tools/verify_daily_operation_enablement_preflight.py` |
-| Root 执行根校验 | 正确 CodexProject 仓库根必须输出 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`；误传项目子目录时必须 fail-closed 为 `codexproject_repo_root_invalid` | `tools/verify_daily_operation_readiness.py` / `tools/verify_daily_operation_enablement_preflight.py` |
+| DAILY_OPERATION 专用 root gate | 当前必须 `status=FAIL` / exit 2 | `python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2` |
+| DAILY_OPERATION enablement preflight root gate | 当前必须 `status=FAIL / exit 2`，`enablement_preflight_ready=false`，阻断原因为 `persistent_daily_operation_authorization_missing` | `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` |
+| Root 执行根校验 | 正确 CodexProject 仓库根必须输出 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`；误传项目子目录时必须 fail-closed 为 `codexproject_repo_root_invalid` | `python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2` / `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` |
 
 ## 不要误读
 
