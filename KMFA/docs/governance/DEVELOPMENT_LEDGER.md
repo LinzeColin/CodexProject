@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s06p3-validation-evidence-replay
+product_version: 0.1.3-s06-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S06`
-- current_phase: `v0.1.3 S06-P3 validation evidence replay`
-- current_tasks: `KMFA-V013-S06-P3-VALIDATION-EVIDENCE-REPLAY-20260703`
-- status: `local_s06p3_validation_evidence_replay_passed_upload_deferred_until_stage10_batch_no_go`
+- current_phase: `v0.1.3 Stage 6 overall review`
+- current_tasks: `KMFA-V013-S06-STAGE-REVIEW-20260703`
+- status: `local_s06_stage_review_passed_upload_deferred_until_stage10_batch_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -52,6 +52,7 @@ product_version: 0.1.3-s06p3-validation-evidence-replay
 | `KMFA-V013-S06-P1-ZERO-DELTA-REPLAY-20260703` | v0.1.3 S06-P1 zero-delta validator replay 本地通过，public-safe 8 次字段比较零差异通过，1 分差异失败并生成 mismatch report；未执行 S06-P2、Stage 6 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S06_P1_ZERO_DELTA_REPLAY/human/zero_delta_replay_report.md` |
 | `KMFA-V013-S06-P2-DIFFERENCE-QUEUE-REPLAY-20260703` | v0.1.3 S06-P2 cross-source difference queue replay 本地通过，public-safe PDF/Excel 同项目同字段 1 分差异进入人工队列，禁止自动修正、平均、四舍五入掩盖和自动选边，未关闭差异阻断 A 级报告；未执行 S06-P3、Stage 6 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/human/difference_queue_replay_report.md` |
 | `KMFA-V013-S06-P3-VALIDATION-EVIDENCE-REPLAY-20260703` | v0.1.3 S06-P3 validation evidence replay 本地通过，S06-P1/S06-P2 public-safe results 已输出为 stage evidence 并写入 metadata/quality，2 个 project validation statuses 均 blocked/Q4，Q5 与 A 级报告仍阻断；未执行 Stage 6 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/human/validation_evidence_replay_report.md` |
+| `KMFA-V013-S06-STAGE-REVIEW-20260703` | v0.1.3 Stage 6 整体复审本地通过，S06-P1/S06-P2/S06-P3 replay validators 全部 PASS，findings_open=0，Q5 与 A 级报告仍阻断；GitHub upload 延期到 Stage 1-10 batch gate | `KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/human/stage6_review_report.md` |
 | `KMFA-S05-STAGE-REVIEW-20260630` | Stage 5 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
 | `KMFA-S05-GITHUB-UPLOAD-20260630` | Stage 5 final GitHub upload 已完成 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` |
 | `S6PAT01-S6PAT03` | S06-P1 零差异校验器完成本地验证：逐字段比较整数分，任意 1 分差异失败并生成 public-safe mismatch report | `KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md` |

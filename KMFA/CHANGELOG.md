@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s06-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 6 整体复审` 本地验证：复跑 S06-P1/S06-P2/S06-P3 replay validators，并生成 Stage 6 review evidence。
+- 新增 `KMFA/tools/v013_s06_stage_review.py`、`KMFA/tools/check_v013_s06_stage_review.py`、`KMFA/tests/test_v013_s06_stage_review.py` 和 `KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/`。
+- 复审确认 phase_results 全部 PASS、findings_open=`0`、project_status_count=`2`、blocked_project_status_count=`2`、q5_allowed_count=`0`、report_grade_a_allowed_count=`0`、data quality=`Q4`、report grade=`D`、release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 S07-P1、GitHub upload、raw value matching、lineage full check、正式报告或业务执行。
+- v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s06p3-validation-evidence-replay - 2026-07-03
 
 - 完成 `v0.1.3 S06-P3｜validation evidence replay` 本地验证：基于 S06-P1/S06-P2 public-safe synthetic evidence，生成 validation evidence stage artifacts 并追加写入 metadata/quality public-safe records。
