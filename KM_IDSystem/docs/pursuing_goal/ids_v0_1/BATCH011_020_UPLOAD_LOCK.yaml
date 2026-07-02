@@ -1,8 +1,10 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T21:59:45Z"
-status: "ready_for_tenth_stage_review_no_github_upload"
+updated_at_utc: "2026-07-02T22:10:49Z"
+status: "reviewed_ready_for_upload_no_github_upload"
+review_task_id: "IDS-V0_1-BATCH-011-020-REVIEW-GATE"
+review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_REVIEW_GATE.md"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -275,5 +277,5 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_run: "STAGE-020 Phase 4 closes out the metadata-only import cost estimator with report sample, risk checklist, owner confirmation flow log, uncertainty notes, failure explanations, rollback, whole-stage review, and Chinese owner feedback; no raw metadata content access, OCR, Embedding, index, import, report file, runtime output, external API call, GitHub upload, PR, merge, app reinstall, or STAGE-021 work is performed."
-  no_upload_reason: "Batch STAGE-011..020 is locally complete but still requires tenth-stage review, repair of review findings if any, app-entry reinstall, GitHub main upload/merge, and app/local/GitHub parity verification before upload is allowed."
+  current_run: "BATCH011_020_REVIEW_GATE reviews STAGE-011..020 local completion evidence, records repair findings, preserves IDS_MetaData as a read-only real-data boundary, and prepares the next upload gate; no raw metadata content access, GitHub upload, PR, merge, app reinstall, or STAGE-021 work is performed."
+  no_upload_reason: "Batch STAGE-011..020 is locally reviewed but GitHub upload remains blocked until IDS-V0_1-BATCH-011-020-UPLOAD-GATE explicitly runs push/PR/merge, app-entry reinstall, and app/local/GitHub parity verification."
