@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260702-V013-S05-P3-AUTHORITY-BASELINE-REPLAY"
+as_of_event_id: "EVENT-KMFA-20260703-V013-S05-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "65e3a6fcc57b2d4b94602cae9c3983d84592a038"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05_P3_COMMIT"
-snapshot_event_time: "2026-07-02T23:55:00+10:00"
-generator_version: "manual-v013-s05-p3-authority-baseline-replay"
+source_base_commit: "68861568ce2111ff133806cfd572ab0213ce2277"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05_STAGE_REVIEW_COMMIT"
+snapshot_event_time: "2026-07-03T04:55:30+10:00"
+generator_version: "manual-v013-s05-stage-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 451
-    total_active_formulas: 52
+    total_active_parameters: 459
+    total_active_formulas: 53
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -95,6 +95,8 @@ dimensions:
       - "KMFA/tools/check_v013_s05_p2_field_candidate_replay.py"
       - "KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/human/test_results.md"
       - "KMFA/tools/check_v013_s05_p3_authority_baseline_replay.py"
+      - "KMFA/stage_artifacts/V013_S05_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/tools/check_v013_s05_stage_review.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
