@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s02-stage-review - 2026-07-02
+
+- 完成 `v0.1.3 Stage 2｜整体复审` 本地验证：复跑 S02-P1 raw readiness、S02-P2 raw mapping readiness、S02-P3 data quality/error gate 和 Stage 2 review validator，确认三个 phase 均为 PASS，review findings open/fixed 均为 0。
+- 新增 `KMFA/tools/v013_s02_stage_review.py`、`KMFA/tools/check_v013_s02_stage_review.py`、`KMFA/tests/test_v013_s02_stage_review.py` 和 `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/`。
+- 复审锁定当前 data quality=`Q2`、report grade=`D`、release permission=`blocked`，正式报告、经营决策依据、delivery、business execution 继续阻断。
+- `/Users/linzezhang/Downloads/KMFA_MetaData` 继续作为只读 raw/private 财务数据入口；Stage 2 review 不修改、删除、移动、重命名、覆盖或写入该目录，公开证据不包含 raw 文件名、raw hash、ZIP member 名、sheet 名、字段/表头明文、row values 或业务值。
+- 本轮不执行 GitHub upload、S03-P1、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S03-P1` 或用户明确指定的单一 phase。
+
 ## 0.1.3-s02p3-data-quality-error-gate - 2026-07-02
 
 - 完成 `v0.1.3 S02-P3｜data quality/error gate` 本地验证：基于 S02-P1 raw readiness、S02-P2 raw mapping readiness 和现有 Q0-Q5/A-D/report release gate policy，锁定当前质量等级为 `Q2`、报告等级为 `D`、release permission 为 `blocked`。

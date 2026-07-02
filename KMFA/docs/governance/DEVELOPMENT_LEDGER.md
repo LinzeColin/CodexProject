@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s02p3-data-quality-error-gate
+product_version: 0.1.3-s02-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S02`
-- current_phase: `v0.1.3 S02-P3｜data quality/error gate`
-- current_tasks: `KMFA-V013-S02-P3-DATA-QUALITY-ERROR-GATE-20260702`
-- status: `local_s02p3_data_quality_error_gate_passed_no_go_overall_upload_deferred`
+- current_phase: `v0.1.3 Stage 2｜整体复审`
+- current_tasks: `KMFA-V013-S02-STAGE-REVIEW-20260702`
+- status: `local_s02_stage_review_passed_no_go_overall_upload_deferred`
 - risk_tier: `T3`
 
 ## Completed
@@ -131,12 +131,13 @@ product_version: 0.1.3-s02p3-data-quality-error-gate
 | `KMFA-V013-S02-P1-RAW-READINESS-20260702` | v0.1.3 S02-P1 raw readiness 本地通过：只读确认 raw metadata 目录存在且可读，公开证据只记录 file_count=5、total_bytes=62788056、扩展名计数 `.xlsx=2/.zip=3`；私有 inventory/diagnostic 写入 git-ignored runtime；未执行 raw value matching、Stage 2 review、GitHub upload、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S02_P1_RAW_READINESS/human/raw_readiness_report.md` |
 | `KMFA-V013-S02-P2-RAW-MAPPING-READINESS-20260702` | v0.1.3 S02-P2 raw mapping readiness 本地通过：只读建立 ZIP/XLSX/schema/header 私有诊断，公开证据只记录聚合计数；value matching 状态为 `blocked_authorized_mapping_required`；未执行 raw row-value extraction、Stage 2 review、GitHub upload、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S02_P2_RAW_MAPPING_READINESS/human/raw_mapping_readiness_report.md` |
 | `KMFA-V013-S02-P3-DATA-QUALITY-ERROR-GATE-20260702` | v0.1.3 S02-P3 data quality/error gate 本地通过：基于 S02-P1/S02-P2 public-safe evidence 和 Q0-Q5/A-D release gate policy，锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；未读取 raw 目录，未执行 raw value matching、Stage 2 review、GitHub upload、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S02_P3_DATA_QUALITY_ERROR_GATE/human/data_quality_error_gate_report.md` |
+| `KMFA-V013-S02-STAGE-REVIEW-20260702` | v0.1.3 Stage 2 整体复审本地通过：复跑 S02-P1/S02-P2/S02-P3 validators 和 Stage 2 review validator，phase_results 全部 PASS，findings_open=0，继续锁定 Q2/D/blocked；未执行 GitHub upload、S03-P1、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/human/stage2_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S02-P3 data quality/error gate 已本地完成；Stage 2 review、GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S02_P3_DATA_QUALITY_ERROR_GATE/human/test_results.md` |
+| 无 | v0.1.3 Stage 2 整体复审已本地完成；下一步只能另起 run 执行 S03-P1 或用户明确指定的单一 phase；GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/human/test_results.md` |
 
 ## Not Completed
 
@@ -145,4 +146,4 @@ product_version: 0.1.3-s02p3-data-quality-error-gate
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| Stage 2 review | S02-P1/S02-P2/S02-P3 已分别本地完成；尚未执行 Stage 2 整体复审、findings 修复或 upload gate | 下一轮只能执行 Stage 2 整体复审；不得跳到 GitHub upload、正式报告、raw value matching、lineage full check 或业务执行 |
+| S03-P1 | Stage 2 整体复审已本地完成，GitHub upload 延后到整体完成 gate | 下一轮只能执行 `v0.1.3 S03-P1` 或用户明确指定的单一 phase；不得跳到 GitHub upload、正式报告、raw value matching、lineage full check 或业务执行 |
