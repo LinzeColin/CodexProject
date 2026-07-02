@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-03 03:11:59 Australia/Sydney
+更新时间：2026-07-03 03:28:33 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -617,16 +617,16 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 
 ## 2026-06-30 17:34:32 Australia/Sydney - S2PLT02 授权 readiness hash 门
 
-- `audit-s2plt02-real-proof-capture-readiness` 现在必须用当前 expected readiness hash 绑定 live 授权 artifact，避免旧授权文件被误当成当前可用授权。
-- 正确 hash `79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e` 时，授权仍为 pass，但 readiness 仍 blocked：缺第二真实日、真实 scheduler proof 和 terminal proof artifact。
+- 历史当时 `audit-s2plt02-real-proof-capture-readiness` 必须用当时 expected readiness hash 绑定 live 授权 artifact，避免旧授权文件被误当成当时可用授权。
+- 历史当时正确 hash `79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e` 时，授权仍为 pass，但 readiness 仍 blocked：缺第二真实日、真实 scheduler proof 和 terminal proof artifact。
 - 错误或过期 hash 会直接 `authorization_artifact_status=blocked`，`real_proof_capture_authorized=false`，错误为 `readiness_state_hash does not match current readiness state`。
-- 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md)。这不是 S2PLT02 accepted，也不是 SMTP/scheduler/Release/production accepted。
+- 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_AUTHORIZATION_READINESS_HASH_GATE.md)。这不是当前 S2PLT02 accepted，也不是 SMTP/scheduler/Release/production accepted；当前事实以本页顶部阅读规则为准。
 
 ## 2026-06-30 17:00:08 Australia/Sydney - S2PLT03 terminal resilience proof capture plan
 
-- `plan-s2plt03-terminal-resilience-proof-capture` 已成为 no-write 顺序门：当前 blocked，`next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`。
-- 当前只确认 S2PLT03 已有 local drill、precheck 和 P0/P1 zero-proof 输入；仍缺 S2PLT02 terminal delivery proof artifact 和 S2PLT03 terminal resilience proof artifact。
-- 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md)。这不是 S2PLT03 accepted，也不是 SMTP/scheduler/Release/production accepted。
+- 历史当时 `plan-s2plt03-terminal-resilience-proof-capture` 已成为 no-write 顺序门：blocked，`next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`。
+- 历史当时只确认 S2PLT03 已有 local drill、precheck 和 P0/P1 zero-proof 输入；仍缺 S2PLT02 terminal delivery proof artifact 和 S2PLT03 terminal resilience proof artifact。
+- 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md)。这不是当前 S2PLT03 accepted，也不是 SMTP/scheduler/Release/production accepted；当前事实以本页顶部阅读规则为准。
 
 ## 2026-06-30 15:31:00 Australia/Sydney - S2PLT02 daily-run dry-run 终态分类
 
@@ -636,27 +636,27 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 
 ## 2026-06-30 15:04:03 Australia/Sydney - S2PLT04 非终态汇总字段同步
 
-- S2PLT04 completion evidence audit 现在顶层显示：S2PLT02 非终态引用 14 条，最新引用为 readiness live 授权同步；S2PLT03 非终态引用 4 条，最新引用为 audit blocker zero-proof 同步。
+- 历史当时 S2PLT04 completion evidence audit 顶层显示：S2PLT02 非终态引用 14 条，历史当时最新引用为 readiness live 授权同步；S2PLT03 非终态引用 4 条，历史当时最新引用为 audit blocker zero-proof 同步。
 - 历史当时仍 blocked：缺 S2PLT02 terminal proof 和 S2PLT03 terminal proof；没有生成 S2PLT04 completion report。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC.md)。
 
 ## 2026-06-30 14:10:42 Australia/Sydney - S2PLT04 最新 S2PLT02 非终态证据同步
 
-- S2PLT04 completion evidence audit 已消费最新 S2PLT02 evidence inventory 与 readiness live 授权同步引用；当前 S2PLT02 nonterminal refs 为 13 条。
-- 这只修正证据链新鲜度；S2PLT04 仍 blocked，仍缺 S2PLT02/S2PLT03 terminal proof。
+- 历史当时 S2PLT04 completion evidence audit 已消费当时最新 S2PLT02 evidence inventory 与 readiness live 授权同步引用；历史当时 S2PLT02 nonterminal refs 为 13 条。
+- 这只修正当时证据链新鲜度；S2PLT04 历史当时仍 blocked，仍缺 S2PLT02/S2PLT03 terminal proof。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_S2PLT04_S2PLT02_LATEST_NONTERMINAL_EVIDENCE_SYNC.md)。
 
 
 ## 2026-06-30 13:33:22 Australia/Sydney - S2PLT02 readiness live 授权同步
 
-- `audit-s2plt02-real-proof-capture-readiness` 现在能识别 live 授权 artifact：`authorization_artifact_status=pass`，`real_proof_capture_authorized=true`。
-- 该 readiness 仍为 blocked：缺第二真实日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact。
+- 历史当时 `audit-s2plt02-real-proof-capture-readiness` 已能识别 live 授权 artifact：`authorization_artifact_status=pass`，`real_proof_capture_authorized=true`。
+- 该 readiness 历史当时仍为 blocked：缺第二真实日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact。
 - 证据：[governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json](../../governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json)。
 
 ## 2026-06-30 13:02:33 Australia/Sydney - S2PLT02 终态证据盘点
 
 - 新增 `audit-s2plt02-terminal-proof-evidence-inventory`，把 S2PLT02 终态 proof 的证据分成可用输入、被阻断候选和缺失输入。
-- 当前可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
+- 历史当时可用终态输入 5 项；2026-06-29/2026-06-30 都是 dry-run 候选，8 封 dry-run、0 封真实发送，不能计入 terminal proof。
 - 证据：[governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
 ## 2026-06-30 07:41:53 Australia/Sydney - S2PLT02 live 授权状态
@@ -668,37 +668,37 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 ## 2026-06-30 09:19:10 Australia/Sydney - S2PLT02 terminal proof 候选生成器
 
 - 新增 `build-s2plt02-terminal-delivery-proof-artifact-draft`，用于未来从两个真实 M1-M4 SMTP delivery manifest 和真实 scheduler proof manifest 生成 stdout-only 候选 artifact。
-- 当前 `artifact_written=false`、`artifact_validation_errors=[]`、sample state hash `beb8f19417b694428749bef5eb01de375ce2321f209c9086dfe4862bf48c2a8b`；这不是 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` live proof。
-- 当前 dry-run/scheduler-disabled 捕获窗口仍 blocked；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
+- 历史当时 `artifact_written=false`、`artifact_validation_errors=[]`、sample state hash `beb8f19417b694428749bef5eb01de375ce2321f209c9086dfe4862bf48c2a8b`；这不是 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` live proof。
+- 历史当时 dry-run/scheduler-disabled 捕获窗口仍 blocked；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
 ## 2026-06-30 09:48:07 Australia/Sydney - S2PLT02 scheduler proof 输入验证器
 
 - 新增 `validate-s2plt02-real-scheduler-proof`，用于未来先校验真实 launchd scheduler proof manifest，再交给 terminal proof 候选生成器。
-- 当前 `scheduler_proof_ready=true` 只来自 fixture；`artifact_written=false`、`scheduler_install_enabled=false`、sample state hash `5e1157dc9c710501cb2bf2e5dcdd3cc09afb40ee68164ff32d844e993843fb80`。
-- 这不是当前 runtime scheduler proof；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
+- 历史当时 `scheduler_proof_ready=true` 只来自 fixture；`artifact_written=false`、`scheduler_install_enabled=false`、sample state hash `5e1157dc9c710501cb2bf2e5dcdd3cc09afb40ee68164ff32d844e993843fb80`。
+- 这不是当前 runtime scheduler proof；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance；当前事实以本页顶部阅读规则为准。
 
 ## 2026-06-30 10:12:54 Australia/Sydney - S2PLT02 terminal proof 输入清单
 
-- 新增 `audit-s2plt02-terminal-delivery-inputs`，用于在写任何 live terminal proof 前列出当前输入清单。
+- 新增 `audit-s2plt02-terminal-delivery-inputs`，用于在写任何 live terminal proof 前列出历史当时输入清单。
 - 已就绪：S2PLT01 terminal acceptance、第一真实发送日、无重复邮件、M4 水印 proof、真实 SMTP proof、P0/P1 zero-proof。
-- 仍缺失：第二真实发送日、8 封真实邮件、真实 launchd scheduler proof、`FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`；当前 `artifact_written=false`、`real_smtp_send_enabled=false`、`scheduler_install_enabled=false`、state hash `5976272c0102361222027116f94f5a73cc53e87fa18d1b0e9a5d82208e7c4444`。
+- 仍缺失：第二真实发送日、8 封真实邮件、真实 launchd scheduler proof、`FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`；历史当时 `artifact_written=false`、`real_smtp_send_enabled=false`、`scheduler_install_enabled=false`、state hash `5976272c0102361222027116f94f5a73cc53e87fa18d1b0e9a5d82208e7c4444`。
 - 这不是 S2PLT02 accepted；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
 ## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 历史授权门状态
 
 - 当时下一步为 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`，且 `authorization_artifact_present=false`。
-- 当前状态以上方 2026-06-30 live 授权记录为准；历史 owner packet 不等于 terminal proof。
+- 后续历史状态以上方 2026-06-30 live 授权记录为准；历史 owner packet 不等于 terminal proof。当前事实以本页顶部阅读规则为准。
 
 ## 2026-06-29 22:44:04 Australia/Sydney - S2PLT02 runtime readiness 状态
 
-- readiness 现在显示 daily/health/watchdog LaunchAgents 已加载且有 calendar trigger，但仍 disabled 且 not running。
-- 当前 `scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof`；这不是 scheduler proof，不允许推进 S2PLT02 terminal delivery proof。
+- readiness 历史当时显示 daily/health/watchdog LaunchAgents 已加载且有 calendar trigger，但仍 disabled 且 not running。
+- 历史当时 `scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof`；这不是 scheduler proof，不允许推进 S2PLT02 terminal delivery proof。
 - 不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
 ## 2026-06-29 20:57:12 Australia/Sydney - S2PLT02 授权草稿 CLI 状态
 
 - 新增 `build-s2plt02-real-proof-capture-authorization-artifact-draft`，只把未来授权 artifact 草稿打印到 stdout，帮助后续明确授权时减少 schema/hash 错误。
-- 当前 `authorization_artifact_written=false`、`authorization_artifact_present_in_repo=false`、`authorization_gate_satisfied_by_this_command=false`；正式授权文件仍缺失。
+- 历史当时 `authorization_artifact_written=false`、`authorization_artifact_present_in_repo=false`、`authorization_gate_satisfied_by_this_command=false`；正式授权文件当时仍缺失。
 - 不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
 - 2026-06-29 23:05:25 Australia/Sydney：已补齐 S2PLT02 授权模板 `FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json`；该模板当时不等于 live 授权，当前 live 授权以上方 2026-06-30 记录为准。
@@ -708,48 +708,48 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 
 ## 2026-06-30 13:02:33 Australia/Sydney - S2PLT02 terminal proof evidence inventory
 
-- 新增 `audit-s2plt02-terminal-proof-evidence-inventory`，当前 blocked / exit 2，`state_hash=431949620cef28641fcd606ee5646c006cd5cf9fd412daadc899a534185ac613`。
+- 新增 `audit-s2plt02-terminal-proof-evidence-inventory`，历史当时 blocked / exit 2，`state_hash=431949620cef28641fcd606ee5646c006cd5cf9fd412daadc899a534185ac613`。
 - 结论：可用终态输入 5 项；2026-06-29 和 2026-06-30 都是 `blocked_dry_run_not_real_terminal_input`，`observed_candidate_real_sent_email_count=0`，不能写入 live terminal proof。
 - 证据：[阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json)。
 
 ## 2026-06-30 12:09:41 Australia/Sydney - S2PLT02 terminal capture window audit CLI
 
-- 新增 `audit-s2plt02-terminal-capture-window` 可复现当前授权后捕获窗口状态：blocked / exit 2，`state_hash=6ad683a0590f9d43c808cf7812edc7c7f93feabec52d365ddb2a8abbbf42b4bf`。
+- 新增 `audit-s2plt02-terminal-capture-window` 可复现历史当时授权后捕获窗口状态：历史当时 blocked / exit 2，`state_hash=6ad683a0590f9d43c808cf7812edc7c7f93feabec52d365ddb2a8abbbf42b4bf`。
 - 结论：2026-06-29 与 2026-06-30 M1-M4 均为 dry-run，`real_sent_candidate_email_count=0`、`observed_terminal_email_count_credit=4/8`、LaunchAgents disabled；不能计入第二真实日、8 封真实邮件或 scheduler proof。
 - 证据：[阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI-20260630.json)。
 
-## S2PLT02 terminal capture window audit
+## S2PLT02 terminal capture window audit（历史）
 
-- 最新审计：[PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-20260630.json)
+- 历史审计：[PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-20260630.json)
 - 结论：live authorization 已通过，但 2026-06-29/2026-06-30 仍为 dry-run，`ADP_ALLOW_SMTP_SEND=false`，ADP launchd labels disabled；不能计入 S2PLT02 terminal proof。
 
 ## S2PLT02 terminal delivery proof artifact draft builder
 
-- 最新记录：[PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER-20260630.json)
+- 历史记录：[PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER-20260630.json)
 - 结论：builder 只能从未来真实 evidence manifests 输出候选 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 内容到 stdout；本轮 `artifact_written=false`，不能代替真实 terminal proof 或 production acceptance。
 
 ## S2PLT02 scheduler proof 输入验证器
 
-- 最新记录：[PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md](../docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR-20260630.json)
-- 结论：validator 只能校验未来真实 launchd scheduler proof manifest；当前 `artifact_written=false`、`scheduler_install_enabled=false`，不能代替真实 scheduler proof、terminal proof 或 production acceptance。
+- 历史记录：[PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md](../docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR-20260630.json)
+- 结论：validator 只能校验未来真实 launchd scheduler proof manifest；历史当时 `artifact_written=false`、`scheduler_install_enabled=false`，不能代替真实 scheduler proof、terminal proof 或 production acceptance。
 
 ## S2PLT02 terminal delivery 输入清单
 
-- 最新记录：[PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY-20260630.json)
+- 历史记录：[PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY-20260630.json)
 - 结论：ready inputs 已公开，missing inputs 仍阻断 terminal proof；该清单只读且 `artifact_written=false`，不能代替真实 terminal proof 或 production acceptance。
 
 ## S2PLT02 terminal proof 捕获计划
 
-- 最新记录：[PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json)
-- 结论：capture plan 只规定后续真实捕获和复审顺序：第二真实 M1-M4 SMTP 日、真实 scheduler proof、stdout-only draft、独立复审、写入 reviewed artifact、运行 validator。当前 `next_executable_step=CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY`、`artifact_written=false`，仍不能代替真实 terminal proof 或 production acceptance。
+- 历史记录：[PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json)
+- 结论：capture plan 只规定历史当时后续真实捕获和复审顺序：第二真实 M1-M4 SMTP 日、真实 scheduler proof、stdout-only draft、独立复审、写入 reviewed artifact、运行 validator。历史当时 `next_executable_step=CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY`、`artifact_written=false`，仍不能代替真实 terminal proof 或 production acceptance。
 
 ## S2PLT02 real delivery manifest 输入验证器
 
-- 最新记录：[PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md](../docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR-20260630.json)
+- 历史记录：[PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md](../docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR-20260630.json)
 - 结论：validator 只校验未来完整单日 M1-M4 real delivery manifest；规范化第一天 evidence 可通过，但历史 2026-06-28 manifest 直接 strict CLI 会 blocked，因为缺少显式 no-production 字段。它不采集第二真实日、不发送 SMTP、不启用 scheduler，也不能代替 S2PLT02 terminal proof 或 production acceptance。
 
 ## 2026-06-30 11:45:16 Australia/Sydney - S2PLT02 real delivery manifest 规范化输入
 
-- 最新记录：[PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION.md](../docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION-20260630.json)
+- 历史记录：[PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION.md](../docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION-20260630.json)
 - 结论：历史 2026-06-28 第一真实 M1-M4 manifest 已规范化为 strict S2PLT02 输入；raw hash `a795bd90778b5a0bbbd217d286f696936954af47a1a547ed689f907b677d9fa2`，normalized manifest validation state hash `91bf1a4477c621a75fceed90efecdb620341cfc97d5a751c127cc5ffbd6a0d99`。
 - 边界：这不采集第二真实日、不发 SMTP、不启用 scheduler、不写 terminal proof，不代表 S2PLT02 或 production accepted。

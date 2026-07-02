@@ -2352,6 +2352,51 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             self.assertNotIn("是否现在宣称 Stage 2 生产通过 | 不接受", text)
             self.assertNotIn("Final bundle 已公开 S2PLT03 capture plan summary，但它仍 blocked", text)
 
+    def test_user_center_readme_historical_s2plt02_s2plt03_entries_do_not_reopen_current_work(self):
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        expected_phrases = (
+            "历史当时 `plan-s2plt03-terminal-resilience-proof-capture` 已成为 no-write 顺序门",
+            "历史当时只确认 S2PLT03 已有 local drill、precheck 和 P0/P1 zero-proof 输入",
+            "历史当时 S2PLT04 completion evidence audit 顶层显示",
+            "历史当时 S2PLT02 nonterminal refs 为 13 条",
+            "历史当时 `audit-s2plt02-real-proof-capture-readiness` 已能识别 live 授权 artifact",
+            "历史当时可用终态输入 5 项",
+            "历史当时 `artifact_written=false`",
+            "历史当时 dry-run/scheduler-disabled 捕获窗口仍 blocked",
+            "历史当时 `scheduler_proof_ready=true` 只来自 fixture",
+            "用于在写任何 live terminal proof 前列出历史当时输入清单",
+            "历史当时 `scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof`",
+            "历史当时 blocked / exit 2",
+            "## S2PLT02 terminal capture window audit（历史）",
+            "历史审计：",
+            "历史记录：",
+            "历史当时 `next_executable_step=CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY`",
+            "当前事实以本页顶部阅读规则为准",
+        )
+        for phrase in expected_phrases:
+            self.assertIn(phrase, readme)
+
+        forbidden_phrases = (
+            "`plan-s2plt03-terminal-resilience-proof-capture` 已成为 no-write 顺序门：当前 blocked",
+            "当前只确认 S2PLT03 已有 local drill",
+            "S2PLT04 completion evidence audit 现在顶层显示",
+            "当前 S2PLT02 nonterminal refs 为 13 条",
+            "`audit-s2plt02-real-proof-capture-readiness` 现在能识别 live 授权 artifact",
+            "当前可用终态输入 5 项",
+            "当前 `artifact_written=false`",
+            "当前 dry-run/scheduler-disabled 捕获窗口仍 blocked",
+            "当前 `scheduler_proof_ready=true`",
+            "用于在写任何 live terminal proof 前列出当前输入清单",
+            "当前 `scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof`",
+            "可复现当前授权后捕获窗口状态",
+            "- 最新审计：",
+            "- 最新记录：",
+            "当前 `next_executable_step=CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY`",
+        )
+        for phrase in forbidden_phrases:
+            self.assertNotIn(phrase, readme)
+
     def test_final_bundle_status_page_is_owner_visible_and_current(self):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
         one_look = (USER_CENTER / "一看三查.md").read_text(encoding="utf-8")
