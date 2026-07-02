@@ -2,17 +2,17 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE006"
-current_phase_id: "IDS-STAGE006-P3"
-current_task_id: "IDS-V0_1-STAGE006-P3"
-next_gate_id: "IDS-STAGE006-P4-GATE"
+current_phase_id: "IDS-STAGE006-P4"
+current_task_id: "IDS-V0_1-STAGE006-P4"
+next_gate_id: "IDS-STAGE007-P1-GATE"
 total_estimated_hours: 53
-completed_estimated_hours: 52
+completed_estimated_hours: 53
 stages:
   -
     stage_id: "S5"
     name: "项目迁移与三文件重建"
     person_goal: "逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。"
-    status: "in_progress"
+    status: "completed"
     stop_conditions:
       - "一次 PR 同时迁移多个项目"
       - "无证据事实被写入 VERIFIED"
@@ -1290,7 +1290,7 @@ stages:
       - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
     stop_gate:
       gate_id: "IDS-STAGE006-GATE"
-      status: "open"
+      status: "local_passed_pending_10_stage_batch_upload"
       pass_conditions:
         - "Phase 1 明确 macOS、Docker、IDS_DATA_ROOT、内置盘和移动硬盘边界"
         - "Phase 2 形成最小运行环境、路径检测、状态枚举或存储预算切片"
@@ -1301,6 +1301,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE2_ENVIRONMENT_BASELINE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/scripts/check_environment_baseline.py"
     phases:
       -
@@ -1442,26 +1443,29 @@ stages:
         phase_id: "IDS-STAGE006-P4"
         name: "macOS M2 Max Docker 基线交付证据、回滚与中文反馈"
         objective: "输出环境检查、路径检查、存储预算、状态恢复和回滚说明。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "Phase 3 场景验证未完成"
           - "仍有阻断问题未解决"
           - "试图在未满 10 stages 时推送 GitHub PR"
         stop_gate:
           gate_id: "IDS-STAGE006-P4-GATE"
-          status: "pending"
+          status: "passed_no_github_upload_until_batch_complete"
           pass_conditions:
             - "ACC-STAGE-006 证据完整"
             - "可恢复和不可恢复状态清楚"
             - "默认配置和回滚步骤清楚"
             - "不上传 GitHub，直到 STAGE-001..010 批次完成"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            - "KM_IDSystem/scripts/check_environment_baseline.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE006-P4"
             name: "STAGE-006 交付证据与回滚"
             objective: "生成 ACC-STAGE-006 证据、环境检查结果、路径检查结果、存储预算说明、状态恢复说明、回滚步骤和中文反馈。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 1
             total_hours_percent: "1.89%"
             dependencies:
@@ -1473,7 +1477,11 @@ stages:
               - "macOS Docker baseline final validation"
               - "check-render --project KM_IDSystem"
               - "git status --short --branch"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-006 Phase 4 closeout records ACC-STAGE-006 evidence, whole-stage review, changed-file summary, final environment/path/storage decision, recoverable and non-recoverable states, default configuration, rollback steps, Chinese owner feedback, and the no-upload stop line. Fresh final validation reran the STAGE-006 unittest, CLI smoke, Phase 3 scenario smoke, script py_compile, check-render, marker/JSONL/scope check, and git diff --check; semantic validate remains a sparse-worktree diagnostic and no unrelated project expansion was performed. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, external-drive content scan, runtime data, reports, outputs, GitHub push, PR, or merge was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/scripts/check_environment_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage006_environment_baseline.py"
             risk: "在 STAGE-006 完成后误推送未满 10 stages 的批次。"
             rollback: "Revert IDS-STAGE006-P4 closeout-only changes."
