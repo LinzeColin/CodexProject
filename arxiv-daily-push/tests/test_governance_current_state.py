@@ -411,6 +411,29 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_evidence_inventory_and_dry_run_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        expected_historical_rows = (
+            "历史当时 `audit-s2plt02-terminal-proof-evidence-inventory --launchctl-disabled-file` 指向缺失文件时返回 blocked JSON；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时正常 evidence inventory 仍 blocked：当时仅 1 个真实发送日、4 封真实邮件、2 个 nonterminal succeeded dry-run 日；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 2026-06-29/2026-06-30 的 `adp-daily-run.json` 均为 `status=succeeded`，但 M1-M4 SMTP reports 是 dry-run；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 `nonterminal_succeeded_dry_run_count=2`、dry-run 邮件 8 封、真实候选发送 0 封；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+        )
+        for phrase in expected_historical_rows:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, decisions)
+
+        forbidden_phrases = (
+            "| `audit-s2plt02-terminal-proof-evidence-inventory --launchctl-disabled-file` 指向缺失文件时，现在返回 blocked JSON，不再抛 Python traceback |",
+            "| 正常 evidence inventory 仍 blocked：当前仅 1 个真实发送日、4 封真实邮件、2 个 nonterminal succeeded dry-run 日 |",
+            "| 2026-06-29/2026-06-30 的 `adp-daily-run.json` 均为 `status=succeeded`，但 M1-M4 SMTP reports 是 dry-run | 将两天都分类为 `daily_run_succeeded_but_smtp_dry_run_not_terminal`；不得写 terminal proof，不得宣称第二真实日、8 封真实邮件或 scheduler proof 已满足 |",
+            "| `nonterminal_succeeded_dry_run_count=2`、dry-run 邮件 8 封、真实候选发送 0 封 | 继续按 S2PLT02 capture plan 采集第二真实 M1-M4 SMTP 日、真实 scheduler proof，再写 reviewed terminal proof artifact |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
