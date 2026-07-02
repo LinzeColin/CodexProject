@@ -1067,6 +1067,34 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", generator)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", generator)
 
+    def test_project_yaml_delivery_readiness_does_not_reopen_stage2_final_gate(self) -> None:
+        project_yaml = (ADP_ROOT / "docs/governance/project.yaml").read_text(encoding="utf-8")
+        features = (ADP_ROOT / "功能清单.md").read_text(encoding="utf-8")
+
+        self.assertIn('status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"', project_yaml)
+        self.assertIn(
+            'release_gate: "DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT"',
+            project_yaml,
+        )
+        self.assertIn('next_executable_task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', project_yaml)
+        self.assertIn('next_executable_task_status: "blocked_persistent_daily_operation_authorization_missing"', project_yaml)
+
+        self.assertIn(
+            "| FEAT-ADP-010 | S2PMT07 final bundle、Stage 2 integrated acceptance 与 S3 授权门 | blocked_persistent_daily_operation_authorization_missing |",
+            features,
+        )
+        self.assertIn("Stage 2 integrated acceptance 已记录并保持", features)
+        self.assertIn("当前剩余阻断只剩 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 缺失", features)
+
+        for stale_phrase in (
+            'release_gate: "S2PMT07_FINAL_GATE_PRECHECK_BLOCKED"',
+            'next_executable_task_status: "blocked_precheck"',
+            "| FEAT-ADP-010 | S2PMT07 独立最终复审分配、P0/P1 zero-proof 与最终包 readiness | blocked_precheck |",
+            "final bundle manifest 与 Stage2/S3 production acceptance 仍阻断",
+            "也不声明 DAILY_OPERATION 或 `INTEGRATED_PRODUCTION_ACCEPTED`",
+        ):
+            self.assertNotIn(stale_phrase, project_yaml + "\n" + features)
+
     def test_owner_decision_request_attestation_and_current_precommit_binding(self) -> None:
         manifest_path = (
             REPO_ROOT
