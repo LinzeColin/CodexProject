@@ -1,6 +1,6 @@
 # MVP 准备与复审修补
 
-更新时间：2026-07-03 07:01:53 Australia/Sydney
+更新时间：2026-07-03 08:39:09 Australia/Sydney
 
 本页是 ADP 在 Stage 2 integrated acceptance 已记录、但不进入 S3/DAILY_OPERATION 的前提下，为后续 MVP 复审和修补准备的 GitHub 浅层入口。
 

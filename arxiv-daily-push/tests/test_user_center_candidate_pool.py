@@ -392,6 +392,13 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
                 if not target.exists():
                     missing.append(f"{page_path.relative_to(REPO_ROOT)} -> {href}")
                     continue
+                if "#" in href and target.suffix != ".md":
+                    anchor = urllib.parse.unquote(href.split("#", 1)[1])
+                    if not re.fullmatch(r"L\d+(?:-L\d+)?", anchor):
+                        missing.append(
+                            f"{page_path.relative_to(REPO_ROOT)} uses unsupported non-markdown anchor -> {href}"
+                        )
+                    continue
                 if "#" in href and target.suffix == ".md":
                     anchor = urllib.parse.unquote(href.split("#", 1)[1])
                     if anchor and anchor not in _markdown_anchors(target):
