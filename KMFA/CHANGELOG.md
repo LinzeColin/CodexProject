@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.3-s04p3-basic-tool-report - 2026-07-02
+
+- 完成 `v0.1.3 S04-P3｜基础工具测试报告 replay` 本地验证：复用既有 `generate_tool_test_report.py` 和 synthetic public-safe boundary cases，锁定金额、日期、期间基础工具测试报告。
+- 新增 `KMFA/tools/v013_s04_p3_basic_tool_report.py`、`KMFA/tools/check_v013_s04_p3_basic_tool_report.py`、`KMFA/tests/test_v013_s04_p3_basic_tool_report.py` 和 `KMFA/stage_artifacts/V013_S04_P3_BASIC_TOOL_REPORT/`。
+- 本 phase 验证 synthetic_boundary_cases=22/22、amount_cases=11、date_period_cases=11，并生成 JSON/Markdown 工具函数测试报告。
+- 本 phase 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 固化项目级 raw data inbox 规则：`/Users/linzezhang/Downloads/KMFA_MetaData` 属于用户财务原始数据目录，Codex 不得在该目录内修改、删除、移动、重命名、覆盖或写入生成/额外文件；私有诊断和 scratch output 只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 Stage 4 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 Stage 4 整体复审` 或用户明确指定的单一 phase。
+
 ## 0.1.3-s04p2-field-standardization - 2026-07-02
 
 - 完成 `v0.1.3 S04-P2｜字段标准化 replay` 本地验证：基于既有 `field_standardization.py`，使用 synthetic public-safe values 重放日期、期间、主体、项目、客户/对手方和合同编号 6 个 canonical fields。
