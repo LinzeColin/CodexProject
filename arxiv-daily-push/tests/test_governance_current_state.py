@@ -933,6 +933,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
     def test_daily_operation_enablement_preflight_root_gate_is_owner_readable(self) -> None:
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
+        final_bundle_status = (ADP_ROOT / "用户中心/最终验收包与S3阻断.md").read_text(encoding="utf-8")
         feature_list = (ADP_ROOT / "功能清单.md").read_text(encoding="utf-8")
         dev_record = (ADP_ROOT / "开发记录.md").read_text(encoding="utf-8")
         model_params = (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8")
@@ -979,6 +980,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("具体错误", mvp_prep)
         self.assertIn("open_pr_observation_errors_promoted_to_blocking_reasons=true", model_params)
         self.assertIn("runtime_observation_errors_promoted_to_blocking_reasons=true", model_params)
+        for owner_text in (handoff, final_bundle_status):
+            self.assertIn("repo_root_valid=true", owner_text)
+            self.assertIn("root_validation_errors=[]", owner_text)
+            self.assertIn("required_paths_missing=[]", owner_text)
+            self.assertIn("codexproject_repo_root_invalid", owner_text)
 
 
 if __name__ == "__main__":
