@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s06p1-zero-delta-replay - 2026-07-03
+
+- 完成 `v0.1.3 S06-P1｜zero-delta validator replay` 本地验证：复用既有 integer-cent zero-delta validator，基于 public-safe synthetic/taskpack fixture 重放 8 次字段比较且 mismatch_count=`0`。
+- 新增 `KMFA/tools/v013_s06_p1_zero_delta_replay.py`、`KMFA/tools/check_v013_s06_p1_zero_delta_replay.py`、`KMFA/tests/test_v013_s06_p1_zero_delta_replay.py` 和 `KMFA/stage_artifacts/V013_S06_P1_ZERO_DELTA_REPLAY/`。
+- 本 phase 证明 0.01 元/1 分差异必须失败并生成 mismatch report；report 包含 source、field、authoritative value、system value 和 difference columns。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不写 metadata/quality，不创建 S06-P2 difference queue，不执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告或业务执行。
+- v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s05-stage-review - 2026-07-03
 
 - 完成 `v0.1.3 Stage 5 整体复审` 本地验证：复跑 S05-P1/S05-P2/S05-P3 replay validators、Stage 5 review validator 和 focused unit test。
