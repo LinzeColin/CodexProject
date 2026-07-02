@@ -1512,6 +1512,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like", mvp_prep)
         self.assertIn("旧 `com.linze.adp.local.*` 不得作为当前通过依据", mvp_prep)
         self.assertIn("后台进程扫描只匹配 ADP runner/module/path，不使用裸 `adp` 子串", mvp_prep)
+        self.assertIn("一次受控真实运行窗口只允许临时切换 `ADP_ALLOW_SMTP_SEND`", mvp_prep)
+        self.assertIn("窗口结束后必须恢复为 `UNSET` 或 false-like", mvp_prep)
+        self.assertIn("重新运行 enablement preflight 并确认仍 `status=FAIL / exit 2`", mvp_prep)
+        self.assertIn("不得把一次受控真实运行当作持久 DAILY_OPERATION 授权", mvp_prep)
         self.assertIn("GitHub `origin/main` 的干净隔离工作树", mvp_prep)
         self.assertIn("本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线", mvp_prep)
         self.assertIn(
