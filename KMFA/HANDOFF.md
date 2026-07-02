@@ -9,14 +9,14 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s05p1-a0-file-registration`
-- 当前已完成: `v0.1.3 S05-P1｜A0 文件登记 replay`
-- 证据目录: `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/`
-- 复审结论: S05-P1 generator、validator、新单测、legacy A0 registration validator 和 S04 Stage review dependency validator 均 PASS；A0 file total=`9`、PDF 类=`8`、Excel 类=`1`、Q3 machine candidates=`9`、Q4 locked=`0`、Q5 formal report allowed=`0`；data quality=`Q2`，report grade=`D`，release permission=`blocked`，`github_upload_performed=false`，`github_upload_deferred_until_stage10_batch=true`。
+- 当前版本: `0.1.3-s05p2-field-candidate-replay`
+- 当前已完成: `v0.1.3 S05-P2｜字段级黄金基准候选 replay`
+- 证据目录: `KMFA/stage_artifacts/V013_S05_P2_FIELD_CANDIDATE_REPLAY/`
+- 复审结论: S05-P2 replay generator、validator、新单测、legacy S05-P2 field candidate/owner decision/completion gate validators 和 S05-P1 dependency validator 均 PASS；fixture candidates=`45`、required fields per candidate=`5`、hash/source-anchor recorded=`40`、pending fields=`5`、Q3 field candidates=`45`、Q4 confirmed=`0`、Q5 calculation baseline allowed=`0`；active owner/authorized decision=`downgrade_to_cross_source_support`，completion gate=`ready`，data quality=`Q2`，report grade=`D`，release permission=`blocked`，`github_upload_performed=false`，`github_upload_deferred_until_stage10_batch=true`。
 - upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4 或 Stage 5 单独 upload 作为 active next step。
-- raw boundary: 本轮按 S05-P1 明确需求只读检查 `/Users/linzezhang/Downloads/KMFA_MetaData` 中 A0 private zip 的聚合结构，并确认 raw inbox 未修改、删除、移动、重命名、覆盖或写入生成文件。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值；真实 package/member diagnostic 仅写入 git-ignored `KMFA/.codex_private_runtime/`。本地 private zip 可打开，聚合成员计数为 9、PDF 类 8、Excel 类 1，但整包 hash/size 与已登记 source package 不匹配，因此没有执行 public member SHA256 回填。
-- 未执行: S05-P2、Stage 5 整体复审、GitHub main upload、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 S05-P2` 或用户明确指定的单一 phase；不得执行 GitHub upload、Stage 5 整体复审、raw value matching、正式报告或业务动作。
+- raw boundary: 本轮 S05-P2 replay 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只重放既有 public-safe S05-P2 metadata 与 owner/授权降级决策。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值；未新增 private diagnostic。
+- 未执行: S05-P3、Stage 5 整体复审、GitHub main upload、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S05-P3` 或用户明确指定的单一 phase；不得执行 GitHub upload、Stage 5 整体复审、raw value matching、正式报告或业务动作。
 
 ## 持久本机 raw boundary
 
