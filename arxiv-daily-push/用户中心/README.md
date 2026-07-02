@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 18:13:59 Australia/Sydney
+更新时间：2026-07-02 18:29:36 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -92,6 +92,13 @@
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），计划应发 4 封；受控发送证据不代表 S3/DAILY_OPERATION 已进入。
 
 ## 最近治理与历史记录
+
+## 2026-07-02 18:29:36 Australia/Sydney - root verifier 已显示 S3 阻断原因
+
+- `tools/verify_acceptance_bundle.py --require-zero P0 P1` 现在在 `status=PASS` 之外同步输出 DAILY_OPERATION 阻断字段。
+- 当前关键字段：`daily_operation_authorization_ready=false`；`daily_operation_blocking_reasons=["persistent_daily_operation_authorization_missing"]`；`daily_operation_next_required_step=OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION`。
+- 这说明 final bundle / P0/P1 zero-proof / no-production root gate 已通过，但 S3/DAILY_OPERATION 仍被持久授权 artifact 缺失阻断。
+- 本轮仍只做 MVP 准备与复审修补，不创建 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`，不启用 SMTP、scheduler、Release 或 production restore。
 
 ## 2026-07-02 18:13:59 Australia/Sydney - S3 机器预检标签已同步
 

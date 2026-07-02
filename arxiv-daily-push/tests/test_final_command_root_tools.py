@@ -65,6 +65,27 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertIsNone(payload["next_executable_task"])
         self.assertEqual(payload["s2plt04_completion_report_status"], "pass")
         self.assertEqual(payload["blocking_reasons"], [])
+        self.assertFalse(payload["daily_operation_authorization_ready"])
+        self.assertEqual(
+            payload["daily_operation_blocking_reasons"],
+            ["persistent_daily_operation_authorization_missing"],
+        )
+        self.assertEqual(
+            payload["daily_operation_next_required_step"],
+            "OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION",
+        )
+        self.assertEqual(
+            payload["daily_operation_next_executable_task"],
+            "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
+        )
+        self.assertEqual(
+            payload["daily_operation_persistent_authorization_artifact"],
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+        )
+        self.assertEqual(
+            payload["daily_operation_gate_artifact"],
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json",
+        )
         self.assertTrue(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertFalse(payload["real_smtp_send_enabled"])
