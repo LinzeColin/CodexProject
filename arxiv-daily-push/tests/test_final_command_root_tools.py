@@ -191,6 +191,46 @@ class FinalCommandRootToolTests(unittest.TestCase):
             "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
         )
 
+    def test_verify_daily_operation_enablement_preflight_observes_runtime_by_default(self) -> None:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "tools/verify_daily_operation_enablement_preflight.py",
+                "--generated-at",
+                "2026-07-02T20:10:00+10:00",
+                "--open-pr-count",
+                "0",
+                "--adp-allow-smtp-send",
+                "UNSET",
+            ],
+            cwd=REPO_ROOT,
+            env=self._env(),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout[-2000:])
+        payload = json.loads(completed.stdout)
+        self.assertEqual(payload["status"], "FAIL")
+        self.assertEqual(payload["runtime_observation_mode"], "auto_observed")
+        self.assertEqual(payload["runtime_observation_errors"], [])
+        self.assertEqual(
+            payload["launchagent_disabled_states"],
+            {
+                "com.linzezhang.adp.daily": True,
+                "com.linzezhang.adp.health": True,
+                "com.linzezhang.adp.watchdog": True,
+            },
+        )
+        self.assertEqual(payload["background_adp_process_count"], 0)
+        self.assertFalse(payload["enablement_preflight_ready"])
+        self.assertEqual(
+            payload["blocking_reasons"],
+            ["persistent_daily_operation_authorization_missing"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
