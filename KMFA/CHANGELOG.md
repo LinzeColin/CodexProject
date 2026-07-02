@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3-s03p2-source-check-matrix - 2026-07-02
+
+- 完成 `v0.1.3 S03-P2｜数据源检查矩阵` 本地验证：基于既有 `source_check_matrix.py` 能力，使用合成 metadata 重放六个矩阵维度、五个中文状态枚举和 metadata-only append 状态事件。
+- 新增 `KMFA/tools/v013_s03_p2_source_check_matrix.py`、`KMFA/tools/check_v013_s03_p2_source_check_matrix.py`、`KMFA/tests/test_v013_s03_p2_source_check_matrix.py` 和 `KMFA/stage_artifacts/V013_S03_P2_SOURCE_CHECK_MATRIX/`。
+- 本 phase 不读取或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，不公开 raw 文件名、raw hash、source package hash、storage ref、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 状态变化锁定为 append-only metadata event，`raw_layer_write_allowed=false`、`raw_source_mutation_allowed=false`、`status_change_target_layer=metadata`。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 S03-P3、Stage 3 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S03-P3` 或用户明确指定的单一 phase。
+
 ## 0.1.3-s03p1-file-import-register - 2026-07-02
 
 - 完成 `v0.1.3 S03-P1｜文件型导入登记` 本地验证：基于既有 `file_import_register.py` 能力，使用临时合成文件重放 `zip/xlsx/xls/csv/pdf` 登记、metadata 必需字段、zip traversal 防护和 WPS/OLE 提示。
