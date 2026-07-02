@@ -148,6 +148,53 @@ class Stage009StorageBudgetTests(unittest.TestCase):
         self.assertEqual(online["removable_drive_state"], "ONLINE_VALIDATED")
         self.assertFalse(online["auto_resume"])
 
+    def test_phase3_scenario_report_covers_budget_states_output_risk_and_safe_mode_pauses(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            complete = Path(tmp) / "IDS_DATA_ROOT"
+            complete.mkdir()
+            self._create_complete_slots(complete)
+            absent = Path(tmp) / "ABSENT_IDS_DATA_ROOT"
+
+            report = module.build_stage009_scenario_report(
+                online_root=str(complete),
+                absent_root=str(absent),
+                storage_ok_total_bytes=1000 * GIB,
+                storage_ok_free_bytes=300 * GIB,
+                storage_warn_total_bytes=500 * GIB,
+                storage_warn_free_bytes=150 * GIB,
+                storage_low_total_bytes=1000 * GIB,
+                storage_low_free_bytes=50 * GIB,
+                storage_high_total_bytes=1000 * GIB,
+                storage_high_free_bytes=120 * GIB,
+                planned_output_ok_bytes=20 * GIB,
+                planned_output_too_large_bytes=250 * GIB,
+            )
+
+        states = report["scenario_states"]
+
+        self.assertTrue(report["overall_valid"])
+        self.assertEqual(report["schema_version"], "ids.stage009.phase3_scenarios.v1")
+        self.assertEqual(report["stage"], "STAGE-009")
+        self.assertEqual(report["phase"], "Phase 3")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-009")
+        self.assertFalse(report["customer_visible"])
+        self.assertEqual(states["ok"], "BUDGET_OK")
+        self.assertEqual(states["warn"], "BUDGET_WARN")
+        self.assertEqual(states["low_free_space"], "BUDGET_BLOCKED_LOW_FREE")
+        self.assertEqual(states["high_waterline"], "BUDGET_BLOCKED_HIGH_WATERLINE")
+        self.assertEqual(states["unknown"], "BUDGET_UNKNOWN")
+        self.assertEqual(states["external_root_not_ready"], "EXTERNAL_ROOT_NOT_READY")
+        self.assertEqual(states["unbounded_output_missing_cap"], "UNBOUNDED_OUTPUT_RISK")
+        self.assertEqual(states["planned_output_exceeds_budget"], "UNBOUNDED_OUTPUT_RISK")
+        for workflow in ["bulk_import", "ocr", "embedding", "index_rebuild", "batch_report_generation"]:
+            self.assertIn(workflow, report["safe_mode_pauses"])
+        self.assertTrue(report["does_not_start_services"])
+        self.assertTrue(report["does_not_create_ids_data_root"])
+        self.assertTrue(report["does_not_scan_external_drive_contents"])
+        self.assertTrue(report["does_not_generate_outputs"])
+        self.assertTrue(report["does_not_write_runtime_data"])
+
     def test_cli_json_contract_is_stage009_operations_only(self):
         result = subprocess.run(
             [
