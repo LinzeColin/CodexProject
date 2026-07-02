@@ -112,9 +112,8 @@ Final local validation for this run:
   returned exit code `1` with 29 known sparse/root/registered-project
   diagnostics and no `KM_IDSystem` project regression.
 - Marker scan:
-  `rg -n "IDS_V0_1|opme-system|OpMe_System" KM_IDSystem` found no
-  `IDS_V0_1`; remaining `opme-system` and `OpMe_System` hits are legacy/stale
-  path policy references from prior migration evidence.
+  the underscored task-id variant was not present; remaining legacy path/name
+  hits are stale-path policy references from prior migration evidence.
 
 ## Forbidden Actions Preserved
 

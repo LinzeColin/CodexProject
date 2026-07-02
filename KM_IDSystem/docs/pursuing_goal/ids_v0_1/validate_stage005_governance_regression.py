@@ -62,6 +62,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE2_READONLY_IDENTITY_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE4_CLOSEOUT.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
@@ -280,6 +281,15 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-STAGE012-P3"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE012-P4-GATE"' in roadmap_text
     )
+    stage012_phase4_closeout = (
+        'current_task_id: "IDS-V0_1-STAGE012-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_stage: "STAGE-013"' in batch_text
+        and 'current_stage_id: "IDS-STAGE012"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE012-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE012-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE013-P1-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -289,6 +299,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or stage012_phase1_active
         or stage012_phase2_active
         or stage012_phase3_active
+        or stage012_phase4_closeout
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
@@ -306,6 +317,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or 'next_phase: "Phase 4"' in batch_text
         or 'next_stage: "STAGE-006"' in batch_text
         or 'next_stage: "STAGE-012"' in batch_text
+        or 'next_stage: "STAGE-013"' in batch_text
     )
     current_phase_allowed = (
         'current_phase_id: "IDS-STAGE005-P2"' in roadmap_text
