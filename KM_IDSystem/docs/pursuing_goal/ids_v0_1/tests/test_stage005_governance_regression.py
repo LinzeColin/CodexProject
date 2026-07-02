@@ -2410,6 +2410,47 @@ next_gate_id: "IDS-STAGE020-P3-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage020_phase3_import_cost_estimator_scenarios(self):
+        module = self._load_module()
+        batch_text = """
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-020:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE020-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE020"
+current_phase_id: "IDS-STAGE020-P3"
+current_task_id: "IDS-V0_1-STAGE020-P3"
+next_gate_id: "IDS-STAGE020-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE020-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE020-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_changed_path_policy_allows_stage011_phase2_files(self):
         module = self._load_module()
         allowed_paths = [
@@ -2458,6 +2499,7 @@ next_gate_id: "IDS-STAGE020-P3-GATE"
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE2_COST_ESTIMATOR_SLICE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE3_SCENARIO_VALIDATION.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_import_preflight.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_import_risk_estimator.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage020_import_cost_estimator.py",
