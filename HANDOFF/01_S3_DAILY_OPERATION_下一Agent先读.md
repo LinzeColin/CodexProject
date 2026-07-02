@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 15:00:53 Australia/Sydney
+更新时间：2026-07-02 17:29:36 Australia/Sydney
 
 ## 当前结论
 
@@ -23,6 +23,7 @@
 - 当前 Stage 2 accepted 事实以 `arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml` 和 `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 为准。
 - 当前最新状态以 `CURRENT.yaml`、`OWNER_STATUS.md`、`关键结论与用户决策.md` 和本文件为准。
 - 一次受控真实运行验收、final bundle pass、Stage 2 integrated acceptance 都不等于持久 DAILY_OPERATION 授权。
+- 当前 S3 安全边界必须检查真实 LaunchAgent 标签：`com.linzezhang.adp.daily`、`com.linzezhang.adp.health`、`com.linzezhang.adp.watchdog`。旧 `com.linze.adp.local.*` 只属于历史记录，不得作为当前 S3 safety check。
 - 不要为了追逐当前提交号重复改写本页；只有 S3/DAILY_OPERATION 事实、授权状态或证据路径变化时才更新。
 
 ## 唯一当前阻断
@@ -82,7 +83,13 @@ case "$ADP_ALLOW_SMTP_SEND_VALUE" in
     exit 1
     ;;
 esac
-launchctl print-disabled gui/$(id -u) | rg 'com\.linze\.adp\.local\.(daily|health|watchdog)'
+for label in com.linzezhang.adp.daily com.linzezhang.adp.health com.linzezhang.adp.watchdog; do
+  if launchctl print "gui/$(id -u)/$label" >/dev/null 2>&1; then
+    printf 'blocked: %s is loaded\n' "$label" >&2
+    exit 1
+  fi
+  printf '%s not_loaded\n' "$label"
+done
 ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|CodexProject.*arxiv-daily-push' | rg -v 'rg -i|pytest|unittest|validate|zsh -lc|exec_command' || true
 OPEN_PR_COUNT=$(
   curl -fsSL -H 'User-Agent: codex-adp-open-pr-check' 'https://github.com/LinzeColin/CodexProject/pulls?q=is%3Apr+is%3Aopen' |
@@ -92,4 +99,4 @@ printf 'open_pr_count=%s\n' "$OPEN_PR_COUNT"
 test "$OPEN_PR_COUNT" = "0"
 ```
 
-预期：授权 artifact 不存在；`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like；三个 ADP LaunchAgents disabled；无 ADP 后台进程；`open_pr_count=0`。后台进程扫描只匹配 ADP runner/module/path 信号，不使用裸 `adp` 子串，避免把普通工作树路径或 shell 命令误判为运行中。若 `ADP_ALLOW_SMTP_SEND` 为 truthy，或 open PR 结果为 `UNKNOWN` / 非 0，停止并回报，不得当作通过。
+预期：授权 artifact 不存在；`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like；`com.linzezhang.adp.daily`、`com.linzezhang.adp.health`、`com.linzezhang.adp.watchdog` 三个真实 ADP LaunchAgent 标签均未加载或保持 disabled；旧 `com.linze.adp.local.*` 仅为历史标签口径，不得作为当前复核通过依据；无 ADP 后台进程；`open_pr_count=0`。后台进程扫描只匹配 ADP runner/module/path 信号，不使用裸 `adp` 子串，避免把普通工作树路径或 shell 命令误判为运行中。若 `ADP_ALLOW_SMTP_SEND` 为 truthy、任一真实 LaunchAgent 标签已加载，或 open PR 结果为 `UNKNOWN` / 非 0，停止并回报，不得当作通过。
