@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE011"
-current_phase_id: "IDS-STAGE011-P1"
-current_task_id: "IDS-V0_1-STAGE011-P1"
-next_gate_id: "IDS-STAGE011-P2-GATE"
+current_phase_id: "IDS-STAGE011-P2"
+current_task_id: "IDS-V0_1-STAGE011-P2"
+next_gate_id: "IDS-STAGE011-P3-GATE"
 total_estimated_hours: 84
-completed_estimated_hours: 79
+completed_estimated_hours: 81
 stages:
   -
     stage_id: "S5"
@@ -2447,17 +2447,20 @@ stages:
       - "跳过 STAGE-006..010 已有路径、存储和安全边界而直接实现运行接口"
       - "在 STAGE-011..020 未完成、复审和修复前上传 GitHub main"
     stop_gate:
-      gate_id: "IDS-STAGE011-P1-GATE"
+      gate_id: "IDS-STAGE011-P2-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
-        - "P0 STAGE-011 taskpack SHA 已确认"
-        - "STAGE-011 Phase 1 只建立安全模式边界，不进入 Phase 2 实现"
-        - "本机热数据、外接盘冷数据、GitHub 元数据、IDS_MetaData 真实数据库路径和外部 API 预算边界清楚"
-        - "安全模式触发、暂停、恢复、重验规则清楚"
+        - "STAGE-011 Phase 1 边界已完成"
+        - "STAGE-011 Phase 2 只实现只读 safe-mode baseline 最小切片，不进入 Phase 3"
+        - "safe-mode 状态能组合 path、storage、removable-drive、index 和 API budget 输入"
+        - "no-side-effect guardrails 保持为 true"
         - "render 检查无中文入口漂移"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE2_SAFE_MODE_BASELINE.md"
+        - "KM_IDSystem/scripts/check_safe_mode_baseline.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
         - "KM_IDSystem/docs/governance/events.jsonl"
     phases:
@@ -2515,3 +2518,54 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "安全模式边界如果过早实现，可能误恢复数据任务、读取 raw metadata、写派生产物或消耗外部 API 预算。"
             rollback: "Revert IDS-STAGE011-P1 governance/evidence changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData or runtime data."
+      -
+        phase_id: "IDS-STAGE011-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现只读 safe-mode baseline 接口，组合路径、空间、水位线、离线、索引和外部 API 预算状态。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 边界未完成"
+          - "实现需要启动服务、安装依赖、读取 raw metadata、写 runtime 输出或调用外部 API"
+          - "缺少先失败后通过的 focused test"
+          - "一次 run 进入 Phase 3 场景验证"
+        stop_gate:
+          gate_id: "IDS-STAGE011-P2-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "`check_safe_mode_baseline.py` 只读且 operations-only"
+            - "safe-mode 状态覆盖 clear、root missing、storage blocked、path blocked、index failed、API budget exceeded"
+            - "CLI JSON 合同可运行"
+            - "D02 相关回归测试通过"
+            - "BATCH011_020_UPLOAD_LOCK.yaml 仍保持 push_allowed=false"
+          evidence_refs:
+            - "KM_IDSystem/scripts/check_safe_mode_baseline.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE2_SAFE_MODE_BASELINE.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE011-P2"
+            name: "安全模式基线最小只读接口"
+            objective: "实现 STAGE-011 Phase 2 的只读 safe-mode baseline preflight，输出状态、暂停工作流、operator actions、重验要求和 no-side-effect guardrails。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "2.38%"
+            dependencies:
+              - "IDS-V0_1-STAGE011-P1"
+            acceptance_ids:
+              - "ACC-STAGE-011"
+            test_commands:
+              - "RED: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py -q"
+              - "GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py -q"
+              - "D02 regression: bundled python -B -m unittest STAGE-006..011 tests -q"
+              - "CLI smoke: check_safe_mode_baseline.py with IDS_MetaData path, bounded_preflight, index OK, API budget OK"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+            test_results: "TDD RED failed as expected because check_safe_mode_baseline.py was missing: Ran 4 tests with 4 failures. GREEN passed after implementation: STAGE-011 focused unittest ran 4 tests OK; D02 regression set for STAGE-006 through STAGE-011 ran 36 tests OK. CLI smoke returned state=SAFE_MODE_CLEAR, safe_mode=false, local_path_contract_state=PATH_CONTRACT_OK, storage_budget_state=BUDGET_OK, does_not_read_raw_metadata=true, does_not_call_external_apis=true, and does_not_generate_outputs=true. Phase 2 did not start services, install dependencies, create runtime data/reports/outputs, read raw database content, call external APIs, push to GitHub, or enter Phase 3."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_safe_mode_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE2_SAFE_MODE_BASELINE.md"
+            risk: "安全模式组合层如果映射错误，可能误恢复数据任务、错误消耗外部 API 预算或把 path/storage/index/API block 混为同一类不可恢复故障。"
+            rollback: "Revert IDS-STAGE011-P2 script, test, evidence, batch-lock, roadmap/event, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData or runtime data."
