@@ -2247,6 +2247,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
         one_look = (USER_CENTER / "一看三查.md").read_text(encoding="utf-8")
         roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
+        decisions = (USER_CENTER / "关键结论与用户决策.md").read_text(encoding="utf-8")
+        mvp = (USER_CENTER / "MVP准备与复审修补.md").read_text(encoding="utf-8")
 
         self.assertTrue(FINAL_BUNDLE_STATUS_PAGE.exists())
         page = FINAL_BUNDLE_STATUS_PAGE.read_text(encoding="utf-8")
@@ -2254,7 +2256,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             page,
             r"^# 最终验收包与 S3 阻断\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n",
         )
-        for text in (readme, one_look, roadmap):
+        for text in (readme, one_look, roadmap, decisions, mvp):
             self.assertIn("[最终验收包与 S3 阻断](./最终验收包与S3阻断.md)", text)
 
         required_links = (
