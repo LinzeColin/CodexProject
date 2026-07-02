@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260703-V013-S06-P2-DIFFERENCE-QUEUE-REPLAY"
+as_of_event_id: "EVENT-KMFA-20260703-V013-S06-P3-VALIDATION-EVIDENCE-REPLAY"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "6ee4e146650eaff9a00b97c3a263db379764798c"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_P2_DIFFERENCE_QUEUE_REPLAY_COMMIT"
-snapshot_event_time: "2026-07-03T06:20:00+10:00"
-generator_version: "manual-v013-s06p2-difference-queue-replay"
+source_base_commit: "4ef3e1eafd75a34be0dd6a7534f2c73a27eb56c3"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_P3_VALIDATION_EVIDENCE_REPLAY_COMMIT"
+snapshot_event_time: "2026-07-03T07:20:00+10:00"
+generator_version: "manual-v013-s06p3-validation-evidence-replay"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 477
+    total_active_parameters: 487
     total_active_formulas: 53
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
@@ -103,6 +103,11 @@ dimensions:
       - "KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/human/test_results.md"
       - "KMFA/tools/check_v013_s06_p2_difference_queue_replay.py"
       - "KMFA/tools/v013_s06_p2_difference_queue_replay.py"
+      - "KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/human/test_results.md"
+      - "KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/human/validation_evidence_replay_report.md"
+      - "KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/machine/validation_evidence_replay_manifest.json"
+      - "KMFA/tools/check_v013_s06_p3_validation_evidence_replay.py"
+      - "KMFA/tools/v013_s06_p3_validation_evidence_replay.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"

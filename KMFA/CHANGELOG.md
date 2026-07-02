@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s06p3-validation-evidence-replay - 2026-07-03
+
+- 完成 `v0.1.3 S06-P3｜validation evidence replay` 本地验证：基于 S06-P1/S06-P2 public-safe synthetic evidence，生成 validation evidence stage artifacts 并追加写入 metadata/quality public-safe records。
+- 新增 `KMFA/tools/v013_s06_p3_validation_evidence_replay.py`、`KMFA/tools/check_v013_s06_p3_validation_evidence_replay.py`、`KMFA/tests/test_v013_s06_p3_validation_evidence_replay.py` 和 `KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/`。
+- 本 phase 确认 `metadata_quality_written=true`、`project_status_count=2`、`blocked_project_status_count=2`、`q5_allowed_count=0`、`report_grade_a_allowed_count=0`；差异未关闭，正式报告与业务执行仍阻断。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；metadata/quality 仅保存 hash/ref/status/evidence/gate，不新增字段明文、raw 金额值、PDF 原值或 Excel 原值。
+- 本轮不执行 Stage 6 review、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s06p2-difference-queue-replay - 2026-07-03
 
 - 完成 `v0.1.3 S06-P2｜cross-source difference queue replay` 本地验证：复用既有 cross-source difference queue，基于 public-safe synthetic PDF/Excel conflict fixture 生成 1 条人工差异队列。
