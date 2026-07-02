@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 22:02:27 Australia/Sydney
+更新时间：2026-07-02 22:08:44 Australia/Sydney
 
 ## 当前结论
 
@@ -86,7 +86,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_sync PYTHONPAT
 
 ## 安全边界复核
 
-安全边界复核主路径：先运行 `python3 tools/verify_daily_operation_enablement_preflight.py`，读取自动观察到的 `open_pr_observation_mode=auto_observed`、`open_pr_count`、`adp_allow_smtp_send_environment_raw`、LaunchAgent 和后台进程结果。下方 shell 只作为人工补充复核；open PR 人工 HTML fallback 只允许作为降级审计补充，不得替代 enablement preflight root gate。
+安全边界复核主路径：先运行上方最小复核命令中的 copy-safe enablement preflight，确认 `EXPECTED_PREFLIGHT_EXIT=2` 后，再读取自动观察到的 `open_pr_observation_mode=auto_observed`、`open_pr_count`、`adp_allow_smtp_send_environment_raw`、LaunchAgent 和后台进程结果。下方 shell 只作为人工补充复核；open PR 人工 HTML fallback 只允许作为降级审计补充，不得替代 enablement preflight root gate。
 
 ```bash
 test ! -e FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json
