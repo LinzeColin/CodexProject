@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-03 00:12:03 Australia/Sydney
+更新时间：2026-07-03 04:23:14 Australia/Sydney
 
 ## 当前结论
 
@@ -28,6 +28,7 @@
 - 当前 Stage 2 accepted 事实以 `arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml` 和 `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 为准。
 - 当前最新状态以 `CURRENT.yaml`、`OWNER_STATUS.md`、`关键结论与用户决策.md` 和本文件为准。
 - 一次受控真实运行验收、final bundle pass、Stage 2 integrated acceptance 都不等于持久 DAILY_OPERATION 授权。
+- 一次受控真实运行只允许在受控窗口内临时切换 `ADP_ALLOW_SMTP_SEND`；窗口结束后必须回到 `UNSET` 或 false-like，并重新通过 enablement preflight 的 fail-closed 复核。不得把一次受控真实运行当作 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。
 - `python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1` 的 `status=PASS` 只证明 final bundle / zero-proof / no-production root gate 通过；必须同时读取 `daily_operation_authorization_ready=false` 和 `daily_operation_blocking_reasons`，不得把 root PASS 当作 S3/DAILY_OPERATION 可启用。
 - `tools/verify_daily_operation_readiness.py` 是 S3/DAILY_OPERATION 专用 fail-closed root gate；缺持久授权 artifact 时必须返回 `status=FAIL` 和 exit 2。该非零退出是正确阻断，不是验证故障。
 - `tools/verify_daily_operation_enablement_preflight.py` 是 `S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT` 的只读组合门；它只汇总 readiness + open PR + SMTP flag + LaunchAgent + background process，不创建授权、不启用运行。默认命令会自动观察 GitHub open PR count、真实 `ADP_ALLOW_SMTP_SEND` 环境值、LaunchAgent 和后台 ADP 进程，输出 `open_pr_observation_mode=auto_observed`、`adp_allow_smtp_send_environment_raw` 和 `runtime_observation_mode=auto_observed`；当前缺持久授权时同样必须返回 `status=FAIL / exit 2`。
@@ -60,6 +61,7 @@
 - 不要创建或伪造 `daily_operation_persistent_enablement_authorization.json`。
 - 不要把 `daily_operation_persistent_enablement_authorization.request.json` 当成授权。
 - 不要重新发送同日 M1-M4 邮件来制造进度。
+- 不要把一次受控真实运行窗口结束后的临时发送开关留成 truthy。
 
 ## 若 owner 未来明确授权
 

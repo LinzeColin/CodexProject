@@ -1376,6 +1376,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("后台进程扫描只匹配 ADP runner/module/path 信号，不使用裸 `adp` 子串", handoff)
         self.assertNotIn("ps aux | rg -i 'arxiv_daily_push|arxiv-daily-push|local_runner|adp'", handoff)
         self.assertIn("安全边界复核主路径：先运行上方最小复核命令中的 copy-safe enablement preflight", handoff)
+        self.assertIn("一次受控真实运行只允许在受控窗口内临时切换 `ADP_ALLOW_SMTP_SEND`", handoff)
+        self.assertIn("窗口结束后必须回到 `UNSET` 或 false-like", handoff)
+        self.assertIn("重新通过 enablement preflight 的 fail-closed 复核", handoff)
+        self.assertIn(
+            "不得把一次受控真实运行当作 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`",
+            handoff,
+        )
         self.assertNotIn("安全边界复核主路径：先运行 `python3 tools/verify_daily_operation_enablement_preflight.py`", handoff)
         self.assertIn("open PR 人工 HTML fallback 只允许作为降级审计补充", handoff)
         self.assertIn("不得替代 enablement preflight root gate", handoff)
