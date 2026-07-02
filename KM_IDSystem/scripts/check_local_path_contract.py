@@ -369,6 +369,245 @@ def evaluate_local_path_contract(
     }
 
 
+def _operations_only(report: dict[str, Any]) -> bool:
+    return all(
+        report.get(field) is True
+        for field in [
+            "does_not_start_services",
+            "does_not_create_ids_data_root",
+            "does_not_scan_recursively",
+            "does_not_scan_external_drive_contents",
+            "does_not_open_source_files",
+            "does_not_hash_source_files",
+            "does_not_generate_outputs",
+            "does_not_write_runtime_data",
+            "does_not_write_manifests",
+            "does_not_copy_backups",
+        ]
+    )
+
+
+def build_stage010_scenario_report(
+    *,
+    valid_source_uri: str,
+    missing_source_uri: str,
+    online_root: str,
+    offline_root: str,
+    reconnected_root: str,
+    permission_denied_root: str,
+    path_changed_current: str,
+    path_changed_expected: str,
+    processed_path: str,
+    backup_path: str,
+    manifest_path: str,
+    report_export_path: str,
+    storage_total_bytes: int,
+    storage_ok_free_bytes: int,
+    storage_low_free_bytes: int,
+    planned_output_ok_bytes: int,
+    planned_output_too_large_bytes: int,
+) -> dict[str, Any]:
+    """Build deterministic Phase 3 path-contract scenarios without writes."""
+
+    common = {
+        "source_uri": valid_source_uri,
+        "processed_path": processed_path,
+        "backup_path": backup_path,
+        "manifest_path": manifest_path,
+        "report_export_path": report_export_path,
+        "internal_total_bytes": storage_total_bytes,
+        "internal_free_bytes": storage_ok_free_bytes,
+        "planned_output_bytes": planned_output_ok_bytes,
+    }
+    scenarios = {
+        "online": evaluate_local_path_contract(
+            ids_data_root=online_root,
+            **common,
+        ),
+        "offline_root": evaluate_local_path_contract(
+            ids_data_root=offline_root,
+            **common,
+        ),
+        "reconnected_root": evaluate_local_path_contract(
+            ids_data_root=reconnected_root,
+            previous_state="OFFLINE",
+            **common,
+        ),
+        "permission_denied_root": evaluate_local_path_contract(
+            ids_data_root=permission_denied_root,
+            **common,
+        ),
+        "path_changed": evaluate_local_path_contract(
+            ids_data_root=path_changed_current,
+            expected_path=path_changed_expected,
+            **common,
+        ),
+        "missing_source": evaluate_local_path_contract(
+            source_uri=missing_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            ids_data_root=online_root,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+        ),
+        "invalid_source_uri": evaluate_local_path_contract(
+            source_uri="https://example.com/source.csv",
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            ids_data_root=None,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            require_external_root=False,
+        ),
+        "low_free_space": evaluate_local_path_contract(
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            ids_data_root=online_root,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_low_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            require_external_root=False,
+        ),
+        "planned_output_exceeds_budget": evaluate_local_path_contract(
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            ids_data_root=online_root,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_too_large_bytes,
+        ),
+    }
+    path_role_risks = {
+        "processed_relative": evaluate_local_path_contract(
+            source_uri=valid_source_uri,
+            processed_path="relative/processed",
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            ids_data_root=None,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            require_external_root=False,
+        ),
+        "backup_inside_source": evaluate_local_path_contract(
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=Path(urlparse(valid_source_uri).path).as_posix(),
+            manifest_path=manifest_path,
+            report_export_path=report_export_path,
+            ids_data_root=None,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            require_external_root=False,
+        ),
+        "manifest_bad_extension": evaluate_local_path_contract(
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=str(Path(manifest_path).with_suffix(".secret")),
+            report_export_path=report_export_path,
+            ids_data_root=None,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            require_external_root=False,
+        ),
+        "report_export_missing": evaluate_local_path_contract(
+            source_uri=valid_source_uri,
+            processed_path=processed_path,
+            backup_path=backup_path,
+            manifest_path=manifest_path,
+            report_export_path="",
+            ids_data_root=None,
+            internal_total_bytes=storage_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            require_external_root=False,
+        ),
+    }
+    expected_states = {
+        "online": "PATH_CONTRACT_OK",
+        "offline_root": "SOURCE_PATH_NOT_READY",
+        "reconnected_root": "SOURCE_PATH_NOT_READY",
+        "permission_denied_root": "SOURCE_PATH_NOT_READY",
+        "path_changed": "SOURCE_PATH_NOT_READY",
+        "missing_source": "SOURCE_PATH_NOT_READY",
+        "invalid_source_uri": "SOURCE_URI_INVALID",
+        "low_free_space": "PROCESSED_PATH_UNBOUNDED",
+        "planned_output_exceeds_budget": "PROCESSED_PATH_UNBOUNDED",
+    }
+    expected_role_states = {
+        "processed_relative": "PROCESSED_PATH_UNBOUNDED",
+        "backup_inside_source": "BACKUP_PATH_UNSAFE",
+        "manifest_bad_extension": "MANIFEST_PATH_UNSAFE",
+        "report_export_missing": "REPORT_EXPORT_PATH_UNSAFE",
+    }
+    scenario_states = {name: report["state"] for name, report in scenarios.items()}
+    path_role_risk_states = {
+        name: report["state"]
+        for name, report in path_role_risks.items()
+    }
+    blocked_scenarios = [
+        name for name, state in expected_states.items() if state != "PATH_CONTRACT_OK"
+    ]
+    safe_mode_valid = all(scenarios[name]["safe_mode"] for name in blocked_scenarios)
+    role_safe_mode_valid = all(report["safe_mode"] for report in path_role_risks.values())
+    pause_valid = all(
+        workflow in scenarios["offline_root"]["paused_workflows"]
+        for workflow in PAUSED_WORKFLOWS
+    )
+    operations_only_valid = all(
+        _operations_only(report)
+        for report in [*scenarios.values(), *path_role_risks.values()]
+    )
+
+    return {
+        "schema_version": "ids.stage010.phase3_scenarios.v1",
+        "stage": "STAGE-010",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-010",
+        "entrance": OPERATIONS_ENTRANCE,
+        "customer_visible": False,
+        "overall_valid": (
+            scenario_states == expected_states
+            and path_role_risk_states == expected_role_states
+            and safe_mode_valid
+            and role_safe_mode_valid
+            and pause_valid
+            and operations_only_valid
+        ),
+        "scenario_states": scenario_states,
+        "path_role_risk_states": path_role_risk_states,
+        "path_contract_scenarios": scenarios,
+        "path_role_risk_scenarios": path_role_risks,
+        "safe_mode_pauses": PAUSED_WORKFLOWS[:],
+        "does_not_start_services": True,
+        "does_not_create_ids_data_root": True,
+        "does_not_scan_recursively": True,
+        "does_not_scan_external_drive_contents": True,
+        "does_not_open_source_files": True,
+        "does_not_hash_source_files": True,
+        "does_not_generate_outputs": True,
+        "does_not_write_runtime_data": True,
+        "does_not_write_manifests": True,
+        "does_not_copy_backups": True,
+    }
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Read-only IDS Stage 010 local path contract preflight."

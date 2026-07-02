@@ -5,6 +5,7 @@ import sys
 import tempfile
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -244,6 +245,100 @@ class Stage010LocalPathContractTests(unittest.TestCase):
         self.assertTrue(payload["does_not_start_services"])
         self.assertTrue(payload["does_not_scan_external_drive_contents"])
         self.assertTrue(payload["does_not_generate_outputs"])
+
+    def test_phase3_scenario_report_covers_path_storage_root_and_safe_mode_edges(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            source = base / "source.csv"
+            source.write_text("fixture", encoding="utf-8")
+            missing_source = base / "missing.csv"
+
+            online_root = base / "online_IDS_DATA_ROOT"
+            online_root.mkdir()
+            self._create_complete_slots(online_root)
+
+            offline_root = base / "offline_IDS_DATA_ROOT"
+
+            reconnected_root = base / "reconnected_IDS_DATA_ROOT"
+            reconnected_root.mkdir()
+            self._create_complete_slots(reconnected_root)
+
+            permission_denied_root = base / "permission_denied_IDS_DATA_ROOT"
+            permission_denied_root.mkdir()
+            self._create_complete_slots(permission_denied_root)
+
+            output_paths = self._default_paths(base)
+
+            def access_side_effect(path, mode):
+                return Path(path) != permission_denied_root
+
+            with patch.object(module.os, "access", side_effect=access_side_effect):
+                report = module.build_stage010_scenario_report(
+                    valid_source_uri=source.as_uri(),
+                    missing_source_uri=missing_source.as_uri(),
+                    online_root=str(online_root),
+                    offline_root=str(offline_root),
+                    reconnected_root=str(reconnected_root),
+                    permission_denied_root=str(permission_denied_root),
+                    path_changed_current=str(online_root),
+                    path_changed_expected=str(base / "expected_IDS_DATA_ROOT"),
+                    processed_path=output_paths["processed_path"],
+                    backup_path=output_paths["backup_path"],
+                    manifest_path=output_paths["manifest_path"],
+                    report_export_path=output_paths["report_export_path"],
+                    storage_total_bytes=1000 * GIB,
+                    storage_ok_free_bytes=300 * GIB,
+                    storage_low_free_bytes=50 * GIB,
+                    planned_output_ok_bytes=20 * GIB,
+                    planned_output_too_large_bytes=250 * GIB,
+                )
+
+            for path in output_paths.values():
+                self.assertFalse(Path(path).exists())
+            self.assertFalse(offline_root.exists())
+            self.assertFalse(missing_source.exists())
+
+        states = report["scenario_states"]
+        role_states = report["path_role_risk_states"]
+
+        self.assertTrue(report["overall_valid"])
+        self.assertEqual(report["schema_version"], "ids.stage010.phase3_scenarios.v1")
+        self.assertEqual(report["stage"], "STAGE-010")
+        self.assertEqual(report["phase"], "Phase 3")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-010")
+        self.assertFalse(report["customer_visible"])
+        self.assertEqual(states["online"], "PATH_CONTRACT_OK")
+        self.assertEqual(states["offline_root"], "SOURCE_PATH_NOT_READY")
+        self.assertEqual(states["reconnected_root"], "SOURCE_PATH_NOT_READY")
+        self.assertEqual(states["permission_denied_root"], "SOURCE_PATH_NOT_READY")
+        self.assertEqual(states["path_changed"], "SOURCE_PATH_NOT_READY")
+        self.assertEqual(states["missing_source"], "SOURCE_PATH_NOT_READY")
+        self.assertEqual(states["invalid_source_uri"], "SOURCE_URI_INVALID")
+        self.assertEqual(states["low_free_space"], "PROCESSED_PATH_UNBOUNDED")
+        self.assertEqual(states["planned_output_exceeds_budget"], "PROCESSED_PATH_UNBOUNDED")
+        self.assertEqual(role_states["processed_relative"], "PROCESSED_PATH_UNBOUNDED")
+        self.assertEqual(role_states["backup_inside_source"], "BACKUP_PATH_UNSAFE")
+        self.assertEqual(role_states["manifest_bad_extension"], "MANIFEST_PATH_UNSAFE")
+        self.assertEqual(role_states["report_export_missing"], "REPORT_EXPORT_PATH_UNSAFE")
+        for workflow in [
+            "bulk_import",
+            "ocr",
+            "embedding",
+            "index_rebuild",
+            "backup_copy",
+            "manifest_generation",
+            "report_export",
+            "batch_report_generation",
+        ]:
+            self.assertIn(workflow, report["safe_mode_pauses"])
+        self.assertTrue(report["does_not_start_services"])
+        self.assertTrue(report["does_not_create_ids_data_root"])
+        self.assertTrue(report["does_not_scan_external_drive_contents"])
+        self.assertTrue(report["does_not_open_source_files"])
+        self.assertTrue(report["does_not_write_manifests"])
+        self.assertTrue(report["does_not_copy_backups"])
+        self.assertTrue(report["does_not_generate_outputs"])
 
 
 if __name__ == "__main__":
