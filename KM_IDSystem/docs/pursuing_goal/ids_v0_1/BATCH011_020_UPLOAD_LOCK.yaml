@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T11:03:09Z"
+updated_at_utc: "2026-07-02T11:22:17Z"
 status: "in_progress_no_github_upload"
 
 repository:
@@ -44,13 +44,17 @@ stage_progress:
     status: "in_progress"
     completed_phases:
       - "Phase 1"
-    next_phase: "Phase 2"
-    current_task_id: "IDS-V0_1-STAGE011-P1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE011-P2"
     acceptance_id: "ACC-STAGE-011"
-    acceptance_status: "phase1_boundary_complete"
+    acceptance_status: "phase2_implementation_complete"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE2_SAFE_MODE_BASELINE.md"
+      - "KM_IDSystem/scripts/check_safe_mode_baseline.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-012:
@@ -91,5 +95,5 @@ stage_progress:
     evidence_refs: []
 
 decision:
-  current_run: "STAGE-011 Phase 1 completed locally with safe-mode boundary evidence only; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, and repaired."
-  no_upload_reason: "Batch STAGE-011..020 has only STAGE-011 Phase 1 complete."
+  current_run: "STAGE-011 Phase 2 completed locally with a read-only safe-mode baseline interface; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, and repaired."
+  no_upload_reason: "Batch STAGE-011..020 has only STAGE-011 Phase 1-2 complete."
