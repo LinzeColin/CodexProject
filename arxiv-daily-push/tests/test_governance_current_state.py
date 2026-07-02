@@ -1133,6 +1133,32 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ):
             self.assertNotIn(stale_phrase, project_yaml + "\n" + features)
 
+    def test_evidence_freshness_partial_is_current_and_not_s3_blocker(self) -> None:
+        project_yaml = (ADP_ROOT / "docs/governance/project.yaml").read_text(encoding="utf-8")
+        owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "evidence_freshness 仍为 PARTIAL：13 tree-bound events、10 commit-bound events、331 legacy unbound events、40 precommit pending events",
+            project_yaml,
+        )
+        self.assertNotIn(
+            "0 tree-bound events、1 commit-bound event、55 legacy unbound events、38 precommit pending events",
+            project_yaml,
+        )
+        self.assertIn(
+            "evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断",
+            owner_status,
+        )
+        self.assertIn("pending_or_stale_events=383", owner_status)
+        self.assertIn("legacy_unbound_events=331", owner_status)
+        self.assertIn(
+            "证据新鲜度 | `evidence_freshness=PARTIAL` 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断",
+            mvp_prep,
+        )
+        self.assertIn("当前唯一 S3 阻断仍是持久授权 artifact 缺失", mvp_prep)
+        self.assertIn("不要把 pending/stale events 当作生产开关或 Stage 2 回退依据", mvp_prep)
+
     def test_owner_decision_request_attestation_and_current_precommit_binding(self) -> None:
         manifest_path = (
             REPO_ROOT

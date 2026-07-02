@@ -2379,6 +2379,9 @@ def render_owner_status(item: dict[str, Any]) -> str:
 - legacy_unbound_events: `{item['event_binding_counts']['legacy_unbound_events']}`
 - precommit_pending_events: `{item['event_binding_counts']['precommit_pending_events']}`
 - pending_or_stale_events: `{item['pending_event_count']}`
+- freshness_counts: `pending_or_stale_events={item['pending_event_count']}; legacy_unbound_events={item['event_binding_counts']['legacy_unbound_events']}`
+- freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+- current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
 ## 15. UNKNOWN
 

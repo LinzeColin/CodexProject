@@ -88,6 +88,9 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 - legacy_unbound_events: `331`
 - precommit_pending_events: `40`
 - pending_or_stale_events: `383`
+- freshness_counts: `pending_or_stale_events=383; legacy_unbound_events=331`
+- freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+- current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
 ## 15. UNKNOWN
 
