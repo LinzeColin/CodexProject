@@ -184,6 +184,7 @@ def build_enablement_preflight_report(
     open_pr_observation_errors: list[str] | None = None,
 ) -> dict[str, Any]:
     generated = generated_at or datetime.now(timezone.utc).isoformat()
+    authorization_artifact = root / AUTHORIZATION_ARTIFACT_REF
     readiness = _load_readiness_report(root, generated)
     environment_smtp_send = os.environ.get("ADP_ALLOW_SMTP_SEND", "UNSET")
     raw_smtp_send = environment_smtp_send if adp_allow_smtp_send is None else adp_allow_smtp_send
@@ -231,6 +232,8 @@ def build_enablement_preflight_report(
         "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
         "task_id": "S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT",
         "generated_at": generated,
+        "repo_root": str(root),
+        "required_cwd": "CodexProject repository root",
         "enablement_preflight_ready": enablement_preflight_ready,
         "checks": checks,
         "blocking_reasons": [] if enablement_preflight_ready else blocking_reasons,
@@ -239,6 +242,7 @@ def build_enablement_preflight_report(
         "daily_operation_ready": readiness.get("daily_operation_ready") is True,
         "persistent_daily_operation_authorized": readiness.get("persistent_daily_operation_authorized") is True,
         "authorization_artifact": readiness.get("authorization_artifact", AUTHORIZATION_ARTIFACT_REF),
+        "authorization_artifact_exists": authorization_artifact.is_file(),
         "next_required_step": readiness.get("next_required_step"),
         "next_executable_task": readiness.get("next_executable_task"),
         "open_pr_count": open_pr_count,
