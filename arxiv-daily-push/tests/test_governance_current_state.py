@@ -700,6 +700,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+        mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
         one_look = (ADP_ROOT / "用户中心/一看三查.md").read_text(encoding="utf-8")
         roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
         mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
@@ -767,6 +768,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("不是当前要求必须存在一个持久显式 `false` 环境变量", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like", readme)
         self.assertNotIn("持久 `ADP_ALLOW_SMTP_SEND=false`", readme)
+        self.assertIn("邮件状态历史 SMTP 开关口径已清理", mail_status)
+        self.assertIn("历史运行条目只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前复核仍只接受 `UNSET` 或 false-like", mail_status)
+        self.assertIn("运行后 `ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like", mail_status)
+        self.assertNotIn("运行后持久 `ADP_ALLOW_SMTP_SEND=false`", mail_status)
         self.assertLess(
             readme.index("当前治理 SMTP 原始值证据口径已同步"),
             readme.index("owner A 决策 mainline 证据已绑定"),
