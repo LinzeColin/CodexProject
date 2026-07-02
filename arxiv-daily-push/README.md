@@ -103,14 +103,15 @@ V5 到 V6 的 Stage 1 任务连续性：
 ## 本地验证
 
 以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径。
+不要给这些 root tools 追加 `--json`；它们默认输出 JSON。
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push
 git diff --check
-python3 tools/verify_acceptance_bundle.py --require-zero P0 P1
-python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2
-python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2
+python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1
+python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2
+python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2
 ```
 
 预期：前两个 S3/DAILY_OPERATION 专用命令本体仍输出 `status=FAIL`，随后 shell 断言分别显示 `EXPECTED_READINESS_EXIT=2` 和 `EXPECTED_PREFLIGHT_EXIT=2`。这是缺持久授权 artifact 时的正确阻断，不得为了让命令直接返回 0 而启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION。
