@@ -2,6 +2,18 @@
 
 Active Codex-related project hub for LinzeColin.
 
+## Owner First Screen
+
+- Current purpose: source-level GitHub hub for multiple governed projects.
+- Current source of truth: GitHub `main` plus the local main checkout below; ordinary project work should happen in long-lived project worktrees, not this main checkout.
+- Outdated or risky roots: duplicate `CodexProject*`, standalone project copies, old-Mac paths, app caches, and per-project shadow folders.
+- Read next: start with [AGENTS.md](AGENTS.md), then [docs/governance/STANDARD.md](docs/governance/STANDARD.md); for a specific project, read its `功能清单.md`, `开发记录.md`, and `模型参数文件.md`.
+- Do not touch without a specific run contract: secrets, runtime DB/WAL/SHM files, browser profiles, raw private datasets, caches, and unrelated project directories.
+- Pending decisions: project-specific owner decisions live in project human-entry files and any active `docs/pursuing_goal/**/V*_ROOT_LOCK.yaml`.
+- Evidence: governance truth converges through project `docs/governance/` files, `VERSION`, `CHANGELOG.md`, tests, validators, and commit-bound evidence.
+- Unknowns: if a project lacks a clear current Stage/Phase/Task in its human-entry files, treat the status as `UNKNOWN` and stop for a narrower handoff.
+- Next smallest action: choose one project/worktree, verify `cwd`, git root, branch, remote, HEAD, and status, then read only that project's entry files before edits.
+
 ## Governance Entry
 
 - Execution contract: [AGENTS.md](AGENTS.md)
