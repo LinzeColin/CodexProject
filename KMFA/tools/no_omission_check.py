@@ -99,6 +99,12 @@ def load_requirements() -> list[dict[str, str]]:
     return rows
 
 
+def is_baseline_status_record(record: dict[str, object]) -> bool:
+    record_type = str(record.get("record_type") or "")
+    phase_id = str(record.get("phase_id") or "")
+    return not (record_type.startswith("v013_") or phase_id.startswith("V013_"))
+
+
 def load_status_records() -> tuple[set[str], set[str], set[str], list[dict[str, object]]]:
     if not STAGE_STATUS.exists():
         fail(f"missing stage status registry: {STAGE_STATUS.relative_to(ROOT)}")
@@ -116,13 +122,14 @@ def load_status_records() -> tuple[set[str], set[str], set[str], list[dict[str, 
         records.append(record)
     if not records:
         fail("stage_status.jsonl has no records")
+    baseline_records = [record for record in records if is_baseline_status_record(record)]
 
     roadmap_stage_ids: set[str] = set()
     governance_stage_ids: set[str] = set()
     stage_ids: set[str] = set()
     phase_ids: set[str] = set()
     task_ids: set[str] = set()
-    for record in records:
+    for record in baseline_records:
         if record.get("record_type") == "stage":
             if record.get("roadmap_stage_id"):
                 roadmap_stage_ids.add(str(record["roadmap_stage_id"]))
@@ -143,7 +150,7 @@ def load_status_records() -> tuple[set[str], set[str], set[str], list[dict[str, 
         fail(f"expected 54 phase records, found {len(phase_ids)}")
     if len(task_ids) != 162:
         fail(f"expected 162 task records, found {len(task_ids)}")
-    return stage_ids, phase_ids, task_ids, records
+    return stage_ids, phase_ids, task_ids, baseline_records
 
 
 def check_requirements(rows: list[dict[str, str]], stage_ids: set[str], task_ids: set[str]) -> None:

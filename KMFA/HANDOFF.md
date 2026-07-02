@@ -9,12 +9,12 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s03-stage-review`
-- 当前已完成: `v0.1.3 Stage 3｜整体复审`
-- 证据目录: `KMFA/stage_artifacts/V013_S03_STAGE_REVIEW/`
-- 复审结论: Stage 3 review generator、validator、新单测、S03-P1/S03-P2/S03-P3 validators 均 PASS，phase_results 全部 PASS，findings_open=0，data quality=`Q2`，report grade=`D`，release permission=`blocked`，github_upload_ready_next_gate=`true`。
-- 未执行: GitHub upload、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 Stage 3 GitHub upload` 或用户明确指定的单一 phase；不得在本 review run 内上传。
+- 当前版本: `0.1.3-s04p1-amount-precision`
+- 当前已完成: `v0.1.3 S04-P1｜金额精度与 no-float replay`
+- 证据目录: `KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/`
+- 复审结论: S04-P1 generator、validator、新单测、既有 amount_tools test、no-float scanner 和 S03 stage review dependency 均 PASS；amount_cases=9、rejections=9、scan_fixture_forbidden_float_findings=3、repository_no_float_scan_passed=true；data quality=`Q2`，report grade=`D`，release permission=`blocked`。
+- 未执行: S04-P2、S04-P3、Stage 4 review、GitHub upload、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S04-P2 字段标准化 replay`；不得在 S04-P1 run 内上传或进入 Stage 4 review。
 
 ## 持久本机 raw boundary
 
