@@ -28,6 +28,7 @@ class Stage005GovernanceRegressionTests(unittest.TestCase):
         self.assertEqual(report["event_json_errors"], [])
         self.assertEqual(report["forbidden_changed_paths"], [])
         self.assertEqual(report["tracked_forbidden_runtime_files"], [])
+        self.assertTrue(all(report["data_boundary_checks"].values()), report["data_boundary_checks"])
         self.assertGreaterEqual(report["surface_counts"]["governance"], 1)
         self.assertGreaterEqual(report["surface_counts"]["scripts"], 1)
         self.assertGreaterEqual(report["accepted_name_hits"]["IDS / Industrial Data System"], 1)
@@ -94,6 +95,35 @@ next_gate_id: "IDS-STAGE005-P4-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_ids_metadata_raw_boundary_requires_real_data_only_policy(self):
+        module = self._load_module()
+        root_lock_text = """
+ids_metadata_raw_root: "/Users/linzezhang/Downloads/IDS_MetaData"
+ids_metadata_raw_root_record: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+ids_metadata_raw_root_policy: "read-only; path is tracked in GitHub governance; raw database content is not committed, copied, scanned, moved, deleted, or modified"
+real_data_only_policy: "fake business data and fabricated evidence are forbidden"
+"""
+        batch_text = """
+data_boundary:
+  ids_metadata_raw_root: "/Users/linzezhang/Downloads/IDS_MetaData"
+  boundary_record: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  raw_root_policy: "read-only; do not modify raw database content"
+"""
+        boundary_text = """
+# IDS Metadata Raw Data Boundary
+Local raw metadata root: `/Users/linzezhang/Downloads/IDS_MetaData`
+Codex must not create, edit, delete, move, clean, rewrite, normalize, rename,
+or compact files inside that local raw metadata root.
+Raw directory content copied into GitHub: `no`
+## Real Data Only Policy
+New fake industrial records, fake database rows, fake business documents,
+placeholder corpora, and fake business data are forbidden.
+"""
+
+        checks = module.evaluate_data_boundary(root_lock_text, batch_text, boundary_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_phase_state_allows_phase4_closeout_completion(self):
         module = self._load_module()
         batch_text = """
@@ -150,6 +180,42 @@ current_stage_id: "IDS-STAGE010"
 current_phase_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
 current_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
 next_gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_uploaded_batch_terminal_state_after_stage005(self):
+        module = self._load_module()
+        batch_text = """
+status: "uploaded_to_github_main"
+upload_gate:
+  push_allowed: true
+  gate_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+  merged_sha: "2d418ccba1e16bcb940387c6e8152668fc2dccaf"
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-006"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+    acceptance_status: "local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE010"
+current_phase_id: "IDS-V0_1-BATCH-001-010-MAIN-MERGED"
+current_task_id: "IDS-V0_1-BATCH-001-010-MAIN-MERGED"
+next_gate_id: "IDS-STAGE011-P1-GATE"
         phase_id: "IDS-STAGE005-P2"
           status: "passed_with_local_evidence"
         phase_id: "IDS-STAGE005-P3"

@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-001-010"
 created_at_utc: "2026-07-02T04:29:53Z"
-updated_at_utc: "2026-07-02T10:29:44Z"
-status: "local_batch_upload_gate_passed_pending_github_merge"
+updated_at_utc: "2026-07-02T10:48:44Z"
+status: "uploaded_to_github_main"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -17,6 +17,13 @@ scope:
   acceptance_range: "ACC-STAGE-001..ACC-STAGE-010"
   source_index: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
 
+data_boundary:
+  ids_metadata_raw_root: "/Users/linzezhang/Downloads/IDS_MetaData"
+  boundary_record: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  raw_root_policy: "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content"
+  real_data_only_policy: "All IDS runtime corpus, database-backed content, analytics inputs, reports, indexes, manifests, and committed examples must use real user-approved data; fake business data and fabricated evidence are forbidden."
+  local_existence_check: "IDS_METADATA_ROOT_EXISTS"
+
 upload_gate:
   push_allowed: true
   required_before_push:
@@ -26,10 +33,15 @@ upload_gate:
     - "check-render --project KM_IDSystem returns drift_count=0."
     - "Changed scope remains inside KM_IDSystem/ and allowed governance roots."
     - "No open blocker tied to raw data, secrets, local generated data, or sparse-worktree expansion."
+    - "IDS_MetaData raw database root is recorded as a read-only real-data source boundary."
   github_target: "main"
   gate_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
   gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
   remote_strategy: "push branch, create PR to main, merge PR, verify no open PRs or issues"
+  github_pr: "https://github.com/LinzeColin/CodexProject/pull/270"
+  merged_sha: "2d418ccba1e16bcb940387c6e8152668fc2dccaf"
+  post_merge_open_prs: 0
+  post_merge_open_issues: 0
 
 stage_progress:
   STAGE-001:
@@ -227,5 +239,5 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
 
 decision:
-  current_run: "Completed STAGE-001..010 batch upload gate locally; upload to GitHub main may proceed by pushing this branch, opening a PR to main, merging it, and verifying no open PRs or issues remain."
-  no_upload_reason: "NONE after local batch gate validation passes; direct push to main is avoided because origin/main and the local batch branch diverged."
+  current_run: "Completed STAGE-001..010 batch upload to GitHub main through PR #270; main, local branch, and remote feature branch all point to merge SHA 2d418ccba1e16bcb940387c6e8152668fc2dccaf."
+  no_upload_reason: "NONE. Upload completed and post-merge open PR/issue checks returned zero."
