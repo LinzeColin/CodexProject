@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 18:39:57 Australia/Sydney
+更新时间：2026-07-02 18:49:38 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -92,6 +92,13 @@
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），计划应发 4 封；受控发送证据不代表 S3/DAILY_OPERATION 已进入。
 
 ## 最近治理与历史记录
+
+## 2026-07-02 18:49:38 Australia/Sydney - 持久授权模板已补齐但默认无效
+
+- 新增 `FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json`，用于未来 owner 明确授权持久 DAILY_OPERATION 时减少字段猜测。
+- 模板默认 `template_only=true` 且 `explicit_persistent_daily_operation_authorization=false`；复制不改到 live artifact 路径必须无效。
+- 当前真正授权 artifact 仍缺：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。
+- 本轮仍只做 MVP 准备与复审修补，不创建持久授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。
 
 ## 2026-07-02 18:39:57 Australia/Sydney - DAILY_OPERATION 专用 root gate 已补齐
 

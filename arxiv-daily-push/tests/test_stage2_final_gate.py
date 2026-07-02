@@ -7118,6 +7118,32 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_state(tampered),
         )
 
+    def test_daily_operation_persistent_authorization_template_is_not_live_authorization(self) -> None:
+        template_path = (
+            REPO_ROOT
+            / "FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json"
+        )
+        template_index = (REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertTrue(template_path.exists())
+        self.assertIn("daily_operation_persistent_enablement_authorization.template.json", template_index)
+        self.assertFalse(
+            (REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json").exists()
+        )
+
+        payload = json.loads(template_path.read_text(encoding="utf-8"))
+        self.assertTrue(payload["template_only"])
+        self.assertFalse(payload["explicit_persistent_daily_operation_authorization"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertIn(
+            "persistent daily operation authorization artifact must be explicit",
+            stage2_final_gate_module._validate_persistent_daily_operation_authorization_artifact(payload),
+        )
+
     def test_daily_operation_persistent_authorization_request_is_request_only(self) -> None:
         build_state = getattr(
             stage2_final_gate_module,
