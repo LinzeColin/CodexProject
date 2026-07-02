@@ -1958,6 +1958,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("只有明确得到 `open_pr_count=0` 才能通过", readme)
         self.assertIn("本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线", mvp)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like", mvp)
+        self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp)
+        self.assertNotIn("## 09 推荐第一轮 Run Contract", mvp)
         self.assertIn("GitHub pulls HTML fallback", mvp)
         self.assertIn("若结果为 `UNKNOWN` 或非 0，不得当作通过", mvp)
         self.assertIn("open PR 必须用 GitHub pulls HTML fallback 得到 0", mvp)
