@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T21:01:01Z"
+updated_at_utc: "2026-07-02T21:12:02Z"
 status: "in_progress_no_github_upload"
 
 repository:
@@ -230,20 +230,22 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-019:
-    status: "in_progress"
+    status: "completed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
-    next_phase: "Phase 4"
-    current_task_id: "IDS-V0_1-STAGE019-P3"
+      - "Phase 4"
+    next_stage: "STAGE-020"
+    current_task_id: "IDS-V0_1-STAGE019-P4"
     acceptance_id: "ACC-STAGE-019"
-    acceptance_status: "phase3_scenario_validation_complete"
+    acceptance_status: "local_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_PHASE2_RISK_ESTIMATOR_SLICE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/scripts/check_import_risk_estimator.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_import_risk_estimator.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_PHASE4_CLOSEOUT.md"
@@ -255,5 +257,5 @@ stage_progress:
     evidence_refs: []
 
 decision:
-  current_run: "STAGE-019 Phase 3 completed locally with metadata-only scenario validation for empty_directory, small_directory, large_directory, offline_drive, archive_present, insufficient_space, plus save/cancel/split/skip owner decision coverage; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, app entries are reinstalled, and batch-gated."
-  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 through STAGE-018 complete locally and STAGE-019 Phase 1-3 complete locally; STAGE-019 Phase 4 and STAGE-020 remain pending."
+  current_run: "STAGE-019 Phase 4 completed locally with owner feedback summary, preflight report sample, risk checklist, confirmation flow log, uncertainty notes, failure explanations, rollback, and whole-stage closeout evidence; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, app entries are reinstalled, and batch-gated."
+  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 through STAGE-019 complete locally; STAGE-020 remains pending."
