@@ -2987,3 +2987,47 @@ tasks:
     rollback: "Revert the final backup evidence commit before push; after push create a correcting commit rather than rewriting public main."
     target_version: "0.1.0-post-s18-final-no-go-backup-upload"
     completed_version: "0.1.0-post-s18-final-no-go-backup-upload"
+  - task_id: "KMFA-V013-S00-P1-DOWNLOADS-APP-ENTRY-20260702"
+    phase: "V013_S00_P1_DOWNLOADS_APP_ENTRY"
+    objective: "在 Downloads 建立 KMFA.app 本机入口并更新 KMFA 专用图标，入口只打开 canonical KMFA public-safe 首页 HTML。"
+    scope:
+      - "Downloads KMFA.app bundle binding"
+      - "KMFA app icon hash evidence"
+      - "S00-P1 validator and unit test"
+      - "public-safe app entry evidence"
+    non_scope:
+      - "Stage 0 review"
+      - "GitHub upload"
+      - "raw business data"
+      - "zip or Excel or PDF commit"
+      - "lineage full check completion"
+      - "pending reconciliation closure"
+      - "formal report release"
+      - "live connector"
+      - "OpMe deep coupling"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-FINAL-GITHUB-BACKUP-NO-GO-20260702"
+    required_files:
+      - "KMFA/tools/check_v013_s00_app_entry.py"
+      - "KMFA/tests/test_v013_s00_app_entry.py"
+      - "KMFA/stage_artifacts/V013_S00_APP_ENTRY/human/app_entry_record.md"
+      - "KMFA/stage_artifacts/V013_S00_APP_ENTRY/human/test_results.md"
+      - "KMFA/stage_artifacts/V013_S00_APP_ENTRY/machine/app_entry_manifest.json"
+    acceptance_ids:
+      - "ACC-V013-S00-APP-ENTRY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v013_s00_app_entry.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v013_s00_app_entry -q"
+      - "plutil -lint /Users/linzezhang/Downloads/KMFA.app/Contents/Info.plist"
+    test_results:
+      - "PASS: Downloads KMFA.app exists, Info.plist parses, launcher dry-run binds canonical target HTML, icon hash matches manifest and delivery remains blocked."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V013_S00_APP_ENTRY/human/app_entry_record.md"
+      - "KMFA/stage_artifacts/V013_S00_APP_ENTRY/human/test_results.md"
+      - "KMFA/stage_artifacts/V013_S00_APP_ENTRY/machine/app_entry_manifest.json"
+    risk: "This phase creates a local app entry only. It does not authorize Stage 0 review, GitHub upload, delivery, formal report release, live connector or business execution."
+    rollback: "Remove /Users/linzezhang/Downloads/KMFA.app and revert V013_S00_APP_ENTRY artifacts, validator, unit test and governance rows before rerunning S00-P1."
+    target_version: "0.1.3-s00p1-app-entry"
+    completed_version: "0.1.3-s00p1-app-entry"

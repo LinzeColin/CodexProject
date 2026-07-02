@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-post-s18-final-no-go-backup-upload`
-- current_stage: `S18`
-- current_phase: `Post-S18 Final GitHub Backup｜NO_GO governance backup only`
-- status: `uploaded_no_go_governance_backup_only_release_blocked`
+- version: `0.1.3-s00p1-app-entry`
+- current_stage: `S00`
+- current_phase: `v0.1.3 S00-P1｜Downloads App Entry`
+- status: `local_app_entry_verified_no_go_stage_review_pending`
 - production_ready: `false`
-- github_upload_ready: `final_no_go_governance_backup_evidence_generated_push_proof_required`
+- github_upload_ready: `false_stage0_review_required_first`
 
 ## 已完成
 
@@ -40,6 +40,7 @@
 - Post-S18 Part 4 已完成 Stage 10-12 本地复审，证据位于 `KMFA/stage_artifacts/PART4_STAGES_10_12_REVIEW/`；本轮未执行 GitHub upload、Stage 13-18 复审、整体项目复审、lineage full check、正式报告或业务执行。
 - Post-S18 Lineage / Report Gate 已完成本地阻断证据，证据位于 `KMFA/stage_artifacts/LINEAGE_REPORT_GATE/`；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据和 release/delivery claim。
 - Post-S18 Final GitHub Backup 证据已生成，证据位于 `KMFA/stage_artifacts/FINAL_GITHUB_BACKUP/`；该上传只能作为 `NO_GO governance backup only`，不改变 `delivery_allowed=false`。
+- v0.1.3 S00-P1 Downloads app entry 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S00_APP_ENTRY/`；`/Users/linzezhang/Downloads/KMFA.app` 指向 canonical KMFA public-safe 首页 HTML，图标 hash 已锁定。本轮未执行 Stage 0 review、GitHub upload、正式报告、live connector 或业务执行，`NO_GO` 保持不变。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
 - Post-S18 Whole Project Final Review 已完成本地复审和 findings 修复，证据位于 `KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/`；当前全项目 Go/No-Go 仍为 `NO_GO`，`delivery_allowed=false`。
@@ -131,11 +132,11 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- Post-S18 第二阶段整体项目复审尚未执行；下一轮只能执行 whole-project final review/fix，不上传 GitHub。
+- v0.1.3 Stage 0 整体复审尚未执行；下一轮只能复跑 S00-P1 validator、治理 validator、raw/secret scan 并修复 findings，不直接上传 GitHub。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
 - S17-P1/S17-P2/S17-P3、Stage 17 整体复审、Stage 17 final GitHub upload、S18-P1、S18-P2、S18-P3、Stage 18 整体复审和 Stage 18 final GitHub upload 已完成；Stage 18 review-level Go/No-Go 为 `NO_GO`；不能直接进入 lineage full check、正式报告、完整报告邮件、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
-- 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
+- 后续所有开发必须建立在 v1.2 完整任务包、v0.1.3 修补包 roadmap 和 HTML 样板基线上；每次 run work 最多只推进一个 phase。
