@@ -160,6 +160,69 @@ class Stage008RemovableDriveStateTests(unittest.TestCase):
         self.assertTrue(payload["does_not_create_ids_data_root"])
         self.assertTrue(payload["does_not_scan_recursively"])
 
+    def test_phase3_scenario_report_covers_transitions_storage_and_safe_mode_pauses(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            online = base / "online"
+            online.mkdir()
+            self._create_complete_slots(online)
+
+            offline = base / "offline"
+
+            denied = base / "denied"
+            denied.mkdir()
+
+            missing = base / "missing"
+            missing.mkdir()
+            self._create_complete_slots(missing)
+            (missing / "42_SLOT").rmdir()
+
+            def access_side_effect(path, mode):
+                return Path(path) != denied
+
+            with patch.object(module.root_detector.os, "access", side_effect=access_side_effect):
+                report = module.build_stage008_scenario_report(
+                    online_root=str(online),
+                    offline_root=str(offline),
+                    reconnected_root=str(online),
+                    permission_denied_root=str(denied),
+                    path_changed_current=str(online),
+                    path_changed_expected=str(base / "expected"),
+                    structure_invalid_root=str(missing),
+                    storage_total_bytes=1000 * 1024**3,
+                    storage_ok_free_bytes=300 * 1024**3,
+                    storage_low_free_bytes=50 * 1024**3,
+                    storage_high_used_free_bytes=120 * 1024**3,
+                )
+
+        scenarios = report["removable_drive_scenarios"]
+        storage = report["storage_scenarios"]
+
+        self.assertTrue(report["overall_valid"])
+        self.assertEqual(report["schema_version"], "ids.stage008.phase3_scenarios.v1")
+        self.assertFalse(report["customer_visible"])
+        self.assertTrue(report["does_not_start_services"])
+        self.assertTrue(report["does_not_create_ids_data_root"])
+        self.assertTrue(report["does_not_scan_recursively"])
+        self.assertTrue(report["does_not_scan_external_drive_contents"])
+        self.assertEqual(scenarios["online"]["state"], "ONLINE_VALIDATED")
+        self.assertFalse(scenarios["online"]["safe_mode"])
+        self.assertFalse(scenarios["online"]["auto_resume"])
+        self.assertEqual(scenarios["offline"]["state"], "OFFLINE")
+        self.assertEqual(scenarios["reconnected"]["state"], "RECONNECTED_NEEDS_REVALIDATION")
+        self.assertTrue(scenarios["reconnected"]["requires_revalidation"])
+        self.assertFalse(scenarios["reconnected"]["resume_allowed"])
+        self.assertEqual(scenarios["permission_denied"]["state"], "PERMISSION_DENIED")
+        self.assertEqual(scenarios["path_changed"]["state"], "PATH_CHANGED")
+        self.assertTrue(scenarios["path_changed"]["requires_operator_confirmation"])
+        self.assertEqual(scenarios["structure_invalid"]["state"], "STRUCTURE_INVALID")
+        self.assertEqual(storage["ok"]["state"], "ONLINE_VALIDATED")
+        self.assertEqual(storage["low_free_space"]["state"], "STORAGE_BLOCKED")
+        self.assertEqual(storage["high_waterline"]["state"], "STORAGE_BLOCKED")
+        for workflow in ["bulk_import", "ocr", "embedding", "index_rebuild", "raw_material_cleanup"]:
+            self.assertIn(workflow, report["safe_mode_pauses"])
+
 
 if __name__ == "__main__":
     unittest.main()
