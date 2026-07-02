@@ -1,5 +1,5 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260702-V013-S03-P3-SOURCE-PRIORITY"
+as_of_event_id: "EVENT-KMFA-20260702-V013-S03-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "59f9b9796e6e49b703dbbda23a485c1d6f455e9c"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S18UPLOAD_COMMIT"
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 386
+    total_active_parameters: 393
     total_active_formulas: 52
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
@@ -79,6 +79,8 @@ dimensions:
       - "KMFA/tools/check_v013_s03_p2_source_check_matrix.py"
       - "KMFA/stage_artifacts/V013_S03_P3_SOURCE_PRIORITY/human/test_results.md"
       - "KMFA/tools/check_v013_s03_p3_source_priority.py"
+      - "KMFA/stage_artifacts/V013_S03_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/tools/check_v013_s03_stage_review.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
@@ -148,6 +150,7 @@ dimensions:
       - "KMFA/tools/check_v013_s03_p1_file_import_register.py"
       - "KMFA/tools/check_v013_s03_p2_source_check_matrix.py"
       - "KMFA/tools/check_v013_s03_p3_source_priority.py"
+      - "KMFA/tools/check_v013_s03_stage_review.py"
       - "KMFA/tools/source_check_matrix.py"
       - "KMFA/tools/source_priority.py"
       - "KMFA/tools/amount_tools.py"
