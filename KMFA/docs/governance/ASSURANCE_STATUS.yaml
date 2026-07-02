@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260703-V013-S06-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260703-V013-S07-P1-FINANCE-FILE-ADAPTER-REPLAY"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "e4dc1f5b1e1da24cc3e59a1b27f0668af83c186c"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_STAGE_REVIEW_COMMIT"
-snapshot_event_time: "2026-07-03T08:40:00+10:00"
-generator_version: "manual-v013-s06-stage-review"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S07_P1_FINANCE_FILE_ADAPTER_REPLAY_COMMIT"
+snapshot_event_time: "2026-07-03T09:40:00+10:00"
+generator_version: "manual-v013-s07-p1-finance-file-adapter-replay"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 494
+    total_active_parameters: 502
     total_active_formulas: 53
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
@@ -113,6 +113,11 @@ dimensions:
       - "KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
       - "KMFA/tools/check_v013_s06_stage_review.py"
       - "KMFA/tools/v013_s06_stage_review.py"
+      - "KMFA/stage_artifacts/V013_S07_P1_FINANCE_FILE_ADAPTER_REPLAY/human/test_results.md"
+      - "KMFA/stage_artifacts/V013_S07_P1_FINANCE_FILE_ADAPTER_REPLAY/human/finance_file_adapter_replay_report.md"
+      - "KMFA/stage_artifacts/V013_S07_P1_FINANCE_FILE_ADAPTER_REPLAY/machine/finance_file_adapter_replay_manifest.json"
+      - "KMFA/tools/check_v013_s07_p1_finance_file_adapter_replay.py"
+      - "KMFA/tools/v013_s07_p1_finance_file_adapter_replay.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
