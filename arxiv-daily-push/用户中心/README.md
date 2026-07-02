@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 13:04:44 Australia/Sydney
+更新时间：2026-07-02 15:07:43 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -92,6 +92,13 @@
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），总应发送 4 封；这不是 S3/DAILY_OPERATION 已进入声明。
 
 ## 最近治理与历史记录
+
+## 2026-07-02 15:07:43 Australia/Sydney - 后台进程扫描停止门已同步到路线图
+
+- S3/MVP 安全边界复核的后台进程扫描只匹配 ADP runner/module/path 信号：`arxiv_daily_push`、`arxiv-daily-push`、`local_runner` 或 `CodexProject.*arxiv-daily-push`。
+- 禁止使用裸 `adp` 子串作为进程扫描匹配项，避免把普通工作树路径、shell 命令或审计文本误判为后台 DAILY_OPERATION。
+- 该规则已同步到 [路线图与停止门](./路线图与停止门.md)、[MVP 准备与复审修补](./MVP准备与复审修补.md) 和 [S3 DAILY_OPERATION 下一 Agent 先读](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md)。
+- 这仍不授权 S3/DAILY_OPERATION；持久授权 artifact 仍缺失，继续保持 `daily_operation_enabled=false`。
 
 ## 2026-07-02 12:52:07 Australia/Sydney - MVP Run Contract README 入口同步
 
