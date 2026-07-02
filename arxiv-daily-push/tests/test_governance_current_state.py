@@ -782,6 +782,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("当前允许的安全状态是 `UNSET` 或 false-like", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", readme)
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like", decisions)
+        self.assertIn("历史 SMTP 开关口径已清理", decisions)
+        self.assertIn(
+            "历史行只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前执行入口仍只接受 `UNSET` 或 false-like",
+            decisions,
+        )
         self.assertIn(
             "继续按原始值复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like",
             decisions,
@@ -790,8 +795,19 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "按当前入口原始值规则复核 `ADP_ALLOW_SMTP_SEND`：只接受 `UNSET` 或 false-like",
             decisions,
         )
+        self.assertIn(
+            "在受控窗口按授权切换 `ADP_ALLOW_SMTP_SEND`，并在收口后回到 `UNSET` 或 false-like",
+            decisions,
+        )
+        self.assertIn(
+            "也不得把这类历史 false-like 状态回写成当前 Stage 2 结论",
+            decisions,
+        )
         self.assertNotIn("继续保持持久 `ADP_ALLOW_SMTP_SEND=false`", decisions)
         self.assertNotIn("保持 `ADP_ALLOW_SMTP_SEND=false`，三个 ADP LaunchAgent disabled", decisions)
+        self.assertNotIn("当时保持 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("当时维持 `ADP_ALLOW_SMTP_SEND=false`", decisions)
+        self.assertNotIn("先清除 `ADP_ALLOW_SMTP_SEND=false`", decisions)
         self.assertIn("只有明确得到 `open_pr_count=0` 才能通过", readme)
         self.assertIn("`UNKNOWN`、非 0、命令失败或无法解析都必须停止并回报", readme)
         self.assertIn("open PR 边界复核 fallback", roadmap)
