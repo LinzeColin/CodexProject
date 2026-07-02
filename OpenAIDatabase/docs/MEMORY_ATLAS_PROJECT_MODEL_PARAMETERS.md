@@ -2965,3 +2965,54 @@ Stage 9 整体复审已确认：
 - 本 phase 不读取 raw/private/cookie/session/secret 数据。
 - 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
+
+## 63. v1.1.6 Stage 9 Phase 3 Data Map C3 隔离原型参数
+
+状态：`phase_9_3_data_map_c3_spike_ready_pending_stage_review`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Phase 9.3 创建 `data-map-spike` 的独立原型证据、fixture 安全、production isolation 和治理记录。
+- Data Map 2.0 必须解释 source -> topic -> asset -> action，不得退化为 static structure diagram、plain table 或不可解释 node-link graph。
+
+输入：
+
+- `apps/memory-atlas/src/experiments/data-map-spike/README.md`
+- `apps/memory-atlas/src/experiments/data-map-spike/index.html`
+- `apps/memory-atlas/src/experiments/data-map-spike/main.ts`
+- `apps/memory-atlas/src/experiments/data-map-spike/fixture.ts`
+- `docs/product/data_map_c3_spike_contract.md`
+- `docs/acceptance/data_map_c3_spike_acceptance.md`
+
+处理方法：
+
+- 检查 spike 文件是否齐全。
+- 检查 main source 是否保留 source/topic/asset/action 四层、三类 edge、data_to_action_flow、map_card 字段、Inspector/Search/Review handoff、proposal-only 状态、reduced motion 和 smoke hook。
+- 检查 fixture 是否保持 raw/private、plaintext secrets、local absolute paths 和 writeback 标志为 false，`proposalOnly` 为 true。
+- 检查 production `src` 是否没有引用 `data-map-spike`。
+- 使用 `validate:v1.1.6-stage9-phase3` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9P03-001 stage9_phase3_contract_id = data_map_c3_spike_contract`
+- `PARAM-MA-V116-S9P03-002 stage9_phase3_spike_path = apps/memory-atlas/src/experiments/data-map-spike`
+- `PARAM-MA-V116-S9P03-003 stage9_phase3_required_features = source_layer;topic_layer;asset_layer;action_layer;source_to_topic_edges;topic_to_asset_edges;asset_to_action_edges;data_to_action_flow;map_card;open_inspector;jump_to_search;jump_to_review;proposal_candidate;reduced_motion;smoke_status_hook`
+- `PARAM-MA-V116-S9P03-004 stage9_phase3_fixture_safety = rawPrivateDataIncluded:false;plaintextSecretsIncluded:false;localAbsolutePathsIncluded:false;writebackAllowed:false;proposalOnly:true`
+- `PARAM-MA-V116-S9P03-005 stage9_phase3_isolation_boundary = no_production_import;no_route;no_navigation;no_feature_flag_default;no_direct_writeback;no_proposal_write`
+- `PARAM-MA-V116-S9P03-006 stage9_phase3_required_validator = validate:v1.1.6-stage9-phase3`
+
+输出：
+
+- Stage 9 Phase 3 Data Map spike 原型文件。
+- Stage 9 Phase 3 产品合同。
+- Stage 9 Phase 3 验收文件。
+- Stage 9 Phase 3 validator。
+
+边界：
+
+- 本 phase 不修改 production Data Guide / Data Map、路由、导航、feature flag 或 app shell。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
