@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-021-030"
 created_at_utc: "2026-07-02T22:43:25Z"
-updated_at_utc: "2026-07-02T23:01:24Z"
-status: "stage021_phase3_in_progress"
+updated_at_utc: "2026-07-02T23:14:15Z"
+status: "stage021_completed_local_pending_stage022"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -41,21 +41,23 @@ upload_gate:
 
 stage_progress:
   STAGE-021:
-    status: "in_progress"
+    status: "completed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
-    next_phase: "Phase 4"
-    next_gate: "IDS-STAGE021-P4-GATE"
-    current_task_id: "IDS-V0_1-STAGE021-P3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    next_gate: "IDS-STAGE022-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
     acceptance_id: "ACC-STAGE-021"
-    acceptance_status: "phase3_scenario_validation_complete"
+    acceptance_status: "local_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE2_PREFLIGHT_CONFIRMATION_UI_SLICE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/scripts/check_preflight_confirmation_ui.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage021_preflight_confirmation_ui.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
@@ -63,9 +65,9 @@ stage_progress:
 
 decision:
   current_stage: "STAGE-021"
-  current_phase: "Phase 3"
-  current_task_id: "IDS-V0_1-STAGE021-P3"
-  next_allowed_task_id: "IDS-V0_1-STAGE021-P4"
+  current_phase: "Phase 4"
+  current_task_id: "IDS-V0_1-STAGE021-P4"
+  next_allowed_task_id: "IDS-V0_1-STAGE022-P1"
   github_upload_allowed: false
   no_upload_reason: "STAGE-021..030 batch is not complete, not reviewed, and not repaired."
   no_app_reinstall_reason: "App entry reinstall is deferred until the next ten-stage batch upload gate."
