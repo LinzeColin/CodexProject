@@ -314,6 +314,28 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_inventory_capture_plan_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 capture plan `aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1` 仍 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 capture plan `cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4` 仍 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+
+        forbidden_phrases = (
+            "| 当前 capture plan `aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1` 仍 blocked |",
+            "| 当前 capture plan `cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4` 仍 blocked |",
+            "| 缺失真实 scheduler proof 和 S2PLT02 terminal proof artifact | 等真实捕获窗口满足后，再构建 reviewed terminal proof artifact 并运行 validator | prerequisite `94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9`",
+            "| 缺失真实 scheduler proof 和 S2PLT02 terminal proof artifact | 等真实捕获窗口满足后，再构建 reviewed terminal proof artifact 并运行 validator | prerequisite `bcb40505ad7244626589c24991dcf05fe775268ce44b5eab3b68444f38cded6e`",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
