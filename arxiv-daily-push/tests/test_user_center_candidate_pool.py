@@ -194,6 +194,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "本机/launchd 只作为历史与受控运行证据来源",
             "`ADP_ALLOW_SMTP_SEND` 原始值只接受 `UNSET` 或 false-like",
             "当前 MVP 准备只做复审修补、证据同步和防回归补强，不进入 S3/DAILY_OPERATION",
+            "python3 tools/verify_acceptance_bundle.py --require-zero P0 P1",
+            'python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
+            'python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
         )
         for phrase in required_phrases:
             with self.subTest(phrase=phrase):
