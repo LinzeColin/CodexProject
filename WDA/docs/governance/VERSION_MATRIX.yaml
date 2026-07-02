@@ -1,0 +1,11 @@
+schema_version: "codexproject.version_matrix.v1"
+project_id: "WDA"
+current_version: "0.0.0"
+data_snapshot_version: "NOT_APPLICABLE"
+current_iteration: "WDA-STAGE0"
+versions:
+  -
+    version: "0.0.0"
+    date: "2026-07-02"
+    summary: "Project bootstrap shell."
+    status: "active"

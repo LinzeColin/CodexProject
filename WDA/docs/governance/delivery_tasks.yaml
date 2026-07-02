@@ -1,0 +1,15 @@
+schema_version: "codexproject.delivery_tasks.v1"
+project_id: "WDA"
+tasks:
+  -
+    task_id: "WDA-STAGE0-P1"
+    title: "Create clean WDA project shell"
+    status: "in_progress"
+    acceptance_ids:
+      - "ACC-WDA-STAGE0-P1"
+  -
+    task_id: "WDA-STAGE0-P2"
+    title: "Define WDA product scope"
+    status: "planned"
+    acceptance_ids:
+      - "ACC-WDA-STAGE0-P2"
