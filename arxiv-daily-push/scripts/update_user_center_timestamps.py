@@ -58,6 +58,12 @@ def validate_timestamp(path: Path, now: datetime) -> list[str]:
         return [f"{path}: expected first line to be an H1 heading"]
     if len(lines) < 3 or lines[1] != "" or not lines[2].startswith("更新时间"):
         return [f"{path}: expected 更新时间 line immediately under H1"]
+    first_content_after_timestamp = next(
+        (line for line in lines[3:] if line.strip()),
+        "",
+    )
+    if first_content_after_timestamp.startswith("## "):
+        return [f"{path}: expected purpose intro before first section"]
 
     match = TIMESTAMP_RE.match(timestamp_lines[0])
     if not match:
