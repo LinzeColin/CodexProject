@@ -2769,3 +2769,50 @@ Stage 9 整体复审已确认：
 - 本复审不修改核心前端实现、CSS、路由或 feature flag。
 - 本复审不导入 experiment 目录，不切换 feature flag default。
 - 本复审不进入 Stage 8；GitHub main upload 只在 final remote checks 通过后执行。
+
+## 59. v1.1.6 Stage 8 Phase 1 发布、本地 App 与回滚安全参数
+
+状态：`phase_8_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Stage 8 必须先冻结发布、本地 App 和回滚安全合同，再允许任何 production build、installer、browser、Cloudflare 或 Access 操作。
+- 发布安全必须区分 local pass、offline preflight pass 和 live deploy complete，不能把外部授权缺失包装成完成。
+- 本 phase 只定义合同和验收，不运行 installer，不 build，不部署 Cloudflare，不修改 Access policy，不读取 raw/private/cookie/session/secret，不执行 direct writeback。
+
+输入：
+
+- `docs/product/memory_atlas_release_rollback_contract.md`
+- `docs/acceptance/memory_atlas_release_rollback_acceptance.md`
+- v1.1.5 Stage 8 经验：Local App Packaging、Release Safety、offline Cloudflare Pages + Access preflight、rollback matrix、runtime manifest 和 cleanup guard。
+
+处理方法：
+
+- 固定 local app、runtime manifest、redacted release artifact、Cloudflare preflight、live deploy authorization、rollback matrix、proposal-only writeback 和 cleanup guard。
+- 固定 release item 必备字段和 owner gate。
+- 固定 stale runtime manifest、stale local app、raw/private release artifact、unauthorized Cloudflare deploy、unauthorized Access policy change、missing rollback path、weakened proposal-only boundary、unclean transient output 和 premature GitHub upload 为失败条件。
+- 使用 `validate:v1.1.6-stage8-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S8P01-001 stage8_phase1_contract_id = memory_atlas_release_rollback_contract`
+- `PARAM-MA-V116-S8P01-002 stage8_phase1_required_surfaces = local_app_bundle;runtime_manifest;redacted_static_artifact;cloudflare_preflight;live_deploy_authorization_gate;rollback_matrix;proposal_only_writeback_gate;cleanup_guard`
+- `PARAM-MA-V116-S8P01-003 stage8_phase1_rollback_matrix = memory_starfield;memory_river;data_map_2_0;search_review_workflows;proposal_queue;local_app_runtime;cloudflare_release`
+- `PARAM-MA-V116-S8P01-004 stage8_phase1_required_item_fields = release_item_id;surface;artifact_path;git_commit;snapshot_generated_at;source_scope;build_mode;audit_status;rollback_path;fallback_mode;owner_gate;evidence_refs;risk_level;inspector_link;proposal_hint`
+- `PARAM-MA-V116-S8P01-005 stage8_phase1_failure_conditions = stale_runtime_manifest;stale_local_app;raw_private_release_artifact;unauthorized_cloudflare_deploy;unauthorized_access_policy_change;missing_rollback_path;weakened_proposal_only_boundary;unclean_transient_output;premature_github_upload`
+- `PARAM-MA-V116-S8P01-006 stage8_phase1_status = phase_8_1_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S8P01-007 stage8_phase1_required_validator = validate:v1.1.6-stage8-phase1`
+
+输出：
+
+- Stage 8 Phase 1 产品合同。
+- Stage 8 Phase 1 验收文件。
+- Stage 8 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback、部署脚本或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不运行 installer，不执行 production build，不部署 Cloudflare，不修改 Access policy。
+- 本 phase 不进入 Stage 8 整体复审，不进入 Stage 9-10，不执行 GitHub main 上传。

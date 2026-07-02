@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 8 Phase 1
+
+- Added `docs/product/memory_atlas_release_rollback_contract.md` to define the
+  Release Rollback Contract, including local app bundle targets, runtime
+  manifest, redacted static artifact, offline Cloudflare preflight, live deploy
+  authorization gate, rollback matrix, proposal-only writeback gate and cleanup
+  guard.
+- Added `docs/acceptance/memory_atlas_release_rollback_acceptance.md`.
+- Added `validate:v1.1.6-stage8-phase1`.
+- Contract title: Release Rollback Contract.
+- Registered `MA-V116-S8P01` in delivery, feature, development and model
+  parameter records.
+- Stage 8 Phase 1 status: `phase_8_1_contract_created_pending_stage_review`.
+
+No runtime UI implementation, CSS change, browser screenshot run, production
+build, local app install, installer run, Cloudflare live deploy, Access policy
+change, external account operation, raw/private data read, direct writeback,
+agent apply, Stage 8 review, Stage 9/10 work, No GitHub main upload, or live
+deploy was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload; No live deploy.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 7 Review
 
 - Added `validate:v1.1.6-stage7` to pin Stage 7 Phase 1 contract,

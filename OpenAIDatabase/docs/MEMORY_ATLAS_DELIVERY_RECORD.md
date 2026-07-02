@@ -681,6 +681,43 @@ Stage 3 Phase 1 状态：`phase_3_1_contract_created_pending_stage_review`。
 
 Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
 
+### Stage 8 Phase 1：Release Rollback Contract
+
+Stage 8 Phase 1 状态：`phase_8_1_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S8P01`。
+
+本 phase 是 v1.1.6 修补包进入“发布、本地 App 与回滚安全”的第一轮，只定义
+`memory_atlas_release_rollback_contract` 合同、验收、validator 和治理记录一致性。
+它把本地 macOS app、runtime manifest、redacted static artifact、offline
+Cloudflare preflight、live deploy authorization gate、rollback matrix、
+proposal-only writeback gate 和 cleanup guard 固定为后续发布实现的阻断门槛。
+
+新增产物：
+
+- `docs/product/memory_atlas_release_rollback_contract.md`
+- `docs/acceptance/memory_atlas_release_rollback_acceptance.md`
+- `validate:v1.1.6-stage8-phase1`
+
+验收边界：
+
+- 运行时 manifest 指向旧 commit、本地 app 服务旧数据、release artifact 包含
+  raw/private/cookie/session/secret、未授权 Cloudflare deploy、未授权 Access policy
+  change、缺少 Memory Starfield/Memory River rollback path、proposal-only 边界被削弱、
+  临时产物无 cleanup 证据或 GitHub upload 先于 final validation，均为未来实现失败条件。
+- Stage 8 Phase 1 通过不表示 production build、local app install、Cloudflare live
+  deploy、Access policy change、浏览器截图或真实 release audit 已完成。
+- 不实现运行时 UI，不修改 CSS，不运行 installer，不执行 production build，不部署
+  Cloudflare，不修改 Access policy，不读取 raw/private 数据，不直接写长期记忆，不执行
+  agent apply，不进入 Stage 8 整体复审，不进入 Stage 9-10，不上传 GitHub main。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload; No live deploy.
+
+下一步：
+
+- 进入 Stage 8 整体复审，补 review artifact 和 stage-level validator，并解决复审暴露的问题。
+- Stage 8 整体复审未执行前，不上传 GitHub main。
+
 ### Stage 6 整体复审
 
 Stage 6 状态：`stage_6_review_passed_pending_github_main_upload`。
