@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE009"
-current_phase_id: "IDS-STAGE009-P3"
-current_task_id: "IDS-V0_1-STAGE009-P3"
-next_gate_id: "IDS-STAGE009-P4-GATE"
+current_phase_id: "IDS-STAGE009-P4"
+current_task_id: "IDS-V0_1-STAGE009-P4"
+next_gate_id: "IDS-STAGE010-P1-GATE"
 total_estimated_hours: 71
-completed_estimated_hours: 70
+completed_estimated_hours: 71
 stages:
   -
     stage_id: "S5"
@@ -1911,7 +1911,7 @@ stages:
     stage_id: "IDS-STAGE009"
     name: "存储预算基线"
     person_goal: "建立 800GB 内置盘与 5TB 移动硬盘的存储预算，防止任务写满本机。"
-    status: "in_progress"
+    status: "completed"
     stop_conditions:
       - "需要真实资料但没有 fixture 或 owner 授权样本"
       - "可能删除、移动、覆盖原始文件"
@@ -1933,6 +1933,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE2_STORAGE_BUDGET_BASELINE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE4_CLOSEOUT.md"
     phases:
       -
         phase_id: "IDS-STAGE009-P1"
@@ -2074,26 +2075,29 @@ stages:
         phase_id: "IDS-STAGE009-P4"
         name: "存储预算基线交付证据、回滚与中文反馈"
         objective: "输出环境检查、路径检查、存储预算、水位线、状态恢复和回滚说明。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "Phase 3 场景验证未完成"
           - "仍有阻断问题未解决"
           - "试图在未满 10 stages 时推送 GitHub PR"
         stop_gate:
           gate_id: "IDS-STAGE009-P4-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "ACC-STAGE-009 证据完整"
             - "可恢复和不可恢复状态清楚"
             - "默认配置和回滚步骤清楚"
             - "不上传 GitHub，直到 STAGE-001..010 批次完成"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            - "KM_IDSystem/docs/governance/events.jsonl"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE009-P4"
             name: "STAGE-009 交付证据与回滚"
             objective: "生成 ACC-STAGE-009 证据、环境检查结果、路径检查结果、存储预算说明、水位线说明、状态恢复说明、回滚步骤和中文反馈。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 1
             total_hours_percent: "1.41%"
             dependencies:
@@ -2105,7 +2109,10 @@ stages:
               - "storage budget final validation"
               - "check-render --project KM_IDSystem"
               - "git status --short --branch"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-009 Phase 4 closeout records whole-stage review, environment/path/storage/waterline evidence, recoverable and non-recoverable states, default configuration, rollback, Chinese owner feedback, and the no-upload stop line. Fresh validation includes Stage009 focused unittest, Stage006/007/008 regressions, STAGE-009 CLI smoke, scenario smoke overall_valid=true, static no-write/no-scan boundary search, py_compile, check-render drift_count=0, marker/scope/JSONL checks, git diff --check, and semantic governance diagnostic with only the known 28 sparse-worktree/root/unrelated-project errors."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE009_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/governance/events.jsonl"
             risk: "在 STAGE-009 完成后误推送未满 10 stages 的批次。"
             rollback: "Revert IDS-STAGE009-P4 closeout-only changes."
