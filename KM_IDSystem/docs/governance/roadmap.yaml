@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE006"
-current_phase_id: "IDS-STAGE006-P2"
-current_task_id: "IDS-V0_1-STAGE006-P2"
-next_gate_id: "IDS-STAGE006-P3-GATE"
+current_phase_id: "IDS-STAGE006-P3"
+current_task_id: "IDS-V0_1-STAGE006-P3"
+next_gate_id: "IDS-STAGE006-P4-GATE"
 total_estimated_hours: 53
-completed_estimated_hours: 50
+completed_estimated_hours: 52
 stages:
   -
     stage_id: "S5"
@@ -1300,6 +1300,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE2_ENVIRONMENT_BASELINE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/scripts/check_environment_baseline.py"
     phases:
       -
@@ -1397,25 +1398,28 @@ stages:
         phase_id: "IDS-STAGE006-P3"
         name: "macOS M2 Max Docker 基线专项验证与异常场景"
         objective: "验证移动硬盘在线、离线、重连、权限异常、路径变化和安全模式场景。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "未完成 Phase 2 最小切片"
           - "无法模拟异常场景且没有明确降级证据"
           - "验证需要真实资料写入或外接盘内容扫描"
         stop_gate:
           gate_id: "IDS-STAGE006-P3-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "在线、离线、重连、权限异常和路径变化有证据或明确 deferred gate"
             - "内置盘高水位保护有证据"
             - "安全模式会暂停大批量导入、OCR、Embedding 和索引重建"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/scripts/check_environment_baseline.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage006_environment_baseline.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE006-P3"
             name: "macOS Docker 基线异常场景验证"
             objective: "验证 STAGE-006 最小切片的环境、路径、空间和安全模式异常场景。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "3.77%"
             dependencies:
@@ -1427,8 +1431,11 @@ stages:
               - "storage-waterline scenario checks"
               - "safe-mode pause scenario checks"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "TDD red failed with 2 expected errors because build_phase3_scenario_report did not exist. After implementation, Codex bundled Python unittest ran 7 tests OK; py_compile passed. Phase 3 covers ONLINE, OFFLINE, RECONNECTED, PERMISSION_DENIED, PATH_CHANGED, low-free-space BLOCKED, high-waterline BLOCKED, and safe-mode pause list for bulk_import, OCR, Embedding, index_rebuild, batch_report_generation, and raw_material_cleanup. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, external-drive content scan, runtime data, reports, outputs, GitHub push, or PR was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE006_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/scripts/check_environment_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage006_environment_baseline.py"
             risk: "异常验证误触碰真实原始资料或不可回滚地改变本地运行状态。"
             rollback: "Revert IDS-STAGE006-P3 validation/evidence changes."
       -
