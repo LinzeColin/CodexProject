@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 18:29:36 Australia/Sydney
+更新时间：2026-07-02 18:39:57 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -92,6 +92,13 @@
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），计划应发 4 封；受控发送证据不代表 S3/DAILY_OPERATION 已进入。
 
 ## 最近治理与历史记录
+
+## 2026-07-02 18:39:57 Australia/Sydney - DAILY_OPERATION 专用 root gate 已补齐
+
+- 新增 `tools/verify_daily_operation_readiness.py`：它只验证 S3/DAILY_OPERATION 是否可继续，不写授权 artifact，也不启用运行时。
+- 当前缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`，所以该命令必须返回 `status=FAIL` / exit 2，并显示 `persistent_daily_operation_authorization_missing`。
+- 这条 fail-closed 结果是正确阻断，不是测试故障；它防止后续 agent 只看 final bundle PASS 就误入 DAILY_OPERATION。
+- 本轮仍只做 MVP 准备与复审修补，不创建持久授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。
 
 ## 2026-07-02 18:29:36 Australia/Sydney - root verifier 已显示 S3 阻断原因
 

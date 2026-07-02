@@ -90,6 +90,39 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertFalse(payload["real_smtp_send_enabled"])
 
+    def test_verify_daily_operation_readiness_root_tool_fails_closed_without_authorization(self) -> None:
+        completed = subprocess.run(
+            [sys.executable, "tools/verify_daily_operation_readiness.py"],
+            cwd=REPO_ROOT,
+            env=self._env(),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout[-2000:])
+        payload = json.loads(completed.stdout)
+        self.assertEqual(payload["status"], "FAIL")
+        self.assertFalse(payload["daily_operation_ready"])
+        self.assertFalse(payload["persistent_daily_operation_authorized"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertEqual(
+            payload["blocking_reasons"],
+            ["persistent_daily_operation_authorization_missing"],
+        )
+        self.assertEqual(
+            payload["next_required_step"],
+            "OBTAIN_EXPLICIT_OWNER_PERSISTENT_DAILY_OPERATION_AUTHORIZATION",
+        )
+        self.assertEqual(
+            payload["authorization_artifact"],
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+        )
+        self.assertEqual(payload["validation_errors"], [])
+
 
 if __name__ == "__main__":
     unittest.main()
