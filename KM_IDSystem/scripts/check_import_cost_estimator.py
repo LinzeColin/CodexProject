@@ -490,6 +490,127 @@ def build_stage020_scenario_report(
     return report
 
 
+def _cost_report_sample(cost_report: dict[str, Any]) -> dict[str, Any]:
+    sample_keys = [
+        "schema_version",
+        "overall_state",
+        "confirmation_status",
+        "file_count_estimate",
+        "total_size_bytes_estimate",
+        "format_counts",
+        "archive_candidate_count",
+        "scanned_document_candidate_count",
+        "unknown_format_count",
+        "oversized_file_count",
+        "high_risk_file_count",
+        "embedding_token_estimate",
+        "external_api_cost_estimate",
+        "ocr_page_estimate",
+        "index_size_estimate",
+        "local_space_pressure",
+        "future_local_space_bytes_estimate",
+        "cost_score_band",
+        "risk_items",
+        "cost_items",
+        "priority_hint",
+        "human_product_entrance_payload",
+    ]
+    return {key: cost_report.get(key) for key in sample_keys}
+
+
+def build_cost_owner_feedback_summary(
+    cost_report: dict[str, Any],
+    *,
+    recorded_at: str | None = None,
+    stage_review_findings: list[str] | tuple[str, ...] | None = None,
+) -> dict[str, Any]:
+    """Build Phase 4 closeout evidence without creating runtime artifacts."""
+
+    recorded_at = recorded_at or _utc_now()
+    feedback: dict[str, Any] = {
+        "schema_version": "ids.stage020.import_cost_estimator.owner_feedback.v1",
+        "stage": "STAGE-020",
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE020-P4",
+        "acceptance_id": "ACC-STAGE-020",
+        "entrance": ENTRANCE,
+        "recorded_at": recorded_at,
+        "report_sample": _cost_report_sample(cost_report),
+        "risk_checklist": {
+            "COST_SOURCE_NOT_CONFIGURED": "未配置导入来源；请先选择 owner 批准的本地 file:// 输入。",
+            "COST_SOURCE_BLOCKED": "来源不可用或越过安全边界；系统不会继续读取或推断该来源。",
+            "COST_DRIVE_OFFLINE": "移动硬盘或来源盘处于离线状态；请重新接入后再做成本估算。",
+            "COST_ARCHIVE_REVIEW_REQUIRED": "发现压缩包候选；需要 owner 复核后再决定是否单独处理。",
+            "COST_HIGH_RISK_FILE_PRESENT": "发现高风险文件；建议先跳过或拆分批次再复核。",
+            "COST_LARGE_BATCH_PRESENT": "文件数量较多；建议先分批处理并保留人工确认点。",
+            "COST_OVERSIZED_FILE_PRESENT": "发现超大文件；建议拆分批次或先跳过后复核。",
+            "COST_UNKNOWN_FORMAT_PRESENT": "发现未知格式；建议跳过或转交人工处理。",
+            "COST_INSUFFICIENT_SPACE": "目标空间不足；请释放空间或缩小批次后再继续。",
+            "COST_LOCAL_SPACE_BLOCKED": "本机空间估算不足；确认前不会启动导入或索引。",
+            "COST_LOCAL_SPACE_PRESSURE_HIGH": "本机空间压力较高；建议降低批次规模后再继续。",
+        },
+        "user_confirmation_flow_log": [
+            "系统展示预检报告样例，owner 先查看文件数量、格式、大小、Embedding token、OCR 页数、外部 API 成本、索引体积和本机空间压力。",
+            "owner 可以选择保存成本估算结果；当前 helper 只提供可序列化内容，不自动落盘。",
+            "owner 可以选择取消；取消后 document/chunk/job/index/import/manifest/database 写入均保持 0。",
+            "owner 可以选择分批；系统只生成 metadata batch plan，不启动解析、OCR、Embedding、索引、外部 API 或导入。",
+            "owner 可以选择跳过高风险文件；压缩包、扫描件、未知格式和可疑候选会进入跳过候选清单。",
+            "owner 明确确认后，后续 Stage 才能进入批量处理；本 Stage 不授权实际导入。",
+        ],
+        "estimation_uncertainty": [
+            "Embedding token 估算使用文件大小元信息代理，不解析正文，也不代表真实 tokenizer 结果。",
+            "OCR 页数估算使用扫描件候选数量和大小代理，不启动 OCR，也不确认图片质量。",
+            "外部 API 成本估算使用配置单价和元信息工作量代理，不调用任何外部 API。",
+            "索引体积估算使用 token 代理乘以配置系数，不建立索引。",
+            "本机空间压力只比较估算输入体积、索引体积和传入 available_space_bytes，不替代系统级容量审计。",
+            "目录处理保持 immediate-child metadata-only，不代表递归扫描或真实生产 corpus 覆盖率。",
+        ],
+        "failure_explanations": {
+            "COST_SOURCE_NOT_CONFIGURED": "未配置导入来源；请先选择 owner 批准的本地 file:// 输入。",
+            "COST_SOURCE_BLOCKED": "来源不可用或越过安全边界；系统不会继续读取或推断该来源。",
+            "COST_DRIVE_OFFLINE": "移动硬盘或来源盘处于离线状态；请重新接入后再做成本估算。",
+            "COST_ARCHIVE_REVIEW_REQUIRED": "发现压缩包候选；需要 owner 复核后再决定是否单独处理。",
+            "COST_HIGH_RISK_FILE_PRESENT": "发现高风险文件；建议先跳过或拆分批次再复核。",
+            "COST_LARGE_BATCH_PRESENT": "文件数量较多；建议先分批处理并保留人工确认点。",
+            "COST_OVERSIZED_FILE_PRESENT": "发现超大文件；建议拆分批次或先跳过后复核。",
+            "COST_UNKNOWN_FORMAT_PRESENT": "发现未知格式；建议跳过或转交人工处理。",
+            "COST_INSUFFICIENT_SPACE": "目标空间不足；请释放空间或缩小批次后再继续。",
+            "COST_LOCAL_SPACE_BLOCKED": "本机空间估算不足；请释放空间、缩小批次或更换目标盘后再继续。",
+        },
+        "rollback_steps": [
+            "Revert Stage020 Phase4 helper additions, focused tests, closeout evidence, Stage005 validator/test changes, batch-lock, roadmap/event, and rendered owner-file changes.",
+            "Do not move, delete, overwrite, rewrite, compact, clean, normalize, repair, or deduplicate original files in place.",
+            "Do not clean /Users/linzezhang/Downloads/IDS_MetaData, runtime databases, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, app entries, or GitHub state.",
+            "After rollback, STAGE-020 should return to Phase 3 complete and Phase 4 pending.",
+        ],
+        "whole_stage_review": {
+            "result": "passed_with_local_evidence",
+            "completed_phases": ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
+            "reviewed_acceptance_id": "ACC-STAGE-020",
+            "findings": list(stage_review_findings or []),
+            "unresolved_findings": [],
+            "next_stage": "STAGE-021",
+            "batch_upload_allowed": False,
+            "next_batch_gate": "BATCH011_020_REVIEW_GATE",
+            "github_upload_status": "not_started",
+            "app_reinstall_status": "not_started",
+        },
+        "processing_guard": dict(PROCESSING_GUARD_ZEROES),
+        "no_persistence_deltas": dict(NO_PERSISTENCE_DELTAS),
+        "does_not_create_screenshots": True,
+        "does_not_write_report_files": True,
+        "does_not_write_json_output_files": True,
+        "does_not_start_services": True,
+        "does_not_install_dependencies": True,
+        "does_not_push_to_github": True,
+        "does_not_open_or_merge_pr": True,
+        "does_not_reinstall_app_entries": True,
+        "does_not_enter_stage021": True,
+    }
+    feedback.update(NO_SIDE_EFFECT_FLAGS)
+    return feedback
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Build a metadata-only Stage 020 import cost estimate.")
     parser.add_argument(

@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T21:43:46Z"
-status: "in_progress_no_github_upload"
+updated_at_utc: "2026-07-02T21:59:45Z"
+status: "ready_for_tenth_stage_review_no_github_upload"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -26,6 +26,7 @@ data_boundary:
 
 upload_gate:
   push_allowed: false
+  review_gate: "BATCH011_020_REVIEW_GATE"
   required_before_push:
     - "STAGE-011 through STAGE-020 all completed."
     - "Each completed Stage has durable local evidence."
@@ -252,25 +253,27 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-020:
-    status: "in_progress"
+    status: "completed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
-    next_phase: "Phase 4"
-    current_task_id: "IDS-V0_1-STAGE020-P3"
+      - "Phase 4"
+    next_stage: "STAGE-021"
+    current_task_id: "IDS-V0_1-STAGE020-P4"
     acceptance_id: "ACC-STAGE-020"
-    acceptance_status: "phase3_scenario_validation_complete"
+    acceptance_status: "local_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE2_COST_ESTIMATOR_SLICE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/scripts/check_import_cost_estimator.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage020_import_cost_estimator.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_run: "STAGE-020 Phase 3 validates metadata-only import cost estimator scenarios for empty directory, small directory, large directory, offline drive, archive present, insufficient space, and owner save/cancel/split/skip decisions; no raw metadata content access, OCR, Embedding, index, import, report, runtime output, external API call, GitHub upload, PR, merge, app reinstall, or Phase 4 work is performed."
-  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 through STAGE-019 complete locally and STAGE-020 Phase 1 through Phase 3 complete locally; STAGE-020 Phase 4, whole-stage closeout, tenth-stage review, repairs, app-entry reinstall, and batch upload gate remain pending."
+  current_run: "STAGE-020 Phase 4 closes out the metadata-only import cost estimator with report sample, risk checklist, owner confirmation flow log, uncertainty notes, failure explanations, rollback, whole-stage review, and Chinese owner feedback; no raw metadata content access, OCR, Embedding, index, import, report file, runtime output, external API call, GitHub upload, PR, merge, app reinstall, or STAGE-021 work is performed."
+  no_upload_reason: "Batch STAGE-011..020 is locally complete but still requires tenth-stage review, repair of review findings if any, app-entry reinstall, GitHub main upload/merge, and app/local/GitHub parity verification before upload is allowed."
