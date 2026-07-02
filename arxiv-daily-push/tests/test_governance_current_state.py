@@ -951,21 +951,26 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("persistent_daily_operation_authorization_missing", text)
         self.assertIn("status=FAIL / exit 2", handoff)
         self.assertIn(
-            "以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
+            "以下命令必须从 CodexProject 仓库根目录运行；`tools/`、`scripts/` 和 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
+            handoff,
+        )
+        self.assertIn("不要给这些 root tools 追加 `--json`", handoff)
+        self.assertIn("python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1", handoff)
+        self.assertIn(
+            'python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
             handoff,
         )
         self.assertIn(
-            'python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
-            handoff,
-        )
-        self.assertIn(
-            'python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
+            'python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
             handoff,
         )
         self.assertNotIn(
             "python3 tools/verify_daily_operation_readiness.py\npython3 tools/verify_daily_operation_enablement_preflight.py",
             handoff,
         )
+        self.assertNotIn("tools/verify_acceptance_bundle.py --root . --require-zero P0 P1 --json", handoff)
+        self.assertNotIn("tools/verify_daily_operation_readiness.py --root . --json", handoff)
+        self.assertNotIn("tools/verify_daily_operation_enablement_preflight.py --root . --json", handoff)
         self.assertIn("open_pr_observation_mode=auto_observed", handoff)
         self.assertNotIn("--open-pr-count 0", handoff)
         self.assertNotIn("--adp-allow-smtp-send UNSET", handoff)
