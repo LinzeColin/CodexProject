@@ -157,6 +157,31 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_post_s2plt02_historical_gaps(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 final bundle prerequisite 仍 blocked",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 S2PLT03/S2PLT04/final bundle 继续阻断",
+            decisions,
+        )
+        self.assertIn(
+            "`validate-final-acceptance-bundle --json` 历史当时仍 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+        forbidden_phrases = (
+            "| final bundle prerequisite 仍 blocked | 默认下一步",
+            "| S2PLT02 terminal delivery proof artifact | 下一步只能构建",
+            "| S2PLT03/S2PLT04/final bundle | 继续阻断；不得跳过 S2PLT02 terminal proof | `validate-final-acceptance-bundle --json` 仍 blocked |",
+            "`plan-final-bundle-prerequisites --json` 当前只剩 S2PLT03 terminal resilience proof 缺口",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
