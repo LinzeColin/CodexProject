@@ -117,9 +117,17 @@ class Stage021PreflightConfirmationUiPhase1Tests(unittest.TestCase):
         self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
         text = BATCH_LOCK.read_text(encoding="utf-8")
 
+        allowed_status_terms = [
+            'status: "stage021_completed_local_pending_stage022"',
+            'status: "stage022_phase1_in_progress"',
+        ]
+        self.assertTrue(
+            any(term in text for term in allowed_status_terms),
+            f"batch lock did not contain an allowed STAGE-021/022 transition status: {allowed_status_terms}",
+        )
+
         required_terms = [
             'batch_id: "IDS-V0_1-BATCH-021-030"',
-            'status: "stage021_completed_local_pending_stage022"',
             'stage_range: "STAGE-021..STAGE-030"',
             'acceptance_range: "ACC-STAGE-021..ACC-STAGE-030"',
             'push_allowed: false',
