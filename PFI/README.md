@@ -32,7 +32,7 @@ Records:
 
 ## v0.2.4 Stage 9 Status
 
-Current run unit: `Stage 9 whole-stage review - 复审并解决暴露问题`.
+Current run unit: `Stage 9 GitHub main upload gate`.
 
 - Stage 8 GitHub main upload: complete before this run; `HEAD == origin/main == remote main` verified at `ab09727d7c22ea5d7a65868c26526330d528a101`.
 - Phase 8.1 automated acceptance: candidate pass.
@@ -51,7 +51,9 @@ Current run unit: `Stage 9 whole-stage review - 复审并解决暴露问题`.
 - Phase 9.3 user confirmation source: chat reply `1`.
 - Stage 9 whole-stage review: pass.
 - Stage 9 whole-stage review pass.
-- GitHub main upload for Stage 9: not executed in this phase run.
+- Phase 9.3 historical upload status: GitHub main upload for Stage 9: not executed in that phase run.
+- Stage 9 GitHub main upload: complete in this gate after terminal remote verification.
+- Stage 9 complete: yes at GitHub main upload gate.
 - Future version work: not started.
 - App bundle reinstall: not executed.
 - Data logic changes: none.
@@ -64,7 +66,8 @@ Current run unit: `Stage 9 whole-stage review - 复审并解决暴露问题`.
 - Phase 9.3 reply protocol: `reports/pfi_v024/stage_9/phase_9_3/reply_protocol.md`.
 - Current Phase 9.3 evidence: `reports/pfi_v024/stage_9/phase_9_3/evidence.json`.
 - Stage 9 whole-stage review evidence: `reports/pfi_v024/stage_9/whole_stage_review/evidence.json`.
-- Next gate: Stage 9 GitHub main upload gate.
+- Stage 9 GitHub main upload evidence: `reports/pfi_v024/stage_9/github_main_upload/evidence.json`.
+- Next gate: stop after Stage 9 upload; future version only after explicit instruction.
 
 ## v0.2.4 Stage 8 Status
 

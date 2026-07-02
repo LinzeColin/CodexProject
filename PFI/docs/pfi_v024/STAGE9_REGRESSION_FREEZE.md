@@ -1,7 +1,7 @@
 # PFI v0.2.4 Stage 9 Regression Freeze
 
-本轮只执行：`Stage 9 whole-stage review - 复审并解决暴露问题`。
-本轮只复审 Stage 9 三个 phase、记录用户回复 `1` 作为 Phase 9.3 确认来源，并生成 whole-stage review evidence；不上传 GitHub main、不进入未来版本、不重装 app bundle、不修改 launcher C/Info.plist、不写入、清理、删除、补造或改写真实财务数据。
+本轮只执行：`Stage 9 GitHub main upload gate`。
+本轮只上传已经完成复审的 Stage 9 package；不进入未来版本、不重装 app bundle、不修改 launcher C/Info.plist、不写入、清理、删除、补造或改写真实财务数据。
 
 ## Phase 9.1 Scope
 
@@ -86,14 +86,25 @@ Evidence:
 - `PFI/reports/pfi_v024/stage_9/whole_stage_review/changed_files.txt`
 - `PFI/reports/pfi_v024/stage_9/whole_stage_review/risk_and_rollback.md`
 
+## Stage 9 GitHub Main Upload
+
+Stage 9 GitHub main upload gate 上传 Phase 9.1、Phase 9.2、Phase 9.3 和 whole-stage review package。
+
+Stage 9 GitHub main upload: complete after terminal remote verification。
+
+Evidence:
+
+- `PFI/docs/pfi_v024/STAGE9_GITHUB_MAIN_UPLOAD.md`
+- `PFI/reports/pfi_v024/stage_9/github_main_upload/evidence.json`
+- `PFI/reports/pfi_v024/stage_9/github_main_upload/terminal.log`
+- `PFI/reports/pfi_v024/stage_9/github_main_upload/changed_files.txt`
+- `PFI/reports/pfi_v024/stage_9/github_main_upload/risk_and_rollback.md`
+
 ## Non Goals
 
-- 不写验收通过。
-- 不把 whole-stage review 写成 GitHub upload complete。
-- 不上传 GitHub main。
 - 不进入未来版本。
 - 不修改 app bundle、launcher 或真实财务数据。
 
 ## Stop Condition
 
-停止在 `Stage 9 whole-stage review pass`。GitHub main upload 必须下一轮再进入。
+停止在 `Stage 9 GitHub main upload gate`。未来版本必须下一轮在用户明确指令后再进入。
