@@ -2899,6 +2899,31 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         for fact in forbidden_facts:
             self.assertNotIn(fact, page)
 
+    def test_project_agents_current_rule_does_not_reopen_stage2_final_gate(self):
+        agents = PROJECT_AGENTS.read_text(encoding="utf-8")
+        compact_agents = re.sub(r"\s+", "", agents)
+
+        required_facts = (
+            "Stage 2 integrated acceptance 已记录并保持",
+            "S3/DAILY_OPERATION 仍未进入",
+            "当前实际阻断只剩 S3/DAILY_OPERATION 持久授权缺失",
+            "persistent_daily_operation_authorization_missing",
+            "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
+        )
+        for fact in required_facts:
+            self.assertIn(re.sub(r"\s+", "", fact), compact_agents)
+
+        forbidden_facts = (
+            "Current global Stage2 entry is\n  `S2PMT07` final gate precheck",
+            "currently `blocked_precheck` because",
+            "independent reviewer proof, inherited V7.1 P0/P1 zero state",
+            "final acceptance bundle, independent signoff, and independent\n  final command execution are not all proven",
+            "Formal source production inclusion, `STAGE2_PRODUCTION_ACCEPTED`, and\n  `INTEGRATED_PRODUCTION_ACCEPTED` remain blocked by V7.2 P0/P1 and final gate\n  rules",
+            "`S2PMT07` local precheck records the current blocked\n  final gate state only",
+        )
+        for fact in forbidden_facts:
+            self.assertNotIn(re.sub(r"\s+", "", fact), compact_agents)
+
     def test_future_source_changes_are_bound_to_user_center_sync_gate(self):
         root_agents = ROOT_AGENTS.read_text(encoding="utf-8")
         agents = PROJECT_AGENTS.read_text(encoding="utf-8")
