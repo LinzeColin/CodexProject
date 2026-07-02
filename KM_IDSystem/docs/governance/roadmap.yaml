@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE002"
-current_phase_id: "IDS-STAGE003-P3"
-current_task_id: "IDS-V0_1-STAGE003-P3"
-next_gate_id: "IDS-STAGE003-P4-GATE"
+current_stage_id: "IDS-STAGE003"
+current_phase_id: "IDS-STAGE003-P4"
+current_task_id: "IDS-V0_1-STAGE003-P4"
+next_gate_id: "IDS-STAGE004-P1-GATE"
 total_estimated_hours: 35
-completed_estimated_hours: 34
+completed_estimated_hours: 35
 stages:
   -
     stage_id: "S5"
@@ -669,7 +669,7 @@ stages:
     stage_id: "IDS-STAGE003"
     name: "MetaDatabase 更名为 FinanceMetaDatabase"
     person_goal: "将 MetaDatabase 一次性更名为 FinanceMetaDatabase，并更新引用、迁移说明和回滚说明。"
-    status: "in_progress"
+    status: "completed"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
       - "把 ProductMetaDatabase 误当成本 Stage 改名目标"
@@ -678,7 +678,7 @@ stages:
       - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
     stop_gate:
       gate_id: "IDS-STAGE003-GATE"
-      status: "open"
+      status: "local_passed_pending_10_stage_batch_upload"
       pass_conditions:
         - "Phase 1 明确独立 MetaDatabase 改名边界和 ProductMetaDatabase 排除规则"
         - "Phase 2 完成最小可回滚引用迁移"
@@ -689,6 +689,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE3_VALIDATION_SCAN.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
     phases:
       -
@@ -829,25 +830,27 @@ stages:
         phase_id: "IDS-STAGE003-P4"
         name: "MetaDatabase 更名为 FinanceMetaDatabase 交付证据、回滚与中文反馈"
         objective: "提交变更文件清单、引用扫描结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "Phase 3 扫描未完成"
           - "仍有阻断问题未解决"
           - "试图在未满 10 stages 时推送 GitHub PR"
         stop_gate:
           gate_id: "IDS-STAGE003-P4-GATE"
-          status: "pending"
+          status: "passed_no_github_upload_until_batch_complete"
           pass_conditions:
             - "ACC-STAGE-003 证据完整"
             - "本 Stage 可回滚"
             - "不上传 GitHub，直到 STAGE-001..010 批次完成"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE003-P4"
             name: "STAGE-003 交付证据与回滚"
             objective: "生成 ACC-STAGE-003 证据、引用扫描结果、legacy alias 保留原因、回滚步骤和中文反馈。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 1
             total_hours_percent: "2.86%"
             dependencies:
@@ -859,7 +862,9 @@ stages:
               - "FinanceMetaDatabase final reference validation"
               - "check-render --project KM_IDSystem"
               - "git status --short --branch"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-003 Phase 4 closeout records ACC-STAGE-003 evidence, whole-stage review, changed-file summary, legacy alias retention reasons, ProductMetaDatabase exclusion, rollback steps, Chinese owner feedback, and the no-upload stop line. Fresh final validation reran STAGE-003 unittest, STAGE-003 validator, ProductMetaDatabase unittest, ProductMetaDatabase validator, check-render, marker/JSONL/scope check, and git diff --check; semantic validate remains a sparse-worktree diagnostic and no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
             risk: "在 STAGE-003 完成后误推送未满 10 stages 的批次。"
             rollback: "Revert IDS-STAGE003-P4 closeout-only changes."
