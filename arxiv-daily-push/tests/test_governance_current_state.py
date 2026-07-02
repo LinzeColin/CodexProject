@@ -468,6 +468,33 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_historical_default_next_steps_as_current_work(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        expected_historical_rows = (
+            "历史当时默认下一步 1 是构建、独立复审并验证 S2PLT03 terminal resilience proof；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时默认下一步 2 是补齐 S2PLT04 completion report；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT02 terminal delivery proof artifact draft builder 只输出 stdout，`artifact_written=false`；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT02 scheduler proof 输入验证器只输出 no-write validation state；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT02 terminal delivery input inventory missing inputs 仍为第二真实发送日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT02 terminal capture-window audit CLI 为 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+        )
+        for phrase in expected_historical_rows:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, decisions)
+
+        forbidden_phrases = (
+            "| 1 | 构建、独立复审并验证 S2PLT03 terminal resilience proof |",
+            "| 2 | 补齐 S2PLT04 completion report |",
+            "当前仍需真实两日 delivery manifest 和真实 scheduler proof 后才能进入 live proof 复核",
+            "当前仍需真实 launchd scheduler proof 后才能进入 live terminal proof 复核",
+            "missing inputs 仍为第二真实发送日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact；该清单 blocked / exit 2",
+            "新增 S2PLT02 terminal capture-window audit CLI，当前仍 blocked",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
