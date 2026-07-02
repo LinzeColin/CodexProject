@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s02-stage-review
+product_version: 0.1.3-s03p1-file-import-register
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S02`
-- current_phase: `v0.1.3 Stage 2｜整体复审`
-- current_tasks: `KMFA-V013-S02-STAGE-REVIEW-20260702`
-- status: `local_s02_stage_review_passed_no_go_overall_upload_deferred`
+- current_stage: `S03`
+- current_phase: `v0.1.3 S03-P1｜文件型导入登记`
+- current_tasks: `KMFA-V013-S03-P1-FILE-IMPORT-REGISTER-20260702`
+- status: `local_s03p1_file_import_register_passed_no_go_overall_upload_deferred`
 - risk_tier: `T3`
 
 ## Completed
@@ -132,12 +132,13 @@ product_version: 0.1.3-s02-stage-review
 | `KMFA-V013-S02-P2-RAW-MAPPING-READINESS-20260702` | v0.1.3 S02-P2 raw mapping readiness 本地通过：只读建立 ZIP/XLSX/schema/header 私有诊断，公开证据只记录聚合计数；value matching 状态为 `blocked_authorized_mapping_required`；未执行 raw row-value extraction、Stage 2 review、GitHub upload、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S02_P2_RAW_MAPPING_READINESS/human/raw_mapping_readiness_report.md` |
 | `KMFA-V013-S02-P3-DATA-QUALITY-ERROR-GATE-20260702` | v0.1.3 S02-P3 data quality/error gate 本地通过：基于 S02-P1/S02-P2 public-safe evidence 和 Q0-Q5/A-D release gate policy，锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；未读取 raw 目录，未执行 raw value matching、Stage 2 review、GitHub upload、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S02_P3_DATA_QUALITY_ERROR_GATE/human/data_quality_error_gate_report.md` |
 | `KMFA-V013-S02-STAGE-REVIEW-20260702` | v0.1.3 Stage 2 整体复审本地通过：复跑 S02-P1/S02-P2/S02-P3 validators 和 Stage 2 review validator，phase_results 全部 PASS，findings_open=0，继续锁定 Q2/D/blocked；未执行 GitHub upload、S03-P1、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/human/stage2_review_report.md` |
+| `KMFA-V013-S03-P1-FILE-IMPORT-REGISTER-20260702` | v0.1.3 S03-P1 文件型导入登记本地通过：重放文件登记、metadata 必需字段、zip traversal 防护和 WPS/OLE 提示；未读取或写入 raw data inbox，未执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S03_P1_FILE_IMPORT_REGISTER/human/file_import_register_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 Stage 2 整体复审已本地完成；下一步只能另起 run 执行 S03-P1 或用户明确指定的单一 phase；GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/human/test_results.md` |
+| 无 | v0.1.3 S03-P1 已本地完成；下一步只能另起 run 执行 S03-P2 或用户明确指定的单一 phase；S03-P3、Stage 3 review、GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S03_P1_FILE_IMPORT_REGISTER/human/test_results.md` |
 
 ## Not Completed
 

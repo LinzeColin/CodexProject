@@ -9,12 +9,12 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s02-stage-review`
-- 当前已完成: `v0.1.3 Stage 2｜整体复审`
-- 证据目录: `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/`
-- 复审结论: S02-P1/S02-P2/S02-P3 validators 全部 PASS，findings_open=0，data quality=`Q2`，report grade=`D`，release permission=`blocked`。
-- 未执行: GitHub upload、S03-P1、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 S03-P1` 或用户明确指定的单一 phase；GitHub upload 延后到整体完成 gate。
+- 当前版本: `0.1.3-s03p1-file-import-register`
+- 当前已完成: `v0.1.3 S03-P1｜文件型导入登记`
+- 证据目录: `KMFA/stage_artifacts/V013_S03_P1_FILE_IMPORT_REGISTER/`
+- 复审结论: S03-P1 validator、旧文件导入单测和 S02 Stage review dependency 均 PASS，data quality=`Q2`，report grade=`D`，release permission=`blocked`。
+- 未执行: S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S03-P2` 或用户明确指定的单一 phase；GitHub upload 延后到整体完成 gate。
 
 ## 持久本机 raw boundary
 
