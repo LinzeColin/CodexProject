@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE016"
-current_phase_id: "IDS-STAGE016-P4"
-current_task_id: "IDS-V0_1-STAGE016-P4"
-next_gate_id: "IDS-STAGE017-P1-GATE"
-total_estimated_hours: 126
-completed_estimated_hours: 126
+current_stage_id: "IDS-STAGE017"
+current_phase_id: "IDS-STAGE017-P1"
+current_task_id: "IDS-V0_1-STAGE017-P1"
+next_gate_id: "IDS-STAGE017-P2-GATE"
+total_estimated_hours: 128
+completed_estimated_hours: 127
 stages:
   -
     stage_id: "S5"
@@ -3953,3 +3953,82 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果 closeout 被误读为生产导入授权，后续可能绕过幂等检查、写入重复 document/chunk/job/index 或污染数据库。"
             rollback: "Revert IDS-STAGE016-P4 closeout, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, runtime data, app entries, GitHub state, or STAGE-017."
+  -
+    stage_id: "IDS-STAGE017"
+    name: "原始资料回归测试"
+    person_goal: "验证重复扫描、断点续扫、移动硬盘离线恢复不会污染原始数据或重复登记。"
+    status: "in_progress"
+    stop_conditions:
+      - "STAGE-016 未完成或导入幂等边界不可追溯"
+      - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+      - "写 runtime database、manifest、index、document/chunk/job、import ledger、报告、outputs 或外部 API"
+      - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+      - "一次 run 进入 Phase 2"
+    stop_gate:
+      gate_id: "IDS-STAGE017-P1-GATE"
+      status: "passed_with_local_evidence"
+      pass_conditions:
+        - "entry contract 记录 P0 taskpack 映射、stage SHA、阶段边界和验收边界"
+        - "Phase 1 scope boundary 定义 repeated scan、breakpoint resume、offline drive recovery 的 no-mutation/no-duplicate 规则"
+        - "source_uri、sha256、file_size、mtime、first_seen_at、manifest_identity、duplicate_state、import_idempotency_key、scan checkpoint 和 drive state 字段已定义为后续 Phase 2 合同"
+        - "STAGE-012 through STAGE-016 的只读、指纹、manifest、duplicate 和 import-idempotency 边界被继承"
+        - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false，未进入 Phase 2"
+    phases:
+      -
+        phase_id: "IDS-STAGE017-P1"
+        name: "原始资料回归测试范围、输入输出与边界确认"
+        objective: "在不实现 scanner/resume/offline-drive adapter、不中断原始资料、不中写任何持久化输出的前提下，定义 STAGE-017 的 regression-test 边界。"
+        status: "completed"
+        stop_conditions:
+          - "STAGE-016 Phase 4 未完成"
+          - "Phase 1 需要读取 raw metadata、扫描 IDS_MetaData 内容、写 runtime 输出、写 manifest/database/index、创建 document/chunk/job 或调用外部 API"
+          - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "一次 run 进入 Phase 2"
+        stop_gate:
+          gate_id: "IDS-STAGE017-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "STAGE017_ENTRY_CONTRACT.md 存在并记录 P0 stage identity、hash、required reads、stage/phase boundary、acceptance summary、stop conditions 和 rollback"
+            - "STAGE017_PHASE1_SCOPE_BOUNDARY.md 存在并记录 repeated scan、resume、offline-drive recovery、state names、allowed/forbidden outputs 和 owner feedback draft"
+            - "Stage005 governance regression 接受 IDS-V0_1-STAGE017-P1 当前态"
+            - "roadmap、batch lock、event log 和 owner rendered files 指向 Phase 1，且上传闸门关闭"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE017-P1"
+            name: "原始资料回归测试 scope boundary"
+            objective: "定义 repeated scan、breakpoint resume、removable-drive offline recovery 的 no-mutation/no-duplicate 边界，作为 Phase 2 最小可运行切片前置合同。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.56%"
+            dependencies:
+              - "IDS-V0_1-STAGE016-P4"
+              - "IDS-V0_1-STAGE015-P4"
+              - "IDS-V0_1-STAGE014-P4"
+              - "IDS-V0_1-STAGE013-P4"
+              - "IDS-V0_1-STAGE012-P4"
+            acceptance_ids:
+              - "ACC-STAGE-017"
+            test_commands:
+              - "RED/GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py -q"
+              - "Stage005 validator report"
+              - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "py_compile Stage005 validator"
+              - "events JSONL parse"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+              - "old underscored task-id variant scan"
+            test_results: "Stage005 RED failed as expected with 32 tests and 3 failures because IDS-V0_1-STAGE017-P1 was not yet accepted by the governance state machine and STAGE017 evidence paths were not allowed. Intermediate RED failed as expected with 32 tests and 1 failure because STAGE017_ENTRY_CONTRACT.md and STAGE017_PHASE1_SCOPE_BOUNDARY.md were missing as required evidence. Stage005 GREEN passed 32 tests. Stage005 validator returned valid=true with issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], and unexpected_changed_paths=[]. Full IDS v0.1 pursuing-goal discover passed 105 tests. py_compile passed for the Stage005 validator. events JSONL parse returned events_jsonl_ok. bundled render --project KM_IDSystem --write updated owner files; bundled check-render returned drift_count=0 and reference_issue_count=0. git diff --check passed. exact old underscored task-id variant scan returned no hits. Legacy path/name hits remain historical migration-policy, stale-path, do-not-revive, or scanner-rule references only. semantic validate remains diagnostic-only with 29 known sparse root-governance or registered-project missing paths and no new KM_IDSystem semantic error. Phase 1 did not read, list, hash, open, copy, move, delete, modify, dump, scan, or commit IDS_MetaData raw metadata content. No service start, dependency install, scanner/resume/offline-drive adapter, manifest/database/index/import writer, document/chunk/job creation, runtime output, external API call, GitHub upload, PR, merge, app reinstall, or Phase 2 work was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE017_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE015_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE014_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果 Phase 1 合同被误读为生产 scanner/resume/offline recovery 授权，后续可能读取 raw metadata、写入重复 document/chunk/job/index/import/manifest 或污染原始资料。"
+            rollback: "Revert IDS-STAGE017-P1 entry/scope evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, runtime data, app entries, GitHub state, or Phase 2."
