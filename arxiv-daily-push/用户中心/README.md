@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 21:02:46 Australia/Sydney
+更新时间：2026-07-02 23:06:15 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -16,6 +16,7 @@
 | 复习、行动、收益 | [复习行动与收益](./复习行动与收益.md) 已显示字段、证据链和 2026-06-28 今日快照数字 | 今日数字已由当日运行快照写入；后续每日必须继续由真实运行报告同步 |
 | Stage 2 integrated acceptance | 已记录并保持 `true` | 可以宣称 Stage 2 acceptance 已记录；仍不能宣称 S3/DAILY_OPERATION 已进入、每日生产运行已验收或 M1-M4 全量后台自动发送已启用 |
 | 最终验收包与 S3 阻断 | [最终验收包与 S3 阻断](./最终验收包与S3阻断.md) | 一页核对 final bundle、P0/P1 zero-proof、S2PLT04、Stage 2 acceptance 和 DAILY_OPERATION 当前阻断 |
+| S3 root 执行根 | 正确 root 必须 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`；错误 root 为 `codexproject_repo_root_invalid` | 复制 S3 复核命令后还要核对这些 JSON 字段，不能只看 exit 2 |
 
 ## 一看三查
 
@@ -95,6 +96,13 @@
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），计划应发 4 封；受控发送证据不代表 S3/DAILY_OPERATION 已进入。
 
 ## 最近治理与历史记录
+
+## 2026-07-02 23:06:15 Australia/Sydney - S3 root validation 第一入口同步
+
+- S3 handoff 和最终验收包页已有 root validation 说明；本页现在同步为第一入口口径。
+- 后续复制 `tools/verify_daily_operation_readiness.py` 或 `tools/verify_daily_operation_enablement_preflight.py` 后，必须同时核对 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`。
+- 若输出 `codexproject_repo_root_invalid`，先修正执行目录或 `--root`；这不是持久授权缺失，也不是 S3/DAILY_OPERATION 状态变化。
+- 本轮仍只做 MVP 准备与复审修补，不创建持久授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。
 
 ## 2026-07-02 20:22:34 Australia/Sydney - open PR 边界已改为 enablement preflight 自动观察
 
