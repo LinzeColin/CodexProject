@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s01p3-no-omission-gate
+product_version: 0.1.3-s01-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S01`
-- current_phase: `v0.1.3 S01-P3｜防遗漏门禁复跑`
-- current_tasks: `KMFA-V013-S01-P3-NO-OMISSION-GATE-20260702`
-- status: `local_no_omission_gate_verified_no_go_stage1_review_pending`
+- current_phase: `v0.1.3 Stage 1｜整体复审`
+- current_tasks: `KMFA-V013-S01-STAGE-REVIEW-20260702`
+- status: `local_stage1_review_passed_no_go_upload_gate_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -127,12 +127,13 @@ product_version: 0.1.3-s01p3-no-omission-gate
 | `KMFA-V013-S01-P1-CURRENT-STATE-PREFLIGHT-20260702` | v0.1.3 S01-P1 当前状态复核本地验证完成：复算 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告；继续保持 `NO_GO` 和 `delivery_allowed=false`；未执行 S01-P2、Stage 1 review、GitHub upload、正式报告、lineage full check、live connector 或业务执行 | `KMFA/stage_artifacts/V013_S01_PRECHECK/human/status_summary.md` |
 | `KMFA-V013-S01-P2-SCOPE-FREEZE-20260702` | v0.1.3 S01-P2 范围冻结本地验证完成：冻结 public-safe scope、非范围、停止线和 `/Users/linzezhang/Downloads/KMFA_MetaData` 只读 raw boundary；继承 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告；未执行 S01-P3、Stage 1 review、GitHub upload、正式报告、lineage full check、live connector 或业务执行 | `KMFA/stage_artifacts/V013_S01_SCOPE_FREEZE/human/scope_freeze_record.md` |
 | `KMFA-V013-S01-P3-NO-OMISSION-GATE-20260702` | v0.1.3 S01-P3 防遗漏门禁复跑本地验证完成：正式 no_omission gate 通过 requirements=20、P0=9、P1=8、stage_status_records=549、task_records=162；未执行 Stage 1 review、GitHub upload、正式报告、lineage full check、live connector 或业务执行 | `KMFA/stage_artifacts/V013_S01_NO_OMISSION_GATE/human/no_omission_gate_record.md` |
+| `KMFA-V013-S01-STAGE-REVIEW-20260702` | v0.1.3 Stage 1 整体复审本地通过：复跑 S01-P1/P2/P3 validators 和 Stage 1 review validator，确认 findings_open=0、github_upload=false、delivery_allowed=false；未执行 GitHub upload、正式报告、lineage full check、live connector 或业务执行 | `KMFA/stage_artifacts/V013_S01_STAGE_REVIEW/human/stage1_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S01-P3 防遗漏门禁复跑已本地完成；Stage 1 review、GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S01_NO_OMISSION_GATE/human/test_results.md` |
+| 无 | v0.1.3 Stage 1 整体复审已本地完成；GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S01_STAGE_REVIEW/human/test_results.md` |
 
 ## Not Completed
 
@@ -141,4 +142,4 @@ product_version: 0.1.3-s01p3-no-omission-gate
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| Stage 1 review / GitHub upload | 本轮只允许完成 S01-P3 一个 phase；尚未执行 Stage 1 整体复审或 upload | 下一轮执行 Stage 1 整体复审，修复 findings 后再处理 upload |
+| Stage 1 GitHub upload | Stage 1 review 已本地通过，但当前 run 不执行 upload；分支仍需对齐最新 `origin/main` 并刷新 evidence binding | 下一轮执行 Stage 1 GitHub upload gate，复跑 validators、治理检查、raw/secret scan、dry-run push、push 和 post-push parity |
