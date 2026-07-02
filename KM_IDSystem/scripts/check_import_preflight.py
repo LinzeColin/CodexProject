@@ -399,6 +399,88 @@ def build_stage018_scenario_report(
     return report
 
 
+def build_owner_feedback_summary(
+    preflight_report: dict[str, Any],
+    operator_decision_plan: dict[str, Any],
+    *,
+    feedback_at: str | None = None,
+) -> dict[str, Any]:
+    """Build Phase 4 owner-facing Chinese feedback without persisting artifacts."""
+
+    feedback_at = feedback_at or _utc_now()
+    risks = list(preflight_report.get("risk_items", []))
+    report_sample = {
+        "schema_version": preflight_report.get("schema_version"),
+        "overall_state": preflight_report.get("overall_state"),
+        "confirmation_status": preflight_report.get("confirmation_status"),
+        "file_count_estimate": preflight_report.get("file_count_estimate", 0),
+        "total_size_bytes_estimate": preflight_report.get("total_size_bytes_estimate", 0),
+        "format_counts": preflight_report.get("format_counts", {}),
+        "archive_candidate_count": preflight_report.get("archive_candidate_count", 0),
+        "scanned_document_candidate_count": preflight_report.get("scanned_document_candidate_count", 0),
+        "estimated_ocr_units": preflight_report.get("estimated_ocr_units", 0),
+        "estimated_embedding_units": preflight_report.get("estimated_embedding_units", 0),
+        "risk_items": risks,
+        "cost_items": preflight_report.get("cost_items", {}),
+        "priority_hint": preflight_report.get("priority_hint"),
+    }
+    failure_explanations = {
+        "PREFLIGHT_NOT_CONFIGURED": "未配置导入来源；请先选择 owner 批准的本地 file:// 输入。",
+        "PREFLIGHT_SOURCE_BLOCKED": "来源不可用或越过安全边界；系统不会继续读取或推断该来源。",
+        "PREFLIGHT_DRIVE_OFFLINE": "移动硬盘或来源盘处于离线状态；请重新接入后再做预检。",
+        "PREFLIGHT_ARCHIVE_PRESENT": "发现压缩包候选；需要 owner 复核后再决定是否单独处理。",
+        "PREFLIGHT_SCANNED_DOCUMENT_PRESENT": "发现扫描件候选；OCR 工作量只是估算，不代表已经启动 OCR。",
+        "PREFLIGHT_LARGE_BATCH": "文件数量较多；建议先分批处理并保留人工确认点。",
+        "PREFLIGHT_UNSUPPORTED_FORMAT": "发现不支持格式；建议跳过或转交人工处理。",
+        "PREFLIGHT_INSUFFICIENT_SPACE": "目标空间不足；请释放空间或缩小批次后再继续。",
+        "PREFLIGHT_REVIEW_REQUIRED": "预检发现需要人工确认的风险项；确认前不会进入批量处理。",
+    }
+    confirmation_flow_log = [
+        "步骤 1：系统展示预检报告样例，owner 先查看数量、体积、格式、风险和成本。",
+        "步骤 2：owner 可以选择保存预检结果；当前 helper 只提供可序列化内容，不自动落盘。",
+        "步骤 3：owner 可以选择取消；取消后 document/chunk/job/index/import/manifest/database 写入均保持 0。",
+        "步骤 4：owner 可以选择分批处理；系统只生成 metadata batch plan，不启动解析或导入。",
+        "步骤 5：owner 可以选择跳过高风险文件；压缩包、扫描件和不支持格式会进入跳过候选清单。",
+    ]
+    uncertainty_notes = [
+        "文件数量、大小和格式来自显式 file:// 输入的文件系统 metadata；目录不递归扫描。",
+        "OCR 和 Embedding 工作量是候选数量估算，不代表已经解析正文或启动处理任务。",
+        "压缩包内部文件数、扫描件页数、图片清晰度和未来解析耗时仍需后续授权阶段确认。",
+        "可用空间判断只比较当前传入的 available_space_bytes 和估算输入体积，不替代系统级容量审计。",
+    ]
+    rollback_steps = [
+        "回滚 Phase 4 时只撤销 owner feedback helper、测试、closeout evidence 和治理指针。",
+        "回滚不得移动、删除、覆盖或重写原始资料。",
+        "回滚不得清理 /Users/linzezhang/Downloads/IDS_MetaData 或任何 runtime database/report/output。",
+    ]
+    no_persistence = dict(NO_PERSISTENCE_DELTAS)
+    summary: dict[str, Any] = {
+        "schema_version": "ids.stage018.import_preflight.owner_feedback.v1",
+        "stage": "STAGE-018",
+        "phase": "Phase 4",
+        "acceptance_id": "ACC-STAGE-018",
+        "entrance": ENTRANCE,
+        "customer_visible": True,
+        "feedback_at": feedback_at,
+        "report_sample": report_sample,
+        "risk_checklist": risks,
+        "confirmation_flow_log": confirmation_flow_log,
+        "failure_explanations": failure_explanations,
+        "uncertainty_notes": uncertainty_notes,
+        "rollback_steps": rollback_steps,
+        "sample_persistence": {
+            "can_serialize_for_owner_review": operator_decision_plan.get("save_contract", {}).get(
+                "can_save_result", False
+            ),
+            "persisted_by_helper": False,
+            "owner_selected_path_required": True,
+        },
+        "no_persistence_deltas": no_persistence,
+    }
+    summary.update(NO_SIDE_EFFECT_FLAGS)
+    return summary
+
+
 def _base_report(
     *,
     prechecked_at: str,

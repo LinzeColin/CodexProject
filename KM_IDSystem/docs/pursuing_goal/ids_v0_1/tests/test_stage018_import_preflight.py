@@ -297,6 +297,81 @@ class Stage018ImportPreflightTests(unittest.TestCase):
         self.assertTrue(scenario_report["does_not_start_import"])
         self.assertTrue(scenario_report["does_not_write_database"])
 
+    def test_phase4_owner_feedback_summary_contains_report_sample_risks_uncertainty_and_rollback(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            docs = base / "feedback"
+            docs.mkdir()
+            shutil.copy2(REAL_SOURCE, docs / "stage018-entry.md")
+            shutil.copy2(REAL_ALT_SOURCE, docs / "stage018-scope.md")
+            (docs / "owner-candidate.zip").write_bytes(b"PK\x03\x04ids-structural-archive-candidate")
+
+            preflight = module.evaluate_import_preflight(
+                source_uris=[docs.as_uri()],
+                prechecked_at=PRECHECKED_AT,
+                available_space_bytes=1,
+            )
+            decision = module.build_operator_decision_plan(preflight, batch_size=2)
+            feedback = module.build_owner_feedback_summary(
+                preflight,
+                decision,
+                feedback_at=PRECHECKED_AT,
+            )
+
+        self.assertEqual(feedback["schema_version"], "ids.stage018.import_preflight.owner_feedback.v1")
+        self.assertEqual(feedback["stage"], "STAGE-018")
+        self.assertEqual(feedback["phase"], "Phase 4")
+        self.assertEqual(feedback["acceptance_id"], "ACC-STAGE-018")
+        self.assertTrue(feedback["customer_visible"])
+        self.assertEqual(feedback["report_sample"]["overall_state"], "PREFLIGHT_REVIEW_REQUIRED")
+        self.assertEqual(feedback["report_sample"]["file_count_estimate"], 3)
+        self.assertIn("PREFLIGHT_ARCHIVE_PRESENT", feedback["risk_checklist"])
+        self.assertIn("PREFLIGHT_INSUFFICIENT_SPACE", feedback["risk_checklist"])
+        self.assertTrue(feedback["confirmation_flow_log"])
+        flow_text = "\n".join(feedback["confirmation_flow_log"])
+        self.assertIn("保存预检结果", flow_text)
+        self.assertIn("取消", flow_text)
+        self.assertIn("分批", flow_text)
+        self.assertIn("跳过高风险文件", flow_text)
+        self.assertGreaterEqual(len(feedback["uncertainty_notes"]), 3)
+        self.assertIn("PREFLIGHT_DRIVE_OFFLINE", feedback["failure_explanations"])
+        self.assertIn("PREFLIGHT_SOURCE_BLOCKED", feedback["failure_explanations"])
+        self.assertIn("PREFLIGHT_INSUFFICIENT_SPACE", feedback["failure_explanations"])
+        self.assertTrue(any("回滚" in step for step in feedback["rollback_steps"]))
+        self.assertFalse(feedback["sample_persistence"]["persisted_by_helper"])
+        self.assertEqual(feedback["no_persistence_deltas"]["database_write_delta"], 0)
+
+    def test_phase4_owner_feedback_serializes_without_raw_body_or_runtime_writes(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            docs = base / "owner"
+            docs.mkdir()
+            shutil.copy2(REAL_SOURCE, docs / "stage018-entry.md")
+
+            preflight = module.evaluate_import_preflight(
+                source_uris=[docs.as_uri()],
+                prechecked_at=PRECHECKED_AT,
+            )
+            decision = module.build_operator_decision_plan(preflight, batch_size=50)
+            feedback = module.build_owner_feedback_summary(
+                preflight,
+                decision,
+                feedback_at=PRECHECKED_AT,
+            )
+
+        serialized = json.dumps(feedback, ensure_ascii=False)
+
+        self.assertNotIn("# IDS v0.1 STAGE-018 Entry Contract", serialized)
+        self.assertNotIn("raw_payload", serialized)
+        self.assertTrue(feedback["does_not_parse_body_text"])
+        self.assertTrue(feedback["does_not_start_ocr"])
+        self.assertTrue(feedback["does_not_create_embeddings"])
+        self.assertTrue(feedback["does_not_build_index"])
+        self.assertTrue(feedback["does_not_start_import"])
+        self.assertTrue(feedback["does_not_write_database"])
+
 
 if __name__ == "__main__":
     unittest.main()
