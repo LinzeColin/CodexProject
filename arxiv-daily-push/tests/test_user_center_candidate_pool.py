@@ -2364,6 +2364,14 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         )
         for fact in required_facts:
             self.assertIn(fact, page)
+        self.assertIn(
+            'python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
+            page,
+        )
+        self.assertNotIn(
+            "```bash\npython3 tools/verify_acceptance_bundle.py --require-zero P0 P1\npython3 tools/verify_daily_operation_enablement_preflight.py\n```",
+            page,
+        )
 
         forbidden_facts = (
             "| S3/DAILY_OPERATION | 已进入",
