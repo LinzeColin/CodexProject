@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s02p2-raw-mapping-readiness`
+- version: `0.1.3-s02p3-data-quality-error-gate`
 - current_stage: `S02`
-- current_phase: `v0.1.3 S02-P2｜raw mapping/value matching readiness`
-- status: `local_s02p2_raw_mapping_readiness_passed_no_go_overall_upload_deferred`
+- current_phase: `v0.1.3 S02-P3｜data quality/error gate`
+- status: `local_s02p3_data_quality_error_gate_passed_no_go_overall_upload_deferred`
 - production_ready: `false`
 - github_upload_ready: `false_overall_completion_upload_deferred`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -49,6 +49,7 @@
 - v0.1.3 Stage 1 整体复审已本地完成，证据位于 `KMFA/stage_artifacts/V013_S01_STAGE_REVIEW/`；复审确认 S01-P1/P2/P3 均通过，findings_open=0，继续保持 `NO_GO` 和 `delivery_allowed=false`，本轮未执行 GitHub upload、正式报告、lineage full check 或业务执行。
 - v0.1.3 S02-P1 raw 数据只读清单与准备度已本地完成，证据位于 `KMFA/stage_artifacts/V013_S02_P1_RAW_READINESS/`；只读确认 `/Users/linzezhang/Downloads/KMFA_MetaData` 存在且可读，公开证据只保留 file_count=5、total_bytes=62788056 和扩展名计数，不公开 raw 文件名、raw hash、字段明文或业务值；私有清单位于 git-ignored `KMFA/.codex_private_runtime/`，本轮未执行 raw value matching、Stage 2 review、GitHub upload、正式报告或业务执行。
 - v0.1.3 S02-P2 raw mapping/value matching readiness 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S02_P2_RAW_MAPPING_READINESS/`；只读解析 raw ZIP/XLSX 容器和表结构，公开证据只记录 raw_files=5、zip_openable=3、workbooks_parseable=25、sheets_seen=4198 等聚合计数；私有 schema/header/mapping diagnostic 位于 git-ignored `KMFA/.codex_private_runtime/`，value matching 仍为 `blocked_authorized_mapping_required`，本轮未执行 raw row-value extraction、Stage 2 review、GitHub upload、正式报告或业务执行。
+- v0.1.3 S02-P3 data quality/error gate 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S02_P3_DATA_QUALITY_ERROR_GATE/`；基于 S02-P1/S02-P2 public-safe manifest 和 Q0-Q5/A-D/report release gate policy，当前锁定为 data quality `Q2`、report grade `D`、release permission `blocked`；本 phase 未读取 raw 目录，未执行 raw value matching、Stage 2 review、GitHub upload、正式报告、lineage full check 或业务执行。
 - 项目级 raw data boundary 已锁定：`/Users/linzezhang/Downloads/KMFA_MetaData` 是用户本机 KMFA 财务原始数据入口，Codex 只能只读读取，不得修改、删除、移动或向该目录写入；Codex 生成的私有诊断和额外文件只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
@@ -141,7 +142,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 S02-P2 已本地完成；下一轮只能执行 S02-P3 data quality/error gate 或用户明确指定的单一 phase，不得跳到 Stage 2 整体复审、GitHub upload、正式报告、lineage full check 或业务执行；GitHub upload 延后到整体完成 gate。
+- v0.1.3 S02-P3 已本地完成；下一轮只能执行 Stage 2 整体复审或用户明确指定的单一 phase，不得跳到 GitHub upload、正式报告、lineage full check、raw value matching、live connector 或业务执行；GitHub upload 延后到整体完成 gate。
 
 ## 阻塞条件
 
