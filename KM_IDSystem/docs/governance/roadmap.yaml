@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE004"
-current_phase_id: "IDS-STAGE004-P4"
-current_task_id: "IDS-V0_1-STAGE004-P4"
-next_gate_id: "IDS-STAGE005-P1-GATE"
-total_estimated_hours: 41
-completed_estimated_hours: 41
+current_stage_id: "IDS-STAGE005"
+current_phase_id: "IDS-STAGE005-P1"
+current_task_id: "IDS-V0_1-STAGE005-P1"
+next_gate_id: "IDS-STAGE005-P2-GATE"
+total_estimated_hours: 47
+completed_estimated_hours: 42
 stages:
   -
     stage_id: "S5"
@@ -1071,3 +1071,185 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage004_legacy_name_scan.py"
             risk: "在 STAGE-004 完成后误推送未满 10 stages 的批次。"
             rollback: "Revert IDS-STAGE004-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE005"
+    name: "仓库治理回归验证"
+    person_goal: "验证一次性仓库治理没有破坏 README、governance、脚本、测试和路径引用。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "缺少 STAGE-001..004 的本地 evidence 链"
+      - "把 sparse-worktree 根治理缺失误修为展开无关项目"
+      - "提交真实原始资料、secrets、本地数据、reports、outputs 或依赖目录"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE005-GATE"
+      status: "open"
+      pass_conditions:
+        - "Phase 1 明确仓库治理回归验证范围、输入输出和禁止路径"
+        - "Phase 2 形成最小可运行回归验证切片或治理合同"
+        - "Phase 3 完成 README、governance、脚本、测试、路径引用和 secrets/runtime 边界验证"
+        - "Phase 4 生成 ACC 证据、回滚说明和中文反馈"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
+    phases:
+      -
+        phase_id: "IDS-STAGE005-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认仓库治理回归验证的目标表面、允许路径、禁止路径、输入输出和后续验证计划。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图实现验证器或修改运行时代码"
+          - "未区分 KM_IDSystem 内真实回归和 sparse-worktree 根治理缺失"
+          - "没有明确禁止 raw data、secrets、runtime 输出和无关项目路径"
+        stop_gate:
+          gate_id: "IDS-STAGE005-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 005 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary file defines governance regression surfaces and forbidden paths"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE005-P1"
+            name: "仓库治理回归验证边界确认"
+            objective: "在不实现验证器的前提下，记录 STAGE-005 的治理回归验证表面、输入、输出、允许路径、禁止路径和 001-010 批次上传规则。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "2.13%"
+            dependencies:
+              - "IDS-V0_1-STAGE004-P4"
+            acceptance_ids:
+              - "ACC-STAGE-005"
+            test_commands:
+              - "P0 STAGE-005 taskpack SHA check"
+              - "tracked governance regression surface baseline"
+              - "Stage005 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-005 Phase 1 boundary artifacts prepared. P0 STAGE-005 taskpack SHA-256 is 7b3d826fb04ed557667e5b25f9d4c4bf301ede24e102cd602ef7ebac602b2716. Baseline tracked KM_IDSystem file count is 113, including README, handoff, governance, pursuing-goal contracts, scripts, backend tests, backend app, frontend, app_bundle, and ProductMetaDatabase contract surfaces. Phase 1 did not implement a validator, modify runtime code, touch raw data, reports, outputs, dependencies, or external projects. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE005_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把 sparse-worktree 的根治理缺失当成本项目回归修复，导致读取或展开无关项目。"
+            rollback: "Revert IDS-STAGE005-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE005-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "按最小变更原则形成仓库治理回归验证工具或治理合同，不引入运行时代码耦合。"
+        status: "not_started"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "试图 broad cleanup 或展开无关项目"
+          - "引入真实资料、secrets、runtime 输出或外部 API 依赖"
+        stop_gate:
+          gate_id: "IDS-STAGE005-P2-GATE"
+          status: "pending"
+          pass_conditions:
+            - "治理回归验证切片可重复运行"
+            - "README、governance、脚本、测试和路径引用检查可审计"
+            - "sparse-worktree 诊断与 KM_IDSystem 回归失败被区分"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE005-P2"
+            name: "仓库治理回归验证最小切片"
+            objective: "建立小型、可审计、可回滚的仓库治理回归验证切片。"
+            status: "not_started"
+            estimated_hours: 2
+            total_hours_percent: "4.26%"
+            dependencies:
+              - "IDS-V0_1-STAGE005-P1"
+            acceptance_ids:
+              - "ACC-STAGE-005"
+            test_commands:
+              - "governance regression validator test"
+              - "path-reference invariant test"
+              - "check-render --project KM_IDSystem"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "验证器只检查 marker，未覆盖真实路径引用和 JSONL/批次锁结构。"
+            rollback: "Revert IDS-STAGE005-P2 validation-slice changes."
+      -
+        phase_id: "IDS-STAGE005-P3"
+        name: "仓库治理回归验证专项验证与异常场景"
+        objective: "验证 README、governance、脚本、测试、路径引用、secrets 和本地数据边界。"
+        status: "not_started"
+        stop_conditions:
+          - "未完成 Phase 2 验证切片"
+          - "无法证明治理回归验证覆盖实际路径"
+          - "扫描证据不足"
+        stop_gate:
+          gate_id: "IDS-STAGE005-P3-GATE"
+          status: "pending"
+          pass_conditions:
+            - "README、governance、脚本、测试和路径引用检查已运行"
+            - "客户可见显示面仍使用 IDS / Industrial Data System"
+            - "未触碰 raw data、secrets、runtime 输出或依赖目录"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE005-P3"
+            name: "仓库治理回归专项验证"
+            objective: "验证 STAGE-005 回归切片的覆盖范围、异常场景和边界。"
+            status: "not_started"
+            estimated_hours: 2
+            total_hours_percent: "4.26%"
+            dependencies:
+              - "IDS-V0_1-STAGE005-P2"
+            acceptance_ids:
+              - "ACC-STAGE-005"
+            test_commands:
+              - "README/governance/script/test/path-reference scan"
+              - "customer-visible output scan"
+              - "secret and runtime boundary scan"
+              - "check-render --project KM_IDSystem"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "验证未区分本项目真实回归和 sparse 根治理缺失。"
+            rollback: "Revert IDS-STAGE005-P3 validation/evidence-only changes."
+      -
+        phase_id: "IDS-STAGE005-P4"
+        name: "仓库治理回归验证交付证据、回滚与中文反馈"
+        objective: "提交变更文件清单、回归验证结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
+        status: "not_started"
+        stop_conditions:
+          - "Phase 3 扫描未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE005-P4-GATE"
+          status: "pending"
+          pass_conditions:
+            - "ACC-STAGE-005 证据完整"
+            - "本 Stage 可回滚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE005-P4"
+            name: "STAGE-005 交付证据与回滚"
+            objective: "生成 ACC-STAGE-005 证据、回归验证结果、legacy alias 保留原因、回滚步骤和中文反馈。"
+            status: "not_started"
+            estimated_hours: 1
+            total_hours_percent: "2.13%"
+            dependencies:
+              - "IDS-V0_1-STAGE005-P3"
+            acceptance_ids:
+              - "ACC-STAGE-005"
+            test_commands:
+              - "STAGE-005 closeout checklist"
+              - "governance regression final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "在 STAGE-005 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE005-P4 closeout-only changes."
