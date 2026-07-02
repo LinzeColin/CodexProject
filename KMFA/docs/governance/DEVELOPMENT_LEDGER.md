@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s00p1-app-entry
+product_version: 0.1.3-s01p1-current-state-preflight
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S00`
-- current_phase: `v0.1.3 S00-P1｜Downloads App Entry`
-- current_tasks: `KMFA-V013-S00-P1-DOWNLOADS-APP-ENTRY-20260702`
-- status: `local_app_entry_verified_no_go_stage_review_pending`
+- current_stage: `S01`
+- current_phase: `v0.1.3 S01-P1｜当前状态复核`
+- current_tasks: `KMFA-V013-S01-P1-CURRENT-STATE-PREFLIGHT-20260702`
+- status: `local_current_state_preflight_verified_no_go_scope_freeze_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -124,12 +124,13 @@ product_version: 0.1.3-s00p1-app-entry
 | `KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE-20260702` | Post-S18 lineage/report gate 本地锁定为 blocked：0 条 actual field/metric/report lineage rows、12 条 pending reconciliation、2 条 D 级报告 runtime 继续阻断正式报告、经营决策依据、release claim 和 delivery claim；未执行 GitHub upload、backup、lineage full check completion、正式报告或业务执行 | `KMFA/stage_artifacts/LINEAGE_REPORT_GATE/human/lineage_report_gate_report.md` |
 | `KMFA-FINAL-GITHUB-BACKUP-NO-GO-20260702` | Post-S18 final GitHub backup/upload 证据已生成：本次只能作为 NO_GO governance backup only；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告继续阻断 release、delivery、正式报告和业务执行 | `KMFA/stage_artifacts/FINAL_GITHUB_BACKUP/human/github_backup_upload_record.md` |
 | `KMFA-V013-S00-P1-DOWNLOADS-APP-ENTRY-20260702` | v0.1.3 S00-P1 Downloads app entry 本地验证完成：`/Users/linzezhang/Downloads/KMFA.app` 指向 canonical KMFA public-safe 首页 HTML，KMFA 专用图标 hash 已锁定；未执行 Stage 0 review、GitHub upload、正式报告、lineage full check、live connector 或业务执行 | `KMFA/stage_artifacts/V013_S00_APP_ENTRY/human/app_entry_record.md` |
+| `KMFA-V013-S01-P1-CURRENT-STATE-PREFLIGHT-20260702` | v0.1.3 S01-P1 当前状态复核本地验证完成：复算 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告；继续保持 `NO_GO` 和 `delivery_allowed=false`；未执行 S01-P2、Stage 1 review、GitHub upload、正式报告、lineage full check、live connector 或业务执行 | `KMFA/stage_artifacts/V013_S01_PRECHECK/human/status_summary.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S00-P1 app entry 已本地完成；Stage 0 review、GitHub upload、S01-P1、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S00_APP_ENTRY/human/test_results.md` |
+| 无 | v0.1.3 S01-P1 当前状态复核已本地完成；S01-P2、Stage 1 review、GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S01_PRECHECK/human/test_results.md` |
 
 ## Not Completed
 
@@ -138,4 +139,4 @@ product_version: 0.1.3-s00p1-app-entry
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| Stage 0 review / GitHub upload | 本轮只允许完成 S00-P1 一个 phase；尚未执行 Stage 0 整体复审或 upload | 下一轮先执行 Stage 0 整体复审并修复 findings，复审通过后再单独 upload |
+| S01-P2 scope freeze / Stage 1 review / GitHub upload | 本轮只允许完成 S01-P1 一个 phase；尚未执行 S01-P2、Stage 1 整体复审或 upload | 下一轮先执行 S01-P2 范围冻结，Stage 1 全部 phase 完成后再整体复审 |
