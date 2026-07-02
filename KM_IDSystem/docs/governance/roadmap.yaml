@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE016"
-current_phase_id: "IDS-STAGE016-P2"
-current_task_id: "IDS-V0_1-STAGE016-P2"
-next_gate_id: "IDS-STAGE016-P3-GATE"
-total_estimated_hours: 122
-completed_estimated_hours: 121
+current_phase_id: "IDS-STAGE016-P3"
+current_task_id: "IDS-V0_1-STAGE016-P3"
+next_gate_id: "IDS-STAGE016-P4-GATE"
+total_estimated_hours: 124
+completed_estimated_hours: 123
 stages:
   -
     stage_id: "S5"
@@ -3707,7 +3707,7 @@ stages:
       - "引入虚拟 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
       - "在 STAGE-011..020 未完成、复审和修复前上传 GitHub main"
     stop_gate:
-      gate_id: "IDS-STAGE016-P2-GATE"
+      gate_id: "IDS-STAGE016-P3-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
         - "P0 taskpack source 和 STAGE-016 execution index 已绑定"
@@ -3716,13 +3716,15 @@ stages:
         - "idempotency key 检查必须发生在 document/chunk/job/index 写入之前"
         - "重复单文件导入和重复批次导入的 no-duplicate document/chunk/job/index 合同已记录"
         - "导入幂等最小切片已实现 metadata-only 报告，不写 database/index/document/chunk/job"
-        - "Phase 2 未读取、列出、hash、打开、复制、移动、删除或修改 IDS_MetaData 原始数据库内容"
-        - "Phase 2 未写 manifest/database/index、未创建 document/chunk/job、未进入 Phase 3"
+        - "Phase 3 已验证 same-file/same-hash、same-name/different-hash、same-hash/different-path、duplicate import no-persistence 和 original hash stable 场景"
+        - "Phase 3 未读取、列出、hash、打开、复制、移动、删除或修改 IDS_MetaData 原始数据库内容"
+        - "Phase 3 未写 manifest/database/index、未创建 document/chunk/job、未进入 Phase 4"
         - "BATCH011_020_UPLOAD_LOCK.yaml 仍保持 push_allowed=false"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_PHASE2_IMPORT_IDEMPOTENCY_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/scripts/check_import_idempotency.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage016_import_idempotency.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE015_PHASE4_CLOSEOUT.md"
@@ -3841,3 +3843,59 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果后续把 metadata-only import key 误接到生产导入、数据库或 index 写入动作，会破坏 no-duplicate document/chunk/job/index 边界。"
             rollback: "Revert IDS-STAGE016-P2 script, focused test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, runtime data, app entries, GitHub state, or Phase 3."
+      -
+        phase_id: "IDS-STAGE016-P3"
+        name: "导入幂等键专项验证与异常场景"
+        objective: "验证 same-file/same-hash、same-name/different-hash、same-hash/different-path、重复导入 no-persistence 和原始 hash 稳定性，确保不会重复污染 documents/chunks/jobs/index。"
+        status: "completed"
+        stop_conditions:
+          - "STAGE-016 Phase 2 未完成"
+          - "验证需要读取、扫描、复制、hash、打开、移动、删除、修改或 dump IDS_MetaData 原始数据库内容"
+          - "验证需要写入 runtime database、manifest、index、document/chunk/job、报告、outputs 或外部 API"
+          - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "一次 run 进入 Phase 4"
+        stop_gate:
+          gate_id: "IDS-STAGE016-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Phase 3 scenario report 覆盖 same-file/same-hash、same-name/different-hash、same-hash/different-path、duplicate import no-persistence、original hash stable"
+            - "重复导入 document_delta、chunk_delta、job_delta、index_delta、import_write_delta、manifest_write_delta、duplicate_write_delta 均为 0"
+            - "原始 tracked governance source 的 before/after SHA-256 和 size 保持一致"
+            - "Stage005 governance regression 已接受 IDS-V0_1-STAGE016-P3 当前态"
+            - "BATCH011_020_UPLOAD_LOCK.yaml 保持 push_allowed=false，未进入 Phase 4"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE016-P3"
+            name: "导入幂等键 scenario report"
+            objective: "在不写数据库、manifest、index、document、chunk、job 或运行输出的前提下，为导入幂等键生成可测试的 Phase 3 场景报告。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.61%"
+            dependencies:
+              - "IDS-V0_1-STAGE016-P2"
+              - "IDS-V0_1-STAGE015-P4"
+              - "IDS-V0_1-STAGE014-P4"
+              - "IDS-V0_1-STAGE013-P4"
+            acceptance_ids:
+              - "ACC-STAGE-016"
+            test_commands:
+              - "RED/GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage016_import_idempotency.py -q"
+              - "RED/GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py -q"
+              - "Stage005 validator report"
+              - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "py_compile import script and Stage005 validator"
+              - "events JSONL parse"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+              - "old underscored task-id variant scan"
+            test_results: "Focused RED failed as expected with 8 Stage016 tests and 1 error because build_stage016_scenario_report did not exist. Focused GREEN passed 8 Stage016 tests after adding metadata-only scenario report support. Stage005 RED failed as expected with 30 tests and 1 failure because IDS-V0_1-STAGE016-P3 was not accepted by the governance state machine. Intermediate RED failed with 30 tests and 1 failure because STAGE016_PHASE3_SCENARIO_VALIDATION.md was missing as required evidence. Stage005 GREEN passed 30 tests. Stage005 validator returned valid=true with issues=[], missing_required_files=[], event_json_errors=[], forbidden_changed_paths=[], and unexpected_changed_paths=[]. Full IDS v0.1 pursuing-goal discover passed 103 tests. py_compile passed for check_import_idempotency.py and Stage005 validator. events JSONL parse returned events_jsonl_ok. bundled render --project KM_IDSystem --write updated owner files; bundled check-render returned drift_count=0 and reference_issue_count=0. git diff --check passed. exact old underscored task-id variant scan returned no hits. Legacy path/name hits remain historical migration-policy, compatibility-scan, stale-path, or do-not-revive references only. semantic validate remains diagnostic-only with 29 known sparse root-governance or registered-project missing paths and no new KM_IDSystem semantic error. Phase 3 did not read, list, hash, open, copy, move, delete, modify, dump, scan, or commit IDS_MetaData raw metadata content. No service start, dependency install, import-record/manifest/database/index write, document/chunk/job creation, runtime output, external API call, GitHub upload, PR, merge, app reinstall, or Phase 4 work was performed."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_import_idempotency.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage016_import_idempotency.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果后续把 scenario validation 误解为生产导入授权，可能绕过幂等检查、写入重复 document/chunk/job/index 或污染数据库。"
+            rollback: "Revert IDS-STAGE016-P3 script, focused test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, persisted manifests, evidence ledgers, audit logs, indexes, delivered reports, runtime data, app entries, GitHub state, or Phase 4."
