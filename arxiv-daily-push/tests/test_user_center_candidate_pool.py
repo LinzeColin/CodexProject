@@ -101,6 +101,32 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("历史当时本机 SMTP 发送授权为 false-like", feature_list)
         self.assertNotIn("本机 SMTP 发送授权必须为 `ADP_ALLOW_SMTP_SEND=false`", feature_list)
 
+    def test_project_readme_records_stage2_and_s3_boundary(self):
+        readme = PROJECT_README.read_text(encoding="utf-8")
+
+        required_phrases = (
+            "[用户中心](./用户中心/README.md)",
+            "Stage 2 integrated acceptance 已记录",
+            "S3/DAILY_OPERATION | 未进入；`daily_operation_enabled=false`",
+            "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
+            "本机/launchd 只作为历史与受控运行证据来源",
+            "`ADP_ALLOW_SMTP_SEND` 原始值只接受 `UNSET` 或 false-like",
+            "当前 MVP 准备只做复审修补、证据同步和防回归补强，不进入 S3/DAILY_OPERATION",
+        )
+        for phrase in required_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, readme)
+
+        forbidden_phrases = (
+            "本机运行策略 | 本机加本地 Codex 运行器",
+            "Stage 2 多来源正式生产 | 未通过",
+            "Stage 2 正式生产仍未通过",
+            "Stage 2 来源正式生产推广",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, readme)
+
     def test_owner_facing_mvp_run_contract_wording_uses_next_round(self):
         pages = [
             *USER_CENTER.glob("*.md"),

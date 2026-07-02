@@ -22,11 +22,14 @@
 | 事项 | 状态 |
 |---|---|
 | Stage 1 arXiv 单源 | 已验收并维持 |
-| 本机运行策略 | 本机加本地 Codex 运行器 |
-| GitHub 角色 | 代码、PR、证据、状态和备份 |
+| Stage 2 integrated acceptance | 已记录并保持；不等于 S3/DAILY_OPERATION |
+| S3/DAILY_OPERATION | 未进入；`daily_operation_enabled=false` |
+| 持久运行授权 | 缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`，不得启用 |
+| 运行策略 | 当前不进入 DAILY_OPERATION；本机/launchd 只作为历史与受控运行证据来源 |
+| GitHub 角色 | 代码、证据、状态、备份和 owner 中文主阅读面 |
 | GitHub 云端每日生产 | 未启用 |
-| Stage 2 多来源正式生产 | 未通过 |
 | Email V1 | 已作为 M1 到 M4 后续邮件模板合同 |
+| SMTP 发送开关 | 当前 `ADP_ALLOW_SMTP_SEND` 原始值只接受 `UNSET` 或 false-like；truthy 必须停止 |
 
 30 天级别证据指 30 个独立日期的真实数据回放、覆盖检查和证据产物；不等于必须等待 30 个自然日。
 
@@ -61,7 +64,8 @@
 - GitHub 云端计划任务生产运行。
 - 未经用户本机环境和密钥设置验证的真实本地 SMTP 生产发送。
 - 真实安装 launchd。
-- Stage 2 来源正式生产推广。
+- S3/DAILY_OPERATION 持久运行。
+- 未经当前来源门禁和用户中心同步门验收的新增来源生产推广。
 
 ## 目标基线
 
@@ -74,9 +78,9 @@ docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_TEXT_DELIVERY_V5.txt
 docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md
 ```
 
-V4 和 Phase 1 到 12 文件只保留为历史上下文。当前目标中，Stage 1 只覆盖 B1/arXiv 单源；Stage 2 可以在后续门禁通过后推广其他板块和来源。
+V4 和 Phase 1 到 12 文件只保留为历史上下文。当前目标中，Stage 1 只覆盖 B1/arXiv 单源；Stage 2 integrated acceptance 已记录并保持。当前未进入的是 S3/DAILY_OPERATION；后续只能在显式 owner 持久授权 artifact、独立 preflight 和停止门均通过后再讨论持久运行。
 
-V6 任务编号规则：每次完成报告必须写明当前任务编号。历史当前任务曾是 `S2P1T01`，即 bioRxiv 和 medRxiv 来源推广。现在 Stage 1 arXiv 已验收，本机生产和迁移准备已完成；Stage 2 正式生产仍未通过。
+V6 任务编号规则：每次完成报告必须写明当前任务编号。历史当前任务曾是 `S2P1T01`，即 bioRxiv 和 medRxiv 来源推广。现在 Stage 1 arXiv 已验收，本机生产和迁移准备已完成；Stage 2 integrated acceptance 已记录，当前 MVP 准备只做复审修补、证据同步和防回归补强，不进入 S3/DAILY_OPERATION。
 
 V5 到 V6 的 Stage 1 任务连续性：
 
