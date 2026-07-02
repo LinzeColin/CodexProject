@@ -119,6 +119,12 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout[-2000:])
         payload = json.loads(completed.stdout)
         self.assertEqual(payload["status"], "FAIL")
+        self.assertIn("repo_root", payload)
+        self.assertIn("required_cwd", payload)
+        self.assertIn("authorization_artifact_exists", payload)
+        self.assertEqual(payload["repo_root"], str(REPO_ROOT))
+        self.assertEqual(payload["required_cwd"], "CodexProject repository root")
+        self.assertFalse(payload["authorization_artifact_exists"])
         self.assertFalse(payload["daily_operation_ready"])
         self.assertFalse(payload["persistent_daily_operation_authorized"])
         self.assertFalse(payload["daily_operation_enabled"])
@@ -169,6 +175,12 @@ class FinalCommandRootToolTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout[-2000:])
         payload = json.loads(completed.stdout)
         self.assertEqual(payload["status"], "FAIL")
+        self.assertIn("repo_root", payload)
+        self.assertIn("required_cwd", payload)
+        self.assertIn("authorization_artifact_exists", payload)
+        self.assertEqual(payload["repo_root"], str(REPO_ROOT))
+        self.assertEqual(payload["required_cwd"], "CodexProject repository root")
+        self.assertFalse(payload["authorization_artifact_exists"])
         self.assertEqual(
             payload["scope"],
             "adp_s3_daily_operation_enablement_preflight_fail_closed_no_runtime_enablement",

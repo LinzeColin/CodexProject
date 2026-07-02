@@ -37,6 +37,7 @@ def _load_stage2_gate(root: Path):
 
 def build_readiness_report(root: Path, generated_at: str | None = None) -> dict[str, Any]:
     generated = generated_at or datetime.now(timezone.utc).isoformat()
+    authorization_artifact = root / AUTHORIZATION_ARTIFACT_REF
     build_state, validate_state = _load_stage2_gate(root)
     gate = build_state(
         generated_at=generated,
@@ -69,6 +70,8 @@ def build_readiness_report(root: Path, generated_at: str | None = None) -> dict[
         "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
         "task_id": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
         "generated_at": generated,
+        "repo_root": str(root),
+        "required_cwd": "CodexProject repository root",
         "daily_operation_ready": daily_operation_ready,
         "gate_status": gate.get("status"),
         "blocking_reasons": blocking_reasons,
@@ -76,6 +79,7 @@ def build_readiness_report(root: Path, generated_at: str | None = None) -> dict[
         "next_required_step": gate.get("next_required_step"),
         "next_executable_task": gate.get("next_executable_task"),
         "authorization_artifact": gate.get("persistent_authorization_artifact_ref", AUTHORIZATION_ARTIFACT_REF),
+        "authorization_artifact_exists": authorization_artifact.is_file(),
         "gate_artifact": gate.get("gate_artifact_ref", GATE_ARTIFACT_REF),
         "persistent_daily_operation_authorized": gate.get("persistent_daily_operation_authorized") is True,
         "daily_operation_enablement_allowed_by_this_artifact": (
