@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE007"
-current_phase_id: "IDS-STAGE007-P4"
-current_task_id: "IDS-V0_1-STAGE007-P4"
-next_gate_id: "IDS-STAGE008-P1-GATE"
-total_estimated_hours: 59
-completed_estimated_hours: 59
+current_stage_id: "IDS-STAGE008"
+current_phase_id: "IDS-STAGE008-P1"
+current_task_id: "IDS-V0_1-STAGE008-P1"
+next_gate_id: "IDS-STAGE008-P2-GATE"
+total_estimated_hours: 65
+completed_estimated_hours: 60
 stages:
   -
     stage_id: "S5"
@@ -1695,3 +1695,190 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage007_ids_data_root_detector.py"
             risk: "在 STAGE-007 完成后误推送未满 10 stages 的批次。"
             rollback: "Revert IDS-STAGE007-P4 closeout-only changes."
+  -
+    stage_id: "IDS-STAGE008"
+    name: "可拔插移动硬盘状态机"
+    person_goal: "处理移动硬盘在线、离线、重新接入、路径变化和权限异常。"
+    status: "in_progress"
+    stop_conditions:
+      - "需要真实资料但没有 fixture 或 owner 授权样本"
+      - "可能删除、移动、覆盖原始文件"
+      - "schema migration 无法回滚"
+      - "测试失败且原因不明"
+      - "修改范围超出本 Stage"
+      - "并行开发导致共享文件冲突"
+      - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
+    stop_gate:
+      gate_id: "IDS-STAGE008-GATE"
+      status: "open"
+      pass_conditions:
+        - "Phase 1 明确可拔插移动硬盘状态机、内置盘、移动硬盘、冷热数据和安全模式边界"
+        - "Phase 2 形成最小只读状态机、路径检测、状态枚举和存储预算切片"
+        - "Phase 3 验证在线、离线、重连、权限异常、路径变化和安全模式场景"
+        - "Phase 4 输出环境检查、路径检查、存储预算、可恢复状态和回滚说明"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE1_SCOPE_BOUNDARY.md"
+    phases:
+      -
+        phase_id: "IDS-STAGE008-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "确认可拔插移动硬盘状态机、IDS_DATA_ROOT、内置盘、移动硬盘、冷热数据和安全模式边界。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 1 试图实现状态机、启动服务或扫描外接盘内容"
+          - "写入、扫描或修改外接盘 IDS_DATA_ROOT 内容"
+          - "创建 data、reports、outputs、.venv、node_modules 或 dist"
+          - "没有定义在线、离线、重连、路径变化、权限异常和安全模式转移规则"
+        stop_gate:
+          gate_id: "IDS-STAGE008-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Stage 008 entry contract exists and binds P0 taskpack hash"
+            - "Phase 1 boundary records read-only macOS/Docker/internal-disk/IDS_DATA_ROOT facts"
+            - "Phase 1 boundary defines removable-drive lifecycle states, transition rules, recovery requirements, and safe-mode rules"
+            - "Batch lock keeps GitHub upload disabled until STAGE-001..010 is complete"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE1_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE008-P1"
+            name: "可拔插移动硬盘状态机边界确认"
+            objective: "在不实现状态机、不启动服务、不扫描外接盘内容的前提下，记录 STAGE-008 的在线、离线、重连、路径变化、权限异常、安全模式和恢复边界。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "1.54%"
+            dependencies:
+              - "IDS-V0_1-STAGE007-P4"
+            acceptance_ids:
+              - "ACC-STAGE-008"
+            test_commands:
+              - "P0 STAGE-008 taskpack SHA check"
+              - "read-only macOS/Docker/internal-disk/IDS_DATA_ROOT baseline commands"
+              - "Stage008 Phase1 marker and JSONL check"
+              - "check-render --project KM_IDSystem"
+              - "changed scope check"
+              - "git diff --check"
+            test_results: "STAGE-008 Phase 1 boundary artifacts prepared. P0 STAGE-008 taskpack SHA-256 is 5cd56ca188c4e13215d08b0281a412c877e3e02209b2c00e4f3ff1c943f2d357. Read-only baseline found macOS 15.1 build 24B83, arm64, Apple M2 Max, Docker CLI 29.6.1, Docker Compose v5.1.4, root filesystem 926Gi size with 758Gi available, and no IDS_DATA_ROOT configured in this shell. Existing STAGE-007 detector smoke returned state=NOT_CONFIGURED, safe_mode=true, customer_visible=false, does_not_create_ids_data_root=true, and does_not_scan_recursively=true. Phase 1 did not start Docker, install dependencies, implement a state machine, write to IDS_DATA_ROOT, scan external-drive contents, create runtime data, touch reports or outputs, or push to GitHub because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE008_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+            risk: "把可拔插移动硬盘状态机边界确认误扩大为真实外接盘扫描、自动恢复、目录创建或数据导入。"
+            rollback: "Revert IDS-STAGE008-P1 governance and rendered-entry changes only."
+      -
+        phase_id: "IDS-STAGE008-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现或记录只读可拔插移动硬盘状态机、路径检测、状态枚举和存储预算接口。"
+        status: "not_started"
+        stop_conditions:
+          - "缺少 Phase 1 边界证据"
+          - "状态机会创建、移动、删除或修改 IDS_DATA_ROOT 内容"
+          - "在客户操作流暴露机器端细节"
+        stop_gate:
+          gate_id: "IDS-STAGE008-P2-GATE"
+          status: "pending"
+          pass_conditions:
+            - "在线、离线、重连、路径变化、权限异常和存储预算有最小可运行检查"
+            - "机器端细节只进入 IDS 系统运营入口"
+            - "重连不会自动恢复大批量导入、OCR、Embedding、索引或清理"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE008-P2"
+            name: "可拔插移动硬盘状态机最小切片"
+            objective: "按 Phase 1 边界建立可拔插移动硬盘状态、路径、权限、存储预算和安全模式的最小可验证切片。"
+            status: "not_started"
+            estimated_hours: 2
+            total_hours_percent: "3.08%"
+            dependencies:
+              - "IDS-V0_1-STAGE008-P1"
+            acceptance_ids:
+              - "ACC-STAGE-008"
+            test_commands:
+              - "removable-drive state-machine focused test"
+              - "path/permission/storage state contract test"
+              - "check-render --project KM_IDSystem"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "状态机写入真实路径、递归扫描外接盘、自动恢复作业或把机器诊断暴露给客户操作流。"
+            rollback: "Revert IDS-STAGE008-P2 implementation-slice changes."
+      -
+        phase_id: "IDS-STAGE008-P3"
+        name: "可拔插移动硬盘状态机专项验证与异常场景"
+        objective: "验证移动硬盘在线、离线、重连、权限异常、路径变化和安全模式场景。"
+        status: "not_started"
+        stop_conditions:
+          - "未完成 Phase 2 最小切片"
+          - "无法模拟异常场景且没有明确降级证据"
+          - "验证需要真实资料写入或外接盘内容扫描"
+        stop_gate:
+          gate_id: "IDS-STAGE008-P3-GATE"
+          status: "pending"
+          pass_conditions:
+            - "在线、离线、重连、权限异常和路径变化有证据或明确 deferred gate"
+            - "内置盘高水位保护有证据"
+            - "安全模式会暂停大批量导入、OCR、Embedding、索引和清理"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE008-P3"
+            name: "可拔插移动硬盘状态机异常场景验证"
+            objective: "验证 STAGE-008 最小切片的状态转移、路径、权限、空间和安全模式异常场景。"
+            status: "not_started"
+            estimated_hours: 2
+            total_hours_percent: "3.08%"
+            dependencies:
+              - "IDS-V0_1-STAGE008-P2"
+            acceptance_ids:
+              - "ACC-STAGE-008"
+            test_commands:
+              - "online/offline/reconnect transition scenario checks"
+              - "path-change/permission/storage scenario checks"
+              - "safe-mode pause scenario checks"
+              - "check-render --project KM_IDSystem"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "异常验证误触碰真实原始资料或不可回滚地改变本地运行状态。"
+            rollback: "Revert IDS-STAGE008-P3 validation/evidence changes."
+      -
+        phase_id: "IDS-STAGE008-P4"
+        name: "可拔插移动硬盘状态机交付证据、回滚与中文反馈"
+        objective: "输出环境检查、路径检查、存储预算、状态恢复和回滚说明。"
+        status: "not_started"
+        stop_conditions:
+          - "Phase 3 场景验证未完成"
+          - "仍有阻断问题未解决"
+          - "试图在未满 10 stages 时推送 GitHub PR"
+        stop_gate:
+          gate_id: "IDS-STAGE008-P4-GATE"
+          status: "pending"
+          pass_conditions:
+            - "ACC-STAGE-008 证据完整"
+            - "可恢复和不可恢复状态清楚"
+            - "默认配置和回滚步骤清楚"
+            - "不上传 GitHub，直到 STAGE-001..010 批次完成"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE008-P4"
+            name: "STAGE-008 交付证据与回滚"
+            objective: "生成 ACC-STAGE-008 证据、环境检查结果、路径检查结果、存储预算说明、状态恢复说明、回滚步骤和中文反馈。"
+            status: "not_started"
+            estimated_hours: 1
+            total_hours_percent: "1.54%"
+            dependencies:
+              - "IDS-V0_1-STAGE008-P3"
+            acceptance_ids:
+              - "ACC-STAGE-008"
+            test_commands:
+              - "STAGE-008 closeout checklist"
+              - "removable-drive state-machine final validation"
+              - "check-render --project KM_IDSystem"
+              - "git status --short --branch"
+            test_results: "NOT_RUN"
+            evidence_refs: []
+            risk: "在 STAGE-008 完成后误推送未满 10 stages 的批次。"
+            rollback: "Revert IDS-STAGE008-P4 closeout-only changes."
