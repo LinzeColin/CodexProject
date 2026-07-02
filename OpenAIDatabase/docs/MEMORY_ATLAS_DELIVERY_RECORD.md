@@ -681,6 +681,32 @@ Stage 3 Phase 1 状态：`phase_3_1_contract_created_pending_stage_review`。
 
 Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
 
+### Stage 6 整体复审
+
+Stage 6 状态：`stage_6_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S6-REVIEW`。
+
+本复审覆盖 v1.1.6 Stage 6 Phase 1 Memory River Rebuild Contract，只确认
+`memory_river_rebuild_contract` 合同、验收、validator、review artifact、
+package script 和治理记录一致。不实现运行时 UI、不修改 CSS、不实现 Memory
+River runtime、不读取 raw/private 数据、不直接写长期记忆、不执行 agent
+apply、不进入 Stage 7、不在 review artifact 中执行 GitHub main 上传。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage6_review.md`
+- `validate:v1.1.6-stage6`
+
+验收边界：
+
+- Stage 6 复审通过不表示 runtime Memory River、浏览器截图、真实 zoom/brush
+  交互或 agent apply 已完成。
+- Stage 7 必须在 Stage 6 上传校验通过后另起 bounded run。
+- 不 commit `.DS_Store`。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
 下一步：
 
 - 继续 Stage 3 的下一个 phase，补 proposal-only 工作区的持久化/队列或复审前收敛检查。

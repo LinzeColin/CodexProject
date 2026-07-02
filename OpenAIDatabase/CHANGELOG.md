@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 6 Review
+
+- Added `validate:v1.1.6-stage6` to pin Stage 6 Phase 1 contract,
+  acceptance, records, review artifact, changed-path boundary and final upload
+  gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage6_review.md`.
+- Marked Stage 6 as review-passed and pending GitHub main upload; Stage 7 must
+  start in a separate bounded run after upload verification.
+- Stage 6 review status: `stage_6_review_passed_pending_github_main_upload`.
+
+No runtime UI implementation, CSS change, browser screenshot run, Memory River
+runtime implementation, raw/private data read, direct writeback, agent apply,
+Stage 7 work, No GitHub main upload, Cloudflare deployment, or Access policy
+change was added by the review itself.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 6 Phase 1
 
 - Added `docs/product/memory_river_rebuild_contract.md` to define the Memory

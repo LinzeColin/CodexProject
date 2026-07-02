@@ -2629,3 +2629,49 @@ Stage 9 整体复审已确认：
 - 本 phase 不读取 raw/private/cookie/session/secret 数据。
 - 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
 - 本 phase 不进入 Stage 6 整体复审，不进入 Stage 7-10，不执行 GitHub main 上传。
+
+## 56. v1.1.6 Stage 6 整体复审门槛
+
+状态：`stage_6_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 6 只有在 Phase 6.1 的合同、验收、validator 和记录均一致时，才允许进入 GitHub main upload gate。
+- Stage 6 复审通过不等于运行时 UI、浏览器截图、runtime Memory River、真实 zoom/brush 或 agent apply 已完成。
+- Stage 6 复审不得读取 raw/private/cookie/session/secret，不得执行 direct writeback，不得进入 Stage 7。
+
+输入：
+
+- `docs/product/memory_river_rebuild_contract.md`
+- `docs/acceptance/memory_river_rebuild_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage6_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage6_phase1.cjs`
+
+处理方法：
+
+- 检查 Stage 6 Phase 1 合同、验收和 validator 是否覆盖记忆时间河重做所需视觉层、交互、字段和失败条件。
+- 检查 Stage 6 review artifact 是否覆盖 Phase 6.1、边界、风险和 Stage 7 前上传 gate。
+- 检查 delivery、feature、development、model parameter、changelog 和 package script 是否一致。
+- 固定 `validate:v1.1.6-stage6` 为 Stage 7 前的必跑 gate。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S6-REVIEW-001 stage6_required_validator = validate:v1.1.6-stage6`
+- `PARAM-MA-V116-S6-REVIEW-002 stage6_review_status = stage_6_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S6-REVIEW-003 stage6_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage6_review.md`
+- `PARAM-MA-V116-S6-REVIEW-004 stage6_allowed_change_scope = contracts;acceptance;records;reviews;validators;package_script`
+- `PARAM-MA-V116-S6-REVIEW-005 stage6_next_gate = GitHub main upload before Stage 7`
+- `PARAM-MA-V116-S6-REVIEW-006 upload_boundary = no_stage7_until_stage6_upload_verified`
+
+输出：
+
+- Stage 6 review artifact。
+- Stage 6 stage-level validator。
+- Stage 6 review records。
+
+边界：
+
+- 本复审不实现运行时 Memory River。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由或 feature flag。
+- 本复审不进入 Stage 7；GitHub main upload 只在 final remote checks 通过后执行。
