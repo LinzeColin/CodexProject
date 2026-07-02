@@ -2421,6 +2421,44 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             decisions,
         )
 
+    def test_roadmap_marks_request_only_daily_operation_sections_as_historical_consumed(self):
+        roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
+        request_mainline = _section(
+            roadmap,
+            "## 2026-07-01 22:51:19 Australia/Sydney - ",
+            "## 2026-07-01 22:22:48 Australia/Sydney - ",
+        )
+        request_ready = _section(
+            roadmap,
+            "## 2026-07-01 22:22:48 Australia/Sydney - ",
+            "## 2026-07-01 21:59:44 Australia/Sydney - ",
+        )
+
+        self.assertIn(
+            "## 2026-07-01 22:51:19 Australia/Sydney - 历史：持久 DAILY_OPERATION 授权请求包 mainline 证据已绑定",
+            request_mainline,
+        )
+        self.assertIn(
+            "## 2026-07-01 22:22:48 Australia/Sydney - 历史：持久 DAILY_OPERATION 授权请求包已准备好",
+            request_ready,
+        )
+        for section in (request_mainline, request_ready):
+            self.assertIn("| 项目 | 当时值 |", section)
+            self.assertIn("当前已由 23:35 owner A keep-disabled mainline 证据消费", section)
+            self.assertIn("不得把 request-only 请求包或 mainline 绑定恢复成当前默认下一步", section)
+        self.assertNotIn(
+            "## 2026-07-01 22:51:19 Australia/Sydney - 持久 DAILY_OPERATION 授权请求包 mainline 证据已绑定",
+            roadmap,
+        )
+        self.assertNotIn(
+            "## 2026-07-01 22:22:48 Australia/Sydney - 持久 DAILY_OPERATION 授权请求包已准备好",
+            roadmap,
+        )
+        self.assertNotIn(
+            "| 下一步 | owner 决定是否另行创建显式持久授权 artifact；缺失时不得进入 DAILY_OPERATION |",
+            request_mainline + request_ready,
+        )
+
     def test_user_center_readme_historical_s2plt02_s2plt03_entries_do_not_reopen_current_work(self):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
