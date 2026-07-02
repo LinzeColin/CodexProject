@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE007"
-current_phase_id: "IDS-STAGE007-P2"
-current_task_id: "IDS-V0_1-STAGE007-P2"
-next_gate_id: "IDS-STAGE007-P3-GATE"
+current_phase_id: "IDS-STAGE007-P3"
+current_task_id: "IDS-V0_1-STAGE007-P3"
+next_gate_id: "IDS-STAGE007-P4-GATE"
 total_estimated_hours: 59
-completed_estimated_hours: 56
+completed_estimated_hours: 58
 stages:
   -
     stage_id: "S5"
@@ -1510,6 +1510,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE2_IDS_DATA_ROOT_DETECTOR.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/scripts/detect_ids_data_root.py"
     phases:
       -
@@ -1607,25 +1608,28 @@ stages:
         phase_id: "IDS-STAGE007-P3"
         name: "IDS_DATA_ROOT 检测专项验证与异常场景"
         objective: "验证移动硬盘在线、离线、重连、权限异常、路径变化、目录缺失、目录重复和安全模式场景。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "未完成 Phase 2 最小切片"
           - "无法模拟异常场景且没有明确降级证据"
           - "验证需要真实资料写入或外接盘内容扫描"
         stop_gate:
           gate_id: "IDS-STAGE007-P3-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "在线、离线、重连、权限异常、路径变化、缺失目录和重复目录有证据或明确 deferred gate"
             - "00_ORIGINAL_RAW_DATA 保持只读合同"
             - "安全模式会暂停大批量导入、OCR、Embedding、索引和清理"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/scripts/detect_ids_data_root.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage007_ids_data_root_detector.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE007-P3"
             name: "IDS_DATA_ROOT 异常场景验证"
             objective: "验证 STAGE-007 最小切片的路径、权限、目录结构和安全模式异常场景。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "3.39%"
             dependencies:
@@ -1637,8 +1641,11 @@ stages:
               - "00-99 slot structure scenario checks"
               - "safe-mode pause scenario checks"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "TDD red failed with 2 expected errors before implementation because previous_state support and build_stage007_scenario_report were missing. After implementation, Codex bundled Python unittest ran 7 tests OK. Scenario report covers STRUCTURE_COMPLETE, ROOT_ABSENT, RECONNECTED, ROOT_PERMISSION_DENIED, PATH_CHANGED, ROOT_NOT_DIRECTORY, MISSING_NUMERIC_SLOTS, DUPLICATE_NUMERIC_SLOT, MALFORMED_TOP_LEVEL_ENTRY, low-free-space BLOCKED, high-waterline BLOCKED, and safe-mode pause list for bulk_import, recursive_directory_scanning, raw_material_cleanup, OCR, Embedding, index_rebuild, and batch_report_generation. No Docker service, backend/frontend service, dependency install, real IDS_DATA_ROOT write, recursive external-drive content scan, 00-99 directory creation, runtime data, reports, outputs, GitHub push, or PR was performed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE007_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/scripts/detect_ids_data_root.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage007_ids_data_root_detector.py"
             risk: "异常验证误触碰真实原始资料或不可回滚地改变本地运行状态。"
             rollback: "Revert IDS-STAGE007-P3 validation/evidence changes."
       -

@@ -142,6 +142,103 @@ class Stage007IdsDataRootDetectorTests(unittest.TestCase):
         self.assertTrue(payload["does_not_create_ids_data_root"])
         self.assertTrue(payload["does_not_scan_recursively"])
 
+    def test_reconnected_complete_root_requires_revalidation_before_resume(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "IDS_DATA_ROOT"
+            root.mkdir()
+            self._create_complete_slots(root)
+
+            report = module.detect_ids_data_root(
+                str(root),
+                previous_state="ROOT_ABSENT",
+            )
+
+        self.assertEqual(report["state"], "RECONNECTED")
+        self.assertTrue(report["safe_mode"])
+        self.assertTrue(report["requires_revalidation"])
+        self.assertEqual(report["missing_slots"], [])
+        self.assertEqual(report["duplicate_slots"], [])
+        self.assertTrue(report["raw_material_slot"]["present"])
+
+    def test_phase3_scenario_report_covers_drive_structure_and_storage_edges(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            complete = base / "complete"
+            complete.mkdir()
+            self._create_complete_slots(complete)
+
+            absent = base / "absent"
+
+            denied = base / "denied"
+            denied.mkdir()
+
+            not_directory = base / "not-directory"
+            not_directory.write_text("not a directory", encoding="utf-8")
+
+            missing = base / "missing"
+            missing.mkdir()
+            self._create_complete_slots(missing)
+            (missing / "42_SLOT").rmdir()
+
+            duplicate = base / "duplicate"
+            duplicate.mkdir()
+            self._create_complete_slots(duplicate)
+            (duplicate / "05_DUPLICATE").mkdir()
+
+            malformed = base / "malformed"
+            malformed.mkdir()
+            self._create_complete_slots(malformed)
+            (malformed / "README.txt").write_text("not a slot", encoding="utf-8")
+
+            def access_side_effect(path, mode):
+                return Path(path) != denied
+
+            with patch.object(module.os, "access", side_effect=access_side_effect):
+                report = module.build_stage007_scenario_report(
+                    complete_root=str(complete),
+                    absent_root=str(absent),
+                    reconnected_root=str(complete),
+                    permission_denied_root=str(denied),
+                    path_changed_current=str(complete),
+                    path_changed_expected=str(base / "expected"),
+                    not_directory_path=str(not_directory),
+                    missing_root=str(missing),
+                    duplicate_root=str(duplicate),
+                    malformed_root=str(malformed),
+                    storage_total_bytes=1000 * 1024**3,
+                    storage_ok_free_bytes=300 * 1024**3,
+                    storage_low_free_bytes=50 * 1024**3,
+                    storage_high_used_free_bytes=120 * 1024**3,
+                )
+
+        states = report["ids_data_root_scenarios"]
+        storage = report["storage_scenarios"]
+
+        self.assertTrue(report["overall_valid"])
+        self.assertFalse(report["customer_visible"])
+        self.assertTrue(report["does_not_create_ids_data_root"])
+        self.assertTrue(report["does_not_scan_recursively"])
+        self.assertEqual(states["complete"]["state"], "STRUCTURE_COMPLETE")
+        self.assertEqual(states["absent"]["state"], "ROOT_ABSENT")
+        self.assertEqual(states["reconnected"]["state"], "RECONNECTED")
+        self.assertEqual(states["permission_denied"]["state"], "ROOT_PERMISSION_DENIED")
+        self.assertEqual(states["path_changed"]["state"], "PATH_CHANGED")
+        self.assertEqual(states["not_directory"]["state"], "ROOT_NOT_DIRECTORY")
+        self.assertEqual(states["missing_slots"]["state"], "MISSING_NUMERIC_SLOTS")
+        self.assertEqual(states["missing_slots"]["missing_slots"], ["42"])
+        self.assertEqual(states["duplicate_slots"]["state"], "DUPLICATE_NUMERIC_SLOT")
+        self.assertEqual(states["duplicate_slots"]["duplicate_slots"], ["05"])
+        self.assertEqual(states["malformed_entries"]["state"], "MALFORMED_TOP_LEVEL_ENTRY")
+        self.assertEqual(storage["ok"]["state"], "OK")
+        self.assertEqual(storage["low_free_space"]["state"], "BLOCKED")
+        self.assertEqual(storage["high_waterline"]["state"], "BLOCKED")
+        self.assertIn("bulk_import", report["safe_mode_pauses"])
+        self.assertIn("ocr", report["safe_mode_pauses"])
+        self.assertIn("embedding", report["safe_mode_pauses"])
+        self.assertIn("index_rebuild", report["safe_mode_pauses"])
+
 
 if __name__ == "__main__":
     unittest.main()
