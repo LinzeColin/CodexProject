@@ -1025,7 +1025,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
         self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', assurance)
-        self.assertIn("next_task_id: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`", owner_status)
+        self.assertIn("下一任务： `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`", owner_status)
         self.assertIn(
             'release_gate: "DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT"',
             assurance,
@@ -1045,22 +1045,23 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
         self.assertIn("baseline_counts_mutated: false", assurance)
         self.assertIn("open_pr_count=0", assurance)
-        self.assertIn("ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like", assurance)
+        self.assertIn("ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like", assurance)
         self.assertNotIn(
             "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0",
             assurance,
         )
         self.assertIn("LaunchAgents disabled", assurance)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json", assurance)
-        self.assertIn("DAILY_OPERATION owner decision is recorded as keep-disabled", assurance)
+        self.assertIn("DAILY_OPERATION owner 决策已记录为保持禁用", assurance)
         self.assertIn("keep-disabled", owner_status)
         self.assertIn("daily_operation_owner_authorization_decision.json", owner_status)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes", assurance)
-        self.assertIn("daily_operation_persistent_enablement_authorization.json if owner authorizes", owner_status)
-        self.assertIn("runtime remains disabled", owner_status)
-        self.assertIn("separate enablement preflight", owner_status)
+        self.assertIn("若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", assurance)
+        self.assertIn("若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", owner_status)
+        self.assertIn("运行时必须保持禁用", owner_status)
+        self.assertIn("单独 enablement preflight", owner_status)
         self.assertNotIn('task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"', assurance)
         self.assertNotIn("next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`", owner_status)
+        self.assertNotIn("下一任务： `S2PMT07-S2PLT04-COMPLETION-REPORT`", owner_status)
         self.assertNotIn('task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION"', assurance)
         self.assertNotIn('task_id: "S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-WRITE"', assurance)
         self.assertIn("owner_decision_recorded_write_gate_allowed", generator)
@@ -1856,6 +1857,57 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("root_validation_errors=[]", owner_text)
             self.assertIn("required_paths_missing=[]", owner_text)
             self.assertIn("codexproject_repo_root_invalid", owner_text)
+
+    def test_adp_owner_status_is_owner_facing_chinese_under_s3_blocker(self) -> None:
+        owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+
+        for required in (
+            "## 9. 用户决策矩阵",
+            "| 决策项 | 当前建议 | 选项 A | 选项 B | 选项 C | 不决策后果 |",
+            "## 10. 当前阻断项",
+            "## 11. 解阻所需证据",
+            "## 12. 模型、公式和参数变更",
+            "## 13. 测试与验收",
+            "## 14. 证据新鲜度",
+            "## 17. 下一唯一任务",
+            "- 当前建议：",
+            "- 预计工作量：",
+            "- 预计成本或资源：",
+            "- 下一任务：",
+            "- 责任角色：",
+            "- 验收编号：",
+            "- 解阻条件：",
+            "- 所需证据：",
+            "- 主要风险：",
+            "- 生成来源：",
+            "唯一当前阻断是缺少显式 owner 持久 DAILY_OPERATION 授权 artifact",
+            "persistent_daily_operation_authorization_missing",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, owner_status)
+
+        for forbidden in (
+            "## 9. A/B/C Choice Matrix",
+            "| Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |",
+            "## 10. Current Blockers",
+            "## 11. Evidence Required To Unblock",
+            "## 12. Model Formula Parameter Change",
+            "## 13. Tests And Acceptance",
+            "## 14. Evidence Freshness",
+            "## 17. Next Unique Task",
+            "- current_recommendation:",
+            "- estimated_effort:",
+            "- estimated_cost_or_resource:",
+            "- next_task_id:",
+            "- responsible_role:",
+            "- acceptance_ids:",
+            "- unblock_condition:",
+            "- evidence_required:",
+            "- principal_risks:",
+            "- generated_from_refs:",
+        ):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, owner_status)
 
 
 if __name__ == "__main__":

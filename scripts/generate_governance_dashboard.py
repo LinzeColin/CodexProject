@@ -39,8 +39,8 @@ PROJECT_REPOSITORIES = {
 }
 
 ADP_SMTP_SEND_RAW_VALUE_EVIDENCE = (
-    "ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like, "
-    "LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+    "ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like，"
+    "LaunchAgents disabled，open_pr_count=0，且无后台 ADP 进程"
 )
 
 ASSURANCE_POLICY = {
@@ -257,18 +257,17 @@ def adp_s2pmt07_blocked_next_task(
             "task_id": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
             "status": "blocked",
             "reason": (
-                "Persistent DAILY_OPERATION authorization request packet is ready, but it is request-only. "
-                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json still "
-                "does not exist, so runtime remains disabled."
+                "持久 DAILY_OPERATION 授权请求包已准备好，但它只是 request-only 请求包。"
+                "`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` "
+                "仍不存在，所以运行时必须保持禁用。"
             ),
             "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
             "owner": "content_owner + engineering_owner",
             "human_owner_role": "content_owner + engineering_owner",
             "unblock_condition": (
-                "Owner must either keep DAILY_OPERATION disabled or create a separate explicit persistent "
-                "DAILY_OPERATION authorization artifact, then run the persistent authorization gate and a "
-                "separate enablement preflight while SMTP, scheduler, Release, restore, and DAILY_OPERATION "
-                "remain disabled until those gates pass."
+                "owner 要么继续保持 DAILY_OPERATION 禁用，要么另行创建显式持久 DAILY_OPERATION 授权 artifact；"
+                "随后必须运行持久授权门和单独 enablement preflight。SMTP、scheduler、Release、restore 和 "
+                "DAILY_OPERATION 在这些门通过前必须保持禁用。"
             ),
             "stale_candidates": stale_candidates or [],
         }
@@ -277,17 +276,16 @@ def adp_s2pmt07_blocked_next_task(
             "task_id": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
             "status": "blocked",
             "reason": (
-                "Persistent DAILY_OPERATION authorization gate has run and is blocked because "
-                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json "
-                "does not exist. Runtime remains disabled."
+                "持久 DAILY_OPERATION 授权门已运行但阻断，因为 "
+                "`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` "
+                "不存在。运行时必须保持禁用。"
             ),
             "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
             "owner": "content_owner + engineering_owner",
             "human_owner_role": "content_owner + engineering_owner",
             "unblock_condition": (
-                "Provide a new explicit owner persistent DAILY_OPERATION authorization artifact, "
-                "then run a separate enablement preflight while keeping SMTP, scheduler, Release, "
-                "restore, and DAILY_OPERATION disabled until that gate passes."
+                "提供新的显式 owner 持久 DAILY_OPERATION 授权 artifact，然后运行单独 enablement preflight；"
+                "在该 gate 通过前，SMTP、scheduler、Release、restore 和 DAILY_OPERATION 必须保持禁用。"
             ),
             "stale_candidates": stale_candidates or [],
         }
@@ -296,17 +294,16 @@ def adp_s2pmt07_blocked_next_task(
             "task_id": "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
             "status": "blocked",
             "reason": (
-                "DAILY_OPERATION owner decision is recorded as keep-disabled. Persistent "
-                "DAILY_OPERATION is not authorized; runtime remains disabled until a separate "
-                "explicit owner authorization and enablement artifact exists."
+                "DAILY_OPERATION owner 决策已记录为保持禁用。持久 DAILY_OPERATION 未授权；"
+                "在单独显式 owner 授权和 enablement artifact 存在前，运行时必须保持禁用。"
             ),
             "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"],
             "owner": "content_owner + engineering_owner",
             "human_owner_role": "content_owner + engineering_owner",
             "unblock_condition": (
-                "Provide explicit owner authorization for persistent DAILY_OPERATION in a new "
-                "artifact, then run a separate enablement preflight. Do not enable SMTP, scheduler, "
-                "Release, restore, or persistent operation from the keep-disabled decision."
+                "如 owner 明确授权持久 DAILY_OPERATION，必须写入新的显式授权 artifact，再运行单独 "
+                "enablement preflight。不得从 keep-disabled 决策推导出 SMTP、scheduler、Release、"
+                "restore 或持久运行权限。"
             ),
             "stale_candidates": stale_candidates or [],
         }
@@ -729,24 +726,21 @@ def adp_s2pmt07_current_recommendation(matrix: dict[str, Any]) -> str:
         )
     if daily_operation_persistent_authorization_request_ready:
         return (
-            "A: Persistent DAILY_OPERATION authorization request packet is ready, but it is "
-            "request-only and does not authorize runtime. Keep DAILY_OPERATION disabled unless "
-            "the owner creates a separate explicit authorization artifact, then rerun the "
-            "persistent authorization gate and a separate enablement preflight."
+            "A：持久 DAILY_OPERATION 授权请求包已准备好，但它只是 request-only 请求包，"
+            "不授权运行时。除非 owner 另行创建显式持久授权 artifact，并重新运行持久授权门和"
+            "单独 enablement preflight，否则继续保持 DAILY_OPERATION 禁用。"
         )
     if daily_operation_persistent_authorization_missing:
         return (
-            "A: Persistent DAILY_OPERATION authorization gate is blocked because the explicit "
-            "owner authorization artifact is missing. Keep DAILY_OPERATION disabled; do not "
-            "enable SMTP, scheduler, Release, restore, or persistent operation until that "
-            "artifact exists and a separate enablement preflight passes."
+            "A：持久 DAILY_OPERATION 授权门当前因缺少显式 owner 授权 artifact 而阻断。"
+            "继续保持 DAILY_OPERATION 禁用；在该 artifact 存在且单独 enablement preflight 通过前，"
+            "不得启用 SMTP、scheduler、Release、restore 或持久运行。"
         )
     if daily_operation_owner_decision_keep_disabled:
         return (
-            "A: DAILY_OPERATION owner decision is recorded as keep-disabled. Persistent "
-            "DAILY_OPERATION is not authorized; keep runtime disabled unless the owner later "
-            "provides a separate explicit persistent DAILY_OPERATION authorization and a new "
-            "enablement artifact passes."
+            "A：DAILY_OPERATION owner 决策已记录为保持禁用。持久 DAILY_OPERATION 未授权；"
+            "除非 owner 之后提供单独显式持久 DAILY_OPERATION 授权并通过新的 enablement artifact，"
+            "否则继续保持运行时禁用。"
         )
     if daily_operation_preflight_current:
         if daily_operation_preflight_passed:
@@ -1564,7 +1558,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             owner_decision["evidence_required"] = (
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json, "
                 "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json, "
-                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, "
+                "若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json, "
                 f"{ADP_SMTP_SEND_RAW_VALUE_EVIDENCE}"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
@@ -1593,7 +1587,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json, "
                 "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json, "
                 "persistent_daily_operation_authorization_missing, "
-                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, "
+                "若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json, "
                 f"{ADP_SMTP_SEND_RAW_VALUE_EVIDENCE}"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
@@ -1621,7 +1615,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             owner_decision["evidence_required"] = (
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, "
                 "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, "
-                "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, "
+                "若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json, "
                 f"{ADP_SMTP_SEND_RAW_VALUE_EVIDENCE}"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
@@ -2239,12 +2233,13 @@ def render_owner_status(item: dict[str, Any]) -> str:
     next_task = assurance["next_executable_task"]
     decision = assurance["owner_decision"]
     blockers = item["policy_blockers"][:3] or [decision["evidence_required"]]
-    if (
+    adp_owner_chinese = (
         item["project_id"] == "arxiv-daily-push"
         and assurance["delivery_readiness"]["status"] == "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"
-    ):
+    )
+    if adp_owner_chinese:
         blockers = [
-            "唯一当前阻断是缺少显式 owner 持久 DAILY_OPERATION 授权 artifact：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。",
+            "唯一当前阻断是缺少显式 owner 持久 DAILY_OPERATION 授权 artifact：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`；阻断码 `persistent_daily_operation_authorization_missing`。",
             "在该 artifact 缺失时，`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like，LaunchAgents 必须 disabled，open_pr_count 必须为 0，且不得有后台 ADP 进程。",
             "不得把 request 包、模板或一次受控真实运行当作持久 DAILY_OPERATION 授权。",
         ]
@@ -2289,6 +2284,34 @@ def render_owner_status(item: dict[str, Any]) -> str:
             f"方法/实证为 `{dims['methodological_rationale']['status']}` / `{dims['empirical_validation']['status']}`，"
             f"交付状态为 `{assurance['delivery_readiness']['status']}`；这不是生产上线声明。"
         )
+    decision_id_label = "决策编号" if adp_owner_chinese else "decision_id"
+    decision_question_label = "决策问题" if adp_owner_chinese else "decision_question"
+    owner_role_label = "责任角色" if adp_owner_chinese else "human_owner_role"
+    assignment_label = "人类分配状态" if adp_owner_chinese else "human_assignment_status"
+    current_recommendation_label = "当前建议" if adp_owner_chinese else "current_recommendation"
+    estimated_effort_label = "预计工作量" if adp_owner_chinese else "estimated_effort"
+    estimated_cost_label = "预计成本或资源" if adp_owner_chinese else "estimated_cost_or_resource"
+    next_task_label = "下一任务" if adp_owner_chinese else "next_task_id"
+    responsible_role_label = "责任角色" if adp_owner_chinese else "responsible_role"
+    acceptance_ids_label = "验收编号" if adp_owner_chinese else "acceptance_ids"
+    unblock_condition_label = "解阻条件" if adp_owner_chinese else "unblock_condition"
+    section_9_title = "用户决策矩阵" if adp_owner_chinese else "A/B/C Choice Matrix"
+    decision_table_header = (
+        "| 决策项 | 当前建议 | 选项 A | 选项 B | 选项 C | 不决策后果 |"
+        if adp_owner_chinese
+        else "| Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |"
+    )
+    section_10_title = "当前阻断项" if adp_owner_chinese else "Current Blockers"
+    section_11_title = "解阻所需证据" if adp_owner_chinese else "Evidence Required To Unblock"
+    evidence_required_label = "所需证据" if adp_owner_chinese else "evidence_required"
+    principal_risks_label = "主要风险" if adp_owner_chinese else "principal_risks"
+    generated_from_refs_label = "生成来源" if adp_owner_chinese else "generated_from_refs"
+    section_12_title = "模型、公式和参数变更" if adp_owner_chinese else "Model Formula Parameter Change"
+    section_13_title = "测试与验收" if adp_owner_chinese else "Tests And Acceptance"
+    section_14_title = "证据新鲜度" if adp_owner_chinese else "Evidence Freshness"
+    section_17_title = "下一唯一任务" if adp_owner_chinese else "Next Unique Task"
+    task_reason_label = "原因" if adp_owner_chinese else "reason"
+    field_separator = "：" if adp_owner_chinese else ":"
     return f"""# OWNER_STATUS
 
 ## 1. 当前结论
@@ -2305,16 +2328,16 @@ def render_owner_status(item: dict[str, Any]) -> str:
 
 ## 4. 需要人类决定什么
 
-- decision_id: `{decision['decision_id']}`
-- decision_question: {decision['decision_question']}
-- human_owner_role: `{decision['human_owner_role']}`
-- human_assignment_status: `{decision['human_assignment_status']}`
+- {decision_id_label}{field_separator} `{decision['decision_id']}`
+- {decision_question_label}{field_separator} {decision['decision_question']}
+- {owner_role_label}{field_separator} `{decision['human_owner_role']}`
+- {assignment_label}{field_separator} `{decision['human_assignment_status']}`
 
 ## 5. 默认建议
 
-- current_recommendation: {decision['current_recommendation']}
-- estimated_effort: {decision['estimated_effort']}
-- estimated_cost_or_resource: {decision['estimated_cost_or_resource']}
+- {current_recommendation_label}{field_separator} {decision['current_recommendation']}
+- {estimated_effort_label}{field_separator} {decision['estimated_effort']}
+- {estimated_cost_label}{field_separator} {decision['estimated_cost_or_resource']}
 
 ## 6. 不决策后果
 
@@ -2322,10 +2345,10 @@ def render_owner_status(item: dict[str, Any]) -> str:
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `{next_task['task_id']}`
-- responsible_role: `{next_task['human_owner_role']}`
-- acceptance_ids: `{brief_list([str(x) for x in next_task.get('acceptance_ids', [])])}`
-- unblock_condition: {next_task['unblock_condition']}
+- {next_task_label}{field_separator} `{next_task['task_id']}`
+- {responsible_role_label}{field_separator} `{next_task['human_owner_role']}`
+- {acceptance_ids_label}{field_separator} `{brief_list([str(x) for x in next_task.get('acceptance_ids', [])])}`
+- {unblock_condition_label}{field_separator} {next_task['unblock_condition']}
 
 ## 8. 九层 Assurance 状态
 
@@ -2339,25 +2362,25 @@ def render_owner_status(item: dict[str, Any]) -> str:
 - evidence_freshness: `{dims['evidence_freshness']['status']}`
 - delivery_readiness: `{assurance['delivery_readiness']['status']}`
 
-## 9. A/B/C Choice Matrix
+## 9. {section_9_title}
 
-| Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
+{decision_table_header}
 |---|---|---|---|---|---|
 | `{decision['decision_id']}` | {decision['current_recommendation']} | {option_a} | {option_b} | {option_c} | {decision['consequence_of_no_decision']} |
 
-## 10. Current Blockers
+## 10. {section_10_title}
 
 1. {blockers[0]}
 2. {blockers[1]}
 3. {blockers[2]}
 
-## 11. Evidence Required To Unblock
+## 11. {section_11_title}
 
-- evidence_required: {decision['evidence_required']}
-- principal_risks: {decision['principal_risks']}
-- generated_from_refs: `{brief_list([str(x) for x in decision.get('generated_from_refs', [])])}`
+- {evidence_required_label}{field_separator} {decision['evidence_required']}
+- {principal_risks_label}{field_separator} {decision['principal_risks']}
+- {generated_from_refs_label}{field_separator} `{brief_list([str(x) for x in decision.get('generated_from_refs', [])])}`
 
-## 12. Model Formula Parameter Change
+## 12. {section_12_title}
 
 - model_count: `{item['models']}`
 - total_formulas: `{counts['total_formulas']}`
@@ -2366,12 +2389,12 @@ def render_owner_status(item: dict[str, Any]) -> str:
 - active_parameters: `{counts['active_parameters']}`
 - active_values_changed_by_this_view: `0`
 
-## 13. Tests And Acceptance
+## 13. {section_13_title}
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
 - release_gate: `{assurance['delivery_readiness']['release_gate']}`
 
-## 14. Evidence Freshness
+## 14. {section_14_title}
 
 - final_commit_binding: `{assurance['final_commit_binding']}`
 - tree_bound_events: `{item['event_binding_counts']['tree_bound_events']}`
@@ -2397,10 +2420,10 @@ def render_owner_status(item: dict[str, Any]) -> str:
 - version: `{item['product_version']}`
 - phase/gate: `{item['current_phase']} / {item['current_gate']}`
 
-## 17. Next Unique Task
+## 17. {section_17_title}
 
 - task_id: `{next_task['task_id']}`
-- reason: {next_task['reason']}
+- {task_reason_label}{field_separator} {next_task['reason']}
 """
 
 
