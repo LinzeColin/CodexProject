@@ -1,5 +1,12 @@
 # ADP 用户中心
 
+## 2026-07-02 11:33:41 Australia/Sydney - open PR 边界复核 fallback 已同步到停止门
+
+- MVP/S3 前置复审的 open PR 安全边界复核必须用 GitHub pulls HTML fallback：`User-Agent: codex-adp-open-pr-check`。
+- 只有明确得到 `open_pr_count=0` 才能通过；`UNKNOWN`、非 0、命令失败或无法解析都必须停止并回报。
+- 该规则已同步到 [MVP 准备与复审修补](./MVP准备与复审修补.md)、[路线图与停止门](./路线图与停止门.md) 和 [S3 DAILY_OPERATION 下一 Agent 先读](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md)。
+- 这仍不授权 S3/DAILY_OPERATION；持久授权 artifact 仍缺失，继续保持 `daily_operation_enabled=false`。
+
 ## 2026-07-02 11:11:20 Australia/Sydney - 最终验收包 JSON 字段阅读规则
 
 - `FINAL_ACCEPTANCE_BUNDLE/manifest.json`、`no_production_side_effects.json`、`owner_production_boundary_decision.json`、`p0_p1_zero_proof.json` 等 JSON 里的 `closure_state` 或 `no_production_side_effects` 字段，只保留该 artifact 写入时的 no-production / closure-state 证据语境。
