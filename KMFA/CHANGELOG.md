@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s01p2-scope-freeze - 2026-07-02
+
+- 完成 `v0.1.3 S01-P2｜范围冻结` 本地验证：锁定本修补包当前只做 public-safe scope freeze，不解决 lineage/reconciliation/report blockers。
+- 新增 `KMFA/tools/check_v013_s01_p2_scope_freeze.py`、`KMFA/tests/test_v013_s01_p2_scope_freeze.py` 和 `KMFA/stage_artifacts/V013_S01_SCOPE_FREEZE/` 证据包，继承 S01-P1 的 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告。
+- 记录外部 v0.1.3 roadmap 原路径当前不可读，未从缺失文件推断新需求；repo 内 v1.2 taskpack/roadmap 仍为可读基线。
+- 登记本机 KMFA 财务原始数据目录 `/Users/linzezhang/Downloads/KMFA_MetaData` 为只读 raw boundary；Codex 不得修改、删除、移动或提交其中任何文件，临时处理只能进入 `KMFA/.codex_private_runtime/`。
+- 本轮只执行一个 phase，不执行 S01-P3、Stage 1 整体复审、GitHub upload、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+
 ## 0.1.3-s01p1-current-state-preflight - 2026-07-02
 
 - 完成 `v0.1.3 S01-P1｜当前状态复核` 本地验证：读取 S18、LINEAGE_REPORT_GATE、S09 evidence 和治理状态，锁定当前仍为 `NO_GO`。

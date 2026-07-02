@@ -5,6 +5,7 @@ private_exports/
 exports/private/
 data/private/
 data/raw/
+.codex_private_runtime/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
