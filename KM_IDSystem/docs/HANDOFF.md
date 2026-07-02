@@ -1,8 +1,10 @@
-# Wuhan Kaiming OpMe System Handoff
+# IDS / Industrial Data System Handoff
 
 ## Purpose
 
-This project turns the original Wuhan Kaiming CLI prototype into a local Web + PDF industrial operations assistant. It provides dashboard views, module-specific analysis, visualization, report generation, model routing configuration, and recoverable local app launchers.
+IDS / Industrial Data System turns the original industrial-operations CLI prototype into a local Web + PDF industrial data and operations console. It provides dashboard views, module-specific analysis, visualization, report generation, model routing configuration, and recoverable local app launchers.
+
+Legacy aliases such as `Wuhan Kaiming OpMe`, `OpMe`, and the Chinese legacy display name may remain only in migration notes, historical evidence, compatibility paths, or rollback context. New UI, reports, generated titles, and formal documentation should use `IDS / Industrial Data System`.
 
 ## Delivery Standard
 
@@ -39,10 +41,10 @@ Install local click entries:
 
 Installed entries:
 
-- `/Applications/Wuhan Kaiming OpMe.command`
-- `/Users/linzezhang/Downloads/Wuhan Kaiming OpMe.command`
-- `/Applications/Wuhan Kaiming OpMe.app`
-- `/Users/linzezhang/Downloads/Wuhan Kaiming OpMe.app`
+- `/Applications/IDS Industrial Data System.command`
+- `/Users/linzezhang/Downloads/IDS Industrial Data System.command`
+- `/Applications/IDS Industrial Data System.app`
+- `/Users/linzezhang/Downloads/IDS Industrial Data System.app`
 
 Use `.command` as the primary local double-click entry. It runs the same service launcher in Terminal and avoids macOS LaunchServices/Gatekeeper silently blocking ad-hoc `.app` bundles. Keep the Terminal window open while using the app; closing it stops the local runtime.
 
@@ -53,7 +55,7 @@ Regenerate the macOS app icon:
 ./scripts/install_app_entries.sh
 ```
 
-The tracked final assets are `app_bundle/assets/OpMeIcon.png` and `app_bundle/assets/OpMeIcon.icns`; the intermediate `.iconset` directory is intentionally ignored.
+The tracked final assets remain `app_bundle/assets/OpMeIcon.png` and `app_bundle/assets/OpMeIcon.icns` as legacy asset paths; the intermediate `.iconset` directory is intentionally ignored.
 
 For verification:
 
@@ -79,11 +81,11 @@ If dependencies were removed during cleanup, the launcher restores them from:
 
 All future development for this system should be synchronized into:
 
-`LinzeColin/KM_IDSystem`
+`LinzeColin/CodexProject`
 
 Use the subdirectory:
 
-`wuhan-kaiming-industrial-assistant/`
+`KM_IDSystem/`
 
 Commit/PR summaries must include:
 
