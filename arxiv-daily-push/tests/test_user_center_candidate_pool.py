@@ -2189,7 +2189,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("`ADP_ALLOW_SMTP_SEND` 为 `UNSET` 或 false-like", mvp)
         self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp)
         self.assertNotIn("## 09 推荐第一轮 Run Contract", mvp)
-        self.assertIn("默认通过 `tools/verify_daily_operation_enablement_preflight.py` 自动观察 GitHub open PR count", mvp)
+        self.assertIn(
+            '默认通过 `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` 自动观察 GitHub open PR count',
+            mvp,
+        )
         self.assertIn("若结果为 `UNKNOWN` 或非 0，不得当作通过", mvp)
         self.assertIn("open PR 由 enablement preflight 自动观察为 0", mvp)
         self.assertIn("open PR 自动观察停止门", roadmap)
