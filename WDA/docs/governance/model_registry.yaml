@@ -1,0 +1,7 @@
+schema_version: "codexproject.model_registry.v1"
+project_id: "WDA"
+models: []
+not_applicable:
+  status: "not_applicable"
+  reason: "WDA product scope is not defined yet; no model can be asserted."
+  evidence_ref: "EVID-WDA-BOOTSTRAP-001"

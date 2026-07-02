@@ -1,0 +1,16 @@
+schema_version: "codexproject.assurance_status.v1"
+project_id: "WDA"
+status: "UNVERIFIED"
+checks:
+  scope_defined:
+    status: "FAILED"
+    evidence_ref: "WDA-STAGE0-P2"
+  clean_worktree:
+    status: "PARTIAL"
+    evidence_ref: "EVID-WDA-BOOTSTRAP-001"
+  model_applicability:
+    status: "NOT_APPLICABLE"
+    evidence_ref: "EVID-WDA-BOOTSTRAP-001"
+  production_readiness:
+    status: "NOT_APPLICABLE"
+    evidence_ref: "EVID-WDA-BOOTSTRAP-001"

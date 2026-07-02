@@ -1,0 +1,101 @@
+schema_version: "codexproject.roadmap.v1"
+roadmap_kind: "product"
+project_id: "WDA"
+current_stage_id: "WDA-STAGE0"
+current_phase_id: "WDA-STAGE0-P2"
+current_task_id: "WDA-STAGE0-P2"
+next_gate_id: "WDA-STAGE0-GATE"
+total_estimated_hours: 6
+completed_estimated_hours: 1
+stages:
+  -
+    stage_id: "WDA-STAGE0"
+    name: "Project definition and workspace bootstrap"
+    person_goal: "Create a clean WDA workspace, then define the real product before implementation."
+    status: "in_progress"
+    stop_conditions:
+      - "Implementation begins before product scope is defined"
+      - "Other CodexProject project directories are expanded or used as WDA context"
+      - "A model, formula, parameter, or production claim is invented without evidence"
+    stop_gate:
+      gate_id: "WDA-STAGE0-GATE"
+      status: "open"
+      pass_conditions:
+        - "WDA has a single clean worktree and GitHub branch"
+        - "WDA product requirements are defined and approved"
+        - "Stage 1 task contract is ready with acceptance criteria and rollback"
+      evidence_refs:
+        - "EVID-WDA-BOOTSTRAP-001"
+    phases:
+      -
+        phase_id: "WDA-STAGE0-P1"
+        name: "Workspace and governance bootstrap"
+        objective: "Create WDA project shell, register root governance, and preserve clean worktree boundaries."
+        status: "in_progress"
+        stop_conditions:
+          - "Worktree contains unrelated project directories"
+          - "Bootstrap claims runtime readiness"
+        stop_gate:
+          gate_id: "WDA-STAGE0-P1-GATE"
+          status: "passed_with_local_sparse_evidence"
+          pass_conditions:
+            - "WDA folder can be selected via Codex Use an existing folder"
+            - "GitHub branch contains WDA project shell"
+            - "check-render for WDA has no drift"
+          evidence_refs:
+            - "EVID-WDA-BOOTSTRAP-001"
+        tasks:
+          -
+            task_id: "WDA-STAGE0-P1"
+            name: "Create WDA clean project shell"
+            objective: "Create the local WDA worktree and GitHub-backed governance shell without expanding unrelated projects."
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "16.67%"
+            dependencies: []
+            acceptance_ids:
+              - "ACC-WDA-STAGE0-P1"
+            test_commands:
+              - "/usr/bin/python3 -B scripts/lean_governance.py check-render --project WDA"
+              - "git status --short --branch"
+              - "git sparse-checkout list"
+            test_results: "check-render passed with drift_count=0 and reference_issue_count=0; sparse checkout is constrained to WDA, root governance registration, and shared governance helpers; full monorepo validation intentionally not used as bootstrap gate."
+            evidence_refs:
+              - "EVID-WDA-BOOTSTRAP-001"
+            risk: "Project shell could be mistaken for product implementation or full monorepo validation could trigger unrelated project expansion."
+            rollback: "Remove WDA from governance/projects.yaml and delete the WDA/ project directory on the bootstrap branch."
+      -
+        phase_id: "WDA-STAGE0-P2"
+        name: "Product definition"
+        objective: "Define WDA's actual users, workflows, data boundaries, model/formula applicability, risks, and first implementation stage."
+        status: "planned"
+        stop_conditions:
+          - "Product scope remains ambiguous"
+          - "Acceptance criteria are not testable"
+        stop_gate:
+          gate_id: "WDA-STAGE0-P2-GATE"
+          status: "planned"
+          pass_conditions:
+            - "Requirements and non-goals are explicit"
+            - "Model/formula/parameter status is evidence-backed"
+            - "Stage 1 task pack is ready"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "WDA-STAGE0-P2"
+            name: "Define WDA product scope"
+            objective: "Turn the tentative project name into a concrete PRD/MVP and first run contract."
+            status: "planned"
+            estimated_hours: 5
+            total_hours_percent: "83.33%"
+            dependencies:
+              - "WDA-STAGE0-P1"
+            acceptance_ids:
+              - "ACC-WDA-STAGE0-P2"
+            test_commands:
+              - "Requirements review checklist"
+              - "/usr/bin/python3 -B scripts/lean_governance.py check-render --project WDA"
+            test_results: "Not started."
+            evidence_refs: []
+            risk: "Premature implementation or vague project objective."
+            rollback: "Keep bootstrap files; revert only requirement edits from the failed definition run."
