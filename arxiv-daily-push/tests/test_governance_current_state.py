@@ -243,6 +243,33 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_historical_wait_state_and_blocker_rows(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        expected_historical_rows = (
+            "历史当时 S2PLT02 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`",
+            "历史当时缺失 live artifact `5` 项",
+            "历史当时 S2PLT03 terminal resilience proof capture plan 仍 blocked",
+            "历史当时 S2PLT02 readiness 已消费 live 授权但仍 blocked",
+            "历史当时 S2PLT02 capture-window runtime-state sync 已补齐但仍 nonterminal",
+            "历史当时 S2PLT04 非终态汇总字段已补齐但仍 nonterminal",
+        )
+        for phrase in expected_historical_rows:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, decisions)
+
+        forbidden_phrases = (
+            "| S2PLT02 当前 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW` |",
+            "| 缺失 live artifact `5` 项 | 先完成 S2PLT02 terminal proof",
+            "| S2PLT03 terminal resilience proof capture plan 仍 blocked | 等待 S2PLT02 terminal acceptance",
+            "| S2PLT02 readiness 已消费 live 授权但仍 blocked | 保留 `authorization_artifact_status=pass`",
+            "| S2PLT02 capture-window runtime-state sync 已补齐但仍 nonterminal | `audit-s2plt02-terminal-capture-window` 现在直接暴露",
+            "| S2PLT04 非终态汇总字段已补齐但仍 nonterminal | 使用顶层 `s2plt02_nonterminal_ref_count=14`",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_owner_decision_page_does_not_reopen_terminal_count_split_as_current_gap(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
 
