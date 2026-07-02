@@ -3082,6 +3082,58 @@ Stage 9 整体复审已确认：
 - 本 review 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 review 不进入 Stage 10，不执行 GitHub main 上传。
 
+## 66. v1.1.6 Stage 10 Phase 1 Final Acceptance Readiness 参数
+
+状态：`phase_10_1_final_acceptance_readiness_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Stage 10 必须在 Stage 9 上传验证完成后开始。
+- Phase 10.1 只建立最终验收 readiness 合同，不执行 Stage 10 整体复审。
+- 最终验收必须把 Roadmap v2 的可用性、解释性、可修改性、中文可读性、搜索复盘、Data Map、Memory River、Memory Starfield、隐私和上传边界收束到同一 evidence matrix。
+
+输入：
+
+- `docs/product/memory_atlas_final_acceptance_readiness_contract.md`
+- `docs/acceptance/memory_atlas_final_acceptance_readiness_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10_phase1.cjs`
+- Stage 0-9 validators and records
+
+处理方法：
+
+- 检查最终验收 readiness 合同是否覆盖 roadmap v2 final acceptance、validator chain、visual evidence、release safety、privacy/writeback、upload readiness 和 governance sync。
+- 检查 acceptance 文件是否说明本 phase 只证明合同与记录一致，不证明最终视觉、浏览器截图、local app packaging、production build、Cloudflare preflight 或 Stage 10 review 完成。
+- 检查 package script、delivery、feature、development、model parameter 和 changelog 是否登记 `MA-V116-S10P01`。
+- 检查当前改动范围是否只包含 Stage 10 Phase 1 合同、验收、validator、package script 和记录。
+- 使用 `validate:v1.1.6-stage10-phase1` 固定本 phase 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S10P01-001 stage10_phase1_contract_id = memory_atlas_final_acceptance_readiness_contract`
+- `PARAM-MA-V116-S10P01-002 stage10_phase1_status = phase_10_1_final_acceptance_readiness_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S10P01-003 stage10_phase1_required_surfaces = roadmap_v2_final_acceptance_matrix;validator_chain;visual_evidence_matrix;release_safety_matrix;privacy_writeback_matrix;upload_readiness_matrix;governance_sync_matrix`
+- `PARAM-MA-V116-S10P01-004 stage10_phase1_required_validator = validate:v1.1.6-stage10-phase1`
+- `PARAM-MA-V116-S10P01-005 stage10_phase1_allowed_change_scope = records;product_contract;acceptance_contract;validator;package_script`
+- `PARAM-MA-V116-S10P01-006 stage10_phase1_entry_condition = stage9_upload_verified_and_origin_main_included`
+- `PARAM-MA-V116-S10P01-007 stage10_phase1_next_gate = Stage 10 review`
+
+输出：
+
+- Stage 10 Phase 1 final acceptance readiness contract。
+- Stage 10 Phase 1 acceptance file。
+- Stage 10 Phase 1 deterministic validator。
+- Stage 10 Phase 1 governance records。
+
+边界：
+
+- 本 phase 不修改 production UI、CSS、路由、导航、feature flag 或 app shell。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot
+  或 Cloudflare deploy。
+- 本 phase 不修改 Access policy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不执行 Stage 10 整体复审，不执行 GitHub main 上传。
+
 ## 63. v1.1.6 Stage 9 Phase 3 Data Map C3 隔离原型参数
 
 状态：`phase_9_3_data_map_c3_spike_ready_pending_stage_review`。
