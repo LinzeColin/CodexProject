@@ -2,9 +2,9 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE010"
-current_phase_id: "IDS-STAGE010-P4"
-current_task_id: "IDS-V0_1-STAGE010-P4"
-next_gate_id: "IDS-STAGE010-GATE"
+current_phase_id: "IDS-STAGE010-REVIEW"
+current_task_id: "IDS-V0_1-STAGE010-REVIEW"
+next_gate_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
 total_estimated_hours: 77
 completed_estimated_hours: 77
 stages:
@@ -2120,7 +2120,7 @@ stages:
     stage_id: "IDS-STAGE010"
     name: "本地路径合同"
     person_goal: "定义 file:// source_uri、processed path、backup path、manifest path 和报告导出路径规范。"
-    status: "completed_pending_review"
+    status: "local_passed_pending_10_stage_batch_upload"
     stop_conditions:
       - "需要真实资料但没有 fixture 或 owner 授权样本"
       - "可能删除、移动、覆盖原始文件"
@@ -2130,12 +2130,13 @@ stages:
       - "并行开发导致共享文件冲突"
     stop_gate:
       gate_id: "IDS-STAGE010-GATE"
-      status: "pending_whole_stage_review"
+      status: "passed_after_whole_stage_review"
       pass_conditions:
         - "Phase 1 明确 file:// source_uri、processed path、backup path、manifest path、报告导出路径和安全模式边界"
         - "Phase 2 形成最小只读本地路径合同、状态枚举和路径检查切片"
         - "Phase 3 验证在线、离线、重连、权限异常、路径变化和无边界派生产物场景"
         - "Phase 4 输出环境检查、路径检查、存储预算、可恢复状态和回滚说明"
+        - "整阶段复审已验证 P0 来源、Phase 1-4 证据、只读脚本、场景覆盖、no-side-effect 边界和无上传状态"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE1_SCOPE_BOUNDARY.md"
@@ -2144,6 +2145,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE2_LOCAL_PATH_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_STAGE_REVIEW.md"
     phases:
       -
         phase_id: "IDS-STAGE010-P1"
@@ -2330,3 +2332,16 @@ stages:
               - "KM_IDSystem/docs/governance/events.jsonl"
             risk: "在 STAGE-010 完成后误推送未复审修复的 10-stage 批次。"
             rollback: "Revert IDS-STAGE010-P4 closeout-only changes."
+    review:
+      review_id: "IDS-STAGE010-REVIEW"
+      task_id: "IDS-V0_1-STAGE010-REVIEW"
+      status: "completed"
+      reviewed_at_utc: "2026-07-02T10:19:33Z"
+      acceptance_ids:
+        - "ACC-STAGE-010"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_STAGE_REVIEW.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/governance/events.jsonl"
+      test_results: "STAGE-010 whole-stage review verified the P0 taskpack binding, Phase 1-4 evidence, read-only local path contract implementation, scenario coverage, no-side-effect boundary, owner/governance render path, and no-upload state. Focused STAGE-010 unittest passed 7 tests, STAGE-006..009 regression unittests passed 25 tests, py_compile passed, CLI smoke returned PATH_CONTRACT_OK with guardrails true, scenario smoke returned overall_valid=true, static no-side-effect scan found no production write/delete/recursive-scan calls, check-render returned drift_count=0, changed-scope check passed, and git diff --check passed. Semantic validate remains a sparse-worktree diagnostic with the known 28 root/other-project missing-path errors and no KM_IDSystem semantic error. No runtime code fix was required; only governance/evidence closure was updated. GitHub upload remains deferred to the separate STAGE-001..010 batch upload gate."
+      decision: "ACC-STAGE-010 locally reviewed and passed; no GitHub upload in this run."

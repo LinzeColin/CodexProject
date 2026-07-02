@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-001-010"
 created_at_utc: "2026-07-02T04:29:53Z"
-updated_at_utc: "2026-07-02T10:07:42Z"
-status: "local_in_progress"
+updated_at_utc: "2026-07-02T10:19:33Z"
+status: "local_reviewed_pending_batch_upload_gate"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -201,16 +201,16 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage009_storage_budget.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
   STAGE-010:
-    status: "completed_local_pending_review"
+    status: "completed_reviewed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
       - "Phase 4"
-    next_phase: "stage_review"
-    current_task_id: "IDS-V0_1-STAGE010-P4"
+    next_phase: "batch_upload_gate"
+    current_task_id: "IDS-V0_1-STAGE010-REVIEW"
     acceptance_id: "ACC-STAGE-010"
-    acceptance_status: "phase4_closeout_complete_pending_stage_review"
+    acceptance_status: "local_passed_reviewed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE1_SCOPE_BOUNDARY.md"
@@ -219,8 +219,9 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE2_LOCAL_PATH_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE3_SCENARIO_VALIDATION.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_STAGE_REVIEW.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
 
 decision:
-  current_run: "Completed only STAGE-010 Phase 4 locally; STAGE-010 is complete pending whole-stage review/fix and batch upload remains locked."
-  no_upload_reason: "The user requires one GitHub main upload only after each completed and repaired 10-Stage batch."
+  current_run: "Completed STAGE-010 whole-stage review locally; STAGE-010 is reviewed and passed, and batch upload remains locked until a separate batch upload gate run."
+  no_upload_reason: "This run is the STAGE-010 review/fix pass only; GitHub main upload must be evaluated and executed by the STAGE-001..010 batch upload gate."
