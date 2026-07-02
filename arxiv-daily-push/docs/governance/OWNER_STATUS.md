@@ -52,12 +52,13 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701` | A: DAILY_OPERATION owner decision is recorded as keep-disabled. Persistent DAILY_OPERATION is not authorized; keep runtime disabled unless the owner later provides a separate explicit persistent DAILY_OPERATION authorization and a new enablement artifact passes. | 继续保持 DAILY_OPERATION 禁用；不启用 SMTP、scheduler、Release 或 production restore。 | 若 owner 明确授权持久 DAILY_OPERATION，则先写新的授权 artifact FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，再跑单独 enablement gate。 | 禁止把 keep-disabled artifact 当作运行授权并启用生产。 | Final bundle ready 状态会保持，但 Stage2 Stop Gate 不得进入 DAILY_OPERATION。 |
+| `DEC-ADP-S2PMT07-PRODUCTION-BOUNDARY-20260701` | A: DAILY_OPERATION owner decision is recorded as keep-disabled. Persistent DAILY_OPERATION is not authorized; keep runtime disabled unless the owner later provides a separate explicit persistent DAILY_OPERATION authorization and a new enablement artifact passes. | 继续保持 DAILY_OPERATION 禁用；不启用 SMTP、scheduler、Release 或 production restore。 | 若 owner 明确授权持久 DAILY_OPERATION，则先写新的授权 artifact FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json，再跑单独 enablement gate。 | 禁止把 keep-disabled artifact 当作运行授权并启用生产。 | Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DAILY_OPERATION 不得进入。 |
 
 ## 10. Current Blockers
 
 1. 唯一当前阻断是缺少显式 owner 持久 DAILY_OPERATION 授权 artifact：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。
 2. 在该 artifact 缺失时，`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like，LaunchAgents 必须 disabled，open_pr_count 必须为 0，且不得有后台 ADP 进程。
+3. 不得把 request 包、模板或一次受控真实运行当作持久 DAILY_OPERATION 授权。
 
 ## 11. Evidence Required To Unblock
 
@@ -96,7 +97,7 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 
 - source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
 - source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
-- source_snapshot_hash: `sha256:033ab10f50060a676c5c3f1f4bf9b935d93bacfde538dad81e89f7762f3f282b`
+- source_snapshot_hash: `sha256:8b4485cf58d77c729eba13cf2d3f284e6b3fbdf7fc51fe8dda2999ff7f1a13ba`
 - snapshot_event_time: `2026-07-01T23:35:39+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`

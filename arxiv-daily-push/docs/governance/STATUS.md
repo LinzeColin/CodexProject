@@ -4,7 +4,7 @@
 
 - source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
 - source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
-- source_snapshot_hash: `sha256:033ab10f50060a676c5c3f1f4bf9b935d93bacfde538dad81e89f7762f3f282b`
+- source_snapshot_hash: `sha256:8b4485cf58d77c729eba13cf2d3f284e6b3fbdf7fc51fe8dda2999ff7f1a13ba`
 - snapshot_event_time: `2026-07-01T23:35:39+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`
@@ -34,7 +34,7 @@
 
 ## Delivery
 
-- Readiness: `BLOCKED_PRECHECK`
+- Readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`
 - Release gate: `DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`

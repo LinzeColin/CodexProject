@@ -899,6 +899,7 @@ def assurance_status(value: str | None) -> str:
         "machine_verified": "VERIFIED",
         "partial": "PARTIAL",
         "blocked_precheck": "BLOCKED_PRECHECK",
+        "blocked_persistent_daily_operation_authorization_missing": "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING",
         "blocked": "FAILED",
         "failed": "FAILED",
         "unknown": "UNVERIFIED",
@@ -1368,6 +1369,12 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     base_commit = configured_source_base() or latest_commit or existing_assurance_base(project_path) or current_commit()
     tree_hash = configured_source_tree() or latest_tree or existing_assurance_tree(project_path) or current_tree_hash()
     policy = dict(ASSURANCE_POLICY.get(project_id, {}))
+    project_config = structural.load_yaml(project_path / "docs/governance/project.yaml")
+    configured_delivery_readiness = (
+        project_config.get("delivery_readiness")
+        if isinstance(project_config.get("delivery_readiness"), dict)
+        else {}
+    )
     arxiv_stage1_accepted = arxiv_stage1_acceptance_proven(project_id, events, manifest)
     if arxiv_stage1_accepted:
         policy.update(
@@ -1380,8 +1387,17 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             }
         )
     if adp_s2pmt07_gate_is_current(project_id, matrix):
-        policy["readiness"] = "blocked_precheck"
-        policy["decision"] = "S2PMT07 final gate precheck is blocked; Stage 1 remains accepted, but integrated production acceptance is not available."
+        configured_status = str(configured_delivery_readiness.get("status") or "").strip()
+        if configured_status == "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING":
+            policy["readiness"] = "blocked_persistent_daily_operation_authorization_missing"
+            policy["decision"] = (
+                "Stage 2 integrated acceptance is recorded, but persistent DAILY_OPERATION "
+                "authorization is missing; keep runtime disabled."
+            )
+            policy["blockers"] = ["persistent_daily_operation_authorization_missing"]
+        else:
+            policy["readiness"] = "blocked_precheck"
+            policy["decision"] = "S2PMT07 final gate precheck is blocked; Stage 1 remains accepted, but integrated production acceptance is not available."
     unresolved = collect_unresolved_fact_ids(project_id, parsed, counts)
     if arxiv_stage1_accepted:
         accepted_s1_resolved = {
@@ -1422,6 +1438,9 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             structural.as_list(next_task.get("stale_candidates")) if isinstance(next_task, dict) else [],
             matrix=matrix,
         )
+        configured_next_status = str(configured_delivery_readiness.get("next_executable_task_status") or "").strip()
+        if configured_next_status:
+            next_task = {**next_task, "status": configured_next_status}
     decision_policy = decision_policy_for(project_id, next_task)
     if decision_policy.get("owner_role") and str(next_task.get("task_id") or "") != "NONE" and not adp_s2pmt07_current:
         next_task = {
@@ -1766,6 +1785,13 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "current_v7_task_id": str(matrix.get("current_v7_task_id") or "UNKNOWN"),
             }
         )
+        configured_status = str(configured_delivery_readiness.get("status") or "").strip()
+        if configured_status == "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING":
+            persistent_blockers = str(
+                matrix.get("s2pmt07_daily_operation_persistent_authorization_blockers")
+                or "persistent_daily_operation_authorization_missing"
+            )
+            delivery_readiness["blocker_ids"] = [item for item in persistent_blockers.split(";") if item]
         current_p0 = matrix.get("current_zero_proof_open_p0_findings")
         current_p1 = matrix.get("current_zero_proof_open_p1_findings")
         current_zero_known = current_p0 is not None and current_p1 is not None
@@ -1839,7 +1865,11 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             },
             "delivery_evidence": {
                 "status": "VERIFIED"
-                if assurance_status(str(policy.get("readiness") or "blocked")) == "BLOCKED_PRECHECK"
+                if assurance_status(str(policy.get("readiness") or "blocked"))
+                in {
+                    "BLOCKED_PRECHECK",
+                    "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING",
+                }
                 else assurance_status(str(policy.get("readiness") or "blocked")),
                 "fact_level": "EXTRACTED",
                 "evidence_refs": [f"{project.get('path')}/docs/governance/delivery_tasks.yaml"],
@@ -2209,6 +2239,15 @@ def render_owner_status(item: dict[str, Any]) -> str:
     next_task = assurance["next_executable_task"]
     decision = assurance["owner_decision"]
     blockers = item["policy_blockers"][:3] or [decision["evidence_required"]]
+    if (
+        item["project_id"] == "arxiv-daily-push"
+        and assurance["delivery_readiness"]["status"] == "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"
+    ):
+        blockers = [
+            "唯一当前阻断是缺少显式 owner 持久 DAILY_OPERATION 授权 artifact：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。",
+            "在该 artifact 缺失时，`ADP_ALLOW_SMTP_SEND` 原始值只能是 `UNSET` 或 false-like，LaunchAgents 必须 disabled，open_pr_count 必须为 0，且不得有后台 ADP 进程。",
+            "不得把 request 包、模板或一次受控真实运行当作持久 DAILY_OPERATION 授权。",
+        ]
     while len(blockers) < 3:
         blockers.append(f"{decision['human_owner_role']} must provide project-specific evidence before readiness can improve.")
     option_a = decision["option_a"]
@@ -2234,6 +2273,16 @@ def render_owner_status(item: dict[str, Any]) -> str:
                 "launchd package 草案和 2026-06-30 迁移 runbook。"
                 "没有启用 GitHub cloud schedule、没有真实 SMTP 生产发送、没有 Release 上传、没有视频要求。"
             )
+    elif (
+        item["project_id"] == "arxiv-daily-push"
+        and assurance["delivery_readiness"]["status"] == "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"
+    ):
+        current_conclusion = (
+            f"{item['project_id']} 当前治理结论：实现一致性为 `{dims['implementation_congruence']['status']}`，"
+            f"方法/实证为 `{dims['methodological_rationale']['status']}` / `{dims['empirical_validation']['status']}`，"
+            "交付状态为 `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`；"
+            "Stage 2 integrated acceptance 已记录，但 S3/DAILY_OPERATION 仍未授权，这不是持久生产运行声明。"
+        )
     else:
         current_conclusion = (
             f"{item['project_id']} 当前治理结论：实现一致性为 `{dims['implementation_congruence']['status']}`，"
