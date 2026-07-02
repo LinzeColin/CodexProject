@@ -173,6 +173,30 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             mail_status,
         )
 
+    def test_user_center_readme_does_not_reopen_consumed_s2plt02_gaps(self) -> None:
+        readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史 S2PLT02 terminal delivery proof 缺口已被 final bundle 和 Stage 2 integrated acceptance 消费",
+            readme,
+        )
+        self.assertIn(
+            "历史当时 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 仍缺失/未就绪",
+            readme,
+        )
+        self.assertIn(
+            "历史当时仍是 `1/2` 真实日、`4/8` 真实邮件",
+            readme,
+        )
+        forbidden_phrases = (
+            "- `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 仍缺失/未就绪",
+            "当前仍是 `1/2` 真实日、`4/8` 真实邮件。",
+            "仍要先等真实 SMTP/scheduler 捕获窗口，清除第二真实 M1-M4 SMTP 日、8 封真实邮件、真实 scheduler proof 和 terminal proof artifact 缺口。",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, readme)
+
     def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
         manifest_path = (
             REPO_ROOT
