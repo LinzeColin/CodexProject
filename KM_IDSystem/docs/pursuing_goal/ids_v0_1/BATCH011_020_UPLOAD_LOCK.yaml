@@ -1,0 +1,95 @@
+schema_version: "ids.v0_1.batch_upload_lock.v1"
+batch_id: "IDS-V0_1-BATCH-011-020"
+created_at_utc: "2026-07-02T11:03:09Z"
+updated_at_utc: "2026-07-02T11:03:09Z"
+status: "in_progress_no_github_upload"
+
+repository:
+  owner_repo: "LinzeColin/CodexProject"
+  worktree_path: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS"
+  target_project_path: "KM_IDSystem"
+  local_branch: "codex/ids-v0-1-stages-001-010"
+  upstream_policy: "do_not_push_until_batch_complete_reviewed_and_repaired"
+
+scope:
+  version: "v0.1"
+  stage_range: "STAGE-011..STAGE-020"
+  acceptance_range: "ACC-STAGE-011..ACC-STAGE-020"
+  source_index: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
+
+data_boundary:
+  ids_metadata_raw_root: "/Users/linzezhang/Downloads/IDS_MetaData"
+  boundary_record: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  raw_root_policy: "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content"
+  real_data_only_policy: "All IDS runtime corpus, database-backed content, analytics inputs, reports, indexes, manifests, and committed examples must use real user-approved data; fake business data and fabricated evidence are forbidden."
+  local_existence_check: "IDS_METADATA_ROOT_EXISTS"
+
+upload_gate:
+  push_allowed: false
+  required_before_push:
+    - "STAGE-011 through STAGE-020 all completed."
+    - "Each completed Stage has durable local evidence."
+    - "Every tenth-stage review finding is fixed or explicitly deferred with a stop gate."
+    - "check-render --project KM_IDSystem returns drift_count=0."
+    - "Changed scope remains inside KM_IDSystem/ and allowed governance roots."
+    - "No open blocker tied to raw data, secrets, local generated data, or sparse-worktree expansion."
+    - "IDS_MetaData raw database root remains recorded as a read-only real-data source boundary."
+  github_target: "main"
+  gate_task_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md"
+  remote_strategy: "push branch, create PR to main, merge PR, verify no open PRs or issues"
+
+stage_progress:
+  STAGE-011:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE011-P1"
+    acceptance_id: "ACC-STAGE-011"
+    acceptance_status: "phase1_boundary_complete"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-012:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-012"
+    evidence_refs: []
+  STAGE-013:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-013"
+    evidence_refs: []
+  STAGE-014:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-014"
+    evidence_refs: []
+  STAGE-015:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-015"
+    evidence_refs: []
+  STAGE-016:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-016"
+    evidence_refs: []
+  STAGE-017:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-017"
+    evidence_refs: []
+  STAGE-018:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-018"
+    evidence_refs: []
+  STAGE-019:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-019"
+    evidence_refs: []
+  STAGE-020:
+    status: "pending"
+    acceptance_id: "ACC-STAGE-020"
+    evidence_refs: []
+
+decision:
+  current_run: "STAGE-011 Phase 1 completed locally with safe-mode boundary evidence only; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, and repaired."
+  no_upload_reason: "Batch STAGE-011..020 has only STAGE-011 Phase 1 complete."
