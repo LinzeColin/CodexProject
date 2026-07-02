@@ -258,6 +258,31 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, readme)
 
+    def test_user_center_readme_does_not_reopen_superseded_daily_operation_preflight_blockers(self) -> None:
+        readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史：gh 等价证据已修复，当时 DAILY_OPERATION 仍阻断",
+            readme,
+        )
+        self.assertIn(
+            "当时剩余失败检查是 `production_preflight_passed`；后续已由 2026-07-01 20:39 secret / artifact repair 消费",
+            readme,
+        )
+        self.assertIn(
+            "当前唯一持久运行阻断仍是 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 缺失",
+            readme,
+        )
+
+        forbidden_phrases = (
+            "当前具体阻断：缺 `ADP_SMTP_HOST`、`ADP_SMTP_PORT`、`ADP_SMTP_USERNAME`、`ADP_SMTP_PASSWORD`",
+            "既有 `OpenAIDatabase/session_history` archive 文件触发 production git artifact hygiene blocker",
+            "默认下一步：补齐 SMTP secret env 名称并通过 OpenAIDatabase owning workflow 处理大文件治理；预检通过前不得请求 persistent DAILY_OPERATION 授权。",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, readme)
+
     def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
         manifest_path = (
             REPO_ROOT

@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-03 00:58:53 Australia/Sydney
+更新时间：2026-07-03 01:25:44 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -345,23 +345,24 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 - 默认下一步：由 owner 记录 `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION`，选择授权持久 DAILY_OPERATION 或保持禁用；授权前不得启用生产运行。
 - 证据：[secret / artifact 修复清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_SECRET_ARTIFACT_REPAIR.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
 
-## 2026-07-01 20:12:13 Australia/Sydney - gh 等价证据已修复，DAILY_OPERATION 仍阻断
+## 2026-07-01 20:12:13 Australia/Sydney - 历史：gh 等价证据已修复，当时 DAILY_OPERATION 仍阻断
 
-- `S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR` 已重跑 DAILY_OPERATION 授权预检；结果仍为 `status=blocked`，不是日常运行启用。
+- `S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR` 历史当时已重跑 DAILY_OPERATION 授权预检；结果为 `status=blocked`，不是日常运行启用。
 - `github_open_pr_count_zero_api_v1` 已作为经复审的 GitHub open PR count 等价证据，解除原 `gh` CLI blocker。
-- 剩余失败检查仍是 `production_preflight_passed`。当前具体阻断：缺 `ADP_SMTP_HOST`、`ADP_SMTP_PORT`、`ADP_SMTP_USERNAME`、`ADP_SMTP_PASSWORD` 这四个 SMTP secret env 名称；既有 `OpenAIDatabase/session_history` archive 文件触发 production git artifact hygiene blocker。
+- 当时剩余失败检查是 `production_preflight_passed`；后续已由 2026-07-01 20:39 secret / artifact repair 消费。历史当时具体阻断包括缺 SMTP secret env 名称，以及跨项目 `OpenAIDatabase/session_history` artifact hygiene；当前 ADP preflight 已限定 ADP scope，且 SMTP secret key-presence metadata 已通过。
+- 当前唯一持久运行阻断仍是 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 缺失。
 - Stage 2 integrated acceptance 仍保持：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
 - DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
-- 默认下一步：补齐 SMTP secret env 名称并通过 OpenAIDatabase owning workflow 处理大文件治理；预检通过前不得请求 persistent DAILY_OPERATION 授权。
+- 历史当时默认下一步是补齐 SMTP secret env 名称并处理 artifact hygiene；当前默认下一步已经变为 owner A keep-disabled 后的持久授权缺失口径，缺显式授权 artifact 时不得请求或启用 persistent DAILY_OPERATION。
 - 证据：[gh 等价修复清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_GH_EQUIVALENT_REPAIR.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
 
-## 2026-07-01 19:43:41 Australia/Sydney - DAILY_OPERATION 授权预检已运行但阻断
+## 2026-07-01 19:43:41 Australia/Sydney - 历史：DAILY_OPERATION 授权预检已运行但当时阻断
 
-- `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT` 已生成并通过 state validator；结果为 `status=blocked`，不是日常运行启用。
-- 失败检查：`production_preflight_passed`。具体阻断：missing `gh` CLI；缺 `ADP_SMTP_HOST`、`ADP_SMTP_PORT`、`ADP_SMTP_USERNAME`、`ADP_SMTP_PASSWORD` 这四个 SMTP secret env 名称；既有 `OpenAIDatabase/session_history` archive 文件触发 production git artifact hygiene blocker。
+- `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT` 历史当时已生成并通过 state validator；结果为 `status=blocked`，不是日常运行启用。
+- 当时失败检查是 `production_preflight_passed`：缺 `gh` CLI、缺 SMTP secret env 名称，以及跨项目 `OpenAIDatabase/session_history` artifact hygiene。后续 `gh` blocker 已由 GitHub open PR count 等价证据解除，secret / artifact 问题已由 20:39 repair 消费或限定为非当前 ADP 阻断。
 - Stage 2 integrated acceptance 仍保持：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
 - DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
-- 默认下一步：先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求 persistent DAILY_OPERATION 授权。
+- 历史当时默认下一步是先修复 DAILY_OPERATION 预检前置条件再重跑预检；当前默认下一步已经变为 owner A keep-disabled 后的持久授权缺失口径，缺显式授权 artifact 时不得请求或启用 persistent DAILY_OPERATION。
 - 证据：[预检清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
 
 ## 2026-07-01 19:04:10 Australia/Sydney - INTEGRATED_PRODUCTION_ACCEPTED 已写入，DAILY_OPERATION 仍未启用
