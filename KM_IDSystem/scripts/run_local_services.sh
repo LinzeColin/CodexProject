@@ -20,7 +20,7 @@ find_cmd() {
 notify_failure() {
   local message="$1"
   log "ERROR: $message"
-  /usr/bin/osascript -e "display notification \"$message\" with title \"Wuhan Kaiming OpMe\"" >/dev/null 2>&1 || true
+  /usr/bin/osascript -e "display notification \"$message\" with title \"IDS / Industrial Data System\"" >/dev/null 2>&1 || true
 }
 
 fail() {
@@ -50,12 +50,12 @@ http_get() {
 
 backend_healthy() {
   local port="$1"
-  http_get "http://127.0.0.1:$port/api/health" | grep -q "wuhan-kaiming-assistant"
+  http_get "http://127.0.0.1:$port/api/health" | grep -q "ids-industrial-data-system"
 }
 
 frontend_healthy() {
   local port="$1"
-  http_get "http://127.0.0.1:$port/" | grep -q "武汉开明智能工业运维助手"
+  http_get "http://127.0.0.1:$port/" | grep -q "IDS / Industrial Data System"
 }
 
 first_free_port() {
@@ -190,7 +190,7 @@ fi
 log "Launch complete: frontend=http://127.0.0.1:$FRONTEND_PORT backend=http://127.0.0.1:$BACKEND_PORT"
 
 if [ "${KEEP_TERMINAL_OPEN:-0}" = "1" ]; then
-  echo "Wuhan Kaiming OpMe is running."
+  echo "IDS / Industrial Data System is running."
   echo "Frontend: http://127.0.0.1:$FRONTEND_PORT/"
   echo "Backend:  http://127.0.0.1:$BACKEND_PORT/api/health"
   echo "Keep this Terminal window open while using the system. Press Ctrl-C to stop watching."

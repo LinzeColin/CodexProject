@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_NAME="Wuhan Kaiming OpMe.app"
-COMMAND_NAME="Wuhan Kaiming OpMe.command"
+APP_NAME="IDS Industrial Data System.app"
+COMMAND_NAME="IDS Industrial Data System.command"
 BUILD_SCRIPT="$ROOT_DIR/scripts/build_app_bundle.sh"
 SOURCE_APP="$ROOT_DIR/app_bundle/$APP_NAME"
 DOWNLOADS_APP="$HOME/Downloads/$APP_NAME"
@@ -50,14 +50,14 @@ LOG_DIR="\$ROOT_DIR/data"
 mkdir -p "\$LOG_DIR"
 printf '[%s] Command launcher invoked\\n' "\$(date '+%Y-%m-%d %H:%M:%S')" >> "\$LOG_DIR/app_entry.log"
 
-echo "Starting Wuhan Kaiming OpMe..."
+echo "Starting IDS / Industrial Data System..."
 cd "\$ROOT_DIR"
 KEEP_TERMINAL_OPEN="\${KEEP_TERMINAL_OPEN:-1}" "\$ROOT_DIR/scripts/run_local_services.sh"
 
 frontend_port="\$(cat "\$LOG_DIR/frontend_port" 2>/dev/null || true)"
 if [ -n "\$frontend_port" ]; then
   echo
-  echo "Wuhan Kaiming OpMe is running: http://127.0.0.1:\$frontend_port/"
+  echo "IDS / Industrial Data System is running: http://127.0.0.1:\$frontend_port/"
 fi
 EOF
   chmod +x "$target"

@@ -3,13 +3,13 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP_PATHS=(
-  "$ROOT_DIR/app_bundle/Wuhan Kaiming OpMe.app"
-  "$HOME/Downloads/Wuhan Kaiming OpMe.app"
-  "/Applications/Wuhan Kaiming OpMe.app"
+  "$ROOT_DIR/app_bundle/IDS Industrial Data System.app"
+  "$HOME/Downloads/IDS Industrial Data System.app"
+  "/Applications/IDS Industrial Data System.app"
 )
 COMMAND_PATHS=(
-  "$HOME/Downloads/Wuhan Kaiming OpMe.command"
-  "/Applications/Wuhan Kaiming OpMe.command"
+  "$HOME/Downloads/IDS Industrial Data System.command"
+  "/Applications/IDS Industrial Data System.command"
 )
 
 for app in "${APP_PATHS[@]}"; do
