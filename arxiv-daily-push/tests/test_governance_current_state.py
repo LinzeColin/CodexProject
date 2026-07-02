@@ -336,6 +336,31 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_runtime_auth_gate_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 `plan-s2plt02-terminal-delivery-proof-capture` 的 `authorization_artifact_status=pass`，但 `runtime_capture_ready=false`；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 next executable step 是 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时 matching authorization 仍不等于 S2PLT02 accepted；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+
+        forbidden_phrases = (
+            "| `plan-s2plt02-terminal-delivery-proof-capture` 当前 `authorization_artifact_status=pass`，但 `runtime_capture_ready=false` |",
+            "| 当前 next executable step 是 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW` |",
+            "| matching authorization 仍不等于 S2PLT02 accepted | 继续阻断第二真实日、8 封真实邮件、真实 scheduler proof 和 terminal proof artifact |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
