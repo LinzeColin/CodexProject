@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s03p2-source-check-matrix
+product_version: 0.1.3-s03p3-source-priority
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S03`
-- current_phase: `v0.1.3 S03-P2｜数据源检查矩阵`
-- current_tasks: `KMFA-V013-S03-P2-SOURCE-CHECK-MATRIX-20260702`
-- status: `local_s03p2_source_check_matrix_passed_no_go_overall_upload_deferred`
+- current_phase: `v0.1.3 S03-P3｜源优先级与差异队列入口`
+- current_tasks: `KMFA-V013-S03-P3-SOURCE-PRIORITY-20260702`
+- status: `local_s03p3_source_priority_passed_no_go_overall_upload_deferred`
 - risk_tier: `T3`
 
 ## Completed
@@ -134,12 +134,13 @@ product_version: 0.1.3-s03p2-source-check-matrix
 | `KMFA-V013-S02-STAGE-REVIEW-20260702` | v0.1.3 Stage 2 整体复审本地通过：复跑 S02-P1/S02-P2/S02-P3 validators 和 Stage 2 review validator，phase_results 全部 PASS，findings_open=0，继续锁定 Q2/D/blocked；未执行 GitHub upload、S03-P1、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/human/stage2_review_report.md` |
 | `KMFA-V013-S03-P1-FILE-IMPORT-REGISTER-20260702` | v0.1.3 S03-P1 文件型导入登记本地通过：重放文件登记、metadata 必需字段、zip traversal 防护和 WPS/OLE 提示；未读取或写入 raw data inbox，未执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S03_P1_FILE_IMPORT_REGISTER/human/file_import_register_report.md` |
 | `KMFA-V013-S03-P2-SOURCE-CHECK-MATRIX-20260702` | v0.1.3 S03-P2 数据源检查矩阵本地通过：重放六个矩阵维度、五个中文状态和 append-only metadata 状态事件；未读取或写入 raw data inbox，未执行 S03-P3、Stage 3 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S03_P2_SOURCE_CHECK_MATRIX/human/source_check_matrix_report.md` |
+| `KMFA-V013-S03-P3-SOURCE-PRIORITY-20260702` | v0.1.3 S03-P3 源优先级与差异队列入口本地通过：重放 9 级来源优先级、同源失效重跑事件和跨源差异人工复核队列；未读取或写入 raw data inbox，未执行 Stage 3 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S03_P3_SOURCE_PRIORITY/human/source_priority_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S03-P2 已本地完成；下一步只能另起 run 执行 S03-P3 或用户明确指定的单一 phase；Stage 3 review、GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S03_P2_SOURCE_CHECK_MATRIX/human/test_results.md` |
+| 无 | v0.1.3 S03-P3 已本地完成；下一步只能另起 run 执行 Stage 3 review 或用户明确指定的单一 phase；GitHub upload、正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S03_P3_SOURCE_PRIORITY/human/test_results.md` |
 
 ## Not Completed
 
@@ -148,4 +149,4 @@ product_version: 0.1.3-s03p2-source-check-matrix
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| S03-P3 | S03-P2 已本地完成，GitHub upload 延后到整体完成 gate | 下一轮只能执行 `v0.1.3 S03-P3` 或用户明确指定的单一 phase；不得跳到 Stage 3 review、GitHub upload、正式报告、raw value matching、lineage full check 或业务执行 |
+| Stage 3 review | S03-P1/S03-P2/S03-P3 均已本地完成，GitHub upload 延后到整体完成 gate | 下一轮只能执行 `v0.1.3 Stage 3 整体复审` 或用户明确指定的单一 phase；不得跳到 GitHub upload、正式报告、raw value matching、lineage full check 或业务执行 |

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3-s03p3-source-priority - 2026-07-02
+
+- 完成 `v0.1.3 S03-P3｜源优先级与差异队列入口` 本地验证：基于既有 `source_priority.py` 能力，使用合成 metadata 重放 9 级来源优先级、同源不一致失效重跑事件和跨源差异人工复核队列。
+- 新增 `KMFA/tools/v013_s03_p3_source_priority.py`、`KMFA/tools/check_v013_s03_p3_source_priority.py`、`KMFA/tests/test_v013_s03_p3_source_priority.py` 和 `KMFA/stage_artifacts/V013_S03_P3_SOURCE_PRIORITY/`。
+- 本 phase 不读取或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，不公开 raw 文件名、raw hash、source package hash、storage ref、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 同源不一致锁定为 metadata-only event，动作为 `invalidate_derived_cache` 和 `request_rerun`；跨源冲突进入 difference queue，`manual_review_required=true`、`auto_selection_allowed=false`、`auto_correction_allowed=false`。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 Stage 3 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 执行 `v0.1.3 Stage 3 整体复审` 或用户明确指定的单一 phase。
+
 ## 0.1.3-s03p2-source-check-matrix - 2026-07-02
 
 - 完成 `v0.1.3 S03-P2｜数据源检查矩阵` 本地验证：基于既有 `source_check_matrix.py` 能力，使用合成 metadata 重放六个矩阵维度、五个中文状态枚举和 metadata-only append 状态事件。
