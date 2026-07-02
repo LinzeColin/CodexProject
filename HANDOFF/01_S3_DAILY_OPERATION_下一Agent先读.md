@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 22:59:47 Australia/Sydney
+更新时间：2026-07-02 23:42:08 Australia/Sydney
 
 ## 当前结论
 
@@ -16,7 +16,7 @@
 | DAILY_OPERATION | `daily_operation_enabled=false` | `arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml` |
 | 持久授权 artifact | 缺失 | `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` |
 | 持久授权模板 | 存在，但默认无效、不能替代授权 | `FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json` |
-| root verifier S3 阻断输出 | `daily_operation_authorization_ready=false`，`daily_operation_blocking_reasons=["persistent_daily_operation_authorization_missing"]` | `tools/verify_acceptance_bundle.py --require-zero P0 P1` |
+| root verifier S3 阻断输出 | `daily_operation_authorization_ready=false`，`daily_operation_blocking_reasons=["persistent_daily_operation_authorization_missing"]` | `python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1` |
 | DAILY_OPERATION 专用 root gate | 当前必须 `status=FAIL` / exit 2 | `tools/verify_daily_operation_readiness.py` |
 | DAILY_OPERATION enablement preflight root gate | 当前必须 `status=FAIL / exit 2`，`enablement_preflight_ready=false`，阻断原因为 `persistent_daily_operation_authorization_missing` | `tools/verify_daily_operation_enablement_preflight.py` |
 | Root 执行根校验 | 正确 CodexProject 仓库根必须输出 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`；误传项目子目录时必须 fail-closed 为 `codexproject_repo_root_invalid` | `tools/verify_daily_operation_readiness.py` / `tools/verify_daily_operation_enablement_preflight.py` |
@@ -74,19 +74,18 @@
 
 ## 最小复核命令
 
-以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径。
+以下命令必须从 CodexProject 仓库根目录运行；`tools/`、`scripts/` 和 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径。不要给这些 root tools 追加 `--json`；它们默认输出 JSON。
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_current PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q
-PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_bundle PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json
-python3 tools/verify_acceptance_bundle.py --require-zero P0 P1
-python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2
-python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2
-PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push
-PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_handoff_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_governance_sync.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=arxiv-daily-push/src python3 -B scripts/validate_project_governance.py --project arxiv-daily-push
+PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=arxiv-daily-push/src python3 -B scripts/validate_governance_sync.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=arxiv-daily-push/src python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1
+PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=arxiv-daily-push/src python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2
+PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=arxiv-daily-push/src python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2
 ```
 
-预期：`verify_daily_operation_readiness.py` 和 `verify_daily_operation_enablement_preflight.py` 的命令本体都输出 `status=FAIL` / exit 2；随后 shell 断言分别输出 `EXPECTED_READINESS_EXIT=2` 和 `EXPECTED_PREFLIGHT_EXIT=2` 并通过。若任一命令返回 0 或其他非 2 exit code，停止并回报，不得为了让命令变绿而放宽 DAILY_OPERATION 门。
+预期：`verify_acceptance_bundle.py` 输出 `status=PASS`，同时显示 `daily_operation_authorization_ready=false`；`verify_daily_operation_readiness.py` 和 `verify_daily_operation_enablement_preflight.py` 的命令本体都输出 `status=FAIL` / exit 2；随后 shell 断言分别输出 `EXPECTED_READINESS_EXIT=2` 和 `EXPECTED_PREFLIGHT_EXIT=2` 并通过。若任一 DAILY_OPERATION 命令返回 0 或其他非 2 exit code，停止并回报，不得为了让命令变绿而放宽 DAILY_OPERATION 门。
 
 最小复核命令还必须读取 JSON 字段：正确仓库根下 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`；缺持久授权时仍应同时显示 `authorization_artifact_exists=false` 和 `persistent_daily_operation_authorization_missing`。若看到 `codexproject_repo_root_invalid`，先修正执行目录或 `--root`，不要把它解释为 DAILY_OPERATION 授权阻断。
 
