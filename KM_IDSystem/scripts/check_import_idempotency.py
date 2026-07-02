@@ -193,6 +193,169 @@ def evaluate_import_idempotency(
     }
 
 
+def _same_name_different_hash(
+    left_uri: str,
+    right_uri: str,
+    *,
+    first_seen_at: str,
+    import_checked_at: str,
+) -> dict[str, Any]:
+    report = evaluate_import_idempotency(
+        source_uris=[left_uri, right_uri],
+        first_seen_at=first_seen_at,
+        import_checked_at=import_checked_at,
+    )
+    return {
+        "scenario_id": "same_name_different_hash",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "IMPORT_KEY_CONFLICT"
+            and report["key_conflict_count"] == 1
+            and report["version_conflict_count"] == 1
+        ),
+        "key_conflict_count": report["key_conflict_count"],
+        "version_conflict_count": report["version_conflict_count"],
+        "import_record_count": report["import_record_count"],
+        "import_write_delta": report["import_write_delta"],
+    }
+
+
+def _same_hash_different_path(
+    left_uri: str,
+    right_uri: str,
+    *,
+    first_seen_at: str,
+    import_checked_at: str,
+) -> dict[str, Any]:
+    report = evaluate_import_idempotency(
+        source_uris=[left_uri, right_uri],
+        first_seen_at=first_seen_at,
+        import_checked_at=import_checked_at,
+    )
+    return {
+        "scenario_id": "same_hash_different_path",
+        "state": report["overall_state"],
+        "valid": (
+            report["overall_state"] == "IMPORT_DUPLICATE_CONTENT"
+            and report["duplicate_content_count"] == 1
+        ),
+        "duplicate_content_count": report["duplicate_content_count"],
+        "import_record_count": report["import_record_count"],
+        "import_write_delta": report["import_write_delta"],
+    }
+
+
+def build_stage016_scenario_report(
+    *,
+    same_file_uri: str,
+    same_name_left_uri: str,
+    same_name_right_uri: str,
+    same_hash_left_uri: str,
+    same_hash_right_uri: str,
+    first_seen_at: str | None = None,
+    import_checked_at: str | None = None,
+) -> dict[str, Any]:
+    """Validate Phase 3 import-idempotency scenarios without side effects."""
+
+    first_seen_at = first_seen_at or _utc_now()
+    import_checked_at = import_checked_at or _utc_now()
+    stage015 = _load_stage015_module()
+    stage013 = stage015._load_stage013_module()
+    source_path = stage013._path_from_uri(same_file_uri)
+    before_sha256 = stage013._hash_file(source_path)
+    before_size = source_path.stat().st_size
+
+    same_file = evaluate_import_idempotency(
+        source_uris=[same_file_uri, same_file_uri],
+        first_seen_at=first_seen_at,
+        import_checked_at=import_checked_at,
+    )
+    same_file_scenario = {
+        "scenario_id": "same_file_same_hash",
+        "state": same_file["overall_state"],
+        "valid": (
+            same_file["overall_state"] == "IMPORT_SINGLE_REPEAT"
+            and same_file["duplicate_input_count"] == 1
+            and same_file["import_record_count"] == 1
+        ),
+        "duplicate_input_count": same_file["duplicate_input_count"],
+        "import_record_count": same_file["import_record_count"],
+        "import_write_delta": same_file["import_write_delta"],
+    }
+
+    same_name = _same_name_different_hash(
+        same_name_left_uri,
+        same_name_right_uri,
+        first_seen_at=first_seen_at,
+        import_checked_at=import_checked_at,
+    )
+    same_hash = _same_hash_different_path(
+        same_hash_left_uri,
+        same_hash_right_uri,
+        first_seen_at=first_seen_at,
+        import_checked_at=import_checked_at,
+    )
+    duplicate_import = {
+        "scenario_id": "duplicate_import_no_persistence",
+        "state": same_file["overall_state"],
+        "valid": (
+            same_file_scenario["valid"]
+            and same_file["document_delta"] == 0
+            and same_file["chunk_delta"] == 0
+            and same_file["job_delta"] == 0
+            and same_file["index_delta"] == 0
+            and same_file["import_write_delta"] == 0
+            and same_file["manifest_write_delta"] == 0
+            and same_file["duplicate_write_delta"] == 0
+        ),
+        "document_delta": same_file["document_delta"],
+        "chunk_delta": same_file["chunk_delta"],
+        "job_delta": same_file["job_delta"],
+        "index_delta": same_file["index_delta"],
+        "import_write_delta": same_file["import_write_delta"],
+        "manifest_write_delta": same_file["manifest_write_delta"],
+        "duplicate_write_delta": same_file["duplicate_write_delta"],
+        "import_record_count": same_file["import_record_count"],
+        "duplicate_input_count": same_file["duplicate_input_count"],
+    }
+
+    after_sha256 = stage013._hash_file(source_path)
+    after_size = source_path.stat().st_size
+    hash_stable = {
+        "scenario_id": "original_hash_stable",
+        "state": "IMPORT_KEY_READY" if before_sha256 == after_sha256 else "IMPORT_UNKNOWN",
+        "valid": before_sha256 == after_sha256 and before_size == after_size,
+        "before_sha256": before_sha256,
+        "after_sha256": after_sha256,
+        "before_size": before_size,
+        "after_size": after_size,
+        "hash_unchanged": before_sha256 == after_sha256,
+        "size_unchanged": before_size == after_size,
+    }
+
+    scenarios = [same_file_scenario, same_name, same_hash, duplicate_import, hash_stable]
+    return {
+        "schema_version": "ids.stage016.import_scenarios.v1",
+        "stage": "STAGE-016",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-016",
+        "entrance": OPERATIONS_ENTRANCE,
+        "overall_valid": all(scenario["valid"] for scenario in scenarios),
+        "scenarios": scenarios,
+        "does_not_scan_recursively": True,
+        "does_not_move_originals": True,
+        "does_not_delete_originals": True,
+        "does_not_overwrite_originals": True,
+        "does_not_write_import_records": True,
+        "does_not_write_manifest_files": True,
+        "does_not_write_database": True,
+        "does_not_write_index": True,
+        "does_not_create_documents_chunks_jobs": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_call_external_apis": True,
+    }
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Build a metadata-only Stage 016 import-idempotency report."
