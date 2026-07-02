@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s02p3-data-quality-error-gate - 2026-07-02
+
+- 完成 `v0.1.3 S02-P3｜data quality/error gate` 本地验证：基于 S02-P1 raw readiness、S02-P2 raw mapping readiness 和现有 Q0-Q5/A-D/report release gate policy，锁定当前质量等级为 `Q2`、报告等级为 `D`、release permission 为 `blocked`。
+- 新增 `KMFA/tools/v013_s02_p3_data_quality_error_gate.py`、`KMFA/tools/check_v013_s02_p3_data_quality_error_gate.py`、`KMFA/tests/test_v013_s02_p3_data_quality_error_gate.py` 和 `KMFA/stage_artifacts/V013_S02_P3_DATA_QUALITY_ERROR_GATE/`。
+- 本 phase 不读取 `/Users/linzezhang/Downloads/KMFA_MetaData`，仅消费 S02-P1/P2 public-safe manifest 和治理 policy；公开证据不包含 raw 文件名、ZIP member 名、sheet 名、字段明文、raw hash、row values 或业务值。
+- 由于 raw value matching 仍为 `blocked_authorized_mapping_required`、owner-authorized semantic mapping 缺失、row-value extraction 未执行、zero-delta 未执行、lineage full check 未执行，正式报告、经营决策依据、完整可信报告展示和 delivery 均继续阻断。
+- 本轮不执行 Stage 2 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。
+
 ## 0.1.3-raw-data-boundary-policy - 2026-07-02
 
 - 登记项目级 raw data inbox：`/Users/linzezhang/Downloads/KMFA_MetaData` 是用户本机 KMFA 财务原始数据目录。
