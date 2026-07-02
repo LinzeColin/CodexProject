@@ -372,6 +372,23 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("仍需真实运行写入的数字", one_check_three)
         self.assertNotIn("当前仓库没有可作为今日真实数字的持久化日报", one_check_three)
 
+    def test_traceability_chain_does_not_reopen_gh_equivalent_preflight_history_as_current_blocker(self):
+        page = TRACEABILITY_CHAIN_PAGE.read_text(encoding="utf-8")
+
+        self.assertIn(
+            "| 历史当时预检状态 | `status=blocked`；`preflight_checks_passed=false`；`failed_checks=production_preflight_passed`；`github_open_pr_count_zero_api_v1` 已解除原 missing gh CLI blocker；`daily_operation_enabled=false` |",
+            page,
+        )
+        self.assertIn(
+            "| 当时阻断 | missing gh CLI；missing SMTP secret env names；OpenAIDatabase session-history archive git artifact hygiene violations；后续状态已解除 missing gh CLI 当时阻断；当前只保留为历史证据 |",
+            page,
+        )
+        self.assertNotIn(
+            "| 当前状态 | `status=blocked`；`preflight_checks_passed=false`；`failed_checks=production_preflight_passed`",
+            page,
+        )
+        self.assertNotIn("最新状态已解除 missing gh CLI 当前阻断", page)
+
     def test_traceability_chain_page_exposes_all_matrix_rows_as_clickable_links(self):
         matrix_rows = list(csv.DictReader(TRACEABILITY_MATRIX.read_text(encoding="utf-8").splitlines()))
         page = TRACEABILITY_CHAIN_PAGE.read_text(encoding="utf-8")
