@@ -36,6 +36,7 @@ LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件.md"
 TIMESTAMP_SCRIPT = ROOT / "scripts" / "update_user_center_timestamps.py"
+V72_README = ROOT / "docs" / "pursuing_goal" / "v7_2" / "README_先读.md"
 V72_HANDOFF_00 = ROOT / "docs" / "pursuing_goal" / "v7_2" / "HANDOFF" / "00_下一Agent先读.md"
 V72_HANDOFF_01 = ROOT / "docs" / "pursuing_goal" / "v7_2" / "HANDOFF" / "01_当前状态与唯一下一任务.md"
 SUMMARY_PAGES = (
@@ -115,6 +116,19 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "必须先解除 S2PMT07 的阻断条件",
         ):
             self.assertNotIn(stale_phrase, combined)
+
+    def test_v72_readme_does_not_route_current_work_to_s2pct02_shadow_source(self):
+        readme = V72_README.read_text(encoding="utf-8")
+
+        self.assertIn("Stage 2 integrated acceptance 已记录并保持", readme)
+        self.assertIn("S3/DAILY_OPERATION 仍未进入", readme)
+        self.assertIn("persistent_daily_operation_authorization_missing", readme)
+        self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", readme)
+        self.assertIn("只能继续 MVP 复审修补", readme)
+        self.assertNotIn("当前全局任务仍是 `S2PCT02`", readme)
+        self.assertNotIn("无共享合同文件冲突、无公共 Schema/生产副作用的 Stage2 Shadow 数据源开发可继续", readme)
+        self.assertNotIn("不宣称 `STAGE2_PRODUCTION_ACCEPTED`", readme)
+        self.assertNotIn("不宣称 `INTEGRATED_PRODUCTION_ACCEPTED`", readme)
 
     def test_user_center_pages_show_timestamp_immediately_under_h1(self):
         for page_path in sorted(USER_CENTER.glob("*.md")):
