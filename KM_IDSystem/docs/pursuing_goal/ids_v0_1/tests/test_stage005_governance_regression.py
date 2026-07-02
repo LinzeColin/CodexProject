@@ -2748,6 +2748,53 @@ next_gate_id: "IDS-V0_1-BATCH-011-020-GITHUB-MERGE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_batch011_020_uploaded_terminal_state(self):
+        module = self._load_module()
+        batch_text = """
+status: "uploaded_to_github_main"
+upload_gate:
+  push_allowed: true
+  gate_task_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md"
+  github_pr: "https://github.com/LinzeColin/CodexProject/pull/271"
+  merged_sha: "61fcb5295c6e0046059eba236c4cedbdaa2f2fed"
+  post_merge_open_prs: 0
+  post_merge_open_issues: 0
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-020:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-021"
+    current_task_id: "IDS-V0_1-STAGE020-P4"
+    acceptance_status: "local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE020"
+current_phase_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"
+current_task_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"
+next_gate_id: "IDS-STAGE021-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
+          status: "uploaded_to_github_main"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_phase_state_allows_completed_batch_upload_gate_after_stage005(self):
         module = self._load_module()
         batch_text = """

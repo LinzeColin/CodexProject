@@ -86,8 +86,23 @@ is:
 
 ## Remote Merge Evidence
 
-Pending. This section must be updated after the PR is merged and app entry
-reinstall is verified.
+- PR: `https://github.com/LinzeColin/CodexProject/pull/271`
+- PR title: `IDS v0.1 STAGE-011..020 batch upload`
+- PR head before merge: `85de9fd839a05e0bf4fc6ed06e2a92aed4326bbf`
+- PR base before merge: `bdb0ce21f133f79f984f88602671769634b98999`
+- GitHub merge SHA: `61fcb5295c6e0046059eba236c4cedbdaa2f2fed`
+- Merge result: `merged=true`
+- Post-merge open PRs in `LinzeColin/CodexProject`: `0`
+- Post-merge open issues in `LinzeColin/CodexProject`: `0`
+- Post-merge remote feature branch: deleted by GitHub after merge.
+- App entry reinstall: passed.
+  - `/Users/linzezhang/Downloads/IDS Industrial Data System.app`
+  - `/Applications/IDS Industrial Data System.app`
+  - `/Users/linzezhang/Downloads/IDS Industrial Data System.command`
+  - `/Applications/IDS Industrial Data System.command`
+- App launcher root: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem`
+- Codesign verification: passed for both installed `.app` bundles.
+- Verified at UTC: `2026-07-02T22:29:29Z`
 
 ## Stop Conditions
 
@@ -106,7 +121,9 @@ reinstall is verified.
 
 ## Rollback
 
-If this gate fails before GitHub upload, revert this gate commit and leave
-`BATCH011_020_UPLOAD_LOCK.yaml` at the prior reviewed no-upload state. If a PR
-is created but cannot be merged, close the PR or leave an explicit blocker; do
-not start `STAGE-021` while upload is unresolved.
+If a later audit finds this upload invalid, revert the merged PR or apply a
+targeted correction through GitHub main. Do not touch
+`/Users/linzezhang/Downloads/IDS_MetaData`, runtime data, reports, outputs,
+persisted manifests, evidence ledgers, audit logs, indexes, or app entries
+unless the correction explicitly targets those installed launchers. `STAGE-021`
+must remain a separate next run.
