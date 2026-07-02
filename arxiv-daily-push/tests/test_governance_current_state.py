@@ -1381,6 +1381,18 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("persistent_daily_operation_authorized=false", roadmap)
         self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED", roadmap)
 
+    def test_roadmap_does_not_treat_historical_daily_operation_preflight_as_current_enablement_pass(self) -> None:
+        roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "| DAILY_OPERATION 技术预检 | 历史 2026-07-01 20:39 技术项曾通过；当前 enablement preflight 仍必须 `status=FAIL / exit 2`，阻断为 `persistent_daily_operation_authorization_missing`；`state_hash=a856ee3d1532d8973e11bb502f76f7320f9816904b52aab64975112c764de55e` | 禁止把历史技术预检通过解读成当前 DAILY_OPERATION 已就绪或可启用 |",
+            roadmap,
+        )
+        self.assertNotIn(
+            "| DAILY_OPERATION 技术预检 | 已通过技术项；`state_hash=a856ee3d1532d8973e11bb502f76f7320f9816904b52aab64975112c764de55e` | 禁止在 owner 持久运行授权缺失时启用 DAILY_OPERATION |",
+            roadmap,
+        )
+
     def test_three_base_model_parameter_summary_matches_governance_counts(self) -> None:
         model_spec = (ADP_ROOT / "docs/governance/MODEL_SPEC.md").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
