@@ -1002,6 +1002,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn("tools/verify_acceptance_bundle.py --root . --require-zero P0 P1 --json", mvp_prep)
         self.assertNotIn("tools/verify_daily_operation_readiness.py --root . --json", mvp_prep)
         self.assertNotIn("tools/verify_daily_operation_enablement_preflight.py --root . --json", mvp_prep)
+        for current_guidance_text in (handoff, mvp_prep, decisions, roadmap):
+            self.assertIn(
+                "python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1",
+                current_guidance_text,
+            )
+            self.assertNotIn("`tools/verify_acceptance_bundle.py --require-zero P0 P1`", current_guidance_text)
         self.assertIn("open_pr_observation_errors_promoted_to_blocking_reasons=true", model_params)
         self.assertIn("runtime_observation_errors_promoted_to_blocking_reasons=true", model_params)
         for command_owner_text in (readme, final_bundle_status):

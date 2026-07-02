@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-02 23:42:08 Australia/Sydney
+更新时间：2026-07-02 23:48:12 Australia/Sydney
 
 ## 当前结论
 
@@ -28,7 +28,7 @@
 - 当前 Stage 2 accepted 事实以 `arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml` 和 `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 为准。
 - 当前最新状态以 `CURRENT.yaml`、`OWNER_STATUS.md`、`关键结论与用户决策.md` 和本文件为准。
 - 一次受控真实运行验收、final bundle pass、Stage 2 integrated acceptance 都不等于持久 DAILY_OPERATION 授权。
-- `tools/verify_acceptance_bundle.py --require-zero P0 P1` 的 `status=PASS` 只证明 final bundle / zero-proof / no-production root gate 通过；必须同时读取 `daily_operation_authorization_ready=false` 和 `daily_operation_blocking_reasons`，不得把 root PASS 当作 S3/DAILY_OPERATION 可启用。
+- `python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1` 的 `status=PASS` 只证明 final bundle / zero-proof / no-production root gate 通过；必须同时读取 `daily_operation_authorization_ready=false` 和 `daily_operation_blocking_reasons`，不得把 root PASS 当作 S3/DAILY_OPERATION 可启用。
 - `tools/verify_daily_operation_readiness.py` 是 S3/DAILY_OPERATION 专用 fail-closed root gate；缺持久授权 artifact 时必须返回 `status=FAIL` 和 exit 2。该非零退出是正确阻断，不是验证故障。
 - `tools/verify_daily_operation_enablement_preflight.py` 是 `S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT` 的只读组合门；它只汇总 readiness + open PR + SMTP flag + LaunchAgent + background process，不创建授权、不启用运行。默认命令会自动观察 GitHub open PR count、真实 `ADP_ALLOW_SMTP_SEND` 环境值、LaunchAgent 和后台 ADP 进程，输出 `open_pr_observation_mode=auto_observed`、`adp_allow_smtp_send_environment_raw` 和 `runtime_observation_mode=auto_observed`；当前缺持久授权时同样必须返回 `status=FAIL / exit 2`。
 - 两个 DAILY_OPERATION root gate 的 exit 2 还不够；后续 agent 必须同时核对 JSON 字段 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`。若误传 `--root arxiv-daily-push` 等非 CodexProject 仓库根，工具应返回 `repo_root_valid=false` 和 `codexproject_repo_root_invalid`，这代表命令执行根错误，不是 S3 授权缺失。
