@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260702-V013-S04-P1-AMOUNT-PRECISION"
+as_of_event_id: "EVENT-KMFA-20260702-V013-S04-P2-FIELD-STANDARDIZATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "59f9b9796e6e49b703dbbda23a485c1d6f455e9c"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S18UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-02T20:05:00+10:00"
-generator_version: "manual-v013-s04p1-amount-precision"
+snapshot_event_time: "2026-07-02T20:55:00+10:00"
+generator_version: "manual-v013-s04p2-field-standardization"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 401
+    total_active_parameters: 410
     total_active_formulas: 52
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
@@ -83,6 +83,8 @@ dimensions:
       - "KMFA/tools/check_v013_s03_stage_review.py"
       - "KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/human/test_results.md"
       - "KMFA/tools/check_v013_s04_p1_amount_precision.py"
+      - "KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/human/test_results.md"
+      - "KMFA/tools/check_v013_s04_p2_field_standardization.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md"
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
@@ -154,6 +156,7 @@ dimensions:
       - "KMFA/tools/check_v013_s03_p3_source_priority.py"
       - "KMFA/tools/check_v013_s03_stage_review.py"
       - "KMFA/tools/check_v013_s04_p1_amount_precision.py"
+      - "KMFA/tools/check_v013_s04_p2_field_standardization.py"
       - "KMFA/tools/source_check_matrix.py"
       - "KMFA/tools/source_priority.py"
       - "KMFA/tools/amount_tools.py"

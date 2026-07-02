@@ -1,0 +1,178 @@
+{
+  "alias_dictionary_row_count": 32,
+  "branch": "codex/kmfa",
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "business_field_parsing_performed": false,
+  "business_value_publication_allowed": false,
+  "canonical_field_count": 6,
+  "canonical_fields": [
+    "document_date",
+    "period_month",
+    "company_entity",
+    "project_name",
+    "counterparty",
+    "contract_number"
+  ],
+  "completed_task_ids": [
+    "S4PBT01",
+    "S4PBT02",
+    "S4PBT03"
+  ],
+  "current_data_quality_grade": "Q2",
+  "current_report_grade": "D",
+  "delivery_allowed": false,
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/human/field_standardization_report.md",
+    "KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/human/test_results.md",
+    "KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/machine/field_standardization_manifest.json"
+  ],
+  "field_plaintext_publication_allowed": false,
+  "field_standardization_dependency_validated": true,
+  "field_standardization_refs": [
+    "KMFA/tools/field_standardization.py",
+    "KMFA/tests/test_field_standardization.py",
+    "KMFA/metadata/schema_maps/field_alias_dictionary.csv",
+    "KMFA/metadata/schema_maps/field_standardization_policy.yaml",
+    "KMFA/metadata/quality/field_quality_status.jsonl",
+    "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md",
+    "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
+  ],
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "mapping_record_count": 6,
+  "mapping_records_public_safe": true,
+  "next_required_step": "S04-P3 basic tool report replay in a separate run. Do not perform Stage 4 review or GitHub upload until S04-P3 is complete and reviewed.",
+  "non_scope": [
+    "S04-P3 basic tool report replay",
+    "Stage 4 review",
+    "GitHub upload",
+    "raw data inspection beyond accidental listing already removed from temp",
+    "raw directory mutation",
+    "raw filename publication",
+    "field or header plaintext from raw sources",
+    "row value publication",
+    "business value publication",
+    "raw value matching",
+    "lineage full check completion",
+    "formal report release",
+    "live connector",
+    "business execution"
+  ],
+  "phase_id": "S04-P2",
+  "phase_name": "field standardization replay",
+  "phase_scope": "v013_s04_p2_field_standardization_replay_only",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credentials_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_hashes_committed": false,
+    "raw_file_names_committed": false,
+    "sheet_names_committed": false,
+    "sqlite_or_db_committed": false,
+    "zip_committed": false,
+    "zip_member_names_committed": false
+  },
+  "quality_passed_for_complete_synthetic_row": true,
+  "quality_passed_for_incomplete_synthetic_row": false,
+  "quality_status_count": 5,
+  "quality_status_issue_types": [
+    "invalid_field_value",
+    "missing_required_field"
+  ],
+  "quality_statuses_public_safe": true,
+  "raw_data_boundary": {
+    "codex_accidental_listing_performed_by_this_run": true,
+    "codex_accidental_listing_temp_files_removed": true,
+    "codex_delete_allowed": false,
+    "codex_generate_inside_allowed": false,
+    "codex_modify_allowed": false,
+    "codex_move_allowed": false,
+    "codex_overwrite_allowed": false,
+    "codex_read_allowed_only_when_phase_requires": true,
+    "codex_read_required_by_this_phase": false,
+    "codex_rename_allowed": false,
+    "github_commit_allowed": false,
+    "local_raw_data_dir": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "private_runtime_output_dir": "KMFA/.codex_private_runtime/"
+  },
+  "raw_dir_accidental_listing_performed": true,
+  "raw_dir_accidental_listing_temp_files_removed": true,
+  "raw_dir_mutation_performed": false,
+  "raw_dir_read_required": false,
+  "raw_file_bytes_committed": false,
+  "raw_file_hash_publication_allowed": false,
+  "raw_filename_publication_allowed": false,
+  "raw_layer_write_allowed": false,
+  "raw_source_mutation_allowed": false,
+  "raw_value_matching_performed": false,
+  "release_permission": "blocked",
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "reviewed_head": "65a6b86fc276c340915a0758a6d1b72e7269047c",
+  "row_value_publication_allowed": false,
+  "run_time": "2026-07-02T19:29:24+10:00",
+  "s04_p1_dependency_ref": "KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/machine/amount_precision_manifest.json",
+  "s04_p1_dependency_validated": true,
+  "schema_version": "kmfa.v013_s04_p2_field_standardization.v1",
+  "sheet_name_publication_allowed": false,
+  "stage4_review_performed": false,
+  "stage_id": "S04",
+  "stage_name": "v0.1.3 amount precision field standardization and basic tools",
+  "standardization_case_count": 6,
+  "standardization_case_passed_count": 6,
+  "standardization_case_results": [
+    {
+      "actual_value": "2026-06-29",
+      "canonical_field": "document_date",
+      "expected_value": "2026-06-29",
+      "passed": true
+    },
+    {
+      "actual_value": "2026-06",
+      "canonical_field": "period_month",
+      "expected_value": "2026-06",
+      "passed": true
+    },
+    {
+      "actual_value": "公开主体 A",
+      "canonical_field": "company_entity",
+      "expected_value": "公开主体 A",
+      "passed": true
+    },
+    {
+      "actual_value": "示例 项目",
+      "canonical_field": "project_name",
+      "expected_value": "示例 项目",
+      "passed": true
+    },
+    {
+      "actual_value": "示例客户",
+      "canonical_field": "counterparty",
+      "expected_value": "示例客户",
+      "passed": true
+    },
+    {
+      "actual_value": "KMFA-DEMO-001",
+      "canonical_field": "contract_number",
+      "expected_value": "KMFA-DEMO-001",
+      "passed": true
+    }
+  ],
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "task_id": "KMFA-V013-S04-P2-FIELD-STANDARDIZATION-20260702",
+  "validators": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v013_s04_p2_field_standardization.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v013_s04_p2_field_standardization.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v013_s04_p2_field_standardization -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_field_standardization -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v013_s04_p1_amount_precision.py"
+  ],
+  "version": "0.1.3",
+  "worktree": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa",
+  "zip_member_name_publication_allowed": false
+}
