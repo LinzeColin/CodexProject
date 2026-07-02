@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T14:53:57Z"
+updated_at_utc: "2026-07-02T15:05:46Z"
 status: "in_progress_no_github_upload"
 
 repository:
@@ -155,13 +155,17 @@ stage_progress:
     status: "in_progress"
     completed_phases:
       - "Phase 1"
-    next_phase: "Phase 2"
-    current_task_id: "IDS-V0_1-STAGE016-P1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE016-P2"
     acceptance_id: "ACC-STAGE-016"
-    acceptance_status: "phase1_scope_boundary_complete"
+    acceptance_status: "phase2_import_idempotency_slice_complete"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE016_PHASE2_IMPORT_IDEMPOTENCY_SLICE.md"
+      - "KM_IDSystem/scripts/check_import_idempotency.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage016_import_idempotency.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE015_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE014_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE4_CLOSEOUT.md"
@@ -186,5 +190,5 @@ stage_progress:
     evidence_refs: []
 
 decision:
-  current_run: "STAGE-016 Phase 1 completed locally with import-idempotency entry contract, field/status boundary, original-material protection rules, no-duplicate document/chunk/job/index contract, rollback, and no-Phase-2/no-upload guardrails; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, and batch-gated."
-  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 through STAGE-015 complete locally and STAGE-016 Phase 1 complete; STAGE-016 Phase 2-4 and STAGE-017..020 remain pending."
+  current_run: "STAGE-016 Phase 2 completed locally with a metadata-only import-idempotency slice, deterministic file/batch key contract, explicit failure states, zero document/chunk/job/index/import deltas, and no-Phase-3/no-upload guardrails; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, and batch-gated."
+  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 through STAGE-015 complete locally and STAGE-016 Phase 1-2 complete; STAGE-016 Phase 3-4 and STAGE-017..020 remain pending."
