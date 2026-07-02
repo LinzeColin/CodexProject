@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE012"
-current_phase_id: "IDS-STAGE012-P2"
-current_task_id: "IDS-V0_1-STAGE012-P2"
-next_gate_id: "IDS-STAGE012-P3-GATE"
-total_estimated_hours: 90
-completed_estimated_hours: 89
+current_phase_id: "IDS-STAGE012-P3"
+current_task_id: "IDS-V0_1-STAGE012-P3"
+next_gate_id: "IDS-STAGE012-P4-GATE"
+total_estimated_hours: 92
+completed_estimated_hours: 91
 stages:
   -
     stage_id: "S5"
@@ -2701,7 +2701,7 @@ stages:
       - "引入虚拟 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
       - "在 STAGE-011..020 未完成、复审和修复前上传 GitHub main"
     stop_gate:
-      gate_id: "IDS-STAGE012-P2-GATE"
+      gate_id: "IDS-STAGE012-P3-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
         - "P0 taskpack source 和 STAGE-012 execution index 已绑定"
@@ -2711,13 +2711,16 @@ stages:
         - "Phase 2 最小只读 identity slice 已实现，只接受显式 file:// URI 并返回 metadata-only records"
         - "重复输入不会生成重复 manifest candidate record"
         - "异常文件进入明确状态，不静默跳过"
+        - "Phase 3 已验证同文件同 hash、同名不同 hash、同 hash 不同路径、重复导入无持久化和原 hash 稳定场景"
         - "Phase 1 未读取、列出、hash、打开、复制、移动、删除或修改真实原始资料或 IDS_MetaData 内容"
         - "Phase 2 未读取、列出、hash、打开、复制、移动、删除或修改 IDS_MetaData 内容"
+        - "Phase 3 未读取、列出、hash、打开、复制、移动、删除或修改 IDS_MetaData 内容"
         - "BATCH011_020_UPLOAD_LOCK.yaml 仍保持 push_allowed=false"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE2_READONLY_IDENTITY_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/scripts/check_original_raw_identity.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
@@ -2829,3 +2832,56 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果后续把 metadata-only report 当作持久 manifest/database 写入，可能绕过只读和幂等边界。"
             rollback: "Revert IDS-STAGE012-P2 script, test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, manifests, evidence ledgers, audit logs, delivered reports, runtime data, or app entries."
+      -
+        phase_id: "IDS-STAGE012-P3"
+        name: "场景验证"
+        objective: "验证原始资料 identity slice 对同文件同 hash、同名不同 hash、同 hash 不同路径、重复导入和原 hash 稳定性的处理，并确认无持久化副作用。"
+        status: "completed"
+        stop_conditions:
+          - "未完成 Phase 2 最小只读 identity slice"
+          - "场景验证需要读取、列出、hash、打开、复制、移动、删除或修改 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "场景验证写 manifest/database/document/chunk/job、生成 runtime 输出或进入 Phase 4 closeout"
+          - "测试使用 fake IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "一次 run 进入 Phase 4"
+        stop_gate:
+          gate_id: "IDS-STAGE012-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "build_stage012_scenario_report 返回 Phase 3 scenario report"
+            - "same_file_same_hash 保持一个 manifest candidate 并记录重复输入"
+            - "same_name_different_hash 标记 ORIGINAL_RAW_HASH_CONFLICT"
+            - "same_hash_different_path 标记 ORIGINAL_RAW_DUPLICATE_CONTENT"
+            - "duplicate_import_no_persistence 保持 document/chunk/job delta 为 0"
+            - "original_hash_stable 证明显式源文件 hash 和 file_size 未变化"
+            - "focused Stage012 tests、Stage005 governance regression 和 render 检查通过"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE012-P3"
+            name: "原始资料 identity 场景验证"
+            objective: "在不写 manifest/database、不创建 document/chunk/job、不扫描原始目录的前提下，验证重复、冲突、同 hash 不同路径和原 hash 稳定性场景。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "2.17%"
+            dependencies:
+              - "IDS-V0_1-STAGE012-P2"
+            acceptance_ids:
+              - "ACC-STAGE-012"
+            test_commands:
+              - "RED: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py -q"
+              - "GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py -q"
+              - "Governance: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py -q"
+              - "Stage005 validator report"
+              - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "py_compile check_original_raw_identity.py and Stage005 validator"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+            test_results: "TDD RED failed as expected because build_stage012_scenario_report was missing: focused Stage012 test errored with AttributeError. GREEN passed after implementation: focused Stage012 test ran 5 OK. Governance regression passed after Stage005 forward-compat extension: Stage005 governance regression ran 14 OK. Stage005 validator returned valid=true, issue_count=0, unexpected_changed_paths=[]; full v0.1 pursuing-goal discover ran 59 OK; py_compile passed for check_original_raw_identity.py and Stage005 validator; check-render returned drift_count=0; git diff --check passed. Semantic validate returned rc=1 with 29 known sparse/root/registered-project diagnostics and no KM_IDSystem project regression. Marker scan found no IDS_V0_1; remaining opme-system/OpMe_System hits are legacy/stale path policy references. Focused scenario tests use tracked governance docs as real repository source evidence with temporary structural copies only, not fake IDS business data. No raw metadata content read, service start, dependency install, manifest/database write, document/chunk/job creation, runtime output, external API call, GitHub upload, PR, merge, app reinstall, Phase 4 work, or IDS_MetaData content touch was performed."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_original_raw_identity.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果未来把场景 report 误接为持久导入动作，可能创建重复 document/chunk/job 或绕过只读原始资料合同。"
+            rollback: "Revert IDS-STAGE012-P3 script, test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, manifests, evidence ledgers, audit logs, delivered reports, runtime data, or app entries."
