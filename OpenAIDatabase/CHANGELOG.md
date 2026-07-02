@@ -1,5 +1,362 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 5 Review
+
+- Added `validate:v1.1.6-stage5` to pin Stage 5 Phase 1 contract,
+  acceptance, records, review artifact, changed-path boundary and final upload
+  gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage5_review.md`.
+- Marked Stage 5 as review-passed and pending Stage 1-5 final upload; GitHub
+  main upload remains deferred until final upload gates are run.
+- Stage 5 review status: `stage_5_review_passed_pending_stage1_5_final_upload`.
+
+No runtime UI implementation, CSS change, browser screenshot run, Data Map
+runtime implementation, raw/private data read, direct writeback, agent apply,
+Stage 6 work, No GitHub main upload, Cloudflare deployment, or Access policy
+change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 5 Phase 1
+
+- Added `docs/product/data_map_2_0_workflow_contract.md` to define the
+  Data Map 2.0 Workflow Contract, including the source, topic, asset and action
+  layers, data-to-action flow, map card anatomy, cross-workflow handoffs and
+  proposal-only boundary.
+- Added `docs/acceptance/data_map_2_0_workflow_acceptance.md`.
+- Added `validate:v1.1.6-stage5-phase1`.
+- Registered `MA-V116-S5P01` in delivery, feature, development and model
+  parameter records.
+- Stage 5 Phase 1 status: `phase_5_1_contract_created_pending_stage_review`.
+
+No runtime UI implementation, CSS change, browser screenshot run, Data Map
+runtime implementation, raw/private data read, direct writeback, agent apply,
+Stage 5 review, No GitHub main upload, Cloudflare deployment, or Access policy
+change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 4 Review
+
+- Added `validate:v1.1.6-stage4` to pin Stage 4 Phase 1 / 2 contracts,
+  acceptance files, records, review artifact, changed-path boundary and upload
+  gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage4_review.md`.
+- Marked Stage 4 as review-passed and still pending Stage 5; GitHub main
+  upload remains deferred until Stage 1-5 are complete and final upload gates
+  are run.
+- Stage 4 review status: `stage_4_review_passed_pending_stage5`.
+
+No runtime UI implementation, CSS change, browser screenshot run, search index
+implementation, Review / Summary / Iteration runtime implementation,
+raw/private data read, direct writeback, Data Map runtime work, Stage 5 work,
+No GitHub main upload, Cloudflare deployment, or Access policy change was
+added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 4 Phase 2
+
+- Added `docs/product/review_summary_iteration_workflow_contract.md` to define
+  the Review / Summary / Iteration Workflow Contract, including the eight
+  required review questions, theme change panels, opportunity and low-value
+  loop panels, decision changes, next actions, proposal decision and iteration
+  backlog boundary.
+- Added `docs/acceptance/review_summary_iteration_workflow_acceptance.md`.
+- Added `validate:v1.1.6-stage4-phase2`.
+- Registered `MA-V116-S4P02` in delivery, feature, development and model
+  parameter records.
+- Stage 4 Phase 2 status: `phase_4_2_contract_created_pending_stage_review`.
+
+No runtime UI implementation, CSS change, browser screenshot run, Review /
+Summary / Iteration runtime implementation, raw/private data read, direct
+writeback, Data Map runtime work, Stage 5 work, No GitHub main upload,
+Cloudflare deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 4 Phase 1
+
+- Added `docs/product/search_2_0_workflow_contract.md` to define the
+  Search 2.0 Workflow Contract query regions, result list anatomy, `matched_reason`,
+  Starfield/River/Inspector jump actions, session summary, zero-result
+  recovery and proposal-only handoff boundary.
+- Added `docs/acceptance/search_2_0_workflow_acceptance.md`.
+- Added `validate:v1.1.6-stage4-phase1`.
+- Registered `MA-V116-S4P01` in delivery, feature, development and model
+  parameter records.
+- Stage 4 Phase 1 status: `phase_4_1_contract_created_pending_stage_review`.
+
+No runtime UI implementation, CSS change, browser screenshot run, search index
+implementation, raw/private data read, direct writeback, Review / Summary /
+Iteration runtime work, Data Map runtime work, Stage 5 work, No GitHub main
+upload, Cloudflare deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 3 Review
+
+- Added `validate:v1.1.6-stage3` to pin Stage 3 Phase 1 / 2 contracts,
+  acceptance files, records, review artifact, changed-path boundary and upload
+  gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage3_review.md`.
+- Marked Stage 3 as review-passed and still pending Stage 4; GitHub main
+  upload remains deferred until Stage 1-5 are complete and final upload gates
+  are run.
+- Stage 3 review status: `stage_3_review_passed_pending_stage4`.
+
+No runtime UI implementation, CSS change, browser screenshot run, localStorage
+write, raw/private data read, direct writeback, complete agent apply work,
+Search 2.0 runtime work, Review / Summary / Iteration runtime work, Data Map
+runtime work, Stage 4 work, Stage 5 work, No GitHub main upload, Cloudflare
+deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 3 Phase 2
+
+- Added `docs/product/proposal_queue_persistence_contract.md` to define the
+  proposal queue persistence storage key, browser-local scope, append-only
+  mutation policy, proposal record schema, revision chain, proposal history,
+  rollback proposal and forbidden-payload boundary.
+- Added `docs/acceptance/proposal_queue_persistence_acceptance.md`.
+- Added `validate:v1.1.6-stage3-phase2`.
+- Registered `MA-V116-S3P02` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, localStorage
+write, raw/private data read, direct writeback, complete agent apply work,
+Search 2.0 runtime work, Review / Summary / Iteration runtime work, Data Map
+runtime work, Stage 4 work, Stage 5 work, No GitHub main upload, Cloudflare
+deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 3 Phase 1
+
+- Added `docs/product/proposal_only_adjustment_workspace_contract.md` to
+  define the proposal-only adjustment workspace regions, allowed targets,
+  allowed fields, draft schema, proposal states, diff preview, safety review,
+  Inspector handoff, rollback panel and future agent-apply boundary.
+- Added `docs/acceptance/proposal_only_adjustment_workspace_acceptance.md`.
+- Added `validate:v1.1.6-stage3-phase1`.
+- Registered `MA-V116-S3P01` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, complete agent apply work, Search 2.0 runtime
+work, Review / Summary / Iteration runtime work, Data Map runtime work,
+Stage 4 work, Stage 5 work, No GitHub main upload, Cloudflare deployment, or
+Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 2 Review
+
+- Added `validate:v1.1.6-stage2` to pin Stage 2 Phase 1 / 2 / 3 / 4
+  contracts, acceptance files, records, review artifact, changed-path boundary,
+  and upload gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage2_review.md`.
+- Marked Stage 2 as review-passed and still pending Stage 3; GitHub main
+  upload remains deferred until Stage 1-5 are complete and final upload gates
+  are run.
+- Stage 2 review status: `stage_2_review_passed_pending_stage3`.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, complete proposal editor work, agent apply work,
+Search 2.0 runtime work, Review / Summary / Iteration runtime work, Data Map
+runtime work, Stage 3 work, No GitHub main upload, Cloudflare deployment, or
+Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 2 Phase 4
+
+- Added `docs/product/topic_classification_lane_visibility_contract.md` to
+  define the concrete `topic_classification_lane` visibility hierarchy,
+  required fields, topic-state grouping, sorting, badges,
+  expand/compare/pin/review interactions, linked asset/action/starfield/river
+  jumps, Inspector handoff, proposal-only adjustment boundary and
+  empty/error/conflict/black-hole/stale states.
+- Added `docs/acceptance/topic_classification_lane_visibility_acceptance.md`.
+- Added `validate:v1.1.6-stage2-phase4`.
+- Registered `MA-V116-S2P04` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, complete proposal editor work, agent apply work,
+Search 2.0 runtime work, Review / Summary / Iteration runtime work, Data Map
+runtime work, No GitHub main upload, Cloudflare deployment, or Access policy
+change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 2 Phase 3
+
+- Added `docs/product/tier_asset_lane_visibility_contract.md` to define the
+  concrete `tier_asset_lane` visibility hierarchy, required fields, asset
+  tier grouping, sorting, badges, expand/compare/pin/review interactions,
+  linked-action jump, Inspector handoff, proposal-only adjustment boundary and
+  empty/error/stale states.
+- Added `docs/acceptance/tier_asset_lane_visibility_acceptance.md`.
+- Added `validate:v1.1.6-stage2-phase3`.
+- Registered `MA-V116-S2P03` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, complete proposal editor work, agent apply work,
+Search 2.0 runtime work, Review / Summary / Iteration runtime work, Data Map
+runtime work, No GitHub main upload, Cloudflare deployment, or Access policy
+change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 2 Phase 2
+
+- Added `docs/product/suggested_action_lane_visibility_contract.md` to define
+  the concrete `suggested_action_lane` visibility hierarchy, required fields,
+  grouping, sorting, badges, expand/compare/pin/review interactions,
+  Inspector handoff, proposal-only adjustment boundary and empty/error states.
+- Added `docs/acceptance/suggested_action_lane_visibility_acceptance.md`.
+- Added `validate:v1.1.6-stage2-phase2`.
+- Registered `MA-V116-S2P02` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, complete proposal editor work, agent apply work,
+Search 2.0 runtime work, Review / Summary / Iteration runtime work, Data Map
+runtime work, No GitHub main upload, Cloudflare deployment, or Access policy
+change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 2 Phase 1
+
+- Added `docs/product/detail_visibility_workbench_contract.md` to define the
+  detail visibility workbench IA, three detail lanes, expand/collapse
+  behavior, workbench filters, default sorting, Inspector handoff,
+  proposal-only hints, empty/error states and future screenshot gates.
+- Added `docs/acceptance/detail_visibility_workbench_acceptance.md`.
+- Added `validate:v1.1.6-stage2-phase1`.
+- Registered `MA-V116-S2P01` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, complete proposal editor work, agent apply work,
+Search 2.0 runtime work, Review / Summary / Iteration runtime work, Data Map
+runtime work, No GitHub main upload, Cloudflare deployment, or Access policy
+change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 1 Review
+
+- Added `validate:v1.1.6-stage1` to pin Stage 1 Phase 1 / 2 / 3 / 4 / 5
+  contracts, acceptance files, records, review artifact, changed-path boundary,
+  and upload gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage1_review.md`.
+- Marked Stage 1 as review-passed and still pending Stage 2; GitHub main
+  upload remains deferred until Stage 1-5 are complete and final upload gates
+  are run.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, complete proposal editor work, agent apply work,
+Search 2.0 runtime work, Review / Summary / Iteration runtime work, Data Map
+runtime work, No GitHub main upload, Cloudflare deployment, or Access policy
+change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 1 Phase 5
+
+- Added `docs/product/proposal_only_adjustment_entry_contract.md` to define
+  proposal-only adjustment entry surfaces, target types, allowed fields, draft
+  schema, user-readable safety copy, Inspector handoff, no-direct-writeback
+  boundaries and future-phase exclusions.
+- Added `docs/acceptance/proposal_only_adjustment_entry_acceptance.md`.
+- Added `validate:v1.1.6-stage1-phase5`.
+- Registered `MA-V116-S1P05` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, full proposal editor work, agent apply work,
+Search 2.0 work, review / summary / iteration work, Data Map work, No GitHub
+main upload, Cloudflare deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 1 Phase 4
+
+- Added `docs/product/topic_classification_detail_contract.md` to define topic
+  classification detail fields, seven topic states, strength / trend /
+  confidence / record-count / evidence requirements, cross-board links,
+  Inspector handoff, proposal-only boundaries and future-phase exclusions.
+- Added `docs/acceptance/topic_classification_detail_acceptance.md`.
+- Added `validate:v1.1.6-stage1-phase4`.
+- Registered `MA-V116-S1P04` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, proposal editor work, Search 2.0 work, review /
+summary / iteration work, Data Map work, No GitHub main upload, Cloudflare
+deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 1 Phase 3
+
+- Added `docs/product/tier_asset_detail_contract.md` to define tier asset
+  detail fields, seven asset tiers, importance / priority / confidence /
+  staleness requirements, Inspector handoff, proposal-only boundaries and
+  future-phase exclusions.
+- Added `docs/acceptance/tier_asset_detail_acceptance.md`.
+- Added `validate:v1.1.6-stage1-phase3`.
+- Registered `MA-V116-S1P03` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, topic model work, proposal editor work, Search
+2.0 work, Data Map work, No GitHub main upload, Cloudflare deployment, or
+Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 1 Phase 2
+
+- Added `docs/product/suggested_action_detail_contract.md` to define suggested
+  action detail fields, action types, ROI / effort / urgency / evidence /
+  next-step requirements, Inspector handoff, proposal-only boundaries and
+  future-phase exclusions.
+- Added `docs/acceptance/suggested_action_detail_acceptance.md`.
+- Added `validate:v1.1.6-stage1-phase2`.
+- Registered `MA-V116-S1P02` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, layer-asset model work, topic model work, Search
+2.0 work, Data Map work, No GitHub main upload, Cloudflare deployment, or
+Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.6 Stage 1 Phase 1
+
+- Added `docs/product/memory_overview_usage_contract.md` to define `记忆总览`
+  as the system entry point with 今日状态, Memory Weather, suggested actions,
+  low-value loops, proto-star opportunities, tier asset summary, topic summary,
+  Mini 记忆星系, 记忆时间河脉冲, system usage instructions, Presentation /
+  Analysis mode, Inspector and proposal-only boundaries.
+- Added `docs/acceptance/memory_overview_usage_acceptance.md`.
+- Added `validate:v1.1.6-stage1-phase1`.
+- Registered `MA-V116-S1P01` in delivery, feature, development and model
+  parameter records.
+
+No runtime UI implementation, CSS change, browser screenshot run, raw/private
+data read, direct writeback, Stage 2-5 work, No GitHub main upload, Cloudflare
+deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 0 Review
 
 - Added `validate:v1.1.6-stage0` to pin the Stage 0 Phase 0.1 / 0.2

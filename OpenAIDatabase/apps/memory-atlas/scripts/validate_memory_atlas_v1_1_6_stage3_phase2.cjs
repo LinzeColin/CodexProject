@@ -1,0 +1,398 @@
+#!/usr/bin/env node
+"use strict";
+
+const fs = require("node:fs");
+const path = require("node:path");
+const { spawnSync } = require("node:child_process");
+
+const appRoot = path.resolve(__dirname, "..");
+const repoRoot = path.resolve(appRoot, "../..");
+const checks = [];
+
+function pass(name, evidence, details) {
+  checks.push({ name, status: "PASS", evidence, ...(details ? { details } : {}) });
+}
+
+function assertCondition(condition, name, evidence, failure, details = {}) {
+  if (condition) {
+    pass(name, evidence, details);
+    return;
+  }
+  const error = new Error(failure);
+  error.details = details;
+  throw error;
+}
+
+function readRepoFile(relativePath) {
+  return fs.readFileSync(path.join(repoRoot, relativePath), "utf8");
+}
+
+function hasAll(source, fragments) {
+  return fragments.every((fragment) => source.includes(fragment));
+}
+
+function run(command, args, options = {}) {
+  const result = spawnSync(command, args, {
+    cwd: options.cwd || repoRoot,
+    encoding: "utf8",
+    stdio: "pipe",
+  });
+  if (result.status !== 0) {
+    const error = new Error(`${command} ${args.join(" ")} failed with ${result.status}`);
+    error.stdout = result.stdout;
+    error.stderr = result.stderr;
+    throw error;
+  }
+  return result;
+}
+
+function validateTextFile(relativePath) {
+  const source = readRepoFile(relativePath);
+  assertCondition(
+    source.endsWith("\n"),
+    `${relativePath}:final_newline`,
+    `${relativePath} has a final newline`,
+    `${relativePath} is missing a final newline`,
+  );
+
+  const blocked = [String.fromCharCode(0xfffd), String.fromCharCode(0x00c2), String.fromCharCode(0x00c3)];
+  const badLines = [];
+  source.split("\n").forEach((line, index) => {
+    if (line.trimEnd() !== line) badLines.push(`${index + 1}:trailing`);
+    if (blocked.some((char) => line.includes(char))) badLines.push(`${index + 1}:mojibake`);
+  });
+  assertCondition(
+    badLines.length === 0,
+    `${relativePath}:text_clean`,
+    `${relativePath} has no blocked mojibake characters or trailing whitespace`,
+    `${relativePath} contains blocked characters or trailing whitespace`,
+    { badLines: badLines.slice(0, 20) },
+  );
+}
+
+function validateProductContract() {
+  const contract = readRepoFile("docs/product/proposal_queue_persistence_contract.md");
+  assertCondition(
+    hasAll(contract, [
+      "Memory Atlas proposal queue 持久化与版本链合同",
+      "v1.1.6 Stage 3 Phase 2",
+      "proposal_queue_persistence",
+      "memory-atlas.writeback.proposals.v1",
+      "browser_local_only",
+      "append_only",
+      "proposal_record",
+      "proposal_revision",
+      "proposal_history",
+      "rollback_proposal",
+      "queue_schema_version",
+      "proposal_id",
+      "revision",
+      "parent_proposal_id",
+      "supersedes_proposal_id",
+      "rollback_to_proposal_id",
+      "parent_snapshot_id",
+      "target_ref",
+      "target_type",
+      "target_id",
+      "field",
+      "old_value_ref",
+      "proposed_value",
+      "diff_summary",
+      "reason",
+      "evidence_refs",
+      "status",
+      "created_at",
+      "updated_at",
+      "requires_conflict_check",
+      "requires_agent_or_human_apply",
+      "rollback_hint",
+      "draft",
+      "needs_review",
+      "ready_for_agent_apply",
+      "rejected",
+      "superseded",
+      "stale_snapshot",
+      "schema_mismatch",
+      "forbidden_payload",
+      "raw/private",
+      "active memory",
+      "agent apply",
+      "Search 2.0",
+      "Data Map 2.0",
+      "本 phase 不修改运行时",
+    ]),
+    "stage3_phase2_product_contract",
+    "Proposal queue persistence contract covers storage key, append-only records, version chain, rollback proposals, schema fields, statuses, safety and future-phase boundaries",
+    "Proposal queue persistence contract is incomplete",
+  );
+}
+
+function validateAcceptanceContract() {
+  const acceptance = readRepoFile("docs/acceptance/proposal_queue_persistence_acceptance.md");
+  assertCondition(
+    hasAll(acceptance, [
+      "Memory Atlas proposal queue 持久化与版本链验收",
+      "v1.1.6 Stage 3 Phase 2",
+      "proposal_queue_persistence",
+      "memory-atlas.writeback.proposals.v1",
+      "browser_local_only",
+      "append_only",
+      "proposal_record",
+      "proposal_revision",
+      "proposal_history",
+      "rollback_proposal",
+      "queue_schema_version",
+      "proposal_id",
+      "revision",
+      "parent_proposal_id",
+      "supersedes_proposal_id",
+      "rollback_to_proposal_id",
+      "parent_snapshot_id",
+      "target_ref",
+      "target_type",
+      "target_id",
+      "field",
+      "old_value_ref",
+      "proposed_value",
+      "diff_summary",
+      "reason",
+      "evidence_refs",
+      "status",
+      "created_at",
+      "updated_at",
+      "requires_conflict_check",
+      "requires_agent_or_human_apply",
+      "rollback_hint",
+      "draft",
+      "needs_review",
+      "ready_for_agent_apply",
+      "rejected",
+      "superseded",
+      "stale_snapshot",
+      "schema_mismatch",
+      "forbidden_payload",
+      "Desktop 1440x900",
+      "Tablet 768x1024",
+      "Mobile 390x844",
+      "raw/private/cookie/session/secret",
+      "active memory",
+      "agent apply",
+      "Search 2.0",
+      "Data Map 2.0",
+      "validate:v1.1.6-stage3-phase2",
+      "MA-V116-S3P02",
+      "No runtime UI",
+    ]),
+    "stage3_phase2_acceptance_contract",
+    "Proposal queue persistence acceptance covers storage, schema, version chain, rollback, states, safety failures and deliverables",
+    "Proposal queue persistence acceptance is incomplete",
+  );
+}
+
+function validateRecords() {
+  const delivery = readRepoFile("docs/MEMORY_ATLAS_DELIVERY_RECORD.md");
+  const model = readRepoFile("docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md");
+  const featureList = readRepoFile("功能清单.md");
+  const development = readRepoFile("开发记录.md");
+  const modelIndex = readRepoFile("模型参数文件.md");
+  const changelog = readRepoFile("CHANGELOG.md");
+  const packageJson = readRepoFile("apps/memory-atlas/package.json");
+
+  assertCondition(
+    hasAll(delivery, [
+      "Stage 3 Phase 2",
+      "Proposal Queue Persistence Contract",
+      "proposal queue 持久化",
+      "validate:v1.1.6-stage3-phase2",
+      "phase_3_2_contract_created_pending_stage_review",
+      "MA-V116-S3P02",
+      "No runtime UI",
+      "No raw/private data read",
+      "No direct writeback",
+      "No GitHub main upload",
+    ]),
+    "delivery_record_stage3_phase2",
+    "Delivery record captures Stage 3 Phase 2 scope, validator, status and no-upload boundary",
+    "Delivery record is missing Stage 3 Phase 2 details",
+  );
+
+  assertCondition(
+    hasAll(model, [
+      "v1.1.6 Stage 3 Phase 2 proposal queue 持久化与版本链门槛",
+      "phase_3_2_contract_created_pending_stage_review",
+      "PARAM-MA-V116-S3P02-001 storage_key",
+      "PARAM-MA-V116-S3P02-002 storage_scope",
+      "PARAM-MA-V116-S3P02-003 queue_mutation_policy",
+      "PARAM-MA-V116-S3P02-004 required_record_fields",
+      "PARAM-MA-V116-S3P02-005 proposal_statuses",
+      "PARAM-MA-V116-S3P02-006 failure_states",
+      "PARAM-MA-V116-S3P02-007 stage3_phase2_required_validator",
+    ]),
+    "model_parameters_stage3_phase2",
+    "Model parameters document Stage 3 Phase 2 storage key, scope, mutation policy, schema, statuses and validator",
+    "Model parameters are missing Stage 3 Phase 2 details",
+  );
+
+  assertCondition(
+    hasAll(featureList, [
+      "FEAT-MA-V116-S3P02",
+      "Memory Atlas proposal queue 持久化与版本链",
+      "EVID-MA-V116-S3P02-PROPOSAL-QUEUE-CONTRACT",
+      "EVID-MA-V116-S3P02-PROPOSAL-QUEUE-ACCEPTANCE",
+      "validate:v1.1.6-stage3-phase2",
+      "phase_3_2_contract_created_pending_stage_review",
+    ]),
+    "feature_list_stage3_phase2",
+    "Feature list registers Stage 3 Phase 2 feature, evidence and validation",
+    "Feature list is missing Stage 3 Phase 2 details",
+  );
+
+  assertCondition(
+    hasAll(development, [
+      "memory_atlas_v116_stage3_phase02",
+      "MA-V116-S3P02 Proposal Queue Persistence Contract",
+      "phase_3_2_contract_created_pending_stage_review",
+      "ACC-MA-V116-S3P02",
+      "validate:v1.1.6-stage3-phase2",
+      "proposal_queue_persistence_contract.md",
+      "proposal_queue_persistence_acceptance.md",
+    ]),
+    "development_record_stage3_phase2",
+    "Development record captures Stage 3 Phase 2 objective, tasks, acceptance, evidence, risk and rollback",
+    "Development record is missing Stage 3 Phase 2 details",
+  );
+
+  assertCondition(
+    hasAll(modelIndex, [
+      "MA-V116-S3P02",
+      "proposal queue 持久化",
+      "memory-atlas.writeback.proposals.v1",
+      "append_only",
+      "proposal_history",
+      "rollback_proposal",
+      "proposal_only_no_direct_active_memory_write",
+      "validate:v1.1.6-stage3-phase2",
+    ]),
+    "model_index_stage3_phase2",
+    "Root model parameter file records Stage 3 Phase 2 model and parameters",
+    "Root model parameter file is missing Stage 3 Phase 2 details",
+  );
+
+  assertCondition(
+    hasAll(changelog, [
+      "Unreleased - Memory Atlas v1.1.6 Stage 3 Phase 2",
+      "proposal_queue_persistence_contract.md",
+      "proposal_queue_persistence_acceptance.md",
+      "validate:v1.1.6-stage3-phase2",
+      "No runtime UI implementation",
+      "No raw/private data read",
+      "No direct writeback",
+      "No GitHub main upload",
+    ]),
+    "changelog_stage3_phase2",
+    "Changelog records Stage 3 Phase 2 deliverables and non-goal boundaries",
+    "Changelog is missing Stage 3 Phase 2 details",
+  );
+
+  assertCondition(
+    packageJson.includes('"validate:v1.1.6-stage3-phase2"'),
+    "package_script_stage3_phase2",
+    "Package script exposes validate:v1.1.6-stage3-phase2",
+    "Package script is missing validate:v1.1.6-stage3-phase2",
+  );
+}
+
+function validateChangedPaths() {
+  const status = run("git", ["status", "--short", "-z", "--", "OpenAIDatabase"], { cwd: path.resolve(repoRoot, "..") }).stdout;
+  const changed = status
+    .split("\0")
+    .map((line) => line.slice(3).trim())
+    .filter(Boolean)
+    .map((line) => line.replace(/^OpenAIDatabase\//, ""));
+
+  const allowedPrefixes = [
+    "CHANGELOG.md",
+    "apps/memory-atlas/package.json",
+    "apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage1",
+    "apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage2",
+    "apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage3.cjs",
+    "apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage3_phase1.cjs",
+    "apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage3_phase2.cjs",
+    "docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
+    "docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
+    "docs/acceptance/",
+    "docs/product/",
+    "docs/reviews/memory_atlas_v1_1_6_stage1_review.md",
+    "docs/reviews/memory_atlas_v1_1_6_stage2_review.md",
+    "docs/reviews/memory_atlas_v1_1_6_stage3_review.md",
+    "功能清单.md",
+    "开发记录.md",
+    "模型参数文件.md",
+  ];
+
+  const outside = changed.filter((file) => !allowedPrefixes.some((prefix) => file === prefix || file.startsWith(prefix)));
+  assertCondition(
+    outside.length === 0,
+    "stage3_phase2_change_scope",
+    "Current OpenAIDatabase changes are limited to Stage 1, Stage 2, Stage 3 Phase 1-2, and Stage 3 review contracts, acceptance, records, reviews, validators, and package script",
+    "Unexpected files changed outside Stage 3 Phase 2 bounded scope",
+    { changed, outside },
+  );
+}
+
+function validateBoundary() {
+  const forbiddenFiles = [
+    "src/App.tsx",
+    "src/App.css",
+    "src/main.tsx",
+    "src/data",
+    "src/lib/writeback",
+  ];
+  const status = run("git", ["status", "--short", "--", "OpenAIDatabase"], { cwd: path.resolve(repoRoot, "..") }).stdout;
+  const touchedForbidden = forbiddenFiles.filter((file) => status.includes(`OpenAIDatabase/apps/memory-atlas/${file}`));
+  assertCondition(
+    touchedForbidden.length === 0,
+    "stage3_phase2_boundary",
+    "No runtime UI/CSS/data/writeback/Search/Review/Data Map/agent-apply work is present in this contract phase",
+    "Runtime or writeback files were modified in a contract-only phase",
+    { touchedForbidden },
+  );
+}
+
+try {
+  [
+    "docs/product/proposal_queue_persistence_contract.md",
+    "docs/acceptance/proposal_queue_persistence_acceptance.md",
+    "docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
+    "docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
+    "功能清单.md",
+    "开发记录.md",
+    "模型参数文件.md",
+    "CHANGELOG.md",
+  ].forEach(validateTextFile);
+
+  validateProductContract();
+  validateAcceptanceContract();
+  validateRecords();
+  validateChangedPaths();
+  validateBoundary();
+
+  console.log(JSON.stringify({ status: "PASS", stage: "v1.1.6-stage3-phase2", checks }, null, 2));
+} catch (error) {
+  console.error(
+    JSON.stringify(
+      {
+        status: "FAIL",
+        stage: "v1.1.6-stage3-phase2",
+        message: error.message,
+        details: error.details || {},
+        stdout: error.stdout,
+        stderr: error.stderr,
+        checks,
+      },
+      null,
+      2,
+    ),
+  );
+  process.exit(1);
+}
