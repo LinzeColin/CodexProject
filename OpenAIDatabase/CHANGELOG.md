@@ -21,6 +21,34 @@ No Cloudflare live deploy, Access policy mutation, memoryatlas.linzezhang.com pu
 - Restored proM2 MacData Chinese report artifacts to Markdown `.md` files for latest, draft, and final reports per owner instruction.
 
 No API key, token, password, cookie, session, Keychain item, shell history, full environment dump, `.env` raw content, Time Machine data, or iCloud data is collected.
+## Unreleased - Memory Atlas v1.1.7 Stage 0 Phase 2
+
+- Added `docs/product/memory_atlas_v1_1_7_stage0_phase2_usage_help_contract.md`.
+- Added `docs/acceptance/memory_atlas_v1_1_7_stage0_phase2_usage_help_acceptance.md`.
+- Added `docs/product/memory_atlas_usage_guide.md`.
+- Added `apps/memory-atlas/src/components/help/MemoryAtlasHelpPanel.tsx`.
+- Added `apps/memory-atlas/src/components/EmptyState.tsx` and
+  `apps/memory-atlas/src/components/ErrorState.tsx`.
+- Added `validate:v1.1.7-stage0-phase2` to verify the Help panel, 3-minute
+  usage path, empty snapshot state, no-filtered-results state, load error
+  state, WebGL fallback explanation, proposal-not-writable explanation,
+  contract/acceptance/guide and governance records.
+- Updated `App.tsx` to expose the Help entry, render empty/error states and
+  explain unsafe proposal writeback policy.
+- Updated `GalaxyScene.tsx` to use Chinese registry copy for WebGL fallback
+  recovery guidance.
+- Registered `MA-V117-S0P02` / `ACC-MA-V117-S0P02` with status
+  `phase_0_2_usage_help_completed_pending_stage0_review`.
+
+No Stage 0.3 detail visibility contract, Stage 1 schema, Search 2.0, Review
+workflow, Data Map 2.0, Memory River replacement, Memory Starfield replacement,
+browser screenshot, production build, local app install, Cloudflare deploy,
+Access policy change, raw/private data read, direct writeback, proposal write,
+agent apply or GitHub main upload was added.
+
+Machine-readable boundary summary: No raw/private data read; No direct
+writeback; No proposal write; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 0 Phase 1
 
 - Added `docs/product/memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract.md`.

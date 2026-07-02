@@ -40,7 +40,52 @@ export interface ChineseUiCopy {
     notLoaded: string;
     loading: string;
     loadFailedTitle: string;
+    loadFailedDescription: string;
+    loadFailedAction: string;
     loadingGalaxy: string;
+    emptyAtlasTitle: string;
+    emptyAtlasDescription: string;
+    emptyAtlasAction: string;
+    noFilteredResultsTitle: string;
+    noFilteredResultsDescription: string;
+    noFilteredResultsAction: string;
+    webglUnavailableTitle: string;
+    webglUnavailableDescription: string;
+    webglUnavailableAction: string;
+    proposalUnavailableTitle: string;
+    proposalUnavailableDescription: string;
+    proposalUnavailableAction: string;
+  };
+  help: {
+    buttonLabel: string;
+    panelTitle: string;
+    panelSubtitle: string;
+    closeLabel: string;
+    threeMinuteTitle: string;
+    threeMinutePath: Array<{
+      minute: string;
+      title: string;
+      description: string;
+      actionLabel: string;
+      view: ViewKey;
+    }>;
+    modeTitle: string;
+    modes: {
+      presentation: {
+        label: string;
+        description: string;
+      };
+      analysis: {
+        label: string;
+        description: string;
+      };
+    };
+    workflowTitle: string;
+    workflowNotes: Array<{
+      title: string;
+      description: string;
+    }>;
+    footerNote: string;
   };
   overview: {
     eyebrow: string;
