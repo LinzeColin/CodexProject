@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.3 S03｜原始文件导入与数据源检查矩阵`
-- 当前 Phase: `S03-P1｜文件型导入登记已本地完成；下一步只能 S03-P2`
+- 当前 Phase: `S03-P2｜数据源检查矩阵已本地完成；下一步只能 S03-P3`
 
 ## Execution Rules
 
