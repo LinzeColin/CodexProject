@@ -1,10 +1,11 @@
 # ADP 用户中心
 
-## 2026-07-02 07:57:17 Australia/Sydney - 当前阅读规则
+## 2026-07-02 10:39:44 Australia/Sydney - 当前阅读规则
 
 - 当前事实：Stage 2 integrated acceptance 已记录并保持 `true`；S3/DAILY_OPERATION 不进入，`daily_operation_enabled=false`。
 - 本页 2026-07-01 19:04 以前关于 S2PLT02、S2PLT03、S2PLT04、final bundle 缺口的记录只作历史追溯，不得用来回退当前 Stage 2 accepted 事实。
 - 后续默认工作仍是 [MVP 准备与复审修补](./MVP准备与复审修补.md)：只做用户中心、证据链、测试和治理同步的小范围修补。
+- 后续开发基线必须是 GitHub `origin/main` 的干净隔离工作树；本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线。
 
 ## 2026-07-02 06:52:05 Australia/Sydney - MVP 准备与复审修补入口已补齐
 
