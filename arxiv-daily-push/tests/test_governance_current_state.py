@@ -1503,6 +1503,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("窗口结束后必须恢复为 `UNSET` 或 false-like", one_look)
         self.assertIn("重新运行 enablement preflight，并确认仍 `status=FAIL / exit 2`", one_look)
         self.assertIn("不得把一次受控真实运行当作持久 DAILY_OPERATION 授权", one_look)
+        self.assertIn("一次受控真实运行窗口只允许临时切换 `ADP_ALLOW_SMTP_SEND`", mail_status)
+        self.assertIn("窗口结束后必须恢复为 `UNSET` 或 false-like", mail_status)
+        self.assertIn("重新运行 enablement preflight，并确认仍 `status=FAIL / exit 2`", mail_status)
+        self.assertIn("不得把一次受控真实运行当作持久 DAILY_OPERATION 授权", mail_status)
         self.assertRegex(
             roadmap,
             r"^# 路线图与停止门\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n\n本页说明 ADP 当前在哪个阶段",
