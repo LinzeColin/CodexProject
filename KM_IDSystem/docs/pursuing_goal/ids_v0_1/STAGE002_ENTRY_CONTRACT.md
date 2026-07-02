@@ -39,10 +39,10 @@ contracts such as product schemas, manifest templates, governance rules, and
 taskpack-derived inputs.
 
 It is not a raw-material store, not an external-drive mirror, not a new full
-CodexProject checkout, and not a replacement for historical `MetaDatabase` or
-future `FinanceMetaDatabase` work. Real source materials remain outside GitHub
-and outside this stage unless a later stage provides explicit fixture or owner
-authorization.
+CodexProject checkout, and not a replacement for the finance metadata subsystem
+governed by STAGE-003 `FinanceMetaDatabase` migration. Real source materials
+remain outside GitHub and outside this stage unless a later stage provides
+explicit fixture or owner authorization.
 
 ## Phase Boundary
 
@@ -95,4 +95,3 @@ STAGE-002 in one run.
 回滚本 Stage 的代码、schema、配置或 UI 变更；不得影响原始资料、manifest、
 evidence ledger、audit log 和已交付报告。若本 Stage 产生派生产物，应只清理
 明确允许清理的临时文件或可重建缓存。
-

@@ -74,7 +74,8 @@ later phase explicitly authorizes a narrow fixture or generated contract:
 - any `00_ORIGINAL_RAW_DATA` path;
 - any external-drive raw data root;
 - unrelated CodexProject directories such as Alpha, PFI, EEI, KMFA, Memory
-  Atlas, Serenity, or historical `MetaDatabase` project checkouts.
+  Atlas, Serenity, or historical finance metadata project checkouts covered
+  by STAGE-003 `FinanceMetaDatabase` migration.
 
 ## Affected File Groups
 

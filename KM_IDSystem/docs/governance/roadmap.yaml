@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE002"
-current_phase_id: "IDS-STAGE003-P1"
-current_task_id: "IDS-V0_1-STAGE003-P1"
-next_gate_id: "IDS-STAGE003-P2-GATE"
+current_phase_id: "IDS-STAGE003-P2"
+current_task_id: "IDS-V0_1-STAGE003-P2"
+next_gate_id: "IDS-STAGE003-P3-GATE"
 total_estimated_hours: 35
-completed_estimated_hours: 29
+completed_estimated_hours: 32
 stages:
   -
     stage_id: "S5"
@@ -687,6 +687,8 @@ stages:
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
     phases:
       -
         phase_id: "IDS-STAGE003-P1"
@@ -738,25 +740,28 @@ stages:
         phase_id: "IDS-STAGE003-P2"
         name: "实现、接入与最小可运行切片"
         objective: "按最小变更原则完成独立 MetaDatabase 到 FinanceMetaDatabase 的引用迁移，不引入运行时代码耦合。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "缺少 Phase 1 边界证据"
           - "试图重命名 ProductMetaDatabase"
           - "引入真实资料、secrets、runtime 输出或外部 API 依赖"
         stop_gate:
           gate_id: "IDS-STAGE003-P2-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "独立旧名引用迁移完成"
             - "迁移说明和回滚说明存在"
             - "ProductMetaDatabase 合同未被误改"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE003-P2"
             name: "FinanceMetaDatabase 最小引用迁移"
             objective: "完成小型、可审计、可回滚的独立 MetaDatabase 引用迁移。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 3
             total_hours_percent: "8.57%"
             dependencies:
@@ -764,11 +769,15 @@ stages:
             acceptance_ids:
               - "ACC-STAGE-003"
             test_commands:
+              - "TDD red: Codex bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py -q"
               - "standalone MetaDatabase migration test"
               - "ProductMetaDatabase exclusion check"
               - "check-render --project KM_IDSystem"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "TDD red failed with 1 expected error before implementation because validate_stage003_finance_meta_rename.py was missing. After implementation, Codex bundled Python unittest ran 1 test OK; validate_stage003_finance_meta_rename.py returned valid=true, issues=[], runtime_target_hits=[], product_meta_path_touched=[], finance_meta_hits=66, standalone_old_hits=53, and product_meta_hits=166 after final governance render. ProductMetaDatabase unittest ran 2 tests OK and ProductMetaDatabase validator returned valid=true, issues=[]. STAGE-002 migration wording now points to STAGE-003 FinanceMetaDatabase authority; ProductMetaDatabase contract files were not modified. check-render returned drift_count=0; marker/JSONL/scope check returned stage003_phase2_marker_jsonl_scope_ok=True; git diff --check passed. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE003_PHASE2_REFERENCE_MIGRATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage003_finance_meta_rename.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage003_finance_meta_rename.py"
             risk: "替换过宽导致 ProductMetaDatabase 或历史证据失真。"
             rollback: "Revert IDS-STAGE003-P2 migration changes."
       -
