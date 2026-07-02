@@ -690,6 +690,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("persistent_daily_operation_authorized=false", handoff)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", handoff)
         self.assertIn("不要把它当成当前 S3/DAILY_OPERATION 状态页", handoff)
+        self.assertIn(
+            "`FINAL_ACCEPTANCE_BUNDLE/manifest.json`、`no_production_side_effects.json`、`owner_production_boundary_decision.json`、`p0_p1_zero_proof.json`",
+            handoff,
+        )
+        self.assertIn(
+            "`closure_state` / `no_production_side_effects` false 字段，只说明该 artifact 写入时的 no-production / closure-state 语境",
+            handoff,
+        )
+        self.assertIn(
+            "不得回退当前 Stage 2 accepted 事实，也不得诱导修改这些历史 final bundle artifact",
+            handoff,
+        )
+        self.assertIn(
+            "当前 Stage 2 accepted 事实以 `arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml` 和 `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 为准",
+            handoff,
+        )
         self.assertIn("不要为了追逐当前提交号重复改写本页", handoff)
         self.assertIn("不要启用 SMTP", handoff)
         self.assertIn("不要启用、安装或 kickstart scheduler/LaunchAgents", handoff)
