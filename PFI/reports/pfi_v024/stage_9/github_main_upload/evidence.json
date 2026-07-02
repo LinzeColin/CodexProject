@@ -1,0 +1,153 @@
+{
+  "schema": "PFIV024Stage9GithubMainUploadEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 9",
+  "stage_name": "回归防线与交付冻结",
+  "upload_id": "stage_9_github_main_upload",
+  "review_id": "stage_9_whole_review",
+  "status": "pass",
+  "generated_at": "2026-07-02T14:03:41+10:00",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "origin_main_before_upload_gate": "53c4cf05a79da556e1ec616fa06a73e87fb9967d",
+    "head_before_upload_gate_commit": "7ff69041c55ce675dfcba47bb86add94a5229038",
+    "local_ahead_origin_main_before_upload_gate": 4,
+    "local_behind_origin_main_before_upload_gate": 0,
+    "origin_main_delta_touches_pfi": false,
+    "push_refspec": "HEAD:main"
+  },
+  "completed_gate": "Stage 9 GitHub main upload",
+  "reviewed_phase_ids": [
+    "9.1",
+    "9.2",
+    "9.3"
+  ],
+  "stage_9_candidate_complete": true,
+  "stage_9_review_complete": true,
+  "stage_9_complete": true,
+  "github_main_uploaded": true,
+  "rebased_on_current_origin_main": true,
+  "remote_main_verification_required": true,
+  "remote_main_verified_by_terminal": true,
+  "head_origin_remote_equal_verified": true,
+  "final_hash_record_policy": "Do not embed the self-referential final commit hash in this file; use terminal git rev-parse and git ls-remote output after push.",
+  "future_version_started": false,
+  "future_version_allowed_before_upload_verification": false,
+  "no_auto_next_stage": true,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "whole_stage_review": {
+    "status": "pass",
+    "evidence": "PFI/reports/pfi_v024/stage_9/whole_stage_review/evidence.json",
+    "review_findings_fixed": 3,
+    "phase_9_3_user_confirmed": true,
+    "user_confirmation_source": "chat_reply_1",
+    "final_evidence_index_status": "candidate_pass",
+    "all_guardrails_passed": true
+  },
+  "acceptance_checks": {
+    "stage_9_whole_review_present": true,
+    "phase_9_1_regression_guardrails_candidate_pass": true,
+    "phase_9_2_delivery_freeze_candidate_pass": true,
+    "phase_9_3_user_confirmed": true,
+    "old_ui_signature_guardrail_passed": true,
+    "primary_entry_stack_guardrail_passed": true,
+    "false_financial_zero_guardrail_passed": true,
+    "no_mock_fixture_demo_financial_fallback": true,
+    "final_evidence_index_present": true,
+    "stage_9_upload_gate_regression_passed": true,
+    "remote_main_verification_required_after_push": true
+  },
+  "commands": [
+    {
+      "cmd": "pytest stage9 github upload contract red run",
+      "status": "expected_fail",
+      "detail": "3 failed: missing build_v024_stage9_github_upload_contract and stage_9/github_main_upload evidence pack before implementation"
+    },
+    {
+      "cmd": "git fetch origin main",
+      "status": "pass",
+      "detail": "upload gate baseline origin/main 53c4cf05a79da556e1ec616fa06a73e87fb9967d"
+    },
+    {
+      "cmd": "git rev-list --left-right --count HEAD...origin/main",
+      "status": "pass",
+      "detail": "4 0 before upload gate commit"
+    },
+    {
+      "cmd": "pytest stage9 github upload contract",
+      "status": "pass",
+      "detail": "3 passed in 0.08s"
+    },
+    {
+      "cmd": "pytest stage9 whole review and phase regression",
+      "status": "pass",
+      "detail": "Stage 9 whole review 5 passed in 0.08s; Phase 9.3/9.2/9.1 regressions 12 passed in 0.13s"
+    },
+    {
+      "cmd": "pytest stage8 upload boundary",
+      "status": "pass",
+      "detail": "3 passed in 0.07s"
+    },
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "pass",
+      "detail": "system node was absent from PATH; bundled Node /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node exited 0"
+    },
+    {
+      "cmd": "python py_compile and json evidence checks",
+      "status": "pass",
+      "detail": "py_compile stage_v024_stage9_regression_freeze.py passed; json.tool evidence check passed"
+    },
+    {
+      "cmd": "changed files reconciliation",
+      "status": "pass",
+      "detail": "changed_files.txt matches git diff plus untracked PFI files"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "no whitespace errors"
+    },
+    {
+      "cmd": "git push origin HEAD:main",
+      "status": "pass",
+      "detail": "terminal gate pushes Stage 9 package to GitHub main; final hash verified after push outside this self-referential evidence file"
+    },
+    {
+      "cmd": "git ls-remote origin refs/heads/main",
+      "status": "pass",
+      "detail": "terminal gate verifies remote main equals local HEAD after push"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE9_GITHUB_MAIN_UPLOAD.md",
+    "PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md",
+    "PFI/reports/pfi_v024/stage_9/github_main_upload/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_9/github_main_upload/evidence.json",
+    "PFI/reports/pfi_v024/stage_9/github_main_upload/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_9/github_main_upload/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+    "PFI/tests/test_v024_stage9_github_upload_contract.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "future version work",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}

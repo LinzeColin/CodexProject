@@ -1,0 +1,47 @@
+2026-07-02T04:03:41Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_before_upload_gate=7ff69041c55ce675dfcba47bb86add94a5229038
+origin_main_before_upload_gate=53c4cf05a79da556e1ec616fa06a73e87fb9967d
+ahead_behind_before_upload_gate=4 0
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_github_upload_contract.py -q
+Result: 3 failed before implementation; missing build_v024_stage9_github_upload_contract and stage_9/github_main_upload evidence pack.
+
+Implementation boundary:
+Stage 9 GitHub main upload gate only. Did not start future version work, did not reinstall app bundle, did not mutate launcher files, and did not change financial data or metric logic.
+
+Remote baseline:
+git fetch origin main
+Result: origin/main 53c4cf05a79da556e1ec616fa06a73e87fb9967d
+git rev-list --left-right --count HEAD...origin/main
+Result: 4 0 before upload gate commit.
+
+Validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_github_upload_contract.py -q
+Result: 3 passed in 0.08s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_whole_review_contract.py -q
+Result: 5 passed in 0.08s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase93_user_acceptance.py PFI/tests/test_v024_stage9_phase92_delivery_freeze.py PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q
+Result: 12 passed in 0.13s
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_github_upload_contract.py -q
+Result: 3 passed in 0.07s
+node --check PFI/web/app/shell.js
+Result: system node was absent from PATH.
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+Result: exit 0.
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py
+Result: exit 0.
+python3 -m json.tool PFI/reports/pfi_v024/stage_9/github_main_upload/evidence.json
+Result: exit 0.
+python3 -m json.tool PFI/reports/pfi_v024/stage_9/whole_stage_review/evidence.json
+Result: exit 0.
+git diff --check -- PFI
+Result: exit 0.
+changed_files reconciliation
+Result: exit 0.
+
+Final remote verification policy:
+After committing this gate, run git push origin HEAD:main, git fetch origin main, git rev-parse HEAD, git rev-parse origin/main, and git ls-remote origin refs/heads/main. The final terminal output after push is the authoritative remote-main proof because the final commit hash is self-referential to this evidence pack.

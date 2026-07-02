@@ -216,6 +216,35 @@ class V024Stage9WholeReviewContract:
 
 
 @dataclass(frozen=True)
+class V024Stage9GithubUploadContract:
+    target_version: str
+    source_package_version: str
+    repair_label: str
+    stage_id: str
+    stage_name: str
+    upload_id: str
+    review_id: str
+    reviewed_phase_ids: list[str]
+    stage_9_candidate_complete: bool
+    stage_9_review_complete: bool
+    stage_9_complete: bool
+    github_main_uploaded: bool
+    rebased_on_current_origin_main: bool
+    remote_main_verification_required: bool
+    future_version_started: bool
+    future_version_allowed_before_upload_verification: bool
+    app_bundle_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+    max_phases_per_run: int
+    validation_commands: list[str]
+    explicitly_not_done: list[str]
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class V024Stage9Phase91Evaluation:
     schema: str
     target_version: str
@@ -509,6 +538,49 @@ def build_v024_stage9_whole_review_contract() -> V024Stage9WholeReviewContract:
             "future version work",
             "app bundle reinstall",
             "financial data mutation or synthesis",
+        ],
+    )
+
+
+def build_v024_stage9_github_upload_contract() -> V024Stage9GithubUploadContract:
+    return V024Stage9GithubUploadContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        repair_label=REPAIR_LABEL,
+        stage_id=STAGE,
+        stage_name=STAGE_NAME,
+        upload_id="stage_9_github_main_upload",
+        review_id="stage_9_whole_review",
+        reviewed_phase_ids=[PHASE_9_1_ID, PHASE_9_2_ID, PHASE_9_3_ID],
+        stage_9_candidate_complete=True,
+        stage_9_review_complete=True,
+        stage_9_complete=True,
+        github_main_uploaded=True,
+        rebased_on_current_origin_main=True,
+        remote_main_verification_required=True,
+        future_version_started=False,
+        future_version_allowed_before_upload_verification=False,
+        app_bundle_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
+        max_phases_per_run=1,
+        validation_commands=[
+            "python3 -m pytest PFI/tests/test_v024_stage9_github_upload_contract.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage9_whole_review_contract.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage9_phase93_user_acceptance.py PFI/tests/test_v024_stage9_phase92_delivery_freeze.py PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q",
+            "python3 -m pytest PFI/tests/test_v024_stage8_github_upload_contract.py -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 -m py_compile PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+            "python3 -m json.tool PFI/reports/pfi_v024/stage_9/github_main_upload/evidence.json",
+            "git diff --check -- PFI",
+            "git push origin HEAD:main",
+            "git ls-remote origin refs/heads/main",
+        ],
+        explicitly_not_done=[
+            "future version work",
+            "app bundle reinstall",
+            "launcher C or Info.plist changes",
+            "financial data or metric logic changes",
         ],
     )
 
