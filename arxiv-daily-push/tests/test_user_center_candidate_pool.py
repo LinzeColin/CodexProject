@@ -1963,6 +1963,14 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("当前工作不是继续实现多来源，而是修补 owner-facing 证据、用户中心和测试", roadmap)
         self.assertIn("不是正式生产前预检查，也不是 S3/DAILY_OPERATION 启用", roadmap)
         self.assertIn("维护复习行动收益展示", roadmap)
+        self.assertRegex(
+            readme,
+            r"^# ADP 用户中心\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n\n这里是 ADP 在 GitHub 上的唯一中文用户入口",
+        )
+        self.assertEqual(readme.count("更新时间："), 1)
+        self.assertLess(readme.index("## 总览"), readme.index("## 最近治理与历史记录"))
+        self.assertLess(readme.index("## 一看三查"), readme.index("## 最近治理与历史记录"))
+        self.assertLess(readme.index("## 阅读规则"), readme.index("## 最近治理与历史记录"))
         self.assertIn("GitHub `origin/main` 的干净隔离工作树", readme)
         self.assertIn("MVP Run Contract README 入口同步", readme)
         self.assertIn("看后续复审修补的范围、停止条件、验收标准和下一轮 Run Contract 模板", readme)
