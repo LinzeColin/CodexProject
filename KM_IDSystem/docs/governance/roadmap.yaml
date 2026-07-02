@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE013"
-current_phase_id: "IDS-STAGE013-P2"
-current_task_id: "IDS-V0_1-STAGE013-P2"
-next_gate_id: "IDS-STAGE013-P3-GATE"
-total_estimated_hours: 98
-completed_estimated_hours: 97
+current_phase_id: "IDS-STAGE013-P3"
+current_task_id: "IDS-V0_1-STAGE013-P3"
+next_gate_id: "IDS-STAGE013-P4-GATE"
+total_estimated_hours: 100
+completed_estimated_hours: 99
 stages:
   -
     stage_id: "S5"
@@ -2953,7 +2953,7 @@ stages:
       - "引入虚拟 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
       - "在 STAGE-011..020 未完成、复审和修复前上传 GitHub main"
     stop_gate:
-      gate_id: "IDS-STAGE013-P2-GATE"
+      gate_id: "IDS-STAGE013-P3-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
         - "P0 taskpack source 和 STAGE-013 execution index 已绑定"
@@ -2963,13 +2963,16 @@ stages:
         - "Phase 2 只接受显式 local file:// 输入并生成 metadata-only fingerprint"
         - "重复输入保持幂等，不产生重复 manifest candidate"
         - "缺失、阻断或不可读文件进入显式失败状态"
+        - "Phase 3 覆盖同文件同 hash、同名不同 hash、同 hash 不同路径、重复导入无 persistence、原始 hash 稳定"
         - "Phase 1 未读取、列出、hash、打开、复制、移动、删除或修改真实原始资料或 IDS_MetaData 内容"
         - "Phase 2 阻断 IDS_MetaData 路径后才会进行存在检查、hash 或文件读取"
+        - "Phase 3 只使用 tracked governance docs 和临时结构副本，不读 IDS_MetaData 内容"
         - "BATCH011_020_UPLOAD_LOCK.yaml 仍保持 push_allowed=false"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE2_FILE_FINGERPRINT_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/scripts/check_file_fingerprint.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE4_CLOSEOUT.md"
@@ -3080,3 +3083,59 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果后续把 Phase 2 metadata-only preflight 当作批量导入授权，可能绕过 Phase 3/4 场景验证和十阶段上传门。"
             rollback: "Revert IDS-STAGE013-P2 script, test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, manifests, evidence ledgers, audit logs, delivered reports, runtime data, app entries, GitHub state, or Phase 3."
+      -
+        phase_id: "IDS-STAGE013-P3"
+        name: "文件指纹引擎专项验证与异常场景"
+        objective: "验证同文件同 hash、同名不同 hash、同 hash 不同路径、重复导入无 persistence、原始 hash 稳定和原始文件未修改。"
+        status: "completed"
+        stop_conditions:
+          - "Phase 2 最小只读接口未完成"
+          - "验证需要读取、列出、hash、打开、复制、移动、删除或修改 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "验证需要写 manifest/database、创建 document/chunk/job、生成 runtime 输出、启动服务、安装依赖或调用外部 API"
+          - "缺少先失败后通过的 focused scenario test"
+          - "一次 run 进入 Phase 4 交付 closeout"
+        stop_gate:
+          gate_id: "IDS-STAGE013-P3-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "`build_stage013_scenario_report(...)` 覆盖 same-file/same-hash、same-name/different-hash、same-hash/different-path"
+            - "重复导入报告 document_delta、chunk_delta、job_delta 均为 0"
+            - "原始 source 的 before/after sha256 和 size 保持不变"
+            - "scenario report 不写 manifest/database，不创建 document/chunk/job"
+            - "BATCH011_020_UPLOAD_LOCK.yaml 仍保持 push_allowed=false"
+          evidence_refs:
+            - "KM_IDSystem/scripts/check_file_fingerprint.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE013-P3"
+            name: "文件指纹专项场景验证"
+            objective: "实现 STAGE-013 Phase 3 的 metadata-only scenario report，验证重复、冲突、同 hash 多路径、重复导入无 persistence 和原始 hash 稳定。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "2.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE013-P2"
+            acceptance_ids:
+              - "ACC-STAGE-013"
+            test_commands:
+              - "RED: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py -q"
+              - "GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py -q"
+              - "RED/GREEN: bundled python -B -m unittest KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py -q"
+              - "Stage005 validator report"
+              - "Full v0.1 discover: bundled python -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "py_compile check_file_fingerprint.py and Stage005 validator"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+            test_results: "TDD RED failed as expected: STAGE-013 focused unittest ran 6 tests with 1 error because build_stage013_scenario_report was missing. GREEN passed after implementation: STAGE-013 focused unittest ran 6 OK. Governance RED failed as expected: Stage005 governance regression ran 18 tests with 1 failure because IDS-V0_1-STAGE013-P3 was not accepted. GREEN passed after validator extension and Phase 3 evidence updates: Stage005 governance regression ran 18 OK. Stage005 validator returned valid=true, issue_count=0, unexpected_changed_paths=[], missing_required_files=[], and forbidden_changed_paths=[]; full v0.1 pursuing-goal discover ran 69 OK; py_compile passed for check_file_fingerprint.py and Stage005 validator; check-render returned drift_count=0; git diff --check passed. Semantic validate returned rc=1 with 29 known sparse/root/registered-project diagnostics and no KM_IDSystem project regression. Exact underscored marker scan returned no hits; legacy path/name scan hits are stale-path, migration-note, and compatibility-scan references. Focused tests use tracked governance documents as real repository source evidence and temporary process-owned copies only for structural duplicate/conflict scenarios, not fake IDS business data. Phase 3 did not read, list, open, hash, copy, move, delete, modify, dump, scan, or commit IDS_MetaData raw metadata content. No service start, dependency install, manifest/database write, document/chunk/job creation, runtime output, external API call, GitHub upload, PR, merge, app reinstall, or Phase 4 work was performed."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_file_fingerprint.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果把 Phase 3 scenario report 当作生产导入结果，可能绕过 Phase 4 交付证据、回滚和十阶段上传门。"
+            rollback: "Revert IDS-STAGE013-P3 script, test, evidence, batch-lock, roadmap/event, validator/test, and rendered owner-file changes only; do not touch 00_ORIGINAL_RAW_DATA, /Users/linzezhang/Downloads/IDS_MetaData, manifests, evidence ledgers, audit logs, delivered reports, runtime data, app entries, GitHub state, or Phase 4."
