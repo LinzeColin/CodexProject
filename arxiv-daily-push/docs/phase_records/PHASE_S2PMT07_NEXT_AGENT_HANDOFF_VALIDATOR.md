@@ -11,20 +11,22 @@ The validator is artifact-level only. It checks schema version, handoff decision
 required V7.2 reader files, prerequisite artifact validations, final-bundle refs,
 blocking state, no-production flags, and `handoff_hash` binding.
 
-## Current Result
+## Historical Result
 
-Current status remains `blocked`.
+历史当时 next-agent handoff artifact 不存在。
 
-The real next-agent handoff artifact does not exist yet:
+At 2026-06-28 07:13:17 Australia/Sydney, this validator phase was blocked:
 
 - `handoff_present=false`
 - `validation_errors=["next_agent_handoff_missing"]`
 - `next_agent_handoff_ready_by_payload=false`
 - `integrated_production_accepted=false`
 
-## Required Future Artifact
+当前 `HANDOFF/00_下一Agent先读.md` 已存在并已被 final bundle 与 Stage 2 integrated acceptance 消费。当前剩余阻断只看 S3/DAILY_OPERATION 持久授权 artifact 缺失。不得把 2026-06-28 的 next-agent handoff validator 重新解释成当前 final bundle 缺口。
 
-Future `HANDOFF/00_下一Agent先读.md` evidence must include:
+## Validator Contract
+
+`HANDOFF/00_下一Agent先读.md` evidence must include:
 
 - `schema_version=adp.next_agent_handoff.v1`
 - `handoff_decision=NEXT_AGENT_HANDOFF_READY_NO_PRODUCTION_ACCEPTANCE`
@@ -39,15 +41,14 @@ Future `HANDOFF/00_下一Agent先读.md` evidence must include:
   and V7.2 side effects false
 - `handoff_hash` matching the canonical payload content
 
-## Non-Scope
+## Historical Non-Scope
 
-No next-agent handoff artifact is created. No final acceptance bundle is created.
-No independent final signoff is created. No final commands are executed. No P0/P1
-closure, no S2PLT04 completion, no SMTP, no scheduler install or enablement, no
-Release upload, no public schema or DB migration, no production queue mutation,
-no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2
-contract-file edit, no DAILY_OPERATION, and no integrated production acceptance
-is claimed.
+This 2026-06-28 validator phase did not create the next-agent handoff artifact,
+final acceptance bundle, independent final signoff, final command proof, P0/P1
+closure, S2PLT04 completion, SMTP, scheduler install or enablement, Release
+upload, public schema or DB migration, production queue mutation,
+ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file
+edit, DAILY_OPERATION, or integrated production acceptance.
 
 ## Evidence
 
@@ -75,8 +76,10 @@ is claimed.
 - Remote ADP/arxiv/s2p branch scan: empty.
 - `__pycache__` / `.pyc` residual scan: empty after cleanup.
 
-## Next Step
+## Current Reading Rule
 
-Keep S2PMT07 blocked until a real final bundle contains valid P0/P1 zero proof,
-S2PLT04 completion report, final command execution proof, no-production
-attestation, next-agent handoff, and independent final review signoff.
+This record is historical validator evidence only. Current Stage 2/final bundle
+status must be read from `docs/pursuing_goal/CURRENT.yaml`,
+`FINAL_ACCEPTANCE_BUNDLE/manifest.json`,
+`FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`, and
+`HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md`.
