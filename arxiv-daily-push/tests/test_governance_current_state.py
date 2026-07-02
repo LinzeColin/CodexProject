@@ -929,10 +929,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("persistent_daily_operation_authorization_missing", text)
         self.assertIn("status=FAIL / exit 2", handoff)
         self.assertIn("--open-pr-count", handoff)
-        self.assertIn("--launchagent-daily-disabled", handoff)
-        self.assertIn("--background-adp-process-count", handoff)
+        self.assertIn("runtime_observation_mode=auto_observed", handoff)
+        self.assertNotIn("--launchagent-daily-disabled true", handoff)
+        self.assertNotIn("--background-adp-process-count 0", handoff)
         self.assertIn("readiness + open PR + SMTP flag + LaunchAgent + background process", mvp_prep)
+        self.assertIn("默认自动观察 LaunchAgent 和后台进程", mvp_prep)
         self.assertIn("enablement_preflight_ready=false", model_params)
+        self.assertIn("runtime_observation_mode=auto_observed", model_params)
 
 
 if __name__ == "__main__":

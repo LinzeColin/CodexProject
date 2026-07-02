@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 18:49:38 Australia/Sydney
+更新时间：2026-07-02 19:33:55 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -92,6 +92,13 @@
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），计划应发 4 封；受控发送证据不代表 S3/DAILY_OPERATION 已进入。
 
 ## 最近治理与历史记录
+
+## 2026-07-02 19:33:55 Australia/Sydney - Enablement preflight 默认自动观察运行边界
+
+- `tools/verify_daily_operation_enablement_preflight.py` 现在默认自动观察真实 LaunchAgent 标签和后台 ADP 进程，输出 `runtime_observation_mode=auto_observed`。
+- 后续 agent 不需要也不应手填 `--launchagent-*-disabled true` 或 `--background-adp-process-count 0` 来替代真实观察。
+- 当前缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`，所以该 gate 仍必须 `status=FAIL / exit 2`，不得启用 S3/DAILY_OPERATION。
+- 本轮仍只做 MVP 准备与复审修补，不创建持久授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。
 
 ## 2026-07-02 18:49:38 Australia/Sydney - 持久授权模板已补齐但默认无效
 

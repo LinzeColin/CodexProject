@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,6 +26,24 @@ REQUIRED_LAUNCHAGENTS = (
     "com.linzezhang.adp.watchdog",
 )
 FALSE_LIKE_VALUES = {"", "0", "false", "no", "off", "unset", "none"}
+BACKGROUND_PROCESS_MARKERS = (
+    "arxiv_daily_push",
+    "arxiv-daily-push",
+)
+BACKGROUND_RUN_MARKERS = (
+    "local-runner",
+    "local_runner",
+    "run-local-daily",
+    "run-scheduled-production",
+    "scheduled-production",
+    "watchdog",
+)
+OBSERVATION_TOOL_MARKERS = (
+    "verify_daily_operation_enablement_preflight.py",
+    "verify_daily_operation_readiness.py",
+    "unittest",
+    "pytest",
+)
 
 
 def _parse_bool(value: str, *, arg_name: str) -> bool:
@@ -49,6 +68,63 @@ def _load_readiness_report(root: Path, generated_at: str | None) -> dict[str, An
     return build_readiness_report(root, generated_at=generated_at)
 
 
+def _launchagent_is_disabled_or_not_loaded(label: str) -> tuple[bool, str | None]:
+    launchctl = "/bin/launchctl"
+    if not Path(launchctl).exists():
+        return True, None
+    uid = os.getuid()
+    completed = subprocess.run(
+        [launchctl, "print", f"gui/{uid}/{label}"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if completed.returncode != 0:
+        return True, None
+    output = completed.stdout.lower()
+    if "disabled = true" in output or "disabled = 1" in output:
+        return True, None
+    return False, None
+
+
+def _is_adp_background_process(command: str) -> bool:
+    normalized = command.lower()
+    if any(marker in normalized for marker in OBSERVATION_TOOL_MARKERS):
+        return False
+    if not any(marker in normalized for marker in BACKGROUND_PROCESS_MARKERS):
+        return False
+    return any(marker in normalized for marker in BACKGROUND_RUN_MARKERS)
+
+
+def _observe_background_adp_process_count() -> tuple[int | None, str | None]:
+    completed = subprocess.run(
+        ["/bin/ps", "-axo", "pid=,command="],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if completed.returncode != 0:
+        return None, "background_process_observation_failed"
+    count = sum(1 for line in completed.stdout.splitlines() if _is_adp_background_process(line))
+    return count, None
+
+
+def observe_runtime_boundary() -> tuple[dict[str, bool], int | None, list[str]]:
+    errors: list[str] = []
+    launchagent_states: dict[str, bool] = {}
+    for label in REQUIRED_LAUNCHAGENTS:
+        disabled, error = _launchagent_is_disabled_or_not_loaded(label)
+        launchagent_states[label] = disabled
+        if error:
+            errors.append(error)
+    process_count, process_error = _observe_background_adp_process_count()
+    if process_error:
+        errors.append(process_error)
+    return launchagent_states, process_count, _unique_reasons(errors)
+
+
 def _unique_reasons(reasons: list[str]) -> list[str]:
     seen: set[str] = set()
     unique: list[str] = []
@@ -67,6 +143,8 @@ def build_enablement_preflight_report(
     adp_allow_smtp_send: str | None = None,
     launchagent_disabled_states: dict[str, bool],
     background_adp_process_count: int | None = None,
+    runtime_observation_mode: str = "provided",
+    runtime_observation_errors: list[str] | None = None,
 ) -> dict[str, Any]:
     generated = generated_at or datetime.now(timezone.utc).isoformat()
     readiness = _load_readiness_report(root, generated)
@@ -126,6 +204,8 @@ def build_enablement_preflight_report(
         "adp_allow_smtp_send_raw": raw_smtp_send,
         "launchagent_disabled_states": {label: launchagent_disabled_states.get(label) is True for label in REQUIRED_LAUNCHAGENTS},
         "background_adp_process_count": background_adp_process_count,
+        "runtime_observation_mode": runtime_observation_mode,
+        "runtime_observation_errors": runtime_observation_errors or [],
         "runtime_enablement_detected": runtime_enablement_detected,
         **runtime_flags,
     }
@@ -143,19 +223,19 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--launchagent-daily-disabled",
-        required=True,
+        default=None,
         type=lambda value: _parse_bool(value, arg_name="--launchagent-daily-disabled"),
         help="Whether com.linzezhang.adp.daily is disabled or not loaded.",
     )
     parser.add_argument(
         "--launchagent-health-disabled",
-        required=True,
+        default=None,
         type=lambda value: _parse_bool(value, arg_name="--launchagent-health-disabled"),
         help="Whether com.linzezhang.adp.health is disabled or not loaded.",
     )
     parser.add_argument(
         "--launchagent-watchdog-disabled",
-        required=True,
+        default=None,
         type=lambda value: _parse_bool(value, arg_name="--launchagent-watchdog-disabled"),
         help="Whether com.linzezhang.adp.watchdog is disabled or not loaded.",
     )
@@ -166,17 +246,43 @@ def main(argv: list[str] | None = None) -> int:
         help="Observed ADP runner/module/path background process count.",
     )
     args = parser.parse_args(argv)
+    provided_states = {
+        "com.linzezhang.adp.daily": args.launchagent_daily_disabled,
+        "com.linzezhang.adp.health": args.launchagent_health_disabled,
+        "com.linzezhang.adp.watchdog": args.launchagent_watchdog_disabled,
+    }
+    provided_complete = all(value is not None for value in provided_states.values()) and (
+        args.background_adp_process_count is not None
+    )
+    observed_states: dict[str, bool] = {}
+    observed_process_count: int | None = None
+    observation_errors: list[str] = []
+    if not provided_complete:
+        observed_states, observed_process_count, observation_errors = observe_runtime_boundary()
+    launchagent_states = {
+        label: bool(value) if value is not None else observed_states.get(label, False)
+        for label, value in provided_states.items()
+    }
+    process_count = (
+        args.background_adp_process_count
+        if args.background_adp_process_count is not None
+        else observed_process_count
+    )
+    if provided_complete:
+        observation_mode = "provided"
+    elif all(value is None for value in provided_states.values()) and args.background_adp_process_count is None:
+        observation_mode = "auto_observed"
+    else:
+        observation_mode = "mixed"
     report = build_enablement_preflight_report(
         Path(args.root).resolve(),
         generated_at=args.generated_at,
         open_pr_count=args.open_pr_count,
         adp_allow_smtp_send=args.adp_allow_smtp_send,
-        launchagent_disabled_states={
-            "com.linzezhang.adp.daily": args.launchagent_daily_disabled,
-            "com.linzezhang.adp.health": args.launchagent_health_disabled,
-            "com.linzezhang.adp.watchdog": args.launchagent_watchdog_disabled,
-        },
-        background_adp_process_count=args.background_adp_process_count,
+        launchagent_disabled_states=launchagent_states,
+        background_adp_process_count=process_count,
+        runtime_observation_mode=observation_mode,
+        runtime_observation_errors=observation_errors,
     )
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if report["status"] == "PASS" else 2
