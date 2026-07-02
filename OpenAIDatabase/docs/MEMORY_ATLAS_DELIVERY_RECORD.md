@@ -952,6 +952,46 @@ Machine-readable boundary summary: No production integration; No raw/private dat
 - 再上传 canonical GitHub main tree。
 - Stage 10 必须在 Stage 9 上传验证完成后另起 bounded run。
 
+### Stage 10 Phase 1 Final Acceptance Readiness
+
+Stage 10 Phase 1 状态：
+`phase_10_1_final_acceptance_readiness_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S10P01`。
+
+本 phase 在 Stage 9 上传验证后建立最终验收 readiness 合同，只定义后续 Stage
+10 review 必须证明的 roadmap v2 final acceptance、validator chain、visual
+evidence、release safety、privacy/writeback、upload readiness 和 governance
+sync 七类门槛。不执行整项目复审，不修改 production UI，不运行 production build，
+不安装本地 app，不运行浏览器截图，不部署 Cloudflare，不上传 GitHub main。
+
+新增产物：
+
+- `docs/product/memory_atlas_final_acceptance_readiness_contract.md`
+- `docs/acceptance/memory_atlas_final_acceptance_readiness_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage10_phase1.cjs`
+- `validate:v1.1.6-stage10-phase1`
+
+验收边界：
+
+- Stage 10 Phase 1 contract 和 acceptance 文件必须存在并覆盖七类最终验收
+  readiness surface。
+- `validate:v1.1.6-stage10-phase1` 必须通过。
+- 当前分支必须包含 `origin/main`，证明 Stage 10 从 Stage 9 上传后的 baseline
+  开始。
+- 当前 OpenAIDatabase 改动必须限制在 Stage 10 Phase 1 合同、验收、validator、
+  package script 和记录文件。
+- 本 phase 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写
+  长期记忆、不写 proposal、不执行 agent apply、不上传 GitHub main。
+
+Machine-readable boundary summary: No production UI; No production build; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- Stage 10 Phase 1 完成后，另起 bounded run 执行 Stage 10 整体复审。
+- Stage 10 整体复审通过前，不执行最终 GitHub main 上传。
+
 ### Stage 6 整体复审
 
 Stage 6 状态：`stage_6_review_passed_pending_github_main_upload`。

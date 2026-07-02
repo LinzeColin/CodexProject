@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 10 Phase 1
+
+- Added `docs/product/memory_atlas_final_acceptance_readiness_contract.md`.
+- Added `docs/acceptance/memory_atlas_final_acceptance_readiness_acceptance.md`.
+- Added `validate:v1.1.6-stage10-phase1` to pin the Stage 10 final
+  acceptance readiness contract, acceptance file, records, uploaded-baseline
+  ancestry check, changed-file boundary and runtime non-goals.
+- Marked Stage 10 Phase 1 as
+  `phase_10_1_final_acceptance_readiness_contract_created_pending_stage_review`.
+
+No production UI, CSS, route, app shell, feature flag default, production build,
+browser screenshot run, local app install, Cloudflare live deploy, Access policy
+change, raw/private data read, direct writeback, proposal write, agent apply,
+Stage 10 review, GitHub main upload, or live deploy was added.
+
+Machine-readable boundary summary: No production UI; No production build; No raw/private data read; No direct writeback; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 9 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_6_stage9_review.md`.
