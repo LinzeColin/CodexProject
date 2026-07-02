@@ -194,6 +194,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "本机/launchd 只作为历史与受控运行证据来源",
             "`ADP_ALLOW_SMTP_SEND` 原始值只接受 `UNSET` 或 false-like",
             "当前 MVP 准备只做复审修补、证据同步和防回归补强，不进入 S3/DAILY_OPERATION",
+            "以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
             "python3 tools/verify_acceptance_bundle.py --require-zero P0 P1",
             'python3 tools/verify_daily_operation_readiness.py; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
             'python3 tools/verify_daily_operation_enablement_preflight.py; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
@@ -2364,6 +2365,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "persistent_daily_operation_authorization_missing",
             "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json",
             "不得把 final bundle pass、zero-proof 或 S2PLT04 完成解读成 S3/DAILY_OPERATION 已进入",
+            "以下命令必须从 CodexProject 仓库根目录运行；`tools/` 与 `FINAL_ACCEPTANCE_BUNDLE/` 均为仓库根路径",
         )
         for fact in required_facts:
             self.assertIn(fact, page)
