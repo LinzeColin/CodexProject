@@ -24,6 +24,7 @@ DATA_SOURCE_PAGE = USER_CENTER / "数据源与板块健康.md"
 REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
 TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
 FINAL_BUNDLE_STATUS_PAGE = USER_CENTER / "最终验收包与S3阻断.md"
+MAIL_TEMPLATE_PREVIEW_PAGE = USER_CENTER / "邮件模板预览.md"
 RESTORE_PATH_SAFETY_PAGE = USER_CENTER / "恢复路径安全扫描.md"
 RESTORE_ATOMIC_REPLACEMENT_PAGE = USER_CENTER / "恢复原子替换扫描.md"
 OUTBOX_DELIVERY_PAGE = USER_CENTER / "事务发件箱与消息ID扫描.md"
@@ -2469,6 +2470,32 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "real_smtp_send_enabled=true",
             "scheduler_install_enabled=true",
             "Release 已上传",
+        )
+        for fact in forbidden_facts:
+            self.assertNotIn(fact, page)
+
+    def test_mail_template_preview_is_preview_only_and_fail_closed(self):
+        self.assertTrue(MAIL_TEMPLATE_PREVIEW_PAGE.is_file())
+        page = MAIL_TEMPLATE_PREVIEW_PAGE.read_text(encoding="utf-8")
+
+        required_facts = (
+            "本页只展示 Email V1 模板预览，不证明真实发送、持久 SMTP 授权或 S3/DAILY_OPERATION 已进入",
+            "一次受控真实运行窗口只允许临时切换 `ADP_ALLOW_SMTP_SEND`",
+            "窗口结束后必须恢复为 `UNSET` 或 false-like",
+            "重新运行 enablement preflight，并确认仍 `status=FAIL / exit 2`",
+            "不得把一次受控真实运行当作持久 DAILY_OPERATION 授权",
+            "预览生成不计入已发送邮件",
+            "缺 `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 时不得启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION",
+        )
+        for fact in required_facts:
+            self.assertIn(fact, page)
+
+        forbidden_facts = (
+            "模板预览证明真实发送",
+            "预览生成计入已发送邮件",
+            "邮件模板预览已进入 S3/DAILY_OPERATION",
+            "daily_operation_enabled=true",
+            "scheduler_install_enabled=true",
         )
         for fact in forbidden_facts:
             self.assertNotIn(fact, page)
