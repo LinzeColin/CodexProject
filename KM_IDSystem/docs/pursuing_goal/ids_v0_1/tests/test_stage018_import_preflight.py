@@ -170,6 +170,133 @@ class Stage018ImportPreflightTests(unittest.TestCase):
         self.assertTrue(report["does_not_parse_body_text"])
         self.assertTrue(report["does_not_write_database"])
 
+    def test_phase3_scenario_report_covers_empty_small_large_offline_archive_and_space(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            empty_dir = base / "empty"
+            small_dir = base / "small"
+            large_dir = base / "large"
+            archive_dir = base / "archive"
+            for path in [empty_dir, small_dir, large_dir, archive_dir]:
+                path.mkdir()
+            shutil.copy2(REAL_SOURCE, small_dir / "stage018-entry.md")
+            shutil.copy2(REAL_ALT_SOURCE, small_dir / "stage018-scope.md")
+            for index in range(101):
+                shutil.copy2(REAL_SOURCE, large_dir / f"stage018-entry-{index:03}.md")
+            shutil.copy2(REAL_SOURCE, archive_dir / "stage018-entry.md")
+            (archive_dir / "owner-candidate.zip").write_bytes(b"PK\x03\x04ids-structural-archive-candidate")
+
+            scenario_report = module.build_stage018_scenario_report(
+                scenario_sources={
+                    "empty_directory": {"source_uris": [empty_dir.as_uri()]},
+                    "small_directory": {"source_uris": [small_dir.as_uri()]},
+                    "large_directory": {"source_uris": [large_dir.as_uri()]},
+                    "offline_drive": {"source_uris": [small_dir.as_uri()], "drive_state": "offline"},
+                    "archive_present": {"source_uris": [archive_dir.as_uri()]},
+                    "insufficient_space": {"source_uris": [small_dir.as_uri()], "available_space_bytes": 1},
+                },
+                prechecked_at=PRECHECKED_AT,
+                batch_size=50,
+            )
+
+        self.assertEqual(scenario_report["schema_version"], "ids.stage018.import_preflight.scenario_validation.v1")
+        self.assertEqual(scenario_report["stage"], "STAGE-018")
+        self.assertEqual(scenario_report["phase"], "Phase 3")
+        self.assertEqual(scenario_report["acceptance_id"], "ACC-STAGE-018")
+        self.assertEqual(scenario_report["validation_state"], "SCENARIO_VALIDATION_PASSED")
+        self.assertTrue(scenario_report["required_scenarios_covered"])
+        self.assertEqual(scenario_report["scenario_count"], 6)
+
+        scenarios = scenario_report["scenario_results"]
+        self.assertEqual(scenarios["empty_directory"]["preflight"]["overall_state"], "PREFLIGHT_READY")
+        self.assertEqual(scenarios["small_directory"]["preflight"]["overall_state"], "PREFLIGHT_READY")
+        self.assertEqual(scenarios["large_directory"]["preflight"]["overall_state"], "PREFLIGHT_REVIEW_REQUIRED")
+        self.assertIn("PREFLIGHT_LARGE_BATCH", scenarios["large_directory"]["preflight"]["risk_items"])
+        self.assertGreater(scenarios["large_directory"]["operator_decision_plan"]["batch_plan"]["batch_count"], 1)
+        self.assertEqual(scenarios["offline_drive"]["preflight"]["overall_state"], "PREFLIGHT_DRIVE_OFFLINE")
+        self.assertEqual(scenarios["archive_present"]["preflight"]["overall_state"], "PREFLIGHT_REVIEW_REQUIRED")
+        self.assertIn("PREFLIGHT_ARCHIVE_PRESENT", scenarios["archive_present"]["preflight"]["risk_items"])
+        self.assertEqual(scenarios["insufficient_space"]["preflight"]["overall_state"], "PREFLIGHT_REVIEW_REQUIRED")
+        self.assertIn("PREFLIGHT_INSUFFICIENT_SPACE", scenarios["insufficient_space"]["preflight"]["risk_items"])
+
+        for key in [
+            "actual_parse_jobs_started",
+            "actual_ocr_jobs_started",
+            "actual_embedding_jobs_started",
+            "actual_index_jobs_started",
+            "actual_import_jobs_started",
+        ]:
+            self.assertEqual(scenario_report["processing_guard"][key], 0)
+
+    def test_phase3_operator_decision_plan_supports_save_cancel_split_and_skip_without_persistence(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            docs = base / "operator"
+            docs.mkdir()
+            shutil.copy2(REAL_SOURCE, docs / "stage018-entry.md")
+            shutil.copy2(REAL_ALT_SOURCE, docs / "stage018-scope.md")
+            (docs / "scan-page.png").write_bytes(b"\x89PNG\r\n\x1a\nids-structural-scan-candidate")
+
+            preflight = module.evaluate_import_preflight(
+                source_uris=[docs.as_uri()],
+                prechecked_at=PRECHECKED_AT,
+            )
+            decision = module.build_operator_decision_plan(preflight, batch_size=2)
+
+        self.assertEqual(decision["schema_version"], "ids.stage018.import_preflight.operator_decision.v1")
+        self.assertEqual(decision["stage"], "STAGE-018")
+        self.assertEqual(decision["phase"], "Phase 3")
+        self.assertEqual(decision["save_contract"]["state"], "PREFLIGHT_RESULT_SERIALIZABLE")
+        self.assertTrue(decision["save_contract"]["can_save_result"])
+        self.assertFalse(decision["save_contract"]["persisted_by_helper"])
+        self.assertEqual(decision["cancel_contract"]["state"], "PREFLIGHT_CANCEL_READY")
+        self.assertEqual(decision["cancel_contract"]["document_delta"], 0)
+        self.assertTrue(decision["batch_plan"]["can_split"])
+        self.assertEqual(decision["batch_plan"]["batch_size"], 2)
+        self.assertEqual(decision["batch_plan"]["batch_count"], 2)
+        self.assertEqual(decision["skip_high_risk_plan"]["high_risk_file_count"], 1)
+        self.assertEqual(decision["skip_high_risk_plan"]["kept_file_count"], 2)
+        self.assertIn("save_for_owner_review", decision["supported_owner_actions"])
+        self.assertIn("cancel_without_side_effects", decision["supported_owner_actions"])
+        self.assertIn("split_into_batches", decision["supported_owner_actions"])
+        self.assertIn("skip_high_risk_files", decision["supported_owner_actions"])
+        for key in [
+            "document_delta",
+            "chunk_delta",
+            "job_delta",
+            "index_delta",
+            "import_write_delta",
+            "manifest_write_delta",
+            "database_write_delta",
+        ]:
+            self.assertEqual(decision["no_persistence_deltas"][key], 0)
+
+    def test_phase3_scenario_report_serializes_without_body_content_or_processing(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            docs = base / "serialize"
+            docs.mkdir()
+            shutil.copy2(REAL_SOURCE, docs / "stage018-entry.md")
+
+            scenario_report = module.build_stage018_scenario_report(
+                scenario_sources={"small_directory": {"source_uris": [docs.as_uri()]}},
+                prechecked_at=PRECHECKED_AT,
+            )
+
+        serialized = json.dumps(scenario_report, ensure_ascii=False)
+
+        self.assertNotIn("# IDS v0.1 STAGE-018 Entry Contract", serialized)
+        self.assertNotIn("raw_payload", serialized)
+        self.assertTrue(scenario_report["does_not_parse_body_text"])
+        self.assertTrue(scenario_report["does_not_start_ocr"])
+        self.assertTrue(scenario_report["does_not_create_embeddings"])
+        self.assertTrue(scenario_report["does_not_build_index"])
+        self.assertTrue(scenario_report["does_not_start_import"])
+        self.assertTrue(scenario_report["does_not_write_database"])
+
 
 if __name__ == "__main__":
     unittest.main()

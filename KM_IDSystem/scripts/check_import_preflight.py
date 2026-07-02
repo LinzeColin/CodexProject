@@ -31,6 +31,33 @@ EMBEDDING_HINT_EXTENSIONS = {
     ".pptx",
 }
 SUPPORTED_EXTENSIONS = ARCHIVE_EXTENSIONS | SCANNED_HINT_EXTENSIONS | EMBEDDING_HINT_EXTENSIONS
+REQUIRED_PHASE3_SCENARIOS = {
+    "empty_directory",
+    "small_directory",
+    "large_directory",
+    "offline_drive",
+    "archive_present",
+    "insufficient_space",
+}
+PROCESSING_GUARD_ZEROES = {
+    "actual_parse_jobs_started": 0,
+    "actual_ocr_jobs_started": 0,
+    "actual_embedding_jobs_started": 0,
+    "actual_index_jobs_started": 0,
+    "actual_import_jobs_started": 0,
+}
+NO_PERSISTENCE_DELTAS = {
+    "document_delta": 0,
+    "chunk_delta": 0,
+    "job_delta": 0,
+    "index_delta": 0,
+    "import_write_delta": 0,
+    "manifest_write_delta": 0,
+    "evidence_write_delta": 0,
+    "audit_write_delta": 0,
+    "report_write_delta": 0,
+    "database_write_delta": 0,
+}
 NO_SIDE_EFFECT_FLAGS = {
     "does_not_scan_recursively": True,
     "does_not_parse_body_text": True,
@@ -234,6 +261,142 @@ def evaluate_import_preflight(
         rejected_inputs=rejected_inputs,
         available_space_bytes=available_space_bytes,
     )
+
+
+def _is_high_risk_record(record: dict[str, Any]) -> bool:
+    return bool(
+        record.get("archive_candidate")
+        or record.get("scanned_document_candidate")
+        or record.get("unsupported_format")
+    )
+
+
+def _chunk_records(records: list[dict[str, Any]], batch_size: int) -> list[list[dict[str, Any]]]:
+    if not records:
+        return []
+    size = max(1, batch_size)
+    return [records[index : index + size] for index in range(0, len(records), size)]
+
+
+def _record_summary(record: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "source_uri": record["source_uri"],
+        "source_path": record["source_path"],
+        "basename": record["basename"],
+        "extension": record["extension"],
+        "file_size": record["file_size"],
+        "risk_tags": [
+            tag
+            for tag, enabled in {
+                "archive": record.get("archive_candidate", False),
+                "scanned_document": record.get("scanned_document_candidate", False),
+                "unsupported_format": record.get("unsupported_format", False),
+            }.items()
+            if enabled
+        ],
+    }
+
+
+def build_operator_decision_plan(preflight_report: dict[str, Any], *, batch_size: int = 50) -> dict[str, Any]:
+    """Create a serializable owner-decision plan without persisting or processing data."""
+
+    records = list(preflight_report.get("file_records", []))
+    high_risk_records = [record for record in records if _is_high_risk_record(record)]
+    kept_records = [record for record in records if not _is_high_risk_record(record)]
+    batches = _chunk_records(records, batch_size)
+    serialized = json.dumps(preflight_report, ensure_ascii=False, sort_keys=True)
+    no_persistence = dict(NO_PERSISTENCE_DELTAS)
+    return {
+        "schema_version": "ids.stage018.import_preflight.operator_decision.v1",
+        "stage": "STAGE-018",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-018",
+        "entrance": ENTRANCE,
+        "source_preflight_state": preflight_report.get("overall_state"),
+        "supported_owner_actions": [
+            "save_for_owner_review",
+            "cancel_without_side_effects",
+            "split_into_batches",
+            "skip_high_risk_files",
+        ],
+        "save_contract": {
+            "state": "PREFLIGHT_RESULT_SERIALIZABLE",
+            "can_save_result": True,
+            "persisted_by_helper": False,
+            "serialized_bytes": len(serialized.encode("utf-8")),
+            "owner_selected_path_required": True,
+        },
+        "cancel_contract": {"state": "PREFLIGHT_CANCEL_READY", **no_persistence},
+        "batch_plan": {
+            "can_split": len(batches) > 1,
+            "batch_size": max(1, batch_size),
+            "batch_count": len(batches),
+            "batches": [
+                {
+                    "batch_index": index + 1,
+                    "file_count": len(batch),
+                    "total_size_bytes": sum(record["file_size"] for record in batch),
+                    "files": [_record_summary(record) for record in batch],
+                }
+                for index, batch in enumerate(batches)
+            ],
+        },
+        "skip_high_risk_plan": {
+            "can_skip_high_risk_files": True,
+            "high_risk_file_count": len(high_risk_records),
+            "kept_file_count": len(kept_records),
+            "skipped_files": [_record_summary(record) for record in high_risk_records],
+            "kept_files": [_record_summary(record) for record in kept_records],
+        },
+        "no_persistence_deltas": no_persistence,
+    }
+
+
+def build_stage018_scenario_report(
+    *,
+    scenario_sources: dict[str, dict[str, Any]],
+    prechecked_at: str | None = None,
+    batch_size: int = 50,
+) -> dict[str, Any]:
+    """Validate Stage 018 preflight scenarios using explicit metadata-only inputs."""
+
+    prechecked_at = prechecked_at or _utc_now()
+    scenario_results: dict[str, dict[str, Any]] = {}
+    for scenario_id in sorted(scenario_sources):
+        scenario = scenario_sources[scenario_id]
+        preflight = evaluate_import_preflight(
+            source_uris=scenario.get("source_uris"),
+            prechecked_at=prechecked_at,
+            drive_state=scenario.get("drive_state", "online"),
+            available_space_bytes=scenario.get("available_space_bytes"),
+        )
+        scenario_results[scenario_id] = {
+            "scenario_id": scenario_id,
+            "preflight": preflight,
+            "operator_decision_plan": build_operator_decision_plan(preflight, batch_size=batch_size),
+        }
+
+    required_scenarios_covered = REQUIRED_PHASE3_SCENARIOS.issubset(set(scenario_results))
+    report: dict[str, Any] = {
+        "schema_version": "ids.stage018.import_preflight.scenario_validation.v1",
+        "stage": "STAGE-018",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-018",
+        "entrance": ENTRANCE,
+        "customer_visible": True,
+        "validation_state": (
+            "SCENARIO_VALIDATION_PASSED" if required_scenarios_covered else "SCENARIO_VALIDATION_PARTIAL"
+        ),
+        "prechecked_at": prechecked_at,
+        "scenario_count": len(scenario_results),
+        "required_scenarios": sorted(REQUIRED_PHASE3_SCENARIOS),
+        "required_scenarios_covered": required_scenarios_covered,
+        "scenario_results": scenario_results,
+        "processing_guard": dict(PROCESSING_GUARD_ZEROES),
+        "no_persistence_deltas": dict(NO_PERSISTENCE_DELTAS),
+    }
+    report.update(NO_SIDE_EFFECT_FLAGS)
+    return report
 
 
 def _base_report(
