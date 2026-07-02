@@ -699,12 +699,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "当前这些 final-bundle runtime 缺口已被 Stage 2 integrated acceptance 消费",
             readme,
         )
+        self.assertIn(
+            "这在历史当时不是 S2PLT02/S2PLT04/S2PMT07 accepted；当前对应 final-bundle runtime 证据已被 Stage 2 integrated acceptance 消费",
+            readme,
+        )
+        self.assertIn(
+            "这在历史当时不是 S2PLT02 accepted；当前 S2PLT02 terminal proof 已进入 final bundle 并被 Stage 2 integrated acceptance 消费",
+            readme,
+        )
 
         forbidden_phrases = (
             "`plan-final-bundle-prerequisites` 当前已经在顶层给出下一条可执行只读命令",
             "`validate-final-acceptance-bundle` 当前在顶层直接显示 `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`",
             "这意味着最终验收入口仍 blocked：下一步仍是 S2PLT02 terminal delivery proof 的真实 SMTP/scheduler 捕获窗口",
             "`plan-final-bundle-prerequisites` 当前已经把 S2PLT02 capture plan 的真实 runtime 下一步暴露到顶层",
+            "。这不是 S2PLT02/S2PLT04/S2PMT07 accepted",
+            "- 这不是 S2PLT02 accepted；",
         )
         for phrase in forbidden_phrases:
             with self.subTest(phrase=phrase):
