@@ -1,5 +1,6 @@
 import csv
 import re
+import unicodedata
 import unittest
 import urllib.parse
 from pathlib import Path
@@ -43,6 +44,35 @@ def _section(text: str, start_heading: str, end_heading: str) -> str:
     return text[start:end]
 
 
+def _github_heading_slug(heading: str) -> str:
+    heading = re.sub(r"`([^`]*)`", r"\1", heading)
+    heading = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", heading)
+    heading = re.sub(r"<[^>]+>", "", heading)
+    heading = heading.strip().lower()
+    chars = []
+    for char in heading:
+        category = unicodedata.category(char)
+        if char.isalnum() or category.startswith(("L", "N")) or char in {" ", "-"}:
+            chars.append(char)
+    slug = "".join(chars)
+    slug = re.sub(r"\s+", "-", slug).strip("-")
+    return re.sub(r"-+", "-", slug)
+
+
+def _markdown_anchors(path: Path) -> set[str]:
+    text = path.read_text(encoding="utf-8")
+    anchors = set(re.findall(r"id=[\"']([^\"']+)[\"']", text))
+    seen: dict[str, int] = {}
+    for match in re.finditer(r"^(#{1,6})\s+(.+?)\s*#*\s*$", text, flags=re.MULTILINE):
+        base = _github_heading_slug(match.group(2))
+        if not base:
+            continue
+        count = seen.get(base, 0)
+        seen[base] = count + 1
+        anchors.add(base if count == 0 else f"{base}-{count}")
+    return anchors
+
+
 class UserCenterCandidatePoolTests(unittest.TestCase):
     def test_owner_facing_local_markdown_links_resolve_to_existing_files(self):
         pages = [REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", *USER_CENTER.glob("*.md")]
@@ -57,8 +87,18 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
                 if not href_without_anchor:
                     continue
                 target = (page_path.parent / urllib.parse.unquote(href_without_anchor)).resolve()
+                try:
+                    target.relative_to(REPO_ROOT)
+                except ValueError:
+                    missing.append(f"{page_path.relative_to(REPO_ROOT)} escapes repo -> {href}")
+                    continue
                 if not target.exists():
                     missing.append(f"{page_path.relative_to(REPO_ROOT)} -> {href}")
+                    continue
+                if "#" in href and target.suffix == ".md":
+                    anchor = urllib.parse.unquote(href.split("#", 1)[1])
+                    if anchor and anchor not in _markdown_anchors(target):
+                        missing.append(f"{page_path.relative_to(REPO_ROOT)} missing anchor -> {href}")
 
         self.assertEqual(missing, [])
 
