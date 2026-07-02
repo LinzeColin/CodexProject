@@ -78,7 +78,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("integrated_production_acceptance_state_hash=4b88b2edd8fe2eae7ee63f8b512eb713501805725f5fcdf3fb6363f0df3b5453", current_state)
         self.assertIn("integrated_production_acceptance.json", current_state)
         self.assertIn("daily_operation_enabled=false", current_state)
-        self.assertIn("ADP_ALLOW_SMTP_SEND=false", current_state)
+        self.assertIn("ADP_ALLOW_SMTP_SEND` raw value is `UNSET` or false-like", current_state)
         self.assertIn("LaunchAgents disabled", current_state)
         self.assertIn("no background ADP process", current_state)
         self.assertIn("No DAILY_OPERATION, standing SMTP permission, scheduler enable/install, Release, or production restore is claimed", current_state)
@@ -396,7 +396,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
         self.assertIn("baseline_counts_mutated: false", assurance)
         self.assertIn("open_pr_count=0", assurance)
-        self.assertIn("ADP_ALLOW_SMTP_SEND=false", assurance)
+        self.assertIn("ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like", assurance)
+        self.assertNotIn(
+            "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0",
+            assurance,
+        )
         self.assertIn("LaunchAgents disabled", assurance)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json", assurance)
         self.assertIn("DAILY_OPERATION owner decision is recorded as keep-disabled", assurance)
@@ -417,6 +421,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("daily_operation_persistent_authorization_request_ready", generator)
         self.assertIn("daily_operation_persistent_authorization_missing", generator)
         self.assertIn("production_boundary_preflight_ready", generator)
+        self.assertIn("ADP_SMTP_SEND_RAW_VALUE_EVIDENCE", generator)
+        self.assertIn("ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like", generator)
+        self.assertNotIn(
+            "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process",
+            generator,
+        )
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", generator)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", generator)
