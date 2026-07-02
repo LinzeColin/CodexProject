@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 15:54:22 Australia/Sydney
+更新时间：2026-07-02 16:20:38 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -93,11 +93,18 @@
 
 ## 最近治理与历史记录
 
+## 2026-07-02 16:20:38 Australia/Sydney - 用户中心历史 SMTP 开关口径已清理
+
+- 本页历史记录不再把当前安全边界写成必须存在“持久显式 false”环境变量。
+- 历史运行条目只说明当时 `ADP_ALLOW_SMTP_SEND` 为 false-like；当前复核仍只接受 `UNSET` 或 false-like。
+- truthy 值、显式持久授权文件缺失、LaunchAgents 非 disabled 或后台 ADP 进程命中，都必须停止并回报。
+- 本轮仍只做 MVP 准备与复审修补，不授权 S3/DAILY_OPERATION，不启用 SMTP、scheduler、Release 或 production restore。
+
 ## 2026-07-02 15:54:22 Australia/Sydney - 当前治理 SMTP 原始值证据口径已同步
 
 - 当前 `OWNER_STATUS`、`ASSURANCE_STATUS`、当前状态测试和治理生成器中的 SMTP 边界证据，统一使用 `ADP_ALLOW_SMTP_SEND` 原始值口径。
 - 当前允许的安全状态仍是 `UNSET` 或 false-like；truthy 必须停止并回报。
-- 下方 2026-07-01 历史记录里出现的 `ADP_ALLOW_SMTP_SEND=false`，只表示当时运行证据或当时环境事实，不是当前要求必须存在一个持久显式 `false` 环境变量。
+- 下方 2026-07-01 历史记录只保留“当时 false-like”的运行证据或环境事实，不是当前要求必须存在一个持久显式 `false` 环境变量。
 - 本轮仍不授权 S3/DAILY_OPERATION，不启用 SMTP、scheduler、Release 或 production restore；缺显式持久授权 artifact 时继续保持 `daily_operation_enabled=false`。
 
 ## 2026-07-02 15:07:43 Australia/Sydney - 后台进程扫描停止门已同步到路线图
@@ -158,7 +165,7 @@
 - 绑定 commit 为 `90b297a55451b691c3e0270cfaa64e5d58c5a519`，tree 为 `d92ec4a0cd884641263c7979f7a5c625229ae83c`。
 - 被绑定决策仍是 `owner_selected_option=A`、`decision=keep_daily_operation_disabled_no_persistent_authorization`、`state_hash=d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4`。
 - 真正的持久授权文件仍不存在：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。因此 `persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`。
-- 运行边界保持关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；本轮未启用 SMTP、scheduler、Release、production restore 或 DAILY_OPERATION。
+- 运行边界保持关闭：`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；本轮未启用 SMTP、scheduler、Release、production restore 或 DAILY_OPERATION。
 - 证据：[owner A mainline 证据清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION-20260701.json) / [owner A mainline 阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTATION.md) / [被回应的 request-only 授权请求包](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json)。
 
 ## 2026-07-01 23:14:53 Australia/Sydney - owner 已选择 A：继续禁用 DAILY_OPERATION
@@ -166,7 +173,7 @@
 - `S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED` 已记录 owner 对持久 DAILY_OPERATION 授权请求的回应：`owner_selected_option=A`。
 - 当前决策为 `decision=keep_daily_operation_disabled_no_persistent_authorization`，`result=pass_owner_selected_option_a_keep_daily_operation_disabled_after_request_no_runtime_enablement`，`state_hash=d793c63910fa3b1e467e0b6b1c78deb63e87a44f02e8507ec363d174b9813fb4`。
 - 真正的持久授权文件仍不存在：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。因此 `persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`。
-- 运行边界保持关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；本轮未启用 SMTP、scheduler、Release、production restore 或 DAILY_OPERATION。
+- 运行边界保持关闭：`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；本轮未启用 SMTP、scheduler、Release、production restore 或 DAILY_OPERATION。
 - 证据：[owner A 决策清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-KEEP-DISABLED-20260701.json) / [owner A 阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_KEEP_DISABLED.md) / [被回应的 request-only 授权请求包](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json)。
 
 ## 2026-07-01 22:51:19 Australia/Sydney - 持久 DAILY_OPERATION 授权请求包 mainline 证据已绑定
@@ -174,7 +181,7 @@
 - `S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION` 已把 request-only 持久 DAILY_OPERATION 授权请求包绑定到 mainline：`binding_status=commit_bound`，`result_commit=4f72c42ea62275fdd18285cf189070c6aa76bd71`，`result_tree_hash=0f0772e4250330372d58456a355e205327dff933`。
 - 被绑定的请求包仍只是 owner 决策请求：`request_only=true`，`state_hash=be561b7e01250e75d471bbdbd2a4df2e048d8b287bb310d202c8549b2aefb3ee`。
 - 真正的持久授权文件仍缺失：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`；缺文件时不得启用 DAILY_OPERATION。
-- 运行边界仍关闭：`persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`、`new_smtp_run_executed_by_this_attestation=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled。
+- 运行边界仍关闭：`persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`、`new_smtp_run_executed_by_this_attestation=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled。
 - 证据：[request mainline 证据清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION-20260701.json) / [request mainline 阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTATION.md) / [被绑定的授权请求包](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json)。
 
 ## 2026-07-01 22:22:48 Australia/Sydney - 持久 DAILY_OPERATION 授权请求包已准备好
@@ -183,7 +190,7 @@
 - 该请求包只是请求 owner 决策，不是授权文件：`request_only=true`、`persistent_daily_operation_authorized=false`、`daily_operation_enablement_allowed_by_this_request=false`。
 - 真正的持久授权文件仍缺失：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`；缺失时不得启用 DAILY_OPERATION。
 - 当前 request state hash：`be561b7e01250e75d471bbdbd2a4df2e048d8b287bb310d202c8549b2aefb3ee`，运行清单为 `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json`。
-- 运行边界仍关闭：`daily_operation_enabled=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- 运行边界仍关闭：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
 - 默认下一步：owner 选择继续禁用，或另行创建显式持久授权文件后再跑 persistent authorization gate 和单独 enablement preflight。
 - 证据：[授权请求包](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json) / [请求包运行清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST.md)。
 
@@ -192,7 +199,7 @@
 - `S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION` 已把上一轮持久 DAILY_OPERATION 授权门绑定到 mainline：`binding_status=commit_bound`，`result_commit=f8e34c0ce3919945ca055dd781332128c72dfc4a`，`result_tree_hash=21090213e25901ab8342dbd710c64da57bd619b7`。
 - 被绑定的授权门仍是阻断状态：`status=blocked_persistent_daily_operation_authorization_missing`，`state_hash=f9ef81e7a07bca57e11876e2a53d3d18e9148d6da7c8919002ce6cfb55f8ef61`。
 - 当前仍缺少显式持久运行授权文件：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`；缺文件时不得启用持久日常运行。
-- 运行边界仍关闭：`persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`、`new_smtp_run_executed_by_this_attestation=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled。
+- 运行边界仍关闭：`persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`、`new_smtp_run_executed_by_this_attestation=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled。
 - 证据：[mainline 证据清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-MAINLINE-ATTESTATION-20260701.json) / [mainline 阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_GATE_MAINLINE_ATTESTATION.md) / [被绑定的授权门 artifact](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json)。
 
 ## 2026-07-01 21:37:03 Australia/Sydney - 持久 DAILY_OPERATION 授权门已阻断
@@ -202,7 +209,7 @@
 - 授权门证据已写入：`state_hash=f9ef81e7a07bca57e11876e2a53d3d18e9148d6da7c8919002ce6cfb55f8ef61`，阻断原因为 `persistent_daily_operation_authorization_missing`。
 - DAILY_OPERATION 仍未授权、未启用：`owner_daily_operation_authorization_recorded=false`、`persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`、`daily_operation_persistent_authorization_enablement_allowed=false`。
 - 2026-07-01 的一次受控真实运行验收和 21:10 的 keep-disabled 决策都不是持久 DAILY_OPERATION 授权。
-- 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- 运行边界仍关闭：`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
 - 默认下一步：只有出现新的显式 owner 持久 DAILY_OPERATION 授权文件并通过单独 enablement preflight，才能继续日常运行启用；否则保持禁用。
 - 证据：[持久授权门 artifact](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json) / [运行清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_PERSISTENT_AUTHORIZATION_GATE.md)。
 
@@ -212,7 +219,7 @@
 - 决策 artifact 已通过校验：`status=pass_daily_operation_owner_decision_recorded_keep_disabled`，`state_hash=803dc436b9c27b99fa82109604184fd8bc028c32eac9a40545e0824ce7f3972b`。
 - DAILY_OPERATION 仍未授权、未启用：`owner_daily_operation_authorization_recorded=false`、`persistent_daily_operation_authorized=false`、`daily_operation_enabled=false`。
 - Stage 2 integrated acceptance 仍保持：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
-- 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- 运行边界仍关闭：`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
 - 默认下一步：只有出现新的显式 owner persistent DAILY_OPERATION authorization artifact 并通过单独 enablement gate，才能继续 `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`；否则保持禁用。
 - 证据：[DAILY_OPERATION owner 决策 artifact](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json) / [运行清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_KEEP_DISABLED.md)。
 
@@ -222,7 +229,7 @@
 - 技术预检已通过：`preflight_checks_passed=true`、`failed_checks=[]`、`production_preflight_status=pass`、`state_hash=a856ee3d1532d8973e11bb502f76f7320f9816904b52aab64975112c764de55e`。
 - 已消费的证据：`github_open_pr_count_zero_api_v1`、本机 local-runner env 文件的 SMTP secret key-presence metadata `adp_local_runner_env_file_secret_presence_v1`（只记录 key 名称，不记录 secret value）、ADP scoped git artifact hygiene。
 - Stage 2 integrated acceptance 仍保持：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
-- DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
 - 默认下一步：由 owner 记录 `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION`，选择授权持久 DAILY_OPERATION 或保持禁用；授权前不得启用生产运行。
 - 证据：[secret / artifact 修复清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_SECRET_ARTIFACT_REPAIR.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
 
@@ -232,7 +239,7 @@
 - `github_open_pr_count_zero_api_v1` 已作为经复审的 GitHub open PR count 等价证据，解除原 `gh` CLI blocker。
 - 剩余失败检查仍是 `production_preflight_passed`。当前具体阻断：缺 `ADP_SMTP_HOST`、`ADP_SMTP_PORT`、`ADP_SMTP_USERNAME`、`ADP_SMTP_PASSWORD` 这四个 SMTP secret env 名称；既有 `OpenAIDatabase/session_history` archive 文件触发 production git artifact hygiene blocker。
 - Stage 2 integrated acceptance 仍保持：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
-- DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
 - 默认下一步：补齐 SMTP secret env 名称并通过 OpenAIDatabase owning workflow 处理大文件治理；预检通过前不得请求 persistent DAILY_OPERATION 授权。
 - 证据：[gh 等价修复清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_GH_EQUIVALENT_REPAIR.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
 
@@ -241,7 +248,7 @@
 - `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT` 已生成并通过 state validator；结果为 `status=blocked`，不是日常运行启用。
 - 失败检查：`production_preflight_passed`。具体阻断：missing `gh` CLI；缺 `ADP_SMTP_HOST`、`ADP_SMTP_PORT`、`ADP_SMTP_USERNAME`、`ADP_SMTP_PASSWORD` 这四个 SMTP secret env 名称；既有 `OpenAIDatabase/session_history` archive 文件触发 production git artifact hygiene blocker。
 - Stage 2 integrated acceptance 仍保持：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
-- DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
 - 默认下一步：先修复 DAILY_OPERATION 预检前置条件，再重跑预检；预检通过前不得请求 persistent DAILY_OPERATION 授权。
 - 证据：[预检清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
 
@@ -249,7 +256,7 @@
 
 - `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 已写入并通过校验：`status=pass_integrated_production_accepted_evidence_written_no_runtime_enablement`。
 - 当前 Stage 2 integrated production acceptance 已记录：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
-- 日常运行仍关闭：`daily_operation_enabled=false`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
+- 日常运行仍关闭：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
 - 下一步只允许进入 `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`，即单独请求 DAILY_OPERATION 授权并再次证明运行边界安全。
 - 证据：[integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json) / [运行清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_WRITE.md)。
 
@@ -259,7 +266,7 @@
 - Owner decision artifact gate 已通过：`state_hash=b1ce1cd2749ac3712dae378734b39d1354fff8613c5f875536beed44c2746e6a`。
 - Acceptance write gate 已允许：`acceptance_write_gate_allowed=true`，`state_hash=565fb28fab914f9dc6a79fa0dd0144556516a5c3b0d22de5dddefc3e0d95c89b`，`failed_checks=[]`。
 - 这在当时只允许下一步写入 `INTEGRATED_PRODUCTION_ACCEPTED` 证据；当前该证据已写入，仍未启用的是 `DAILY_OPERATION`。
-- 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
+- 运行边界仍关闭：`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[owner 决策 artifact](../../FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json) / [artifact gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-ARTIFACT-GATE-20260701.json) / [write gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json)。
 
 ## 2026-07-01 17:35:58 Australia/Sydney - 历史：Owner 决策请求模板已公开，但不是批准
@@ -275,14 +282,14 @@
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE` 已由 CLI 生成并通过 validator：`write_gate_precheck_ready=true`，`failed_checks=[]`，`state_hash=48bd21b374fb86b91ab1a684af5bc8f5d2d7a7be752b85d75fe9f8bb9f43bcd8`。
 - 这个历史 gate 已消费 owner decision packet、final bundle、受控真实运行验收和去重证据，但当时 `acceptance_write_gate_allowed=false`，因为还没有显式 owner production-boundary acceptance/write decision。
 - 后续 owner 决策已记录，新 write gate 已允许，且 `INTEGRATED_PRODUCTION_ACCEPTED` 证据已写入；当前仍未启用的是 `DAILY_OPERATION`。
-- 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
+- 运行边界仍关闭：`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[write gate 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE-20260701.json) / [owner decision packet 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json) / [受控运行验收清单](../../governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json)。这是历史当时的 write-gate 语境；当前 Stage 2 acceptance 已记录，S3/DAILY_OPERATION 仍未进入。
 
 ## 2026-07-01 17:12:07 Australia/Sydney - 受控真实运行验收复核已通过，未重复发送
 
 - 用户授权一次前台真实运行验收：`local-runner daily --allow-smtp-send` 复用 `2026-07-01` 既有 daily input report。
 - 结果：`status=pass`，`sent_mail_count=4/4`，M1/M2/M3/M4 均有真实 sent 证据；本轮 `newly_sent_mail_products=[]`，因为同日 ledger 已有四封 sent refs，所以没有重复补发。
-- 运行后安全状态：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled，无 ADP 后台进程。
+- 运行后安全状态：`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled，无 ADP 后台进程。
 - 这次验收在历史当时只证明受控前台运行和去重边界；后续已写入 Stage 2 acceptance，当前仍未启用 `DAILY_OPERATION`、scheduler、Release 或 production restore。
 - 证据：[受控运行验收清单](../../governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_AUTHORIZED_CONTROLLED_REAL_RUN_ACCEPTANCE.md) / runtime report sha256 `123d516e640aa6549b32ff50ce927a71adc7a765175f8a16ea6a6f6be50f401e`。
 
@@ -291,14 +298,14 @@
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET` 已由 CLI 生成并通过 validator：`packet_ready=true`，`failed_checks=[]`，`state_hash=de807ff8c395bfda9db6edb4aadacb1e1bdb0e076b4025ed3daca7a2402da289`。
 - 这个 packet 只把 owner 下一步选择变成可审查证据：可以记录 production-boundary decision evidence 后进入单独 final acceptance write gate，或暂停在 final bundle ready 状态。
 - 历史当时仍未记录 owner approval：`owner_production_boundary_decision_recorded=false`，未写 `INTEGRATED_PRODUCTION_ACCEPTED`；当前 owner 决策和 Stage 2 acceptance 已写入，仍未启用的是 `DAILY_OPERATION`。
-- 运行边界仍关闭：持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
+- 运行边界仍关闭：`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[owner decision packet 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION-PACKET-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_OWNER_DECISION_PACKET.md) / [preflight 清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json)。这是历史当时的决策包语境；当前 Stage 2 acceptance 已记录，S3/DAILY_OPERATION 仍未进入。
 
 ## 2026-07-01 15:16:36 Australia/Sydney - Production-boundary preflight 已通过，仍等待 owner 决策
 
 - `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT` 已通过所有 configured checks，`failed_checks=[]`，`state_hash=6fc89cd8b1d83a2501c54aadd3e6ad04dcf209ec3898d7c0e65d8e65ae9ab4e5`。
-- 这只说明 final bundle、zero proof、final command、independent review、no-production attestation、open PR、持久 SMTP 开关、LaunchAgents 和后台进程状态满足进入生产边界决策的条件。
-- 历史当时仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`；当前 Stage 2 acceptance 已写入，仍未启用的是 `DAILY_OPERATION`，持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents disabled。
+- 这只说明 final bundle、zero proof、final command、independent review、no-production attestation、open PR、SMTP 开关原始值、LaunchAgents 和后台进程状态满足进入生产边界决策的条件。
+- 历史当时仍未写 `INTEGRATED_PRODUCTION_ACCEPTED`；当前 Stage 2 acceptance 已写入，仍未启用的是 `DAILY_OPERATION`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled。
 - 历史当时可执行动作是 `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-OWNER-DECISION`：记录 owner production-boundary decision evidence。当前该决策和 Stage 2 acceptance 已写入；仍不得自动启用 SMTP/scheduler/Release/production restore。
 - 证据：[preflight 运行清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_PREFLIGHT.md) / [最终验收包 manifest](../../FINAL_ACCEPTANCE_BUNDLE/manifest.json)。这是历史当时的 preflight 语境；当前 Stage 2 acceptance 已记录，S3/DAILY_OPERATION 仍未进入。
 
@@ -307,7 +314,7 @@
 - `FINAL_ACCEPTANCE_BUNDLE/manifest.json` 已生成并通过 final bundle validator；`missing_items=[]`，S2PLT04 completion report、final command execution、next-agent handoff、independent signoff、no-production attestation 和 P0/P1 zero proof 已进入最终包。
 - Final bundle artifact chain 已通过并已收口；历史当时阻断点只剩生产验收边界，而不是最终包缺失项。当前生产验收边界也已写入 Stage 2 acceptance，仍未进入的是 S3/DAILY_OPERATION。
 - 本轮只做一次受控前台真实运行验收：M1/M2/M3/M4 当日计划为 `4/4` 已发送证据，运行复用历史发送证据，`newly_sent_mail_products=[]`，没有重复补发。
-- 运行后持久 `ADP_ALLOW_SMTP_SEND=false`，daily/health/watchdog LaunchAgents 均 disabled；未启用后台 scheduler、Release、production restore 或 daily operation。
+- 运行后 `ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents 均 disabled；未启用后台 scheduler、Release、production restore 或 daily operation。
 - 历史当时可执行动作不是再写 S2PLT04/final bundle 缺失件，也不是启用生产；历史当时应进入 `S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT`，即生产验收边界预检和 owner 决策证据。当前 Stage 2 acceptance 已记录，仍未进入 S3/DAILY_OPERATION。
 - 证据：[最终验收包 manifest](../../FINAL_ACCEPTANCE_BUNDLE/manifest.json) / [本轮状态同步清单](../../governance/run_manifests/ADP-S2PMT07-POST-FINAL-BUNDLE-CURRENT-STATE-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_POST_FINAL_BUNDLE_CURRENT_STATE_SYNC.md)。这是历史当时的 final bundle 后续语境；当前 Stage 2 acceptance 已记录，但不是 `DAILY_OPERATION`、SMTP/scheduler/Release 或 S3 production accepted。
 
@@ -315,7 +322,7 @@
 
 - S2PLT02 当前真实邮件证据已达 `2/2` 天、`8/8` 封；真实 scheduler proof 也已在受控 launchd/no-SMTP 窗口中通过验证。
 - 当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF`；当时剩余缺口是 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，不能跳到 S2PLT03/S2PLT04/final bundle。后续历史状态见上方 2026-07-01 14:49:29 记录；当前事实以本页顶部阅读规则为准。
-- 本次 scheduler proof run 未发送 SMTP，未启用持久 scheduler，未拉取 live arXiv；运行后 LaunchAgents disabled，ADP 进程数 `0`，持久 `ADP_ALLOW_SMTP_SEND=false`。
+- 本次 scheduler proof run 未发送 SMTP，未启用持久 scheduler，未拉取 live arXiv；运行后 LaunchAgents disabled，ADP 进程数 `0`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like。
 - 证据：[scheduler proof](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json) / [proof validation](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-VALIDATION-20260701.json) / [capture audit pass](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-PASS-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_PASS.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 08:37:20 Australia/Sydney - 历史：S2PLT02 当时只剩 scheduler proof 与 terminal artifact 缺口
@@ -328,7 +335,7 @@
 
 - 服务日 `2026-06-29` 的 M1/M2/M3/M4 受控前台真实 SMTP catch-up 已发送；S2PLT02 真实证据达到 `2/2` 天、`8/8` 封。
 - 历史当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；历史当时剩余缺口是 `REAL_SCHEDULER_PROOF` 和 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`。
-- 运行后持久 `ADP_ALLOW_SMTP_SEND=false`，LaunchAgents disabled/not running，无后台 ADP 进程；这不是 scheduler/Release/production accepted。
+- 运行后 `ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，LaunchAgents disabled/not running，无后台 ADP 进程；这不是 scheduler/Release/production accepted。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-CONTROLLED-REAL-SECOND-DAY-CAPTURE-20260630.json) / [邮件状态](./邮件发送与队列状态.md) / [阶段记录](../docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_CONTROLLED_REAL_CATCHUP_20260629.md)。
 
 
