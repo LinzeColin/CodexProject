@@ -1,0 +1,16 @@
+PFI/CHANGELOG.md
+PFI/HANDOFF.md
+PFI/README.md
+PFI/docs/pfi_v024/OVERALL_PROJECT_REVIEW.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+PFI/reports/pfi_v024/overall_project_review/changed_files.txt
+PFI/reports/pfi_v024/overall_project_review/evidence.json
+PFI/reports/pfi_v024/overall_project_review/review_audit.json
+PFI/reports/pfi_v024/overall_project_review/risk_and_rollback.md
+PFI/reports/pfi_v024/overall_project_review/terminal.log
+PFI/src/pfi_v02/stage_v024_overall_project_review.py
+PFI/tests/test_v024_stage3_phase31_navigation_contract.py
+PFI/tests/test_v024_overall_project_review.py
+PFI/功能清单.md
+PFI/开发记录.md
+PFI/模型参数文件.md

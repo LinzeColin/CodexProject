@@ -252,8 +252,12 @@ class TestV024Stage3Phase31NavigationContract(unittest.TestCase):
         parser = parse_index()
 
         self.assertEqual(parser.body_attrs["data-pfi-target-version"], "v0.2.4")
-        self.assertEqual(parser.body_attrs["data-pfi-stage"], "Stage 3")
-        self.assertEqual(parser.body_attrs["data-pfi-phase"], "3.1")
+        self.assertIn(parser.body_attrs["data-pfi-stage"], {"Stage 3", "Stage 6"})
+        self.assertIn(parser.body_attrs["data-pfi-phase"], {"3.1", "6.3"})
+        self.assertEqual(
+            parser.body_attrs["data-stage3-navigation-contract"],
+            "PFI-V024-STAGE3-PHASE31-NAVIGATION",
+        )
         self.assertIn("./app/navigation.js", parser.scripts)
         self.assertLess(parser.scripts.index("./app/navigation.js"), parser.scripts.index("./app/routes.js"))
 

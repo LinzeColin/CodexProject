@@ -30,6 +30,21 @@ Records:
 - `docs/pfi_v024/RUN_CONTRACT.md`
 - `reports/pfi_v024/pre_stage_0/evidence.json`
 
+## v0.2.4 Overall Project Review
+
+Current run unit: `v0.2.4 overall project review`.
+
+- Overall project review: pass.
+- GitHub main upload after overall review: complete after terminal remote verification.
+- Stage 0-9 evidence chain: complete.
+- Stage 8.3 用户验收已由用户回复 `1` 确认.
+- Stage 9.3 用户验收已由用户回复 `1` 确认.
+- future version 未开始.
+- App bundle reinstall: not executed.
+- Data logic changes: none.
+- Financial data changes: none.
+- Evidence: `reports/pfi_v024/overall_project_review/evidence.json`.
+
 ## v0.2.4 Stage 9 Status
 
 Current run unit: `Stage 9 GitHub main upload gate`.

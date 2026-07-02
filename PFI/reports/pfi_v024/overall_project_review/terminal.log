@@ -1,0 +1,76 @@
+2026-07-02T04:23:00Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_before_overall_review_gate=d7252fcfcdde5c051e64092d390c3bb039468768
+origin_main_before_overall_review_gate=d7252fcfcdde5c051e64092d390c3bb039468768
+remote_main_before_overall_review_gate=d7252fcfcdde5c051e64092d390c3bb039468768
+ahead_behind_before_overall_review_gate=0 0
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_overall_project_review.py -q
+Result: 4 failed before implementation; missing stage_v024_overall_project_review module, OVERALL_PROJECT_REVIEW.md, overall review evidence pack and status anchors.
+
+Implementation boundary:
+v0.2.4 overall project review only. Stage 8.3 and Stage 9.3 user acceptance are accepted by user reply 1 and are not blockers. Did not start future version work, did not reinstall app bundle, did not mutate launcher files, and did not change financial data or metric logic.
+
+Review fixes:
+- Full v0.2.4 regression exposed Stage 3 historical test drift: final runtime body marker is Stage 6 while the Stage 3 navigation contract remains mounted. The test now verifies the navigation contract without forcing runtime rollback.
+- Full v0.2.4 regression exposed missing Stage 7 historical anchors in RUN_CONTRACT. Restored `Stage 7 / Phase 7.3 - 验收` and `Stage 7 whole-stage review`.
+
+Validation:
+rg --files PFI/tests | rg 'test_v024' | sort | xargs env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider -q
+Result: 218 passed in 3.03s.
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+Result: exit 0.
+env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_overall_project_review.py
+Result: exit 0.
+python3 -m json.tool PFI/reports/pfi_v024/overall_project_review/evidence.json
+Result: exit 0.
+python3 -m json.tool PFI/reports/pfi_v024/overall_project_review/review_audit.json
+Result: exit 0.
+git diff --check -- PFI
+Result: exit 0.
+changed_files reconciliation
+Result: exit 0.
+
+Rebase refresh before commit:
+git fetch origin main
+Result: origin/main advanced to 92fd9c5fc02a24976a92c9c9f8a1c2b94f3299bd.
+git diff --name-only $(git merge-base HEAD origin/main)..origin/main --
+Result: changed KM_IDSystem paths only; no PFI paths.
+git stash push --include-untracked -m pfi-v024-overall-review-before-kmids-rebase
+Result: Saved working directory and index state.
+git rebase origin/main
+Result: Successfully rebased and updated refs/heads/codex/pfi.
+git stash pop
+Result: Restored overall review working tree; stash dropped.
+post_rebase_head=92fd9c5fc02a24976a92c9c9f8a1c2b94f3299bd
+post_rebase_origin_main=92fd9c5fc02a24976a92c9c9f8a1c2b94f3299bd
+post_rebase_ahead_behind=0 0
+
+Post-rebase final validation:
+rg --files PFI/tests | rg 'test_v024' | sort | xargs env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider -q
+Result: 218 passed in 3.01s.
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+Result: exit 0.
+py_compile/json/diff/changed-files/boundary scan
+Result: exit 0.
+
+Second rebase refresh before commit:
+git fetch origin main
+Result: origin/main advanced to e03587a97b2a922f857ab10cc0aa3d882992d00e.
+git diff --name-only $(git merge-base HEAD origin/main)..origin/main --
+Result: changed OpenAIDatabase paths only; no PFI paths.
+git stash push --include-untracked -m pfi-v024-overall-review-before-memory-atlas-rebase
+Result: Saved working directory and index state.
+git rebase origin/main
+Result: Successfully rebased and updated refs/heads/codex/pfi.
+git stash pop
+Result: Restored overall review working tree; stash dropped.
+second_post_rebase_head=e03587a97b2a922f857ab10cc0aa3d882992d00e
+second_post_rebase_origin_main=e03587a97b2a922f857ab10cc0aa3d882992d00e
+second_post_rebase_ahead_behind=0 0.
+
+Final remote verification policy:
+After committing this gate, run git push origin HEAD:main, git fetch origin main, git rev-parse HEAD, git rev-parse origin/main, and git ls-remote origin refs/heads/main. The final terminal output after push is the authoritative remote-main proof because the final commit hash is self-referential to this evidence pack.

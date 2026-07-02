@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Overall Project Review - 2026-07-02
+
+- 完成 `v0.2.4 overall project review`：以整个 PFI v0.2.4 repair package 为目标复审 Stage 0-9、Stage 8/9 用户验收、整体交付证据和 GitHub main 上传状态。
+- Stage 8.3 用户验收已由用户回复 `1` 确认；Stage 9.3 用户验收已由用户回复 `1` 确认；future version 未开始。
+- 新增 `PFI/tests/test_v024_overall_project_review.py`、`PFI/docs/pfi_v024/OVERALL_PROJECT_REVIEW.md` 和 `PFI/reports/pfi_v024/overall_project_review/` evidence。
+- 本轮不重装 app bundle，不修改 launcher C/Info.plist，不写入、清理、删除、补造或改写真实财务数据。
+
 ## v0.2.4 Repair Pack Stage 9 GitHub Main Upload - 2026-07-02
 
 - 完成 `Stage 9 GitHub main upload gate`：将 Stage 9 Phase 9.1、Phase 9.2、Phase 9.3 和 whole-stage review package 上传到 GitHub main。
