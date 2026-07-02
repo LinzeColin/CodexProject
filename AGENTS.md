@@ -29,8 +29,8 @@
   以及唯一 Acceptance target。
 - 不得编造 formulas、parameters、versions、test results、owner decisions、
   incidents、或 evidence。`UNKNOWN` 必须链接到具体 Roadmap task。
-- `arxiv-daily-push` 的 source 或 board add/delete/rename/enable/disable 必须遵守
-  source/board user-center sync gate；config/code-only changes 不算完成。
+- `arxiv-daily-push` 的 source or board add/delete/rename/enable/disable 必须遵守
+  source/board user-center sync gate；config/code-only changes are not complete，不算完成。
 - GitHub source-of-truth：持久 product changes 必须 commit 并 push 到
   `LinzeColin/CodexProject`；local apps/caches/WAL/SHM/recovery folders 不是
   product roots。
