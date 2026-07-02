@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.3 S05｜A0 权威项目成本黄金基准`
-- 当前 Phase: `v0.1.3 S05-P2 字段级黄金基准候选 replay 已本地完成；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；下一步只能独立进入 v0.1.3 S05-P3 或用户明确指定的单一 phase`
+- 当前 Phase: `v0.1.3 S05-P3 权威基准锁定 replay 已本地完成；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；下一步只能独立进入 v0.1.3 Stage 5 整体复审或用户明确指定的单一 phase`
 
 ## Execution Rules
 

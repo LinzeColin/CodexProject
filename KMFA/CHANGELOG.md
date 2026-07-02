@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s05p3-authority-baseline-replay - 2026-07-02
+
+- 完成 `v0.1.3 S05-P3｜权威基准锁定 replay` 本地验证：重放既有 public-safe S05-P3 authority baseline lock，并验证 S05-P2 replay dependency。
+- 新增 `KMFA/tools/v013_s05_p3_authority_baseline_replay.py`、`KMFA/tools/check_v013_s05_p3_authority_baseline_replay.py`、`KMFA/tests/test_v013_s05_p3_authority_baseline_replay.py` 和 `KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/`。
+- 本 phase 锁定 baseline version=`KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK`、content hash=`sha256:dbb55ffb4e3608e49dbcf91e97fc0f19395a8269ff7c8f4d5c3f8ca398c03670`、authority records=`45`、Q5 locked fields=`40`、excluded fields=`5`；`formal_report_allowed=false`，`stage5_review_performed=false`，`github_upload_performed=false`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 Stage 5 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s05p2-field-candidate-replay - 2026-07-02
 
 - 完成 `v0.1.3 S05-P2｜字段级黄金基准候选 replay` 本地验证：重放既有 public-safe S05-P2 A0 field candidate metadata、owner/授权降级决策和 completion gate。

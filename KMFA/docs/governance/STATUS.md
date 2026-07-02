@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s05p2-field-candidate-replay`
+- version: `0.1.3-s05p3-authority-baseline-replay`
 - current_stage: `S05`
-- current_phase: `v0.1.3 S05-P2｜字段级黄金基准候选 replay`
-- status: `local_s05_p2_completed_upload_deferred_until_stage10_batch_owner_downgrade_replayed`
+- current_phase: `v0.1.3 S05-P3｜权威基准锁定 replay`
+- status: `local_s05_p3_completed_upload_deferred_until_stage10_batch_authority_baseline_replayed`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_stage1_10_batch_gate`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -61,6 +61,7 @@
 - v0.1.3 Stage 4 整体复审已本地完成，证据位于 `KMFA/stage_artifacts/V013_S04_STAGE_REVIEW/`；复审复跑 S04-P1/S04-P2/S04-P3 validators 和 Stage 4 review validator，phase_results 全部 PASS、findings_open=0、findings_fixed=0、data quality=`Q2`、report grade=`D`、release permission=`blocked`。侧聊纠正后，本地 Stage 4 upload gate 产物已撤销/改正为 not_uploaded/deferred；GitHub main 未上传，且 v1.3 GitHub main upload 必须等 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，未执行 Stage 5、raw value matching、lineage full check、正式报告、live connector 或业务执行。
 - v0.1.3 S05-P1 A0 文件登记 replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/`；本 phase 复用既有 A0 文件登记清单并只读检查本机 raw inbox 中 A0 private zip 的聚合结构，确认 A0 inventory=9、PDF 类=8、Excel 类=1、Q3 machine candidates=9、Q4/Q5=0。本地 private zip 可打开且聚合结构匹配，但整包 hash/size 与已登记 source package 不匹配，因此未执行 public member SHA256 回填；真实 package/member diagnostic 仅写入 git-ignored `KMFA/.codex_private_runtime/`。公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values 或业务值；本轮未修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S05-P2、Stage 5 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - v0.1.3 S05-P2 字段级黄金基准候选 replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S05_P2_FIELD_CANDIDATE_REPLAY/`；本 phase 只重放既有 public-safe S05-P2 metadata、owner/授权降级决策和 completion gate，确认 fixture candidates=45、required fields per candidate=5、hash/source-anchor recorded=40、pending fields=5、Q4 confirmed=0、Q5 calculation baseline allowed=0；active owner/authorized decision 将 pending Excel candidate 降级为 cross-source support only，completion gate 为 ready。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未公开 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values 或业务值，未执行 S05-P3、Stage 5 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
+- v0.1.3 S05-P3 权威基准锁定 replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/`；本 phase 只重放既有 public-safe S05-P3 aggregate authority baseline metadata 和 validator 结果，确认 baseline version=`KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK`、content hash=`sha256:dbb55ffb4e3608e49dbcf91e97fc0f19395a8269ff7c8f4d5c3f8ca398c03670`、authority records=45、Q5 locked fields=40、excluded fields=5；`formal_report_allowed=false`、`stage5_review_performed=false`、`github_upload_performed=false`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未公开 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values 或业务值，未执行 Stage 5 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - 项目级 raw data boundary 已锁定：`/Users/linzezhang/Downloads/KMFA_MetaData` 是用户本机 KMFA 财务原始数据入口，Codex 只能只读读取，不得修改、删除、移动或向该目录写入；Codex 生成的私有诊断和额外文件只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
@@ -153,7 +154,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 S05-P2 已本地完成；侧聊纠正后，GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S05-P3` 或用户明确指定的单一 phase，不得跳到 Stage 5 review、GitHub upload、正式报告、lineage full check、raw value matching、live connector 或业务执行。
+- v0.1.3 S05-P3 已本地完成；侧聊纠正后，GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 Stage 5 整体复审` 或用户明确指定的单一 phase，不得跳到 GitHub upload、正式报告、lineage full check、raw value matching、live connector 或业务执行。
 
 ## 阻塞条件
 
