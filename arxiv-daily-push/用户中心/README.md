@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-03 03:58:45 Australia/Sydney
+更新时间：2026-07-03 04:07:17 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -587,7 +587,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 - 历史当时 `plan-final-bundle-prerequisites` 已在顶层给出下一条可执行只读命令：`plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json`。
 - 历史当时仍 blocked：prerequisite plan `state_hash=9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b`，final validator `state_hash=e7f33cbf0d084cb00c547016d83139b47e62809e2638be3a33effc8dcbe74358`，S2PLT02 capture plan `state_hash=48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`。
 - 这条命令历史当时的 dry-run 状态是 `blocked`，并且 `writes_artifact=false`、`satisfies_gate=false`、`dry_run_wrote_artifact=false`；它不会发送邮件、不会启用定时器、不会写 final bundle proof。当前这些 final-bundle runtime 缺口已被 Stage 2 integrated acceptance 消费。
-- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC.md)。这不是 S2PLT02/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
+- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC.md)。这在历史当时不是 S2PLT02/S2PLT04/S2PMT07 accepted；当前对应 final-bundle runtime 证据已被 Stage 2 integrated acceptance 消费，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 20:27:55 Australia/Sydney - Final bundle S2PLT02 runtime readiness 顶层同步
 
@@ -595,19 +595,19 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 - 历史当时仍 blocked：final validator `state_hash=b70e0ae4ab942c46018d87e28c09b9d8e839f4ab10682cbf4fde8e993a15194e`，prerequisite plan `state_hash=8878509d00a04899d9b4a647d98146dea5aa88e39f41a07d25f39b9848cb8878`，runtime readiness `state_hash=48bea5fd4a31cbe6f675b1a2b939d1444b8a148b37d3f6a7b338096071a995f9`。
 - 历史当时剩余动作：采集第二个连续真实 M1-M4 SMTP 日、采集真实 launchd scheduler proof、写入并验证 reviewed S2PLT02 terminal delivery proof artifact。历史当时仍是 `1/2` 真实日、`4/8` 真实邮件。当前这些数量缺口已被 final bundle 和 Stage 2 integrated acceptance 消费，不得当作当前缺口。
 - SMTP secret env 名称级缺口：`ADP_SMTP_HOST;ADP_SMTP_PORT;ADP_SMTP_USERNAME;ADP_SMTP_PASSWORD`；`smtp_secret_env_ready=false`；`smtp_secret_values_logged=false`。
-- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_RUNTIME_READINESS_SUMMARY.md)。这不是 S2PLT02/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
+- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_RUNTIME_READINESS_SUMMARY.md)。这在历史当时不是 S2PLT02/S2PLT04/S2PMT07 accepted；当前对应 final-bundle runtime 证据已被 Stage 2 integrated acceptance 消费，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 19:00:51 Australia/Sydney - 历史：Final bundle validator runtime step 顶层同步
 
 - 历史当时 `validate-final-acceptance-bundle` 在顶层直接显示 `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，不用再深入 JSON 才能看到当时真实下一步。
 - 这意味着历史当时最终验收入口为 blocked：下一步仍是 S2PLT02 terminal delivery proof 的真实 SMTP/scheduler 捕获窗口，不是写 S2PLT04 completion report，不是生成 final bundle manifest，也不是启用生产。当前这些 final-bundle runtime 缺口已被 Stage 2 integrated acceptance 消费。
-- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_VALIDATOR_RUNTIME_STEP_SUMMARY.md)。这不是 S2PLT02/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
+- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_VALIDATOR_RUNTIME_STEP_SUMMARY.md)。这在历史当时不是 S2PLT02/S2PLT04/S2PMT07 accepted；当前对应 final-bundle runtime 证据已被 Stage 2 integrated acceptance 消费，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 18:38:53 Australia/Sydney - 历史：S2PMT07 final bundle prerequisite runtime step 同步
 
 - 历史当时 `plan-final-bundle-prerequisites` 已把 S2PLT02 capture plan 的真实 runtime 下一步暴露到顶层：`next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。
 - 历史当时这意味着 final bundle 下一步不是直接写 S2PLT04 completion report，也不是直接启用 SMTP/scheduler；历史当时要先等真实 SMTP/scheduler 捕获窗口，清除第二真实 M1-M4 SMTP 日、8 封真实邮件、真实 scheduler proof 和 terminal proof artifact 缺口。当前 S2PLT02/S2PLT03/S2PLT04/final-bundle artifacts 已被 Stage 2 integrated acceptance 消费，不得把本行当作当前运行指令。
-- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC.md)。这不是 S2PLT02/S2PLT04/S2PMT07 accepted，也不是 SMTP/scheduler/Release/production accepted。
+- 证据：[运行清单](../../governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC-20260630.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC.md)。这在历史当时不是 S2PLT02/S2PLT04/S2PMT07 accepted；当前对应 final-bundle runtime 证据已被 Stage 2 integrated acceptance 消费，也不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-06-30 18:11:03 Australia/Sydney - S2PLT02 捕获计划 runtime/auth 门
 
@@ -682,7 +682,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 - 新增 `audit-s2plt02-terminal-delivery-inputs`，用于在写任何 live terminal proof 前列出历史当时输入清单。
 - 已就绪：S2PLT01 terminal acceptance、第一真实发送日、无重复邮件、M4 水印 proof、真实 SMTP proof、P0/P1 zero-proof。
 - 仍缺失：第二真实发送日、8 封真实邮件、真实 launchd scheduler proof、`FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`；历史当时 `artifact_written=false`、`real_smtp_send_enabled=false`、`scheduler_install_enabled=false`、state hash `5976272c0102361222027116f94f5a73cc53e87fa18d1b0e9a5d82208e7c4444`。
-- 这不是 S2PLT02 accepted；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
+- 这在历史当时不是 S2PLT02 accepted；当前 S2PLT02 terminal proof 已进入 final bundle 并被 Stage 2 integrated acceptance 消费。不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PMT07 或 S3/DAILY_OPERATION accepted。
 
 ## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 历史授权门状态
 
