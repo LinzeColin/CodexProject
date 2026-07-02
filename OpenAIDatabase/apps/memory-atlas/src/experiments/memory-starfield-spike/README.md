@@ -160,3 +160,29 @@ This Stage 1 spike is accepted when:
 Delete `apps/memory-atlas/src/experiments/memory-starfield-spike/`. No
 production app code rollback is required while this directory remains
 unimported.
+
+## v1.1.6 Stage 9 Phase 1 Continuity
+
+- Task ID: `MA-V116-S9P01`
+- Status: `phase_9_1_memory_starfield_c3_spike_ready_pending_stage_review`
+- Validator: `validate:v1.1.6-stage9-phase1`
+
+This v1.1.6 phase reuses the existing isolated C3 Memory Starfield spike as the
+first prototype checkpoint after the Stage 6-8 contracts. The accepted evidence
+is the isolated spike directory, redacted fixture, Three.js particle canvas,
+nebula dust, Flow Field, gravitational disk, Black Hole marker, Proto-Star
+marker, Memory Terrain cluster, hover card, reduced-motion control and smoke
+status hook.
+
+No production integration is allowed in this phase:
+
+1. Do not import `memory-starfield-spike` from production `src/App.tsx`,
+   `src/main.tsx` or production components.
+2. Do not add a production route, navigation item, renderer import or feature
+   flag default switch.
+3. Do not run production build, installer, local app install, Cloudflare deploy
+   or Access policy changes as acceptance for this phase.
+4. Do not read raw/private/cookie/session/secret data.
+5. Do not write active memory or proposals from the spike.
+6. No Stage 9 review, Stage 10 work or GitHub main upload is included here.
+7. No GitHub main upload is part of this phase.

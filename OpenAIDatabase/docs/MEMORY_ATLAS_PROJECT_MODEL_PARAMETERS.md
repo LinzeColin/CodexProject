@@ -2863,3 +2863,54 @@ Stage 9 整体复审已确认：
 - 本复审不修改核心前端实现、CSS、路由或 feature flag。
 - 本复审不运行 installer，不执行 production build，不部署 Cloudflare，不修改 Access policy。
 - 本复审不进入 Stage 9；GitHub main upload 只在 final remote checks 通过后执行。
+
+## 61. v1.1.6 Stage 9 Phase 1 记忆星系 C3 隔离原型参数
+
+状态：`phase_9_1_memory_starfield_c3_spike_ready_pending_stage_review`。
+
+模型假设：
+
+- Stage 9 是 C3 isolated prototype pass，不等于 production integration。
+- Phase 9.1 只固定 `memory-starfield-spike` 的独立原型证据、fixture 安全、production isolation 和治理记录。
+- 既有 v1.1.5 spike 可作为 v1.1.6 修补包原型基础，但必须补 v1.1.6 continuity、validator 和 no-production-import gate。
+
+输入：
+
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/README.md`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/index.html`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/main.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/fixture.ts`
+- `docs/product/memory_starfield_c3_spike_contract.md`
+- `docs/acceptance/memory_starfield_c3_spike_acceptance.md`
+
+处理方法：
+
+- 检查 spike 文件是否齐全。
+- 检查 main source 是否保留 Three.js、particle LOD、nebula dust、Flow Field、gravity disk、Black Hole、Proto-Star、hover card、reduced motion 和 smoke hook。
+- 检查 fixture 是否保持 raw/private、plaintext secrets 和 local absolute paths 标志为 false。
+- 检查 production `src` 是否没有引用 `memory-starfield-spike`。
+- 使用 `validate:v1.1.6-stage9-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S9P01-001 stage9_phase1_contract_id = memory_starfield_c3_spike_contract`
+- `PARAM-MA-V116-S9P01-002 stage9_phase1_spike_path = apps/memory-atlas/src/experiments/memory-starfield-spike`
+- `PARAM-MA-V116-S9P01-003 stage9_phase1_required_features = three_js_canvas;particle_lod;nebula_dust;flow_field;gravity_disk;black_hole_marker;proto_star_marker;memory_terrain_signal;hover_card;smoke_status_hook`
+- `PARAM-MA-V116-S9P01-004 stage9_phase1_fixture_safety = rawPrivateDataIncluded:false;plaintextSecretsIncluded:false;localAbsolutePathsIncluded:false`
+- `PARAM-MA-V116-S9P01-005 stage9_phase1_isolation_boundary = no_production_import;no_route;no_navigation;no_feature_flag_default;no_direct_writeback`
+- `PARAM-MA-V116-S9P01-006 stage9_phase1_required_validator = validate:v1.1.6-stage9-phase1`
+
+输出：
+
+- Stage 9 Phase 1 产品合同。
+- Stage 9 Phase 1 验收文件。
+- Stage 9 Phase 1 validator。
+- Memory Starfield spike README v1.1.6 continuity note。
+
+边界：
+
+- 本 phase 不修改 production Galaxy、路由、导航、feature flag 或 app shell。
+- 本 phase 不运行 production build、installer、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不执行 agent apply。
+- 本 phase 不进入 Stage 9 整体复审，不进入 Stage 10，不执行 GitHub main 上传。
