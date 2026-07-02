@@ -56,6 +56,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/product_meta_database/tests/test_contract.py",
     "KM_IDSystem/backend/tests/test_stage001_naming_contract.py",
     "KM_IDSystem/scripts/check_safe_mode_baseline.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE011_PHASE3_SCENARIO_VALIDATION.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py",
     "KM_IDSystem/scripts/run_local_services.sh",
     "KM_IDSystem/scripts/smoke_test.sh",
@@ -228,8 +229,16 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-STAGE011-P2"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE011-P3-GATE"' in roadmap_text
     )
+    stage011_phase3_active = (
+        'current_task_id: "IDS-V0_1-STAGE011-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'current_stage_id: "IDS-STAGE011"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE011-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE011-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE011-P4-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
-    later_stage_state = batch_terminal_state or stage011_phase2_active
+    later_stage_state = batch_terminal_state or stage011_phase2_active or stage011_phase3_active
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
         'STAGE-005:\n    status: "in_progress"' in batch_text

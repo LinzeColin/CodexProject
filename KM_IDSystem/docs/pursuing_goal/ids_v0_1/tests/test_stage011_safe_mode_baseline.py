@@ -5,6 +5,7 @@ import sys
 import tempfile
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -30,6 +31,16 @@ class Stage011SafeModeBaselineTests(unittest.TestCase):
             "manifest_path": str(base / "metadata" / "manifest.json"),
             "report_export_path": str(base / "exports" / "report.pdf"),
         }
+
+    def _create_complete_slots(self, root: Path) -> None:
+        for index in range(100):
+            if index == 0:
+                name = "00_ORIGINAL_RAW_DATA"
+            elif index == 99:
+                name = "99_ARCHIVE"
+            else:
+                name = f"{index:02d}_SLOT"
+            (root / name).mkdir()
 
     def test_clear_bounded_preflight_is_operations_only_without_reading_source(self):
         module = self._load_module()
@@ -231,6 +242,95 @@ class Stage011SafeModeBaselineTests(unittest.TestCase):
         self.assertTrue(payload["does_not_read_raw_metadata"])
         self.assertTrue(payload["does_not_generate_outputs"])
         self.assertTrue(payload["does_not_call_external_apis"])
+
+    def test_phase3_scenario_report_covers_safe_mode_edges_and_paused_workflows(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            output_paths = self._default_paths(base)
+
+            online_root = base / "online_IDS_DATA_ROOT"
+            online_root.mkdir()
+            self._create_complete_slots(online_root)
+
+            offline_root = base / "offline_IDS_DATA_ROOT"
+
+            reconnected_root = base / "reconnected_IDS_DATA_ROOT"
+            reconnected_root.mkdir()
+            self._create_complete_slots(reconnected_root)
+
+            permission_denied_root = base / "permission_denied_IDS_DATA_ROOT"
+            permission_denied_root.mkdir()
+            self._create_complete_slots(permission_denied_root)
+
+            def access_side_effect(path, mode):
+                return Path(path) != permission_denied_root
+
+            with patch.object(module.path_contract.os, "access", side_effect=access_side_effect):
+                report = module.build_stage011_scenario_report(
+                    valid_source_uri=REAL_SOURCE.as_uri(),
+                    online_root=str(online_root),
+                    offline_root=str(offline_root),
+                    reconnected_root=str(reconnected_root),
+                    permission_denied_root=str(permission_denied_root),
+                    path_changed_current=str(online_root),
+                    path_changed_expected=str(base / "expected_IDS_DATA_ROOT"),
+                    processed_path=output_paths["processed_path"],
+                    backup_path=output_paths["backup_path"],
+                    manifest_path=output_paths["manifest_path"],
+                    report_export_path=output_paths["report_export_path"],
+                    storage_total_bytes=1000 * GIB,
+                    storage_ok_free_bytes=300 * GIB,
+                    storage_low_free_bytes=50 * GIB,
+                    planned_output_ok_bytes=20 * GIB,
+                    planned_output_too_large_bytes=250 * GIB,
+                    invalid_source_uri="https://www.iana.org/domains/reserved",
+                )
+
+            for path in output_paths.values():
+                self.assertFalse(Path(path).exists())
+            self.assertFalse(offline_root.exists())
+
+        states = report["scenario_states"]
+
+        self.assertTrue(report["overall_valid"])
+        self.assertEqual(report["schema_version"], "ids.stage011.phase3_scenarios.v1")
+        self.assertEqual(report["stage"], "STAGE-011")
+        self.assertEqual(report["phase"], "Phase 3")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-011")
+        self.assertFalse(report["customer_visible"])
+        self.assertEqual(states["clear"], "SAFE_MODE_CLEAR")
+        self.assertEqual(states["drive_offline"], "SAFE_MODE_DRIVE_OFFLINE")
+        self.assertEqual(states["drive_reconnected"], "SAFE_MODE_REVALIDATION_REQUIRED")
+        self.assertEqual(states["permission_denied"], "SAFE_MODE_PERMISSION_DENIED")
+        self.assertEqual(states["path_changed"], "SAFE_MODE_REVALIDATION_REQUIRED")
+        self.assertEqual(states["storage_low_free"], "SAFE_MODE_STORAGE_BLOCKED")
+        self.assertEqual(states["unbounded_output_missing_cap"], "SAFE_MODE_STORAGE_BLOCKED")
+        self.assertEqual(states["path_blocked"], "SAFE_MODE_PATH_BLOCKED")
+        self.assertEqual(states["index_failed"], "SAFE_MODE_INDEX_FAILED")
+        self.assertEqual(states["api_budget_exceeded"], "SAFE_MODE_API_BUDGET_EXCEEDED")
+        for workflow in [
+            "bulk_import",
+            "ocr",
+            "embedding",
+            "index_rebuild",
+            "raw_material_cleanup",
+            "backup_copy",
+            "manifest_generation",
+            "report_export",
+            "external_api_calls",
+        ]:
+            self.assertIn(workflow, report["safe_mode_pauses"])
+        for scenario in report["safe_mode_scenarios"].values():
+            self.assertFalse(scenario["auto_resume"])
+            self.assertTrue(scenario["bounded_preflight_only"])
+            self.assertTrue(scenario["does_not_read_raw_metadata"])
+            self.assertTrue(scenario["does_not_call_external_apis"])
+            self.assertTrue(scenario["does_not_generate_outputs"])
+            self.assertTrue(scenario["does_not_write_runtime_data"])
+            self.assertTrue(scenario["does_not_scan_external_drive_contents"])
+            self.assertTrue(scenario["does_not_open_source_files"])
+            self.assertTrue(scenario["does_not_hash_source_files"])
 
 
 if __name__ == "__main__":
