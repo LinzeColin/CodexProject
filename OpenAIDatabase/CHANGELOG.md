@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 6 Phase 1
+
+- Added `docs/product/memory_river_rebuild_contract.md` to define the Memory
+  River Rebuild Contract, including `time_river`, `theme_bands`,
+  `event_pulses`, `decision_nodes`, `black_hole_band`, `proto_star_marker`,
+  `evidence_density_lane`, zoom, brush, hover card, Inspector handoff and
+  reduced-motion requirements.
+- Added `docs/acceptance/memory_river_rebuild_acceptance.md`.
+- Added `validate:v1.1.6-stage6-phase1`.
+- Contract title: Memory River Rebuild Contract.
+- Registered `MA-V116-S6P01` in delivery, feature, development and model
+  parameter records.
+- Stage 6 Phase 1 status: `phase_6_1_contract_created_pending_stage_review`.
+
+No runtime UI implementation, CSS change, browser screenshot run, Memory River
+runtime implementation, raw/private data read, direct writeback, agent apply,
+Stage 6 review, Stage 7/8/9/10 work, No GitHub main upload, Cloudflare
+deployment, or Access policy change was added.
+
+Machine-readable boundary summary: No runtime UI implementation; No raw/private data read; No direct writeback; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 5 Review
 
 - Added `validate:v1.1.6-stage5` to pin Stage 5 Phase 1 contract,

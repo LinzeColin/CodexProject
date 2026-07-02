@@ -2583,3 +2583,49 @@ Stage 9 整体复审已确认：
 - 本复审不读取 raw/private/cookie/session/secret 数据。
 - 本复审不修改核心前端实现、CSS、路由或 feature flag。
 - 本复审不进入 Stage 6，不执行 GitHub main 上传。
+
+## 55. v1.1.6 Stage 6 Phase 1 记忆时间河重做参数
+
+状态：`phase_6_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 旧 Timeline 不能继续作为默认可用性答案；Stage 6 必须将它按 0 分处理并重做为记忆时间河。
+- 记忆时间河必须让用户看见时间、主题、事件、决策、black-hole 风险和 proto-star 机会如何共同形成下一步行动。
+- 本 phase 只定义合同和验收，不实现 runtime Memory River，不读取 raw/private/cookie/session/secret，不执行 direct writeback。
+
+输入：
+
+- `docs/product/memory_river_rebuild_contract.md`
+- `docs/acceptance/memory_river_rebuild_acceptance.md`
+- Roadmap v2 记忆时间河要求：时间河、主题带、事件脉冲、决策节点、black hole band、proto-star marker、zoom、brush、hover card、click Inspector、reduced motion。
+
+处理方法：
+
+- 固定 Memory River rebuild 的视觉层和交互层。
+- 固定 river item 必备字段和 Inspector/proposal handoff。
+- 固定 date list、static table、dots-and-lines-only、缺少生命周期 marker、缺少 Inspector 交接、raw/private hover card 和 ignored reduced motion 为失败条件。
+- 使用 `validate:v1.1.6-stage6-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S6P01-001 stage6_phase1_contract_id = memory_river_rebuild_contract`
+- `PARAM-MA-V116-S6P01-002 stage6_phase1_required_layers = time_river;theme_bands;event_pulses;decision_nodes;black_hole_band;proto_star_marker;evidence_density_lane`
+- `PARAM-MA-V116-S6P01-003 stage6_phase1_required_interactions = zoom;brush;hover_card;click_inspector;keyboard_navigation;reduced_motion`
+- `PARAM-MA-V116-S6P01-004 stage6_phase1_required_item_fields = river_item_id;item_type;occurred_at;theme_id;theme_label;topic_state;importance;confidence;evidence_count;evidence_refs;source_scope;linked_asset_ids;linked_action_ids;inspector_link;proposal_hint`
+- `PARAM-MA-V116-S6P01-005 stage6_phase1_failure_conditions = date_list;static_table;dots_and_lines_only;missing_theme_bands;missing_lifecycle_markers;missing_inspector_handoff;raw_private_hover_card;reduced_motion_ignored`
+- `PARAM-MA-V116-S6P01-006 stage6_phase1_status = phase_6_1_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S6P01-007 stage6_phase1_required_validator = validate:v1.1.6-stage6-phase1`
+
+输出：
+
+- Stage 6 Phase 1 产品合同。
+- Stage 6 Phase 1 验收文件。
+- Stage 6 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不进入 Stage 6 整体复审，不进入 Stage 7-10，不执行 GitHub main 上传。
