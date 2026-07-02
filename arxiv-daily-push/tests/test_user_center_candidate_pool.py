@@ -587,6 +587,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("artifact_written=false", page)
         self.assertIn("s2plt03_accepted=false", page)
         self.assertIn("s2plt03_resilience_drill_completed=false", page)
+        self.assertIn("| 历史字段 | prerequisite plan `state_hash=3b2475e26547816b77885fddb170944fb858a4aa14fc04305de6798c288a8651`", page)
+        self.assertIn("| 历史当时 S2PLT03 下一步 | `next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`", page)
+        self.assertIn("| 历史当时剩余缺口 | `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT;S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT`", page)
         self.assertIn("REQ-ADP-V7-051-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC", page)
         self.assertIn(
@@ -601,6 +604,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("next_executable_command_dry_run_status=blocked", page)
         self.assertIn("next_executable_command_writes_artifact=false", page)
         self.assertIn("next_executable_command_satisfies_gate=false", page)
+        self.assertIn("| 历史字段 | prerequisite plan `state_hash=9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b`", page)
+        self.assertIn("| 历史当时下一命令 | `next_executable_command=plan-s2plt02-terminal-delivery-proof-capture`", page)
+        self.assertIn("| 历史当时命令安全字段 | `next_executable_command_dry_run_status=blocked`", page)
         self.assertIn("REQ-ADP-V7-049-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY", page)
         self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY-20260630.json", page)
@@ -611,6 +617,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "final_bundle_prerequisite_plan_state_hash=bc5c75ce6138842f2b3de247420260b55d3b1a5f7cfb6f10dc44f91efb594af6",
             page,
         )
+        self.assertIn("| 历史字段 | `state_hash=303854706b4dee813e8e9d3f970bfce8943db4a162779845835d1682d5dc91ff`", page)
+        self.assertIn("| 历史当时 runtime blockers | `second_consecutive_real_m1_m4_smtp_day_missing", page)
         self.assertIn("REQ-ADP-V7-050-S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY", page)
         self.assertIn(
@@ -629,6 +637,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("missing_smtp_secret_env_names=ADP_SMTP_HOST;ADP_SMTP_PORT;ADP_SMTP_USERNAME;ADP_SMTP_PASSWORD", page)
         self.assertIn("smtp_secret_env_ready=false", page)
         self.assertIn("smtp_secret_values_logged=false", page)
+        self.assertIn("| 历史字段 | final validator `state_hash=b70e0ae4ab942c46018d87e28c09b9d8e839f4ab10682cbf4fde8e993a15194e`", page)
+        self.assertIn("| 历史当时 remaining runtime actions | `capture_second_consecutive_real_m1_m4_smtp_day", page)
+        self.assertIn("| 历史当时 SMTP secret env 缺口 | `missing_smtp_secret_env_names=ADP_SMTP_HOST", page)
+        self.assertIn("| 历史当时计数 | 真实发送日 `1/2`，真实邮件 `4/8`", page)
         self.assertIn("REQ-ADP-V7-048-S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC", page)
         self.assertIn(
@@ -638,6 +650,8 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC.md", page)
         self.assertIn("blocked_final_bundle_prerequisite_s2plt02_runtime_step_synced_no_production", page)
         self.assertIn("next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", page)
+        self.assertIn("| 历史字段 | `state_hash=bc5c75ce6138842f2b3de247420260b55d3b1a5f7cfb6f10dc44f91efb594af6`", page)
+        self.assertIn("| 历史当时剩余缺口 | `SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`", page)
         self.assertIn("bc5c75ce6138842f2b3de247420260b55d3b1a5f7cfb6f10dc44f91efb594af6", page)
         self.assertIn("next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF", page)
         self.assertIn("REQ-ADP-V7-041-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC", page)
@@ -658,6 +672,12 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2", page)
         self.assertIn("01921f133de411eed12662818911e76e67c880d878394c7e39e8fd66f78c1e65", page)
         self.assertIn("adp_allow_smtp_send_false", page)
+        self.assertIn("| 历史字段 | `authorization_artifact_status=pass`", page)
+        self.assertIn("| 历史当时 runtime blockers | `second_consecutive_real_m1_m4_smtp_day_missing", page)
+        self.assertIn(
+            "| 历史当时剩余缺口 | `SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`",
+            page,
+        )
         self.assertIn("REQ-ADP-V7-043-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", page)
         self.assertIn("S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", page)
         self.assertIn("ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json", page)
@@ -1422,6 +1442,18 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| 当前 zero-proof | `current_zero_proof_counts=P0=0;P1=0`", page)
         self.assertNotIn("| 剩余阻断 | S2PLT02 terminal delivery proof、S2PLT03 terminal resilience proof", page)
         self.assertNotIn("| Artifact validation | `terminal_artifact_validation_status=blocked`", page)
+        self.assertNotIn("| 当前字段 | prerequisite plan `state_hash=3b2475e26547816b77885fddb170944fb858a4aa14fc04305de6798c288a8651`", page)
+        self.assertNotIn("| 当前字段 | prerequisite plan `state_hash=9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b`", page)
+        self.assertNotIn("| 当前字段 | final validator `state_hash=b70e0ae4ab942c46018d87e28c09b9d8e839f4ab10682cbf4fde8e993a15194e`", page)
+        self.assertNotIn("| 当前字段 | `state_hash=303854706b4dee813e8e9d3f970bfce8943db4a162779845835d1682d5dc91ff`", page)
+        self.assertNotIn("| 当前字段 | `state_hash=bc5c75ce6138842f2b3de247420260b55d3b1a5f7cfb6f10dc44f91efb594af6`", page)
+        self.assertNotIn("| 当前字段 | `authorization_artifact_status=pass`", page)
+        self.assertNotIn("| S2PLT03 下一步 | `next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`", page)
+        self.assertNotIn("| 下一命令 | `next_executable_command=plan-s2plt02-terminal-delivery-proof-capture`", page)
+        self.assertNotIn("| 命令安全字段 | `next_executable_command_dry_run_status=blocked`", page)
+        self.assertNotIn("| remaining runtime actions | `capture_second_consecutive_real_m1_m4_smtp_day", page)
+        self.assertNotIn("| runtime blockers | `second_consecutive_real_m1_m4_smtp_day_missing", page)
+        self.assertNotIn("| 当前计数 | 真实发送日 `1/2`，真实邮件 `4/8`", page)
         self.assertNotIn(
             "- S2PLT04 复核：`s2plt02_nonterminal_ref_count=14`、"
             "`state_hash=a126940b6692c08c49d870de513555cc89c7374399ed099028fdc7395a94016a`，仍 blocked。",
