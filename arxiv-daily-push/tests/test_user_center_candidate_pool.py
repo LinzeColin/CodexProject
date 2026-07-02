@@ -2455,6 +2455,49 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             decisions,
         )
 
+    def test_2039_daily_operation_secret_repair_is_historical_consumed(self):
+        decisions = (USER_CENTER / "关键结论与用户决策.md").read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+        traceability = TRACEABILITY_CHAIN_PAGE.read_text(encoding="utf-8")
+
+        decision_section = _section(
+            decisions,
+            "## 2026-07-01 20:39:16 Australia/Sydney - ",
+            "## 2026-07-01 20:12:13 Australia/Sydney - ",
+        )
+        readme_section = _section(
+            readme,
+            "## 2026-07-01 20:39:16 Australia/Sydney - ",
+            "## 2026-07-01 20:12:13 Australia/Sydney - ",
+        )
+        traceability_section = _section(
+            traceability,
+            "## 2026-07-01 20:39:16 Australia/Sydney - ",
+            "## 2026-07-01 20:12:13 Australia/Sydney - ",
+        )
+
+        for label, section in {
+            "decisions": decision_section,
+            "readme": readme_section,
+            "traceability": traceability_section,
+        }.items():
+            with self.subTest(page=label):
+                self.assertIn("历史：", section)
+                self.assertIn("20:39 当时 owner 授权决策待办已由 21:10 keep-disabled 决策消费", section)
+                self.assertIn("当前已由 23:35 owner A keep-disabled mainline 证据消费", section)
+                self.assertIn("不得把 20:39 secret / artifact repair 恢复成当前 owner 授权决策入口", section)
+                self.assertNotIn("等待 owner 授权", section)
+                self.assertNotIn("剩余 owner 授权决策", section)
+                self.assertNotIn("进入 `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION`", section)
+                self.assertNotIn("由 owner 记录授权或保持禁用", section)
+
+        self.assertIn("| 字段 | 当时值 |", traceability_section)
+        self.assertIn("历史当时状态", traceability_section)
+        self.assertNotIn("| 字段 | 当前值 |", traceability_section)
+        self.assertNotIn("| 当前状态 |", traceability_section)
+        self.assertNotIn("| 下一步 | `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION` |", traceability_section)
+        self.assertNotIn("| 剩余阻断 | owner DAILY_OPERATION authorization 未记录；`daily_operation_enabled=false` |", traceability_section)
+
     def test_roadmap_marks_request_only_daily_operation_sections_as_historical_consumed(self):
         roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
         request_mainline = _section(

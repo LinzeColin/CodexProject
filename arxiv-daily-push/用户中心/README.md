@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-03 06:51:42 Australia/Sydney
+更新时间：2026-07-03 07:01:53 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -336,14 +336,14 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 - 默认下一步：只有出现新的显式 owner persistent DAILY_OPERATION authorization artifact 并通过单独 enablement gate，才能继续 `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`；否则保持禁用。
 - 证据：[DAILY_OPERATION owner 决策 artifact](../../FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json) / [运行清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_OWNER_DECISION_KEEP_DISABLED.md)。
 
-## 2026-07-01 20:39:16 Australia/Sydney - DAILY_OPERATION 技术预检已通过，等待 owner 授权
+## 2026-07-01 20:39:16 Australia/Sydney - 历史：DAILY_OPERATION 技术预检已通过，当时等待 owner 决策
 
 - `S2PMT07-DAILY-OPERATION-SECRET-AND-ARTIFACT-REPAIR` 已重跑 DAILY_OPERATION 授权预检；结果为 `status=blocked_owner_daily_operation_authorization_required`，不是日常运行启用。
 - 技术预检已通过：`preflight_checks_passed=true`、`failed_checks=[]`、`production_preflight_status=pass`、`state_hash=a856ee3d1532d8973e11bb502f76f7320f9816904b52aab64975112c764de55e`。
 - 已消费的证据：`github_open_pr_count_zero_api_v1`、本机 local-runner env 文件的 SMTP secret key-presence metadata `adp_local_runner_env_file_secret_presence_v1`（只记录 key 名称，不记录 secret value）、ADP scoped git artifact hygiene。
 - Stage 2 integrated acceptance 仍保持：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
 - DAILY_OPERATION 仍未启用：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
-- 默认下一步：由 owner 记录 `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION`，选择授权持久 DAILY_OPERATION 或保持禁用；授权前不得启用生产运行。
+- 历史当时下一步：20:39 当时 owner 授权决策待办已由 21:10 keep-disabled 决策消费；当前已由 23:35 owner A keep-disabled mainline 证据消费；不得把 20:39 secret / artifact repair 恢复成当前 owner 授权决策入口。
 - 证据：[secret / artifact 修复清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_SECRET_ARTIFACT_REPAIR.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
 
 ## 2026-07-01 20:12:13 Australia/Sydney - 历史：gh 等价证据已修复，当时 DAILY_OPERATION 仍阻断
