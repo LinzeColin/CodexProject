@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s00p1-app-entry`
-- current_stage: `S00`
-- current_phase: `v0.1.3 S00-P1｜Downloads App Entry`
-- status: `local_app_entry_verified_no_go_stage_review_pending`
+- version: `0.1.3-s01p1-current-state-preflight`
+- current_stage: `S01`
+- current_phase: `v0.1.3 S01-P1｜当前状态复核`
+- status: `local_current_state_preflight_verified_no_go_scope_freeze_pending`
 - production_ready: `false`
 - github_upload_ready: `false_stage0_review_required_first`
 
@@ -41,6 +41,7 @@
 - Post-S18 Lineage / Report Gate 已完成本地阻断证据，证据位于 `KMFA/stage_artifacts/LINEAGE_REPORT_GATE/`；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据和 release/delivery claim。
 - Post-S18 Final GitHub Backup 证据已生成，证据位于 `KMFA/stage_artifacts/FINAL_GITHUB_BACKUP/`；该上传只能作为 `NO_GO governance backup only`，不改变 `delivery_allowed=false`。
 - v0.1.3 S00-P1 Downloads app entry 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S00_APP_ENTRY/`；`/Users/linzezhang/Downloads/KMFA.app` 指向 canonical KMFA public-safe 首页 HTML，图标 hash 已锁定。本轮未执行 Stage 0 review、GitHub upload、正式报告、live connector 或业务执行，`NO_GO` 保持不变。
+- v0.1.3 S01-P1 当前状态复核已本地完成，证据位于 `KMFA/stage_artifacts/V013_S01_PRECHECK/`；当前 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据、release claim 和 delivery claim。本轮未执行 S01-P2、Stage 1 整体复审、GitHub upload、lineage full check、formal report release、live connector 或业务执行。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
 - Post-S18 Whole Project Final Review 已完成本地复审和 findings 修复，证据位于 `KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/`；当前全项目 Go/No-Go 仍为 `NO_GO`，`delivery_allowed=false`。
@@ -132,7 +133,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 Stage 0 整体复审尚未执行；下一轮只能复跑 S00-P1 validator、治理 validator、raw/secret scan 并修复 findings，不直接上传 GitHub。
+- v0.1.3 S01-P2 范围冻结尚未执行；下一轮只能锁定 v0.1.3 修补包范围，不得跳到 Stage 1 整体复审、GitHub upload、正式报告、lineage full check 或业务执行。
 
 ## 阻塞条件
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3-s01p1-current-state-preflight - 2026-07-02
+
+- 完成 `v0.1.3 S01-P1｜当前状态复核` 本地验证：读取 S18、LINEAGE_REPORT_GATE、S09 evidence 和治理状态，锁定当前仍为 `NO_GO`。
+- 新增 `KMFA/tools/check_v013_s01_p1_preflight.py`、`KMFA/tests/test_v013_s01_p1_preflight.py` 和 `KMFA/stage_artifacts/V013_S01_PRECHECK/` 证据包，复算 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告。
+- 本轮只执行一个 phase，不执行 S01-P2、Stage 1 整体复审、GitHub upload、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+- 公开仓库未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、credentials、银行流水、合同、薪资或税务申报材料；`NO_GO` 和 `delivery_allowed=false` 保持不变。
+
 ## 0.1.3-s00p1-app-entry - 2026-07-02
 
 - 完成 `v0.1.3 S00-P1｜Downloads App Entry` 本地验证：已在 `/Users/linzezhang/Downloads/KMFA.app` 建立 KMFA app 入口，并更新 KMFA 专用 `.icns` 图标。
