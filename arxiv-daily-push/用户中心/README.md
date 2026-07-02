@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-03 01:33:21 Australia/Sydney
+更新时间：2026-07-03 03:11:59 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -433,14 +433,14 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 
 ## 2026-07-01 11:24:30 Australia/Sydney - 历史：S2PLT02 真实 scheduler proof 已捕获，仍未生产验收
 
-- S2PLT02 当前真实邮件证据已达 `2/2` 天、`8/8` 封；真实 scheduler proof 也已在受控 launchd/no-SMTP 窗口中通过验证。
+- 历史当时 S2PLT02 真实邮件证据已达 `2/2` 天、`8/8` 封；真实 scheduler proof 也已在受控 launchd/no-SMTP 窗口中通过验证。
 - 当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF`；当时剩余缺口是 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，不能跳到 S2PLT03/S2PLT04/final bundle。后续历史状态见上方 2026-07-01 14:49:29 记录；当前事实以本页顶部阅读规则为准。
 - 本次 scheduler proof run 未发送 SMTP，未启用持久 scheduler，未拉取 live arXiv；运行后 LaunchAgents disabled，ADP 进程数 `0`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like。
 - 证据：[scheduler proof](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-20260701.json) / [proof validation](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-VALIDATION-20260701.json) / [capture audit pass](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-CAPTURE-PASS-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_CAPTURE_PASS.md)。这不是 SMTP/scheduler/Release/production accepted。
 
 ## 2026-07-01 08:37:20 Australia/Sydney - 历史：S2PLT02 当时只剩 scheduler proof 与 terminal artifact 缺口
 
-- S2PLT02 当前真实邮件证据已达 `2/2` 天、`8/8` 封；第二真实日和 8 封真实邮件不再是当前缺口。
+- 历史当时 S2PLT02 真实邮件证据已达 `2/2` 天、`8/8` 封；第二真实日和 8 封真实邮件不再是当时缺口。
 - 当时下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；历史当时剩余缺口是 `REAL_SCHEDULER_PROOF` 和 `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`。后续历史缺口曾见上方 2026-07-01 11:24:30 记录；当前事实以本页顶部阅读规则为准。
 - 证据：[运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-SCHEDULER-BLOCKER-SYNC-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PLT02_TERMINAL_SCHEDULER_BLOCKER_SYNC.md)。这不是 SMTP/scheduler/Release/production accepted。
 
