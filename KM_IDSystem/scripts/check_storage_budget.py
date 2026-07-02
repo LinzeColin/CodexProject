@@ -294,6 +294,159 @@ def evaluate_storage_budget(
     }
 
 
+def _operations_only(report: dict[str, Any]) -> bool:
+    return all(
+        report.get(field) is True
+        for field in [
+            "does_not_start_services",
+            "does_not_create_ids_data_root",
+            "does_not_scan_recursively",
+            "does_not_scan_external_drive_contents",
+            "does_not_generate_outputs",
+            "does_not_write_runtime_data",
+        ]
+    )
+
+
+def build_stage009_scenario_report(
+    *,
+    online_root: str,
+    absent_root: str,
+    storage_ok_total_bytes: int,
+    storage_ok_free_bytes: int,
+    storage_warn_total_bytes: int,
+    storage_warn_free_bytes: int,
+    storage_low_total_bytes: int,
+    storage_low_free_bytes: int,
+    storage_high_total_bytes: int,
+    storage_high_free_bytes: int,
+    planned_output_ok_bytes: int,
+    planned_output_too_large_bytes: int,
+) -> dict[str, Any]:
+    """Build deterministic Phase 3 storage-budget scenarios without outputs."""
+
+    scenarios = {
+        "ok": evaluate_storage_budget(
+            ids_data_root=online_root,
+            internal_total_bytes=storage_ok_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            job_kind="bounded_preflight",
+            require_external_root=False,
+        ),
+        "warn": evaluate_storage_budget(
+            ids_data_root=online_root,
+            internal_total_bytes=storage_warn_total_bytes,
+            internal_free_bytes=storage_warn_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            job_kind="bounded_preflight",
+            require_external_root=False,
+        ),
+        "low_free_space": evaluate_storage_budget(
+            ids_data_root=online_root,
+            internal_total_bytes=storage_low_total_bytes,
+            internal_free_bytes=storage_low_free_bytes,
+            planned_output_bytes=1 * 1024**3,
+            job_kind="bounded_preflight",
+            require_external_root=False,
+        ),
+        "high_waterline": evaluate_storage_budget(
+            ids_data_root=online_root,
+            internal_total_bytes=storage_high_total_bytes,
+            internal_free_bytes=storage_high_free_bytes,
+            planned_output_bytes=1 * 1024**3,
+            job_kind="bounded_preflight",
+            require_external_root=False,
+        ),
+        "unknown": evaluate_storage_budget(
+            ids_data_root=online_root,
+            internal_total_bytes=None,
+            internal_free_bytes=None,
+            planned_output_bytes=planned_output_ok_bytes,
+            job_kind="bounded_preflight",
+            require_external_root=False,
+            allow_real_disk_fallback=False,
+        ),
+        "external_root_not_ready": evaluate_storage_budget(
+            ids_data_root=absent_root,
+            internal_total_bytes=storage_ok_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_ok_bytes,
+            job_kind="bulk_import",
+            require_external_root=True,
+        ),
+        "unbounded_output_missing_cap": evaluate_storage_budget(
+            ids_data_root=online_root,
+            internal_total_bytes=storage_ok_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=None,
+            job_kind="embedding",
+            require_external_root=False,
+        ),
+        "planned_output_exceeds_budget": evaluate_storage_budget(
+            ids_data_root=online_root,
+            internal_total_bytes=storage_ok_total_bytes,
+            internal_free_bytes=storage_ok_free_bytes,
+            planned_output_bytes=planned_output_too_large_bytes,
+            job_kind="ocr",
+            require_external_root=False,
+        ),
+    }
+    expected_states = {
+        "ok": "BUDGET_OK",
+        "warn": "BUDGET_WARN",
+        "low_free_space": "BUDGET_BLOCKED_LOW_FREE",
+        "high_waterline": "BUDGET_BLOCKED_HIGH_WATERLINE",
+        "unknown": "BUDGET_UNKNOWN",
+        "external_root_not_ready": "EXTERNAL_ROOT_NOT_READY",
+        "unbounded_output_missing_cap": "UNBOUNDED_OUTPUT_RISK",
+        "planned_output_exceeds_budget": "UNBOUNDED_OUTPUT_RISK",
+    }
+    scenario_states = {
+        name: report["state"]
+        for name, report in scenarios.items()
+    }
+    state_valid = scenario_states == expected_states
+    warn_valid = (
+        scenarios["warn"]["large_jobs_require_review"]
+        and scenarios["warn"]["requires_operator_confirmation"]
+        and not scenarios["warn"]["safe_mode"]
+    )
+    blocked_names = [
+        "low_free_space",
+        "high_waterline",
+        "unknown",
+        "external_root_not_ready",
+        "unbounded_output_missing_cap",
+        "planned_output_exceeds_budget",
+    ]
+    safe_mode_valid = all(scenarios[name]["safe_mode"] for name in blocked_names)
+    pause_valid = all(
+        workflow in scenarios["unbounded_output_missing_cap"]["paused_workflows"]
+        for workflow in PAUSED_WORKFLOWS
+    )
+    operations_only_valid = all(_operations_only(report) for report in scenarios.values())
+
+    return {
+        "schema_version": "ids.stage009.phase3_scenarios.v1",
+        "stage": "STAGE-009",
+        "phase": "Phase 3",
+        "acceptance_id": "ACC-STAGE-009",
+        "entrance": OPERATIONS_ENTRANCE,
+        "customer_visible": False,
+        "overall_valid": state_valid and warn_valid and safe_mode_valid and pause_valid and operations_only_valid,
+        "scenario_states": scenario_states,
+        "budget_scenarios": scenarios,
+        "safe_mode_pauses": PAUSED_WORKFLOWS[:],
+        "does_not_start_services": True,
+        "does_not_create_ids_data_root": True,
+        "does_not_scan_recursively": True,
+        "does_not_scan_external_drive_contents": True,
+        "does_not_generate_outputs": True,
+        "does_not_write_runtime_data": True,
+    }
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Read-only IDS Stage 009 storage-budget preflight."
