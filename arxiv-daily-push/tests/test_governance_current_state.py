@@ -157,6 +157,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
+        mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "S2PLT02 terminal proof 和 S2PLT04 completion report 已进入 final bundle 并被 Stage 2 integrated acceptance 消费",
+            mail_status,
+        )
+        self.assertIn(
+            "历史当时不发送 SMTP、不启用 scheduler；当时 S2PLT02 terminal proof 和 S2PLT04 completion report 尚未写入",
+            mail_status,
+        )
+        self.assertNotIn(
+            "当前仍不发送 SMTP、不启用 scheduler；S2PLT02 terminal proof 和 S2PLT04 completion report 仍未写入。",
+            mail_status,
+        )
+
     def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
         manifest_path = (
             REPO_ROOT
