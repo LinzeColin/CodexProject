@@ -1641,3 +1641,945 @@ Stage 9 整体复审已确认：
 - 本复审不读取 raw/private/cookie/session/secret 数据。
 - 本复审不新增 direct active-memory writeback。
 - 本复审不新增 production runtime feature work。
+
+## 36. v1.1.6 Stage 1 Phase 1 记忆总览使用说明门槛
+
+状态：`phase_1_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 用户打开 Memory Atlas 后首先需要可理解的系统状态和下一步行动，而不是内部字段或普通 dashboard。
+- 记忆总览的可用性取决于“状态、原因、行动、深入入口”能否在同一入口形成闭环。
+- 使用说明必须降低理解成本，但不能绕过 Inspector、proposal-only 和隐私边界。
+
+输入：
+
+- `docs/product/memory_overview_usage_contract.md`
+- `docs/acceptance/memory_overview_usage_acceptance.md`
+- Stage 0 中文 UI 质量合同和视觉密度基线。
+- 后续实现 phase 的浏览器截图与 redacted derived snapshot。
+
+处理方法：
+
+- 固定记忆总览作为系统操作中枢的说明结构。
+- 将首页信息拆成今日状态、Memory Weather、建议动作、低价值循环、新生机会、层级资产摘要、主题分类摘要、Mini 记忆星系和记忆时间河脉冲。
+- 将 Presentation / Analysis、Inspector、Proposal 和后续搜索复盘路径写成用户可执行说明。
+- 使用 `validate:v1.1.6-stage1-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S1P01-001 overview_required_role = system_entry_not_welcome_page`
+- `PARAM-MA-V116-S1P01-002 required_overview_modules = 今日状态;Memory Weather;建议动作;低价值循环;新生机会;层级资产摘要;主题分类摘要;Mini 记忆星系;记忆时间河脉冲;系统使用说明`
+- `PARAM-MA-V116-S1P01-003 required_mode_explanations = Presentation;Analysis`
+- `PARAM-MA-V116-S1P01-004 required_explanation_surfaces = Inspector;Proposal`
+- `PARAM-MA-V116-S1P01-005 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S1P01-006 stage1_phase1_required_validator = validate:v1.1.6-stage1-phase1`
+- `screenshot_viewports = 1440x900;768x1024;390x844`
+
+输出：
+
+- Stage 1 Phase 1 产品合同。
+- Stage 1 Phase 1 验收文件。
+- Stage 1 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- Stage 2-5 未进入。
+
+## 37. v1.1.6 Stage 1 Phase 2 建议动作明细门槛
+
+状态：`phase_1_2_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 建议动作只有在能够解释原因、收益、成本、紧急度、证据和下一步时才适合用于真实决策。
+- 建议动作是 proposal-ready action candidate，不是直接写长期记忆的命令。
+- 首页摘要应该短，完整判断应交给展开层和 Inspector。
+
+输入：
+
+- `docs/product/suggested_action_detail_contract.md`
+- `docs/acceptance/suggested_action_detail_acceptance.md`
+- Stage 1 Phase 1 记忆总览使用说明合同。
+- 后续实现 phase 的 redacted evidence、Universe State 和浏览器截图。
+
+处理方法：
+
+- 固定建议动作的必备字段。
+- 固定五类动作语义：continue、review、consolidate、explore、defer。
+- 固定 Inspector 交接内容和 proposal-only 安全边界。
+- 使用 `validate:v1.1.6-stage1-phase2` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S1P02-001 suggested_action_required_fields = action_id;title;action_type;reason;roi_score;effort_cost;urgency;confidence;evidence_count;evidence_refs;source_scope;linked_theme_ids;next_step;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S1P02-002 suggested_action_types = continue;review;consolidate;explore;defer`
+- `PARAM-MA-V116-S1P02-003 effort_cost_values = low;medium;high`
+- `PARAM-MA-V116-S1P02-004 urgency_values = now;this_week;later;watch`
+- `PARAM-MA-V116-S1P02-005 confidence_values = high;medium;low`
+- `PARAM-MA-V116-S1P02-006 required_explanation_surface = Inspector`
+- `PARAM-MA-V116-S1P02-007 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S1P02-008 stage1_phase2_required_validator = validate:v1.1.6-stage1-phase2`
+
+输出：
+
+- Stage 1 Phase 2 产品合同。
+- Stage 1 Phase 2 验收文件。
+- Stage 1 Phase 2 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 层级资产和主题分类完整模型未进入。
+- Search 2.0、Review / Summary / Iteration 和 Data Map 2.0 未进入。
+
+## 38. v1.1.6 Stage 1 Phase 3 层级资产明细门槛
+
+状态：`phase_1_3_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 层级资产只有在能够说明层级、重要性、优先级、置信度、有效性、证据和下一步时才适合用于真实复盘和行动。
+- 层级资产是结构化资产视图，不是原始记录列表，也不是数据库字段直出。
+- 层级资产可以提示 proposal-only 调整，但不能由前端直接写长期记忆。
+
+输入：
+
+- `docs/product/tier_asset_detail_contract.md`
+- `docs/acceptance/tier_asset_detail_acceptance.md`
+- Stage 1 Phase 1 记忆总览使用说明合同。
+- Stage 1 Phase 2 建议动作明细合同。
+- 后续实现 phase 的 redacted evidence、Universe State 和浏览器截图。
+
+处理方法：
+
+- 固定七类层级资产：core_profile、project、decision、workflow、knowledge、opportunity、stale。
+- 固定层级资产的必备字段。
+- 固定 Inspector 交接内容和 proposal-only 安全边界。
+- 使用 `validate:v1.1.6-stage1-phase3` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S1P03-001 tier_asset_types = core_profile;project;decision;workflow;knowledge;opportunity;stale`
+- `PARAM-MA-V116-S1P03-002 tier_asset_required_fields = asset_id;asset_tier;title;summary;importance;priority;confidence;staleness_status;evidence_count;evidence_refs;source_scope;linked_action_ids;recommended_asset_action;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S1P03-003 importance_values = high;medium;low`
+- `PARAM-MA-V116-S1P03-004 priority_values = p0;p1;p2;p3;watch`
+- `PARAM-MA-V116-S1P03-005 staleness_status_values = current;needs_review;stale;unknown`
+- `PARAM-MA-V116-S1P03-006 recommended_asset_actions = keep;review;consolidate;lower_priority;validate;defer`
+- `PARAM-MA-V116-S1P03-007 required_explanation_surface = Inspector`
+- `PARAM-MA-V116-S1P03-008 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S1P03-009 stage1_phase3_required_validator = validate:v1.1.6-stage1-phase3`
+
+输出：
+
+- Stage 1 Phase 3 产品合同。
+- Stage 1 Phase 3 验收文件。
+- Stage 1 Phase 3 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 主题分类完整模型未进入。
+- Search 2.0、Review / Summary / Iteration 和 Data Map 2.0 未进入。
+
+## 39. v1.1.6 Stage 1 Phase 4 主题分类明细门槛
+
+状态：`phase_1_4_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 主题分类只有在能够说明强度、趋势、置信度、记录数、证据、关联资产、关联动作和下一步时才适合用于真实复盘和行动。
+- 主题分类是语义聚合视图，不是 tag 列表，也不是数据库字段直出。
+- 主题分类可以提示 proposal-only 调整，但不能由前端直接写长期记忆。
+
+输入：
+
+- `docs/product/topic_classification_detail_contract.md`
+- `docs/acceptance/topic_classification_detail_acceptance.md`
+- Stage 1 Phase 1 记忆总览使用说明合同。
+- Stage 1 Phase 2 建议动作明细合同。
+- Stage 1 Phase 3 层级资产明细合同。
+- 后续实现 phase 的 redacted evidence、Universe State 和浏览器截图。
+
+处理方法：
+
+- 固定七类主题状态：dominant、rising、declining、emerging、conflict、black_hole、stale。
+- 固定主题分类的必备字段。
+- 固定跨板块链接、Inspector 交接内容和 proposal-only 安全边界。
+- 使用 `validate:v1.1.6-stage1-phase4` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S1P04-001 topic_states = dominant;rising;declining;emerging;conflict;black_hole;stale`
+- `PARAM-MA-V116-S1P04-002 topic_required_fields = topic_id;topic_label;topic_state;topic_strength;trend;confidence;record_count;evidence_count;evidence_refs;source_scope;linked_asset_ids;linked_action_ids;matched_reason;recommended_topic_action;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S1P04-003 trend_values = up;down;flat;new;volatile`
+- `PARAM-MA-V116-S1P04-004 confidence_values = high;medium;low`
+- `PARAM-MA-V116-S1P04-005 recommended_topic_actions = continue;review;consolidate;validate;defer;watch`
+- `PARAM-MA-V116-S1P04-006 required_cross_board_links = linked_asset_ids;linked_action_ids;linked_starfield_cluster_id;linked_river_range`
+- `PARAM-MA-V116-S1P04-007 required_explanation_surface = Inspector`
+- `PARAM-MA-V116-S1P04-008 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S1P04-009 stage1_phase4_required_validator = validate:v1.1.6-stage1-phase4`
+
+输出：
+
+- Stage 1 Phase 4 产品合同。
+- Stage 1 Phase 4 验收文件。
+- Stage 1 Phase 4 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- Proposal 编辑工作区、Search 2.0、Review / Summary / Iteration 和 Data Map 2.0 未进入。
+
+## 40. v1.1.6 Stage 1 Phase 5 proposal-only 调整入口门槛
+
+状态：`phase_1_5_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 用户看懂总览、建议动作、层级资产和主题分类后，需要安全提出修正，而不是直接写长期记忆。
+- proposal-only 调整入口只生成 draft，不是完整 proposal 编辑工作区，也不是 agent apply。
+- 每个 draft 必须保留来源、目标、字段、旧值引用、建议值、理由、证据、冲突检查要求和 rollback hint。
+
+输入：
+
+- `docs/product/proposal_only_adjustment_entry_contract.md`
+- `docs/acceptance/proposal_only_adjustment_entry_acceptance.md`
+- Stage 1 Phase 1 记忆总览使用说明合同。
+- Stage 1 Phase 2 建议动作明细合同。
+- Stage 1 Phase 3 层级资产明细合同。
+- Stage 1 Phase 4 主题分类明细合同。
+- 后续实现 phase 的 redacted evidence、Inspector focus 和浏览器截图。
+
+处理方法：
+
+- 固定五类入口：memory_overview、suggested_action_detail、tier_asset_detail、topic_classification_detail、inspector。
+- 固定四类目标：overview_signal、suggested_action、tier_asset、topic_classification。
+- 固定八类允许字段：importance、priority、topic_category、action_status、due_window、hidden_until、stale_override、confidence_note。
+- 固定 proposal draft 最小 schema 和 no-direct-writeback 安全说明。
+- 使用 `validate:v1.1.6-stage1-phase5` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S1P05-001 proposal_entry_surfaces = memory_overview;suggested_action_detail;tier_asset_detail;topic_classification_detail;inspector`
+- `PARAM-MA-V116-S1P05-002 proposal_target_types = overview_signal;suggested_action;tier_asset;topic_classification`
+- `PARAM-MA-V116-S1P05-003 proposal_allowed_fields = importance;priority;topic_category;action_status;due_window;hidden_until;stale_override;confidence_note`
+- `PARAM-MA-V116-S1P05-004 proposal_required_schema_fields = proposal_id;proposal_schema_version;parent_snapshot_id;entry_surface;target_type;target_id;field;old_value_ref;proposed_value;reason;evidence_refs;confidence;created_at;created_by;requires_conflict_check;requires_agent_or_human_apply;rollback_hint`
+- `PARAM-MA-V116-S1P05-005 proposal_schema_version = memory_atlas_proposal_entry.v1`
+- `PARAM-MA-V116-S1P05-006 requires_conflict_check = true`
+- `PARAM-MA-V116-S1P05-007 requires_agent_or_human_apply = true`
+- `PARAM-MA-V116-S1P05-008 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S1P05-009 forbidden_payload_scope = raw_private_cookie_session_secret_local_absolute_path`
+- `PARAM-MA-V116-S1P05-010 stage1_phase5_required_validator = validate:v1.1.6-stage1-phase5`
+
+输出：
+
+- Stage 1 Phase 5 产品合同。
+- Stage 1 Phase 5 验收文件。
+- Stage 1 Phase 5 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 完整 proposal 编辑工作区、agent apply、Search 2.0、Review / Summary / Iteration 和 Data Map 2.0 未进入。
+- Stage 1 phase 本地完成后仍需整体复审，复审通过前不得进入 Stage 2 或上传 GitHub main。
+
+## 41. v1.1.6 Stage 1 整体复审门槛
+
+状态：`stage_1_review_passed_pending_stage2`。
+
+模型假设：
+
+- Stage 1 只有在 Phase 1.1 到 Phase 1.5 的合同、验收、validator 和记录均一致时，才允许进入 Stage 2。
+- Stage 1 复审通过不等于运行时 UI、浏览器截图、完整 proposal editor、Search 2.0、Review / Summary / Iteration 或 Data Map 已完成。
+- GitHub main 上传必须等 Stage 1-5 全部完成并通过最终上传 gate。
+
+输入：
+
+- `docs/product/memory_overview_usage_contract.md`
+- `docs/product/suggested_action_detail_contract.md`
+- `docs/product/tier_asset_detail_contract.md`
+- `docs/product/topic_classification_detail_contract.md`
+- `docs/product/proposal_only_adjustment_entry_contract.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage1_review.md`
+- Stage 1 Phase 1-5 validator。
+
+处理方法：
+
+- 固定 Stage 1 五个 phase 的合同和验收边界。
+- 固定 Stage 1 review artifact。
+- 固定 `validate:v1.1.6-stage1` 为进入 Stage 2 前的必跑 gate。
+- 确认 changed paths 仅限 Stage 1 contracts、acceptance、records、review、validators 和 package script。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S1-REVIEW-001 stage1_required_validator = validate:v1.1.6-stage1`
+- `PARAM-MA-V116-S1-REVIEW-002 stage1_review_status = stage_1_review_passed_pending_stage2`
+- `PARAM-MA-V116-S1-REVIEW-003 stage1_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage1_review.md`
+- `PARAM-MA-V116-S1-REVIEW-004 stage1_allowed_change_scope = contracts;acceptance;review;records;validators;package_script`
+- `PARAM-MA-V116-S1-REVIEW-005 stage1_next_gate = Stage 2 bounded run`
+- `PARAM-MA-V116-S1-REVIEW-006 upload_boundary = no_github_main_upload_until_stage1_to_stage5_complete`
+
+输出：
+
+- Stage 1 review artifact。
+- Stage 1 validator。
+- Stage 1 记录状态：`stage_1_review_passed_pending_stage2`。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由或 feature flag。
+- 本复审不进入 Stage 2-5，不执行 GitHub main 上传。
+
+## 42. v1.1.6 Stage 2 Phase 1 明细可见性工作台门槛
+
+状态：`phase_2_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Stage 2 的第一步是建立统一明细工作台 IA，而不是直接实现 React/CSS。
+- 建议动作、层级资产和主题分类三类明细必须能在同一个工作台模式下展开、筛选、排序并交接 Inspector。
+- 工作台内筛选不是 Search 2.0，不能把搜索工作流冒充为本 phase 已完成。
+
+输入：
+
+- `docs/product/detail_visibility_workbench_contract.md`
+- `docs/acceptance/detail_visibility_workbench_acceptance.md`
+- Stage 1 记忆总览、建议动作、层级资产、主题分类和 proposal-only 调整入口合同。
+- 后续实现 phase 的 redacted evidence、Universe State、Inspector focus 和浏览器截图。
+
+处理方法：
+
+- 固定工作台区域：workbench_header、scope_controls、density_mode、suggested_action_lane、tier_asset_lane、topic_classification_lane、inspector_handoff、proposal_entry_hint、empty_state、error_state。
+- 固定三类 lane 的最小字段和默认排序。
+- 固定展开交互：collapsed summary、expanded detail、open_inspector、jump_to_related、proposal_only_entry。
+- 固定筛选：source_scope、confidence、evidence_count、proposal_hint、urgency、effort_cost、action_type、asset_tier、importance、priority、staleness_status、topic_state、trend、clear_filters。
+- 使用 `validate:v1.1.6-stage2-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S2P01-001 workbench_regions = workbench_header;scope_controls;density_mode;suggested_action_lane;tier_asset_lane;topic_classification_lane;inspector_handoff;proposal_entry_hint;empty_state;error_state`
+- `PARAM-MA-V116-S2P01-002 required_lanes = suggested_action_lane;tier_asset_lane;topic_classification_lane`
+- `PARAM-MA-V116-S2P01-003 expansion_primitives = collapsed_summary;expanded_detail;open_inspector;jump_to_related;proposal_only_entry`
+- `PARAM-MA-V116-S2P01-004 suggested_action_lane_fields = action_id;title;action_type;reason;roi_score;effort_cost;urgency;confidence;evidence_count;next_step;proposal_hint;open_inspector`
+- `PARAM-MA-V116-S2P01-005 tier_asset_lane_fields = asset_id;asset_tier;title;summary;importance;priority;confidence;staleness_status;evidence_count;linked_action_ids;recommended_asset_action;proposal_hint;open_inspector`
+- `PARAM-MA-V116-S2P01-006 topic_classification_lane_fields = topic_id;topic_label;topic_state;topic_strength;trend;confidence;record_count;evidence_count;linked_asset_ids;linked_action_ids;recommended_topic_action;proposal_hint;open_inspector`
+- `PARAM-MA-V116-S2P01-007 required_filters = source_scope;confidence;evidence_count;proposal_hint;urgency;effort_cost;action_type;asset_tier;importance;priority;staleness_status;topic_state;trend;clear_filters`
+- `PARAM-MA-V116-S2P01-008 required_explanation_surface = Inspector`
+- `PARAM-MA-V116-S2P01-009 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S2P01-010 stage2_phase1_required_validator = validate:v1.1.6-stage2-phase1`
+
+输出：
+
+- Stage 2 Phase 1 产品合同。
+- Stage 2 Phase 1 验收文件。
+- Stage 2 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- Search 2.0、Review / Summary / Iteration、Data Map 2.0、完整 proposal editor 和 agent apply 未进入。
+- Stage 2 整体复审未执行。
+
+## 43. v1.1.6 Stage 2 Phase 2 suggested action lane 可见性门槛
+
+状态：`phase_2_2_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Stage 2 Phase 2 只细化 suggested_action_lane，不实现运行时 React/CSS。
+- 建议动作必须能被快速扫描、比较、展开证据，并交接 Inspector。
+- 建议动作可引导 proposal-only 调整，但不得直接写 active memory 或长期记忆。
+
+输入：
+
+- `docs/product/suggested_action_lane_visibility_contract.md`
+- `docs/acceptance/suggested_action_lane_visibility_acceptance.md`
+- Stage 2 Phase 1 明细可见性工作台合同。
+- Stage 1 建议动作明细合同和 proposal-only 调整入口合同。
+
+处理方法：
+
+- 固定 suggested_action_lane 三层信息：scan_row、decision_row、evidence_drawer。
+- 固定建议动作最小字段、分组、排序、badge 和交互。
+- 固定 Inspector handoff 字段与 proposal-only 边界。
+- 使用 `validate:v1.1.6-stage2-phase2` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S2P02-001 action_lane_layers = scan_row;decision_row;evidence_drawer`
+- `PARAM-MA-V116-S2P02-002 suggested_action_required_fields = action_id;title;action_type;reason;roi_score;effort_cost;urgency;confidence;evidence_count;evidence_refs;source_scope;linked_theme_ids;linked_asset_ids;next_step;recommended_time_window;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S2P02-003 action_groups = now;this_week;later;watch`
+- `PARAM-MA-V116-S2P02-004 action_sort_keys = roi_score;urgency;effort_cost;confidence;evidence_count;selection_focus`
+- `PARAM-MA-V116-S2P02-005 action_badges = high_roi;medium_roi;low_roi;low_effort;medium_effort;high_effort;urgent_now;this_week;later;watch;evidence_ready;evidence_thin;missing_evidence;proposal_recommended;proposal_not_needed`
+- `PARAM-MA-V116-S2P02-006 action_interactions = expand_action;compare_actions;pin_action;mark_reviewed;clear_temporary_state`
+- `PARAM-MA-V116-S2P02-007 inspector_handoff_fields = source_lane;target_type;action_id;title;action_type;reason;roi_score;effort_cost;urgency;confidence;evidence_refs;linked_theme_ids;linked_asset_ids;next_step;recommended_time_window;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S2P02-008 action_states = empty_state;low_evidence_state;error_state;loading_state`
+- `PARAM-MA-V116-S2P02-009 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S2P02-010 stage2_phase2_required_validator = validate:v1.1.6-stage2-phase2`
+
+输出：
+
+- Stage 2 Phase 2 产品合同。
+- Stage 2 Phase 2 验收文件。
+- Stage 2 Phase 2 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- Search 2.0、Review / Summary / Iteration、Data Map 2.0、完整 proposal editor 和 agent apply 未进入。
+- Stage 2 整体复审未执行。
+
+## 44. v1.1.6 Stage 2 Phase 3 tier asset lane 可见性门槛
+
+状态：`phase_2_3_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Stage 2 Phase 3 只细化 tier_asset_lane，不实现运行时 React/CSS。
+- 层级资产必须能被快速扫描、比较、展开证据，并交接 Inspector。
+- 层级资产可引导 proposal-only 调整，但不得直接写 active memory 或长期记忆。
+
+输入：
+
+- `docs/product/tier_asset_lane_visibility_contract.md`
+- `docs/acceptance/tier_asset_lane_visibility_acceptance.md`
+- Stage 2 Phase 1 明细可见性工作台合同。
+- Stage 1 层级资产明细合同和 proposal-only 调整入口合同。
+
+处理方法：
+
+- 固定 tier_asset_lane 三层信息：asset_scan_row、asset_decision_row、asset_evidence_drawer。
+- 固定层级资产最小字段、七类资产分组、排序、badge 和交互。
+- 固定 Inspector handoff 字段与 proposal-only 边界。
+- 使用 `validate:v1.1.6-stage2-phase3` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S2P03-001 asset_lane_layers = asset_scan_row;asset_decision_row;asset_evidence_drawer`
+- `PARAM-MA-V116-S2P03-002 tier_asset_required_fields = asset_id;asset_tier;title;summary;importance;priority;confidence;staleness_status;evidence_count;evidence_refs;source_scope;linked_action_ids;linked_theme_ids;linked_time_range;recommended_asset_action;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S2P03-003 asset_groups = core_profile;project;decision;workflow;knowledge;opportunity;stale`
+- `PARAM-MA-V116-S2P03-004 asset_sort_keys = importance;priority;staleness_status;confidence;evidence_count;selection_focus`
+- `PARAM-MA-V116-S2P03-005 asset_badges = core_profile;project;decision;workflow;knowledge;opportunity;stale;high_importance;medium_importance;low_importance;p0;p1;p2;p3;watch;current;needs_review;stale;unknown;evidence_ready;evidence_thin;missing_evidence;proposal_recommended;proposal_not_needed`
+- `PARAM-MA-V116-S2P03-006 asset_interactions = expand_asset;compare_assets;pin_asset;mark_reviewed;jump_to_linked_action;clear_temporary_state`
+- `PARAM-MA-V116-S2P03-007 inspector_handoff_fields = source_lane;target_type;asset_id;asset_tier;title;summary;importance;priority;confidence;staleness_status;evidence_refs;source_scope;linked_action_ids;linked_theme_ids;linked_time_range;recommended_asset_action;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S2P03-008 asset_states = empty_state;low_evidence_state;stale_conflict_state;error_state;loading_state`
+- `PARAM-MA-V116-S2P03-009 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S2P03-010 stage2_phase3_required_validator = validate:v1.1.6-stage2-phase3`
+
+输出：
+
+- Stage 2 Phase 3 产品合同。
+- Stage 2 Phase 3 验收文件。
+- Stage 2 Phase 3 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- Search 2.0、Review / Summary / Iteration、Data Map 2.0、完整 proposal editor 和 agent apply 未进入。
+- Stage 2 整体复审未执行。
+
+## 45. v1.1.6 Stage 2 Phase 4 topic classification lane 可见性门槛
+
+状态：`phase_2_4_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Stage 2 Phase 4 只细化 topic_classification_lane，不实现运行时 React/CSS。
+- 主题分类必须能被快速扫描、比较、展开证据，并交接 Inspector。
+- 主题分类可引导 proposal-only 调整，但不得直接写 active memory 或长期记忆。
+
+输入：
+
+- `docs/product/topic_classification_lane_visibility_contract.md`
+- `docs/acceptance/topic_classification_lane_visibility_acceptance.md`
+- Stage 2 Phase 1 明细可见性工作台合同。
+- Stage 1 主题分类明细合同和 proposal-only 调整入口合同。
+
+处理方法：
+
+- 固定 topic_classification_lane 三层信息：topic_scan_row、topic_decision_row、topic_evidence_drawer。
+- 固定主题分类最小字段、七类主题状态分组、排序、badge 和交互。
+- 固定 Inspector handoff 字段与 proposal-only 边界。
+- 使用 `validate:v1.1.6-stage2-phase4` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S2P04-001 topic_lane_layers = topic_scan_row;topic_decision_row;topic_evidence_drawer`
+- `PARAM-MA-V116-S2P04-002 topic_classification_required_fields = topic_id;topic_label;topic_state;topic_strength;trend;confidence;record_count;evidence_count;evidence_refs;source_scope;linked_asset_ids;linked_action_ids;linked_starfield_cluster_id;linked_river_range;related_topic_ids;matched_reason;recommended_topic_action;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S2P04-003 topic_groups = dominant;rising;emerging;conflict;black_hole;declining;stale`
+- `PARAM-MA-V116-S2P04-004 topic_sort_keys = topic_strength;trend;confidence;record_count;evidence_count;selection_focus`
+- `PARAM-MA-V116-S2P04-005 topic_badges = dominant;rising;declining;emerging;conflict;black_hole;stale;high_strength;medium_strength;low_strength;trend_up;trend_down;trend_flat;trend_new;trend_volatile;high_confidence;medium_confidence;low_confidence;evidence_ready;evidence_thin;missing_evidence;proposal_recommended;proposal_not_needed`
+- `PARAM-MA-V116-S2P04-006 topic_interactions = expand_topic;compare_topics;pin_topic;mark_reviewed;jump_to_linked_asset;jump_to_linked_action;jump_to_starfield;jump_to_river;clear_temporary_state`
+- `PARAM-MA-V116-S2P04-007 inspector_handoff_fields = source_lane;target_type;topic_id;topic_label;topic_state;topic_strength;trend;confidence;record_count;evidence_count;evidence_refs;source_scope;linked_asset_ids;linked_action_ids;linked_starfield_cluster_id;linked_river_range;related_topic_ids;matched_reason;recommended_topic_action;proposal_hint;rollback_hint`
+- `PARAM-MA-V116-S2P04-008 topic_states = empty_state;low_evidence_state;conflict_state;black_hole_state;stale_state;error_state;loading_state`
+- `PARAM-MA-V116-S2P04-009 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S2P04-010 stage2_phase4_required_validator = validate:v1.1.6-stage2-phase4`
+
+输出：
+
+- Stage 2 Phase 4 产品合同。
+- Stage 2 Phase 4 验收文件。
+- Stage 2 Phase 4 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- Search 2.0、Review / Summary / Iteration、Data Map 2.0、完整 proposal editor 和 agent apply 未进入。
+- Stage 2 整体复审未执行。
+
+## 46. v1.1.6 Stage 2 整体复审门槛
+
+状态：`stage_2_review_passed_pending_stage3`。
+
+模型假设：
+
+- Stage 2 只有在 Phase 2.1 到 Phase 2.4 的合同、验收、validator 和记录均一致时，才允许进入 Stage 3。
+- Stage 2 复审通过不等于运行时 UI、浏览器截图、完整 proposal editor、Search 2.0、Review / Summary / Iteration 或 Data Map 已完成。
+- GitHub main 上传必须等 Stage 1-5 全部完成并通过最终上传 gate。
+
+输入：
+
+- `docs/product/detail_visibility_workbench_contract.md`
+- `docs/product/suggested_action_lane_visibility_contract.md`
+- `docs/product/tier_asset_lane_visibility_contract.md`
+- `docs/product/topic_classification_lane_visibility_contract.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage2_review.md`
+- Stage 2 Phase 1-4 validator。
+
+处理方法：
+
+- 固定 Stage 2 四个 phase 的合同和验收边界。
+- 固定 Stage 2 review artifact。
+- 固定 `validate:v1.1.6-stage2` 为进入 Stage 3 前的必跑 gate。
+- 确认 changed paths 仅限 Stage 1 和 Stage 2 contracts、acceptance、records、review、validators 和 package script。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S2-REVIEW-001 stage2_required_validator = validate:v1.1.6-stage2`
+- `PARAM-MA-V116-S2-REVIEW-002 stage2_review_status = stage_2_review_passed_pending_stage3`
+- `PARAM-MA-V116-S2-REVIEW-003 stage2_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage2_review.md`
+- `PARAM-MA-V116-S2-REVIEW-004 stage2_allowed_change_scope = contracts;acceptance;review;records;validators;package_script`
+- `PARAM-MA-V116-S2-REVIEW-005 stage2_next_gate = Stage 3 bounded run`
+- `PARAM-MA-V116-S2-REVIEW-006 upload_boundary = no_github_main_upload_until_stage1_to_stage5_complete`
+
+输出：
+
+- Stage 2 review artifact。
+- Stage 2 validator。
+- Stage 2 记录状态：`stage_2_review_passed_pending_stage3`。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由或 feature flag。
+- 本复审不进入 Stage 3-5，不执行 GitHub main 上传。
+
+## 47. v1.1.6 Stage 3 Phase 1 proposal-only 调整工作区门槛
+
+状态：`phase_3_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 用户调整重要性、优先级、主题、状态或隐藏窗口时，需要完整 proposal-only adjustment workspace，而不是只有入口提示。
+- proposal-only 工作区必须让 old_value、proposed_value、reason、evidence_refs、confidence、冲突检查要求和 rollback_hint 同时可见。
+- 工作区可以把 proposal 标记为 ready_for_agent_apply，但不能执行 agent apply，也不能直接写 active memory。
+
+输入：
+
+- `docs/product/proposal_only_adjustment_workspace_contract.md`
+- `docs/acceptance/proposal_only_adjustment_workspace_acceptance.md`
+- Stage 1 proposal-only 调整入口合同。
+- Stage 2 明细可见性工作台和三类 lane 合同。
+- 后续实现 phase 的 redacted snapshot、Inspector focus 和浏览器截图。
+
+处理方法：
+
+- 固定工作区区域：proposal_queue、target_context_panel、field_editor_panel、proposal_diff_preview、safety_review_panel、rollback_panel。
+- 固定允许字段：importance、priority、topic_category、action_status、due_window、hidden_until、stale_override、confidence_note。
+- 固定四类目标：overview_signal、suggested_action、tier_asset、topic_classification。
+- 固定 proposal draft schema、proposal 状态、Inspector 交接和 no-direct-writeback 安全说明。
+- 使用 `validate:v1.1.6-stage3-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S3P01-001 workspace_regions = proposal_queue;target_context_panel;field_editor_panel;proposal_diff_preview;safety_review_panel;rollback_panel`
+- `PARAM-MA-V116-S3P01-002 allowed_fields = importance;priority;topic_category;action_status;due_window;hidden_until;stale_override;confidence_note`
+- `PARAM-MA-V116-S3P01-003 proposal_target_types = overview_signal;suggested_action;tier_asset;topic_classification`
+- `PARAM-MA-V116-S3P01-004 proposal_required_schema_fields = proposal_id;proposal_schema_version;parent_snapshot_id;source_surface;entry_surface;target_type;target_id;field;old_value;old_value_ref;proposed_value;reason;evidence_refs;confidence;status;created_at;created_by;requires_conflict_check;requires_agent_or_human_apply;rollback_hint`
+- `PARAM-MA-V116-S3P01-005 proposal_statuses = draft;needs_review;ready_for_agent_apply;rejected;superseded`
+- `PARAM-MA-V116-S3P01-006 proposal_boundary = proposal_only_no_direct_active_memory_write`
+- `PARAM-MA-V116-S3P01-007 stage3_phase1_required_validator = validate:v1.1.6-stage3-phase1`
+
+输出：
+
+- Stage 3 Phase 1 产品合同。
+- Stage 3 Phase 1 验收文件。
+- Stage 3 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不实现 agent apply，不进入 Search 2.0、Review / Summary / Iteration 或 Data Map 2.0。
+- Stage 3 整体复审未执行。
+
+## 48. v1.1.6 Stage 3 Phase 2 proposal queue 持久化与版本链门槛
+
+状态：`phase_3_2_contract_created_pending_stage_review`。
+
+模型假设：
+
+- proposal-only 工作区只有在 proposal queue 可追溯、可复核、可回滚时，才适合支持用户调整重要性、优先级和主题。
+- 本地 queue 可以保存 draft metadata，但不能保存 raw/private 内容，不能直接写 active memory，也不能代替 agent/human apply。
+- 版本链必须 append-only；修改、替代和回滚都必须生成新记录而不是覆盖旧记录。
+
+输入：
+
+- `docs/product/proposal_queue_persistence_contract.md`
+- `docs/acceptance/proposal_queue_persistence_acceptance.md`
+- Stage 3 Phase 1 proposal-only 调整工作区合同。
+- 现有写回提案版本控制模型。
+- 后续实现 phase 的 redacted snapshot、Inspector focus 和浏览器截图。
+
+处理方法：
+
+- 固定 storage key：`memory-atlas.writeback.proposals.v1`。
+- 固定 storage_scope：`browser_local_only`。
+- 固定 queue_mutation_policy：`append_only`。
+- 固定 proposal_record、proposal_revision、proposal_history 和 rollback_proposal。
+- 固定 stale_snapshot、schema_mismatch 和 forbidden_payload 阻断状态。
+- 使用 `validate:v1.1.6-stage3-phase2` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S3P02-001 storage_key = memory-atlas.writeback.proposals.v1`
+- `PARAM-MA-V116-S3P02-002 storage_scope = browser_local_only`
+- `PARAM-MA-V116-S3P02-003 queue_mutation_policy = append_only`
+- `PARAM-MA-V116-S3P02-004 required_record_fields = proposal_id;proposal_schema_version;revision;parent_proposal_id;supersedes_proposal_id;rollback_to_proposal_id;parent_snapshot_id;target_ref;target_type;target_id;field;old_value_ref;proposed_value;diff_summary;reason;evidence_refs;status;created_at;updated_at;created_by;requires_conflict_check;requires_agent_or_human_apply;rollback_hint`
+- `PARAM-MA-V116-S3P02-005 proposal_statuses = draft;needs_review;ready_for_agent_apply;rejected;superseded`
+- `PARAM-MA-V116-S3P02-006 failure_states = stale_snapshot;schema_mismatch;forbidden_payload`
+- `PARAM-MA-V116-S3P02-007 stage3_phase2_required_validator = validate:v1.1.6-stage3-phase2`
+
+输出：
+
+- Stage 3 Phase 2 产品合同。
+- Stage 3 Phase 2 验收文件。
+- Stage 3 Phase 2 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不写 localStorage，不实现 agent apply，不进入 Search 2.0、Review / Summary / Iteration 或 Data Map 2.0。
+- Stage 3 整体复审未执行。
+
+## 49. v1.1.6 Stage 3 整体复审门槛
+
+状态：`stage_3_review_passed_pending_stage4`。
+
+模型假设：
+
+- Stage 3 只有在 Phase 3.1 和 Phase 3.2 的合同、验收、validator 和记录均一致时，才允许进入 Stage 4。
+- Stage 3 复审通过不等于运行时 UI、浏览器截图、真实 localStorage queue、agent apply、Search 2.0、Review / Summary / Iteration 或 Data Map 已完成。
+- GitHub main 上传必须等 Stage 1-5 全部完成并通过最终上传 gate。
+
+输入：
+
+- `docs/product/proposal_only_adjustment_workspace_contract.md`
+- `docs/product/proposal_queue_persistence_contract.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage3_review.md`
+- Stage 3 Phase 1-2 validator。
+
+处理方法：
+
+- 固定 Stage 3 两个 phase 的合同和验收边界。
+- 固定 Stage 3 review artifact。
+- 固定 `validate:v1.1.6-stage3` 为进入 Stage 4 前的必跑 gate。
+- 确认 changed paths 仅限 Stage 1、Stage 2 和 Stage 3 contracts、acceptance、records、reviews、validators 和 package script。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S3-REVIEW-001 stage3_required_validator = validate:v1.1.6-stage3`
+- `PARAM-MA-V116-S3-REVIEW-002 stage3_review_status = stage_3_review_passed_pending_stage4`
+- `PARAM-MA-V116-S3-REVIEW-003 stage3_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage3_review.md`
+- `PARAM-MA-V116-S3-REVIEW-004 stage3_allowed_change_scope = contracts;acceptance;review;records;validators;package_script`
+- `PARAM-MA-V116-S3-REVIEW-005 stage3_next_gate = Stage 4 bounded run`
+- `PARAM-MA-V116-S3-REVIEW-006 upload_boundary = no_github_main_upload_until_stage1_to_stage5_complete`
+
+输出：
+
+- Stage 3 review artifact。
+- Stage 3 validator。
+- Stage 3 记录状态：`stage_3_review_passed_pending_stage4`。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由、feature flag 或 localStorage。
+- 本复审不进入 Stage 4-5，不执行 GitHub main 上传。
+
+## 50. v1.1.6 Stage 4 Phase 1 Search 2.0 工作流参数
+
+状态：`phase_4_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Search 2.0 必须是搜索、解释、跳转和下一步行动的工作流，不是普通数据库列表。
+- 搜索结果只有在能解释 `matched_reason`、显示 title/summary/source/tier/topic/recency/importance，并提供 Starfield/River/Inspector 跳转时，才适合进入真实使用。
+- Search 2.0 只能使用 redacted summary 和 evidence_refs，不读取 raw/private/cookie/session/secret。
+- 本 phase 不实现运行时搜索、不进入 Review / Summary / Iteration、不进入 Data Map 2.0。
+
+输入：
+
+- `docs/product/search_2_0_workflow_contract.md`
+- `docs/acceptance/search_2_0_workflow_acceptance.md`
+- Stage 1-3 已建立的 overview、detail、proposal-only 合同。
+
+处理方法：
+
+- 固定 `search_2_0_workflow` 区域：`query_input`、`filter_state`、`result_list`、`result_action_bar`、`search_session_summary`、`zero_result_recovery`。
+- 固定结果字段：title、summary、source、tier、topic、recency、importance、matched_reason、evidence_refs、jump_to_starfield、jump_to_river、open_inspector、proposal_candidate。
+- 固定安全边界：No runtime UI、No raw/private data read、No direct writeback、No GitHub main upload。
+- 使用 `validate:v1.1.6-stage4-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S4P01-001 stage4_phase1_contract_id = search_2_0_workflow`
+- `PARAM-MA-V116-S4P01-002 stage4_phase1_required_regions = query_input;filter_state;result_list;result_action_bar;search_session_summary;zero_result_recovery`
+- `PARAM-MA-V116-S4P01-003 stage4_phase1_required_result_fields = title;summary;source;tier;topic;recency;importance;matched_reason;evidence_refs;jump_to_starfield;jump_to_river;open_inspector;proposal_candidate`
+- `PARAM-MA-V116-S4P01-004 stage4_phase1_navigation_actions = jump_to_starfield;jump_to_river;open_inspector`
+- `PARAM-MA-V116-S4P01-005 stage4_phase1_safety = redacted_summary_only;no_raw_private;no_direct_writeback`
+- `PARAM-MA-V116-S4P01-006 stage4_phase1_status = phase_4_1_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S4P01-007 stage4_phase1_required_validator = validate:v1.1.6-stage4-phase1`
+
+输出：
+
+- Stage 4 Phase 1 产品合同。
+- Stage 4 Phase 1 验收文件。
+- Stage 4 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不进入 Review / Summary / Iteration、Data Map 2.0、Stage 5 或 GitHub main 上传。
+
+## 51. v1.1.6 Stage 4 Phase 2 Review / Summary / Iteration 工作流参数
+
+状态：`phase_4_2_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Review / Summary / Iteration 必须回答八个复盘问题，不能只给摘要。
+- 复盘结论必须包含 evidence_refs、confidence、next_actions 和 proposal_candidate 判断。
+- 如果需要调整重要性、优先级、主题、动作状态或隐藏策略，必须进入 Stage 3 proposal-only 工作区。
+- 本 phase 不实现运行时复盘、不读取 raw/private/cookie/session/secret、不进入 Data Map 2.0。
+
+输入：
+
+- `docs/product/review_summary_iteration_workflow_contract.md`
+- `docs/acceptance/review_summary_iteration_workflow_acceptance.md`
+- Stage 4 Phase 1 Search 2.0 工作流合同。
+- Stage 3 proposal-only 工作区和 queue 合同。
+
+处理方法：
+
+- 固定 `review_summary_iteration_workflow` 区域：`review_period_selector`、`theme_change_panel`、`opportunity_panel`、`low_value_loop_panel`、`decision_change_panel`、`next_action_panel`、`proposal_decision_panel`、`iteration_backlog`。
+- 固定八个复盘问题：本期主导主题是什么、哪些主题增强、哪些主题衰退、哪些新机会出现、哪些低价值循环出现、哪些决策变化、下一步动作是什么、是否需要生成 proposal。
+- 固定输出字段：dominant_topics、strengthening_topics、declining_topics、new_opportunities、low_value_loops、decision_changes、next_actions、proposal_candidate、evidence_refs、confidence、iteration。
+- 固定安全边界：No runtime UI、No raw/private data read、No direct writeback、No GitHub main upload。
+- 使用 `validate:v1.1.6-stage4-phase2` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S4P02-001 stage4_phase2_contract_id = review_summary_iteration_workflow`
+- `PARAM-MA-V116-S4P02-002 stage4_phase2_required_regions = review_period_selector;theme_change_panel;opportunity_panel;low_value_loop_panel;decision_change_panel;next_action_panel;proposal_decision_panel;iteration_backlog`
+- `PARAM-MA-V116-S4P02-003 stage4_phase2_required_questions = dominant_topics;strengthening_topics;declining_topics;new_opportunities;low_value_loops;decision_changes;next_actions;proposal_candidate`
+- `PARAM-MA-V116-S4P02-004 stage4_phase2_required_outputs = evidence_refs;confidence;iteration;acceptance_hint;blocked_reason;review_again_at`
+- `PARAM-MA-V116-S4P02-005 stage4_phase2_safety = redacted_summary_only;no_raw_private;no_direct_writeback`
+- `PARAM-MA-V116-S4P02-006 stage4_phase2_status = phase_4_2_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S4P02-007 stage4_phase2_required_validator = validate:v1.1.6-stage4-phase2`
+
+输出：
+
+- Stage 4 Phase 2 产品合同。
+- Stage 4 Phase 2 验收文件。
+- Stage 4 Phase 2 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不进入 Data Map 2.0、Stage 5 或 GitHub main 上传。
+
+## 52. v1.1.6 Stage 4 整体复审门槛
+
+状态：`stage_4_review_passed_pending_stage5`。
+
+模型假设：
+
+- Stage 4 只有在 Phase 4.1 和 Phase 4.2 的合同、验收、validator 和记录均一致时，才允许进入 Stage 5。
+- Stage 4 复审通过不等于运行时 UI、浏览器截图、runtime Search 2.0、runtime Review / Summary / Iteration 或 Data Map 2.0 已完成。
+- 本复审不实现运行时搜索、不实现复盘 runtime、不读取 raw/private/cookie/session/secret、不执行 direct writeback。
+
+输入：
+
+- `docs/product/search_2_0_workflow_contract.md`
+- `docs/acceptance/search_2_0_workflow_acceptance.md`
+- `docs/product/review_summary_iteration_workflow_contract.md`
+- `docs/acceptance/review_summary_iteration_workflow_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage4_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage4.cjs`
+
+处理方法：
+
+- 固定 `validate:v1.1.6-stage4` 为进入 Stage 5 前的必跑 gate。
+- 固定 Stage 4 review artifact 为 `docs/reviews/memory_atlas_v1_1_6_stage4_review.md`。
+- 固定允许改动范围为 contracts、acceptance、review、records、validators、package_script。
+- 固定上传边界：Stage 1-5 完成并通过最终上传 gate 前不上传 GitHub main。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S4-REVIEW-001 stage4_required_validator = validate:v1.1.6-stage4`
+- `PARAM-MA-V116-S4-REVIEW-002 stage4_review_status = stage_4_review_passed_pending_stage5`
+- `PARAM-MA-V116-S4-REVIEW-003 stage4_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage4_review.md`
+- `PARAM-MA-V116-S4-REVIEW-004 stage4_allowed_change_scope = contracts;acceptance;review;records;validators;package_script`
+- `PARAM-MA-V116-S4-REVIEW-005 stage4_next_gate = Stage 5 bounded run`
+- `PARAM-MA-V116-S4-REVIEW-006 upload_boundary = no_github_main_upload_until_stage1_to_stage5_complete`
+
+输出：
+
+- Stage 4 复审 artifact。
+- Stage 4 stage-level validator。
+- Stage 4 记录状态：`stage_4_review_passed_pending_stage5`。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由、feature flag 或 localStorage。
+- 本复审不进入 Stage 5，不执行 GitHub main 上传。
+
+## 53. v1.1.6 Stage 5 Phase 1 Data Map 2.0 工作流参数
+
+状态：`phase_5_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- Data Map 2.0 必须解释数据如何变成行动建议，不能只是 static structure diagram。
+- Data Map 2.0 必须至少包含来源层、主题层、资产层和行动层。
+- 每张 map card 必须包含 label、type、strength、trend、evidence_count、action_count 和 inspector_link。
+- 本 phase 不实现运行时 Data Map、不读取 raw/private/cookie/session/secret、不执行 direct writeback。
+
+输入：
+
+- `docs/product/data_map_2_0_workflow_contract.md`
+- `docs/acceptance/data_map_2_0_workflow_acceptance.md`
+- Stage 4 Search 2.0 工作流合同。
+- Stage 4 Review / Summary / Iteration 工作流合同。
+
+处理方法：
+
+- 固定 `data_map_2_0_workflow` 四层结构：`source_layer`、`topic_layer`、`asset_layer`、`action_layer`。
+- 固定数据到行动路径：`source_to_topic_edges`、`topic_to_asset_edges`、`asset_to_action_edges`、`data_to_action_flow`。
+- 固定 map card 字段：label、type、strength、trend、evidence_count、action_count、inspector_link。
+- 固定跨工作流 handoff：open_inspector、jump_to_search、jump_to_review、proposal_candidate。
+- 固定安全边界：No runtime UI、No raw/private data read、No direct writeback、No GitHub main upload。
+- 使用 `validate:v1.1.6-stage5-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S5P01-001 stage5_phase1_contract_id = data_map_2_0_workflow`
+- `PARAM-MA-V116-S5P01-002 stage5_phase1_required_layers = source_layer;topic_layer;asset_layer;action_layer`
+- `PARAM-MA-V116-S5P01-003 stage5_phase1_required_edges = source_to_topic_edges;topic_to_asset_edges;asset_to_action_edges;data_to_action_flow`
+- `PARAM-MA-V116-S5P01-004 stage5_phase1_required_card_fields = label;type;strength;trend;evidence_count;action_count;inspector_link`
+- `PARAM-MA-V116-S5P01-005 stage5_phase1_handoffs = open_inspector;jump_to_search;jump_to_review;proposal_candidate`
+- `PARAM-MA-V116-S5P01-006 stage5_phase1_status = phase_5_1_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S5P01-007 stage5_phase1_required_validator = validate:v1.1.6-stage5-phase1`
+
+输出：
+
+- Stage 5 Phase 1 产品合同。
+- Stage 5 Phase 1 验收文件。
+- Stage 5 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不进入 Stage 5 整体复审，不执行 GitHub main 上传。
+
+## 54. v1.1.6 Stage 5 整体复审门槛
+
+状态：`stage_5_review_passed_pending_stage1_5_final_upload`。
+
+模型假设：
+
+- Stage 5 只有在 Phase 5.1 的合同、验收、validator 和记录均一致时，才允许进入 Stage 1-5 final upload gate。
+- Stage 5 复审通过不等于运行时 UI、浏览器截图、runtime Data Map 2.0 或 agent apply 已完成。
+- Stage 5 复审不得读取 raw/private/cookie/session/secret，不得执行 direct writeback，不得上传 GitHub main。
+
+输入：
+
+- `docs/product/data_map_2_0_workflow_contract.md`
+- `docs/acceptance/data_map_2_0_workflow_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage5_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage5_phase1.cjs`
+
+处理方法：
+
+- 先运行 Stage 5 Phase 1 validator。
+- 检查 Stage 5 review artifact 是否覆盖 Phase 5.1、边界、风险和 Stage 1-5 final upload gate。
+- 检查 delivery、feature、development、model parameter、changelog 和 package script 是否一致。
+- 固定 `validate:v1.1.6-stage5` 为 Stage 1-5 final upload 前的必跑 gate。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S5-REVIEW-001 stage5_required_validator = validate:v1.1.6-stage5`
+- `PARAM-MA-V116-S5-REVIEW-002 stage5_review_status = stage_5_review_passed_pending_stage1_5_final_upload`
+- `PARAM-MA-V116-S5-REVIEW-003 stage5_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage5_review.md`
+- `PARAM-MA-V116-S5-REVIEW-004 stage5_allowed_change_scope = contracts;acceptance;records;reviews;validators;package_script`
+- `PARAM-MA-V116-S5-REVIEW-005 stage5_next_gate = Stage 1-5 final upload`
+- `PARAM-MA-V116-S5-REVIEW-006 upload_boundary = no_github_main_upload_until_final_upload_gate_passes`
+
+输出：
+
+- Stage 5 review artifact。
+- Stage 5 stage-level validator。
+- Stage 5 review records。
+
+边界：
+
+- 本复审不实现运行时 Data Map 2.0。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由或 feature flag。
+- 本复审不进入 Stage 6，不执行 GitHub main 上传。

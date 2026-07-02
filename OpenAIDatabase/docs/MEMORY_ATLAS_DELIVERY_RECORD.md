@@ -291,3 +291,630 @@ Stage 0 整体复审状态：`stage_0_review_passed_pending_upload`。
 - commit 后处理 `origin/main` behind 状态。
 - 重新运行 `validate:v1.1.6-stage0` 和可用治理检查。
 - 上传 GitHub main。
+
+### Stage 1 Phase 1：Memory Overview Usage Contract
+
+Stage 1 Phase 1 状态：`phase_1_1_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包进入“记忆总览与系统使用说明”的第一轮，只建立可用性合同和验收文件，不替换运行时 UI、不修改 CSS、不启动浏览器、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/memory_overview_usage_contract.md`
+- `docs/acceptance/memory_overview_usage_acceptance.md`
+- `validate:v1.1.6-stage1-phase1`
+
+本 phase 解决的缺口：
+
+- 记忆总览需要被明确为系统操作中枢，而不是欢迎页或普通 dashboard。
+- 首页必须能解释今日状态、Memory Weather、建议动作、低价值循环、新生机会、层级资产摘要、主题分类摘要、Mini 记忆星系和记忆时间河脉冲。
+- 系统使用说明必须告诉用户如何从总览进入 Inspector、记忆星系、记忆时间河、搜索、复盘、总结与迭代。
+- Presentation / Analysis 模式、Inspector 和 Proposal 的边界必须可被用户理解。
+- proposal-only 必须保持为前端调整边界，不直接写长期记忆。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 1 Phase 1。
+- Stage 1 整体复审未执行。
+- Stage 2-5 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+
+下一步：
+
+- Stage 1 Phase 2 已承接建议动作明细合同；后续继续补层级资产模型和主题分类模型。
+- Stage 1 所有 phase 完成后进行 Stage 1 整体复审，修复复审发现的问题。
+
+### Stage 1 Phase 2：Suggested Action Detail Contract
+
+Stage 1 Phase 2 状态：`phase_1_2_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包的建议动作明细合同轮次，只定义建议动作展开后的字段、解释、排序、Inspector 交接和 proposal-only 边界，不实现运行时 UI、不修改 CSS、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/suggested_action_detail_contract.md`
+- `docs/acceptance/suggested_action_detail_acceptance.md`
+- `validate:v1.1.6-stage1-phase2`
+
+本 phase 解决的缺口：
+
+- 建议动作不能只有短句列表，必须能展开为可判断、可追溯、可调整的行动解释。
+- 每条建议动作必须包含 reason、ROI、effort cost、urgency、confidence、evidence、next step、proposal hint 和 rollback hint。
+- `continue`、`review`、`consolidate`、`explore`、`defer` 五类动作必须有明确语义。
+- 点击建议动作进入 Inspector 时必须能解释原因、证据、ROI、努力成本、紧急度和下一步。
+- 建议动作只能引导 proposal-only 调整，不得直接写 active memory 或长期记忆。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 1 Phase 2。
+- 层级资产和主题分类完整模型未进入。
+- Proposal 编辑工作区、Search 2.0、Review / Summary / Iteration、Data Map 2.0 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+
+下一步：
+
+- Stage 1 Phase 3 已承接层级资产明细模型合同；后续继续补主题分类模型。
+- Stage 1 所有 phase 完成后进行 Stage 1 整体复审，修复复审发现的问题。
+
+### Stage 1 Phase 3：Tier Asset Detail Contract
+
+Stage 1 Phase 3 状态：`phase_1_3_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包的层级资产明细合同轮次，只定义层级资产展开后的资产层级、字段、排序、Inspector 交接和 proposal-only 边界，不实现运行时 UI、不修改 CSS、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/tier_asset_detail_contract.md`
+- `docs/acceptance/tier_asset_detail_acceptance.md`
+- `validate:v1.1.6-stage1-phase3`
+
+本 phase 解决的缺口：
+
+- 层级资产不能只有摘要，必须能展开为可判断、可追溯、可调整的结构化资产。
+- 层级资产必须覆盖 core_profile、project、decision、workflow、knowledge、opportunity、stale 七类。
+- 每个资产必须包含 asset_id、asset_tier、summary、importance、priority、confidence、staleness_status、evidence、linked actions、recommended asset action、proposal hint 和 rollback hint。
+- 点击层级资产进入 Inspector 时必须能解释重要性、优先级、置信度、有效性、证据和下一步。
+- 层级资产只能引导 proposal-only 调整，不得直接写 active memory 或长期记忆。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 1 Phase 3。
+- 主题分类完整模型未进入。
+- Proposal 编辑工作区、Search 2.0、Review / Summary / Iteration、Data Map 2.0 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+
+下一步：
+
+- Stage 1 Phase 4 已承接主题分类明细模型合同；后续继续补 proposal-only 调整入口合同或进入 Stage 1 复审前检查。
+- Stage 1 所有 phase 完成后进行 Stage 1 整体复审，修复复审发现的问题。
+
+### Stage 1 Phase 4：Topic Classification Detail Contract
+
+Stage 1 Phase 4 状态：`phase_1_4_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包的主题分类明细合同轮次，只定义主题状态、字段、趋势、证据、关联板块、Inspector 交接和 proposal-only 边界，不实现运行时 UI、不修改 CSS、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/topic_classification_detail_contract.md`
+- `docs/acceptance/topic_classification_detail_acceptance.md`
+- `validate:v1.1.6-stage1-phase4`
+
+本 phase 解决的缺口：
+
+- 主题分类不能只是 tag 列表，必须能展开为可解释、可追溯、可调整的语义聚合。
+- 主题分类必须覆盖 dominant、rising、declining、emerging、conflict、black_hole、stale 七类主题状态。
+- 每个主题必须包含 topic_strength、trend、confidence、record_count、evidence_count、linked assets、linked actions、matched reason、recommended topic action、proposal hint 和 rollback hint。
+- 点击主题分类进入 Inspector 时必须能解释强度、趋势、置信度、记录数、证据和跨板块链接。
+- 主题分类只能引导 proposal-only 调整，不得直接写 active memory 或长期记忆。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 1 Phase 4。
+- Proposal 编辑工作区、Search 2.0、Review / Summary / Iteration、Data Map 2.0 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+
+下一步：
+
+- 继续 Stage 1 的下一个 phase，补 proposal-only 调整入口合同或做 Stage 1 复审前收敛检查。
+- Stage 1 所有 phase 完成后进行 Stage 1 整体复审，修复复审发现的问题。
+
+### Stage 1 Phase 5：Proposal-only Adjustment Entry Contract
+
+Stage 1 Phase 5 状态：`phase_1_5_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包的 proposal-only 调整入口合同轮次，只定义从记忆总览、建议动作明细、层级资产明细、主题分类明细和 Inspector 进入 proposal draft 的安全入口，不实现完整 proposal 编辑工作区、不实现 agent apply、不修改运行时 UI、不修改 CSS、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/proposal_only_adjustment_entry_contract.md`
+- `docs/acceptance/proposal_only_adjustment_entry_acceptance.md`
+- `validate:v1.1.6-stage1-phase5`
+
+本 phase 解决的缺口：
+
+- 用户看懂明细后需要能提出 importance、priority、topic_category、action_status、due_window、hidden_until、stale_override 或 confidence_note 调整。
+- 调整入口必须说明 proposal draft 不会直接写 active memory。
+- 每个 proposal draft 必须包含 proposal_id、parent_snapshot_id、entry_surface、target_type、target_id、field、old_value_ref、proposed_value、reason、evidence_refs、created_at、requires_conflict_check、requires_agent_or_human_apply 和 rollback_hint。
+- 调整入口必须覆盖 memory_overview、suggested_action_detail、tier_asset_detail、topic_classification_detail 和 Inspector。
+- 后续 apply 必须由 agent/human 在前端之外做冲突检查、history、版本链和 rollback。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 1 Phase 5 的 proposal-only 调整入口合同。
+- 完整 Proposal 编辑工作区、agent apply、Search 2.0、Review / Summary / Iteration、Data Map 2.0 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+
+下一步：
+
+- Stage 1 phase 已本地完成，下一轮必须执行 Stage 1 整体复审并修复复审发现的问题。
+- Stage 1 整体复审未执行前，不进入 Stage 2，不上传 GitHub main。
+
+### Stage 1 整体复审
+
+Stage 1 整体复审状态：`stage_1_review_passed_pending_stage2`。
+
+本复审覆盖 v1.1.6 Stage 1 Phase 1-5，只确认合同、验收、validator、记录、review artifact 和进入 Stage 2 前边界一致，不实现运行时 UI、不修改 CSS、不读取 raw/private 数据、不直接写长期记忆、不上传 GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage1_review.md`
+- `validate:v1.1.6-stage1`
+
+复审发现的问题：
+
+- Phase 1.1-1.5 已有合同、验收和 phase validator，但缺少 Stage 1 整体 review artifact 和 deterministic stage-level validator。
+
+修复：
+
+- 新增 Stage 1 review artifact。
+- 新增 `validate:v1.1.6-stage1`。
+- 更新 delivery、model、feature、development、model parameter 和 changelog 记录，标记 Stage 1 复审通过并等待 Stage 2。
+
+验收边界：
+
+- Stage 1 复审通过不表示 runtime UI、浏览器截图、完整 Proposal 编辑工作区、agent apply、Search 2.0、Review / Summary / Iteration 或 Data Map 2.0 已完成。
+- Stage 2-5 未进入。
+- 不 commit，不上传 GitHub main；GitHub main 上传延后到 Stage 1-5 全部完成且最终上传 gate 通过后。
+
+下一步：
+
+- 进入 Stage 2 的第一个 bounded run。
+- 若 Stage 1 文件后续变化，必须重新运行 `validate:v1.1.6-stage1`。
+
+### Stage 2 Phase 1：Detail Visibility Workbench Contract
+
+Stage 2 Phase 1 状态：`phase_2_1_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包进入“明细可见性工作台”的第一轮，只定义建议动作、层级资产和主题分类三类明细的统一工作台 IA、展开、筛选、排序、Inspector 交接和 proposal-only 入口提示，不实现运行时 UI、不修改 CSS、不启动浏览器、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/detail_visibility_workbench_contract.md`
+- `docs/acceptance/detail_visibility_workbench_acceptance.md`
+- `validate:v1.1.6-stage2-phase1`
+
+本 phase 解决的缺口：
+
+- Stage 1 已定义明细字段，但缺少统一工作台来承载三类明细。
+- 工作台必须包含 suggested_action_lane、tier_asset_lane 和 topic_classification_lane。
+- 每条明细必须支持 collapsed summary、expanded detail、open_inspector、jump_to_related 和 proposal_only_entry。
+- 工作台必须定义 source_scope、confidence、evidence_count、proposal_hint、urgency、effort_cost、action_type、asset_tier、importance、priority、staleness_status、topic_state、trend 和 clear_filters。
+- 空态、加载态、错误态必须明确，不允许用 mock 数据伪造明细。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 2 Phase 1 的明细可见性工作台合同。
+- Search 2.0、Review / Summary / Iteration、Data Map 2.0、完整 Proposal 编辑工作区和 agent apply 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+
+下一步：
+
+- 继续 Stage 2 的下一个 phase，补建议动作 lane 具体可见性合同或实现隔离原型。
+- Stage 2 整体复审未执行前，不进入 Stage 3，不上传 GitHub main。
+
+### Stage 2 Phase 2：Suggested Action Lane Visibility Contract
+
+Stage 2 Phase 2 状态：`phase_2_2_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包的 suggested_action_lane 具体可见性合同轮次，只定义建议动作 lane 的扫描行、决策行、证据抽屉、分组排序、状态 badge、展开比较、Inspector 交接和 proposal-only 调整边界，不实现运行时 UI、不修改 CSS、不启动浏览器、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/suggested_action_lane_visibility_contract.md`
+- `docs/acceptance/suggested_action_lane_visibility_acceptance.md`
+- `validate:v1.1.6-stage2-phase2`
+
+本 phase 解决的缺口：
+
+- 建议动作不能只作为首页摘要，必须在工作台里可扫描、可比较、可展开证据。
+- 每个建议动作必须包含 action_id、title、action_type、reason、roi_score、effort_cost、urgency、confidence、evidence_count、evidence_refs、source_scope、linked_theme_ids、linked_asset_ids、next_step、recommended_time_window、proposal_hint 和 rollback_hint。
+- suggested_action_lane 必须支持 now、this_week、later、watch 分组，以及 ROI、urgency、effort、confidence、evidence_count 排序。
+- suggested_action_lane 必须支持 expand action、compare actions、pin action、mark reviewed 和 clear temporary state。
+- 点击建议动作进入 Inspector 时必须带 source_lane = suggested_action_lane、target_type = suggested_action 和证据/下一步/proposal hint 交接字段。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 2 Phase 2 的 suggested_action_lane 可见性合同。
+- tier_asset_lane、topic_classification_lane、Search 2.0、Review / Summary / Iteration、Data Map 2.0、完整 Proposal 编辑工作区和 agent apply 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+- Stage 2 整体复审未执行。
+
+下一步：
+
+- 继续 Stage 2 的下一个 phase，补 tier_asset_lane 具体可见性合同。
+- Stage 2 整体复审未执行前，不进入 Stage 3，不上传 GitHub main。
+
+### Stage 2 Phase 3：Tier Asset Lane Visibility Contract
+
+Stage 2 Phase 3 状态：`phase_2_3_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包的 tier_asset_lane 具体可见性合同轮次，只定义层级资产 lane 的资产扫描行、决策行、证据抽屉、七类资产分组、排序、状态 badge、展开比较、Inspector 交接和 proposal-only 调整边界，不实现运行时 UI、不修改 CSS、不启动浏览器、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/tier_asset_lane_visibility_contract.md`
+- `docs/acceptance/tier_asset_lane_visibility_acceptance.md`
+- `validate:v1.1.6-stage2-phase3`
+
+本 phase 解决的缺口：
+
+- 层级资产不能只作为首页摘要或原始记忆列表，必须在工作台里可扫描、可比较、可展开证据。
+- 每个层级资产必须包含 asset_id、asset_tier、title、summary、importance、priority、confidence、staleness_status、evidence_count、evidence_refs、source_scope、linked_action_ids、linked_theme_ids、linked_time_range、recommended_asset_action、proposal_hint 和 rollback_hint。
+- tier_asset_lane 必须支持 core_profile、project、decision、workflow、knowledge、opportunity、stale 七类资产分组，以及 importance、priority、staleness_status、confidence、evidence_count 排序。
+- tier_asset_lane 必须支持 expand asset、compare assets、pin asset、mark reviewed、jump to linked action 和 clear temporary state。
+- 点击层级资产进入 Inspector 时必须带 source_lane = tier_asset_lane、target_type = tier_asset 和证据/关联/下一步/proposal hint 交接字段。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 2 Phase 3 的 tier_asset_lane 可见性合同。
+- topic_classification_lane、Search 2.0、Review / Summary / Iteration、Data Map 2.0、完整 Proposal 编辑工作区和 agent apply 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+- Stage 2 整体复审未执行。
+
+下一步：
+
+- 继续 Stage 2 的下一个 phase，补 topic_classification_lane 具体可见性合同。
+- Stage 2 整体复审未执行前，不进入 Stage 3，不上传 GitHub main。
+
+### Stage 2 Phase 4：Topic Classification Lane Visibility Contract
+
+Stage 2 Phase 4 状态：`phase_2_4_contract_created_pending_stage_review`。
+
+本 phase 是 v1.1.6 修补包的 topic_classification_lane 具体可见性合同轮次，只定义主题分类 lane 的主题扫描行、决策行、证据抽屉、七类主题状态分组、排序、状态 badge、展开比较、Inspector 交接和 proposal-only 调整边界，不实现运行时 UI、不修改 CSS、不启动浏览器、不读取 raw/private 数据、不直接写长期记忆。
+
+新增产物：
+
+- `docs/product/topic_classification_lane_visibility_contract.md`
+- `docs/acceptance/topic_classification_lane_visibility_acceptance.md`
+- `validate:v1.1.6-stage2-phase4`
+
+本 phase 解决的缺口：
+
+- 主题分类不能只是 tag 列表，必须在工作台里可扫描、可比较、可展开证据。
+- 每个主题分类必须包含 topic_id、topic_label、topic_state、topic_strength、trend、confidence、record_count、evidence_count、evidence_refs、source_scope、linked_asset_ids、linked_action_ids、linked_starfield_cluster_id、linked_river_range、related_topic_ids、matched_reason、recommended_topic_action、proposal_hint 和 rollback_hint。
+- topic_classification_lane 必须支持 dominant、rising、emerging、conflict、black_hole、declining、stale 七类主题状态分组，以及 topic_strength、trend、confidence、record_count、evidence_count 排序。
+- topic_classification_lane 必须支持 expand topic、compare topics、pin topic、mark reviewed、jump to linked asset、jump to linked action、jump to starfield、jump to river 和 clear temporary state。
+- 点击主题分类进入 Inspector 时必须带 source_lane = topic_classification_lane、target_type = topic_classification 和证据/关联/下一步/proposal hint 交接字段。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 2 Phase 4 的 topic_classification_lane 可见性合同。
+- Search 2.0、Review / Summary / Iteration、Data Map 2.0、完整 Proposal 编辑工作区和 agent apply 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+- Stage 2 整体复审未执行。
+
+下一步：
+
+- 继续 Stage 2 整体复审，补 review artifact 和 stage-level validator，并修复复审暴露的问题。
+- Stage 2 整体复审未执行前，不进入 Stage 3，不上传 GitHub main。
+
+### Stage 2 整体复审
+
+Stage 2 整体复审状态：`stage_2_review_passed_pending_stage3`。
+
+本复审覆盖 v1.1.6 Stage 2 Phase 1-4，只确认合同、验收、validator、记录、review artifact 和进入 Stage 3 前边界一致，不实现运行时 UI、不修改 CSS、不读取 raw/private 数据、不直接写长期记忆、不上传 GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage2_review.md`
+- `validate:v1.1.6-stage2`
+
+复审发现的问题：
+
+- Phase 2.1-2.4 已有合同、验收和 phase validator，但缺少 Stage 2 整体 review artifact 和 deterministic stage-level validator。
+
+修复：
+
+- 新增 Stage 2 review artifact。
+- 新增 `validate:v1.1.6-stage2`。
+- 更新 delivery、model、feature、development、model parameter 和 changelog 记录，标记 Stage 2 复审通过并等待 Stage 3。
+
+验收边界：
+
+- Stage 2 复审通过不表示 runtime UI、浏览器截图、完整 Proposal 编辑工作区、agent apply、Search 2.0、Review / Summary / Iteration 或 Data Map 2.0 已完成。
+- Stage 3-5 未进入。
+- 不 commit，不上传 GitHub main；GitHub main 上传延后到 Stage 1-5 全部完成且最终上传 gate 通过后。
+
+下一步：
+
+- 进入 Stage 3 的第一个 bounded run。
+- 若 Stage 2 文件后续变化，必须重新运行 `validate:v1.1.6-stage2`。
+
+### Stage 3 Phase 1：Proposal-only Adjustment Workspace Contract
+
+Stage 3 Phase 1 状态：`phase_3_1_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S3P01`。
+
+本 phase 是 v1.1.6 修补包进入 proposal-only 调整层的第一轮，只定义 proposal-only 调整工作区的信息架构、字段、schema、状态、diff preview、安全复核、Inspector 交接和 rollback 边界，不实现运行时 UI、不修改 CSS、不启动浏览器、不读取 raw/private 数据、不直接写长期记忆、不执行 agent apply。
+
+新增产物：
+
+- `docs/product/proposal_only_adjustment_workspace_contract.md`
+- `docs/acceptance/proposal_only_adjustment_workspace_acceptance.md`
+- `validate:v1.1.6-stage3-phase1`
+
+本 phase 解决的缺口：
+
+- Stage 1 只定义 proposal-only 调整入口，尚未定义完整工作区。
+- 用户需要在同一工作区看到 proposal_queue、target_context_panel、field_editor_panel、proposal_diff_preview、safety_review_panel 和 rollback_panel。
+- 工作区必须允许 proposal-only 调整 importance、priority、topic_category、action_status、due_window、hidden_until、stale_override 和 confidence_note。
+- 每个 proposal draft 必须包含 proposal_id、parent_snapshot_id、target_id、field、old_value、proposed_value、reason、created_at、rollback_hint、requires_conflict_check 和 requires_agent_or_human_apply。
+- proposal 状态必须区分 draft、needs_review、ready_for_agent_apply、rejected 和 superseded。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 3 Phase 1 的 proposal-only 调整工作区合同。
+- agent apply、Search 2.0、Review / Summary / Iteration、Data Map 2.0 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 继续 Stage 3 的下一个 phase，补 proposal-only 工作区的持久化/队列或复审前收敛检查。
+- Stage 3 整体复审未执行前，不进入 Stage 4，不上传 GitHub main。
+
+### Stage 3 Phase 2：Proposal Queue Persistence Contract
+
+Stage 3 Phase 2 状态：`phase_3_2_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S3P02`。
+
+本 phase 是 v1.1.6 修补包 proposal-only 调整层的第二轮，只定义 proposal queue 持久化与版本链合同，不实现运行时 UI、不修改 CSS、不启动浏览器、不写 localStorage、不读取 raw/private 数据、不直接写长期记忆、不执行 agent apply。
+
+新增产物：
+
+- `docs/product/proposal_queue_persistence_contract.md`
+- `docs/acceptance/proposal_queue_persistence_acceptance.md`
+- `validate:v1.1.6-stage3-phase2`
+
+本 phase 解决的缺口：
+
+- Stage 3 Phase 1 定义了工作区，但没有固定本地 proposal queue 的持久化键、追加策略和版本链。
+- proposal queue 必须固定为 `memory-atlas.writeback.proposals.v1`，范围为 `browser_local_only`，变更策略为 `append_only`。
+- 每个 proposal_record 必须保留 proposal_id、revision、parent_proposal_id、supersedes_proposal_id、rollback_to_proposal_id、parent_snapshot_id、target_ref、target_type、target_id、field、old_value_ref、proposed_value、diff_summary、reason、evidence_refs、status、created_at、updated_at、requires_conflict_check、requires_agent_or_human_apply 和 rollback_hint。
+- proposal_history 必须记录状态变化、替代和 rollback_proposal，不能静默覆盖旧 proposal。
+- stale_snapshot、schema_mismatch 和 forbidden_payload 必须作为阻断状态显式可见。
+
+验收边界：
+
+- 本 phase 只覆盖 Roadmap v2 Stage 3 Phase 2 的 proposal queue 持久化与版本链合同。
+- agent apply、Search 2.0、Review / Summary / Iteration、Data Map 2.0 未进入。
+- 不启动本地 app，不执行 Playwright 截图验收；截图验收进入后续实现 phase。
+- 不 commit，不上传 GitHub main；Stage 1-5 完成后再做整体上传流程。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 进入 Stage 3 整体复审，补 review artifact 和 stage-level validator，并修复复审暴露的问题。
+- Stage 3 整体复审未执行前，不进入 Stage 4，不上传 GitHub main。
+
+### Stage 3 整体复审
+
+Stage 3 整体复审状态：`stage_3_review_passed_pending_stage4`。
+
+任务 ID：`MA-V116-S3-REVIEW`。
+
+本复审覆盖 v1.1.6 Stage 3 Phase 1-2，只确认 proposal-only 调整工作区、proposal queue 持久化与版本链的合同、验收、validator、记录、review artifact 和进入 Stage 4 前边界一致，不实现运行时 UI、不修改 CSS、不写 localStorage、不读取 raw/private 数据、不直接写长期记忆、不执行 agent apply、不上传 GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage3_review.md`
+- `validate:v1.1.6-stage3`
+
+复审发现的问题：
+
+- Phase 3.1-3.2 已有合同、验收和 phase validator，但缺少 Stage 3 整体 review artifact 和 deterministic stage-level validator。
+
+修复：
+
+- 新增 Stage 3 review artifact。
+- 新增 `validate:v1.1.6-stage3`。
+- 更新 delivery、model、feature、development、model parameter 和 changelog 记录，标记 Stage 3 复审通过并等待 Stage 4。
+
+验收边界：
+
+- Stage 3 复审通过不表示 runtime UI、浏览器截图、真实 localStorage queue、agent apply、Search 2.0、Review / Summary / Iteration 或 Data Map 2.0 已完成。
+- Stage 4-5 未进入。
+- 不 commit，不上传 GitHub main；GitHub main 上传延后到 Stage 1-5 全部完成且最终上传 gate 通过后。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 进入 Stage 4 的第一个 bounded run。
+- 若 Stage 3 文件后续变化，必须重新运行 `validate:v1.1.6-stage3`。
+
+### Stage 4 Phase 1：Search 2.0 Workflow Contract
+
+Stage 4 Phase 1 状态：`phase_4_1_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S4P01`。
+
+本 phase 覆盖 v1.1.6 Search 2.0 工作流合同，只确认 `search_2_0_workflow`、query/filter、result list、`matched_reason`、`jump_to_starfield`、`jump_to_river`、`open_inspector`、session summary、zero-result recovery、proposal-only handoff、安全边界、validator 和记录一致，不实现运行时 UI、不修改 CSS、不建立真实搜索索引、不读取 raw/private 数据、不直接写长期记忆、不进入 Review / Summary / Iteration、不进入 Data Map 2.0、不上传 GitHub main。
+
+新增产物：
+
+- `docs/product/search_2_0_workflow_contract.md`
+- `docs/acceptance/search_2_0_workflow_acceptance.md`
+- `validate:v1.1.6-stage4-phase1`
+
+验收边界：
+
+- Stage 4 Phase 1 通过不表示 runtime Search 2.0、浏览器截图、Review / Summary / Iteration 或 Data Map 2.0 已完成。
+- Stage 4 整体复审未执行。
+- Stage 5 未进入。
+- 不 commit，不上传 GitHub main；GitHub main 上传延后到 Stage 1-5 全部完成且最终上传 gate 通过后。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 进入 Stage 4 Phase 2：Review / Summary / Iteration 合同。
+- Stage 4 整体复审未执行前，不进入 Stage 5，不上传 GitHub main。
+
+### Stage 4 Phase 2：Review / Summary / Iteration Workflow Contract
+
+Stage 4 Phase 2 状态：`phase_4_2_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S4P02`。
+
+本 phase 覆盖 v1.1.6 Review / Summary / Iteration 工作流合同，只确认 `review_summary_iteration_workflow`、八个复盘问题、theme_change_panel、opportunity_panel、low_value_loop_panel、decision_change_panel、next_action_panel、proposal_decision_panel、iteration_backlog、安全边界、validator 和记录一致，不实现运行时 UI、不修改 CSS、不读取 raw/private 数据、不直接写长期记忆、不执行 agent apply、不进入 Data Map 2.0、不上传 GitHub main。
+
+新增产物：
+
+- `docs/product/review_summary_iteration_workflow_contract.md`
+- `docs/acceptance/review_summary_iteration_workflow_acceptance.md`
+- `validate:v1.1.6-stage4-phase2`
+
+验收边界：
+
+- Stage 4 Phase 2 通过不表示 runtime Review / Summary / Iteration、浏览器截图、Data Map 2.0 或 Stage 4 整体复审已完成。
+- Stage 4 整体复审未执行。
+- Stage 5 未进入。
+- 不 commit，不上传 GitHub main；GitHub main 上传延后到 Stage 1-5 全部完成且最终上传 gate 通过后。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 进入 Stage 4 整体复审，补 review artifact 和 stage-level validator，并解决复审暴露的问题。
+- Stage 4 整体复审未执行前，不进入 Stage 5，不上传 GitHub main。
+
+### Stage 4 整体复审
+
+Stage 4 整体复审状态：`stage_4_review_passed_pending_stage5`。
+
+任务 ID：`MA-V116-S4-REVIEW`。
+
+本复审覆盖 Stage 4 Phase 1 Search 2.0 Workflow Contract 和 Stage 4
+Phase 2 Review / Summary / Iteration Workflow Contract，只确认合同、验收、
+phase validator、review artifact、stage-level validator、记录一致性、改动
+范围和安全边界。不实现运行时 UI、不修改 CSS、不建立真实搜索索引、不实现复盘
+runtime、不读取 raw/private 数据、不直接写长期记忆、不执行 agent apply、不进入
+Data Map 2.0 runtime、不进入 Stage 5、不上传 GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage4_review.md`
+- `validate:v1.1.6-stage4`
+
+复审结论：
+
+- Stage 4 Phase 1 Search 2.0 合同、验收、validator 和记录一致。
+- Stage 4 Phase 2 Review / Summary / Iteration 合同、验收、validator 和记录一致。
+- 复审发现的 deterministic stage-level validator/review artifact 缺口已修复。
+- Stage 4 整体复审通过，进入 `stage_4_review_passed_pending_stage5`。
+
+验收边界：
+
+- Stage 4 复审通过不表示 runtime Search 2.0、runtime Review / Summary /
+  Iteration、浏览器截图或 Data Map 2.0 已完成。
+- Stage 5 未进入。
+- 不 commit，不上传 GitHub main；GitHub main 上传延后到 Stage 1-5 全部完成且最终上传 gate 通过后。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 进入 Stage 5 的第一个 bounded run。
+- 若 Stage 4 文件后续变化，必须重新运行 `validate:v1.1.6-stage4`。
+
+### Stage 5 Phase 1：Data Map 2.0 Workflow Contract
+
+Stage 5 Phase 1 状态：`phase_5_1_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S5P01`。
+
+本 phase 覆盖 v1.1.6 Data Map 2.0 工作流合同，只确认
+`data_map_2_0_workflow`、source_layer、topic_layer、asset_layer、
+action_layer、data_to_action_flow、source_to_topic_edges、topic_to_asset_edges、
+asset_to_action_edges、map_card 字段、Inspector/Search/Review 跳转、
+proposal-only handoff、安全边界、validator 和记录一致。不实现运行时 UI、
+不修改 CSS、不实现 Data Map renderer、不读取 raw/private 数据、不直接写长期记忆、
+不执行 agent apply、不进入 Stage 5 整体复审、不上传 GitHub main。
+
+新增产物：
+
+- `docs/product/data_map_2_0_workflow_contract.md`
+- `docs/acceptance/data_map_2_0_workflow_acceptance.md`
+- `validate:v1.1.6-stage5-phase1`
+
+验收边界：
+
+- Stage 5 Phase 1 通过不表示 runtime Data Map 2.0、浏览器截图或 Stage 5
+  整体复审已完成。
+- Stage 5 整体复审未执行。
+- 不 commit，不上传 GitHub main；GitHub main 上传延后到 Stage 1-5 全部完成且最终上传 gate 通过后。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 进入 Stage 5 整体复审，补 review artifact 和 stage-level validator，并解决复审暴露的问题。
+- Stage 5 整体复审未执行前，不上传 GitHub main。
+
+### Stage 5 整体复审
+
+Stage 5 状态：`stage_5_review_passed_pending_stage1_5_final_upload`。
+
+任务 ID：`MA-V116-S5-REVIEW`。
+
+本复审覆盖 v1.1.6 Stage 5 Phase 1 Data Map 2.0 Workflow Contract，只确认
+`data_map_2_0_workflow` 合同、验收、validator、review artifact、package
+script 和治理记录一致。不实现运行时 UI、不修改 CSS、不实现 Data Map
+runtime、不读取 raw/private 数据、不直接写长期记忆、不执行 agent apply、不进入
+Stage 6、不上传 GitHub main。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage5_review.md`
+- `validate:v1.1.6-stage5`
+
+验收边界：
+
+- Stage 5 复审通过不表示 runtime Data Map 2.0、浏览器截图或 agent apply
+  已完成。
+- Stage 1-5 final upload 未执行。
+- 不 commit，不上传 GitHub main；GitHub main 上传延后到 final upload gate 通过后。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一步：
+
+- 执行 Stage 1-5 final upload gate：fetch/integrate、重跑 Stage 1-5 validators、
+  可用 governance checks、确认 changed files、避免 staging `.DS_Store`。
+- final upload gate 未通过前，不上传 GitHub main。
