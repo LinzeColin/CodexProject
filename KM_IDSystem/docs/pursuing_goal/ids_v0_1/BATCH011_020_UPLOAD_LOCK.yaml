@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T12:31:22Z"
+updated_at_utc: "2026-07-02T12:43:43Z"
 status: "in_progress_no_github_upload"
 
 repository:
@@ -63,20 +63,22 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-012:
-    status: "in_progress"
+    status: "completed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
-    next_phase: "Phase 4"
-    current_task_id: "IDS-V0_1-STAGE012-P3"
+      - "Phase 4"
+    next_stage: "STAGE-013"
+    current_task_id: "IDS-V0_1-STAGE012-P4"
     acceptance_id: "ACC-STAGE-012"
-    acceptance_status: "phase3_scenario_validation_complete"
+    acceptance_status: "local_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE2_READONLY_IDENTITY_SLICE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/scripts/check_original_raw_identity.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
@@ -115,5 +117,5 @@ stage_progress:
     evidence_refs: []
 
 decision:
-  current_run: "STAGE-012 Phase 3 completed locally with duplicate/conflict/hash-stability scenario validation; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, and batch-gated."
-  no_upload_reason: "Batch STAGE-011..020 has only STAGE-011 complete and STAGE-012 Phase 1-3 complete; STAGE-012 Phase 4 and STAGE-013..020 remain pending."
+  current_run: "STAGE-012 completed locally through Phase 4 closeout and whole-stage review; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, and batch-gated."
+  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 and STAGE-012 complete locally; STAGE-013..020 remain pending."
