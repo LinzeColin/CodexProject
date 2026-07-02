@@ -1,8 +1,8 @@
 # 事务发件箱与消息ID扫描
 
-更新时间：2026-07-01 22:06:40 Australia/Sydney
+更新时间：2026-07-02 10:55:00 Australia/Sydney
 
-本页是 P0 `A-003` 的 GitHub 浅层阅读入口。它只说明事务发件箱、消息 ID、发送 claim 和 SMTP accepted-before-commit crash window 的当前本地证据；不关闭 P0，不发送 SMTP，不启用 scheduler，不代表 Stage 2 production accepted。
+本页是 P0 `A-003` 的 GitHub 浅层历史/局部证据入口。它只说明事务发件箱、消息 ID、发送 claim 和 SMTP accepted-before-commit crash window 的证据；本页自身不单独关闭 P0，不发送 SMTP，不启用 scheduler，不授权 S3/DAILY_OPERATION。当前 Stage 2 acceptance、P0/P1 zero-proof 和最终包状态以 final bundle 证据为准。
 
 ## 一眼结论
 
@@ -20,7 +20,7 @@
 | delivery semantics | `at_least_once_with_idempotent_message_id` |
 | exactly-once 声明 | `false` |
 | 真实 SMTP 发送 | `false` |
-| P0 关闭声明 | `false` |
+| 本页单独 P0 关闭声明 | `false` |
 
 ## 探针明细
 
@@ -41,8 +41,10 @@
 - [A-003 独立技术复审 receipt](../../governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json)
 - [A-003 阶段记录](../docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md)
 - [P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)
+- [P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)
+- [Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)
 - [聚焦测试](../tests/test_stage2_lease_fencing.py)
 
-## 仍未完成
+## 当前边界
 
-P0 `A-003` 已有 finding-level 独立技术复审 `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`，但仍需进入后续 P0 closure package 和最终 S2PMT07 gate 后才可关闭。本页不启用 SMTP、scheduler、Release，不改队列/Schema/数据源，不关闭 P0/P1，不声明 `INTEGRATED_PRODUCTION_ACCEPTED`。
+P0 `A-003` 已有 finding-level 独立技术复审 `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`，后续已被 P0/P1 zero-proof、final bundle 和 Stage 2 integrated acceptance 证据链消费。本页自身不启用 SMTP、scheduler、Release，不改队列/Schema/数据源，不单独关闭 P0/P1，也不授权 S3/DAILY_OPERATION。

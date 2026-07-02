@@ -1546,6 +1546,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[C-011 运行清单](../../governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json)", page)
         self.assertIn("[C-011 阶段记录](../docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md)", page)
         self.assertIn("[P1 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertIn("[P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)", page)
+        self.assertIn("[Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)", page)
+        self.assertIn("本页自身不单独关闭 P1", page)
+        self.assertIn("后续已被 P1 review、P0/P1 zero-proof、final bundle 和 Stage 2 integrated acceptance 证据链消费", page)
         self.assertIn("[Focused tests](../tests/test_stage2_sources.py)", page)
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
@@ -1570,6 +1574,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         )
         self.assertIn("[A-001 阶段记录](../docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md)", page)
         self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertIn("[P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)", page)
+        self.assertIn("[Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)", page)
+        self.assertIn("本页自身不单独关闭 P0", page)
+        self.assertIn("后续已被 P0/P1 zero-proof、final bundle 和 Stage 2 integrated acceptance 证据链消费", page)
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[恢复路径安全扫描](./恢复路径安全扫描.md)", readme)
@@ -1596,6 +1604,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         )
         self.assertIn("[A-002 阶段记录](../docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md)", page)
         self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertIn("[P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)", page)
+        self.assertIn("[Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)", page)
+        self.assertIn("本页自身不单独关闭 P0", page)
+        self.assertIn("后续已被 P0/P1 zero-proof、final bundle 和 Stage 2 integrated acceptance 证据链消费", page)
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[恢复原子替换扫描](./恢复原子替换扫描.md)", readme)
@@ -1630,6 +1642,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         )
         self.assertIn("[A-003 阶段记录](../docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md)", page)
         self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertIn("[P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)", page)
+        self.assertIn("[Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)", page)
+        self.assertIn("本页自身不单独关闭 P0", page)
+        self.assertIn("后续已被 P0/P1 zero-proof、final bundle 和 Stage 2 integrated acceptance 证据链消费", page)
         self.assertIn("[聚焦测试](../tests/test_stage2_lease_fencing.py)", page)
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
@@ -1648,12 +1664,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("unknown claim reference | fail-closed", page)
         self.assertIn("unsupported foreground claim | fail-closed", page)
         self.assertIn("真实 SMTP 发送 | `false`", page)
-        self.assertIn("P0 关闭声明 | `false`", page)
+        self.assertIn("本页单独 P0 关闭声明 | `false`", page)
         self.assertIn(
             "[A-004 运行清单](../../governance/run_manifests/ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json)",
             page,
         )
         self.assertIn("[A-004 阶段记录](../docs/phase_records/PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md)", page)
+        self.assertIn("[P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)", page)
+        self.assertIn("[Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)", page)
+        self.assertIn("本页自身不单独关闭 P0", page)
+        self.assertIn("后续已被 P0/P1 zero-proof、final bundle 和 Stage 2 integrated acceptance 证据链消费", page)
         self.assertIn("[聚焦测试](../tests/test_security_boundary.py)", page)
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
@@ -1674,12 +1694,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("仓库写入 | fail-closed", page)
         self.assertIn("邮件发送 | fail-closed", page)
         self.assertIn("真实 SMTP 发送 | `false`", page)
-        self.assertIn("P0 关闭声明 | `false`", page)
+        self.assertIn("本页单独 P0 关闭声明 | `false`", page)
         self.assertIn(
             "[A-005 运行清单](../../governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json)",
             page,
         )
         self.assertIn("[A-005 阶段记录](../docs/phase_records/PHASE_S2PMT01_TRUST_BOUNDARY_A005.md)", page)
+        self.assertIn("[P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)", page)
+        self.assertIn("[Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)", page)
+        self.assertIn("本页自身不单独关闭 P0", page)
+        self.assertIn("后续已被 P0/P1 zero-proof、final bundle 和 Stage 2 integrated acceptance 证据链消费", page)
         self.assertIn("[聚焦测试](../tests/test_security_boundary.py)", page)
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
@@ -1698,7 +1722,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("launchd bootstrap | 已在 isolated label 执行 / 生产 label 未触碰", page)
         self.assertIn("scheduler 启用 | `false`", page)
         self.assertIn("真实 SMTP 发送 | `false`", page)
-        self.assertIn("P0 关闭声明 | `false`", page)
+        self.assertIn("本页单独 P0 关闭声明 | `false`", page)
         self.assertIn(
             "[B-001 运行清单](../../governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json)",
             page,
@@ -1713,10 +1737,40 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         )
         self.assertIn("[B-001 阶段记录](../docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md)", page)
         self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertIn("[P0/P1 zero-proof](../../FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json)", page)
+        self.assertIn("[Stage 2 integrated acceptance](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)", page)
+        self.assertIn("本页自身不单独关闭 P0", page)
+        self.assertIn("后续已被 P0/P1 zero-proof、final bundle 和 Stage 2 integrated acceptance 证据链消费", page)
         self.assertIn("[聚焦测试](../tests/test_stage2_lifecycle_cache.py)", page)
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[自动唤醒安装生命周期扫描](./自动唤醒安装生命周期扫描.md)", readme)
+
+    def test_scan_pages_do_not_revert_zero_proof_or_stage2_acceptance_to_historical_pending_state(self):
+        pages = [
+            LEGACY_MAIL_SCAN_PAGE,
+            RESTORE_PATH_SAFETY_PAGE,
+            RESTORE_ATOMIC_REPLACEMENT_PAGE,
+            OUTBOX_DELIVERY_PAGE,
+            FRONTSTAGE_EVIDENCE_PAGE,
+            TRUST_BOUNDARY_PAGE,
+            B001_INSTALL_LIFECYCLE_PAGE,
+        ]
+        forbidden = (
+            "仍未进入 P0 关闭包",
+            "仍需进入后续 P0 closure package",
+            "最终 S2PMT07 gate 后才可关闭",
+            "仍需独立 reviewer 对证据充分性作出明确判断。本页",
+            "不关闭 P0/P1，不声明 `INTEGRATED_PRODUCTION_ACCEPTED`",
+            "不代表 Stage 2 production accepted",
+            "不代表 Stage2 production accepted",
+        )
+        for path in pages:
+            page = path.read_text(encoding="utf-8")
+            self.assertIn("当前 Stage 2 acceptance、P0/P1 zero-proof 和最终包状态以 final bundle 证据为准", page)
+            self.assertIn("不授权 S3/DAILY_OPERATION", page)
+            for phrase in forbidden:
+                self.assertNotIn(phrase, page)
 
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (
