@@ -6,6 +6,13 @@
 
 v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。Stage 1-18 均已完成本地实现、验证、整体复审和 GitHub main 上传；Post-S18 Part 1-6 已在 canonical worktree 本地通过并生成 validator/evidence/local-governance 记录。Post-S18 第二阶段全项目本地复审已完成：新增 task pack zero-delta synthetic fixture、lineage completeness 阻断 validator、whole-project final review validator 和当前全项目 Go/No-Go。当前 `STAGE18_GITHUB_UPLOAD_PENDING` 已从最新全项目 Go/No-Go blocker 中移除并记录为 resolved，但项目仍为 `NO_GO`，`delivery_allowed=false`。随后已独立完成 KMFA worktree cleanup：只保留 canonical `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`，确认无遗留 `kmfa-s*` worktree，删除空旧目录 `/Users/linzezhang/Documents/KMFA v0.1`。Lineage / Report Gate 已独立锁定：0 条 actual lineage rows、2 条 D 级 report runtime、12 条 pending reconciliation 继续阻断正式报告、经营决策依据、release claim 和 delivery claim。Final GitHub backup evidence 已按 `NO_GO governance backup only` 生成并基于最新 `origin/main` rebase；本轮仍未执行 lineage full check completion、正式报告、live connector、OpMe 深度耦合、生产恢复或业务动作。
 
+## 持久本机 raw boundary
+
+- 用户确认 KMFA 后续本机财务原始数据统一放在 `/Users/linzezhang/Downloads/KMFA_MetaData`。
+- 该目录属于 raw/private business data；Codex 只能在当前 phase 明确需要时只读读取，不得修改、删除、移动、重命名、覆盖或写入生成文件。
+- Codex 生成的私有 inventory、schema/header diagnostic、mapping diagnostic、scratch files 或本地报告只能写入项目受控且 Git 忽略的位置，例如 `KMFA/.codex_private_runtime/`，或另一个明确加入 `.gitignore` 的额外工作目录。
+- 公开 GitHub 只能保存 public-safe 结构、聚合计数、状态、hash/ref、证据索引、validator 结果和治理记录；不得提交 raw 文件、raw 文件名、字段/表头明文、sheet 名、row values、业务金额、credentials、银行流水、合同、薪资或税务材料。
+
 ## 当前状态
 
 - Post-S18 Part 1 Review 已本地通过：新增 `KMFA/tools/check_part1_stages_01_03_review.py`、`KMFA/tests/test_part1_stages_01_03_review.py` 和 `KMFA/stage_artifacts/PART1_STAGES_01_03_REVIEW/`；当轮全量 KMFA unittest 为 269 tests。
