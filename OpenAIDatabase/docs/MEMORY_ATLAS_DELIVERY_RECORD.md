@@ -786,7 +786,7 @@ Stage 9 Phase 1 状态：`phase_9_1_memory_starfield_c3_spike_ready_pending_stag
   不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期记忆、
   不上传 GitHub main。
 
-Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No Stage 10 work; No GitHub main upload.
 
 下一步：
 
@@ -910,6 +910,47 @@ Machine-readable boundary summary: No production integration; No raw/private dat
 
 - Stage 9 四个 C3 原型 phase 已完成；下一轮应执行 Stage 9 整体复审。
 - Stage 9 整体复审通过并修复复审问题前，不上传 GitHub main。
+
+### Stage 9 整体复审
+
+Stage 9 状态：`stage_9_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S9-REVIEW`。
+
+本复审覆盖 Stage 9 Phase 1 Memory Starfield C3 Spike、Phase 2 Memory River
+C3 Spike、Phase 3 Data Map C3 Spike 与 Phase 4 Universe State Fixture
+Continuity。复审只固定四个 C3 隔离原型 phase 的合同、验收、validator、
+production isolation、review artifact、package script 和治理记录一致性，不替换
+production Galaxy / Timeline / Data Map，不导入 experiment 到 app shell，不修改
+Universe State score formula、parameter YAML、input fixture、sample 或 schema，不进入
+Stage 10。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage9_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage9.cjs`
+- `validate:v1.1.6-stage9`
+
+验收边界：
+
+- Stage 9 Phase 1-4 validator 均必须通过。
+- `validate:universe-state-spike` 必须通过。
+- Stage 9 review artifact、delivery、feature、development、model parameter、
+  changelog 和 package script 必须一致。
+- production `src` 不得 import 或 reference Stage 9 isolated experiments。
+- 本 review 不 production integration、不 build、不运行浏览器截图、不安装本地
+  app、不部署 Cloudflare、不修改 Access policy、不读取 raw/private、不直接写长期
+  记忆、不写 proposal、不执行 agent apply、不上传 GitHub main。
+
+Machine-readable boundary summary: No production integration; No raw/private data read; No direct writeback; No GitHub main upload.
+
+下一 gate：
+
+- 先执行 final remote checks、Stage 9 phase validators、
+  `validate:universe-state-spike`、`validate:v1.1.6-stage9`、项目级
+  acceptance audit 和 diff check。
+- 再上传 canonical GitHub main tree。
+- Stage 10 必须在 Stage 9 上传验证完成后另起 bounded run。
 
 ### Stage 6 整体复审
 
