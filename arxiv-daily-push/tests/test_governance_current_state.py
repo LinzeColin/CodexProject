@@ -273,6 +273,26 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_artifact_validation_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 的 artifact validation 为 `terminal_artifact_present=false`",
+            decisions,
+        )
+        self.assertIn(
+            "历史当时阻断原因包括 `s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven`；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            decisions,
+        )
+
+        forbidden_phrases = (
+            "| `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 当前 `terminal_artifact_present=false`",
+            "| 阻断原因仍是 `s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven` |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
