@@ -74,6 +74,27 @@ def _markdown_anchors(path: Path) -> set[str]:
 
 
 class UserCenterCandidatePoolTests(unittest.TestCase):
+    def test_owner_facing_pages_do_not_use_local_absolute_paths_as_evidence(self):
+        pages = [
+            *USER_CENTER.glob("*.md"),
+            ROOT / "功能清单.md",
+            ROOT / "开发记录.md",
+            ROOT / "模型参数文件.md",
+        ]
+        offenders = []
+        forbidden_patterns = ("/Users/", "/private/tmp/", "file://")
+        for page_path in pages:
+            text = page_path.read_text(encoding="utf-8")
+            for pattern in forbidden_patterns:
+                if pattern in text:
+                    offenders.append(f"{page_path.relative_to(REPO_ROOT)} contains {pattern}")
+            for match in re.finditer(r"`/tmp/[^`]+`", text):
+                offenders.append(
+                    f"{page_path.relative_to(REPO_ROOT)} contains local tmp evidence {match.group(0)}"
+                )
+
+        self.assertEqual(offenders, [])
+
     def test_owner_facing_local_markdown_links_resolve_to_existing_files(self):
         pages = [REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", *USER_CENTER.glob("*.md")]
         missing = []
