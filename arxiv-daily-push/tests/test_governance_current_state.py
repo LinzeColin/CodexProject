@@ -283,6 +283,36 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, readme)
 
+    def test_user_center_readme_does_not_reopen_early_final_bundle_runtime_gaps(self) -> None:
+        readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 `plan-final-bundle-prerequisites` 已在顶层给出下一条可执行只读命令",
+            readme,
+        )
+        self.assertIn(
+            "历史当时 `validate-final-acceptance-bundle` 在顶层直接显示 `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`",
+            readme,
+        )
+        self.assertIn(
+            "历史当时 `plan-final-bundle-prerequisites` 已把 S2PLT02 capture plan 的真实 runtime 下一步暴露到顶层",
+            readme,
+        )
+        self.assertIn(
+            "当前这些 final-bundle runtime 缺口已被 Stage 2 integrated acceptance 消费",
+            readme,
+        )
+
+        forbidden_phrases = (
+            "`plan-final-bundle-prerequisites` 当前已经在顶层给出下一条可执行只读命令",
+            "`validate-final-acceptance-bundle` 当前在顶层直接显示 `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`",
+            "这意味着最终验收入口仍 blocked：下一步仍是 S2PLT02 terminal delivery proof 的真实 SMTP/scheduler 捕获窗口",
+            "`plan-final-bundle-prerequisites` 当前已经把 S2PLT02 capture plan 的真实 runtime 下一步暴露到顶层",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, readme)
+
     def test_persistent_daily_operation_gate_is_bound_to_mainline_without_runtime_enablement(self) -> None:
         manifest_path = (
             REPO_ROOT
