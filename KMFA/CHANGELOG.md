@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s01p3-no-omission-gate - 2026-07-02
+
+- 完成 `v0.1.3 S01-P3｜防遗漏门禁复跑` 本地验证：复跑正式 `KMFA/tools/no_omission_check.py`，确认 requirements=20、P0=9、P1=8、stage_status_records=549、task_records=162。
+- 新增 `KMFA/tools/check_v013_s01_p3_no_omission_gate.py`、`KMFA/tests/test_v013_s01_p3_no_omission_gate.py` 和 `KMFA/stage_artifacts/V013_S01_NO_OMISSION_GATE/` 证据包，绑定旧 S01-P3 baseline、v1.2 FULL_HTML_NO_OMISSION 基线和 v0.1.3 S01-P2 范围冻结边界。
+- 继续记录外部 v0.1.3 roadmap 原路径当前不可读，未从缺失文件推断新需求；repo 内 v1.2 taskpack/roadmap 仍为可读基线。
+- 本轮只执行一个 phase，不执行 Stage 1 整体复审、GitHub upload、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+- `/Users/linzezhang/Downloads/KMFA_MetaData` 仍为只读 raw boundary；本 phase 不读取该目录内容，不修改、删除、移动或提交其中任何文件。
+
 ## 0.1.3-s01p2-scope-freeze - 2026-07-02
 
 - 完成 `v0.1.3 S01-P2｜范围冻结` 本地验证：锁定本修补包当前只做 public-safe scope freeze，不解决 lineage/reconciliation/report blockers。
