@@ -40,11 +40,18 @@ PYTHONPATH=arxiv-daily-push/src python -B -m unittest arxiv-daily-push/tests/tes
   not be overwritten or deleted. V5/V6/V7.0 files remain historical evidence
   and alias references; they no longer override V7.2.
 - Every implementation closeout must state the current V7.2 contract, the
-  active contextual task, and any legacy alias. Current global Stage2 entry is
-  `S2PMT07` final gate precheck, currently `blocked_precheck` because
-  independent reviewer proof, inherited V7.1 P0/P1 zero state, S2PLT04
-  completion, final acceptance bundle, independent signoff, and independent
-  final command execution are not all proven. `S2PCT02`
+  active contextual task, and any legacy alias. Stage 2 integrated acceptance 已
+  记录并保持；当前事实以 `docs/pursuing_goal/CURRENT.yaml`,
+  `FINAL_ACCEPTANCE_BUNDLE/manifest.json`, and
+  `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 为准。
+  S3/DAILY_OPERATION 仍未进入；当前实际阻断只剩 S3/DAILY_OPERATION 持久授权
+  缺失，即 `persistent_daily_operation_authorization_missing` /
+  `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`
+  不存在。下一可执行任务是
+  `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`；缺该显式
+  owner 持久授权 artifact 时，只能继续 MVP 复审修补、fail-closed 复核和证据
+  同步，不得启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION。
+  `S2PCT02`
   (`S2P2T02` legacy alias)
   Science/top-journal metadata-only no-send shadow evidence is completed
   history, not the current task. `S2PCT01`
@@ -53,9 +60,9 @@ PYTHONPATH=arxiv-daily-push/src python -B -m unittest arxiv-daily-push/tests/tes
   record, not a D2 source-domain acceptance claim. `S2PBT01`
   (`S2P1T01` legacy alias) bioRxiv/medRxiv no-send replay and shadow evidence
   has passed and remains a D1 alias/history record, not the current task.
-  Formal source production inclusion, `STAGE2_PRODUCTION_ACCEPTED`, and
-  `INTEGRATED_PRODUCTION_ACCEPTED` remain blocked by V7.2 P0/P1 and final gate
-  rules. EMAIL_LEARNING_V1 M1-M4 renderer is merged to main through PR #152 and
+  Formal source production inclusion and DAILY_OPERATION remain blocked by the
+  persistent authorization gate, not by reopening the old Stage 2 final gate.
+  EMAIL_LEARNING_V1 M1-M4 renderer is merged to main through PR #152 and
   maintained through PR #153; future mail entrypoints must use the same Email
   V1 contract/readiness gate and must not bypass it. `S2PMT01` local security
   evidence covers `UNTRUSTED_DATA`, typed frontstage statements, safe URL
@@ -92,11 +99,10 @@ PYTHONPATH=arxiv-daily-push/src python -B -m unittest arxiv-daily-push/tests/tes
   cards, safe config-change flow, append-only revision ledger, queue
   search/filter/export/drilldown, safe manual actions, feedback visibility,
   accessibility/mail compatibility, source-to-ROI traceability, and no
-  production side effects. `S2PMT07` local precheck records the current blocked
-  final gate state only; it does not provide independent review signoff, close
-  inherited P0/P1, complete S2PLT04, enable DAILY_OPERATION, or claim
-  `INTEGRATED_PRODUCTION_ACCEPTED`. None closes inherited P0/P1 blockers until
-  independent review.
+  production side effects. `S2PMT07` historical local precheck records are
+  history; they do not reopen current final-bundle, P0/P1 zero-proof, S2PLT04,
+  independent review, or Stage 2 integrated acceptance gaps. They also do not
+  enable DAILY_OPERATION.
   `ADP-S1P5T05` completed the Stage 1 local production and migration prep after
   `ARXIV_PRODUCTION_ACCEPTED`.
   Final Stage 1 production strategy is local Mac + Codex/local runner; GitHub
