@@ -1,0 +1,40 @@
+2026-07-02T03:51:32Z cwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+git root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+remote=git@github.com:LinzeColin/CodexProject.git
+head_at_review_start=e73742d856a5fd24638e561ae23d77e7f631a605
+origin_main_at_review_start=53c4cf05a79da556e1ec616fa06a73e87fb9967d
+ahead_behind_at_review_start=3 0
+
+RED:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_whole_review_contract.py -q
+Result: 5 failed before implementation; missing Stage 9 whole-stage review contract, STAGE9_WHOLE_STAGE_REVIEW.md, whole_stage_review evidence pack, and whole review status language.
+
+Implementation boundary:
+Stage 9 whole-stage review only. User reply 1 is recorded as Phase 9.3 confirmation source. Did not execute GitHub main upload, did not start future version work, did not reinstall app bundle, and did not modify real financial data.
+
+Pre-closeout verification:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_whole_review_contract.py -q
+Result: 1 failed, 4 passed in 0.10s. Failure was the expected evidence command-status closeout gap: command statuses still used placeholder values.
+
+Phase regression validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_phase93_user_acceptance.py PFI/tests/test_v024_stage9_phase92_delivery_freeze.py PFI/tests/test_v024_stage9_phase91_regression_guardrails.py -q
+Result: first run exposed a README compatibility gap for the historical Phase 9.3 anchor. After restoring that anchor, rerun result: 12 passed in 0.14s.
+
+Stage 8 upload boundary validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage8_github_upload_contract.py -q
+Result: 3 passed in 0.07s.
+
+Syntax and evidence validation:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m py_compile PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py
+Result: exit 0.
+python3 -m json.tool PFI/reports/pfi_v024/stage_9/whole_stage_review/evidence.json >/tmp/pfi_stage9_whole_review_evidence_json_check.out
+Result: exit 0.
+git diff --check -- PFI
+Result: exit 0.
+changed_files.txt reconciliation against git diff plus untracked PFI files
+Result: exit 0.
+
+Whole-review contract validation after evidence closeout:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage9_whole_review_contract.py -q
+Result: 5 passed in 0.07s.

@@ -1,0 +1,142 @@
+{
+  "schema": "PFIV024Stage9WholeReviewEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 9",
+  "stage_name": "回归防线与交付冻结",
+  "review_id": "stage_9_whole_review",
+  "current_run_unit": "Stage 9 whole-stage review",
+  "current_run_only": true,
+  "status": "pass",
+  "stage_9_candidate_complete": true,
+  "stage_9_whole_review_complete": true,
+  "reviewed_phase_ids": ["9.1", "9.2", "9.3"],
+  "phase_statuses": {
+    "phase_9_1": "candidate_pass",
+    "phase_9_2": "candidate_pass",
+    "phase_9_3": "user_confirmed"
+  },
+  "phase_9_3_user_confirmed": true,
+  "user_confirmation_source": "chat_reply_1",
+  "github_main_uploaded": false,
+  "future_version_started": false,
+  "app_bundle_reinstall_executed": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "head_at_review_start": "e73742d856a5fd24638e561ae23d77e7f631a605",
+  "origin_main_at_review_start": "53c4cf05a79da556e1ec616fa06a73e87fb9967d",
+  "ahead_behind_at_review_start": "3 0",
+  "review_inputs": [
+    "PFI/reports/pfi_v024/stage_9/phase_9_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_1/regression_guardrails.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/final_evidence_index.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_2/closeout_candidate.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/evidence.json",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/manual_acceptance.md",
+    "PFI/reports/pfi_v024/stage_9/phase_9_3/reply_protocol.md"
+  ],
+  "stop_condition_audit": {
+    "old_ui_signature_regression": "absent",
+    "primary_entry_stack_regression": "absent",
+    "false_financial_zero_visible": "absent",
+    "forbidden_financial_data_added": "absent",
+    "manual_acceptance_missing": "absent",
+    "final_evidence_index_missing": "absent",
+    "stage_9_upload_executed_early": "absent",
+    "future_version_started": "absent"
+  },
+  "review_findings": [
+    {
+      "id": "S9-REVIEW-F1",
+      "severity": "P1",
+      "status": "fixed",
+      "finding": "Stage 9 had no whole-stage review gate or evidence after Phase 9.1/9.2/9.3 reached guardrail, delivery freeze, and user confirmation state.",
+      "fix": "Added STAGE9_WHOLE_STAGE_REVIEW.md, whole_stage_review evidence pack, terminal log, changed files, risk/rollback, and contract test.",
+      "verification": "test_v024_stage9_whole_review_contract.py covers artifacts, bounded scope, phase consistency, stop conditions, findings, and non-upload gate."
+    },
+    {
+      "id": "S9-REVIEW-F2",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Top-level status files still described Stage 9 Phase 9.3 as waiting after the user replied 1.",
+      "fix": "Updated README, HANDOFF, RUN_CONTRACT, STAGE9_REGRESSION_FREEZE, CHANGELOG, and three baseline status files to record whole-stage review pass and next GitHub upload gate.",
+      "verification": "Stage 9 whole review contract checks status files for whole-stage review pass while keeping GitHub upload and future version work unstarted."
+    },
+    {
+      "id": "S9-REVIEW-F3",
+      "severity": "P2",
+      "status": "fixed",
+      "finding": "Stage 9 lacked one consolidated command/evidence surface tying regression guardrails, delivery freeze index, user confirmation, no fake data, no upload, and no future-version boundary together before upload.",
+      "fix": "Added whole_stage_review/evidence.json with reviewed phase IDs, phase statuses, validation surface, stop-condition audit, commands, remaining gates and explicit non-goals.",
+      "verification": "Whole-review pytest, Stage 9 phase regressions, Stage 8 upload boundary, py_compile, json evidence checks, changed-files reconciliation and git diff check are recorded as pass."
+    }
+  ],
+  "commands": [
+    {
+      "cmd": "pytest stage9 whole review red run",
+      "status": "expected_fail",
+      "detail": "5 failed before implementation: missing build_v024_stage9_whole_review_contract, STAGE9_WHOLE_STAGE_REVIEW.md, whole_stage_review evidence pack, and status-file whole review language"
+    },
+    {
+      "cmd": "pytest stage9 whole review contract",
+      "status": "pass",
+      "detail": "5 passed in 0.07s"
+    },
+    {
+      "cmd": "pytest stage9 phase regression",
+      "status": "pass",
+      "detail": "12 passed in 0.14s after restoring the Phase 9.3 historical README anchor"
+    },
+    {
+      "cmd": "pytest stage8 upload boundary",
+      "status": "pass",
+      "detail": "3 passed in 0.07s"
+    },
+    {
+      "cmd": "python py_compile stage9 contract",
+      "status": "pass",
+      "detail": "py_compile exited 0 for PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py"
+    },
+    {
+      "cmd": "json evidence checks",
+      "status": "pass",
+      "detail": "python3 -m json.tool accepted whole_stage_review/evidence.json"
+    },
+    {
+      "cmd": "changed files reconciliation",
+      "status": "pass",
+      "detail": "changed_files.txt matches git diff plus untracked PFI files"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass",
+      "detail": "git diff --check -- PFI exited 0"
+    }
+  ],
+  "remaining_gates": ["GitHub main upload"],
+  "explicitly_not_done": [
+    "GitHub main upload",
+    "future version work",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE9_REGRESSION_FREEZE.md",
+    "PFI/docs/pfi_v024/STAGE9_WHOLE_STAGE_REVIEW.md",
+    "PFI/reports/pfi_v024/stage_9/whole_stage_review/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_9/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v024/stage_9/whole_stage_review/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_9/whole_stage_review/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage9_regression_freeze.py",
+    "PFI/tests/test_v024_stage9_whole_review_contract.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ]
+}

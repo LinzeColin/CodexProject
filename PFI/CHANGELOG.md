@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 9 Whole-Stage Review - 2026-07-02
+
+- 完成 `Stage 9 whole-stage review - 复审并解决暴露问题`：复审 Phase 9.1 回归规则、Phase 9.2 交付冻结和 Phase 9.3 用户确认来源。
+- 新增 `PFI/tests/test_v024_stage9_whole_review_contract.py`、`PFI/docs/pfi_v024/STAGE9_WHOLE_STAGE_REVIEW.md` 和 `PFI/reports/pfi_v024/stage_9/whole_stage_review/` evidence。
+- 记录用户回复 `1` 作为 Phase 9.3 确认来源；复审发现 3 项均已 fixed。
+- 本轮不执行 Stage 9 GitHub main upload，不进入未来版本，不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 9 Phase 9.3 - 2026-07-01
 
 - 完成 `Stage 9 / Phase 9.3 - 用户验收`等待包：生成人工验收清单、reply protocol 和 waiting evidence。
