@@ -36,6 +36,8 @@ LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件.md"
 TIMESTAMP_SCRIPT = ROOT / "scripts" / "update_user_center_timestamps.py"
+V72_HANDOFF_00 = ROOT / "docs" / "pursuing_goal" / "v7_2" / "HANDOFF" / "00_下一Agent先读.md"
+V72_HANDOFF_01 = ROOT / "docs" / "pursuing_goal" / "v7_2" / "HANDOFF" / "01_当前状态与唯一下一任务.md"
 SUMMARY_PAGES = (
     USER_CENTER / "README.md",
     USER_CENTER / "邮件发送与队列状态.md",
@@ -91,6 +93,29 @@ def _load_timestamp_script_module():
 
 
 class UserCenterCandidatePoolTests(unittest.TestCase):
+    def test_v72_next_agent_handoff_does_not_reopen_stage2_final_gate(self):
+        handoff_00 = V72_HANDOFF_00.read_text(encoding="utf-8")
+        handoff_01 = V72_HANDOFF_01.read_text(encoding="utf-8")
+        combined = handoff_00 + "\n" + handoff_01
+
+        for phrase in (
+            "Stage 2 integrated acceptance 已记录并保持",
+            "S3/DAILY_OPERATION 仍未进入",
+            "当前实际阻断只剩 S3/DAILY_OPERATION 持久授权缺失",
+            "persistent_daily_operation_authorization_missing",
+            "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION",
+        ):
+            self.assertIn(phrase, combined)
+
+        for stale_phrase in (
+            "S2PMT07_FINAL_GATE_PRECHECK_BLOCKED",
+            "S2PMT07 final gate precheck 当前为 blocked",
+            "不得声明 `INTEGRATED_PRODUCTION_ACCEPTED`",
+            "当前没有可声明生产验收的下一任务",
+            "必须先解除 S2PMT07 的阻断条件",
+        ):
+            self.assertNotIn(stale_phrase, combined)
+
     def test_user_center_pages_show_timestamp_immediately_under_h1(self):
         for page_path in sorted(USER_CENTER.glob("*.md")):
             with self.subTest(page=page_path.name):
