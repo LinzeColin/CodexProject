@@ -913,6 +913,35 @@ Stage 6、不上传 GitHub main。
 
 Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
 
+### Stage 6 Phase 1：Memory River Rebuild Contract
+
+Stage 6 Phase 1 状态：`phase_6_1_contract_created_pending_stage_review`。
+
+任务 ID：`MA-V116-S6P01`。
+
+本 phase 是 v1.1.6 修补包进入“记忆时间河重做”的第一轮，只定义
+`memory_river_rebuild_contract` 合同、验收、validator 和治理记录一致性。
+它把旧 Timeline 按 0 分处理，要求未来实现必须展示 `time_river`、
+`theme_bands`、`event_pulses`、`decision_nodes`、`black_hole_band`、
+`proto_star_marker` 和 `evidence_density_lane`，并支持 zoom、brush、
+hover card、click Inspector、keyboard navigation 和 reduced motion。
+
+新增产物：
+
+- `docs/product/memory_river_rebuild_contract.md`
+- `docs/acceptance/memory_river_rebuild_acceptance.md`
+- `validate:v1.1.6-stage6-phase1`
+
+验收边界：
+
+- 默认日期列表、静态表格、普通 dots-and-lines timeline、缺少生命周期 marker、
+  缺少 Inspector 交接或 reduced motion 被忽略，均为未来实现失败条件。
+- Stage 6 Phase 1 通过不表示 runtime Memory River、浏览器截图或真实交互已完成。
+- 不实现运行时 UI，不修改 CSS，不读取 raw/private 数据，不直接写长期记忆，
+  不执行 agent apply，不进入 Stage 7-10，不上传 GitHub main。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
+
 下一步：
 
 - 执行 Stage 1-5 final upload gate：fetch/integrate、重跑 Stage 1-5 validators、
