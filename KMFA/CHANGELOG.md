@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s05p2-field-candidate-replay - 2026-07-02
+
+- 完成 `v0.1.3 S05-P2｜字段级黄金基准候选 replay` 本地验证：重放既有 public-safe S05-P2 A0 field candidate metadata、owner/授权降级决策和 completion gate。
+- 新增 `KMFA/tools/v013_s05_p2_field_candidate_replay.py`、`KMFA/tools/check_v013_s05_p2_field_candidate_replay.py`、`KMFA/tests/test_v013_s05_p2_field_candidate_replay.py` 和 `KMFA/stage_artifacts/V013_S05_P2_FIELD_CANDIDATE_REPLAY/`。
+- 本 phase 锁定 fixture candidates=`45`、hash/source-anchor recorded=`40`、pending fields=`5`、Q4 confirmed=`0`、Q5 calculation baseline allowed=`0`；active owner/authorized decision 将 pending Excel candidate 降级为 cross-source support only，completion gate 为 ready。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 S05-P3、Stage 5 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s05p1-a0-file-registration - 2026-07-02
 
 - 完成 `v0.1.3 S05-P1｜A0 文件登记 replay` 本地验证：基于既有 A0 文件登记清单，锁定 9 个 public-safe A0 inventory records、8 个 PDF 类记录、1 个 Excel 类记录和 9 个 Q3 机器候选。

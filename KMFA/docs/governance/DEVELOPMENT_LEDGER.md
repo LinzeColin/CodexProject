@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s05p1-a0-file-registration
+product_version: 0.1.3-s05p2-field-candidate-replay
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S05`
-- current_phase: `v0.1.3 S05-P1｜A0 文件登记 replay`
-- current_tasks: `KMFA-V013-S05-P1-A0-FILE-REGISTRATION-20260702`
-- status: `local_s05_p1_completed_upload_deferred_until_stage10_batch_private_source_mismatch`
+- current_phase: `v0.1.3 S05-P2｜字段级黄金基准候选 replay`
+- current_tasks: `KMFA-V013-S05-P2-FIELD-CANDIDATE-REPLAY-20260702`
+- status: `local_s05_p2_completed_upload_deferred_until_stage10_batch_owner_downgrade_replayed`
 - risk_tier: `T3`
 
 ## Completed
@@ -141,12 +141,13 @@ product_version: 0.1.3-s05p1-a0-file-registration
 | `KMFA-V013-S04-P3-BASIC-TOOL-REPORT-20260702` | v0.1.3 S04-P3 基础工具测试报告 replay 本地通过：重放 22/22 个 synthetic boundary cases、11 个金额 case 和 11 个日期/期间 case，并生成 JSON/Markdown 工具函数测试报告；未读取或写入 raw data inbox，未执行 Stage 4 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S04_P3_BASIC_TOOL_REPORT/human/basic_tool_report_replay_report.md` |
 | `KMFA-V013-S04-STAGE-REVIEW-20260702` | v0.1.3 Stage 4 整体复审本地通过：复跑 S04-P1/S04-P2/S04-P3 validators 和 Stage 4 review validator，phase_results 全部 PASS，findings_open=0，findings_fixed=0；GitHub main 未上传且延期到 Stage 1-10 批量上传 gate；未读取或写入 raw data inbox，未执行 Stage 5、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S04_STAGE_REVIEW/human/stage4_review_report.md` |
 | `KMFA-V013-S05-P1-A0-FILE-REGISTRATION-20260702` | v0.1.3 S05-P1 A0 文件登记 replay 本地通过：A0 inventory=9、PDF 类=8、Excel 类=1、Q3 machine candidates=9、Q4/Q5=0；本机 A0 private zip 可打开且聚合结构匹配，但整包 hash/size 与登记 source package 不匹配，因此 public member SHA256 未回填；未提交 raw 文件名、raw hash、ZIP member name、sheet name、字段明文、row values 或业务值；未执行 S05-P2、Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/human/a0_file_registration_replay_report.md` |
+| `KMFA-V013-S05-P2-FIELD-CANDIDATE-REPLAY-20260702` | v0.1.3 S05-P2 字段级黄金基准候选 replay 本地通过：fixture candidates=45、hash/source-anchor recorded=40、pending fields=5、Q4 confirmed=0、Q5 calculation baseline allowed=0；active owner/authorized decision 将 pending Excel candidate 降级为 cross-source support only，completion gate ready；未读取或写入 raw data inbox，未执行 S05-P3、Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P2_FIELD_CANDIDATE_REPLAY/human/field_candidate_replay_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S05-P1 完成后，下一步只能另起 run 执行 v0.1.3 S05-P2 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/human/test_results.md` |
+| 无 | v0.1.3 S05-P2 完成后，下一步只能另起 run 执行 v0.1.3 S05-P3 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S05_P2_FIELD_CANDIDATE_REPLAY/human/test_results.md` |
 
 ## Not Completed
 
@@ -155,4 +156,4 @@ product_version: 0.1.3-s05p1-a0-file-registration
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 Stage 4 review 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S05-P1 或用户明确指定的单一 phase |
+| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S05-P2 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S05-P3 或用户明确指定的单一 phase |
