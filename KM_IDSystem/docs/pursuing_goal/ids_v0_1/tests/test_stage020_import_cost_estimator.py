@@ -14,6 +14,7 @@ ENTRY = PURSUE_ROOT / "STAGE020_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE020_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE020_PHASE2_COST_ESTIMATOR_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE020_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE020_PHASE4_CLOSEOUT.md"
 SCRIPT = ROOT / "scripts" / "check_import_cost_estimator.py"
 ESTIMATED_AT = "2026-07-02T21:34:00Z"
 
@@ -361,6 +362,95 @@ class Stage020ImportCostEstimatorPhase1Tests(unittest.TestCase):
             "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "NO_PHASE4",
+        ]:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_phase4_owner_feedback_summary_returns_closeout_contract_without_outputs(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            docs = base / "cost-closeout"
+            docs.mkdir()
+            shutil.copy2(ENTRY, docs / "stage020-entry.md")
+            shutil.copy2(PHASE1, docs / "stage020-scope.md")
+            (docs / "owner-candidate.zip").write_bytes(b"PK\x03\x04ids-structural-archive-candidate")
+            (docs / "scan-page.png").write_bytes(b"\x89PNG\r\n\x1a\nids-structural-scan-candidate")
+            (docs / "unknown-format.weird").write_bytes(b"ids-structural-unknown-format-candidate")
+
+            cost_report = module.evaluate_import_cost_estimate(
+                source_uris=[docs.as_uri()],
+                estimated_at=ESTIMATED_AT,
+                oversized_file_threshold_bytes=1,
+            )
+            feedback = module.build_cost_owner_feedback_summary(
+                cost_report,
+                recorded_at=ESTIMATED_AT,
+                stage_review_findings=[
+                    "Phase 4 records closeout evidence without creating runtime outputs.",
+                    "Batch upload remains blocked until the tenth-stage review gate.",
+                ],
+            )
+
+        self.assertEqual(feedback["schema_version"], "ids.stage020.import_cost_estimator.owner_feedback.v1")
+        self.assertEqual(feedback["stage"], "STAGE-020")
+        self.assertEqual(feedback["phase"], "Phase 4")
+        self.assertEqual(feedback["task_id"], "IDS-V0_1-STAGE020-P4")
+        self.assertEqual(feedback["acceptance_id"], "ACC-STAGE-020")
+        self.assertEqual(feedback["recorded_at"], ESTIMATED_AT)
+        self.assertEqual(feedback["report_sample"]["schema_version"], "ids.stage020.import_cost_estimator.v1")
+        self.assertIn("embedding_token_estimate", feedback["report_sample"])
+        self.assertIn("external_api_cost_estimate", feedback["report_sample"])
+        self.assertIn("ocr_page_estimate", feedback["report_sample"])
+        self.assertIn("index_size_estimate", feedback["report_sample"])
+        self.assertIn("local_space_pressure", feedback["report_sample"])
+        self.assertIn("human_product_entrance_payload", feedback["report_sample"])
+        self.assertIn("COST_ARCHIVE_REVIEW_REQUIRED", feedback["risk_checklist"])
+        self.assertIn("COST_UNKNOWN_FORMAT_PRESENT", feedback["risk_checklist"])
+        self.assertGreaterEqual(len(feedback["user_confirmation_flow_log"]), 5)
+        self.assertTrue(any("保存" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("取消" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("分批" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("高风险" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("Embedding" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("OCR" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("外部 API" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("索引" in item for item in feedback["estimation_uncertainty"]))
+        self.assertIn("COST_SOURCE_BLOCKED", feedback["failure_explanations"])
+        self.assertIn("COST_LOCAL_SPACE_BLOCKED", feedback["failure_explanations"])
+        self.assertGreaterEqual(len(feedback["rollback_steps"]), 4)
+        self.assertEqual(feedback["whole_stage_review"]["result"], "passed_with_local_evidence")
+        self.assertEqual(feedback["whole_stage_review"]["next_stage"], "STAGE-021")
+        self.assertFalse(feedback["whole_stage_review"]["batch_upload_allowed"])
+        self.assertEqual(feedback["whole_stage_review"]["next_batch_gate"], "BATCH011_020_REVIEW_GATE")
+        for value in feedback["processing_guard"].values():
+            self.assertEqual(value, 0)
+        for value in feedback["no_persistence_deltas"].values():
+            self.assertEqual(value, 0)
+        self.assertTrue(feedback["does_not_create_screenshots"])
+        self.assertTrue(feedback["does_not_write_report_files"])
+
+    def test_phase4_evidence_document_records_delivery_review_raw_boundary_and_no_stage021(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+
+        for term in [
+            "IDS-V0_1-STAGE020-P4",
+            "ACC-STAGE-020",
+            "预检报告样例",
+            "风险清单",
+            "用户确认流程日志",
+            "估算不确定性",
+            "失败解释文案",
+            "回滚方式",
+            "Whole-Stage Review",
+            "STAGE-020 已在本地完成",
+            "BATCH011_020_REVIEW_GATE",
+            "push_allowed=false",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_STAGE021",
+            "不执行 GitHub upload、PR、merge 或 app reinstall",
         ]:
             with self.subTest(term=term):
                 self.assertIn(term, text)
