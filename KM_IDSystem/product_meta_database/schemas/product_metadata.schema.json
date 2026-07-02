@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ids.product_meta_database.product_metadata.v0_1",
+  "title": "IDS ProductMetaDatabase product metadata",
+  "description": "Minimal IDS v0.1 product metadata contract. It is static, Git-trackable, and does not carry raw materials.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "product_id",
+    "product_name",
+    "subsystem",
+    "stage",
+    "acceptance_id",
+    "version_scope",
+    "storage_policy",
+    "lineage"
+  ],
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "const": "IDS"
+    },
+    "product_name": {
+      "type": "string",
+      "const": "IDS / Industrial Data System"
+    },
+    "subsystem": {
+      "type": "string",
+      "const": "ProductMetaDatabase"
+    },
+    "stage": {
+      "type": "string",
+      "const": "STAGE-002"
+    },
+    "acceptance_id": {
+      "type": "string",
+      "const": "ACC-STAGE-002"
+    },
+    "version_scope": {
+      "type": "string",
+      "const": "v0.1"
+    },
+    "storage_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_material_policy",
+        "external_api_policy",
+        "github_storage"
+      ],
+      "properties": {
+        "raw_material_policy": {
+          "type": "string",
+          "const": "forbidden"
+        },
+        "external_api_policy": {
+          "type": "string",
+          "const": "denied"
+        },
+        "github_storage": {
+          "type": "string",
+          "const": "small_contracts_only"
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_documents",
+        "document_chunks",
+        "evidence_refs",
+        "audit_events",
+        "index_versions",
+        "report_snapshots"
+      ],
+      "properties": {
+        "source_documents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "document_chunks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "audit_events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "index_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "report_snapshots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+
