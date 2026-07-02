@@ -631,6 +631,30 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, readme)
 
+    def test_user_center_readme_does_not_reopen_historical_s2plt03_summary_as_current_work(self) -> None:
+        readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "历史当时 S2PLT03 下一步仍是 `WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`",
+            readme,
+        )
+        self.assertIn(
+            "当前该 S2PLT03 proof 已进入 final bundle 并被 Stage 2 integrated acceptance 消费",
+            readme,
+        )
+        self.assertIn(
+            "这在历史当时不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted",
+            readme,
+        )
+
+        forbidden_phrases = (
+            "- S2PLT03 下一步仍是 `WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`",
+            "。这不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 accepted",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, readme)
+
     def test_user_center_readme_does_not_reopen_superseded_daily_operation_preflight_blockers(self) -> None:
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
 
