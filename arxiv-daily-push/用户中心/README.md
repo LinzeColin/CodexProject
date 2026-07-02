@@ -1,5 +1,11 @@
 # ADP 用户中心
 
+## 2026-07-02 11:39:13 Australia/Sydney - SMTP 发送开关原始值复核
+
+- S3/MVP 安全边界复核必须显示 `ADP_ALLOW_SMTP_SEND` 原始值，不能把未设置的环境变量默认写成显式 `false`。
+- 当前允许的安全状态是 `UNSET` 或 false-like；如果值为 `1`、`true`、`yes` 或 `on` 等 truthy，必须停止并回报。
+- 该规则只用于证明当前没有持久 SMTP 发送授权；它不创建授权 artifact，也不启用 S3/DAILY_OPERATION。
+
 ## 2026-07-02 11:33:41 Australia/Sydney - open PR 边界复核 fallback 已同步到停止门
 
 - MVP/S3 前置复审的 open PR 安全边界复核必须用 GitHub pulls HTML fallback：`User-Agent: codex-adp-open-pr-check`。
