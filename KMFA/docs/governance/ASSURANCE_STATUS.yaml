@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260702-V013-S02-P3-DATA-QUALITY-ERROR-GATE"
+as_of_event_id: "EVENT-KMFA-20260702-V013-S02-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "54219915c038e645327f6f4d57787227c205a142"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S18UPLOAD_COMMIT"
-snapshot_event_time: "2026-07-02T17:00:00+10:00"
-generator_version: "manual-v013-s02p3-data-quality-error-gate"
+snapshot_event_time: "2026-07-02T17:02:47+10:00"
+generator_version: "manual-v013-s02-stage-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 354
+    total_active_parameters: 362
     total_active_formulas: 52
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"

@@ -6,6 +6,16 @@
 
 v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。Stage 1-18 均已完成本地实现、验证、整体复审和 GitHub main 上传；Post-S18 Part 1-6 已在 canonical worktree 本地通过并生成 validator/evidence/local-governance 记录。Post-S18 第二阶段全项目本地复审已完成：新增 task pack zero-delta synthetic fixture、lineage completeness 阻断 validator、whole-project final review validator 和当前全项目 Go/No-Go。当前 `STAGE18_GITHUB_UPLOAD_PENDING` 已从最新全项目 Go/No-Go blocker 中移除并记录为 resolved，但项目仍为 `NO_GO`，`delivery_allowed=false`。随后已独立完成 KMFA worktree cleanup：只保留 canonical `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`，确认无遗留 `kmfa-s*` worktree，删除空旧目录 `/Users/linzezhang/Documents/KMFA v0.1`。Lineage / Report Gate 已独立锁定：0 条 actual lineage rows、2 条 D 级 report runtime、12 条 pending reconciliation 继续阻断正式报告、经营决策依据、release claim 和 delivery claim。Final GitHub backup evidence 已按 `NO_GO governance backup only` 生成并基于最新 `origin/main` rebase；本轮仍未执行 lineage full check completion、正式报告、live connector、OpMe 深度耦合、生产恢复或业务动作。
 
+## v0.1.3 当前续跑状态
+
+- 当前本地分支: `codex/kmfa`
+- 当前版本: `0.1.3-s02-stage-review`
+- 当前已完成: `v0.1.3 Stage 2｜整体复审`
+- 证据目录: `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/`
+- 复审结论: S02-P1/S02-P2/S02-P3 validators 全部 PASS，findings_open=0，data quality=`Q2`，report grade=`D`，release permission=`blocked`。
+- 未执行: GitHub upload、S03-P1、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S03-P1` 或用户明确指定的单一 phase；GitHub upload 延后到整体完成 gate。
+
 ## 持久本机 raw boundary
 
 - 用户确认 KMFA 后续本机财务原始数据统一放在 `/Users/linzezhang/Downloads/KMFA_MetaData`。
