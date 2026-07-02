@@ -434,6 +434,40 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_nonterminal_s2plt04_runtime_readiness_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        expected_historical_rows = (
+            "历史当时 S2PLT04 audit 顶层已公开 S2PLT02/S2PLT03 非终态证据数量，但 completion report 仍未就绪；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 LaunchAgents 已 loaded 且有 calendar triggers，但仍 disabled/not running；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT04 已消费 14 条 S2PLT02 nonterminal refs 但仍 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT04 audit 已同步 13 条 S2PLT02 nonterminal refs，但仍缺 terminal proof；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 live 授权已通过但 readiness 仍 blocked；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 terminal proof 仍缺失；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT02 terminal proof missing；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT04 completion report missing；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 final bundle incomplete；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+        )
+        for phrase in expected_historical_rows:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, decisions)
+
+        forbidden_phrases = (
+            "| S2PLT04 audit 顶层已公开 S2PLT02/S2PLT03 非终态证据数量，但 completion report 仍未就绪 |",
+            "| `state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f` 仍为 blocked |",
+            "| LaunchAgents 已 loaded 且有 calendar triggers，但仍 disabled/not running | 不得把 loaded/calendar trigger 当作真实 scheduler proof；继续按 capture plan 等待第二真实 M1-M4 SMTP 日、8 封真实邮件、真实 scheduler proof 和 reviewed terminal artifact |",
+            "| S2PLT04 已消费 14 条 S2PLT02 nonterminal refs 但仍 blocked | 继续阻断 S2PLT04 completion report，直到 S2PLT02/S2PLT03 terminal evidence 均通过 |",
+            "| S2PLT04 audit 已同步 13 条 S2PLT02 nonterminal refs，但仍缺 terminal proof | 继续按 capture plan 采集第二真实 M1-M4 SMTP 日、8 封真实邮件、真实 scheduler proof，再补 S2PLT03 terminal proof；未齐前不得写 S2PLT04 completion report |",
+            "| live 授权已通过但 readiness 仍 blocked | 把授权视为已完成 next action；继续采集第二真实日、真实 scheduler proof 和 terminal proof artifact |",
+            "| terminal proof 仍缺失 | 不得用授权 artifact、dry-run 或 loaded disabled LaunchAgents 替代终态 proof |",
+            "| S2PLT02 terminal proof missing | 仅在明确授权和安全门满足后采集第二真实 M1-M4 SMTP 日与真实 scheduler proof |",
+            "| S2PLT04 completion report missing | 等 S2PLT02/S2PLT03 terminal evidence 均通过后再生成 |",
+            "| final bundle incomplete | 等 S2PLT04、final commands、handoff、signoff、manifest 全部通过 |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
