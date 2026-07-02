@@ -1,7 +1,7 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-011-020"
 created_at_utc: "2026-07-02T11:03:09Z"
-updated_at_utc: "2026-07-02T13:16:44Z"
+updated_at_utc: "2026-07-02T13:24:12Z"
 status: "in_progress_no_github_upload"
 
 repository:
@@ -84,20 +84,22 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-013:
-    status: "in_progress"
+    status: "completed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
-    next_phase: "Phase 4"
-    current_task_id: "IDS-V0_1-STAGE013-P3"
+      - "Phase 4"
+    next_stage: "STAGE-014"
+    current_task_id: "IDS-V0_1-STAGE013-P4"
     acceptance_id: "ACC-STAGE-013"
-    acceptance_status: "phase3_scenario_validation_complete"
+    acceptance_status: "local_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE2_FILE_FINGERPRINT_SLICE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE013_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/scripts/check_file_fingerprint.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE012_PHASE4_CLOSEOUT.md"
@@ -133,5 +135,5 @@ stage_progress:
     evidence_refs: []
 
 decision:
-  current_run: "STAGE-013 Phase 3 completed locally with file-fingerprint scenario validation; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, and batch-gated."
-  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 and STAGE-012 complete locally and STAGE-013 Phase 1-3 complete; STAGE-013 Phase 4 and STAGE-014..020 remain pending."
+  current_run: "STAGE-013 completed locally with file-fingerprint closeout, review, rollback, and Chinese owner feedback; GitHub upload is blocked until STAGE-011..020 are complete, reviewed, repaired, and batch-gated."
+  no_upload_reason: "Batch STAGE-011..020 has STAGE-011 through STAGE-013 complete locally; STAGE-014..020 remain pending."
