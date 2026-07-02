@@ -424,6 +424,94 @@ def build_stage019_scenario_report(
     return report
 
 
+def build_owner_feedback_summary(
+    risk_report: dict[str, Any],
+    operator_decision_plan: dict[str, Any],
+    *,
+    feedback_at: str | None = None,
+) -> dict[str, Any]:
+    """Build Phase 4 owner-facing Chinese feedback without persisting artifacts."""
+
+    feedback_at = feedback_at or _utc_now()
+    risks = list(risk_report.get("risk_items", []))
+    report_sample = {
+        "schema_version": risk_report.get("schema_version"),
+        "overall_state": risk_report.get("overall_state"),
+        "confirmation_status": risk_report.get("confirmation_status"),
+        "risk_score_band": risk_report.get("risk_score_band"),
+        "file_count_estimate": risk_report.get("file_count_estimate", 0),
+        "total_size_bytes_estimate": risk_report.get("total_size_bytes_estimate", 0),
+        "format_counts": risk_report.get("format_counts", {}),
+        "high_risk_file_count": risk_report.get("high_risk_file_count", 0),
+        "oversized_file_count": risk_report.get("oversized_file_count", 0),
+        "suspicious_archive_count": risk_report.get("suspicious_archive_count", 0),
+        "unknown_format_count": risk_report.get("unknown_format_count", 0),
+        "insufficient_space_risk": risk_report.get("insufficient_space_risk", False),
+        "risk_items": risks,
+        "cost_items": risk_report.get("cost_items", {}),
+        "priority_hint": risk_report.get("priority_hint"),
+        "human_product_entrance_payload": risk_report.get("human_product_entrance_payload", {}),
+    }
+    failure_explanations = {
+        "RISK_SOURCE_NOT_CONFIGURED": "未配置导入来源；请先选择 owner 批准的本地 file:// 输入。",
+        "RISK_SOURCE_BLOCKED": "来源不可用或越过安全边界；系统不会继续读取或推断该来源。",
+        "RISK_DRIVE_OFFLINE": "移动硬盘或来源盘处于离线状态；请重新接入后再做风险估算。",
+        "RISK_SUSPICIOUS_ARCHIVE_PRESENT": "发现可疑压缩包；需要 owner 复核后再决定是否单独处理。",
+        "RISK_HIGH_RISK_FILE_PRESENT": "发现高风险文件候选；确认前不会进入批量处理。",
+        "RISK_LARGE_BATCH_PRESENT": "文件数量较多；建议先分批处理并保留人工确认点。",
+        "RISK_OVERSIZED_FILE_PRESENT": "发现超大文件；建议拆分批次或先跳过后复核。",
+        "RISK_UNKNOWN_FORMAT_PRESENT": "发现未知格式；建议跳过或转交人工处理。",
+        "RISK_INSUFFICIENT_SPACE": "目标空间不足；请释放空间或缩小批次后再继续。",
+        "RISK_OWNER_REVIEW_REQUIRED": "风险估算发现需要 owner 确认的风险项；确认前不会进入批量处理。",
+    }
+    confirmation_flow_log = [
+        "步骤 1：系统展示预检报告样例，owner 先查看数量、体积、格式、风险、成本和优先级。",
+        "步骤 2：owner 可以选择保存风险估算结果；当前 helper 只提供可序列化内容，不自动落盘。",
+        "步骤 3：owner 可以选择取消；取消后 document/chunk/job/index/import/manifest/database 写入均保持 0。",
+        "步骤 4：owner 可以选择分批；系统只生成 metadata batch plan，不启动解析、OCR、Embedding、索引或导入。",
+        "步骤 5：owner 可以选择跳过高风险文件；可疑压缩包、扫描件、未知格式和超大文件会进入跳过候选清单。",
+        "步骤 6：owner 确认后才进入批量处理；本 Stage 只交付确认前的风险反馈，不授权实际导入。",
+    ]
+    uncertainty_notes = [
+        "风险估算只基于显式 file:// 输入的文件系统 metadata；目录不递归扫描。",
+        "风险等级不代表正文质量、页数、解析耗时、压缩包内部结构或未来模型成本。",
+        "OCR 和 Embedding 工作量是候选数量估算，不代表已经解析正文或启动处理任务。",
+        "空间不足判断只比较传入 available_space_bytes 与估算输入体积，不替代系统级容量审计。",
+    ]
+    rollback_steps = [
+        "回滚 Phase 4 时只撤销 owner feedback helper、测试、closeout evidence 和治理指针。",
+        "回滚不得移动、删除、覆盖或重写原始资料。",
+        "回滚不得清理 /Users/linzezhang/Downloads/IDS_MetaData 或任何 runtime database/report/output。",
+        "回滚后 STAGE-019 应退回 Phase 3 完成、Phase 4 未完成状态。",
+    ]
+    no_persistence = dict(NO_PERSISTENCE_DELTAS)
+    summary: dict[str, Any] = {
+        "schema_version": "ids.stage019.import_risk_estimator.owner_feedback.v1",
+        "stage": "STAGE-019",
+        "phase": "Phase 4",
+        "acceptance_id": "ACC-STAGE-019",
+        "entrance": ENTRANCE,
+        "customer_visible": True,
+        "feedback_at": feedback_at,
+        "report_sample": report_sample,
+        "risk_checklist": risks,
+        "confirmation_flow_log": confirmation_flow_log,
+        "failure_explanations": failure_explanations,
+        "uncertainty_notes": uncertainty_notes,
+        "rollback_steps": rollback_steps,
+        "sample_persistence": {
+            "can_serialize_for_owner_review": operator_decision_plan.get("save_contract", {}).get(
+                "can_save_result", False
+            ),
+            "persisted_by_helper": False,
+            "owner_selected_path_required": True,
+        },
+        "no_persistence_deltas": no_persistence,
+    }
+    summary.update(NO_SIDE_EFFECT_FLAGS)
+    return summary
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Build a metadata-only Stage 019 import risk estimate.")
     parser.add_argument(

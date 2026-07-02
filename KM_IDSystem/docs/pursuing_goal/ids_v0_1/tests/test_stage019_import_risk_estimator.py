@@ -14,6 +14,7 @@ ENTRY = PURSUE_ROOT / "STAGE019_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE019_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE019_PHASE2_RISK_ESTIMATOR_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE019_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE019_PHASE4_CLOSEOUT.md"
 SCRIPT = ROOT / "scripts" / "check_import_risk_estimator.py"
 PRECHECKED_AT = "2026-07-02T20:49:12Z"
 
@@ -346,6 +347,114 @@ class Stage019ImportRiskEstimatorPhase1Tests(unittest.TestCase):
             "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "NO_PHASE4",
+        ]:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_phase4_owner_feedback_summary_contains_sample_risks_uncertainty_failure_and_rollback(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            docs = base / "feedback"
+            docs.mkdir()
+            shutil.copy2(ENTRY, docs / "stage019-entry.md")
+            shutil.copy2(PHASE1, docs / "stage019-scope.md")
+            (docs / "owner-candidate.zip").write_bytes(b"PK\x03\x04ids-structural-archive-candidate")
+            (docs / "unknown-format.weird").write_bytes(b"ids-structural-unknown-format-candidate")
+
+            risk_report = module.evaluate_import_risk_estimate(
+                source_uris=[docs.as_uri()],
+                estimated_at=PRECHECKED_AT,
+                available_space_bytes=1,
+            )
+            decision = module.build_risk_operator_decision_plan(risk_report, batch_size=2)
+            feedback = module.build_owner_feedback_summary(
+                risk_report,
+                decision,
+                feedback_at=PRECHECKED_AT,
+            )
+
+        self.assertEqual(feedback["schema_version"], "ids.stage019.import_risk_estimator.owner_feedback.v1")
+        self.assertEqual(feedback["stage"], "STAGE-019")
+        self.assertEqual(feedback["phase"], "Phase 4")
+        self.assertEqual(feedback["acceptance_id"], "ACC-STAGE-019")
+        self.assertEqual(feedback["entrance"], "人类产品入口 + IDS 系统运营入口")
+        self.assertTrue(feedback["customer_visible"])
+        self.assertEqual(feedback["report_sample"]["overall_state"], "RISK_BLOCKED")
+        self.assertEqual(feedback["report_sample"]["file_count_estimate"], 4)
+        self.assertIn("RISK_SUSPICIOUS_ARCHIVE_PRESENT", feedback["risk_checklist"])
+        self.assertIn("RISK_UNKNOWN_FORMAT_PRESENT", feedback["risk_checklist"])
+        self.assertIn("RISK_INSUFFICIENT_SPACE", feedback["risk_checklist"])
+        self.assertEqual(feedback["report_sample"]["human_product_entrance_payload"]["title"], "导入风险估算器")
+        flow_text = "\n".join(feedback["confirmation_flow_log"])
+        self.assertIn("保存风险估算结果", flow_text)
+        self.assertIn("取消", flow_text)
+        self.assertIn("分批", flow_text)
+        self.assertIn("跳过高风险文件", flow_text)
+        self.assertIn("owner 确认后才进入批量处理", flow_text)
+        self.assertGreaterEqual(len(feedback["uncertainty_notes"]), 3)
+        self.assertIn("RISK_DRIVE_OFFLINE", feedback["failure_explanations"])
+        self.assertIn("RISK_SOURCE_BLOCKED", feedback["failure_explanations"])
+        self.assertIn("RISK_INSUFFICIENT_SPACE", feedback["failure_explanations"])
+        self.assertIn("RISK_SUSPICIOUS_ARCHIVE_PRESENT", feedback["failure_explanations"])
+        self.assertIn("RISK_UNKNOWN_FORMAT_PRESENT", feedback["failure_explanations"])
+        self.assertIn("RISK_OVERSIZED_FILE_PRESENT", feedback["failure_explanations"])
+        self.assertTrue(any("回滚" in step for step in feedback["rollback_steps"]))
+        self.assertFalse(feedback["sample_persistence"]["persisted_by_helper"])
+        self.assertEqual(feedback["no_persistence_deltas"]["database_write_delta"], 0)
+
+    def test_phase4_owner_feedback_serializes_without_raw_body_or_runtime_writes(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            docs = base / "owner"
+            docs.mkdir()
+            shutil.copy2(ENTRY, docs / "stage019-entry.md")
+
+            risk_report = module.evaluate_import_risk_estimate(
+                source_uris=[docs.as_uri()],
+                estimated_at=PRECHECKED_AT,
+            )
+            decision = module.build_risk_operator_decision_plan(risk_report, batch_size=50)
+            feedback = module.build_owner_feedback_summary(
+                risk_report,
+                decision,
+                feedback_at=PRECHECKED_AT,
+            )
+
+        serialized = json.dumps(feedback, ensure_ascii=False)
+
+        self.assertNotIn("# IDS v0.1 STAGE-019 Entry Contract", serialized)
+        self.assertNotIn("raw_payload", serialized)
+        self.assertTrue(feedback["does_not_parse_body_text"])
+        self.assertTrue(feedback["does_not_start_ocr"])
+        self.assertTrue(feedback["does_not_create_embeddings"])
+        self.assertTrue(feedback["does_not_build_index"])
+        self.assertTrue(feedback["does_not_start_import"])
+        self.assertTrue(feedback["does_not_write_database"])
+
+    def test_phase4_closeout_document_records_delivery_no_raw_data_no_stage020(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+
+        for term in [
+            "IDS-V0_1-STAGE019-P4",
+            "ACC-STAGE-019",
+            "预检报告样例",
+            "风险清单",
+            "用户确认流程日志",
+            "估算不确定性",
+            "失败解释文案",
+            "回滚方式",
+            "build_owner_feedback_summary",
+            "不解析正文",
+            "不启动 OCR",
+            "不启动 Embedding",
+            "不建立索引",
+            "不启动实际导入",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_STAGE020",
         ]:
             with self.subTest(term=term):
                 self.assertIn(term, text)
