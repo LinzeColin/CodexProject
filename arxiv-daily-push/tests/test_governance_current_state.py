@@ -386,6 +386,31 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, decisions)
 
+    def test_owner_decision_page_does_not_reopen_authorization_hash_and_s2plt03_plan_as_current_gap(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+
+        expected_historical_rows = (
+            "历史当时 live 授权 artifact 只有在 `readiness_state_hash` 匹配 expected hash `79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e` 时才算当时有效；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 stale/wrong hash 会 `authorization_artifact_status=blocked`，`real_proof_capture_authorized=false`；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 matching hash 仍不等于 S2PLT02 accepted；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 `plan-s2plt03-terminal-resilience-proof-capture` blocked，`next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+            "历史当时 S2PLT03 输入只是 `LOCAL_RESILIENCE_DRILL`、`RESILIENCE_PRECHECK`、`P0_P1_ZERO_PROOF`；当前 final bundle 已被 Stage 2 integrated acceptance 消费",
+        )
+        for phrase in expected_historical_rows:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, decisions)
+
+        forbidden_phrases = (
+            "| live 授权 artifact 现在只有在 `readiness_state_hash` 匹配 expected hash `79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e` 时才算当前有效 |",
+            "| stale/wrong hash 会 `authorization_artifact_status=blocked`，`real_proof_capture_authorized=false`，错误为 `readiness_state_hash does not match current readiness state` | 保持 fail-closed；重新生成或复核授权前，不允许把授权 action 标记完成 |",
+            "| matching hash 仍不等于 S2PLT02 accepted | 即使授权 pass，也继续阻断第二真实日、8 封真实邮件、真实 scheduler proof 和 terminal proof artifact |",
+            "| `plan-s2plt03-terminal-resilience-proof-capture` 当前 blocked，`next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE`，不得直接写 S2PLT03 terminal proof artifact |",
+            "| 当前已完成的 S2PLT03 输入只是 `LOCAL_RESILIENCE_DRILL`、`RESILIENCE_PRECHECK`、`P0_P1_ZERO_PROOF` |",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, decisions)
+
     def test_mail_status_page_does_not_reopen_consumed_s2plt04_gaps(self) -> None:
         mail_status = (ADP_ROOT / "用户中心/邮件发送与队列状态.md").read_text(encoding="utf-8")
 
