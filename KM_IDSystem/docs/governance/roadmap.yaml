@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE002"
-current_phase_id: "IDS-STAGE002-P3"
-current_task_id: "IDS-V0_1-STAGE002-P3"
-next_gate_id: "IDS-STAGE002-P4-GATE"
+current_phase_id: "IDS-STAGE002-P4"
+current_task_id: "IDS-V0_1-STAGE002-P4"
+next_gate_id: "IDS-STAGE003-P1-GATE"
 total_estimated_hours: 28
-completed_estimated_hours: 27
+completed_estimated_hours: 28
 stages:
   -
     stage_id: "S5"
@@ -458,7 +458,7 @@ stages:
     stage_id: "IDS-STAGE002"
     name: "新建 ProductMetaDatabase"
     person_goal: "新建 ProductMetaDatabase，承载产品 schema、manifest template、治理规则和 taskpack 输入，不承载 500GB 原始资料。"
-    status: "in_progress"
+    status: "completed"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
       - "把 ProductMetaDatabase 做成原始资料仓库或外部盘镜像"
@@ -467,7 +467,7 @@ stages:
       - "试图在 STAGE-001..010 批次完成前推送或合并 GitHub PR"
     stop_gate:
       gate_id: "IDS-STAGE002-GATE"
-      status: "open"
+      status: "local_passed_pending_10_stage_batch_upload"
       pass_conditions:
         - "Phase 1 明确 ProductMetaDatabase 的控制面边界、允许路径和禁止路径"
         - "Phase 2 完成最小可运行、可解析、可回滚的 metadata skeleton"
@@ -478,6 +478,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE2_METADATA_SKELETON.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE3_VALIDATION_SCAN.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/product_meta_database/README.md"
         - "KM_IDSystem/product_meta_database/validate_product_meta_database.py"
     phases:
@@ -626,25 +627,27 @@ stages:
         phase_id: "IDS-STAGE002-P4"
         name: "新建 ProductMetaDatabase 交付证据、回滚与中文反馈"
         objective: "提交变更文件清单、引用扫描结果、legacy alias 保留原因、ACC 证据和回滚步骤。"
-        status: "not_started"
+        status: "completed"
         stop_conditions:
           - "Phase 3 扫描未完成"
           - "仍有阻断问题未解决"
           - "试图在未满 10 stages 时推送 GitHub PR"
         stop_gate:
           gate_id: "IDS-STAGE002-P4-GATE"
-          status: "pending"
+          status: "passed_no_github_upload_until_batch_complete"
           pass_conditions:
             - "ACC-STAGE-002 证据完整"
             - "本 Stage 可回滚"
             - "不上传 GitHub，直到 STAGE-001..010 批次完成"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE002-P4"
             name: "STAGE-002 交付证据与回滚"
             objective: "生成 ACC-STAGE-002 证据、引用扫描结果、legacy alias 保留原因、回滚步骤和中文反馈。"
-            status: "not_started"
+            status: "completed"
             estimated_hours: 1
             total_hours_percent: "3.57%"
             dependencies:
@@ -656,7 +659,9 @@ stages:
               - "ProductMetaDatabase final contract validation"
               - "check-render --project KM_IDSystem"
               - "git status --short --branch"
-            test_results: "NOT_RUN"
-            evidence_refs: []
+            test_results: "STAGE-002 whole-stage review passed: P1/P2/P3/P4 evidence exists; Codex bundled Python ProductMetaDatabase unittest ran 2 tests OK; validator returned valid=true, issues=[], external_api_policy=denied, raw_material_policy=forbidden, forbidden_markers=[], forbidden_runtime_paths_present=false; ProductMetaDatabase legacy hits=0; ProductMetaDatabase actual secret hits excluding policy marker definitions=0; forbidden runtime dirs=0; active blockers=0; one non-blocking company/source prompt context item remains in model_router.py. check-render returned drift_count=0; marker/JSONL/scope check returned stage002_phase4_marker_jsonl_scope_ok=True; git diff --check passed. Full semantic validate remains blocked by sparse worktree omissions with 28 known errors, so no unrelated project expansion was performed. No GitHub push or PR because STAGE-001..010 is not complete."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE002_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
             risk: "在 STAGE-002 完成后误推送未满 10 stages 的批次。"
             rollback: "Revert IDS-STAGE002-P4 closeout-only changes."
