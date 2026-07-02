@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Pre Stage 0
+
+- Added `docs/product/memory_atlas_v1_1_7_gap_remediation_upgrade_contract.md`.
+- Added `docs/acceptance/memory_atlas_v1_1_7_pre_stage0_acceptance.md`.
+- Added `docs/reviews/memory_atlas_v1_1_7_pre_stage0_review.md`.
+- Added `validate:v1.1.7-pre-stage0` to pin the v1.1.7 gap remediation
+  upgrade package, Stage 0-10 stage map, acceptance matrix, baseline boundary,
+  record alignment, changed-path boundary and final one-time GitHub main upload
+  gate.
+- Registered `MA-V117-PRESTAGE0` / `ACC-MA-V117-PRESTAGE0` with status
+  `pre_stage_0_review_passed_pending_github_main_upload`.
+
+No production runtime feature work, production React/CSS/route change, feature
+flag default switch, raw/private data read, direct writeback, proposal write,
+agent apply, production build, browser screenshot, local app install,
+Cloudflare live deploy, Access policy change or GitHub main upload was added by
+the pre-stage review artifact.
+
+Machine-readable boundary summary: No production runtime feature work; No
+raw/private data read; No direct writeback; No GitHub main upload in review
+artifact.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 10 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_6_stage10_review.md`.

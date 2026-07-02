@@ -681,6 +681,40 @@ Stage 3 Phase 1 状态：`phase_3_1_contract_created_pending_stage_review`。
 
 Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
 
+## v1.1.7 Pre Stage 0：Gap Remediation Upgrade Package
+
+状态：`pre_stage_0_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V117-PRESTAGE0`。
+
+验收 ID：`ACC-MA-V117-PRESTAGE0`。
+
+本 pre-stage 固定 v1.1.7 gap remediation 升级包，只确认 Roadmap v2 gap
+remediation 输入、v1.1.6 Stage 10 baseline、Stage 0-10 执行映射、验收矩阵、
+review artifact、validator、记录一致性、改动范围和一次性 GitHub main 上传
+gate。不实现运行时 UI、不修改 CSS/路由、不切换 feature flag、不读取
+raw/private 数据、不直接写长期记忆、不写 proposal、不执行 agent apply、不
+build、不截图、不安装本地 app、不部署 Cloudflare、不修改 Access policy。
+
+新增产物：
+
+- `docs/product/memory_atlas_v1_1_7_gap_remediation_upgrade_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_pre_stage0_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_7_pre_stage0_review.md`
+- `validate:v1.1.7-pre-stage0`
+
+验收边界：
+
+- Pre Stage 0 通过不表示 Stage 0 runtime remediation、浏览器截图、FPS、Memory
+  Starfield、Memory River、Data Map 2.0、Search 2.0、Review / Summary /
+  Iteration 或 Summary iteration 已完成。
+- Stage 0 尚未开始。
+- GitHub main 上传只允许在 `validate:v1.1.7-pre-stage0`、`git diff --check
+  -- OpenAIDatabase`、clean tracked tree、fetch/integrate 和 canonical remote
+  确认后一次性执行。
+
+Machine-readable boundary summary: No production runtime feature work; No raw/private data read; No direct writeback; No GitHub main upload in review artifact.
+
 ### Stage 8 Phase 1：Release Rollback Contract
 
 Stage 8 Phase 1 状态：`phase_8_1_contract_created_pending_stage_review`。
