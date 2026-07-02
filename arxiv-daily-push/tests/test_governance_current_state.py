@@ -739,6 +739,16 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("只接受明确 `open_pr_count=0`", roadmap)
         self.assertIn("`UNKNOWN`、非 0、命令失败或无法解析都必须停止并回报，不得当作通过", roadmap)
         self.assertIn("该复核只证明 open PR 边界，不授权 S3/DAILY_OPERATION", roadmap)
+        self.assertRegex(
+            one_look,
+            r"^# 一看三查\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n",
+        )
+        self.assertEqual(one_look.count("更新时间："), 1)
+        self.assertRegex(
+            roadmap,
+            r"^# 路线图与停止门\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n\n本页说明 ADP 当前在哪个阶段",
+        )
+        self.assertEqual(roadmap.count("更新时间："), 1)
         self.assertTrue(mvp_prep.startswith("# MVP 准备与复审修补\n"))
         self.assertIn("不进入 S3/DAILY_OPERATION", mvp_prep)
         self.assertIn("只做复审、修补、用户向可读性、证据同步、测试补强和低风险局部修复", mvp_prep)

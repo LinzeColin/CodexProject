@@ -1839,6 +1839,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
 
         for text in (readme, one_look, decisions, roadmap):
             self.assertIn("[MVP 准备与复审修补](./MVP准备与复审修补.md)", text)
+        self.assertRegex(
+            one_look,
+            r"^# 一看三查\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n",
+        )
+        self.assertEqual(one_look.count("更新时间："), 1)
+        self.assertRegex(
+            roadmap,
+            r"^# 路线图与停止门\n\n更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney\n\n本页说明 ADP 当前在哪个阶段",
+        )
+        self.assertEqual(roadmap.count("更新时间："), 1)
         self.assertIn("Stage 2 最终门 | 已通过 Stage 2 integrated acceptance", one_look)
         self.assertIn("S3 / DAILY_OPERATION | 不进入；保持禁用", one_look)
         self.assertIn("宣称 S3/DAILY_OPERATION 已进入 | 不可以", one_look)
