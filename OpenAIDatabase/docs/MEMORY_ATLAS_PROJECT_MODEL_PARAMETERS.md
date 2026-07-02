@@ -2816,3 +2816,50 @@ Stage 9 整体复审已确认：
 - 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
 - 本 phase 不运行 installer，不执行 production build，不部署 Cloudflare，不修改 Access policy。
 - 本 phase 不进入 Stage 8 整体复审，不进入 Stage 9-10，不执行 GitHub main 上传。
+
+## 60. v1.1.6 Stage 8 整体复审门槛
+
+状态：`stage_8_review_passed_pending_github_main_upload`。
+
+模型假设：
+
+- Stage 8 只有在 Phase 8.1 的合同、验收、validator 和记录均一致时，才允许进入 GitHub main upload gate。
+- Stage 8 复审通过不等于 production build、本地 App 安装、runtime manifest、release artifact audit、Cloudflare preflight 或 live deploy 已完成。
+- Stage 8 复审不得读取 raw/private/cookie/session/secret，不得执行 direct writeback，不得运行 installer/build/deploy，不得进入 Stage 9。
+
+输入：
+
+- `docs/product/memory_atlas_release_rollback_contract.md`
+- `docs/acceptance/memory_atlas_release_rollback_acceptance.md`
+- `docs/reviews/memory_atlas_v1_1_6_stage8_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage8_phase1.cjs`
+
+处理方法：
+
+- 检查 Stage 8 Phase 1 合同、验收和 validator 是否覆盖本地 App、runtime manifest、redacted static artifact、Cloudflare preflight、授权门槛、rollback matrix、proposal-only gate 和 cleanup guard。
+- 检查 Stage 8 review artifact 是否覆盖 Phase 8.1、边界、风险和 Stage 9 前上传 gate。
+- 检查 delivery、feature、development、model parameter、changelog 和 package script 是否一致。
+- 固定 `validate:v1.1.6-stage8` 为 Stage 9 前的必跑 gate。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S8-REVIEW-001 stage8_required_validator = validate:v1.1.6-stage8`
+- `PARAM-MA-V116-S8-REVIEW-002 stage8_review_status = stage_8_review_passed_pending_github_main_upload`
+- `PARAM-MA-V116-S8-REVIEW-003 stage8_review_artifact = docs/reviews/memory_atlas_v1_1_6_stage8_review.md`
+- `PARAM-MA-V116-S8-REVIEW-004 stage8_allowed_change_scope = contracts;acceptance;records;reviews;validators;package_script`
+- `PARAM-MA-V116-S8-REVIEW-005 stage8_next_gate = GitHub main upload before Stage 9`
+- `PARAM-MA-V116-S8-REVIEW-006 upload_boundary = no_stage9_until_stage8_upload_verified`
+
+输出：
+
+- Stage 8 review artifact。
+- Stage 8 stage-level validator。
+- Stage 8 review records。
+
+边界：
+
+- 本复审不实现运行时发布流程。
+- 本复审不读取 raw/private/cookie/session/secret 数据。
+- 本复审不修改核心前端实现、CSS、路由或 feature flag。
+- 本复审不运行 installer，不执行 production build，不部署 Cloudflare，不修改 Access policy。
+- 本复审不进入 Stage 9；GitHub main upload 只在 final remote checks 通过后执行。

@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.6 Stage 8 Review
+
+- Added `validate:v1.1.6-stage8` to pin Stage 8 Phase 1 contract,
+  acceptance, records, review artifact, changed-path boundary and final upload
+  gate.
+- Added `docs/reviews/memory_atlas_v1_1_6_stage8_review.md`.
+- Marked Stage 8 as review-passed and pending GitHub main upload; Stage 9 must
+  start in a separate bounded run after upload verification.
+- Stage 8 review status: `stage_8_review_passed_pending_github_main_upload`.
+
+No runtime UI implementation, CSS change, browser screenshot run, production
+build, local app install, installer run, app bundle mutation, Cloudflare live
+deploy, Access policy change, external account operation, raw/private data
+read, direct writeback, agent apply, Stage 9 work, No GitHub main upload, or
+live deploy was added by the review itself.
+
+Machine-readable boundary summary: No runtime UI implementation; No production build; No raw/private data read; No direct writeback; No GitHub main upload; No live deploy.
+
 ## Unreleased - Memory Atlas v1.1.6 Stage 8 Phase 1
 
 - Added `docs/product/memory_atlas_release_rollback_contract.md` to define the

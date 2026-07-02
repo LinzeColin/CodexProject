@@ -718,6 +718,45 @@ Machine-readable boundary summary: No runtime UI; No raw/private data read; No d
 - 进入 Stage 8 整体复审，补 review artifact 和 stage-level validator，并解决复审暴露的问题。
 - Stage 8 整体复审未执行前，不上传 GitHub main。
 
+### Stage 8 整体复审
+
+Stage 8 复审状态：`stage_8_review_passed_pending_github_main_upload`。
+
+任务 ID：`MA-V116-S8-REVIEW`。
+
+新增产物：
+
+- `docs/reviews/memory_atlas_v1_1_6_stage8_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_6_stage8.cjs`
+- `validate:v1.1.6-stage8`
+
+复审结论：
+
+- Phase 8.1 Release Rollback Contract、验收、validator 和记录一致。
+- Stage 8 缺少 deterministic whole-stage validator 与 review artifact 的缺口已修复。
+- Stage 8 已通过整体复审，等待 GitHub main upload gate。
+
+复审边界：
+
+- No runtime UI。
+- No CSS change。
+- No browser screenshot run。
+- No production build。
+- No installer run。
+- No local app install or rebuild。
+- No app bundle or runtime cache mutation。
+- No Cloudflare live deploy。
+- No Access policy change。
+- No raw/private data read。
+- No direct writeback。
+- No GitHub main upload。
+
+下一 gate：
+
+- 先执行 final remote checks、`validate:v1.1.6-stage8-phase1`、
+  `validate:v1.1.6-stage8`、项目级 acceptance audit 和 diff check。
+- 再上传 canonical GitHub main tree。
+
 ### Stage 6 整体复审
 
 Stage 6 状态：`stage_6_review_passed_pending_github_main_upload`。
