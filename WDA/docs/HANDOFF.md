@@ -2,21 +2,22 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2C owner-authorized readable artifact intake contract.
+Execute WDA Stage 2 Sprint 2D real-data readable artifact discovery.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is readable artifact intake contract definition, not raw message reading
-- Implementation status: Sprint 2B-A/2B-B/2B-C and Sprint 2C contract artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is readable artifact discovery, not raw message reading
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, and Sprint 2D discovery artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
 - Latest Sprint 2B-B outputs: `WDA/docs/stage2_sprint2b_schema_probe/`
 - Latest Sprint 2B-C outputs: `WDA/docs/stage2_sprint2b_route_decision/`
 - Latest Sprint 2C outputs: `WDA/docs/stage2_sprint2c_readable_artifact_contract/`
+- Latest Sprint 2D outputs: `WDA/docs/stage2_sprint2d_real_artifact_discovery/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Raw Gate: `Conditional Investigation`; message readability not proven; Raw Gate is not Go
 
@@ -38,7 +39,8 @@ Execute WDA Stage 2 Sprint 2C owner-authorized readable artifact intake contract
 - Sprint 2B-C route decision recommends an owner-authorized readable artifact intake contract as the next route; it does not execute that route.
 - WDA RAG/Web/Matrix data-dependent implementation remains blocked until a safe, authorized message-level import path exists.
 - Sprint 2C defines the readable artifact contract only; it does not create `messages.jsonl`, validate a real artifact, or implement RAG/Web/Matrix.
-- Future Sprint 2D should validate a small owner-authorized sample artifact only if the user provides or approves one.
+- Sprint 2D searched real data sources metadata-only and found no validated message-level readable artifact; APFS was mounted read-only for discovery and detached after search.
+- WDA still lacks message-level readable input; future conversion requires a separate approved sprint and a selected readable candidate.
 
 ## Files To Read First
 
@@ -68,6 +70,10 @@ Execute WDA Stage 2 Sprint 2C owner-authorized readable artifact intake contract
 - `WDA/docs/stage2_sprint2c_readable_artifact_contract/readable_artifact_contract.md`
 - `WDA/docs/stage2_sprint2c_readable_artifact_contract/import_manifest_schema.md`
 - `WDA/docs/stage2_sprint2c_readable_artifact_contract/next_sprint2d_validation_plan.md`
+- `WDA/docs/stage2_sprint2d_real_artifact_discovery/README.md`
+- `WDA/docs/stage2_sprint2d_real_artifact_discovery/sprint2d_decision.md`
+- `WDA/docs/stage2_sprint2d_real_artifact_discovery/readable_artifact_candidates.csv`
+- `WDA/docs/stage2_sprint2d_real_artifact_discovery/privacy_and_safety_validation.md`
 
 ## Validation
 
@@ -115,6 +121,19 @@ Latest Sprint 2C contract:
 - Next executable step: validate a small owner-authorized sample artifact only if the user provides or approves one
 - Raw Gate: `Conditional Investigation`
 
+Latest Sprint 2D discovery:
+
+- Required discovery outputs present: true
+- Discovery mode: real-data, metadata-only
+- APFS source scanned: true, mounted read-only
+- APFS detached after search: true
+- Candidate rows reported: 12, all local generated report/metadata-like rows
+- APFS message/chat-like readable artifact candidates: 0
+- Protected DB/key/MMKV/login opened: 0
+- Message content parsed: 0
+- `messages.jsonl` produced: false
+- Raw Gate: `Conditional Investigation`
+
 ## Next Step
 
-Run Sprint 2D only if explicitly approved and only after the user provides or approves a small owner-authorized readable sample artifact. Keep the gate narrow: validate manifest/checksums/schema shape only first; do not attempt SQLCipher keys, protected-store bypass, `key_info`/MMKV/login-store opening, third-party WeChat export/decrypt tools, message/contact row selection from protected DB bundles, or RAG/Web/Matrix implementation.
+Run a conversion/validation sprint only if explicitly approved and only after selecting a concrete readable candidate. Keep the gate narrow: validate manifest/checksums/schema shape first; do not attempt SQLCipher keys, protected-store bypass, `key_info`/MMKV/login-store opening, third-party WeChat export/decrypt tools, message/contact row selection from protected DB bundles, raw upload, or RAG/Web/Matrix implementation.
