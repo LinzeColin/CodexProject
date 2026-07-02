@@ -1,6 +1,8 @@
 from pathlib import Path
+import importlib.util
 import json
 import re
+import sys
 import unittest
 
 
@@ -1019,6 +1021,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
     def test_owner_and_assurance_route_to_persistent_authorization_missing_gate(self) -> None:
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        status = (ADP_ROOT / "docs/governance/STATUS.md").read_text(encoding="utf-8")
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
         self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', assurance)
@@ -1032,9 +1035,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn('status: "blocked_persistent_daily_operation_authorization_missing"', assurance)
         self.assertIn("交付状态为 `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`", owner_status)
         self.assertIn("- delivery_readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`", owner_status)
+        self.assertIn("- Readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`", status)
         self.assertIn("唯一当前阻断是缺少显式 owner 持久 DAILY_OPERATION 授权 artifact", owner_status)
         self.assertNotIn("交付状态为 `BLOCKED_PRECHECK`", owner_status)
         self.assertNotIn("- delivery_readiness: `BLOCKED_PRECHECK`", owner_status)
+        self.assertNotIn("- Readiness: `BLOCKED_PRECHECK`", status)
         self.assertIn("stage2_integrated_production_accepted: true", assurance)
         self.assertIn("current_zero_proof_open_p0_findings: 0", assurance)
         self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
@@ -1074,6 +1079,31 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-PREFLIGHT", generator)
         self.assertIn("S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-WRITE-GATE", generator)
         self.assertIn("S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", generator)
+
+        sys.path.insert(0, str(REPO_ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location(
+                "generate_governance_dashboard_for_status_test",
+                REPO_ROOT / "scripts/generate_governance_dashboard.py",
+            )
+            self.assertIsNotNone(spec)
+            self.assertIsNotNone(spec.loader)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            config = module.structural.load_yaml(module.structural.PROJECTS_FILE)
+            project = next(
+                project
+                for project in module.structural.as_list(config.get("projects"))
+                if module.structural.project_scope(project) == "arxiv-daily-push"
+            )
+            rendered_status = module.render_status(module.load_project(project))
+        finally:
+            try:
+                sys.path.remove(str(REPO_ROOT / "scripts"))
+            except ValueError:
+                pass
+        self.assertIn("- Readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`", rendered_status)
+        self.assertNotIn("- Readiness: `BLOCKED_PRECHECK`", rendered_status)
 
     def test_project_yaml_delivery_readiness_does_not_reopen_stage2_final_gate(self) -> None:
         project_yaml = (ADP_ROOT / "docs/governance/project.yaml").read_text(encoding="utf-8")
