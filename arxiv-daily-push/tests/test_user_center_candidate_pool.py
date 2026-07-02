@@ -227,6 +227,48 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
                 for phrase in forbidden_current_gap_phrases:
                     self.assertNotIn(phrase, page_text)
 
+    def test_no_production_attestation_validator_history_does_not_reopen_current_gap(self):
+        feature_list = (ROOT / "功能清单.md").read_text(encoding="utf-8")
+        development_record = (ROOT / "开发记录.md").read_text(encoding="utf-8")
+        model_params = MODEL_PARAMS_PAGE.read_text(encoding="utf-8")
+        phase_record = (
+            ROOT
+            / "docs/phase_records/PHASE_S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATOR.md"
+        ).read_text(encoding="utf-8")
+
+        required_current_truths = (
+            "历史当时 no-production side-effect attestation artifact 不存在",
+            "当前 `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` 已存在并已被 final bundle 与 Stage 2 integrated acceptance 消费",
+            "当前剩余阻断只看 S3/DAILY_OPERATION 持久授权 artifact 缺失",
+            "不得把 2026-06-28 的 no-production side-effect attestation validator 重新解释成当前 final bundle 缺口",
+        )
+        for page_name, page_text in {
+            "功能清单": feature_list,
+            "开发记录": development_record,
+            "模型参数文件": model_params,
+            "phase_record": phase_record,
+        }.items():
+            with self.subTest(page=page_name):
+                for phrase in required_current_truths:
+                    self.assertIn(phrase, page_text)
+
+        forbidden_current_gap_phrases = (
+            "当前 independent signoff、final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失",
+            "当前已有真实 no-production attestation artifact：`FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`，其独立校验为 pass；最终包仍因其他 required items 缺失而 blocked",
+            "Current status remains `blocked`",
+            "The real no-production side-effect attestation artifact does not exist yet",
+            "Keep S2PMT07 blocked until a real final bundle contains valid P0/P1 zero proof",
+        )
+        for page_name, page_text in {
+            "功能清单": feature_list,
+            "开发记录": development_record,
+            "模型参数文件": model_params,
+            "phase_record": phase_record,
+        }.items():
+            with self.subTest(page=page_name):
+                for phrase in forbidden_current_gap_phrases:
+                    self.assertNotIn(phrase, page_text)
+
     def test_project_readme_records_stage2_and_s3_boundary(self):
         readme = PROJECT_README.read_text(encoding="utf-8")
 
