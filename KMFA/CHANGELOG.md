@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3-s05-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 5 整体复审` 本地验证：复跑 S05-P1/S05-P2/S05-P3 replay validators、Stage 5 review validator 和 focused unit test。
+- 新增 `KMFA/tools/v013_s05_stage_review.py`、`KMFA/tools/check_v013_s05_stage_review.py`、`KMFA/tests/test_v013_s05_stage_review.py` 和 `KMFA/stage_artifacts/V013_S05_STAGE_REVIEW/`。
+- 复审确认 phase_results=`S05-P1=PASS, S05-P2=PASS, S05-P3=PASS`，authority records=`45`、Q5 locked fields=`40`、excluded fields=`5`，open findings=`0`，data quality=`Q2`，report grade=`D`，release permission=`blocked`。
+- 本轮不执行 S06-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s05p3-authority-baseline-replay - 2026-07-02
 
 - 完成 `v0.1.3 S05-P3｜权威基准锁定 replay` 本地验证：重放既有 public-safe S05-P3 authority baseline lock，并验证 S05-P2 replay dependency。

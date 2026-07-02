@@ -1,10 +1,10 @@
 # KMFA Owner Status
 
-更新时间: 2026-07-02
+更新时间: 2026-07-03
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 1-18 的实现、复审和上传，并完成 Post-S18 Part 1-6、Whole Project Final Review、worktree cleanup、Lineage / Report Gate 与 final GitHub backup evidence。v0.1.3 S05-P3 权威基准锁定 replay 已本地完成：baseline version=`KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK`，content hash=`sha256:dbb55ffb4e3608e49dbcf91e97fc0f19395a8269ff7c8f4d5c3f8ca398c03670`，authority records=45，Q5 locked fields=40，excluded fields=5；S05-P2 dependency validator、legacy S05-P3 authority baseline lock validator、v0.1.3 S05-P3 validator 和新单测均 PASS。侧聊纠正后，v1.3 不再按单个 Stage 做 GitHub upload gate；GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行，当前 GitHub main 未上传。最新状态仍为 `NO_GO`，`delivery_allowed=false`：当前只有 lineage protocol header、0 条 actual lineage rows，12 条 S09 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据、release claim 和 delivery claim。项目仍不是可用业务系统；本轮未执行 Stage 5 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复、现场施工、安全签字、技术签字、开票、催收、法律决策、付款或银行动作。下一轮只能另起 run work 执行 `v0.1.3 Stage 5 整体复审` 或用户明确指定的单一 phase。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 1-18 的实现、复审和上传，并完成 Post-S18 Part 1-6、Whole Project Final Review、worktree cleanup、Lineage / Report Gate 与 final GitHub backup evidence。v0.1.3 Stage 5 整体复审已本地完成：S05-P1/S05-P2/S05-P3 replay validators、Stage 5 review validator 和新单测均 PASS；phase_results 全部 PASS，authority records=45，Q5 locked fields=40，excluded fields=5，open findings=0，data quality=`Q2`，report grade=`D`，release permission=`blocked`。侧聊纠正后，v1.3 不再按单个 Stage 做 GitHub upload gate；GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行，当前 GitHub main 未上传。最新状态仍为 `NO_GO`，`delivery_allowed=false`：当前只有 lineage protocol header、0 条 actual lineage rows，12 条 S09 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据、release claim 和 delivery claim。项目仍不是可用业务系统；本轮未执行 S06-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复、现场施工、安全签字、技术签字、开票、催收、法律决策、付款或银行动作。下一轮只能另起 run work 执行 `v0.1.3 S06-P1` 或用户明确指定的单一 phase。
 
 ## 你现在能信任什么
 

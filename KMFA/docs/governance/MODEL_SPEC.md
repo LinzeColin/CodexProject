@@ -108,7 +108,15 @@ product_version: 0.1.0-s18p3-integration-preparation
 - purpose: 将 40 条具备 private hash/source-anchor 证据的 PDF 字段锁定为 Q5 calculation baseline，并将 5 条 Excel 字段按 active owner/授权降级决策排除。
 - fact_level: EXTRACTED
 - evidence: `KMFA/tools/a0_authority_baseline_lock.py`, `KMFA/tools/check_a0_authority_baseline_lock.py`, `KMFA/metadata/baseline/a0_authority_baseline_manifest.json`, `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md`
-- limitation: 只保存 public-safe hash/source-anchor baseline，不提交真实字段明文；Stage 5 review/upload 已完成，但不代表 zero-delta、lineage 或正式报告发布完成。
+- limitation: 只保存 public-safe hash/source-anchor baseline，不提交真实字段明文；Stage 5 review 为本地完成且 GitHub upload deferred，不代表 zero-delta、lineage 或正式报告发布完成。
+
+### FORM-KMFA-A0-STAGE-REVIEW-001
+
+- type: deterministic public-safe Stage 5 review gate
+- purpose: 复跑 S05-P1/S05-P2/S05-P3 validator，锁定 Stage 5 本地整体复审证据，确认 open findings 为 0 且 GitHub upload 延后到 Stage 1-10 batch gate。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/v013_s05_stage_review.py`, `KMFA/tools/check_v013_s05_stage_review.py`, `KMFA/stage_artifacts/V013_S05_STAGE_REVIEW/human/stage5_review_report.md`, `KMFA/stage_artifacts/V013_S05_STAGE_REVIEW/machine/stage5_review_manifest.json`
+- limitation: 只证明 Stage 5 public-safe local review closure；不读取 raw inbox，不发布 raw/private 明细，不执行 S06、GitHub upload、lineage full check、formal report 或 business execution。
 
 ### FORM-KMFA-REDCIRCLE-POSTPONEMENT-001
 
@@ -271,8 +279,8 @@ product_version: 0.1.0-s18p3-integration-preparation
 ## Counts
 
 - active models: 7
-- active formulas: 50
-- active parameters: 252
+- active formulas: 53
+- active parameters: 459
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 1

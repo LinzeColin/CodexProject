@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s05p3-authority-baseline-replay
+product_version: 0.1.3-s05-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S05`
-- current_phase: `v0.1.3 S05-P3｜权威基准锁定 replay`
-- current_tasks: `KMFA-V013-S05-P3-AUTHORITY-BASELINE-REPLAY-20260702`
-- status: `local_s05_p3_completed_upload_deferred_until_stage10_batch_authority_baseline_replayed`
+- current_phase: `v0.1.3 Stage 5 整体复审`
+- current_tasks: `KMFA-V013-S05-STAGE-REVIEW-20260703`
+- status: `local_s05_stage_review_passed_upload_deferred_until_stage10_batch_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -48,6 +48,7 @@ product_version: 0.1.3-s05p3-authority-baseline-replay
 | `S5PAT01-S5PAT03` | S05-P1 A0 文件登记、A0 项目候选清单和 Q3/Q4 状态完成本地验证 | `KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md` |
 | `S5PBT01-S5PBT03` | S05-P2 public-safe 字段合同、45 条 A0 golden fixture 候选、40 条 PDF 字段 hash/source anchor 和 Excel owner/授权降级决策完成本地验证 | `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/owner_decision_record.md` |
 | `S5PCT01-S5PCT03` | S05-P3 A0 authority baseline lock 完成本地验证：40 条 PDF 字段锁定为 Q5 calculation baseline，5 条 Excel 字段排除为 cross-source support only | `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md` |
+| `KMFA-V013-S05-STAGE-REVIEW-20260703` | v0.1.3 Stage 5 整体复审本地通过，S05-P1/S05-P2/S05-P3 replay validators 全部 PASS，GitHub upload 延期到 Stage 1-10 batch gate | `KMFA/stage_artifacts/V013_S05_STAGE_REVIEW/human/stage5_review_report.md` |
 | `KMFA-S05-STAGE-REVIEW-20260630` | Stage 5 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
 | `KMFA-S05-GITHUB-UPLOAD-20260630` | Stage 5 final GitHub upload 已完成 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` |
 | `S6PAT01-S6PAT03` | S06-P1 零差异校验器完成本地验证：逐字段比较整数分，任意 1 分差异失败并生成 public-safe mismatch report | `KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md` |
