@@ -2675,3 +2675,50 @@ Stage 9 整体复审已确认：
 - 本复审不读取 raw/private/cookie/session/secret 数据。
 - 本复审不修改核心前端实现、CSS、路由或 feature flag。
 - 本复审不进入 Stage 7；GitHub main upload 只在 final remote checks 通过后执行。
+
+## 57. v1.1.6 Stage 7 Phase 1 记忆星系重做参数
+
+状态：`phase_7_1_contract_created_pending_stage_review`。
+
+模型假设：
+
+- 现有 Galaxy 不能继续作为 v1.1.6 记忆星系的最终可用性答案；Stage 7 必须将普通 node-link graph、dots-and-lines 和 Obsidian-like graph 设为失败条件。
+- 记忆星系必须让用户看见主题引力、星云、流场、轨迹、黑洞风险、新生机会和记忆地形层如何共同解释当前记忆状态。
+- 本 phase 只定义合同和验收，不实现 runtime Memory Starfield，不导入 experiment 目录，不切换 feature flag，不读取 raw/private/cookie/session/secret，不执行 direct writeback。
+
+输入：
+
+- `docs/product/memory_starfield_rebuild_contract.md`
+- `docs/acceptance/memory_starfield_rebuild_acceptance.md`
+- Roadmap v2 记忆星系要求：星云、流场、轨迹、引力源、黑洞、新生星云、记忆地形层、非普通 Obsidian Graph、Search/River/Inspector 交接和 reduced motion。
+
+处理方法：
+
+- 固定 Memory Starfield rebuild 的视觉层和交互层。
+- 固定 starfield item 必备字段和 Inspector/proposal handoff。
+- 固定 dots-only、nodes-and-edges-only、Obsidian-like、chart-like、missing nebula、missing flow field、missing trajectories、missing gravity、missing lifecycle markers、blank fallback、raw/private hover card 和 ignored reduced motion 为失败条件。
+- 使用 `validate:v1.1.6-stage7-phase1` 固定合同、验收、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V116-S7P01-001 stage7_phase1_contract_id = memory_starfield_rebuild_contract`
+- `PARAM-MA-V116-S7P01-002 stage7_phase1_required_layers = memory_starfield;nebula_field;flow_field;trajectory_trails;gravity_sources;black_hole_core;proto_star_cloud;memory_terrain_layer;cluster_constellations;ambient_depth_particles`
+- `PARAM-MA-V116-S7P01-003 stage7_phase1_required_interactions = orbit_pan_zoom;hover_card;click_inspector;focus_cluster;jump_from_search;jump_from_river;presentation_analysis_toggle;keyboard_navigation;reduced_motion`
+- `PARAM-MA-V116-S7P01-004 stage7_phase1_required_item_fields = starfield_item_id;item_type;theme_id;theme_label;topic_state;gravity_mass;orbit_radius;trajectory_refs;terrain_value;importance;confidence;evidence_count;evidence_refs;source_scope;linked_river_range;linked_asset_ids;linked_action_ids;inspector_link;proposal_hint`
+- `PARAM-MA-V116-S7P01-005 stage7_phase1_failure_conditions = dots_only;nodes_and_edges_only;obsidian_like_graph;chart_like_network;missing_nebula;missing_flow_field;missing_trajectories;missing_gravity_sources;missing_black_hole;missing_proto_star;missing_memory_terrain;missing_inspector_handoff;blank_fallback;raw_private_hover_card;reduced_motion_ignored`
+- `PARAM-MA-V116-S7P01-006 stage7_phase1_status = phase_7_1_contract_created_pending_stage_review`
+- `PARAM-MA-V116-S7P01-007 stage7_phase1_required_validator = validate:v1.1.6-stage7-phase1`
+
+输出：
+
+- Stage 7 Phase 1 产品合同。
+- Stage 7 Phase 1 验收文件。
+- Stage 7 Phase 1 validator。
+
+边界：
+
+- 本参数段不新增运行时公式，不改变 Memory Atlas scoring、ROI、writeback 或数据生成。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不修改核心前端实现、CSS、路由或 feature flag。
+- 本 phase 不导入 experiment 目录，不切换 feature flag default。
+- 本 phase 不进入 Stage 7 整体复审，不进入 Stage 8-10，不执行 GitHub main 上传。
