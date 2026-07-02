@@ -38,6 +38,10 @@ PROJECT_REPOSITORIES = {
     "arxiv-daily-push": "https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push",
 }
 
+ADP_SMTP_SEND_RAW_VALUE_EVIDENCE = (
+    "ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like, "
+    "LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+)
 
 ASSURANCE_POLICY = {
     "Alpha": {
@@ -1542,7 +1546,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.request.json, "
                 "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-20260701.json, "
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, "
-                "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+                f"{ADP_SMTP_SEND_RAW_VALUE_EVIDENCE}"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
         elif daily_operation_persistent_authorization_missing:
@@ -1571,7 +1575,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-GATE-20260701.json, "
                 "persistent_daily_operation_authorization_missing, "
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, "
-                "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+                f"{ADP_SMTP_SEND_RAW_VALUE_EVIDENCE}"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
         elif daily_operation_owner_decision_keep_disabled:
@@ -1599,7 +1603,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json, "
                 "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-KEEP-DISABLED-20260701.json, "
                 "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json if owner authorizes, "
-                "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+                f"{ADP_SMTP_SEND_RAW_VALUE_EVIDENCE}"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
         elif daily_operation_preflight_current:
@@ -1631,7 +1635,8 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             owner_decision["evidence_required"] = (
                 "governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json, "
                 "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json, "
-                "owner DAILY_OPERATION authorization artifact, open_pr_count=0, ADP_ALLOW_SMTP_SEND=false before enablement, "
+                "owner DAILY_OPERATION authorization artifact, open_pr_count=0, "
+                "ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like before enablement, "
                 "LaunchAgents disabled before enablement, and no background ADP process"
                 if daily_operation_preflight_passed
                 else (
@@ -1655,7 +1660,8 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             )
             owner_decision["evidence_required"] = (
                 "FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json, daily-operation authorization artifact, "
-                "daily-operation preflight pass, persistent ADP_ALLOW_SMTP_SEND=false before enablement, LaunchAgents disabled before enablement, "
+                "daily-operation preflight pass, ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like before enablement, "
+                "LaunchAgents disabled before enablement, "
                 "open_pr_count=0, and no background ADP process before enablement"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
@@ -1673,7 +1679,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             owner_decision["evidence_required"] = (
                 "FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.json, passing owner decision artifact gate, "
                 "passing acceptance write gate, final bundle manifest pass, no-production side-effect attestation pass, "
-                "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0, and no background ADP process"
+                f"{ADP_SMTP_SEND_RAW_VALUE_EVIDENCE}"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
         elif production_boundary_preflight_ready:
@@ -1689,14 +1695,14 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
             owner_decision["question"] = owner_decision["decision_question"]
             owner_decision["option_a"] = (
                 "记录 owner 生产验收边界决策证据：preflight 已验证 final bundle ready、"
-                "open_pr_count=0、持久 ADP_ALLOW_SMTP_SEND=false、LaunchAgents disabled、无后台 ADP 进程；"
+                "open_pr_count=0、ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like、"
+                "LaunchAgents disabled、无后台 ADP 进程；"
                 "下一步仍不得自动启用 SMTP/scheduler/Release/DAILY_OPERATION。"
             )
             owner_decision["evidence_required"] = (
                 "owner review of FINAL_ACCEPTANCE_BUNDLE/owner_production_boundary_decision.request.json, "
                 "preflight checks passed, final bundle manifest pass, no-production side-effect "
-                "attestation pass, persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, "
-                "open_pr_count=0, no background ADP process, and explicit owner production-boundary decision artifact"
+                f"attestation pass, {ADP_SMTP_SEND_RAW_VALUE_EVIDENCE}, and explicit owner production-boundary decision artifact"
             )
             owner_decision["unblock_task_id"] = next_task["task_id"]
         elif (
