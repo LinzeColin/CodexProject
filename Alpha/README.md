@@ -13,7 +13,16 @@
 - 失败去向：若出现 `No module named pytest` 或 `No module named yaml`，先处理开发依赖；若出现业务断言失败，再查看 `Alpha/docs/structure_migration_map.md` 和对应测试文件。
 - 回滚：revert S6PAT02 Alpha README 提交即可；本轮不改运行代码、不移动文件、不触发交易或外部自动化。
 
-# Alpha - Personal Quant Agent Workspace
+## 中文首屏（30 秒内读完）
+
+- 这是 Owner 的 Alpha 入口页：先确认当前治理任务和最小验证动作，避免先跑全量测试。
+- 已知事实：`S6PA-GATE` 已通过，`S6PB-GATE` 与 `S6-GATE` 仍进行中；当前最小验证仍以 `tests/test_backtest_fixture.py` 为主。
+- 当前待办：确认本轮环境依赖后再进入 `Alpha/backend/` 的流程；若环境 blocker 仍在，先处理依赖不是功能代码。
+- 下一步最小动作：按顺序执行“进场命令”前的环境自检后，只读 `功能清单.md` / `开发记录.md` / `模型参数文件.md` 复核状态一致性。
+- 不要改：未授权更改 `docs/governance/` 或源码配置，仅限 owner 首屏文案更新。
+- 证据边界：本页默认引用 `docs/governance/roadmap.yaml` 与项目开发记录，若发现不一致，先回到任务级决策依据更新再改此处。
+
+## Alpha - Personal Quant Agent Workspace
 
 Alpha is a local-first personal quant agent workspace for research, backtesting,
 automatic paper trading, order-intent review, broker-ready ticket generation, and
