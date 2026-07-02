@@ -18,7 +18,7 @@
 |---|---|---|
 | runtime | `KMFA/tools/home_navigation_runtime.py` | 生成 S11-P1 public-safe 首页导航 manifest、records 和 HTML 样张 |
 | validator | `KMFA/tools/check_s11_p1_home_navigation.py` | 验证 8 个必需模块、KM 标识、蓝色商务风、全中文可见入口、public-safe 边界和 scope gate |
-| unit test | `KMFA/tests/test_home_navigation_runtime.py` | 覆盖模块完整性、HTML 样板继承、正式报告阻断、私有文件禁止和缺模块拒绝 |
+| unit test | `KMFA/tests/test_home_navigation_runtime.py` | 覆盖模块完整性、HTML 样板继承、图标和动作按钮交互、正式报告阻断、私有文件禁止和缺模块拒绝 |
 | metadata | `KMFA/metadata/reports/home_navigation_manifest.json` | S11-P1 首页导航 manifest |
 | metadata | `KMFA/metadata/reports/home_navigation_modules.jsonl` | 8 条首页模块记录 |
 | machine evidence | `KMFA/stage_artifacts/S11_P1_home_navigation/machine/s11_p1_manifest.json` | S11-P1 machine manifest |
@@ -38,6 +38,11 @@
 - `s11_p3_project_cost_detail_scope_included=false`
 - `stage11_review_scope_included=false`
 - `github_upload_allowed=false`
+- `navigation_and_action_icons_present=true`
+- `module_action_button_count=8`
+- `module_action_target_href_count=8`
+- `module_action_panel_present=true`
+- `client_side_module_selection_present=true`
 
 ## HTML 样板继承
 

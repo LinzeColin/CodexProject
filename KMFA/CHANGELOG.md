@@ -1,5 +1,11 @@
 # Changelog
 
+## s11-p1-home-navigation-interaction-hardening - 2026-07-02
+
+- 修复当前工作区 S11-P1 首页运行时新增 RED 测试：HTML 首页现在包含每个导航/动作入口的图标、8 个可点击 `module-action` 按钮、public-safe 本地页面 `data-href` 目标、`module_action_panel` 交互反馈区和 `selectModule` 选择逻辑。
+- 同步重新生成 `KMFA/stage_artifacts/S11_P1_home_navigation/exports/html/kmfa_home_navigation.html`、`KMFA/metadata/reports/home_navigation_manifest.json` 和 `KMFA/stage_artifacts/S11_P1_home_navigation/machine/s11_p1_manifest.json`，content hash 已随 public-safe HTML 更新。
+- 本维护项不推进 v0.1.3 Stage 4，不执行 GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；仅清理阻断后续验证的 S11-P1 public-safe UI 测试失败。
+
 ## 0.1.3-s03-stage-review - 2026-07-02
 
 - 完成 `v0.1.3 Stage 3｜整体复审` 本地验证：复跑 S03-P1 文件型导入登记、S03-P2 数据源检查矩阵、S03-P3 源优先级与差异队列入口 validators 和 Stage 3 review validator，确认三个 phase 均为 PASS，review findings open/fixed 均为 0。
