@@ -887,7 +887,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("后台进程扫描只匹配 ADP runner/module/path，不使用裸 `adp` 子串", mvp_prep)
         self.assertIn("GitHub `origin/main` 的干净隔离工作树", mvp_prep)
         self.assertIn("本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线", mvp_prep)
-        self.assertIn("默认通过 `tools/verify_daily_operation_enablement_preflight.py` 自动观察 GitHub open PR count", mvp_prep)
+        self.assertIn(
+            '默认通过 `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` 自动观察 GitHub open PR count',
+            mvp_prep,
+        )
         self.assertIn("open_pr_observation_mode=auto_observed", mvp_prep)
         self.assertIn("open PR 由 enablement preflight 自动观察为 0", mvp_prep)
         self.assertIn("## 09 推荐下一轮 Run Contract 模板", mvp_prep)
@@ -995,21 +998,54 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("## 10 下一轮最小验证命令", mvp_prep)
         self.assertIn("以下命令必须从 CodexProject 仓库根目录运行", mvp_prep)
         self.assertIn("不要给这些 root tools 追加 `--json`", mvp_prep)
-        self.assertIn("python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1", mvp_prep)
+        acceptance_bundle_command = "python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1"
+        readiness_command = (
+            'python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; '
+            'echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2'
+        )
+        preflight_command = (
+            'python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; '
+            'echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2'
+        )
+        self.assertIn(acceptance_bundle_command, mvp_prep)
         self.assertIn(
-            'python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2',
+            readiness_command,
             mvp_prep,
         )
         self.assertIn(
-            'python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2',
+            preflight_command,
             mvp_prep,
         )
         self.assertNotIn("tools/verify_acceptance_bundle.py --root . --require-zero P0 P1 --json", mvp_prep)
         self.assertNotIn("tools/verify_daily_operation_readiness.py --root . --json", mvp_prep)
         self.assertNotIn("tools/verify_daily_operation_enablement_preflight.py --root . --json", mvp_prep)
+        for line_label, required_command in (
+            ("Enablement preflight", preflight_command),
+            ("Root 执行根", readiness_command),
+            ("Root 执行根", preflight_command),
+            ("S3 readiness", readiness_command),
+            ("S3 enablement preflight", preflight_command),
+        ):
+            matching_rows = [line for line in mvp_prep.splitlines() if line.startswith(f"| {line_label} |")]
+            self.assertTrue(matching_rows, f"missing MVP row for {line_label}")
+            self.assertTrue(
+                any(f"`{required_command}`" in row for row in matching_rows),
+                f"MVP row {line_label} must expose copy-safe command {required_command}",
+            )
+        self.assertNotIn("| `tools/verify_daily_operation_readiness.py` |", mvp_prep)
+        self.assertNotIn("| `tools/verify_daily_operation_enablement_preflight.py` |", mvp_prep)
+        self.assertNotIn(
+            "| `tools/verify_daily_operation_readiness.py` / `tools/verify_daily_operation_enablement_preflight.py` |",
+            mvp_prep,
+        )
+        self.assertIn(f"| 覆盖命令 | `{readiness_command}` / `{preflight_command}` |", roadmap)
+        self.assertIn(f"| 覆盖命令 | `{readiness_command}` |", roadmap)
+        self.assertIn(f"| 覆盖命令 | `{preflight_command}` |", roadmap)
+        self.assertNotIn("| 覆盖命令 | `tools/verify_daily_operation_readiness.py`", roadmap)
+        self.assertNotIn("| 覆盖命令 | `tools/verify_daily_operation_enablement_preflight.py`", roadmap)
         for current_guidance_text in (handoff, mvp_prep, decisions, roadmap):
             self.assertIn(
-                "python3 -B tools/verify_acceptance_bundle.py --root . --require-zero P0 P1",
+                acceptance_bundle_command,
                 current_guidance_text,
             )
             self.assertNotIn("`tools/verify_acceptance_bundle.py --require-zero P0 P1`", current_guidance_text)

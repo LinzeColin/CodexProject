@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-02 23:32:55 Australia/Sydney
+更新时间：2026-07-03 00:05:49 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -127,7 +127,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 
 ## 2026-07-02 20:22:34 Australia/Sydney - open PR 边界已改为 enablement preflight 自动观察
 
-- MVP/S3 前置复审现在默认通过 `tools/verify_daily_operation_enablement_preflight.py` 只读自动观察 GitHub open PR count，并输出 `open_pr_observation_mode=auto_observed`。
+- MVP/S3 前置复审现在默认通过 `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` 只读自动观察 GitHub open PR count，并输出 `open_pr_observation_mode=auto_observed`。
 - 只有明确得到 `open_pr_count=0` 才能通过；`UNKNOWN`、非 0、命令失败或无法解析都必须停止并回报。
 - 2026-07-02 11:33 的 GitHub pulls HTML fallback 记录只保留为降级审计补充，不再是 owner-facing 最小命令。
 - 本轮仍只做 MVP 准备与复审修补，不创建持久授权 artifact，不启用 SMTP、scheduler、Release 或 production restore。
