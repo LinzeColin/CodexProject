@@ -127,6 +127,41 @@ next_gate_id: "IDS-STAGE006-P1-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_completed_batch_upload_gate_after_stage005(self):
+        module = self._load_module()
+        batch_text = """
+status: "local_batch_upload_gate_passed_pending_github_merge"
+upload_gate:
+  push_allowed: true
+  gate_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-006"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+    acceptance_status: "local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE010"
+current_phase_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+current_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+next_gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
 
 if __name__ == "__main__":
     unittest.main()

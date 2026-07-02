@@ -2,9 +2,9 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE010"
-current_phase_id: "IDS-STAGE010-REVIEW"
-current_task_id: "IDS-V0_1-STAGE010-REVIEW"
-next_gate_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+current_phase_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+current_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+next_gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"
 total_estimated_hours: 77
 completed_estimated_hours: 77
 stages:
@@ -2345,3 +2345,81 @@ stages:
         - "KM_IDSystem/docs/governance/events.jsonl"
       test_results: "STAGE-010 whole-stage review verified the P0 taskpack binding, Phase 1-4 evidence, read-only local path contract implementation, scenario coverage, no-side-effect boundary, owner/governance render path, and no-upload state. Focused STAGE-010 unittest passed 7 tests, STAGE-006..009 regression unittests passed 25 tests, py_compile passed, CLI smoke returned PATH_CONTRACT_OK with guardrails true, scenario smoke returned overall_valid=true, static no-side-effect scan found no production write/delete/recursive-scan calls, check-render returned drift_count=0, changed-scope check passed, and git diff --check passed. Semantic validate remains a sparse-worktree diagnostic with the known 28 root/other-project missing-path errors and no KM_IDSystem semantic error. No runtime code fix was required; only governance/evidence closure was updated. GitHub upload remains deferred to the separate STAGE-001..010 batch upload gate."
       decision: "ACC-STAGE-010 locally reviewed and passed; no GitHub upload in this run."
+  -
+    stage_id: "IDS-V0_1-BATCH-001-010"
+    name: "STAGE-001..010 批次上传门"
+    person_goal: "十个 Stage 完成并解决复审问题后，作为一个批次上传到 GitHub main。"
+    status: "local_batch_upload_gate_passed_pending_github_merge"
+    stop_conditions:
+      - "任一 STAGE-001..010 本地验收或证据缺失"
+      - "focused test、validator、render、diff 或 changed-scope 检查失败"
+      - "GitHub 仍有 open PR/issue"
+      - "远端 main 与本地分支分叉且尝试直接覆盖 main"
+      - "需要展开无关项目目录才能上传"
+    stop_gate:
+      gate_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+      status: "passed_locally_pending_github_merge"
+      pass_conditions:
+        - "STAGE-001..010 均有 4 个 phase 完成记录"
+        - "ACC-STAGE-001..010 均本地通过"
+        - "STAGE-010 整阶段复审已完成"
+        - "batch gate 验证通过"
+        - "通过 PR 合并而非直接覆盖 diverged main"
+        - "合并后无 open PR/issue"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/governance/events.jsonl"
+    phases:
+      -
+        phase_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+        name: "批次上传门与 GitHub main 合并"
+        objective: "验证 STAGE-001..010 的本地证据、测试和远端状态后，把该 10-stage 批次合并进 GitHub main tree。"
+        status: "local_gate_passed_pending_github_merge"
+        stop_conditions:
+          - "本地 batch gate 未通过"
+          - "GitHub PR 创建或合并失败"
+          - "合并后仍有 open PR/issue"
+        stop_gate:
+          gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"
+          status: "pending_remote_merge"
+          pass_conditions:
+            - "GitHub PR merged into main"
+            - "No open PRs or issues remain"
+            - "Local worktree is clean after upload"
+        tasks:
+          -
+            task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+            name: "STAGE-001..010 批次上传门"
+            objective: "完成 10-stage 批次上传前验证、PR/merge 路径选择和无遗留 PR/issue 检查。"
+            status: "local_gate_passed_pending_github_merge"
+            estimated_hours: 1
+            total_hours_percent: "1.30%"
+            dependencies:
+              - "IDS-V0_1-STAGE010-REVIEW"
+            acceptance_ids:
+              - "ACC-STAGE-001"
+              - "ACC-STAGE-002"
+              - "ACC-STAGE-003"
+              - "ACC-STAGE-004"
+              - "ACC-STAGE-005"
+              - "ACC-STAGE-006"
+              - "ACC-STAGE-007"
+              - "ACC-STAGE-008"
+              - "ACC-STAGE-009"
+              - "ACC-STAGE-010"
+            test_commands:
+              - "batch lock completion and evidence-ref check"
+              - "GitHub open PR/issue precheck"
+              - "focused STAGE-001..010 unittests and validators"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "semantic validate diagnostic"
+            test_results: "Local batch gate precheck passed: STAGE-001..010 each have four completed phases and existing evidence refs; GitHub connector returned no open PRs and no open issues at gate start. origin/main and the local batch branch are diverged, so this gate requires PR merge rather than direct push to main. Gate validation exposed two non-product issues: system Python 3.9 cannot run backend tests that use Python 3.10 union syntax, and the Stage005 governance-regression validator did not yet allow the later batch-upload current state. A RED test was added for the batch gate state and the validator was minimally extended; GREEN run passed 5 tests. Final local validation passed: bundled Python focused batch tests ran 49 tests OK; ProductMetaDatabase and STAGE-003/004/005 validators returned valid=true; check-render returned drift_count=0; changed-scope and git diff --check passed; STAGE-010 CLI smoke returned PATH_CONTRACT_OK and scenario smoke returned overall_valid=true. Semantic validate remains a sparse-worktree diagnostic with the known 28 root/other-project missing-path errors and no KM_IDSystem semantic error. Remote merge evidence is produced by this run before final completion is claimed."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "直接推送覆盖 diverged main，或在 GitHub PR/issue 未清理时进入 STAGE-011。"
+            rollback: "If upload fails before merge, close the PR or keep the blocker explicit and revert this gate commit locally if needed."

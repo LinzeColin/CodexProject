@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-001-010"
 created_at_utc: "2026-07-02T04:29:53Z"
-updated_at_utc: "2026-07-02T10:19:33Z"
-status: "local_reviewed_pending_batch_upload_gate"
+updated_at_utc: "2026-07-02T10:29:44Z"
+status: "local_batch_upload_gate_passed_pending_github_merge"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -18,7 +18,7 @@ scope:
   source_index: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
 
 upload_gate:
-  push_allowed: false
+  push_allowed: true
   required_before_push:
     - "STAGE-001 through STAGE-010 all completed."
     - "Each completed Stage has durable local evidence."
@@ -27,6 +27,9 @@ upload_gate:
     - "Changed scope remains inside KM_IDSystem/ and allowed governance roots."
     - "No open blocker tied to raw data, secrets, local generated data, or sparse-worktree expansion."
   github_target: "main"
+  gate_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
+  remote_strategy: "push branch, create PR to main, merge PR, verify no open PRs or issues"
 
 stage_progress:
   STAGE-001:
@@ -221,7 +224,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE010_STAGE_REVIEW.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md"
 
 decision:
-  current_run: "Completed STAGE-010 whole-stage review locally; STAGE-010 is reviewed and passed, and batch upload remains locked until a separate batch upload gate run."
-  no_upload_reason: "This run is the STAGE-010 review/fix pass only; GitHub main upload must be evaluated and executed by the STAGE-001..010 batch upload gate."
+  current_run: "Completed STAGE-001..010 batch upload gate locally; upload to GitHub main may proceed by pushing this branch, opening a PR to main, merging it, and verifying no open PRs or issues remain."
+  no_upload_reason: "NONE after local batch gate validation passes; direct push to main is avoided because origin/main and the local batch branch diverged."

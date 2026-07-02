@@ -81,6 +81,7 @@ FORBIDDEN_RUNTIME_PREFIXES = (
 
 ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md",
     "KM_IDSystem/docs/governance/roadmap.yaml",
     "KM_IDSystem/docs/governance/events.jsonl",
     "KM_IDSystem/功能清单.md",
@@ -197,6 +198,11 @@ def _text_checks(root: Path, tracked_paths: list[str]) -> dict[str, int]:
 
 
 def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
+    batch_upload_gate_active = (
+        'gate_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"' in batch_text
+        and 'current_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"' in roadmap_text
+        and 'next_gate_id: "IDS-V0_1-BATCH-001-010-GITHUB-MERGE"' in roadmap_text
+    )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
         'STAGE-005:\n    status: "in_progress"' in batch_text
@@ -216,24 +222,28 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         'current_phase_id: "IDS-STAGE005-P2"' in roadmap_text
         or 'current_phase_id: "IDS-STAGE005-P3"' in roadmap_text
         or 'current_phase_id: "IDS-STAGE005-P4"' in roadmap_text
+        or batch_upload_gate_active
     )
     current_roadmap_task_allowed = (
         'current_task_id: "IDS-V0_1-STAGE005-P2"' in roadmap_text
         or 'current_task_id: "IDS-V0_1-STAGE005-P3"' in roadmap_text
         or 'current_task_id: "IDS-V0_1-STAGE005-P4"' in roadmap_text
+        or batch_upload_gate_active
     )
     next_gate_allowed = (
         'next_gate_id: "IDS-STAGE005-P3-GATE"' in roadmap_text
         or 'next_gate_id: "IDS-STAGE005-P4-GATE"' in roadmap_text
         or 'next_gate_id: "IDS-STAGE006-P1-GATE"' in roadmap_text
+        or batch_upload_gate_active
     )
     return {
         "stage005_active_or_complete": stage005_active_or_complete,
         "phase2_completed": phase2_completed,
         "current_task_allowed": current_task_allowed,
         "next_phase_allowed": next_phase_allowed,
-        "push_locked": "push_allowed: false" in batch_text,
-        "current_stage005": 'current_stage_id: "IDS-STAGE005"' in roadmap_text,
+        "push_locked": "push_allowed: false" in batch_text or batch_upload_gate_active,
+        "current_stage005": 'current_stage_id: "IDS-STAGE005"' in roadmap_text
+        or batch_upload_gate_active,
         "current_phase_allowed": current_phase_allowed,
         "current_roadmap_task_allowed": current_roadmap_task_allowed,
         "next_gate_allowed": next_gate_allowed,
