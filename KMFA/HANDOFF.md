@@ -9,14 +9,14 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s07p3-redcircle-postponement-replay`
-- 当前已完成: `v0.1.3 S07-P3 Redcircle postponement replay`
-- 证据目录: `KMFA/stage_artifacts/V013_S07_P3_REDCIRCLE_POSTPONEMENT_REPLAY/`
-- S07-P3 结论: S07-P3 replay generator、validator 和新单测均 PASS；legacy S07-P3 Redcircle postponement validator/unit test 均 PASS；S06 Stage review dependency validator、S07-P1 replay dependency validator 和 S07-P2 replay dependency validator 已通过。S07-P3 replay 确认 redcircle_export_types=`operating, contract, collection, finance`、reserved_template_count=`4`、connector_policy_count=`1`、rollback_plan_count=`4`、registry_source_count=`4`、template_contract_hash_count=`4`、source_private_ref_count=`4`、automatic_connector_allowed_count=`0`、manual_export_file_allowed_count=`4`、d15_file_mvp_automatic_connector_allowed=`false`、read_only_required=`true`、hash_retention_required=`true`、rollback_plan_required=`true`、manual_approval_required=`true`、q4_human_confirmed_count=`0`、q5_calculation_baseline_allowed_count=`0`、formal_report_allowed_count=`0`，data quality=`Q4`，report grade=`D`，release permission=`blocked`，`stage7_review_performed=false`，`github_upload_performed=false`。
-- upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4 或 Stage 5 单独 upload 作为 active next step。
-- raw boundary: 本轮 S07-P3 replay 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe aggregate Redcircle postponement evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值、Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
-- 未执行: Stage 7 review、GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 Stage 7 整体复审` 或用户明确指定的单一 phase；不得执行 GitHub upload、raw value matching、正式报告或业务动作。
+- 当前版本: `0.1.3-s07-stage-review`
+- 当前已完成: `v0.1.3 Stage 7 整体复审`
+- 证据目录: `KMFA/stage_artifacts/V013_S07_STAGE_REVIEW/`
+- Stage 7 复审结论: S07-P1/S07-P2/S07-P3 replay validators 全部 PASS；legacy S07-P1 finance adapter validator/unit、legacy S07-P2 WPS adapter validator/unit、legacy S07-P3 Redcircle postponement validator/unit 均 PASS；Stage 7 review validator 和 focused unit test PASS。复审确认 phase_results=`S07-P1=PASS, S07-P2=PASS, S07-P3=PASS`、open findings=`0`、Q5 allowed count=`0`、formal report allowed count=`0`、Redcircle automatic connector allowed=`false`、data quality=`Q4`、report grade=`D`、release permission=`blocked`、`s08_p1_performed=false`、`github_upload_performed=false`。
+- upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4、Stage 5、Stage 6 或 Stage 7 单独 upload 作为 active next step。
+- raw boundary: 本轮 Stage 7 review 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe aggregate adapter/replay/review evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值、Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
+- 未执行: S08-P1、GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S08-P1 project composite key replay` 或用户明确指定的单一 phase；不得执行 GitHub upload、raw value matching、正式报告或业务动作。
 
 ## 持久本机 raw boundary
 
