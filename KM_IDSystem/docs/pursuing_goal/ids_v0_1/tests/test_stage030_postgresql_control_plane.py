@@ -10,6 +10,7 @@ ENTRY = PURSUE_ROOT / "STAGE030_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE030_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE030_PHASE2_POSTGRES_CONTROL_PLANE_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE030_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE030_PHASE4_CLOSEOUT.md"
 POSTGRES_ROOT = PURSUE_ROOT / "postgresql_control_plane"
 SCHEMA_SQL = POSTGRES_ROOT / "001_control_plane_schema.sql"
 SCHEMA_INDEX = POSTGRES_ROOT / "control_plane_schema_index.json"
@@ -99,21 +100,22 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, text)
 
-    def test_batch021_030_lock_retains_prior_evidence_and_tracks_current_phase3(self):
+    def test_batch021_030_lock_retains_prior_evidence_and_tracks_current_phase4_closeout(self):
         self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
         text = BATCH_LOCK.read_text(encoding="utf-8")
 
         required_terms = [
-            'status: "stage030_phase3_in_progress"',
+            'status: "stage030_completed_local_pending_batch_review"',
             "STAGE-030:",
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'next_gate: "IDS-STAGE030-P4-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE030-P3"',
+            '      - "Phase 4"',
+            'next_phase: "batch_review_gate"',
+            'next_gate: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE030-P4"',
             'acceptance_id: "ACC-STAGE-030"',
-            'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/scripts/check_postgresql_control_plane.py",
@@ -121,8 +123,9 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/control_plane_schema_index.json",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE2_POSTGRES_CONTROL_PLANE_SLICE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE3_SCENARIO_VALIDATION.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_postgresql_control_plane.py",
-            'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'push_allowed: false',
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content",
@@ -132,7 +135,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, text)
 
-    def test_roadmap_and_events_track_stage030_phase3_local_gate(self):
+    def test_roadmap_and_events_track_stage030_phase4_closeout_local_gate(self):
         self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
         self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
         roadmap_text = ROADMAP.read_text(encoding="utf-8")
@@ -140,19 +143,21 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
 
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE030"',
-            'current_phase_id: "IDS-STAGE030-P3"',
-            'current_task_id: "IDS-V0_1-STAGE030-P3"',
-            'next_gate_id: "IDS-STAGE030-P4-GATE"',
+            'current_phase_id: "IDS-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'stage_id: "IDS-STAGE030"',
             'name: "STAGE-030 · PostgreSQL 控制面启动"',
             'phase_id: "IDS-STAGE030-P1"',
             'phase_id: "IDS-STAGE030-P2"',
             'phase_id: "IDS-STAGE030-P3"',
+            'phase_id: "IDS-STAGE030-P4"',
             'status: "passed_with_local_evidence"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE2_POSTGRES_CONTROL_PLANE_SLICE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE3_SCENARIO_VALIDATION.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/scripts/check_postgresql_control_plane.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/001_control_plane_schema.sql",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/control_plane_schema_index.json",
@@ -294,35 +299,39 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             "NO_PHASE3",
         ]
         batch_terms = [
-            'status: "stage030_phase3_in_progress"',
+            'status: "stage030_completed_local_pending_batch_review"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'next_gate: "IDS-STAGE030-P4-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE030-P3"',
-            'acceptance_status: "phase3_scenario_validation_complete"',
+            '      - "Phase 4"',
+            'next_phase: "batch_review_gate"',
+            'next_gate: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'acceptance_status: "local_passed"',
             "KM_IDSystem/scripts/check_postgresql_control_plane.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/001_control_plane_schema.sql",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/control_plane_schema_index.json",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE2_POSTGRES_CONTROL_PLANE_SLICE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE3_SCENARIO_VALIDATION.md",
-            'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE4_CLOSEOUT.md",
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'push_allowed: false',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE030"',
-            'current_phase_id: "IDS-STAGE030-P3"',
-            'current_task_id: "IDS-V0_1-STAGE030-P3"',
-            'next_gate_id: "IDS-STAGE030-P4-GATE"',
+            'current_phase_id: "IDS-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'phase_id: "IDS-STAGE030-P2"',
             'phase_id: "IDS-STAGE030-P3"',
+            'phase_id: "IDS-STAGE030-P4"',
             'status: "passed_with_local_evidence"',
             "KM_IDSystem/scripts/check_postgresql_control_plane.py",
             "001_control_plane_schema.sql",
             "control_plane_schema_index.json",
             "STAGE030_PHASE2_POSTGRES_CONTROL_PLANE_SLICE.md",
             "STAGE030_PHASE3_SCENARIO_VALIDATION.md",
+            "STAGE030_PHASE4_CLOSEOUT.md",
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE030-P2-20260703-001"',
@@ -419,26 +428,30 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             "NO_PHASE4",
         ]
         batch_terms = [
-            'status: "stage030_phase3_in_progress"',
+            'status: "stage030_completed_local_pending_batch_review"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'next_gate: "IDS-STAGE030-P4-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE030-P3"',
-            'acceptance_status: "phase3_scenario_validation_complete"',
+            '      - "Phase 4"',
+            'next_phase: "batch_review_gate"',
+            'next_gate: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'acceptance_status: "local_passed"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE3_SCENARIO_VALIDATION.md",
-            'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE4_CLOSEOUT.md",
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'push_allowed: false',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE030"',
-            'current_phase_id: "IDS-STAGE030-P3"',
-            'current_task_id: "IDS-V0_1-STAGE030-P3"',
-            'next_gate_id: "IDS-STAGE030-P4-GATE"',
+            'current_phase_id: "IDS-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'phase_id: "IDS-STAGE030-P3"',
+            'phase_id: "IDS-STAGE030-P4"',
             'status: "passed_with_local_evidence"',
             "STAGE030_PHASE3_SCENARIO_VALIDATION.md",
+            "STAGE030_PHASE4_CLOSEOUT.md",
             "build_stage030_scenario_report",
         ]
         event_terms = [
@@ -452,6 +465,115 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
         for term in phase3_terms:
             with self.subTest(term=term):
                 self.assertIn(term, phase3_text)
+        for term in batch_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, batch_text)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+    def test_phase4_builds_delivery_evidence_rollback_and_owner_feedback_without_live_database(self):
+        module = self._load_module()
+
+        report = module.build_stage030_delivery_report(SCHEMA_SQL, SCHEMA_INDEX)
+
+        self.assertEqual(report["schema_version"], "ids.stage030.postgresql_control_plane.phase4.v1")
+        self.assertEqual(report["stage"], "STAGE-030")
+        self.assertEqual(report["phase"], "Phase 4")
+        self.assertEqual(report["task_id"], "IDS-V0_1-STAGE030-P4")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-030")
+        self.assertEqual(report["next_gate"], "IDS-V0_1-BATCH-021-030-REVIEW-GATE")
+        self.assertEqual(report["stage_review_status"], "pending_next_run")
+        self.assertFalse(report["github_upload_allowed"])
+        self.assertFalse(report["app_reinstall_allowed"])
+        self.assertTrue(report["does_not_connect_to_postgres"])
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertTrue(report["does_not_write_runtime_outputs"])
+        self.assertTrue(report["does_not_use_fake_ids_business_data"])
+
+        self.assertEqual(report["schema_diff"]["mode"], "static_contract_diff_not_executed")
+        self.assertIn("ids_metadata_sources", report["schema_diff"]["tables_added"])
+        self.assertIn("chk_payload_size_bytes", report["schema_diff"]["constraints_added"])
+        self.assertEqual(report["migration_output"]["mode"], "static_contract_output_not_executed")
+        self.assertIn("dry_run_command_ref", report["migration_output"])
+        self.assertIn("rollback_command_ref", report["migration_output"])
+        self.assertEqual(report["recovery_test_log"]["mode"], "static_recovery_log_not_executed")
+        self.assertIn("recovery_checkpoint_ref", report["recovery_test_log"]["checks"])
+        self.assertTrue(report["destructive_migration_confirmation"]["required"])
+        self.assertFalse(report["destructive_migration_confirmation"]["destructive_allowed_by_default"])
+        self.assertGreaterEqual(len(report["rollback_backup_steps"]), 5)
+        self.assertTrue(any("backup" in step.lower() or "备份" in step for step in report["rollback_backup_steps"]))
+        self.assertTrue(any("PostgreSQL" in item for item in report["known_limits"]))
+        self.assertIn("STAGE-030 已完成 Phase 4", report["chinese_owner_feedback"])
+
+    def test_phase4_closeout_batch_roadmap_and_events_track_completed_local_no_upload_gate(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        phase4_text = PHASE4.read_text(encoding="utf-8")
+        batch_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        phase4_terms = [
+            "IDS-V0_1-STAGE030-P4",
+            "ACC-STAGE-030",
+            "schema diff",
+            "migration 输出",
+            "恢复测试日志",
+            "已知限制",
+            "破坏性迁移",
+            "数据库回滚",
+            "备份恢复步骤",
+            "IDS-V0_1-BATCH-021-030-REVIEW-GATE",
+            "push_allowed=false",
+            "STAGE-030 已完成 Phase 4",
+            "pending_next_run",
+            "不连接 PostgreSQL",
+            "不执行真实 migration dry-run、apply、rollback、backup、restore 或 schema diff",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+            "NO_BATCH_UPLOAD",
+            "NO_STAGE_REVIEW_THIS_RUN",
+        ]
+        batch_terms = [
+            'status: "stage030_completed_local_pending_batch_review"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            '      - "Phase 4"',
+            'next_phase: "batch_review_gate"',
+            'next_gate: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'acceptance_status: "local_passed"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE4_CLOSEOUT.md",
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE030"',
+            'current_phase_id: "IDS-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'phase_id: "IDS-STAGE030-P4"',
+            'status: "passed_with_local_evidence"',
+            "STAGE030_PHASE4_CLOSEOUT.md",
+            "build_stage030_delivery_report",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE030-P4-20260703-001"',
+            '"event_type":"stage_closeout"',
+            '"task_id":"IDS-V0_1-STAGE030-P4"',
+            '"ACC-STAGE-030"',
+            "STAGE030_PHASE4_CLOSEOUT.md",
+            "build_stage030_delivery_report",
+            "IDS-V0_1-BATCH-021-030-REVIEW-GATE",
+        ]
+        for term in phase4_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, phase4_text)
         for term in batch_terms:
             with self.subTest(term=term):
                 self.assertIn(term, batch_text)
