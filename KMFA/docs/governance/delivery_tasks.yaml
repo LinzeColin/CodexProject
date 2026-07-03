@@ -6451,3 +6451,57 @@ tasks:
     rollback: "Revert V014_S03_P2_SOURCE_CHECK_MATRIX artifacts, S03-P2 protocol, matrix/status event outputs, validator, unit test and governance rows. Raw data directory must not be modified."
     target_version: "0.1.4-s03p2-source-check-matrix"
     completed_version: "0.1.4-s03p2-source-check-matrix"
+
+
+  - task_id: "KMFA-V014-S03-P3-SOURCE-PRIORITY-20260704"
+    phase: "V014-S3PC"
+    objective: "基于 S03-P2 public matrix/status events 建立 v0.1.4 S03-P3 public-safe 源优先级、同源失效重跑和跨源人工差异队列证据。"
+    scope:
+      - "S03-P3 source priority"
+      - "same-source invalidate and rerun policy event"
+      - "cross-source manual difference queue policy fixture"
+      - "public-safe protocol and evidence"
+    non_scope:
+      - "Stage 3 review"
+      - "GitHub upload"
+      - "raw root read/list/hash/mutation"
+      - "raw value matching"
+      - "field mapping"
+      - "formal report"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-V014-S03-P2-SOURCE-CHECK-MATRIX-20260703"
+    required_files:
+      - "KMFA/tools/v014_s03_p3_source_priority.py"
+      - "KMFA/tools/check_v014_s03_p3_source_priority.py"
+      - "KMFA/tests/test_v014_s03_p3_source_priority.py"
+      - "KMFA/metadata/protocol/source_priority_v1_4_s03_p3.json"
+      - "KMFA/metadata/sources/v014_s03_p3_source_priority_records.jsonl"
+      - "KMFA/metadata/sources/v014_s03_p3_same_source_rerun_events.jsonl"
+      - "KMFA/metadata/quality/v014_s03_p3_cross_source_difference_queue.jsonl"
+      - "KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/machine/source_priority_manifest.json"
+    acceptance_ids:
+      - "ACC-V014-S03-P3-SOURCE-PRIORITY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s03_p3_source_priority.py KMFA/tools/check_v014_s03_p3_source_priority.py KMFA/tests/test_v014_s03_p3_source_priority.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s03_p3_source_priority.py --write"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s03_p2_source_check_matrix.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s03_p3_source_priority.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s03_p3_source_priority -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_source_priority -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S03-P3 generator, S03-P2 dependency validator, S03-P3 validator, focused unit tests, source priority unit tests, no-omission, no-float, governance validators, governance sync, structured parse, YAML parse, raw/private path scan, public raw leak scan, high-signal secret scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/human/source_priority_report.md"
+      - "KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/machine/source_priority_manifest.json"
+      - "KMFA/metadata/protocol/source_priority_v1_4_s03_p3.json"
+      - "KMFA/metadata/sources/v014_s03_p3_source_priority_records.jsonl"
+      - "KMFA/metadata/sources/v014_s03_p3_same_source_rerun_events.jsonl"
+      - "KMFA/metadata/quality/v014_s03_p3_cross_source_difference_queue.jsonl"
+    risk: "S03-P3 proves source priority and manual conflict routing only. It does not prove field mapping, raw value matching, formal report readiness, Stage 3 review or GitHub upload readiness."
+    rollback: "Revert V014_S03_P3_SOURCE_PRIORITY artifacts, S03-P3 protocol, priority/rerun/queue outputs, validator, unit test and governance rows. Raw data directory must not be modified."
+    target_version: "0.1.4-s03p3-source-priority"
+    completed_version: "0.1.4-s03p3-source-priority"

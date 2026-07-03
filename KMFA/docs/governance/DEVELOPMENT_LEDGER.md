@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s03p3-source-priority
+
+- task_id: `KMFA-V014-S03-P3-SOURCE-PRIORITY-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred`
+- scope: v0.1.4 S03-P3 source priority only; used S03-P2 public matrix/status events to generate public-safe source priority records, same-source rerun policy event and cross-source manual difference queue item, without reading raw root.
+- evidence: `KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/human/source_priority_report.md`, `KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/human/test_results.md`, `KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/machine/source_priority_manifest.json`, `KMFA/tools/check_v014_s03_p3_source_priority.py`
+- counts: source_priority_record_count=5, source_priority_order_count=9, same_source_policy_event_count=1, cross_source_difference_queue_item_count=1, auto_selection_allowed=false.
+- blocker_state: Stage 3 review=false, GitHub upload=false, raw root read=false, raw inventory=false, raw value matching=false, field mapping=false, formal_report_allowed=false, delivery_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q2, current_report_grade=D.
+
+product_version: 0.1.4-s03p3-source-priority
+version_matrix_product_version_reference: 0.1.4-s03p3-source-priority
+
 ## 2026-07-03 - 0.1.4-s03p2-source-check-matrix
 
 - task_id: `KMFA-V014-S03-P2-SOURCE-CHECK-MATRIX-20260703`
