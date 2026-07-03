@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S04-P3 基础工具测试；synthetic boundary cases=`22/22` PASS，amount cases=`11`，date/period cases=`11`，JSON/Markdown tool report 已生成。证据位于 `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/`，validator 为 `KMFA/tools/check_v014_s04_p3_basic_tool_report.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出、hash、写入、删除、移动、重命名、覆盖或转换 raw inbox，未进入 Stage 4 review/S05，未执行 raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 Stage 4 整体复审；S04-P1/S04-P2/S04-P3 validators 全部 PASS，open findings=`0`，Stage 4 review evidence 已生成。证据位于 `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s04_stage_review.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出、hash、写入、删除、移动、重命名、覆盖或转换 raw inbox，未进入 S05，未执行 raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 Stage 4 整体复审已确认 S04-P1/S04-P2/S04-P3 validators 全部 PASS，open findings=0；公开证据只保存聚合计数、validator 结果、review report 和 NO_GO/upload-deferred 边界，GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S04-P3 已确认基础工具测试通过本地 validator；金额小数/负数/万元/异常字符、中文日期/年月/空值等 22 个 synthetic boundary cases 全部通过，公开证据只保存 synthetic cases、聚合计数、工具报告和 NO_GO/upload-deferred 边界。
 - v0.1.4 S04-P2 已确认字段标准化通过本地 validator；字段别名映射、canonical 字段输出和缺失/异常字段质量状态已 public-safe 锁定，公开证据只保存 synthetic cases、聚合计数、质量状态和 NO_GO/upload-deferred 边界。
 - v0.1.4 S04-P1 已确认金额精度/no-float 基础工具通过本地 validator；金额标准化输出整数分，float/非整分/空白/异常金额拒绝，公开证据只保存 synthetic cases、计数、no-float 结果和 NO_GO/upload-deferred 边界。
@@ -157,4 +158,4 @@ KMFA 已完成 v0.1.4 S04-P3 基础工具测试；synthetic boundary cases=`22/2
 
 ## 下一步
 
-下一步只能另起 run work 执行 `v0.1.4 Stage 4 整体复审`；不得跳到 GitHub upload、S05、raw value matching、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只能另起 run work 执行 `v0.1.4 S05-P1`；不得跳到 GitHub upload、S05-P2/S05-P3、raw value matching、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。

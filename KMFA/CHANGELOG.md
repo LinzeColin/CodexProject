@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s04-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 4 整体复审`。
+- 新增 Stage 4 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S04-P1/S04-P2/S04-P3 validators，phase_results 全部 PASS，open findings=`0`；锁定 amount cases `9`、alias dictionary rows `32`、canonical fields `6`、synthetic boundary cases `22/22`、NO_GO/Q2/D/blocked。
+- 本轮未读取、列出、hash 或修改 raw root，未执行 GitHub upload、S05、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s04p3-basic-tool-report - 2026-07-04
 
 - 完成 `v0.1.4 S04-P3｜基础工具测试`。

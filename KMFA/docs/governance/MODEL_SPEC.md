@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s04p3-basic-tool-report
+product_version: 0.1.4-s04-stage-review
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S04-P3 只证明 synthetic public-safe 金额/日期/期间基础工具边界测试和 JSON/Markdown 工具报告证据闭合；不声明 Stage 4 review、GitHub upload、S05、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 Stage 4 review 只证明 S04-P1/S04-P2/S04-P3 validators 全部 PASS、open findings=0 和 NO_GO/Q2/D/blocked 边界闭合；不声明 GitHub upload、S05、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s04p3-basic-tool-report
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s03_stage_review.py`, `KMFA/stage_artifacts/V014_S03_STAGE_REVIEW/machine/stage3_review_manifest.json`
-- current_v014_scope_lock: `Stage 3 review completed; S04/GitHub upload/raw value matching/field mapping/formal report/live connector/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s04_stage_review.py`, `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/machine/stage4_review_manifest.json`
+- current_v014_scope_lock: `Stage 4 review completed; GitHub upload/S05/raw value matching/lineage full check/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -97,6 +97,15 @@ product_version: 0.1.4-s04p3-basic-tool-report
 - expression: `s04p3_valid = synthetic_boundary_case_total == 22 AND synthetic_boundary_case_passed == 22 AND amount_boundary_case_count == 11 AND date_period_boundary_case_count == 11 AND json_report_generated == true AND markdown_report_generated == true AND raw_dir_read_performed == false AND github_upload_performed == false`
 - evidence: `KMFA/tools/check_v014_s04_p3_basic_tool_report.py`, `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/machine/basic_tool_report_manifest.json`
 - limitation: S04-P3 只证明基础工具 synthetic boundary 测试和工具报告生成；不证明 Stage 4 review、raw value matching、正式报告或 GitHub upload readiness。
+
+### FORM-KMFA-V014-S04-STAGE-REVIEW-001
+
+- type: deterministic public-safe Stage 4 review gate
+- purpose: 复跑 S04-P1/S04-P2/S04-P3 validators，锁定 Stage 4 本地整体复审证据，确认 open findings 为 0 且 GitHub upload 延后到 v1.4 Stage 1-18 完整复审后。
+- fact_level: EXTRACTED
+- expression: `s04_stage_review_valid = phase_results == PASS/PASS/PASS AND open_review_finding_count == 0 AND raw_inbox_read_by_this_review == false AND github_upload_performed == false AND s05_p1_started == false AND current_go_no_go == NO_GO`
+- evidence: `KMFA/tools/v014_s04_stage_review.py`, `KMFA/tools/check_v014_s04_stage_review.py`, `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/machine/stage4_review_manifest.json`
+- limitation: 只证明 Stage 4 public-safe local review closure；不读取 raw inbox，不发布 raw/private 明细，不执行 GitHub upload、S05、raw value matching、lineage full check、formal report 或 business execution。
 
 ### FORM-KMFA-AMOUNT-001
 
