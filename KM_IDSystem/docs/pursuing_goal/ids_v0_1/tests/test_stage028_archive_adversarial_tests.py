@@ -652,6 +652,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             'current_stage_id: "IDS-STAGE030"',
             'current_stage_id: "IDS-STAGE031"',
             'current_stage_id: "IDS-STAGE032"',
+            'current_stage_id: "IDS-STAGE033"',
         ]
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE028-P4"',
@@ -671,6 +672,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE031-REVIEW"',
             'current_phase_id: "IDS-STAGE032-P1"',
             'current_phase_id: "IDS-STAGE032-P4"',
+            'current_phase_id: "IDS-STAGE033-P1"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE028-P4"',
@@ -690,6 +692,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE031-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE032-P1"',
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
+            'current_task_id: "IDS-V0_1-STAGE033-P1"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P1-GATE"',
@@ -710,6 +713,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE032-P1-GATE"',
             'next_gate_id: "IDS-STAGE032-P2-GATE"',
             'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
+            'next_gate_id: "IDS-STAGE033-P2-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_stage_terms), allowed_roadmap_stage_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)

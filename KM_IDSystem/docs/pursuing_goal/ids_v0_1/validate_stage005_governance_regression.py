@@ -171,6 +171,8 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE3_SCENARIO_VALIDATION.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE4_CLOSEOUT.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_STAGE_REVIEW.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_connection_pool/stage032_connection_pool_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/schema_migration_safety/stage031_migration_safety_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/001_control_plane_schema.sql",
@@ -305,6 +307,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE032-P3-20260703-001",
     "EVT-IDS-V0_1-STAGE032-P4-20260703-001",
     "EVT-IDS-V0_1-STAGE032-REVIEW-20260703-001",
+    "EVT-IDS-V0_1-STAGE033-P1-20260703-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -402,6 +405,7 @@ ALLOWED_CHANGED_PREFIXES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_",
@@ -425,6 +429,7 @@ ALLOWED_CHANGED_PREFIXES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage031_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage032_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage033_",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
     "KM_IDSystem/scripts/check_file_fingerprint.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/",
@@ -1518,6 +1523,18 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-STAGE032-REVIEW"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE033-P1-GATE"' in roadmap_text
     )
+    stage033_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-031-040"' in batch_text
+        and 'status: "stage033_phase1_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE033-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE033-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE033"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE033-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE033-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE033-P2-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -1616,6 +1633,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or stage032_phase3_active
         or stage032_phase4_closeout
         or stage032_reviewed_local
+        or stage033_phase1_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
