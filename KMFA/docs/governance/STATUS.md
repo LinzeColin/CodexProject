@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s10-stage-review`
-- current_stage: `S10`
-- current_phase: `v0.1.3 Stage 10 review`
-- status: `local_s10p3_report_export_replay_passed_upload_deferred_until_stage10_batch_no_go`
+- version: `0.1.3-stage1-10-batch-review`
+- current_stage: `S01-S10`
+- current_phase: `v0.1.3 Stage 1-10 batch overall review`
+- status: `batch_review_passed_local_only_upload_ready_next_gate_no_go`
 - production_ready: `false`
-- github_upload_ready: `false_deferred_until_stage1_10_batch_gate`
+- github_upload_ready: `true_separate_stage1_10_upload_gate_required`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
@@ -174,6 +174,7 @@
 - v0.1.3 S10-P2 report grade runtime replay 已本地完成；证据位于 `KMFA/stage_artifacts/V013_S10_P2_REPORT_GRADE_RUNTIME_REPLAY/`；复用既有 S10-P2 public-safe report grade runtime artifacts 并验证 v0.1.3 S10-P1 dependency，确认 report_grade_records=2、grade_distribution=`D:2`、pending_reconciliations=12、confirmed_resolutions=0、source_quality_grade=`Q4`、zero_delta_passed=false、complete_trusted_report_display_allowed=false、formal_report_allowed=false、business_decision_basis_allowed=false、export_artifact_count=0。该行后续边界已由 S10-P3 和 Stage 10 review 完成状态承接；不得作为当前 next step。
 - v0.1.3 S10-P3 report export replay 已本地完成；证据位于 `KMFA/stage_artifacts/V013_S10_P3_REPORT_EXPORT_REPLAY/`；复用既有 S10-P3 public-safe report export artifacts 并验证 v0.1.3 S10-P2 dependency，确认 report_export_records=2、html_exports=2、csv_appendices=2、excel_compatible_downloads=2、committed_pdf_file_count=0、committed_excel_file_count=0、formal_report_count=0、business_decision_basis_count=0、pending_reconciliations=12、grade_distribution=`D:2`。该行后续边界已由 Stage 10 review 完成状态承接；不得作为当前 next step。
 - v0.1.3 Stage 10 overall review 已本地完成；证据位于 `KMFA/stage_artifacts/V013_S10_STAGE_REVIEW/`；复跑 S10-P1/S10-P2/S10-P3 replay validators、legacy S10 validators 和 v0.1.3 Stage 10 review validator，phase_results 全部 PASS，open findings=0，fixed findings=2，legacy Stage 10 upload artifacts current gate=false，GitHub main 未上传且延期到 Stage 1-10 batch overall review 通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 Stage 1-10 batch overall review` 或用户明确指定的单一 phase，不得跳到 GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
+- v0.1.3 Stage 1-10 batch overall review 已本地完成；证据位于 `KMFA/stage_artifacts/V013_STAGE1_10_BATCH_REVIEW/`；复核 S01-S10 共 10 个 v0.1.3 stage review manifest，stage_results 全部 PASS，open stage review findings=0，open batch findings=0，legacy individual Stage upload artifacts current gate=false，GitHub main 未上传但下一步可进入独立 Stage 1-10 GitHub upload gate。下一轮只能另起 run work 执行 `v0.1.3 Stage 1-10 GitHub upload gate` 或用户明确指定的单一 phase；不得跳到正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
 
 ## 阻塞条件
 
