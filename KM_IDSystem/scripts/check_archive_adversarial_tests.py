@@ -494,6 +494,150 @@ def build_stage028_scenario_report(
     }
 
 
+def _build_archive_manifest_sample(scenario_report: dict[str, Any]) -> dict[str, Any]:
+    for result in scenario_report.get("scenario_results", []):
+        manifest = result["archive_adversarial_report"]["archive_manifest"]
+        entries = list(manifest.get("entries", []))
+        if entries:
+            sample = deepcopy(manifest)
+            sample["sample_state"] = "ARCHIVE_ADVERSARIAL_MANIFEST_SAMPLE_READY"
+            sample["sample_source"] = "in_memory_stage028_phase3_scenario_report"
+            sample["entry_count"] = len(entries)
+            return sample
+    return {
+        "schema_version": "ids.stage028.archive_adversarial_manifest.v1",
+        "sample_state": "ARCHIVE_ADVERSARIAL_MANIFEST_SAMPLE_EMPTY",
+        "sample_source": "in_memory_stage028_phase3_scenario_report",
+        "entry_count": 0,
+        "runtime_output_written": False,
+        "entries": [],
+    }
+
+
+def _build_safety_block_log_sample(scenario_report: dict[str, Any]) -> dict[str, Any]:
+    risk_records: list[dict[str, Any]] = []
+    for result in scenario_report.get("scenario_results", []):
+        scenario_id = result["scenario_id"]
+        report = result["archive_adversarial_report"]
+        for entry in report.get("risk_entries", []):
+            risk_records.append(
+                {
+                    "scenario_id": scenario_id,
+                    "entry_path": entry.get("entry_path"),
+                    "risk_code": entry.get("risk_code"),
+                    "entry_state": entry.get("entry_state"),
+                    "owner_review_required": True,
+                    "runtime_log_written": False,
+                }
+            )
+    return {
+        "state": "ARCHIVE_ADVERSARIAL_BLOCK_LOG_READY" if risk_records else "ARCHIVE_ADVERSARIAL_BLOCK_LOG_EMPTY",
+        "sample_source": "in_memory_stage028_phase3_scenario_report",
+        "risk_codes": sorted({record["risk_code"] for record in risk_records if record.get("risk_code")}),
+        "blocked_entry_count": len(risk_records),
+        "risk_records": risk_records,
+        "runtime_output_written": False,
+        "audit_log_written": False,
+    }
+
+
+def build_stage028_closeout_summary(
+    *,
+    scenario_report: dict[str, Any],
+    evaluated_at: str | None = None,
+) -> dict[str, Any]:
+    """Build Stage 028 Phase 4 closeout evidence without writing runtime outputs."""
+
+    manifest_sample = _build_archive_manifest_sample(scenario_report)
+    block_log_sample = _build_safety_block_log_sample(scenario_report)
+    cleanup_sample = dict(scenario_report["cleanup_validation"])
+    delivery_ready = (
+        manifest_sample["entry_count"] > 0
+        and block_log_sample["state"] == "ARCHIVE_ADVERSARIAL_BLOCK_LOG_READY"
+        and cleanup_sample.get("state") == "ARCHIVE_ADVERSARIAL_CLEANUP_ALLOWLIST_VALIDATED"
+    )
+    return {
+        "schema_version": "ids.stage028.archive_adversarial_tests.closeout.v1",
+        "stage": "STAGE-028",
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE028-P4",
+        "acceptance_id": "ACC-STAGE-028",
+        "entrance": ENTRANCE,
+        "evaluated_at": evaluated_at,
+        "source_scenario_schema": scenario_report.get("schema_version"),
+        "closeout_state": "ARCHIVE_ADVERSARIAL_STAGE_CLOSEOUT_PASSED"
+        if delivery_ready
+        else "ARCHIVE_ADVERSARIAL_STAGE_CLOSEOUT_REVIEW_REQUIRED",
+        "whole_stage_review": {
+            "result": "passed_with_local_evidence" if delivery_ready else "review_required",
+            "phases_reviewed": ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
+            "phase_results": {
+                "Phase 1": "scope_boundary_defined",
+                "Phase 2": "archive_adversarial_slice_passed",
+                "Phase 3": scenario_report.get("validation_state"),
+                "Phase 4": "closeout_evidence_recorded",
+            },
+            "unresolved_findings": [],
+            "batch_gate_state": "BATCH021_030_LOCKED_NO_UPLOAD",
+        },
+        "delivery_evidence": {
+            "evidence_state": "ARCHIVE_ADVERSARIAL_DELIVERY_EVIDENCE_READY"
+            if delivery_ready
+            else "ARCHIVE_ADVERSARIAL_DELIVERY_EVIDENCE_REVIEW_REQUIRED",
+            "archive_manifest_sample": manifest_sample,
+            "safety_block_log_sample": block_log_sample,
+            "cleanup_allowlist_sample": cleanup_sample,
+        },
+        "risk_boundary": {
+            "raw_metadata_root": "/Users/linzezhang/Downloads/IDS_MetaData",
+            "raw_metadata_path_only_boundary": True,
+            "real_data_only_policy": True,
+            "no_runtime_output": True,
+            "no_processing_jobs": True,
+            "no_github_upload": True,
+            "no_app_reinstall": True,
+            "stop_conditions": [
+                "需要读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 IDS_MetaData 内容",
+                "可能删除、移动、覆盖原始压缩包、事实源、manifest、evidence ledger 或 audit log",
+                "需要写 archive_adversarial runtime output、archive_manifest runtime output、database、index、report 或 parser output",
+                "测试失败且原因不明",
+                "修改范围超出 STAGE-028 Phase 4",
+            ],
+        },
+        "staging_rollback": {
+            "rollback_state": "ARCHIVE_ADVERSARIAL_STAGING_ROLLBACK_DOCUMENTED",
+            "rollback_scope": "Revert STAGE-028 Phase 4 closeout changes only.",
+            "staging_area_policy": "Only process-owned temporary staging paths from focused tests may be removed by the test harness.",
+            "cleanup_instructions": {
+                "temp_only": True,
+                "do_not_delete_original_archive": True,
+                "do_not_touch_raw_metadata_root": True,
+                "do_not_clean_fact_source_or_evidence": True,
+                "do_not_clean_manifest_or_audit_outputs": True,
+            },
+        },
+        "owner_feedback_zh": [
+            "STAGE-028 已在本地完成压缩包对抗测试闭环，当前证据是内存报告和中文 closeout，不是生产批量导入器。",
+            "系统会先形成 archive_manifest 样例、安全阻断日志和清理白名单，再把安全条目交给 hash、manifest、dedup、parser 后续计划。",
+            "自动清理只允许面向 process-owned temporary staging files；不得删除原始压缩包、真实资料、manifest、审计日志或 IDS_MetaData 原始数据库。",
+            "BATCH021_030 仍未满足十阶段批量上传门槛，所以 No GitHub upload and No app reinstall。",
+        ],
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "next_allowed_task_id": "IDS-V0_1-STAGE029-P1",
+        "does_not_read_raw_metadata": True,
+        "does_not_write_archive_adversarial_runtime_output": True,
+        "does_not_write_archive_manifest_runtime_output": True,
+        "does_not_write_runtime_outputs": True,
+        "does_not_start_processing_jobs": True,
+        "does_not_use_fake_ids_business_data": True,
+        "does_not_create_import_queue": True,
+        "does_not_write_database": True,
+        "does_not_write_index": True,
+        "does_not_call_external_apis": True,
+    }
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run IDS Stage 028 archive adversarial checks.")
     parser.add_argument("--archive-uri", required=True)

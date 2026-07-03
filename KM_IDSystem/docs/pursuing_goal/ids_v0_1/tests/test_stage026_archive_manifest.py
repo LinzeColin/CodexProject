@@ -232,6 +232,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'status: "stage028_phase1_in_progress"',
             'status: "stage028_phase2_in_progress"',
             'status: "stage028_phase3_in_progress"',
+            'status: "stage028_completed_local_pending_stage029"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
@@ -243,6 +244,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE028-P1"',
             'current_task_id: "IDS-V0_1-STAGE028-P2"',
             'current_task_id: "IDS-V0_1-STAGE028-P3"',
+            'current_task_id: "IDS-V0_1-STAGE028-P4"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
@@ -262,6 +264,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE028-P2-GATE"',
             'next_gate: "IDS-STAGE028-P3-GATE"',
             'next_gate: "IDS-STAGE028-P4-GATE"',
+            'next_gate: "IDS-STAGE029-P1-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P2"',
@@ -275,6 +278,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
@@ -318,6 +322,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE028-P1"',
             'current_phase_id: "IDS-STAGE028-P2"',
             'current_phase_id: "IDS-STAGE028-P3"',
+            'current_phase_id: "IDS-STAGE028-P4"',
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
@@ -329,6 +334,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE028-P1"',
             'current_task_id: "IDS-V0_1-STAGE028-P2"',
             'current_task_id: "IDS-V0_1-STAGE028-P3"',
+            'current_task_id: "IDS-V0_1-STAGE028-P4"',
             'next_gate_id: "IDS-STAGE026-P2-GATE"',
             'next_gate_id: "IDS-STAGE026-P3-GATE"',
             'next_gate_id: "IDS-STAGE026-P4-GATE"',
@@ -340,10 +346,11 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE028-P2-GATE"',
             'next_gate_id: "IDS-STAGE028-P3-GATE"',
             'next_gate_id: "IDS-STAGE028-P4-GATE"',
+            'next_gate_id: "IDS-STAGE029-P1-GATE"',
         ]
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:11]), allowed_current_terms[:11])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[11:22]), allowed_current_terms[11:22])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[22:]), allowed_current_terms[22:])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:12]), allowed_current_terms[:12])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[12:24]), allowed_current_terms[12:24])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[24:]), allowed_current_terms[24:])
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -507,6 +514,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'status: "stage028_phase1_in_progress"',
             'status: "stage028_phase2_in_progress"',
             'status: "stage028_phase3_in_progress"',
+            'status: "stage028_completed_local_pending_stage029"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 3"',
@@ -524,6 +532,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE028-P1"',
             'current_task_id: "IDS-V0_1-STAGE028-P2"',
             'current_task_id: "IDS-V0_1-STAGE028-P3"',
+            'current_task_id: "IDS-V0_1-STAGE028-P4"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase2_archive_manifest_slice_complete"',
@@ -541,6 +550,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE028-P2-GATE"',
             'next_gate: "IDS-STAGE028-P3-GATE"',
             'next_gate: "IDS-STAGE028-P4-GATE"',
+            'next_gate: "IDS-STAGE029-P1-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P3"',
@@ -553,6 +563,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -686,6 +697,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'status: "stage028_phase1_in_progress"',
             'status: "stage028_phase2_in_progress"',
             'status: "stage028_phase3_in_progress"',
+            'status: "stage028_completed_local_pending_stage029"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 4"',
@@ -701,6 +713,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE028-P1"',
             'current_task_id: "IDS-V0_1-STAGE028-P2"',
             'current_task_id: "IDS-V0_1-STAGE028-P3"',
+            'current_task_id: "IDS-V0_1-STAGE028-P4"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase3_scenario_validation_complete"',
@@ -716,6 +729,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE028-P2-GATE"',
             'next_gate: "IDS-STAGE028-P3-GATE"',
             'next_gate: "IDS-STAGE028-P4-GATE"',
+            'next_gate: "IDS-STAGE029-P1-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P4"',
@@ -727,6 +741,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -799,6 +814,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
 
@@ -837,6 +853,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE028-P1"',
             'current_phase_id: "IDS-STAGE028-P2"',
             'current_phase_id: "IDS-STAGE028-P3"',
+            'current_phase_id: "IDS-STAGE028-P4"',
             'current_task_id: "IDS-V0_1-STAGE026-P4"',
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
@@ -845,6 +862,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE028-P1"',
             'current_task_id: "IDS-V0_1-STAGE028-P2"',
             'current_task_id: "IDS-V0_1-STAGE028-P3"',
+            'current_task_id: "IDS-V0_1-STAGE028-P4"',
             'next_gate_id: "IDS-STAGE027-P1-GATE"',
             'next_gate_id: "IDS-STAGE027-P2-GATE"',
             'next_gate_id: "IDS-STAGE027-P3-GATE"',
@@ -853,11 +871,12 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE028-P2-GATE"',
             'next_gate_id: "IDS-STAGE028-P3-GATE"',
             'next_gate_id: "IDS-STAGE028-P4-GATE"',
+            'next_gate_id: "IDS-STAGE029-P1-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:3]), allowed_current_terms[:3])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[3:11]), allowed_current_terms[3:11])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[11:19]), allowed_current_terms[11:19])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[19:]), allowed_current_terms[19:])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[3:12]), allowed_current_terms[3:12])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[12:21]), allowed_current_terms[12:21])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[21:]), allowed_current_terms[21:])
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
