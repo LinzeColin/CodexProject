@@ -1,10 +1,10 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION"
-source_snapshot_hash: "sha256:8b4485cf58d77c729eba13cf2d3f284e6b3fbdf7fc51fe8dda2999ff7f1a13ba"
+source_snapshot_hash: "sha256:e98c113a59645c22fe2e7b8f71f342a8b6e83dd904e300a4e65d072c99d12d0a"
 source_base_commit: "90b297a55451b691c3e0270cfaa64e5d58c5a519"
 source_tree_hash: "d92ec4a0cd884641263c7979f7a5c625229ae83c"
 snapshot_event_time: "2026-07-01T23:35:39+10:00"
-generator_version: "4.0.0"
+generator_version: "4.0.1"
 final_commit_binding: "COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519"
 dimensions:
   structural_completeness:
@@ -82,7 +82,7 @@ delivery_readiness:
   current_zero_proof_open_p0_findings: 0
   current_zero_proof_open_p1_findings: 0
   baseline_counts_mutated: false
-  parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
+  parallel_shadow_source_task: "NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
   task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"

@@ -140,7 +140,7 @@ PROJECT_REGISTRY_MIGRATION_VERSIONS = {
 }
 PRODUCT_ROADMAP_KIND = "product"
 ADP_V72_CURRENT_TASK_ID = "S2PMT07"
-ADP_V72_SHADOW_SOURCE_NEXT = "NONE_WHILE_S2PMT07_BLOCKED"
+ADP_V72_SHADOW_SOURCE_NEXT = "NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW"
 HUMAN_ENTRY_QUALITY_CONTRACTS = {
     "功能清单.md": {
         "title": "# 功能清单",
@@ -656,8 +656,27 @@ def validate_arxiv_daily_push_v7_root_lock(
             validation.add(required, scope, f"VERSION_MATRIX.yaml current_v7_task_id must be {ADP_V72_CURRENT_TASK_ID} for V7.2")
     else:
         validation.add(required, scope, "VERSION_MATRIX.yaml missing supported current_v7_contract_version")
-    if matrix.get("current_v7_shadow_source_task_id") != ADP_V72_SHADOW_SOURCE_NEXT:
-        validation.add(required, scope, f"VERSION_MATRIX.yaml current_v7_shadow_source_task_id must be {ADP_V72_SHADOW_SOURCE_NEXT}")
+    current_shadow_source_next = ADP_V72_SHADOW_SOURCE_NEXT
+    current_pointer_path = project_path / "docs" / "pursuing_goal" / "CURRENT.yaml"
+    if current_pointer_path.exists():
+        try:
+            current_for_shadow = load_yaml(current_pointer_path)
+            current_pointer = (
+                current_for_shadow.get("current_pointer_registry")
+                if isinstance(current_for_shadow.get("current_pointer_registry"), dict)
+                else {}
+            )
+            current_shadow_source_next = str(
+                current_pointer.get("shadow_source_next") or current_shadow_source_next
+            )
+        except Exception as exc:
+            validation.add(required, scope, f"CURRENT.yaml shadow_source_next parse failure: {exc}")
+    if matrix.get("current_v7_shadow_source_task_id") != current_shadow_source_next:
+        validation.add(
+            required,
+            scope,
+            f"VERSION_MATRIX.yaml current_v7_shadow_source_task_id must match CURRENT.yaml shadow_source_next {current_shadow_source_next}",
+        )
     if matrix.get("current_v7_final_task_id") != "S2PMT07":
         validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_final_task_id must be S2PMT07")
     if matrix.get("stage1_acceptance_gate") != "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED":
