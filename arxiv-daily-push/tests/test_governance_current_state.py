@@ -1616,6 +1616,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         one_look = (ADP_ROOT / "用户中心/一看三查.md").read_text(encoding="utf-8")
         roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
         mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
+        version_matrix = (ADP_ROOT / "docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
+        current_gate = _quoted_yaml_value(version_matrix, "current_gate")
 
         self.assertIn("S3 DAILY_OPERATION 下一 Agent 先读", handoff)
         self.assertIn("交接内容生成基线", handoff)
@@ -1629,8 +1631,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("persistent_daily_operation_authorized=false", handoff)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", handoff)
         self.assertIn("最新 MVP 复审准备进展", handoff)
+        self.assertIn("ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT", handoff)
         self.assertIn("ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP", handoff)
-        self.assertIn("EVIDENCE_FRESHNESS_DYNAMIC_COUNT_DEDUP_NO_RUNTIME_ENABLEMENT", handoff)
+        self.assertIn(f"| 当前治理 gate | `{current_gate}`", handoff)
+        self.assertNotIn(
+            "| 当前治理 gate | `EVIDENCE_FRESHNESS_DYNAMIC_COUNT_DEDUP_NO_RUNTIME_ENABLEMENT`",
+            handoff,
+        )
         self.assertIn(
             "[OWNER_STATUS 第 14 节](../arxiv-daily-push/docs/governance/OWNER_STATUS.md#14-证据新鲜度)",
             handoff,
