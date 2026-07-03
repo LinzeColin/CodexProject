@@ -13,6 +13,7 @@ from typing import Any
 
 
 SCHEMA_VERSION = "ids.stage032.database_connection_pool.phase2.v1"
+SCENARIO_SCHEMA_VERSION = "ids.stage032.database_connection_pool.phase3.v1"
 INDEX_SCHEMA_VERSION = "ids.stage032.database_connection_pool.index.v1"
 STAGE = "STAGE-032"
 PHASE = "Phase 2"
@@ -35,9 +36,31 @@ EXPECTED_SOURCE_REFS = {
     "stage031_migration_safety_checker_ref": "../../../../scripts/check_schema_migration_safety.py",
 }
 
+EXPLAINED_CONSTRAINTS = {
+    "credential_guard": "连接凭证必须来自 ENV:IDS_POSTGRES_DSN 或批准的本地 secret store；提交明文 DSN、密码或云凭证必须阻断。",
+    "pool_size_guard": "连接池总上限超过 10、出现 overflow 或无 backpressure 时必须停止并给出 owner-readable reason。",
+    "timeout_guard": "statement、lock、idle 和 shutdown timeout 必须有上限，避免无限等待或占满本机资源。",
+    "transaction_guard": "backend、worker、report task 和 retrieval task 必须有明确事务边界、rollback 和幂等要求。",
+    "retry_backoff_guard": "重试必须有上限、backoff 和 non-retryable 分类，认证、schema、migration 或 raw boundary 错误不能盲目重试。",
+    "healthcheck_guard": "healthcheck 只能验证安全 readiness，不得写数据库、echo secret 或触碰 raw metadata。",
+    "storage_boundary_guard": "PostgreSQL 只能保存控制面 refs 和热索引 metadata，不得保存 raw files、raw database rows、正文、OCR、向量或报告二进制。",
+    "raw_metadata_boundary_guard": "/Users/linzezhang/Downloads/IDS_MetaData 只能作为 path-only 边界记录，不得读取、列出、hash、复制、修改或 dump。",
+    "real_data_only_guard": "系统只能使用真实 owner-approved 数据；fake IDS business data、fake rows、placeholder corpus 和 fabricated evidence 必须阻断。",
+}
+
 
 def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _scenario(status: bool, evidence: str, owner_explanation: str, **extra: Any) -> dict[str, Any]:
+    payload = {
+        "status": "PASS" if status else "FAIL",
+        "evidence": evidence,
+        "owner_explanation": owner_explanation,
+    }
+    payload.update(extra)
+    return payload
 
 
 def _profile_valid(profile: dict[str, Any], guardrails: dict[str, Any]) -> bool:
@@ -209,13 +232,115 @@ def build_stage032_connection_pool_report(index_path: Path) -> dict[str, Any]:
     }
 
 
+def build_stage032_scenario_validation_report(index_path: Path) -> dict[str, Any]:
+    index = _load_json(index_path)
+    phase2_report = build_stage032_connection_pool_report(index_path)
+    profiles = phase2_report["profile_results"]
+    guardrails = phase2_report["guardrail_results"]
+    runtime_policy = phase2_report["runtime_policy_results"]
+    source_refs = index.get("source_refs", {})
+    retry_guard = index.get("guardrails", {}).get("retry_backoff_guard", {})
+    healthcheck_guard = index.get("guardrails", {}).get("healthcheck_guard", {})
+    storage_guard = index.get("guardrails", {}).get("storage_boundary_guard", {})
+    pool_guard = index.get("guardrails", {}).get("pool_size_guard", {})
+    timeout_guard = index.get("guardrails", {}).get("timeout_guard", {})
+
+    scenario_results = {
+        "migration_dry_run": _scenario(
+            guardrails["source_refs_match"]
+            and runtime_policy["execute_migration"]
+            and "stage030_control_plane_schema_ref" in source_refs
+            and "stage031_migration_safety_index_ref" in source_refs,
+            "Stage030 schema and Stage031 migration-safety refs are present; runtime execute_migration=false.",
+            "migration dry-run 只作为上游 tracked contract 依赖验证；本阶段不执行 live dry-run。",
+        ),
+        "repeat_execution": _scenario(
+            bool(index.get("connection_pool_contract_id"))
+            and guardrails["source_refs_match"]
+            and runtime_policy["instantiate_connection_pool"],
+            f"connection_pool_contract_id={index.get('connection_pool_contract_id')}; instantiate_connection_pool=false.",
+            "重复执行必须由稳定 contract id、上游 migration identity 和无 runtime pool 行为共同约束。",
+        ),
+        "failure_rollback": _scenario(
+            guardrails["transaction_guard"]
+            and runtime_policy["execute_migration"]
+            and "stage031_migration_safety_index_ref" in source_refs,
+            "transaction_guard=true; Stage031 migration safety ref is present; execute_migration=false.",
+            "失败回滚依赖 Stage031 的 rollback contract 和本阶段事务 rollback 要求；当前不执行 live rollback。",
+        ),
+        "recovery_smoke": _scenario(
+            guardrails["healthcheck_guard"]
+            and guardrails["raw_metadata_boundary_guard"]
+            and healthcheck_guard.get("safe_healthcheck_only") is True
+            and healthcheck_guard.get("writes_database") is False,
+            "safe healthcheck contract is present; healthcheck writes_database=false and touches_raw_metadata=false.",
+            "恢复冒烟只验证 future safe readiness contract，不写数据库、不触碰原始资料。",
+        ),
+        "raw_payload_block": _scenario(
+            guardrails["storage_boundary_guard"]
+            and guardrails["raw_metadata_boundary_guard"]
+            and guardrails["real_data_only_guard"],
+            "storage, raw metadata, and real-data-only guardrails all pass.",
+            "数据库不会写入原始大文件、raw database rows、正文、OCR 全文、向量 payload、报告二进制、secrets 或 fake data。",
+        ),
+        "derived_output_limit": _scenario(
+            runtime_policy["write_runtime_outputs"]
+            and storage_guard.get("stores_report_binaries") is False
+            and storage_guard.get("stores_vector_payloads") is False,
+            "write_runtime_outputs=false; report binaries and vector payloads are blocked in storage boundary.",
+            "派生产物必须保持有界、可重建、可解释；本阶段不生成 JSON output、report、PDF、audit log 或 index runtime 文件。",
+        ),
+        "connection_pool_boundary": _scenario(
+            all(profiles.values())
+            and guardrails["pool_size_guard"]
+            and guardrails["timeout_guard"],
+            f"aggregate_max_pool_size={pool_guard.get('aggregate_max_pool_size')}; statement_timeout_ms={timeout_guard.get('statement_timeout_ms')}; lock_timeout_ms={timeout_guard.get('lock_timeout_ms')}.",
+            "后端、worker、报告任务和检索任务的连接池与 timeout 超限时必须进入可解释 stop reason。",
+        ),
+        "transaction_boundary": _scenario(
+            guardrails["transaction_guard"]
+            and guardrails["retry_backoff_guard"]
+            and "raw_metadata_boundary_violation" in retry_guard.get("non_retryable_errors", []),
+            "transaction_guard and retry_backoff_guard are true; raw_metadata_boundary_violation is non-retryable.",
+            "事务边界、rollback、幂等与 non-retryable 错误分类必须先定义，不能用重试掩盖 schema 或 raw boundary 错误。",
+        ),
+        "constraint_error_explanations": _scenario(
+            all(guardrails.get(key, False) for key in EXPLAINED_CONSTRAINTS),
+            "All required guardrail ids have owner-facing explanations.",
+            "约束错误必须能解释为凭证、连接池、timeout、事务、重试、healthcheck、存储、raw boundary 或真实数据问题。",
+            constraint_refs=list(EXPLAINED_CONSTRAINTS),
+            explanations=EXPLAINED_CONSTRAINTS,
+        ),
+    }
+
+    return {
+        "schema_version": SCENARIO_SCHEMA_VERSION,
+        "stage": STAGE,
+        "phase": "Phase 3",
+        "task_id": "IDS-V0_1-STAGE032-P3",
+        "acceptance_id": ACCEPTANCE_ID,
+        "scenario_results": scenario_results,
+        "raw_metadata_boundary": phase2_report["raw_metadata_boundary"],
+        "connection_pool_index_ref": index_path.as_posix(),
+        "does_not_connect_to_postgres": True,
+        "does_not_execute_migration": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_write_runtime_outputs": True,
+        "does_not_use_fake_ids_business_data": True,
+    }
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     pursue_root = root / "docs" / "pursuing_goal" / "ids_v0_1"
     index_path = pursue_root / "database_connection_pool" / "stage032_connection_pool_index.json"
     report = build_stage032_connection_pool_report(index_path)
+    scenario_report = build_stage032_scenario_validation_report(index_path)
     print(json.dumps(
-        {"connection_pool_report": report},
+        {
+            "connection_pool_report": report,
+            "scenario_report": scenario_report,
+        },
         ensure_ascii=False,
         sort_keys=True,
         indent=2,
@@ -224,6 +349,10 @@ def main() -> int:
         list(report["profile_results"].values())
         + list(report["guardrail_results"].values())
         + list(report["runtime_policy_results"].values())
+        + [
+            scenario["status"] == "PASS"
+            for scenario in scenario_report["scenario_results"].values()
+        ]
         + [
             report["index_schema_version"] == INDEX_SCHEMA_VERSION,
             report["does_not_connect_to_postgres"],
