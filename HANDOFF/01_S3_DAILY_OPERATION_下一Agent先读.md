@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-03 13:02:57 Australia/Sydney
+更新时间：2026-07-03 13:18:52 Australia/Sydney
 
 ## 当前结论
 
@@ -27,8 +27,8 @@
 
 | 项目 | 当前口径 | 证据 |
 |---|---|---|
-| 最新 MVP 准备任务 | `ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP` 已把动态证据新鲜度计数从浅层 MVP 页面移出，避免 owner 页面复制漂移数字 | [MVP 准备与复审修补](../arxiv-daily-push/用户中心/MVP准备与复审修补.md) |
-| 当前治理 gate | `EVIDENCE_FRESHNESS_DYNAMIC_COUNT_DEDUP_NO_RUNTIME_ENABLEMENT`；该 gate 只说明证据展示去重和 no-runtime 边界，不授权 DAILY_OPERATION | `arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml` |
+| 最新 MVP 准备任务 | `ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT` 已把本页当前治理 gate 对齐 `VERSION_MATRIX.yaml`；上一轮 `ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP` 仍是当前计数来源去重证据 | [MVP 准备与复审修补](../arxiv-daily-push/用户中心/MVP准备与复审修补.md) |
+| 当前治理 gate | `S3_HANDOFF_CURRENT_GATE_ALIGNMENT_NO_RUNTIME_ENABLEMENT`；该 gate 只说明 S3 first-read handoff 与当前治理矩阵一致，不授权 DAILY_OPERATION | `arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml` |
 | 当前计数来源 | 证据新鲜度的实时计数只读 [OWNER_STATUS 第 14 节](../arxiv-daily-push/docs/governance/OWNER_STATUS.md#14-证据新鲜度)，本 handoff 不复制动态计数 | `arxiv-daily-push/docs/governance/OWNER_STATUS.md` |
 | S3/MVP 边界 | 仍不得创建持久授权 artifact，不得启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION | `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 仍缺失 |
 
