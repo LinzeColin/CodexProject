@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s06p1-zero-delta-validator - 2026-07-04
+
+- 完成 `v0.1.4 S06-P1｜zero-delta validator`。
+- 新增 S06-P1 evidence generator、validator、focused unit test、public-safe pass fixture、one-cent mismatch fixture、zero-delta results、mismatch report、risk register、rollback plan 和 machine manifest。
+- 复用 `KMFA/tools/zero_delta_validator.py` 逐字段比较整数分；public-safe pass fixture 比较 `8` 个字段且 mismatch count=`0`，1 cent mismatch fixture 必须失败并生成包含 source、field、authoritative/system cents、difference cents 的 report。
+- 本轮未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或真实业务值。
+- 本轮未执行 S06-P2、S06-P3、Stage 6 review、GitHub upload、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s05-stage-review - 2026-07-04
 
 - 完成 `v0.1.4 Stage 5 整体复审`。

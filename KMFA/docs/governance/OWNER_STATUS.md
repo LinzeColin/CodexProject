@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 Stage 5 整体复审；S05-P1/S05-P2/S05-P3 validators 全部 PASS，open findings `0`，public-safe 计数为 A0 files `9`、field candidates `45`、authority records `45`、PDF Q5 calculation baseline locked fields `40`、Excel excluded fields `5`，但 full Q5 quality、zero-delta、lineage full check 和 formal report 均为 `0/false`。证据位于 `KMFA/stage_artifacts/V014_S05_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s05_stage_review.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P1、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S06-P1 zero-delta validator；public-safe pass fixture 比较 `8` 个整数分字段且 mismatch count=`0`，1 cent mismatch 被捕获并生成 mismatch report。证据位于 `KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/`，validator 为 `KMFA/tools/check_v014_s06_p1_zero_delta_validator.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P2/S06-P3、Stage 6 review、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
