@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2L bounded subject coverage and import-readiness planning.
+Execute WDA Stage 2 Sprint 2M-B first-batch subject coverage import validation.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is bounded subject coverage planning, not RAG/Web/Matrix buildout
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, and Sprint 2L subject coverage plan artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is subject coverage import validation, not RAG/Web/Matrix buildout
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, and Sprint 2M-B subject coverage import validation artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -25,8 +25,10 @@ Execute WDA Stage 2 Sprint 2L bounded subject coverage and import-readiness plan
 - Latest Sprint 2J-B outputs: `WDA/docs/stage2_sprint2j_wda_raw_import_validation/`
 - Latest Sprint 2K-B outputs: `WDA/docs/stage2_sprint2k_b_bounded_raw_import_validation/`
 - Latest Sprint 2L outputs: `WDA/docs/stage2_sprint2l_subject_coverage_plan/`
+- Latest Sprint 2M-B outputs: `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
-- Raw Gate: `Bounded Multi-Message Proven`; full Raw Gate Go is not proven
+- Latest Sprint 2M-B local Raw Import Pack: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2m_b_subject_coverage_import_validation/`
+- Raw Gate: `First-Batch Subject Coverage Proven`; full Raw Gate Go is not proven
 
 ## Key Decisions
 
@@ -73,7 +75,11 @@ Execute WDA Stage 2 Sprint 2L bounded subject coverage and import-readiness plan
 - Sprint 2L is planning-only: it does not run exporter tools, does not access the external hard drive, and does not create or modify `messages.jsonl`.
 - Sprint 2L defines Sprint 2M-A as an old-computer bounded first-batch subject coverage export with max 5 subject targets, max 100 messages per subject/conversation, max 500 total messages, and `include_media_paths=false`.
 - Sprint 2L explicitly excludes `李晶工作交接` as a pollution/noise source, not a subject sample.
-- RAG/Web/Matrix remain blocked until broader coverage and repeatability are proven.
+- Sprint 2M-A produced a bounded first-batch subject coverage transfer bundle: 5 subject exports, 100 rows each, 500 total rows, `include_media_paths=false`, no external hard drive, and `李晶工作交接` excluded as pollution/noise.
+- Sprint 2M-B validated the transfer bundle on the new computer and generated a local WDA Raw Import Pack under `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2m_b_subject_coverage_import_validation/`.
+- Sprint 2M-B generated local `messages.jsonl` with `500` rows, `conversations.jsonl` with `5` rows, `contacts.jsonl` with `23` rows, and empty `media_index.csv`.
+- Sprint 2M-B advances Raw Gate to `First-Batch Subject Coverage Proven`, not full Go.
+- RAG/Web/Matrix remain blocked until repeatable broader import-readiness and Data Core readiness are proven.
 
 ## Files To Read First
 
@@ -139,6 +145,11 @@ Execute WDA Stage 2 Sprint 2L bounded subject coverage and import-readiness plan
 - `WDA/docs/stage2_sprint2l_subject_coverage_plan/export_scope_policy.md`
 - `WDA/docs/stage2_sprint2l_subject_coverage_plan/sprint2m_old_computer_export_plan.md`
 - `WDA/docs/stage2_sprint2l_subject_coverage_plan/import_readiness_criteria.md`
+- `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/README.md`
+- `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/transfer_bundle_validation.md`
+- `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/wda_contract_mapping_report.md`
+- `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/raw_gate_decision.md`
+- `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/next_sprint2n_plan.md`
 
 ## Validation
 
@@ -309,6 +320,27 @@ Latest Sprint 2L subject coverage plan:
 - RAG/Web/Matrix: blocked
 - Raw Gate: `Bounded Multi-Message Proven`, not full Go
 
+Latest Sprint 2M-B subject coverage import validation:
+
+- Required Sprint 2M-B repo-safe outputs present: true
+- Input transfer bundle: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_inputs/sprint2m_a_subject_coverage_export/sprint2m_transfer_bundle.zip`
+- Transfer bundle SHA-256: `ba8ff637714711e444d6072f4e50a59452e1a286a51b7b49038cc11bfd285d0b`
+- External bundle checksum status: `pass`
+- Internal payload checksum status: `pass`
+- Transfer bundle file count: `20`
+- Forbidden key/config/DB/log/tool/state/full-export paths in bundle: `0`
+- Raw subject export files parsed: `5`
+- Expected rows per subject: `100`
+- Local `messages.jsonl` rows: `500`
+- Local `conversations.jsonl` rows: `5`
+- Local `contacts.jsonl` rows: `23`
+- Local `media_index.csv` rows: `0`
+- Conversion errors: `0`
+- Explicit noise source `李晶工作交接` raw export hits: `0`
+- Repo raw content committed: false
+- RAG/Web/Matrix: blocked
+- Raw Gate: `First-Batch Subject Coverage Proven`, not full Go
+
 ## Next Step
 
-Run Sprint 2M-A on the old computer only after explicit approval. Sprint 2M-A should export first-batch subject coverage within the Sprint 2L caps, keep `include_media_paths=false`, write raw outputs only under WDA_MetaData, and transfer only the bounded bundle plus repo-safe reports for new-computer validation. Do not start RAG/Web/Matrix.
+Run Sprint 2N on the new computer as an import-readiness and Data Core boundary planning sprint. Do not run WeChat exporter tools, do not access the external hard drive, do not enable media handling, and do not start RAG/Web/Matrix from the bounded 2M-B evidence.

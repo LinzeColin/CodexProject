@@ -1,0 +1,6 @@
+subject_id,subject_label,source_file,expected_rows,actual_rows,parse_status,export_status,validation
+S1_mxr_yan,马祥荣 / 雁,raw_sensitive_subject_exports/01_S1_mxr_yan_export_raw.jsonl,100,100,pass,succeeded,pass
+S2_spouse,老婆,raw_sensitive_subject_exports/02_S2_spouse_export_raw.jsonl,100,100,pass,succeeded,pass
+S3_payment_invoice_amount,付款/发票/金额相关联系人,raw_sensitive_subject_exports/03_S3_payment_invoice_amount_export_raw.jsonl,100,100,pass,succeeded,pass
+S4_recent_high_frequency,近期高频联系人,raw_sensitive_subject_exports/04_S4_recent_high_frequency_export_raw.jsonl,100,100,pass,succeeded,pass
+S5_weak_noise_sample,弱匹配/噪音样本,raw_sensitive_subject_exports/05_S5_weak_noise_sample_export_raw.jsonl,100,100,pass,succeeded,pass
