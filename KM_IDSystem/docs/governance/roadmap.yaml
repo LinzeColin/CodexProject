@@ -2,18 +2,18 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE033"
-current_phase_id: "IDS-STAGE033-P2"
-current_task_id: "IDS-V0_1-STAGE033-P2"
-next_gate_id: "IDS-STAGE033-P3-GATE"
+current_phase_id: "IDS-STAGE033-P3"
+current_task_id: "IDS-V0_1-STAGE033-P3"
+next_gate_id: "IDS-STAGE033-P4-GATE"
 current_transition_history:
   previous_state:
+    current_phase_id: "IDS-STAGE033-P2"
+    current_task_id: "IDS-V0_1-STAGE033-P2"
+    next_gate_id: "IDS-STAGE033-P3-GATE"
+  earlier_state:
     current_phase_id: "IDS-STAGE033-P1"
     current_task_id: "IDS-V0_1-STAGE033-P1"
     next_gate_id: "IDS-STAGE033-P2-GATE"
-  earlier_state:
-    current_phase_id: "IDS-STAGE032-REVIEW"
-    current_task_id: "IDS-V0_1-STAGE032-REVIEW"
-    next_gate_id: "IDS-STAGE033-P1-GATE"
 total_estimated_hours: 158
 completed_estimated_hours: 284
 stages:
@@ -7887,12 +7887,12 @@ stages:
       - "写 runtime output、database、manifest、evidence ledger、audit log、index、report、PDF、screenshot、JSON output、statistics output、cleanup output 或 production data artifact"
       - "提交 secrets、API key、数据库密码、credential-bearing DSN 或云端凭证"
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档、placeholder corpus 或伪造证据"
-      - "执行 GitHub upload、PR、merge、app reinstall、batch review 或进入 Phase 3"
+      - "执行 GitHub upload、PR、merge、app reinstall、batch review 或进入 Phase 4"
     stop_gate:
-      gate_id: "IDS-STAGE033-P2-GATE"
+      gate_id: "IDS-STAGE033-P3-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
-        - "Phase 2 defines a tracked static database-size guard index and stdout-only checker"
+        - "Phase 3 validates migration dry-run dependency, repeat execution, failure rollback, recovery smoke, raw large-file blocking, OCR full-text blocking, derived artifact limits, database size budget, connection-pool boundary, transaction boundary, and constraint explanations"
         - "PostgreSQL remains limited to control-plane, state, refs, audit/evidence, migration state, job state, and bounded hot-index metadata"
         - "Policy thresholds protect the 800 GiB internal disk without claiming measured runtime database size"
         - "Raw/OCR/large-file/unbounded-derived payloads remain blocked from PostgreSQL"
@@ -7902,6 +7902,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE2_DATABASE_SIZE_GUARD_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json"
         - "KM_IDSystem/scripts/check_database_size_guard.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
@@ -7995,3 +7996,47 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "如果静态策略被误读为 live 数据库监控或清理授权，可能提前执行 size query、VACUUM、cleanup、backup/restore 或删除动作；如果策略阈值被误读为实测值，也会造成错误运营判断。"
             rollback: "Revert STAGE033 Phase 2 evidence, database_size_guard index, check_database_size_guard.py, batch lock, Stage033/Stage005 tests, validator updates, roadmap/event changes, compatibility-test updates, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, app entries, GitHub state, PostgreSQL data directories, size-statistics outputs, cleanup outputs, or Phase 3 artifacts."
+      -
+        phase_id: "IDS-STAGE033-P3"
+        name: "数据库体积护栏 专项验证与异常场景"
+        objective: "验证数据库体积护栏的静态异常场景：migration dry-run 依赖、重复执行、失败回滚、恢复冒烟、raw 大文件阻断、OCR 全文阻断、派生产物限制、体积预算、连接池边界、事务边界和约束错误解释。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "连接 PostgreSQL、运行 live dry-run/apply/rollback/backup/restore/schema diff"
+          - "运行 size query、VACUUM、reindex、cleanup、retention deletion 或 recovery smoke"
+          - "读取或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "进入 Phase 4 或执行 GitHub upload/app reinstall/batch review"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE033-P3"
+            name: "Database size guard scenario validation"
+            objective: "扩展 check_database_size_guard.py 的 scenario report，并新增 Phase 3 场景验证证据，证明数据库体积护栏在 raw/OCR/大文件/派生产物、体积阈值、连接池、事务、回滚和约束解释方面可测试且无 live side effects。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "8.33%"
+            dependencies:
+              - "IDS-V0_1-STAGE033-P2"
+              - "IDS-V0_1-STAGE031-P2"
+              - "IDS-V0_1-STAGE032-P2"
+            acceptance_ids:
+              - "ACC-STAGE-033"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage033_database_size_guard.Stage033DatabaseSizeGuardPhase3Tests -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage033_phase3_database_size_guard_scenarios -q"
+              - "python3 -B KM_IDSystem/scripts/check_database_size_guard.py"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/lean_governance.py validate --project KM_IDSystem --semantic"
+            test_results: "RED failed as expected because build_stage033_scenario_validation_report, STAGE033_PHASE3_SCENARIO_VALIDATION.md, batch/roadmap/event evidence, and Stage005 P3 state acceptance were missing before implementation. GREEN passed after adding the static Phase 3 scenario report, STAGE033_PHASE3_SCENARIO_VALIDATION.md, BATCH031_040 stage033_phase3_in_progress state, roadmap/event evidence, Stage033 focused tests, Stage005 validator/test acceptance, and Stage026-032 compatibility allowances for the later STAGE-033 P3 no-upload state. check_database_size_guard.py returned scenario_results PASS for migration_dry_run, repeat_execution, failure_rollback, recovery_smoke, raw_large_file_block, ocr_full_text_block, derived_artifact_limit, database_size_budget, connection_pool_boundary, transaction_boundary, and constraint_error_explanations, with side-effect flags true for no PostgreSQL connection, no migration execution, no raw metadata read, no runtime output, no size queries, no cleanup, and no fake IDS data. Stage033 Phase3 focused tests ran 3 tests OK; Stage005 focused Phase3 state test ran 1 test OK; Stage033 focused file ran 11 tests OK; Stage005 governance regression ran 112 tests OK; Stage026-030 compatibility tests ran 75 tests OK; Stage031-033 compatibility/focused tests ran 37 tests OK; full IDS v0.1 pursuing-goal discovery ran 409 tests OK; Stage005 validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, tracked forbidden runtime files, or raw data boundary gaps; py_compile passed for changed tests, validator, and checker; events.jsonl parsed with 154 events, 0 duplicate ids, and 0 JSON errors; render --project KM_IDSystem --write updated 1 owner file and check-render returned drift_count=0; git diff --check passed. Semantic validate returned sync validation errors=0 and the expected sparse-worktree diagnostic rc=1 with 29 missing root schema/workflow/hook/unrelated registered-project errors, so this run did not expand sparse checkout. This run does not connect to PostgreSQL, create live schema or migration files, create DSNs or credential-bearing configs, run size-statistics queries, execute VACUUM, reindex, cleanup, retention deletion, backup, restore, migration dry-run/apply/rollback/schema diff, read raw metadata, write runtime outputs, upload to GitHub, reinstall app entries, run batch review, or enter Phase 4. Fake IDS business data, fake database rows, fake source documents, placeholder corpus, and fabricated evidence remain forbidden."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/scripts/check_database_size_guard.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage033_database_size_guard.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "如果静态场景验证被误解为已执行 live migration、rollback、recovery smoke、size query 或 cleanup，会造成错误生产判断；如果约束解释不完整，后续 Phase 4 交付证据会缺少可解释停止原因。"
+            rollback: "Revert STAGE033 Phase 3 evidence, check_database_size_guard.py scenario changes, batch lock, Stage033/Stage005 tests, validator updates, roadmap/event changes, compatibility-test updates, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, app entries, GitHub state, PostgreSQL data directories, size-statistics outputs, cleanup outputs, or Phase 4 artifacts."

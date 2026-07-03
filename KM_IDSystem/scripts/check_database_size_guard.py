@@ -13,6 +13,7 @@ from typing import Any
 
 
 SCHEMA_VERSION = "ids.stage033.database_size_guard.phase2.v1"
+SCENARIO_SCHEMA_VERSION = "ids.stage033.database_size_guard.phase3.v1"
 INDEX_SCHEMA_VERSION = "ids.stage033.database_size_guard.index.v1"
 STAGE = "STAGE-033"
 PHASE = "Phase 2"
@@ -50,9 +51,30 @@ REQUIRED_GUARDRAILS = [
     "real_data_only_guard",
 ]
 
+EXPLAINED_CONSTRAINTS = {
+    "postgres_storage_scope_guard": "PostgreSQL 只能保存控制面 metadata、状态 refs、audit/evidence refs、migration/job state 和有界 hot-index metadata.",
+    "database_size_budget_guard": "数据库体积阈值是 policy threshold，不是实测数据库大小；超过 warning/hard-stop 阈值必须给出 owner-readable stop reason.",
+    "row_payload_guard": "单行 payload 和 scalar text 必须有上限；raw/OCR/vector/report binary body 必须改为 path-only ref 或可重建派生产物 ref.",
+    "retention_cleanup_guard": "cleanup 默认 dry-run only；自动删除、VACUUM、reindex、backup/restore 或 retention deletion 需要后续 owner stop gate.",
+    "connection_pool_budget_guard": "数据库体积护栏不得绕过 STAGE-032 连接池预算；连接池上限、overflow 和 backpressure 必须保持可解释.",
+    "rollback_verification_guard": "体积相关 schema 或 cleanup 变化必须绑定 STAGE-031 migration safety、备份恢复计划和 post-cleanup verification.",
+    "raw_metadata_boundary_guard": "/Users/linzezhang/Downloads/IDS_MetaData 只允许 path-only 边界记录，不得读取、列出、hash、复制、修改、删除、dump、scan 或 normalize.",
+    "real_data_only_guard": "系统只允许使用 owner-approved 真实数据；fake IDS business data、fake rows、placeholder corpus 和 fabricated evidence 必须阻断.",
+}
+
 
 def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _scenario(status: bool, evidence: str, owner_explanation: str, **extra: Any) -> dict[str, Any]:
+    payload = {
+        "status": "PASS" if status else "FAIL",
+        "evidence": evidence,
+        "owner_explanation": owner_explanation,
+    }
+    payload.update(extra)
+    return payload
 
 
 def _guardrail_results(index: dict[str, Any]) -> dict[str, bool]:
@@ -266,14 +288,159 @@ def build_stage033_database_size_guard_report(index_path: Path) -> dict[str, Any
     }
 
 
+def build_stage033_scenario_validation_report(index_path: Path) -> dict[str, Any]:
+    index = _load_json(index_path)
+    phase2_report = build_stage033_database_size_guard_report(index_path)
+    guardrails = phase2_report["guardrail_results"]
+    runtime_policy = phase2_report["runtime_policy_results"]
+    source_refs = index.get("source_refs", {})
+    schema_change = index.get("schema_change_plan", {})
+    policy_thresholds = phase2_report["policy_thresholds"]
+    budget = index.get("guardrails", {}).get("database_size_budget_guard", {})
+    row = index.get("guardrails", {}).get("row_payload_guard", {})
+    cleanup = index.get("guardrails", {}).get("retention_cleanup_guard", {})
+    pool = index.get("guardrails", {}).get("connection_pool_budget_guard", {})
+    rollback = index.get("guardrails", {}).get("rollback_verification_guard", {})
+
+    scenario_results = {
+        "migration_dry_run": _scenario(
+            guardrails["source_refs_match"]
+            and guardrails["schema_change_plan_static"]
+            and runtime_policy["execute_migration"],
+            (
+                f"future_migration_id={schema_change.get('future_migration_id')}; "
+                "sql_file_created=false; migration_executed=false; execute_migration=false."
+            ),
+            "migration dry-run 只验证 tracked contract 依赖和 future migration identity；本阶段不执行 live dry-run。",
+        ),
+        "repeat_execution": _scenario(
+            bool(index.get("database_size_guard_contract_id"))
+            and guardrails["schema_change_plan_static"]
+            and runtime_policy["write_runtime_outputs"],
+            (
+                f"database_size_guard_contract_id={index.get('database_size_guard_contract_id')}; "
+                "write_runtime_outputs=false."
+            ),
+            "重复执行依赖稳定 contract id 和无 runtime 写入，避免重复生成体积统计、cleanup output 或数据库状态。",
+        ),
+        "failure_rollback": _scenario(
+            guardrails["rollback_verification_guard"]
+            and guardrails["retention_cleanup_guard"]
+            and runtime_policy["execute_migration"]
+            and runtime_policy["execute_restore"],
+            (
+                "rollback_verification_guard=true; retention_cleanup_guard=true; "
+                "execute_migration=false; execute_restore=false."
+            ),
+            "失败回滚依赖 STAGE-031 migration safety、backup/restore plan 和 owner stop gate；本阶段不执行 live rollback。",
+        ),
+        "recovery_smoke": _scenario(
+            guardrails["rollback_verification_guard"]
+            and guardrails["raw_metadata_boundary_guard"]
+            and schema_change.get("recovery_smoke_executed") is False
+            and runtime_policy["connect_to_postgres"],
+            "recovery_smoke_executed=false; connect_to_postgres=false; raw boundary remains path-only.",
+            "恢复冒烟在本阶段是静态 contract 验证，不写数据库、不连接 PostgreSQL、不触碰原始资料。",
+        ),
+        "raw_large_file_block": _scenario(
+            guardrails["postgres_storage_scope_guard"]
+            and guardrails["raw_content_block_guard"]
+            and guardrails["large_file_block_guard"],
+            "storage scope, raw content block, and large-file block guardrails all pass.",
+            "PostgreSQL 不会写入 500GB 原始文件、raw database rows、source bodies、archives、report binaries 或 media blobs。",
+        ),
+        "ocr_full_text_block": _scenario(
+            guardrails["ocr_full_text_block_guard"]
+            and guardrails["row_payload_guard"],
+            (
+                f"max_control_plane_payload_bytes={row.get('max_control_plane_payload_bytes')}; "
+                f"max_single_scalar_text_bytes={row.get('max_single_scalar_text_bytes')}; "
+                "stores_ocr_full_text_allowed=false."
+            ),
+            "OCR 全文、document body、unbounded extracted text 和 chunk body text 必须保持在 PostgreSQL 之外。",
+        ),
+        "derived_artifact_limit": _scenario(
+            guardrails["derived_artifact_limit_guard"]
+            and runtime_policy["write_runtime_outputs"],
+            "derived_artifact_limit_guard=true; write_runtime_outputs=false; only bounded refs are allowed.",
+            "无限制派生产物不入库；允许的仅是 manifest/evidence/audit/report/source refs 和可重建有界 hot-index metadata。",
+        ),
+        "database_size_budget": _scenario(
+            guardrails["database_size_budget_guard"]
+            and runtime_policy["run_size_queries"]
+            and policy_thresholds["measured_database_size_gib"] == "NOT_MEASURED_BY_POLICY",
+            (
+                f"internal_disk_budget_gib={budget.get('internal_disk_budget_gib')}; "
+                f"warning_threshold_gib={budget.get('warning_threshold_gib')}; "
+                f"hard_stop_threshold_gib={budget.get('hard_stop_threshold_gib')}; "
+                "run_size_queries=false; measured_database_size_gib=NOT_MEASURED_BY_POLICY."
+            ),
+            "体积阈值用于保护 800GB 内置盘，但不是实测数据库大小；未来 live 检查必须单独授权。",
+        ),
+        "connection_pool_boundary": _scenario(
+            guardrails["connection_pool_budget_guard"]
+            and runtime_policy["connect_to_postgres"]
+            and source_refs.get("stage032_connection_pool_index_ref")
+            == "../database_connection_pool/stage032_connection_pool_index.json",
+            (
+                f"aggregate_max_pool_size={pool.get('aggregate_max_pool_size')}; "
+                f"max_overflow={pool.get('max_overflow')}; connect_to_postgres=false."
+            ),
+            "体积护栏不能放大连接池；任何并发、overflow 或 backpressure 变化必须由 STAGE-032 合同解释。",
+        ),
+        "transaction_boundary": _scenario(
+            source_refs.get("stage031_migration_safety_index_ref")
+            == "../schema_migration_safety/stage031_migration_safety_index.json"
+            and guardrails["connection_pool_budget_guard"]
+            and guardrails["rollback_verification_guard"]
+            and cleanup.get("cleanup_default_mode") == "dry_run_only"
+            and rollback.get("requires_post_cleanup_verification") is True,
+            (
+                "Stage031 migration safety ref and Stage032 pool budget ref are present; "
+                "cleanup_default_mode=dry_run_only; post_cleanup_verification=true."
+            ),
+            "事务边界通过上游 migration safety、连接池预算、dry-run cleanup 和 rollback verification 共同约束。",
+        ),
+        "constraint_error_explanations": _scenario(
+            all(guardrails.get(key, False) for key in EXPLAINED_CONSTRAINTS),
+            "All required database-size guard constraints have owner-facing explanations.",
+            "约束错误必须能解释为存储范围、体积阈值、row payload、cleanup、连接池、回滚、raw boundary 或真实数据问题。",
+            constraint_refs=list(EXPLAINED_CONSTRAINTS),
+            explanations=EXPLAINED_CONSTRAINTS,
+        ),
+    }
+
+    return {
+        "schema_version": SCENARIO_SCHEMA_VERSION,
+        "stage": STAGE,
+        "phase": "Phase 3",
+        "task_id": "IDS-V0_1-STAGE033-P3",
+        "acceptance_id": ACCEPTANCE_ID,
+        "scenario_results": scenario_results,
+        "raw_metadata_boundary": phase2_report["raw_metadata_boundary"],
+        "database_size_guard_index_ref": index_path.as_posix(),
+        "does_not_connect_to_postgres": True,
+        "does_not_execute_migration": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_write_runtime_outputs": True,
+        "does_not_use_fake_ids_business_data": True,
+        "does_not_run_size_queries": True,
+        "does_not_execute_cleanup": True,
+    }
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     pursue_root = root / "docs" / "pursuing_goal" / "ids_v0_1"
     index_path = pursue_root / "database_size_guard" / "stage033_database_size_guard_index.json"
     report = build_stage033_database_size_guard_report(index_path)
+    scenario_report = build_stage033_scenario_validation_report(index_path)
     print(
         json.dumps(
-            {"database_size_guard_report": report},
+            {
+                "database_size_guard_report": report,
+                "scenario_report": scenario_report,
+            },
             ensure_ascii=False,
             sort_keys=True,
             indent=2,
@@ -282,6 +449,10 @@ def main() -> int:
     checks = (
         list(report["guardrail_results"].values())
         + list(report["runtime_policy_results"].values())
+        + [
+            scenario["status"] == "PASS"
+            for scenario in scenario_report["scenario_results"].values()
+        ]
         + [
             report["index_schema_version"] == INDEX_SCHEMA_VERSION,
             report["does_not_connect_to_postgres"],

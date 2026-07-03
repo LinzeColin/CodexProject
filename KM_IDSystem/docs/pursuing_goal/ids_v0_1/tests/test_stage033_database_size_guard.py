@@ -1,4 +1,5 @@
 import json
+import importlib.util
 from pathlib import Path
 import subprocess
 import sys
@@ -10,6 +11,7 @@ PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE033_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE033_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE033_PHASE2_DATABASE_SIZE_GUARD_SLICE.md"
+PHASE3 = PURSUE_ROOT / "STAGE033_PHASE3_SCENARIO_VALIDATION.md"
 INDEX = PURSUE_ROOT / "database_size_guard" / "stage033_database_size_guard_index.json"
 SCRIPT = ROOT / "scripts" / "check_database_size_guard.py"
 BATCH_LOCK = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
@@ -130,12 +132,14 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
         allowed_lock_current_terms = [
             'status: "stage033_phase1_in_progress"',
             'status: "stage033_phase2_in_progress"',
+            'status: "stage033_phase3_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 2"',
             'next_phase: "Phase 3"',
             'next_gate: "IDS-STAGE033-P2-GATE"',
             'next_gate: "IDS-STAGE033-P3-GATE"',
+            'next_gate: "IDS-STAGE033-P4-GATE"',
         ]
         typo_guard_terms = [
             'acceptance_id: "ACC-STAGE-033"',
@@ -148,10 +152,12 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
             'current_task_id: "IDS-V0_1-STAGE033-P2"',
+            'current_task_id: "IDS-V0_1-STAGE033-P3"',
         ]
         allowed_acceptance_status_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_size_guard_slice_defined"',
+            'acceptance_status: "phase3_scenario_validation_passed"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE033"',
@@ -163,14 +169,17 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE033-P1"',
             'current_phase_id: "IDS-STAGE033-P2"',
+            'current_phase_id: "IDS-STAGE033-P3"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
             'current_task_id: "IDS-V0_1-STAGE033-P2"',
+            'current_task_id: "IDS-V0_1-STAGE033-P3"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE033-P2-GATE"',
             'next_gate_id: "IDS-STAGE033-P3-GATE"',
+            'next_gate_id: "IDS-STAGE033-P4-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE033-P1-20260703-001"',
@@ -202,6 +211,157 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+
+class Stage033DatabaseSizeGuardPhase3Tests(unittest.TestCase):
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage033_database_size_guard", SCRIPT)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_phase3_scenario_report_validates_migration_raw_size_pool_and_constraints(self):
+        module = self._load_checker_module()
+        self.assertTrue(INDEX.is_file(), f"missing size guard index: {INDEX}")
+
+        report = module.build_stage033_scenario_validation_report(INDEX)
+
+        self.assertEqual("ids.stage033.database_size_guard.phase3.v1", report["schema_version"])
+        self.assertEqual("STAGE-033", report["stage"])
+        self.assertEqual("Phase 3", report["phase"])
+        self.assertEqual("IDS-V0_1-STAGE033-P3", report["task_id"])
+        self.assertEqual("ACC-STAGE-033", report["acceptance_id"])
+        self.assertTrue(report["does_not_connect_to_postgres"])
+        self.assertTrue(report["does_not_execute_migration"])
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertTrue(report["does_not_write_runtime_outputs"])
+        self.assertTrue(report["does_not_use_fake_ids_business_data"])
+        self.assertTrue(report["does_not_run_size_queries"])
+        self.assertTrue(report["does_not_execute_cleanup"])
+
+        scenario_results = report["scenario_results"]
+        expected_scenarios = [
+            "migration_dry_run",
+            "repeat_execution",
+            "failure_rollback",
+            "recovery_smoke",
+            "raw_large_file_block",
+            "ocr_full_text_block",
+            "derived_artifact_limit",
+            "database_size_budget",
+            "connection_pool_boundary",
+            "transaction_boundary",
+            "constraint_error_explanations",
+        ]
+        self.assertEqual(sorted(expected_scenarios), sorted(scenario_results))
+        for scenario_id, result in scenario_results.items():
+            with self.subTest(scenario_id=scenario_id):
+                self.assertEqual("PASS", result["status"])
+                self.assertTrue(result["evidence"])
+                self.assertTrue(result["owner_explanation"])
+
+        explanations = scenario_results["constraint_error_explanations"]["explanations"]
+        for constraint_id in [
+            "postgres_storage_scope_guard",
+            "database_size_budget_guard",
+            "row_payload_guard",
+            "retention_cleanup_guard",
+            "connection_pool_budget_guard",
+            "rollback_verification_guard",
+            "raw_metadata_boundary_guard",
+            "real_data_only_guard",
+        ]:
+            with self.subTest(constraint_id=constraint_id):
+                self.assertIn(constraint_id, explanations)
+
+    def test_phase3_doc_covers_static_scenarios_and_blocks_live_side_effects(self):
+        self.assertTrue(PHASE3.is_file(), f"missing phase3 evidence: {PHASE3}")
+        text = PHASE3.read_text(encoding="utf-8")
+
+        required_terms = [
+            "ids.stage033.database_size_guard.phase3.v1",
+            "IDS-V0_1-STAGE033-P3",
+            "ACC-STAGE-033",
+            "build_stage033_scenario_validation_report",
+            "migration_dry_run",
+            "repeat_execution",
+            "failure_rollback",
+            "recovery_smoke",
+            "raw_large_file_block",
+            "ocr_full_text_block",
+            "derived_artifact_limit",
+            "database_size_budget",
+            "connection_pool_boundary",
+            "transaction_boundary",
+            "constraint_error_explanations",
+            "不连接 PostgreSQL",
+            "不执行 live migration dry-run、apply、rollback、backup、restore 或 schema diff",
+            "不运行 size query、VACUUM、reindex、cleanup 或 retention deletion",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据、虚构数据库行、虚构源文档、placeholder corpus 或伪造证据",
+            "NO_PHASE4",
+        ]
+
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_phase3_batch_roadmap_and_event_track_local_no_upload_gate(self):
+        self.assertTrue(PHASE3.is_file(), f"missing phase3 evidence: {PHASE3}")
+        self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
+        self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
+        self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
+
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        lock_terms = [
+            'status: "stage033_phase3_in_progress"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            'next_phase: "Phase 4"',
+            'next_gate: "IDS-STAGE033-P4-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE033-P3"',
+            'acceptance_status: "phase3_scenario_validation_passed"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE3_SCENARIO_VALIDATION.md",
+            "KM_IDSystem/scripts/check_database_size_guard.py",
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE033"',
+            'current_phase_id: "IDS-STAGE033-P3"',
+            'current_task_id: "IDS-V0_1-STAGE033-P3"',
+            'next_gate_id: "IDS-STAGE033-P4-GATE"',
+            'phase_id: "IDS-STAGE033-P3"',
+            'task_id: "IDS-V0_1-STAGE033-P3"',
+            'status: "passed_with_local_evidence"',
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE033-P3-20260703-001"',
+            '"event_type":"validation"',
+            '"task_id":"IDS-V0_1-STAGE033-P3"',
+            '"ACC-STAGE-033"',
+            "STAGE033_PHASE3_SCENARIO_VALIDATION.md",
+            "build_stage033_scenario_validation_report",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+        ]
+
+        self.assertNotIn('current_task_id: "IDS_V0_1-STAGE033-P3"', lock_text)
+        for term in lock_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, lock_text)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -358,26 +518,48 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
                 self.assertIn(term, phase2_text)
 
         lock_terms = [
-            'status: "stage033_phase2_in_progress"',
             '      - "Phase 1"',
             '      - "Phase 2"',
-            'next_phase: "Phase 3"',
-            'next_gate: "IDS-STAGE033-P3-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE033-P2"',
-            'acceptance_status: "phase2_size_guard_slice_defined"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE2_DATABASE_SIZE_GUARD_SLICE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json",
             "KM_IDSystem/scripts/check_database_size_guard.py",
             'push_allowed: false',
         ]
+        allowed_lock_current_terms = [
+            'status: "stage033_phase2_in_progress"',
+            'status: "stage033_phase3_in_progress"',
+        ]
+        allowed_lock_next_terms = [
+            'next_phase: "Phase 3"',
+            'next_phase: "Phase 4"',
+            'next_gate: "IDS-STAGE033-P3-GATE"',
+            'next_gate: "IDS-STAGE033-P4-GATE"',
+        ]
+        allowed_lock_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE033-P2"',
+            'current_task_id: "IDS-V0_1-STAGE033-P3"',
+        ]
+        allowed_acceptance_status_terms = [
+            'acceptance_status: "phase2_size_guard_slice_defined"',
+            'acceptance_status: "phase3_scenario_validation_passed"',
+        ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE033"',
-            'current_phase_id: "IDS-STAGE033-P2"',
-            'current_task_id: "IDS-V0_1-STAGE033-P2"',
-            'next_gate_id: "IDS-STAGE033-P3-GATE"',
             'phase_id: "IDS-STAGE033-P2"',
             'task_id: "IDS-V0_1-STAGE033-P2"',
             'status: "passed_with_local_evidence"',
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE033-P2"',
+            'current_phase_id: "IDS-STAGE033-P3"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE033-P2"',
+            'current_task_id: "IDS-V0_1-STAGE033-P3"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE033-P3-GATE"',
+            'next_gate_id: "IDS-STAGE033-P4-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE033-P2-20260703-001"',
@@ -394,9 +576,19 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
         for term in lock_terms:
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_current_terms), allowed_lock_current_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_next_terms), allowed_lock_next_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_task_terms), allowed_lock_task_terms)
+        self.assertTrue(
+            any(term in lock_text for term in allowed_acceptance_status_terms),
+            allowed_acceptance_status_terms,
+        )
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
