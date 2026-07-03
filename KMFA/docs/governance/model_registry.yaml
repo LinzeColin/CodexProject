@@ -86,7 +86,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s04-stage-review"
+    model_version: "0.1.4-s05p1-a0-file-registration"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -110,6 +110,7 @@ models:
       - "FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-V014-S04P3-BASIC-TOOL-REPORT-001"
       - "FORM-KMFA-V014-S04-STAGE-REVIEW-001"
+      - "FORM-KMFA-V014-S05P1-A0-FILE-REGISTRATION-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -153,6 +154,7 @@ models:
       - "PARAM-KMFA-1045"
       - "PARAM-KMFA-1046"
       - "PARAM-KMFA-1047"
+      - "PARAM-KMFA-1050"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -275,7 +277,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s04-stage-review"
+    model_version: "0.1.4-s05p1-a0-file-registration"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -283,6 +285,7 @@ models:
       - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
       - "FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-V014-S04P3-BASIC-TOOL-REPORT-001"
+      - "FORM-KMFA-V014-S05P1-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -339,6 +342,8 @@ models:
       - "PARAM-KMFA-417"
       - "PARAM-KMFA-418"
       - "PARAM-KMFA-419"
+      - "PARAM-KMFA-1048"
+      - "PARAM-KMFA-1049"
       - "PARAM-KMFA-420"
       - "PARAM-KMFA-421"
       - "PARAM-KMFA-422"

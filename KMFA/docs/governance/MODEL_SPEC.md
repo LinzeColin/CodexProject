@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s04-stage-review
+product_version: 0.1.4-s05p1-a0-file-registration
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 Stage 4 review 只证明 S04-P1/S04-P2/S04-P3 validators 全部 PASS、open findings=0 和 NO_GO/Q2/D/blocked 边界闭合；不声明 GitHub upload、S05、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S05-P1 只证明 A0 文件聚合登记、Q3 候选状态、private diagnostic 放置和 NO_GO/Q3/D/blocked 边界；本 phase 授权只读 list/stat/read/hash raw inbox，但不声明 S05-P2 字段级黄金候选、S05-P3 权威基准、Stage 5 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s04-stage-review
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s04_stage_review.py`, `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/machine/stage4_review_manifest.json`
-- current_v014_scope_lock: `Stage 4 review completed; GitHub upload/S05/raw value matching/lineage full check/formal report/live connector/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s05_p1_a0_file_registration.py`, `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/machine/a0_file_registration_manifest.json`
+- current_v014_scope_lock: `S05-P1 completed; S05-P2/S05-P3/Stage 5 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -106,6 +106,15 @@ product_version: 0.1.4-s04-stage-review
 - expression: `s04_stage_review_valid = phase_results == PASS/PASS/PASS AND open_review_finding_count == 0 AND raw_inbox_read_by_this_review == false AND github_upload_performed == false AND s05_p1_started == false AND current_go_no_go == NO_GO`
 - evidence: `KMFA/tools/v014_s04_stage_review.py`, `KMFA/tools/check_v014_s04_stage_review.py`, `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/machine/stage4_review_manifest.json`
 - limitation: 只证明 Stage 4 public-safe local review closure；不读取 raw inbox，不发布 raw/private 明细，不执行 GitHub upload、S05、raw value matching、lineage full check、formal report 或 business execution。
+
+### FORM-KMFA-V014-S05P1-A0-FILE-REGISTRATION-001
+
+- type: deterministic public-safe A0 file registration gate
+- purpose: 验证 v0.1.4 S05-P1 A0 文件登记，覆盖 A0 文件聚合计数、Q3 candidate 计数、private diagnostic 放置、public raw hash/member name 不提交、raw inbox 只读授权操作和 upload-deferred NO_GO 边界。
+- fact_level: EXTRACTED
+- expression: `s05p1_valid = total_files == 9 AND pdf_files == 8 AND excel_files == 1 AND private_business_member_hash_record_count == 9 AND public_actual_raw_member_hash_committed_count == 0 AND q3_machine_candidate_count == 9 AND q4_human_locked_count == 0 AND raw_inbox_hashed_by_this_phase == true AND raw_inbox_mutated_by_this_phase == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s05_p1_a0_file_registration.py`, `KMFA/tools/check_v014_s05_p1_a0_file_registration.py`, `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/machine/a0_file_registration_manifest.json`
+- limitation: S05-P1 只证明文件登记和 private diagnostic 边界；不证明字段级 golden baseline、权威基准锁定、raw value matching、zero-delta、正式报告或 GitHub upload readiness。
 
 ### FORM-KMFA-AMOUNT-001
 

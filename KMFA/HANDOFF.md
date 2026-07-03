@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `Stage 4 整体复审`：`KMFA/tools/v014_s04_stage_review.py`、`KMFA/tools/check_v014_s04_stage_review.py`、`KMFA/tests/test_v014_s04_stage_review.py` 和 Stage 4 review evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/`。本 review 复跑 S04-P1/S04-P2/S04-P3 validators，锁定 phase_results 全部 PASS、open findings `0`、amount cases `9`、canonical fields `6`、synthetic cases `22/22`，并保持 NO_GO/Q2/D/blocked。未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S05-P1`，不得跳到 GitHub upload、S05-P2/S05-P3、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S05-P1｜A0 文件登记`：`KMFA/tools/v014_s05_p1_a0_file_registration.py`、`KMFA/tools/check_v014_s05_p1_a0_file_registration.py`、`KMFA/tests/test_v014_s05_p1_a0_file_registration.py` 和 S05-P1 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/`。本 phase 按 S05-P1 授权对 `/Users/linzezhang/Downloads/KMFA_MetaData` 执行只读 list/stat/read/hash，锁定 A0 public-safe 聚合计数 total files `9`、PDF `8`、Excel `1`、Q3 machine candidates `9`、Q4/Q5 `0`、private business member hash diagnostic count `9`、public raw hash committed `0`，并保持 NO_GO/Q3/D/blocked。真实 package/member diagnostic 仅写入 git-ignored `KMFA/.codex_private_runtime/`；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。未修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S05-P2/S05-P3、Stage 5 review、GitHub upload、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S05-P2`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s04-stage-review`
-- 当前已完成: `v0.1.4 Stage 4 review`
-- 证据目录: `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/`
-- validator: `KMFA/tools/check_v014_s04_stage_review.py`
-- focused test: `KMFA/tests/test_v014_s04_stage_review.py`
+- 当前版本: `0.1.4-s05p1-a0-file-registration`
+- 当前已完成: `v0.1.4 S05-P1 A0 file registration`
+- 证据目录: `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/`
+- validator: `KMFA/tools/check_v014_s05_p1_a0_file_registration.py`
+- focused test: `KMFA/tests/test_v014_s05_p1_a0_file_registration.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: 本 review 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe S04 validators 并生成 review evidence。
-- 未执行: GitHub upload、S05、raw inventory、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- raw boundary: 本 phase 按 S05-P1 授权只读读取、列出、stat 和 hash `/Users/linzezhang/Downloads/KMFA_MetaData` 中匹配 public shape 的 A0 private zip；未修改、删除、移动、重命名、覆盖或写入 raw inbox；真实 hash diagnostic 仅在 git-ignored private runtime。
+- 未执行: GitHub upload、S05-P2、S05-P3、Stage 5 review、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
 
 ## v0.1.3 历史状态
 

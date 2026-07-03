@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s05p1-a0-file-registration
+
+- task_id: `KMFA-V014-S05-P1-A0-FILE-REGISTRATION-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred_private_hashes_computed_package_mismatch`
+- scope: v0.1.4 S05-P1 A0 file registration only; used the S05-P1 authorized read-only raw inbox list/stat/read/hash path to identify the matching A0 private zip by public shape, wrote true package/member diagnostics only to git-ignored private runtime, and generated public-safe A0 register/candidate evidence.
+- evidence: `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/human/a0_file_registration_report.md`, `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/human/test_results.md`, `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/machine/a0_file_registration_manifest.json`, `KMFA/tools/check_v014_s05_p1_a0_file_registration.py`
+- counts: total_files=9, pdf_files=8, excel_files=1, private_business_member_hash_record_count=9, public_actual_raw_package_hash_committed_count=0, public_actual_raw_member_hash_committed_count=0, raw_member_name_committed_count=0, candidate_count=9, q3_machine_candidate_count=9, q4_human_locked_count=0, q5_calculation_baseline_allowed_count=0, q5_formal_report_allowed_count=0.
+- blocker_state: GitHub upload=false, S05-P2=false, S05-P3=false, Stage5_review=false, raw value matching=false, lineage full check=false, formal_report_allowed=false, delivery_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q3, current_report_grade=D.
+- raw_boundary: raw inbox read/list/stat/hash=true by S05-P1 authorization; raw inbox mutation/write/delete/move/rename/overwrite=false; public raw filenames/hash/member names/sheet names/field plaintext/row values/business values committed=false.
+
+product_version: 0.1.4-s05p1-a0-file-registration
+version_matrix_product_version_reference: 0.1.4-s05p1-a0-file-registration
+
 ## 2026-07-04 - 0.1.4-s04-stage-review
 
 - task_id: `KMFA-V014-S04-STAGE-REVIEW-20260704`
