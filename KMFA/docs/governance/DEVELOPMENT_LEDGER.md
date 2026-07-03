@@ -1,15 +1,23 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s08p1-project-composite-key-replay
-version_matrix_product_version_reference: 0.1.3-s08p1-project-composite-key-replay
+## 2026-07-03 - 0.1.3-s08p2-business-entity-model-replay
+
+- task_id: `KMFA-V013-S08-P2-BUSINESS-ENTITY-MODEL-REPLAY-20260703`
+- status: `completed_validated_local_only_no_go_upload_deferred_business_entity_model_replayed`
+- evidence: `KMFA/stage_artifacts/V013_S08_P2_BUSINESS_ENTITY_MODEL_REPLAY/machine/business_entity_model_replay_manifest.json`
+- validator: `KMFA/tools/check_v013_s08_p2_business_entity_model_replay.py`
+- scope: S08-P2 replay only; S08-P3, Stage 8 review and GitHub upload not performed.
+
+product_version: 0.1.3-s08p2-business-entity-model-replay
+version_matrix_product_version_reference: 0.1.3-s08p2-business-entity-model-replay
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S08`
-- current_phase: `v0.1.3 S08-P1 project composite key replay`
-- current_tasks: `KMFA-V013-S08-P1-PROJECT-COMPOSITE-KEY-REPLAY-20260703`
-- status: `local_s08_p1_completed_upload_deferred_until_stage10_batch_no_go`
+- current_phase: `v0.1.3 S08-P2 business entity model replay`
+- current_tasks: `KMFA-V013-S08-P2-BUSINESS-ENTITY-MODEL-REPLAY-20260703`
+- status: `local_s08_p2_completed_upload_deferred_until_stage10_batch_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -58,6 +66,7 @@ version_matrix_product_version_reference: 0.1.3-s08p1-project-composite-key-repl
 | `KMFA-V013-S07-P2-WPS-FILE-ADAPTER-REPLAY-20260703` | v0.1.3 S07-P2 WPS file adapter replay 本地通过，4 类 WPS export、20 条 hash-only 字段映射、4 条只读字段报告、4 条转换提示和 20 条 source header hash 已 public-safe 锁定；未读取 raw inbox，未执行 S07-P3、Stage 7 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S07_P2_WPS_FILE_ADAPTER_REPLAY/human/wps_file_adapter_replay_report.md` |
 | `KMFA-V013-S07-P3-REDCIRCLE-POSTPONEMENT-REPLAY-20260703` | v0.1.3 S07-P3 Redcircle postponement replay 本地通过，4 类 Redcircle reserved export templates、1 条 connector policy、4 条 rollback plan、4 条 registry source 和 D15 automatic connector blocked 已 public-safe 锁定；未读取 raw inbox，未执行 Stage 7 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S07_P3_REDCIRCLE_POSTPONEMENT_REPLAY/human/redcircle_postponement_replay_report.md` |
 | `KMFA-V013-S08-P1-PROJECT-COMPOSITE-KEY-REPLAY-20260703` | v0.1.3 S08-P1 project composite key replay 本地通过，重放 8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条 manual review queue、1 条 strong auto match 和 10000 bps 权重；S08-P2/S08-P3/Stage 8 review/GitHub upload 均未执行 | `KMFA/stage_artifacts/V013_S08_P1_PROJECT_COMPOSITE_KEY_REPLAY/human/project_composite_key_replay_report.md` |
+| `KMFA-V013-S08-P2-BUSINESS-ENTITY-MODEL-REPLAY-20260703` | v0.1.3 S08-P2 business entity model replay 本地通过，重放 8 类实体、14 条关系、32 条 lifecycle statuses、每类实体 4 个状态；S08-P3/Stage 8 review/GitHub upload 均未执行 | `KMFA/stage_artifacts/V013_S08_P2_BUSINESS_ENTITY_MODEL_REPLAY/human/business_entity_model_replay_report.md` |
 | `KMFA-S05-STAGE-REVIEW-20260630` | Stage 5 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
 | `KMFA-S05-GITHUB-UPLOAD-20260630` | Stage 5 final GitHub upload 已完成 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` |
 | `S6PAT01-S6PAT03` | S06-P1 零差异校验器完成本地验证：逐字段比较整数分，任意 1 分差异失败并生成 public-safe mismatch report | `KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md` |
@@ -158,7 +167,7 @@ version_matrix_product_version_reference: 0.1.3-s08p1-project-composite-key-repl
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S08-P1 完成后，下一步只能另起 run 执行 v0.1.3 S08-P2 business entity model replay 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S08_P1_PROJECT_COMPOSITE_KEY_REPLAY/human/test_results.md` |
+| 无 | v0.1.3 S08-P2 完成后，下一步只能另起 run 执行 v0.1.3 S08-P3 entity matching quality replay 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S08_P2_BUSINESS_ENTITY_MODEL_REPLAY/human/test_results.md` |
 
 ## Not Completed
 
@@ -167,4 +176,4 @@ version_matrix_product_version_reference: 0.1.3-s08p1-project-composite-key-repl
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S08-P1 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S08-P2 或用户明确指定的单一 phase |
+| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S08-P2 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S08-P3 或用户明确指定的单一 phase |
