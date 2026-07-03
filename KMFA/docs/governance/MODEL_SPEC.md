@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s05p2-field-golden-baseline
+product_version: 0.1.4-s05p3-authority-baseline-lock
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S05-P2 只证明 5 个 field contracts、45 条 field candidates、40 条 PDF private-only anchor/hash recorded、5 条 Excel owner-downgraded cross-source support only、Q3/Q4/Q5 状态和 NO_GO/Q3/D/blocked 边界；本 phase 未读取 raw inbox，不声明 S05-P3 权威基准、Stage 5 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S05-P3 只证明 45 条 authority records、40 条 PDF-backed fields 锁定为 Q5 calculation baseline、5 条 Excel fields 降级为 cross-source support only、Q4 human-confirmed=40、formal report allowed=0 和 NO_GO/Q4/D/blocked 边界；本 phase 未读取 raw inbox，不声明 Stage 5 review、GitHub upload、raw value matching、zero-delta validation、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s05p2-field-golden-baseline
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s05_p2_field_golden_baseline.py`, `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json`
-- current_v014_scope_lock: `S05-P2 completed; S05-P3/Stage 5 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s05_p3_authority_baseline_lock.py`, `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/machine/authority_baseline_lock_manifest.json`
+- current_v014_scope_lock: `S05-P3 completed; Stage 5 review/GitHub upload/raw value matching/zero-delta validation/lineage full check/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -125,6 +125,16 @@ product_version: 0.1.4-s05p2-field-golden-baseline
 - evidence: `KMFA/tools/v014_s05_p2_field_golden_baseline.py`, `KMFA/tools/check_v014_s05_p2_field_golden_baseline.py`, `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json`
 - boundary_validation: `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/human/test_results.md`
 - limitation: S05-P2 只证明字段级 public-safe candidate baseline 和 active owner/授权降级边界；不证明 S05-P3 权威基准锁定、Stage 5 review、raw value matching、zero-delta、正式报告或 GitHub upload readiness。
+
+### FORM-KMFA-V014-S05P3-AUTHORITY-BASELINE-LOCK-001
+
+- type: deterministic public-safe authority baseline lock gate
+- purpose: 验证 v0.1.4 S05-P3 权威基准锁定，覆盖 authority records、Q5 calculation-baseline lock、Excel cross-source support only exclusion、Q4 human-confirmed release state、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s05p3_valid = authority_record_count == 45 AND q5_calculation_baseline_locked_count == 40 AND excluded_cross_source_support_only_count == 5 AND q4_human_confirmed_count == 40 AND q5_full_quality_grade_allowed_count == 0 AND formal_report_allowed_count == 0 AND zero_delta_validated_count == 0 AND lineage_full_check_completed_count == 0 AND raw_inbox_read_by_this_phase == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s05_p3_authority_baseline_lock.py`, `KMFA/tools/check_v014_s05_p3_authority_baseline_lock.py`, `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/machine/authority_baseline_lock_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/human/test_results.md`
+- limitation: S05-P3 只证明 public-safe authority baseline lock 和 Q5 calculation-baseline readiness；不证明 Stage 5 review、raw value matching、zero-delta、lineage full check、正式报告或 GitHub upload readiness。
 
 ### FORM-KMFA-AMOUNT-001
 
@@ -337,7 +347,7 @@ product_version: 0.1.4-s05p2-field-golden-baseline
 
 ### MOD-KMFA-COST-001
 
-- status: active with v0.1.4 S04-P3 basic tool report evidence and existing public-safe cost-analysis formulas
+- status: active with v0.1.4 S05-P3 authority baseline lock evidence and existing public-safe cost-analysis formulas
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
 - current limitation: S18-P1 precision stress, S18-P2 full regression acceptance and S18-P3 integration preparation are local-only; S18-P2 Go/No-Go remains NO_GO; Stage 18 review/upload, lineage full check, official report generation, live connectors and OpMe deep coupling are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.
@@ -345,8 +355,8 @@ product_version: 0.1.4-s05p2-field-golden-baseline
 ## Counts
 
 - active models: 8
-- active formulas: 65
-- active parameters: 668
+- active formulas: 70
+- active parameters: 685
 - planned models: 0
 - planned formulas: 0
 - planned parameters: 1

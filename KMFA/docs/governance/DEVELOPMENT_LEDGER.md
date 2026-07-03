@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s05p3-authority-baseline-lock
+
+- task_id: `KMFA-V014-S05-P3-AUTHORITY-BASELINE-LOCK-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred_authority_baseline_locked_public_safe`
+- scope: v0.1.4 S05-P3 authority baseline lock only; used S05-P2 public field contracts/candidates and active owner/authorized downgrade record to generate a public-safe authority baseline without reading raw inbox.
+- evidence: `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/human/authority_baseline_lock_report.md`, `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/human/test_results.md`, `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/machine/authority_baseline_lock_manifest.json`, `KMFA/tools/check_v014_s05_p3_authority_baseline_lock.py`
+- counts: authority_record_count=45, q5_calculation_baseline_locked_count=40, excluded_cross_source_support_only_count=5, q4_human_confirmed_count=40, q5_calculation_baseline_allowed_count=40, q5_full_quality_grade_allowed_count=0, formal_report_allowed_count=0, zero_delta_validated_count=0, lineage_full_check_completed_count=0.
+- blocker_state: GitHub upload=false, Stage5_review=false, raw value matching=false, zero-delta validation=false, lineage full check=false, formal_report_allowed=false, delivery_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D.
+- raw_boundary: raw inbox read/list/stat/hash/mutation=false in S05-P3; public raw filenames/hash/member names/sheet names/field plaintext/row values/business values committed=false.
+
+product_version: 0.1.4-s05p3-authority-baseline-lock
+version_matrix_product_version_reference: 0.1.4-s05p3-authority-baseline-lock
+
 ## 2026-07-04 - 0.1.4-s05p2-field-golden-baseline
 
 - task_id: `KMFA-V014-S05-P2-FIELD-GOLDEN-BASELINE-20260704`
