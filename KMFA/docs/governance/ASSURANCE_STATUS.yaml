@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260704-V014-S06-P3-VALIDATION-EVIDENCE"
+as_of_event_id: "EVENT-KMFA-20260704-V014-S06-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "39201eecaefd445553b066c27c7e73601c5afe18"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-04T12:20:00+10:00"
-generator_version: "manual-v014-s06-p3-validation-evidence"
+snapshot_event_time: "2026-07-04T14:10:00+10:00"
+generator_version: "manual-v014-s06-stage-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 697
-    total_active_formulas: 74
+    total_active_parameters: 700
+    total_active_formulas: 75
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -174,6 +174,10 @@ dimensions:
       - "KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/human/validation_evidence_report.md"
       - "KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/machine/validation_evidence_manifest.json"
       - "KMFA/tools/check_v014_s06_p3_validation_evidence.py"
+      - "KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/human/stage6_review_report.md"
+      - "KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
+      - "KMFA/tools/check_v014_s06_stage_review.py"
       - "KMFA/tools/check_v014_s06_p1_zero_delta_validator.py"
       - "KMFA/tools/check_v014_s04_stage_review.py"
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
