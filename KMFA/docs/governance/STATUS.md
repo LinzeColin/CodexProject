@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s04-stage-review`
-- current_stage: `S04`
-- current_phase: `v0.1.4 Stage 4 review`
-- status: `review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete`
+- version: `0.1.4-s05p1-a0-file-registration`
+- current_stage: `S05`
+- current_phase: `v0.1.4 S05-P1 A0 file registration`
+- status: `completed_validated_local_only_no_go_upload_deferred_private_hashes_computed_package_mismatch`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S05-P1 A0 file registration completed local-only: A0 total files=9, PDF=8, Excel=1, private business member hash diagnostic count=9, Q3 machine candidates=9, Q4 human locked=0, Q5 calculation/formal report allowed=0, public actual raw package/member hash committed=0, raw member name committed=0, current data quality=Q3, report grade=D, release permission=blocked, raw inbox read/list/stat/hash=true by S05-P1 authorization, raw inbox mutation/write/delete/move/rename/overwrite=false, github_upload=false, S05-P2=false, Stage5_review=false.
 - v0.1.4 Stage 4 review completed local-only: S04-P1/S04-P2/S04-P3 validators PASS, open findings=0, amount_case_count=9, canonical_field_count=6, synthetic_boundary_case_passed=22/22, current data quality=Q2, report grade=D, release permission=blocked, raw_root_read=false, raw_root_list=false, raw_root_hash=false, github_upload=false, S05=false.
 - v0.1.4 S04-P3 basic tool report completed local-only: synthetic_boundary_case_passed=22/22, amount_boundary_case_count=11, date_period_boundary_case_count=11, JSON/Markdown tool reports generated, raw_root_read=false, raw_root_list=false, raw_root_hash=false, github_upload=false, Stage4_review=false, S05=false.
 - v0.1.4 S04-P2 field standardization completed local-only: canonical_field_count=6, alias_dictionary_row_count=32, mapping_record_count=6, standardization_case_passed_count=6/6, quality_status_count=5, raw_root_read=false, raw_root_list=false, raw_root_hash=false, github_upload=false, Stage4_review=false.

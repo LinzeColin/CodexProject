@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s05p1-a0-file-registration - 2026-07-04
+
+- 完成 `v0.1.4 S05-P1｜A0 文件登记`。
+- 新增 A0 file registration evidence generator、validator、focused unit test、public-safe file register、public-safe candidates、risk register、rollback plan 和 machine manifest。
+- 按 S05-P1 授权只读 list/stat/read/hash `/Users/linzezhang/Downloads/KMFA_MetaData`；锁定 A0 total files `9`、PDF `8`、Excel `1`、private member hash diagnostic count `9`、Q3 machine candidates `9`、Q4/Q5 `0`、public raw hash committed `0`。
+- 真实 package/member diagnostic 仅写入 git-ignored `KMFA/.codex_private_runtime/`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values 或业务值。
+- 本轮未修改 raw inbox，未执行 S05-P2、S05-P3、Stage 5 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s04-stage-review - 2026-07-04
 
 - 完成 `v0.1.4 Stage 4 整体复审`。
