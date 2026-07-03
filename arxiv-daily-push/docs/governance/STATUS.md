@@ -4,7 +4,7 @@
 
 - source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
 - source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
-- source_snapshot_hash: `sha256:cf6c36fadf467b98a7c5bfa0da1572444db9b6eaf642aa4d737752ee609907b0`
+- source_snapshot_hash: `sha256:20fadb45b19a51ef16399aeff7e1010b4111648c059642f695154d77beb05fb4`
 - snapshot_event_time: `2026-07-01T23:35:39+10:00`
 - generator_version: `4.0.1`
 - final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`
