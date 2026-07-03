@@ -9,15 +9,16 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s08p1-project-composite-key-replay`
-- 当前已完成: `v0.1.3 S08-P1 project composite key replay`
-- 证据目录: `KMFA/stage_artifacts/V013_S08_P1_PROJECT_COMPOSITE_KEY_REPLAY/`
+- 当前版本: `0.1.3-s08p2-business-entity-model-replay`
+- 当前已完成: `v0.1.3 S08-P2 business entity model replay`
+- 证据目录: `KMFA/stage_artifacts/V013_S08_P2_BUSINESS_ENTITY_MODEL_REPLAY/`
 - Stage 7 复审结论: S07-P1/S07-P2/S07-P3 replay validators 全部 PASS；legacy S07-P1 finance adapter validator/unit、legacy S07-P2 WPS adapter validator/unit、legacy S07-P3 Redcircle postponement validator/unit 均 PASS；Stage 7 review validator 和 focused unit test PASS。复审确认 phase_results=`S07-P1=PASS, S07-P2=PASS, S07-P3=PASS`、open findings=`0`、Q5 allowed count=`0`、formal report allowed count=`0`、Redcircle automatic connector allowed=`false`、data quality=`Q4`、report grade=`D`、release permission=`blocked`、`s08_p1_performed=false`、`github_upload_performed=false`。
 - upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4、Stage 5、Stage 6 或 Stage 7 单独 upload 作为 active next step。
-- S08-P1 结论: 已重放既有 public-safe 项目组合键能力，锁定 8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条人工复核队列、1 条 strong auto match、10000 bps 权重总和、8500/7000/5000 bps 阈值；S08-P2/S08-P3/Stage 8 review 和 GitHub upload 均未执行。
-- raw boundary: 本轮 Stage 7 review 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe aggregate adapter/replay/review evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值、Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
-- 未执行: S08-P2、S08-P3、Stage 8 review、GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 S08-P2 business entity model replay` 或用户明确指定的单一 phase；不得执行 S08-P3、Stage 8 review、GitHub upload、raw value matching、正式报告或业务动作。
+- S08-P1 结论: 已重放既有 public-safe 项目组合键能力，锁定 8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条人工复核队列、1 条 strong auto match、10000 bps 权重总和、8500/7000/5000 bps 阈值。
+- S08-P2 结论: 已重放既有 public-safe 业务实体模型能力，锁定 8 类实体、14 条关系、32 条 lifecycle statuses、每类实体 4 个状态；实体值保持 hash/ref only，关系保持 schema-only，生命周期保持 status-only；S08-P3/Stage 8 review 和 GitHub upload 均未执行。
+- raw boundary: 本轮 S08-P2 replay 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe schema/entity relationship lifecycle replay evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值、Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
+- 未执行: S08-P3、Stage 8 review、GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S08-P3 entity matching quality replay` 或用户明确指定的单一 phase；不得执行 S08-P3、Stage 8 review、GitHub upload、raw value matching、正式报告或业务动作。
 
 ## 持久本机 raw boundary
 
