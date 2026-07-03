@@ -574,6 +574,8 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'status: "stage026_phase1_in_progress"',
             'status: "stage026_phase2_in_progress"',
             'status: "stage026_phase3_in_progress"',
+            'status: "stage026_completed_local_pending_stage027"',
+            'status: "completed_local"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
 
@@ -584,6 +586,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
 
@@ -592,6 +595,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'acceptance_status: "phase3_scenario_validation_complete"',
             'acceptance_status: "local_passed"',
             'acceptance_status: "phase2_archive_manifest_slice_complete"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
         ]
         self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
 
@@ -602,6 +606,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE026-P2-GATE"',
             'next_gate: "IDS-STAGE026-P3-GATE"',
             'next_gate: "IDS-STAGE026-P4-GATE"',
+            'next_gate: "IDS-STAGE027-P1-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
 
@@ -634,6 +639,8 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'status: "stage026_phase1_in_progress"',
             'status: "stage026_phase2_in_progress"',
             'status: "stage026_phase3_in_progress"',
+            'status: "stage026_completed_local_pending_stage027"',
+            'status: "completed_local"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
 
@@ -643,6 +650,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
 
@@ -650,6 +658,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'acceptance_status: "phase3_scenario_validation_complete"',
             'acceptance_status: "local_passed"',
             'acceptance_status: "phase2_archive_manifest_slice_complete"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
         ]
         self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
 
@@ -659,6 +668,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE026-P2-GATE"',
             'next_gate: "IDS-STAGE026-P3-GATE"',
             'next_gate: "IDS-STAGE026-P4-GATE"',
+            'next_gate: "IDS-STAGE027-P1-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
 
@@ -752,6 +762,8 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'status: "stage026_phase1_in_progress"',
             'status: "stage026_phase2_in_progress"',
             'status: "stage026_phase3_in_progress"',
+            'status: "stage026_completed_local_pending_stage027"',
+            'status: "completed_local"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
 
@@ -763,6 +775,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
 
@@ -772,6 +785,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'acceptance_status: "phase3_scenario_validation_complete"',
             'acceptance_status: "local_passed"',
             'acceptance_status: "phase2_archive_manifest_slice_complete"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
         ]
         self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
 
@@ -783,6 +797,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE026-P2-GATE"',
             'next_gate: "IDS-STAGE026-P3-GATE"',
             'next_gate: "IDS-STAGE026-P4-GATE"',
+            'next_gate: "IDS-STAGE027-P1-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
 
