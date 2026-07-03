@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S04-P2｜字段标准化`：`KMFA/tools/v014_s04_p2_field_standardization.py`、`KMFA/tools/check_v014_s04_p2_field_standardization.py`、`KMFA/tests/test_v014_s04_p2_field_standardization.py` 和 field standardization evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S04_P2_FIELD_STANDARDIZATION/`。本 phase 复用既有 `field_standardization.py`，锁定 canonical fields `6`、alias dictionary rows `32`、mapping records `6`、standardization cases `6/6`、quality statuses `5`，并确认缺失/异常字段进入质量状态且不静默跳过。未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S04-P3｜基础工具测试`，不得跳到 Stage 4 review、GitHub upload、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S04-P3｜基础工具测试`：`KMFA/tools/v014_s04_p3_basic_tool_report.py`、`KMFA/tools/check_v014_s04_p3_basic_tool_report.py`、`KMFA/tests/test_v014_s04_p3_basic_tool_report.py` 和 basic tool report evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/`。本 phase 复用既有 synthetic boundary report，锁定 synthetic cases `22/22`、amount boundary cases `11`、date/period boundary cases `11`，并生成 JSON/Markdown 工具函数测试报告。未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 Stage 4 整体复审`，不得跳到 GitHub upload、S05、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s04p2-field-standardization`
-- 当前已完成: `v0.1.4 S04-P2 field standardization`
-- 证据目录: `KMFA/stage_artifacts/V014_S04_P2_FIELD_STANDARDIZATION/`
-- validator: `KMFA/tools/check_v014_s04_p2_field_standardization.py`
-- focused test: `KMFA/tests/test_v014_s04_p2_field_standardization.py`
+- 当前版本: `0.1.4-s04p3-basic-tool-report`
+- 当前已完成: `v0.1.4 S04-P3 basic tool report`
+- 证据目录: `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/`
+- validator: `KMFA/tools/check_v014_s04_p3_basic_tool_report.py`
+- focused test: `KMFA/tests/test_v014_s04_p3_basic_tool_report.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: 本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只生成 public-safe synthetic field standardization evidence。
-- 未执行: S04-P3、Stage 4 review、raw inventory、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
+- raw boundary: 本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只生成 public-safe synthetic basic tool test evidence。
+- 未执行: Stage 4 review、GitHub upload、S05、raw inventory、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
 
 ## v0.1.3 历史状态
 

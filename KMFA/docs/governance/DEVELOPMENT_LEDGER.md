@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s04p3-basic-tool-report
+
+- task_id: `KMFA-V014-S04-P3-BASIC-TOOL-REPORT-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred`
+- scope: v0.1.4 S04-P3 basic tool report only; generated public-safe synthetic amount/date/period boundary evidence and JSON/Markdown tool reports without reading, listing or hashing raw root.
+- evidence: `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/human/basic_tool_report.md`, `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/human/test_results.md`, `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/machine/basic_tool_report_manifest.json`, `KMFA/tools/check_v014_s04_p3_basic_tool_report.py`
+- counts: synthetic_boundary_case_total=22, synthetic_boundary_case_passed=22, synthetic_boundary_case_failed=0, amount_boundary_case_count=11, date_period_boundary_case_count=11, json_report_generated=true, markdown_report_generated=true.
+- blocker_state: Stage 4 review=false, Stage 4 upload gate=false, S05=false, GitHub upload=false, raw root read=false, raw root list=false, raw root hash=false, raw value matching=false, formal_report_allowed=false, delivery_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q2, current_report_grade=D.
+
+product_version: 0.1.4-s04p3-basic-tool-report
+version_matrix_product_version_reference: 0.1.4-s04p3-basic-tool-report
+
 ## 2026-07-04 - 0.1.4-s04p2-field-standardization
 
 - task_id: `KMFA-V014-S04-P2-FIELD-STANDARDIZATION-20260704`
