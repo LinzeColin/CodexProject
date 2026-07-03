@@ -171,7 +171,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 S10-P1 report templates replay 已本地完成；GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S10-P2 report grade runtime replay` 或用户明确指定的单一 phase，不得跳到 S10-P3、Stage 10 review、GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
+- v0.1.3 S10-P2 report grade runtime replay 已本地完成；证据位于 `KMFA/stage_artifacts/V013_S10_P2_REPORT_GRADE_RUNTIME_REPLAY/`；复用既有 S10-P2 public-safe report grade runtime artifacts 并验证 v0.1.3 S10-P1 dependency，确认 report_grade_records=2、grade_distribution=`D:2`、pending_reconciliations=12、confirmed_resolutions=0、source_quality_grade=`Q4`、zero_delta_passed=false、complete_trusted_report_display_allowed=false、formal_report_allowed=false、business_decision_basis_allowed=false、export_artifact_count=0。GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S10-P3 report export replay` 或用户明确指定的单一 phase，不得跳到 Stage 10 review、GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
 
 ## 阻塞条件
 
