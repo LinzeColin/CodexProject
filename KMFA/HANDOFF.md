@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S02-P3｜数据质量等级`：legacy `check_report_grade_gate.py`、`check_v014_s02_p3_quality_gate.py` 和 focused unit test 均已本地通过；S02-P3 证据位于 `KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/`，新增 `KMFA/metadata/protocol/quality_gate_lock_v1_4.json` 锁定 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级、quality-to-release gate、missing-evidence block、NO_GO/D/blocked 和 upload-deferred 边界。`/Users/linzezhang/Downloads/KMFA_MetaData` 未被读取、列出、盘点、修改、删除、移动、重命名、覆盖或写入；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 Stage 2 整体复审`，不得跳到 GitHub upload、raw inventory、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `Stage 2 整体复审`：`check_v014_s02_p1_metadata_protocol.py`、`check_v014_s02_p2_immutability_policy.py`、`check_v014_s02_p3_quality_gate.py`、`check_v014_s02_stage_review.py` 和 focused unit test 均已本地通过；Stage 2 review 证据位于 `KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/`，复审确认 S02-P1/S02-P2/S02-P3 phase_results 全部 PASS、open findings=0、当前仍为 `NO_GO`/`Q0`/`D`/`blocked`。`/Users/linzezhang/Downloads/KMFA_MetaData` 未被读取、列出、盘点、修改、删除、移动、重命名、覆盖或写入；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S03-P1`，不得跳到 GitHub upload、raw inventory、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s02p3-quality-gate`
-- 当前已完成: `v0.1.4 S02-P3 quality gate`
-- 证据目录: `KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/`
-- validator: `KMFA/tools/check_v014_s02_p3_quality_gate.py`
-- focused test: `KMFA/tests/test_v014_s02_p3_quality_gate.py`
+- 当前版本: `0.1.4-s02-stage-review`
+- 当前已完成: `v0.1.4 Stage 2 review`
+- 证据目录: `KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/`
+- validator: `KMFA/tools/check_v014_s02_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s02_stage_review.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: 本 phase 未读取、列出、盘点、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未抽取 v1.4 zip 内 raw/private payload。
-- 未执行: Stage 2 review、raw inventory、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
+- raw boundary: 本 review 未读取、列出、盘点、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未抽取 v1.4 zip 内 raw/private payload。
+- 未执行: S03-P1、raw inventory、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
 
 ## v0.1.3 历史状态
 
