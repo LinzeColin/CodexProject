@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE023"
-current_phase_id: "IDS-STAGE023-P1"
-current_task_id: "IDS-V0_1-STAGE023-P1"
-next_gate_id: "IDS-STAGE023-P2-GATE"
+current_phase_id: "IDS-STAGE023-P2"
+current_task_id: "IDS-V0_1-STAGE023-P2"
+next_gate_id: "IDS-STAGE023-P3-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 188
+completed_estimated_hours: 192
 stages:
   -
     stage_id: "S5"
@@ -5594,22 +5594,27 @@ stages:
       - "解析正文、启动 OCR、Embedding、index、import、report、runtime database 或写 manifest/database/document/chunk/job"
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
       - "执行 GitHub upload、PR、merge 或 app reinstall"
-      - "进入 Phase 2 或实现预检场景 runner"
+      - "进入 Phase 3 或执行预检场景专项验证"
     stop_gate:
-      gate_id: "IDS-STAGE023-P2-GATE"
-      status: "phase1_passed_pending_phase2"
+      gate_id: "IDS-STAGE023-P3-GATE"
+      status: "phase2_passed_pending_phase3"
       pass_conditions:
         - "Phase 1 定义导入预检场景测试的输入目录、输出摘要、风险项、成本项和确认状态"
         - "Phase 1 确认预检场景测试只读取元信息，不解析正文、不修改原始文件"
         - "Phase 1 定义 owner 确认后才进入批量处理"
         - "Phase 1 定义 empty_directory、small_directory、large_directory、offline_drive、bad_file、archive_present、insufficient_space 场景词汇"
+        - "Phase 2 实现 metadata-only 预检场景测试最小可运行切片"
+        - "Phase 2 输出文件数量、格式、大小、压缩包、扫描件、坏文件候选、OCR/Embedding/API/index 估算、风险、成本和优先级建议"
+        - "Phase 2 把预检场景测试结果展示给人类产品入口"
         - "BATCH021_030_UPLOAD_LOCK.yaml 保持 push_allowed=false"
     acceptance:
       acceptance_id: "ACC-STAGE-023"
-      status: "phase1_scope_boundary_defined"
+      status: "phase2_preflight_scenario_slice_complete"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE2_PREFLIGHT_SCENARIO_TESTS_SLICE.md"
+        - "KM_IDSystem/scripts/check_preflight_scenario_tests.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage023_preflight_scenario_tests.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
     phases:
@@ -5651,3 +5656,41 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
             risk: "如果 Phase 1 合同被误当成可运行预检场景测试，可能绕过 Phase 2 TDD、owner confirmation、raw data boundary 和后续 batch review gate；如果 raw data boundary 被误读，可能触碰 IDS_MetaData 原始数据库。"
             rollback: "Revert STAGE023 entry/scope evidence, BATCH021_030_UPLOAD_LOCK.yaml, focused tests, Stage005 validator/test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, GitHub state, or Phase 2 artifacts."
+      -
+        phase_id: "IDS-STAGE023-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现 metadata-only 预检场景测试 payload，汇总文件数量、格式、大小、压缩包、扫描件、坏文件候选、OCR/Embedding/API/index 估算、风险、成本和优先级建议，并展示给人类产品入口。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "启动实际解析、OCR、Embedding、索引、导入、外部 API、scenario runner 或 runtime 服务"
+          - "写 manifest/database/evidence ledger/audit log/runtime data/report/output/document/chunk/job/index/import/scenario result row"
+          - "执行 Phase 3 场景验证、保存/取消/分批/跳过持久化行为、GitHub upload 或 app reinstall"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE023-P2"
+            name: "预检场景测试 metadata-only 最小切片"
+            objective: "新增 check_preflight_scenario_tests.py，复用 STAGE-020 metadata-only 成本估算链生成 ids.stage023.preflight_scenario_tests.v1、risk/cost/priority_suggestion 和 PreflightScenarioTestsPanel contract。"
+            status: "completed"
+            estimated_hours: 4
+            total_hours_percent: "2.50%"
+            dependencies:
+              - "IDS-V0_1-STAGE023-P1"
+            acceptance_ids:
+              - "ACC-STAGE-023"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage023_preflight_scenario_tests -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage023_phase2_preflight_scenario_slice -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "check-render --project KM_IDSystem"
+              - "semantic validate diagnostic"
+            test_results: "RED/GREEN complete: Stage023 Phase2 RED failed because check_preflight_scenario_tests.py and STAGE023_PHASE2_PREFLIGHT_SCENARIO_TESTS_SLICE.md were missing. Stage005 P2 target RED failed because IDS-STAGE023-P2 was not yet accepted by the governance state machine. GREEN passed after adding metadata-only preflight scenario helper, Phase2 evidence, BATCH021_030 phase2 status, roadmap/event records, and validator state: Stage023 focused tests ran 6 tests OK; Stage005 targeted P2 state test ran 1 test OK; Stage021 focused regression ran 13 tests OK after allowing the later STAGE-023 P2 batch transition while preserving STAGE-021 evidence checks; Stage022 focused regression ran 13 tests OK after allowing the later STAGE-023 P2 batch transition while preserving STAGE-022 evidence checks; Stage005 governance regression ran 63 tests OK; Stage005 validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, or raw data boundary gaps; full IDS v0.1 pursuing-goal discover ran 212 tests OK; py_compile passed for check_preflight_scenario_tests.py, Stage005 validator, Stage005 regression test, Stage021 focused test, Stage022 focused test, and Stage023 focused test; owner render wrote 功能清单.md, 开发记录.md, and 模型参数文件.md; check-render returned drift_count=0; events JSONL parsed with count 107; git diff --check passed; old underscore task-id spelling scan returned no hits; legacy pre-rename path added-line scan returned no additions; semantic validate diagnostic exited 1 with 29 known sparse root/registered-project missing errors and no KM_IDSystem product error. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit IDS_MetaData raw metadata content; did not parse body text, start OCR, create Embedding, build indexes, start imports, call external APIs, write runtime outputs, start services, install dependencies, push to GitHub, create or merge a PR, reinstall app entries, or enter Phase 3."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_preflight_scenario_tests.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE2_PREFLIGHT_SCENARIO_TESTS_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage023_preflight_scenario_tests.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            risk: "如果 Phase 2 scenario payload 被误当成生产场景验证或实际导入授权，可能绕过 Phase 3 场景验证、owner 持久化确认、raw data boundary 和后续 batch review gate。"
+            rollback: "Revert check_preflight_scenario_tests.py, STAGE023_PHASE2 evidence, focused tests, BATCH021_030 phase2 status, Stage005 validator/test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, GitHub state, or Phase 3 artifacts."
