@@ -1,0 +1,10 @@
+table_name,actual_rows,expected_rows,validation
+sources,7,7,pass
+import_runs,1,1,pass
+conversations,5,5,pass
+contacts,23,23,pass
+subjects,5,5,pass
+messages,500,500,pass
+message_subject_links,500,500,pass
+media_index,0,0,pass
+validation_events,22,22,pass
