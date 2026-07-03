@@ -106,6 +106,7 @@ models:
       - "FORM-KMFA-V014-S03P2-SOURCE-CHECK-MATRIX-001"
       - "FORM-KMFA-V014-S03P3-SOURCE-PRIORITY-001"
       - "FORM-KMFA-V014-S03-STAGE-REVIEW-001"
+      - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -143,6 +144,7 @@ models:
       - "PARAM-KMFA-1033"
       - "PARAM-KMFA-1034"
       - "PARAM-KMFA-1035"
+      - "PARAM-KMFA-1038"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -258,13 +260,14 @@ models:
     kind: "deterministic_financial_analysis_pipeline"
     purpose: "支持 A0 权威基准、字段标准化、金额标准化、零差异校验、差异队列、项目身份匹配、项目成本事实层和后续项目成本报告。"
     owner: "KMFA"
-    status: "planned"
+    status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s16-github-upload"
+    model_version: "0.1.4-s04p1-amount-precision"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
       - "FORM-KMFA-AMOUNT-001"
+      - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -461,6 +464,8 @@ models:
       - "PARAM-KMFA-590"
       - "PARAM-KMFA-591"
       - "PARAM-KMFA-592"
+      - "PARAM-KMFA-1036"
+      - "PARAM-KMFA-1037"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"

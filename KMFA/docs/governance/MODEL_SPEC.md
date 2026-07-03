@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s03-stage-review
+product_version: 0.1.4-s04p1-amount-precision
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 Stage 3 review 只证明 S03-P1/S03-P2/S03-P3 validators 全部 PASS、open findings=0、public-safe source onboarding 证据闭合；不声明 S04、GitHub upload、raw value matching、字段映射、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S04-P1 只证明 synthetic public-safe 金额标准化、异常拒绝和 no-float 证据闭合；不声明 S04-P2、S04-P3、Stage 4 review、GitHub upload、raw value matching、字段映射、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -71,12 +71,21 @@ product_version: 0.1.4-s03-stage-review
 - evidence: `KMFA/tools/check_v014_s03_stage_review.py`, `KMFA/tests/test_v014_s03_stage_review.py`, `KMFA/stage_artifacts/V014_S03_STAGE_REVIEW/human/stage3_review_report.md`, `KMFA/stage_artifacts/V014_S03_STAGE_REVIEW/machine/stage3_review_manifest.json`
 - limitation: 只证明 Stage 3 public-safe local review closure；不读取 raw inbox，不发布 raw/private 明细，不执行 S04、GitHub upload、raw value matching、field mapping、lineage full check、formal report 或 business execution。
 
+### FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001
+
+- type: deterministic amount precision validation gate
+- purpose: 复用金额标准化和 no-float 工具，锁定 v0.1.4 S04-P1 public-safe synthetic amount precision evidence。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/v014_s04_p1_amount_precision.py`, `KMFA/tools/check_v014_s04_p1_amount_precision.py`, `KMFA/tests/test_v014_s04_p1_amount_precision.py`, `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/machine/amount_precision_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/human/test_results.md`
+- limitation: 只证明整数分金额标准化、异常拒绝和 no-float 基础工具边界；不做 S04-P2 字段标准化、raw value matching、zero-delta、事实层或报告验收。
+
 ### FORM-KMFA-AMOUNT-001
 
 - type: deterministic amount normalization
 - purpose: 将授权来源中的业务金额标准化为整数分，并阻断 float 金额用法。
 - fact_level: EXTRACTED
-- evidence: `KMFA/tools/amount_tools.py`, `KMFA/tools/check_no_float_money.py`, `KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md`
+- evidence: `KMFA/tools/amount_tools.py`, `KMFA/tools/check_no_float_money.py`, `KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md`, `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/machine/amount_precision_manifest.json`
 - boundary_validation: `KMFA/tests/test_basic_tool_boundaries.py`, `KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md`
 - limitation: 不做 zero-delta，不处理源冲突取舍。
 
@@ -278,21 +287,21 @@ product_version: 0.1.4-s03-stage-review
 - evidence: `KMFA/tools/manual_resolution_events.py`, `KMFA/tools/check_s12_p1_manual_resolution_events.py`, `KMFA/tests/test_manual_resolution_events.py`, `KMFA/metadata/approvals/manual_resolution_event_manifest.json`, `KMFA/metadata/approvals/manual_resolution_events.jsonl`, `KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/s12_p1_completion_record.md`
 - limitation: 只提交公开安全事件类型、角色引用、时间、原因码、影响范围、版本和证据引用；不提交 raw business values、字段明文、真实金额、Excel workbook、PDF、zip、sqlite/db、private CSV 或 credentials；不发布 S12-P2 影响预览，不执行 S12-P3 派生重跑，不做 Stage 12 review/upload、lineage full check、正式报告或外部接口。
 
-## Planned Business Model
+## Active Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, Stage 9 review/upload, S10-P1 report templates, S10-P2 report grade runtime, S10-P3 report export, S11-P1 home navigation, S11-P2 source check board, S11-P3 project cost page, Stage 11 review/upload, S12-P1 manual resolution events, S12-P2 impact preview and S12-P3 rerun mechanism active
+- status: active with v0.1.4 S04-P1 amount precision evidence and existing public-safe cost-analysis formulas
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
 - current limitation: S18-P1 precision stress, S18-P2 full regression acceptance and S18-P3 integration preparation are local-only; S18-P2 Go/No-Go remains NO_GO; Stage 18 review/upload, lineage full check, official report generation, live connectors and OpMe deep coupling are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.
 
 ## Counts
 
-- active models: 7
-- active formulas: 56
-- active parameters: 641
-- planned models: 1
+- active models: 8
+- active formulas: 64
+- active parameters: 665
+- planned models: 0
 - planned formulas: 0
 - planned parameters: 1
 
