@@ -12,6 +12,7 @@ ENTRY = PURSUE_ROOT / "STAGE026_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE026_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE026_PHASE2_ARCHIVE_MANIFEST_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE026_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE026_PHASE4_CLOSEOUT.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
@@ -201,7 +202,6 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             "STAGE-024:",
             "STAGE-025:",
             "STAGE-026:",
-            'status: "in_progress"',
             'completed_phases:',
             '      - "Phase 1"',
             'acceptance_id: "ACC-STAGE-026"',
@@ -216,30 +216,41 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, text)
+        allowed_stage_status_terms = [
+            'status: "in_progress"',
+            'status: "completed_local"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_stage_status_terms), allowed_stage_status_terms)
         allowed_status_terms = [
             'status: "stage026_phase1_in_progress"',
             'status: "stage026_phase2_in_progress"',
             'status: "stage026_phase3_in_progress"',
+            'status: "stage026_completed_local_pending_stage027"',
+            'status: "completed_local"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_archive_manifest_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
         ]
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE026-P2-GATE"',
             'next_gate: "IDS-STAGE026-P3-GATE"',
             'next_gate: "IDS-STAGE026-P4-GATE"',
+            'next_gate: "IDS-STAGE027-P1-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
@@ -276,16 +287,19 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE026-P1"',
             'current_phase_id: "IDS-STAGE026-P2"',
             'current_phase_id: "IDS-STAGE026-P3"',
+            'current_phase_id: "IDS-STAGE026-P4"',
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
             'next_gate_id: "IDS-STAGE026-P2-GATE"',
             'next_gate_id: "IDS-STAGE026-P3-GATE"',
             'next_gate_id: "IDS-STAGE026-P4-GATE"',
+            'next_gate_id: "IDS-STAGE027-P1-GATE"',
         ]
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:3]), allowed_current_terms[:3])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[3:6]), allowed_current_terms[3:6])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[6:]), allowed_current_terms[6:])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:4]), allowed_current_terms[:4])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[4:8]), allowed_current_terms[4:8])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[8:]), allowed_current_terms[8:])
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -443,26 +457,32 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
         allowed_status_terms = [
             'status: "stage026_phase2_in_progress"',
             'status: "stage026_phase3_in_progress"',
+            'status: "completed_local"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 3"',
             'next_phase: "Phase 4"',
+            'next_stage: "STAGE-027"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase2_archive_manifest_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
         ]
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE026-P3-GATE"',
             'next_gate: "IDS-STAGE026-P4-GATE"',
+            'next_gate: "IDS-STAGE027-P1-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -575,17 +595,11 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
         self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
         text = BATCH_LOCK.read_text(encoding="utf-8")
         required_terms = [
-            'status: "stage026_phase3_in_progress"',
             "STAGE-026:",
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'current_task_id: "IDS-V0_1-STAGE026-P3"',
             'acceptance_id: "ACC-STAGE-026"',
-            'acceptance_status: "phase3_scenario_validation_complete"',
-            'next_gate: "IDS-STAGE026-P4-GATE"',
-            'next_allowed_task_id: "IDS-V0_1-STAGE026-P4"',
             'push_allowed: false',
             "KM_IDSystem/scripts/check_archive_manifest.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE3_SCENARIO_VALIDATION.md",
@@ -594,6 +608,124 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, text)
+        allowed_status_terms = [
+            'status: "stage026_phase3_in_progress"',
+            'status: "completed_local"',
+        ]
+        allowed_next_phase_terms = [
+            'next_phase: "Phase 4"',
+            'next_stage: "STAGE-027"',
+        ]
+        allowed_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE026-P3"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
+        ]
+        allowed_acceptance_terms = [
+            'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
+        ]
+        allowed_gate_terms = [
+            'next_gate: "IDS-STAGE026-P4-GATE"',
+            'next_gate: "IDS-STAGE027-P1-GATE"',
+        ]
+        allowed_next_terms = [
+            'next_allowed_task_id: "IDS-V0_1-STAGE026-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P1"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
+        self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
+        self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
+        self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
+        self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
+        self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
+
+    def test_phase4_closeout_records_whole_stage_review_raw_boundary_rollback_and_no_upload(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+        required_terms = [
+            "IDS-V0_1-STAGE026-P4",
+            "ACC-STAGE-026",
+            "压缩包 Manifest",
+            "Whole-Stage Review",
+            "passed_with_local_evidence",
+            "Phase 1",
+            "Phase 2",
+            "Phase 3",
+            "Phase 4",
+            "build_archive_manifest",
+            "build_stage026_scenario_report",
+            "ARCHIVE_MANIFEST_SCENARIO_VALIDATION_PASSED",
+            "POST_EXTRACT_REINGEST_VALIDATED",
+            "ARCHIVE_MANIFEST_CLEANUP_ALLOWLIST_VALIDATED",
+            "rollback",
+            "中文 owner feedback",
+            "push_allowed=false",
+            "No GitHub upload",
+            "No app reinstall",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不写 archive_manifest runtime output",
+            "不启动 hash、manifest、dedup、parser、OCR、Embedding、index、import",
+            "NO_STAGE027",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_batch021_030_lock_tracks_completed_stage026_phase4_without_upload_permission(self):
+        self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
+        text = BATCH_LOCK.read_text(encoding="utf-8")
+        required_terms = [
+            'status: "completed_local"',
+            "STAGE-026:",
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            '      - "Phase 4"',
+            'next_stage: "STAGE-027"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
+            'acceptance_id: "ACC-STAGE-026"',
+            'acceptance_status: "local_passed"',
+            'next_gate: "IDS-STAGE027-P1-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P1"',
+            'push_allowed: false',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE4_CLOSEOUT.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_roadmap_and_events_track_stage026_phase4_closeout_without_batch_upload(self):
+        self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
+        self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE026"',
+            'current_phase_id: "IDS-STAGE026-P4"',
+            'current_task_id: "IDS-V0_1-STAGE026-P4"',
+            'next_gate_id: "IDS-STAGE027-P1-GATE"',
+            'status: "completed"',
+            'status: "passed_with_local_evidence"',
+            'phase_id: "IDS-STAGE026-P4"',
+            "STAGE026_PHASE4_CLOSEOUT.md",
+            "No GitHub upload",
+            "No app reinstall",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE026-P4-20260703-001"',
+            '"event_type":"stage_closeout"',
+            '"task_id":"IDS-V0_1-STAGE026-P4"',
+            '"ACC-STAGE-026"',
+            "STAGE026_PHASE4_CLOSEOUT.md",
+        ]
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
 
 
 if __name__ == "__main__":
