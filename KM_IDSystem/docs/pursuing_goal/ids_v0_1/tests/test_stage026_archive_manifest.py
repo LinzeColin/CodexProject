@@ -241,6 +241,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'status: "stage030_phase2_in_progress"',
             'status: "stage030_phase3_in_progress"',
             'status: "stage030_completed_local_pending_batch_review"',
+            'status: "reviewed_ready_for_upload_no_github_upload"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
@@ -260,6 +261,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE030-P2"',
             'current_task_id: "IDS-V0_1-STAGE030-P3"',
             'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
         ]
         allowed_acceptance_terms = [
@@ -311,6 +313,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
@@ -362,6 +365,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE030-P2"',
             'current_phase_id: "IDS-STAGE030-P3"',
             'current_phase_id: "IDS-STAGE030-P4"',
+            'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE030-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
@@ -382,6 +386,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE030-P2"',
             'current_task_id: "IDS-V0_1-STAGE030-P3"',
             'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
             'next_gate_id: "IDS-STAGE026-P2-GATE"',
             'next_gate_id: "IDS-STAGE026-P3-GATE"',
@@ -403,6 +408,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P3-GATE"',
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
         ]
         allowed_phase_terms = [term for term in allowed_current_terms if term.startswith("current_phase_id")]
         allowed_task_terms = [term for term in allowed_current_terms if term.startswith("current_task_id")]
@@ -582,6 +588,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'status: "stage030_phase2_in_progress"',
             'status: "stage030_phase3_in_progress"',
             'status: "stage030_completed_local_pending_batch_review"',
+            'status: "reviewed_ready_for_upload_no_github_upload"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 3"',
@@ -607,6 +614,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE030-P2"',
             'current_task_id: "IDS-V0_1-STAGE030-P3"',
             'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
         ]
         allowed_acceptance_terms = [
@@ -655,6 +663,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -797,6 +806,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'status: "stage030_phase2_in_progress"',
             'status: "stage030_phase3_in_progress"',
             'status: "stage030_completed_local_pending_batch_review"',
+            'status: "reviewed_ready_for_upload_no_github_upload"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 4"',
@@ -820,6 +830,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE030-P2"',
             'current_task_id: "IDS-V0_1-STAGE030-P3"',
             'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
         ]
         allowed_acceptance_terms = [
@@ -865,6 +876,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -946,6 +958,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
 
@@ -994,6 +1007,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE030-P2"',
             'current_phase_id: "IDS-STAGE030-P3"',
             'current_phase_id: "IDS-STAGE030-P4"',
+            'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE030-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P4"',
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
@@ -1011,6 +1025,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE030-P2"',
             'current_task_id: "IDS-V0_1-STAGE030-P3"',
             'current_task_id: "IDS-V0_1-STAGE030-P4"',
+            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
             'next_gate_id: "IDS-STAGE027-P1-GATE"',
             'next_gate_id: "IDS-STAGE027-P2-GATE"',
@@ -1029,6 +1044,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P3-GATE"',
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
         ]
         allowed_stage_terms = [term for term in allowed_current_terms if term.startswith("current_stage_id")]
         allowed_phase_terms = [term for term in allowed_current_terms if term.startswith("current_phase_id")]
