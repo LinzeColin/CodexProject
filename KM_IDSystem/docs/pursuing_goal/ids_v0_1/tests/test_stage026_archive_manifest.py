@@ -1,17 +1,38 @@
+import hashlib
+import importlib.util
 from pathlib import Path
+import tempfile
 import unittest
+import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[4]
 PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE026_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE026_PHASE1_SCOPE_BOUNDARY.md"
+PHASE2 = PURSUE_ROOT / "STAGE026_PHASE2_ARCHIVE_MANIFEST_SLICE.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
+SCRIPT = ROOT / "scripts" / "check_archive_manifest.py"
+MANIFESTED_AT = "2026-07-03T03:21:34Z"
 
 
 class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
+    def _load_module(self):
+        self.assertTrue(SCRIPT.exists(), f"missing script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage026_archive_manifest", SCRIPT)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def _write_zip(self, archive_path, entries):
+        with zipfile.ZipFile(archive_path, "w") as archive:
+            for entry_path, payload in entries.items():
+                archive.writestr(entry_path, payload)
+
     def test_phase1_contracts_exist_and_bind_taskpack_identity(self):
         self.assertTrue(ENTRY.is_file(), f"missing entry contract: {ENTRY}")
         self.assertTrue(PHASE1.is_file(), f"missing phase1 boundary: {PHASE1}")
@@ -114,7 +135,6 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
 
         required_terms = [
             'batch_id: "IDS-V0_1-BATCH-021-030"',
-            'status: "stage026_phase1_in_progress"',
             "STAGE-021:",
             "STAGE-022:",
             "STAGE-023:",
@@ -124,12 +144,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'status: "in_progress"',
             'completed_phases:',
             '      - "Phase 1"',
-            'next_phase: "Phase 2"',
-            'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'acceptance_id: "ACC-STAGE-026"',
-            'acceptance_status: "phase1_scope_boundary_defined"',
-            'next_gate: "IDS-STAGE026-P2-GATE"',
-            'next_allowed_task_id: "IDS-V0_1-STAGE026-P2"',
             'push_allowed: false',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE1_SCOPE_BOUNDARY.md",
@@ -141,6 +156,31 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, text)
+        allowed_status_terms = [
+            'status: "stage026_phase1_in_progress"',
+            'status: "stage026_phase2_in_progress"',
+        ]
+        allowed_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE026-P1"',
+            'current_task_id: "IDS-V0_1-STAGE026-P2"',
+        ]
+        allowed_acceptance_terms = [
+            'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_archive_manifest_slice_complete"',
+        ]
+        allowed_gate_terms = [
+            'next_gate: "IDS-STAGE026-P2-GATE"',
+            'next_gate: "IDS-STAGE026-P3-GATE"',
+        ]
+        allowed_next_terms = [
+            'next_allowed_task_id: "IDS-V0_1-STAGE026-P2"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE026-P3"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
+        self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
+        self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
+        self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
+        self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
 
     def test_roadmap_and_events_track_stage026_phase1_local_gate(self):
         self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
@@ -150,9 +190,6 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
 
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE026"',
-            'current_phase_id: "IDS-STAGE026-P1"',
-            'current_task_id: "IDS-V0_1-STAGE026-P1"',
-            'next_gate_id: "IDS-STAGE026-P2-GATE"',
             'stage_id: "IDS-STAGE026"',
             'name: "STAGE-026 · 压缩包 Manifest"',
             'phase_id: "IDS-STAGE026-P1"',
@@ -170,9 +207,177 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        allowed_current_terms = [
+            'current_phase_id: "IDS-STAGE026-P1"',
+            'current_phase_id: "IDS-STAGE026-P2"',
+            'current_task_id: "IDS-V0_1-STAGE026-P1"',
+            'current_task_id: "IDS-V0_1-STAGE026-P2"',
+            'next_gate_id: "IDS-STAGE026-P2-GATE"',
+            'next_gate_id: "IDS-STAGE026-P3-GATE"',
+        ]
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:2]), allowed_current_terms[:2])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[2:4]), allowed_current_terms[2:4])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[4:]), allowed_current_terms[4:])
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
+
+    def test_phase2_archive_manifest_records_hash_entries_risks_reingest_and_cleanup_without_runtime_manifest(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            archive_path = base / "owner-archive-manifest.zip"
+            staging = base / "staging"
+            outside = base / "escape.txt"
+            entries = {
+                "safe/manifest-note.md": b"ok",
+                "../escape.txt": b"escape",
+                "/absolute.txt": b"absolute",
+                "too-large.bin": b"0123456789",
+            }
+            self._write_zip(archive_path, entries)
+            expected_hash = hashlib.sha256(archive_path.read_bytes()).hexdigest()
+
+            manifest = module.build_archive_manifest(
+                archive_uri=archive_path.as_uri(),
+                staging_area_uri=staging.as_uri(),
+                manifested_at=MANIFESTED_AT,
+                archive_single_file_size_limit_bytes=4,
+            )
+
+            safe_target = staging / "safe" / "manifest-note.md"
+            self.assertTrue(safe_target.is_file())
+            self.assertEqual(safe_target.read_bytes(), b"ok")
+            self.assertTrue(archive_path.is_file())
+            self.assertFalse(outside.exists())
+
+        self.assertEqual(manifest["schema_version"], "ids.stage026.archive_manifest.v1")
+        self.assertEqual(manifest["source_schema_version"], "ids.stage025.safe_extraction_engine.v1")
+        self.assertEqual(manifest["stage"], "STAGE-026")
+        self.assertEqual(manifest["phase"], "Phase 2")
+        self.assertEqual(manifest["task_id"], "IDS-V0_1-STAGE026-P2")
+        self.assertEqual(manifest["acceptance_id"], "ACC-STAGE-026")
+        self.assertEqual(manifest["archive_manifest_schema"], "ids.stage026.archive_manifest.v1")
+        self.assertEqual(manifest["archive_hash_sha256"], expected_hash)
+        self.assertTrue(manifest["archive_manifest_id"].startswith("ids.stage026.archive_manifest."))
+        self.assertEqual(manifest["archive_manifest_decision_state"], "ARCHIVE_MANIFEST_OWNER_REVIEW_REQUIRED")
+        self.assertEqual(manifest["safe_extracted_file_count"], 1)
+        self.assertGreaterEqual(manifest["archive_blocked_entry_count"], 3)
+        self.assertGreaterEqual(len(manifest["archive_entry_manifest"]), 4)
+        self.assertEqual(len(manifest["post_extract_reingest"]["reingest_queue"]), 1)
+        self.assertEqual(manifest["post_extract_reingest"]["required_pipeline"], ["hash", "manifest", "dedup", "parser"])
+        self.assertEqual(manifest["post_extract_reingest"]["state"], "POST_EXTRACT_REINGEST_REQUIRED")
+        risk_codes = {entry["risk_code"] for entry in manifest["archive_risk_items"]}
+        self.assertIn("ARCHIVE_MANIFEST_PATH_TRAVERSAL_BLOCKED", risk_codes)
+        self.assertIn("ARCHIVE_MANIFEST_ABSOLUTE_PATH_BLOCKED", risk_codes)
+        self.assertIn("ARCHIVE_MANIFEST_ENTRY_SIZE_LIMIT_EXCEEDED", risk_codes)
+        quarantine_states = {entry["manifest_entry_state"] for entry in manifest["archive_risk_items"]}
+        self.assertIn("ARCHIVE_MANIFEST_ENTRY_QUARANTINE_REQUIRED", quarantine_states)
+        self.assertTrue(manifest["cleanup_allowlist"])
+        self.assertTrue(all(item["cleanup_class"] == "ARCHIVE_STAGING_TEMP_FILE" for item in manifest["cleanup_allowlist"]))
+        self.assertTrue(manifest["cleanup_policy"]["does_not_clean_original_archive"])
+        self.assertTrue(manifest["cleanup_policy"]["does_not_clean_fact_source_or_evidence"])
+        self.assertTrue(manifest["original_archive_preserved"])
+        self.assertTrue(manifest["does_not_overwrite_original_archive"])
+        self.assertTrue(manifest["does_not_write_outside_staging"])
+        self.assertTrue(manifest["does_not_write_archive_manifest_runtime_output"])
+        self.assertTrue(manifest["does_not_start_processing_jobs"])
+        for value in manifest["processing_guard"].values():
+            self.assertEqual(value, 0)
+        for value in manifest["no_persistence_deltas"].values():
+            self.assertEqual(value, 0)
+
+    def test_phase2_manifest_routes_missing_raw_and_adapter_cases_without_raw_access_or_fake_support(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            staging = base / "staging"
+            missing = base / "missing.zip"
+            rar_path = base / "owner-review.rar"
+            rar_path.write_bytes(b"Rar!\x1a\x07\x00ids structural rar placeholder")
+
+            missing_manifest = module.build_archive_manifest(
+                archive_uri=missing.as_uri(),
+                staging_area_uri=staging.as_uri(),
+                manifested_at=MANIFESTED_AT,
+            )
+            rar_manifest = module.build_archive_manifest(
+                archive_uri=rar_path.as_uri(),
+                staging_area_uri=staging.as_uri(),
+                manifested_at=MANIFESTED_AT,
+            )
+            raw_manifest = module.build_archive_manifest(
+                archive_uri="file:///Users/linzezhang/Downloads/IDS_MetaData/raw-owner.zip",
+                staging_area_uri=(base / "raw-staging").as_uri(),
+                manifested_at=MANIFESTED_AT,
+            )
+
+        self.assertEqual(missing_manifest["archive_manifest_decision_state"], "ARCHIVE_MANIFEST_BLOCKED")
+        missing_risks = {entry["risk_code"] for entry in missing_manifest["archive_risk_items"]}
+        self.assertIn("ARCHIVE_MANIFEST_SOURCE_MISSING", missing_risks)
+        self.assertIsNone(missing_manifest["archive_hash_sha256"])
+
+        self.assertEqual(rar_manifest["archive_manifest_decision_state"], "ARCHIVE_MANIFEST_OWNER_REVIEW_REQUIRED")
+        rar_risks = {entry["risk_code"] for entry in rar_manifest["archive_risk_items"]}
+        self.assertIn("ARCHIVE_MANIFEST_ADAPTER_OWNER_REVIEW_REQUIRED", rar_risks)
+        self.assertTrue(rar_manifest["does_not_fake_rar_7z_support"])
+
+        self.assertEqual(raw_manifest["archive_manifest_decision_state"], "ARCHIVE_MANIFEST_BLOCKED")
+        raw_risks = {entry["risk_code"] for entry in raw_manifest["archive_risk_items"]}
+        self.assertIn("ARCHIVE_MANIFEST_SOURCE_BLOCKED_RAW_METADATA_ROOT", raw_risks)
+        self.assertIsNone(raw_manifest["archive_hash_sha256"])
+        self.assertTrue(raw_manifest["does_not_read_raw_metadata"])
+
+    def test_phase2_evidence_document_records_implemented_slice_and_no_phase3(self):
+        self.assertTrue(PHASE2.is_file(), f"missing phase2 evidence: {PHASE2}")
+        text = PHASE2.read_text(encoding="utf-8")
+        required_terms = [
+            "STAGE-026",
+            "IDS-V0_1-STAGE026-P2",
+            "ACC-STAGE-026",
+            "KM_IDSystem/scripts/check_archive_manifest.py",
+            "build_archive_manifest",
+            "ids.stage026.archive_manifest.v1",
+            "压缩包 hash",
+            "解压文件列表",
+            "解压体积",
+            "嵌套层级",
+            "失败项",
+            "风险项",
+            "ARCHIVE_MANIFEST_OWNER_REVIEW_REQUIRED",
+            "ARCHIVE_MANIFEST_BLOCKED",
+            "POST_EXTRACT_REINGEST_REQUIRED",
+            "cleanup allowlist",
+            "不清理事实源和证据产物",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_PHASE3",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_batch021_030_lock_tracks_current_stage026_phase2_without_upload_permission(self):
+        self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
+        text = BATCH_LOCK.read_text(encoding="utf-8")
+        required_terms = [
+            'status: "stage026_phase2_in_progress"',
+            "STAGE-026:",
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            'next_phase: "Phase 3"',
+            'current_task_id: "IDS-V0_1-STAGE026-P2"',
+            'acceptance_id: "ACC-STAGE-026"',
+            'acceptance_status: "phase2_archive_manifest_slice_complete"',
+            'next_gate: "IDS-STAGE026-P3-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE026-P3"',
+            'push_allowed: false',
+            "KM_IDSystem/scripts/check_archive_manifest.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE2_ARCHIVE_MANIFEST_SLICE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
 
 
 if __name__ == "__main__":
