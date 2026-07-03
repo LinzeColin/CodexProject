@@ -1214,3 +1214,10 @@
 - 明确 Stage 完成复审修复后再上传 GitHub，中间 Phase 不上传。
 - 明确时间只是参考，质量门禁通过可提前交付，未通过不得交付。
 - 未实现业务导入、金额工具、zero-delta 正式脚本、UI、报告或外部接口。
+# 0.1.4-s02p1-metadata-protocol - 2026-07-03
+
+- 完成 `v0.1.4 S02-P1｜metadata目录协议` 本地验证。
+- 新增 `KMFA/metadata/protocol/raw_data_roots_v1_4.json`，把 `/Users/linzezhang/Downloads/KMFA_MetaData` 锁定为 raw/private inbox，当前 phase no read/no list/no inventory/no mutation。
+- 新增 `KMFA/tools/check_v014_s02_p1_metadata_protocol.py` 与 `KMFA/tests/test_v014_s02_p1_metadata_protocol.py`，复用 `metadata_protocol_check.py` 并额外验证 S01 review dependency、raw boundary、no-upload/no-go、evidence refs 和 Git 状态。
+- 新增 `KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/` public-safe evidence。
+- 未执行 S02-P2、S02-P3、Stage 2 review、GitHub upload、raw inventory、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。

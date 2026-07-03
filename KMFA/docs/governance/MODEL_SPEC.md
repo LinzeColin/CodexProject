@@ -280,8 +280,8 @@ product_version: 0.1.4-s01-stage-review
 ## Counts
 
 - active models: 7
-- active formulas: 54
-- active parameters: 635
+- active formulas: 56
+- active parameters: 641
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 1
@@ -314,3 +314,13 @@ product_version: 0.1.4-s01-stage-review
 - expression: `stage1_review_valid = phase_results == PASS_PASS_PASS AND open_findings == 0 AND github_upload_performed == false AND s02_started == false AND current_go_no_go == NO_GO`
 - evidence: `KMFA/tools/check_v014_s01_stage_review.py`, `KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/machine/stage1_review_manifest.json`
 - limitation: 不证明 S02、raw inventory、raw value matching、正式报告、GitHub upload 或 delivery readiness。
+
+### FORM-KMFA-V014-S02P1-METADATA-PROTOCOL-001
+
+- status: active
+- type: deterministic public-safe metadata protocol gate
+- purpose: 验证 v0.1.4 S02-P1 metadata 目录协议，覆盖七类 metadata 目录、五类核心标识符、raw-root public-safe protocol、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s02p1_valid = required_dirs == 7 AND required_identifiers == 5 AND raw_inbox_read == false AND raw_inbox_listed == false AND raw_inventory_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/check_v014_s02_p1_metadata_protocol.py`, `KMFA/tools/metadata_protocol_check.py`, `KMFA/metadata/protocol/raw_data_roots_v1_4.json`, `KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/machine/s02_p1_metadata_protocol_manifest.json`
+- limitation: 不证明 raw readiness、raw inventory、raw value matching、S02-P2、S02-P3、Stage 2 review、正式报告、GitHub upload 或 delivery readiness。

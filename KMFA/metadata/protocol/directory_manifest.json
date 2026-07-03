@@ -1,7 +1,7 @@
 {
   "schema_version": "kmfa.metadata_directory_manifest.v1",
   "project_id": "KMFA",
-  "stage_phase": "S05-P2",
+  "stage_phase": "S02-P1",
   "directories": [
     "metadata/sources",
     "metadata/imports",
@@ -51,7 +51,8 @@
     "metadata/lineage/derived_data_versions.jsonl",
     "metadata/protocol/metadata_protocol.yaml",
     "metadata/protocol/directory_manifest.json",
-    "metadata/protocol/field_dictionary.csv"
+    "metadata/protocol/field_dictionary.csv",
+    "metadata/protocol/raw_data_roots_v1_4.json"
   ],
   "raw_sensitive_data_public_repo_allowed": false,
   "business_records_committed": false
