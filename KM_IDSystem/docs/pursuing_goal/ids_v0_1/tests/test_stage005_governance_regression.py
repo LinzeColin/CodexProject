@@ -5,6 +5,9 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[4]
 VALIDATOR = ROOT / "docs" / "pursuing_goal" / "ids_v0_1" / "validate_stage005_governance_regression.py"
+APP_ENTRY_INSTALLER = ROOT / "scripts" / "install_app_entries.sh"
+APP_ENTRY_DIAGNOSTIC = ROOT / "scripts" / "diagnose_app_entry.sh"
+APP_BUNDLE_BUILDER = ROOT / "scripts" / "build_app_bundle.sh"
 
 
 class Stage005GovernanceRegressionTests(unittest.TestCase):
@@ -16,6 +19,31 @@ class Stage005GovernanceRegressionTests(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         return module
+
+    def test_app_entry_install_policy_is_app_only_without_command_launchers(self):
+        self.assertTrue(APP_ENTRY_INSTALLER.is_file(), f"missing installer: {APP_ENTRY_INSTALLER}")
+        self.assertTrue(APP_ENTRY_DIAGNOSTIC.is_file(), f"missing diagnostic: {APP_ENTRY_DIAGNOSTIC}")
+        self.assertTrue(APP_BUNDLE_BUILDER.is_file(), f"missing builder: {APP_BUNDLE_BUILDER}")
+
+        scripts = {
+            "installer": APP_ENTRY_INSTALLER.read_text(encoding="utf-8"),
+            "diagnostic": APP_ENTRY_DIAGNOSTIC.read_text(encoding="utf-8"),
+            "builder": APP_BUNDLE_BUILDER.read_text(encoding="utf-8"),
+        }
+
+        forbidden_terms = [
+            ".command",
+            "COMMAND_NAME",
+            "COMMAND_PATHS",
+            "DOWNLOADS_COMMAND",
+            "APPLICATIONS_COMMAND",
+            "write_command_launcher",
+            "command launcher",
+        ]
+        for script_name, text in scripts.items():
+            for term in forbidden_terms:
+                with self.subTest(script=script_name, term=term):
+                    self.assertNotIn(term, text)
 
     def test_phase2_report_validates_current_governance_surface(self):
         module = self._load_module()
@@ -2360,6 +2388,1429 @@ next_gate_id: "IDS-STAGE020-P2-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage021_phase1_preflight_confirmation_ui_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE021-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE021-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE021"
+current_phase_id: "IDS-STAGE021-P1"
+current_task_id: "IDS-V0_1-STAGE021-P1"
+next_gate_id: "IDS-STAGE021-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"
+          status: "completed"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage021_phase2_preflight_confirmation_ui_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE021-P2"
+    acceptance_status: "phase2_preflight_confirmation_ui_slice_complete"
+    next_gate: "IDS-STAGE021-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE021"
+current_phase_id: "IDS-STAGE021-P2"
+current_task_id: "IDS-V0_1-STAGE021-P2"
+next_gate_id: "IDS-STAGE021-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage021_phase3_preflight_confirmation_ui_scenarios(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE021-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE021-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE021"
+current_phase_id: "IDS-STAGE021-P3"
+current_task_id: "IDS-V0_1-STAGE021-P3"
+next_gate_id: "IDS-STAGE021-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage021_phase4_preflight_confirmation_ui_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE021"
+current_phase_id: "IDS-STAGE021-P4"
+current_task_id: "IDS-V0_1-STAGE021-P4"
+next_gate_id: "IDS-STAGE022-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage022_phase1_data_priority_queue_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE022-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE022-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE022"
+current_phase_id: "IDS-STAGE022-P1"
+current_task_id: "IDS-V0_1-STAGE022-P1"
+next_gate_id: "IDS-STAGE022-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage022_phase2_data_priority_queue_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE022-P2"
+    acceptance_status: "phase2_priority_queue_slice_complete"
+    next_gate: "IDS-STAGE022-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE022"
+current_phase_id: "IDS-STAGE022-P2"
+current_task_id: "IDS-V0_1-STAGE022-P2"
+next_gate_id: "IDS-STAGE022-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage022_phase3_data_priority_queue_scenarios(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE022-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE022-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE022"
+current_phase_id: "IDS-STAGE022-P3"
+current_task_id: "IDS-V0_1-STAGE022-P3"
+next_gate_id: "IDS-STAGE022-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage022_phase4_data_priority_queue_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE022"
+current_phase_id: "IDS-STAGE022-P4"
+current_task_id: "IDS-V0_1-STAGE022-P4"
+next_gate_id: "IDS-STAGE023-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage023_phase1_preflight_scenario_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+  STAGE-023:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE023-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE023-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE023"
+current_phase_id: "IDS-STAGE023-P1"
+current_task_id: "IDS-V0_1-STAGE023-P1"
+next_gate_id: "IDS-STAGE023-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE023-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage023_phase2_preflight_scenario_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+  STAGE-023:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE023-P2"
+    acceptance_status: "phase2_preflight_scenario_slice_complete"
+    next_gate: "IDS-STAGE023-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE023"
+current_phase_id: "IDS-STAGE023-P2"
+current_task_id: "IDS-V0_1-STAGE023-P2"
+next_gate_id: "IDS-STAGE023-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE023-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage023_phase3_preflight_scenario_validation(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+  STAGE-023:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE023-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE023-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE023"
+current_phase_id: "IDS-STAGE023-P3"
+current_task_id: "IDS-V0_1-STAGE023-P3"
+next_gate_id: "IDS-STAGE023-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE023-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage023_phase4_preflight_scenario_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+  STAGE-023:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-024"
+    current_task_id: "IDS-V0_1-STAGE023-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE024-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE023"
+current_phase_id: "IDS-STAGE023-P4"
+current_task_id: "IDS-V0_1-STAGE023-P4"
+next_gate_id: "IDS-STAGE024-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE023-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage024_phase1_archive_threat_model_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+  STAGE-023:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-024"
+    current_task_id: "IDS-V0_1-STAGE023-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE024-P1-GATE"
+  STAGE-024:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE024-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE024-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE024"
+current_phase_id: "IDS-STAGE024-P1"
+current_task_id: "IDS-V0_1-STAGE024-P1"
+next_gate_id: "IDS-STAGE024-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE023-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE024-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage024_phase2_archive_safe_extraction_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+  STAGE-023:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-024"
+    current_task_id: "IDS-V0_1-STAGE023-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE024-P1-GATE"
+  STAGE-024:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE024-P2"
+    acceptance_status: "phase2_safe_extraction_slice_complete"
+    next_gate: "IDS-STAGE024-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE024"
+current_phase_id: "IDS-STAGE024-P2"
+current_task_id: "IDS-V0_1-STAGE024-P2"
+next_gate_id: "IDS-STAGE024-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE023-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE024-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage024_phase3_archive_threat_scenarios(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+  STAGE-023:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-024"
+    current_task_id: "IDS-V0_1-STAGE023-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE024-P1-GATE"
+  STAGE-024:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE024-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE024-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE024"
+current_phase_id: "IDS-STAGE024-P3"
+current_task_id: "IDS-V0_1-STAGE024-P3"
+next_gate_id: "IDS-STAGE024-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE023-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE024-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage024_phase4_archive_threat_model_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+  STAGE-023:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-024"
+    current_task_id: "IDS-V0_1-STAGE023-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE024-P1-GATE"
+  STAGE-024:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-025"
+    current_task_id: "IDS-V0_1-STAGE024-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE025-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE024"
+current_phase_id: "IDS-STAGE024-P4"
+current_task_id: "IDS-V0_1-STAGE024-P4"
+next_gate_id: "IDS-STAGE025-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE023-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE023-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE024-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage025_phase1_safe_extraction_engine_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-024:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-025"
+    current_task_id: "IDS-V0_1-STAGE024-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE025-P1-GATE"
+  STAGE-025:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE025-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE025-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE025"
+current_phase_id: "IDS-STAGE025-P1"
+current_task_id: "IDS-V0_1-STAGE025-P1"
+next_gate_id: "IDS-STAGE025-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE024-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE025-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage025_phase2_safe_extraction_engine_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-024:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-025"
+    current_task_id: "IDS-V0_1-STAGE024-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE025-P1-GATE"
+  STAGE-025:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE025-P2"
+    acceptance_status: "phase2_safe_extraction_engine_slice_complete"
+    next_gate: "IDS-STAGE025-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE025"
+current_phase_id: "IDS-STAGE025-P2"
+current_task_id: "IDS-V0_1-STAGE025-P2"
+next_gate_id: "IDS-STAGE025-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE025-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage025_phase3_safe_extraction_engine_scenarios(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-024:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-025"
+    current_task_id: "IDS-V0_1-STAGE024-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE025-P1-GATE"
+  STAGE-025:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE025-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE025-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE025"
+current_phase_id: "IDS-STAGE025-P3"
+current_task_id: "IDS-V0_1-STAGE025-P3"
+next_gate_id: "IDS-STAGE025-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE025-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage025_phase4_safe_extraction_engine_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-024:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-025"
+    current_task_id: "IDS-V0_1-STAGE024-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE025-P1-GATE"
+  STAGE-025:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-026"
+    current_task_id: "IDS-V0_1-STAGE025-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE026-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE025"
+current_phase_id: "IDS-STAGE025-P4"
+current_task_id: "IDS-V0_1-STAGE025-P4"
+next_gate_id: "IDS-STAGE026-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE024-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE025-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_phase_state_allows_stage020_phase2_import_cost_estimator_slice(self):
         module = self._load_module()
         batch_text = """
@@ -2795,6 +4246,836 @@ next_gate_id: "IDS-STAGE021-P1-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage026_phase1_archive_manifest_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-025:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-026"
+    current_task_id: "IDS-V0_1-STAGE025-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE026-P1-GATE"
+  STAGE-026:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE026-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE026-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE026"
+current_phase_id: "IDS-STAGE026-P1"
+current_task_id: "IDS-V0_1-STAGE026-P1"
+next_gate_id: "IDS-STAGE026-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE025-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE026-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage026_phase2_archive_manifest_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-025:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-026"
+    current_task_id: "IDS-V0_1-STAGE025-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE026-P1-GATE"
+  STAGE-026:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE026-P2"
+    acceptance_status: "phase2_archive_manifest_slice_complete"
+    next_gate: "IDS-STAGE026-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE026"
+current_phase_id: "IDS-STAGE026-P2"
+current_task_id: "IDS-V0_1-STAGE026-P2"
+next_gate_id: "IDS-STAGE026-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage026_phase3_archive_manifest_scenario_validation(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-026:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE026-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE026-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE026"
+current_phase_id: "IDS-STAGE026-P3"
+current_task_id: "IDS-V0_1-STAGE026-P3"
+next_gate_id: "IDS-STAGE026-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage026_phase4_archive_manifest_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-026:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-027"
+    current_task_id: "IDS-V0_1-STAGE026-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE027-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE026"
+current_phase_id: "IDS-STAGE026-P4"
+current_task_id: "IDS-V0_1-STAGE026-P4"
+next_gate_id: "IDS-STAGE027-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P4"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage027_phase1_reingest_extracted_files_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-026:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-027"
+    current_task_id: "IDS-V0_1-STAGE026-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE027-P1-GATE"
+  STAGE-027:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE027-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE027-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE027"
+current_phase_id: "IDS-STAGE027-P1"
+current_task_id: "IDS-V0_1-STAGE027-P1"
+next_gate_id: "IDS-STAGE027-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE026-P4"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage027_phase2_reingest_extracted_files_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-027:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE027-P2"
+    acceptance_status: "phase2_reingest_slice_complete"
+    next_gate: "IDS-STAGE027-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE027"
+current_phase_id: "IDS-STAGE027-P2"
+current_task_id: "IDS-V0_1-STAGE027-P2"
+next_gate_id: "IDS-STAGE027-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage027_phase3_reingest_scenario_validation(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-027:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE027-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE027-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE027"
+current_phase_id: "IDS-STAGE027-P3"
+current_task_id: "IDS-V0_1-STAGE027-P3"
+next_gate_id: "IDS-STAGE027-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage027_phase4_reingest_closeout_completion(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage027_completed_local_pending_stage028"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-027:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-028"
+    current_task_id: "IDS-V0_1-STAGE027-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE028-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE027"
+current_phase_id: "IDS-STAGE027-P4"
+current_task_id: "IDS-V0_1-STAGE027-P4"
+next_gate_id: "IDS-STAGE028-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P4"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage028_phase1_archive_adversarial_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage028_phase1_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-027:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-028"
+    current_task_id: "IDS-V0_1-STAGE027-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE028-P1-GATE"
+  STAGE-028:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE028-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE028-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE028"
+current_phase_id: "IDS-STAGE028-P1"
+current_task_id: "IDS-V0_1-STAGE028-P1"
+next_gate_id: "IDS-STAGE028-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P4"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage028_phase2_archive_adversarial_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage028_phase2_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-027:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-028"
+    current_task_id: "IDS-V0_1-STAGE027-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE028-P1-GATE"
+  STAGE-028:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE028-P2"
+    acceptance_status: "phase2_archive_adversarial_slice_complete"
+    next_gate: "IDS-STAGE028-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE028"
+current_phase_id: "IDS-STAGE028-P2"
+current_task_id: "IDS-V0_1-STAGE028-P2"
+next_gate_id: "IDS-STAGE028-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P4"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage028_phase3_archive_adversarial_validation(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage028_phase3_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-027:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-028"
+    current_task_id: "IDS-V0_1-STAGE027-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE028-P1-GATE"
+  STAGE-028:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE028-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE028-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE028"
+current_phase_id: "IDS-STAGE028-P3"
+current_task_id: "IDS-V0_1-STAGE028-P3"
+next_gate_id: "IDS-STAGE028-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE027-P4"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage028_phase4_archive_adversarial_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage028_completed_local_pending_stage029"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-028:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-029"
+    current_task_id: "IDS-V0_1-STAGE028-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE029-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE028"
+current_phase_id: "IDS-STAGE028-P4"
+current_task_id: "IDS-V0_1-STAGE028-P4"
+next_gate_id: "IDS-STAGE029-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P4"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage029_phase1_archive_cleanup_allowlist_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage029_phase1_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-028:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-029"
+    current_task_id: "IDS-V0_1-STAGE028-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE029-P1-GATE"
+  STAGE-029:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE029-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE029-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE029"
+current_phase_id: "IDS-STAGE029-P1"
+current_task_id: "IDS-V0_1-STAGE029-P1"
+next_gate_id: "IDS-STAGE029-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P4"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage029_phase2_archive_cleanup_allowlist_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage029_phase2_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-029:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    current_task_id: "IDS-V0_1-STAGE029-P2"
+    acceptance_status: "phase2_cleanup_allowlist_slice_complete"
+    next_gate: "IDS-STAGE029-P3-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE029"
+current_phase_id: "IDS-STAGE029-P2"
+current_task_id: "IDS-V0_1-STAGE029-P2"
+next_gate_id: "IDS-STAGE029-P3-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage029_phase3_archive_cleanup_scenario_validation(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage029_phase3_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-029:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE029-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+    next_gate: "IDS-STAGE029-P4-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE029"
+current_phase_id: "IDS-STAGE029-P3"
+current_task_id: "IDS-V0_1-STAGE029-P3"
+next_gate_id: "IDS-STAGE029-P4-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage029_phase4_archive_cleanup_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage029_completed_local_pending_stage030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-029:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-030"
+    current_task_id: "IDS-V0_1-STAGE029-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE030-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE029"
+current_phase_id: "IDS-STAGE029-P4"
+current_task_id: "IDS-V0_1-STAGE029-P4"
+next_gate_id: "IDS-STAGE030-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P4"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_phase_state_allows_completed_batch_upload_gate_after_stage005(self):
         module = self._load_module()
         batch_text = """
@@ -2860,6 +5141,276 @@ next_gate_id: "IDS-STAGE011-P1-GATE"
           status: "passed_with_local_evidence"
         phase_id: "IDS-STAGE005-P4"
           status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage030_phase1_postgresql_control_plane_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage030_phase1_in_progress"
+stage_progress:
+  STAGE-029:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-030"
+    current_task_id: "IDS-V0_1-STAGE029-P4"
+    acceptance_status: "local_passed"
+  STAGE-030:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE030-P2-GATE"
+    current_task_id: "IDS-V0_1-STAGE030-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+upload_gate:
+  push_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-STAGE030-P1"
+current_task_id: "IDS-V0_1-STAGE030-P1"
+next_gate_id: "IDS-STAGE030-P2-GATE"
+        phase_id: "IDS-STAGE029-P4"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE030-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage030_phase2_postgresql_control_plane_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage030_phase2_in_progress"
+stage_progress:
+  STAGE-030:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    next_gate: "IDS-STAGE030-P3-GATE"
+    current_task_id: "IDS-V0_1-STAGE030-P2"
+    acceptance_status: "phase2_schema_migration_slice_complete"
+upload_gate:
+  push_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-STAGE030-P2"
+current_task_id: "IDS-V0_1-STAGE030-P2"
+next_gate_id: "IDS-STAGE030-P3-GATE"
+        phase_id: "IDS-STAGE030-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage030_phase3_postgresql_control_plane_validation(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage030_phase3_in_progress"
+stage_progress:
+  STAGE-030:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    next_gate: "IDS-STAGE030-P4-GATE"
+    current_task_id: "IDS-V0_1-STAGE030-P3"
+    acceptance_status: "phase3_scenario_validation_complete"
+upload_gate:
+  push_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-STAGE030-P3"
+current_task_id: "IDS-V0_1-STAGE030-P3"
+next_gate_id: "IDS-STAGE030-P4-GATE"
+        phase_id: "IDS-STAGE030-P3"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_stage030_phase4_closeout_pending_batch_review(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage030_completed_local_pending_batch_review"
+stage_progress:
+  STAGE-030:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_phase: "batch_review_gate"
+    next_gate: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE030-P4"
+    acceptance_status: "local_passed"
+upload_gate:
+  push_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-STAGE030-P4"
+current_task_id: "IDS-V0_1-STAGE030-P4"
+next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+        phase_id: "IDS-STAGE030-P4"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_batch021_030_review_gate_evidence_records_local_review_without_upload(self):
+        review_gate = ROOT / "docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md"
+
+        self.assertTrue(review_gate.exists(), f"missing review gate: {review_gate}")
+
+        text = review_gate.read_text(encoding="utf-8")
+        required_markers = [
+            "IDS-V0_1-BATCH-021-030-REVIEW-GATE",
+            "STAGE-021..STAGE-030",
+            "BATCH021_030_UPLOAD_LOCK.yaml",
+            "Ten-stage completion",
+            "Durable evidence files",
+            "Owner render",
+            "raw data boundary",
+            "push_allowed=false",
+            "No GitHub upload",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "repair finding",
+            "next allowed gate: IDS-V0_1-BATCH-021-030-UPLOAD-GATE",
+        ]
+
+        for marker in required_markers:
+            with self.subTest(marker=marker):
+                self.assertIn(marker, text)
+
+    def test_phase_state_allows_batch021_030_reviewed_pending_upload_gate(self):
+        module = self._load_module()
+        batch_text = """
+status: "reviewed_ready_for_upload_no_github_upload"
+review_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md"
+upload_gate:
+  push_allowed: false
+  review_gate: "BATCH021_030_REVIEW_GATE"
+  gate_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+stage_progress:
+  STAGE-030:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_phase: "batch_review_gate"
+    current_task_id: "IDS-V0_1-STAGE030-P4"
+    acceptance_status: "local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+        phase_id: "IDS-STAGE030-P4"
+          status: "passed_no_github_upload_until_batch_review"
+        phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+          status: "passed_no_github_upload_until_upload_gate"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_batch021_030_upload_gate_evidence_records_github_main_strategy(self):
+        upload_gate = ROOT / "docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md"
+
+        self.assertTrue(upload_gate.exists(), f"missing upload gate: {upload_gate}")
+
+        text = upload_gate.read_text(encoding="utf-8")
+        required_markers = [
+            "IDS-V0_1-BATCH-021-030-UPLOAD-GATE",
+            "STAGE-021..STAGE-030",
+            "BATCH021_030_REVIEW_GATE.md",
+            "BATCH021_030_UPLOAD_LOCK.yaml",
+            "GitHub open PR/issue precheck",
+            "push_allowed=true",
+            "PR targeting `main`",
+            "No STAGE-031",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "raw database content was not read",
+            "app entry reinstall",
+        ]
+
+        for marker in required_markers:
+            with self.subTest(marker=marker):
+                self.assertIn(marker, text)
+
+    def test_phase_state_allows_batch021_030_upload_gate_pending_github_merge(self):
+        module = self._load_module()
+        batch_text = """
+status: "local_batch_upload_gate_passed_pending_github_merge"
+upload_gate:
+  push_allowed: true
+  review_gate: "BATCH021_030_REVIEW_GATE"
+  gate_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md"
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-030:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-031"
+    current_task_id: "IDS-V0_1-STAGE030-P4"
+    acceptance_status: "local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+current_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"
+        phase_id: "IDS-STAGE030-P4"
+          status: "passed_no_github_upload_until_batch_review"
+        phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+          status: "passed_no_github_upload_until_upload_gate"
+        phase_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+          status: "passed_pending_github_merge"
 """
 
         checks = module.evaluate_phase_state(batch_text, roadmap_text)
