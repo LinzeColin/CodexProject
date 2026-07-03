@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION"
-source_snapshot_hash: "sha256:019ddb17dd22a6fff5f5def961211b210b4c95c8e9d0e584789c0f74d2ac383d"
+source_snapshot_hash: "sha256:13ab6ed272aac45973ea469a8cb6a6e481c6de60331b24f19735644717a9737b"
 source_base_commit: "90b297a55451b691c3e0270cfaa64e5d58c5a519"
 source_tree_hash: "d92ec4a0cd884641263c7979f7a5c625229ae83c"
 snapshot_event_time: "2026-07-01T23:35:39+10:00"

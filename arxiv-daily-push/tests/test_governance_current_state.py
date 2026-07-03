@@ -1475,6 +1475,28 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             zero_proof_note,
         )
 
+    def test_model_spec_historical_sections_do_not_reopen_consumed_stage2_gaps(self) -> None:
+        model_spec = (ADP_ROOT / "docs/governance/MODEL_SPEC.md").read_text(encoding="utf-8")
+
+        self.assertIn("Historical write-time status remained blocked", model_spec)
+        self.assertIn("Historical write-time precheck remained blocked", model_spec)
+        self.assertIn("Historical write-time final bundle readiness sub-gate", model_spec)
+        self.assertIn("Current Stage 2 truth is governed by CURRENT.yaml", model_spec)
+        self.assertIn("当前唯一 S3 阻断仍是 `persistent_daily_operation_authorization_missing`", model_spec)
+
+        forbidden_phrases = (
+            "Current status remains blocked because the real directory and artifacts are missing",
+            "The current precheck remains blocked because S2PLT04 completion is missing",
+            "In the current state `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json`",
+            "In the current state, `FINAL_COMMAND_EXECUTION`, `NEXT_AGENT_HANDOFF`",
+            "It currently remains `blocked`, `manifest_present=false`",
+            "The current precheck remains blocked because S2PLT01 acceptance is not proven",
+            "the final acceptance bundle is missing, inherited V7.1 P0=8 and P1=37 remain open",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, model_spec)
+
     def test_s3_daily_operation_handoff_records_post_acceptance_blocker(self) -> None:
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")
