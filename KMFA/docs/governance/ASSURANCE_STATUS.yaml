@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260703-V013-S10-P3-REPORT-EXPORT-REPLAY"
+as_of_event_id: "EVENT-KMFA-20260703-V013-S10-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "416b932537cc2b0a4646af437dfc2b8977259a16"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S10P3_REPORT_EXPORT_REPLAY_COMMIT"
-snapshot_event_time: "2026-07-03T17:23:22+10:00"
-generator_version: "manual-v013-s10p3-report-export-replay"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S10_STAGE_REVIEW_COMMIT"
+snapshot_event_time: "2026-07-03T18:30:00+10:00"
+generator_version: "manual-v013-s10-stage-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 612
+    total_active_parameters: 618
     total_active_formulas: 53
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
