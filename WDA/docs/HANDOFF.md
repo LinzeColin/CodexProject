@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA v0.2-R1 full-auto WeChat export to Chinese human-readable intelligence workspace.
+Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and regenerate Chinese human-readable workspace.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility and local Chinese human-readable intelligence reports; current scope is v0.2-R1 productized local report workspace plus full-auto pipeline runbook/spec, not RAG/Web/Matrix buildout
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, v0.1-C local query/report entry, and v0.2-R1 local Chinese human-readable workspace artifacts generated
+- Product scope: WDA Control Plane for WeChat data analysis feasibility and local Chinese human-readable intelligence reports; current scope is v0.2-R2-B full-auto bundle import, Data Core rebuild, and report regeneration, not RAG/Web/Matrix buildout
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, v0.1-C local query/report entry, v0.2-R1 local Chinese human-readable workspace, and v0.2-R2-B missing-input blocker documentation generated
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -31,12 +31,14 @@ Execute WDA v0.2-R1 full-auto WeChat export to Chinese human-readable intelligen
 - Latest v0.1-B outputs: `WDA/docs/v0_1_analysis_layer/`
 - Latest v0.1-C outputs: `WDA/docs/v0_1_query_report_entry/`
 - Latest v0.2-R1 outputs: `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/`
+- Latest v0.2-R2-B outputs: `WDA/docs/v0_2_r2_full_auto_workspace/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Latest Sprint 2M-B local Raw Import Pack: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2m_b_subject_coverage_import_validation/`
 - Latest v0.1-A local Data Core seed: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/data_core_seed/wda_v0_1_seed.sqlite`
 - Latest v0.1-B local analysis layer: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/analysis_layer/`
 - Latest v0.1-C local query/report entry: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/query_report_entry/`
 - Latest v0.2-R1 local human-readable workspace: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/`
+- Latest v0.2-R2-B local validation output: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/validation_report.json`
 - Raw Gate: `First-Batch Subject Coverage Proven`; full Raw Gate Go is not proven
 
 ## Key Decisions
@@ -103,6 +105,9 @@ Execute WDA v0.2-R1 full-auto WeChat export to Chinese human-readable intelligen
 - v0.2-R1 has a runnable new-computer one-command entrypoint: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/run_wda_v0_2_r1.sh`.
 - v0.2-R1 does not run the old-computer exporter. It defines the old-computer all-conversation export runner spec and keeps one-time old-computer setup as the remaining full-coverage blocker.
 - v0.2-R1 local reports may contain full-sensitive evidence excerpts and must remain under WDA_MetaData; repo docs contain only structure, counts, runbooks, and safety boundaries.
+- v0.2-R2-B attempted to import the full-auto export bundle, but the required zip was missing at `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/input_full_export/wda_v0_2_r2_full_export_transfer_bundle.zip`.
+- v0.2-R2-B did not generate a v0.2-R2 Raw Import Pack, Data Core, analysis outputs, dashboard, or Chinese reports because the input bundle was absent.
+- v0.2-R2-B wrote a local blocker validation report only; it did not upload raw data, run WeChat exporter tools, call OpenAI API with raw messages, or start RAG/Web/Matrix.
 - RAG/Web/Matrix remain blocked until repeatable broader import-readiness and Data Core readiness are proven.
 
 ## Files To Read First
@@ -200,6 +205,10 @@ Execute WDA v0.2-R1 full-auto WeChat export to Chinese human-readable intelligen
 - `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/validation_report.md`
 - `WDA/scripts/wda_v0_2_r1_generate_workspace.py`
 - `WDA/scripts/run_wda_v0_2_r1.sh`
+- `WDA/docs/v0_2_r2_full_auto_workspace/README.md`
+- `WDA/docs/v0_2_r2_full_auto_workspace/full_auto_import_summary.md`
+- `WDA/docs/v0_2_r2_full_auto_workspace/validation_report.md`
+- `WDA/docs/v0_2_r2_full_auto_workspace/next_v0_2_r3_incremental_update_plan.md`
 
 ## Validation
 
