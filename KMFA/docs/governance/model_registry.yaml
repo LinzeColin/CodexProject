@@ -81,7 +81,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s01p1-read-only-scope-lock"
+    model_version: "0.1.4-s01p2-public-baseline-sync"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -150,9 +150,13 @@ models:
       - "PARAM-KMFA-1000"
       - "PARAM-KMFA-1001"
       - "PARAM-KMFA-1002"
+      - "PARAM-KMFA-1003"
+      - "PARAM-KMFA-1004"
+      - "PARAM-KMFA-1005"
     inputs:
       - "user objective"
       - "KMFA TaskPack and Roadmap"
+      - "KMFA/taskpack/v1_4 public-safe baseline"
       - "CodexProject root governance"
     outputs:
       - "phase scope gate"

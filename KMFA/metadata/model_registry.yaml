@@ -1,4 +1,4 @@
-version: "0.1.0-s18-github-upload"
+version: "0.1.4-s01p2-public-baseline-sync"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
