@@ -280,8 +280,8 @@ product_version: 0.1.4-s01p2-public-baseline-sync
 ## Counts
 
 - active models: 7
-- active formulas: 53
-- active parameters: 629
+- active formulas: 54
+- active parameters: 635
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 1
@@ -293,3 +293,14 @@ product_version: 0.1.4-s01p2-public-baseline-sync
 - 0.01 元差异被静默通过。
 - 缺数据报告被伪装为完整报告。
 - Stage 未完成复审修复即上传 GitHub。
+
+
+### FORM-KMFA-V014-S01P3-NO-OMISSION-BASELINE-001
+
+- status: active
+- type: deterministic public-safe governance gate
+- purpose: 验证 v0.1.4 S01-P3 防遗漏基线，覆盖 legacy requirements、v1.4 overlay requirements、18/54/162 roadmap registry、raw boundary 和 no-upload/no-review scope gate。
+- fact_level: EXTRACTED
+- expression: `s01p3_valid = legacy_requirements == 20 AND legacy_p0 == 9 AND legacy_p1 == 8 AND v14_overlay == 5 AND v14_stages == 18 AND v14_phases == 54 AND v14_tasks == 162 AND github_upload_performed == false`
+- evidence: `KMFA/tools/check_v014_s01_p3_no_omission_baseline.py`, `KMFA/metadata/traceability/v1_4_no_omission_requirements.csv`, `KMFA/metadata/traceability/v1_4_stage_phase_task_status.jsonl`, `KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/machine/s01_p3_no_omission_baseline_manifest.json`
+- limitation: 不证明 Stage 1 review、raw inventory、raw value matching、正式报告、GitHub upload 或 delivery readiness。

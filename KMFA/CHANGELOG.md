@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s01p3-no-omission-baseline - 2026-07-03
+
+- 完成 `S01-P3｜防遗漏基线 / no-omission baseline`。
+- 新增 v1.4 requirements overlay 和 18/54/162 roadmap registry。
+- 新增 `KMFA/tools/check_v014_s01_p3_no_omission_baseline.py` 与 focused unit test。
+- 保持 raw inbox 未读取/未列出/未修改，Stage 1 review、S02 和 GitHub upload 未执行。
+
 ## 0.1.4-s01p2-public-baseline-sync - 2026-07-03
 
 - 完成 `v0.1.4 S01-P2｜项目骨架与中文入口 / public-safe taskpack baseline sync` 本地验证准备：同步 9 个 S01-P1 锁定的 v1.4 public-safe source 到 `KMFA/taskpack/v1_4/`，新增 `KMFA/metadata/baseline/source_package_v1_4.json`。

@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S01-P2｜项目骨架与中文入口 / public-safe taskpack baseline sync`：基于 S01-P1 锁定的 9 个 public-safe source SHA256，将 v1.4 public-safe baseline 同步到 `KMFA/taskpack/v1_4/`，登记 `KMFA/metadata/baseline/source_package_v1_4.json`，刷新三中文入口和治理记录，并保留 HTML audit 聚合结果 `PASS=54/WARN=0/FAIL=0`、NO_GO / no-upload 边界和质量优先时间规则。`/Users/linzezhang/Downloads/KMFA_MetaData` 未被读取、列出、修改、删除、移动、重命名、覆盖或写入；v1.4 zip 的 raw/private payload 未抽取、未提交；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S01-P3｜防遗漏基线 / no-omission baseline`，不得跳到 raw inventory、Stage 1 review、GitHub upload、正式报告、live connector、OpMe 深度耦合或业务执行。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S01-P3｜防遗漏基线 / no-omission baseline`：锁定 legacy requirements=20、P0=9、P1=8，新增 v1.4 overlay requirements=5，建立 v1.4 roadmap registry=18 Stage / 54 Phase / 162 Task，并新增 `KMFA/tools/check_v014_s01_p3_no_omission_baseline.py` 与 focused unit test。`/Users/linzezhang/Downloads/KMFA_MetaData` 未被读取、列出、修改、删除、移动、重命名、覆盖或写入；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 Stage 1 整体复审`，不得跳到 S02、raw inventory、GitHub upload、正式报告、live connector、OpMe 深度耦合或业务执行。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s01p2-public-baseline-sync`
-- 当前已完成: `v0.1.4 S01-P2 public-safe baseline sync`
-- 证据目录: `KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/`
-- validator: `KMFA/tools/check_v014_s01_p2_public_baseline_sync.py`
-- focused test: `KMFA/tests/test_v014_s01_p2_public_baseline_sync.py`
+- 当前版本: `0.1.4-s01p3-no-omission-baseline`
+- 当前已完成: `v0.1.4 S01-P3 no-omission baseline`
+- 证据目录: `KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/`
+- validator: `KMFA/tools/check_v014_s01_p3_no_omission_baseline.py`
+- focused test: `KMFA/tests/test_v014_s01_p3_no_omission_baseline.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
 - raw boundary: 本 phase 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未抽取 v1.4 zip 内 raw/private payload。
-- 未执行: S01-P3、Stage 1 review、raw inventory、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
+- 未执行: Stage 1 review、S02、raw inventory、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
 
 ## v0.1.3 历史状态
 

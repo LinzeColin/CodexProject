@@ -5,9 +5,9 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s01p2-public-baseline-sync`
+- version: `0.1.4-s01p3-no-omission-baseline`
 - current_stage: `S01`
-- current_phase: `v0.1.4 S01-P2 public-safe baseline sync`
+- current_phase: `v0.1.4 S01-P3 no-omission baseline`
 - status: `completed_validated_local_only_no_go_upload_deferred`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S01-P3 no-omission baseline 已本地完成：证据位于 `KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/`，validator 为 `KMFA/tools/check_v014_s01_p3_no_omission_baseline.py`，focused unit 为 `KMFA/tests/test_v014_s01_p3_no_omission_baseline.py`；本 phase 锁定 legacy requirements=20、P0=9、P1=8，v1.4 overlay requirements=5，v1.4 roadmap registry=18 Stage/54 Phase/162 Task；未读取或列出 raw inbox，未执行 Stage 1 review/S02/GitHub upload。
 - v0.1.4 S01-P2 public-safe baseline sync 已本地完成：证据位于 `KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/`，validator 为 `KMFA/tools/check_v014_s01_p2_public_baseline_sync.py`，focused unit 为 `KMFA/tests/test_v014_s01_p2_public_baseline_sync.py`；本 phase 只同步 S01-P1 锁定的 9 个 public-safe v1.4 source 到 `KMFA/taskpack/v1_4/` 并刷新中文入口/治理记录；未读取或列出 raw inbox，未抽取 raw/private payload，未执行 S01-P3/Stage 1 review/GitHub upload。
 - v0.1.4 S01-P1 只读检查与范围锁定已本地完成：证据位于 `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/`，validator 为 `KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py`，focused unit 为 `KMFA/tests/test_v014_s01_p1_read_only_scope_lock.py`；本 phase 只锁定 v1.4 source package、公开 taskpack/roadmap/raw-readonly/UIUX gate hash、canonical worktree 路径、raw inbox 禁区和 no-upload/no-go 边界；未读取或列出 raw inbox，未抽取 raw/private payload，未执行 S01-P2/S01-P3/Stage 1 review/GitHub upload。
 - S01-P1 只读计划与范围锁定。
