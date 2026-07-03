@@ -1,15 +1,15 @@
 # KMFA Development Ledger
 
-product_version: 0.1.3-s07p2-wps-file-adapter-replay
+product_version: 0.1.3-s07p3-redcircle-postponement-replay
 version_matrix_product_version_reference: 0.1.3-s06-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S07`
-- current_phase: `v0.1.3 S07-P2 WPS file adapter replay`
-- current_tasks: `KMFA-V013-S07-P2-WPS-FILE-ADAPTER-REPLAY-20260703`
-- status: `local_s07p2_wps_file_adapter_replay_passed_upload_deferred_until_stage10_batch_no_go`
+- current_phase: `v0.1.3 S07-P3 Redcircle postponement replay`
+- current_tasks: `KMFA-V013-S07-P3-REDCIRCLE-POSTPONEMENT-REPLAY-20260703`
+- status: `local_s07p3_redcircle_postponement_replay_passed_upload_deferred_until_stage10_batch_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -56,6 +56,7 @@ version_matrix_product_version_reference: 0.1.3-s06-stage-review
 | `KMFA-V013-S06-STAGE-REVIEW-20260703` | v0.1.3 Stage 6 整体复审本地通过，S06-P1/S06-P2/S06-P3 replay validators 全部 PASS，findings_open=0，Q5 与 A 级报告仍阻断；GitHub upload 延期到 Stage 1-10 batch gate | `KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/human/stage6_review_report.md` |
 | `KMFA-V013-S07-P1-FINANCE-FILE-ADAPTER-REPLAY-20260703` | v0.1.3 S07-P1 finance file adapter replay 本地通过，9 类财务支撑源、45 条 hash-only 字段候选、9 条只读字段报告和 45 条 source header hash 已 public-safe 锁定；未读取 raw inbox，未执行 S07-P2、S07-P3、Stage 7 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S07_P1_FINANCE_FILE_ADAPTER_REPLAY/human/finance_file_adapter_replay_report.md` |
 | `KMFA-V013-S07-P2-WPS-FILE-ADAPTER-REPLAY-20260703` | v0.1.3 S07-P2 WPS file adapter replay 本地通过，4 类 WPS export、20 条 hash-only 字段映射、4 条只读字段报告、4 条转换提示和 20 条 source header hash 已 public-safe 锁定；未读取 raw inbox，未执行 S07-P3、Stage 7 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S07_P2_WPS_FILE_ADAPTER_REPLAY/human/wps_file_adapter_replay_report.md` |
+| `KMFA-V013-S07-P3-REDCIRCLE-POSTPONEMENT-REPLAY-20260703` | v0.1.3 S07-P3 Redcircle postponement replay 本地通过，4 类 Redcircle reserved export templates、1 条 connector policy、4 条 rollback plan、4 条 registry source 和 D15 automatic connector blocked 已 public-safe 锁定；未读取 raw inbox，未执行 Stage 7 review 或 GitHub upload | `KMFA/stage_artifacts/V013_S07_P3_REDCIRCLE_POSTPONEMENT_REPLAY/human/redcircle_postponement_replay_report.md` |
 | `KMFA-S05-STAGE-REVIEW-20260630` | Stage 5 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/stage5_review_report.md` |
 | `KMFA-S05-GITHUB-UPLOAD-20260630` | Stage 5 final GitHub upload 已完成 | `KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md` |
 | `S6PAT01-S6PAT03` | S06-P1 零差异校验器完成本地验证：逐字段比较整数分，任意 1 分差异失败并生成 public-safe mismatch report | `KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md` |
@@ -156,7 +157,7 @@ version_matrix_product_version_reference: 0.1.3-s06-stage-review
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S07-P2 完成后，下一步只能另起 run 执行 v0.1.3 S07-P3 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S07_P2_WPS_FILE_ADAPTER_REPLAY/human/test_results.md` |
+| 无 | v0.1.3 S07-P3 完成后，下一步只能另起 run 执行 v0.1.3 Stage 7 整体复审或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S07_P3_REDCIRCLE_POSTPONEMENT_REPLAY/human/test_results.md` |
 
 ## Not Completed
 
