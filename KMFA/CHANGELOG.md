@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s04p1-amount-precision - 2026-07-04
+
+- 完成 `v0.1.4 S04-P1｜金额精度与基础工具`。
+- 新增 amount precision evidence generator、validator、focused unit test、review report、test results 和 machine manifest。
+- 锁定金额标准化 cases `9/9`、拒绝 cases `9/9`、forbidden-float fixture findings `3`、repository no-float scan PASS。
+- 本轮未读取 raw root，未执行 S04-P2、S04-P3、Stage 4 review、GitHub upload、raw value matching、字段映射、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s03-stage-review - 2026-07-04
 
 - 完成 `v0.1.4 Stage 3 整体复审`。

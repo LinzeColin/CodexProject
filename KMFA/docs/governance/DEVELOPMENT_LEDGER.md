@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s04p1-amount-precision
+
+- task_id: `KMFA-V014-S04-P1-AMOUNT-PRECISION-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred`
+- scope: v0.1.4 S04-P1 amount precision only; generated public-safe synthetic amount normalization, rejection and no-float evidence without reading raw root.
+- evidence: `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/human/amount_precision_report.md`, `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/human/test_results.md`, `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/machine/amount_precision_manifest.json`, `KMFA/tools/check_v014_s04_p1_amount_precision.py`
+- counts: amount_case_count=9, amount_case_passed_count=9, amount_rejection_count=9, amount_rejection_passed_count=9, forbidden_float_fixture_findings=3, repository_no_float_scan_passed=true.
+- blocker_state: S04-P2=false, S04-P3=false, Stage 4 review=false, GitHub upload=false, raw root read=false, raw value matching=false, field mapping=false, formal_report_allowed=false, delivery_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q2, current_report_grade=D.
+
+product_version: 0.1.4-s04p1-amount-precision
+version_matrix_product_version_reference: 0.1.4-s04p1-amount-precision
+
 ## 2026-07-04 - 0.1.4-s03-stage-review
 
 - task_id: `KMFA-V014-S03-STAGE-REVIEW-20260704`
