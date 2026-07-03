@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260704-V014-S06-P2-DIFFERENCE-QUEUE"
+as_of_event_id: "EVENT-KMFA-20260704-V014-S06-P3-VALIDATION-EVIDENCE"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "39201eecaefd445553b066c27c7e73601c5afe18"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-04T10:40:00+10:00"
-generator_version: "manual-v014-s06-p2-difference-queue"
+snapshot_event_time: "2026-07-04T12:20:00+10:00"
+generator_version: "manual-v014-s06-p3-validation-evidence"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 694
-    total_active_formulas: 73
+    total_active_parameters: 697
+    total_active_formulas: 74
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -166,6 +166,14 @@ dimensions:
       - "KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/human/zero_delta_validator_report.md"
       - "KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/machine/zero_delta_validator_manifest.json"
       - "KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/machine/mismatch_report.csv"
+      - "KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/human/difference_queue_report.md"
+      - "KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/machine/difference_queue_manifest.json"
+      - "KMFA/tools/check_v014_s06_p2_difference_queue.py"
+      - "KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/human/validation_evidence_report.md"
+      - "KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/machine/validation_evidence_manifest.json"
+      - "KMFA/tools/check_v014_s06_p3_validation_evidence.py"
       - "KMFA/tools/check_v014_s06_p1_zero_delta_validator.py"
       - "KMFA/tools/check_v014_s04_stage_review.py"
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"

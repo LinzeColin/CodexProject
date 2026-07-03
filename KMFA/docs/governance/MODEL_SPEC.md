@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s06p1-zero-delta-validator
+product_version: 0.1.4-s06p3-validation-evidence
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S06-P1 只证明 public-safe synthetic 整数分 zero-delta validator、8 次 pass fixture 字段比较、1 cent mismatch 失败与 mismatch report schema；本 phase 未读取 raw inbox，不声明 S06-P2 difference queue、S06-P3 metadata quality、Stage 6 review、GitHub upload、actual business zero-delta、raw value matching、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S06-P3 只证明 S06-P1/S06-P2 public-safe evidence 已输出 sanitized validation evidence 并写入 metadata/quality；本 phase 未读取 raw inbox，不声明 Stage 6 review、GitHub upload、actual business zero-delta、raw value matching、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s06p1-zero-delta-validator
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s05_stage_review.py`, `KMFA/stage_artifacts/V014_S05_STAGE_REVIEW/machine/stage5_review_manifest.json`
-- current_v014_scope_lock: `S06-P1 zero-delta validator completed; S06-P2/S06-P3/Stage 6 review/GitHub upload/raw value matching/metadata quality write/lineage full check/formal report/live connector/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s06_p3_validation_evidence.py`, `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/machine/validation_evidence_manifest.json`
+- current_v014_scope_lock: `S06-P3 validation evidence completed; Stage 6 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -165,6 +165,16 @@ product_version: 0.1.4-s06p1-zero-delta-validator
 - evidence: `KMFA/tools/v014_s06_p2_difference_queue.py`, `KMFA/tools/check_v014_s06_p2_difference_queue.py`, `KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/machine/difference_queue_manifest.json`
 - boundary_validation: `KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/human/test_results.md`
 - limitation: S06-P2 只证明 public-safe unresolved difference queue 行为；不写 S06-P3 metadata quality，不关闭差异，不执行 Stage 6 review、GitHub upload、actual business raw value matching、lineage full check、正式报告或 business execution。
+
+### FORM-KMFA-V014-S06P3-VALIDATION-EVIDENCE-001
+
+- type: deterministic public-safe validation evidence gate
+- purpose: 验证 v0.1.4 S06-P3 validation evidence，覆盖 S06-P1/S06-P2 dependencies、sanitized evidence output、metadata/quality 写入、Q5/A 级报告阻断、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s06p3_valid = s06_p1_dependency == PASS AND s06_p2_dependency == PASS AND metadata_quality_written == true AND project_status_count == 2 AND blocked_project_status_count == 2 AND q5_allowed_count == 0 AND report_grade_a_allowed_count == 0 AND stage6_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s06_p3_validation_evidence.py`, `KMFA/tools/check_v014_s06_p3_validation_evidence.py`, `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/machine/validation_evidence_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/human/test_results.md`
+- limitation: S06-P3 只证明 public-safe validation evidence 和 metadata/quality 写入；不关闭差异，不执行 Stage 6 review、GitHub upload、actual business raw value matching、lineage full check、正式报告或 business execution。
 
 ### FORM-KMFA-AMOUNT-001
 

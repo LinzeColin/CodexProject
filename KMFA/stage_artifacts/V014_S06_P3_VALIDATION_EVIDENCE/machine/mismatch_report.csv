@@ -1,0 +1,2 @@
+mismatch_id,source_id,file_hash,field_path,mapping_version,formula_version,status,evidence_ref
+MM-S06P3-4483ca6f7118bfed,SRC-s06p3-zero-delta-8628f739,sha256:9e370c562371b8a1172c1a62a2bdada1fb41df02ff956b43dc6c7fb527f5d22f,field_ref:sha256:579fa7a11ff2b58292f1cfadd45b2cb1b0b35ec93713ca252c7077a5afb6f572,MAP-SRC-s06p3-zero-delta-8628f739-v0.1.0,FORM-KMFA-S06P3-VALIDATION-EVIDENCE-v0.1.0,zero_delta_failed,KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/machine/mismatch_report.csv
