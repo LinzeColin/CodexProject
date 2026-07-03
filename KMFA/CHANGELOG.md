@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s07p1-finance-file-adapter - 2026-07-04
+
+- 完成 `v0.1.4 S07-P1｜财务文件适配`。
+- 新增 S07-P1 finance adapter generator、validator、focused unit test、public-safe manifest、field candidate mirror、support source registry、readonly field report、risk register、rollback plan 和 test results。
+- 复用既有 public-safe finance adapter baseline，锁定 source categories=`9`、source registry=`9`、field candidates=`45`、hash-only candidates=`45`、readonly field reports=`9`、source header fingerprints=`45`、Q4/Q5/formal report allowed=`0`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values、PDF/Excel source values 或真实业务值。
+- 本轮未执行 S07-P2、S07-P3、Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s06-stage-review - 2026-07-04
 
 - 完成 `v0.1.4 Stage 6 整体复审`。

@@ -186,6 +186,16 @@ product_version: 0.1.4-s06p3-validation-evidence
 - boundary_validation: `KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/human/test_results.md`
 - limitation: Stage 6 review 只证明 S06 public-safe local review closure；不证明 GitHub upload、S07-P1、difference closure、raw value matching、lineage full check、正式报告或 business execution。
 
+### FORM-KMFA-V014-S07P1-FINANCE-FILE-ADAPTER-001
+
+- type: deterministic public-safe finance file adapter gate
+- purpose: 复用 public-safe finance adapter baseline，锁定 v0.1.4 S07-P1 财务支撑源登记、字段候选映射、只读字段报告、质量边界和 no-upload/no-review scope gate。
+- fact_level: EXTRACTED
+- expression: `s07p1_valid = S06 stage review PASS AND legacy finance adapter PASS AND source_category_count == 9 AND source_registry_count == 9 AND field_candidate_count == 45 AND hash_only_field_candidate_count == 45 AND readonly_field_report_count == 9 AND q5_allowed_count == 0 AND formal_report_allowed_count == 0 AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s07_p1_finance_file_adapter.py`, `KMFA/tools/check_v014_s07_p1_finance_file_adapter.py`, `KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/machine/finance_file_adapter_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/human/test_results.md`
+- limitation: S07-P1 只证明 public-safe local finance file adapter evidence；不证明 S07-P2、S07-P3、Stage 7 review、raw value matching、lineage full check、正式报告、GitHub upload、delivery readiness 或 business execution。
+
 ### FORM-KMFA-AMOUNT-001
 
 - type: deterministic amount normalization
