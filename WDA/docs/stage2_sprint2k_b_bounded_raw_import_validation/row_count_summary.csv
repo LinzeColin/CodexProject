@@ -1,0 +1,8 @@
+source_file,conversation_count_in_file,raw_rows,parse_errors,converted_messages,expected_rows,row_count_status
+export_01_raw.jsonl,1,20,0,20,20,pass
+export_02_raw.jsonl,1,20,0,20,20,pass
+export_03_raw.jsonl,1,20,0,20,20,pass
+export_04_raw.jsonl,1,20,0,20,20,pass
+export_05_raw.jsonl,1,20,0,20,20,pass
+TOTAL,5,100,0,100,100,pass
+

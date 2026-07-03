@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2J-B validation and conversion of minimal message-level artifact.
+Execute WDA Stage 2 Sprint 2K-B validation and conversion of bounded multi-session export.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is minimal Raw Import Pack validation, not RAG/Web/Matrix buildout
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, and Sprint 2J-B raw import validation artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is bounded multi-session Raw Import Pack validation, not RAG/Web/Matrix buildout
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, and Sprint 2K-B bounded raw import validation artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -23,8 +23,9 @@ Execute WDA Stage 2 Sprint 2J-B validation and conversion of minimal message-lev
 - Latest Sprint 2G outputs: `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/`
 - Latest Sprint 2I outputs: `WDA/docs/stage2_sprint2i_2h_report_validation/`
 - Latest Sprint 2J-B outputs: `WDA/docs/stage2_sprint2j_wda_raw_import_validation/`
+- Latest Sprint 2K-B outputs: `WDA/docs/stage2_sprint2k_b_bounded_raw_import_validation/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
-- Raw Gate: `Sample Message-Level Proven`; full Raw Gate Go is not proven
+- Raw Gate: `Bounded Multi-Message Proven`; full Raw Gate Go is not proven
 
 ## Key Decisions
 
@@ -64,6 +65,10 @@ Execute WDA Stage 2 Sprint 2J-B validation and conversion of minimal message-lev
 - Sprint 2J-B validated the transferred minimal artifact on the new computer and generated a local WDA Raw Import Pack under `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2j_wda_raw_import_validation/`.
 - Sprint 2J-B generated local `messages.jsonl` with `1` row, `conversations.jsonl` with `1` row, `contacts.jsonl` with `2` rows, and empty `media_index.csv`.
 - Sprint 2J-B advances Raw Gate to `Sample Message-Level Proven`, not full Go.
+- Sprint 2K-A produced a bounded repeatability export: 5 conversations, 20 rows per conversation, 100 total message rows, `include_media_paths=false`, and no keys/configs/DBs/logs/tool_work/sensitive_local_state in the transfer bundle.
+- Sprint 2K-B validated the bounded transfer bundle on the new computer and generated a local WDA Raw Import Pack under `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2k_b_bounded_raw_import_validation/`.
+- Sprint 2K-B generated local `messages.jsonl` with `100` rows, `conversations.jsonl` with `5` rows, `contacts.jsonl` with `21` rows, and empty `media_index.csv`.
+- Sprint 2K-B advances Raw Gate to `Bounded Multi-Message Proven`, not full Go.
 - RAG/Web/Matrix remain blocked until broader coverage and repeatability are proven.
 
 ## Files To Read First
@@ -120,6 +125,11 @@ Execute WDA Stage 2 Sprint 2J-B validation and conversion of minimal message-lev
 - `WDA/docs/stage2_sprint2j_wda_raw_import_validation/wda_contract_mapping_report.md`
 - `WDA/docs/stage2_sprint2j_wda_raw_import_validation/raw_gate_decision.md`
 - `WDA/docs/stage2_sprint2j_wda_raw_import_validation/next_sprint2k_plan.md`
+- `WDA/docs/stage2_sprint2k_b_bounded_raw_import_validation/README.md`
+- `WDA/docs/stage2_sprint2k_b_bounded_raw_import_validation/raw_artifact_shape_report.md`
+- `WDA/docs/stage2_sprint2k_b_bounded_raw_import_validation/wda_contract_mapping_report.md`
+- `WDA/docs/stage2_sprint2k_b_bounded_raw_import_validation/raw_gate_decision.md`
+- `WDA/docs/stage2_sprint2k_b_bounded_raw_import_validation/next_sprint2l_plan.md`
 
 ## Validation
 
@@ -250,6 +260,28 @@ Latest Sprint 2J-B raw import validation:
 - RAG/Web/Matrix: blocked
 - Raw Gate: `Sample Message-Level Proven`, not full Go
 
+Latest Sprint 2K-B bounded raw import validation:
+
+- Required Sprint 2K-B repo-safe outputs present: true
+- Expected input path exists: false
+- Actual validated transfer bundle: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_inputs/sprint2k_transfer_bundle/sprint2k_a_bounded_repeatability_export/sprint2k_transfer_bundle.zip`
+- Transfer bundle SHA-256: `e97cf341fc5905372b2d76546a4270bb54b515d1f1b6850b2ab7815089123b56`
+- Payload checksum manifest status: pass
+- Transfer bundle file count: `18`
+- Raw bounded export files: `5`
+- Key material / DBs / broad logs / `tool_work/` / `sensitive_local_state/` included in bundle: false
+- Local Raw Import Pack output root: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2k_b_bounded_raw_import_validation/`
+- Local `messages.jsonl` rows: `100`
+- Local `conversations.jsonl` rows: `5`
+- Local `contacts.jsonl` rows: `21`
+- Local `media_index.csv` rows: `0`
+- Missing required fields: none
+- Conversion errors: `0`
+- Validation errors: none
+- Repo raw content committed: false
+- RAG/Web/Matrix: blocked
+- Raw Gate: `Bounded Multi-Message Proven`, not full Go
+
 ## Next Step
 
-Run Sprint 2K bounded repeatability and coverage validation next. Do not start RAG/Web/Matrix yet. Sprint 2K should prove repeatable bounded exports beyond the one-message sample, keep raw outputs under WDA_MetaData only, and continue blocking key material, decrypted DBs, broad logs, and raw message content from git.
+Run Sprint 2L broader bounded coverage and import-readiness planning next. Do not start RAG/Web/Matrix yet. Sprint 2L should decide the next bounded sample expansion, keep raw outputs under WDA_MetaData only, and continue blocking key material, DBs, broad logs, raw exports, transfer bundles, contacts, and raw message content from git.
