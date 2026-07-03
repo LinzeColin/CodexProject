@@ -21,6 +21,23 @@ No Cloudflare live deploy, Access policy mutation, memoryatlas.linzezhang.com pu
 - Restored proM2 MacData Chinese report artifacts to Markdown `.md` files for latest, draft, and final reports per owner instruction.
 
 No API key, token, password, cookie, session, Keychain item, shell history, full environment dump, `.env` raw content, Time Machine data, or iCloud data is collected.
+## Unreleased - Memory Atlas v1.1.7 Stage 0 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage0_review.md`.
+- Added `validate:v1.1.7-stage0` to run Phase 0.1, Phase 0.2 and Phase 0.3
+  validators, verify the Stage 0 review artifact, confirm canonical remote /
+  sparse boundary and check governance records.
+- Registered `MA-V117-S0-REVIEW` / `ACC-MA-V117-S0-REVIEW` with status
+  `stage_0_review_passed_pending_stage1_no_github_main_upload`.
+
+No Stage 1 work, runtime UI implementation, screenshot, production build, local
+app install, Cloudflare deploy, Access policy change, raw/private data read,
+direct writeback, proposal write, agent apply or GitHub main upload was added.
+
+Machine-readable boundary summary: No Stage 1 work; No raw/private data read;
+No direct writeback; No proposal write; No GitHub main upload before whole
+Stage 0-8 completion.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 0 Phase 3
 
 - Added `docs/product/detail_visibility_contract.md` for the v1.1.7 Stage 0
