@@ -16,6 +16,7 @@ ENTRY = PURSUE_ROOT / "STAGE024_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE024_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE024_PHASE2_SAFE_EXTRACTION_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE024_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE024_PHASE4_CLOSEOUT.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 SCRIPT = ROOT / "scripts" / "check_archive_threat_model.py"
 EXTRACTED_AT = "2026-07-03T03:12:44Z"
@@ -130,6 +131,7 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'status: "stage024_phase1_in_progress"',
             'status: "stage024_phase2_in_progress"',
             'status: "stage024_phase3_in_progress"',
+            'status: "stage024_completed_local_pending_stage025"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_status_terms),
@@ -141,6 +143,7 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE024-P1"',
             'current_task_id: "IDS-V0_1-STAGE024-P2"',
             'current_task_id: "IDS-V0_1-STAGE024-P3"',
+            'current_task_id: "IDS-V0_1-STAGE024-P4"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_task_terms),
@@ -149,6 +152,7 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
         allowed_acceptance_terms = [
             'acceptance_status: "phase2_safe_extraction_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_acceptance_terms),
@@ -157,10 +161,19 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE024-P3-GATE"',
             'next_gate: "IDS-STAGE024-P4-GATE"',
+            'next_gate: "IDS-STAGE025-P1-GATE"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_gate_terms),
             f"batch lock did not contain an allowed STAGE-024 next gate: {allowed_gate_terms}",
+        )
+        allowed_stage_status_terms = [
+            'status: "in_progress"',
+            'status: "completed_local"',
+        ]
+        self.assertTrue(
+            any(term in text for term in allowed_stage_status_terms),
+            f"batch lock did not contain an allowed STAGE-024 stage status: {allowed_stage_status_terms}",
         )
 
         required_terms = [
@@ -170,12 +183,12 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'STAGE-023:',
             'STAGE-024:',
             'status: "completed_local"',
-            'status: "in_progress"',
             'acceptance_id: "ACC-STAGE-024"',
             'push_allowed: false',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE2_SAFE_EXTRACTION_SLICE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/scripts/check_archive_threat_model.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage024_archive_threat_model.py",
             "/Users/linzezhang/Downloads/IDS_MetaData",
@@ -362,6 +375,120 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "NO_PHASE4",
+        ]
+
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_phase4_owner_feedback_summary_returns_archive_closeout_contract_without_outputs(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            archive_path = base / "closeout.zip"
+            staging = base / "closeout-staging"
+            staging.mkdir()
+            self._write_zip(
+                archive_path,
+                {
+                    "safe/archive-note.txt": b"safe",
+                    "../blocked.txt": b"blocked",
+                },
+            )
+            archive_report = module.safe_extract_archive(
+                archive_uri=archive_path.as_uri(),
+                staging_area_uri=staging.as_uri(),
+                extracted_at=EXTRACTED_AT,
+            )
+            scenario_dir = base / "phase3-scenarios"
+            scenario_dir.mkdir()
+            scenario_report = module.build_stage024_scenario_report(
+                scenario_archives=self._phase3_scenario_archives(scenario_dir),
+                evaluated_at=EXTRACTED_AT,
+            )
+            feedback = module.build_archive_threat_owner_feedback_summary(
+                archive_report,
+                scenario_report=scenario_report,
+                recorded_at=EXTRACTED_AT,
+                stage_review_findings=[
+                    "Phase 4 records archive_manifest sample, safety block log, cleanup allowlist, rollback, and owner feedback without creating runtime outputs.",
+                    "BATCH021_030 upload remains blocked until STAGE-021..030 are complete, reviewed, and repaired.",
+                ],
+            )
+
+        self.assertEqual(feedback["schema_version"], "ids.stage024.archive_threat_model.owner_feedback.v1")
+        self.assertEqual(feedback["stage"], "STAGE-024")
+        self.assertEqual(feedback["phase"], "Phase 4")
+        self.assertEqual(feedback["task_id"], "IDS-V0_1-STAGE024-P4")
+        self.assertEqual(feedback["acceptance_id"], "ACC-STAGE-024")
+        self.assertEqual(feedback["recorded_at"], EXTRACTED_AT)
+        self.assertEqual(feedback["report_sample"]["archive_manifest_sample"]["schema_version"], "ids.stage024.archive_manifest.v1")
+        self.assertGreaterEqual(len(feedback["report_sample"]["safety_block_log"]), 1)
+        self.assertGreaterEqual(len(feedback["report_sample"]["cleanup_allowlist_sample"]), 1)
+        self.assertEqual(feedback["report_sample"]["scenario_validation_sample"]["schema_version"], "ids.stage024.archive_threat_model.scenario_validation.v1")
+        self.assertIn("ARCHIVE_PATH_TRAVERSAL_BLOCKED", feedback["risk_checklist"])
+        self.assertIn("ARCHIVE_ABSOLUTE_PATH_BLOCKED", feedback["risk_checklist"])
+        self.assertIn("ARCHIVE_TOTAL_SIZE_LIMIT_EXCEEDED", feedback["risk_checklist"])
+        self.assertIn("ARCHIVE_NESTED_DEPTH_LIMIT_EXCEEDED", feedback["risk_checklist"])
+        self.assertIn("ARCHIVE_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED", feedback["risk_checklist"])
+        self.assertIn("ARCHIVE_FILE_COUNT_LIMIT_EXCEEDED", feedback["risk_checklist"])
+        self.assertIn("ARCHIVE_FORMAT_REQUIRES_EXTERNAL_ADAPTER", feedback["risk_checklist"])
+        self.assertIn("ARCHIVE_SOURCE_BLOCKED_RAW_METADATA_ROOT", feedback["risk_checklist"])
+        self.assertTrue(any("不覆盖原始压缩包" in item for item in feedback["automatic_extraction_boundaries"]))
+        self.assertTrue(any("不写出指定 staging 区" in item for item in feedback["automatic_extraction_boundaries"]))
+        self.assertTrue(any("owner review" in item or "人工复核" in item for item in feedback["automatic_extraction_boundaries"]))
+        self.assertIn("ARCHIVE_EXTRACTION_BLOCKED", feedback["failure_explanations"])
+        self.assertIn("ARCHIVE_EXTRACTION_OWNER_REVIEW_REQUIRED", feedback["failure_explanations"])
+        self.assertIn("ARCHIVE_CLEANUP_ALLOWLIST_VALIDATED", feedback["failure_explanations"])
+        self.assertTrue(feedback["staging_rollback_and_cleanup"]["cleanup_targets_are_staging_temp_files_only"])
+        self.assertFalse(feedback["staging_rollback_and_cleanup"]["original_archive_in_cleanup_allowlist"])
+        self.assertTrue(feedback["staging_rollback_and_cleanup"]["protected_refs_preserved"])
+        self.assertGreaterEqual(len(feedback["rollback_steps"]), 4)
+        self.assertEqual(feedback["whole_stage_review"]["result"], "passed_with_local_evidence")
+        self.assertEqual(feedback["whole_stage_review"]["next_stage"], "STAGE-025")
+        self.assertFalse(feedback["whole_stage_review"]["batch_upload_allowed"])
+        self.assertEqual(feedback["whole_stage_review"]["next_batch_gate"], "IDS-STAGE025-P1-GATE")
+        self.assertEqual(feedback["whole_stage_review"]["unresolved_findings"], [])
+        for value in feedback["processing_guard"].values():
+            self.assertEqual(value, 0)
+        for value in feedback["no_persistence_deltas"].values():
+            self.assertEqual(value, 0)
+        self.assertTrue(feedback["does_not_write_archive_manifest_runtime_output"])
+        self.assertTrue(feedback["does_not_write_report_files"])
+        self.assertTrue(feedback["does_not_push_to_github"])
+        self.assertTrue(feedback["does_not_reinstall_app_entries"])
+        self.assertTrue(feedback["does_not_enter_stage025"])
+
+    def test_phase4_evidence_document_records_archive_manifest_block_log_cleanup_review_raw_boundary_and_no_stage025(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE024-P4",
+            "ACC-STAGE-024",
+            "ids.stage024.archive_threat_model.owner_feedback.v1",
+            "build_archive_threat_owner_feedback_summary",
+            "archive_manifest 样例",
+            "安全阻断日志",
+            "清理白名单",
+            "自动解压风险边界",
+            "停止条件",
+            "staging 区回滚",
+            "Whole-Stage Review",
+            "STAGE-024 已在本地完成",
+            "IDS-STAGE025-P1-GATE",
+            "push_allowed=false",
+            "ARCHIVE_PATH_TRAVERSAL_BLOCKED",
+            "ARCHIVE_ABSOLUTE_PATH_BLOCKED",
+            "ARCHIVE_TOTAL_SIZE_LIMIT_EXCEEDED",
+            "ARCHIVE_NESTED_DEPTH_LIMIT_EXCEEDED",
+            "ARCHIVE_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+            "ARCHIVE_FILE_COUNT_LIMIT_EXCEEDED",
+            "ARCHIVE_CLEANUP_ALLOWLIST_VALIDATED",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_STAGE025",
+            "不执行 GitHub upload、PR、merge 或 app reinstall",
         ]
 
         for term in required_terms:
