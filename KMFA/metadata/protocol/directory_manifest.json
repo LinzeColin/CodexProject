@@ -53,7 +53,8 @@
     "metadata/protocol/directory_manifest.json",
     "metadata/protocol/field_dictionary.csv",
     "metadata/protocol/raw_data_roots_v1_4.json",
-    "metadata/protocol/immutability_policy_lock_v1_4.json"
+    "metadata/protocol/immutability_policy_lock_v1_4.json",
+    "metadata/protocol/quality_gate_lock_v1_4.json"
   ],
   "raw_sensitive_data_public_repo_allowed": false,
   "business_records_committed": false

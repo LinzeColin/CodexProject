@@ -700,15 +700,19 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s02p3"
+    model_version: "0.1.4-s02p3-quality-gate"
     assumptions:
       - "ASM-KMFA-006"
     formula_ids:
       - "FORM-KMFA-QUALITY-GATE-001"
+      - "FORM-KMFA-V014-S02P3-QUALITY-GATE-001"
     parameter_ids:
       - "PARAM-KMFA-205"
       - "PARAM-KMFA-206"
       - "PARAM-KMFA-207"
+      - "PARAM-KMFA-1018"
+      - "PARAM-KMFA-1019"
+      - "PARAM-KMFA-1020"
     inputs:
       - "KMFA Roadmap S02-P3"
       - "KMFA data governance quality gate"
@@ -718,11 +722,16 @@ models:
       - "report release permission gate"
     code_refs:
       - "KMFA/tools/check_report_grade_gate.py"
+      - "KMFA/tools/check_v014_s02_p3_quality_gate.py"
     test_refs:
       - "python3 KMFA/tools/check_report_grade_gate.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s02_p3_quality_gate.py"
     evidence_refs:
       - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
+      - "KMFA/metadata/protocol/quality_gate_lock_v1_4.json"
+      - "KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/machine/s02_p3_quality_gate_manifest.json"
+      - "KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/human/test_results.md"
   - model_id: "MOD-KMFA-FILE-IMPORT-001"
     name: "KMFA file import registration"
     kind: "deterministic_file_metadata_registration"

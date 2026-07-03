@@ -1,8 +1,9 @@
 {
   "schema_version": "kmfa.report_release_gate.v1",
   "project_id": "KMFA",
+  "version": "0.1.4-s02p3-quality-gate",
   "stage_phase": "S02-P3",
-  "source_governance": "05_KMFA_数据治理与质量门禁_v1_1.md:4",
+  "source_governance": "01_KMFA_Codex_TaskPack_v1_4_public_safe.md:10",
   "append_only": true,
   "forbidden_plaintext": true,
   "quality_to_report_gate": [
@@ -46,5 +47,6 @@
     "raw_data_mutation_detected"
   ],
   "missing_gate_evidence_policy": "block_release",
-  "runtime_status": "protocol_defined_no_release_events_committed"
+  "runtime_status": "protocol_defined_no_release_events_committed",
+  "v014_scope": "release_gate_policy_only_no_runtime_release_no_upload"
 }
