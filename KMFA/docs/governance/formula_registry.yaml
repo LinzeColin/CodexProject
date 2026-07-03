@@ -2621,3 +2621,47 @@ formulas:
     evidence_refs:
       - "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/test_results.md"
       - "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/machine/s01_p3_no_omission_baseline_manifest.json"
+
+  - formula_id: "FORM-KMFA-V014-S01-STAGE-REVIEW-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-001"
+      - "ASM-KMFA-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "stage1_review_valid = phase_results == PASS_PASS_PASS AND open_findings == 0 AND github_upload_performed == false AND s02_started == false AND current_go_no_go == NO_GO"
+    variables:
+      - name: "phase_results"
+        data_type: "string_triple"
+        unit: "status"
+        input_domain: "PASS;PASS;PASS"
+      - name: "open_findings"
+        data_type: "integer"
+        unit: "finding_count"
+        input_domain: "0"
+      - name: "github_upload_performed"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+      - name: "s02_started"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+      - name: "current_go_no_go"
+        data_type: "enum"
+        unit: "go_no_go"
+        input_domain: "NO_GO"
+    constraints:
+      - "Stage 1 review must rerun and bind S01-P1, S01-P2 and S01-P3 validators."
+      - "Stage 1 review must not read list mutate raw inbox or extract private payload."
+      - "Stage 1 review must not perform S02, raw inventory, GitHub upload, formal report or business execution."
+    missing_policy: "Missing phase evidence, review manifest, validator evidence, zero-open-finding gate or false scope gates fails Stage 1 review validation."
+    output_range: "v014_stage1_review_manifest"
+    code_refs:
+      - "KMFA/tools/check_v014_s01_stage_review.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s01_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s01_stage_review -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/machine/stage1_review_manifest.json"
