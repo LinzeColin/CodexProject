@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-03 - 0.1.4-s01p1-read-only-scope-lock
+
+- task_id: `KMFA-V014-S01-P1-READ-ONLY-SCOPE-LOCK-20260703`
+- status: `completed_validated_local_only_no_go_upload_deferred`
+- evidence: `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/`
+- validator: `KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py`
+- scope: v0.1.4 S01-P1 read-only scope lock only; source package hash, public source evidence, raw-readonly policy, HTML human-flow aggregate gate, canonical worktree path and no-upload/no-go boundary.
+- raw_boundary: `/Users/linzezhang/Downloads/KMFA_MetaData` was not read, listed, modified, moved, renamed, deleted, overwritten, or written.
+- blocker_state: S01-P2=false, S01-P3=false, Stage 1 review=false, GitHub upload=false, raw inventory=false, raw value matching=false, formal_report_allowed=false, delivery_allowed=false.
+
+product_version: 0.1.4-s01p1-read-only-scope-lock
+version_matrix_product_version_reference: 0.1.4-s01p1-read-only-scope-lock
+
 ## 2026-07-03 - 0.1.3-stage1-10-github-upload
 
 - task_id: `KMFA-V013-STAGE1-10-GITHUB-UPLOAD-20260703`
@@ -264,6 +277,7 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | `KMFA-V013-S08-STAGE-REVIEW-20260703` | v0.1.3 Stage 8 overall review 本地通过，completed_version=`0.1.3-s08-stage-review`：复跑 S08-P1/S08-P2/S08-P3 replay validators，phase_results 全部 PASS，open findings=0，fixed findings=1，legacy upload 非当前 gate；未读取或写入 raw data inbox，未执行 S09-P1、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/human/stage8_review_report.md` |
 | `KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703` | v0.1.3 S09-P1 project cost fact layer replay 本地通过，completed_version=`0.1.3-s09p1-project-cost-fact-layer-replay`：重放 6 个 required metrics、9 个 cost categories、4 条 fact records 和 9 条 unallocated pool records；formal calculation、S09-P2/S09-P3、Stage 9 review、GitHub upload、raw value matching、正式报告和业务执行均未执行 | `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/human/project_cost_fact_layer_replay_report.md` |
 | `KMFA-V013-S09-P2-MARGIN-CASH-MARGIN-REPLAY-20260703` | v0.1.3 S09-P2 margin and cash margin replay 本地通过，completed_version=`0.1.3-s09p2-margin-cash-margin-replay`：重放 4 个 required margin metrics、4 条 margin records 和 12 条 scope difference summary records；S09-P3、Stage 9 review、GitHub upload、raw value matching、正式报告和业务执行均未执行 | `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/human/margin_cash_margin_replay_report.md` |
+| `KMFA-V014-S01-P1-READ-ONLY-SCOPE-LOCK-20260703` | v0.1.4 S01-P1 只读检查与范围锁定本地通过：登记 v1.4 修补包 source package、9 个 public-safe source 条目、raw-readonly policy、HTML human-flow audit 54/0/0 和 no-upload/no-go 边界；未读取、列出、修改或写入 raw inbox，未执行 S01-P2、S01-P3、Stage 1 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/implementation_plan.md` |
 
 ## In Progress
 

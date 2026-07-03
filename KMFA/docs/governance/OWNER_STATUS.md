@@ -4,11 +4,12 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上保留历史 Stage 1-18 证据；当前 v0.1.3 续跑已完成 Stage 1-10 batch overall review，并完成独立 Stage 1-10 GitHub upload gate 本地验证：新增 upload validator、focused unit test 和 `KMFA/stage_artifacts/V013_STAGE1_10_GITHUB_UPLOAD/` 证据，已在最新 `origin/main` 上 rebase，复跑 S01-S10 validators、治理 validator、安全扫描和全量 326 个 KMFA tests。最新状态仍为 `NO_GO`，`delivery_allowed=false`：当前只有 lineage protocol header、0 条 actual lineage rows、12 条 S09 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据、release claim 和 delivery claim。项目仍不是可用业务系统；本轮未读取、列出或修改 raw inbox，未执行 raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合、生产恢复或任何业务动作。
+KMFA 已开始 v0.1.4 HUMAN_FLOW_VERIFIED 修补包；当前只完成 `S01-P1｜只读检查与范围锁定`，新增 `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/`、`KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py` 和 focused unit test。S01-P1 只登记 v1.4 source package hash、公开 taskpack/roadmap/raw-readonly/UIUX gate 证据、canonical worktree 路径、HTML human-flow audit 聚合结果 `PASS=54/WARN=0/FAIL=0` 和 no-upload/no-go 边界。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出或修改 raw inbox，未抽取 raw/private payload，未执行 S01-P2、S01-P3、Stage 1 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
 - 项目路径已经收敛到 `LinzeColin/CodexProject/KMFA`。
+- v0.1.4 S01-P1 已把 v1.4 修补包范围、安全边界、raw-readonly policy 和 HTML human-flow gate 锁定为 public-safe 证据；下一步只能执行 S01-P2。
 - 三中文入口已存在：`功能清单.md`、`开发记录.md`、`模型参数文件.md`。
 - 项目治理文件和 metadata 草案已建立。
 - 公开仓库隐私边界已写入。

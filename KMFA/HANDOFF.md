@@ -4,6 +4,22 @@
 
 ## 当前目标
 
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已开始执行。当前仅完成 `S01-P1｜只读检查与范围锁定`：基于 v1.4 taskpack、roadmap、raw-readonly policy、Codex read-only prompt 和 HTML human-flow audit 的公开安全材料，登记源包 SHA256、9 个 public-safe source 条目、raw inbox 禁区、canonical worktree 路径适配、HTML audit 聚合结果 `PASS=54/WARN=0/FAIL=0` 和 NO_GO / no-upload 边界。`/Users/linzezhang/Downloads/KMFA_MetaData` 未被读取、列出、修改、删除、移动、重命名、覆盖或写入；v1.4 zip 的 raw/private payload 未抽取、未提交；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S01-P2｜项目骨架与中文入口 / public-safe taskpack baseline sync`，不得跳到 raw inventory、S01-P3、Stage 1 review、GitHub upload、正式报告、live connector、OpMe 深度耦合或业务执行。
+
+## v0.1.4 当前续跑状态
+
+- 当前本地分支: `codex/kmfa`
+- 当前版本: `0.1.4-s01p1-read-only-scope-lock`
+- 当前已完成: `v0.1.4 S01-P1 read-only scope lock`
+- 证据目录: `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/`
+- validator: `KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py`
+- focused test: `KMFA/tests/test_v014_s01_p1_read_only_scope_lock.py`
+- upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
+- raw boundary: 本 phase 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未抽取 v1.4 zip 内 raw/private payload。
+- 未执行: S01-P2、S01-P3、Stage 1 review、raw inventory、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
+
+## v0.1.3 历史状态
+
 v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。Stage 1-18 均已完成本地实现、验证、整体复审和 GitHub main 上传；Post-S18 Part 1-6 已在 canonical worktree 本地通过并生成 validator/evidence/local-governance 记录。Post-S18 第二阶段全项目本地复审已完成：新增 task pack zero-delta synthetic fixture、lineage completeness 阻断 validator、whole-project final review validator 和当前全项目 Go/No-Go。当前 `STAGE18_GITHUB_UPLOAD_PENDING` 已从最新全项目 Go/No-Go blocker 中移除并记录为 resolved，但项目仍为 `NO_GO`，`delivery_allowed=false`。随后已独立完成 KMFA worktree cleanup：只保留 canonical `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`，确认无遗留 `kmfa-s*` worktree，删除空旧目录 `/Users/linzezhang/Documents/KMFA v0.1`。Lineage / Report Gate 已独立锁定：0 条 actual lineage rows、2 条 D 级 report runtime、12 条 pending reconciliation 继续阻断正式报告、经营决策依据、release claim 和 delivery claim。Final GitHub backup evidence 已按 `NO_GO governance backup only` 生成并基于最新 `origin/main` rebase；本轮仍未执行 lineage full check completion、正式报告、live connector、OpMe 深度耦合、生产恢复或业务动作。
 
 ## v0.1.3 当前续跑状态

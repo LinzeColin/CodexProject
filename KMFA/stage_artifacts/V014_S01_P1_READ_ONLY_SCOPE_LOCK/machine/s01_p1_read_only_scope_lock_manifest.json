@@ -1,0 +1,144 @@
+{
+  "schema_version": "kmfa.v014_s01_p1_read_only_scope_lock.v1",
+  "project_id": "KMFA",
+  "version": "0.1.4",
+  "stage_id": "S01",
+  "phase_id": "P1",
+  "stage_phase": "S01-P1",
+  "task_id": "KMFA-V014-S01-P1-READ-ONLY-SCOPE-LOCK-20260703",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "generated_at": "2026-07-03T21:10:00+10:00",
+  "source_package": {
+    "path": "/Users/linzezhang/Downloads/KMFA_ChatGPT_Stage3_Codex_Delivery_Pack_v1_4_HUMAN_FLOW_VERIFIED.zip",
+    "sha256": "2d5fa2a64ae72d5a5a8810e13444529b10eca358e368bac57611283827608356",
+    "selected_public_member_count": 9,
+    "private_raw_directory_members_excluded": true,
+    "raw_private_member_names_committed": false,
+    "zip_or_raw_payload_committed": false
+  },
+  "selected_public_sources": [
+    {
+      "label": "v1.4 taskpack",
+      "sha256": "3bf7e13789b80ec475e202d01b4fa04d97fa61b2ede6b414fb6a113a4a2e519a",
+      "bytes": 16894
+    },
+    {
+      "label": "v1.4 roadmap",
+      "sha256": "ae208388f14d977be2d6cfacd62e5a8a1c899a970b138a3d8adc8026ecc7c61f",
+      "bytes": 34848
+    },
+    {
+      "label": "v1.4 README",
+      "sha256": "ec4dec84515dcfd476a5bd9ceca9492fa2de350c53b4ac9c13be5b3d6db1c074",
+      "bytes": 1806
+    },
+    {
+      "label": "v1.4 HTML entry",
+      "sha256": "d2ae0e8b38440e3afcb821489db3299272a064f6076d03aee34aaeb74e0ecbe2",
+      "bytes": 8939
+    },
+    {
+      "label": "v1.4 HTML human-flow audit script",
+      "sha256": "4e0a5f2e6157032309deace231f1bcde9dc6451a72b25729fa1efd9476af9eb2",
+      "bytes": 8788
+    },
+    {
+      "label": "v1.4 HTML human-flow audit report",
+      "sha256": "d08ed51e814a0693bd7cb0f99dce542921f8dd2ce40824723b1e705e77a6de0b",
+      "bytes": 1518
+    },
+    {
+      "label": "v1.4 raw data roots policy",
+      "sha256": "f7e2baa767f5eff05017e7833108a42068057e6eca18fd3ec2873e7efab85f07",
+      "bytes": 1628
+    },
+    {
+      "label": "v1.4 Codex read-only raw-data prompt",
+      "sha256": "7a191808ee5e7cd4ae2f5edee12a0e7ae6cc61695a7fc2a87a4ff6a8f1671522",
+      "bytes": 1611
+    },
+    {
+      "label": "v1.2 HTML inheritance note retained for history",
+      "sha256": "df38dda774d1ecd91d73c863229f98e49b2fd683d8216788365be39ef012ef9f",
+      "bytes": 1090
+    }
+  ],
+  "scope_lock": {
+    "objective": "Read v1.4 taskpack roadmap HTML human-flow audit and raw-readonly protocol, then lock the first implementation plan without business implementation.",
+    "current_phase_only": true,
+    "phase_scope": "read_only_plan_and_scope_lock",
+    "business_code_modified": false,
+    "product_runtime_modified": false,
+    "github_upload_this_phase": false,
+    "stage_review_this_phase": false,
+    "next_phase": "S01-P2",
+    "next_phase_started": false
+  },
+  "path_policy": {
+    "taskpack_declared_project_path": "/Users/linzezhang/Documents/Codex/CodexProject/KMFA",
+    "canonical_worktree_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa",
+    "path_resolution": "Use canonical project-level KMFA worktree for development and treat taskpack main-repo path as logical GitHub project path.",
+    "standalone_or_old_path_used": false,
+    "new_worktree_created": false
+  },
+  "v14_gates": {
+    "raw_data_root": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_data_root_mode": "read_only",
+    "derived_runtime_target": "KMFA/.codex_private_runtime or KMFA/local_runtime when gitignored",
+    "html_human_flow_baseline": "v1.4 clickable HTML samples",
+    "html_audit_files": 6,
+    "html_audit_rows": 54,
+    "html_audit_pass": 54,
+    "html_audit_warn": 0,
+    "html_audit_fail": 0,
+    "s02_s03_raw_readonly_contract_required": true,
+    "s03_local_raw_inventory_required": true,
+    "s10_s11_s12_human_flow_required": true,
+    "s18_full_chain_required": true
+  },
+  "raw_data_boundary": {
+    "raw_inbox_read_by_this_phase": false,
+    "raw_inbox_listed_by_this_phase": false,
+    "raw_inbox_modified_by_this_phase": false,
+    "raw_inbox_deleted_by_this_phase": false,
+    "raw_inbox_moved_by_this_phase": false,
+    "raw_inbox_renamed_by_this_phase": false,
+    "raw_inbox_overwritten_by_this_phase": false,
+    "raw_inbox_written_by_this_phase": false,
+    "raw_payload_extracted_from_delivery_zip": false,
+    "raw_filenames_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "business_values_committed": false
+  },
+  "release_state": {
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "current_report_grade": "D",
+    "release_permission": "blocked"
+  },
+  "non_goals": [
+    "S01-P2 implementation",
+    "S01-P3 no-omission baseline implementation",
+    "Stage 1 review",
+    "GitHub upload",
+    "raw value matching",
+    "raw row extraction",
+    "lineage full check",
+    "formal report",
+    "live connector",
+    "OpMe deep coupling",
+    "business execution"
+  ],
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/implementation_plan.md",
+    "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/files_to_read.md",
+    "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/files_to_modify.md",
+    "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/stop_conditions.md",
+    "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json"
+  ]
+}
