@@ -1,3 +1,5 @@
+import importlib.util
+import json
 from pathlib import Path
 import unittest
 
@@ -6,12 +8,28 @@ ROOT = Path(__file__).resolve().parents[4]
 PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE031_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE031_PHASE1_SCOPE_BOUNDARY.md"
+PHASE2 = PURSUE_ROOT / "STAGE031_PHASE2_SCHEMA_MIGRATION_SAFETY_SLICE.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
+SAFETY_ROOT = PURSUE_ROOT / "schema_migration_safety"
+SAFETY_INDEX = SAFETY_ROOT / "stage031_migration_safety_index.json"
+CONTROL_PLANE_ROOT = PURSUE_ROOT / "postgresql_control_plane"
+CONTROL_PLANE_SQL = CONTROL_PLANE_ROOT / "001_control_plane_schema.sql"
+CONTROL_PLANE_INDEX = CONTROL_PLANE_ROOT / "control_plane_schema_index.json"
+SCRIPT = ROOT / "scripts" / "check_schema_migration_safety.py"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
 
 
 class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
+    def _load_phase2_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage031_schema_migration_safety", SCRIPT)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
     def test_phase1_contracts_exist_and_bind_taskpack_identity(self):
         self.assertTrue(ENTRY.is_file(), f"missing entry contract: {ENTRY}")
         self.assertTrue(PHASE1.is_file(), f"missing phase1 boundary: {PHASE1}")
@@ -107,14 +125,10 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
 
         lock_terms = [
             'batch_id: "IDS-V0_1-BATCH-031-040"',
-            'status: "stage031_phase1_in_progress"',
             'stage_range: "STAGE-031..STAGE-040"',
             'acceptance_range: "ACC-STAGE-031..ACC-STAGE-040"',
             'push_allowed: false',
-            'current_task_id: "IDS-V0_1-STAGE031-P1"',
             'acceptance_id: "ACC-STAGE-031"',
-            'acceptance_status: "phase1_scope_boundary_defined"',
-            'next_gate: "IDS-STAGE031-P2-GATE"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage031_schema_migration_safety.py",
@@ -123,13 +137,38 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE031"',
-            'current_phase_id: "IDS-STAGE031-P1"',
-            'current_task_id: "IDS-V0_1-STAGE031-P1"',
-            'next_gate_id: "IDS-STAGE031-P2-GATE"',
             'stage_id: "IDS-STAGE031"',
             'name: "STAGE-031 · Schema 迁移安全"',
             'phase_id: "IDS-STAGE031-P1"',
             'status: "passed_with_local_evidence"',
+        ]
+        allowed_lock_current_terms = [
+            'status: "stage031_phase1_in_progress"',
+            'status: "stage031_phase2_in_progress"',
+        ]
+        allowed_lock_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE031-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+        ]
+        allowed_lock_acceptance_terms = [
+            'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_safety_slice_defined"',
+        ]
+        allowed_lock_gate_terms = [
+            'next_gate: "IDS-STAGE031-P2-GATE"',
+            'next_gate: "IDS-STAGE031-P3-GATE"',
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE031-P1"',
+            'current_phase_id: "IDS-STAGE031-P2"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE031-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE031-P2-GATE"',
+            'next_gate_id: "IDS-STAGE031-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE031-P1-20260703-001"',
@@ -141,6 +180,143 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             "/Users/linzezhang/Downloads/IDS_MetaData",
         ]
 
+        for term in lock_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, lock_text)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_current_terms), allowed_lock_current_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_task_terms), allowed_lock_task_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_acceptance_terms), allowed_lock_acceptance_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_gate_terms), allowed_lock_gate_terms)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+    def test_phase2_safety_index_records_dry_run_backup_validation_rollback_and_recovery_guards(self):
+        self.assertTrue(SAFETY_INDEX.is_file(), f"missing safety index: {SAFETY_INDEX}")
+        index = json.loads(SAFETY_INDEX.read_text(encoding="utf-8"))
+
+        self.assertEqual(index["schema_version"], "ids.stage031.schema_migration_safety.index.v1")
+        self.assertEqual(index["stage"], "STAGE-031")
+        self.assertEqual(index["task_id"], "IDS-V0_1-STAGE031-P2")
+        self.assertEqual(index["acceptance_id"], "ACC-STAGE-031")
+        self.assertEqual(index["source_schema_change"]["migration_id"], "ids_stage030_001_control_plane")
+        self.assertEqual(index["source_schema_change"]["schema_sql_ref"], "../postgresql_control_plane/001_control_plane_schema.sql")
+        self.assertTrue(index["dry_run_guard"]["required"])
+        self.assertTrue(index["backup_checkpoint_guard"]["required"])
+        self.assertTrue(index["validation_guard"]["required"])
+        self.assertTrue(index["rollback_guard"]["required"])
+        self.assertTrue(index["recovery_smoke_guard"]["required"])
+        self.assertTrue(index["audit_guard"]["required"])
+        self.assertFalse(index["owner_stop_gate"]["destructive_auto_approval_allowed"])
+        self.assertLessEqual(index["connection_pool_guard"]["max_pool_size"], 10)
+        self.assertLessEqual(index["database_size_guard"]["max_control_plane_payload_bytes"], 1048576)
+        self.assertIn("NO_RAW_DB_CONTENT", index["storage_quality_guard"]["blocked_payloads"])
+        self.assertIn("fake IDS business data", index["storage_quality_guard"]["forbidden"])
+        self.assertFalse(index["runtime_policy"]["connect_to_postgres"])
+        self.assertFalse(index["runtime_policy"]["execute_migration"])
+        self.assertFalse(index["runtime_policy"]["write_runtime_outputs"])
+        self.assertEqual(index["raw_metadata_boundary"]["path"], "/Users/linzezhang/Downloads/IDS_MetaData")
+        self.assertFalse(index["raw_metadata_boundary"]["content_access_allowed"])
+
+    def test_phase2_script_builds_migration_safety_report_without_runtime_side_effects(self):
+        module = self._load_phase2_module()
+        self.assertTrue(CONTROL_PLANE_SQL.is_file(), f"missing schema sql: {CONTROL_PLANE_SQL}")
+        self.assertTrue(CONTROL_PLANE_INDEX.is_file(), f"missing schema index: {CONTROL_PLANE_INDEX}")
+        self.assertTrue(SAFETY_INDEX.is_file(), f"missing safety index: {SAFETY_INDEX}")
+
+        report = module.build_stage031_migration_safety_report(
+            SAFETY_INDEX,
+            CONTROL_PLANE_SQL,
+            CONTROL_PLANE_INDEX,
+        )
+
+        self.assertEqual(report["schema_version"], "ids.stage031.schema_migration_safety.phase2.v1")
+        self.assertEqual(report["stage"], "STAGE-031")
+        self.assertEqual(report["task_id"], "IDS-V0_1-STAGE031-P2")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-031")
+        self.assertEqual(report["migration_id"], "ids_stage030_001_control_plane")
+        self.assertTrue(all(report["safety_gate_results"].values()), report["safety_gate_results"])
+        self.assertTrue(all(report["guardrail_results"].values()), report["guardrail_results"])
+        self.assertEqual(report["raw_metadata_boundary"]["path"], "/Users/linzezhang/Downloads/IDS_MetaData")
+        self.assertTrue(report["raw_metadata_boundary"]["path_only"])
+        self.assertTrue(report["raw_metadata_boundary"]["no_raw_content_access"])
+        self.assertTrue(report["does_not_connect_to_postgres"])
+        self.assertTrue(report["does_not_execute_migration"])
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertTrue(report["does_not_write_runtime_outputs"])
+        self.assertTrue(report["does_not_use_fake_ids_business_data"])
+
+    def test_phase2_doc_batch_roadmap_and_event_track_local_no_upload_gate(self):
+        self.assertTrue(PHASE2.is_file(), f"missing phase2 evidence: {PHASE2}")
+        self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
+        self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
+        self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
+
+        phase2_text = PHASE2.read_text(encoding="utf-8")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        phase2_terms = [
+            "ids.stage031.schema_migration_safety.phase2.v1",
+            "IDS-V0_1-STAGE031-P2",
+            "ACC-STAGE-031",
+            "KM_IDSystem/scripts/check_schema_migration_safety.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/schema_migration_safety/stage031_migration_safety_index.json",
+            "dry-run",
+            "backup checkpoint",
+            "validation checklist",
+            "rollback guard",
+            "recovery smoke",
+            "owner stop-gate",
+            "不连接 PostgreSQL",
+            "不执行 migration dry-run、apply、rollback、backup、restore 或 schema diff",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+            "NO_PHASE3",
+        ]
+        lock_terms = [
+            'status: "stage031_phase2_in_progress"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            'next_phase: "Phase 3"',
+            'next_gate: "IDS-STAGE031-P3-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+            'acceptance_status: "phase2_safety_slice_defined"',
+            "KM_IDSystem/scripts/check_schema_migration_safety.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/schema_migration_safety/stage031_migration_safety_index.json",
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE031"',
+            'current_phase_id: "IDS-STAGE031-P2"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+            'next_gate_id: "IDS-STAGE031-P3-GATE"',
+            'phase_id: "IDS-STAGE031-P2"',
+            'status: "passed_with_local_evidence"',
+            "KM_IDSystem/scripts/check_schema_migration_safety.py",
+            "stage031_migration_safety_index.json",
+            "STAGE031_PHASE2_SCHEMA_MIGRATION_SAFETY_SLICE.md",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE031-P2-20260703-001"',
+            '"event_type":"implementation"',
+            '"task_id":"IDS-V0_1-STAGE031-P2"',
+            '"ACC-STAGE-031"',
+            "check_schema_migration_safety.py",
+            "stage031_migration_safety_index.json",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+        ]
+
+        for term in phase2_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, phase2_text)
         for term in lock_terms:
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)
