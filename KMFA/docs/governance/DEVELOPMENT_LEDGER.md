@@ -296,7 +296,7 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S09-P2 完成后，下一步只能另起 run 执行 v0.1.3 S09-P3 public-safe scope reconciliation replay 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/human/test_results.md` |
+| 无 | v0.1.4 S01-P3 完成后，下一步只能另起 run 执行 Stage 1 整体复审并修复 findings；不得 GitHub upload；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/human/test_results.md` |
 
 ## Not Completed
 
@@ -306,3 +306,5 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
 | GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S09-P2 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S09-P3 或用户明确指定的单一 phase |
+
+| `2026-07-03T23:10:00+10:00` | implementation | v0.1.4 S01-P3 no-omission baseline 本地完成，completed_version=`0.1.4-s01p3-no-omission-baseline`：legacy requirements=20/P0=9/P1=8，v1.4 overlay requirements=5，roadmap registry=18 Stage/54 Phase/162 Task；未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox；未执行 Stage 1 review、S02、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA-V014-S01-P3-NO-OMISSION-BASELINE-20260703` | EXTRACTED | `KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/s01_p3_completion_record.md` |

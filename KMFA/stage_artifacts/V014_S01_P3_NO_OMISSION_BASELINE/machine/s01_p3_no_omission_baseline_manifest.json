@@ -1,0 +1,71 @@
+{
+  "schema_version": "kmfa.v014_s01_p3_no_omission_baseline.v1",
+  "project_id": "KMFA",
+  "version": "0.1.4",
+  "stage_phase": "S01-P3",
+  "task_id": "KMFA-V014-S01-P3-NO-OMISSION-BASELINE-20260703",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "dependency": {
+    "required_phase": "S01-P2",
+    "dependency_manifest": "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/machine/s01_p2_public_baseline_sync_manifest.json"
+  },
+  "phase_scope": {
+    "current_phase_only": true,
+    "stage_review_performed": false,
+    "github_upload_performed": false,
+    "s02_started": false,
+    "next_phase": "S01_STAGE_REVIEW",
+    "next_phase_started": false
+  },
+  "no_omission_baseline": {
+    "legacy_requirements": 20,
+    "legacy_p0": 9,
+    "legacy_p1": 8,
+    "v14_overlay_requirements": 5,
+    "v14_overlay_p0": 3,
+    "v14_overlay_p1": 2,
+    "v14_stages": 18,
+    "v14_phases": 54,
+    "v14_tasks": 162,
+    "legacy_requirements_matrix": "KMFA/metadata/traceability/requirements.csv",
+    "v14_overlay_requirements_matrix": "KMFA/metadata/traceability/v1_4_no_omission_requirements.csv",
+    "v14_stage_phase_task_status": "KMFA/metadata/traceability/v1_4_stage_phase_task_status.jsonl",
+    "roadmap_source": "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md",
+    "v14_html_human_flow_audit": {
+      "pass": 54,
+      "warn": 0,
+      "fail": 0
+    }
+  },
+  "raw_data_boundary": {
+    "raw_inbox_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_inbox_read_by_this_phase": false,
+    "raw_inbox_listed_by_this_phase": false,
+    "raw_inbox_modified_by_this_phase": false,
+    "raw_payload_extracted_from_delivery_zip": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "business_values_committed": false
+  },
+  "release_state": {
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "github_main_upload_allowed": false,
+    "current_go_no_go": "NO_GO",
+    "current_report_grade": "D"
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/s01_p3_completion_record.md",
+    "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/machine/s01_p3_no_omission_baseline_manifest.json",
+    "KMFA/metadata/traceability/v1_4_no_omission_requirements.csv",
+    "KMFA/metadata/traceability/v1_4_stage_phase_task_status.jsonl"
+  ],
+  "next_recommended_phase": "S01_STAGE_REVIEW",
+  "next_recommended_prompt": "继续 KMFA v0.1.4，只执行 Stage 1 整体复审；复跑 S01-P1/P2/P3 validators、治理 validator、raw/secret scan，修复复审 findings；不得 GitHub upload。"
+}

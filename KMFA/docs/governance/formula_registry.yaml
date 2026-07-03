@@ -2583,3 +2583,41 @@ formulas:
       - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/stage18_review_report.md"
       - "KMFA/stage_artifacts/S18_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S18_STAGE_REVIEW/machine/stage18_review_manifest.json"
+
+  - formula_id: "FORM-KMFA-V014-S01P3-NO-OMISSION-BASELINE-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-001"
+      - "ASM-KMFA-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "s01p3_valid = legacy_requirements == 20 AND legacy_p0 == 9 AND legacy_p1 == 8 AND v14_overlay == 5 AND v14_stages == 18 AND v14_phases == 54 AND v14_tasks == 162 AND github_upload_performed == false"
+    variables:
+      - name: "legacy_requirements"
+        data_type: "integer"
+        unit: "requirement_count"
+        input_domain: "20"
+      - name: "v14_overlay"
+        data_type: "integer"
+        unit: "requirement_count"
+        input_domain: "5"
+      - name: "v14_tasks"
+        data_type: "integer"
+        unit: "task_count"
+        input_domain: "162"
+      - name: "github_upload_performed"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "S01-P3 must not read list mutate raw inbox or extract private payload."
+      - "S01-P3 must not perform Stage 1 review, S02 or GitHub upload."
+    missing_policy: "Missing requirements, stage status registry, validator evidence or false scope gates fails S01-P3 validation."
+    output_range: "s01_p3_no_omission_baseline_manifest"
+    code_refs:
+      - "KMFA/tools/check_v014_s01_p3_no_omission_baseline.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s01_p3_no_omission_baseline.py"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/machine/s01_p3_no_omission_baseline_manifest.json"
