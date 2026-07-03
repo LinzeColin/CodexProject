@@ -1,10 +1,10 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE029"
-current_phase_id: "IDS-STAGE029-P4"
-current_task_id: "IDS-V0_1-STAGE029-P4"
-next_gate_id: "IDS-STAGE030-P1-GATE"
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-STAGE030-P1"
+current_task_id: "IDS-V0_1-STAGE030-P1"
+next_gate_id: "IDS-STAGE030-P2-GATE"
 total_estimated_hours: 158
 completed_estimated_hours: 277
 stages:
@@ -7034,3 +7034,86 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "如果 Phase 4 closeout 被误读为 cleanup runner、生产自动清理、真实压缩包采样、导入授权或 GitHub 发布授权，可能触碰 raw metadata、删除事实源、写 runtime output、启动后续 pipeline 或提前上传未满十阶段批次。"
             rollback: "Revert check_archive_cleanup_allowlist.py Phase4 additions, STAGE029 Phase4 closeout evidence, BATCH021_030_UPLOAD_LOCK.yaml, focused tests, Stage005 validator/test updates, compatibility test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, original archives, original materials, manifests, evidence ledgers, audit logs, reports, runtime data, outputs, indexes, app entries, GitHub state, STAGE-030, or batch upload gate."
+  -
+    stage_id: "IDS-STAGE030"
+    name: "STAGE-030 · PostgreSQL 控制面启动"
+    person_goal: "建立 metadata、job、document、chunk、evidence、audit、index version 的 PostgreSQL 控制面。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 run 完成超过一个 phase"
+      - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 原始数据库内容"
+      - "创建 PostgreSQL database、schema、migration、runtime data directory 或连接配置"
+      - "连接 PostgreSQL、启动 Docker、安装依赖、启动 backend/frontend/worker 或 external API job"
+      - "执行 migration dry-run、apply、rollback、backup、restore 或 schema diff"
+      - "把 500GB 原始文件、原始数据库内容、生产文档正文、压缩包正文、OCR 全文、向量 payload、报告二进制或 secrets 写入 PostgreSQL 或 Git"
+      - "提交真实原始资料、secrets、API key、数据库密码、云端凭证、虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+      - "执行 GitHub upload、PR、merge、app reinstall 或进入 Phase 2"
+    stop_gate:
+      gate_id: "IDS-STAGE030-P2-GATE"
+      status: "passed_with_local_evidence"
+      pass_conditions:
+        - "Phase 1 defines PostgreSQL schema, migration, connection, storage boundary, and recovery requirements"
+        - "PostgreSQL 只存控制面、状态和热索引，不存 500GB 原始文件"
+        - "/Users/linzezhang/Downloads/IDS_MetaData remains a path-only read-only real database source boundary"
+        - "Migration dry-run, rollback, idempotency, and restore requirements are defined before implementation"
+        - "No PostgreSQL runtime, schema file, migration file, connection, backup/restore, or raw data access is executed"
+        - "No fake IDS business data, fake database row, fake source document, placeholder corpus, or fabricated evidence is introduced"
+        - "BATCH021_030_UPLOAD_LOCK.yaml keeps push_allowed=false"
+        - "No GitHub upload"
+        - "No app reinstall"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_postgresql_control_plane.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+    acceptance:
+      acceptance_id: "ACC-STAGE-030"
+      status: "phase1_scope_boundary_defined"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_postgresql_control_plane.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+    phases:
+      -
+        phase_id: "IDS-STAGE030-P1"
+        name: "范围、输入输出与边界确认"
+        objective: "定义 PostgreSQL 控制面的 schema、migration、connection、storage boundary、recovery 要求，并确认 PostgreSQL 只存控制面、状态和热索引，不存 500GB 原始文件。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "创建 PostgreSQL database、schema、migration、runtime data directory 或连接配置"
+          - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 原始数据库内容"
+          - "连接 PostgreSQL、执行 migration、写 schema diff、写 runtime database、写 report/output/index/evidence/audit/document/chunk/job/import row"
+          - "提交 secrets、API key、数据库密码、云端凭证、虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "执行 GitHub upload、PR、merge、app reinstall 或进入 Phase 2"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE030-P1"
+            name: "PostgreSQL 控制面合同与边界"
+            objective: "记录 STAGE-030 Phase 1 entry contract、PostgreSQL control plane scope boundary、BATCH021_030 lock、raw database path-only source boundary、focused tests 和 governance regression 状态。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "1.27%"
+            dependencies:
+              - "IDS-V0_1-STAGE029-P4"
+            acceptance_ids:
+              - "ACC-STAGE-030"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage030_postgresql_control_plane -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage030_phase1_postgresql_control_plane_boundary -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B -m py_compile KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_postgresql_control_plane.py KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "check-render --project KM_IDSystem"
+              - "semantic validate diagnostic"
+            test_results: "RED/GREEN complete: Stage030 Phase1 RED failed as expected because STAGE030 entry/scope evidence, BATCH021_030 Stage030 state, roadmap state, and event evidence were missing; Stage005 targeted P1 state RED failed because IDS-STAGE030-P1 was not accepted by the governance state machine. GREEN passed after adding Stage030 entry/scope boundary, BATCH021_030 no-upload state, roadmap/event records, focused tests, Stage005 validator/test updates, and Stage026/Stage027/Stage028/Stage029 compatibility allowances for the later STAGE-030 P1 state. Stage030 focused tests ran 4 tests OK; Stage005 targeted P1 state test ran 1 test OK; Stage005 governance regression ran 90 tests OK; Stage026/Stage027/Stage028/Stage029 compatibility focused tests ran 15/20/12/16 tests OK; full IDS v0.1 pursuing-goal discover ran 342 tests OK; Stage005 governance validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, or raw data boundary gaps; py_compile passed for Stage030 focused test, Stage005 validator/test, and Stage026/Stage027/Stage028/Stage029 compatibility tests; events.jsonl parsed with 134 events and 0 duplicate ids; check-render returned drift_count=0 after rendering owner files; git diff --check passed. Full semantic validation is a sparse-worktree diagnostic with 29 expected errors for missing root governance schemas/workflows/hooks and unrelated registered project paths; this run did not expand sparse checkout. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit /Users/linzezhang/Downloads/IDS_MetaData raw metadata database content. This run did not create PostgreSQL database/schema/migration/runtime data directory/connection config, connect to PostgreSQL, start Docker/backend/frontend/worker, install dependencies, execute migration dry-run/apply/rollback/backup/restore/schema diff, write runtime output, database, manifest, evidence ledger, audit log, index, report, PDF, screenshot, JSON output, document/chunk/job/import row, parser output, production data artifact, push to GitHub, create or merge a PR, reinstall app entries, or enter Phase 2. Secrets, API keys, database passwords, cloud credentials, fake IDS business data, fake database rows, fake source documents, placeholder corpus, and fabricated evidence remain forbidden."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_postgresql_control_plane.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "如果 Phase 1 合同被误读为 PostgreSQL schema/migration/runtime 授权，可能提前写 runtime database、读取 raw metadata、暴露 secrets、保存原始内容、启动服务或提前上传未满十阶段批次。"
+            rollback: "Revert STAGE030 entry/scope evidence, BATCH021_030_UPLOAD_LOCK.yaml, focused tests, Stage005 validator/test updates, compatibility test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, 00_ORIGINAL_RAW_DATA, runtime data, reports, outputs, manifests, evidence ledgers, audit logs, indexes, PostgreSQL data directories, app entries, GitHub state, or Phase 2 artifacts."
