@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S04-P3｜基础工具测试`：`KMFA/tools/v014_s04_p3_basic_tool_report.py`、`KMFA/tools/check_v014_s04_p3_basic_tool_report.py`、`KMFA/tests/test_v014_s04_p3_basic_tool_report.py` 和 basic tool report evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/`。本 phase 复用既有 synthetic boundary report，锁定 synthetic cases `22/22`、amount boundary cases `11`、date/period boundary cases `11`，并生成 JSON/Markdown 工具函数测试报告。未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 Stage 4 整体复审`，不得跳到 GitHub upload、S05、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `Stage 4 整体复审`：`KMFA/tools/v014_s04_stage_review.py`、`KMFA/tools/check_v014_s04_stage_review.py`、`KMFA/tests/test_v014_s04_stage_review.py` 和 Stage 4 review evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/`。本 review 复跑 S04-P1/S04-P2/S04-P3 validators，锁定 phase_results 全部 PASS、open findings `0`、amount cases `9`、canonical fields `6`、synthetic cases `22/22`，并保持 NO_GO/Q2/D/blocked。未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S05-P1`，不得跳到 GitHub upload、S05-P2/S05-P3、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s04p3-basic-tool-report`
-- 当前已完成: `v0.1.4 S04-P3 basic tool report`
-- 证据目录: `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/`
-- validator: `KMFA/tools/check_v014_s04_p3_basic_tool_report.py`
-- focused test: `KMFA/tests/test_v014_s04_p3_basic_tool_report.py`
+- 当前版本: `0.1.4-s04-stage-review`
+- 当前已完成: `v0.1.4 Stage 4 review`
+- 证据目录: `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/`
+- validator: `KMFA/tools/check_v014_s04_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s04_stage_review.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: 本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只生成 public-safe synthetic basic tool test evidence。
-- 未执行: Stage 4 review、GitHub upload、S05、raw inventory、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- raw boundary: 本 review 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe S04 validators 并生成 review evidence。
+- 未执行: GitHub upload、S05、raw inventory、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
 
 ## v0.1.3 历史状态
 

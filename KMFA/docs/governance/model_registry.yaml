@@ -86,7 +86,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s03-stage-review"
+    model_version: "0.1.4-s04-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -109,6 +109,7 @@ models:
       - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
       - "FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-V014-S04P3-BASIC-TOOL-REPORT-001"
+      - "FORM-KMFA-V014-S04-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -149,6 +150,9 @@ models:
       - "PARAM-KMFA-1038"
       - "PARAM-KMFA-1041"
       - "PARAM-KMFA-1044"
+      - "PARAM-KMFA-1045"
+      - "PARAM-KMFA-1046"
+      - "PARAM-KMFA-1047"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -227,6 +231,8 @@ models:
       - "KMFA/tools/integration_preparation.py"
       - "KMFA/tools/check_s18_p3_integration_preparation.py"
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
+      - "KMFA/tools/v014_s04_stage_review.py"
+      - "KMFA/tools/check_v014_s04_stage_review.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
@@ -238,6 +244,7 @@ models:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p2_full_regression_acceptance.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p3_integration_preparation.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py --require-source-package-present"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s04_stage_review.py"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
@@ -259,6 +266,8 @@ models:
       - "KMFA/stage_artifacts/S18_P3_integration_preparation/machine/s18_p3_manifest.json"
       - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/implementation_plan.md"
       - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json"
+      - "KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/human/stage4_review_report.md"
+      - "KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/machine/stage4_review_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"
@@ -266,7 +275,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s04p3-basic-tool-report"
+    model_version: "0.1.4-s04-stage-review"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
