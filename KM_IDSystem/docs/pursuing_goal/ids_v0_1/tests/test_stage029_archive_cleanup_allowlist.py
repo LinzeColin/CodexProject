@@ -1,17 +1,44 @@
 from pathlib import Path
+import importlib.util
+import json
+import subprocess
+import tempfile
 import unittest
+import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[4]
+REPO_ROOT = ROOT.parent
+SCRIPT = ROOT / "scripts" / "check_archive_cleanup_allowlist.py"
 PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE029_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE029_PHASE1_SCOPE_BOUNDARY.md"
+PHASE2 = PURSUE_ROOT / "STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
 
 
 class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
+    def _load_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage029_archive_cleanup_allowlist", SCRIPT)
+        self.assertIsNotNone(spec)
+        module = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        spec.loader.exec_module(module)
+        return module
+
+    def _write_zip_fixture(self, base: Path, entries: dict[str, bytes]) -> Path:
+        archive_path = base / "stage029-real-governance-payload.zip"
+        with zipfile.ZipFile(archive_path, "w") as archive:
+            for entry_name, payload in entries.items():
+                archive.writestr(entry_name, payload)
+        return archive_path
+
+    def _tracked_payload(self) -> bytes:
+        return PHASE1.read_bytes()
+
     def test_phase1_contracts_exist_and_bind_taskpack_identity(self):
         self.assertTrue(ENTRY.is_file(), f"missing entry contract: {ENTRY}")
         self.assertTrue(PHASE1.is_file(), f"missing phase1 boundary: {PHASE1}")
@@ -128,28 +155,52 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         text = BATCH_LOCK.read_text(encoding="utf-8")
 
         required_terms = [
-            'status: "stage029_phase1_in_progress"',
             "STAGE-028:",
             "STAGE-029:",
             'status: "in_progress"',
             '      - "Phase 1"',
-            'next_phase: "Phase 2"',
-            'current_task_id: "IDS-V0_1-STAGE029-P1"',
             'acceptance_id: "ACC-STAGE-029"',
-            'acceptance_status: "phase1_scope_boundary_defined"',
-            'next_gate: "IDS-STAGE029-P2-GATE"',
             'push_allowed: false',
-            'next_allowed_task_id: "IDS-V0_1-STAGE029-P2"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_archive_cleanup_allowlist.py",
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content",
         ]
+        allowed_status_terms = [
+            'status: "stage029_phase1_in_progress"',
+            'status: "stage029_phase2_in_progress"',
+        ]
+        allowed_next_phase_terms = [
+            'next_phase: "Phase 2"',
+            'next_phase: "Phase 3"',
+        ]
+        allowed_current_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE029-P1"',
+            'current_task_id: "IDS-V0_1-STAGE029-P2"',
+        ]
+        allowed_acceptance_terms = [
+            'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_cleanup_allowlist_slice_complete"',
+        ]
+        allowed_gate_terms = [
+            'next_gate: "IDS-STAGE029-P2-GATE"',
+            'next_gate: "IDS-STAGE029-P3-GATE"',
+        ]
+        allowed_next_task_terms = [
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P2"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P3"',
+        ]
 
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, text)
+        self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
+        self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
+        self.assertTrue(any(term in text for term in allowed_current_task_terms), allowed_current_task_terms)
+        self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
+        self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
+        self.assertTrue(any(term in text for term in allowed_next_task_terms), allowed_next_task_terms)
 
     def test_roadmap_and_events_track_stage029_phase1_local_gate(self):
         self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
@@ -159,15 +210,24 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
 
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE029"',
-            'current_phase_id: "IDS-STAGE029-P1"',
-            'current_task_id: "IDS-V0_1-STAGE029-P1"',
-            'next_gate_id: "IDS-STAGE029-P2-GATE"',
             'stage_id: "IDS-STAGE029"',
             'name: "STAGE-029 · 压缩包清理白名单"',
             'phase_id: "IDS-STAGE029-P1"',
             'status: "passed_with_local_evidence"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE1_SCOPE_BOUNDARY.md",
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE029-P1"',
+            'current_phase_id: "IDS-STAGE029-P2"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE029-P1"',
+            'current_task_id: "IDS-V0_1-STAGE029-P2"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE029-P2-GATE"',
+            'next_gate_id: "IDS-STAGE029-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P1-20260703-001"',
@@ -177,6 +237,263 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             "STAGE029_PHASE1_SCOPE_BOUNDARY.md",
         ]
 
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+    def test_phase2_builds_cleanup_allowlist_from_safe_extraction_without_deleting_protected_refs(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            archive_path = self._write_zip_fixture(
+                base,
+                {
+                    "safe/stage029-scope-boundary.md": self._tracked_payload(),
+                    "safe/stage029-entry-contract.md": ENTRY.read_bytes(),
+                },
+            )
+            staging = base / "stage029-staging"
+
+            report = module.build_archive_cleanup_allowlist(
+                archive_uri=archive_path.as_uri(),
+                staging_area_uri=staging.as_uri(),
+                evaluated_at="2026-07-03T12:26:00Z",
+            )
+
+        self.assertEqual(report["schema_version"], "ids.stage029.archive_cleanup_allowlist.v1")
+        self.assertEqual(report["stage"], "STAGE-029")
+        self.assertEqual(report["phase"], "Phase 2")
+        self.assertEqual(report["task_id"], "IDS-V0_1-STAGE029-P2")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-029")
+        self.assertEqual(report["entrance"], "IDS 系统运营入口")
+        self.assertEqual(report["source_schema_version"], "ids.stage028.archive_adversarial_tests.v1")
+        self.assertTrue(report["archive_cleanup_allowlist_id"].startswith("ids.stage029.cleanup_allowlist."))
+        self.assertEqual(report["cleanup_decision_state"], "ARCHIVE_CLEANUP_READY_FOR_TEMP_CLEANUP")
+        self.assertGreater(report["safe_extracted_file_count"], 0)
+        self.assertEqual(report["cleanup_candidate_count"], len(report["cleanup_candidates"]))
+        self.assertEqual(report["cleanup_validation"]["state"], "ARCHIVE_CLEANUP_ALLOWLIST_VALIDATED")
+        self.assertTrue(report["cleanup_validation"]["cleanup_targets_are_staging_temp_files_only"])
+        self.assertTrue(report["cleanup_validation"]["protected_refs_preserved"])
+        self.assertFalse(report["cleanup_validation"]["original_archive_in_cleanup_allowlist"])
+        self.assertEqual(report["post_extract_reingest"]["required_pipeline"], ["hash", "manifest", "dedup", "parser"])
+        self.assertEqual(report["reingest_validation"]["state"], "ARCHIVE_CLEANUP_REINGEST_READY_FOR_PIPELINE")
+        self.assertEqual(
+            report["reingest_validation"]["actual_jobs_started"],
+            {"hash": 0, "manifest": 0, "dedup": 0, "parser": 0, "ocr": 0, "embedding": 0, "index": 0, "import": 0},
+        )
+        self.assertEqual(set(report["cleanup_validation"]["allowed_cleanup_classes"]), {"ARCHIVE_STAGING_TEMP_FILE"})
+        self.assertTrue(all(candidate["cleanup_candidate_class"] == "ARCHIVE_STAGING_TEMP_FILE" for candidate in report["cleanup_candidates"]))
+        self.assertTrue(all(candidate["cleanup_executed"] is False for candidate in report["cleanup_candidates"]))
+        self.assertTrue(all(candidate["delete_operation_started"] is False for candidate in report["cleanup_candidates"]))
+        protected_classes = {item["protected_class"] for item in report["protected_refs"]}
+        for expected_class in {
+            "PROTECTED_ORIGINAL_ARCHIVE",
+            "PROTECTED_ARCHIVE_MANIFEST",
+            "PROTECTED_EVIDENCE_LEDGER",
+            "PROTECTED_AUDIT_LOG",
+            "PROTECTED_DELIVERED_REPORT",
+            "PROTECTED_DATABASE_OR_INDEX",
+            "PROTECTED_RAW_METADATA_ROOT",
+        }:
+            with self.subTest(expected_class=expected_class):
+                self.assertIn(expected_class, protected_classes)
+        for delta_name, delta_value in report["no_persistence_deltas"].items():
+            with self.subTest(delta_name=delta_name):
+                self.assertEqual(delta_value, 0)
+        self.assertFalse(report["cleanup_runner_executed"])
+        self.assertTrue(report["does_not_delete_files"])
+        self.assertTrue(report["does_not_clean_original_archive"])
+        self.assertTrue(report["does_not_clean_fact_source_or_evidence"])
+        self.assertTrue(report["does_not_write_archive_cleanup_runtime_output"])
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertTrue(report["does_not_use_fake_ids_business_data"])
+
+    def test_phase2_routes_failed_risk_and_over_limit_entries_to_owner_review_or_quarantine(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            payload = self._tracked_payload()
+            archive_path = self._write_zip_fixture(
+                base,
+                {
+                    "safe/ok.md": payload,
+                    "../escape.md": payload,
+                    "/absolute.md": payload,
+                    "nested/depth/archive.zip": payload,
+                    "too-many/one.md": payload,
+                    "too-many/two.md": payload,
+                },
+            )
+            staging = base / "stage029-staging"
+
+            report = module.build_archive_cleanup_allowlist(
+                archive_uri=archive_path.as_uri(),
+                staging_area_uri=staging.as_uri(),
+                evaluated_at="2026-07-03T12:27:00Z",
+                archive_file_count_limit=2,
+                archive_nested_depth_limit=0,
+            )
+
+        self.assertEqual(report["cleanup_decision_state"], "ARCHIVE_CLEANUP_OWNER_REVIEW_REQUIRED")
+        self.assertGreater(report["blocked_entry_count"], 0)
+        self.assertGreater(report["owner_review_entry_count"], 0)
+        self.assertGreater(report["quarantine_entry_count"], 0)
+        self.assertEqual(
+            report["manual_review_routing"]["state"],
+            "ARCHIVE_CLEANUP_OWNER_REVIEW_OR_QUARANTINE_REQUIRED",
+        )
+        self.assertTrue(report["manual_review_routing"]["failure_files_to_owner_review"])
+        self.assertTrue(report["manual_review_routing"]["risk_files_to_owner_review"])
+        self.assertTrue(report["manual_review_routing"]["over_limit_files_to_owner_review"])
+        self.assertTrue(report["manual_review_routing"]["quarantine_required"])
+        self.assertTrue(all(entry["cleanup_routing_state"] in {"ARCHIVE_CLEANUP_OWNER_REVIEW_REQUIRED", "ARCHIVE_CLEANUP_QUARANTINE_REQUIRED"} for entry in report["risk_entries"]))
+        self.assertTrue(report["cleanup_validation"]["protected_refs_preserved"])
+        self.assertFalse(report["cleanup_runner_executed"])
+        self.assertTrue(report["does_not_delete_files"])
+
+    def test_phase2_blocks_protected_cleanup_candidates(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            archive_path = self._write_zip_fixture(base, {"safe/ok.md": self._tracked_payload()})
+            staging = base / "stage029-staging"
+            report = module.build_archive_cleanup_allowlist(
+                archive_uri=archive_path.as_uri(),
+                staging_area_uri=staging.as_uri(),
+                evaluated_at="2026-07-03T12:28:00Z",
+                additional_cleanup_candidates=[
+                    {"uri": archive_path.as_uri(), "cleanup_candidate_class": "PROTECTED_ORIGINAL_ARCHIVE"},
+                    {"uri": "evidence://stage029/evidence-ledger", "cleanup_candidate_class": "PROTECTED_EVIDENCE_LEDGER"},
+                    {"uri": "audit://stage029/audit-log", "cleanup_candidate_class": "PROTECTED_AUDIT_LOG"},
+                    {
+                        "uri": "file:///Users/linzezhang/Downloads/IDS_MetaData/raw.db",
+                        "cleanup_candidate_class": "ARCHIVE_STAGING_TEMP_FILE",
+                    },
+                ],
+            )
+
+        blocked_candidates = [
+            candidate
+            for candidate in report["cleanup_candidates"]
+            if candidate["cleanup_decision_state"] == "ARCHIVE_CLEANUP_BLOCKED_PROTECTED_REF"
+        ]
+        self.assertEqual(len(blocked_candidates), 4)
+        self.assertEqual(report["blocked_protected_candidate_count"], 4)
+        self.assertEqual(report["cleanup_decision_state"], "ARCHIVE_CLEANUP_OWNER_REVIEW_REQUIRED")
+        self.assertTrue(all(candidate["cleanup_executed"] is False for candidate in blocked_candidates))
+        self.assertTrue(all(candidate["delete_operation_started"] is False for candidate in blocked_candidates))
+        self.assertTrue(report["cleanup_validation"]["protected_refs_preserved"])
+        self.assertTrue(report["cleanup_validation"]["does_not_clean_original_archive"])
+        self.assertTrue(report["cleanup_validation"]["does_not_clean_fact_source_or_evidence"])
+
+    def test_phase2_cli_emits_json_without_runtime_output_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            archive_path = self._write_zip_fixture(base, {"safe/ok.md": self._tracked_payload()})
+            staging = base / "stage029-staging"
+            result = subprocess.run(
+                [
+                    "python3",
+                    "-B",
+                    str(SCRIPT),
+                    "--archive-uri",
+                    archive_path.as_uri(),
+                    "--staging-area-uri",
+                    staging.as_uri(),
+                    "--evaluated-at",
+                    "2026-07-03T12:29:00Z",
+                ],
+                cwd=REPO_ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["schema_version"], "ids.stage029.archive_cleanup_allowlist.v1")
+        self.assertFalse(report["cleanup_runner_executed"])
+        self.assertTrue(report["does_not_write_archive_cleanup_runtime_output"])
+
+    def test_phase2_evidence_batch_roadmap_and_event_track_local_no_upload_gate(self):
+        self.assertTrue(PHASE2.is_file(), f"missing phase2 evidence: {PHASE2}")
+        phase2_text = PHASE2.read_text(encoding="utf-8")
+        batch_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        phase2_terms = [
+            "IDS-V0_1-STAGE029-P2",
+            "ACC-STAGE-029",
+            "build_archive_cleanup_allowlist",
+            "ids.stage029.archive_cleanup_allowlist.v1",
+            "ARCHIVE_CLEANUP_READY_FOR_TEMP_CLEANUP",
+            "ARCHIVE_CLEANUP_OWNER_REVIEW_REQUIRED",
+            "ARCHIVE_CLEANUP_BLOCKED_PROTECTED_REF",
+            "safe extraction",
+            "path filtering",
+            "risk marking",
+            "quarantine",
+            "owner review",
+            "hash",
+            "manifest",
+            "dedup",
+            "parser",
+            "不执行 cleanup runner",
+            "不删除原始资料",
+            "不删除原始压缩包",
+            "不删除 manifest",
+            "不删除 evidence",
+            "不删除 audit",
+            "不删除报告",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "file:///Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+            "NO_PHASE3",
+        ]
+        batch_terms = [
+            'status: "stage029_phase2_in_progress"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            'current_task_id: "IDS-V0_1-STAGE029-P2"',
+            'acceptance_status: "phase2_cleanup_allowlist_slice_complete"',
+            'next_gate: "IDS-STAGE029-P3-GATE"',
+            'push_allowed: false',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P3"',
+            "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE029"',
+            'current_phase_id: "IDS-STAGE029-P2"',
+            'current_task_id: "IDS-V0_1-STAGE029-P2"',
+            'next_gate_id: "IDS-STAGE029-P3-GATE"',
+            'phase_id: "IDS-STAGE029-P2"',
+            'status: "passed_with_local_evidence"',
+            "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE029-P2-20260703-001"',
+            '"event_type":"implementation"',
+            '"task_id":"IDS-V0_1-STAGE029-P2"',
+            '"ACC-STAGE-029"',
+            "check_archive_cleanup_allowlist.py",
+            "STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
+        ]
+
+        for term in phase2_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, phase2_text)
+        for term in batch_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, batch_text)
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
