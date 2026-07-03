@@ -13,6 +13,7 @@ from typing import Any
 
 SCHEMA_VERSION = "ids.stage030.postgresql_control_plane.phase2.v1"
 SCENARIO_SCHEMA_VERSION = "ids.stage030.postgresql_control_plane.phase3.v1"
+DELIVERY_SCHEMA_VERSION = "ids.stage030.postgresql_control_plane.phase4.v1"
 MIGRATION_ID = "ids_stage030_001_control_plane"
 RAW_METADATA_ROOT = "/Users/linzezhang/Downloads/IDS_MetaData"
 
@@ -240,6 +241,92 @@ def build_stage030_scenario_report(schema_sql_path: Path, schema_index_path: Pat
     }
 
 
+def build_stage030_delivery_report(schema_sql_path: Path, schema_index_path: Path) -> dict[str, Any]:
+    sql = schema_sql_path.read_text(encoding="utf-8")
+    index = _load_index(schema_index_path)
+    control_report = build_stage030_control_plane_report(schema_sql_path, schema_index_path)
+    scenario_report = build_stage030_scenario_report(schema_sql_path, schema_index_path)
+    migration = index.get("migration", {})
+    constraints_added = [
+        constraint_id for constraint_id in EXPLAINED_CONSTRAINTS if constraint_id in sql
+    ]
+
+    return {
+        "schema_version": DELIVERY_SCHEMA_VERSION,
+        "stage": "STAGE-030",
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE030-P4",
+        "acceptance_id": "ACC-STAGE-030",
+        "next_gate": "IDS-V0_1-BATCH-021-030-REVIEW-GATE",
+        "stage_review_status": "pending_next_run",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "schema_diff": {
+            "mode": "static_contract_diff_not_executed",
+            "baseline": "no tracked PostgreSQL control-plane schema before STAGE-030 Phase 2",
+            "target_schema_sql_ref": schema_sql_path.as_posix(),
+            "target_schema_index_ref": schema_index_path.as_posix(),
+            "migration_id": MIGRATION_ID,
+            "tables_added": REQUIRED_TABLES,
+            "constraints_added": constraints_added,
+            "raw_payload_columns_added": [],
+            "notes": "This is a tracked-contract diff only; no live database schema diff was executed.",
+        },
+        "migration_output": {
+            "mode": "static_contract_output_not_executed",
+            "migration_id": MIGRATION_ID,
+            "dry_run_command_ref": migration.get("dry_run_command_ref"),
+            "rollback_command_ref": migration.get("rollback_command_ref"),
+            "expected_static_result": "all Phase2 migration guards true and all Phase3 scenario statuses PASS",
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_LIVE_POSTGRESQL_CONNECTION",
+        },
+        "recovery_test_log": {
+            "mode": "static_recovery_log_not_executed",
+            "checks": [
+                "recovery_checkpoint_ref",
+                "rollback_sql_ref",
+                "DROP TABLE IF EXISTS ids_schema_migrations",
+                "ON_ERROR_STOP=1",
+                "--single-transaction",
+            ],
+            "result": "static PASS from tracked SQL/index contracts",
+            "live_restore_log_ref": "NOT_AVAILABLE_BY_POLICY_NO_BACKUP_OR_RESTORE_EXECUTION",
+        },
+        "destructive_migration_confirmation": {
+            "required": True,
+            "destructive_allowed_by_default": migration.get("destructive_allowed") is True,
+            "current_contract_value": migration.get("destructive_allowed"),
+            "manual_confirmation_required_before_change": True,
+            "owner_message": "任何 DROP/ALTER/数据删除/重建索引等破坏性迁移必须单独人工确认，默认阻断。",
+        },
+        "rollback_backup_steps": [
+            "Stop before live migration if schema diff cannot be explained from tracked SQL/index contracts.",
+            "Create a PostgreSQL logical backup in a future authorized run before apply.",
+            "Record backup location, checksum, migration id, and owner approval in the future run evidence.",
+            "Run rollback_command_ref with ON_ERROR_STOP=1 and --single-transaction if apply fails.",
+            "Restore from the approved backup only in a future authorized restore run.",
+            "Re-run recovery smoke checks and keep raw metadata root path-only after rollback.",
+        ],
+        "known_limits": [
+            "PostgreSQL live connection, dry-run, apply, rollback, backup, restore, and schema diff were not executed in this phase.",
+            "The report proves tracked contract readiness, not production database readiness.",
+            "No runtime database rows, document/chunk/job rows, indexes, reports, screenshots, PDFs, or JSON output files were generated.",
+            "Raw metadata remains path-only at /Users/linzezhang/Downloads/IDS_MetaData and was not inspected.",
+            "Batch upload is blocked until the STAGE-021..030 batch review gate and repair gate pass.",
+        ],
+        "chinese_owner_feedback": (
+            "STAGE-030 已完成 Phase 4：当前交付的是 PostgreSQL 控制面 schema/migration "
+            "的静态工程合同、回滚和备份恢复说明，以及中文 owner 反馈。它不是生产数据库迁移授权；"
+            "下一步应进入 STAGE-021..030 批次复审，而不是直接 GitHub upload 或 app reinstall。"
+        ),
+        "control_plane_report": control_report,
+        "scenario_report": scenario_report,
+        "does_not_connect_to_postgres": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_write_runtime_outputs": True,
+        "does_not_use_fake_ids_business_data": True,
+    }
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     pursue_root = root / "docs" / "pursuing_goal" / "ids_v0_1" / "postgresql_control_plane"
@@ -251,8 +338,16 @@ def main() -> int:
         pursue_root / "001_control_plane_schema.sql",
         pursue_root / "control_plane_schema_index.json",
     )
+    delivery_report = build_stage030_delivery_report(
+        pursue_root / "001_control_plane_schema.sql",
+        pursue_root / "control_plane_schema_index.json",
+    )
     print(json.dumps(
-        {"control_plane_report": report, "scenario_report": scenario_report},
+        {
+            "control_plane_report": report,
+            "scenario_report": scenario_report,
+            "delivery_report": delivery_report,
+        },
         ensure_ascii=False,
         indent=2,
         sort_keys=True,
@@ -267,6 +362,12 @@ def main() -> int:
             for scenario in scenario_report["scenario_results"].values()
         ]
         + [
+            delivery_report["schema_diff"]["mode"] == "static_contract_diff_not_executed",
+            delivery_report["migration_output"]["mode"] == "static_contract_output_not_executed",
+            delivery_report["recovery_test_log"]["mode"] == "static_recovery_log_not_executed",
+            delivery_report["stage_review_status"] == "pending_next_run",
+            delivery_report["github_upload_allowed"] is False,
+            delivery_report["app_reinstall_allowed"] is False,
             report["raw_metadata_boundary"]["path"] == RAW_METADATA_ROOT,
             report["raw_metadata_boundary"]["path_only"],
             report["raw_metadata_boundary"]["no_raw_content_access"],

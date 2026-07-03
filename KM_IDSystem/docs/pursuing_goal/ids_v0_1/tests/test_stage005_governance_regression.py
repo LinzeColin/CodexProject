@@ -5252,6 +5252,39 @@ next_gate_id: "IDS-STAGE030-P4-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage030_phase4_closeout_pending_batch_review(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage030_completed_local_pending_batch_review"
+stage_progress:
+  STAGE-030:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_phase: "batch_review_gate"
+    next_gate: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE030-P4"
+    acceptance_status: "local_passed"
+upload_gate:
+  push_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-STAGE030-P4"
+current_task_id: "IDS-V0_1-STAGE030-P4"
+next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+        phase_id: "IDS-STAGE030-P4"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
 
 if __name__ == "__main__":
     unittest.main()
