@@ -26,6 +26,22 @@ DEFAULT_ARCHIVE_FILE_COUNT_LIMIT = 10000
 DEFAULT_ARCHIVE_TOTAL_SIZE_LIMIT_BYTES = 4 * 1024 * 1024 * 1024
 DEFAULT_ARCHIVE_SINGLE_FILE_SIZE_LIMIT_BYTES = 512 * 1024 * 1024
 DEFAULT_ARCHIVE_NESTED_DEPTH_LIMIT = 1
+REQUIRED_STAGE024_SCENARIOS = (
+    "path_traversal",
+    "absolute_path",
+    "archive_bomb",
+    "nested_archive",
+    "garbled_filename",
+    "too_many_files",
+)
+EXPECTED_STAGE024_SCENARIO_RISKS = {
+    "path_traversal": "ARCHIVE_PATH_TRAVERSAL_BLOCKED",
+    "absolute_path": "ARCHIVE_ABSOLUTE_PATH_BLOCKED",
+    "archive_bomb": "ARCHIVE_TOTAL_SIZE_LIMIT_EXCEEDED",
+    "nested_archive": "ARCHIVE_NESTED_DEPTH_LIMIT_EXCEEDED",
+    "garbled_filename": "ARCHIVE_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+    "too_many_files": "ARCHIVE_FILE_COUNT_LIMIT_EXCEEDED",
+}
 
 PROCESSING_GUARD_ZEROES = {
     "actual_hash_jobs_started": 0,
@@ -173,6 +189,12 @@ def _normalize_entry_path(entry_path: str) -> tuple[str | None, dict[str, str] |
             "risk_code": "ARCHIVE_ABSOLUTE_PATH_BLOCKED",
             "risk_label": "absolute path is not allowed",
             "state": "ARCHIVE_ENTRY_BLOCKED_ABSOLUTE_PATH",
+        }
+    if "\ufffd" in raw:
+        return None, {
+            "risk_code": "ARCHIVE_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+            "risk_label": "garbled filename requires owner review before extraction",
+            "state": "ARCHIVE_ENTRY_QUARANTINED_GARBLED_FILENAME",
         }
     normalized = posixpath.normpath(raw)
     if normalized in {"", "."}:
@@ -538,6 +560,162 @@ def safe_extract_archive(
     elif archive_type == "TAR":
         _extract_tar(report=report, archive_path=archive_path, staging_path=staging_path, limits=limits)
     return _finalize_report(report)
+
+
+def _flatten_reingest_queue(scenario_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    queue: list[dict[str, Any]] = []
+    for result in scenario_results:
+        threat_model = result["archive_threat_model"]
+        for item in threat_model["post_extract_reingest"]["reingest_queue"]:
+            queue.append({"scenario_id": result["scenario_id"], **item})
+    return queue
+
+
+def _flatten_cleanup_allowlist(scenario_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    cleanup_items: list[dict[str, Any]] = []
+    for result in scenario_results:
+        threat_model = result["archive_threat_model"]
+        for item in threat_model["cleanup_allowlist"]:
+            cleanup_items.append({"scenario_id": result["scenario_id"], **item})
+    return cleanup_items
+
+
+def _build_reingest_validation(reingest_queue: list[dict[str, Any]]) -> dict[str, Any]:
+    pipeline_stage_states = {
+        "hash": "POST_EXTRACT_HASH_REQUIRED",
+        "manifest": "POST_EXTRACT_MANIFEST_REQUIRED",
+        "dedup": "POST_EXTRACT_DEDUP_REQUIRED",
+        "parser": "POST_EXTRACT_PARSER_REQUIRED",
+    }
+    return {
+        "state": "POST_EXTRACT_REINGEST_VALIDATED" if reingest_queue else "POST_EXTRACT_REINGEST_NOT_READY",
+        "required_pipeline": ["hash", "manifest", "dedup", "parser"],
+        "safe_extracted_file_count": len(reingest_queue),
+        "pipeline_stage_states": pipeline_stage_states,
+        "reingest_queue": reingest_queue,
+        "actual_jobs_started": {
+            "hash": 0,
+            "manifest": 0,
+            "dedup": 0,
+            "parser": 0,
+        },
+    }
+
+
+def _build_cleanup_validation(
+    *,
+    cleanup_allowlist: list[dict[str, Any]],
+    original_archive_refs: list[str],
+    scenario_results: list[dict[str, Any]],
+) -> dict[str, Any]:
+    cleanup_classes = {item.get("cleanup_class") for item in cleanup_allowlist}
+    cleanup_uris = [item["uri"] for item in cleanup_allowlist]
+    original_archive_in_cleanup = any(ref in cleanup_uris for ref in original_archive_refs)
+    policies_preserve_refs = all(
+        result["archive_threat_model"]["cleanup_policy"]["does_not_clean_original_archive"]
+        and result["archive_threat_model"]["cleanup_policy"]["does_not_clean_fact_source_or_evidence"]
+        for result in scenario_results
+    )
+    targets_are_temp_only = bool(cleanup_allowlist) and cleanup_classes <= {"ARCHIVE_STAGING_TEMP_FILE"}
+    return {
+        "state": "ARCHIVE_CLEANUP_ALLOWLIST_VALIDATED" if targets_are_temp_only and not original_archive_in_cleanup else "ARCHIVE_CLEANUP_ALLOWLIST_REVIEW_REQUIRED",
+        "allowed_cleanup_classes": sorted(cleanup_classes),
+        "cleanup_allowlist_uris": cleanup_uris,
+        "cleanup_targets_are_staging_temp_files_only": targets_are_temp_only,
+        "original_archive_in_cleanup_allowlist": original_archive_in_cleanup,
+        "protected_refs_preserved": policies_preserve_refs and not original_archive_in_cleanup,
+        "does_not_clean_original_archive": not original_archive_in_cleanup,
+        "does_not_clean_fact_source_or_evidence": policies_preserve_refs,
+    }
+
+
+def build_stage024_scenario_report(
+    *,
+    scenario_archives: dict[str, dict[str, Any]],
+    evaluated_at: str | None = None,
+    required_scenarios: tuple[str, ...] = REQUIRED_STAGE024_SCENARIOS,
+) -> dict[str, Any]:
+    """Validate Stage 024 Phase 3 archive-threat scenarios without starting processing jobs."""
+
+    evaluated_at = evaluated_at or _utc_now()
+    scenario_results: list[dict[str, Any]] = []
+    required_scenario_set = set(required_scenarios)
+    for scenario_id in required_scenarios:
+        scenario_config = dict(scenario_archives[scenario_id])
+        threat_model = safe_extract_archive(
+            archive_uri=scenario_config["archive_uri"],
+            staging_area_uri=scenario_config["staging_area_uri"],
+            extracted_at=evaluated_at,
+            archive_file_count_limit=scenario_config.get("archive_file_count_limit", DEFAULT_ARCHIVE_FILE_COUNT_LIMIT),
+            archive_total_size_limit_bytes=scenario_config.get(
+                "archive_total_size_limit_bytes",
+                DEFAULT_ARCHIVE_TOTAL_SIZE_LIMIT_BYTES,
+            ),
+            archive_single_file_size_limit_bytes=scenario_config.get(
+                "archive_single_file_size_limit_bytes",
+                DEFAULT_ARCHIVE_SINGLE_FILE_SIZE_LIMIT_BYTES,
+            ),
+            archive_nested_depth_limit=scenario_config.get("archive_nested_depth_limit", DEFAULT_ARCHIVE_NESTED_DEPTH_LIMIT),
+        )
+        risk_codes = [entry["risk_code"] for entry in threat_model["risk_entries"]]
+        expected_risk_code = EXPECTED_STAGE024_SCENARIO_RISKS.get(scenario_id)
+        expected_risk_observed = expected_risk_code is None or expected_risk_code in risk_codes
+        scenario_results.append(
+            {
+                "scenario_id": scenario_id,
+                "scenario_state": "ARCHIVE_THREAT_SCENARIO_VALIDATED"
+                if expected_risk_observed
+                else "ARCHIVE_THREAT_SCENARIO_REVIEW_REQUIRED",
+                "expected_risk_code": expected_risk_code,
+                "expected_risk_observed": expected_risk_observed,
+                "risk_codes": risk_codes,
+                "safe_extracted_file_count": threat_model["safe_extracted_file_count"],
+                "blocked_entry_count": threat_model["blocked_entry_count"],
+                "archive_threat_model": threat_model,
+            }
+        )
+
+    reingest_queue = _flatten_reingest_queue(scenario_results)
+    cleanup_allowlist = _flatten_cleanup_allowlist(scenario_results)
+    original_archive_refs = [result["archive_threat_model"]["original_archive_ref"] for result in scenario_results]
+    reingest_validation = _build_reingest_validation(reingest_queue)
+    cleanup_validation = _build_cleanup_validation(
+        cleanup_allowlist=cleanup_allowlist,
+        original_archive_refs=original_archive_refs,
+        scenario_results=scenario_results,
+    )
+    required_scenarios_covered = required_scenario_set <= set(scenario_archives)
+    required_expected_risks_passed = all(result["expected_risk_observed"] for result in scenario_results)
+    validation_passed = (
+        required_scenarios_covered
+        and required_expected_risks_passed
+        and reingest_validation["safe_extracted_file_count"] > 0
+        and cleanup_validation["protected_refs_preserved"]
+    )
+    return {
+        "schema_version": "ids.stage024.archive_threat_model.scenario_validation.v1",
+        "stage": "STAGE-024",
+        "phase": "Phase 3",
+        "task_id": "IDS-V0_1-STAGE024-P3",
+        "acceptance_id": "ACC-STAGE-024",
+        "entrance": ENTRANCE,
+        "evaluated_at": evaluated_at,
+        "required_scenarios": list(required_scenarios),
+        "scenario_count": len(scenario_results),
+        "required_scenarios_covered": required_scenarios_covered,
+        "validation_state": "ARCHIVE_THREAT_SCENARIO_VALIDATION_PASSED"
+        if validation_passed
+        else "ARCHIVE_THREAT_SCENARIO_VALIDATION_REVIEW_REQUIRED",
+        "scenario_results": scenario_results,
+        "reingest_validation": reingest_validation,
+        "cleanup_validation": cleanup_validation,
+        "processing_guard": dict(PROCESSING_GUARD_ZEROES),
+        "no_persistence_deltas": dict(NO_PERSISTENCE_DELTAS),
+        "does_not_read_raw_metadata": True,
+        "does_not_write_archive_manifest_runtime_output": True,
+        "does_not_start_processing_jobs": True,
+        "does_not_use_fake_ids_business_data": True,
+    }
 
 
 def _build_parser() -> argparse.ArgumentParser:
