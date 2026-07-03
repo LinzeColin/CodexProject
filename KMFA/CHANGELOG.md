@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s05-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 5 整体复审`。
+- 新增 Stage 5 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S05-P1/S05-P2/S05-P3 validators，phase_results 全部 PASS，open findings=`0`；锁定 A0 files `9`、field candidates `45`、authority records `45`、Q5 calculation baseline locked fields `40`、Excel excluded fields `5`、formal report allowed `0`、zero-delta `0`、lineage full check `0`。
+- 本 review 未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值。
+- 本轮未执行 GitHub upload、S06-P1、raw value matching、zero-delta validation、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s05p3-authority-baseline-lock - 2026-07-04
 
 - 完成 `v0.1.4 S05-P3｜权威基准锁定`。
