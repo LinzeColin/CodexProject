@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s09p2-margin-cash-margin-replay`
+- version: `0.1.3-s09p3-scope-reconciliation-replay`
 - current_stage: `S09`
-- current_phase: `v0.1.3 S09-P2 margin and cash margin replay`
-- status: `local_s09_p2_margin_cash_margin_replay_passed_upload_deferred_until_stage10_batch_no_go`
+- current_phase: `v0.1.3 S09-P3 scope reconciliation replay`
+- status: `local_s09_p3_scope_reconciliation_replay_passed_upload_deferred_until_stage10_batch_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_stage1_10_batch_gate`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -70,6 +70,7 @@
 - v0.1.3 Stage 8 overall review 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/`；复审复跑 S08-P1/S08-P2/S08-P3 replay validators 和 Stage 8 review validator，确认 phase_results 全部 PASS、open findings=0、fixed findings=1、Q5/formal report allowed count=0、legacy Stage 8 upload artifacts current gate=false、data quality=`Q4`、report grade=`D`、release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S09-P1、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - v0.1.3 S09-P1 project cost fact layer replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/`；复用既有 S09-P1 public-safe 项目成本事实层 artifacts 并验证 v0.1.3 Stage 8 review dependency，确认 required metrics=6、cost categories=9、fact records=4、unallocated pool=9、authority locked fields=40、excluded fields=5、business entity types=8、project identity profiles=4、manual review queue=3、unresolved differences=1、blocked quality results=2，所有 metric/cost category 均保持 hash/private-ref only，formal calculation allowed=0，report grade=`D`，release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S09-P2、S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - v0.1.3 S09-P2 margin and cash margin replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/`；复用既有 S09-P2 public-safe 毛利与现金毛利 artifacts 并验证 v0.1.3 S09-P1 dependency，确认 required margin metrics=4、project cost fact records=4、margin records=4、scope difference summary records=12、authority field groups=8、manual review queue=3、unresolved differences=1、zero-delta fail count=1、blocked quality results=2，authority/system/cash value 均保持 hash/private-ref only，authority/system overwrite allowed=0，public amount values committed=0，report grade=`D`，release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+- v0.1.3 S09-P3 scope reconciliation replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S09_P3_SCOPE_RECONCILIATION_REPLAY/`；复用既有 S09-P3 public-safe 口径转换与差异核对 artifacts 并验证 v0.1.3 S09-P2 dependency，确认 reconciliation records=12、domain controls=6、required reconciliation domains=6、required human fields=8、confirmed resolutions=0、pending resolutions=12，所有差异继续 pending owner/授权复核，derived metric rerun allowed=false、formal report rerun allowed=false、formal report allowed=false，report grade=`D`，release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - v0.1.3 S06-P1 zero-delta validator replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P1_ZERO_DELTA_REPLAY/`；本 phase 复用既有 `zero_delta_validator.py` 和 public-safe synthetic/taskpack fixture，确认 8 次字段比较全部零差异通过、pass mismatch_count=0，并验证 0.01 元/1 分差异必须失败且生成 mismatch report。`metadata_quality_written=false`、`difference_queue_created=false`、`stage6_review_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P2、S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - v0.1.3 S06-P2 cross-source difference queue replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/`；本 phase 复用既有 `cross_source_difference_queue.py` 和 public-safe synthetic PDF/Excel conflict fixture，确认 PDF/Excel 同项目同字段 1 分差异进入人工队列，禁止自动修正、平均、四舍五入掩盖和自动选边，未关闭差异阻断 A 级报告。`metadata_quality_written=false`、`source_difference_queue_metadata_written=false`、`stage6_review_performed=false`、`s06_p3_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - v0.1.3 S06-P3 validation evidence replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/`；本 phase 只消费 S06-P1/S06-P2 public-safe evidence，输出 zero_delta_result、sanitized mismatch report、project validation statuses，并追加写入 metadata/quality public-safe records。`metadata_quality_written=true`、`project_status_count=2`、`blocked_project_status_count=2`、`q5_allowed_count=0`、`report_grade_a_allowed_count=0`、`stage6_review_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
@@ -169,7 +170,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 S09-P2 margin and cash margin replay 已本地完成；GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S09-P3 public-safe scope reconciliation replay` 或用户明确指定的单一 phase，不得跳到 Stage 9 review、GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
+- v0.1.3 S09-P3 scope reconciliation replay 已本地完成；GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 Stage 9 overall review` 或用户明确指定的单一 phase，不得跳到 GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
 
 ## 阻塞条件
 
