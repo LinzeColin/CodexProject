@@ -414,6 +414,136 @@ def build_stage023_scenario_report(
     return report
 
 
+def _preflight_scenario_report_sample(preflight_scenario_report: dict[str, Any]) -> dict[str, Any]:
+    sample_keys = [
+        "schema_version",
+        "overall_state",
+        "confirmation_status",
+        "priority_suggestion",
+        "required_scenarios",
+        "file_count_estimate",
+        "total_size_bytes_estimate",
+        "format_counts",
+        "archive_candidate_count",
+        "scanned_document_candidate_count",
+        "unknown_format_count",
+        "oversized_file_count",
+        "high_risk_file_count",
+        "bad_file_candidate_count",
+        "scenario_validation_summary",
+        "embedding_token_estimate",
+        "external_api_cost_estimate",
+        "ocr_page_estimate",
+        "index_size_estimate",
+        "local_space_pressure",
+        "risk_items",
+        "cost_items",
+        "human_product_entrance_payload",
+        "ui_component_contract",
+    ]
+    return {key: preflight_scenario_report.get(key) for key in sample_keys}
+
+
+def build_preflight_scenario_owner_feedback_summary(
+    preflight_scenario_report: dict[str, Any],
+    *,
+    recorded_at: str | None = None,
+    stage_review_findings: list[str] | tuple[str, ...] | None = None,
+) -> dict[str, Any]:
+    """Build Phase 4 closeout evidence without creating runtime artifacts."""
+
+    recorded_at = recorded_at or _utc_now()
+    feedback: dict[str, Any] = {
+        "schema_version": "ids.stage023.preflight_scenario_tests.owner_feedback.v1",
+        "stage": "STAGE-023",
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE023-P4",
+        "acceptance_id": "ACC-STAGE-023",
+        "entrance": ENTRANCE,
+        "recorded_at": recorded_at,
+        "report_sample": _preflight_scenario_report_sample(preflight_scenario_report),
+        "risk_checklist": {
+            "SCENARIO_SOURCE_NOT_CONFIGURED": "未配置导入预检来源；请先选择 owner 批准的本地 file:// 输入。",
+            "SCENARIO_SOURCE_BLOCKED": "来源不可用或越过安全边界；系统不会继续读取或推断该来源。",
+            "SCENARIO_OFFLINE_DRIVE": "移动硬盘或来源盘处于离线状态；请重新接入后再做预检场景测试。",
+            "SCENARIO_ARCHIVE_REVIEW_REQUIRED": "发现压缩包候选；需要 owner 复核后再决定是否单独处理。",
+            "SCENARIO_BAD_FILE_PRESENT": "发现坏文件元信息信号；建议跳过该文件并单独人工复核。",
+            "SCENARIO_HIGH_RISK_FILE_PRESENT": "发现高风险文件；建议先跳过或拆分批次再复核。",
+            "SCENARIO_LARGE_DIRECTORY_REVIEW_REQUIRED": "文件数量较多；建议分批处理并保留人工确认点。",
+            "SCENARIO_OVERSIZED_FILE_PRESENT": "发现超大文件；建议拆分批次或先跳过后复核。",
+            "SCENARIO_UNKNOWN_FORMAT_PRESENT": "发现未知格式；建议跳过或转交人工处理。",
+            "SCENARIO_INSUFFICIENT_SPACE": "目标空间不足；请释放空间或缩小批次后再继续。",
+            "SCENARIO_LOCAL_SPACE_BLOCKED": "本机空间估算不足；确认前不会启动导入或索引。",
+            "SCENARIO_EMPTY_DIRECTORY": "空目录不会启动任何处理；owner 可取消或重新选择来源。",
+        },
+        "scenario_feedback": {
+            "empty_directory": "空目录只返回 0 文件预检摘要，不启动解析、OCR、Embedding、索引或导入。",
+            "small_directory": "小目录可作为低风险确认样例，仍需 owner 确认后才允许后续阶段继续。",
+            "large_directory": "大目录默认建议分批，避免一次性处理带来空间和成本不确定性。",
+            "offline_drive": "断开移动硬盘应阻断预检继续处理，等待重新接入后重试。",
+            "bad_file": "坏文件候选默认进入跳过或人工复核路径。",
+            "archive_present": "压缩包候选默认进入人工复核路径，不自动解压。",
+            "insufficient_space": "空间不足时预检阻断，要求释放空间或缩小批次。",
+        },
+        "user_confirmation_flow_log": [
+            "系统展示预检报告样例，owner 先查看文件数量、格式、大小、压缩包、扫描件、坏文件、OCR/Embedding 估算、风险、成本和优先级建议。",
+            "owner 可以选择保存预检结果；当前 helper 只提供可序列化内容，不自动落盘。",
+            "owner 可以选择取消；取消后 document/chunk/job/index/import/manifest/database/scenario_result 写入均保持 0。",
+            "owner 可以选择分批；系统只生成 metadata batch plan，不启动解析、OCR、Embedding、索引、外部 API 或导入。",
+            "owner 可以选择跳过高风险文件；压缩包、扫描件、未知格式、坏文件、超大文件和可疑候选会进入跳过候选清单。",
+            "owner 明确确认后，后续 Stage 才能进入批量处理；本 Stage 不授权实际导入。",
+        ],
+        "estimation_uncertainty": [
+            "Embedding token 估算使用文件大小元信息代理，不解析正文，也不代表真实 tokenizer 结果。",
+            "OCR 页数估算使用扫描件候选数量和大小代理，不启动 OCR，也不确认图片质量。",
+            "外部 API 成本估算使用配置单价和元信息工作量代理，不调用任何外部 API。",
+            "索引体积估算使用 token 代理乘以配置系数，不建立索引。",
+            "本机空间压力只比较估算输入体积、索引体积和传入 available_space_bytes，不替代系统级容量审计。",
+            "坏文件识别只使用 0 字节、扩展名和文件名提示，不解析正文，也不修复源文件。",
+            "目录处理保持 immediate-child metadata-only，不代表递归扫描或真实生产 corpus 覆盖率。",
+        ],
+        "failure_explanations": {
+            "PREFLIGHT_SCENARIO_BLOCKED": "预检场景被阻断；来源不可用、设备离线或空间不足时，系统不会继续处理。",
+            "PREFLIGHT_SCENARIO_OWNER_REVIEW_REQUIRED": "预检场景需要 owner 复核；请先查看风险、成本、分批和跳过建议，再决定是否继续。",
+            "PREFLIGHT_SCENARIO_READY": "未发现必须阻断项；继续前仍需遵守后续 Stage 的独立授权和审计要求。",
+            "SCENARIO_BAD_FILE_PRESENT": "发现坏文件候选；系统不会修复、删除、复制或移动源文件。",
+            "SCENARIO_ARCHIVE_REVIEW_REQUIRED": "发现压缩包候选；系统不会自动解压或解析。",
+            "SCENARIO_LOCAL_SPACE_BLOCKED": "本机空间估算不足；请释放空间、缩小批次或更换目标盘后再继续。",
+        },
+        "rollback_steps": [
+            "Revert Stage023 Phase4 helper additions, focused tests, closeout evidence, Stage005 validator/test changes, BATCH021_030 lock, roadmap/event updates, and rendered owner-file changes.",
+            "Do not move, delete, overwrite, rewrite, compact, clean, normalize, repair, or deduplicate original files in place.",
+            "Do not clean /Users/linzezhang/Downloads/IDS_MetaData, runtime databases, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, or GitHub state.",
+            "After rollback, STAGE-023 should return to Phase 3 complete and Phase 4 pending.",
+        ],
+        "whole_stage_review": {
+            "result": "passed_with_local_evidence",
+            "completed_phases": ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
+            "reviewed_acceptance_id": "ACC-STAGE-023",
+            "findings": list(stage_review_findings or []),
+            "unresolved_findings": [],
+            "next_stage": "STAGE-024",
+            "batch_upload_allowed": False,
+            "next_batch_gate": "IDS-STAGE024-P1-GATE",
+            "github_upload_status": "not_started",
+            "app_reinstall_status": "not_started",
+        },
+        "processing_guard": dict(PROCESSING_GUARD_ZEROES),
+        "no_persistence_deltas": dict(NO_PERSISTENCE_DELTAS),
+        "does_not_create_screenshots": True,
+        "does_not_write_report_files": True,
+        "does_not_write_json_output_files": True,
+        "does_not_start_services": True,
+        "does_not_install_dependencies": True,
+        "does_not_push_to_github": True,
+        "does_not_open_or_merge_pr": True,
+        "does_not_reinstall_app_entries": True,
+        "does_not_enter_stage024": True,
+    }
+    feedback.update(NO_SIDE_EFFECT_FLAGS)
+    return feedback
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Build a metadata-only Stage 023 preflight scenario-test payload.")
     parser.add_argument(

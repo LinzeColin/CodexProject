@@ -12,6 +12,7 @@ ENTRY = PURSUE_ROOT / "STAGE023_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE023_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE023_PHASE2_PREFLIGHT_SCENARIO_TESTS_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE023_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE023_PHASE4_CLOSEOUT.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 SCRIPT = ROOT / "scripts" / "check_preflight_scenario_tests.py"
 EVALUATED_AT = "2026-07-03T01:18:21Z"
@@ -81,6 +82,112 @@ class Stage023PreflightScenarioTestsPhase1Tests(unittest.TestCase):
             "PREFLIGHT_SCENARIO_WAITING_OWNER_CONFIRMATION",
             "PREFLIGHT_SCENARIO_OWNER_APPROVED",
             "owner 确认后才进入批量处理",
+        ]
+
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_phase4_owner_feedback_summary_returns_closeout_contract_without_outputs(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "preflight-closeout"
+            docs.mkdir()
+            shutil.copy2(ENTRY, docs / "preflight-structural-note.md")
+            shutil.copy2(PHASE1, docs / "preflight-structural-reference.csv")
+            (docs / "owner-candidate.zip").write_bytes(b"PK\x03\x04ids-structural-archive-candidate")
+            (docs / "scan-page.png").write_bytes(b"\x89PNG\r\n\x1a\nids-structural-scan-candidate")
+            (docs / "unknown-format.weird").write_bytes(b"ids-structural-unknown-format-candidate")
+            (docs / "broken-source.bad").write_bytes(b"")
+
+            preflight_report = module.evaluate_preflight_scenario_tests(
+                source_uris=[docs.as_uri()],
+                evaluated_at=EVALUATED_AT,
+                oversized_file_threshold_bytes=1,
+            )
+            feedback = module.build_preflight_scenario_owner_feedback_summary(
+                preflight_report,
+                recorded_at=EVALUATED_AT,
+                stage_review_findings=[
+                    "Phase 4 records closeout evidence without creating runtime outputs.",
+                    "BATCH021_030 upload remains blocked until STAGE-021..030 are complete and reviewed.",
+                ],
+            )
+
+        self.assertEqual(feedback["schema_version"], "ids.stage023.preflight_scenario_tests.owner_feedback.v1")
+        self.assertEqual(feedback["stage"], "STAGE-023")
+        self.assertEqual(feedback["phase"], "Phase 4")
+        self.assertEqual(feedback["task_id"], "IDS-V0_1-STAGE023-P4")
+        self.assertEqual(feedback["acceptance_id"], "ACC-STAGE-023")
+        self.assertEqual(feedback["recorded_at"], EVALUATED_AT)
+        self.assertEqual(feedback["report_sample"]["schema_version"], "ids.stage023.preflight_scenario_tests.v1")
+        self.assertIn("scenario_validation_summary", feedback["report_sample"])
+        self.assertIn("human_product_entrance_payload", feedback["report_sample"])
+        self.assertIn("ui_component_contract", feedback["report_sample"])
+        self.assertIn("embedding_token_estimate", feedback["report_sample"])
+        self.assertIn("ocr_page_estimate", feedback["report_sample"])
+        self.assertIn("index_size_estimate", feedback["report_sample"])
+        self.assertIn("SCENARIO_ARCHIVE_REVIEW_REQUIRED", feedback["risk_checklist"])
+        self.assertIn("SCENARIO_BAD_FILE_PRESENT", feedback["risk_checklist"])
+        self.assertIn("SCENARIO_INSUFFICIENT_SPACE", feedback["risk_checklist"])
+        self.assertGreaterEqual(len(feedback["user_confirmation_flow_log"]), 6)
+        self.assertTrue(any("预检报告" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("保存" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("取消" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("分批" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("高风险" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("Embedding" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("OCR" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("外部 API" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("索引" in item for item in feedback["estimation_uncertainty"]))
+        self.assertIn("PREFLIGHT_SCENARIO_BLOCKED", feedback["failure_explanations"])
+        self.assertIn("PREFLIGHT_SCENARIO_OWNER_REVIEW_REQUIRED", feedback["failure_explanations"])
+        self.assertIn("SCENARIO_BAD_FILE_PRESENT", feedback["failure_explanations"])
+        self.assertGreaterEqual(len(feedback["rollback_steps"]), 4)
+        self.assertEqual(feedback["whole_stage_review"]["result"], "passed_with_local_evidence")
+        self.assertEqual(feedback["whole_stage_review"]["next_stage"], "STAGE-024")
+        self.assertFalse(feedback["whole_stage_review"]["batch_upload_allowed"])
+        self.assertEqual(feedback["whole_stage_review"]["next_batch_gate"], "IDS-STAGE024-P1-GATE")
+        self.assertEqual(feedback["whole_stage_review"]["unresolved_findings"], [])
+        for value in feedback["processing_guard"].values():
+            self.assertEqual(value, 0)
+        for value in feedback["no_persistence_deltas"].values():
+            self.assertEqual(value, 0)
+        self.assertTrue(feedback["does_not_create_screenshots"])
+        self.assertTrue(feedback["does_not_write_report_files"])
+        self.assertTrue(feedback["does_not_push_to_github"])
+        self.assertTrue(feedback["does_not_reinstall_app_entries"])
+        self.assertTrue(feedback["does_not_enter_stage024"])
+
+    def test_phase4_evidence_document_records_delivery_review_raw_boundary_and_no_stage024(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE023-P4",
+            "ACC-STAGE-023",
+            "预检报告样例",
+            "风险清单",
+            "用户确认流程日志",
+            "估算不确定性",
+            "失败解释文案",
+            "回滚方式",
+            "Whole-Stage Review",
+            "STAGE-023 已在本地完成",
+            "IDS-STAGE024-P1-GATE",
+            "push_allowed=false",
+            "empty_directory",
+            "small_directory",
+            "large_directory",
+            "offline_drive",
+            "bad_file",
+            "archive_present",
+            "insufficient_space",
+            "PreflightScenarioTestsPanel",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_STAGE024",
+            "不执行 GitHub upload、PR、merge 或 app reinstall",
         ]
 
         for term in required_terms:
@@ -321,6 +428,7 @@ class Stage023PreflightScenarioTestsPhase1Tests(unittest.TestCase):
             'status: "stage023_phase1_in_progress"',
             'status: "stage023_phase2_in_progress"',
             'status: "stage023_phase3_in_progress"',
+            'status: "stage023_completed_local_pending_stage024"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_status_terms),
@@ -331,6 +439,7 @@ class Stage023PreflightScenarioTestsPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE023-P1"',
             'current_task_id: "IDS-V0_1-STAGE023-P2"',
             'current_task_id: "IDS-V0_1-STAGE023-P3"',
+            'current_task_id: "IDS-V0_1-STAGE023-P4"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_task_terms),
@@ -343,12 +452,12 @@ class Stage023PreflightScenarioTestsPhase1Tests(unittest.TestCase):
             'STAGE-022:',
             'STAGE-023:',
             'status: "completed_local"',
-            'status: "in_progress"',
             'acceptance_id: "ACC-STAGE-023"',
             'push_allowed: false',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE3_SCENARIO_VALIDATION.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage023_preflight_scenario_tests.py",
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content",

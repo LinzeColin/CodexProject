@@ -126,6 +126,7 @@ class Stage021PreflightConfirmationUiPhase1Tests(unittest.TestCase):
             'status: "stage023_phase1_in_progress"',
             'status: "stage023_phase2_in_progress"',
             'status: "stage023_phase3_in_progress"',
+            'status: "stage023_completed_local_pending_stage024"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_status_terms),

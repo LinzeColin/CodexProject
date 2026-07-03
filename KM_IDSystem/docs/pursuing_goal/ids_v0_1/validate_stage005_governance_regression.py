@@ -120,6 +120,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE2_PREFLIGHT_SCENARIO_TESTS_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE4_CLOSEOUT.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py",
@@ -188,6 +189,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE023-P1-20260703-001",
     "EVT-IDS-V0_1-STAGE023-P2-20260703-001",
     "EVT-IDS-V0_1-STAGE023-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE023-P4-20260703-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -235,6 +237,7 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE2_PREFLIGHT_SCENARIO_TESTS_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE4_CLOSEOUT.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage023_preflight_scenario_tests.py",
     "KM_IDSystem/scripts/check_preflight_scenario_tests.py",
     "KM_IDSystem/scripts/check_preflight_confirmation_ui.py",
@@ -870,6 +873,17 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-STAGE023-P3"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE023-P4-GATE"' in roadmap_text
     )
+    stage023_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_gate: "IDS-STAGE024-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE023"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE023-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE024-P1-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -926,6 +940,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or stage023_phase1_active
         or stage023_phase2_active
         or stage023_phase3_active
+        or stage023_phase4_closeout
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
