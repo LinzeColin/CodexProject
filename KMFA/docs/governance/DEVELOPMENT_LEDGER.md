@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s05p2-field-golden-baseline
+
+- task_id: `KMFA-V014-S05-P2-FIELD-GOLDEN-BASELINE-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred_field_candidates_public_safe`
+- scope: v0.1.4 S05-P2 field golden baseline only; used S05-P1 public register/candidates and the active owner/authorized downgrade record to generate public-safe field contracts and field candidates without reading raw inbox.
+- evidence: `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/human/field_golden_baseline_report.md`, `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/human/test_results.md`, `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json`, `KMFA/tools/check_v014_s05_p2_field_golden_baseline.py`
+- counts: field_contract_count=5, a0_project_candidate_count=9, field_candidate_count=45, pdf_field_candidate_count=40, excel_field_candidate_count=5, source_anchor_recorded_private_only_count=40, source_anchor_pending_or_downgraded_count=5, private_value_hash_recorded_count=40, private_value_hash_pending_or_downgraded_count=5, q3_field_candidate_count=45, q4_human_confirmed_count=0, q5_calculation_baseline_allowed_count=0, owner_downgraded_excel_candidate_count=1, owner_downgraded_excel_field_count=5.
+- blocker_state: GitHub upload=false, S05-P3=false, Stage5_review=false, raw value matching=false, lineage full check=false, formal_report_allowed=false, delivery_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q3, current_report_grade=D.
+- raw_boundary: raw inbox read/list/stat/hash/mutation=false in S05-P2; public raw filenames/hash/member names/sheet names/field plaintext/row values/business values committed=false.
+
+product_version: 0.1.4-s05p2-field-golden-baseline
+version_matrix_product_version_reference: 0.1.4-s05p2-field-golden-baseline
+
 ## 2026-07-04 - 0.1.4-s05p1-a0-file-registration
 
 - task_id: `KMFA-V014-S05-P1-A0-FILE-REGISTRATION-20260704`

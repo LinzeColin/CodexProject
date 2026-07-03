@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s05p2-field-golden-baseline - 2026-07-04
+
+- 完成 `v0.1.4 S05-P2｜字段级黄金基准`。
+- 新增 field golden baseline evidence generator、validator、focused unit test、public-safe field contracts、public-safe field candidates、risk register、rollback plan 和 machine manifest。
+- 基于 S05-P1 public-safe A0 register/candidates 与 active owner/授权降级记录，锁定 field contracts `5`、field candidates `45`、PDF candidates `40`、Excel candidates `5`、PDF private-only source-anchor/hash recorded `40`、Excel owner-downgraded field candidates `5`、Q3 `45`、Q4/Q5 `0`。
+- 本轮未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值。
+- 本轮未执行 S05-P3、Stage 5 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s05p1-a0-file-registration - 2026-07-04
 
 - 完成 `v0.1.4 S05-P1｜A0 文件登记`。

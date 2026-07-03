@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S05-P1 A0 文件登记；A0 public-safe 聚合计数为 total files `9`、PDF `8`、Excel `1`、Q3 machine candidates `9`、Q4/Q5 `0`，private member hash diagnostic count `9` 仅写入 git-ignored runtime。证据位于 `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/`，validator 为 `KMFA/tools/check_v014_s05_p1_a0_file_registration.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本 phase 按 S05-P1 授权只读 list/stat/read/hash raw inbox，未修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S05-P2/S05-P3、Stage 5 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S05-P2 字段级黄金基准；public-safe 计数为 field contracts `5`、field candidates `45`、PDF private-only anchor/hash recorded `40`、Excel owner-downgraded field candidates `5`、Q3 `45`、Q4/Q5 `0`。证据位于 `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/`，validator 为 `KMFA/tools/check_v014_s05_p2_field_golden_baseline.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S05-P3、Stage 5 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S05-P2 字段级黄金基准已确认本地 validator 通过；公开证据只保存 field contract/candidate refs、private-only anchor/hash status、active owner/授权降级状态、聚合计数和 NO_GO/upload-deferred 边界，不保存 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S05-P1 A0 文件登记已确认本地 validator 通过；公开证据只保存聚合计数、状态、private refs 和 NO_GO/upload-deferred 边界，不保存 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values 或业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 Stage 4 整体复审已确认 S04-P1/S04-P2/S04-P3 validators 全部 PASS，open findings=0；公开证据只保存聚合计数、validator 结果、review report 和 NO_GO/upload-deferred 边界，GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S04-P3 已确认基础工具测试通过本地 validator；金额小数/负数/万元/异常字符、中文日期/年月/空值等 22 个 synthetic boundary cases 全部通过，公开证据只保存 synthetic cases、聚合计数、工具报告和 NO_GO/upload-deferred 边界。
