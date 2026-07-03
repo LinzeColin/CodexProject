@@ -2078,6 +2078,35 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, combined)
 
+    def test_three_base_files_do_not_reopen_historical_final_bundle_blockers(self) -> None:
+        features = (ADP_ROOT / "功能清单.md").read_text(encoding="utf-8")
+        development = (ADP_ROOT / "开发记录.md").read_text(encoding="utf-8")
+        model_params = (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8")
+        combined = "\n".join([features, development, model_params])
+
+        for label, text in (
+            ("features", features),
+            ("development", development),
+            ("model_params", model_params),
+        ):
+            with self.subTest(label=label):
+                self.assertIn("current_s3_blocker=persistent_daily_operation_authorization_missing", text)
+                self.assertIn("当前 Stage 2 integrated acceptance 已记录", text)
+
+        for forbidden in (
+            "当前 P0/P1 zero checks 为 true，但 final bundle 仍缺 manifest",
+            "当前 final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失",
+            "当前 completion report、manifest、zero-proof artifact 和 final bundle 仍缺失",
+            "当前 manifest 和 final bundle 仍缺失",
+            "当前 artifact 仍缺失，inherited P0/P1 仍为 `8 / 37`",
+            "真实 artifact 仍缺失，final bundle 仍 blocked",
+            "7 个当前 blocker：`reviewer_independence_not_proven`",
+            "当前阻断原因 | `s2plt01_not_accepted`",
+            "INTEGRATED_PRODUCTION_ACCEPTED` 未通过",
+        ):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, combined)
+
 
 if __name__ == "__main__":
     unittest.main()
