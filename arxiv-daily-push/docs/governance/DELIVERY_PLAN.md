@@ -109,8 +109,8 @@ machine_summary:
 - Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-SECRET-ARTIFACT-REPAIR-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_SECRET_ARTIFACT_REPAIR.md`; `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`.
 - Gate state: `status=blocked_owner_daily_operation_authorization_required`; `preflight_checks_passed=true`; `failed_checks=[]`; `state_hash=a856ee3d1532d8973e11bb502f76f7320f9816904b52aab64975112c764de55e`.
 - Cleared blockers: required SMTP secret key presence is proven by `adp_local_runner_env_file_secret_presence_v1` without logging values; ADP-scoped git artifact hygiene passes and no longer treats unrelated `OpenAIDatabase/session_history` migration archives as ADP runtime blockers.
-- Remaining blocker: explicit owner DAILY_OPERATION authorization is not recorded, and `daily_operation_enabled=false`.
-- Next required step: `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION`; record owner authorization or keep DAILY_OPERATION disabled.
+- Write-time remaining blocker: explicit owner DAILY_OPERATION authorization was not recorded at 20:39; later consumed by the 21:10 keep-disabled owner decision and 23:35 owner A mainline attestation. Current next executable remains `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION` until a separate persistent authorization artifact exists.
+- Write-time next required step: `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION`; this is historical and must not be restored as the current task after the keep-disabled owner decision.
 - Production boundary: Stage 2 accepted evidence remains true, but no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, V7.1 baseline P0/P1 mutation, cross-project OpenAIDatabase deletion, or `DAILY_OPERATION` is introduced by this task.
 - Verification: focused production-preflight/final-gate/current-state tests plus governance validators are required before commit; semantic extractor is not claimed unless actually rerun.
 
@@ -121,8 +121,8 @@ machine_summary:
 - Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-GH-EQUIVALENT-REPAIR-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_GH_EQUIVALENT_REPAIR.md`; `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`.
 - Gate state: `status=blocked`; `preflight_checks_passed=false`; `failed_checks=production_preflight_passed`; `state_hash=2b8bd06a85516fc1608996a335a579153cd6db1a64eb090691b776f8ea03f361`.
 - Cleared blocker: `github_open_pr_count_zero_api_v1` is accepted as the reviewed equivalent for the missing `gh` CLI command.
-- Remaining blockers: missing SMTP secret env names `ADP_SMTP_HOST`, `ADP_SMTP_PORT`, `ADP_SMTP_USERNAME`, `ADP_SMTP_PASSWORD`; 10 existing `OpenAIDatabase/session_history` archive git artifact hygiene violations.
-- Next required step: `S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR`; repair remaining production preflight blockers before requesting persistent DAILY_OPERATION authorization.
+- Write-time remaining blockers (historical; later consumed or scoped away by 20:39 secret / artifact repair): missing SMTP secret env names `ADP_SMTP_HOST`, `ADP_SMTP_PORT`, `ADP_SMTP_USERNAME`, `ADP_SMTP_PASSWORD`; 10 existing `OpenAIDatabase/session_history` archive git artifact hygiene violations. Current next executable remains `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION` until a separate persistent authorization artifact exists.
+- Write-time next required step: `S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR`; this is historical and must not be restored as the current task after the 20:39 repair and owner A keep-disabled decision.
 - Production boundary: Stage 2 accepted evidence remains true, but no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, V7.1 baseline P0/P1 mutation, cross-project OpenAIDatabase deletion, or `DAILY_OPERATION` is introduced by this task.
 - Verification: focused production-preflight/final-gate/CLI/current-state tests plus governance validators are required before commit; semantic extractor is not claimed unless actually rerun.
 
@@ -132,8 +132,8 @@ machine_summary:
 - Result: `blocked_daily_operation_authorization_preflight_no_runtime_enablement`
 - Evidence: `governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md`; `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`.
 - Gate state: `status=blocked`; `preflight_checks_passed=false`; `failed_checks=production_preflight_passed`; `state_hash=f306ae932dfbbc9f50dd0f465b7d9b125004f81c6dff4a36f7e4062bcb494660`.
-- Blockers: missing `gh` CLI; missing SMTP secret env names `ADP_SMTP_HOST`, `ADP_SMTP_PORT`, `ADP_SMTP_USERNAME`, `ADP_SMTP_PASSWORD`; 10 existing `OpenAIDatabase/session_history` archive git artifact hygiene violations.
-- Next required step: `S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR`; repair production preflight blockers before requesting persistent DAILY_OPERATION authorization.
+- Write-time blockers (historical; later consumed by 20:12 gh equivalent repair and 20:39 secret / artifact repair): missing `gh` CLI; missing SMTP secret env names `ADP_SMTP_HOST`, `ADP_SMTP_PORT`, `ADP_SMTP_USERNAME`, `ADP_SMTP_PASSWORD`; 10 existing `OpenAIDatabase/session_history` archive git artifact hygiene violations. Current next executable remains `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION` until a separate persistent authorization artifact exists.
+- Write-time next required step: `S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR`; this is historical and must not be restored as the current task after the 20:12 / 20:39 repairs and owner A keep-disabled decision.
 - Production boundary: Stage 2 accepted evidence remains true, but no SMTP send, scheduler enable/install, Release, restore, public schema/DB/source/ranking/queue mutation, CURRENT/V7 mutation, V7.1 baseline P0/P1 mutation, cross-project OpenAIDatabase deletion, or `DAILY_OPERATION` is introduced by this task.
 - Verification: focused final-gate/CLI/current-state tests plus governance validators are required before commit; semantic extractor is not claimed unless actually rerun.
 

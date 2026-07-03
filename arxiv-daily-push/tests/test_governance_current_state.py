@@ -168,6 +168,34 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, combined)
 
+    def test_governance_plan_and_ledger_mark_daily_operation_preflight_blockers_as_write_time_history(self) -> None:
+        delivery_plan = (ADP_ROOT / "docs/governance/DELIVERY_PLAN.md").read_text(encoding="utf-8")
+        ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
+        combined = "\n".join([delivery_plan, ledger])
+
+        required_phrases = (
+            "Write-time remaining blocker: explicit owner DAILY_OPERATION authorization was not recorded at 20:39",
+            "Write-time remaining blockers (historical; later consumed or scoped away by 20:39 secret / artifact repair)",
+            "Write-time blockers (historical; later consumed by 20:12 gh equivalent repair and 20:39 secret / artifact repair)",
+            "Current next executable remains `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`",
+        )
+        for phrase in required_phrases:
+            with self.subTest(phrase=phrase):
+                if phrase not in combined:
+                    self.fail(f"missing expected historical phrase: {phrase}")
+
+        forbidden_phrases = (
+            "- Remaining blocker: explicit owner DAILY_OPERATION authorization is not recorded, and `daily_operation_enabled=false`.",
+            "- Next required step: `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION`; record owner authorization or keep DAILY_OPERATION disabled.",
+            "- Remaining blockers: missing SMTP secret env names `ADP_SMTP_HOST`, `ADP_SMTP_PORT`, `ADP_SMTP_USERNAME`, `ADP_SMTP_PASSWORD`; 10 existing `OpenAIDatabase/session_history` archive git artifact hygiene violations.",
+            "- Blockers: missing `gh` CLI; missing SMTP secret env names `ADP_SMTP_HOST`, `ADP_SMTP_PORT`, `ADP_SMTP_USERNAME`, `ADP_SMTP_PASSWORD`; 10 existing `OpenAIDatabase/session_history` archive git artifact hygiene violations.",
+            "- Next: `S2PMT07-DAILY-OPERATION-PREFLIGHT-SECRET-AND-ARTIFACT-REPAIR` must repair remaining production preflight blockers before owner persistent DAILY_OPERATION authorization can be requested.",
+            "- Next: `S2PMT07-DAILY-OPERATION-PREFLIGHT-PREREQUISITE-REPAIR` must repair the production preflight blockers before owner persistent DAILY_OPERATION authorization can be requested.",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, combined)
+
     def test_owner_decision_page_does_not_reopen_pre_acceptance_final_bundle_gaps(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
 
