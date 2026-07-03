@@ -15,6 +15,7 @@ ENTRY = PURSUE_ROOT / "STAGE029_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE029_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE029_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE029_PHASE4_CLOSEOUT.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
@@ -218,7 +219,6 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         required_terms = [
             "STAGE-028:",
             "STAGE-029:",
-            'status: "in_progress"',
             '      - "Phase 1"',
             'acceptance_id: "ACC-STAGE-029"',
             'push_allowed: false',
@@ -232,31 +232,38 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'status: "stage029_phase1_in_progress"',
             'status: "stage029_phase2_in_progress"',
             'status: "stage029_phase3_in_progress"',
+            'status: "stage029_completed_local_pending_stage030"',
+            'status: "completed_local"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 2"',
             'next_phase: "Phase 3"',
             'next_phase: "Phase 4"',
+            'next_stage: "STAGE-030"',
         ]
         allowed_current_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P1"',
             'current_task_id: "IDS-V0_1-STAGE029-P2"',
             'current_task_id: "IDS-V0_1-STAGE029-P3"',
+            'current_task_id: "IDS-V0_1-STAGE029-P4"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_cleanup_allowlist_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
         ]
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE029-P2-GATE"',
             'next_gate: "IDS-STAGE029-P3-GATE"',
             'next_gate: "IDS-STAGE029-P4-GATE"',
+            'next_gate: "IDS-STAGE030-P1-GATE"',
         ]
         allowed_next_task_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE030-P1"',
         ]
 
         for term in required_terms:
@@ -288,16 +295,19 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE029-P1"',
             'current_phase_id: "IDS-STAGE029-P2"',
             'current_phase_id: "IDS-STAGE029-P3"',
+            'current_phase_id: "IDS-STAGE029-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P1"',
             'current_task_id: "IDS-V0_1-STAGE029-P2"',
             'current_task_id: "IDS-V0_1-STAGE029-P3"',
+            'current_task_id: "IDS-V0_1-STAGE029-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P2-GATE"',
             'next_gate_id: "IDS-STAGE029-P3-GATE"',
             'next_gate_id: "IDS-STAGE029-P4-GATE"',
+            'next_gate_id: "IDS-STAGE030-P1-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P1-20260703-001"',
@@ -537,22 +547,28 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         allowed_batch_status_terms = [
             'status: "stage029_phase2_in_progress"',
             'status: "stage029_phase3_in_progress"',
+            'status: "stage029_completed_local_pending_stage030"',
+            'status: "completed_local"',
         ]
         allowed_batch_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P2"',
             'current_task_id: "IDS-V0_1-STAGE029-P3"',
+            'current_task_id: "IDS-V0_1-STAGE029-P4"',
         ]
         allowed_batch_acceptance_terms = [
             'acceptance_status: "phase2_cleanup_allowlist_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
         ]
         allowed_batch_gate_terms = [
             'next_gate: "IDS-STAGE029-P3-GATE"',
             'next_gate: "IDS-STAGE029-P4-GATE"',
+            'next_gate: "IDS-STAGE030-P1-GATE"',
         ]
         allowed_batch_next_task_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE030-P1"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE029"',
@@ -564,14 +580,17 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE029-P2"',
             'current_phase_id: "IDS-STAGE029-P3"',
+            'current_phase_id: "IDS-STAGE029-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P2"',
             'current_task_id: "IDS-V0_1-STAGE029-P3"',
+            'current_task_id: "IDS-V0_1-STAGE029-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P3-GATE"',
             'next_gate_id: "IDS-STAGE029-P4-GATE"',
+            'next_gate_id: "IDS-STAGE030-P1-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P2-20260703-001"',
@@ -717,26 +736,51 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             "NO_PHASE4",
         ]
         batch_terms = [
-            'status: "stage029_phase3_in_progress"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'current_task_id: "IDS-V0_1-STAGE029-P3"',
-            'acceptance_status: "phase3_scenario_validation_complete"',
-            'next_gate: "IDS-STAGE029-P4-GATE"',
             'push_allowed: false',
-            'next_allowed_task_id: "IDS-V0_1-STAGE029-P4"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE3_SCENARIO_VALIDATION.md",
+        ]
+        allowed_batch_status_terms = [
+            'status: "stage029_phase3_in_progress"',
+            'status: "stage029_completed_local_pending_stage030"',
+            'status: "completed_local"',
+        ]
+        allowed_batch_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE029-P3"',
+            'current_task_id: "IDS-V0_1-STAGE029-P4"',
+        ]
+        allowed_batch_acceptance_terms = [
+            'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
+        ]
+        allowed_batch_gate_terms = [
+            'next_gate: "IDS-STAGE029-P4-GATE"',
+            'next_gate: "IDS-STAGE030-P1-GATE"',
+        ]
+        allowed_batch_next_task_terms = [
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE030-P1"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE029"',
-            'current_phase_id: "IDS-STAGE029-P3"',
-            'current_task_id: "IDS-V0_1-STAGE029-P3"',
-            'next_gate_id: "IDS-STAGE029-P4-GATE"',
             'phase_id: "IDS-STAGE029-P3"',
             'status: "passed_with_local_evidence"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE3_SCENARIO_VALIDATION.md",
             "build_stage029_scenario_report",
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE029-P3"',
+            'current_phase_id: "IDS-STAGE029-P4"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE029-P3"',
+            'current_task_id: "IDS-V0_1-STAGE029-P4"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE029-P4-GATE"',
+            'next_gate_id: "IDS-STAGE030-P1-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P3-20260703-001"',
@@ -753,6 +797,195 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         for term in batch_terms:
             with self.subTest(term=term):
                 self.assertIn(term, batch_text)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_status_terms), allowed_batch_status_terms)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_task_terms), allowed_batch_task_terms)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_acceptance_terms), allowed_batch_acceptance_terms)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_gate_terms), allowed_batch_gate_terms)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_next_task_terms), allowed_batch_next_task_terms)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+    def test_phase4_closeout_summary_records_delivery_evidence_rollback_owner_feedback_and_no_upload(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            scenario_report = module.build_stage029_scenario_report(
+                scenario_archives=self._phase3_scenario_archives(Path(tmp)),
+                evaluated_at="2026-07-03T13:34:00Z",
+            )
+            closeout = module.build_stage029_closeout_summary(
+                scenario_report=scenario_report,
+                evaluated_at="2026-07-03T13:34:00Z",
+            )
+
+        self.assertEqual(closeout["schema_version"], "ids.stage029.archive_cleanup_allowlist.closeout.v1")
+        self.assertEqual(closeout["stage"], "STAGE-029")
+        self.assertEqual(closeout["phase"], "Phase 4")
+        self.assertEqual(closeout["task_id"], "IDS-V0_1-STAGE029-P4")
+        self.assertEqual(closeout["acceptance_id"], "ACC-STAGE-029")
+        self.assertEqual(closeout["source_scenario_schema"], "ids.stage029.archive_cleanup_allowlist.scenario_validation.v1")
+        self.assertEqual(closeout["closeout_state"], "ARCHIVE_CLEANUP_STAGE_CLOSEOUT_PASSED")
+        self.assertEqual(closeout["whole_stage_review"]["result"], "passed_with_local_evidence")
+        self.assertEqual(closeout["next_allowed_task_id"], "IDS-V0_1-STAGE030-P1")
+        self.assertFalse(closeout["github_upload_allowed"])
+        self.assertFalse(closeout["app_reinstall_allowed"])
+
+        delivery = closeout["delivery_evidence"]
+        self.assertEqual(delivery["evidence_state"], "ARCHIVE_CLEANUP_DELIVERY_EVIDENCE_READY")
+        manifest_sample = delivery["archive_manifest_sample"]
+        self.assertEqual(manifest_sample["schema_version"], "ids.stage029.archive_cleanup_allowlist.manifest_sample.v1")
+        self.assertEqual(manifest_sample["sample_state"], "ARCHIVE_CLEANUP_MANIFEST_SAMPLE_READY")
+        self.assertGreaterEqual(manifest_sample["entry_count"], 1)
+        self.assertFalse(manifest_sample["runtime_output_written"])
+        self.assertFalse(manifest_sample["archive_manifest_runtime_output_written"])
+        self.assertTrue(manifest_sample["original_archive_preserved"])
+
+        block_log = delivery["safety_block_log_sample"]
+        self.assertEqual(block_log["state"], "ARCHIVE_CLEANUP_BLOCK_LOG_READY")
+        self.assertTrue(
+            {
+                "ARCHIVE_ADVERSARIAL_PATH_TRAVERSAL_BLOCKED",
+                "ARCHIVE_ADVERSARIAL_ABSOLUTE_PATH_BLOCKED",
+                "ARCHIVE_ADVERSARIAL_TOTAL_SIZE_LIMIT_EXCEEDED",
+                "ARCHIVE_ADVERSARIAL_NESTED_DEPTH_LIMIT_EXCEEDED",
+                "ARCHIVE_ADVERSARIAL_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+                "ARCHIVE_ADVERSARIAL_FILE_COUNT_LIMIT_EXCEEDED",
+            }
+            <= set(block_log["risk_codes"]),
+            block_log,
+        )
+        self.assertGreaterEqual(block_log["blocked_entry_count"], 6)
+        self.assertFalse(block_log["runtime_output_written"])
+        self.assertFalse(block_log["audit_log_written"])
+
+        cleanup_sample = delivery["cleanup_allowlist_sample"]
+        self.assertEqual(cleanup_sample["state"], "ARCHIVE_CLEANUP_SCENARIO_ALLOWLIST_VALIDATED")
+        self.assertTrue(cleanup_sample["cleanup_targets_are_staging_temp_files_only"])
+        self.assertFalse(cleanup_sample["original_archive_in_cleanup_allowlist"])
+        self.assertTrue(cleanup_sample["protected_refs_preserved"])
+
+        risk_boundary = closeout["risk_boundary"]
+        self.assertTrue(risk_boundary["raw_metadata_path_only_boundary"])
+        self.assertTrue(risk_boundary["real_data_only_policy"])
+        self.assertTrue(risk_boundary["no_runtime_output"])
+        self.assertTrue(risk_boundary["no_processing_jobs"])
+        self.assertTrue(risk_boundary["no_deletion"])
+        self.assertIn("/Users/linzezhang/Downloads/IDS_MetaData", risk_boundary["raw_metadata_root"])
+        self.assertGreaterEqual(len(risk_boundary["stop_conditions"]), 5)
+
+        rollback = closeout["staging_rollback"]
+        self.assertEqual(rollback["rollback_state"], "ARCHIVE_CLEANUP_STAGING_ROLLBACK_DOCUMENTED")
+        self.assertTrue(rollback["cleanup_instructions"]["temp_only"])
+        self.assertTrue(rollback["cleanup_instructions"]["do_not_delete_original_archive"])
+        self.assertTrue(rollback["cleanup_instructions"]["do_not_touch_raw_metadata_root"])
+        self.assertTrue(rollback["cleanup_instructions"]["do_not_clean_manifest_evidence_audit_or_reports"])
+
+        self.assertGreaterEqual(len(closeout["owner_feedback_zh"]), 3)
+        self.assertTrue(closeout["does_not_read_raw_metadata"])
+        self.assertTrue(closeout["does_not_write_runtime_outputs"])
+        self.assertTrue(closeout["does_not_delete_files"])
+        self.assertTrue(closeout["does_not_use_fake_ids_business_data"])
+
+    def test_phase4_closeout_doc_records_delivery_evidence_risk_stop_rollback_and_chinese_feedback(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE029-P4",
+            "ACC-STAGE-029",
+            "ids.stage029.archive_cleanup_allowlist.closeout.v1",
+            "build_stage029_closeout_summary",
+            "archive_manifest 样例",
+            "安全阻断日志",
+            "清理白名单",
+            "自动解压风险边界",
+            "停止条件",
+            "staging 区回滚",
+            "清理说明",
+            "Whole-Stage Review",
+            "中文 owner feedback",
+            "ARCHIVE_CLEANUP_STAGE_CLOSEOUT_PASSED",
+            "ARCHIVE_CLEANUP_DELIVERY_EVIDENCE_READY",
+            "ARCHIVE_CLEANUP_STAGING_ROLLBACK_DOCUMENTED",
+            "No GitHub upload",
+            "No app reinstall",
+            "next allowed task",
+            "IDS-V0_1-STAGE030-P1",
+            "process-owned temporary archive fixtures",
+            "不得使用虚构 IDS 业务数据",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_STAGE030",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_batch021_030_lock_tracks_stage029_completed_local_without_upload_permission(self):
+        self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
+        text = BATCH_LOCK.read_text(encoding="utf-8")
+
+        required_terms = [
+            "STAGE-029:",
+            'status: "completed_local"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            '      - "Phase 4"',
+            'next_stage: "STAGE-030"',
+            'current_task_id: "IDS-V0_1-STAGE029-P4"',
+            'acceptance_id: "ACC-STAGE-029"',
+            'acceptance_status: "local_passed"',
+            'next_gate: "IDS-STAGE030-P1-GATE"',
+            'push_allowed: false',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_ENTRY_CONTRACT.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE1_SCOPE_BOUNDARY.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE3_SCENARIO_VALIDATION.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE4_CLOSEOUT.md",
+            "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_archive_cleanup_allowlist.py",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_roadmap_and_events_track_stage029_phase4_closeout_local_gate(self):
+        self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
+        self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE029"',
+            'current_phase_id: "IDS-STAGE029-P4"',
+            'current_task_id: "IDS-V0_1-STAGE029-P4"',
+            'next_gate_id: "IDS-STAGE030-P1-GATE"',
+            'stage_id: "IDS-STAGE029"',
+            'name: "STAGE-029 · 压缩包清理白名单"',
+            'phase_id: "IDS-STAGE029-P4"',
+            'status: "passed_with_local_evidence"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE4_CLOSEOUT.md",
+            "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
+            "build_stage029_closeout_summary",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE029-P4-20260703-001"',
+            '"event_type":"stage_closeout"',
+            '"task_id":"IDS-V0_1-STAGE029-P4"',
+            '"ACC-STAGE-029"',
+            "STAGE029_PHASE4_CLOSEOUT.md",
+            "check_archive_cleanup_allowlist.py",
+            "build_stage029_closeout_summary",
+        ]
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
