@@ -11,6 +11,7 @@ ENTRY = PURSUE_ROOT / "STAGE025_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE025_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE025_PHASE2_SAFE_EXTRACTION_ENGINE_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE025_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE025_PHASE4_CLOSEOUT.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 SCRIPT = ROOT / "scripts" / "check_safe_extraction_engine.py"
 EXTRACTED_AT = "2026-07-03T05:42:18Z"
@@ -392,6 +393,120 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, text)
 
+    def test_phase4_owner_feedback_summary_returns_safe_extraction_closeout_contract_without_outputs(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            archive_path = base / "closeout.zip"
+            staging = base / "closeout-staging"
+            self._write_zip(
+                archive_path,
+                {
+                    "safe/archive-note.txt": b"safe",
+                    "../blocked.txt": b"blocked",
+                },
+            )
+            archive_report = module.run_safe_extraction_engine(
+                archive_uri=archive_path.as_uri(),
+                staging_area_uri=staging.as_uri(),
+                extracted_at=EXTRACTED_AT,
+            )
+            scenario_dir = base / "phase3-scenarios"
+            scenario_dir.mkdir()
+            scenario_report = module.build_stage025_scenario_report(
+                scenario_archives=self._phase3_scenario_archives(scenario_dir),
+                evaluated_at=EXTRACTED_AT,
+            )
+            feedback = module.build_safe_extraction_engine_owner_feedback_summary(
+                archive_report,
+                scenario_report=scenario_report,
+                recorded_at=EXTRACTED_AT,
+                stage_review_findings=[
+                    "Phase 4 records archive_manifest sample, safety block log, cleanup allowlist, rollback, and owner feedback without creating runtime outputs.",
+                    "BATCH021_030 upload remains blocked until STAGE-021..030 are complete, reviewed, and repaired.",
+                ],
+            )
+
+        self.assertEqual(feedback["schema_version"], "ids.stage025.safe_extraction_engine.owner_feedback.v1")
+        self.assertEqual(feedback["stage"], "STAGE-025")
+        self.assertEqual(feedback["phase"], "Phase 4")
+        self.assertEqual(feedback["task_id"], "IDS-V0_1-STAGE025-P4")
+        self.assertEqual(feedback["acceptance_id"], "ACC-STAGE-025")
+        self.assertEqual(feedback["safe_extraction_engine_id"], "ids.stage025.safe_extraction_engine")
+        self.assertEqual(feedback["recorded_at"], EXTRACTED_AT)
+        self.assertEqual(feedback["report_sample"]["archive_manifest_sample"]["schema_version"], "ids.stage025.archive_manifest.v1")
+        self.assertGreaterEqual(len(feedback["report_sample"]["safety_block_log"]), 1)
+        self.assertGreaterEqual(len(feedback["report_sample"]["cleanup_allowlist_sample"]), 1)
+        self.assertEqual(feedback["report_sample"]["scenario_validation_sample"]["schema_version"], "ids.stage025.safe_extraction_engine.scenario_validation.v1")
+        self.assertIn("SAFE_EXTRACTION_PATH_TRAVERSAL_BLOCKED", feedback["risk_checklist"])
+        self.assertIn("SAFE_EXTRACTION_ABSOLUTE_PATH_BLOCKED", feedback["risk_checklist"])
+        self.assertIn("SAFE_EXTRACTION_TOTAL_SIZE_LIMIT_EXCEEDED", feedback["risk_checklist"])
+        self.assertIn("SAFE_EXTRACTION_NESTED_DEPTH_LIMIT_EXCEEDED", feedback["risk_checklist"])
+        self.assertIn("SAFE_EXTRACTION_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED", feedback["risk_checklist"])
+        self.assertIn("SAFE_EXTRACTION_FILE_COUNT_LIMIT_EXCEEDED", feedback["risk_checklist"])
+        self.assertIn("SAFE_EXTRACTION_ADAPTER_OWNER_REVIEW_REQUIRED", feedback["risk_checklist"])
+        self.assertIn("SAFE_EXTRACTION_SOURCE_BLOCKED_RAW_METADATA_ROOT", feedback["risk_checklist"])
+        self.assertTrue(any("不覆盖原始压缩包" in item for item in feedback["automatic_extraction_boundaries"]))
+        self.assertTrue(any("不写出指定 staging 区" in item for item in feedback["automatic_extraction_boundaries"]))
+        self.assertTrue(any("owner review" in item or "人工复核" in item for item in feedback["automatic_extraction_boundaries"]))
+        self.assertIn("SAFE_EXTRACTION_BLOCKED", feedback["failure_explanations"])
+        self.assertIn("SAFE_EXTRACTION_OWNER_REVIEW_REQUIRED", feedback["failure_explanations"])
+        self.assertIn("SAFE_EXTRACTION_CLEANUP_ALLOWLIST_VALIDATED", feedback["failure_explanations"])
+        self.assertTrue(feedback["staging_rollback_and_cleanup"]["cleanup_targets_are_staging_temp_files_only"])
+        self.assertFalse(feedback["staging_rollback_and_cleanup"]["original_archive_in_cleanup_allowlist"])
+        self.assertTrue(feedback["staging_rollback_and_cleanup"]["protected_refs_preserved"])
+        self.assertGreaterEqual(len(feedback["rollback_steps"]), 4)
+        self.assertEqual(feedback["whole_stage_review"]["result"], "passed_with_local_evidence")
+        self.assertEqual(feedback["whole_stage_review"]["next_stage"], "STAGE-026")
+        self.assertFalse(feedback["whole_stage_review"]["batch_upload_allowed"])
+        self.assertEqual(feedback["whole_stage_review"]["next_batch_gate"], "IDS-STAGE026-P1-GATE")
+        self.assertEqual(feedback["whole_stage_review"]["unresolved_findings"], [])
+        for value in feedback["processing_guard"].values():
+            self.assertEqual(value, 0)
+        for value in feedback["no_persistence_deltas"].values():
+            self.assertEqual(value, 0)
+        self.assertTrue(feedback["does_not_write_archive_manifest_runtime_output"])
+        self.assertTrue(feedback["does_not_write_report_files"])
+        self.assertTrue(feedback["does_not_push_to_github"])
+        self.assertTrue(feedback["does_not_reinstall_app_entries"])
+        self.assertTrue(feedback["does_not_enter_stage026"])
+
+    def test_phase4_evidence_document_records_closeout_review_raw_boundary_and_no_stage026(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE025-P4",
+            "ACC-STAGE-025",
+            "ids.stage025.safe_extraction_engine.owner_feedback.v1",
+            "build_safe_extraction_engine_owner_feedback_summary",
+            "archive_manifest 样例",
+            "安全阻断日志",
+            "清理白名单",
+            "自动解压风险边界",
+            "停止条件",
+            "staging 区回滚",
+            "Whole-Stage Review",
+            "STAGE-025 已在本地完成",
+            "IDS-STAGE026-P1-GATE",
+            "push_allowed=false",
+            "SAFE_EXTRACTION_PATH_TRAVERSAL_BLOCKED",
+            "SAFE_EXTRACTION_ABSOLUTE_PATH_BLOCKED",
+            "SAFE_EXTRACTION_TOTAL_SIZE_LIMIT_EXCEEDED",
+            "SAFE_EXTRACTION_NESTED_DEPTH_LIMIT_EXCEEDED",
+            "SAFE_EXTRACTION_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+            "SAFE_EXTRACTION_FILE_COUNT_LIMIT_EXCEEDED",
+            "SAFE_EXTRACTION_CLEANUP_ALLOWLIST_VALIDATED",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_STAGE026",
+            "不执行 GitHub upload、PR、merge 或 app reinstall",
+        ]
+
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
     def test_phase2_evidence_document_records_engine_slice_boundaries_and_no_phase3(self):
         self.assertTrue(PHASE2.is_file(), f"missing phase2 evidence: {PHASE2}")
         text = PHASE2.read_text(encoding="utf-8")
@@ -437,7 +552,6 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
         required_terms = [
             'batch_id: "IDS-V0_1-BATCH-021-030"',
             "STAGE-025:",
-            'status: "in_progress"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             'acceptance_id: "ACC-STAGE-025"',
@@ -456,24 +570,28 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
         allowed_status_terms = [
             'status: "stage025_phase2_in_progress"',
             'status: "stage025_phase3_in_progress"',
+            'status: "stage025_completed_local_pending_stage026"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
 
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE025-P2"',
             'current_task_id: "IDS-V0_1-STAGE025-P3"',
+            'current_task_id: "IDS-V0_1-STAGE025-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
 
         allowed_acceptance_terms = [
             'acceptance_status: "phase2_safe_extraction_engine_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
         ]
         self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
 
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE025-P3-GATE"',
             'next_gate: "IDS-STAGE025-P4-GATE"',
+            'next_gate: "IDS-STAGE026-P1-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
 
@@ -483,23 +601,73 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
 
         required_terms = [
             'batch_id: "IDS-V0_1-BATCH-021-030"',
-            'status: "stage025_phase3_in_progress"',
             "STAGE-025:",
-            'status: "in_progress"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'next_gate: "IDS-STAGE025-P4-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE025-P3"',
             'acceptance_id: "ACC-STAGE-025"',
-            'acceptance_status: "phase3_scenario_validation_complete"',
             'push_allowed: false',
             "KM_IDSystem/scripts/check_safe_extraction_engine.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE025_PHASE3_SCENARIO_VALIDATION.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage025_safe_extraction_engine.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
+        ]
+
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+        allowed_status_terms = [
+            'status: "stage025_phase3_in_progress"',
+            'status: "stage025_completed_local_pending_stage026"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
+
+        allowed_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE025-P3"',
+            'current_task_id: "IDS-V0_1-STAGE025-P4"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
+
+        allowed_acceptance_terms = [
+            'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
+
+        allowed_gate_terms = [
+            'next_gate: "IDS-STAGE025-P4-GATE"',
+            'next_gate: "IDS-STAGE026-P1-GATE"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
+
+    def test_batch021_030_lock_tracks_stage025_phase4_closeout_without_upload_permission(self):
+        self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
+        text = BATCH_LOCK.read_text(encoding="utf-8")
+
+        required_terms = [
+            'batch_id: "IDS-V0_1-BATCH-021-030"',
+            'status: "stage025_completed_local_pending_stage026"',
+            "STAGE-025:",
+            'status: "completed_local"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            '      - "Phase 4"',
+            'next_stage: "STAGE-026"',
+            'next_gate: "IDS-STAGE026-P1-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE025-P4"',
+            'acceptance_id: "ACC-STAGE-025"',
+            'acceptance_status: "local_passed"',
+            'push_allowed: false',
+            "KM_IDSystem/scripts/check_safe_extraction_engine.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE025_PHASE4_CLOSEOUT.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage025_safe_extraction_engine.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
+            'next_allowed_task_id: "IDS-V0_1-STAGE026-P1"',
+            'github_upload_allowed: false',
         ]
 
         for term in required_terms:
@@ -542,7 +710,6 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'batch_id: "IDS-V0_1-BATCH-021-030"',
             'STAGE-024:\n    status: "completed_local"',
             "STAGE-025:",
-            'status: "in_progress"',
             '      - "Phase 1"',
             'acceptance_id: "ACC-STAGE-025"',
             'push_allowed: false',
@@ -563,6 +730,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'status: "stage025_phase1_in_progress"',
             'status: "stage025_phase2_in_progress"',
             'status: "stage025_phase3_in_progress"',
+            'status: "stage025_completed_local_pending_stage026"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
 
@@ -570,6 +738,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE025-P1"',
             'current_task_id: "IDS-V0_1-STAGE025-P2"',
             'current_task_id: "IDS-V0_1-STAGE025-P3"',
+            'current_task_id: "IDS-V0_1-STAGE025-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
 
@@ -577,6 +746,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_safe_extraction_engine_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
+            'acceptance_status: "local_passed"',
         ]
         self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
 
@@ -584,6 +754,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE025-P2-GATE"',
             'next_gate: "IDS-STAGE025-P3-GATE"',
             'next_gate: "IDS-STAGE025-P4-GATE"',
+            'next_gate: "IDS-STAGE026-P1-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
 
