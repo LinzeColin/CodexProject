@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s06p3-validation-evidence - 2026-07-04
+
+- 完成 `v0.1.4 S06-P3｜validation evidence output`。
+- 新增 S06-P3 evidence generator、validator、focused unit test、validation evidence report、sanitized zero-delta result、sanitized mismatch report、project validation statuses、risk register、rollback plan 和 machine manifest。
+- 基于 S06-P1/S06-P2 public-safe evidence 写入 `metadata/quality`：zero-delta records=`1`、data quality records=`2`、source difference records=`1`、mismatch rows=`1`；project status count=`2`、blocked=`2`、Q5 allowed=`0`、report grade A allowed=`0`。
+- 本轮未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values、PDF/Excel source values 或真实业务值。
+- 本轮未执行 Stage 6 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s06p2-difference-queue - 2026-07-04
 
 - 完成 `v0.1.4 S06-P2｜cross-source difference queue`。

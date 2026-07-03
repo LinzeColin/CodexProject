@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s06p3-validation-evidence
+
+- task_id: `KMFA-V014-S06-P3-VALIDATION-EVIDENCE-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred_validation_evidence`
+- scope: v0.1.4 S06-P3 validation evidence only; reused S06-P1/S06-P2 public-safe evidence to generate sanitized validation evidence and metadata/quality records without reading raw inbox, closing differences, running Stage 6 review, or performing GitHub upload.
+- evidence: `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/human/validation_evidence_report.md`, `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/human/test_results.md`, `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/machine/validation_evidence_manifest.json`, `KMFA/tools/check_v014_s06_p3_validation_evidence.py`
+- counts: S06-P1 dependency PASS, S06-P2 dependency PASS, project_status_count=2, blocked_project_status_count=2, metadata_zero_delta_records_written=1, metadata_data_quality_records_written=2, metadata_source_difference_records_written=1, metadata_mismatch_rows_written=1, q5_allowed_count=0, report_grade_a_allowed_count=0.
+- blocker_state: Stage6_review=false, GitHub upload=false, raw value matching=false, lineage full check=false, formal_report_allowed=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+- raw_boundary: raw inbox read/list/stat/hash/mutation=false in S06-P3; public raw filenames/hash/member names/sheet names/field plaintext/row values/PDF or Excel source values/business values committed=false.
+
+product_version: 0.1.4-s06p3-validation-evidence
+version_matrix_product_version_reference: 0.1.4-s06p3-validation-evidence
+
 ## 2026-07-04 - 0.1.4-s06p2-difference-queue
 
 - task_id: `KMFA-V014-S06-P2-DIFFERENCE-QUEUE-20260704`
