@@ -78,13 +78,13 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 ## 13. 测试与验收
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `MVP_PAGE_LATEST_HANDOFF_GATE_SYNC_NO_RUNTIME_ENABLEMENT`
+- release_gate: `MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`
 
 ## 14. 证据新鲜度
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:996986b0e00b458c376c84ea037dd06f4c548ad0`
 - tree_bound_events: `17`
-- commit_bound_events: `10`
+- commit_bound_events: `11`
 - legacy_unbound_events: `334`
 - precommit_pending_events: `40`
 - pending_or_stale_events: `390`
@@ -98,13 +98,13 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 
 ## 16. 技术元数据
 
-- source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
-- source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
-- source_snapshot_hash: `sha256:fdcbea4bc6fbeb8c8037df239c52fba72b9f41c614bb27f6c32abd6389da9fbe`
-- snapshot_event_time: `2026-07-03T13:30:04+10:00`
+- source_base_commit: `996986b0e00b458c376c84ea037dd06f4c548ad0`
+- source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
+- source_snapshot_hash: `sha256:7cb1c552a0137dff306803a77222859a5d36e282ad6b2f4898529cbf7e3727a8`
+- snapshot_event_time: `2026-07-03T13:45:55+10:00`
 - generator_version: `4.0.1`
 - version: `0.23.1`
-- phase/gate: `S2PL / MVP_PAGE_LATEST_HANDOFF_GATE_SYNC_NO_RUNTIME_ENABLEMENT`
+- phase/gate: `S2PL / MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`
 
 ## 17. 下一唯一任务
 
