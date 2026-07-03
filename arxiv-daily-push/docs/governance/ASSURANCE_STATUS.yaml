@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260703-ADP-MVP-PREP-THREE-BASE-TEMPLATE-HISTORICAL-BLOCKER-WORDING"
-source_snapshot_hash: "sha256:59ea09492a7e73585b9cc0a1a8d75ee8bd767419c5212d102f8caefe970aaf5c"
+as_of_event_id: "EVENT-20260703-ADP-MVP-PREP-KEY-DECISIONS-HISTORICAL-PREFLIGHT-HEADERS"
+source_snapshot_hash: "sha256:26df93912078fabf158921dbc9ae743cf6d208e5f201185bab90770eeca28b5e"
 source_base_commit: "90b297a55451b691c3e0270cfaa64e5d58c5a519"
 source_tree_hash: "d92ec4a0cd884641263c7979f7a5c625229ae83c"
-snapshot_event_time: "2026-07-03T12:08:05+10:00"
+snapshot_event_time: "2026-07-03T12:28:16+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 13
     commit_bound_events: 10
-    legacy_unbound_events: 333
+    legacy_unbound_events: 334
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"
-  release_gate: "THREE_BASE_TEMPLATE_HISTORY_BLOCKER_WORDING_CURRENT_STATE_ALIGNED_NO_RUNTIME_ENABLEMENT"
+  release_gate: "KEY_DECISIONS_HISTORICAL_PREFLIGHT_HEADERS_ALIGNED_NO_RUNTIME_ENABLEMENT"
   blocker_ids:
     - "persistent_daily_operation_authorization_missing"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

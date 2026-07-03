@@ -1117,14 +1117,16 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         )
 
     def test_owner_and_assurance_route_to_persistent_authorization_missing_gate(self) -> None:
+        version_matrix = (ADP_ROOT / "docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
         status = (ADP_ROOT / "docs/governance/STATUS.md").read_text(encoding="utf-8")
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
+        current_gate = _quoted_yaml_value(version_matrix, "current_gate")
 
         self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', assurance)
         self.assertIn("下一任务： `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`", owner_status)
-        self.assertIn('release_gate: "THREE_BASE_TEMPLATE_HISTORY_BLOCKER_WORDING_CURRENT_STATE_ALIGNED_NO_RUNTIME_ENABLEMENT"', assurance)
+        self.assertIn(f'release_gate: "{current_gate}"', assurance)
         self.assertIn('status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"', assurance)
         self.assertIn('blocker_ids:\n    - "persistent_daily_operation_authorization_missing"', assurance)
         self.assertIn('status: "blocked_persistent_daily_operation_authorization_missing"', assurance)
@@ -1241,7 +1243,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
 
         self.assertIn(
-            "evidence_freshness 仍为 PARTIAL：13 tree-bound events、10 commit-bound events、333 legacy unbound events、40 precommit pending events",
+            "evidence_freshness 仍为 PARTIAL：13 tree-bound events、10 commit-bound events、334 legacy unbound events、40 precommit pending events",
             project_yaml,
         )
         self.assertNotIn(
@@ -1252,8 +1254,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断",
             owner_status,
         )
-        self.assertIn("pending_or_stale_events=385", owner_status)
-        self.assertIn("legacy_unbound_events=333", owner_status)
+        self.assertIn("pending_or_stale_events=386", owner_status)
+        self.assertIn("legacy_unbound_events=334", owner_status)
         self.assertIn(
             "证据新鲜度 | `evidence_freshness=PARTIAL` 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断",
             mvp_prep,
@@ -1268,6 +1270,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         )
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        version_matrix = (ADP_ROOT / "docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
+        current_iteration = _quoted_yaml_value(version_matrix, "current_iteration")
+        current_task = re.sub(r"^ITER-\d{8}-", "", current_iteration)
+        current_gate = _quoted_yaml_value(version_matrix, "current_gate")
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         current = (ADP_ROOT / "docs/pursuing_goal/CURRENT.yaml").read_text(encoding="utf-8")
 
@@ -1527,6 +1533,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
     def test_three_base_model_parameter_summary_matches_governance_counts(self) -> None:
         model_spec = (ADP_ROOT / "docs/governance/MODEL_SPEC.md").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        version_matrix = (ADP_ROOT / "docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
+        current_iteration = _quoted_yaml_value(version_matrix, "current_iteration")
+        current_task = re.sub(r"^ITER-\d{8}-", "", current_iteration)
+        current_gate = _quoted_yaml_value(version_matrix, "current_gate")
         model_params = (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8")
         summary = model_params.split("\n## 2026-", 1)[0]
 
@@ -1540,11 +1550,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- active_formula_count: `{active_formulas.group(1)}`", summary)
         self.assertIn(f"- active_parameter_count: `{active_parameters.group(1)}`", summary)
         self.assertIn(
-            "- current_task: `S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION`",
+            f"- current_task: `{current_task}`",
             summary,
         )
         self.assertIn(
-            "- next_gate: `DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`",
+            f"- next_gate: `{current_gate}`",
             summary,
         )
         self.assertIn("owner A keep-disabled decision mainline-bound", summary)

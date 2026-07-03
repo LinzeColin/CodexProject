@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 350
+- task_count: 351
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-03 12:28:16 Australia/Sydney - Key-decision historical preflight headers aligned
+
+- Task: `ADP-MVP-PREP-KEY-DECISIONS-HISTORICAL-PREFLIGHT-HEADERS`
+- Result: `pass_key_decisions_historical_preflight_headers_aligned_no_runtime_enablement`
+- Evidence: `arxiv-daily-push/用户中心/关键结论与用户决策.md`; `arxiv-daily-push/tests/test_user_center_candidate_pool.py`.
+- Current state: the consumed 2026-07-01 20:12 gh-equivalent repair and 19:43 DAILY_OPERATION authorization preflight sections now use historical-time table headers; Stage 2 integrated acceptance remains recorded, and the current S3 blocker remains `persistent_daily_operation_authorization_missing`.
+- Boundary: this MVP preparation does not create `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`, does not send SMTP, and does not enable scheduler, Release, production restore, or DAILY_OPERATION.
+- Verification: target TDD red/green user-center regression, project governance, governance sync, changed-only semantic governance, fail-closed daily-operation enablement preflight, and git whitespace scan.
 
 ## 2026-07-03 12:08:05 Australia/Sydney - Three-base template-history blocker wording aligned
 
