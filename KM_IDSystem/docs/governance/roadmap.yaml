@@ -2,20 +2,20 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE031"
-current_phase_id: "IDS-STAGE031-P4"
-current_task_id: "IDS-V0_1-STAGE031-P4"
-next_gate_id: "IDS-STAGE031-REVIEW-GATE"
+current_phase_id: "IDS-STAGE031-REVIEW"
+current_task_id: "IDS-V0_1-STAGE031-REVIEW"
+next_gate_id: "IDS-STAGE032-P1-GATE"
 current_transition_history:
   previous_state:
+    current_phase_id: "IDS-STAGE031-P4"
+    current_task_id: "IDS-V0_1-STAGE031-P4"
+    next_gate_id: "IDS-STAGE031-REVIEW-GATE"
+  earlier_state:
     current_phase_id: "IDS-STAGE031-P3"
     current_task_id: "IDS-V0_1-STAGE031-P3"
     next_gate_id: "IDS-STAGE031-P4-GATE"
-  earlier_state:
-    current_phase_id: "IDS-STAGE031-P2"
-    current_task_id: "IDS-V0_1-STAGE031-P2"
-    next_gate_id: "IDS-STAGE031-P3-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 281
+completed_estimated_hours: 282
 stages:
   -
     stage_id: "S5"
@@ -1288,7 +1288,7 @@ stages:
     stage_id: "IDS-STAGE006"
     name: "macOS M2 Max Docker 基线"
     person_goal: "建立 macOS + M2 Max + Docker Desktop / Docker Compose 的 IDS v0.1 运行基线。"
-    status: "completed_local"
+    status: "completed_reviewed_local"
     stop_conditions:
       - "需要真实资料但没有 fixture 或 owner 授权样本"
       - "可能删除、移动、覆盖原始文件"
@@ -7479,6 +7479,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE2_SCHEMA_MIGRATION_SAFETY_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_STAGE_REVIEW.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/schema_migration_safety/stage031_migration_safety_index.json"
         - "KM_IDSystem/scripts/check_schema_migration_safety.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
@@ -7642,3 +7643,17 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "如果 Phase 4 closeout 被误读为生产数据库迁移授权、stage review 完成或批次上传授权，可能提前连接 PostgreSQL、执行 DDL、备份/恢复、写 runtime database、读取 raw metadata、保存原始内容、启动服务、跳过复审或提前上传未满十阶段批次。"
             rollback: "Revert check_schema_migration_safety.py Phase4 additions, STAGE031 Phase4 closeout evidence, BATCH031_040_UPLOAD_LOCK.yaml, Stage031/Stage005 tests, Stage005 validator updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, manifests, evidence ledgers, audit logs, indexes, PostgreSQL data directories, app entries, GitHub state, stage review gate, batch review gate, upload gate, or STAGE-032."
+    review:
+      review_id: "IDS-STAGE031-REVIEW"
+      task_id: "IDS-V0_1-STAGE031-REVIEW"
+      status: "completed"
+      reviewed_at_utc: "2026-07-03T09:26:34Z"
+      acceptance_ids:
+        - "ACC-STAGE-031"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_STAGE_REVIEW.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/governance/events.jsonl"
+        - "scripts/lean_governance.py"
+      test_results: "STAGE-031 whole-stage review verified the P0 taskpack binding, Phase 1-4 evidence, static schema migration safety checker, scenario coverage, closeout evidence, raw data boundary, owner/governance render path, and no-upload state. RED evidence: Stage031 focused review test failed because STAGE031_STAGE_REVIEW.md was missing, and Stage005 reviewed-local state test failed because IDS-V0_1-STAGE031-REVIEW was not accepted. Review repair also found STAGE031-REVIEW-F5: owner render write-mode failed on Python 3.9 because Path.write_text(..., newline=...) is unsupported; scripts/lean_governance.py was repaired to use path.open(..., newline=\"\\n\") while preserving LF output. GREEN validation: Stage031 focused tests ran 13 tests OK; Stage005 governance regression ran 104 tests OK; Stage026-030 compatibility tests ran 75 tests OK; full IDS v0.1 pursuing-goal discovery ran 377 tests OK; check_schema_migration_safety.py returned the tracked phase4 report with safety_all=True, guardrails_all=True, scenario_all=True, phase4_no_upload=True, and no_raw=True; Stage005 validator returned valid=true with issues=[], no missing required files, no missing event ids, no JSONL errors, no forbidden changed paths, no unexpected changed paths, and no tracked forbidden runtime files; render --project KM_IDSystem --write updated 3 owner files after the Python 3.9 compatibility fix and check-render returned drift_count=0; py_compile, events JSONL parse, and git diff --check passed. Full semantic validate remains a sparse-worktree diagnostic with missing root schema/workflow/hook and unrelated registered-project paths, so this run did not expand sparse checkout. No product runtime code or database migration fix was required; governance/evidence closure and owner-render tooling were repaired. GitHub upload remains deferred until STAGE-031..040 are complete, reviewed, repaired, and batch-gated."
+      decision: "ACC-STAGE-031 locally reviewed and passed; no GitHub upload, no app reinstall, and no STAGE-032 work in this run."
