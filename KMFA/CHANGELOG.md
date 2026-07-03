@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s10p2-report-grade-runtime-replay - 2026-07-03
+
+- 完成 `v0.1.3 S10-P2｜report grade runtime replay` 本地验证：复用既有 S10-P2 public-safe 报告等级 runtime artifacts，并验证 v0.1.3 S10-P1 dependency。
+- 新增 `KMFA/tools/v013_s10_p2_report_grade_runtime_replay.py`、`KMFA/tools/check_v013_s10_p2_report_grade_runtime_replay.py` 和 `KMFA/tests/test_v013_s10_p2_report_grade_runtime_replay.py`。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V013_S10_P2_REPORT_GRADE_RUNTIME_REPLAY/`，锁定 2 条报告等级记录均为 `D`、12 条 pending reconciliation、0 条 confirmed resolution、zero_delta_passed=false、完整可信报告/正式报告/经营决策依据/导出均阻断。
+- 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF/Excel 原值或 credential。
+- 未执行 S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s10p1-report-templates-replay - 2026-07-03
 
 - 完成 `v0.1.3 S10-P1｜report templates replay` 本地验证：复用既有 S10-P1 public-safe 报告模板 artifacts，并验证 v0.1.3 Stage 9 review dependency。
