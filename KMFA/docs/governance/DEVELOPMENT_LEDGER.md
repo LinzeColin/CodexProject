@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-03 - 0.1.3-s10p1-report-templates-replay
+
+- task_id: `KMFA-V013-S10-P1-REPORT-TEMPLATES-REPLAY-20260703`
+- status: `completed_validated_local_only_no_go_upload_deferred_report_templates_replayed`
+- evidence: `KMFA/stage_artifacts/V013_S10_P1_REPORT_TEMPLATES_REPLAY/machine/report_templates_replay_manifest.json`
+- validator: `KMFA/tools/check_v013_s10_p1_report_templates_replay.py`
+- scope: S10-P1 replay only; S10-P2, S10-P3, Stage 10 review and GitHub upload not performed.
+- result: templates=2, sections=11, pending_reconciliations=12, formal_report_count=0, export_artifact_count=0, upload_deferred/no_go.
+
+product_version: 0.1.3-s10p1-report-templates-replay
+version_matrix_product_version_reference: 0.1.3-s10p1-report-templates-replay
+
 ## 2026-07-03 - 0.1.3-s09-stage-review
 
 - task_id: `KMFA-V013-S09-STAGE-REVIEW-20260703`
@@ -37,10 +49,10 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S09`
-- current_phase: `v0.1.3 S09-P1 project cost fact layer replay`
-- current_tasks: `KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703`
-- status: `local_s09_p1_completed_upload_deferred_until_stage10_batch_no_go`
+- current_stage: `S10`
+- current_phase: `v0.1.3 S10-P1 report templates replay`
+- current_tasks: `KMFA-V013-S10-P1-REPORT-TEMPLATES-REPLAY-20260703`
+- status: `local_s10p1_completed_upload_deferred_until_stage10_batch_no_go`
 - risk_tier: `T3`
 
 ## Completed

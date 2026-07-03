@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s10p1-report-templates-replay - 2026-07-03
+
+- 完成 `v0.1.3 S10-P1｜report templates replay` 本地验证：复用既有 S10-P1 public-safe 报告模板 artifacts，并验证 v0.1.3 Stage 9 review dependency。
+- 新增 `KMFA/tools/v013_s10_p1_report_templates_replay.py`、`KMFA/tools/check_v013_s10_p1_report_templates_replay.py`、`KMFA/tests/test_v013_s10_p1_report_templates_replay.py` 和 `KMFA/stage_artifacts/V013_S10_P1_REPORT_TEMPLATES_REPLAY/`。
+- 锁定 template_count=`2`、section_count=`11`、project_cost_section_count=`4`、business_overview_section_count=`7`、pending_reconciliation_count=`12`、formal_report_count=`0`、export_artifact_count=`0`；可信等级运行时、导出、正式报告和经营决策依据均继续阻断。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values、业务金额或业务值。
+- 未执行 S10-P2、S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s09-stage-review - 2026-07-03
 
 - 完成 v0.1.3 Stage 9 overall review：复跑 S09-P1/S09-P2/S09-P3 replay validators 和 legacy S09 validators，确认 phase_results 全部 PASS、open findings=0、fixed findings=1、pending resolutions=12。

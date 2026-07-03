@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s09-stage-review`
-- current_stage: `S09`
-- current_phase: `v0.1.3 Stage 9 overall review`
-- status: `local_s09_stage_review_passed_upload_deferred_until_stage10_batch_no_go`
+- version: `0.1.3-s10p1-report-templates-replay`
+- current_stage: `S10`
+- current_phase: `v0.1.3 S10-P1 report templates replay`
+- status: `local_s10p1_report_templates_replay_passed_upload_deferred_until_stage10_batch_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_stage1_10_batch_gate`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -171,7 +171,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 Stage 9 overall review 已本地完成；GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S10-P1 report templates replay` 或用户明确指定的单一 phase，不得跳到 GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
+- v0.1.3 S10-P1 report templates replay 已本地完成；GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S10-P2 report grade runtime replay` 或用户明确指定的单一 phase，不得跳到 S10-P3、Stage 10 review、GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
 
 ## 阻塞条件
 
