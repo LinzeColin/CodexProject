@@ -167,6 +167,8 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_STAGE_REVIEW.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_ENTRY_CONTRACT.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE2_CONNECTION_POOL_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_connection_pool/stage032_connection_pool_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/schema_migration_safety/stage031_migration_safety_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/001_control_plane_schema.sql",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/control_plane_schema_index.json",
@@ -192,6 +194,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_postgresql_control_plane.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage031_schema_migration_safety.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage032_database_connection_pool.py",
+    "KM_IDSystem/scripts/check_database_connection_pool.py",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
     "KM_IDSystem/scripts/check_file_fingerprint.py",
     "KM_IDSystem/scripts/check_manifest_generation.py",
@@ -212,6 +215,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
     "KM_IDSystem/scripts/check_postgresql_control_plane.py",
     "KM_IDSystem/scripts/check_schema_migration_safety.py",
+    "KM_IDSystem/scripts/check_database_connection_pool.py",
     "KM_IDSystem/scripts/build_app_bundle.sh",
     "KM_IDSystem/scripts/diagnose_app_entry.sh",
     "KM_IDSystem/scripts/run_local_services.sh",
@@ -294,6 +298,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE031-REVIEW-20260703-001",
     "EVT-IDS-V0_1-STAGE031-REVIEW-20260703-002",
     "EVT-IDS-V0_1-STAGE032-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE032-P2-20260703-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -332,6 +337,7 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
     "KM_IDSystem/scripts/check_postgresql_control_plane.py",
     "KM_IDSystem/scripts/check_schema_migration_safety.py",
+    "KM_IDSystem/scripts/check_database_connection_pool.py",
     "KM_IDSystem/scripts/build_app_bundle.sh",
     "KM_IDSystem/scripts/diagnose_app_entry.sh",
     "KM_IDSystem/scripts/install_app_entries.sh",
@@ -417,6 +423,7 @@ ALLOWED_CHANGED_PREFIXES = (
     "KM_IDSystem/scripts/check_file_fingerprint.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/schema_migration_safety/",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_connection_pool/",
 )
 
 
@@ -1455,6 +1462,18 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-STAGE032-P1"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE032-P2-GATE"' in roadmap_text
     )
+    stage032_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-031-040"' in batch_text
+        and 'status: "stage032_phase2_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE032-P2"' in batch_text
+        and 'acceptance_status: "phase2_connection_pool_slice_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE032-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE032"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE032-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE032-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE032-P3-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -1549,6 +1568,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or stage031_phase4_closeout
         or stage031_reviewed_local
         or stage032_phase1_active
+        or stage032_phase2_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
