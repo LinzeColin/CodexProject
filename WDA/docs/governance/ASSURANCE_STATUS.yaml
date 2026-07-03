@@ -1,16 +1,43 @@
 schema_version: "codexproject.assurance_status.v1"
 project_id: "WDA"
-status: "UNVERIFIED"
+status: "PARTIAL"
+dimensions:
+  structural_completeness:
+    status: "VERIFIED"
+    evidence_ref: "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
+  implementation_congruence:
+    status: "PARTIAL"
+    evidence_ref: "EVID-WDA-V02R3-LOCAL-RUNTIME-001"
+    total_active_parameters: 5
+    total_active_formulas: "0"
+  parameter_source_quality:
+    status: "VERIFIED"
+    evidence_ref: "EVID-WDA-V02R3-LOCAL-RUNTIME-001"
+  methodological_rationale:
+    status: "PARTIAL"
+    evidence_ref: "WDA-V0.2-R3-P2"
+  empirical_validation:
+    status: "PARTIAL"
+    evidence_ref: "EVID-WDA-V02R3-DASHBOARD-001"
+  operational_validation:
+    status: "VERIFIED"
+    evidence_ref: "EVID-WDA-V02R3-FASTAPI-001"
+  delivery_evidence:
+    status: "PARTIAL"
+    evidence_ref: "WDA/docs/v0_2_r3_desktop_realtime_frontend/acceptance_report.md"
+  evidence_freshness:
+    status: "VERIFIED"
+    evidence_ref: "EVID-WDA-V02R3-UPDATE-001"
 checks:
   scope_defined:
-    status: "FAILED"
-    evidence_ref: "WDA-STAGE0-P2"
+    status: "PASS"
+    evidence_ref: "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
   clean_worktree:
     status: "PARTIAL"
-    evidence_ref: "EVID-WDA-BOOTSTRAP-001"
+    evidence_ref: "EVID-WDA-V02R3-LOCAL-RUNTIME-001"
   model_applicability:
     status: "NOT_APPLICABLE"
-    evidence_ref: "EVID-WDA-BOOTSTRAP-001"
+    evidence_ref: "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
   production_readiness:
-    status: "NOT_APPLICABLE"
-    evidence_ref: "EVID-WDA-BOOTSTRAP-001"
+    status: "PARTIAL"
+    evidence_ref: "WDA-V0.2-R3-P2"

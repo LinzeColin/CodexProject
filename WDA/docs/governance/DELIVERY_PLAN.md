@@ -2,17 +2,23 @@
 
 ## Current Delivery State
 
-Bootstrap only. No application, service, automation, model, API, dataset, or production workflow exists yet.
+WDA v0.2-R3 P1 has a locally verified app/API/dashboard/update skeleton. It is usable as a local control surface, but full product-grade report v2 and UX hardening remain open.
 
-## Stage 0
+## Active Stage
 
-1. Create clean worktree and governance shell.
-2. Define product requirements and non-goals.
-3. Decide whether WDA needs runtime code, models, formulas, data integrations, or UI.
-4. Produce Stage 1 run contract before implementation.
+`WDA-V0.2-R3 Desktop Realtime Frontend`
+
+1. P1: local runtime, FastAPI service, dashboard, launcher, manual update, scheduler scripts. `completed`
+2. P2: report v2 rewriting, evidence drill-down, responsive/detail UX hardening, final acceptance audit. `planned`
 
 ## Stop Conditions
 
-- Product scope remains ambiguous.
-- Worktree expands unrelated CodexProject projects.
-- Implementation starts before acceptance criteria exist.
+- External drive access is required for frontend/runtime work.
+- WeChat exporter is run without explicit approval.
+- Raw/private data is committed to Git.
+- Local launcher cannot open the frontend.
+- FastAPI status/update paths cannot be verified.
+
+## Default Next Step
+
+Execute `WDA-V0.2-R3-P2` only after confirming the desired depth of report rewriting and evidence drill-down.

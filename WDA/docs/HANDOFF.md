@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and regenerate Chinese human-readable workspace.
+Continue WDA v0.2-R3 Desktop Realtime Frontend toward product-grade delivery: local app entry, FastAPI service, Chinese dashboard, manual update, launchd scheduler template, Chinese report v2 quality, and repo-safe acceptance docs.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility and local Chinese human-readable intelligence reports; current scope is v0.2-R2-B full-auto bundle import, Data Core rebuild, and report regeneration, not RAG/Web/Matrix buildout
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, v0.1-C local query/report entry, v0.2-R1 local Chinese human-readable workspace, and v0.2-R2-B full-auto bundle import/Data Core/report workspace generated
+- Product scope: WDA Control Plane for local WeChat data analysis and Chinese human-readable intelligence reports; current scope is v0.2-R3 Desktop Realtime Frontend on top of the v0.2-R2 local Data Core, not cloud deployment, external-drive acquisition, WeChat exporter execution, or RAG/Web/Matrix buildout
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, v0.1-C local query/report entry, v0.2-R1 local Chinese human-readable workspace, v0.2-R2-B full-auto bundle import/Data Core/report workspace, and v0.2-R3-P1 local app/API/dashboard/update/launcher skeleton generated
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -32,6 +32,7 @@ Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and reg
 - Latest v0.1-C outputs: `WDA/docs/v0_1_query_report_entry/`
 - Latest v0.2-R1 outputs: `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/`
 - Latest v0.2-R2-B outputs: `WDA/docs/v0_2_r2_full_auto_workspace/`
+- Latest v0.2-R3 outputs: `WDA/docs/v0_2_r3_desktop_realtime_frontend/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Latest Sprint 2M-B local Raw Import Pack: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2m_b_subject_coverage_import_validation/`
 - Latest v0.1-A local Data Core seed: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/data_core_seed/wda_v0_1_seed.sqlite`
@@ -40,6 +41,10 @@ Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and reg
 - Latest v0.2-R1 local human-readable workspace: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/`
 - Latest v0.2-R2-B local validation output: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/validation_report.json`
 - Latest v0.2-R2-B local Data Core: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/data_core/wda_v0_2_r2.sqlite`
+- Latest v0.2-R3 local runtime: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r3_app_runtime/`
+- Latest v0.2-R3 local app entry: `/Users/linzezhang/Downloads/WDA.app`
+- Latest v0.2-R3 fallback entry: `/Users/linzezhang/Downloads/WDA.command`
+- Latest v0.2-R3 local service: `http://127.0.0.1:18730/`
 - Raw Gate: `Full-Auto Message Import Proven`; RAG/Web/Matrix Go is not proven
 
 ## Key Decisions
@@ -47,7 +52,7 @@ Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and reg
 - Keep WDA as one long-lived project worktree.
 - Do not create a full CodexProject copy for each chat.
 - Do not expand unrelated project directories into this worktree.
-- Treat current WDA files as governance/bootstrap only, not product implementation.
+- Treat current WDA files as local product implementation plus governance docs; raw/private runtime outputs remain local-only under WDA_MetaData.
 - Treat old computer as the highest-value data source candidate.
 - Treat new computer as WDA Control Plane / WDA_HOME / database / RAG / Web host.
 - Do not copy the full old WeChat cache; Sprint 2 should use a copied candidate DB bundle if approved.
@@ -113,6 +118,11 @@ Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and reg
 - v0.2-R2-B imported `612,664` messages, `1,552` conversations, and `5,870` contacts; failed conversations: `0`; media rows: `0`.
 - v0.2-R2-B did not upload raw data, run WeChat exporter tools, call OpenAI API with raw messages, or start RAG/Web/Matrix.
 - RAG/Web/Matrix remain blocked until repeatable broader import-readiness and Data Core readiness are proven.
+- v0.2-R3-P1 created a local app/API/dashboard/update skeleton using the v0.2-R2 Data Core as read-only input.
+- v0.2-R3-P1 installed `/Users/linzezhang/Downloads/WDA.app` and `/Users/linzezhang/Downloads/WDA.command` through `WDA/scripts/install_wda_app_launcher.sh`.
+- v0.2-R3-P1 starts FastAPI at `http://127.0.0.1:18730/` through `WDA/scripts/wda_app_start.sh`.
+- v0.2-R3-P1 writes runtime state, logs, report index, and dashboard snapshot under `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r3_app_runtime/`.
+- v0.2-R3-P1 manual update is verified through dashboard button/API/script, but full Chinese report v2 rewriting and deeper evidence drill-down remain R3-P2 work.
 
 ## Files To Read First
 

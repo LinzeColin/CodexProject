@@ -1,41 +1,178 @@
 schema_version: "codexproject.project.v1"
 project_id: "WDA"
 project_name: "WDA"
-summary: "WDA is a newly created CodexProject project shell. The product purpose, users, workflows, data boundaries, model/formula applicability, and delivery scope are not defined yet."
-version: "0.0.0"
-fact_level: "PROPOSED"
+summary: "WDA is a local-first WeChat Data Analysis control plane. v0.2-R3 turns the proven v0.2-R2 local Data Core into a double-click desktop-style local app entry with FastAPI APIs, Chinese dashboard, manual update, launchd scheduler template, and repo-safe operating docs."
+version: "0.2-r3"
+fact_level: "VERIFIED_LOCAL"
 owner_role: "product_owner + engineering_owner"
-current_status: "definition_pending"
+current_status: "active_local_mvp_in_progress"
 limitations:
   -
-    statement: "WDA has no approved product scope, runtime code, data contract, model contract, or production readiness claim yet."
-    fact_level: "PROPOSED"
+    statement: "v0.2-R3 has a verified local app/API/dashboard/update skeleton, but full product-grade Chinese report rewriting and broader UX hardening remain in progress."
+    fact_level: "VERIFIED_LOCAL"
     evidence_refs:
-      - "EVID-WDA-BOOTSTRAP-001"
+      - "EVID-WDA-V02R3-LOCAL-RUNTIME-001"
     unknown_task_ids:
-      - "WDA-STAGE0-P1"
+      - "WDA-V0.2-R3-P2"
+  -
+    statement: "Raw messages, SQLite databases, transfer bundles, keys, decrypted DBs, and private reports must remain outside Git under WDA_MetaData or other approved local-only roots."
+    fact_level: "VERIFIED_LOCAL"
+    evidence_refs:
+      - "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
+    unknown_task_ids: []
 features:
   -
-    feature_id: "FEAT-WDA-BOOTSTRAP-001"
-    name: "Project bootstrap and governance shell"
-    description: "Establish a clean single-project worktree, root governance registration, and owner-readable project entrypoints."
+    feature_id: "FEAT-WDA-R2-DATA-CORE-001"
+    name: "v0.2-R2 local full-auto Data Core"
+    description: "Validated local SQLite Data Core imported from the full-auto export bundle with 612,664 messages, 1,552 conversations, 5,870 contacts, and 0 media rows."
     status: "active"
-    fact_level: "PROPOSED"
+    fact_level: "VERIFIED_LOCAL"
+    model_ids: []
+    parameter_ids:
+      - "PARAM-WDA-R3-DATA-CORE-PATH"
+    code_refs:
+      - "WDA/scripts/wda_v0_2_r2_import_full_bundle.py"
+      - "WDA/scripts/run_wda_v0_2_r2_b.sh"
+    test_refs:
+      - "WDA/docs/v0_2_r2_full_auto_workspace/validation_report.md"
+    evidence_refs:
+      - "EVID-WDA-V02R2-DATA-CORE-001"
+  -
+    feature_id: "FEAT-WDA-R3-LOCAL-APP-001"
+    name: "v0.2-R3 local desktop entry"
+    description: "Installs /Users/linzezhang/Downloads/WDA.app and /Users/linzezhang/Downloads/WDA.command, both routing to the local start script."
+    status: "active"
+    fact_level: "VERIFIED_LOCAL"
+    model_ids: []
+    parameter_ids:
+      - "PARAM-WDA-R3-RUNTIME-ROOT"
+      - "PARAM-WDA-R3-HOST"
+      - "PARAM-WDA-R3-PORT"
+    code_refs:
+      - "WDA/scripts/install_wda_app_launcher.sh"
+      - "WDA/scripts/wda_app_start.sh"
+    test_refs:
+      - "ls -ld /Users/linzezhang/Downloads/WDA.app /Users/linzezhang/Downloads/WDA.command"
+    evidence_refs:
+      - "EVID-WDA-V02R3-LOCAL-LAUNCHER-001"
+  -
+    feature_id: "FEAT-WDA-R3-FASTAPI-001"
+    name: "v0.2-R3 FastAPI local service"
+    description: "Local FastAPI service exposes health, status, update, report, dashboard, contact, action, and evidence APIs on 127.0.0.1:18730."
+    status: "active"
+    fact_level: "VERIFIED_LOCAL"
+    model_ids: []
+    parameter_ids:
+      - "PARAM-WDA-R3-HOST"
+      - "PARAM-WDA-R3-PORT"
+    code_refs:
+      - "WDA/app_api/main.py"
+      - "WDA/app_api/core.py"
+      - "WDA/app_api/cli.py"
+    test_refs:
+      - "curl -sS http://127.0.0.1:18730/api/health"
+      - "curl -sS http://127.0.0.1:18730/api/status"
+    evidence_refs:
+      - "EVID-WDA-V02R3-FASTAPI-001"
+  -
+    feature_id: "FEAT-WDA-R3-DASHBOARD-001"
+    name: "v0.2-R3 Chinese dashboard"
+    description: "Chinese dashboard prioritizes action, risk, opportunity, contact radar, handoff, behavior optimization, freshness, and update controls before technical counts."
+    status: "active"
+    fact_level: "VERIFIED_LOCAL"
     model_ids: []
     parameter_ids: []
     code_refs:
-      - "WDA/README.md"
-      - "WDA/AGENTS.md"
+      - "WDA/app_api/core.py"
+      - "WDA/app_api/main.py"
     test_refs:
-      - "scripts/lean_governance.py check-render --project WDA"
+      - "Node Playwright screenshot /tmp/wda-r3-home.png"
     evidence_refs:
-      - "EVID-WDA-BOOTSTRAP-001"
+      - "EVID-WDA-V02R3-DASHBOARD-001"
+  -
+    feature_id: "FEAT-WDA-R3-UPDATE-RUNTIME-001"
+    name: "v0.2-R3 manual and scheduled update runtime"
+    description: "Manual update writes local run status, report index, dashboard snapshot, and logs. launchd install/uninstall scripts provide scheduled update wiring but are not loaded by default."
+    status: "active"
+    fact_level: "VERIFIED_LOCAL"
+    model_ids: []
+    parameter_ids:
+      - "PARAM-WDA-R3-UPDATE-INTERVAL-SECONDS"
+    code_refs:
+      - "WDA/scripts/wda_app_update.sh"
+      - "WDA/scripts/install_wda_launch_agent.sh"
+      - "WDA/scripts/uninstall_wda_launch_agent.sh"
+    test_refs:
+      - "curl -sS -X POST http://127.0.0.1:18730/api/update/run"
+      - "curl -sS http://127.0.0.1:18730/api/update/runs"
+    evidence_refs:
+      - "EVID-WDA-V02R3-UPDATE-001"
 models: []
 formulas: []
-parameters: []
+parameters:
+  -
+    parameter_id: "PARAM-WDA-R3-DATA-CORE-PATH"
+    name: "v0.2-R3 source Data Core path"
+    value: "/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/data_core/wda_v0_2_r2.sqlite"
+    source: "WDA v0.2-R2 verified local output"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    parameter_id: "PARAM-WDA-R3-RUNTIME-ROOT"
+    name: "v0.2-R3 local runtime root"
+    value: "/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r3_app_runtime"
+    source: "WDA v0.2-R3 task pack"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    parameter_id: "PARAM-WDA-R3-HOST"
+    name: "local service host"
+    value: "127.0.0.1"
+    source: "WDA/app_api/core.py"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    parameter_id: "PARAM-WDA-R3-PORT"
+    name: "local service port"
+    value: "18730"
+    source: "WDA/app_api/core.py"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    parameter_id: "PARAM-WDA-R3-UPDATE-INTERVAL-SECONDS"
+    name: "launchd default update interval"
+    value: "86400"
+    source: "WDA/scripts/install_wda_launch_agent.sh"
+    fact_level: "VERIFIED_LOCAL"
 evidence_refs:
   -
-    evidence_id: "EVID-WDA-BOOTSTRAP-001"
-    kind: "bootstrap"
-    ref: "WDA project shell created in CodexProject worktree"
-    fact_level: "PROPOSED"
+    evidence_id: "EVID-WDA-V02R2-DATA-CORE-001"
+    kind: "local_data_core"
+    ref: "WDA/docs/v0_2_r2_full_auto_workspace/validation_report.md"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    evidence_id: "EVID-WDA-V02R3-LOCAL-RUNTIME-001"
+    kind: "runtime"
+    ref: "/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r3_app_runtime/state/status.json"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    evidence_id: "EVID-WDA-V02R3-LOCAL-LAUNCHER-001"
+    kind: "launcher"
+    ref: "/Users/linzezhang/Downloads/WDA.app and /Users/linzezhang/Downloads/WDA.command"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    evidence_id: "EVID-WDA-V02R3-FASTAPI-001"
+    kind: "api"
+    ref: "curl health/status against http://127.0.0.1:18730"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    evidence_id: "EVID-WDA-V02R3-DASHBOARD-001"
+    kind: "frontend"
+    ref: "/tmp/wda-r3-home.png"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    evidence_id: "EVID-WDA-V02R3-UPDATE-001"
+    kind: "update_runtime"
+    ref: "/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r3_app_runtime/state/last_run.json"
+    fact_level: "VERIFIED_LOCAL"
+  -
+    evidence_id: "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
+    kind: "data_governance"
+    ref: "WDA/docs/v0_2_r3_desktop_realtime_frontend/data_governance.md"
+    fact_level: "VERIFIED_LOCAL"

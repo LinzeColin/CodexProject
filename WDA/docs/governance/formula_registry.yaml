@@ -3,5 +3,5 @@ project_id: "WDA"
 formulas: []
 not_applicable:
   status: "not_applicable"
-  reason: "WDA has no approved formulas during bootstrap."
-  evidence_ref: "EVID-WDA-BOOTSTRAP-001"
+  reason: "WDA v0.2-R3 P1 does not introduce new formulas. Runtime status uses observable counts and timestamps from the verified local Data Core."
+  evidence_ref: "EVID-WDA-V02R3-DATA-GOVERNANCE-001"

@@ -1,40 +1,39 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "WDA"
-current_stage_id: "WDA-STAGE0"
-current_phase_id: "WDA-STAGE0-P2"
-current_task_id: "WDA-STAGE0-P2"
-next_gate_id: "WDA-STAGE0-GATE"
-total_estimated_hours: 6
-completed_estimated_hours: 1
+current_stage_id: "WDA-V0.2-R3"
+current_phase_id: "WDA-V0.2-R3-P1"
+current_task_id: "WDA-V0.2-R3-P1"
+next_gate_id: "WDA-V0.2-R3-GATE"
+total_estimated_hours: 30
+completed_estimated_hours: 14
 stages:
   -
     stage_id: "WDA-STAGE0"
     name: "Project definition and workspace bootstrap"
-    person_goal: "Create a clean WDA workspace, then define the real product before implementation."
-    status: "in_progress"
+    person_goal: "Create a clean WDA workspace, define local-first product boundaries, and preserve raw/private data separation."
+    status: "completed"
     stop_conditions:
-      - "Implementation begins before product scope is defined"
       - "Other CodexProject project directories are expanded or used as WDA context"
       - "A model, formula, parameter, or production claim is invented without evidence"
     stop_gate:
       gate_id: "WDA-STAGE0-GATE"
-      status: "open"
+      status: "passed_with_local_evidence"
       pass_conditions:
         - "WDA has a single clean worktree and GitHub branch"
-        - "WDA product requirements are defined and approved"
-        - "Stage 1 task contract is ready with acceptance criteria and rollback"
+        - "Local-first WDA product objective is defined"
+        - "Raw/private data boundary is explicit"
       evidence_refs:
-        - "EVID-WDA-BOOTSTRAP-001"
+        - "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
     phases:
       -
         phase_id: "WDA-STAGE0-P1"
         name: "Workspace and governance bootstrap"
         objective: "Create WDA project shell, register root governance, and preserve clean worktree boundaries."
-        status: "in_progress"
+        status: "completed"
         stop_conditions:
           - "Worktree contains unrelated project directories"
-          - "Bootstrap claims runtime readiness"
+          - "Bootstrap claims runtime readiness before evidence"
         stop_gate:
           gate_id: "WDA-STAGE0-P1-GATE"
           status: "passed_with_local_sparse_evidence"
@@ -51,51 +50,223 @@ stages:
             objective: "Create the local WDA worktree and GitHub-backed governance shell without expanding unrelated projects."
             status: "completed"
             estimated_hours: 1
-            total_hours_percent: "16.67%"
+            total_hours_percent: "3.33%"
             dependencies: []
             acceptance_ids:
               - "ACC-WDA-STAGE0-P1"
             test_commands:
               - "/usr/bin/python3 -B scripts/lean_governance.py check-render --project WDA"
-              - "git status --short --branch"
-              - "git sparse-checkout list"
-            test_results: "check-render passed with drift_count=0 and reference_issue_count=0; sparse checkout is constrained to WDA, root governance registration, and shared governance helpers; full monorepo validation intentionally not used as bootstrap gate."
+            test_results: "check-render passed with drift_count=0 and reference_issue_count=0."
             evidence_refs:
               - "EVID-WDA-BOOTSTRAP-001"
-            risk: "Project shell could be mistaken for product implementation or full monorepo validation could trigger unrelated project expansion."
+            risk: "Project shell could be mistaken for product implementation."
             rollback: "Remove WDA from governance/projects.yaml and delete the WDA/ project directory on the bootstrap branch."
       -
         phase_id: "WDA-STAGE0-P2"
         name: "Product definition"
-        objective: "Define WDA's actual users, workflows, data boundaries, model/formula applicability, risks, and first implementation stage."
-        status: "planned"
+        objective: "Define WDA users, workflow, data boundaries, model/formula applicability, risks, and first implementation stage."
+        status: "completed"
         stop_conditions:
           - "Product scope remains ambiguous"
           - "Acceptance criteria are not testable"
         stop_gate:
           gate_id: "WDA-STAGE0-P2-GATE"
-          status: "planned"
+          status: "passed_with_task_pack"
           pass_conditions:
             - "Requirements and non-goals are explicit"
             - "Model/formula/parameter status is evidence-backed"
-            - "Stage 1 task pack is ready"
-          evidence_refs: []
+            - "v0.2-R3 run contract exists"
+          evidence_refs:
+            - "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
         tasks:
           -
             task_id: "WDA-STAGE0-P2"
-            name: "Define WDA product scope"
-            objective: "Turn the tentative project name into a concrete PRD/MVP and first run contract."
-            status: "planned"
-            estimated_hours: 5
-            total_hours_percent: "83.33%"
+            name: "Define WDA v0.2-R3 product scope"
+            objective: "Turn the tentative project shell into a local-first WDA app/runtime/dashboard task contract."
+            status: "completed"
+            estimated_hours: 3
+            total_hours_percent: "10.00%"
             dependencies:
               - "WDA-STAGE0-P1"
             acceptance_ids:
               - "ACC-WDA-STAGE0-P2"
             test_commands:
-              - "Requirements review checklist"
+              - "Review WDA_v0_2_R3_desktop_realtime_frontend_task_pack.zip"
               - "/usr/bin/python3 -B scripts/lean_governance.py check-render --project WDA"
+            test_results: "Task pack and handoff define local app, FastAPI, dashboard, update runtime, scheduler template, report UX, and data-governance boundaries."
+            evidence_refs:
+              - "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
+            risk: "Premature implementation before data boundary and local-only constraints are explicit."
+            rollback: "Revert only R3 scope docs and generated launch/runtime artifacts."
+  -
+    stage_id: "WDA-V0.2-R2"
+    name: "Full-auto Data Core baseline"
+    person_goal: "Use a locally validated full-auto import as the R3 source of truth."
+    status: "completed"
+    stop_conditions:
+      - "Raw messages, DBs, bundles, keys, or decrypted files are committed to Git"
+      - "External drive or WeChat exporter is required on the new computer for R3 app startup"
+    stop_gate:
+      gate_id: "WDA-V0.2-R2-GATE"
+      status: "passed_with_local_sensitive_evidence"
+      pass_conditions:
+        - "Full-auto bundle validated"
+        - "Data Core opens read-only"
+        - "Counts and validation report exist"
+      evidence_refs:
+        - "EVID-WDA-V02R2-DATA-CORE-001"
+    phases:
+      -
+        phase_id: "WDA-V0.2-R2-P1"
+        name: "Full-auto import and report workspace"
+        objective: "Import full-auto bundle, build local Data Core, and generate local full-sensitive report workspace."
+        status: "completed"
+        stop_conditions:
+          - "Bundle checksum or forbidden-file policy fails"
+          - "SQLite integrity check fails"
+        stop_gate:
+          gate_id: "WDA-V0.2-R2-P1-GATE"
+          status: "passed"
+          pass_conditions:
+            - "SQLite integrity check is ok"
+            - "Message, conversation, contact counts are recorded"
+            - "No raw/private data is committed"
+          evidence_refs:
+            - "EVID-WDA-V02R2-DATA-CORE-001"
+        tasks:
+          -
+            task_id: "WDA-V0.2-R2-P1"
+            name: "Build v0.2-R2 Data Core"
+            objective: "Create the local SQLite Data Core that R3 can read without external drive access."
+            status: "completed"
+            estimated_hours: 6
+            total_hours_percent: "20.00%"
+            dependencies:
+              - "WDA-STAGE0-P2"
+            acceptance_ids:
+              - "ACC-WDA-V0.2-R2-P1"
+            test_commands:
+              - "WDA/scripts/run_wda_v0_2_r2_b.sh"
+              - "SQLite read-only count and integrity checks"
+            test_results: "Imported 612,664 messages, 1,552 conversations, 5,870 contacts, 0 failed conversations, and SQLite integrity check ok."
+            evidence_refs:
+              - "EVID-WDA-V02R2-DATA-CORE-001"
+            risk: "Local full-sensitive files must remain outside Git."
+            rollback: "Remove the local v0_2_r2/full_auto_workspace output and rerun from the verified transfer bundle."
+  -
+    stage_id: "WDA-V0.2-R3"
+    name: "Desktop Realtime Frontend"
+    person_goal: "Make WDA usable as a local desktop-style app with dashboard, FastAPI, update controls, scheduler template, and repo-safe docs."
+    status: "in_progress"
+    stop_conditions:
+      - "External drive is accessed"
+      - "WeChat exporter is run without explicit approval"
+      - "Raw/private data enters Git"
+      - "Frontend cannot open from local launcher"
+      - "API or update status cannot be verified"
+    stop_gate:
+      gate_id: "WDA-V0.2-R3-GATE"
+      status: "open"
+      pass_conditions:
+        - "Local app entry opens the frontend without terminal commands"
+        - "FastAPI health/status/update/report APIs work"
+        - "Dashboard is Chinese, human-readable, and action-oriented"
+        - "Manual update writes run status and logs"
+        - "launchd scheduler install/uninstall scripts exist"
+        - "Repo-safe docs and handoff are current"
+        - "check-render passes"
+      evidence_refs:
+        - "EVID-WDA-V02R3-LOCAL-RUNTIME-001"
+        - "EVID-WDA-V02R3-FASTAPI-001"
+        - "EVID-WDA-V02R3-DASHBOARD-001"
+    phases:
+      -
+        phase_id: "WDA-V0.2-R3-P1"
+        name: "Local app runtime, API, dashboard, and launcher"
+        objective: "Implement the local runtime root, FastAPI service, Chinese dashboard, manual update path, launcher scripts, and scheduler templates."
+        status: "completed"
+        stop_conditions:
+          - "Service cannot start from local launcher"
+          - "Manual update does not write status"
+          - "Dashboard does not render"
+        stop_gate:
+          gate_id: "WDA-V0.2-R3-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Unit tests pass"
+            - "FastAPI health/status endpoints respond"
+            - "Playwright confirms dashboard content and button"
+            - "Local launcher files exist"
+          evidence_refs:
+            - "EVID-WDA-V02R3-LOCAL-LAUNCHER-001"
+            - "EVID-WDA-V02R3-FASTAPI-001"
+            - "EVID-WDA-V02R3-DASHBOARD-001"
+            - "EVID-WDA-V02R3-UPDATE-001"
+        tasks:
+          -
+            task_id: "WDA-V0.2-R3-P1"
+            name: "Implement Desktop Realtime Frontend MVP"
+            objective: "Create R3 runtime/API/dashboard/update/launcher/scheduler skeleton from the approved task pack."
+            status: "completed"
+            estimated_hours: 8
+            total_hours_percent: "26.67%"
+            dependencies:
+              - "WDA-V0.2-R2-P1"
+            acceptance_ids:
+              - "ACC-WDA-V0.2-R3-P1"
+            test_commands:
+              - "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m unittest WDA.tests.test_v0_2_r3_app"
+              - "WDA/scripts/wda_app_update.sh"
+              - "WDA/scripts/install_wda_app_launcher.sh"
+              - "WDA/scripts/wda_app_start.sh"
+              - "curl -sS http://127.0.0.1:18730/api/health"
+              - "curl -sS http://127.0.0.1:18730/api/status"
+              - "curl -sS -X POST http://127.0.0.1:18730/api/update/run"
+              - "Node Playwright dashboard smoke test"
+              - "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project WDA"
+            test_results: "Unit tests passed; update run completed; WDA.app/WDA.command installed; FastAPI health/status responded; dashboard returned 200 and rendered Chinese action/risk/contact sections; Playwright click test had no console errors."
+            evidence_refs:
+              - "EVID-WDA-V02R3-LOCAL-RUNTIME-001"
+              - "EVID-WDA-V02R3-LOCAL-LAUNCHER-001"
+              - "EVID-WDA-V02R3-FASTAPI-001"
+              - "EVID-WDA-V02R3-DASHBOARD-001"
+              - "EVID-WDA-V02R3-UPDATE-001"
+            risk: "R3 P1 is a usable skeleton; report quality and deeper product UX still need P2 polish before final product-grade closeout."
+            rollback: "Stop service with WDA/scripts/wda_app_stop.sh, remove /Users/linzezhang/Downloads/WDA.app and WDA.command, remove /Users/linzezhang/Downloads/WDA_MetaData/v0_2_r3_app_runtime, then revert R3 code/docs."
+      -
+        phase_id: "WDA-V0.2-R3-P2"
+        name: "Report v2 quality and product UX hardening"
+        objective: "Upgrade report copy, evidence drill-down, contact detail ergonomics, empty/error/loading states, and final acceptance documentation."
+        status: "planned"
+        stop_conditions:
+          - "Reports remain a thin wrapper over old Markdown"
+          - "Evidence drill-down is not decision-useful"
+          - "UI states are not polished across desktop and mobile"
+        stop_gate:
+          gate_id: "WDA-V0.2-R3-P2-GATE"
+          status: "planned"
+          pass_conditions:
+            - "Chinese reports have conclusion, findings, why it matters, evidence, impact, and next actions"
+            - "Dashboard and detail pages survive responsive/browser QA"
+            - "Final acceptance report proves every R3 requirement"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "WDA-V0.2-R3-P2"
+            name: "Harden report v2 and UX quality"
+            objective: "Complete product-grade Chinese report rewriting and frontend/detail UX polish."
+            status: "planned"
+            estimated_hours: 12
+            total_hours_percent: "40.00%"
+            dependencies:
+              - "WDA-V0.2-R3-P1"
+            acceptance_ids:
+              - "ACC-WDA-V0.2-R3-P2"
+            test_commands:
+              - "Browser responsive screenshot checks"
+              - "Report quality checklist"
+              - "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project WDA"
             test_results: "Not started."
             evidence_refs: []
-            risk: "Premature implementation or vague project objective."
-            rollback: "Keep bootstrap files; revert only requirement edits from the failed definition run."
+            risk: "A technically working dashboard may still not meet the user's product-quality report bar."
+            rollback: "Revert only P2 report renderer/UI changes; keep P1 launcher/API runtime if still valid."

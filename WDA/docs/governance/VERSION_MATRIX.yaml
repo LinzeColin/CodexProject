@@ -1,11 +1,37 @@
 schema_version: "codexproject.version_matrix.v1"
 project_id: "WDA"
-current_version: "0.0.0"
-data_snapshot_version: "NOT_APPLICABLE"
-current_iteration: "WDA-STAGE0"
+current_version: "0.2-r3"
+product_version: "0.2-r3"
+product_version_status: "local_mvp_in_progress"
+governance_spec_version: "codexproject.project.v1"
+data_snapshot_version: "v0.2-r2-full-auto-workspace-2026-07-03"
+current_iteration: "WDA-V0.2-R3"
+current_phase: "WDA-V0.2-R3-P1"
+current_gate: "WDA-V0.2-R3-GATE"
+model_versions:
+  -
+    model_id: "NOT_APPLICABLE"
+    version: "0.2-r3"
+    status: "not_applicable"
+    evidence_ref: "EVID-WDA-V02R3-DATA-GOVERNANCE-001"
+parameter_profile_versions:
+  -
+    profile_id: "WDA-R3-RUNTIME-PARAMETERS"
+    version: "0.2-r3"
+    status: "active"
 versions:
   -
     version: "0.0.0"
     date: "2026-07-02"
     summary: "Project bootstrap shell."
+    status: "superseded"
+  -
+    version: "0.2-r2"
+    date: "2026-07-03"
+    summary: "Full-auto local Data Core and report workspace baseline."
+    status: "baseline"
+  -
+    version: "0.2-r3"
+    date: "2026-07-03"
+    summary: "Local desktop-style app entry, FastAPI service, Chinese dashboard, manual update, scheduler scripts, and repo-safe docs."
     status: "active"
