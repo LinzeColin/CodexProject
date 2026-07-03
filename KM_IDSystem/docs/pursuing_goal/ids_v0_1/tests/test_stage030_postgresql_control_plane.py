@@ -38,15 +38,24 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
         allowed_phase_terms = [
             'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE031-P1"',
+            'current_phase_id: "IDS-STAGE031-P2"',
+            'current_phase_id: "IDS-STAGE031-P3"',
+            'current_phase_id: "IDS-STAGE031-P4"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE031-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+            'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_gate_terms = [
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'next_gate_id: "IDS-STAGE031-P2-GATE"',
+            'next_gate_id: "IDS-STAGE031-P3-GATE"',
+            'next_gate_id: "IDS-STAGE031-P4-GATE"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_stage_terms), allowed_stage_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_phase_terms), allowed_phase_terms)
