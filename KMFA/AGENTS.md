@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 2`
-- 当前 Phase: `Stage 2 整体复审已完成本地验证；本 review 只复跑 S02-P1/S02-P2/S02-P3 validators 并锁定 NO_GO/upload-deferred 边界，不执行 S03-P1 或 GitHub upload`
+- 当前 Stage: `v0.1.4 Stage 3`
+- 当前 Phase: `S03-P1 文件型导入登记已完成本地验证；本 phase 只执行 raw root read-only list/stat/read/hash 和 public-safe 登记，不执行 S03-P2、Stage 3 review 或 GitHub upload`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 Stage 2 整体复审已完成；下一轮只能在用户明确开启后执行 `S03-P1 文件登记/导入登记协议`。不得直接执行 GitHub upload、raw inventory、raw value matching、正式报告、live connector、OpMe 深度耦合或任何业务动作。
+- v0.1.4 S03-P1 文件型导入登记已完成；下一轮只能在用户明确开启后执行 `S03-P2 数据源检查矩阵`。不得直接执行 Stage 3 review、GitHub upload、raw value matching、正式报告、live connector、OpMe 深度耦合或任何业务动作。
 - Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成；S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已完成。Stage 18 review-level Go/No-Go 仍为 `NO_GO`；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
