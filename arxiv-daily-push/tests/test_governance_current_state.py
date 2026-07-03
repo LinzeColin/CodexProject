@@ -1044,6 +1044,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("current_zero_proof_open_p0_findings: 0", assurance)
         self.assertIn("current_zero_proof_open_p1_findings: 0", assurance)
         self.assertIn("baseline_counts_mutated: false", assurance)
+        self.assertIn('parallel_shadow_source_task: "NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW"', assurance)
+        self.assertNotIn('parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"', assurance)
+        self.assertIn("- Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`", status)
+        self.assertNotIn("- Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`", status)
         self.assertIn("open_pr_count=0", assurance)
         self.assertIn("ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like", assurance)
         self.assertNotIn(
@@ -1105,6 +1109,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
                 pass
         self.assertIn("- Readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`", rendered_status)
         self.assertNotIn("- Readiness: `BLOCKED_PRECHECK`", rendered_status)
+        self.assertIn("- Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`", rendered_status)
+        self.assertNotIn("- Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`", rendered_status)
 
     def test_project_yaml_delivery_readiness_does_not_reopen_stage2_final_gate(self) -> None:
         project_yaml = (ADP_ROOT / "docs/governance/project.yaml").read_text(encoding="utf-8")

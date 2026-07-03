@@ -4,9 +4,9 @@
 
 - source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
 - source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
-- source_snapshot_hash: `sha256:8b4485cf58d77c729eba13cf2d3f284e6b3fbdf7fc51fe8dda2999ff7f1a13ba`
+- source_snapshot_hash: `sha256:e98c113a59645c22fe2e7b8f71f342a8b6e83dd904e300a4e65d072c99d12d0a`
 - snapshot_event_time: `2026-07-01T23:35:39+10:00`
-- generator_version: `4.0.0`
+- generator_version: `4.0.1`
 - final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`
 
 ## Current State
@@ -48,7 +48,7 @@
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `true`
 - Next governance task: `S2PMT07`
-- Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
+- Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
 - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
 - Pending/stale events: `383`
 - Tree-bound events: `13`

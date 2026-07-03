@@ -21,7 +21,7 @@ import validate_project_governance as structural
 sys.dont_write_bytecode = True
 
 ROOT = structural.ROOT
-GENERATOR_VERSION = "4.0.0"
+GENERATOR_VERSION = "4.0.1"
 COMPLETED_TASK_STATES = {"completed", "rejected", "deprecated"}
 EXECUTABLE_TASK_STATES = {"ready", "in_progress", "blocked", "planned"}
 ASSURANCE_STATUSES = {"VERIFIED", "PARTIAL", "UNVERIFIED", "FAILED", "NOT_APPLICABLE"}
@@ -930,9 +930,21 @@ def canonical_input_paths(project_path: Path) -> list[Path]:
         project_path / "docs/governance/delivery_tasks.yaml",
         project_path / "docs/governance/VERSION_MATRIX.yaml",
         project_path / "docs/governance/TRACEABILITY_MATRIX.csv",
+        project_path / "docs/pursuing_goal/CURRENT.yaml",
         ROOT / "governance/projects.yaml",
     ]
     return [path for path in candidates if path.is_file()]
+
+
+def adp_current_pointer(project_path: Path) -> dict[str, Any]:
+    current_path = project_path / "docs/pursuing_goal/CURRENT.yaml"
+    if not current_path.is_file():
+        return {}
+    current = structural.load_yaml(current_path)
+    if not isinstance(current, dict):
+        return {}
+    pointer = current.get("current_pointer_registry")
+    return pointer if isinstance(pointer, dict) else {}
 
 
 def source_snapshot_hash(paths: list[Path]) -> str:
@@ -1364,6 +1376,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     tree_hash = configured_source_tree() or latest_tree or existing_assurance_tree(project_path) or current_tree_hash()
     policy = dict(ASSURANCE_POLICY.get(project_id, {}))
     project_config = structural.load_yaml(project_path / "docs/governance/project.yaml")
+    current_pointer = adp_current_pointer(project_path)
     configured_delivery_readiness = (
         project_config.get("delivery_readiness")
         if isinstance(project_config.get("delivery_readiness"), dict)
@@ -1775,7 +1788,11 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                     "current_zero_proof_open_p1_findings", "UNKNOWN"
                 ),
                 "baseline_counts_mutated": bool(matrix.get("baseline_counts_mutated", False)),
-                "parallel_shadow_source_task": str(matrix.get("current_v7_shadow_source_task_id") or "UNKNOWN"),
+                "parallel_shadow_source_task": str(
+                    current_pointer.get("shadow_source_next")
+                    or matrix.get("current_v7_shadow_source_task_id")
+                    or "UNKNOWN"
+                ),
                 "current_v7_task_id": str(matrix.get("current_v7_task_id") or "UNKNOWN"),
             }
         )
