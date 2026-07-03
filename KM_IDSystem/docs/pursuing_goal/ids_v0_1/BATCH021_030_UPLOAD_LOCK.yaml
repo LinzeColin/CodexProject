@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-021-030"
 created_at_utc: "2026-07-02T22:43:25Z"
-updated_at_utc: "2026-07-03T08:06:10Z"
-status: "local_batch_upload_gate_passed_pending_github_merge"
+updated_at_utc: "2026-07-03T08:21:35Z"
+status: "uploaded_to_github_main"
 review_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
 review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md"
 
@@ -42,6 +42,18 @@ upload_gate:
   gate_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
   gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md"
   remote_strategy: "after the ten-stage batch gate only: push branch, create PR to main, merge PR, reinstall app entries, verify app/local/GitHub parity, verify no open PRs or issues"
+  github_pr: "https://github.com/LinzeColin/CodexProject/pull/272"
+  merged_sha: "88a428c7901226bd44d5e4ff106cd51d74b550fe"
+  post_merge_open_prs: 0
+  post_merge_open_issues: 0
+  app_entry_reinstall:
+    status: "installed"
+    verified_at_utc: "2026-07-03T08:21:35Z"
+    downloads_app: "/Users/linzezhang/Downloads/IDS Industrial Data System.app"
+    applications_app: "/Applications/IDS Industrial Data System.app"
+    downloads_command: "/Users/linzezhang/Downloads/IDS Industrial Data System.command"
+    applications_command: "/Applications/IDS Industrial Data System.command"
+    launcher_root_dir: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem"
 
 stage_progress:
   STAGE-021:
@@ -268,13 +280,18 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
-  next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"
+  current_task_id: "IDS-V0_1-BATCH-021-030-MAIN-MERGED"
+  next_allowed_task_id: "IDS-STAGE031-P1-GATE"
   transition_history:
     previous_state:
+      status: "local_batch_upload_gate_passed_pending_github_merge"
+      current_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+      next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"
+      github_upload_allowed: true
+    earlier_state:
       status: "reviewed_ready_for_upload_no_github_upload"
       current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
       next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
       github_upload_allowed: false
-  current_run: "BATCH021_030_UPLOAD_GATE passed local pre-push checks and may push the reviewed STAGE-021..030 batch branch, use PR #272 targeting main, merge the PR, reinstall app entries, and verify app/local/GitHub parity; no raw metadata content access or STAGE-031 work is performed."
-  no_upload_reason: "NONE for this gate. Direct HEAD:main push remains prohibited because origin/main and this branch are diverged; upload must proceed through PR and GitHub merge."
+  current_run: "PR #272 merged BATCH021_030 into GitHub main with merge SHA 88a428c7901226bd44d5e4ff106cd51d74b550fe; app entries were reinstalled and verified to point to this KM_IDS/KM_IDSystem worktree; post-merge open PRs and open issues are both 0; no raw metadata content access or STAGE-031 work is performed."
+  no_upload_reason: "NONE; batch upload is complete through PR #272 and GitHub main merge SHA 88a428c7901226bd44d5e4ff106cd51d74b550fe."

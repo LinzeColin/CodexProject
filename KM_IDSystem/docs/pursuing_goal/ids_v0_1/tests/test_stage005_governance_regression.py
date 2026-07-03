@@ -20,30 +20,28 @@ class Stage005GovernanceRegressionTests(unittest.TestCase):
         spec.loader.exec_module(module)
         return module
 
-    def test_app_entry_install_policy_is_app_only_without_command_launchers(self):
+    def test_app_entry_install_policy_installs_app_and_command_launchers(self):
         self.assertTrue(APP_ENTRY_INSTALLER.is_file(), f"missing installer: {APP_ENTRY_INSTALLER}")
         self.assertTrue(APP_ENTRY_DIAGNOSTIC.is_file(), f"missing diagnostic: {APP_ENTRY_DIAGNOSTIC}")
         self.assertTrue(APP_BUNDLE_BUILDER.is_file(), f"missing builder: {APP_BUNDLE_BUILDER}")
 
-        scripts = {
-            "installer": APP_ENTRY_INSTALLER.read_text(encoding="utf-8"),
-            "diagnostic": APP_ENTRY_DIAGNOSTIC.read_text(encoding="utf-8"),
-            "builder": APP_BUNDLE_BUILDER.read_text(encoding="utf-8"),
-        }
-
-        forbidden_terms = [
-            ".command",
-            "COMMAND_NAME",
-            "COMMAND_PATHS",
+        installer_text = APP_ENTRY_INSTALLER.read_text(encoding="utf-8")
+        builder_text = APP_BUNDLE_BUILDER.read_text(encoding="utf-8")
+        required_installer_terms = [
+            'APP_NAME="IDS Industrial Data System.app"',
+            'COMMAND_NAME="IDS Industrial Data System.command"',
+            "DOWNLOADS_APP",
+            "APPLICATIONS_APP",
             "DOWNLOADS_COMMAND",
             "APPLICATIONS_COMMAND",
-            "write_command_launcher",
-            "command launcher",
+            'exec "$ROOT_DIR/scripts/run_local_services.sh"',
         ]
-        for script_name, text in scripts.items():
-            for term in forbidden_terms:
-                with self.subTest(script=script_name, term=term):
-                    self.assertNotIn(term, text)
+
+        for term in required_installer_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, installer_text)
+
+        self.assertIn("IDS Industrial Data System.app", builder_text)
 
     def test_phase2_report_validates_current_governance_surface(self):
         module = self._load_module()
@@ -4153,6 +4151,27 @@ next_gate_id: "IDS-V0_1-BATCH-011-020-UPLOAD-GATE"
             with self.subTest(marker=marker):
                 self.assertIn(marker, text)
 
+    def test_batch021_030_upload_lock_records_terminal_main_merge_evidence(self):
+        upload_lock = ROOT / "docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+
+        text = upload_lock.read_text(encoding="utf-8")
+        required_markers = [
+            'status: "uploaded_to_github_main"',
+            'github_pr: "https://github.com/LinzeColin/CodexProject/pull/272"',
+            'merged_sha: "88a428c7901226bd44d5e4ff106cd51d74b550fe"',
+            "post_merge_open_prs: 0",
+            "post_merge_open_issues: 0",
+            'downloads_command: "/Users/linzezhang/Downloads/IDS Industrial Data System.command"',
+            'applications_command: "/Applications/IDS Industrial Data System.command"',
+            'launcher_root_dir: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem"',
+            'current_task_id: "IDS-V0_1-BATCH-021-030-MAIN-MERGED"',
+            'next_allowed_task_id: "IDS-STAGE031-P1-GATE"',
+        ]
+
+        for marker in required_markers:
+            with self.subTest(marker=marker):
+                self.assertIn(marker, text)
+
     def test_phase_state_allows_batch011_020_upload_gate_pending_github_merge(self):
         module = self._load_module()
         batch_text = """
@@ -5360,11 +5379,18 @@ next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
             "BATCH021_030_UPLOAD_LOCK.yaml",
             "GitHub open PR/issue precheck",
             "push_allowed=true",
-            "PR targeting `main`",
+            "Use PR #272 targeting `main`",
             "No STAGE-031",
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "raw database content was not read",
             "app entry reinstall",
+            "PR #272",
+            "GitHub merge SHA: `88a428c7901226bd44d5e4ff106cd51d74b550fe`",
+            "Post-merge open PRs in `LinzeColin/CodexProject`: `0`",
+            "Post-merge open issues in `LinzeColin/CodexProject`: `0`",
+            "/Users/linzezhang/Downloads/IDS Industrial Data System.command",
+            "/Applications/IDS Industrial Data System.command",
+            "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem",
         ]
 
         for marker in required_markers:
@@ -5411,6 +5437,56 @@ next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"
           status: "passed_no_github_upload_until_upload_gate"
         phase_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
           status: "passed_pending_github_merge"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_batch021_030_uploaded_terminal_state(self):
+        module = self._load_module()
+        batch_text = """
+status: "uploaded_to_github_main"
+upload_gate:
+  push_allowed: true
+  review_gate: "BATCH021_030_REVIEW_GATE"
+  gate_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md"
+  github_pr: "https://github.com/LinzeColin/CodexProject/pull/272"
+  merged_sha: "88a428c7901226bd44d5e4ff106cd51d74b550fe"
+  post_merge_open_prs: 0
+  post_merge_open_issues: 0
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-030:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-031"
+    current_task_id: "IDS-V0_1-STAGE030-P4"
+    acceptance_status: "local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-V0_1-BATCH-021-030-MAIN-MERGED"
+current_task_id: "IDS-V0_1-BATCH-021-030-MAIN-MERGED"
+next_gate_id: "IDS-STAGE031-P1-GATE"
+        phase_id: "IDS-STAGE030-P4"
+          status: "passed_no_github_upload_until_batch_review"
+        phase_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+          status: "uploaded_to_github_main"
+        phase_id: "IDS-V0_1-BATCH-021-030-MAIN-MERGED"
+          status: "completed"
 """
 
         checks = module.evaluate_phase_state(batch_text, roadmap_text)

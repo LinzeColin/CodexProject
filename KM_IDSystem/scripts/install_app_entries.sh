@@ -3,10 +3,13 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP_NAME="IDS Industrial Data System.app"
+COMMAND_NAME="IDS Industrial Data System.command"
 BUILD_SCRIPT="$ROOT_DIR/scripts/build_app_bundle.sh"
 SOURCE_APP="$ROOT_DIR/app_bundle/$APP_NAME"
 DOWNLOADS_APP="$HOME/Downloads/$APP_NAME"
 APPLICATIONS_APP="/Applications/$APP_NAME"
+DOWNLOADS_COMMAND="$HOME/Downloads/$COMMAND_NAME"
+APPLICATIONS_COMMAND="/Applications/$COMMAND_NAME"
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
 
 chmod +x "$BUILD_SCRIPT"
@@ -42,9 +45,21 @@ cp -R "$SOURCE_APP" "$DOWNLOADS_APP"
 rm -rf "$APPLICATIONS_APP"
 cp -R "$SOURCE_APP" "$APPLICATIONS_APP"
 
+cat > "$DOWNLOADS_COMMAND" <<EOF
+#!/usr/bin/env bash
+cd "$ROOT_DIR"
+exec "$ROOT_DIR/scripts/run_local_services.sh"
+EOF
+chmod +x "$DOWNLOADS_COMMAND"
+
+cp "$DOWNLOADS_COMMAND" "$APPLICATIONS_COMMAND"
+chmod +x "$APPLICATIONS_COMMAND"
+
 clear_bundle_xattrs "$SOURCE_APP"
 clear_bundle_xattrs "$DOWNLOADS_APP"
 clear_bundle_xattrs "$APPLICATIONS_APP"
+clear_bundle_xattrs "$DOWNLOADS_COMMAND"
+clear_bundle_xattrs "$APPLICATIONS_COMMAND"
 sign_app_best_effort "$DOWNLOADS_APP"
 sign_app_best_effort "$APPLICATIONS_APP"
 
@@ -56,3 +71,5 @@ fi
 echo "Installed:"
 echo "$DOWNLOADS_APP"
 echo "$APPLICATIONS_APP"
+echo "$DOWNLOADS_COMMAND"
+echo "$APPLICATIONS_COMMAND"
