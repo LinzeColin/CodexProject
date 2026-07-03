@@ -30,6 +30,29 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
         spec.loader.exec_module(module)
         return module
 
+    def _assert_roadmap_current_allows_stage031(self, roadmap_text):
+        allowed_stage_terms = [
+            'current_stage_id: "IDS-STAGE030"',
+            'current_stage_id: "IDS-STAGE031"',
+        ]
+        allowed_phase_terms = [
+            'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'current_phase_id: "IDS-STAGE031-P1"',
+        ]
+        allowed_task_terms = [
+            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE031-P1"',
+        ]
+        allowed_gate_terms = [
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
+            'next_gate_id: "IDS-STAGE031-P2-GATE"',
+        ]
+        self.assertTrue(any(term in roadmap_text for term in allowed_stage_terms), allowed_stage_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_phase_terms), allowed_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_task_terms), allowed_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_gate_terms), allowed_gate_terms)
+
     def test_entry_contract_records_postgresql_control_plane_phase1_boundary(self):
         self.assertTrue(ENTRY.is_file(), f"missing entry contract: {ENTRY}")
         text = ENTRY.read_text(encoding="utf-8")
@@ -143,11 +166,6 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
         events_text = EVENTS.read_text(encoding="utf-8")
 
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE030"',
-            'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
-            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
-            'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
-            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'stage_id: "IDS-STAGE030"',
             'name: "STAGE-030 · PostgreSQL 控制面启动"',
             'phase_id: "IDS-STAGE030-P1"',
@@ -178,6 +196,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self._assert_roadmap_current_allows_stage031(roadmap_text)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -321,11 +340,6 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             'push_allowed:',
         ]
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE030"',
-            'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
-            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
-            'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
-            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'phase_id: "IDS-STAGE030-P2"',
             'phase_id: "IDS-STAGE030-P3"',
             'phase_id: "IDS-STAGE030-P4"',
@@ -355,6 +369,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self._assert_roadmap_current_allows_stage031(roadmap_text)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -448,11 +463,6 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             'push_allowed:',
         ]
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE030"',
-            'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
-            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
-            'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
-            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'phase_id: "IDS-STAGE030-P3"',
             'phase_id: "IDS-STAGE030-P4"',
             'status: "passed_with_local_evidence"',
@@ -477,6 +487,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self._assert_roadmap_current_allows_stage031(roadmap_text)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -560,11 +571,6 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             'push_allowed:',
         ]
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE030"',
-            'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
-            'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
-            'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
-            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'phase_id: "IDS-STAGE030-P4"',
             'status: "passed_with_local_evidence"',
             "STAGE030_PHASE4_CLOSEOUT.md",
@@ -588,6 +594,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self._assert_roadmap_current_allows_stage031(roadmap_text)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
