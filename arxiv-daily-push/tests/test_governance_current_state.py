@@ -1637,6 +1637,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT", handoff)
         self.assertIn("ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP", handoff)
         self.assertIn(f"| 当前治理 gate | `{current_gate}`", handoff)
+        self.assertIn(
+            "[功能任务测试证据追踪链](../arxiv-daily-push/用户中心/功能任务测试证据追踪链.md)",
+            handoff,
+        )
         self.assertNotIn(
             "| 当前治理 gate | `EVIDENCE_FRESHNESS_DYNAMIC_COUNT_DEDUP_NO_RUNTIME_ENABLEMENT`",
             handoff,
@@ -1841,6 +1845,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT", mvp_prep)
         self.assertIn("S3_HANDOFF_CURRENT_GATE_ALIGNMENT_NO_RUNTIME_ENABLEMENT", mvp_prep)
         self.assertIn("S3 first-read handoff", mvp_prep)
+        self.assertIn("[功能任务测试证据追踪链](./功能任务测试证据追踪链.md)", mvp_prep)
         self.assertIn("不进入 S3/DAILY_OPERATION", mvp_prep)
         self.assertIn("只做复审、修补、用户向可读性、证据同步、测试补强和低风险局部修复", mvp_prep)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", mvp_prep)
