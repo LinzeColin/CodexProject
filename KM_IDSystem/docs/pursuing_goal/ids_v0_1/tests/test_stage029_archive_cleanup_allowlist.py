@@ -259,6 +259,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_size_guard_slice_defined"',
             'acceptance_status: "phase2_cleanup_allowlist_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
             'acceptance_status: "local_passed"',
@@ -335,6 +336,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE032-P1"',
             'current_phase_id: "IDS-STAGE032-P4"',
             'current_phase_id: "IDS-STAGE033-P1"',
+            'current_phase_id: "IDS-STAGE033-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P1"',
@@ -354,6 +356,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE032-P1"',
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
+            'current_task_id: "IDS-V0_1-STAGE033-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P2-GATE"',
@@ -374,6 +377,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE032-P2-GATE"',
             'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE033-P2-GATE"',
+            'next_gate_id: "IDS-STAGE033-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P1-20260703-001"',
@@ -687,6 +691,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE032-P1"',
             'current_phase_id: "IDS-STAGE032-P4"',
             'current_phase_id: "IDS-STAGE033-P1"',
+            'current_phase_id: "IDS-STAGE033-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P2"',
@@ -705,6 +710,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE032-P1"',
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
+            'current_task_id: "IDS-V0_1-STAGE033-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P3-GATE"',
@@ -724,6 +730,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE032-P2-GATE"',
             'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE033-P2-GATE"',
+            'next_gate_id: "IDS-STAGE033-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P2-20260703-001"',
@@ -946,6 +953,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE032-P1"',
             'current_phase_id: "IDS-STAGE032-P4"',
             'current_phase_id: "IDS-STAGE033-P1"',
+            'current_phase_id: "IDS-STAGE033-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P3"',
@@ -963,6 +971,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE032-P1"',
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
+            'current_task_id: "IDS-V0_1-STAGE033-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P4-GATE"',
@@ -981,6 +990,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE032-P2-GATE"',
             'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE033-P2-GATE"',
+            'next_gate_id: "IDS-STAGE033-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P3-20260703-001"',
@@ -1196,6 +1206,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE032-P1"',
             'current_phase_id: "IDS-STAGE032-P4"',
             'current_phase_id: "IDS-STAGE033-P1"',
+            'current_phase_id: "IDS-STAGE033-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P4"',
@@ -1212,6 +1223,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE032-P1"',
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
+            'current_task_id: "IDS-V0_1-STAGE033-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE030-P1-GATE"',
@@ -1229,6 +1241,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE032-P2-GATE"',
             'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE033-P2-GATE"',
+            'next_gate_id: "IDS-STAGE033-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P4-20260703-001"',

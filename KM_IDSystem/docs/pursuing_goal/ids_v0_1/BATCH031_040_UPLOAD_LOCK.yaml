@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-03T11:23:27Z"
-status: "stage033_phase1_in_progress"
+updated_at_utc: "2026-07-03T11:42:03Z"
+status: "stage033_phase2_in_progress"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -89,24 +89,28 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-033:
-    status: "stage033_phase1_in_progress"
+    status: "stage033_phase2_in_progress"
     completed_phases:
       - "Phase 1"
-    next_phase: "Phase 2"
-    next_gate: "IDS-STAGE033-P2-GATE"
-    current_task_id: "IDS-V0_1-STAGE033-P1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    next_gate: "IDS-STAGE033-P3-GATE"
+    current_task_id: "IDS-V0_1-STAGE033-P2"
     acceptance_id: "ACC-STAGE-033"
-    acceptance_status: "phase1_scope_boundary_defined"
+    acceptance_status: "phase2_size_guard_slice_defined"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE2_DATABASE_SIZE_GUARD_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json"
+      - "KM_IDSystem/scripts/check_database_size_guard.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage033_database_size_guard.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE033-P1"
-  next_allowed_task_id: "IDS-V0_1-STAGE033-P2"
+  current_task_id: "IDS-V0_1-STAGE033-P2"
+  next_allowed_task_id: "IDS-V0_1-STAGE033-P3"
   github_upload_allowed: false
-  current_run: "STAGE-033 Phase 1 defines the database volume guard boundary for PostgreSQL storage scope, blocked raw/OCR/large-file payloads, bounded derived artifacts, size budgets, table/index/payload guardrails, retention/cleanup boundaries, audit evidence, and rollback verification from tracked Git contracts only; it does not connect to PostgreSQL, create schema or migrations, run size-statistics queries, execute cleanup, read raw metadata content, write runtime outputs, upload to GitHub, create a PR, merge, reinstall app entries, run batch review, or enter Phase 2."
-  no_upload_reason: "BATCH031_040 has only STAGE-031 and STAGE-032 completed/reviewed locally plus STAGE-033 Phase 1 in progress; upload remains blocked until STAGE-033..040 are completed, reviewed, repaired, and a separate batch upload gate runs."
+  current_run: "STAGE-033 Phase 2 implements a static database size-guard slice from tracked Git contracts: a machine-readable index and stdout-only checker for PostgreSQL storage scope, raw/OCR/large-file blocks, policy size thresholds, table/index/row payload guardrails, retention/cleanup stop gates, Stage032 pool budget dependency, quality constraints, raw data boundary, real-data-only policy, and rollback verification. It does not connect to PostgreSQL, create live schema or migrations, create connection configs or DSNs, run size-statistics queries, execute VACUUM/reindex/cleanup/backup/restore, read raw metadata content, write runtime outputs, upload to GitHub, create a PR, merge, reinstall app entries, run batch review, or enter Phase 3."
+  no_upload_reason: "BATCH031_040 has only STAGE-031 and STAGE-032 completed/reviewed locally plus STAGE-033 Phase 2 in progress; upload remains blocked until STAGE-033..040 are completed, reviewed, repaired, and a separate batch upload gate runs."
