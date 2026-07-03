@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S03-P2 数据源检查矩阵`：`KMFA/tools/v014_s03_p2_source_check_matrix.py`、`KMFA/tools/check_v014_s03_p2_source_check_matrix.py` 和 focused unit test 已建立；证据位于 `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/`，基于 S03-P1 public register 生成 matrix rows `5`、metadata status events `5`、required dimensions `6`、allowed statuses `5`，状态均为 `人工复核`。本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S03-P3`，不得跳到 Stage 3 review、GitHub upload、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行.
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S03-P3 源优先级`：`KMFA/tools/v014_s03_p3_source_priority.py`、`KMFA/tools/check_v014_s03_p3_source_priority.py` 和 focused unit test 已建立；证据位于 `KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/`，基于 S03-P2 public matrix/status events 生成 source priority records `5`、priority order `9`、same-source rerun policy event `1`、cross-source manual difference queue item `1`，`auto_selection_allowed=false`。本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 Stage 3 整体复审`，不得跳到 GitHub upload、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行.
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s03p2-source-check-matrix`
-- 当前已完成: `v0.1.4 S03-P2 source check matrix`
-- 证据目录: `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/`
-- validator: `KMFA/tools/check_v014_s03_p2_source_check_matrix.py`
-- focused test: `KMFA/tests/test_v014_s03_p2_source_check_matrix.py`
+- 当前版本: `0.1.4-s03p3-source-priority`
+- 当前已完成: `v0.1.4 S03-P3 source priority`
+- 证据目录: `KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/`
+- validator: `KMFA/tools/check_v014_s03_p3_source_priority.py`
+- focused test: `KMFA/tests/test_v014_s03_p3_source_priority.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: 本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只使用 S03-P1 public register。
-- 未执行: S03-P3、Stage 3 review、raw inventory、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
+- raw boundary: 本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只使用 S03-P2 public matrix/status events。
+- 未执行: Stage 3 review、raw inventory、raw value matching、field mapping、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
 
 ## v0.1.3 历史状态
 

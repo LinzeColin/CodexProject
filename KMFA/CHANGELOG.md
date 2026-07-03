@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s03p3-source-priority - 2026-07-04
+
+- 完成 `v0.1.4 S03-P3｜源优先级`。
+- 新增 public-safe source priority generator、validator、focused unit test、协议文件和 evidence bundle。
+- 基于 S03-P2 public matrix/status events 生成 source priority records `5`、priority order `9`、same-source rerun policy event `1`、cross-source manual difference queue item `1`；处理后数据低于原始上传和授权导出，同源不一致失效缓存并请求重跑，跨源冲突进入人工队列且不自动选边。
+- 本轮未读取 raw root，未执行 Stage 3 review、GitHub upload、raw value matching、字段映射、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s03p2-source-check-matrix - 2026-07-03
 
 - 完成 `v0.1.4 S03-P2｜数据源检查矩阵`。

@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S03-P2 数据源检查矩阵；基于 S03-P1 public register 生成 `5` 条 public-safe matrix rows 和 `5` 条 metadata status events，状态均为 `人工复核`。证据位于 `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/`，validator 为 `KMFA/tools/check_v014_s03_p2_source_check_matrix.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取 raw root，未写入、删除、移动、重命名、覆盖或转换 raw inbox，未执行 S03-P3、Stage 3 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S03-P3 源优先级；基于 S03-P2 public matrix/status events 生成 `5` 条 public-safe source priority records、`9` 级 priority order、`1` 条 same-source rerun policy event 和 `1` 条 cross-source manual difference queue item。证据位于 `KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/`，validator 为 `KMFA/tools/check_v014_s03_p3_source_priority.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取 raw root，未写入、删除、移动、重命名、覆盖或转换 raw inbox，未执行 Stage 3 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S03-P3 已确认 public-safe source priority 通过本地 validator；raw/upload/authorized/processed 排序已锁定，处理后数据低于原始上传/授权导出，同源不一致只失效缓存并请求重跑，跨源冲突只进入人工差异队列且 `auto_selection_allowed=false`，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S03-P2 已确认 public-safe source check matrix/status events 通过本地 validator；matrix/status 只使用 S03-P1 public file ids、维度、状态和 private refs，不包含 raw 文件名、raw hash、字段/表头明文、row values 或业务值，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S03-P1 已确认 raw root read-only registration 通过本地 validator，公开证据只保存聚合计数、类型、大小、状态和 private refs，raw 文件明细和内容 hash 留在 git-ignored private runtime，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 Stage 2 整体复审已确认 S02-P1/S02-P2/S02-P3 validators 全部 PASS，open findings=0，当前仍为 NO_GO/Q0/D/blocked，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
@@ -32,8 +33,8 @@ KMFA 已完成 v0.1.4 S03-P2 数据源检查矩阵；基于 S03-P1 public regist
 - S03-P1 文件登记工具已存在，覆盖 `zip/xlsx/xls/csv/pdf` 登记、zip traversal 防护和 WPS/OLE 操作提示。
 - S03-P2 数据源检查矩阵工具已存在，状态只允许 `已就绪`、`部分/阻塞`、`失败/不适用`、`已过期`、`人工复核`。
 - S03-P3 源优先级工具已存在，固定 `raw_upload -> authorized_export -> raw_extracted_value -> staging_structured_row -> canonical_fact -> derived_metric -> report_reference -> frontend_display -> processed_data`，同源不一致失效重跑，跨源冲突不自动选边。
-- Stage 3 整体复审已通过，发现的源优先级链路对齐问题已修复。
-- Stage 3 已整体上传 GitHub main，reviewed content commit `39b0eef52424a12b6c0c8ad368bd878b46300be4`。
+- legacy/v0.1.0 Stage 3 整体复审历史已通过，发现的源优先级链路对齐问题已修复；这不是当前 v0.1.4 Stage 3 review 状态。
+- legacy/v0.1.0 Stage 3 曾整体上传 GitHub main，reviewed content commit `39b0eef52424a12b6c0c8ad368bd878b46300be4`；当前 v0.1.4 未执行 Stage 3 review 或 GitHub upload。
 - S04-P1 金额工具已存在，覆盖元、万元、千元、千分位、负数、括号负数、float 禁止和异常输入不默认为 0。
 - S04-P2 字段标准化工具已存在，覆盖字段别名、中文字段映射、日期/期间/主体/项目/客户/合同编号标准化，以及缺字段质量状态。
 - S04-P3 基础工具测试已存在，覆盖金额小数、负数、万元、异常字符、中文日期、年月、空值，并生成工具函数测试报告。
