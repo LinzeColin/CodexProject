@@ -14,6 +14,7 @@ PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE029_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE029_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md"
+PHASE3 = PURSUE_ROOT / "STAGE029_PHASE3_SCENARIO_VALIDATION.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
@@ -38,6 +39,66 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
 
     def _tracked_payload(self) -> bytes:
         return PHASE1.read_bytes()
+
+    def _phase3_scenario_archives(self, base: Path) -> dict[str, dict[str, object]]:
+        payload = self._tracked_payload()
+
+        def scenario(name: str, entries: dict[str, bytes], **limits: object) -> dict[str, object]:
+            scenario_dir = base / name
+            scenario_dir.mkdir(parents=True, exist_ok=True)
+            archive_path = self._write_zip_fixture(scenario_dir, entries)
+            return {
+                "archive_uri": archive_path.as_uri(),
+                "staging_area_uri": (scenario_dir / "staging").as_uri(),
+                **limits,
+            }
+
+        return {
+            "path_traversal": scenario(
+                "path-traversal",
+                {
+                    "safe/path-traversal.md": payload,
+                    "../escape.md": payload,
+                },
+            ),
+            "absolute_path": scenario(
+                "absolute-path",
+                {
+                    "safe/absolute.md": payload,
+                    "/absolute.md": payload,
+                },
+            ),
+            "archive_bomb": scenario(
+                "archive-bomb",
+                {"safe/bomb.md": payload},
+                archive_total_size_limit_bytes=1,
+                archive_single_file_size_limit_bytes=1,
+            ),
+            "nested_archive": scenario(
+                "nested-archive",
+                {
+                    "safe/nested.md": payload,
+                    "nested/inner.zip": payload,
+                },
+                archive_nested_depth_limit=0,
+            ),
+            "garbled_filename": scenario(
+                "garbled-filename",
+                {
+                    "safe/garbled.md": payload,
+                    "bad/\ufffd-name.md": payload,
+                },
+            ),
+            "too_many_files": scenario(
+                "too-many-files",
+                {
+                    "safe/one.md": payload,
+                    "safe/two.md": payload,
+                    "safe/three.md": payload,
+                },
+                archive_file_count_limit=2,
+            ),
+        }
 
     def test_phase1_contracts_exist_and_bind_taskpack_identity(self):
         self.assertTrue(ENTRY.is_file(), f"missing entry contract: {ENTRY}")
@@ -170,26 +231,32 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         allowed_status_terms = [
             'status: "stage029_phase1_in_progress"',
             'status: "stage029_phase2_in_progress"',
+            'status: "stage029_phase3_in_progress"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 2"',
             'next_phase: "Phase 3"',
+            'next_phase: "Phase 4"',
         ]
         allowed_current_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P1"',
             'current_task_id: "IDS-V0_1-STAGE029-P2"',
+            'current_task_id: "IDS-V0_1-STAGE029-P3"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_cleanup_allowlist_slice_complete"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
         ]
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE029-P2-GATE"',
             'next_gate: "IDS-STAGE029-P3-GATE"',
+            'next_gate: "IDS-STAGE029-P4-GATE"',
         ]
         allowed_next_task_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P4"',
         ]
 
         for term in required_terms:
@@ -220,14 +287,17 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE029-P1"',
             'current_phase_id: "IDS-STAGE029-P2"',
+            'current_phase_id: "IDS-STAGE029-P3"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P1"',
             'current_task_id: "IDS-V0_1-STAGE029-P2"',
+            'current_task_id: "IDS-V0_1-STAGE029-P3"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P2-GATE"',
             'next_gate_id: "IDS-STAGE029-P3-GATE"',
+            'next_gate_id: "IDS-STAGE029-P4-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P1-20260703-001"',
@@ -458,26 +528,50 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             "NO_PHASE3",
         ]
         batch_terms = [
-            'status: "stage029_phase2_in_progress"',
             '      - "Phase 1"',
             '      - "Phase 2"',
-            'current_task_id: "IDS-V0_1-STAGE029-P2"',
-            'acceptance_status: "phase2_cleanup_allowlist_slice_complete"',
-            'next_gate: "IDS-STAGE029-P3-GATE"',
             'push_allowed: false',
-            'next_allowed_task_id: "IDS-V0_1-STAGE029-P3"',
             "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
         ]
+        allowed_batch_status_terms = [
+            'status: "stage029_phase2_in_progress"',
+            'status: "stage029_phase3_in_progress"',
+        ]
+        allowed_batch_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE029-P2"',
+            'current_task_id: "IDS-V0_1-STAGE029-P3"',
+        ]
+        allowed_batch_acceptance_terms = [
+            'acceptance_status: "phase2_cleanup_allowlist_slice_complete"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
+        ]
+        allowed_batch_gate_terms = [
+            'next_gate: "IDS-STAGE029-P3-GATE"',
+            'next_gate: "IDS-STAGE029-P4-GATE"',
+        ]
+        allowed_batch_next_task_terms = [
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P4"',
+        ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE029"',
-            'current_phase_id: "IDS-STAGE029-P2"',
-            'current_task_id: "IDS-V0_1-STAGE029-P2"',
-            'next_gate_id: "IDS-STAGE029-P3-GATE"',
             'phase_id: "IDS-STAGE029-P2"',
             'status: "passed_with_local_evidence"',
             "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE029-P2"',
+            'current_phase_id: "IDS-STAGE029-P3"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE029-P2"',
+            'current_task_id: "IDS-V0_1-STAGE029-P3"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE029-P3-GATE"',
+            'next_gate_id: "IDS-STAGE029-P4-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P2-20260703-001"',
@@ -491,6 +585,171 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         for term in phase2_terms:
             with self.subTest(term=term):
                 self.assertIn(term, phase2_text)
+        for term in batch_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, batch_text)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_status_terms), allowed_batch_status_terms)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_task_terms), allowed_batch_task_terms)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_acceptance_terms), allowed_batch_acceptance_terms)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_gate_terms), allowed_batch_gate_terms)
+        self.assertTrue(any(term in batch_text for term in allowed_batch_next_task_terms), allowed_batch_next_task_terms)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+    def test_phase3_scenario_report_validates_risks_reingest_cleanup_and_no_delete(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            report = module.build_stage029_scenario_report(
+                scenario_archives=self._phase3_scenario_archives(Path(tmp)),
+                evaluated_at="2026-07-03T13:12:00Z",
+            )
+
+        self.assertEqual(report["schema_version"], "ids.stage029.archive_cleanup_allowlist.scenario_validation.v1")
+        self.assertEqual(report["stage"], "STAGE-029")
+        self.assertEqual(report["phase"], "Phase 3")
+        self.assertEqual(report["task_id"], "IDS-V0_1-STAGE029-P3")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-029")
+        self.assertEqual(report["source_schema_version"], "ids.stage029.archive_cleanup_allowlist.v1")
+        self.assertEqual(report["validation_state"], "ARCHIVE_CLEANUP_SCENARIO_VALIDATION_PASSED")
+        self.assertTrue(report["required_scenarios_covered"])
+        self.assertEqual(
+            report["required_scenarios"],
+            [
+                "path_traversal",
+                "absolute_path",
+                "archive_bomb",
+                "nested_archive",
+                "garbled_filename",
+                "too_many_files",
+            ],
+        )
+        self.assertEqual(report["scenario_count"], 6)
+
+        expected_risks = {
+            "path_traversal": "ARCHIVE_ADVERSARIAL_PATH_TRAVERSAL_BLOCKED",
+            "absolute_path": "ARCHIVE_ADVERSARIAL_ABSOLUTE_PATH_BLOCKED",
+            "archive_bomb": "ARCHIVE_ADVERSARIAL_TOTAL_SIZE_LIMIT_EXCEEDED",
+            "nested_archive": "ARCHIVE_ADVERSARIAL_NESTED_DEPTH_LIMIT_EXCEEDED",
+            "garbled_filename": "ARCHIVE_ADVERSARIAL_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+            "too_many_files": "ARCHIVE_ADVERSARIAL_FILE_COUNT_LIMIT_EXCEEDED",
+        }
+        by_id = {item["scenario_id"]: item for item in report["scenario_results"]}
+        for scenario_id, risk_code in expected_risks.items():
+            with self.subTest(scenario_id=scenario_id):
+                result = by_id[scenario_id]
+                self.assertEqual(result["scenario_state"], "ARCHIVE_CLEANUP_SCENARIO_VALIDATED")
+                self.assertEqual(result["expected_risk_code"], risk_code)
+                self.assertTrue(result["expected_risk_observed"])
+                self.assertIn(risk_code, result["risk_codes"])
+                self.assertGreaterEqual(result["cleanup_candidate_count"], 0)
+                self.assertFalse(result["cleanup_runner_executed"])
+                self.assertTrue(result["does_not_delete_files"])
+
+        reingest_validation = report["reingest_validation"]
+        self.assertEqual(reingest_validation["state"], "ARCHIVE_CLEANUP_REINGEST_VALIDATED")
+        self.assertEqual(reingest_validation["required_pipeline"], ["hash", "manifest", "dedup", "parser"])
+        self.assertGreaterEqual(reingest_validation["safe_extracted_file_count"], 1)
+        self.assertEqual(
+            reingest_validation["actual_jobs_started"],
+            {"hash": 0, "manifest": 0, "dedup": 0, "parser": 0, "ocr": 0, "embedding": 0, "index": 0, "import": 0},
+        )
+        self.assertFalse(reingest_validation["import_queue_created"])
+
+        cleanup_validation = report["cleanup_validation"]
+        self.assertEqual(cleanup_validation["state"], "ARCHIVE_CLEANUP_SCENARIO_ALLOWLIST_VALIDATED")
+        self.assertTrue(cleanup_validation["cleanup_targets_are_staging_temp_files_only"])
+        self.assertFalse(cleanup_validation["original_archive_in_cleanup_allowlist"])
+        self.assertTrue(cleanup_validation["protected_refs_preserved"])
+        self.assertTrue(cleanup_validation["does_not_clean_original_archive"])
+        self.assertTrue(cleanup_validation["does_not_clean_fact_source_or_evidence"])
+
+        self.assertFalse(report["cleanup_runner_executed"])
+        self.assertTrue(report["does_not_delete_files"])
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertTrue(report["does_not_write_archive_cleanup_runtime_output"])
+        self.assertTrue(report["does_not_use_fake_ids_business_data"])
+        self.assertTrue(report["does_not_start_processing_jobs"])
+        self.assertTrue(report["does_not_create_import_queue"])
+        self.assertTrue(all(value == 0 for value in report["no_persistence_deltas"].values()))
+
+    def test_phase3_evidence_batch_roadmap_and_event_track_local_no_upload_gate(self):
+        self.assertTrue(PHASE3.is_file(), f"missing phase3 evidence: {PHASE3}")
+        phase3_text = PHASE3.read_text(encoding="utf-8")
+        batch_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        phase3_terms = [
+            "IDS-V0_1-STAGE029-P3",
+            "ACC-STAGE-029",
+            "build_stage029_scenario_report",
+            "ids.stage029.archive_cleanup_allowlist.scenario_validation.v1",
+            "path_traversal",
+            "absolute_path",
+            "archive_bomb",
+            "nested_archive",
+            "garbled_filename",
+            "too_many_files",
+            "ARCHIVE_CLEANUP_SCENARIO_VALIDATION_PASSED",
+            "ARCHIVE_CLEANUP_REINGEST_VALIDATED",
+            "ARCHIVE_CLEANUP_SCENARIO_ALLOWLIST_VALIDATED",
+            "hash",
+            "manifest",
+            "dedup",
+            "parser",
+            "只清理允许的临时文件",
+            "不执行 cleanup runner",
+            "不删除原始资料",
+            "不删除原始压缩包",
+            "不删除 manifest",
+            "不删除 evidence",
+            "不删除 audit",
+            "不删除报告",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+            "NO_PHASE4",
+        ]
+        batch_terms = [
+            'status: "stage029_phase3_in_progress"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            'current_task_id: "IDS-V0_1-STAGE029-P3"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
+            'next_gate: "IDS-STAGE029-P4-GATE"',
+            'push_allowed: false',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P4"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE3_SCENARIO_VALIDATION.md",
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE029"',
+            'current_phase_id: "IDS-STAGE029-P3"',
+            'current_task_id: "IDS-V0_1-STAGE029-P3"',
+            'next_gate_id: "IDS-STAGE029-P4-GATE"',
+            'phase_id: "IDS-STAGE029-P3"',
+            'status: "passed_with_local_evidence"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE3_SCENARIO_VALIDATION.md",
+            "build_stage029_scenario_report",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE029-P3-20260703-001"',
+            '"event_type":"validation"',
+            '"task_id":"IDS-V0_1-STAGE029-P3"',
+            '"ACC-STAGE-029"',
+            "STAGE029_PHASE3_SCENARIO_VALIDATION.md",
+            "build_stage029_scenario_report",
+        ]
+
+        for term in phase3_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, phase3_text)
         for term in batch_terms:
             with self.subTest(term=term):
                 self.assertIn(term, batch_text)
