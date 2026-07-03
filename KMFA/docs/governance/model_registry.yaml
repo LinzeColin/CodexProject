@@ -663,14 +663,18 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s02p2"
+    model_version: "0.1.4-s02p2-immutability-policy"
     assumptions:
       - "ASM-KMFA-005"
     formula_ids:
       - "FORM-KMFA-IMMUTABILITY-001"
+      - "FORM-KMFA-V014-S02P2-IMMUTABILITY-POLICY-001"
     parameter_ids:
       - "PARAM-KMFA-203"
       - "PARAM-KMFA-204"
+      - "PARAM-KMFA-1015"
+      - "PARAM-KMFA-1016"
+      - "PARAM-KMFA-1017"
     inputs:
       - "KMFA Roadmap S02-P2"
       - "KMFA data governance gate"
@@ -680,11 +684,15 @@ models:
       - "control event no-raw-write contract"
     code_refs:
       - "KMFA/tools/immutability_policy_check.py"
+      - "KMFA/tools/check_v014_s02_p2_immutability_policy.py"
     test_refs:
       - "python3 KMFA/tools/immutability_policy_check.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s02_p2_immutability_policy.py"
     evidence_refs:
       - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
       - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+      - "KMFA/metadata/protocol/immutability_policy_lock_v1_4.json"
+      - "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/machine/s02_p2_immutability_policy_manifest.json"
   - model_id: "MOD-KMFA-QUALITY-GATE-001"
     name: "KMFA data quality and report release gate"
     kind: "deterministic_quality_gate_contract"

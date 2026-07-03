@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s02p2-immutability-policy - 2026-07-03
+
+- 完成 `v0.1.4 S02-P2｜不可污染原则`。
+- 新增 `KMFA/metadata/protocol/immutability_policy_lock_v1_4.json`，锁定 raw manifest append-only、derived version append-only、control event no-raw-write 和 raw inbox no-read/no-list/no-mutation 边界。
+- 新增 `KMFA/tools/check_v014_s02_p2_immutability_policy.py`、`KMFA/tests/test_v014_s02_p2_immutability_policy.py` 和 `KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/`。
+- 未读取、列出、盘点、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 S02-P3、Stage 2 review、raw inventory、GitHub upload、正式报告或业务执行。
+
 ## 0.1.4-s01-stage-review - 2026-07-03
 
 - 完成 `v0.1.4 Stage 1 整体复审`。

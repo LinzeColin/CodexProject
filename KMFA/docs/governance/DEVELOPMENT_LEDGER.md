@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-03 - 0.1.4-s02p2-immutability-policy
+
+- task_id: `KMFA-V014-S02-P2-IMMUTABILITY-POLICY-20260703`
+- status: `completed_validated_local_only_no_go_upload_deferred`
+- validator: `KMFA/tools/check_v014_s02_p2_immutability_policy.py`
+- scope: v0.1.4 S02-P2 immutability policy only; reused S02-P1 metadata protocol dependency, validated raw manifest append-only immutable fields, derived data version invalidation/rerun/compare no-overwrite protocol, control event no-raw-write boundary and raw inbox no-read/no-list/no-mutation guard.
+- blocker_state: S02-P3=false, Stage 2 review=false, GitHub upload=false, raw inventory=false, raw value matching=false, formal_report_allowed=false, delivery_allowed=false, current_go_no_go=NO_GO.
+- evidence: `KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/human/s02_p2_completion_record.md`
+
+product_version: 0.1.4-s02p2-immutability-policy
+version_matrix_product_version_reference: 0.1.4-s02p2-immutability-policy
+
 ## 2026-07-03 - 0.1.4-s02p1-metadata-protocol
 
 - task_id: `KMFA-V014-S02-P1-METADATA-PROTOCOL-20260703`
