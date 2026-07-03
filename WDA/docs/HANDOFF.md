@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA v0.1-C minimal query and report entry.
+Execute WDA v0.2-R1 full-auto WeChat export to Chinese human-readable intelligence workspace.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is local static query/report entry over the minimal Data Core seed and analysis layer, not RAG/Web/Matrix buildout
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, and v0.1-C local query/report entry artifacts generated
+- Product scope: WDA Control Plane for WeChat data analysis feasibility and local Chinese human-readable intelligence reports; current scope is v0.2-R1 productized local report workspace plus full-auto pipeline runbook/spec, not RAG/Web/Matrix buildout
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, v0.1-C local query/report entry, and v0.2-R1 local Chinese human-readable workspace artifacts generated
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -30,11 +30,13 @@ Execute WDA v0.1-C minimal query and report entry.
 - Latest v0.1-A outputs: `WDA/docs/v0_1_data_core_seed/`
 - Latest v0.1-B outputs: `WDA/docs/v0_1_analysis_layer/`
 - Latest v0.1-C outputs: `WDA/docs/v0_1_query_report_entry/`
+- Latest v0.2-R1 outputs: `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Latest Sprint 2M-B local Raw Import Pack: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2m_b_subject_coverage_import_validation/`
 - Latest v0.1-A local Data Core seed: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/data_core_seed/wda_v0_1_seed.sqlite`
 - Latest v0.1-B local analysis layer: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/analysis_layer/`
 - Latest v0.1-C local query/report entry: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/query_report_entry/`
+- Latest v0.2-R1 local human-readable workspace: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/`
 - Raw Gate: `First-Batch Subject Coverage Proven`; full Raw Gate Go is not proven
 
 ## Key Decisions
@@ -97,6 +99,10 @@ Execute WDA v0.1-C minimal query and report entry.
 - v0.1-B created local full-sensitive subject reports under WDA_MetaData and repo-safe summaries under `WDA/docs/v0_1_analysis_layer/`.
 - v0.1-C created a local static query/report entry with `index.html`, `index.md`, 5 subject pages, query examples, an operator guide, and v0.1 closure summary.
 - v0.1-C is not a web app and not RAG. It only links local seed, analysis outputs, and subject reports under WDA_MetaData.
+- v0.2-R1 creates a productized local Chinese human-readable intelligence workspace under WDA_MetaData with dashboard, action reports, contact radar, evidence index, operator guide, config, and pipeline runbook.
+- v0.2-R1 has a runnable new-computer one-command entrypoint: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/run_wda_v0_2_r1.sh`.
+- v0.2-R1 does not run the old-computer exporter. It defines the old-computer all-conversation export runner spec and keeps one-time old-computer setup as the remaining full-coverage blocker.
+- v0.2-R1 local reports may contain full-sensitive evidence excerpts and must remain under WDA_MetaData; repo docs contain only structure, counts, runbooks, and safety boundaries.
 - RAG/Web/Matrix remain blocked until repeatable broader import-readiness and Data Core readiness are proven.
 
 ## Files To Read First
@@ -188,6 +194,12 @@ Execute WDA v0.1-C minimal query and report entry.
 - `WDA/docs/v0_1_query_report_entry/repo_safe_report_index.md`
 - `WDA/docs/v0_1_query_report_entry/v0_1_closure_summary.md`
 - `WDA/docs/v0_1_query_report_entry/next_v0_2_options.md`
+- `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/README.md`
+- `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/full_auto_pipeline_design.md`
+- `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/one_command_runbook.md`
+- `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/validation_report.md`
+- `WDA/scripts/wda_v0_2_r1_generate_workspace.py`
+- `WDA/scripts/run_wda_v0_2_r1.sh`
 
 ## Validation
 
@@ -206,6 +218,35 @@ Latest verified command:
 ```
 
 Result: passed with `drift_count=0` and `reference_issue_count=0` after Sprint 2B output generation.
+
+Latest v0.2-R1 local validation:
+
+- Local output root: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/`
+- Repo-safe docs: `WDA/docs/v0_2_r1_full_auto_human_readable_workspace/`
+- New-computer one-command entrypoint: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/run_wda_v0_2_r1.sh`
+- SQLite seed opened read-only: true
+- SQLite integrity check: `ok`
+- Messages: `500`
+- Conversations: `5`
+- Contacts: `23`
+- Subjects: `5`
+- Message subject links: `500`
+- Media index rows: `0`
+- Keyword signal hits: `514`
+- Todo candidates: `50`
+- Opportunity candidates: `30`
+- Risk candidates: `16`
+- Behavior indicator rows: `5`
+- Local Chinese reports generated: true
+- Dashboard generated: `dashboard/index.html`, `dashboard/index.md`
+- Contact radar subject pages: `5`
+- `李晶工作交接` hits: `0`
+- External hard drive accessed: false
+- WeChat exporter run: false
+- OpenAI API called with raw content: false
+- RAG/Web/Matrix started: false
+- Repo raw content written: false
+- Remaining one-time setup: old-computer full-export runner with all-conversation chunk/checkpoint/resume
 
 Latest Sprint 2B local validation:
 
