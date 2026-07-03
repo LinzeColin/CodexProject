@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2G automated WeChat message acquisition feasibility and controlled trial plan.
+Execute WDA Stage 2 Sprint 2I validation of Sprint 2H non-sensitive reports and remediation decision.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is automated acquisition route selection, not raw message reading
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, and Sprint 2G automated route feasibility artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is Sprint 2H report validation and remediation decision, not raw message reading
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, and Sprint 2I report validation artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -21,6 +21,7 @@ Execute WDA Stage 2 Sprint 2G automated WeChat message acquisition feasibility a
 - Latest Sprint 2E outputs: `WDA/docs/stage2_sprint2e_message_data_route_decision/`
 - Latest Sprint 2F outputs: `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/`
 - Latest Sprint 2G outputs: `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/`
+- Latest Sprint 2I outputs: `WDA/docs/stage2_sprint2i_2h_report_validation/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Raw Gate: `Conditional Investigation`; message readability not proven; Raw Gate is not Go
 
@@ -53,6 +54,11 @@ Execute WDA Stage 2 Sprint 2G automated WeChat message acquisition feasibility a
 - Low-risk read-only/APFS/schema-only routes have not produced message-level data.
 - Recommended next sprint is Sprint 2H controlled automated acquisition trial using one local CLI exporter route in the `wechat-cli` / `wx-cli` family, only after explicit user approval.
 - Sprint 2H should run on the old computer if the target data is the old-computer WeChat source; the new computer remains WDA Control Plane and future RAG/Web/database host.
+- Sprint 2H partially succeeded: `r266-tech/wechat-cli` / `wxkey` was installed/pinned, `wxkey bootstrap` succeeded under approved high-permission trial, and key coverage reached `25/26`.
+- Sprint 2H did not produce `messages.jsonl` or a minimal message-level sample.
+- Sprint 2H post-bootstrap `wechat-cli status`, strict status, and `wxkey doctor` live-read paths hung with no usable JSON output.
+- Sprint 2I validated only the non-sensitive report pack; it did not transfer `sensitive_local_state/`, `raw_trial_outputs/`, raw logs, key configs, decrypted DBs, or message outputs.
+- Recommended next executable step is Sprint 2I-B bounded old-computer remediation on the existing pinned primary route, only after explicit approval.
 
 ## Files To Read First
 
@@ -98,6 +104,11 @@ Execute WDA Stage 2 Sprint 2G automated WeChat message acquisition feasibility a
 - `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/candidate_tool_matrix.md`
 - `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/controlled_trial_plan.md`
 - `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/recommended_next_sprint.md`
+- `WDA/docs/stage2_sprint2i_2h_report_validation/README.md`
+- `WDA/docs/stage2_sprint2i_2h_report_validation/sprint2h_result_validation.md`
+- `WDA/docs/stage2_sprint2i_2h_report_validation/sensitive_material_exclusion_check.md`
+- `WDA/docs/stage2_sprint2i_2h_report_validation/blocker_analysis.md`
+- `WDA/docs/stage2_sprint2i_2h_report_validation/recommended_sprint2i_b_plan.md`
 
 ## Validation
 
@@ -194,6 +205,21 @@ Latest Sprint 2G automated acquisition feasibility:
 - RAG/Web/Matrix: blocked
 - Raw Gate: `Conditional Investigation`
 
+Latest Sprint 2I report validation:
+
+- Required Sprint 2I outputs present: true
+- Hard drive required: false
+- Input pack: `/Users/linzezhang/Downloads/WDA_sprint2h_non_sensitive_report_pack_for_2I.zip`
+- Input pack SHA-256: `a7c913deee0a2723806ec3ce9bb03c63f4d28f91839eaac8940f6fa111c12084`
+- Non-sensitive transferred files: 15
+- Actual transferred `sensitive_local_state/`, `raw_trial_outputs/`, raw logs, key configs, decrypted DBs, message outputs: 0
+- Sprint 2H result: partial success, no minimal message-level sample
+- Sprint 2H key coverage: `25/26`
+- `messages.jsonl` created: false
+- Recommended next step: Sprint 2I-B bounded old-computer remediation on the existing pinned primary route, only after explicit approval
+- RAG/Web/Matrix: blocked
+- Raw Gate: `Conditional Investigation`
+
 ## Next Step
 
-Run Sprint 2H only after explicit approval of one automated acquisition route. The recommended trial is a local CLI exporter in the `wechat-cli` / `wx-cli` family on the old computer, with outputs constrained to WDA_MetaData and transferred to the new computer only as approved trial artifacts or WDA Raw Import Pack candidates. Do not run third-party tools, decrypt, extract keys, bypass protected stores, open `key_info`/login/MMKV/KVDB/key-value stores, parse message content outside the approved trial boundary, upload raw data, or implement RAG/Web/Matrix before a valid `messages.jsonl` exists.
+Run Sprint 2I-B only after explicit approval. The recommended remediation is one bounded old-computer run using the existing pinned `r266-tech/wechat-cli` / `wxkey` route, strict timeouts, and minimal commands to classify the post-bootstrap hang and attempt one minimal message-level sample. Do not transfer `sensitive_local_state/`, `raw_trial_outputs/`, raw logs, key configs, decrypted DBs, or message outputs to the new computer by default. Do not start RAG/Web/Matrix before a valid `messages.jsonl` or equivalent approved message-level sample exists.
