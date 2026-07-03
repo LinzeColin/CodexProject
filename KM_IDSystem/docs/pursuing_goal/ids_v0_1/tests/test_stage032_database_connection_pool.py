@@ -13,6 +13,7 @@ PHASE1 = PURSUE_ROOT / "STAGE032_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE032_PHASE2_CONNECTION_POOL_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE032_PHASE3_SCENARIO_VALIDATION.md"
 PHASE4 = PURSUE_ROOT / "STAGE032_PHASE4_CLOSEOUT.md"
+STAGE_REVIEW = PURSUE_ROOT / "STAGE032_STAGE_REVIEW.md"
 INDEX = PURSUE_ROOT / "database_connection_pool" / "stage032_connection_pool_index.json"
 SCRIPT = ROOT / "scripts" / "check_database_connection_pool.py"
 BATCH_LOCK = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
@@ -125,16 +126,11 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'acceptance_range: "ACC-STAGE-031..ACC-STAGE-040"',
             'push_allowed: false',
             "STAGE-032:",
-            'status: "stage032_completed_local_pending_review"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
             '      - "Phase 4"',
-            'next_phase: "stage_review_gate"',
-            'next_gate: "IDS-STAGE032-REVIEW-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE032-P4"',
             'acceptance_id: "ACC-STAGE-032"',
-            'acceptance_status: "local_passed_pending_stage_review"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE2_CONNECTION_POOL_SLICE.md",
@@ -146,11 +142,28 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content",
         ]
+        allowed_lock_status_terms = [
+            'status: "stage032_completed_local_pending_review"',
+            'status: "stage032_completed_reviewed_local"',
+        ]
+        allowed_lock_next_terms = [
+            'next_phase: "stage_review_gate"',
+            'next_stage: "STAGE-033"',
+        ]
+        allowed_lock_gate_terms = [
+            'next_gate: "IDS-STAGE032-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE033-P1-GATE"',
+        ]
+        allowed_lock_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE032-P4"',
+            'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
+        ]
+        allowed_lock_acceptance_terms = [
+            'acceptance_status: "local_passed_pending_stage_review"',
+            'acceptance_status: "reviewed_local_passed"',
+        ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE032"',
-            'current_phase_id: "IDS-STAGE032-P4"',
-            'current_task_id: "IDS-V0_1-STAGE032-P4"',
-            'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
             'stage_id: "IDS-STAGE032"',
             'name: "STAGE-032 · 数据库连接与连接池基线"',
             'phase_id: "IDS-STAGE032-P1"',
@@ -161,6 +174,18 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'status: "passed_with_local_evidence"',
             'phase_id: "IDS-STAGE032-P4"',
             'status: "passed_with_local_evidence"',
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE032-P4"',
+            'current_phase_id: "IDS-STAGE032-REVIEW"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE032-P4"',
+            'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
+            'next_gate_id: "IDS-STAGE033-P1-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE032-P4-20260703-001"',
@@ -178,9 +203,17 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
         for term in lock_terms:
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_status_terms), allowed_lock_status_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_next_terms), allowed_lock_next_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_gate_terms), allowed_lock_gate_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_task_terms), allowed_lock_task_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_acceptance_terms), allowed_lock_acceptance_terms)
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -488,6 +521,90 @@ class Stage032DatabaseConnectionPoolPhase4Tests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, text)
+
+
+class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
+    def test_stage_review_artifact_records_findings_repairs_and_no_upload_boundary(self):
+        self.assertTrue(STAGE_REVIEW.is_file(), f"missing stage review: {STAGE_REVIEW}")
+        review_text = STAGE_REVIEW.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE032-REVIEW",
+            "ACC-STAGE-032",
+            "STAGE-032 · 数据库连接与连接池基线",
+            "STAGE032-REVIEW-F1",
+            "STAGE032-REVIEW-F2",
+            "STAGE032-REVIEW-F3",
+            "STAGE032-REVIEW-F4",
+            "P0 source binding",
+            "Phase 1 boundary",
+            "Phase 2 connection pool checker",
+            "Phase 3 scenario validation",
+            "Phase 4 closeout",
+            "build_stage032_delivery_report",
+            "completed_reviewed_local",
+            "IDS-STAGE033-P1-GATE",
+            "NO_GITHUB_UPLOAD",
+            "NO_APP_REINSTALL",
+            "NO_STAGE033_THIS_RUN",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, review_text)
+
+    def test_stage_review_gate_batch_roadmap_and_event_track_reviewed_local_no_upload(self):
+        self.assertTrue(STAGE_REVIEW.is_file(), f"missing stage review: {STAGE_REVIEW}")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        lock_terms = [
+            'status: "stage032_completed_reviewed_local"',
+            'STAGE-032:',
+            'status: "completed_reviewed_local"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            '      - "Phase 4"',
+            'review_status: "passed"',
+            'next_stage: "STAGE-033"',
+            'next_gate: "IDS-STAGE033-P1-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
+            'acceptance_status: "reviewed_local_passed"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_STAGE_REVIEW.md",
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE032"',
+            'current_phase_id: "IDS-STAGE032-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
+            'next_gate_id: "IDS-STAGE033-P1-GATE"',
+            'review_id: "IDS-STAGE032-REVIEW"',
+            'task_id: "IDS-V0_1-STAGE032-REVIEW"',
+            'status: "completed"',
+            "STAGE032_STAGE_REVIEW.md",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE032-REVIEW-20260703-001"',
+            '"event_type":"stage_review"',
+            '"task_id":"IDS-V0_1-STAGE032-REVIEW"',
+            '"ACC-STAGE-032"',
+            "STAGE032_STAGE_REVIEW.md",
+            "IDS-STAGE033-P1-GATE",
+        ]
+
+        for term in lock_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, lock_text)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
 
 
 if __name__ == "__main__":

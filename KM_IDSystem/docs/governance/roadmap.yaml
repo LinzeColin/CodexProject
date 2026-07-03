@@ -2,18 +2,18 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE032"
-current_phase_id: "IDS-STAGE032-P4"
-current_task_id: "IDS-V0_1-STAGE032-P4"
-next_gate_id: "IDS-STAGE032-REVIEW-GATE"
+current_phase_id: "IDS-STAGE032-REVIEW"
+current_task_id: "IDS-V0_1-STAGE032-REVIEW"
+next_gate_id: "IDS-STAGE033-P1-GATE"
 current_transition_history:
   previous_state:
+    current_phase_id: "IDS-STAGE032-P4"
+    current_task_id: "IDS-V0_1-STAGE032-P4"
+    next_gate_id: "IDS-STAGE032-REVIEW-GATE"
+  earlier_state:
     current_phase_id: "IDS-STAGE032-P3"
     current_task_id: "IDS-V0_1-STAGE032-P3"
     next_gate_id: "IDS-STAGE032-P4-GATE"
-  earlier_state:
-    current_phase_id: "IDS-STAGE032-P2"
-    current_task_id: "IDS-V0_1-STAGE032-P2"
-    next_gate_id: "IDS-STAGE032-P3-GATE"
 total_estimated_hours: 158
 completed_estimated_hours: 283
 stages:
@@ -7661,7 +7661,7 @@ stages:
     stage_id: "IDS-STAGE032"
     name: "STAGE-032 · 数据库连接与连接池基线"
     person_goal: "建立后端、worker、报告任务、检索任务的数据库连接策略。"
-    status: "completed_local_pending_review"
+    status: "completed_reviewed_local"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
       - "连接 PostgreSQL 或执行真实 migration dry-run/apply/rollback/backup/restore/schema diff"
@@ -7670,7 +7670,7 @@ stages:
       - "写 runtime output、database、manifest、evidence ledger、audit log、index、report、PDF、screenshot、JSON output 或 production data artifact"
       - "提交 secrets、API key、数据库密码、credential-bearing DSN 或云端凭证"
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档、placeholder corpus 或伪造证据"
-      - "执行 GitHub upload、PR、merge、app reinstall、batch review、stage review 或进入 STAGE-033"
+      - "执行 GitHub upload、PR、merge、app reinstall、batch review 或进入 STAGE-033"
     stop_gate:
       gate_id: "IDS-STAGE032-P4-GATE"
       status: "passed_with_local_evidence"
@@ -7861,3 +7861,16 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "如果 Phase 4 closeout 被误读为生产 PostgreSQL 连接、连接池上线、数据库迁移授权、stage review 完成或批次上传授权，可能提前连接数据库、提交 DSN、实例化 pool、写 runtime database、读取 raw metadata、跳过复审或提前上传未满十阶段批次。"
             rollback: "Revert check_database_connection_pool.py Phase4 additions, STAGE032 Phase4 closeout evidence, BATCH031_040_UPLOAD_LOCK.yaml, Stage032/Stage005 tests, Stage005 validator updates, roadmap/event changes, compatibility-test updates, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, manifests, evidence ledgers, audit logs, indexes, PostgreSQL data directories, app entries, GitHub state, stage review gate, batch review gate, upload gate, or STAGE-033."
+    review:
+      review_id: "IDS-STAGE032-REVIEW"
+      task_id: "IDS-V0_1-STAGE032-REVIEW"
+      status: "completed"
+      reviewed_at_utc: "2026-07-03T11:09:12Z"
+      acceptance_ids:
+        - "ACC-STAGE-032"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_STAGE_REVIEW.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/governance/events.jsonl"
+      test_results: "STAGE-032 whole-stage review verified the P0 taskpack binding, Phase 1-4 evidence, static database connection-pool checker, scenario coverage, closeout evidence, raw data boundary, owner/governance state, and no-upload state. RED evidence: Stage032 review test failed as expected because STAGE032_STAGE_REVIEW.md was missing, and Stage005 reviewed-local test failed as expected because IDS-V0_1-STAGE032-REVIEW was not accepted. GREEN validation after repair: Stage032 focused tests ran 13 tests OK; Stage031 compatibility tests ran 13 tests OK; Stage005 governance regression ran 109 tests OK; full IDS v0.1 pursuing-goal discovery ran 395 tests OK; Stage005 validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, tracked forbidden runtime files, or data-boundary gaps; check_database_connection_pool.py returned the tracked static Phase4 delivery report with no_raw=True and no_fake=True; py_compile passed for changed tests, validator, and checker; events.jsonl parsed with 151 events, 0 duplicate ids, and 0 JSON errors; render --project KM_IDSystem --write updated 3 owner files; check-render returned drift_count=0; git diff --check passed. Full semantic validate returned the expected sparse-worktree diagnostic rc=1 with 29 missing root schema/workflow/hook/unrelated registered-project errors, so this run did not expand sparse checkout. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit /Users/linzezhang/Downloads/IDS_MetaData raw metadata database content. This run did not connect to PostgreSQL, instantiate connection pools, create DSNs or credential-bearing configs, execute live migration dry-run/apply/rollback/backup/restore/schema diff, write runtime output, start services, install dependencies, push to GitHub, create or merge a PR, reinstall app entries, run batch review, or enter STAGE-033. Fake IDS business data, fake database rows, fake source documents, placeholder corpus, and fabricated evidence remain forbidden."
+      decision: "ACC-STAGE-032 locally reviewed and passed; no GitHub upload, no app reinstall, and no STAGE-033 work in this run."
