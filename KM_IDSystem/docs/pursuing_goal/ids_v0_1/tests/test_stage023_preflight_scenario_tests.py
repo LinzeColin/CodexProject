@@ -429,6 +429,7 @@ class Stage023PreflightScenarioTestsPhase1Tests(unittest.TestCase):
             'status: "stage023_phase2_in_progress"',
             'status: "stage023_phase3_in_progress"',
             'status: "stage023_completed_local_pending_stage024"',
+            'status: "stage024_phase1_in_progress"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_status_terms),
@@ -440,6 +441,7 @@ class Stage023PreflightScenarioTestsPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE023-P2"',
             'current_task_id: "IDS-V0_1-STAGE023-P3"',
             'current_task_id: "IDS-V0_1-STAGE023-P4"',
+            'current_task_id: "IDS-V0_1-STAGE024-P1"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_task_terms),
