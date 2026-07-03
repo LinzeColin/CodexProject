@@ -1,29 +1,20 @@
 # Chinese Report Summary
 
-## Status
+Generated local reports:
 
-Chinese human-readable reports were not regenerated for v0.2-R2 because the
-full-auto transfer bundle is missing.
+- today_briefing.md
+- contact_radar/
+- work_handoff_summary.md
+- work_information_summary.md
+- work_optimization.md
+- todo_action_center.md
+- risk_center.md
+- opportunity_center.md
+- personal_behavior_review.md
+- relationship_roi.md
+- evidence_index.md
 
-## Expected Reports After Unblock
-
-- `dashboard/index.html`
-- `dashboard/index.md`
-- `reports/today_briefing.md`
-- `reports/contact_radar/`
-- `reports/work_handoff_summary.md`
-- `reports/work_information_summary.md`
-- `reports/work_optimization.md`
-- `reports/todo_action_center.md`
-- `reports/risk_center.md`
-- `reports/opportunity_center.md`
-- `reports/personal_behavior_review.md`
-- `reports/relationship_roi.md`
-- `reports/evidence_index.md`
-
-## Required Human-Readable Sections
-
-Future regenerated reports must include:
+Each human-facing report uses:
 
 - 结论
 - 关键发现

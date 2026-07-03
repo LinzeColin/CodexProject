@@ -1,14 +1,19 @@
 # Updated Handoff Note
 
-v0.2-R2-B was attempted on the new computer and blocked before import.
+v0.2-R2-B imported the full-auto transfer bundle from:
 
-Exact blocker:
+`/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_export/wda_v0_2_r2_full_export_transfer_bundle.zip`
+
+Requested path was:
 
 `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/input_full_export/wda_v0_2_r2_full_export_transfer_bundle.zip`
 
-does not exist, and the requested `v0_2_r2` input directory was not present.
+Local output root:
 
-No import, Raw Import Pack conversion, Data Core rebuild, or v0.2-R2 Chinese
-report regeneration was executed.
+`/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace`
+
+Messages imported: `612664`.
+Conversations imported: `1552`.
+Contacts imported: `5870`.
 
 RAG/Web/Matrix remain not started.

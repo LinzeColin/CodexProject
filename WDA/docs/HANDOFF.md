@@ -10,7 +10,7 @@ Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and reg
 - Project directory: `WDA/`
 - Branch: `codex/wda`
 - Product scope: WDA Control Plane for WeChat data analysis feasibility and local Chinese human-readable intelligence reports; current scope is v0.2-R2-B full-auto bundle import, Data Core rebuild, and report regeneration, not RAG/Web/Matrix buildout
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, v0.1-C local query/report entry, v0.2-R1 local Chinese human-readable workspace, and v0.2-R2-B missing-input blocker documentation generated
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, v0.1-C local query/report entry, v0.2-R1 local Chinese human-readable workspace, and v0.2-R2-B full-auto bundle import/Data Core/report workspace generated
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -39,7 +39,8 @@ Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and reg
 - Latest v0.1-C local query/report entry: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/query_report_entry/`
 - Latest v0.2-R1 local human-readable workspace: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/`
 - Latest v0.2-R2-B local validation output: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/validation_report.json`
-- Raw Gate: `First-Batch Subject Coverage Proven`; full Raw Gate Go is not proven
+- Latest v0.2-R2-B local Data Core: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/data_core/wda_v0_2_r2.sqlite`
+- Raw Gate: `Full-Auto Message Import Proven`; RAG/Web/Matrix Go is not proven
 
 ## Key Decisions
 
@@ -105,9 +106,12 @@ Execute WDA v0.2-R2-B import full-auto export bundle, rebuild Data Core, and reg
 - v0.2-R1 has a runnable new-computer one-command entrypoint: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r1/run_wda_v0_2_r1.sh`.
 - v0.2-R1 does not run the old-computer exporter. It defines the old-computer all-conversation export runner spec and keeps one-time old-computer setup as the remaining full-coverage blocker.
 - v0.2-R1 local reports may contain full-sensitive evidence excerpts and must remain under WDA_MetaData; repo docs contain only structure, counts, runbooks, and safety boundaries.
-- v0.2-R2-B attempted to import the full-auto export bundle, but the required zip was missing at `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/input_full_export/wda_v0_2_r2_full_export_transfer_bundle.zip`.
-- v0.2-R2-B did not generate a v0.2-R2 Raw Import Pack, Data Core, analysis outputs, dashboard, or Chinese reports because the input bundle was absent.
-- v0.2-R2-B wrote a local blocker validation report only; it did not upload raw data, run WeChat exporter tools, call OpenAI API with raw messages, or start RAG/Web/Matrix.
+- v0.2-R2-B requested bundle path was missing at `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/input_full_export/wda_v0_2_r2_full_export_transfer_bundle.zip`.
+- v0.2-R2-B found and used the same-name local transfer bundle at `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_export/wda_v0_2_r2_full_export_transfer_bundle.zip`.
+- v0.2-R2-B validated bundle checksums and forbidden-file policy with `0` checksum mismatches and `0` forbidden file hits.
+- v0.2-R2-B generated a local full-sensitive Raw Import Pack, rebuilt SQLite Data Core, reran deterministic analysis, and regenerated Chinese human-readable reports under `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/`.
+- v0.2-R2-B imported `612,664` messages, `1,552` conversations, and `5,870` contacts; failed conversations: `0`; media rows: `0`.
+- v0.2-R2-B did not upload raw data, run WeChat exporter tools, call OpenAI API with raw messages, or start RAG/Web/Matrix.
 - RAG/Web/Matrix remain blocked until repeatable broader import-readiness and Data Core readiness are proven.
 
 ## Files To Read First
@@ -256,6 +260,38 @@ Latest v0.2-R1 local validation:
 - RAG/Web/Matrix started: false
 - Repo raw content written: false
 - Remaining one-time setup: old-computer full-export runner with all-conversation chunk/checkpoint/resume
+
+Latest v0.2-R2-B full-auto import validation:
+
+- Requested input path: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/input_full_export/wda_v0_2_r2_full_export_transfer_bundle.zip`
+- Requested input path exists: false
+- Actual bundle used: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_export/wda_v0_2_r2_full_export_transfer_bundle.zip`
+- Fallback same-name bundle used: true
+- Bundle sha256: `59ae77740b20c240c434ecec0fe1d89ff537b48f0b1fb4dbfcde338f7b79d7f6`
+- Zip files: `2003`
+- Raw JSONL chunks: `1990`
+- Checksum mismatches: `0`
+- Forbidden file hits: `0`
+- Invalid JSONL rows: `0`
+- Messages imported: `612,664`
+- Conversations imported: `1,552`
+- Contacts imported: `5,870`
+- Failed conversations: `0`
+- Media rows: `0`
+- Time range: `2022-10-02 07:49:53 UTC` to `2026-07-03 00:42:04 UTC`
+- Signal counts: communication behavior `237,653`; todo/commitment `48,387`; risk/blocker `20,197`; opportunity `18,781`; money/invoice/contract/acceptance `16,659`
+- Local Data Core: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/data_core/wda_v0_2_r2.sqlite`
+- SQLite integrity check: `ok`
+- Local Raw Import Pack: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/raw_import_pack/`
+- Local analysis outputs: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/analysis_outputs/`
+- Local dashboard: `/Users/linzezhang/Downloads/WDA_MetaData/v0_2_r2/full_auto_workspace/dashboard/index.html`
+- Local reports checked: `91` markdown pages with required Chinese sections
+- External hard drive accessed: false
+- WeChat exporter run on new computer: false
+- OpenAI API called with raw messages: false
+- Raw data uploaded: false
+- RAG/Web/Matrix started: false
+- Repo raw content written: false
 
 Latest Sprint 2B local validation:
 
@@ -509,4 +545,4 @@ Latest v0.1-C minimal query/report entry:
 
 ## Next Step
 
-Choose a v0.2 option focused on repeatability and broader import-readiness. Do not start RAG/Web/Matrix, media handling, raw upload, or OpenAI API calls with raw message content until a later explicit gate allows it.
+Execute WDA v0.2-R3 incremental update runner planning/implementation: detect new transfer bundles, validate checksums and forbidden files, import only new chunks/messages, preserve the v0.2-R2 Data Core, regenerate changed reports, and keep all full-sensitive outputs under WDA_MetaData. Do not start RAG/Web/Matrix, media handling, raw upload, or OpenAI API calls with raw message content until a later explicit gate allows it.
