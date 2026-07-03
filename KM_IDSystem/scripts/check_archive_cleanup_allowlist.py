@@ -20,8 +20,25 @@ import check_archive_adversarial_tests as archive_adversarial
 
 ENTRANCE = "IDS 系统运营入口"
 ARCHIVE_CLEANUP_SCHEMA = "ids.stage029.archive_cleanup_allowlist.v1"
+ARCHIVE_CLEANUP_SCENARIO_SCHEMA = "ids.stage029.archive_cleanup_allowlist.scenario_validation.v1"
 ARCHIVE_CLEANUP_ALLOWLIST_ID_PREFIX = "ids.stage029.cleanup_allowlist"
 REQUIRED_PIPELINE = ["hash", "manifest", "dedup", "parser"]
+REQUIRED_STAGE029_SCENARIOS = (
+    "path_traversal",
+    "absolute_path",
+    "archive_bomb",
+    "nested_archive",
+    "garbled_filename",
+    "too_many_files",
+)
+EXPECTED_STAGE029_SCENARIO_RISKS = {
+    "path_traversal": "ARCHIVE_ADVERSARIAL_PATH_TRAVERSAL_BLOCKED",
+    "absolute_path": "ARCHIVE_ADVERSARIAL_ABSOLUTE_PATH_BLOCKED",
+    "archive_bomb": "ARCHIVE_ADVERSARIAL_TOTAL_SIZE_LIMIT_EXCEEDED",
+    "nested_archive": "ARCHIVE_ADVERSARIAL_NESTED_DEPTH_LIMIT_EXCEEDED",
+    "garbled_filename": "ARCHIVE_ADVERSARIAL_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+    "too_many_files": "ARCHIVE_ADVERSARIAL_FILE_COUNT_LIMIT_EXCEEDED",
+}
 ZERO_JOB_STARTS = {
     "hash": 0,
     "manifest": 0,
@@ -406,6 +423,209 @@ def build_archive_cleanup_allowlist(
         "does_not_call_external_apis": True,
         "does_not_read_raw_metadata": archive_report.get("does_not_read_raw_metadata", True),
         "does_not_use_fake_ids_business_data": True,
+    }
+
+
+def _flatten_scenario_reingest_queue(scenario_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    queue: list[dict[str, Any]] = []
+    for result in scenario_results:
+        for item in result["archive_cleanup_report"]["post_extract_reingest"].get("reingest_queue", []):
+            queue.append({"scenario_id": result["scenario_id"], **deepcopy(item)})
+    return queue
+
+
+def _flatten_scenario_cleanup_allowlist(scenario_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    cleanup_items: list[dict[str, Any]] = []
+    for result in scenario_results:
+        for item in result["archive_cleanup_report"].get("cleanup_allowlist", []):
+            cleanup_items.append({"scenario_id": result["scenario_id"], **deepcopy(item)})
+    return cleanup_items
+
+
+def _build_scenario_reingest_validation(reingest_queue: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        "state": "ARCHIVE_CLEANUP_REINGEST_VALIDATED" if reingest_queue else "ARCHIVE_CLEANUP_REINGEST_REVIEW_REQUIRED",
+        "required_pipeline": list(REQUIRED_PIPELINE),
+        "safe_extracted_file_count": len(reingest_queue),
+        "reingest_queue": deepcopy(reingest_queue),
+        "actual_jobs_started": dict(ZERO_JOB_STARTS),
+        "import_queue_created": False,
+    }
+
+
+def _build_scenario_cleanup_validation(
+    *,
+    cleanup_allowlist: list[dict[str, Any]],
+    scenario_results: list[dict[str, Any]],
+) -> dict[str, Any]:
+    cleanup_classes = {item.get("cleanup_candidate_class") for item in cleanup_allowlist}
+    cleanup_uris = [item.get("cleanup_candidate_uri") for item in cleanup_allowlist]
+    original_archive_refs = [result["archive_cleanup_report"]["original_archive_ref"] for result in scenario_results]
+    original_archive_in_cleanup = any(ref in cleanup_uris for ref in original_archive_refs)
+    temp_only = bool(cleanup_allowlist) and cleanup_classes <= {"ARCHIVE_STAGING_TEMP_FILE"}
+    protected_refs_preserved = all(
+        result["archive_cleanup_report"]["cleanup_validation"]["protected_refs_preserved"]
+        and result["archive_cleanup_report"]["does_not_clean_original_archive"]
+        and result["archive_cleanup_report"]["does_not_clean_fact_source_or_evidence"]
+        for result in scenario_results
+    )
+    return {
+        "state": (
+            "ARCHIVE_CLEANUP_SCENARIO_ALLOWLIST_VALIDATED"
+            if temp_only and protected_refs_preserved and not original_archive_in_cleanup
+            else "ARCHIVE_CLEANUP_SCENARIO_ALLOWLIST_REVIEW_REQUIRED"
+        ),
+        "allowed_cleanup_classes": sorted(cleanup_classes),
+        "cleanup_allowlist_uris": cleanup_uris,
+        "cleanup_targets_are_staging_temp_files_only": temp_only,
+        "original_archive_in_cleanup_allowlist": original_archive_in_cleanup,
+        "protected_refs_preserved": protected_refs_preserved and not original_archive_in_cleanup,
+        "does_not_clean_original_archive": not original_archive_in_cleanup,
+        "does_not_clean_fact_source_or_evidence": protected_refs_preserved,
+    }
+
+
+def _build_scenario_manual_review_validation(scenario_results: list[dict[str, Any]]) -> dict[str, Any]:
+    owner_review_entry_count = sum(result["archive_cleanup_report"]["owner_review_entry_count"] for result in scenario_results)
+    quarantine_entry_count = sum(result["archive_cleanup_report"]["quarantine_entry_count"] for result in scenario_results)
+    return {
+        "state": (
+            "ARCHIVE_CLEANUP_MANUAL_REVIEW_VALIDATED"
+            if owner_review_entry_count and quarantine_entry_count
+            else "ARCHIVE_CLEANUP_MANUAL_REVIEW_REVIEW_REQUIRED"
+        ),
+        "owner_review_entry_count": owner_review_entry_count,
+        "quarantine_entry_count": quarantine_entry_count,
+        "risk_files_to_owner_review": owner_review_entry_count > 0,
+        "quarantine_required": quarantine_entry_count > 0,
+    }
+
+
+def _zero_persistence_deltas_for_reports(scenario_results: list[dict[str, Any]]) -> dict[str, int]:
+    deltas = dict(NO_PERSISTENCE_DELTAS)
+    for result in scenario_results:
+        for key, value in result["archive_cleanup_report"].get("no_persistence_deltas", {}).items():
+            deltas[key] = deltas.get(key, 0) + int(value or 0)
+    return deltas
+
+
+def build_stage029_scenario_report(
+    *,
+    scenario_archives: dict[str, dict[str, Any]],
+    evaluated_at: str | None = None,
+    required_scenarios: tuple[str, ...] = REQUIRED_STAGE029_SCENARIOS,
+) -> dict[str, Any]:
+    """Validate Stage 029 Phase 3 cleanup allowlist scenarios without persistence."""
+
+    scenario_results: list[dict[str, Any]] = []
+    required_scenario_set = set(required_scenarios)
+    for scenario_id in required_scenarios:
+        scenario_config = dict(scenario_archives[scenario_id])
+        cleanup_report = build_archive_cleanup_allowlist(
+            archive_uri=scenario_config["archive_uri"],
+            staging_area_uri=scenario_config["staging_area_uri"],
+            evaluated_at=evaluated_at,
+            archive_file_count_limit=scenario_config.get(
+                "archive_file_count_limit",
+                archive_adversarial.safe_extraction_engine.archive_threat_model.DEFAULT_ARCHIVE_FILE_COUNT_LIMIT,
+            ),
+            archive_total_size_limit_bytes=scenario_config.get(
+                "archive_total_size_limit_bytes",
+                archive_adversarial.safe_extraction_engine.archive_threat_model.DEFAULT_ARCHIVE_TOTAL_SIZE_LIMIT_BYTES,
+            ),
+            archive_single_file_size_limit_bytes=scenario_config.get(
+                "archive_single_file_size_limit_bytes",
+                archive_adversarial.safe_extraction_engine.archive_threat_model.DEFAULT_ARCHIVE_SINGLE_FILE_SIZE_LIMIT_BYTES,
+            ),
+            archive_nested_depth_limit=scenario_config.get(
+                "archive_nested_depth_limit",
+                archive_adversarial.safe_extraction_engine.archive_threat_model.DEFAULT_ARCHIVE_NESTED_DEPTH_LIMIT,
+            ),
+        )
+        risk_codes = [entry["risk_code"] for entry in cleanup_report["risk_entries"]]
+        expected_risk_code = EXPECTED_STAGE029_SCENARIO_RISKS.get(scenario_id)
+        expected_risk_observed = expected_risk_code is None or expected_risk_code in risk_codes
+        scenario_results.append(
+            {
+                "scenario_id": scenario_id,
+                "scenario_state": (
+                    "ARCHIVE_CLEANUP_SCENARIO_VALIDATED"
+                    if expected_risk_observed
+                    else "ARCHIVE_CLEANUP_SCENARIO_REVIEW_REQUIRED"
+                ),
+                "expected_risk_code": expected_risk_code,
+                "expected_risk_observed": expected_risk_observed,
+                "risk_codes": risk_codes,
+                "cleanup_decision_state": cleanup_report["cleanup_decision_state"],
+                "safe_extracted_file_count": cleanup_report["safe_extracted_file_count"],
+                "blocked_entry_count": cleanup_report["blocked_entry_count"],
+                "quarantine_entry_count": cleanup_report["quarantine_entry_count"],
+                "cleanup_candidate_count": cleanup_report["cleanup_candidate_count"],
+                "cleanup_runner_executed": cleanup_report["cleanup_runner_executed"],
+                "does_not_delete_files": cleanup_report["does_not_delete_files"],
+                "archive_cleanup_report": cleanup_report,
+            }
+        )
+
+    reingest_queue = _flatten_scenario_reingest_queue(scenario_results)
+    cleanup_allowlist = _flatten_scenario_cleanup_allowlist(scenario_results)
+    reingest_validation = _build_scenario_reingest_validation(reingest_queue)
+    cleanup_validation = _build_scenario_cleanup_validation(
+        cleanup_allowlist=cleanup_allowlist,
+        scenario_results=scenario_results,
+    )
+    manual_review_validation = _build_scenario_manual_review_validation(scenario_results)
+    required_scenarios_covered = required_scenario_set <= set(scenario_archives)
+    scenarios_validated = all(
+        result["scenario_state"] == "ARCHIVE_CLEANUP_SCENARIO_VALIDATED" for result in scenario_results
+    )
+    validation_passed = (
+        required_scenarios_covered
+        and scenarios_validated
+        and reingest_validation["state"] == "ARCHIVE_CLEANUP_REINGEST_VALIDATED"
+        and cleanup_validation["state"] == "ARCHIVE_CLEANUP_SCENARIO_ALLOWLIST_VALIDATED"
+        and manual_review_validation["state"] == "ARCHIVE_CLEANUP_MANUAL_REVIEW_VALIDATED"
+    )
+    no_persistence_deltas = _zero_persistence_deltas_for_reports(scenario_results)
+    return {
+        "schema_version": ARCHIVE_CLEANUP_SCENARIO_SCHEMA,
+        "source_schema_version": ARCHIVE_CLEANUP_SCHEMA,
+        "stage": "STAGE-029",
+        "phase": "Phase 3",
+        "task_id": "IDS-V0_1-STAGE029-P3",
+        "acceptance_id": "ACC-STAGE-029",
+        "entrance": ENTRANCE,
+        "evaluated_at": evaluated_at,
+        "required_scenarios": list(required_scenarios),
+        "scenario_count": len(scenario_results),
+        "required_scenarios_covered": required_scenarios_covered,
+        "validation_state": (
+            "ARCHIVE_CLEANUP_SCENARIO_VALIDATION_PASSED"
+            if validation_passed
+            else "ARCHIVE_CLEANUP_SCENARIO_VALIDATION_REVIEW_REQUIRED"
+        ),
+        "scenario_results": scenario_results,
+        "reingest_validation": reingest_validation,
+        "cleanup_validation": cleanup_validation,
+        "manual_review_validation": manual_review_validation,
+        "processing_guard": dict(ZERO_JOB_STARTS),
+        "no_persistence_deltas": no_persistence_deltas,
+        "cleanup_runner_executed": False,
+        "does_not_delete_files": True,
+        "does_not_clean_original_archive": cleanup_validation["does_not_clean_original_archive"],
+        "does_not_clean_fact_source_or_evidence": cleanup_validation["does_not_clean_fact_source_or_evidence"],
+        "does_not_write_archive_cleanup_runtime_output": True,
+        "does_not_write_archive_manifest_runtime_output": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_use_fake_ids_business_data": True,
+        "does_not_start_processing_jobs": True,
+        "does_not_create_import_queue": True,
+        "does_not_write_database": True,
+        "does_not_write_reports": True,
+        "does_not_write_evidence_ledger": True,
+        "does_not_write_audit_log": True,
+        "does_not_write_index": True,
+        "does_not_write_document_chunk_job_import_rows": True,
     }
 
 
