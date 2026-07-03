@@ -34,7 +34,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态子集索引；不等于完整报告正文或真实 SMTP 发送 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 430 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 431 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
@@ -366,12 +366,12 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 - 历史当时默认下一步是先修复 DAILY_OPERATION 预检前置条件再重跑预检；当前默认下一步已经变为 owner A keep-disabled 后的持久授权缺失口径，缺显式授权 artifact 时不得请求或启用 persistent DAILY_OPERATION。
 - 证据：[预检清单](../../governance/run_manifests/ADP-S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_DAILY_OPERATION_AUTHORIZATION_PREFLIGHT.md) / [integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json)。
 
-## 2026-07-01 19:04:10 Australia/Sydney - INTEGRATED_PRODUCTION_ACCEPTED 已写入，DAILY_OPERATION 仍未启用
+## 2026-07-01 19:04:10 Australia/Sydney - 历史：INTEGRATED_PRODUCTION_ACCEPTED 已写入，当时默认下一步是 DAILY_OPERATION 授权预检
 
 - `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json` 已写入并通过校验：`status=pass_integrated_production_accepted_evidence_written_no_runtime_enablement`。
 - 当前 Stage 2 integrated production acceptance 已记录：`integrated_production_accepted=true`、`stage2_integrated_production_accepted=true`、`production_acceptance_claimed=true`。
 - 日常运行仍关闭：`daily_operation_enabled=false`，`ADP_ALLOW_SMTP_SEND` 当时为 false-like，当前只接受 `UNSET` 或 false-like，daily/health/watchdog LaunchAgents disabled；未启用 SMTP、scheduler、Release 或 production restore。
-- 下一步只允许进入 `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`，即单独请求 DAILY_OPERATION 授权并再次证明运行边界安全。
+- 历史当时默认下一步是进入 `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`；当前已由后续 DAILY_OPERATION owner 决策、持久授权门和 owner A mainline 证据消费，当前实际阻断只剩持久 DAILY_OPERATION 授权 artifact 缺失。
 - 证据：[integrated acceptance artifact](../../FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json) / [运行清单](../../governance/run_manifests/ADP-S2PMT07-INTEGRATED-PRODUCTION-ACCEPTANCE-EVIDENCE-20260701.json) / [阶段记录](../docs/phase_records/PHASE_S2PMT07_INTEGRATED_PRODUCTION_ACCEPTANCE_EVIDENCE_WRITE.md)。
 
 ## 2026-07-01 18:16:00 Australia/Sydney - Owner 决策已记录，写入门已允许但运行仍关闭
