@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S05-P2｜字段级黄金基准`：`KMFA/tools/v014_s05_p2_field_golden_baseline.py`、`KMFA/tools/check_v014_s05_p2_field_golden_baseline.py`、`KMFA/tests/test_v014_s05_p2_field_golden_baseline.py` 和 S05-P2 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/`。本 phase 只使用 S05-P1 public-safe register/candidates 和既有 active owner/授权降级记录，未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`。公开证据锁定 5 个 field contracts、45 条 field candidates、40 条 PDF private-only source-anchor/hash recorded、5 条 Excel field candidates 降级为 cross-source support only、Q3 field candidates `45`、Q4/Q5 `0`、completion gate ready with owner downgrade，并保持 NO_GO/Q3/D/blocked。公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row/cell values 或业务值。未执行 S05-P3、Stage 5 review、GitHub upload、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S05-P3`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S05-P3｜权威基准锁定`：`KMFA/tools/v014_s05_p3_authority_baseline_lock.py`、`KMFA/tools/check_v014_s05_p3_authority_baseline_lock.py`、`KMFA/tests/test_v014_s05_p3_authority_baseline_lock.py` 和 S05-P3 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/`。本 phase 只使用 S05-P2 public-safe field candidates/contracts 和既有 active owner/授权降级记录，未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`。公开证据锁定 authority records `45`、PDF Q5 calculation baseline locked fields `40`、Excel excluded fields `5`、Q4 human confirmed `40`、field-level Q5 calculation baseline allowed `40`，但 full Q5 quality、zero-delta、lineage full check 和 formal report 均为 `0/false`，并保持 NO_GO/Q4/D/blocked。公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row/cell values 或业务值。未执行 Stage 5 review、GitHub upload、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 Stage 5 整体复审`，不得在 S05-P3 本轮补做 GitHub upload。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s05p2-field-golden-baseline`
-- 当前已完成: `v0.1.4 S05-P2 field golden baseline`
-- 证据目录: `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/`
-- validator: `KMFA/tools/check_v014_s05_p2_field_golden_baseline.py`
-- focused test: `KMFA/tests/test_v014_s05_p2_field_golden_baseline.py`
+- 当前版本: `0.1.4-s05p3-authority-baseline-lock`
+- 当前已完成: `v0.1.4 S05-P3 authority baseline lock`
+- 证据目录: `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/`
+- validator: `KMFA/tools/check_v014_s05_p3_authority_baseline_lock.py`
+- focused test: `KMFA/tests/test_v014_s05_p3_authority_baseline_lock.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S05-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只使用 S05-P1 public refs 和 active owner/授权降级记录。
-- 未执行: GitHub upload、S05-P3、Stage 5 review、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- raw boundary: S05-P3 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只使用 S05-P2 public refs 和 active owner/授权降级记录。
+- 未执行: GitHub upload、Stage 5 review、raw value matching、raw source field/header plaintext publication、zero-delta validation、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
 
 ## v0.1.3 历史状态
 
@@ -228,7 +228,7 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - S05-P2 owner decision application preview 只预演决策的 public-safe 应用路径；active downgrade decision 不代表 Q4/Q5 完成。
 - S05-P2 completion gate 的 active downgrade ready 结果只代表 S05-P2 可本地关闭，不代表 Stage 5 完成。
 - S05-P3 权威基准锁定只允许 hash/source-anchor 完整且 public-safe 的 40 条 PDF 字段进入 Q5 calculation baseline；Excel candidate 依据 active owner/授权降级决策排除，不得用于正式报告。
-- S05-P3 lock、Stage 5 review 和 Stage 5 upload 均已完成；仍不代表 zero-delta、lineage、事实层或报告发布完成。
+- v0.1.4 S05-P3 lock 已完成；Stage 5 review 和 GitHub upload 均未在本轮执行。S05-P3 不代表 zero-delta、lineage、事实层或报告发布完成。
 - S06-P1 zero-delta validator、S06-P2 cross-source difference queue、S06-P3 validation evidence output、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 entity matching quality、Stage 8 review/upload、S09-P1 public-safe fact layer、S09-P2 margin/cash margin layer、S09-P3 scope reconciliation、Stage 9 review/upload、S10-P1 report templates、S10-P2 report grade runtime、S10-P3 report export、Stage 10 review/upload、S11-P1 home navigation、S11-P2 source check board、S11-P3 project cost page、Stage 11 review/upload、S12-P1 manual resolution events、S12-P2 impact preview、S12-P3 rerun mechanism、Stage 12 review/upload、S13-P1 financial operating report、S13-P2 collection receivable aging、S13-P3 cross table review、Stage 13 review/upload、S14-P1 fund cash loan plan、S14-P2 invoice tax plan、S14-P3 policy evidence plan、Stage 14 review/upload、S15-P1 performance fact fields、S15-P2 performance review list、S15-P3 salary boundary、Stage 15 review 和 Stage 15 upload 已完成；lineage 和报告发布门禁仍未完成。
 
 ## 已改/需看文件

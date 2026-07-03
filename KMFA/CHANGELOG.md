@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s05p3-authority-baseline-lock - 2026-07-04
+
+- 完成 `v0.1.4 S05-P3｜权威基准锁定`。
+- 新增 authority baseline lock evidence generator、validator、focused unit test、public-safe baseline manifest、public-safe authority records、risk register、rollback plan 和 machine manifest。
+- 基于 S05-P2 public-safe field candidates/contracts 与 active owner/授权降级记录，锁定 authority records `45`、PDF Q5 calculation baseline locked fields `40`、Excel excluded fields `5`、Q4 human confirmed `40`、field-level Q5 calculation baseline allowed `40`。
+- 本轮未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值。
+- 本轮未执行 Stage 5 review、GitHub upload、raw value matching、zero-delta validation、lineage full check、正式报告、live connector 或业务执行；full Q5 quality、formal report 和 GitHub main upload 仍为 false，GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s05p2-field-golden-baseline - 2026-07-04
 
 - 完成 `v0.1.4 S05-P2｜字段级黄金基准`。
