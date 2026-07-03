@@ -818,6 +818,35 @@ apply、不上传 GitHub main。
 
 Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload.
 
+## v1.1.7 Stage 0 Review
+
+状态：`stage_0_review_passed_pending_stage1_no_github_main_upload`。
+
+任务 ID：`MA-V117-S0-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S0-REVIEW`。
+
+本 review gate 运行并固定 Stage 0 三个 phase 的验收链：
+
+- Phase 0.1：`validate:v1.1.7-stage0-phase1`
+- Phase 0.2：`validate:v1.1.7-stage0-phase2`
+- Phase 0.3：`validate:v1.1.7-stage0-phase3`
+
+新增/更新产物：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage0_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0.cjs`
+- `validate:v1.1.7-stage0`
+
+验收边界：
+
+- Stage 0 review 通过不表示 Stage 1-8、运行时明细工作台、浏览器截图、build、
+  deploy 或最终 GitHub main 上传完成。
+- 下一步只能进入 Stage 1 的一个 phase。
+- 整个 Stage 0-8 项目完成前不上传 GitHub main。
+
+Machine-readable boundary summary: No Stage 1 work; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
+
 ### Stage 8 Phase 1：Release Rollback Contract
 
 Stage 8 Phase 1 状态：`phase_8_1_contract_created_pending_stage_review`。

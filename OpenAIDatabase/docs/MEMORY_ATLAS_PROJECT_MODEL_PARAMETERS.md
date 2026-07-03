@@ -3197,6 +3197,61 @@ Stage 9 整体复审已确认：
 - 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 phase 不执行 GitHub main 上传。
 
+## 72. v1.1.7 Stage 0 Review
+
+状态：`stage_0_review_passed_pending_stage1_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S0-REVIEW`。
+
+模型假设：
+
+- Stage 0 review 只证明 Phase 0.1/0.2/0.3 的合同、运行时轻量修复、validator 和
+  记录链一致，不证明 Stage 1-8。
+- Stage 0 review 不执行 GitHub main 上传；上传必须等整个 Stage 0-8 项目完成后走最终 gate。
+- Stage 0 review 不进入 Stage 1，不读取 raw/private，不写 proposal，不执行 agent apply。
+
+输入：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage0_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs`
+
+处理方法：
+
+- 执行 Phase 0.1/0.2/0.3 validator chain。
+- 检查 Stage 0 review artifact 是否包含 phase coverage、validation、boundaries、
+  remaining risks 和 next gate。
+- 检查 records 是否登记 `MA-V117-S0-REVIEW`、`ACC-MA-V117-S0-REVIEW`、
+  `stage_0_review_passed_pending_stage1_no_github_main_upload` 和
+  `validate:v1.1.7-stage0`。
+- 检查 canonical remote 和 sparse checkout boundary。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S0-REVIEW-001 stage0_review_status = stage_0_review_passed_pending_stage1_no_github_main_upload`
+- `PARAM-MA-V117-S0-REVIEW-002 stage0_review_required_validator = validate:v1.1.7-stage0`
+- `PARAM-MA-V117-S0-REVIEW-003 stage0_review_phase_validators = validate:v1.1.7-stage0-phase1;validate:v1.1.7-stage0-phase2;validate:v1.1.7-stage0-phase3`
+- `PARAM-MA-V117-S0-REVIEW-004 stage0_review_next_gate = Stage 1 one phase per run`
+- `PARAM-MA-V117-S0-REVIEW-005 stage0_review_upload_boundary = no_github_main_upload_before_whole_stage_0_to_8_completion`
+
+输出：
+
+- Stage 0 review artifact。
+- Stage 0 deterministic validator。
+- Stage 0 review package script。
+
+边界：
+
+- 本 review 不进入 Stage 1。
+- 本 review 不实现运行时 UI、CSS、数据生成、Search 2.0、Review workflow、Data Map
+  2.0、Memory River 或 Memory Starfield。
+- 本 review 不运行 production build、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 review 不读取 raw/private/cookie/session/secret 数据。
+- 本 review 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 review 不执行 GitHub main 上传。
+
 ## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
 
 状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。
