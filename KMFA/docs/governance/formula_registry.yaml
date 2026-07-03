@@ -2665,3 +2665,47 @@ formulas:
     evidence_refs:
       - "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/machine/stage1_review_manifest.json"
+
+  - formula_id: "FORM-KMFA-V014-S02P1-METADATA-PROTOCOL-001"
+    model_id: "MOD-KMFA-METADATA-001"
+    assumption_ids:
+      - "ASM-KMFA-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "s02p1_valid = required_dirs == 7 AND required_identifiers == 5 AND raw_inbox_read == false AND raw_inbox_listed == false AND raw_inventory_performed == false AND github_upload_performed == false"
+    variables:
+      - name: "required_dirs"
+        data_type: "integer"
+        unit: "directory_count"
+        input_domain: "7"
+      - name: "required_identifiers"
+        data_type: "integer"
+        unit: "identifier_count"
+        input_domain: "5"
+      - name: "raw_inbox_read"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+      - name: "raw_inventory_performed"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+      - name: "github_upload_performed"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "S02-P1 defines metadata protocol only and must not perform raw inventory."
+      - "S02-P1 must not start S02-P2, S02-P3, Stage 2 review or GitHub upload."
+      - "S02-P1 public evidence must not include raw filenames, raw hashes, field/header plaintext, row values or business values."
+    missing_policy: "Missing metadata protocol, raw-root protocol, validator evidence or false scope gates fails S02-P1 validation."
+    output_range: "v014_s02_p1_metadata_protocol_manifest"
+    code_refs:
+      - "KMFA/tools/check_v014_s02_p1_metadata_protocol.py"
+      - "KMFA/tools/metadata_protocol_check.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s02_p1_metadata_protocol.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/metadata_protocol_check.py"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/machine/s02_p1_metadata_protocol_manifest.json"

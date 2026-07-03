@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 Stage 1 整体复审；`S01-P1｜只读检查与范围锁定`、`S01-P2｜public-safe baseline sync`、`S01-P3｜no-omission baseline` 三个 validator 全部 PASS，open findings=0。复审证据位于 `KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s01_stage_review.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出或修改 raw inbox，未抽取 raw/private payload，未执行 S02、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S02-P1 metadata目录协议；七类 metadata 目录、五类核心标识符、`raw_data_roots_v1_4.json` raw/private 根目录协议、validator 和 focused unit test 均已本地验证。证据位于 `KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/`，validator 为 `KMFA/tools/check_v014_s02_p1_metadata_protocol.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出、盘点或修改 raw inbox，未执行 S02-P2/S02-P3、Stage 2 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S02-P1 已确认 metadata 目录协议、标识符协议、公开仓库隐私边界和 raw-root 协议通过本地 validator，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 Stage 1 整体复审已确认 S01-P1/S01-P2/S01-P3 全部通过，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S01-P2 已把 v1.4 public-safe baseline 同步到 `KMFA/taskpack/v1_4/`，并用 normalized repo paths + SHA256 绑定，未提交 source package member paths 或 raw/private payload。
 - 项目路径已经收敛到 `LinzeColin/CodexProject/KMFA`。

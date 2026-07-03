@@ -1,4 +1,4 @@
-version: "0.1.4-s01-stage-review"
+version: "0.1.4-s02p1-metadata-protocol"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -58,6 +58,7 @@ active_formula_ids:
   - "FORM-KMFA-S18-STAGE-REVIEW-001"
   - "FORM-KMFA-V014-S01P3-NO-OMISSION-BASELINE-001"
   - "FORM-KMFA-V014-S01-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S02P1-METADATA-PROTOCOL-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

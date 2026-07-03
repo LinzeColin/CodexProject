@@ -626,14 +626,18 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s02p1"
+    model_version: "0.1.4-s02p1-metadata-protocol"
     assumptions:
       - "ASM-KMFA-004"
     formula_ids:
       - "FORM-KMFA-METADATA-ID-001"
+      - "FORM-KMFA-V014-S02P1-METADATA-PROTOCOL-001"
     parameter_ids:
       - "PARAM-KMFA-201"
       - "PARAM-KMFA-202"
+      - "PARAM-KMFA-1012"
+      - "PARAM-KMFA-1013"
+      - "PARAM-KMFA-1014"
     inputs:
       - "KMFA Roadmap S02-P1"
       - "KMFA data governance gate"
@@ -643,11 +647,15 @@ models:
       - "public repository metadata privacy boundary"
     code_refs:
       - "KMFA/tools/metadata_protocol_check.py"
+      - "KMFA/tools/check_v014_s02_p1_metadata_protocol.py"
     test_refs:
       - "python3 KMFA/tools/metadata_protocol_check.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s02_p1_metadata_protocol.py"
     evidence_refs:
       - "KMFA/docs/governance/METADATA_PROTOCOL.md"
       - "KMFA/metadata/protocol/metadata_protocol.yaml"
+      - "KMFA/metadata/protocol/raw_data_roots_v1_4.json"
+      - "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/machine/s02_p1_metadata_protocol_manifest.json"
   - model_id: "MOD-KMFA-IMMUTABILITY-001"
     name: "KMFA raw immutability and append-only governance"
     kind: "deterministic_immutability_contract"
