@@ -12,6 +12,7 @@ ENTRY = PURSUE_ROOT / "STAGE032_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE032_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE032_PHASE2_CONNECTION_POOL_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE032_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE032_PHASE4_CLOSEOUT.md"
 INDEX = PURSUE_ROOT / "database_connection_pool" / "stage032_connection_pool_index.json"
 SCRIPT = ROOT / "scripts" / "check_database_connection_pool.py"
 BATCH_LOCK = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
@@ -109,7 +110,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, combined)
 
-    def test_batch031_040_lock_roadmap_and_event_track_stage032_phase3_without_upload(self):
+    def test_batch031_040_lock_roadmap_and_event_track_stage032_phase4_without_upload(self):
         self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
         self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
         self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
@@ -124,19 +125,21 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'acceptance_range: "ACC-STAGE-031..ACC-STAGE-040"',
             'push_allowed: false',
             "STAGE-032:",
-            'status: "stage032_phase3_in_progress"',
+            'status: "stage032_completed_local_pending_review"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'next_gate: "IDS-STAGE032-P4-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE032-P3"',
+            '      - "Phase 4"',
+            'next_phase: "stage_review_gate"',
+            'next_gate: "IDS-STAGE032-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE032-P4"',
             'acceptance_id: "ACC-STAGE-032"',
-            'acceptance_status: "phase3_scenario_validation_defined"',
+            'acceptance_status: "local_passed_pending_stage_review"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE2_CONNECTION_POOL_SLICE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE3_SCENARIO_VALIDATION.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_connection_pool/stage032_connection_pool_index.json",
             "KM_IDSystem/scripts/check_database_connection_pool.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage032_database_connection_pool.py",
@@ -145,9 +148,9 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE032"',
-            'current_phase_id: "IDS-STAGE032-P3"',
-            'current_task_id: "IDS-V0_1-STAGE032-P3"',
-            'next_gate_id: "IDS-STAGE032-P4-GATE"',
+            'current_phase_id: "IDS-STAGE032-P4"',
+            'current_task_id: "IDS-V0_1-STAGE032-P4"',
+            'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
             'stage_id: "IDS-STAGE032"',
             'name: "STAGE-032 · 数据库连接与连接池基线"',
             'phase_id: "IDS-STAGE032-P1"',
@@ -156,14 +159,16 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'status: "passed_with_local_evidence"',
             'phase_id: "IDS-STAGE032-P3"',
             'status: "passed_with_local_evidence"',
+            'phase_id: "IDS-STAGE032-P4"',
+            'status: "passed_with_local_evidence"',
         ]
         event_terms = [
-            '"event_id":"EVT-IDS-V0_1-STAGE032-P3-20260703-001"',
-            '"event_type":"validation"',
-            '"task_id":"IDS-V0_1-STAGE032-P3"',
+            '"event_id":"EVT-IDS-V0_1-STAGE032-P4-20260703-001"',
+            '"event_type":"stage_closeout"',
+            '"task_id":"IDS-V0_1-STAGE032-P4"',
             '"ACC-STAGE-032"',
-            "STAGE032_PHASE3_SCENARIO_VALIDATION.md",
-            "build_stage032_scenario_validation_report",
+            "STAGE032_PHASE4_CLOSEOUT.md",
+            "build_stage032_delivery_report",
             "stage032_connection_pool_index.json",
             "check_database_connection_pool.py",
             "数据库连接与连接池基线",
@@ -371,6 +376,113 @@ class Stage032DatabaseConnectionPoolPhase3Tests(unittest.TestCase):
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "不得使用虚构 IDS 业务数据、虚构数据库行、虚构源文档、placeholder corpus 或伪造证据",
             "NO_PHASE4",
+        ]
+
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+
+class Stage032DatabaseConnectionPoolPhase4Tests(unittest.TestCase):
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage032_database_connection_pool", SCRIPT)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_phase4_delivery_report_closes_static_evidence_without_live_side_effects(self):
+        module = self._load_checker_module()
+        self.assertTrue(INDEX.is_file(), f"missing connection pool index: {INDEX}")
+
+        report = module.build_stage032_delivery_report(INDEX)
+
+        self.assertEqual("ids.stage032.database_connection_pool.phase4.v1", report["schema_version"])
+        self.assertEqual("STAGE-032", report["stage"])
+        self.assertEqual("Phase 4", report["phase"])
+        self.assertEqual("IDS-V0_1-STAGE032-P4", report["task_id"])
+        self.assertEqual("ACC-STAGE-032", report["acceptance_id"])
+        self.assertEqual("IDS-STAGE032-REVIEW-GATE", report["next_gate"])
+        self.assertEqual("pending_next_run", report["stage_review_status"])
+        self.assertFalse(report["github_upload_allowed"])
+        self.assertFalse(report["app_reinstall_allowed"])
+
+        for key in [
+            "schema_diff",
+            "migration_output",
+            "recovery_test_log",
+            "known_limits",
+            "destructive_migration_confirmation",
+            "rollback_steps",
+            "backup_restore_steps",
+            "chinese_owner_feedback",
+            "phase2_report",
+            "scenario_report",
+        ]:
+            with self.subTest(key=key):
+                self.assertIn(key, report)
+                self.assertTrue(report[key])
+
+        self.assertEqual(
+            "static_connection_pool_contract_diff_not_executed",
+            report["schema_diff"]["mode"],
+        )
+        self.assertEqual(
+            "static_connection_pool_migration_output_not_executed",
+            report["migration_output"]["mode"],
+        )
+        self.assertEqual(
+            "static_connection_pool_recovery_log_not_executed",
+            report["recovery_test_log"]["mode"],
+        )
+        self.assertEqual(
+            "PASS",
+            report["migration_output"]["scenario_results"]["constraint_error_explanations"]["status"],
+        )
+
+        confirmation = report["destructive_migration_confirmation"]
+        self.assertTrue(confirmation["required"])
+        self.assertFalse(confirmation["current_contract_value"])
+        self.assertTrue(confirmation["manual_confirmation_required_before_change"])
+
+        for key in [
+            "does_not_connect_to_postgres",
+            "does_not_execute_migration",
+            "does_not_read_raw_metadata",
+            "does_not_write_runtime_outputs",
+            "does_not_use_fake_ids_business_data",
+        ]:
+            with self.subTest(key=key):
+                self.assertTrue(report[key])
+
+    def test_phase4_doc_covers_closeout_delivery_review_boundary_and_raw_data_policy(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 evidence: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+
+        required_terms = [
+            "ids.stage032.database_connection_pool.phase4.v1",
+            "IDS-V0_1-STAGE032-P4",
+            "ACC-STAGE-032",
+            "build_stage032_delivery_report",
+            "schema_diff",
+            "migration_output",
+            "recovery_test_log",
+            "known_limits",
+            "destructive_migration_confirmation",
+            "rollback_steps",
+            "backup_restore_steps",
+            "chinese_owner_feedback",
+            "IDS-STAGE032-REVIEW-GATE",
+            "NO_BATCH_UPLOAD",
+            "NO_STAGE_REVIEW_THIS_RUN",
+            "NO_GITHUB_UPLOAD",
+            "不连接 PostgreSQL",
+            "不执行真实 migration dry-run、apply、rollback、backup、restore 或 schema diff",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
         ]
 
         for term in required_terms:

@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-03T10:43:08Z"
-status: "stage032_phase3_in_progress"
+updated_at_utc: "2026-07-03T10:57:16Z"
+status: "stage032_completed_local_pending_review"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -64,21 +64,23 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-032:
-    status: "stage032_phase3_in_progress"
+    status: "stage032_completed_local_pending_review"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
-    next_phase: "Phase 4"
-    next_gate: "IDS-STAGE032-P4-GATE"
-    current_task_id: "IDS-V0_1-STAGE032-P3"
+      - "Phase 4"
+    next_phase: "stage_review_gate"
+    next_gate: "IDS-STAGE032-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE032-P4"
     acceptance_id: "ACC-STAGE-032"
-    acceptance_status: "phase3_scenario_validation_defined"
+    acceptance_status: "local_passed_pending_stage_review"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE2_CONNECTION_POOL_SLICE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE4_CLOSEOUT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_connection_pool/stage032_connection_pool_index.json"
       - "KM_IDSystem/scripts/check_database_connection_pool.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage032_database_connection_pool.py"
@@ -86,8 +88,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE032-P3"
-  next_allowed_task_id: "IDS-V0_1-STAGE032-P4"
+  current_task_id: "IDS-V0_1-STAGE032-P4"
+  next_allowed_task_id: "IDS-V0_1-STAGE032-REVIEW"
   github_upload_allowed: false
-  current_run: "STAGE-032 Phase 3 validates database connection and connection-pool baseline scenarios from tracked Git contracts only; it does not connect to PostgreSQL, instantiate pools, create DSNs or credential-bearing configs, execute migrations, read raw metadata content, write runtime outputs, upload to GitHub, create a PR, merge, reinstall app entries, run batch review, or enter Phase 4."
-  no_upload_reason: "BATCH031_040 has only STAGE-031 completed/reviewed and STAGE-032 Phase 1-3 locally defined; upload remains blocked until STAGE-032..040 are completed, reviewed, repaired, and a separate batch upload gate runs."
+  current_run: "STAGE-032 Phase 4 closes local database connection and connection-pool baseline delivery evidence from tracked Git contracts only; it does not connect to PostgreSQL, instantiate pools, create DSNs or credential-bearing configs, execute migrations, read raw metadata content, write runtime outputs, upload to GitHub, create a PR, merge, reinstall app entries, run batch review, run stage review, or enter STAGE-033."
+  no_upload_reason: "BATCH031_040 has only STAGE-031 completed/reviewed and STAGE-032 Phase 1-4 locally defined; upload remains blocked until STAGE-032..040 are completed, reviewed, repaired, and a separate batch upload gate runs."
