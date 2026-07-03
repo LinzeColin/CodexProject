@@ -614,6 +614,13 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         page = TRACEABILITY_CHAIN_PAGE.read_text(encoding="utf-8")
         table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+        version_matrix = (ROOT / "docs" / "governance" / "VERSION_MATRIX.yaml").read_text(encoding="utf-8")
+        current_gate_match = re.search(r'^current_gate: "([^"]+)"', version_matrix, flags=re.MULTILINE)
+        self.assertIsNotNone(current_gate_match)
+        current_gate = current_gate_match.group(1)
+        summary_start = page.index("## 摘要")
+        summary_end = page.index("## 历史：", summary_start)
+        summary_section = page[summary_start:summary_end]
 
         self.assertGreaterEqual(len(matrix_rows), 406)
         self.assertEqual(len(table_rows), len(matrix_rows))
@@ -635,6 +642,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[TRACEABILITY_MATRIX.csv](../docs/governance/TRACEABILITY_MATRIX.csv)", page)
         self.assertIn("[C-010 阶段记录](../docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md)", page)
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
+        self.assertIn(current_gate, summary_section)
         self.assertIn("## 历史：S2PLT02 live authorization", page)
         self.assertIn("历史当时结论：live authorization", page)
         self.assertIn("历史当时 S2PLT04 复核", page)
