@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已开始 v0.1.4 HUMAN_FLOW_VERIFIED 修补包；当前只完成 `S01-P1｜只读检查与范围锁定`，新增 `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/`、`KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py` 和 focused unit test。S01-P1 只登记 v1.4 source package hash、公开 taskpack/roadmap/raw-readonly/UIUX gate 证据、canonical worktree 路径、HTML human-flow audit 聚合结果 `PASS=54/WARN=0/FAIL=0` 和 no-upload/no-go 边界。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出或修改 raw inbox，未抽取 raw/private payload，未执行 S01-P2、S01-P3、Stage 1 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已继续 v0.1.4 HUMAN_FLOW_VERIFIED 修补包；当前已完成 `S01-P2｜项目骨架与中文入口 / public-safe taskpack baseline sync`，新增 `KMFA/taskpack/v1_4/`、`KMFA/metadata/baseline/source_package_v1_4.json`、`KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/`、`KMFA/tools/check_v014_s01_p2_public_baseline_sync.py` 和 focused unit test。S01-P2 只同步 9 个 public-safe source、刷新三中文入口和治理记录，并保留 `PASS=54/WARN=0/FAIL=0` HTML human-flow gate。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出或修改 raw inbox，未抽取 raw/private payload，未执行 S01-P3、Stage 1 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S01-P2 已把 v1.4 public-safe baseline 同步到 `KMFA/taskpack/v1_4/`，并用 normalized repo paths + SHA256 绑定，未提交 source package member paths 或 raw/private payload。
 - 项目路径已经收敛到 `LinzeColin/CodexProject/KMFA`。
 - v0.1.4 S01-P1 已把 v1.4 修补包范围、安全边界、raw-readonly policy 和 HTML human-flow gate 锁定为 public-safe 证据；下一步只能执行 S01-P2。
 - 三中文入口已存在：`功能清单.md`、`开发记录.md`、`模型参数文件.md`。

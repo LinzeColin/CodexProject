@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-03 - 0.1.4-s01p2-public-baseline-sync
+
+- task_id: `KMFA-V014-S01-P2-PUBLIC-BASELINE-SYNC-20260703`
+- status: `completed_validated_local_only_no_go_upload_deferred`
+- evidence: `KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/`
+- validator: `KMFA/tools/check_v014_s01_p2_public_baseline_sync.py`
+- scope: v0.1.4 S01-P2 public-safe baseline sync only; copied nine S01-P1 locked v1.4 public sources into normalized repo paths, refreshed Chinese entries and governance records, and recorded quality-over-time rule.
+- raw_boundary: `/Users/linzezhang/Downloads/KMFA_MetaData` was not read, listed, modified, moved, renamed, deleted, overwritten, or written.
+- blocker_state: S01-P3=false, Stage 1 review=false, GitHub upload=false, raw inventory=false, raw value matching=false, formal_report_allowed=false, delivery_allowed=false.
+
+product_version: 0.1.4-s01p2-public-baseline-sync
+version_matrix_product_version_reference: 0.1.4-s01p2-public-baseline-sync
+
 ## 2026-07-03 - 0.1.4-s01p1-read-only-scope-lock
 
 - task_id: `KMFA-V014-S01-P1-READ-ONLY-SCOPE-LOCK-20260703`

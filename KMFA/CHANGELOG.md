@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4-s01p2-public-baseline-sync - 2026-07-03
+
+- 完成 `v0.1.4 S01-P2｜项目骨架与中文入口 / public-safe taskpack baseline sync` 本地验证准备：同步 9 个 S01-P1 锁定的 v1.4 public-safe source 到 `KMFA/taskpack/v1_4/`，新增 `KMFA/metadata/baseline/source_package_v1_4.json`。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/`，并新增 `KMFA/tools/check_v014_s01_p2_public_baseline_sync.py`、`KMFA/tests/test_v014_s01_p2_public_baseline_sync.py`。
+- 本 phase 未读取、列出、修改或写入 raw inbox；未抽取 raw/private payload；未执行 S01-P3、Stage 1 review、GitHub upload、正式报告、live connector、OpMe 深度耦合或业务执行。
+
 ## 0.1.4-s01p1-read-only-scope-lock - 2026-07-03
 
 - 完成 `v0.1.4 S01-P1｜只读检查与范围锁定` 本地验证：登记 v1.4 HUMAN_FLOW_VERIFIED 修补包 SHA256、9 个 public-safe source 条目、raw-readonly policy、Codex read-only prompt、roadmap gate 和 HTML human-flow audit 聚合结果。

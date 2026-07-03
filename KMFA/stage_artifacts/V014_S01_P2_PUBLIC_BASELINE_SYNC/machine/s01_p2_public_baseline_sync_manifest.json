@@ -1,0 +1,168 @@
+{
+  "schema_version": "kmfa.v014_s01_p2_public_baseline_sync.v1",
+  "project_id": "KMFA",
+  "version": "0.1.4",
+  "stage_id": "S01",
+  "phase_id": "P2",
+  "stage_phase": "S01-P2",
+  "task_id": "KMFA-V014-S01-P2-PUBLIC-BASELINE-SYNC-20260703",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "generated_at": "2026-07-03T22:20:00+10:00",
+  "dependency": {
+    "required_phase": "S01-P1",
+    "manifest": "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json",
+    "dependency_status": "completed_validated_local_only_no_go_upload_deferred"
+  },
+  "phase_scope": {
+    "objective": "Sync v1.4 public-safe taskpack baseline into the repo and refresh Chinese project entries without business implementation.",
+    "current_phase_only": true,
+    "tasks": [
+      "create_or_refresh_kmfa_project_entry_files",
+      "register_governance_project_config_public_safe_baseline",
+      "record_quality_over_time_rule"
+    ],
+    "business_code_modified": false,
+    "product_runtime_modified": false,
+    "s01_p3_started": false,
+    "stage_review_performed": false,
+    "github_upload_performed": false,
+    "next_phase": "S01-P3",
+    "next_phase_started": false
+  },
+  "baseline_sync": {
+    "repo_baseline_root": "KMFA/taskpack/v1_4",
+    "metadata_baseline_manifest": "KMFA/metadata/baseline/source_package_v1_4.json",
+    "taskpack_baseline_manifest": "KMFA/taskpack/v1_4/machine/source_package_manifest.json",
+    "copied_public_source_count": 9,
+    "source_package_sha256": "2d5fa2a64ae72d5a5a8810e13444529b10eca358e368bac57611283827608356",
+    "zip_internal_entry_names_committed": false,
+    "raw_payload_extracted": false,
+    "selected_public_sources": [
+      {
+        "label": "v1.4 taskpack",
+        "target_path": "KMFA/taskpack/v1_4/taskpack/01_KMFA_Codex_TaskPack_v1_4_public_safe.md",
+        "sha256": "3bf7e13789b80ec475e202d01b4fa04d97fa61b2ede6b414fb6a113a4a2e519a",
+        "bytes": 16894,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      },
+      {
+        "label": "v1.4 roadmap",
+        "target_path": "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md",
+        "sha256": "ae208388f14d977be2d6cfacd62e5a8a1c899a970b138a3d8adc8026ecc7c61f",
+        "bytes": 34848,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      },
+      {
+        "label": "v1.4 README",
+        "target_path": "KMFA/taskpack/v1_4/README.source.md",
+        "sha256": "ec4dec84515dcfd476a5bd9ceca9492fa2de350c53b4ac9c13be5b3d6db1c074",
+        "bytes": 1806,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      },
+      {
+        "label": "v1.4 HTML entry",
+        "target_path": "KMFA/taskpack/v1_4/html_uiux/00_KMFA_HTML_human_flow_entry_v1_4.html",
+        "sha256": "d2ae0e8b38440e3afcb821489db3299272a064f6076d03aee34aaeb74e0ecbe2",
+        "bytes": 8939,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      },
+      {
+        "label": "v1.4 HTML human-flow audit script",
+        "target_path": "KMFA/taskpack/v1_4/html_uiux/kmfa_html_human_flow_audit.py",
+        "sha256": "4e0a5f2e6157032309deace231f1bcde9dc6451a72b25729fa1efd9476af9eb2",
+        "bytes": 8788,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      },
+      {
+        "label": "v1.4 HTML human-flow audit report",
+        "target_path": "KMFA/taskpack/v1_4/html_uiux/KMFA_HTML_human_flow_audit_report_v1_4.md",
+        "sha256": "d08ed51e814a0693bd7cb0f99dce542921f8dd2ce40824723b1e705e77a6de0b",
+        "bytes": 1518,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      },
+      {
+        "label": "v1.4 raw data roots policy",
+        "target_path": "KMFA/taskpack/v1_4/raw_data_protocol/KMFA_raw_data_roots_v1_4.yaml",
+        "sha256": "f7e2baa767f5eff05017e7833108a42068057e6eca18fd3ec2873e7efab85f07",
+        "bytes": 1628,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      },
+      {
+        "label": "v1.4 Codex read-only raw-data prompt",
+        "target_path": "KMFA/taskpack/v1_4/raw_data_protocol/CODEX_read_only_raw_data_prompt_v1_4.md",
+        "sha256": "7a191808ee5e7cd4ae2f5edee12a0e7ae6cc61695a7fc2a87a4ff6a8f1671522",
+        "bytes": 1611,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      },
+      {
+        "label": "v1.2 HTML inheritance note retained for history",
+        "target_path": "KMFA/taskpack/v1_4/history/KMFA_HTML_UIUX_inheritance_note_v1_2.md",
+        "sha256": "df38dda774d1ecd91d73c863229f98e49b2fd683d8216788365be39ef012ef9f",
+        "bytes": 1090,
+        "zip_entry_selection_policy": "sha256_match_public_entry_name_not_committed"
+      }
+    ]
+  },
+  "v14_gates": {
+    "raw_data_root": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_data_root_mode": "read_only",
+    "derived_runtime_target": "KMFA/.codex_private_runtime or KMFA/local_runtime when gitignored",
+    "html_human_flow_baseline": "v1.4 clickable HTML samples; active acceptance baseline for later UI/report phases",
+    "html_audit_files": 6,
+    "html_audit_rows": 54,
+    "html_audit_pass": 54,
+    "html_audit_warn": 0,
+    "html_audit_fail": 0,
+    "quality_over_time_rule": "quality_gate_passed_can_finish_early_quality_gate_failed_blocks_delivery",
+    "s02_s03_raw_readonly_contract_required": true,
+    "s03_local_raw_inventory_required": true,
+    "s10_s11_s12_human_flow_required": true,
+    "s18_full_chain_required": true
+  },
+  "raw_data_boundary": {
+    "raw_inbox_read_by_this_phase": false,
+    "raw_inbox_listed_by_this_phase": false,
+    "raw_inbox_modified_by_this_phase": false,
+    "raw_inbox_deleted_by_this_phase": false,
+    "raw_inbox_moved_by_this_phase": false,
+    "raw_inbox_renamed_by_this_phase": false,
+    "raw_inbox_overwritten_by_this_phase": false,
+    "raw_inbox_written_by_this_phase": false,
+    "raw_payload_extracted_from_delivery_zip": false,
+    "raw_private_entry_names_committed": false,
+    "raw_filenames_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "business_values_committed": false
+  },
+  "release_state": {
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "current_report_grade": "D",
+    "release_permission": "blocked"
+  },
+  "non_goals": [
+    "S01-P3 no-omission baseline implementation",
+    "Stage 1 review",
+    "GitHub upload",
+    "raw inventory",
+    "raw value matching",
+    "raw row extraction",
+    "lineage full check",
+    "formal report",
+    "live connector",
+    "OpMe deep coupling",
+    "business execution"
+  ],
+  "evidence_refs": [
+    "KMFA/taskpack/v1_4/PUBLIC_SAFE_BASELINE.md",
+    "KMFA/taskpack/v1_4/machine/source_package_manifest.json",
+    "KMFA/metadata/baseline/source_package_v1_4.json",
+    "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/human/s01_p2_completion_record.md",
+    "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/machine/s01_p2_public_baseline_sync_manifest.json"
+  ]
+}

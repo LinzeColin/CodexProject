@@ -40,15 +40,18 @@ formulas:
       - "KMFA/AGENTS.md"
       - "KMFA/HANDOFF.md"
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
+      - "KMFA/tools/check_v014_s01_p2_public_baseline_sync.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py --require-source-package-present"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s01_p2_public_baseline_sync.py --require-source-package-present"
     evidence_refs:
       - "KMFA/docs/governance/project.yaml"
       - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
       - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/implementation_plan.md"
       - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json"
+      - "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/machine/s01_p2_public_baseline_sync_manifest.json"
   - formula_id: "FORM-KMFA-AMOUNT-001"
     model_id: "MOD-KMFA-COST-001"
     assumption_ids:

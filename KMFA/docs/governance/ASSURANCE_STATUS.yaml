@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260703-V014-S01-P1-READ-ONLY-SCOPE-LOCK"
+as_of_event_id: "EVENT-KMFA-20260703-V014-S01-P2-PUBLIC-BASELINE-SYNC"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "82211a56cfa05996d2ebe818b1f82500a4f34554"
+source_base_commit: "39201eecaefd445553b066c27c7e73601c5afe18"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-03T21:10:00+10:00"
-generator_version: "manual-v014-s01p1-read-only-scope-lock"
+snapshot_event_time: "2026-07-03T22:20:00+10:00"
+generator_version: "manual-v014-s01p2-public-baseline-sync"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 629
+    total_active_parameters: 632
     total_active_formulas: 53
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
@@ -110,6 +110,8 @@ dimensions:
       - "KMFA/tools/v013_s06_p3_validation_evidence_replay.py"
       - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/test_results.md"
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
+      - "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/human/test_results.md"
+      - "KMFA/tools/check_v014_s01_p2_public_baseline_sync.py"
       - "KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/human/stage6_review_report.md"
       - "KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
