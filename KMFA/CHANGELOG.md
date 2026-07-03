@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s03-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 3 整体复审`。
+- 新增 Stage 3 review validator、focused unit test、review report、test results 和 machine manifest。
+- 复跑 S03-P1/S03-P2/S03-P3 validators，phase_results 全部 PASS，open findings=0；锁定 public raw files `5`、matrix rows `5`、source priority records `5`、priority order `9`。
+- 本轮未进入 S04，未执行 GitHub upload、raw value matching、字段映射、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s03p3-source-priority - 2026-07-04
 
 - 完成 `v0.1.4 S03-P3｜源优先级`。
