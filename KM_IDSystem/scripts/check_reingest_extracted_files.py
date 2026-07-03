@@ -36,6 +36,25 @@ NO_PERSISTENCE_DELTAS = {
     "import_queue_delta": 0,
 }
 ACTUAL_JOBS_STARTED = {"hash": 0, "manifest": 0, "dedup": 0, "parser": 0}
+REQUIRED_STAGE027_SCENARIOS = (
+    "ready_for_import_queue",
+    "duplicate_content_owner_review",
+    "missing_source_blocked",
+    "raw_metadata_root_blocked",
+    "adapter_owner_review",
+)
+EXPECTED_STAGE027_SCENARIO_DECISIONS = {
+    "ready_for_import_queue": "REINGEST_READY_FOR_IMPORT_QUEUE",
+    "duplicate_content_owner_review": "REINGEST_OWNER_REVIEW_REQUIRED",
+    "missing_source_blocked": "REINGEST_BLOCKED",
+    "raw_metadata_root_blocked": "REINGEST_BLOCKED",
+    "adapter_owner_review": "REINGEST_OWNER_REVIEW_REQUIRED",
+}
+EXPECTED_STAGE027_SCENARIO_RISKS = {
+    "missing_source_blocked": "REINGEST_SOURCE_MISSING",
+    "raw_metadata_root_blocked": "REINGEST_SOURCE_BLOCKED_RAW_METADATA_ROOT",
+    "adapter_owner_review": "REINGEST_FORMAT_REQUIRES_EXTERNAL_ADAPTER",
+}
 
 
 def _reingest_idempotency_key(*, manifest_id: str, import_key: str, source_uri: str) -> str:
@@ -74,6 +93,8 @@ def _safe_entries_by_uri(entries: list[dict[str, Any]]) -> dict[str, dict[str, A
 def _risk_code_from_archive(risk_code: str | None) -> str:
     if not risk_code:
         return "REINGEST_UNKNOWN_ARCHIVE_RISK"
+    if risk_code.endswith("ADAPTER_OWNER_REVIEW_REQUIRED"):
+        return "REINGEST_FORMAT_REQUIRES_EXTERNAL_ADAPTER"
     for prefix in ("ARCHIVE_MANIFEST_", "SAFE_EXTRACTION_", "ARCHIVE_"):
         if risk_code.startswith(prefix):
             return "REINGEST_" + risk_code.removeprefix(prefix)
@@ -184,6 +205,8 @@ def _reingest_record(
 
 def _decision_state(records: list[dict[str, Any]], risk_items: list[dict[str, Any]]) -> str:
     if risk_items and not records:
+        if any(item.get("reingest_routing_state") == "REINGEST_OWNER_REVIEW_REQUIRED" for item in risk_items):
+            return "REINGEST_OWNER_REVIEW_REQUIRED"
         return "REINGEST_BLOCKED"
     states = {record["reingest_record_state"] for record in records}
     if "REINGEST_BLOCKED" in states:
@@ -297,6 +320,168 @@ def build_reingest_extracted_files(
         "does_not_use_fake_ids_business_data": True,
         "does_not_call_external_apis": True,
         "does_not_write_runtime_outputs": True,
+    }
+
+
+def _build_pipeline_validation(scenario_results: list[dict[str, Any]]) -> dict[str, Any]:
+    ready_record_count = 0
+    owner_review_count = 0
+    blocked_reingest_count = 0
+    required_pipeline_observed = True
+    actual_jobs_started = dict(ACTUAL_JOBS_STARTED)
+    for result in scenario_results:
+        report = result["reingest_report"]
+        required_pipeline_observed = required_pipeline_observed and report["reingest_required_pipeline"] == REQUIRED_PIPELINE
+        ready_record_count += sum(
+            1
+            for record in report["reingest_records"]
+            if record["reingest_record_state"] == "REINGEST_READY_FOR_IMPORT_QUEUE"
+        )
+        owner_review_count += int(report.get("owner_review_count", 0) or 0)
+        blocked_reingest_count += int(report.get("blocked_reingest_count", 0) or 0)
+        for job, count in report["actual_jobs_started"].items():
+            actual_jobs_started[job] = actual_jobs_started.get(job, 0) + int(count or 0)
+    jobs_zero = all(value == 0 for value in actual_jobs_started.values())
+    return {
+        "state": "REINGEST_PIPELINE_VALIDATED"
+        if required_pipeline_observed and jobs_zero and ready_record_count > 0
+        else "REINGEST_PIPELINE_REVIEW_REQUIRED",
+        "required_pipeline": list(REQUIRED_PIPELINE),
+        "required_pipeline_observed": required_pipeline_observed,
+        "actual_jobs_started": actual_jobs_started,
+        "ready_record_count": ready_record_count,
+        "owner_review_count": owner_review_count,
+        "blocked_reingest_count": blocked_reingest_count,
+    }
+
+
+def _build_persistence_validation(scenario_results: list[dict[str, Any]]) -> dict[str, Any]:
+    all_no_persistence_deltas_zero = True
+    does_not_create_import_queue = True
+    does_not_write_database = True
+    does_not_write_index = True
+    does_not_write_runtime_outputs = True
+    for result in scenario_results:
+        report = result["reingest_report"]
+        all_no_persistence_deltas_zero = all_no_persistence_deltas_zero and all(
+            int(value or 0) == 0 for value in report["no_persistence_deltas"].values()
+        )
+        does_not_create_import_queue = does_not_create_import_queue and bool(report["does_not_create_import_queue"])
+        does_not_write_database = does_not_write_database and bool(report["does_not_write_database"])
+        does_not_write_index = does_not_write_index and bool(report["does_not_write_index"])
+        does_not_write_runtime_outputs = does_not_write_runtime_outputs and bool(report["does_not_write_runtime_outputs"])
+    persistence_validated = (
+        all_no_persistence_deltas_zero
+        and does_not_create_import_queue
+        and does_not_write_database
+        and does_not_write_index
+        and does_not_write_runtime_outputs
+    )
+    return {
+        "state": "REINGEST_NO_PERSISTENCE_VALIDATED"
+        if persistence_validated
+        else "REINGEST_NO_PERSISTENCE_REVIEW_REQUIRED",
+        "all_no_persistence_deltas_zero": all_no_persistence_deltas_zero,
+        "does_not_create_import_queue": does_not_create_import_queue,
+        "does_not_write_database": does_not_write_database,
+        "does_not_write_index": does_not_write_index,
+        "does_not_write_runtime_outputs": does_not_write_runtime_outputs,
+    }
+
+
+def build_stage027_scenario_report(
+    *,
+    scenario_archives: dict[str, dict[str, Any]],
+    evaluated_at: str | None = None,
+    required_scenarios: tuple[str, ...] = REQUIRED_STAGE027_SCENARIOS,
+) -> dict[str, Any]:
+    """Validate Stage 027 Phase 3 re-ingest scenarios without persistence side effects."""
+
+    scenario_results: list[dict[str, Any]] = []
+    required_scenario_set = set(required_scenarios)
+    for scenario_id in required_scenarios:
+        scenario_config = dict(scenario_archives[scenario_id])
+        reingest_report = build_reingest_extracted_files(
+            archive_uri=scenario_config["archive_uri"],
+            staging_area_uri=scenario_config["staging_area_uri"],
+            evaluated_at=evaluated_at,
+            archive_file_count_limit=scenario_config.get(
+                "archive_file_count_limit",
+                archive_manifest.archive_threat_model.DEFAULT_ARCHIVE_FILE_COUNT_LIMIT,
+            ),
+            archive_total_size_limit_bytes=scenario_config.get(
+                "archive_total_size_limit_bytes",
+                archive_manifest.archive_threat_model.DEFAULT_ARCHIVE_TOTAL_SIZE_LIMIT_BYTES,
+            ),
+            archive_single_file_size_limit_bytes=scenario_config.get(
+                "archive_single_file_size_limit_bytes",
+                archive_manifest.archive_threat_model.DEFAULT_ARCHIVE_SINGLE_FILE_SIZE_LIMIT_BYTES,
+            ),
+            archive_nested_depth_limit=scenario_config.get(
+                "archive_nested_depth_limit",
+                archive_manifest.archive_threat_model.DEFAULT_ARCHIVE_NESTED_DEPTH_LIMIT,
+            ),
+        )
+        risk_codes = [entry["risk_code"] for entry in reingest_report["reingest_risk_items"]]
+        expected_decision_state = EXPECTED_STAGE027_SCENARIO_DECISIONS[scenario_id]
+        expected_risk_code = EXPECTED_STAGE027_SCENARIO_RISKS.get(scenario_id)
+        expected_decision_observed = reingest_report["reingest_decision_state"] == expected_decision_state
+        expected_risk_observed = expected_risk_code is None or expected_risk_code in risk_codes
+        scenario_results.append(
+            {
+                "scenario_id": scenario_id,
+                "scenario_state": "REINGEST_SCENARIO_VALIDATED"
+                if expected_decision_observed and expected_risk_observed
+                else "REINGEST_SCENARIO_REVIEW_REQUIRED",
+                "expected_decision_state": expected_decision_state,
+                "expected_decision_observed": expected_decision_observed,
+                "expected_risk_code": expected_risk_code,
+                "expected_risk_observed": expected_risk_observed,
+                "decision_state": reingest_report["reingest_decision_state"],
+                "risk_codes": risk_codes,
+                "reingest_record_count": reingest_report["reingest_record_count"],
+                "owner_review_count": reingest_report["owner_review_count"],
+                "blocked_reingest_count": reingest_report["blocked_reingest_count"],
+                "reingest_report": reingest_report,
+            }
+        )
+
+    pipeline_validation = _build_pipeline_validation(scenario_results)
+    persistence_validation = _build_persistence_validation(scenario_results)
+    required_scenarios_covered = required_scenario_set <= set(scenario_archives)
+    scenarios_validated = all(result["scenario_state"] == "REINGEST_SCENARIO_VALIDATED" for result in scenario_results)
+    validation_passed = (
+        required_scenarios_covered
+        and scenarios_validated
+        and pipeline_validation["state"] == "REINGEST_PIPELINE_VALIDATED"
+        and persistence_validation["state"] == "REINGEST_NO_PERSISTENCE_VALIDATED"
+    )
+    return {
+        "schema_version": "ids.stage027.reingest_extracted_files.scenario_validation.v1",
+        "stage": "STAGE-027",
+        "phase": "Phase 3",
+        "task_id": "IDS-V0_1-STAGE027-P3",
+        "acceptance_id": "ACC-STAGE-027",
+        "entrance": ENTRANCE,
+        "reingest_schema": REINGEST_SCHEMA,
+        "evaluated_at": evaluated_at,
+        "required_scenarios": list(required_scenarios),
+        "scenario_count": len(scenario_results),
+        "required_scenarios_covered": required_scenarios_covered,
+        "validation_state": "REINGEST_SCENARIO_VALIDATION_PASSED"
+        if validation_passed
+        else "REINGEST_SCENARIO_VALIDATION_REVIEW_REQUIRED",
+        "scenario_results": scenario_results,
+        "pipeline_validation": pipeline_validation,
+        "persistence_validation": persistence_validation,
+        "no_persistence_deltas": dict(NO_PERSISTENCE_DELTAS),
+        "does_not_read_raw_metadata": True,
+        "does_not_write_reingest_runtime_output": True,
+        "does_not_start_processing_jobs": True,
+        "does_not_use_fake_ids_business_data": True,
+        "does_not_create_import_queue": True,
+        "does_not_write_database": True,
+        "does_not_write_index": True,
     }
 
 

@@ -14,11 +14,13 @@ PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE027_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE027_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md"
+PHASE3 = PURSUE_ROOT / "STAGE027_PHASE3_SCENARIO_VALIDATION.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
 SCRIPT = ROOT / "scripts" / "check_reingest_extracted_files.py"
 EVALUATED_AT = "2026-07-03T08:08:27Z"
+SCENARIO_AT = "2026-07-03T08:32:18Z"
 
 
 class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
@@ -35,6 +37,43 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         with zipfile.ZipFile(archive_path, "w") as archive:
             for entry_path, payload in entries.items():
                 archive.writestr(entry_path, payload)
+
+    def _phase3_scenario_archives(self, base):
+        ready_archive = base / "ready-for-reingest.zip"
+        duplicate_archive = base / "duplicate-reingest.zip"
+        missing_archive = base / "missing-reingest.zip"
+        adapter_archive = base / "owner-adapter.rar"
+        self._write_zip(ready_archive, {"safe/ready.md": b"ready phase3 payload"})
+        self._write_zip(
+            duplicate_archive,
+            {
+                "safe/duplicate-a.md": b"duplicate phase3 payload",
+                "safe/duplicate-b.md": b"duplicate phase3 payload",
+            },
+        )
+        adapter_archive.write_bytes(b"process-owned structural adapter fixture")
+        return {
+            "ready_for_import_queue": {
+                "archive_uri": ready_archive.as_uri(),
+                "staging_area_uri": (base / "staging-ready").as_uri(),
+            },
+            "duplicate_content_owner_review": {
+                "archive_uri": duplicate_archive.as_uri(),
+                "staging_area_uri": (base / "staging-duplicate").as_uri(),
+            },
+            "missing_source_blocked": {
+                "archive_uri": missing_archive.as_uri(),
+                "staging_area_uri": (base / "staging-missing").as_uri(),
+            },
+            "raw_metadata_root_blocked": {
+                "archive_uri": "file:///Users/linzezhang/Downloads/IDS_MetaData/raw-owner.zip",
+                "staging_area_uri": (base / "staging-raw").as_uri(),
+            },
+            "adapter_owner_review": {
+                "archive_uri": adapter_archive.as_uri(),
+                "staging_area_uri": (base / "staging-adapter").as_uri(),
+            },
+        }
 
     def test_phase1_contracts_exist_and_bind_taskpack_identity(self):
         self.assertTrue(ENTRY.is_file(), f"missing entry contract: {ENTRY}")
@@ -164,26 +203,32 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         allowed_status_terms = [
             'status: "stage027_phase1_in_progress"',
             'status: "stage027_phase2_in_progress"',
+            'status: "stage027_phase3_in_progress"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 2"',
             'next_phase: "Phase 3"',
+            'next_phase: "Phase 4"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
+            'current_task_id: "IDS-V0_1-STAGE027-P3"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_reingest_slice_complete"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
         ]
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE027-P2-GATE"',
             'next_gate: "IDS-STAGE027-P3-GATE"',
+            'next_gate: "IDS-STAGE027-P4-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -220,14 +265,17 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE027-P1"',
             'current_phase_id: "IDS-STAGE027-P2"',
+            'current_phase_id: "IDS-STAGE027-P3"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
+            'current_task_id: "IDS-V0_1-STAGE027-P3"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE027-P2-GATE"',
             'next_gate_id: "IDS-STAGE027-P3-GATE"',
+            'next_gate_id: "IDS-STAGE027-P4-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
@@ -411,17 +459,11 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
         text = BATCH_LOCK.read_text(encoding="utf-8")
         required_terms = [
-            'status: "stage027_phase2_in_progress"',
             "STAGE-027:",
             '      - "Phase 1"',
             '      - "Phase 2"',
-            'next_phase: "Phase 3"',
-            'current_task_id: "IDS-V0_1-STAGE027-P2"',
             'acceptance_id: "ACC-STAGE-027"',
-            'acceptance_status: "phase2_reingest_slice_complete"',
-            'next_gate: "IDS-STAGE027-P3-GATE"',
             'push_allowed: false',
-            'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
             "KM_IDSystem/scripts/check_reingest_extracted_files.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py",
@@ -429,6 +471,36 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, text)
+        allowed_status_terms = [
+            'status: "stage027_phase2_in_progress"',
+            'status: "stage027_phase3_in_progress"',
+        ]
+        allowed_next_phase_terms = [
+            'next_phase: "Phase 3"',
+            'next_phase: "Phase 4"',
+        ]
+        allowed_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE027-P2"',
+            'current_task_id: "IDS-V0_1-STAGE027-P3"',
+        ]
+        allowed_acceptance_terms = [
+            'acceptance_status: "phase2_reingest_slice_complete"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
+        ]
+        allowed_gate_terms = [
+            'next_gate: "IDS-STAGE027-P3-GATE"',
+            'next_gate: "IDS-STAGE027-P4-GATE"',
+        ]
+        allowed_next_terms = [
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
+        self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
+        self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
+        self.assertTrue(any(term in text for term in allowed_acceptance_terms), allowed_acceptance_terms)
+        self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
+        self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
 
     def test_roadmap_and_events_track_stage027_phase2_local_gate(self):
         self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
@@ -437,9 +509,6 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         events_text = EVENTS.read_text(encoding="utf-8")
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE027"',
-            'current_phase_id: "IDS-STAGE027-P2"',
-            'current_task_id: "IDS-V0_1-STAGE027-P2"',
-            'next_gate_id: "IDS-STAGE027-P3-GATE"',
             'phase_id: "IDS-STAGE027-P2"',
             'status: "passed_with_local_evidence"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md",
@@ -450,6 +519,179 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             '"task_id":"IDS-V0_1-STAGE027-P2"',
             '"ACC-STAGE-027"',
             "STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md",
+        ]
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE027-P2"',
+            'current_phase_id: "IDS-STAGE027-P3"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE027-P2"',
+            'current_task_id: "IDS-V0_1-STAGE027-P3"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE027-P3-GATE"',
+            'next_gate_id: "IDS-STAGE027-P4-GATE"',
+        ]
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+    def test_phase3_scenario_report_validates_reingest_ready_review_blocked_and_no_persistence(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            report = module.build_stage027_scenario_report(
+                scenario_archives=self._phase3_scenario_archives(base),
+                evaluated_at=SCENARIO_AT,
+            )
+
+        self.assertEqual(report["schema_version"], "ids.stage027.reingest_extracted_files.scenario_validation.v1")
+        self.assertEqual(report["stage"], "STAGE-027")
+        self.assertEqual(report["phase"], "Phase 3")
+        self.assertEqual(report["task_id"], "IDS-V0_1-STAGE027-P3")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-027")
+        self.assertEqual(report["reingest_schema"], "ids.stage027.reingest_extracted_files.v1")
+        self.assertEqual(report["validation_state"], "REINGEST_SCENARIO_VALIDATION_PASSED")
+        self.assertTrue(report["required_scenarios_covered"])
+        self.assertEqual(
+            report["required_scenarios"],
+            [
+                "ready_for_import_queue",
+                "duplicate_content_owner_review",
+                "missing_source_blocked",
+                "raw_metadata_root_blocked",
+                "adapter_owner_review",
+            ],
+        )
+        self.assertEqual(report["scenario_count"], 5)
+
+        expected_decisions = {
+            "ready_for_import_queue": "REINGEST_READY_FOR_IMPORT_QUEUE",
+            "duplicate_content_owner_review": "REINGEST_OWNER_REVIEW_REQUIRED",
+            "missing_source_blocked": "REINGEST_BLOCKED",
+            "raw_metadata_root_blocked": "REINGEST_BLOCKED",
+            "adapter_owner_review": "REINGEST_OWNER_REVIEW_REQUIRED",
+        }
+        expected_risks = {
+            "missing_source_blocked": "REINGEST_SOURCE_MISSING",
+            "raw_metadata_root_blocked": "REINGEST_SOURCE_BLOCKED_RAW_METADATA_ROOT",
+            "adapter_owner_review": "REINGEST_FORMAT_REQUIRES_EXTERNAL_ADAPTER",
+        }
+        by_id = {item["scenario_id"]: item for item in report["scenario_results"]}
+        self.assertEqual(set(by_id), set(expected_decisions))
+        for scenario_id, decision_state in expected_decisions.items():
+            with self.subTest(scenario_id=scenario_id):
+                result = by_id[scenario_id]
+                self.assertEqual(result["scenario_state"], "REINGEST_SCENARIO_VALIDATED")
+                self.assertEqual(result["expected_decision_state"], decision_state)
+                self.assertTrue(result["expected_decision_observed"])
+                self.assertEqual(result["decision_state"], decision_state)
+                self.assertEqual(result["reingest_report"]["schema_version"], "ids.stage027.reingest_extracted_files.v1")
+                if scenario_id in expected_risks:
+                    self.assertEqual(result["expected_risk_code"], expected_risks[scenario_id])
+                    self.assertTrue(result["expected_risk_observed"])
+                    self.assertIn(expected_risks[scenario_id], result["risk_codes"])
+
+        pipeline_validation = report["pipeline_validation"]
+        self.assertEqual(pipeline_validation["state"], "REINGEST_PIPELINE_VALIDATED")
+        self.assertEqual(pipeline_validation["required_pipeline"], ["hash", "manifest", "dedup", "parser"])
+        self.assertEqual(pipeline_validation["actual_jobs_started"], {"hash": 0, "manifest": 0, "dedup": 0, "parser": 0})
+        self.assertGreaterEqual(pipeline_validation["ready_record_count"], 1)
+
+        persistence_validation = report["persistence_validation"]
+        self.assertEqual(persistence_validation["state"], "REINGEST_NO_PERSISTENCE_VALIDATED")
+        self.assertTrue(persistence_validation["all_no_persistence_deltas_zero"])
+        self.assertTrue(persistence_validation["does_not_create_import_queue"])
+        self.assertTrue(persistence_validation["does_not_write_database"])
+        self.assertTrue(persistence_validation["does_not_write_index"])
+        for value in report["no_persistence_deltas"].values():
+            self.assertEqual(value, 0)
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertTrue(report["does_not_write_reingest_runtime_output"])
+        self.assertTrue(report["does_not_start_processing_jobs"])
+        self.assertTrue(report["does_not_use_fake_ids_business_data"])
+
+    def test_phase3_evidence_document_records_scenarios_raw_boundary_and_no_phase4(self):
+        self.assertTrue(PHASE3.is_file(), f"missing phase3 evidence: {PHASE3}")
+        text = PHASE3.read_text(encoding="utf-8")
+        required_terms = [
+            "IDS-V0_1-STAGE027-P3",
+            "ACC-STAGE-027",
+            "ids.stage027.reingest_extracted_files.scenario_validation.v1",
+            "build_stage027_scenario_report",
+            "ready_for_import_queue",
+            "duplicate_content_owner_review",
+            "missing_source_blocked",
+            "raw_metadata_root_blocked",
+            "adapter_owner_review",
+            "REINGEST_READY_FOR_IMPORT_QUEUE",
+            "REINGEST_OWNER_REVIEW_REQUIRED",
+            "REINGEST_BLOCKED",
+            "REINGEST_SOURCE_MISSING",
+            "REINGEST_SOURCE_BLOCKED_RAW_METADATA_ROOT",
+            "REINGEST_FORMAT_REQUIRES_EXTERNAL_ADAPTER",
+            "REINGEST_PIPELINE_VALIDATED",
+            "REINGEST_NO_PERSISTENCE_VALIDATED",
+            "process-owned temporary structural archive fixtures",
+            "不是 IDS corpus、database rows、business evidence、raw metadata、committed examples 或 user production data",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_PHASE4",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_batch021_030_lock_tracks_current_stage027_phase3_without_upload_permission(self):
+        self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
+        text = BATCH_LOCK.read_text(encoding="utf-8")
+        required_terms = [
+            'status: "stage027_phase3_in_progress"',
+            "STAGE-027:",
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            'next_phase: "Phase 4"',
+            'current_task_id: "IDS-V0_1-STAGE027-P3"',
+            'acceptance_id: "ACC-STAGE-027"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
+            'next_gate: "IDS-STAGE027-P4-GATE"',
+            'push_allowed: false',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
+            "KM_IDSystem/scripts/check_reingest_extracted_files.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE3_SCENARIO_VALIDATION.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_roadmap_and_events_track_stage027_phase3_local_gate(self):
+        self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
+        self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE027"',
+            'current_phase_id: "IDS-STAGE027-P3"',
+            'current_task_id: "IDS-V0_1-STAGE027-P3"',
+            'next_gate_id: "IDS-STAGE027-P4-GATE"',
+            'phase_id: "IDS-STAGE027-P3"',
+            'status: "passed_with_local_evidence"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE3_SCENARIO_VALIDATION.md",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE027-P3-20260703-001"',
+            '"event_type":"validation"',
+            '"task_id":"IDS-V0_1-STAGE027-P3"',
+            '"ACC-STAGE-027"',
+            "STAGE027_PHASE3_SCENARIO_VALIDATION.md",
         ]
         for term in roadmap_terms:
             with self.subTest(term=term):

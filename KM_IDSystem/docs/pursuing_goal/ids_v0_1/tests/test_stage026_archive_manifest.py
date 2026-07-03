@@ -249,6 +249,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE027-P1-GATE"',
             'next_gate: "IDS-STAGE027-P2-GATE"',
             'next_gate: "IDS-STAGE027-P3-GATE"',
+            'next_gate: "IDS-STAGE027-P4-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P2"',
@@ -257,6 +258,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P1"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
@@ -295,22 +297,25 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE026-P4"',
             'current_phase_id: "IDS-STAGE027-P1"',
             'current_phase_id: "IDS-STAGE027-P2"',
+            'current_phase_id: "IDS-STAGE027-P3"',
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
             'current_task_id: "IDS-V0_1-STAGE026-P4"',
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
+            'current_task_id: "IDS-V0_1-STAGE027-P3"',
             'next_gate_id: "IDS-STAGE026-P2-GATE"',
             'next_gate_id: "IDS-STAGE026-P3-GATE"',
             'next_gate_id: "IDS-STAGE026-P4-GATE"',
             'next_gate_id: "IDS-STAGE027-P1-GATE"',
             'next_gate_id: "IDS-STAGE027-P2-GATE"',
             'next_gate_id: "IDS-STAGE027-P3-GATE"',
+            'next_gate_id: "IDS-STAGE027-P4-GATE"',
         ]
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:6]), allowed_current_terms[:6])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[6:12]), allowed_current_terms[6:12])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[12:]), allowed_current_terms[12:])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:7]), allowed_current_terms[:7])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[7:14]), allowed_current_terms[7:14])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[14:]), allowed_current_terms[14:])
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -493,6 +498,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE027-P1-GATE"',
             'next_gate: "IDS-STAGE027-P2-GATE"',
             'next_gate: "IDS-STAGE027-P3-GATE"',
+            'next_gate: "IDS-STAGE027-P4-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P3"',
@@ -500,6 +506,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P1"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -648,12 +655,14 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE027-P1-GATE"',
             'next_gate: "IDS-STAGE027-P2-GATE"',
             'next_gate: "IDS-STAGE027-P3-GATE"',
+            'next_gate: "IDS-STAGE027-P4-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE026-P4"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P1"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -721,6 +730,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P1"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
         ]
         self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
 
@@ -753,17 +763,20 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE026-P4"',
             'current_phase_id: "IDS-STAGE027-P1"',
             'current_phase_id: "IDS-STAGE027-P2"',
+            'current_phase_id: "IDS-STAGE027-P3"',
             'current_task_id: "IDS-V0_1-STAGE026-P4"',
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
+            'current_task_id: "IDS-V0_1-STAGE027-P3"',
             'next_gate_id: "IDS-STAGE027-P1-GATE"',
             'next_gate_id: "IDS-STAGE027-P2-GATE"',
             'next_gate_id: "IDS-STAGE027-P3-GATE"',
+            'next_gate_id: "IDS-STAGE027-P4-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[:2]), allowed_current_terms[:2])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[2:5]), allowed_current_terms[2:5])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[5:8]), allowed_current_terms[5:8])
-        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[8:]), allowed_current_terms[8:])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[2:6]), allowed_current_terms[2:6])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[6:10]), allowed_current_terms[6:10])
+        self.assertTrue(any(term in roadmap_text for term in allowed_current_terms[10:]), allowed_current_terms[10:])
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
