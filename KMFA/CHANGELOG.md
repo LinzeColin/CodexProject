@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3-s10-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 10｜overall review` 本地验证：复跑 S10-P1/S10-P2/S10-P3 replay validators、legacy S10 validators、legacy Stage 10 review validator、v0.1.3 Stage 10 review validator 和 focused unit test。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V013_S10_STAGE_REVIEW/`，锁定 phase_results 全部 PASS、open findings=0、fixed findings=2、2 个 HTML 报告、2 个 CSV 附表、2 个 Excel-compatible CSV 下载记录、0 个 committed PDF、0 个 committed Excel workbook、0 个正式报告和 0 个经营决策依据。
+- legacy Stage 10 upload artifacts 已降级为历史证据，非当前 v1.3 active upload gate；GitHub main upload 仍为 `not_uploaded_deferred_until_stage1_10_batch`。
+- 未执行 GitHub upload、Stage 1-10 batch overall review、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe deep coupling 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s10p3-report-export-replay - 2026-07-03
 
 - 完成 `v0.1.3 S10-P3｜report export replay` 本地验证：复用既有 S10-P3 public-safe 报告导出 artifacts，并验证 v0.1.3 S10-P2 dependency。
