@@ -28,7 +28,7 @@
     "KMFA/tools/check_v013_s09_p3_scope_reconciliation_replay.py",
     "KMFA/tests/test_v013_s09_p3_scope_reconciliation_replay.py"
   ],
-  "generated_at": "2026-07-03T15:24:24+10:00",
+  "generated_at": "2026-07-03T19:47:40+10:00",
   "github_upload": {
     "github_upload_deferred_until_stage10_batch": true,
     "github_upload_performed": false,
@@ -154,7 +154,7 @@
     "private_runtime_output_dir": "KMFA/.codex_private_runtime/"
   },
   "remote": "git@github.com:LinzeColin/CodexProject.git",
-  "reviewed_head": "346a2f58c65f038ddb653f36836415b79eb528ef",
+  "reviewed_head": "494a166779fa8fdc1a282d1ebbdca293e3e78886",
   "s09_p2_dependency_status": "completed_validated_local_only_no_go_upload_deferred_margin_cash_margin_replayed",
   "s09_p2_dependency_validated": true,
   "schema_version": "kmfa.v013_s09_p3_scope_reconciliation_replay.v1",

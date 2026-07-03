@@ -29,7 +29,7 @@
     "KMFA/tools/check_v013_s10_p2_report_grade_runtime_replay.py",
     "KMFA/tests/test_v013_s10_p2_report_grade_runtime_replay.py"
   ],
-  "generated_at": "2026-07-03T17:10:50+10:00",
+  "generated_at": "2026-07-03T19:47:50+10:00",
   "github_upload": {
     "github_upload_deferred_until_stage10_batch": true,
     "github_upload_performed": false,
@@ -205,7 +205,7 @@
     "stage_scope_false_count": 8,
     "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001"
   },
-  "reviewed_head": "9d2b0c539ab909b7452467f1d8dac89390fd471d",
+  "reviewed_head": "494a166779fa8fdc1a282d1ebbdca293e3e78886",
   "s10_p1_dependency_status": "completed_validated_local_only_no_go_upload_deferred_report_templates_replayed",
   "s10_p1_dependency_validated": true,
   "schema_version": "kmfa.v013_s10_p2_report_grade_runtime_replay.v1",

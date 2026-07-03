@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-stage1-10-batch-review`
+- version: `0.1.3-stage1-10-github-upload`
 - current_stage: `S01-S10`
-- current_phase: `v0.1.3 Stage 1-10 batch overall review`
-- status: `batch_review_passed_local_only_upload_ready_next_gate_no_go`
+- current_phase: `v0.1.3 Stage 1-10 GitHub upload gate`
+- status: `github_upload_gate_validated_public_safe_ready_to_push_no_go`
 - production_ready: `false`
-- github_upload_ready: `true_separate_stage1_10_upload_gate_required`
+- github_upload_ready: `true_stage1_10_upload_gate_validated`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 

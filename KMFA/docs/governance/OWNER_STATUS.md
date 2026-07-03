@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上保留历史 Stage 1-18 证据；当前 v0.1.3 续跑已完成 Stage 1-10 batch overall review：新增 generator、validator、focused unit test 和 `KMFA/stage_artifacts/V013_STAGE1_10_BATCH_REVIEW/` 证据，复核 S01-S10 共 10 个 v0.1.3 stage review manifest，stage_results 全部 PASS，open stage review findings=0，open batch findings=0，legacy individual Stage upload artifacts 均非当前 v1.3 gate。GitHub main 仍未上传；下一步只能另起独立 Stage 1-10 GitHub upload gate，并在该 gate 内复跑 validators、安全扫描和分支集成检查后再 push。最新状态仍为 `NO_GO`，`delivery_allowed=false`：当前只有 lineage protocol header、0 条 actual lineage rows、12 条 S09 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据、release claim 和 delivery claim。项目仍不是可用业务系统；本轮未读取、列出或修改 raw inbox，未执行 raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合、生产恢复或任何业务动作。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上保留历史 Stage 1-18 证据；当前 v0.1.3 续跑已完成 Stage 1-10 batch overall review，并完成独立 Stage 1-10 GitHub upload gate 本地验证：新增 upload validator、focused unit test 和 `KMFA/stage_artifacts/V013_STAGE1_10_GITHUB_UPLOAD/` 证据，已在最新 `origin/main` 上 rebase，复跑 S01-S10 validators、治理 validator、安全扫描和全量 326 个 KMFA tests。最新状态仍为 `NO_GO`，`delivery_allowed=false`：当前只有 lineage protocol header、0 条 actual lineage rows、12 条 S09 pending reconciliation 和 2 条 D 级报告继续阻断正式报告、经营决策依据、release claim 和 delivery claim。项目仍不是可用业务系统；本轮未读取、列出或修改 raw inbox，未执行 raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合、生产恢复或任何业务动作。
 
 ## 你现在能信任什么
 
