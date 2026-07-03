@@ -4,14 +4,14 @@
 - Task ID: `IDS-V0_1-BATCH-021-030-UPLOAD-GATE`
 - Stage range: `STAGE-021..STAGE-030`
 - Acceptance range: `ACC-STAGE-021..ACC-STAGE-030`
-- Gate checked at UTC: `2026-07-03T08:06:10Z`
+- Gate checked at UTC: `2026-07-03T08:21:35Z`
 - Target repository: `LinzeColin/CodexProject`
 - Target branch: `main`
 - IDS metadata raw root: `/Users/linzezhang/Downloads/IDS_MetaData`
 - Review gate evidence: `BATCH021_030_REVIEW_GATE.md`
 - Upload lock: `BATCH021_030_UPLOAD_LOCK.yaml`
 - Current upload switch: `push_allowed=true`
-- Decision: open a PR targeting `main`; No STAGE-031
+- Decision: PR #272 merged into `main`; app entries reinstalled; no open PRs or issues; No STAGE-031
 
 ## Goal
 
@@ -32,7 +32,7 @@ expand the sparse worktree.
 | Owner render | Passed. `check-render --project KM_IDSystem` returned `drift_count=0` and `reference_issue_count=0` before this gate. | `scripts/lean_governance.py check-render --project KM_IDSystem` |
 | GitHub open PR/issue precheck | Passed. The pre-PR GitHub issue API and GitHub connector check found zero open issues and zero open PRs before creating this upload PR. | GitHub public API; GitHub connector search |
 | Remote main strategy | Passed. Branch and `origin/main` are diverged, so direct `HEAD:main` push is not allowed. GitHub reports PR #272 as mergeable with `mergeable_state=unstable`, not a content conflict. | `git rev-list --left-right --count origin/main...HEAD`; GitHub pull API |
-| app entry reinstall | Pending after GitHub merge. `scripts/install_app_entries.sh` will rebuild/copy `.app` and `.command` launchers without reading raw metadata. | `KM_IDSystem/scripts/install_app_entries.sh` |
+| app entry reinstall | Passed. `scripts/install_app_entries.sh` rebuilt/copied `.app` and `.command` launchers without reading raw metadata; installed launchers point to this `KM_IDS/KM_IDSystem` worktree. | `KM_IDSystem/scripts/install_app_entries.sh`; installed app/command paths |
 | IDS metadata raw data boundary | Passed. `/Users/linzezhang/Downloads/IDS_MetaData` remains a path-only read-only real-data source boundary; raw database content was not read, listed, scanned, hashed, copied, modified, deleted, moved, dumped, normalized, or committed. | `IDS_METADATA_RAW_DATA_BOUNDARY.md`; `BATCH021_030_UPLOAD_LOCK.yaml` |
 
 ## Remote Main Strategy
@@ -90,8 +90,23 @@ is:
 
 ## Remote Merge Evidence
 
-Pending. This section must be updated after the PR is merged and app entry
-reinstall is verified.
+- PR title: `[codex] IDS v0.1 STAGE-021..030 batch upload gate`
+- PR URL: `https://github.com/LinzeColin/CodexProject/pull/272`
+- PR head before merge: `5f3aaa0fd6a422909ee00cf1f604b5acdbaa032a`
+- PR base before merge: `38c6975da8aca6adcfc82d937502a597da3c5871`
+- GitHub merge SHA: `88a428c7901226bd44d5e4ff106cd51d74b550fe`
+- Merge result: `merged=true`
+- Post-merge open PRs in `LinzeColin/CodexProject`: `0`
+- Post-merge open issues in `LinzeColin/CodexProject`: `0`
+- Post-merge remote feature branch: deleted by GitHub after merge.
+- App entry reinstall: passed.
+  - `/Users/linzezhang/Downloads/IDS Industrial Data System.app`
+  - `/Applications/IDS Industrial Data System.app`
+  - `/Users/linzezhang/Downloads/IDS Industrial Data System.command`
+  - `/Applications/IDS Industrial Data System.command`
+- App launcher root: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem`
+- Codesign verification: passed for both installed `.app` bundles.
+- Verified at UTC: `2026-07-03T08:21:35Z`
 
 ## Stop Conditions
 
@@ -110,7 +125,9 @@ reinstall is verified.
 
 ## Rollback
 
-If this gate fails before GitHub upload, revert this gate commit and leave
-`BATCH021_030_UPLOAD_LOCK.yaml` at the prior reviewed no-upload state. If PR
-#272 cannot be merged, close it or leave an explicit blocker; do not start
-`STAGE-031` while upload is unresolved.
+If a later audit finds this upload invalid, correct through a targeted GitHub
+main commit or revert PR #272. Do not touch
+`/Users/linzezhang/Downloads/IDS_MetaData`, runtime data, reports, outputs,
+persisted manifests, evidence ledgers, audit logs, indexes, or app entries
+unless the correction explicitly targets those installed launchers. `STAGE-031`
+must remain a separate next run.
