@@ -136,6 +136,38 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn("| 阻断 2：缺 SMTP secret env 名称", decisions)
         self.assertNotIn("| 阻断 3：既有 `OpenAIDatabase/session_history` archive", decisions)
 
+    def test_three_base_gh_equivalent_blockers_are_historical_not_current(self) -> None:
+        features = (ADP_ROOT / "功能清单.md").read_text(encoding="utf-8")
+        development = (ADP_ROOT / "开发记录.md").read_text(encoding="utf-8")
+        model_params = (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8")
+        combined = "\n".join([features, development, model_params])
+
+        self.assertIn(
+            "当时剩余阻断：missing SMTP secret env names；existing OpenAIDatabase session-history archive git artifact hygiene violations",
+            features,
+        )
+        self.assertIn(
+            "后续已由 20:39 secret / artifact 预检修复消费或限定为非当前 ADP 阻断",
+            features,
+        )
+        self.assertIn(
+            "当时剩余阻断原因：missing SMTP secret env names；existing OpenAIDatabase session-history archive git artifact hygiene violations",
+            development,
+        )
+        self.assertIn(
+            "后续已由 20:39 secret / artifact 预检修复消费或限定为非当前 ADP 阻断",
+            development,
+        )
+        self.assertIn("current_blocker=persistent_daily_operation_authorization_missing", model_params)
+
+        forbidden_phrases = (
+            "当前剩余阻断：missing SMTP secret env names；existing OpenAIDatabase session-history archive git artifact hygiene violations",
+            "剩余阻断原因：missing SMTP secret env names；existing OpenAIDatabase session-history archive git artifact hygiene violations。",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, combined)
+
     def test_owner_decision_page_does_not_reopen_pre_acceptance_final_bundle_gaps(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
 
