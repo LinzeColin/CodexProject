@@ -339,6 +339,123 @@ def build_stage025_scenario_report(
     }
 
 
+def _safe_extraction_report_sample(
+    safe_extraction_report: dict[str, Any],
+    scenario_report: dict[str, Any] | None,
+) -> dict[str, Any]:
+    return {
+        "archive_manifest_sample": safe_extraction_report.get("archive_manifest", {}),
+        "safety_block_log": safe_extraction_report.get("risk_entries", []),
+        "cleanup_allowlist_sample": safe_extraction_report.get("cleanup_allowlist", []),
+        "post_extract_reingest_sample": safe_extraction_report.get("post_extract_reingest", {}),
+        "scenario_validation_sample": scenario_report or {},
+    }
+
+
+def build_safe_extraction_engine_owner_feedback_summary(
+    safe_extraction_report: dict[str, Any],
+    *,
+    scenario_report: dict[str, Any] | None = None,
+    recorded_at: str | None = None,
+    stage_review_findings: list[str] | tuple[str, ...] | None = None,
+) -> dict[str, Any]:
+    """Build Stage 025 Phase 4 closeout evidence without creating runtime artifacts."""
+
+    cleanup_allowlist = safe_extraction_report.get("cleanup_allowlist", [])
+    cleanup_uris = [item["uri"] for item in cleanup_allowlist]
+    original_archive_ref = safe_extraction_report.get("original_archive_ref")
+    cleanup_classes = sorted({item.get("cleanup_class") for item in cleanup_allowlist if item.get("cleanup_class")})
+    original_archive_in_cleanup = bool(original_archive_ref and original_archive_ref in cleanup_uris)
+    return {
+        "schema_version": "ids.stage025.safe_extraction_engine.owner_feedback.v1",
+        "stage": "STAGE-025",
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE025-P4",
+        "acceptance_id": "ACC-STAGE-025",
+        "entrance": ENTRANCE,
+        "safe_extraction_engine_id": SAFE_EXTRACTION_ENGINE_ID,
+        "recorded_at": recorded_at,
+        "report_sample": _safe_extraction_report_sample(safe_extraction_report, scenario_report),
+        "risk_checklist": {
+            "SAFE_EXTRACTION_PATH_TRAVERSAL_BLOCKED": "路径穿越被阻断；不得写出 staging 根目录。",
+            "SAFE_EXTRACTION_ABSOLUTE_PATH_BLOCKED": "绝对路径被阻断；不得按归档内绝对路径写本机文件。",
+            "SAFE_EXTRACTION_TOTAL_SIZE_LIMIT_EXCEEDED": "解压后总量超过限制；必须停止并进入 owner review。",
+            "SAFE_EXTRACTION_ENTRY_SIZE_LIMIT_EXCEEDED": "单文件大小超过限制；该条目隔离并等待人工复核。",
+            "SAFE_EXTRACTION_NESTED_DEPTH_LIMIT_EXCEEDED": "嵌套包深度超过限制；禁止递归自动解压。",
+            "SAFE_EXTRACTION_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED": "乱码文件名进入人工复核；不得猜测或重命名后继续。",
+            "SAFE_EXTRACTION_FILE_COUNT_LIMIT_EXCEEDED": "文件数超过限制；后续条目进入隔离状态。",
+            "SAFE_EXTRACTION_ADAPTER_OWNER_REVIEW_REQUIRED": "RAR/7Z 等格式需要 owner 批准的外部 adapter，当前不伪造支持。",
+            "SAFE_EXTRACTION_SOURCE_BLOCKED_RAW_METADATA_ROOT": "IDS_MetaData 原始数据库根路径被阻断，helper 不读取内容。",
+            "SAFE_EXTRACTION_STAGING_OVERWRITE_BLOCKED": "目标 staging 文件已存在时拒绝覆盖。",
+        },
+        "automatic_extraction_boundaries": [
+            "只允许 owner 批准的 file:// archive_uri 和 staging_area_uri。",
+            "不覆盖原始压缩包，不移动、删除、重写或修复原始文件。",
+            "不写出指定 staging 区，不覆盖 staging 中既有文件。",
+            "RAR/7Z、乱码文件名、路径风险、超限和嵌套风险必须进入 owner review 或人工复核/隔离。",
+            "archive_manifest 样例和安全阻断日志只作为内存级 closeout evidence，不写 runtime output。",
+            "安全解压产物只进入 hash、manifest、dedup、parser re-ingest 计划，不启动实际处理 job。",
+        ],
+        "stop_conditions": [
+            "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容。",
+            "清理原始压缩包、事实源、证据产物、manifest、audit output 或 raw metadata。",
+            "绕过 staging 边界、路径过滤、owner review、quarantine 或 cleanup allowlist。",
+            "启动 hash、manifest、dedup、parser、OCR、Embedding、index、import、backend、frontend、worker 或 external API job。",
+            "写 runtime report、database、evidence ledger、audit log、index、document/chunk/job/import row 或 archive_manifest runtime output。",
+            "执行 GitHub upload、PR、merge、app reinstall 或进入 STAGE-026。",
+        ],
+        "failure_explanations": {
+            "SAFE_EXTRACTION_BLOCKED": "压缩包被安全阻断；不得继续解压、解析或清理原始文件。",
+            "SAFE_EXTRACTION_OWNER_REVIEW_REQUIRED": "压缩包需要 owner 复核；请先查看阻断日志、隔离项、清理白名单和 re-ingest 计划。",
+            "SAFE_EXTRACTION_READY_FOR_REINGEST": "安全条目已写入 staging；后续必须重新进入 hash、manifest、dedup、parser 流程。",
+            "SAFE_EXTRACTION_CLEANUP_ALLOWLIST_VALIDATED": "清理白名单只允许 staging temp files；原始归档、事实源和证据产物不在清理范围。",
+        },
+        "staging_rollback_and_cleanup": {
+            "state": "SAFE_EXTRACTION_STAGING_ROLLBACK_GUIDE_READY",
+            "allowed_cleanup_classes": cleanup_classes,
+            "cleanup_allowlist_uris": cleanup_uris,
+            "cleanup_targets_are_staging_temp_files_only": bool(cleanup_allowlist)
+            and set(cleanup_classes) <= {"ARCHIVE_STAGING_TEMP_FILE"},
+            "original_archive_in_cleanup_allowlist": original_archive_in_cleanup,
+            "protected_refs_preserved": not original_archive_in_cleanup
+            and safe_extraction_report.get("cleanup_policy", {}).get("does_not_clean_fact_source_or_evidence", False),
+            "rollback_steps": [
+                "Stop after Phase 4 closeout; do not enter STAGE-026 in the same run.",
+                "If rollback is needed, delete only owner-approved staging temp files listed in cleanup_allowlist.",
+                "Do not delete, move, overwrite, rewrite, repair, normalize, compact, or deduplicate the original archive or fact sources.",
+                "Return BATCH021_030 state to STAGE-025 Phase 3 complete and Phase 4 pending if this closeout is reverted.",
+            ],
+        },
+        "rollback_steps": [
+            "Revert Stage025 Phase4 helper additions, focused tests, closeout evidence, Stage005 validator/test changes, BATCH021_030 lock, roadmap/event updates, and rendered owner-file changes.",
+            "Do not clean /Users/linzezhang/Downloads/IDS_MetaData, original archives, fact sources, runtime databases, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, or GitHub state.",
+            "Delete only owner-approved staging temp files from cleanup_allowlist when a local rollback explicitly authorizes cleanup.",
+            "After rollback, STAGE-025 should return to Phase 3 complete and Phase 4 pending.",
+        ],
+        "whole_stage_review": {
+            "result": "passed_with_local_evidence",
+            "completed_phases": ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
+            "reviewed_acceptance_id": "ACC-STAGE-025",
+            "findings": list(stage_review_findings or []),
+            "unresolved_findings": [],
+            "next_stage": "STAGE-026",
+            "batch_upload_allowed": False,
+            "next_batch_gate": "IDS-STAGE026-P1-GATE",
+            "github_upload_status": "not_started",
+            "app_reinstall_status": "not_started",
+        },
+        "processing_guard": dict(archive_threat_model.PROCESSING_GUARD_ZEROES),
+        "no_persistence_deltas": dict(archive_threat_model.NO_PERSISTENCE_DELTAS),
+        "does_not_write_archive_manifest_runtime_output": True,
+        "does_not_write_report_files": True,
+        "does_not_write_json_output_files": True,
+        "does_not_write_database_rows": True,
+        "does_not_push_to_github": True,
+        "does_not_reinstall_app_entries": True,
+        "does_not_enter_stage026": True,
+    }
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run the IDS Stage 025 safe extraction engine.")
     parser.add_argument("--archive-uri", required=True, help="Owner-approved file:// archive URI.")
