@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "ADP-MVP-PREP-S3-HANDOFF-LATEST-PROGRESS-SYNC"
+    phase: "S2PL"
+    objective: "Keep the S3 DAILY_OPERATION first-read handoff aligned with the latest MVP preparation evidence source without copying dynamic counters or enabling runtime."
+    scope: "S3 first-read handoff, regression test, governance delivery task, development event, traceability, current gate metadata, three-base records, generated governance status views, and user-center traceability page."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, CURRENT.yaml mutation, V7.1 historical baseline mutation, V7.2 contract mutation, final-bundle verifier mutation, or DAILY_OPERATION enablement."
+    status: "completed"
+    dependencies: ["ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP", "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"]
+    required_files: ["HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", "arxiv-daily-push/用户中心/MVP准备与复审修补.md", "arxiv-daily-push/docs/governance/OWNER_STATUS.md", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD red/green: python3 -B -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q", "User-center regression: python3 -B -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q", "Dashboard generation: python3 -B scripts/generate_governance_dashboard.py --write --project arxiv-daily-push", "Project governance: python3 -B scripts/validate_project_governance.py --project arxiv-daily-push", "Governance sync: python3 -B scripts/validate_governance_sync.py", "Changed-only semantic governance: python3 -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "Daily readiness/preflight fail-closed: ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_readiness.py --root .; ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_enablement_preflight.py --root ."]
+    test_results: ["TDD red: S3 handoff did not mention the latest MVP evidence-freshness dedup task or OWNER_STATUS section 14 as the current count source", "TDD green: S3 handoff now exposes the latest MVP progress and regression rejects dynamic freshness counters from being copied into that first-read section", "Runtime enablement remains unchanged: persistent_daily_operation_authorized=false, daily_operation_enabled=false, real_smtp_send_enabled=false, scheduler_enabled=false, release_packaging_enabled=false, production_restore_enabled=false"]
+    evidence_refs: ["HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", "arxiv-daily-push/用户中心/MVP准备与复审修补.md", "arxiv-daily-push/docs/governance/OWNER_STATUS.md", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    risk: "Future agents could start from a stale S3 first-read handoff and miss the latest owner-facing evidence source, or copy dynamic freshness counters back into first-read pages."
+    rollback: "Revert the S3 handoff progress section, regression assertion, governance sync files, delivery task, traceability row, and development event; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP"
     phase: "S2PL"
     objective: "Prevent the MVP shallow owner page from duplicating dynamic evidence freshness counts that belong to generated governance status."

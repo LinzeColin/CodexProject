@@ -1628,6 +1628,19 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("daily_operation_enabled=false", handoff)
         self.assertIn("persistent_daily_operation_authorized=false", handoff)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", handoff)
+        self.assertIn("最新 MVP 复审准备进展", handoff)
+        self.assertIn("ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP", handoff)
+        self.assertIn("EVIDENCE_FRESHNESS_DYNAMIC_COUNT_DEDUP_NO_RUNTIME_ENABLEMENT", handoff)
+        self.assertIn(
+            "[OWNER_STATUS 第 14 节](../arxiv-daily-push/docs/governance/OWNER_STATUS.md#14-证据新鲜度)",
+            handoff,
+        )
+        self.assertIn(
+            "本节是 S3 first-read 同步，不是追逐 current main 提交号的改写",
+            handoff,
+        )
+        self.assertNotRegex(handoff, r"最新 MVP 复审准备进展[\s\S]*pending_or_stale_events=\d+")
+        self.assertNotRegex(handoff, r"最新 MVP 复审准备进展[\s\S]*legacy_unbound_events=\d+")
         self.assertIn("不要把它当成当前 S3/DAILY_OPERATION 状态页", handoff)
         self.assertIn(
             "`FINAL_ACCEPTANCE_BUNDLE/manifest.json`、`no_production_side_effects.json`、`owner_production_boundary_decision.json`、`p0_p1_zero_proof.json`",
