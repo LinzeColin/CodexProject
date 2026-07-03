@@ -1,0 +1,126 @@
+{
+  "acceptance_id": "ACC-V014-S03-P2-SOURCE-CHECK-MATRIX",
+  "dependency": {
+    "dependency_expected_status": "completed_validated_local_only_no_go_upload_deferred",
+    "dependency_manifest": "KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/machine/s03_p1_file_registration_manifest.json",
+    "dependency_public_register": "KMFA/metadata/imports/v014_s03_p1_public_raw_file_register.json",
+    "required_phase": "V014_S03_P1_FILE_REGISTRATION"
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/human/source_check_matrix_report.md",
+    "KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/machine/source_check_matrix_manifest.json",
+    "KMFA/metadata/sources/v014_s03_p2_source_check_matrix.jsonl",
+    "KMFA/metadata/sources/v014_s03_p2_source_status_events.jsonl",
+    "KMFA/metadata/protocol/source_check_matrix_v1_4_s03_p2.json"
+  ],
+  "final_validation_recorded_at": "2026-07-03T23:59:00+10:00",
+  "generated_at": "2026-07-03T14:00:17Z",
+  "matrix_file_ref": "KMFA/metadata/sources/v014_s03_p2_source_check_matrix.jsonl",
+  "next_recommended_phase": "S03-P3",
+  "phase_id": "S03-P2",
+  "phase_scope": {
+    "business_execution_performed": false,
+    "current_phase_only": true,
+    "field_mapping_performed": false,
+    "formal_report_performed": false,
+    "github_upload_performed": false,
+    "next_phase": "S03-P3",
+    "next_phase_started": false,
+    "raw_root_hash_performed_by_this_phase": false,
+    "raw_root_list_performed_by_this_phase": false,
+    "raw_root_mutation_performed": false,
+    "raw_root_read_performed_by_this_phase": false,
+    "raw_value_matching_performed": false,
+    "s03_p3_started": false,
+    "source_check_matrix_only": true,
+    "stage3_review_performed": false,
+    "uses_s03_p1_public_register_only": true
+  },
+  "project_id": "KMFA",
+  "protocol_ref": "KMFA/metadata/protocol/source_check_matrix_v1_4_s03_p2.json",
+  "public_repo_safety": {
+    "credentials_committed": false,
+    "directory_tree_plaintext_committed": false,
+    "excel_workbook_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "raw_or_normalized_values_committed": false,
+    "sqlite_or_db_committed": false,
+    "zip_committed": false,
+    "zip_member_names_committed": false
+  },
+  "release_state": {
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "current_data_quality_grade": "Q2",
+    "current_go_no_go": "NO_GO",
+    "current_report_grade": "D",
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "github_main_upload_allowed": false,
+    "release_permission": "blocked"
+  },
+  "schema_version": "kmfa.v014_s03_p2_source_check_matrix.v1",
+  "source_check_matrix_summary": {
+    "allowed_status_count": 5,
+    "allowed_statuses": [
+      "已就绪",
+      "部分/阻塞",
+      "失败/不适用",
+      "已过期",
+      "人工复核"
+    ],
+    "append_only_event_count": 5,
+    "business_segment_counts": {
+      "pending_owner_business_segment": 5
+    },
+    "event_target_layer_counts": {
+      "metadata": 5
+    },
+    "matrix_row_count": 5,
+    "public_file_count_from_s03_p1": 5,
+    "required_dimension_count": 6,
+    "required_dimensions": [
+      "source_system",
+      "business_segment",
+      "source_package_ref",
+      "entity_ref",
+      "account_ref",
+      "frequency"
+    ],
+    "source_system_counts": {
+      "local_raw_directory": 5
+    },
+    "status_counts": {
+      "人工复核": 5,
+      "失败/不适用": 0,
+      "已就绪": 0,
+      "已过期": 0,
+      "部分/阻塞": 0
+    },
+    "status_event_count": 5
+  },
+  "stage_id": "S03",
+  "stage_phase": "S03-P2",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "status_event_file_ref": "KMFA/metadata/sources/v014_s03_p2_source_status_events.jsonl",
+  "task_id": "KMFA-V014-S03-P2-SOURCE-CHECK-MATRIX-20260703",
+  "validation_summary": {
+    "diff_check": "PASS",
+    "focused_unit_test": "PASS",
+    "governance_validator": "PASS",
+    "public_raw_leak_scan": "PASS",
+    "raw_private_scan": "PASS",
+    "s03_p1_dependency": "PASS",
+    "secret_scan": "PASS",
+    "v014_s03_p2_validator": "PASS"
+  },
+  "version": "0.1.4"
+}

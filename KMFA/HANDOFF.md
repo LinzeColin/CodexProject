@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `Stage 2 整体复审`：`check_v014_s02_p1_metadata_protocol.py`、`check_v014_s02_p2_immutability_policy.py`、`check_v014_s02_p3_quality_gate.py`、`check_v014_s02_stage_review.py` 和 focused unit test 均已本地通过；Stage 2 review 证据位于 `KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/`，复审确认 S02-P1/S02-P2/S02-P3 phase_results 全部 PASS、open findings=0、当前仍为 `NO_GO`/`Q0`/`D`/`blocked`。`/Users/linzezhang/Downloads/KMFA_MetaData` 未被读取、列出、盘点、修改、删除、移动、重命名、覆盖或写入；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S03-P1`，不得跳到 GitHub upload、raw inventory、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S03-P2 数据源检查矩阵`：`KMFA/tools/v014_s03_p2_source_check_matrix.py`、`KMFA/tools/check_v014_s03_p2_source_check_matrix.py` 和 focused unit test 已建立；证据位于 `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/`，基于 S03-P1 public register 生成 matrix rows `5`、metadata status events `5`、required dimensions `6`、allowed statuses `5`，状态均为 `人工复核`。本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。下一步只能另起 run work 执行 `v0.1.4 S03-P3`，不得跳到 Stage 3 review、GitHub upload、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行.
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s02-stage-review`
-- 当前已完成: `v0.1.4 Stage 2 review`
-- 证据目录: `KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/`
-- validator: `KMFA/tools/check_v014_s02_stage_review.py`
-- focused test: `KMFA/tests/test_v014_s02_stage_review.py`
+- 当前版本: `0.1.4-s03p2-source-check-matrix`
+- 当前已完成: `v0.1.4 S03-P2 source check matrix`
+- 证据目录: `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/`
+- validator: `KMFA/tools/check_v014_s03_p2_source_check_matrix.py`
+- focused test: `KMFA/tests/test_v014_s03_p2_source_check_matrix.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: 本 review 未读取、列出、盘点、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未抽取 v1.4 zip 内 raw/private payload。
-- 未执行: S03-P1、raw inventory、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
+- raw boundary: 本 phase 未读取、列出、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只使用 S03-P1 public register。
+- 未执行: S03-P3、Stage 3 review、raw inventory、raw value matching、lineage full check、formal report、live connector、OpMe deep coupling、business execution、GitHub upload。
 
 ## v0.1.3 历史状态
 
