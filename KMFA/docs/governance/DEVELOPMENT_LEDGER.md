@@ -163,12 +163,13 @@ version_matrix_product_version_reference: 0.1.3-s08p3-entity-matching-quality-re
 | `KMFA-V013-S05-P1-A0-FILE-REGISTRATION-20260702` | v0.1.3 S05-P1 A0 文件登记 replay 本地通过：A0 inventory=9、PDF 类=8、Excel 类=1、Q3 machine candidates=9、Q4/Q5=0；本机 A0 private zip 可打开且聚合结构匹配，但整包 hash/size 与登记 source package 不匹配，因此 public member SHA256 未回填；未提交 raw 文件名、raw hash、ZIP member name、sheet name、字段明文、row values 或业务值；未执行 S05-P2、Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/human/a0_file_registration_replay_report.md` |
 | `KMFA-V013-S05-P2-FIELD-CANDIDATE-REPLAY-20260702` | v0.1.3 S05-P2 字段级黄金基准候选 replay 本地通过：fixture candidates=45、hash/source-anchor recorded=40、pending fields=5、Q4 confirmed=0、Q5 calculation baseline allowed=0；active owner/authorized decision 将 pending Excel candidate 降级为 cross-source support only，completion gate ready；未读取或写入 raw data inbox，未执行 S05-P3、Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P2_FIELD_CANDIDATE_REPLAY/human/field_candidate_replay_report.md` |
 | `KMFA-V013-S05-P3-AUTHORITY-BASELINE-REPLAY-20260702` | v0.1.3 S05-P3 权威基准锁定 replay 本地通过：baseline version 和 content hash 已复算锁定，authority records=45、Q5 locked fields=40、excluded fields=5；未读取或写入 raw data inbox，未执行 Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/human/authority_baseline_replay_report.md` |
+| `KMFA-V013-S08-STAGE-REVIEW-20260703` | v0.1.3 Stage 8 overall review 本地通过，completed_version=`0.1.3-s08-stage-review`：复跑 S08-P1/S08-P2/S08-P3 replay validators，phase_results 全部 PASS，open findings=0，fixed findings=1，legacy upload 非当前 gate；未读取或写入 raw data inbox，未执行 S09-P1、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/human/stage8_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S08-P3 完成后，下一步只能另起 run 执行 v0.1.3 Stage 8 overall review 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S08_P3_ENTITY_MATCHING_QUALITY_REPLAY/human/test_results.md` |
+| 无 | v0.1.3 Stage 8 review 完成后，下一步只能另起 run 执行 v0.1.3 S09-P1 public-safe project cost fact layer replay 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/human/test_results.md` |
 
 ## Not Completed
 
