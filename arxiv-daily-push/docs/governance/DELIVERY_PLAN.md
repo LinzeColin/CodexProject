@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 351
+- task_count: 352
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-03 12:46:36 Australia/Sydney - MVP evidence freshness dynamic count dedup
+
+- Task: `ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP`
+- Result: `pass_mvp_evidence_freshness_dynamic_count_dedup_no_runtime_enablement`
+- Evidence: `arxiv-daily-push/用户中心/MVP准备与复审修补.md`; `arxiv-daily-push/docs/governance/OWNER_STATUS.md`; `arxiv-daily-push/tests/test_governance_current_state.py`.
+- Current state: the MVP preparation page links `OWNER_STATUS` section 14 as the current evidence freshness count source and no longer copies dynamic `pending_or_stale_events` / `legacy_unbound_events` counters into the shallow owner page.
+- Boundary: this MVP preparation does not create `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`, does not send SMTP, and does not enable scheduler, Release, production restore, or DAILY_OPERATION.
+- Verification: target TDD red/green governance-current-state regression, user-center regression, generated governance dashboard, project governance, governance sync, changed-only semantic governance, fail-closed daily-operation readiness/preflight, and git whitespace scan.
 
 ## 2026-07-03 12:28:16 Australia/Sydney - Key-decision historical preflight headers aligned
 
