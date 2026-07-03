@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s08p1-project-composite-key-replay - 2026-07-03
+
+- 完成 `v0.1.3 S08-P1｜project composite key replay` 本地验证：复用既有 S08-P1 public-safe 项目组合键能力，并验证 v0.1.3 Stage 7 review dependency。
+- 新增 `KMFA/tools/v013_s08_p1_project_composite_key_replay.py`、`KMFA/tools/check_v013_s08_p1_project_composite_key_replay.py`、`KMFA/tests/test_v013_s08_p1_project_composite_key_replay.py` 和 `KMFA/stage_artifacts/V013_S08_P1_PROJECT_COMPOSITE_KEY_REPLAY/`。
+- 本 phase 锁定 required components=`8`、profiles=`4`、matches=`3`、manual review queue=`2`、strong auto match=`1`、human review required=`2`、matching weights sum=`10000 bps`、strong threshold=`8500 bps`、human review threshold=`7000 bps`；单字段缺失不全阻断，低于强匹配阈值进入人工复核且 `auto_merge_allowed=false`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 S08-P2、S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s07-stage-review - 2026-07-03
 
 - 完成 `v0.1.3 Stage 7 整体复审` 本地验证：复跑 S07-P1/S07-P2/S07-P3 replay validators、legacy S07 validators、治理 validator、raw/secret/public-safe scans，并生成 Stage 7 review evidence。
