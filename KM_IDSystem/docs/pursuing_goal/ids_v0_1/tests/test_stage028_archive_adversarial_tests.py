@@ -11,9 +11,11 @@ SCRIPT = ROOT / "scripts" / "check_archive_adversarial_tests.py"
 ENTRY = PURSUE_ROOT / "STAGE028_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE028_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE028_PHASE2_ARCHIVE_ADVERSARIAL_SLICE.md"
+PHASE3 = PURSUE_ROOT / "STAGE028_PHASE3_SCENARIO_VALIDATION.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
+EVALUATED_AT = "2026-07-03T10:48:09Z"
 
 
 class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
@@ -37,6 +39,73 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             archive.writestr("/absolute.md", payload)
             archive.writestr("bad\ufffdname.md", payload)
         return payload
+
+    def _write_zip(self, archive_path: Path, entries: dict[str, bytes]) -> None:
+        with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for entry_path, payload in entries.items():
+                archive.writestr(entry_path, payload)
+
+    def _phase3_scenario_archives(self, base: Path) -> dict[str, dict[str, object]]:
+        self.assertTrue(ENTRY.is_file(), f"missing real tracked payload source: {ENTRY}")
+        payload = ENTRY.read_bytes()
+
+        def scenario(name: str, entries: dict[str, bytes], **limits: object) -> dict[str, object]:
+            scenario_dir = base / name
+            scenario_dir.mkdir(parents=True, exist_ok=True)
+            archive_path = scenario_dir / f"{name}.zip"
+            self._write_zip(archive_path, entries)
+            return {
+                "archive_uri": archive_path.as_uri(),
+                "staging_area_uri": (scenario_dir / "staging").as_uri(),
+                **limits,
+            }
+
+        return {
+            "path_traversal": scenario(
+                "path-traversal",
+                {
+                    "safe/path-traversal.md": payload,
+                    "../escape.md": payload,
+                },
+            ),
+            "absolute_path": scenario(
+                "absolute-path",
+                {
+                    "safe/absolute.md": payload,
+                    "/absolute.md": payload,
+                },
+            ),
+            "archive_bomb": scenario(
+                "archive-bomb",
+                {
+                    "safe/archive-bomb.md": payload,
+                },
+                archive_total_size_limit_bytes=max(1, len(payload) // 2),
+            ),
+            "nested_archive": scenario(
+                "nested-archive",
+                {
+                    "safe/nested.md": payload,
+                    "nested/inner.zip": payload,
+                },
+                archive_nested_depth_limit=0,
+            ),
+            "garbled_filename": scenario(
+                "garbled-filename",
+                {
+                    "safe/garbled.md": payload,
+                    "bad\ufffdname.md": payload,
+                },
+            ),
+            "too_many_files": scenario(
+                "too-many-files",
+                {
+                    "safe/first.md": payload,
+                    "safe/second.md": payload,
+                },
+                archive_file_count_limit=1,
+            ),
+        }
 
     def test_phase1_contracts_exist_and_bind_taskpack_identity(self):
         self.assertTrue(ENTRY.is_file(), f"missing entry contract: {ENTRY}")
@@ -267,26 +336,148 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, text)
 
-    def test_batch021_030_lock_tracks_current_stage028_phase2_without_upload_permission(self):
+    def test_phase3_scenario_report_validates_adversarial_cases_reingest_cleanup_and_no_runtime_output(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            report = module.build_stage028_scenario_report(
+                scenario_archives=self._phase3_scenario_archives(Path(tmp)),
+                evaluated_at=EVALUATED_AT,
+            )
+
+        self.assertEqual(report["schema_version"], "ids.stage028.archive_adversarial_tests.scenario_validation.v1")
+        self.assertEqual(report["stage"], "STAGE-028")
+        self.assertEqual(report["phase"], "Phase 3")
+        self.assertEqual(report["task_id"], "IDS-V0_1-STAGE028-P3")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-028")
+        self.assertEqual(report["archive_adversarial_schema"], "ids.stage028.archive_adversarial_tests.v1")
+        self.assertEqual(report["validation_state"], "ARCHIVE_ADVERSARIAL_SCENARIO_VALIDATION_PASSED")
+        self.assertTrue(report["required_scenarios_covered"])
+        self.assertEqual(
+            report["required_scenarios"],
+            [
+                "path_traversal",
+                "absolute_path",
+                "archive_bomb",
+                "nested_archive",
+                "garbled_filename",
+                "too_many_files",
+            ],
+        )
+        self.assertEqual(report["scenario_count"], 6)
+        expected_risks = {
+            "path_traversal": "ARCHIVE_ADVERSARIAL_PATH_TRAVERSAL_BLOCKED",
+            "absolute_path": "ARCHIVE_ADVERSARIAL_ABSOLUTE_PATH_BLOCKED",
+            "archive_bomb": "ARCHIVE_ADVERSARIAL_TOTAL_SIZE_LIMIT_EXCEEDED",
+            "nested_archive": "ARCHIVE_ADVERSARIAL_NESTED_DEPTH_LIMIT_EXCEEDED",
+            "garbled_filename": "ARCHIVE_ADVERSARIAL_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+            "too_many_files": "ARCHIVE_ADVERSARIAL_FILE_COUNT_LIMIT_EXCEEDED",
+        }
+        by_id = {item["scenario_id"]: item for item in report["scenario_results"]}
+        self.assertEqual(set(by_id), set(expected_risks))
+        for scenario_id, risk_code in expected_risks.items():
+            with self.subTest(scenario_id=scenario_id):
+                result = by_id[scenario_id]
+                self.assertEqual(result["scenario_state"], "ARCHIVE_ADVERSARIAL_SCENARIO_VALIDATED")
+                self.assertEqual(result["expected_risk_code"], risk_code)
+                self.assertTrue(result["expected_risk_observed"])
+                self.assertIn(risk_code, result["risk_codes"])
+                self.assertEqual(
+                    result["archive_adversarial_report"]["schema_version"],
+                    "ids.stage028.archive_adversarial_tests.v1",
+                )
+
+        reingest_validation = report["reingest_validation"]
+        self.assertEqual(reingest_validation["state"], "ARCHIVE_ADVERSARIAL_REINGEST_VALIDATED")
+        self.assertEqual(reingest_validation["required_pipeline"], ["hash", "manifest", "dedup", "parser"])
+        self.assertGreaterEqual(reingest_validation["safe_extracted_file_count"], 1)
+        self.assertEqual(
+            reingest_validation["actual_jobs_started"],
+            {"hash": 0, "manifest": 0, "dedup": 0, "parser": 0, "ocr": 0, "embedding": 0, "index": 0, "import": 0},
+        )
+
+        cleanup_validation = report["cleanup_validation"]
+        self.assertEqual(cleanup_validation["state"], "ARCHIVE_ADVERSARIAL_CLEANUP_ALLOWLIST_VALIDATED")
+        self.assertTrue(cleanup_validation["cleanup_targets_are_staging_temp_files_only"])
+        self.assertFalse(cleanup_validation["original_archive_in_cleanup_allowlist"])
+        self.assertTrue(cleanup_validation["protected_refs_preserved"])
+
+        manual_review_validation = report["manual_review_validation"]
+        self.assertEqual(manual_review_validation["state"], "ARCHIVE_ADVERSARIAL_MANUAL_REVIEW_VALIDATED")
+        self.assertGreaterEqual(manual_review_validation["owner_review_entry_count"], 6)
+        self.assertGreaterEqual(manual_review_validation["quarantine_entry_count"], 6)
+
+        for value in report["processing_guard"].values():
+            self.assertEqual(value, 0)
+        for value in report["no_persistence_deltas"].values():
+            self.assertEqual(value, 0)
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertTrue(report["does_not_write_archive_adversarial_runtime_output"])
+        self.assertTrue(report["does_not_write_archive_manifest_runtime_output"])
+        self.assertTrue(report["does_not_write_runtime_outputs"])
+        self.assertTrue(report["does_not_start_processing_jobs"])
+        self.assertTrue(report["does_not_use_fake_ids_business_data"])
+
+    def test_phase3_evidence_doc_records_scenarios_reingest_cleanup_raw_boundary_and_no_phase4(self):
+        self.assertTrue(PHASE3.is_file(), f"missing phase3 evidence: {PHASE3}")
+        text = PHASE3.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE028-P3",
+            "ACC-STAGE-028",
+            "ids.stage028.archive_adversarial_tests.scenario_validation.v1",
+            "build_stage028_scenario_report",
+            "路径穿越",
+            "绝对路径",
+            "压缩炸弹",
+            "嵌套包",
+            "乱码文件名",
+            "超大文件数",
+            "ARCHIVE_ADVERSARIAL_PATH_TRAVERSAL_BLOCKED",
+            "ARCHIVE_ADVERSARIAL_ABSOLUTE_PATH_BLOCKED",
+            "ARCHIVE_ADVERSARIAL_TOTAL_SIZE_LIMIT_EXCEEDED",
+            "ARCHIVE_ADVERSARIAL_NESTED_DEPTH_LIMIT_EXCEEDED",
+            "ARCHIVE_ADVERSARIAL_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+            "ARCHIVE_ADVERSARIAL_FILE_COUNT_LIMIT_EXCEEDED",
+            "ARCHIVE_ADVERSARIAL_REINGEST_VALIDATED",
+            "hash",
+            "manifest",
+            "dedup",
+            "parser",
+            "ARCHIVE_ADVERSARIAL_CLEANUP_ALLOWLIST_VALIDATED",
+            "只清理允许的临时文件",
+            "不删除原始文件",
+            "process-owned temporary archive fixtures",
+            "不是 IDS corpus、database rows、business evidence、raw metadata 或 committed user data",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_PHASE4",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_batch021_030_lock_tracks_current_stage028_phase3_without_upload_permission(self):
         self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
         text = BATCH_LOCK.read_text(encoding="utf-8")
 
         required_terms = [
-            'status: "stage028_phase2_in_progress"',
+            'status: "stage028_phase3_in_progress"',
             "STAGE-028:",
             'status: "in_progress"',
             '      - "Phase 1"',
             '      - "Phase 2"',
-            'next_phase: "Phase 3"',
-            'current_task_id: "IDS-V0_1-STAGE028-P2"',
+            '      - "Phase 3"',
+            'next_phase: "Phase 4"',
+            'current_task_id: "IDS-V0_1-STAGE028-P3"',
             'acceptance_id: "ACC-STAGE-028"',
-            'acceptance_status: "phase2_archive_adversarial_slice_complete"',
-            'next_gate: "IDS-STAGE028-P3-GATE"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
+            'next_gate: "IDS-STAGE028-P4-GATE"',
             'push_allowed: false',
-            'next_allowed_task_id: "IDS-V0_1-STAGE028-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE028-P4"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE2_ARCHIVE_ADVERSARIAL_SLICE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE3_SCENARIO_VALIDATION.md",
             "KM_IDSystem/scripts/check_archive_adversarial_tests.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage028_archive_adversarial_tests.py",
             "/Users/linzezhang/Downloads/IDS_MetaData",
@@ -296,7 +487,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, text)
 
-    def test_roadmap_and_events_track_stage028_phase2_local_gate(self):
+    def test_roadmap_and_events_track_stage028_phase3_local_gate(self):
         self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
         self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
         roadmap_text = ROADMAP.read_text(encoding="utf-8")
@@ -304,22 +495,22 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
 
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE028"',
-            'current_phase_id: "IDS-STAGE028-P2"',
-            'current_task_id: "IDS-V0_1-STAGE028-P2"',
-            'next_gate_id: "IDS-STAGE028-P3-GATE"',
+            'current_phase_id: "IDS-STAGE028-P3"',
+            'current_task_id: "IDS-V0_1-STAGE028-P3"',
+            'next_gate_id: "IDS-STAGE028-P4-GATE"',
             'stage_id: "IDS-STAGE028"',
             'name: "STAGE-028 · 压缩包对抗测试"',
-            'phase_id: "IDS-STAGE028-P2"',
+            'phase_id: "IDS-STAGE028-P3"',
             'status: "passed_with_local_evidence"',
-            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE2_ARCHIVE_ADVERSARIAL_SLICE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE3_SCENARIO_VALIDATION.md",
             "KM_IDSystem/scripts/check_archive_adversarial_tests.py",
         ]
         event_terms = [
-            '"event_id":"EVT-IDS-V0_1-STAGE028-P2-20260703-001"',
-            '"event_type":"implementation"',
-            '"task_id":"IDS-V0_1-STAGE028-P2"',
+            '"event_id":"EVT-IDS-V0_1-STAGE028-P3-20260703-001"',
+            '"event_type":"validation"',
+            '"task_id":"IDS-V0_1-STAGE028-P3"',
             '"ACC-STAGE-028"',
-            "STAGE028_PHASE2_ARCHIVE_ADVERSARIAL_SLICE.md",
+            "STAGE028_PHASE3_SCENARIO_VALIDATION.md",
             "check_archive_adversarial_tests.py",
         ]
         for term in roadmap_terms:
