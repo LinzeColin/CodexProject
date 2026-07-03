@@ -36,6 +36,9 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_REVIEW_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
@@ -105,6 +108,58 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE2_COST_ESTIMATOR_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE3_SCENARIO_VALIDATION.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE2_PREFLIGHT_CONFIRMATION_UI_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE2_DATA_PRIORITY_QUEUE_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE2_PREFLIGHT_SCENARIO_TESTS_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE2_SAFE_EXTRACTION_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE025_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE025_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE025_PHASE2_SAFE_EXTRACTION_ENGINE_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE025_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE025_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE2_ARCHIVE_MANIFEST_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE2_ARCHIVE_ADVERSARIAL_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE2_POSTGRES_CONTROL_PLANE_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/001_control_plane_schema.sql",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/control_plane_schema_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_safe_mode_baseline.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage012_original_raw_identity.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage013_file_fingerprint.py",
@@ -115,6 +170,16 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_import_preflight.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_import_risk_estimator.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage020_import_cost_estimator.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage021_preflight_confirmation_ui.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage022_data_priority_queue.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage023_preflight_scenario_tests.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage024_archive_threat_model.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage025_safe_extraction_engine.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage028_archive_adversarial_tests.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_archive_cleanup_allowlist.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_postgresql_control_plane.py",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
     "KM_IDSystem/scripts/check_file_fingerprint.py",
     "KM_IDSystem/scripts/check_manifest_generation.py",
@@ -124,6 +189,18 @@ REQUIRED_FILES = (
     "KM_IDSystem/scripts/check_import_preflight.py",
     "KM_IDSystem/scripts/check_import_risk_estimator.py",
     "KM_IDSystem/scripts/check_import_cost_estimator.py",
+    "KM_IDSystem/scripts/check_preflight_confirmation_ui.py",
+    "KM_IDSystem/scripts/check_data_priority_queue.py",
+    "KM_IDSystem/scripts/check_preflight_scenario_tests.py",
+    "KM_IDSystem/scripts/check_archive_threat_model.py",
+    "KM_IDSystem/scripts/check_safe_extraction_engine.py",
+    "KM_IDSystem/scripts/check_archive_manifest.py",
+    "KM_IDSystem/scripts/check_reingest_extracted_files.py",
+    "KM_IDSystem/scripts/check_archive_adversarial_tests.py",
+    "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
+    "KM_IDSystem/scripts/check_postgresql_control_plane.py",
+    "KM_IDSystem/scripts/build_app_bundle.sh",
+    "KM_IDSystem/scripts/diagnose_app_entry.sh",
     "KM_IDSystem/scripts/run_local_services.sh",
     "KM_IDSystem/scripts/smoke_test.sh",
     "KM_IDSystem/scripts/install_app_entries.sh",
@@ -154,6 +231,48 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-BATCH-011-020-REVIEW-GATE-20260702-001",
     "EVT-IDS-V0_1-BATCH-011-020-UPLOAD-GATE-20260702-001",
     "EVT-IDS-V0_1-BATCH-011-020-MAIN-MERGED-20260702-001",
+    "EVT-IDS-V0_1-STAGE021-P1-20260702-001",
+    "EVT-IDS-V0_1-STAGE021-P2-20260702-001",
+    "EVT-IDS-V0_1-STAGE021-P3-20260702-001",
+    "EVT-IDS-V0_1-STAGE021-P4-20260702-001",
+    "EVT-IDS-V0_1-STAGE022-P1-20260702-001",
+    "EVT-IDS-V0_1-STAGE022-P2-20260702-001",
+    "EVT-IDS-V0_1-STAGE022-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE022-P4-20260703-001",
+    "EVT-IDS-V0_1-STAGE023-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE023-P2-20260703-001",
+    "EVT-IDS-V0_1-STAGE023-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE023-P4-20260703-001",
+    "EVT-IDS-V0_1-STAGE024-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE024-P2-20260703-001",
+    "EVT-IDS-V0_1-STAGE024-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE024-P4-20260703-001",
+    "EVT-IDS-V0_1-STAGE025-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE025-P2-20260703-001",
+    "EVT-IDS-V0_1-STAGE025-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE025-P4-20260703-001",
+    "EVT-IDS-V0_1-STAGE026-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE026-P2-20260703-001",
+    "EVT-IDS-V0_1-STAGE026-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE026-P4-20260703-001",
+    "EVT-IDS-V0_1-STAGE027-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE027-P2-20260703-001",
+    "EVT-IDS-V0_1-STAGE027-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE027-P4-20260703-001",
+    "EVT-IDS-V0_1-STAGE028-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE028-P2-20260703-001",
+    "EVT-IDS-V0_1-STAGE028-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE028-P4-20260703-001",
+    "EVT-IDS-V0_1-STAGE029-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE029-P2-20260703-001",
+    "EVT-IDS-V0_1-STAGE029-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE029-P4-20260703-001",
+    "EVT-IDS-V0_1-STAGE030-P1-20260703-001",
+    "EVT-IDS-V0_1-STAGE030-P2-20260703-001",
+    "EVT-IDS-V0_1-STAGE030-P3-20260703-001",
+    "EVT-IDS-V0_1-STAGE030-P4-20260703-001",
+    "EVT-IDS-V0_1-BATCH-021-030-REVIEW-GATE-20260703-001",
+    "EVT-IDS-V0_1-BATCH-021-030-UPLOAD-GATE-20260703-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -171,6 +290,9 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_REVIEW_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
     "KM_IDSystem/scripts/check_safe_mode_baseline.py",
@@ -181,6 +303,41 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/scripts/check_import_preflight.py",
     "KM_IDSystem/scripts/check_import_risk_estimator.py",
     "KM_IDSystem/scripts/check_import_cost_estimator.py",
+    "KM_IDSystem/scripts/check_safe_extraction_engine.py",
+    "KM_IDSystem/scripts/check_archive_manifest.py",
+    "KM_IDSystem/scripts/check_reingest_extracted_files.py",
+    "KM_IDSystem/scripts/check_archive_adversarial_tests.py",
+    "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
+    "KM_IDSystem/scripts/check_postgresql_control_plane.py",
+    "KM_IDSystem/scripts/build_app_bundle.sh",
+    "KM_IDSystem/scripts/diagnose_app_entry.sh",
+    "KM_IDSystem/scripts/install_app_entries.sh",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE2_PREFLIGHT_CONFIRMATION_UI_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE021_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage021_preflight_confirmation_ui.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE2_DATA_PRIORITY_QUEUE_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage022_data_priority_queue.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE2_PREFLIGHT_SCENARIO_TESTS_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage023_preflight_scenario_tests.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_ENTRY_CONTRACT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE1_SCOPE_BOUNDARY.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE2_SAFE_EXTRACTION_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage024_archive_threat_model.py",
+    "KM_IDSystem/scripts/check_preflight_scenario_tests.py",
+    "KM_IDSystem/scripts/check_archive_threat_model.py",
+    "KM_IDSystem/scripts/check_preflight_confirmation_ui.py",
+    "KM_IDSystem/scripts/check_data_priority_queue.py",
     "KM_IDSystem/docs/governance/roadmap.yaml",
     "KM_IDSystem/docs/governance/events.jsonl",
     "KM_IDSystem/功能清单.md",
@@ -199,6 +356,15 @@ ALLOWED_CHANGED_PREFIXES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE018_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE019_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE020_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE025_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE030_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage011_",
@@ -211,8 +377,18 @@ ALLOWED_CHANGED_PREFIXES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage018_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage019_",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage020_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage022_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage023_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage024_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage025_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage028_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage030_",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
     "KM_IDSystem/scripts/check_file_fingerprint.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/postgresql_control_plane/",
 )
 
 
@@ -687,6 +863,485 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-BATCH-011-020-MAIN-MERGED"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE021-P1-GATE"' in roadmap_text
     )
+    stage021_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE021-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE021"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE021-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE021-P2-GATE"' in roadmap_text
+    )
+    stage021_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P2"' in batch_text
+        and 'acceptance_status: "phase2_preflight_confirmation_ui_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE021-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE021"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE021-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE021-P3-GATE"' in roadmap_text
+    )
+    stage021_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE021-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE021"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE021-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE021-P4-GATE"' in roadmap_text
+    )
+    stage021_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_gate: "IDS-STAGE022-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE021"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE021-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE021-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE022-P1-GATE"' in roadmap_text
+    )
+    stage022_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE022-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE022-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE022"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE022-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE022-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE022-P2-GATE"' in roadmap_text
+    )
+    stage022_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE022-P2"' in batch_text
+        and 'acceptance_status: "phase2_priority_queue_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE022-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE022"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE022-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE022-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE022-P3-GATE"' in roadmap_text
+    )
+    stage022_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE022-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE022-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE022"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE022-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE022-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE022-P4-GATE"' in roadmap_text
+    )
+    stage022_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE022-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_gate: "IDS-STAGE023-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE022"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE022-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE022-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE023-P1-GATE"' in roadmap_text
+    )
+    stage023_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE023-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE023"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE023-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE023-P2-GATE"' in roadmap_text
+    )
+    stage023_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P2"' in batch_text
+        and 'acceptance_status: "phase2_preflight_scenario_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE023-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE023"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE023-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE023-P3-GATE"' in roadmap_text
+    )
+    stage023_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE023-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE023"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE023-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE023-P4-GATE"' in roadmap_text
+    )
+    stage023_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_gate: "IDS-STAGE024-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE023"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE023-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE023-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE024-P1-GATE"' in roadmap_text
+    )
+    stage024_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE024-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE024-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE024"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE024-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE024-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE024-P2-GATE"' in roadmap_text
+    )
+    stage024_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE024-P2"' in batch_text
+        and 'acceptance_status: "phase2_safe_extraction_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE024-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE024"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE024-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE024-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE024-P3-GATE"' in roadmap_text
+    )
+    stage024_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE024-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE024-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE024"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE024-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE024-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE024-P4-GATE"' in roadmap_text
+    )
+    stage024_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE024-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_gate: "IDS-STAGE025-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE024"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE024-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE024-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE025-P1-GATE"' in roadmap_text
+    )
+    stage025_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE025-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE025-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE025"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE025-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE025-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE025-P2-GATE"' in roadmap_text
+    )
+    stage025_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE025-P2"' in batch_text
+        and 'acceptance_status: "phase2_safe_extraction_engine_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE025-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE025"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE025-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE025-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE025-P3-GATE"' in roadmap_text
+    )
+    stage025_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE025-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE025-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE025"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE025-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE025-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE025-P4-GATE"' in roadmap_text
+    )
+    stage025_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE025-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_gate: "IDS-STAGE026-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE025"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE025-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE025-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE026-P1-GATE"' in roadmap_text
+    )
+    stage026_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE026-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE026-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE026"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE026-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE026-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE026-P2-GATE"' in roadmap_text
+    )
+    stage026_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE026-P2"' in batch_text
+        and 'acceptance_status: "phase2_archive_manifest_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE026-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE026"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE026-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE026-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE026-P3-GATE"' in roadmap_text
+    )
+    stage026_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE026-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE026-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE026"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE026-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE026-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE026-P4-GATE"' in roadmap_text
+    )
+    stage026_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE026-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_gate: "IDS-STAGE027-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE026"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE026-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE026-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE027-P1-GATE"' in roadmap_text
+    )
+    stage027_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE027-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE027-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE027"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE027-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE027-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE027-P2-GATE"' in roadmap_text
+    )
+    stage027_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE027-P2"' in batch_text
+        and 'acceptance_status: "phase2_reingest_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE027-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE027"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE027-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE027-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE027-P3-GATE"' in roadmap_text
+    )
+    stage027_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE027-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE027-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE027"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE027-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE027-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE027-P4-GATE"' in roadmap_text
+    )
+    stage027_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE027-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_stage: "STAGE-028"' in batch_text
+        and 'next_gate: "IDS-STAGE028-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE027"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE027-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE027-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE028-P1-GATE"' in roadmap_text
+    )
+    stage028_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage028_phase1_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE028-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE028-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE028"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE028-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE028-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE028-P2-GATE"' in roadmap_text
+    )
+    stage028_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage028_phase2_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE028-P2"' in batch_text
+        and 'acceptance_status: "phase2_archive_adversarial_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE028-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE028"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE028-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE028-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE028-P3-GATE"' in roadmap_text
+    )
+    stage028_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage028_phase3_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE028-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE028-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE028"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE028-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE028-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE028-P4-GATE"' in roadmap_text
+    )
+    stage028_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage028_completed_local_pending_stage029"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE028-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_stage: "STAGE-029"' in batch_text
+        and 'next_gate: "IDS-STAGE029-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE028"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE028-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE028-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE029-P1-GATE"' in roadmap_text
+    )
+    stage029_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage029_phase1_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE029-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE029-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE029"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE029-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE029-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE029-P2-GATE"' in roadmap_text
+    )
+    stage029_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage029_phase2_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE029-P2"' in batch_text
+        and 'acceptance_status: "phase2_cleanup_allowlist_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE029-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE029"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE029-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE029-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE029-P3-GATE"' in roadmap_text
+    )
+    stage029_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage029_phase3_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE029-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE029-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE029"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE029-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE029-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE029-P4-GATE"' in roadmap_text
+    )
+    stage029_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage029_completed_local_pending_stage030"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE029-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_stage: "STAGE-030"' in batch_text
+        and 'next_gate: "IDS-STAGE030-P1-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE029"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE029-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE029-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE030-P1-GATE"' in roadmap_text
+    )
+    stage030_phase1_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage030_phase1_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE030-P1"' in batch_text
+        and 'acceptance_status: "phase1_scope_boundary_defined"' in batch_text
+        and 'next_gate: "IDS-STAGE030-P2-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE030"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE030-P1"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE030-P1"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE030-P2-GATE"' in roadmap_text
+    )
+    stage030_phase2_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage030_phase2_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE030-P2"' in batch_text
+        and 'acceptance_status: "phase2_schema_migration_slice_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE030-P3-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE030"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE030-P2"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE030-P2"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE030-P3-GATE"' in roadmap_text
+    )
+    stage030_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage030_phase3_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE030-P3"' in batch_text
+        and 'acceptance_status: "phase3_scenario_validation_complete"' in batch_text
+        and 'next_gate: "IDS-STAGE030-P4-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE030"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE030-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE030-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE030-P4-GATE"' in roadmap_text
+    )
+    stage030_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-021-030"' in batch_text
+        and 'status: "stage030_completed_local_pending_batch_review"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE030-P4"' in batch_text
+        and 'acceptance_status: "local_passed"' in batch_text
+        and 'next_phase: "batch_review_gate"' in batch_text
+        and 'next_gate: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE030"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE030-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE030-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"' in roadmap_text
+    )
+    batch021_030_reviewed_pending_upload = (
+        'status: "reviewed_ready_for_upload_no_github_upload"' in batch_text
+        and 'review_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"' in batch_text
+        and 'review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md"'
+        in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'gate_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in batch_text
+        and 'current_stage_id: "IDS-STAGE030"' in roadmap_text
+        and 'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"' in roadmap_text
+        and 'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in roadmap_text
+    )
+    batch021_030_upload_gate_active = (
+        'status: "local_batch_upload_gate_passed_pending_github_merge"' in batch_text
+        and 'push_allowed: true' in batch_text
+        and 'gate_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in batch_text
+        and 'gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md"'
+        in batch_text
+        and 'current_stage_id: "IDS-STAGE030"' in roadmap_text
+        and 'current_phase_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in roadmap_text
+        and 'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -732,21 +1387,66 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or batch011_020_reviewed_pending_upload
         or batch011_020_upload_gate_active
         or batch011_020_uploaded_to_main
+        or stage021_phase1_active
+        or stage021_phase2_active
+        or stage021_phase3_active
+        or stage021_phase4_closeout
+        or stage022_phase1_active
+        or stage022_phase2_active
+        or stage022_phase3_active
+        or stage022_phase4_closeout
+        or stage023_phase1_active
+        or stage023_phase2_active
+        or stage023_phase3_active
+        or stage023_phase4_closeout
+        or stage024_phase1_active
+        or stage024_phase2_active
+        or stage024_phase3_active
+        or stage024_phase4_closeout
+        or stage025_phase1_active
+        or stage025_phase2_active
+        or stage025_phase3_active
+        or stage025_phase4_closeout
+        or stage026_phase1_active
+        or stage026_phase2_active
+        or stage026_phase3_active
+        or stage026_phase4_closeout
+        or stage027_phase1_active
+        or stage027_phase2_active
+        or stage027_phase3_active
+        or stage027_phase4_closeout
+        or stage028_phase1_active
+        or stage028_phase2_active
+        or stage028_phase3_active
+        or stage028_phase4_closeout
+        or stage029_phase1_active
+        or stage029_phase2_active
+        or stage029_phase3_active
+        or stage029_phase4_closeout
+        or stage030_phase1_active
+        or stage030_phase2_active
+        or stage030_phase3_active
+        or stage030_phase4_closeout
+        or batch021_030_reviewed_pending_upload
+        or batch021_030_upload_gate_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
         'STAGE-005:\n    status: "in_progress"' in batch_text
         or 'STAGE-005:\n    status: "completed_local"' in batch_text
+        or later_stage_state
     )
     current_task_allowed = (
         'current_task_id: "IDS-V0_1-STAGE005-P2"' in batch_text
         or 'current_task_id: "IDS-V0_1-STAGE005-P3"' in batch_text
         or 'current_task_id: "IDS-V0_1-STAGE005-P4"' in batch_text
+        or later_stage_state
     )
     next_phase_allowed = (
         'next_phase: "Phase 3"' in batch_text
         or 'next_phase: "Phase 2"' in batch_text
         or 'next_phase: "Phase 4"' in batch_text
+        or 'next_phase: "batch_review_gate"' in batch_text
         or 'next_stage: "STAGE-006"' in batch_text
         or 'next_stage: "STAGE-012"' in batch_text
         or 'next_stage: "STAGE-013"' in batch_text
@@ -758,6 +1458,13 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or 'next_stage: "STAGE-019"' in batch_text
         or 'next_stage: "STAGE-020"' in batch_text
         or 'next_stage: "STAGE-021"' in batch_text
+        or 'next_stage: "STAGE-022"' in batch_text
+        or 'next_stage: "STAGE-026"' in batch_text
+        or 'next_stage: "STAGE-027"' in batch_text
+        or 'next_stage: "STAGE-028"' in batch_text
+        or 'next_stage: "STAGE-029"' in batch_text
+        or 'next_stage: "STAGE-030"' in batch_text
+        or 'next_stage: "STAGE-031"' in batch_text
     )
     current_phase_allowed = (
         'current_phase_id: "IDS-STAGE005-P2"' in roadmap_text
@@ -789,7 +1496,8 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         "current_roadmap_task_allowed": current_roadmap_task_allowed,
         "next_gate_allowed": next_gate_allowed,
         "roadmap_phase2_completed": 'phase_id: "IDS-STAGE005-P2"' in roadmap_text
-        and 'status: "passed_with_local_evidence"' in roadmap_text,
+        and 'status: "passed_with_local_evidence"' in roadmap_text
+        or later_stage_state,
     }
 
 
@@ -842,6 +1550,7 @@ def build_report(root: Path | None = None) -> dict:
     batch_paths = [
         root / "docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
         root / "docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml",
+        root / "docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
     ]
     batch_text = "\n".join(
         path.read_text(encoding="utf-8")

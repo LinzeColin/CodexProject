@@ -1,0 +1,106 @@
+{
+  "schema_version": "ids.stage030.postgresql_control_plane.index.v1",
+  "stage": "STAGE-030",
+  "task_id": "IDS-V0_1-STAGE030-P2",
+  "acceptance_id": "ACC-STAGE-030",
+  "migration": {
+    "id": "ids_stage030_001_control_plane",
+    "file": "001_control_plane_schema.sql",
+    "dry_run_required": true,
+    "rollback_required": true,
+    "destructive_allowed": false,
+    "dry_run_command_ref": "psql --set ON_ERROR_STOP=1 --single-transaction --file 001_control_plane_schema.sql --dry-run-equivalent-in-future-run",
+    "rollback_command_ref": "psql --set ON_ERROR_STOP=1 --single-transaction --file 001_control_plane_schema.sql --section migrate:down"
+  },
+  "connection": {
+    "connection_url_ref": "ENV:IDS_POSTGRES_DSN",
+    "secrets_forbidden": true,
+    "plaintext_dsn_forbidden": true,
+    "cloud_credentials_forbidden": true
+  },
+  "connection_pool": {
+    "max_pool_size": 10,
+    "statement_timeout_ms": 30000,
+    "lock_timeout_ms": 5000,
+    "idle_timeout_ms": 60000
+  },
+  "database_size_guard": {
+    "max_control_plane_payload_bytes": 1048576,
+    "max_single_scalar_text_bytes": 65536,
+    "stores_raw_files": false,
+    "stores_raw_database_rows": false,
+    "stores_large_index_blobs": false
+  },
+  "required_tables": [
+    "ids_metadata_sources",
+    "ids_jobs",
+    "ids_documents",
+    "ids_chunks",
+    "ids_evidence_records",
+    "ids_audit_events",
+    "ids_index_versions",
+    "ids_schema_migrations"
+  ],
+  "storage_boundary": {
+    "allowed_payloads": [
+      "control-plane ids",
+      "path-only refs",
+      "status values",
+      "small scalar metadata",
+      "evidence refs",
+      "audit refs",
+      "migration refs",
+      "hot index pointer refs"
+    ],
+    "blocked_payloads": [
+      "NO_RAW_DB_CONTENT",
+      "500GB raw files",
+      "raw database rows",
+      "production document bodies",
+      "archive bodies",
+      "OCR full text",
+      "large vector payloads",
+      "report binaries",
+      "secrets"
+    ]
+  },
+  "raw_metadata_boundary": {
+    "path": "/Users/linzezhang/Downloads/IDS_MetaData",
+    "path_only": true,
+    "content_access_allowed": false,
+    "recursive_listing_allowed": false,
+    "hashing_allowed": false,
+    "copy_allowed": false,
+    "modify_allowed": false,
+    "dump_allowed": false
+  },
+  "quality_guards": {
+    "required_fact_levels": [
+      "VERIFIED",
+      "INFERRED",
+      "UNKNOWN"
+    ],
+    "required_index_states": [
+      "DRAFT",
+      "READY",
+      "BLOCKED",
+      "ROLLBACK_READY"
+    ],
+    "forbidden": [
+      "fake IDS business data",
+      "fake database rows",
+      "fake source documents",
+      "placeholder corpus",
+      "fabricated evidence",
+      "plaintext secrets"
+    ]
+  },
+  "runtime_policy": {
+    "connect_to_postgres": false,
+    "create_database": false,
+    "write_runtime_outputs": false,
+    "read_raw_metadata": false,
+    "install_dependencies": false,
+    "start_services": false
+  }
+}
