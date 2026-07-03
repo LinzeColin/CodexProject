@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2I validation of Sprint 2H non-sensitive reports and remediation decision.
+Execute WDA Stage 2 Sprint 2J-B validation and conversion of minimal message-level artifact.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is Sprint 2H report validation and remediation decision, not raw message reading
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, and Sprint 2I report validation artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is minimal Raw Import Pack validation, not RAG/Web/Matrix buildout
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, and Sprint 2J-B raw import validation artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -22,8 +22,9 @@ Execute WDA Stage 2 Sprint 2I validation of Sprint 2H non-sensitive reports and 
 - Latest Sprint 2F outputs: `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/`
 - Latest Sprint 2G outputs: `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/`
 - Latest Sprint 2I outputs: `WDA/docs/stage2_sprint2i_2h_report_validation/`
+- Latest Sprint 2J-B outputs: `WDA/docs/stage2_sprint2j_wda_raw_import_validation/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
-- Raw Gate: `Conditional Investigation`; message readability not proven; Raw Gate is not Go
+- Raw Gate: `Sample Message-Level Proven`; full Raw Gate Go is not proven
 
 ## Key Decisions
 
@@ -59,6 +60,11 @@ Execute WDA Stage 2 Sprint 2I validation of Sprint 2H non-sensitive reports and 
 - Sprint 2H post-bootstrap `wechat-cli status`, strict status, and `wxkey doctor` live-read paths hung with no usable JSON output.
 - Sprint 2I validated only the non-sensitive report pack; it did not transfer `sensitive_local_state/`, `raw_trial_outputs/`, raw logs, key configs, decrypted DBs, or message outputs.
 - Recommended next executable step is Sprint 2I-B bounded old-computer remediation on the existing pinned primary route, only after explicit approval.
+- Sprint 2I-B produced a minimal full-sensitive message-level JSONL proof after bounded remediation.
+- Sprint 2J-B validated the transferred minimal artifact on the new computer and generated a local WDA Raw Import Pack under `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2j_wda_raw_import_validation/`.
+- Sprint 2J-B generated local `messages.jsonl` with `1` row, `conversations.jsonl` with `1` row, `contacts.jsonl` with `2` rows, and empty `media_index.csv`.
+- Sprint 2J-B advances Raw Gate to `Sample Message-Level Proven`, not full Go.
+- RAG/Web/Matrix remain blocked until broader coverage and repeatability are proven.
 
 ## Files To Read First
 
@@ -109,6 +115,11 @@ Execute WDA Stage 2 Sprint 2I validation of Sprint 2H non-sensitive reports and 
 - `WDA/docs/stage2_sprint2i_2h_report_validation/sensitive_material_exclusion_check.md`
 - `WDA/docs/stage2_sprint2i_2h_report_validation/blocker_analysis.md`
 - `WDA/docs/stage2_sprint2i_2h_report_validation/recommended_sprint2i_b_plan.md`
+- `WDA/docs/stage2_sprint2j_wda_raw_import_validation/README.md`
+- `WDA/docs/stage2_sprint2j_wda_raw_import_validation/raw_artifact_shape_report.md`
+- `WDA/docs/stage2_sprint2j_wda_raw_import_validation/wda_contract_mapping_report.md`
+- `WDA/docs/stage2_sprint2j_wda_raw_import_validation/raw_gate_decision.md`
+- `WDA/docs/stage2_sprint2j_wda_raw_import_validation/next_sprint2k_plan.md`
 
 ## Validation
 
@@ -220,6 +231,25 @@ Latest Sprint 2I report validation:
 - RAG/Web/Matrix: blocked
 - Raw Gate: `Conditional Investigation`
 
+Latest Sprint 2J-B raw import validation:
+
+- Required Sprint 2J-B repo-safe outputs present: true
+- Expected input path exists: false
+- Actual validated transfer bundle: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2j_transfer_bundle/sprint2j_transfer_bundle.zip`
+- Transfer bundle SHA-256: `10dbe9b40c13f5a8d09ded87c6f23fa340f4f4edbec8e25da6ff52d21ab76be4`
+- Key material / decrypted DB / `sensitive_local_state/` included in bundle: false
+- Minimal raw artifact: `raw_sensitive_minimal/minimal_export_limit1_raw.jsonl`
+- Local Raw Import Pack output root: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2j_wda_raw_import_validation/`
+- Local `messages.jsonl` rows: `1`
+- Local `conversations.jsonl` rows: `1`
+- Local `contacts.jsonl` rows: `2`
+- Local `media_index.csv` rows: `0`
+- Missing required fields: none
+- Validation errors: none
+- Repo raw content committed: false
+- RAG/Web/Matrix: blocked
+- Raw Gate: `Sample Message-Level Proven`, not full Go
+
 ## Next Step
 
-Run Sprint 2I-B only after explicit approval. The recommended remediation is one bounded old-computer run using the existing pinned `r266-tech/wechat-cli` / `wxkey` route, strict timeouts, and minimal commands to classify the post-bootstrap hang and attempt one minimal message-level sample. Do not transfer `sensitive_local_state/`, `raw_trial_outputs/`, raw logs, key configs, decrypted DBs, or message outputs to the new computer by default. Do not start RAG/Web/Matrix before a valid `messages.jsonl` or equivalent approved message-level sample exists.
+Run Sprint 2K bounded repeatability and coverage validation next. Do not start RAG/Web/Matrix yet. Sprint 2K should prove repeatable bounded exports beyond the one-message sample, keep raw outputs under WDA_MetaData only, and continue blocking key material, decrypted DBs, broad logs, and raw message content from git.
