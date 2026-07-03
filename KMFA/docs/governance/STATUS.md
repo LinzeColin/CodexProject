@@ -5,9 +5,9 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s04p2-field-standardization`
+- version: `0.1.4-s04p3-basic-tool-report`
 - current_stage: `S04`
-- current_phase: `v0.1.4 S04-P2 field standardization`
+- current_phase: `v0.1.4 S04-P3 basic tool report`
 - status: `completed_validated_local_only_no_go_upload_deferred`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
@@ -16,7 +16,8 @@
 
 ## 已完成
 
-- v0.1.4 S04-P2 field standardization completed local-only: canonical_field_count=6, alias_dictionary_row_count=32, mapping_record_count=6, standardization_case_passed_count=6/6, quality_status_count=5, raw_root_read=false, raw_root_list=false, raw_root_hash=false, github_upload=false, S04-P3=false, Stage4_review=false.
+- v0.1.4 S04-P3 basic tool report completed local-only: synthetic_boundary_case_passed=22/22, amount_boundary_case_count=11, date_period_boundary_case_count=11, JSON/Markdown tool reports generated, raw_root_read=false, raw_root_list=false, raw_root_hash=false, github_upload=false, Stage4_review=false, S05=false.
+- v0.1.4 S04-P2 field standardization completed local-only: canonical_field_count=6, alias_dictionary_row_count=32, mapping_record_count=6, standardization_case_passed_count=6/6, quality_status_count=5, raw_root_read=false, raw_root_list=false, raw_root_hash=false, github_upload=false, Stage4_review=false.
 - v0.1.4 S04-P1 amount precision completed local-only: amount_case_count=9, amount_case_passed_count=9, amount_rejection_count=9, amount_rejection_passed_count=9, forbidden_float_fixture_findings=3, repository_no_float_scan_passed=true, raw_root_read=false, github_upload=false, S04-P2=false, Stage4_review=false.
 - v0.1.4 Stage 3 review completed local-only: S03-P1/S03-P2/S03-P3 validators PASS, open findings=0, public_raw_file_count=5, matrix_row_count=5, source_priority_record_count=5, source_priority_order_count=9, GitHub upload=false, S04-P1=false.
 - v0.1.4 S03-P3 source priority completed local-only: source_priority_records=5, source_priority_order_count=9, same_source_policy_event_count=1, cross_source_difference_queue_item_count=1, auto_selection_allowed=false, raw_root_read=false, github_upload=false.

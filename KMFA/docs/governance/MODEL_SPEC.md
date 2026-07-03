@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s04p2-field-standardization
+product_version: 0.1.4-s04p3-basic-tool-report
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S04-P2 只证明 synthetic public-safe 字段标准化、别名映射聚合计数和缺失/异常字段质量状态证据闭合；不声明 S04-P3、Stage 4 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S04-P3 只证明 synthetic public-safe 金额/日期/期间基础工具边界测试和 JSON/Markdown 工具报告证据闭合；不声明 Stage 4 review、GitHub upload、S05、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -88,6 +88,15 @@ product_version: 0.1.4-s04p2-field-standardization
 - expression: `s04p2_valid = canonical_field_count == 6 AND alias_dictionary_row_count == 32 AND mapping_record_count == 6 AND standardization_case_passed_count == 6 AND quality_status_count == 5 AND raw_dir_read_performed == false AND github_upload_performed == false`
 - evidence: `KMFA/tools/check_v014_s04_p2_field_standardization.py`, `KMFA/stage_artifacts/V014_S04_P2_FIELD_STANDARDIZATION/machine/field_standardization_manifest.json`
 - limitation: S04-P2 只证明字段标准化和质量状态边界，不证明 raw value matching、S04-P3、Stage 4 review、正式报告或 GitHub upload readiness。
+
+### FORM-KMFA-V014-S04P3-BASIC-TOOL-REPORT-001
+
+- type: deterministic public-safe basic tool report gate
+- purpose: 验证 v0.1.4 S04-P3 基础工具测试，覆盖金额小数、负数、万元、异常字符、中文日期、年月、空值、JSON/Markdown 工具报告、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s04p3_valid = synthetic_boundary_case_total == 22 AND synthetic_boundary_case_passed == 22 AND amount_boundary_case_count == 11 AND date_period_boundary_case_count == 11 AND json_report_generated == true AND markdown_report_generated == true AND raw_dir_read_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/check_v014_s04_p3_basic_tool_report.py`, `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/machine/basic_tool_report_manifest.json`
+- limitation: S04-P3 只证明基础工具 synthetic boundary 测试和工具报告生成；不证明 Stage 4 review、raw value matching、正式报告或 GitHub upload readiness。
 
 ### FORM-KMFA-AMOUNT-001
 
@@ -300,7 +309,7 @@ product_version: 0.1.4-s04p2-field-standardization
 
 ### MOD-KMFA-COST-001
 
-- status: active with v0.1.4 S04-P2 field standardization evidence and existing public-safe cost-analysis formulas
+- status: active with v0.1.4 S04-P3 basic tool report evidence and existing public-safe cost-analysis formulas
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
 - current limitation: S18-P1 precision stress, S18-P2 full regression acceptance and S18-P3 integration preparation are local-only; S18-P2 Go/No-Go remains NO_GO; Stage 18 review/upload, lineage full check, official report generation, live connectors and OpMe deep coupling are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.

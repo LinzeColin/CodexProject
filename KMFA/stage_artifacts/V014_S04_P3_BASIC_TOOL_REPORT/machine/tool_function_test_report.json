@@ -1,0 +1,240 @@
+{
+  "amount_boundary_cases": [
+    {
+      "actual": 1,
+      "case_id": "S4PCT01-AMOUNT-DECIMAL-CENT",
+      "category": "amount_decimal",
+      "description": "Decimal string with one cent normalizes to integer cents.",
+      "expected": 1,
+      "input_repr": "'0.01'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": 123456789012,
+      "case_id": "S4PCT01-AMOUNT-DECIMAL-LARGE",
+      "category": "amount_decimal",
+      "description": "Large decimal string preserves exact cents.",
+      "expected": 123456789012,
+      "input_repr": "'1234567890.12'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": 1,
+      "case_id": "S4PCT01-AMOUNT-DECIMAL-OBJECT",
+      "category": "amount_decimal",
+      "description": "Decimal object normalizes without float conversion.",
+      "expected": 1,
+      "input_repr": "Decimal('0.01')",
+      "outcome": "PASS"
+    },
+    {
+      "actual_error": "AmountNormalizationError",
+      "case_id": "S4PCT01-AMOUNT-FRACTIONAL-CENT",
+      "category": "amount_decimal",
+      "description": "Fractional cent input is rejected instead of rounded.",
+      "expected_error": "AmountNormalizationError",
+      "input_repr": "'1.234'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": -1,
+      "case_id": "S4PCT01-AMOUNT-NEGATIVE-MINUS",
+      "category": "amount_negative",
+      "description": "Minus sign negative amount preserves sign.",
+      "expected": -1,
+      "input_repr": "'-0.01'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": -1,
+      "case_id": "S4PCT01-AMOUNT-NEGATIVE-PARENTHESES",
+      "category": "amount_negative",
+      "description": "Parentheses negative amount preserves sign.",
+      "expected": -1,
+      "input_repr": "'(0.01)'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": -1,
+      "case_id": "S4PCT01-AMOUNT-NEGATIVE-UNICODE",
+      "category": "amount_negative",
+      "description": "Unicode minus amount preserves sign.",
+      "expected": -1,
+      "input_repr": "'−0.01'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": 100,
+      "case_id": "S4PCT01-AMOUNT-WAN-MIN-CENT",
+      "category": "amount_wan_yuan",
+      "description": "Ten-thousand-yuan unit converts to exact cents.",
+      "expected": 100,
+      "input_repr": "'0.0001万元'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": -1234500,
+      "case_id": "S4PCT01-AMOUNT-WAN-NEGATIVE",
+      "category": "amount_wan_yuan",
+      "description": "Negative ten-thousand-yuan unit converts to exact cents.",
+      "expected": -1234500,
+      "input_repr": "'-1.2345万元'",
+      "outcome": "PASS"
+    },
+    {
+      "actual_error": "AmountNormalizationError",
+      "case_id": "S4PCT01-AMOUNT-ABNORMAL-HASH",
+      "category": "amount_abnormal_characters",
+      "description": "Hash-containing amount is rejected.",
+      "expected_error": "AmountNormalizationError",
+      "input_repr": "'1#2'",
+      "outcome": "PASS"
+    },
+    {
+      "actual_error": "AmountNormalizationError",
+      "case_id": "S4PCT01-AMOUNT-ABNORMAL-PENDING",
+      "category": "amount_abnormal_characters",
+      "description": "Pending-confirmation text is rejected.",
+      "expected_error": "AmountNormalizationError",
+      "input_repr": "'金额待确认'",
+      "outcome": "PASS"
+    }
+  ],
+  "case_summary": {
+    "failed": 0,
+    "passed": 22,
+    "total": 22
+  },
+  "coverage": [
+    "amount decimals",
+    "amount negatives",
+    "amount ten-thousand-yuan unit",
+    "amount abnormal characters",
+    "Chinese dates",
+    "year-month periods",
+    "nullish date and period values"
+  ],
+  "date_period_boundary_cases": [
+    {
+      "actual": "2026-06-29",
+      "case_id": "S4PCT02-DATE-CHINESE",
+      "category": "date_chinese",
+      "description": "Chinese date normalizes to ISO date.",
+      "expected": "2026-06-29",
+      "input_repr": "'2026年6月29日'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": "2026-06-29",
+      "case_id": "S4PCT02-DATE-COMPACT",
+      "category": "date_compact",
+      "description": "Compact numeric date normalizes to ISO date.",
+      "expected": "2026-06-29",
+      "input_repr": "'20260629'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": "2026-06-09",
+      "case_id": "S4PCT02-DATE-SLASH",
+      "category": "date_separator",
+      "description": "Slash-separated date normalizes to ISO date.",
+      "expected": "2026-06-09",
+      "input_repr": "'2026/6/9'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": "2026-06",
+      "case_id": "S4PCT02-PERIOD-CHINESE-YEARMONTH",
+      "category": "period_chinese_year_month",
+      "description": "Chinese year-month normalizes to YYYY-MM.",
+      "expected": "2026-06",
+      "input_repr": "'2026年6月'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": "2026-06",
+      "case_id": "S4PCT02-PERIOD-COMPACT",
+      "category": "period_compact",
+      "description": "Compact numeric period normalizes to YYYY-MM.",
+      "expected": "2026-06",
+      "input_repr": "'202606'",
+      "outcome": "PASS"
+    },
+    {
+      "actual": "2026-06",
+      "case_id": "S4PCT02-PERIOD-FROM-CHINESE-DATE",
+      "category": "period_from_date",
+      "description": "Chinese date used as period normalizes to its month.",
+      "expected": "2026-06",
+      "input_repr": "'2026年6月29日'",
+      "outcome": "PASS"
+    },
+    {
+      "actual_error": "MissingFieldError",
+      "case_id": "S4PCT02-DATE-NONE",
+      "category": "date_nullish",
+      "description": "None date is rejected as missing.",
+      "expected_error": "MissingFieldError",
+      "input_repr": "None",
+      "outcome": "PASS"
+    },
+    {
+      "actual_error": "MissingFieldError",
+      "case_id": "S4PCT02-PERIOD-BLANK",
+      "category": "period_nullish",
+      "description": "Blank period is rejected as missing.",
+      "expected_error": "MissingFieldError",
+      "input_repr": "' '",
+      "outcome": "PASS"
+    },
+    {
+      "actual_error": "MissingFieldError",
+      "case_id": "S4PCT02-DATE-HASH",
+      "category": "date_nullish",
+      "description": "Hash date is rejected as missing.",
+      "expected_error": "MissingFieldError",
+      "input_repr": "'#'",
+      "outcome": "PASS"
+    },
+    {
+      "actual_error": "MissingFieldError",
+      "case_id": "S4PCT02-DATE-NA",
+      "category": "date_nullish",
+      "description": "N/A date is rejected as missing.",
+      "expected_error": "MissingFieldError",
+      "input_repr": "'N/A'",
+      "outcome": "PASS"
+    },
+    {
+      "actual_error": "FieldStandardizationError",
+      "case_id": "S4PCT02-DATE-INVALID-MONTH",
+      "category": "date_invalid",
+      "description": "Invalid month is rejected.",
+      "expected_error": "FieldStandardizationError",
+      "input_repr": "'2026-13-01'",
+      "outcome": "PASS"
+    }
+  ],
+  "generated_at": "2026-06-29T23:05:00+10:00",
+  "non_scope": [
+    "raw business data import",
+    "A0 golden baseline",
+    "zero-delta validator",
+    "fact layer",
+    "report generation",
+    "UI",
+    "external connectors",
+    "GitHub upload"
+  ],
+  "phase": "S04-P3",
+  "project_id": "KMFA",
+  "raw_business_data_used": false,
+  "schema_version": "kmfa.tool_function_test_report.v1",
+  "stage": "S04",
+  "status": "PASS",
+  "task_ids": [
+    "S4PCT01",
+    "S4PCT02",
+    "S4PCT03"
+  ]
+}

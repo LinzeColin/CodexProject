@@ -1,4 +1,4 @@
-version: "0.1.4-s04p2-field-standardization"
+version: "0.1.4-s04p3-basic-tool-report"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -14,6 +14,7 @@ active_formula_ids:
   - "FORM-KMFA-AMOUNT-001"
   - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
   - "FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001"
+  - "FORM-KMFA-V014-S04P3-BASIC-TOOL-REPORT-001"
   - "FORM-KMFA-FIELD-STANDARDIZATION-001"
   - "FORM-KMFA-A0-FILE-REGISTRATION-001"
   - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
