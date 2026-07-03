@@ -37,6 +37,19 @@ def _assert_final_commit_binding_allows_current_mvp_prep(
 
 
 class GovernanceCurrentStateTests(unittest.TestCase):
+    def test_human_review_markdown_formula_does_not_use_machine_implementation_refs(self) -> None:
+        formula_registry = (ADP_ROOT / "docs/governance/formula_registry.yaml").read_text(encoding="utf-8")
+        match = re.search(
+            r'(?ms)^  -\n    formula_id: "FORM-ADP-107".*?(?=^  -\n    formula_id:|\Z)',
+            formula_registry,
+        )
+        self.assertIsNotNone(match)
+        form_adp_107 = match.group(0)
+
+        self.assertIn('semantic_status: "HUMAN_REVIEW_REQUIRED"', form_adp_107)
+        self.assertIn('code_refs:\n      - "arxiv-daily-push/AGENTS.md"', form_adp_107)
+        self.assertNotIn("implementation_refs:", form_adp_107)
+
     def test_development_ledger_current_state_matches_version_matrix(self) -> None:
         version_matrix = (ADP_ROOT / "docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
@@ -1833,6 +1846,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("ADP-MVP-PREP-FIRST-READ-TRACEABILITY-LINK-SYNC", roadmap)
         self.assertIn("MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT", roadmap)
         self.assertIn("[功能任务测试证据追踪链](./功能任务测试证据追踪链.md)", roadmap)
+        self.assertIn("ADP-MVP-PREP-FIRST-READ-TRACEABILITY-LINK-SYNC", one_look)
+        self.assertIn("MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT", one_look)
+        self.assertIn("[功能任务测试证据追踪链](./功能任务测试证据追踪链.md)", one_look)
         self.assertIn("一次受控真实运行窗口只允许临时切换 `ADP_ALLOW_SMTP_SEND`", decisions)
         self.assertIn("窗口结束后必须恢复为 `UNSET` 或 false-like", decisions)
         self.assertIn("重新运行 enablement preflight，并确认仍 `status=FAIL / exit 2`", decisions)

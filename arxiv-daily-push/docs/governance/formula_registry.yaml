@@ -6545,8 +6545,6 @@ formulas:
       - "arxiv-daily-push/docs/phase_records/PHASE_OWNER_CENTER_ENTRY_RULE.md"
       - "governance/run_manifests/ADP-OWNER-CENTER-ENTRY-RULE-20260626.json"
     semantic_status: "HUMAN_REVIEW_REQUIRED"
-    implementation_refs:
-      - "arxiv-daily-push/AGENTS.md"
     implementation_fingerprint: "PENDING_PR_COMMIT"
     evidence_hash: "PENDING_PR_COMMIT"
     last_verified_commit: "PRECOMMIT"
