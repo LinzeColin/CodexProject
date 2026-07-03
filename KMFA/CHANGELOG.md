@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s04p2-field-standardization - 2026-07-04
+
+- 完成 `v0.1.4 S04-P2｜字段标准化`。
+- 新增 field standardization evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 锁定 canonical fields `6`、alias dictionary rows `32`、mapping records `6`、字段标准化 cases `6/6`、缺失/异常质量状态 `5`，缺失字段不得静默跳过。
+- 本轮未读取、列出、hash 或修改 raw root，未执行 S04-P3、Stage 4 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s04p1-amount-precision - 2026-07-04
 
 - 完成 `v0.1.4 S04-P1｜金额精度与基础工具`。
