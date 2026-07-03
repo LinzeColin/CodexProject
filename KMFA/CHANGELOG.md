@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s01-stage-review - 2026-07-03
+
+- 完成 `v0.1.4 Stage 1 整体复审`。
+- 新增 `KMFA/tools/check_v014_s01_stage_review.py` 与 `KMFA/tests/test_v014_s01_stage_review.py`。
+- 新增 `KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/`，绑定 S01-P1/S01-P2/S01-P3 复跑结果、open findings=0、NO_GO、upload deferred 边界。
+- 未读取、列出、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 S02、raw inventory、GitHub upload、正式报告或业务执行。
+
 ## 0.1.4-s01p3-no-omission-baseline - 2026-07-03
 
 - 完成 `S01-P3｜防遗漏基线 / no-omission baseline`。
