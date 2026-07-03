@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s03p2-source-check-matrix - 2026-07-03
+
+- 完成 `v0.1.4 S03-P2｜数据源检查矩阵`。
+- 新增 public-safe source check matrix/status event generator、validator、focused unit test、协议文件和 evidence bundle。
+- 基于 S03-P1 public register 生成 matrix rows `5`、metadata status events `5`、required dimensions `6`、allowed statuses `5`，状态均为 `人工复核`；状态变更只追加 metadata，不写 raw 层。
+- 本轮未读取 raw root，未执行 S03-P3、Stage 3 review、GitHub upload、raw value matching、字段映射、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s03p1-file-registration - 2026-07-03
 
 - 完成 `v0.1.4 S03-P1｜文件型导入登记`。

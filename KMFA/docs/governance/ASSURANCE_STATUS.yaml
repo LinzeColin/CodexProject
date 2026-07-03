@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260703-V014-S03-P1-FILE-REGISTRATION"
+as_of_event_id: "EVENT-KMFA-20260703-V014-S03-P2-SOURCE-CHECK-MATRIX"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "39201eecaefd445553b066c27c7e73601c5afe18"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-03T23:59:00+10:00"
-generator_version: "manual-v014-s03-p1-file-registration"
+generator_version: "manual-v014-s03-p2-source-check-matrix"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 653
-    total_active_formulas: 60
+    total_active_parameters: 656
+    total_active_formulas: 61
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -115,6 +115,12 @@ dimensions:
       - "KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/human/test_results.md"
       - "KMFA/tools/check_v014_s03_p1_file_registration.py"
+      - "KMFA/metadata/sources/v014_s03_p2_source_status_events.jsonl"
+      - "KMFA/metadata/sources/v014_s03_p2_source_check_matrix.jsonl"
+      - "KMFA/metadata/protocol/source_check_matrix_v1_4_s03_p2.json"
+      - "KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/machine/source_check_matrix_manifest.json"
+      - "KMFA/tools/check_v014_s03_p2_source_check_matrix.py"
+      - "KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/human/test_results.md"
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
       - "KMFA/tools/check_v014_s02_p2_immutability_policy.py"
       - "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/test_results.md"

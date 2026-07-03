@@ -1,0 +1,53 @@
+{
+  "allowed_statuses": [
+    "已就绪",
+    "部分/阻塞",
+    "失败/不适用",
+    "已过期",
+    "人工复核"
+  ],
+  "generated_at": "2026-07-03T14:00:17Z",
+  "matrix_file": "KMFA/metadata/sources/v014_s03_p2_source_check_matrix.jsonl",
+  "non_scope": {
+    "business_execution_performed": false,
+    "field_mapping_performed": false,
+    "formal_report_performed": false,
+    "github_upload_performed": false,
+    "raw_value_matching_performed": false,
+    "s03_p3_source_priority_started": false,
+    "stage3_review_performed": false
+  },
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credentials_committed": false,
+    "directory_tree_plaintext_committed": false,
+    "excel_workbook_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "raw_or_normalized_values_committed": false,
+    "sqlite_or_db_committed": false,
+    "zip_committed": false,
+    "zip_member_names_committed": false
+  },
+  "raw_layer_write_allowed": false,
+  "raw_root_mutation_performed": false,
+  "raw_root_read_performed_by_this_phase": false,
+  "raw_source_mutation_allowed": false,
+  "required_dimensions": [
+    "source_system",
+    "business_segment",
+    "source_package_ref",
+    "entity_ref",
+    "account_ref",
+    "frequency"
+  ],
+  "schema_version": "kmfa.source_check_matrix.v1_4.s03_p2",
+  "stage_phase": "S03-P2",
+  "status_changes_append_only": true,
+  "status_changes_target_layer": "metadata",
+  "status_event_file": "KMFA/metadata/sources/v014_s03_p2_source_status_events.jsonl"
+}

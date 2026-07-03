@@ -81,7 +81,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s03p1-file-registration"
+    model_version: "0.1.4-s03p2-source-check-matrix"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -98,6 +98,7 @@ models:
       - "FORM-KMFA-V014-S01-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S02-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S03P1-FILE-REGISTRATION-001"
+      - "FORM-KMFA-V014-S03P2-SOURCE-CHECK-MATRIX-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -126,6 +127,9 @@ models:
       - "PARAM-KMFA-1024"
       - "PARAM-KMFA-1025"
       - "PARAM-KMFA-1026"
+      - "PARAM-KMFA-1027"
+      - "PARAM-KMFA-1028"
+      - "PARAM-KMFA-1029"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -793,19 +797,23 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s03p2"
+    model_version: "0.1.4-s03p2-source-check-matrix"
     assumptions:
       - "ASM-KMFA-004"
       - "ASM-KMFA-005"
       - "ASM-KMFA-009"
     formula_ids:
       - "FORM-KMFA-SOURCE-CHECK-001"
+      - "FORM-KMFA-V014-S03P2-SOURCE-CHECK-MATRIX-001"
     parameter_ids:
       - "PARAM-KMFA-304"
       - "PARAM-KMFA-305"
       - "PARAM-KMFA-306"
+      - "PARAM-KMFA-1027"
+      - "PARAM-KMFA-1028"
+      - "PARAM-KMFA-1029"
     inputs:
-      - "S03-P1 registration bundle"
+      - "S03-P1 public register"
       - "source dimensions"
       - "controlled status"
     outputs:
@@ -813,10 +821,18 @@ models:
       - "source_status_event"
     code_refs:
       - "KMFA/tools/source_check_matrix.py"
+      - "KMFA/tools/v014_s03_p2_source_check_matrix.py"
+      - "KMFA/tools/check_v014_s03_p2_source_check_matrix.py"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_source_check_matrix -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s03_p2_source_check_matrix.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s03_p2_source_check_matrix -q"
     evidence_refs:
       - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md"
+      - "KMFA/metadata/protocol/source_check_matrix_v1_4_s03_p2.json"
+      - "KMFA/metadata/sources/v014_s03_p2_source_check_matrix.jsonl"
+      - "KMFA/metadata/sources/v014_s03_p2_source_status_events.jsonl"
+      - "KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/machine/source_check_matrix_manifest.json"
   - model_id: "MOD-KMFA-SOURCE-PRIORITY-001"
     name: "KMFA source priority and difference queue entry"
     kind: "deterministic_source_priority_contract"

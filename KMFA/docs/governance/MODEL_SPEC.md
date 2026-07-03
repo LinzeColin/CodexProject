@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s03p1-file-registration
+product_version: 0.1.4-s03p2-source-check-matrix
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S03-P1 只证明 raw root read-only list/stat/read/hash 和 public-safe file registration 已完成；不声明 S03-P2 数据源检查矩阵、S03-P3 源优先级、Stage 3 review、GitHub upload、raw value matching、字段映射、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S03-P2 只证明基于 S03-P1 public register 的 public-safe source check matrix/status events 已完成；不声明 S03-P3 源优先级、Stage 3 review、GitHub upload、raw value matching、字段映射、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -14,7 +14,7 @@ product_version: 0.1.4-s03p1-file-registration
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
 - evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s01_stage_review.py`, `KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/machine/stage1_review_manifest.json`
-- current_v014_scope_lock: `S03-P1 completed; S03-P2/Stage 3 review/GitHub upload/raw value matching/formal report/live connector/business execution all false`
+- current_v014_scope_lock: `S03-P2 completed; S03-P3/Stage 3 review/GitHub upload/raw value matching/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -52,8 +52,8 @@ product_version: 0.1.4-s03p1-file-registration
 - type: deterministic source readiness matrix
 - purpose: 按来源系统、业务板块、文件包、主体、账户、频率生成检查矩阵，并以 metadata event 追加状态变化。
 - fact_level: EXTRACTED
-- evidence: `KMFA/tools/source_check_matrix.py`, `KMFA/metadata/sources/source_check_matrix_policy.yaml`, `KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md`
-- limitation: 不实现自动选边、业务字段解析或 UI 检查板。
+- evidence: `KMFA/tools/source_check_matrix.py`, `KMFA/tools/v014_s03_p2_source_check_matrix.py`, `KMFA/tools/check_v014_s03_p2_source_check_matrix.py`, `KMFA/metadata/protocol/source_check_matrix_v1_4_s03_p2.json`, `KMFA/metadata/sources/v014_s03_p2_source_check_matrix.jsonl`, `KMFA/metadata/sources/v014_s03_p2_source_status_events.jsonl`, `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/machine/source_check_matrix_manifest.json`, `KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md`
+- limitation: S03-P2 只基于 S03-P1 public register 生成 public-safe matrix/status events，不读取 raw root，不做 owner mapping/source priority、自动选边、业务字段解析或 UI 检查板。
 
 ### MOD-KMFA-SOURCE-PRIORITY-001
 

@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-03 - 0.1.4-s03p2-source-check-matrix
+
+- task_id: `KMFA-V014-S03-P2-SOURCE-CHECK-MATRIX-20260703`
+- status: `completed_validated_local_only_no_go_upload_deferred`
+- scope: v0.1.4 S03-P2 source check matrix only; used S03-P1 public register to generate public-safe matrix rows and metadata-only status events, without reading raw root.
+- evidence: `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/human/source_check_matrix_report.md`, `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/human/test_results.md`, `KMFA/stage_artifacts/V014_S03_P2_SOURCE_CHECK_MATRIX/machine/source_check_matrix_manifest.json`, `KMFA/tools/check_v014_s03_p2_source_check_matrix.py`
+- counts: matrix_row_count=5, status_event_count=5, required_dimension_count=6, allowed_status_count=5, status_counts=`人工复核=5`.
+- blocker_state: S03-P3=false, Stage 3 review=false, GitHub upload=false, raw root read=false, raw inventory=false, raw value matching=false, formal_report_allowed=false, delivery_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q2, current_report_grade=D.
+
+product_version: 0.1.4-s03p2-source-check-matrix
+version_matrix_product_version_reference: 0.1.4-s03p2-source-check-matrix
+
 ## 2026-07-03 - 0.1.4-s03p1-file-registration
 
 - task_id: `KMFA-V014-S03-P1-FILE-REGISTRATION-20260703`

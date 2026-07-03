@@ -1,4 +1,4 @@
-version: "0.1.4-s03p1-file-registration"
+version: "0.1.4-s03p2-source-check-matrix"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -63,6 +63,7 @@ active_formula_ids:
   - "FORM-KMFA-V014-S02P3-QUALITY-GATE-001"
   - "FORM-KMFA-V014-S02-STAGE-REVIEW-001"
   - "FORM-KMFA-V014-S03P1-FILE-REGISTRATION-001"
+  - "FORM-KMFA-V014-S03P2-SOURCE-CHECK-MATRIX-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"
