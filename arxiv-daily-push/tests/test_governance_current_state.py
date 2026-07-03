@@ -196,6 +196,28 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertNotIn(phrase, combined)
 
+    def test_delivery_plan_s2pmt07_summary_does_not_reopen_final_gate_precheck(self) -> None:
+        delivery_plan = (ADP_ROOT / "docs/governance/DELIVERY_PLAN.md").read_text(encoding="utf-8")
+
+        expected_row = (
+            "| S2PMT07 | Stage 2 integrated acceptance recorded; S3 DAILY_OPERATION authorization blocked | "
+            "blocked_persistent_daily_operation_authorization_missing | `ACC-S2PMT07-FINAL-REVIEW`, "
+            "`ACC-S2PL-DAILY-OPERATION-AUTHORIZATION` | Stage 2 integrated acceptance is recorded and final "
+            "bundle/P0/P1/S2PLT04/signoff/final command evidence has been consumed; DAILY_OPERATION remains disabled "
+            "until a separate explicit owner persistent authorization artifact exists and enablement preflight passes. |"
+        )
+        if expected_row not in delivery_plan:
+            self.fail("DELIVERY_PLAN.md S2PMT07 summary row still does not reflect current S3 blocker state")
+        forbidden_phrases = (
+            "| S2PMT07 | Final gate precheck | blocked | `ACC-S2PMT07-FINAL-REVIEW` |",
+            "integrated production acceptance remains false",
+            "independent reviewer proof, inherited P0/P1 zero state, S2PLT04 completion, final acceptance bundle, "
+            "independent signoff, and final command execution are still missing",
+        )
+        for phrase in forbidden_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, delivery_plan)
+
     def test_owner_decision_page_does_not_reopen_pre_acceptance_final_bundle_gaps(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
 
