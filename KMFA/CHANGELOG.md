@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3-stage1-10-batch-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 1-10 batch overall review` 本地验证：复核 S01-S10 共 10 个 v0.1.3 stage review manifest，stage_results 全部 PASS，open stage review findings=0，open batch findings=0。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V013_STAGE1_10_BATCH_REVIEW/`，并新增 `KMFA/tools/v013_stage1_10_batch_review.py`、`KMFA/tools/check_v013_stage1_10_batch_review.py`、`KMFA/tests/test_v013_stage1_10_batch_review.py`。
+- 修正 active upload policy：历史单 Stage upload-ready/upload artifacts 均非当前 v1.3 gate；GitHub main 仍未上传，下一步只能另起独立 Stage 1-10 GitHub upload gate 并复跑 validators/scans 后再 push。
+- 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe deep coupling 或业务执行；项目仍为 `NO_GO`，`delivery_allowed=false`。
+
 ## 0.1.3-s10-stage-review - 2026-07-03
 
 - 完成 `v0.1.3 Stage 10｜overall review` 本地验证：复跑 S10-P1/S10-P2/S10-P3 replay validators、legacy S10 validators、legacy Stage 10 review validator、v0.1.3 Stage 10 review validator 和 focused unit test。
