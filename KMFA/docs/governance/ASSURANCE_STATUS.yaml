@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260704-V014-S05-P1-A0-FILE-REGISTRATION"
+as_of_event_id: "EVENT-KMFA-20260704-V014-S05-P2-FIELD-GOLDEN-BASELINE"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "39201eecaefd445553b066c27c7e73601c5afe18"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-04T06:00:00+10:00"
-generator_version: "manual-v014-s05p1-a0-file-registration"
+snapshot_event_time: "2026-07-04T07:20:00+10:00"
+generator_version: "manual-v014-s05p2-field-golden-baseline"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 677
-    total_active_formulas: 68
+    total_active_parameters: 681
+    total_active_formulas: 69
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -148,6 +148,10 @@ dimensions:
       - "KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/human/a0_file_registration_report.md"
       - "KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/machine/a0_file_registration_manifest.json"
       - "KMFA/tools/check_v014_s05_p1_a0_file_registration.py"
+      - "KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/human/field_golden_baseline_report.md"
+      - "KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json"
+      - "KMFA/tools/check_v014_s05_p2_field_golden_baseline.py"
       - "KMFA/tools/check_v014_s04_stage_review.py"
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
       - "KMFA/tools/check_v014_s02_p2_immutability_policy.py"

@@ -86,7 +86,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s05p1-a0-file-registration"
+    model_version: "0.1.4-s05p2-field-golden-baseline"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -111,6 +111,7 @@ models:
       - "FORM-KMFA-V014-S04P3-BASIC-TOOL-REPORT-001"
       - "FORM-KMFA-V014-S04-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S05P1-A0-FILE-REGISTRATION-001"
+      - "FORM-KMFA-V014-S05P2-FIELD-GOLDEN-BASELINE-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -155,6 +156,7 @@ models:
       - "PARAM-KMFA-1046"
       - "PARAM-KMFA-1047"
       - "PARAM-KMFA-1050"
+      - "PARAM-KMFA-1054"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -235,6 +237,8 @@ models:
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
       - "KMFA/tools/v014_s04_stage_review.py"
       - "KMFA/tools/check_v014_s04_stage_review.py"
+      - "KMFA/tools/v014_s05_p2_field_golden_baseline.py"
+      - "KMFA/tools/check_v014_s05_p2_field_golden_baseline.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
@@ -247,6 +251,7 @@ models:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p3_integration_preparation.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py --require-source-package-present"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s04_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s05_p2_field_golden_baseline.py"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
@@ -270,6 +275,8 @@ models:
       - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json"
       - "KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/human/stage4_review_report.md"
       - "KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/machine/stage4_review_manifest.json"
+      - "KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/human/field_golden_baseline_report.md"
+      - "KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"
@@ -277,7 +284,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s05p1-a0-file-registration"
+    model_version: "0.1.4-s05p2-field-golden-baseline"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -286,6 +293,7 @@ models:
       - "FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-V014-S04P3-BASIC-TOOL-REPORT-001"
       - "FORM-KMFA-V014-S05P1-A0-FILE-REGISTRATION-001"
+      - "FORM-KMFA-V014-S05P2-FIELD-GOLDEN-BASELINE-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -344,6 +352,9 @@ models:
       - "PARAM-KMFA-419"
       - "PARAM-KMFA-1048"
       - "PARAM-KMFA-1049"
+      - "PARAM-KMFA-1051"
+      - "PARAM-KMFA-1052"
+      - "PARAM-KMFA-1053"
       - "PARAM-KMFA-420"
       - "PARAM-KMFA-421"
       - "PARAM-KMFA-422"

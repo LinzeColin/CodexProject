@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s05p1-a0-file-registration`
+- version: `0.1.4-s05p2-field-golden-baseline`
 - current_stage: `S05`
-- current_phase: `v0.1.4 S05-P1 A0 file registration`
-- status: `completed_validated_local_only_no_go_upload_deferred_private_hashes_computed_package_mismatch`
+- current_phase: `v0.1.4 S05-P2 field golden baseline`
+- status: `completed_validated_local_only_no_go_upload_deferred_field_candidates_public_safe`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S05-P2 field golden baseline completed local-only: field_contract_count=5, field_candidate_count=45, pdf_field_candidate_count=40, excel_field_candidate_count=5, source_anchor_recorded_private_only_count=40, source_anchor_pending_or_downgraded_count=5, private_value_hash_recorded_count=40, private_value_hash_pending_or_downgraded_count=5, q3_field_candidate_count=45, q4_human_confirmed_count=0, q5_calculation_baseline_allowed_count=0, owner_downgraded_excel_candidate_count=1, owner_downgraded_excel_field_count=5, completion_gate_ready=true, active_owner_decision_code=downgrade_to_cross_source_support, current data quality=Q3, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, github_upload=false, S05-P3=false, Stage5_review=false.
 - v0.1.4 S05-P1 A0 file registration completed local-only: A0 total files=9, PDF=8, Excel=1, private business member hash diagnostic count=9, Q3 machine candidates=9, Q4 human locked=0, Q5 calculation/formal report allowed=0, public actual raw package/member hash committed=0, raw member name committed=0, current data quality=Q3, report grade=D, release permission=blocked, raw inbox read/list/stat/hash=true by S05-P1 authorization, raw inbox mutation/write/delete/move/rename/overwrite=false, github_upload=false, S05-P2=false, Stage5_review=false.
 - v0.1.4 Stage 4 review completed local-only: S04-P1/S04-P2/S04-P3 validators PASS, open findings=0, amount_case_count=9, canonical_field_count=6, synthetic_boundary_case_passed=22/22, current data quality=Q2, report grade=D, release permission=blocked, raw_root_read=false, raw_root_list=false, raw_root_hash=false, github_upload=false, S05=false.
 - v0.1.4 S04-P3 basic tool report completed local-only: synthetic_boundary_case_passed=22/22, amount_boundary_case_count=11, date_period_boundary_case_count=11, JSON/Markdown tool reports generated, raw_root_read=false, raw_root_list=false, raw_root_hash=false, github_upload=false, Stage4_review=false, S05=false.

@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s05p1-a0-file-registration
+product_version: 0.1.4-s05p2-field-golden-baseline
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S05-P1 只证明 A0 文件聚合登记、Q3 候选状态、private diagnostic 放置和 NO_GO/Q3/D/blocked 边界；本 phase 授权只读 list/stat/read/hash raw inbox，但不声明 S05-P2 字段级黄金候选、S05-P3 权威基准、Stage 5 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S05-P2 只证明 5 个 field contracts、45 条 field candidates、40 条 PDF private-only anchor/hash recorded、5 条 Excel owner-downgraded cross-source support only、Q3/Q4/Q5 状态和 NO_GO/Q3/D/blocked 边界；本 phase 未读取 raw inbox，不声明 S05-P3 权威基准、Stage 5 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s05p1-a0-file-registration
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s05_p1_a0_file_registration.py`, `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/machine/a0_file_registration_manifest.json`
-- current_v014_scope_lock: `S05-P1 completed; S05-P2/S05-P3/Stage 5 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s05_p2_field_golden_baseline.py`, `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json`
+- current_v014_scope_lock: `S05-P2 completed; S05-P3/Stage 5 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -115,6 +115,16 @@ product_version: 0.1.4-s05p1-a0-file-registration
 - expression: `s05p1_valid = total_files == 9 AND pdf_files == 8 AND excel_files == 1 AND private_business_member_hash_record_count == 9 AND public_actual_raw_member_hash_committed_count == 0 AND q3_machine_candidate_count == 9 AND q4_human_locked_count == 0 AND raw_inbox_hashed_by_this_phase == true AND raw_inbox_mutated_by_this_phase == false AND github_upload_performed == false`
 - evidence: `KMFA/tools/v014_s05_p1_a0_file_registration.py`, `KMFA/tools/check_v014_s05_p1_a0_file_registration.py`, `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/machine/a0_file_registration_manifest.json`
 - limitation: S05-P1 只证明文件登记和 private diagnostic 边界；不证明字段级 golden baseline、权威基准锁定、raw value matching、zero-delta、正式报告或 GitHub upload readiness。
+
+### FORM-KMFA-V014-S05P2-FIELD-GOLDEN-BASELINE-001
+
+- type: deterministic public-safe field golden baseline candidate gate
+- purpose: 验证 v0.1.4 S05-P2 字段级黄金基准，覆盖 field contracts、field candidates、PDF private-only anchor/hash status、Excel owner/授权降级、Q3/Q4/Q5 状态、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s05p2_valid = field_contract_count == 5 AND field_candidate_count == 45 AND pdf_field_candidate_count == 40 AND excel_field_candidate_count == 5 AND source_anchor_recorded_private_only_count == 40 AND owner_downgraded_excel_field_count == 5 AND q4_human_confirmed_count == 0 AND q5_calculation_baseline_allowed_count == 0 AND raw_inbox_read_by_this_phase == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s05_p2_field_golden_baseline.py`, `KMFA/tools/check_v014_s05_p2_field_golden_baseline.py`, `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/human/test_results.md`
+- limitation: S05-P2 只证明字段级 public-safe candidate baseline 和 active owner/授权降级边界；不证明 S05-P3 权威基准锁定、Stage 5 review、raw value matching、zero-delta、正式报告或 GitHub upload readiness。
 
 ### FORM-KMFA-AMOUNT-001
 
