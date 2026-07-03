@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s07p1-finance-file-adapter-replay`
+- version: `0.1.3-s07p2-wps-file-adapter-replay`
 - current_stage: `S07`
-- current_phase: `v0.1.3 S07-P1 finance file adapter replay`
-- status: `local_s07p1_finance_file_adapter_replay_passed_upload_deferred_until_stage10_batch_no_go`
+- current_phase: `v0.1.3 S07-P2 WPS file adapter replay`
+- status: `local_s07p2_wps_file_adapter_replay_passed_upload_deferred_until_stage10_batch_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_stage1_10_batch_gate`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -68,6 +68,7 @@
 - v0.1.3 S06-P3 validation evidence replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/`；本 phase 只消费 S06-P1/S06-P2 public-safe evidence，输出 zero_delta_result、sanitized mismatch report、project validation statuses，并追加写入 metadata/quality public-safe records。`metadata_quality_written=true`、`project_status_count=2`、`blocked_project_status_count=2`、`q5_allowed_count=0`、`report_grade_a_allowed_count=0`、`stage6_review_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - v0.1.3 Stage 6 整体复审已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/`；复审复跑 S06-P1/S06-P2/S06-P3 replay validators 和 Stage 6 review validator，确认 phase_results 全部 PASS、open findings=0、project_status_count=2、blocked_project_status_count=2、q5_allowed_count=0、report_grade_a_allowed_count=0、data quality=`Q4`、report grade=`D`、release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S07-P1、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - v0.1.3 S07-P1 finance file adapter replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S07_P1_FINANCE_FILE_ADAPTER_REPLAY/`；本 phase 复用既有 S07-P1 public-safe finance adapter，确认 source categories=9、field candidates=45、hash-only candidates=45、readonly field reports=9、source header hashes=45、Q4/Q5/formal report allowed count 均为 0、data quality=`Q4`、report grade=`D`、release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S07-P2、S07-P3、Stage 7 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+- v0.1.3 S07-P2 WPS file adapter replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S07_P2_WPS_FILE_ADAPTER_REPLAY/`；本 phase 复用既有 S07-P2 public-safe WPS adapter，确认 source export types=4、field mappings=20、hash-only mappings=20、readonly field reports=4、conversion guidance=4、source header hashes=20、active mapping rule versions=1、Q4/Q5/formal report allowed count 均为 0、data quality=`Q4`、report grade=`D`、release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S07-P3、Stage 7 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - 项目级 raw data boundary 已锁定：`/Users/linzezhang/Downloads/KMFA_MetaData` 是用户本机 KMFA 财务原始数据入口，Codex 只能只读读取，不得修改、删除、移动或向该目录写入；Codex 生成的私有诊断和额外文件只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
 - Post-S18 Part 5 已完成 Stage 13-15 本地复审，证据位于 `KMFA/stage_artifacts/PART5_STAGES_13_15_REVIEW/`；当轮未执行 GitHub upload、Stage 16-18 复审、整体项目复审、lineage full check、正式报告、工资计算、奖金审批、薪资导出、付款发放或业务执行。
 - Post-S18 Part 6 已完成 Stage 16-18 本地复审，证据位于 `KMFA/stage_artifacts/PART6_STAGES_16_18_REVIEW/`；本轮未执行 GitHub upload、整体项目复审、lineage full check、正式报告、live connector、OpMe 深度耦合、生产恢复或业务执行。
@@ -160,7 +161,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 S07-P1 finance file adapter replay 已本地完成；侧聊纠正后，GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S07-P2` 或用户明确指定的单一 phase，不得跳到 Stage 7 review、GitHub upload、正式报告、lineage full check、raw value matching、live connector 或业务执行。
+- v0.1.3 S07-P2 WPS file adapter replay 已本地完成；侧聊纠正后，GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S07-P3` 或用户明确指定的单一 phase，不得跳到 Stage 7 review、GitHub upload、正式报告、lineage full check、raw value matching、live connector 或业务执行。
 
 ## 阻塞条件
 
