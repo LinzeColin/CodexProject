@@ -10,6 +10,7 @@ ENTRY = PURSUE_ROOT / "STAGE031_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE031_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE031_PHASE2_SCHEMA_MIGRATION_SAFETY_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE031_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE031_PHASE4_CLOSEOUT.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
 SAFETY_ROOT = PURSUE_ROOT / "schema_migration_safety"
 SAFETY_INDEX = SAFETY_ROOT / "stage031_migration_safety_index.json"
@@ -147,36 +148,43 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'status: "stage031_phase1_in_progress"',
             'status: "stage031_phase2_in_progress"',
             'status: "stage031_phase3_in_progress"',
+            'status: "stage031_completed_local_pending_review"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE031-P1"',
             'current_task_id: "IDS-V0_1-STAGE031-P2"',
             'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_lock_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_safety_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_defined"',
+            'acceptance_status: "local_passed_pending_stage_review"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE031-P2-GATE"',
             'next_gate: "IDS-STAGE031-P3-GATE"',
             'next_gate: "IDS-STAGE031-P4-GATE"',
+            'next_gate: "IDS-STAGE031-REVIEW-GATE"',
         ]
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE031-P1"',
             'current_phase_id: "IDS-STAGE031-P2"',
             'current_phase_id: "IDS-STAGE031-P3"',
+            'current_phase_id: "IDS-STAGE031-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE031-P1"',
             'current_task_id: "IDS-V0_1-STAGE031-P2"',
             'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE031-P2-GATE"',
             'next_gate_id: "IDS-STAGE031-P3-GATE"',
             'next_gate_id: "IDS-STAGE031-P4-GATE"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE031-P1-20260703-001"',
@@ -307,34 +315,42 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
         allowed_lock_current_terms = [
             'status: "stage031_phase2_in_progress"',
             'status: "stage031_phase3_in_progress"',
+            'status: "stage031_completed_local_pending_review"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 3"',
             'next_phase: "Phase 4"',
+            'next_phase: "stage_review_gate"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE031-P3-GATE"',
             'next_gate: "IDS-STAGE031-P4-GATE"',
+            'next_gate: "IDS-STAGE031-REVIEW-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE031-P2"',
             'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_lock_acceptance_terms = [
             'acceptance_status: "phase2_safety_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_defined"',
+            'acceptance_status: "local_passed_pending_stage_review"',
         ]
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE031-P2"',
             'current_phase_id: "IDS-STAGE031-P3"',
+            'current_phase_id: "IDS-STAGE031-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE031-P2"',
             'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE031-P3-GATE"',
             'next_gate_id: "IDS-STAGE031-P4-GATE"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE031-P2-20260703-001"',
@@ -451,26 +467,50 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             "NO_PHASE4",
         ]
         lock_terms = [
-            'status: "stage031_phase3_in_progress"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'next_gate: "IDS-STAGE031-P4-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE031-P3"',
-            'acceptance_status: "phase3_scenario_validation_defined"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE3_SCENARIO_VALIDATION.md",
             'push_allowed: false',
         ]
+        allowed_lock_current_terms = [
+            'status: "stage031_phase3_in_progress"',
+            'status: "stage031_completed_local_pending_review"',
+        ]
+        allowed_lock_next_terms = [
+            'next_phase: "Phase 4"',
+            'next_phase: "stage_review_gate"',
+        ]
+        allowed_lock_gate_terms = [
+            'next_gate: "IDS-STAGE031-P4-GATE"',
+            'next_gate: "IDS-STAGE031-REVIEW-GATE"',
+        ]
+        allowed_lock_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
+        ]
+        allowed_lock_acceptance_terms = [
+            'acceptance_status: "phase3_scenario_validation_defined"',
+            'acceptance_status: "local_passed_pending_stage_review"',
+        ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE031"',
-            'current_phase_id: "IDS-STAGE031-P3"',
-            'current_task_id: "IDS-V0_1-STAGE031-P3"',
-            'next_gate_id: "IDS-STAGE031-P4-GATE"',
             'phase_id: "IDS-STAGE031-P3"',
             'status: "passed_with_local_evidence"',
             "STAGE031_PHASE3_SCENARIO_VALIDATION.md",
             "build_stage031_scenario_validation_report",
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE031-P3"',
+            'current_phase_id: "IDS-STAGE031-P4"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE031-P4-GATE"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE031-P3-20260703-001"',
@@ -485,6 +525,127 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
         for term in phase3_terms:
             with self.subTest(term=term):
                 self.assertIn(term, phase3_text)
+        for term in lock_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, lock_text)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_current_terms), allowed_lock_current_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_next_terms), allowed_lock_next_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_gate_terms), allowed_lock_gate_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_task_terms), allowed_lock_task_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_acceptance_terms), allowed_lock_acceptance_terms)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+    def test_phase4_builds_delivery_evidence_rollback_backup_and_owner_feedback_without_live_database(self):
+        module = self._load_phase2_module()
+
+        report = module.build_stage031_delivery_report(
+            SAFETY_INDEX,
+            CONTROL_PLANE_SQL,
+            CONTROL_PLANE_INDEX,
+        )
+
+        self.assertEqual(report["schema_version"], "ids.stage031.schema_migration_safety.phase4.v1")
+        self.assertEqual(report["stage"], "STAGE-031")
+        self.assertEqual(report["phase"], "Phase 4")
+        self.assertEqual(report["task_id"], "IDS-V0_1-STAGE031-P4")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-031")
+        self.assertEqual(report["next_gate"], "IDS-STAGE031-REVIEW-GATE")
+        self.assertEqual(report["stage_review_status"], "pending_next_run")
+        self.assertFalse(report["github_upload_allowed"])
+        self.assertFalse(report["app_reinstall_allowed"])
+        self.assertTrue(report["does_not_connect_to_postgres"])
+        self.assertTrue(report["does_not_execute_migration"])
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertTrue(report["does_not_write_runtime_outputs"])
+        self.assertTrue(report["does_not_use_fake_ids_business_data"])
+
+        self.assertEqual(report["schema_diff"]["mode"], "static_schema_migration_safety_diff_not_executed")
+        self.assertEqual(report["migration_output"]["mode"], "static_migration_safety_output_not_executed")
+        self.assertEqual(report["recovery_test_log"]["mode"], "static_recovery_log_not_executed")
+        self.assertIn("dry_run_guard", report["schema_diff"]["safety_gates_added"])
+        self.assertIn("constraint_error_explanations", report["migration_output"]["scenario_results"])
+        self.assertIn("recovery_checkpoint_ref", report["recovery_test_log"]["checks"])
+        self.assertTrue(report["destructive_migration_confirmation"]["required"])
+        self.assertFalse(report["destructive_migration_confirmation"]["destructive_allowed_by_default"])
+        self.assertGreaterEqual(len(report["rollback_backup_steps"]), 5)
+        self.assertTrue(any("backup" in step.lower() or "备份" in step for step in report["rollback_backup_steps"]))
+        self.assertTrue(any("PostgreSQL" in item for item in report["known_limits"]))
+        self.assertIn("STAGE-031 已完成 Phase 4", report["chinese_owner_feedback"])
+
+    def test_phase4_closeout_batch_roadmap_and_events_track_completed_local_no_upload_gate(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        phase4_text = PHASE4.read_text(encoding="utf-8")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        phase4_terms = [
+            "IDS-V0_1-STAGE031-P4",
+            "ACC-STAGE-031",
+            "schema diff",
+            "migration 输出",
+            "恢复测试日志",
+            "已知限制",
+            "破坏性迁移",
+            "数据库回滚",
+            "备份恢复步骤",
+            "IDS-STAGE031-REVIEW-GATE",
+            "push_allowed=false",
+            "STAGE-031 已完成 Phase 4",
+            "pending_next_run",
+            "不连接 PostgreSQL",
+            "不执行真实 migration dry-run、apply、rollback、backup、restore 或 schema diff",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+            "NO_BATCH_UPLOAD",
+            "NO_STAGE_REVIEW_THIS_RUN",
+        ]
+        lock_terms = [
+            'status: "stage031_completed_local_pending_review"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            '      - "Phase 4"',
+            'next_phase: "stage_review_gate"',
+            'next_gate: "IDS-STAGE031-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
+            'acceptance_status: "local_passed_pending_stage_review"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE4_CLOSEOUT.md",
+            'next_allowed_task_id: "IDS-V0_1-STAGE031-REVIEW-GATE"',
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE031"',
+            'current_phase_id: "IDS-STAGE031-P4"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
+            'phase_id: "IDS-STAGE031-P4"',
+            'status: "passed_with_local_evidence"',
+            "STAGE031_PHASE4_CLOSEOUT.md",
+            "build_stage031_delivery_report",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE031-P4-20260703-001"',
+            '"event_type":"stage_closeout"',
+            '"task_id":"IDS-V0_1-STAGE031-P4"',
+            '"ACC-STAGE-031"',
+            "STAGE031_PHASE4_CLOSEOUT.md",
+            "build_stage031_delivery_report",
+            "IDS-STAGE031-REVIEW-GATE",
+        ]
+
+        for term in phase4_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, phase4_text)
         for term in lock_terms:
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)

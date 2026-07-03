@@ -14,6 +14,7 @@ from typing import Any
 
 SCHEMA_VERSION = "ids.stage031.schema_migration_safety.phase2.v1"
 SCENARIO_SCHEMA_VERSION = "ids.stage031.schema_migration_safety.phase3.v1"
+DELIVERY_SCHEMA_VERSION = "ids.stage031.schema_migration_safety.phase4.v1"
 INDEX_SCHEMA_VERSION = "ids.stage031.schema_migration_safety.index.v1"
 STAGE = "STAGE-031"
 TASK_ID = "IDS-V0_1-STAGE031-P2"
@@ -313,16 +314,169 @@ def build_stage031_scenario_validation_report(
     }
 
 
+def build_stage031_delivery_report(
+    safety_index_path: Path,
+    control_schema_sql_path: Path,
+    control_schema_index_path: Path,
+) -> dict[str, Any]:
+    safety_index = _load_json(safety_index_path)
+    control_index = _load_json(control_schema_index_path)
+    migration = control_index.get("migration", {})
+    phase2_report = build_stage031_migration_safety_report(
+        safety_index_path,
+        control_schema_sql_path,
+        control_schema_index_path,
+    )
+    scenario_report = build_stage031_scenario_validation_report(
+        safety_index_path,
+        control_schema_sql_path,
+        control_schema_index_path,
+    )
+    safety_gates = phase2_report["safety_gate_results"]
+    guardrails = phase2_report["guardrail_results"]
+    scenario_results = scenario_report["scenario_results"]
+    destructive_auto_allowed = safety_index.get("owner_stop_gate", {}).get("destructive_auto_approval_allowed")
+
+    return {
+        "schema_version": DELIVERY_SCHEMA_VERSION,
+        "stage": STAGE,
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE031-P4",
+        "acceptance_id": ACCEPTANCE_ID,
+        "next_gate": "IDS-STAGE031-REVIEW-GATE",
+        "stage_review_status": "pending_next_run",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "schema_diff": {
+            "mode": "static_schema_migration_safety_diff_not_executed",
+            "baseline": "STAGE-030 tracked PostgreSQL control-plane schema contract without STAGE-031 safety closeout evidence",
+            "target_safety_index_ref": safety_index_path.as_posix(),
+            "target_schema_sql_ref": control_schema_sql_path.as_posix(),
+            "target_schema_index_ref": control_schema_index_path.as_posix(),
+            "migration_id": safety_index.get("source_schema_change", {}).get("migration_id"),
+            "safety_gates_added": sorted(safety_gates),
+            "guardrails_added": sorted(guardrails),
+            "constraints_added": sorted(EXPLAINED_CONSTRAINTS),
+            "raw_payload_columns_added": [],
+            "notes": "This is a tracked-contract schema migration safety diff only; no live database schema diff was executed.",
+        },
+        "migration_output": {
+            "mode": "static_migration_safety_output_not_executed",
+            "migration_id": safety_index.get("source_schema_change", {}).get("migration_id"),
+            "dry_run_command_ref": migration.get("dry_run_command_ref"),
+            "rollback_command_ref": migration.get("rollback_command_ref"),
+            "expected_static_result": "all Phase2 safety gates and guardrails true; all Phase3 scenario statuses PASS",
+            "safety_gate_results": safety_gates,
+            "guardrail_results": guardrails,
+            "scenario_results": scenario_results,
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_LIVE_POSTGRESQL_CONNECTION",
+        },
+        "recovery_test_log": {
+            "mode": "static_recovery_log_not_executed",
+            "checks": [
+                "dry_run_guard",
+                "backup_checkpoint_guard",
+                "validation_guard",
+                "rollback_guard",
+                "recovery_smoke_guard",
+                "recovery_checkpoint_ref",
+                "rollback_sql_ref",
+                "ON_ERROR_STOP=1",
+                "--single-transaction",
+            ],
+            "result": "static PASS from tracked safety index, SQL, and schema index contracts",
+            "live_restore_log_ref": "NOT_AVAILABLE_BY_POLICY_NO_BACKUP_OR_RESTORE_EXECUTION",
+        },
+        "destructive_migration_confirmation": {
+            "required": True,
+            "destructive_allowed_by_default": destructive_auto_allowed is True,
+            "current_contract_value": destructive_auto_allowed,
+            "manual_confirmation_required_before_change": True,
+            "owner_message": "任何 DROP、ALTER、数据删除、重建索引或不可逆 schema migration 必须单独人工确认，默认阻断。",
+        },
+        "rollback_backup_steps": [
+            "Stop before live migration if the schema diff cannot be explained from tracked SQL/index/safety contracts.",
+            "Create a PostgreSQL logical backup in a future authorized run before any apply.",
+            "Record backup location, checksum, migration id, dry-run evidence, and owner approval in future run evidence.",
+            "Run rollback_command_ref with ON_ERROR_STOP=1 and --single-transaction if apply fails.",
+            "Restore from the approved backup only in a future authorized restore run.",
+            "Re-run recovery smoke checks and keep /Users/linzezhang/Downloads/IDS_MetaData path-only after rollback.",
+        ],
+        "known_limits": [
+            "PostgreSQL live connection, dry-run, apply, rollback, backup, restore, and schema diff were not executed in this phase.",
+            "The report proves tracked schema migration safety contract readiness, not production database readiness.",
+            "No runtime database rows, document/chunk/job rows, indexes, reports, screenshots, PDFs, manifests, ledgers, audit logs, or JSON output files were generated.",
+            "Raw metadata remains path-only at /Users/linzezhang/Downloads/IDS_MetaData and was not inspected.",
+            "STAGE-031 review is blocked until a separate stage review run; BATCH031_040 upload remains blocked until STAGE-031..040 are complete, reviewed, and repaired.",
+        ],
+        "chinese_owner_feedback": (
+            "STAGE-031 已完成 Phase 4：当前交付的是 schema migration safety 的静态工程合同、"
+            "schema diff 摘要、migration 输出说明、恢复测试日志、回滚/备份恢复步骤、破坏性迁移人工确认和中文反馈。"
+            "它不是生产数据库迁移授权；下一步应进入 STAGE-031 复审，而不是 GitHub upload 或 app reinstall。"
+        ),
+        "phase2_report": phase2_report,
+        "scenario_report": scenario_report,
+        "does_not_connect_to_postgres": True,
+        "does_not_execute_migration": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_write_runtime_outputs": True,
+        "does_not_use_fake_ids_business_data": True,
+    }
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     pursue_root = root / "docs" / "pursuing_goal" / "ids_v0_1"
+    safety_index = pursue_root / "schema_migration_safety" / "stage031_migration_safety_index.json"
+    control_sql = pursue_root / "postgresql_control_plane" / "001_control_plane_schema.sql"
+    control_index = pursue_root / "postgresql_control_plane" / "control_plane_schema_index.json"
     report = build_stage031_migration_safety_report(
-        pursue_root / "schema_migration_safety" / "stage031_migration_safety_index.json",
-        pursue_root / "postgresql_control_plane" / "001_control_plane_schema.sql",
-        pursue_root / "postgresql_control_plane" / "control_plane_schema_index.json",
+        safety_index,
+        control_sql,
+        control_index,
     )
-    print(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2))
-    return 0 if all(report["safety_gate_results"].values()) and all(report["guardrail_results"].values()) else 1
+    scenario_report = build_stage031_scenario_validation_report(
+        safety_index,
+        control_sql,
+        control_index,
+    )
+    delivery_report = build_stage031_delivery_report(
+        safety_index,
+        control_sql,
+        control_index,
+    )
+    print(json.dumps(
+        {
+            "migration_safety_report": report,
+            "scenario_report": scenario_report,
+            "delivery_report": delivery_report,
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        indent=2,
+    ))
+    checks = (
+        list(report["safety_gate_results"].values())
+        + list(report["guardrail_results"].values())
+        + [
+            scenario["status"] == "PASS"
+            for scenario in scenario_report["scenario_results"].values()
+        ]
+        + [
+            delivery_report["schema_diff"]["mode"] == "static_schema_migration_safety_diff_not_executed",
+            delivery_report["migration_output"]["mode"] == "static_migration_safety_output_not_executed",
+            delivery_report["recovery_test_log"]["mode"] == "static_recovery_log_not_executed",
+            delivery_report["stage_review_status"] == "pending_next_run",
+            delivery_report["github_upload_allowed"] is False,
+            delivery_report["app_reinstall_allowed"] is False,
+            delivery_report["does_not_connect_to_postgres"],
+            delivery_report["does_not_execute_migration"],
+            delivery_report["does_not_read_raw_metadata"],
+            delivery_report["does_not_write_runtime_outputs"],
+            delivery_report["does_not_use_fake_ids_business_data"],
+        ]
+    )
+    return 0 if all(checks) else 1
 
 
 if __name__ == "__main__":

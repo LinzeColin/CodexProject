@@ -326,6 +326,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE030-P1"',
             'current_phase_id: "IDS-STAGE031-P1"',
+            'current_phase_id: "IDS-STAGE031-P2"',
+            'current_phase_id: "IDS-STAGE031-P3"',
+            'current_phase_id: "IDS-STAGE031-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P1"',
@@ -338,6 +341,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
             'current_task_id: "IDS-V0_1-STAGE031-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+            'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P2-GATE"',
@@ -351,6 +357,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'next_gate_id: "IDS-STAGE031-P2-GATE"',
+            'next_gate_id: "IDS-STAGE031-P3-GATE"',
+            'next_gate_id: "IDS-STAGE031-P4-GATE"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P1-20260703-001"',
@@ -655,6 +664,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE030-P1"',
             'current_phase_id: "IDS-STAGE031-P1"',
+            'current_phase_id: "IDS-STAGE031-P2"',
+            'current_phase_id: "IDS-STAGE031-P3"',
+            'current_phase_id: "IDS-STAGE031-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P2"',
@@ -666,6 +678,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
             'current_task_id: "IDS-V0_1-STAGE031-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+            'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P3-GATE"',
@@ -678,6 +693,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'next_gate_id: "IDS-STAGE031-P2-GATE"',
+            'next_gate_id: "IDS-STAGE031-P3-GATE"',
+            'next_gate_id: "IDS-STAGE031-P4-GATE"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P2-20260703-001"',
@@ -891,6 +909,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE030-P1"',
             'current_phase_id: "IDS-STAGE031-P1"',
+            'current_phase_id: "IDS-STAGE031-P2"',
+            'current_phase_id: "IDS-STAGE031-P3"',
+            'current_phase_id: "IDS-STAGE031-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P3"',
@@ -901,6 +922,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
             'current_task_id: "IDS-V0_1-STAGE031-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+            'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P4-GATE"',
@@ -912,6 +936,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'next_gate_id: "IDS-STAGE031-P2-GATE"',
+            'next_gate_id: "IDS-STAGE031-P3-GATE"',
+            'next_gate_id: "IDS-STAGE031-P4-GATE"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P3-20260703-001"',
@@ -1118,6 +1145,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE030-P1"',
             'current_phase_id: "IDS-STAGE031-P1"',
+            'current_phase_id: "IDS-STAGE031-P2"',
+            'current_phase_id: "IDS-STAGE031-P3"',
+            'current_phase_id: "IDS-STAGE031-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE029-P4"',
@@ -1127,6 +1157,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
             'current_task_id: "IDS-V0_1-STAGE031-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P2"',
+            'current_task_id: "IDS-V0_1-STAGE031-P3"',
+            'current_task_id: "IDS-V0_1-STAGE031-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE030-P1-GATE"',
@@ -1137,6 +1170,9 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
             'next_gate_id: "IDS-STAGE031-P2-GATE"',
+            'next_gate_id: "IDS-STAGE031-P3-GATE"',
+            'next_gate_id: "IDS-STAGE031-P4-GATE"',
+            'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P4-20260703-001"',
