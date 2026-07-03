@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S04-P1 金额精度与基础工具；金额标准化 cases `9/9` PASS，异常拒绝 cases `9/9` PASS，forbidden-float fixture findings=`3`，repository no-float scan PASS。证据位于 `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/`，validator 为 `KMFA/tools/check_v014_s04_p1_amount_precision.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取 raw root，未写入、删除、移动、重命名、覆盖或转换 raw inbox，未进入 S04-P2/S04-P3/Stage 4 review，未执行 raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S04-P2 字段标准化；canonical fields=`6`，alias dictionary rows=`32`，mapping records=`6`，standardization cases=`6/6` PASS，quality statuses=`5`。证据位于 `KMFA/stage_artifacts/V014_S04_P2_FIELD_STANDARDIZATION/`，validator 为 `KMFA/tools/check_v014_s04_p2_field_standardization.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出、hash、写入、删除、移动、重命名、覆盖或转换 raw inbox，未进入 S04-P3/Stage 4 review，未执行 raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S04-P2 已确认字段标准化通过本地 validator；字段别名映射、canonical 字段输出和缺失/异常字段质量状态已 public-safe 锁定，公开证据只保存 synthetic cases、聚合计数、质量状态和 NO_GO/upload-deferred 边界。
 - v0.1.4 S04-P1 已确认金额精度/no-float 基础工具通过本地 validator；金额标准化输出整数分，float/非整分/空白/异常金额拒绝，公开证据只保存 synthetic cases、计数、no-float 结果和 NO_GO/upload-deferred 边界。
 - v0.1.4 Stage 3 整体复审已确认 S03-P1/S03-P2/S03-P3 validators 全部 PASS，open findings=0；Stage review 未读取 raw root，未执行 GitHub upload，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S03-P3 已确认 public-safe source priority 通过本地 validator；raw/upload/authorized/processed 排序已锁定，处理后数据低于原始上传/授权导出，同源不一致只失效缓存并请求重跑，跨源冲突只进入人工差异队列且 `auto_selection_allowed=false`，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
@@ -155,4 +156,4 @@ KMFA 已完成 v0.1.4 S04-P1 金额精度与基础工具；金额标准化 cases
 
 ## 下一步
 
-下一步只能另起 run work 执行 `v0.1.4 S04-P1｜金额精度与基础工具`；不得跳到 GitHub upload、raw value matching、field mapping、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只能另起 run work 执行 `v0.1.4 S04-P3｜基础工具测试`；不得跳到 Stage 4 review、GitHub upload、raw value matching、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。

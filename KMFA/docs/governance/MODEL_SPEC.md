@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s04p1-amount-precision
+product_version: 0.1.4-s04p2-field-standardization
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S04-P1 只证明 synthetic public-safe 金额标准化、异常拒绝和 no-float 证据闭合；不声明 S04-P2、S04-P3、Stage 4 review、GitHub upload、raw value matching、字段映射、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S04-P2 只证明 synthetic public-safe 字段标准化、别名映射聚合计数和缺失/异常字段质量状态证据闭合；不声明 S04-P3、Stage 4 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -79,6 +79,15 @@ product_version: 0.1.4-s04p1-amount-precision
 - evidence: `KMFA/tools/v014_s04_p1_amount_precision.py`, `KMFA/tools/check_v014_s04_p1_amount_precision.py`, `KMFA/tests/test_v014_s04_p1_amount_precision.py`, `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/machine/amount_precision_manifest.json`
 - boundary_validation: `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/human/test_results.md`
 - limitation: 只证明整数分金额标准化、异常拒绝和 no-float 基础工具边界；不做 S04-P2 字段标准化、raw value matching、zero-delta、事实层或报告验收。
+
+### FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001
+
+- type: deterministic public-safe field standardization gate
+- purpose: 验证 v0.1.4 S04-P2 字段标准化，覆盖 canonical 字段、别名字典聚合计数、字段映射记录、缺失/异常字段质量状态、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s04p2_valid = canonical_field_count == 6 AND alias_dictionary_row_count == 32 AND mapping_record_count == 6 AND standardization_case_passed_count == 6 AND quality_status_count == 5 AND raw_dir_read_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/check_v014_s04_p2_field_standardization.py`, `KMFA/stage_artifacts/V014_S04_P2_FIELD_STANDARDIZATION/machine/field_standardization_manifest.json`
+- limitation: S04-P2 只证明字段标准化和质量状态边界，不证明 raw value matching、S04-P3、Stage 4 review、正式报告或 GitHub upload readiness。
 
 ### FORM-KMFA-AMOUNT-001
 
@@ -291,7 +300,7 @@ product_version: 0.1.4-s04p1-amount-precision
 
 ### MOD-KMFA-COST-001
 
-- status: active with v0.1.4 S04-P1 amount precision evidence and existing public-safe cost-analysis formulas
+- status: active with v0.1.4 S04-P2 field standardization evidence and existing public-safe cost-analysis formulas
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
 - current limitation: S18-P1 precision stress, S18-P2 full regression acceptance and S18-P3 integration preparation are local-only; S18-P2 Go/No-Go remains NO_GO; Stage 18 review/upload, lineage full check, official report generation, live connectors and OpMe deep coupling are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.
@@ -299,8 +308,8 @@ product_version: 0.1.4-s04p1-amount-precision
 ## Counts
 
 - active models: 8
-- active formulas: 64
-- active parameters: 665
+- active formulas: 65
+- active parameters: 668
 - planned models: 0
 - planned formulas: 0
 - planned parameters: 1

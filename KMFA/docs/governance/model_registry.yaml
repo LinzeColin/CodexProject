@@ -107,6 +107,7 @@ models:
       - "FORM-KMFA-V014-S03P3-SOURCE-PRIORITY-001"
       - "FORM-KMFA-V014-S03-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
+      - "FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -145,6 +146,7 @@ models:
       - "PARAM-KMFA-1034"
       - "PARAM-KMFA-1035"
       - "PARAM-KMFA-1038"
+      - "PARAM-KMFA-1041"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -262,12 +264,13 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s04p1-amount-precision"
+    model_version: "0.1.4-s04p2-field-standardization"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
       - "FORM-KMFA-AMOUNT-001"
       - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
+      - "FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -466,6 +469,8 @@ models:
       - "PARAM-KMFA-592"
       - "PARAM-KMFA-1036"
       - "PARAM-KMFA-1037"
+      - "PARAM-KMFA-1039"
+      - "PARAM-KMFA-1040"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
