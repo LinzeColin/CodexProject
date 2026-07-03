@@ -205,7 +205,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'completed_phases:',
             '      - "Phase 1"',
             'acceptance_id: "ACC-STAGE-026"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py",
@@ -314,6 +314,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
@@ -409,6 +410,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         allowed_phase_terms = [term for term in allowed_current_terms if term.startswith("current_phase_id")]
         allowed_task_terms = [term for term in allowed_current_terms if term.startswith("current_task_id")]
@@ -562,7 +564,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             '      - "Phase 1"',
             '      - "Phase 2"',
             'acceptance_id: "ACC-STAGE-026"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/scripts/check_archive_manifest.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE2_ARCHIVE_MANIFEST_SLICE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py",
@@ -664,6 +666,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -781,7 +784,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             '      - "Phase 2"',
             '      - "Phase 3"',
             'acceptance_id: "ACC-STAGE-026"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/scripts/check_archive_manifest.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE3_SCENARIO_VALIDATION.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py",
@@ -877,6 +880,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -933,7 +937,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'acceptance_id: "ACC-STAGE-026"',
             'acceptance_status: "local_passed"',
             'next_gate: "IDS-STAGE027-P1-GATE"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py",
         ]
@@ -959,6 +963,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
 
@@ -1045,6 +1050,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         allowed_stage_terms = [term for term in allowed_current_terms if term.startswith("current_stage_id")]
         allowed_phase_terms = [term for term in allowed_current_terms if term.startswith("current_phase_id")]

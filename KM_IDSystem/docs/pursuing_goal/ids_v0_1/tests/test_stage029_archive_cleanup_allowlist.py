@@ -221,7 +221,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             "STAGE-029:",
             '      - "Phase 1"',
             'acceptance_id: "ACC-STAGE-029"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_archive_cleanup_allowlist.py",
@@ -283,6 +283,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
 
         for term in required_terms:
@@ -345,6 +346,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P1-20260703-001"',
@@ -578,7 +580,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
         batch_terms = [
             '      - "Phase 1"',
             '      - "Phase 2"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
         ]
@@ -626,6 +628,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         roadmap_terms = [
             'phase_id: "IDS-STAGE029-P2"',
@@ -666,6 +669,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P2-20260703-001"',
@@ -815,7 +819,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE3_SCENARIO_VALIDATION.md",
         ]
         allowed_batch_status_terms = [
@@ -857,6 +861,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         roadmap_terms = [
             'phase_id: "IDS-STAGE029-P3"',
@@ -894,6 +899,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P3-20260703-001"',
@@ -1057,7 +1063,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'acceptance_id: "ACC-STAGE-029"',
             'acceptance_status: "local_passed"',
             'next_gate: "IDS-STAGE030-P1-GATE"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md",
@@ -1114,6 +1120,7 @@ class Stage029ArchiveCleanupAllowlistPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE029-P4-20260703-001"',

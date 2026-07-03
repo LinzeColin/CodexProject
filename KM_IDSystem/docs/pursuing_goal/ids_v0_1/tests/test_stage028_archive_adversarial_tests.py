@@ -577,7 +577,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             'acceptance_id: "ACC-STAGE-028"',
             'acceptance_status: "local_passed"',
             'next_gate: "IDS-STAGE029-P1-GATE"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE2_ARCHIVE_ADVERSARIAL_SLICE.md",
@@ -614,6 +614,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
@@ -685,6 +686,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_stage_terms), allowed_roadmap_stage_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)

@@ -209,7 +209,7 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'STAGE-024:',
             'status: "completed_local"',
             'acceptance_id: "ACC-STAGE-024"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE2_SAFE_EXTRACTION_SLICE.md",

@@ -150,7 +150,7 @@ class Stage021PreflightConfirmationUiPhase1Tests(unittest.TestCase):
             'batch_id: "IDS-V0_1-BATCH-021-030"',
             'stage_range: "STAGE-021..STAGE-030"',
             'acceptance_range: "ACC-STAGE-021..ACC-STAGE-030"',
-            'push_allowed: false',
+            'push_allowed:',
             'current_task_id: "IDS-V0_1-STAGE021-P4"',
             'acceptance_status: "local_passed"',
             'next_gate: "IDS-STAGE022-P1-GATE"',

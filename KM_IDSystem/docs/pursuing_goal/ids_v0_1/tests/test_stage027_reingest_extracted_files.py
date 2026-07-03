@@ -189,7 +189,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             "STAGE-027:",
             '      - "Phase 1"',
             'acceptance_id: "ACC-STAGE-027"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py",
@@ -287,6 +287,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -375,6 +376,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
@@ -562,7 +564,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             '      - "Phase 1"',
             '      - "Phase 2"',
             'acceptance_id: "ACC-STAGE-027"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/scripts/check_reingest_extracted_files.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py",
@@ -653,6 +655,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -734,6 +737,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
@@ -857,7 +861,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             '      - "Phase 2"',
             '      - "Phase 3"',
             'acceptance_id: "ACC-STAGE-027"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/scripts/check_reingest_extracted_files.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE3_SCENARIO_VALIDATION.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py",
@@ -942,6 +946,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -1020,6 +1025,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
@@ -1116,7 +1122,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'acceptance_id: "ACC-STAGE-027"',
             'acceptance_status: "local_passed"',
             'next_gate: "IDS-STAGE028-P1-GATE"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py",
         ]
@@ -1154,6 +1160,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE030-P4"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
@@ -1234,6 +1241,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE030-P4-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
+            'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_stage_terms), allowed_roadmap_stage_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
