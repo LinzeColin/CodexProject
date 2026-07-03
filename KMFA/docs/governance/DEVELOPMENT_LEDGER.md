@@ -1,23 +1,23 @@
 # KMFA Development Ledger
 
-## 2026-07-03 - 0.1.3-s08p3-entity-matching-quality-replay
+## 2026-07-03 - 0.1.3-s09p1-project-cost-fact-layer-replay
 
-- task_id: `KMFA-V013-S08-P3-ENTITY-MATCHING-QUALITY-REPLAY-20260703`
-- status: `completed_validated_local_only_no_go_upload_deferred_entity_matching_quality_replayed`
-- evidence: `KMFA/stage_artifacts/V013_S08_P3_ENTITY_MATCHING_QUALITY_REPLAY/machine/entity_matching_quality_replay_manifest.json`
-- validator: `KMFA/tools/check_v013_s08_p3_entity_matching_quality_replay.py`
-- scope: S08-P3 replay only; Stage 8 review and GitHub upload not performed.
+- task_id: `KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703`
+- status: `completed_validated_local_only_no_go_upload_deferred_project_cost_fact_layer_replayed`
+- evidence: `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/machine/project_cost_fact_layer_replay_manifest.json`
+- validator: `KMFA/tools/check_v013_s09_p1_project_cost_fact_layer_replay.py`
+- scope: S09-P1 replay only; S09-P2, S09-P3, Stage 9 review and GitHub upload not performed.
 
-product_version: 0.1.3-s08p3-entity-matching-quality-replay
-version_matrix_product_version_reference: 0.1.3-s08p3-entity-matching-quality-replay
+product_version: 0.1.3-s09p1-project-cost-fact-layer-replay
+version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-replay
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S08`
-- current_phase: `v0.1.3 S08-P3 entity matching quality replay`
-- current_tasks: `KMFA-V013-S08-P3-ENTITY-MATCHING-QUALITY-REPLAY-20260703`
-- status: `local_s08_p3_completed_upload_deferred_until_stage10_batch_no_go`
+- current_stage: `S09`
+- current_phase: `v0.1.3 S09-P1 project cost fact layer replay`
+- current_tasks: `KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703`
+- status: `local_s09_p1_completed_upload_deferred_until_stage10_batch_no_go`
 - risk_tier: `T3`
 
 ## Completed
@@ -164,12 +164,13 @@ version_matrix_product_version_reference: 0.1.3-s08p3-entity-matching-quality-re
 | `KMFA-V013-S05-P2-FIELD-CANDIDATE-REPLAY-20260702` | v0.1.3 S05-P2 字段级黄金基准候选 replay 本地通过：fixture candidates=45、hash/source-anchor recorded=40、pending fields=5、Q4 confirmed=0、Q5 calculation baseline allowed=0；active owner/authorized decision 将 pending Excel candidate 降级为 cross-source support only，completion gate ready；未读取或写入 raw data inbox，未执行 S05-P3、Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P2_FIELD_CANDIDATE_REPLAY/human/field_candidate_replay_report.md` |
 | `KMFA-V013-S05-P3-AUTHORITY-BASELINE-REPLAY-20260702` | v0.1.3 S05-P3 权威基准锁定 replay 本地通过：baseline version 和 content hash 已复算锁定，authority records=45、Q5 locked fields=40、excluded fields=5；未读取或写入 raw data inbox，未执行 Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/human/authority_baseline_replay_report.md` |
 | `KMFA-V013-S08-STAGE-REVIEW-20260703` | v0.1.3 Stage 8 overall review 本地通过，completed_version=`0.1.3-s08-stage-review`：复跑 S08-P1/S08-P2/S08-P3 replay validators，phase_results 全部 PASS，open findings=0，fixed findings=1，legacy upload 非当前 gate；未读取或写入 raw data inbox，未执行 S09-P1、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/human/stage8_review_report.md` |
+| `KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703` | v0.1.3 S09-P1 project cost fact layer replay 本地通过，completed_version=`0.1.3-s09p1-project-cost-fact-layer-replay`：重放 6 个 required metrics、9 个 cost categories、4 条 fact records 和 9 条 unallocated pool records；formal calculation、S09-P2/S09-P3、Stage 9 review、GitHub upload、raw value matching、正式报告和业务执行均未执行 | `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/human/project_cost_fact_layer_replay_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 Stage 8 review 完成后，下一步只能另起 run 执行 v0.1.3 S09-P1 public-safe project cost fact layer replay 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/human/test_results.md` |
+| 无 | v0.1.3 S09-P1 完成后，下一步只能另起 run 执行 v0.1.3 S09-P2 public-safe margin and cash margin replay 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/human/test_results.md` |
 
 ## Not Completed
 
@@ -178,4 +179,4 @@ version_matrix_product_version_reference: 0.1.3-s08p3-entity-matching-quality-re
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S08-P3 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 Stage 8 overall review 或用户明确指定的单一 phase |
+| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S09-P1 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S09-P2 或用户明确指定的单一 phase |
