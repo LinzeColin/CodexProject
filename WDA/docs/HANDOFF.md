@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA v0.1-B local analysis layer on the existing Minimal Data Core Seed.
+Execute WDA v0.1-C minimal query and report entry.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is local deterministic analysis over the minimal Data Core seed, not RAG/Web/Matrix buildout
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, and v0.1-B local analysis layer artifacts generated
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is local static query/report entry over the minimal Data Core seed and analysis layer, not RAG/Web/Matrix buildout
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, Sprint 2N import-readiness/Data Core boundary, v0.1-A local Data Core seed, v0.1-B local analysis layer, and v0.1-C local query/report entry artifacts generated
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -29,10 +29,12 @@ Execute WDA v0.1-B local analysis layer on the existing Minimal Data Core Seed.
 - Latest Sprint 2N outputs: `WDA/docs/stage2_sprint2n_import_readiness_data_core_boundary/`
 - Latest v0.1-A outputs: `WDA/docs/v0_1_data_core_seed/`
 - Latest v0.1-B outputs: `WDA/docs/v0_1_analysis_layer/`
+- Latest v0.1-C outputs: `WDA/docs/v0_1_query_report_entry/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Latest Sprint 2M-B local Raw Import Pack: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2m_b_subject_coverage_import_validation/`
 - Latest v0.1-A local Data Core seed: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/data_core_seed/wda_v0_1_seed.sqlite`
 - Latest v0.1-B local analysis layer: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/analysis_layer/`
+- Latest v0.1-C local query/report entry: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/query_report_entry/`
 - Raw Gate: `First-Batch Subject Coverage Proven`; full Raw Gate Go is not proven
 
 ## Key Decisions
@@ -93,6 +95,8 @@ Execute WDA v0.1-B local analysis layer on the existing Minimal Data Core Seed.
 - v0.1-B generated deterministic local analysis outputs from the v0.1-A seed using read-only SQLite access.
 - v0.1-B uses fixed keyword/signal matching and observable communication counts only; it makes no personality or psychological claims.
 - v0.1-B created local full-sensitive subject reports under WDA_MetaData and repo-safe summaries under `WDA/docs/v0_1_analysis_layer/`.
+- v0.1-C created a local static query/report entry with `index.html`, `index.md`, 5 subject pages, query examples, an operator guide, and v0.1 closure summary.
+- v0.1-C is not a web app and not RAG. It only links local seed, analysis outputs, and subject reports under WDA_MetaData.
 - RAG/Web/Matrix remain blocked until repeatable broader import-readiness and Data Core readiness are proven.
 
 ## Files To Read First
@@ -179,6 +183,11 @@ Execute WDA v0.1-B local analysis layer on the existing Minimal Data Core Seed.
 - `WDA/docs/v0_1_analysis_layer/validation_report.md`
 - `WDA/docs/v0_1_analysis_layer/keyword_signal_summary.md`
 - `WDA/docs/v0_1_analysis_layer/next_v0_1_c_minimal_query_report_entry_plan.md`
+- `WDA/docs/v0_1_query_report_entry/README.md`
+- `WDA/docs/v0_1_query_report_entry/query_report_entry_summary.md`
+- `WDA/docs/v0_1_query_report_entry/repo_safe_report_index.md`
+- `WDA/docs/v0_1_query_report_entry/v0_1_closure_summary.md`
+- `WDA/docs/v0_1_query_report_entry/next_v0_2_options.md`
 
 ## Validation
 
@@ -429,6 +438,25 @@ Latest v0.1-B local analysis layer:
 - RAG/Web/Matrix: blocked
 - Raw Gate: `First-Batch Subject Coverage Proven`, not full Go
 
+Latest v0.1-C minimal query/report entry:
+
+- Required v0.1-C repo-safe outputs present: true
+- Local output root: `/Users/linzezhang/Downloads/WDA_MetaData/v0_1/query_report_entry/`
+- Local `index.html`: true
+- Local `index.md`: true
+- Subject pages generated: `5`
+- Query examples generated: true
+- Run-query helper generated: true
+- Local operator guide generated: true
+- v0.1 closure summary generated: true
+- Input SQLite database opened read-only: true
+- Input analysis layer outputs present: true
+- Explicit noise source `李晶工作交接` hits: `0`
+- OpenAI API called with raw content: false
+- Repo raw content committed: false
+- RAG/Web/Matrix: blocked
+- Raw Gate: `First-Batch Subject Coverage Proven`, not full Go
+
 ## Next Step
 
-Run v0.1-C on the new computer as a minimal local query/report entry layer over the v0.1-B analysis outputs if approved. Keep raw data local; do not run WeChat exporter tools, access the external hard drive, upload raw data, call OpenAI API with raw message content, or start RAG/Web/Matrix.
+Choose a v0.2 option focused on repeatability and broader import-readiness. Do not start RAG/Web/Matrix, media handling, raw upload, or OpenAI API calls with raw message content until a later explicit gate allows it.
