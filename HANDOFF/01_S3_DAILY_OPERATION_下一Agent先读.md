@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-03 13:50:31 Australia/Sydney
+更新时间：2026-07-03 14:10:10 Australia/Sydney
 
 ## 当前结论
 
@@ -29,6 +29,7 @@
 |---|---|---|
 | 最新 MVP 准备任务 | `ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-MAINLINE-ATTESTATION` 已把上一轮 `ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-SYNC` / `MVP_PAGE_LATEST_HANDOFF_GATE_SYNC_NO_RUNTIME_ENABLEMENT` 绑定到 GitHub main commit `996986b0e00b458c376c84ea037dd06f4c548ad0`；上一轮 `ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT` 仍是 handoff gate 对齐证据；`ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP` 仍是 OWNER_STATUS 第 14 节 evidence freshness 计数去重证据 | [mainline attestation manifest](../governance/run_manifests/ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-MAINLINE-ATTESTATION-20260703.json) / [MVP 准备与复审修补](../arxiv-daily-push/用户中心/MVP准备与复审修补.md) |
 | 当前治理 gate | `MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`；该 gate 只说明 MVP 浅层页与 S3 first-read handoff 的最新 gate 证据已绑定 main，不授权 DAILY_OPERATION | `arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml` |
+| 当前追踪链摘要 | `功能任务测试证据追踪链` 的摘要区已直接展示当前治理 gate 和 DAILY_OPERATION 禁用边界；后续复审 agent 可从 first-read 入口直接跳转到 437 条功能、任务、测试、证据链 | [功能任务测试证据追踪链](../arxiv-daily-push/用户中心/功能任务测试证据追踪链.md) / [VERSION_MATRIX.yaml](../arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml) |
 | 当前计数来源 | 证据新鲜度的实时计数只读 [OWNER_STATUS 第 14 节](../arxiv-daily-push/docs/governance/OWNER_STATUS.md#14-证据新鲜度)，本 handoff 不复制动态计数 | `arxiv-daily-push/docs/governance/OWNER_STATUS.md` |
 | S3/MVP 边界 | 仍不得创建持久授权 artifact，不得启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION | `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 仍缺失 |
 
