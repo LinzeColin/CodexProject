@@ -1,21 +1,21 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE031"
-current_phase_id: "IDS-STAGE031-REVIEW"
-current_task_id: "IDS-V0_1-STAGE031-REVIEW"
-next_gate_id: "IDS-STAGE032-P1-GATE"
+current_stage_id: "IDS-STAGE032"
+current_phase_id: "IDS-STAGE032-P1"
+current_task_id: "IDS-V0_1-STAGE032-P1"
+next_gate_id: "IDS-STAGE032-P2-GATE"
 current_transition_history:
   previous_state:
+    current_phase_id: "IDS-STAGE031-REVIEW"
+    current_task_id: "IDS-V0_1-STAGE031-REVIEW"
+    next_gate_id: "IDS-STAGE032-P1-GATE"
+  earlier_state:
     current_phase_id: "IDS-STAGE031-P4"
     current_task_id: "IDS-V0_1-STAGE031-P4"
     next_gate_id: "IDS-STAGE031-REVIEW-GATE"
-  earlier_state:
-    current_phase_id: "IDS-STAGE031-P3"
-    current_task_id: "IDS-V0_1-STAGE031-P3"
-    next_gate_id: "IDS-STAGE031-P4-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 282
+completed_estimated_hours: 283
 stages:
   -
     stage_id: "S5"
@@ -7657,3 +7657,72 @@ stages:
         - "scripts/lean_governance.py"
       test_results: "STAGE-031 whole-stage review verified the P0 taskpack binding, Phase 1-4 evidence, static schema migration safety checker, scenario coverage, closeout evidence, raw data boundary, owner/governance render path, and no-upload state. RED evidence: Stage031 focused review test failed because STAGE031_STAGE_REVIEW.md was missing, and Stage005 reviewed-local state test failed because IDS-V0_1-STAGE031-REVIEW was not accepted. Review repair also found STAGE031-REVIEW-F5: owner render write-mode failed on Python 3.9 because Path.write_text(..., newline=...) is unsupported; scripts/lean_governance.py was repaired to use path.open(..., newline=\"\\n\") while preserving LF output. GREEN validation: Stage031 focused tests ran 13 tests OK; Stage005 governance regression ran 104 tests OK; Stage026-030 compatibility tests ran 75 tests OK; full IDS v0.1 pursuing-goal discovery ran 377 tests OK; check_schema_migration_safety.py returned the tracked phase4 report with safety_all=True, guardrails_all=True, scenario_all=True, phase4_no_upload=True, and no_raw=True; Stage005 validator returned valid=true with issues=[], no missing required files, no missing event ids, no JSONL errors, no forbidden changed paths, no unexpected changed paths, and no tracked forbidden runtime files; render --project KM_IDSystem --write updated 3 owner files after the Python 3.9 compatibility fix and check-render returned drift_count=0; py_compile, events JSONL parse, and git diff --check passed. Full semantic validate remains a sparse-worktree diagnostic with missing root schema/workflow/hook and unrelated registered-project paths, so this run did not expand sparse checkout. No product runtime code or database migration fix was required; governance/evidence closure and owner-render tooling were repaired. GitHub upload remains deferred until STAGE-031..040 are complete, reviewed, repaired, and batch-gated."
       decision: "ACC-STAGE-031 locally reviewed and passed; no GitHub upload, no app reinstall, and no STAGE-032 work in this run."
+  -
+    stage_id: "IDS-STAGE032"
+    name: "STAGE-032 · 数据库连接与连接池基线"
+    person_goal: "建立后端、worker、报告任务、检索任务的数据库连接策略。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "连接 PostgreSQL 或执行真实 migration dry-run/apply/rollback/backup/restore/schema diff"
+      - "创建 connection config、DSN、pool runtime、database/schema/runtime data directory 或服务进程"
+      - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+      - "写 runtime output、database、manifest、evidence ledger、audit log、index、report、PDF、screenshot、JSON output 或 production data artifact"
+      - "提交 secrets、API key、数据库密码、credential-bearing DSN 或云端凭证"
+      - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档、placeholder corpus 或伪造证据"
+      - "执行 GitHub upload、PR、merge、app reinstall、batch review 或进入 Phase 2"
+    stop_gate:
+      gate_id: "IDS-STAGE032-P1-GATE"
+      status: "passed_with_local_evidence"
+      pass_conditions:
+        - "P0 taskpack identity is bound to STAGE-032/D06-S003/ACC-STAGE-032"
+        - "Phase 1 defines backend, worker, report-task, and retrieval-task connection profiles"
+        - "Connection pool, credential, timeout, transaction, healthcheck, storage, hot-index, and recovery boundaries are explicit"
+        - "PostgreSQL remains control-plane/hot-index only and does not store raw 500GB source content"
+        - "BATCH031_040 upload remains locked"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage032_database_connection_pool.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE032-P1"
+        name: "数据库连接与连接池基线 范围、输入输出与边界确认"
+        objective: "定义 PostgreSQL 控制面的连接策略、连接池边界、凭证策略、事务/超时/重试/healthcheck 边界、存储边界和恢复要求；不创建 runtime connection slice。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "连接 PostgreSQL 或创建连接池 runtime"
+          - "创建 schema、migration、connection config、DSN、runtime output 或 data directory"
+          - "读取或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "进入 Phase 2 或执行 GitHub upload/app reinstall"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE032-P1"
+            name: "Database connection and pool baseline boundary"
+            objective: "从 P0 taskpack 建立 STAGE-032 Phase 1 contract-only 证据，明确 backend、worker、report task、retrieval task 的连接职责和禁止边界。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "8.33%"
+            dependencies:
+              - "IDS-V0_1-STAGE031-REVIEW"
+            acceptance_ids:
+              - "ACC-STAGE-032"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage032_database_connection_pool -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage032_phase1_database_connection_pool_boundary -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/lean_governance.py validate --project KM_IDSystem --semantic"
+            test_results: "RED failed as expected because STAGE032 entry/scope evidence, BATCH031_040 lock state, roadmap/event evidence, and Stage005 state acceptance were missing. GREEN passed after adding STAGE032 entry/scope contracts, BATCH031_040 stage032_phase1_in_progress state, roadmap/event evidence, Stage032 focused tests, Stage005 validator/test acceptance, and Stage026-031 compatibility allowances for the later STAGE-032 P1 no-upload state. Stage032 focused tests ran 4 tests OK; Stage005 focused Stage032 state test ran 1 test OK; Stage026-031 compatibility tests ran 88 tests OK; Stage005 governance regression ran 105 tests OK; full IDS v0.1 pursuing-goal discovery ran 382 tests OK; Stage005 validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, tracked forbidden runtime files, or raw data boundary gaps; py_compile passed; events.jsonl parsed with 147 events and 0 duplicate ids; check-render returned drift_count=0 after owner render; git diff --check passed. Semantic validate returned the expected sparse-worktree diagnostic rc=1 with 29 missing root schema/workflow/hook/unrelated registered-project errors, and this run did not expand sparse checkout. This run is contract-only and does not connect to PostgreSQL, create connection configs, instantiate pools, execute migrations, read raw metadata, write runtime outputs, upload to GitHub, reinstall app entries, run batch review, or enter Phase 2. Fake IDS business data, fake database rows, fake source documents, placeholder corpus, and fabricated evidence remain forbidden."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage032_database_connection_pool.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "如果 Phase 1 合同被误读为已实现连接池，可能提前提交 DSN、连接 PostgreSQL、启动服务、写 runtime 数据、读取 raw metadata 或跳过 Phase 2 的最小实现切片。"
+            rollback: "Revert STAGE032 entry/scope evidence, BATCH031_040 lock, Stage032/Stage005 tests, Stage005 validator updates, roadmap/event changes, compatibility-test updates, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, app entries, GitHub state, PostgreSQL data directories, or Phase 2 artifacts."
