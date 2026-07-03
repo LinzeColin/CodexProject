@@ -3130,13 +3130,68 @@ Stage 9 整体复审已确认：
 - Memory Atlas usage guide。
 - Help panel and empty/error state components。
 - Stage 0 Phase 0.2 deterministic validator。
-- Runtime copy usage for critical surfaces。
-- Chinese layout tolerance CSS。
-- Stage 0 Phase 0.1 deterministic validator。
 
 边界：
 
-- 本 phase 不实现 Help 面板、空/错误状态工作流或明细可见性合同。
+- 本 phase 不实现 Stage 0.3 明细字段合同、Stage 1 schema 或运行时数据模型。
+- 本 phase 不运行 production build、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不执行 GitHub main 上传。
+
+## 71. v1.1.7 Stage 0 Phase 0.3 Detail Visibility Field Contract
+
+状态：`phase_0_3_detail_visibility_contract_completed_pending_stage0_review`。
+
+验收 ID：`ACC-MA-V117-S0P03`。
+
+模型假设：
+
+- Stage 0 Phase 0.3 只定义字段合同，不实现运行时明细工作台、生成器、数据
+  schema、Search 2.0、Review workflow 或截图验收。
+- 三类明细对象必须统一说明 required field、source、display surface 和 edit
+  permission，避免后续实现阶段猜字段含义。
+- 可修改字段只能进入 proposal-only 层；合同不得允许前端直接修改 active memory、
+  source snapshot、模型参数或证据引用。
+
+输入：
+
+- `docs/product/detail_visibility_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase3_detail_visibility_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs`
+
+处理方法：
+
+- 检查 `suggested_action_detail` 是否覆盖 reason、ROI、effort、urgency、
+  evidence、next step、linked topics/assets、proposal hint 和 rollback hint。
+- 检查 `tier_asset_detail` 是否覆盖 core profile、project、decision、workflow、
+  knowledge、opportunity、stale 资产层级，以及 importance、priority、confidence、
+  staleness、evidence 和 recommended action。
+- 检查 `topic_classification_detail` 是否覆盖 strength、trend、confidence、
+  record_count、evidence_count、linked assets/actions、starfield/river handoff 和
+  recommended action。
+- 检查字段表是否包含 source、display surface 和 edit permission。
+- 使用 `validate:v1.1.7-stage0-phase3` 固定本 phase 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S0P03-001 stage0_phase3_contract_id = memory_atlas_v1_1_7_stage0_phase3_detail_visibility_contract`
+- `PARAM-MA-V117-S0P03-002 stage0_phase3_status = phase_0_3_detail_visibility_contract_completed_pending_stage0_review`
+- `PARAM-MA-V117-S0P03-003 stage0_phase3_detail_objects = suggested_action_detail;tier_asset_detail;topic_classification_detail`
+- `PARAM-MA-V117-S0P03-004 stage0_phase3_field_dimensions = field;required;source;display_surface;edit_permission;fallback_policy;evidence_policy`
+- `PARAM-MA-V117-S0P03-005 stage0_phase3_edit_permissions = read_only;proposal_only;system_generated;no_direct_writeback`
+- `PARAM-MA-V117-S0P03-006 stage0_phase3_required_validator = validate:v1.1.7-stage0-phase3`
+
+输出：
+
+- Stage 0 Phase 0.3 detail visibility field contract。
+- Stage 0 Phase 0.3 acceptance checklist。
+- Stage 0 Phase 0.3 deterministic validator。
+
+边界：
+
+- 本 phase 不实现运行时 UI、CSS、数据生成、Search 2.0、Review workflow、Data Map
+  2.0、Memory River 或 Memory Starfield。
 - 本 phase 不运行 production build、本地 app install、browser screenshot 或 Cloudflare deploy。
 - 本 phase 不读取 raw/private/cookie/session/secret 数据。
 - 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。

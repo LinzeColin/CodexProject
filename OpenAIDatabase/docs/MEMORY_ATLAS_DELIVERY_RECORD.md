@@ -787,6 +787,37 @@ apply、不上传 GitHub main。
 
 Machine-readable boundary summary: No raw/private data read; No direct writeback; No proposal write; No GitHub main upload.
 
+## v1.1.7 Stage 0 Phase 0.3：Detail Visibility Field Contract
+
+状态：`phase_0_3_detail_visibility_contract_completed_pending_stage0_review`。
+
+任务 ID：`MA-V117-S0P03`。
+
+验收 ID：`ACC-MA-V117-S0P03`。
+
+本 phase 定义明细可见性字段合同，覆盖 suggested_action_detail、
+tier_asset_detail、topic_classification_detail 三类对象的必备字段、来源、
+展示位置、编辑权限、proposal-only、no-direct-writeback 和 no-mock fallback 边界。
+不做运行时 UI、不做 Stage 1 schema、不截图、不 build、不安装本地 app、不部署
+Cloudflare、不读取 raw/private 数据、不直接写长期记忆、不写 proposal、不执行 agent
+apply、不上传 GitHub main。
+
+新增/更新产物：
+
+- `docs/product/detail_visibility_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase3_detail_visibility_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs`
+- `validate:v1.1.7-stage0-phase3`
+
+验收边界：
+
+- Phase 0.3 通过不表示运行时明细工作台、生成数据字段、浏览器截图、Search 2.0、
+  Review workflow、Data Map 2.0 或 Stage 0 整体复审已完成。
+- Stage 0 三个 phase 已本地完成，但 Stage 0 整体复审未执行。
+- Stage 0-8 全部完成前不上传 GitHub main。
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload.
+
 ### Stage 8 Phase 1：Release Rollback Contract
 
 Stage 8 Phase 1 状态：`phase_8_1_contract_created_pending_stage_review`。
