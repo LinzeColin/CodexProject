@@ -1,8 +1,9 @@
 {
   "schema_version": "kmfa.report_grade_policy.v1",
   "project_id": "KMFA",
+  "version": "0.1.4-s02p3-quality-gate",
   "stage_phase": "S02-P3",
-  "source_taskpack": "01_KMFA_Codex_TaskPack_v1_1_完整防遗漏.md:10.2",
+  "source_taskpack": "01_KMFA_Codex_TaskPack_v1_4_public_safe.md:10.2",
   "append_only": true,
   "forbidden_plaintext": true,
   "report_grades": [
@@ -39,5 +40,6 @@
       "business_decision_basis_allowed": false
     }
   ],
-  "runtime_status": "protocol_defined_no_reports_committed"
+  "runtime_status": "protocol_defined_no_reports_committed",
+  "v014_scope": "report_grade_policy_only_no_formal_report_no_upload"
 }

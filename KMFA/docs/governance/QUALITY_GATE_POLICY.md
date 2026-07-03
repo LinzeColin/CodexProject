@@ -1,12 +1,14 @@
 # KMFA Quality Gate Policy
 
-product_version: `0.1.0-s02p3`
+product_version: `0.1.4-s02p3-quality-gate`
 stage_phase: `S02-P3`
 fact_level: `EXTRACTED`
 
 ## Scope
 
 S02-P3 defines data quality grades, report trust grades, and the release gate between them. It is a protocol phase only: it does not import files, calculate money, run real zero-delta checks, complete lineage verification, or generate formal reports.
+
+v0.1.4 locks the same public-safe protocol for the HUMAN_FLOW_VERIFIED repair package. This phase does not read, list, inventory, modify, or write `/Users/linzezhang/Downloads/KMFA_MetaData`; it only commits policy, validator, evidence index, and governance records.
 
 ## Data Quality Grades
 
@@ -37,6 +39,7 @@ S02-P3 defines data quality grades, report trust grades, and the release gate be
 - `A` reports require `Q5`, zero-delta pass, closed critical differences, and human confirmation.
 - Unresolved critical differences, stale inputs, missing lineage, or failed zero-delta block promotion.
 - Any missing gate evidence is treated as blocked, not as passed.
+- GitHub main upload remains deferred until v1.4 Stage 1-18 are complete, overall-reviewed, and review findings are fixed.
 
 ## S02-P3 Non-goals
 
@@ -45,4 +48,5 @@ S02-P3 defines data quality grades, report trust grades, and the release gate be
 - No formal zero-delta implementation.
 - No lineage completeness checker.
 - No HTML/CSV report generation.
-- No Stage 2 review or GitHub upload.
+- No Stage 2 review.
+- No GitHub upload.

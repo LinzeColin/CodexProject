@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s02p3-quality-gate - 2026-07-03
+
+- 完成 `v0.1.4 S02-P3｜数据质量等级`。
+- 新增 `KMFA/metadata/protocol/quality_gate_lock_v1_4.json`，锁定 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级、quality-to-release 门禁和 missing-evidence block 策略。
+- 新增 `KMFA/tools/check_v014_s02_p3_quality_gate.py`、`KMFA/tests/test_v014_s02_p3_quality_gate.py` 和 `KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/`。
+- 未读取、列出、盘点、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 Stage 2 review、raw inventory、GitHub upload、正式报告或业务执行。
+
 ## 0.1.4-s02p2-immutability-policy - 2026-07-03
 
 - 完成 `v0.1.4 S02-P2｜不可污染原则`。
