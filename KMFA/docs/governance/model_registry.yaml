@@ -81,7 +81,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s01-stage-review"
+    model_version: "0.1.4-s02-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -96,6 +96,7 @@ models:
       - "FORM-KMFA-S18P3-INTEGRATION-PREPARATION-001"
       - "FORM-KMFA-S18-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S01-STAGE-REVIEW-001"
+      - "FORM-KMFA-V014-S02-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -118,6 +119,9 @@ models:
       - "PARAM-KMFA-607"
       - "PARAM-KMFA-608"
       - "PARAM-KMFA-609"
+      - "PARAM-KMFA-1021"
+      - "PARAM-KMFA-1022"
+      - "PARAM-KMFA-1023"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"

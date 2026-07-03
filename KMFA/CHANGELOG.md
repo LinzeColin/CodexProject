@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s02-stage-review - 2026-07-03
+
+- 完成 `v0.1.4 Stage 2 整体复审`。
+- 新增 `KMFA/tools/check_v014_s02_stage_review.py`、`KMFA/tests/test_v014_s02_stage_review.py` 和 `KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/`。
+- 复跑 S02-P1/S02-P2/S02-P3 validators，phase_results 全部 PASS，open findings=0。
+- 未读取、列出、盘点、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 S03-P1、GitHub upload、raw inventory、raw value matching、正式报告或业务执行。
+
 ## 0.1.4-s02p3-quality-gate - 2026-07-03
 
 - 完成 `v0.1.4 S02-P3｜数据质量等级`。

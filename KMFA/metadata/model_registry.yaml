@@ -1,4 +1,4 @@
-version: "0.1.4-s02p3-quality-gate"
+version: "0.1.4-s02-stage-review"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -61,6 +61,7 @@ active_formula_ids:
   - "FORM-KMFA-V014-S02P1-METADATA-PROTOCOL-001"
   - "FORM-KMFA-V014-S02P2-IMMUTABILITY-POLICY-001"
   - "FORM-KMFA-V014-S02P3-QUALITY-GATE-001"
+  - "FORM-KMFA-V014-S02-STAGE-REVIEW-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"
