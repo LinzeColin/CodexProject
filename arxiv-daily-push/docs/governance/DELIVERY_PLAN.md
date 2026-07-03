@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 354
+- task_count: 355
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-03 13:30:04 Australia/Sydney - MVP page latest handoff gate sync
+
+- Task: `ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-SYNC`
+- Result: `pass_mvp_page_latest_handoff_gate_synced_no_runtime_enablement`
+- Evidence: `arxiv-daily-push/用户中心/MVP准备与复审修补.md`; `HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md`; `arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml`; `arxiv-daily-push/tests/test_governance_current_state.py`.
+- Current state: the shallow MVP preparation page now records the latest S3 handoff gate sync and preserves the previous `ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT` evidence instead of leaving the handoff evidence link pointing at a stale MVP page.
+- Boundary: this MVP preparation does not create `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`, does not send SMTP, and does not enable scheduler, Release, production restore, or DAILY_OPERATION.
+- Verification: target TDD red/green governance-current-state regression, user-center regression, generated governance dashboard, project governance, governance sync, fail-closed daily-operation readiness/preflight, V7.2 validator, final acceptance bundle verifier, and git whitespace scan.
 
 ## 2026-07-03 13:18:52 Australia/Sydney - S3 handoff current gate alignment
 

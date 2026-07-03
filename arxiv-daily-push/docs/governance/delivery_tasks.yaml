@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-SYNC"
+    phase: "S2PL"
+    objective: "Synchronize the shallow MVP preparation page with the latest S3 first-read handoff gate so the handoff evidence link does not land on a stale MVP page."
+    scope: "MVP preparation page latest-task rows, S3 handoff latest-task row, regression test, governance delivery task, development event, traceability, current gate metadata, three-base records, generated governance status views, and user-center traceability page."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, CURRENT.yaml mutation, V7.1 historical baseline mutation, V7.2 contract mutation, final-bundle verifier mutation, or DAILY_OPERATION enablement."
+    status: "completed"
+    dependencies: ["ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT", "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"]
+    required_files: ["arxiv-daily-push/用户中心/MVP准备与复审修补.md", "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD red/green: python3 -B -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q", "User-center regression: python3 -B -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q", "Dashboard generation: python3 -B scripts/generate_governance_dashboard.py --write --project arxiv-daily-push", "Project governance: python3 -B scripts/validate_project_governance.py --project arxiv-daily-push", "Governance sync: python3 -B scripts/validate_governance_sync.py", "Daily readiness/preflight fail-closed: ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_readiness.py --root .; ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_enablement_preflight.py --root ."]
+    test_results: ["TDD red: S3 handoff named ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT as latest MVP preparation evidence but the shallow MVP page did not mention that task or gate", "TDD green: MVP page now records the latest handoff gate sync, preserves the prior S3 handoff current-gate alignment evidence, and the regression requires both pages to stay linked", "Runtime enablement remains unchanged: persistent_daily_operation_authorized=false, daily_operation_enabled=false, real_smtp_send_enabled=false, scheduler_enabled=false, release_packaging_enabled=false, production_restore_enabled=false"]
+    evidence_refs: ["arxiv-daily-push/用户中心/MVP准备与复审修补.md", "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md", "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    risk: "Future agents could follow the handoff evidence link to the MVP page and miss the latest current-gate alignment record."
+    rollback: "Revert the MVP page latest-task rows, handoff latest-task row, regression assertion, governance sync files, delivery task, traceability row, and development event; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "ADP-MVP-PREP-S3-HANDOFF-CURRENT-GATE-ALIGNMENT"
     phase: "S2PL"
     objective: "Align the S3 DAILY_OPERATION first-read handoff current governance gate with VERSION_MATRIX.yaml so future review agents do not start from a stale gate."
