@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE026"
-current_phase_id: "IDS-STAGE026-P2"
-current_task_id: "IDS-V0_1-STAGE026-P2"
-next_gate_id: "IDS-STAGE026-P3-GATE"
+current_phase_id: "IDS-STAGE026-P3"
+current_task_id: "IDS-V0_1-STAGE026-P3"
+next_gate_id: "IDS-STAGE026-P4-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 234
+completed_estimated_hours: 237
 stages:
   -
     stage_id: "S5"
@@ -6194,24 +6194,25 @@ stages:
       - "覆盖原始压缩包、写出指定 staging 区、覆盖 staging 既有文件或清理事实源/证据产物"
       - "启动 hash、manifest、dedup、parser、OCR、Embedding、index、import、report、runtime database 或写 document/chunk/job/index/import row"
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
-      - "执行 GitHub upload、PR、merge、app reinstall 或进入 Phase 3"
+      - "执行 GitHub upload、PR、merge、app reinstall 或进入 Phase 4"
     stop_gate:
-      gate_id: "IDS-STAGE026-P3-GATE"
-      status: "phase2_archive_manifest_slice_complete"
+      gate_id: "IDS-STAGE026-P4-GATE"
+      status: "phase3_scenario_validation_complete"
       pass_conditions:
-        - "Phase 2 实现压缩包 hash、解压文件列表、体积、嵌套层级、失败项和风险项的 in-memory manifest"
-        - "Phase 2 将失败、风险、超限和 adapter 需求路由到 owner review 或 quarantine state"
-        - "Phase 2 cleanup allowlist 只包含 staging temp files，不清理事实源和证据产物"
+        - "Phase 3 验证路径穿越、绝对路径、压缩炸弹、嵌套包、乱码文件名和超大文件数场景"
+        - "Phase 3 验证 post-extract re-ingest 计划仍只排队 hash、manifest、dedup、parser"
+        - "Phase 3 验证 cleanup allowlist 只包含 staging temp files，不清理事实源和证据产物"
         - "BATCH021_030_UPLOAD_LOCK.yaml 保持 push_allowed=false"
-        - "Phase 3 尚未执行"
+        - "Phase 4 尚未执行"
     acceptance:
       acceptance_id: "ACC-STAGE-026"
-      status: "phase2_archive_manifest_slice_complete"
+      status: "phase3_scenario_validation_complete"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/scripts/check_archive_manifest.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE2_ARCHIVE_MANIFEST_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
@@ -6296,3 +6297,43 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
             risk: "如果 Phase 2 helper 被误当成生产 ingestion runner，可能错误写入 runtime manifest、启动后续 pipeline、触碰 raw metadata 或清理事实源/证据产物；如果 RAR/7Z adapter 被伪造，可能绕过 owner review。"
             rollback: "Revert Stage026 Phase2 archive manifest helper, evidence doc, focused tests, Stage005 validator/test updates, BATCH021_030 lock, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, original archives, fact sources, runtime data, reports, outputs, persisted archive manifests, staging files, evidence ledgers, audit logs, indexes, app entries, GitHub state, Phase 3, or batch upload gate."
+      -
+        phase_id: "IDS-STAGE026-P3"
+        name: "压缩包 Manifest 专项验证与异常场景"
+        objective: "验证 archive manifest 在路径穿越、绝对路径、压缩炸弹、嵌套包、乱码文件名、超大文件数场景下的风险项、re-ingest 和 cleanup allowlist 行为。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "Phase 3 读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "Phase 3 写 archive_manifest runtime output、reports、JSON output、database、evidence ledger、audit log、index、document/chunk/job/import row 或 parser output"
+          - "Phase 3 启动 hash、manifest、dedup、parser、OCR、Embedding、index、import、backend、frontend、worker、dependency install 或 external API job"
+          - "Phase 3 使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "进入 Phase 4、执行 whole-stage closeout、GitHub upload、PR、merge 或 app reinstall"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE026-P3"
+            name: "Archive Manifest 场景验证"
+            objective: "提供 in-memory scenario validation payload，覆盖 Phase 3 指定异常场景、post-extract reingest validation 和 cleanup allowlist validation。"
+            status: "completed"
+            estimated_hours: 3
+            total_hours_percent: "1.90%"
+            dependencies:
+              - "IDS-V0_1-STAGE026-P2"
+            acceptance_ids:
+              - "ACC-STAGE-026"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage026_archive_manifest -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage026_phase3_archive_manifest_scenario_validation -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B -m py_compile KM_IDSystem/scripts/check_archive_manifest.py"
+              - "check-render --project KM_IDSystem"
+              - "semantic validate diagnostic"
+            test_results: "RED/GREEN complete: Stage026 Phase3 RED failed as expected because build_stage026_scenario_report, STAGE026_PHASE3_SCENARIO_VALIDATION.md, BATCH021_030 P3 state, and IDS-STAGE026-P3 governance state were missing; Stage005 targeted P3 state RED failed because IDS-STAGE026-P3 was not yet accepted by the governance state machine. GREEN passed after adding the Stage026 scenario validation report helper, Phase3 evidence doc, BATCH021_030 P3 no-upload status, roadmap/event records, focused tests, Stage005 validator/test updates, and compatibility updates for Stage021-025 focused tests. Stage026 focused tests ran 12 tests OK; Stage005 targeted P3 state test ran 1 test OK; Stage021-023 focused regression ran 37 tests OK; Stage024-026 focused regression ran 43 tests OK; Stage005 governance validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, or raw data boundary gaps; Stage005 governance regression ran 76 tests OK; full IDS v0.1 pursuing-goal discover ran 273 tests OK; py_compile passed for check_archive_manifest.py, Stage005 validator, Stage005 regression test, Stage021 focused test, Stage022 focused test, Stage023 focused test, Stage024 focused test, Stage025 focused test, and Stage026 focused test. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit IDS_MetaData raw metadata content. Focused tests used process-owned temporary structural archive fixtures only; they are not IDS corpus, database rows, business evidence, raw metadata, or committed user data. This run did not write archive_manifest runtime output, runtime reports, databases, evidence ledgers, audit logs, indexes, document/chunk/job/import rows, or production parser output; did not start hash/manifest/dedup/parser/OCR/Embedding/index/import jobs; did not call external APIs, start services, install dependencies, push to GitHub, create or merge a PR, reinstall app entries, or enter Phase 4."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_archive_manifest.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            risk: "如果 Phase 3 scenario validation 被误当成生产导入授权，可能绕过 owner review、触碰 raw metadata、写 runtime manifest 或启动后续 pipeline；如果 cleanup validation 被误用，可能误删原始压缩包、事实源或证据产物。"
+            rollback: "Revert Stage026 Phase3 scenario helper additions, focused tests, scenario evidence, Stage005 validator/test updates, BATCH021_030 lock, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, original archives, fact sources, runtime data, reports, outputs, persisted archive manifests, staging files, evidence ledgers, audit logs, indexes, app entries, GitHub state, Phase 4, or batch upload gate."

@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-021-030"
 created_at_utc: "2026-07-02T22:43:25Z"
-updated_at_utc: "2026-07-03T03:04:39Z"
-status: "stage026_phase2_in_progress"
+updated_at_utc: "2026-07-03T03:19:56Z"
+status: "stage026_phase3_in_progress"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -155,25 +155,27 @@ stage_progress:
     completed_phases:
       - "Phase 1"
       - "Phase 2"
-    next_phase: "Phase 3"
-    next_gate: "IDS-STAGE026-P3-GATE"
-    current_task_id: "IDS-V0_1-STAGE026-P2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    next_gate: "IDS-STAGE026-P4-GATE"
+    current_task_id: "IDS-V0_1-STAGE026-P3"
     acceptance_id: "ACC-STAGE-026"
-    acceptance_status: "phase2_archive_manifest_slice_complete"
+    acceptance_status: "phase3_scenario_validation_complete"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/scripts/check_archive_manifest.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE2_ARCHIVE_MANIFEST_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE026_PHASE3_SCENARIO_VALIDATION.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage026_archive_manifest.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
   current_stage: "STAGE-026"
-  current_phase: "Phase 2"
-  current_task_id: "IDS-V0_1-STAGE026-P2"
-  next_allowed_task_id: "IDS-V0_1-STAGE026-P3"
+  current_phase: "Phase 3"
+  current_task_id: "IDS-V0_1-STAGE026-P3"
+  next_allowed_task_id: "IDS-V0_1-STAGE026-P4"
   github_upload_allowed: false
   no_upload_reason: "STAGE-021..030 batch is not complete, not reviewed, and not repaired."
   no_app_reinstall_reason: "App entry reinstall is deferred until the next ten-stage batch upload gate."
