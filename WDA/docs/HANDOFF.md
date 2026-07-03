@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2F official/user-readable artifact acquisition contract.
+Execute WDA Stage 2 Sprint 2G automated WeChat message acquisition feasibility and controlled trial plan.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is readable artifact acquisition contract, not raw message reading
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, and Sprint 2F acquisition contract artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is automated acquisition route selection, not raw message reading
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, and Sprint 2G automated route feasibility artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -20,6 +20,7 @@ Execute WDA Stage 2 Sprint 2F official/user-readable artifact acquisition contra
 - Latest Sprint 2D outputs: `WDA/docs/stage2_sprint2d_real_artifact_discovery/`
 - Latest Sprint 2E outputs: `WDA/docs/stage2_sprint2e_message_data_route_decision/`
 - Latest Sprint 2F outputs: `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/`
+- Latest Sprint 2G outputs: `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Raw Gate: `Conditional Investigation`; message readability not proven; Raw Gate is not Go
 
@@ -47,7 +48,11 @@ Execute WDA Stage 2 Sprint 2F official/user-readable artifact acquisition contra
 - Third-party adapter work is research-only backup; high-risk raw adapter work remains rejected under the current boundary.
 - Sprint 2F approves the official/user-readable artifact acquisition route and fixes the future intake storage root at `/Users/linzezhang/Downloads/WDA_MetaData/stage2_inputs/owner_authorized_readable_artifacts/`.
 - Sprint 2F does not create `messages.jsonl`, import real message data, or implement RAG/Web/Matrix.
-- Sprint 2G is the only next executable step, and only if the user provides or approves a real owner-authorized readable artifact.
+- Sprint 2G deprecates the manual owner-prepared artifact route for WDA core viability.
+- WDA requires automated message-level acquisition; if no automated acquisition route is accepted, WDA core is not viable as a fully automatic system.
+- Low-risk read-only/APFS/schema-only routes have not produced message-level data.
+- Recommended next sprint is Sprint 2H controlled automated acquisition trial using one local CLI exporter route in the `wechat-cli` / `wx-cli` family, only after explicit user approval.
+- Sprint 2H should run on the old computer if the target data is the old-computer WeChat source; the new computer remains WDA Control Plane and future RAG/Web/database host.
 
 ## Files To Read First
 
@@ -88,6 +93,11 @@ Execute WDA Stage 2 Sprint 2F official/user-readable artifact acquisition contra
 - `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/artifact_storage_contract.md`
 - `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/artifact_validation_gate.md`
 - `WDA/docs/stage2_sprint2f_artifact_acquisition_contract/next_sprint2g_sample_intake_validation_plan.md`
+- `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/README.md`
+- `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/current_blocker_summary.md`
+- `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/candidate_tool_matrix.md`
+- `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/controlled_trial_plan.md`
+- `WDA/docs/stage2_sprint2g_automated_acquisition_feasibility/recommended_next_sprint.md`
 
 ## Validation
 
@@ -170,6 +180,20 @@ Latest Sprint 2F acquisition contract:
 - Next executable step: Sprint 2G sample intake validation, only if user provides or approves a real owner-authorized readable artifact
 - Raw Gate: `Conditional Investigation`
 
+Latest Sprint 2G automated acquisition feasibility:
+
+- Required feasibility outputs present: true
+- Hard drive required: false
+- WeChat export/decrypt tools executed: false
+- Manual user-prepared artifact route: deprecated for WDA core viability
+- Automated message-level acquisition: required
+- Recommended controlled-trial route: one local CLI exporter in the `wechat-cli` / `wx-cli` family
+- Recommended trial host: old computer, with new computer as WDA Control Plane and validation/RAG/Web host
+- Required before trial: explicit user approval of exact route/tool/repo/commit, host, live WeChat requirement, admin/sudo, process-memory access, key extraction, DB decryption, output path, trial scope, and stop conditions
+- `messages.jsonl` created: false
+- RAG/Web/Matrix: blocked
+- Raw Gate: `Conditional Investigation`
+
 ## Next Step
 
-Run Sprint 2G only if explicitly approved and only after the user provides or approves a real owner-authorized readable artifact under the approved storage root. Sprint 2G should validate manifest/checksums/file types/schema shape first. Do not decrypt, extract keys, bypass protected stores, open `key_info`/login/MMKV/KVDB/key-value stores, run third-party export/decrypt tools, upload raw data, or implement RAG/Web/Matrix.
+Run Sprint 2H only after explicit approval of one automated acquisition route. The recommended trial is a local CLI exporter in the `wechat-cli` / `wx-cli` family on the old computer, with outputs constrained to WDA_MetaData and transferred to the new computer only as approved trial artifacts or WDA Raw Import Pack candidates. Do not run third-party tools, decrypt, extract keys, bypass protected stores, open `key_info`/login/MMKV/KVDB/key-value stores, parse message content outside the approved trial boundary, upload raw data, or implement RAG/Web/Matrix before a valid `messages.jsonl` exists.
