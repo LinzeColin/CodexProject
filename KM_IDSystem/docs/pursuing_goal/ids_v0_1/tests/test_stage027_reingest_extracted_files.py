@@ -205,6 +205,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'status: "stage027_phase2_in_progress"',
             'status: "stage027_phase3_in_progress"',
             'status: "stage027_completed_local_pending_stage028"',
+            'status: "stage028_phase1_in_progress"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 2"',
@@ -217,6 +218,7 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
             'current_task_id: "IDS-V0_1-STAGE027-P3"',
             'current_task_id: "IDS-V0_1-STAGE027-P4"',
+            'current_task_id: "IDS-V0_1-STAGE028-P1"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
@@ -229,12 +231,14 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE027-P3-GATE"',
             'next_gate: "IDS-STAGE027-P4-GATE"',
             'next_gate: "IDS-STAGE028-P1-GATE"',
+            'next_gate: "IDS-STAGE028-P2-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P1"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE028-P2"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -250,7 +254,6 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         events_text = EVENTS.read_text(encoding="utf-8")
 
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE027"',
             'stage_id: "IDS-STAGE027"',
             'name: "STAGE-027 · 解压文件重新入库"',
             'phase_id: "IDS-STAGE027-P1"',
@@ -273,18 +276,21 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE027-P2"',
             'current_phase_id: "IDS-STAGE027-P3"',
             'current_phase_id: "IDS-STAGE027-P4"',
+            'current_phase_id: "IDS-STAGE028-P1"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
             'current_task_id: "IDS-V0_1-STAGE027-P3"',
             'current_task_id: "IDS-V0_1-STAGE027-P4"',
+            'current_task_id: "IDS-V0_1-STAGE028-P1"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE027-P2-GATE"',
             'next_gate_id: "IDS-STAGE027-P3-GATE"',
             'next_gate_id: "IDS-STAGE027-P4-GATE"',
             'next_gate_id: "IDS-STAGE028-P1-GATE"',
+            'next_gate_id: "IDS-STAGE028-P2-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
@@ -484,31 +490,37 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'status: "stage027_phase2_in_progress"',
             'status: "stage027_phase3_in_progress"',
             'status: "stage027_completed_local_pending_stage028"',
+            'status: "stage028_phase1_in_progress"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 3"',
             'next_phase: "Phase 4"',
             'next_stage: "STAGE-028"',
+            'next_phase: "Phase 2"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
             'current_task_id: "IDS-V0_1-STAGE027-P3"',
             'current_task_id: "IDS-V0_1-STAGE027-P4"',
+            'current_task_id: "IDS-V0_1-STAGE028-P1"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase2_reingest_slice_complete"',
             'acceptance_status: "phase3_scenario_validation_complete"',
             'acceptance_status: "local_passed"',
+            'acceptance_status: "phase1_scope_boundary_defined"',
         ]
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE027-P3-GATE"',
             'next_gate: "IDS-STAGE027-P4-GATE"',
             'next_gate: "IDS-STAGE028-P1-GATE"',
+            'next_gate: "IDS-STAGE028-P2-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P3"',
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P1"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE028-P2"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -523,7 +535,6 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         roadmap_text = ROADMAP.read_text(encoding="utf-8")
         events_text = EVENTS.read_text(encoding="utf-8")
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE027"',
             'phase_id: "IDS-STAGE027-P2"',
             'status: "passed_with_local_evidence"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md",
@@ -542,16 +553,19 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE027-P2"',
             'current_phase_id: "IDS-STAGE027-P3"',
             'current_phase_id: "IDS-STAGE027-P4"',
+            'current_phase_id: "IDS-STAGE028-P1"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
             'current_task_id: "IDS-V0_1-STAGE027-P3"',
             'current_task_id: "IDS-V0_1-STAGE027-P4"',
+            'current_task_id: "IDS-V0_1-STAGE028-P1"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE027-P3-GATE"',
             'next_gate_id: "IDS-STAGE027-P4-GATE"',
             'next_gate_id: "IDS-STAGE028-P1-GATE"',
+            'next_gate_id: "IDS-STAGE028-P2-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
@@ -686,26 +700,32 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         allowed_status_terms = [
             'status: "stage027_phase3_in_progress"',
             'status: "stage027_completed_local_pending_stage028"',
+            'status: "stage028_phase1_in_progress"',
         ]
         allowed_next_phase_terms = [
             'next_phase: "Phase 4"',
             'next_stage: "STAGE-028"',
+            'next_phase: "Phase 2"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE027-P3"',
             'current_task_id: "IDS-V0_1-STAGE027-P4"',
+            'current_task_id: "IDS-V0_1-STAGE028-P1"',
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase3_scenario_validation_complete"',
             'acceptance_status: "local_passed"',
+            'acceptance_status: "phase1_scope_boundary_defined"',
         ]
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE027-P4-GATE"',
             'next_gate: "IDS-STAGE028-P1-GATE"',
+            'next_gate: "IDS-STAGE028-P2-GATE"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE027-P4"',
             'next_allowed_task_id: "IDS-V0_1-STAGE028-P1"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE028-P2"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_phase_terms), allowed_next_phase_terms)
@@ -720,7 +740,6 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         roadmap_text = ROADMAP.read_text(encoding="utf-8")
         events_text = EVENTS.read_text(encoding="utf-8")
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE027"',
             'phase_id: "IDS-STAGE027-P3"',
             'status: "passed_with_local_evidence"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE3_SCENARIO_VALIDATION.md",
@@ -738,14 +757,17 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE027-P3"',
             'current_phase_id: "IDS-STAGE027-P4"',
+            'current_phase_id: "IDS-STAGE028-P1"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE027-P3"',
             'current_task_id: "IDS-V0_1-STAGE027-P4"',
+            'current_task_id: "IDS-V0_1-STAGE028-P1"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE027-P4-GATE"',
             'next_gate_id: "IDS-STAGE028-P1-GATE"',
+            'next_gate_id: "IDS-STAGE028-P2-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
@@ -830,7 +852,6 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
         text = BATCH_LOCK.read_text(encoding="utf-8")
         required_terms = [
-            'status: "stage027_completed_local_pending_stage028"',
             "STAGE-027:",
             'status: "completed_local"',
             '      - "Phase 1"',
@@ -843,13 +864,22 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
             'acceptance_status: "local_passed"',
             'next_gate: "IDS-STAGE028-P1-GATE"',
             'push_allowed: false',
-            'next_allowed_task_id: "IDS-V0_1-STAGE028-P1"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py",
         ]
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, text)
+        allowed_status_terms = [
+            'status: "stage027_completed_local_pending_stage028"',
+            'status: "stage028_phase1_in_progress"',
+        ]
+        allowed_next_terms = [
+            'next_allowed_task_id: "IDS-V0_1-STAGE028-P1"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE028-P2"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
+        self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
 
     def test_roadmap_and_events_track_stage027_phase4_closeout_without_batch_upload(self):
         self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
@@ -857,10 +887,6 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         roadmap_text = ROADMAP.read_text(encoding="utf-8")
         events_text = EVENTS.read_text(encoding="utf-8")
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE027"',
-            'current_phase_id: "IDS-STAGE027-P4"',
-            'current_task_id: "IDS-V0_1-STAGE027-P4"',
-            'next_gate_id: "IDS-STAGE028-P1-GATE"',
             'status: "completed"',
             'status: "passed_with_local_evidence"',
             'phase_id: "IDS-STAGE027-P4"',
@@ -878,6 +904,26 @@ class Stage027ReingestExtractedFilesPhase1Tests(unittest.TestCase):
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        allowed_roadmap_stage_terms = [
+            'current_stage_id: "IDS-STAGE027"',
+            'current_stage_id: "IDS-STAGE028"',
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE027-P4"',
+            'current_phase_id: "IDS-STAGE028-P1"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE027-P4"',
+            'current_task_id: "IDS-V0_1-STAGE028-P1"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE028-P1-GATE"',
+            'next_gate_id: "IDS-STAGE028-P2-GATE"',
+        ]
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_stage_terms), allowed_roadmap_stage_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
