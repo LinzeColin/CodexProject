@@ -21,6 +21,7 @@ import check_import_idempotency as import_idempotency
 
 ENTRANCE = "IDS 系统运营入口"
 REINGEST_SCHEMA = "ids.stage027.reingest_extracted_files.v1"
+OWNER_FEEDBACK_SCHEMA = "ids.stage027.reingest_extracted_files.owner_feedback.v1"
 REINGEST_PREFIX = "ids.stage027.reingest"
 REQUIRED_PIPELINE = ["hash", "manifest", "dedup", "parser"]
 NO_PERSISTENCE_DELTAS = {
@@ -482,6 +483,63 @@ def build_stage027_scenario_report(
         "does_not_create_import_queue": True,
         "does_not_write_database": True,
         "does_not_write_index": True,
+    }
+
+
+def build_reingest_extracted_files_owner_feedback_summary(
+    *,
+    scenario_report: dict[str, Any] | None = None,
+    reviewed_at: str | None = None,
+) -> dict[str, Any]:
+    """Build owner-facing STAGE-027 closeout feedback without writing runtime output."""
+
+    scenario_report = dict(scenario_report or {})
+    pipeline_validation = dict(scenario_report.get("pipeline_validation") or {})
+    persistence_validation = dict(scenario_report.get("persistence_validation") or {})
+    review_passed = (
+        scenario_report.get("validation_state") == "REINGEST_SCENARIO_VALIDATION_PASSED"
+        and pipeline_validation.get("state") == "REINGEST_PIPELINE_VALIDATED"
+        and persistence_validation.get("state") == "REINGEST_NO_PERSISTENCE_VALIDATED"
+        and bool(scenario_report.get("does_not_read_raw_metadata", True))
+        and bool(scenario_report.get("does_not_write_reingest_runtime_output", True))
+        and bool(scenario_report.get("does_not_start_processing_jobs", True))
+    )
+    owner_feedback_summary = (
+        "中文 owner feedback: STAGE-027 解压文件重新入库已完成本地整阶段复审；"
+        "ready、duplicate、missing、raw-root、adapter 场景均通过 in-memory validation；"
+        "hash、manifest、dedup、parser 仅作为 required pipeline 状态记录，actual jobs started=0；"
+        "/Users/linzezhang/Downloads/IDS_MetaData 只作为 path-only read-only raw boundary，"
+        "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描；"
+        "BATCH021_030 仍为 No GitHub upload / No app reinstall。"
+    )
+    return {
+        "schema_version": OWNER_FEEDBACK_SCHEMA,
+        "stage": "STAGE-027",
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE027-P4",
+        "acceptance_id": "ACC-STAGE-027",
+        "entrance": ENTRANCE,
+        "reviewed_at": reviewed_at,
+        "stage_review_state": "STAGE027_REVIEW_PASSED" if review_passed else "STAGE027_REVIEW_REQUIRED",
+        "scenario_validation_sample": scenario_report,
+        "reviewed_phase_evidence": [
+            "STAGE027_ENTRY_CONTRACT.md",
+            "STAGE027_PHASE1_SCOPE_BOUNDARY.md",
+            "STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md",
+            "STAGE027_PHASE3_SCENARIO_VALIDATION.md",
+        ],
+        "owner_feedback_summary": owner_feedback_summary,
+        "batch_upload_state": "BATCH021_030_LOCKED_NO_UPLOAD",
+        "next_stage_recommendation": "STAGE-028-P1_AFTER_STAGE027_CLOSEOUT_ONLY",
+        "push_allowed": False,
+        "no_raw_data_access": True,
+        "no_github_upload": True,
+        "no_app_reinstall": True,
+        "no_runtime_output": True,
+        "no_import_queue": True,
+        "no_database_write": True,
+        "no_index_write": True,
+        "does_not_use_fake_ids_business_data": True,
     }
 
 

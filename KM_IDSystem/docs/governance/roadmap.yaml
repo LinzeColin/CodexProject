@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE027"
-current_phase_id: "IDS-STAGE027-P3"
-current_task_id: "IDS-V0_1-STAGE027-P3"
-next_gate_id: "IDS-STAGE027-P4-GATE"
+current_phase_id: "IDS-STAGE027-P4"
+current_task_id: "IDS-V0_1-STAGE027-P4"
+next_gate_id: "IDS-STAGE028-P1-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 250
+completed_estimated_hours: 253
 stages:
   -
     stage_id: "S5"
@@ -6387,7 +6387,7 @@ stages:
     stage_id: "IDS-STAGE027"
     name: "STAGE-027 · 解压文件重新入库"
     person_goal: "让安全解压后的文件重新进入 hash、manifest、dedup、parser 流程，而不是绕过导入预检直接进入索引或业务数据。"
-    status: "in_progress"
+    status: "completed"
     stop_conditions:
       - "一次 run 完成超过一个 phase"
       - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
@@ -6395,35 +6395,40 @@ stages:
       - "写 reingest runtime output、runtime report、database、evidence ledger、audit log、index、document/chunk/job/import row 或 parser output"
       - "启动 hash、manifest、dedup、parser、OCR、Embedding、index、import、backend、frontend、worker、dependency install 或 external API job"
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
-      - "执行 GitHub upload、PR、merge、app reinstall 或进入 Phase 4"
+      - "执行 GitHub upload、PR、merge、app reinstall 或进入 STAGE-028"
     stop_gate:
-      gate_id: "IDS-STAGE027-P4-GATE"
-      status: "open"
+      gate_id: "IDS-STAGE028-P1-GATE"
+      status: "passed_with_local_evidence"
       pass_conditions:
+        - "Phase 1-4 证据完整"
+        - "Whole-Stage Review 已记录并无未修复阻断"
         - "Phase 3 scenario validation covers ready, duplicate, missing, raw-root, and adapter owner-review cases"
-        - "Scenario helper validates no import queue, no runtime output, no database, no index, and no processing jobs"
+        - "Phase 4 owner feedback summary records no upload, no app reinstall, raw boundary, and next-stage recommendation"
         - "BATCH021_030_UPLOAD_LOCK.yaml 保持 push_allowed=false"
-        - "Stage005 governance regression 接受 STAGE-027 Phase 3 当前状态"
+        - "Stage005 governance regression 接受 STAGE-027 Phase 4 completed-local 当前状态"
         - "No reingest runtime output"
         - "No raw data access"
         - "No GitHub upload"
         - "No app reinstall"
+        - "STAGE-028 尚未执行"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/scripts/check_reingest_extracted_files.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
     acceptance:
       acceptance_id: "ACC-STAGE-027"
-      status: "phase3_scenario_validation_complete"
+      status: "local_passed"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/scripts/check_reingest_extracted_files.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE2_REINGEST_EXTRACTED_FILES_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
@@ -6544,3 +6549,43 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
             risk: "如果 scenario validation 被误当成生产 re-ingest runner，可能绕过 owner confirmation、import preflight 或真实数据边界。"
             rollback: "Revert check_reingest_extracted_files.py scenario validation additions, STAGE027 Phase3 evidence, BATCH021_030 lock, focused tests, Stage005 validator/test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, extracted files, staging files, runtime data, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, GitHub state, or Phase 4 artifacts."
+      -
+        phase_id: "IDS-STAGE027-P4"
+        name: "解压文件重新入库 closeout 与整阶段复审"
+        objective: "关闭 STAGE-027，本地记录交付证据、整阶段复审、raw data boundary、rollback 和中文 owner feedback，同时保持十阶段 batch 上传闸门关闭。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "closeout 需要读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "closeout 需要写 reingest runtime output、runtime report、database、evidence ledger、audit log、index、document/chunk/job/import row 或 parser output"
+          - "closeout 启动 hash、manifest、dedup、parser、OCR、Embedding、index、import、backend、frontend、worker、dependency install 或 external API job"
+          - "整阶段复审发现未修复阻断问题"
+          - "执行 GitHub upload、PR、merge、app reinstall 或进入 STAGE-028"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE027-P4"
+            name: "解压文件重新入库 closeout 与整阶段复审"
+            objective: "记录 Stage027 交付证据、复审发现与修复、rollback、owner feedback，并保持 BATCH021_030 上传闸门关闭。"
+            status: "completed"
+            estimated_hours: 3
+            total_hours_percent: "1.90%"
+            dependencies:
+              - "IDS-V0_1-STAGE027-P3"
+            acceptance_ids:
+              - "ACC-STAGE-027"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage027_reingest_extracted_files -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage027_phase4_reingest_closeout_completion -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B -m py_compile KM_IDSystem/scripts/check_reingest_extracted_files.py"
+              - "check-render --project KM_IDSystem"
+              - "semantic validate diagnostic"
+            test_results: "RED/GREEN complete: Stage027 Phase4 RED failed as expected because build_reingest_extracted_files_owner_feedback_summary, STAGE027_PHASE4_CLOSEOUT.md, STAGE-027 Phase4 batch state, roadmap state, event evidence, and IDS-STAGE027-P4 governance state were missing; Stage005 targeted P4 state RED failed because IDS-STAGE027-P4 was not yet accepted by the governance state machine. GREEN passed after adding Phase4 owner feedback summary, closeout evidence, BATCH021_030 completed-local no-upload status, roadmap/event records, focused tests, Stage005 validator/test updates, and Stage026 compatibility allowances for the later STAGE-027 P4 state. Stage027 focused tests ran 20 tests OK; Stage005 targeted P4 state test ran 1 test OK; Stage005 governance validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, or raw data boundary gaps; Stage026 focused regression ran 15 tests OK; Stage021-023 focused regression ran 37 tests OK; Stage024-027 focused regression ran 66 tests OK; Stage005 governance regression ran 81 tests OK; full IDS v0.1 pursuing-goal discover ran 301 tests OK; py_compile passed for check_reingest_extracted_files.py, Stage005 validator, Stage005 regression test, Stage026 focused test, and Stage027 focused test. Events JSONL parsed with count 125 and unique_event_ids=125; git diff --check passed. Bundled Python render --write updated 功能清单.md, 开发记录.md, and 模型参数文件.md; bundled check-render returned drift_count=0 and reference_issue_count=0. Semantic validate --project KM_IDSystem --semantic exited 1 with 29 known sparse root/registered-project missing errors. Semantic changed-only --enforce-sync --base-ref origin/main exited 1 with one accumulated-branch governance sync error because the long-running ahead branch contains model/product capability changes since origin/main and the old required governance files are intentionally deferred to batch gate; it also reported the same 29 sparse root/registered-project missing errors. No sparse expansion or unrelated project reads were performed. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit IDS_MetaData raw metadata content. This run used process-owned temporary structural archive fixtures only; they are not IDS corpus, database rows, business evidence, raw metadata, committed examples, or user production data. This run did not persist reingest runtime output, import queues, reports, databases, evidence ledgers, audit logs, indexes, document/chunk/job/import rows, or production parser output; did not start hash/manifest/dedup/parser/OCR/Embedding/index/import jobs; did not call external APIs, start services, install dependencies, push to GitHub, create or merge a PR, reinstall app entries, or enter STAGE-028."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_reingest_extracted_files.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE027_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage027_reingest_extracted_files.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            risk: "如果 closeout 被误读为生产 re-ingest、生产导入或 GitHub 发布授权，后续可能触碰 raw metadata、写 runtime output、启动后续 pipeline 或提前上传未满十阶段批次。"
+            rollback: "Revert Stage027 Phase4 closeout, owner feedback summary, focused tests, Stage005 validator/test updates, BATCH021_030 lock, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, extracted files, staging files, runtime data, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, GitHub state, STAGE-028, or batch upload gate."
