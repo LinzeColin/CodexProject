@@ -594,10 +594,12 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
         allowed_status_terms = [
             'status: "stage028_completed_local_pending_stage029"',
             'status: "stage029_phase1_in_progress"',
+            'status: "stage029_phase2_in_progress"',
         ]
         allowed_next_terms = [
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P1"',
             'next_allowed_task_id: "IDS-V0_1-STAGE029-P2"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P3"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
         self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
@@ -636,14 +638,17 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE028-P4"',
             'current_phase_id: "IDS-STAGE029-P1"',
+            'current_phase_id: "IDS-STAGE029-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE028-P4"',
             'current_task_id: "IDS-V0_1-STAGE029-P1"',
+            'current_task_id: "IDS-V0_1-STAGE029-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE029-P1-GATE"',
             'next_gate_id: "IDS-STAGE029-P2-GATE"',
+            'next_gate_id: "IDS-STAGE029-P3-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_stage_terms), allowed_roadmap_stage_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)

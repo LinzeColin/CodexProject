@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE029"
-current_phase_id: "IDS-STAGE029-P1"
-current_task_id: "IDS-V0_1-STAGE029-P1"
-next_gate_id: "IDS-STAGE029-P2-GATE"
+current_phase_id: "IDS-STAGE029-P2"
+current_task_id: "IDS-V0_1-STAGE029-P2"
+next_gate_id: "IDS-STAGE029-P3-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 267
+completed_estimated_hours: 271
 stages:
   -
     stage_id: "S5"
@@ -6822,15 +6822,15 @@ stages:
       - "写 archive_cleanup runtime output、archive_manifest runtime output、runtime report、database、evidence ledger、audit log、index、document/chunk/job/import row 或 parser output"
       - "启动 hash、manifest、dedup、parser、OCR、Embedding、index、import、backend、frontend、worker、dependency install 或 external API job"
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
-      - "执行 GitHub upload、PR、merge、app reinstall 或进入 Phase 2"
+      - "执行 GitHub upload、PR、merge、app reinstall 或进入 Phase 3"
     stop_gate:
-      gate_id: "IDS-STAGE029-P2-GATE"
+      gate_id: "IDS-STAGE029-P3-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
-        - "Phase 1 defines cleanup allowlist boundary, staging, archive limits, manifest and reingest rules"
-        - "Only explicit staging temp files may be future cleanup candidates"
-        - "Original materials, original archives, manifest, evidence, audit, report, database, index, parser output, and raw metadata are protected"
-        - "No cleanup runner, deletion, archive_cleanup runtime output, archive_manifest runtime output, database, report, evidence ledger, audit log, index, document/chunk/job/import row, or parser output is written"
+        - "Phase 2 implements an in-memory cleanup allowlist slice using safe extraction, path filtering, risk marking, owner review, quarantine, and post-extract reingest planning"
+        - "Only explicit staging temp files are ready cleanup candidates"
+        - "Protected refs block original materials, original archives, manifest, evidence, audit, report, database, index, parser output, and raw metadata"
+        - "No cleanup runner, deletion, archive_cleanup runtime output, archive_manifest runtime output, database, report, evidence ledger, audit log, index, document/chunk/job/import row, parser output, or production cleanup output is written"
         - "BATCH021_030_UPLOAD_LOCK.yaml keeps push_allowed=false"
         - "/Users/linzezhang/Downloads/IDS_MetaData is recorded as path-only read-only real database source boundary"
         - "No raw data access"
@@ -6839,15 +6839,19 @@ stages:
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_archive_cleanup_allowlist.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
     acceptance:
       acceptance_id: "ACC-STAGE-029"
-      status: "phase1_scope_boundary_defined"
+      status: "phase2_cleanup_allowlist_slice_complete"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_archive_cleanup_allowlist.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
@@ -6895,3 +6899,46 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "如果 Phase 1 合同被误读为生产 cleanup runner 或删除授权，可能删除原始资料、manifest、evidence、audit、report，触碰 raw metadata，写 runtime output，启动后续 pipeline 或提前上传未满十阶段批次。"
             rollback: "Revert STAGE029 entry/scope evidence, BATCH021_030_UPLOAD_LOCK.yaml, focused tests, Stage005 validator/test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, original archives, original materials, manifests, evidence ledgers, audit logs, reports, runtime data, outputs, indexes, app entries, GitHub state, or Phase 2 artifacts."
+      -
+        phase_id: "IDS-STAGE029-P2"
+        name: "实现、接入与最小可运行切片"
+        objective: "实现 in-memory archive cleanup allowlist planner，接入 safe extraction、path filtering、risk marking、owner review、quarantine 和 post-extract reingest planning，同时禁止实际清理和 runtime persistence。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "执行 cleanup runner、自动清理或删除任何文件"
+          - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 原始数据库内容"
+          - "读取真实原始资料、提交真实原始资料、提交真实压缩包 fixture、或采样 owner 未授权生产压缩包"
+          - "删除原始资料、原始压缩包、manifest、evidence ledger、audit log、report、database、index 或 parser output"
+          - "写 archive_cleanup runtime output、archive_manifest runtime output、runtime report、database、evidence ledger、audit log、index、document/chunk/job/import row、JSON output、production cleanup output 或 parser output"
+          - "启动 hash、manifest、dedup、parser、OCR、Embedding、index、import、backend、frontend、worker、dependency install 或 external API job"
+          - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档或伪造证据"
+          - "执行 GitHub upload、PR、merge、app reinstall 或进入 Phase 3"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE029-P2"
+            name: "压缩包清理白名单最小可运行切片"
+            objective: "用 build_archive_cleanup_allowlist 生成 in-memory cleanup allowlist、protected refs、owner review/quarantine routing、post-extract reingest validation 和 zero-persistence guard。"
+            status: "completed"
+            estimated_hours: 4
+            total_hours_percent: "2.53%"
+            dependencies:
+              - "IDS-V0_1-STAGE029-P1"
+            acceptance_ids:
+              - "ACC-STAGE-029"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage029_archive_cleanup_allowlist -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage029_phase2_archive_cleanup_allowlist_slice -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B -m py_compile KM_IDSystem/scripts/check_archive_cleanup_allowlist.py KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_archive_cleanup_allowlist.py KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "check-render --project KM_IDSystem"
+              - "semantic validate diagnostic"
+            test_results: "RED/GREEN complete: Stage029 Phase2 RED failed as expected because check_archive_cleanup_allowlist.py, STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md, STAGE-029 Phase2 batch state, roadmap/event evidence, and IDS-STAGE029-P2 governance state were missing; Stage005 targeted P2 state RED failed because IDS-STAGE029-P2 was not yet accepted by the governance state machine. GREEN passed after adding the in-memory archive cleanup allowlist planner, Phase2 evidence, BATCH021_030 Phase2 no-upload state, roadmap/event records, focused tests, Stage005 validator/test updates, and Stage026/Stage027/Stage028 compatibility allowances for the later STAGE-029 P2 state. Stage029 focused tests ran 10 tests OK; Stage005 targeted P2 state test ran 1 test OK; Stage026/Stage027/Stage028 compatibility focused tests ran 15/20/12 tests OK; Stage005 governance validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, or raw data boundary gaps; full IDS v0.1 pursuing-goal discover ran 329 tests OK; py_compile passed for check_archive_cleanup_allowlist.py, Stage029 focused test, Stage005 validator, and Stage026/Stage027/Stage028 compatibility tests; events.jsonl parsed with 131 events and 0 duplicate ids. This run used process-owned temporary archive fixtures built from tracked governance document bytes only; they are not IDS corpus, database rows, business evidence, raw metadata, committed examples, or user production data. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit /Users/linzezhang/Downloads/IDS_MetaData raw metadata content. This run did not execute cleanup runner, delete files, persist archive_cleanup runtime output, archive_manifest runtime output, import queues, reports, databases, evidence ledgers, audit logs, indexes, document/chunk/job/import rows, JSON output files, production cleanup output, or parser output; did not start hash/manifest/dedup/parser/OCR/Embedding/index/import jobs; did not call external APIs, start services, install dependencies, push to GitHub, create or merge a PR, reinstall app entries, or enter Phase 3. Fake IDS business data, fake database rows, fake source documents, and fabricated evidence remain forbidden. Final render/check-render, git diff --check, and semantic sparse diagnostics are recorded after this roadmap update."
+            evidence_refs:
+              - "KM_IDSystem/scripts/check_archive_cleanup_allowlist.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE029_PHASE2_CLEANUP_ALLOWLIST_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage029_archive_cleanup_allowlist.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "如果 Phase 2 helper 被误读为 cleanup runner 或删除授权，可能删除原始资料、manifest、evidence、audit、report，触碰 raw metadata，写 runtime output，启动后续 pipeline 或提前上传未满十阶段批次。"
+            rollback: "Revert check_archive_cleanup_allowlist.py, STAGE029 Phase2 evidence, BATCH021_030_UPLOAD_LOCK.yaml, focused tests, Stage005 validator/test updates, compatibility test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, original archives, original materials, manifests, evidence ledgers, audit logs, reports, runtime data, outputs, indexes, app entries, GitHub state, or Phase 3 artifacts."
