@@ -12,13 +12,15 @@
 - refreshed_at: `2026-06-27 17:14:45 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P0 evidence set for later independent
-review. It is not an independent reviewer signoff, does not close any P0/P1
-finding, and does not unblock integrated production acceptance.
+review. It is not an independent reviewer signoff and does not close any P0/P1
+finding. Current-state note: this receipt's own status fields are write-time
+historical evidence; current Stage 2 integrated acceptance is recorded, and the
+current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 ## Scope
 
-- Record the eight inherited V7.1 P0 findings that still control the Stage 2
-  production stop gate.
+- Record the eight inherited V7.1 P0 findings that controlled the Stage 2
+  production stop gate at write time.
 - Bind each finding to the current main evidence surface that should be reviewed.
 - Preserve explicit no-production boundaries while S2PMT07 remains blocked.
 
@@ -57,7 +59,7 @@ counters, and does not enable production.
 - packaged_findings: `A-001`, `A-002`, `A-003`, `A-004`, `A-005`, `B-001`, `B-007`, `B-008`
 - p0_closure_claimed: `false`
 - p1_closure_claimed: `false`
-- stage2_integrated_production_accepted: `false`
+- write-time stage2_integrated_production_accepted: `false`; current Stage 2 integrated acceptance is recorded and current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 ## Evidence Refresh 2026-06-27
 
@@ -96,7 +98,7 @@ Independent reviewer agent `019f07b4-fa63-7c83-a3dc-2e178d20acda` returned `PASS
 - reviewer_verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`
 - technical_closure_candidate: `true`
 - p0_closure_claimed: `false`
-- stage2_integrated_production_accepted: `false`
+- write-time stage2_integrated_production_accepted: `false`; current Stage 2 integrated acceptance is recorded and current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 ## Finding-Level Technical Review 2026-06-27 16:41:52 Australia/Sydney
 
@@ -107,7 +109,7 @@ Independent reviewer agent `019f07cc-5e33-7071-8441-fe4e618b0ff2` returned `PASS
 - reviewer_verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`
 - technical_closure_candidate: `true`
 - p0_closure_claimed: `false`
-- stage2_integrated_production_accepted: `false`
+- write-time stage2_integrated_production_accepted: `false`; current Stage 2 integrated acceptance is recorded and current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 ## Finding-Level Technical Review 2026-06-27 17:14:45 Australia/Sydney
 
@@ -118,7 +120,7 @@ Independent reviewer agent `019f07e2-34e9-7570-b822-569e2f83408d` first returned
 - reviewer_verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`
 - technical_closure_candidate: `true`
 - p0_closure_claimed: `false`
-- stage2_integrated_production_accepted: `false`
+- write-time stage2_integrated_production_accepted: `false`; current Stage 2 integrated acceptance is recorded and current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 ## Preserved Blockers
 
@@ -137,7 +139,9 @@ Independent reviewer agent `019f07e2-34e9-7570-b822-569e2f83408d` first returned
 - `release_packaging_enabled`: `false`
 - `production_restore_enabled`: `false`
 - `daily_operation_enabled`: `false`
-- `integrated_production_accepted`: `false`
+- write-time `integrated_production_accepted=false`; current Stage 2 integrated
+  acceptance is recorded and current S3 blocker is
+  `persistent_daily_operation_authorization_missing`.
 - `current_pointer_changed`: `false`
 - `v7_1_baseline_changed`: `false`
 - `v7_2_contract_files_changed`: `false`
@@ -146,5 +150,6 @@ Independent reviewer agent `019f07e2-34e9-7570-b822-569e2f83408d` first returned
 
 An independent reviewer must re-run or inspect the referenced evidence, decide
 each P0 closure explicitly, and produce a separate signoff before inherited P0
-or P1 counters can change. Until then, S2PMT07 remains blocked and Stage 2
-integrated production acceptance remains false.
+or P1 counters can change. At write time this meant S2PMT07 final gate precheck
+remained blocked; current Stage 2 integrated acceptance is recorded, and the
+current S3 blocker is `persistent_daily_operation_authorization_missing`.
