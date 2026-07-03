@@ -1,5 +1,16 @@
 # KMFA Development Ledger
 
+## 2026-07-03 - 0.1.3-s09p3-scope-reconciliation-replay
+
+- task_id: `KMFA-V013-S09-P3-SCOPE-RECONCILIATION-REPLAY-20260703`
+- status: `completed_validated_local_only_no_go_upload_deferred_scope_reconciliation_replayed`
+- evidence: `KMFA/stage_artifacts/V013_S09_P3_SCOPE_RECONCILIATION_REPLAY/machine/scope_reconciliation_replay_manifest.json`
+- validator: `KMFA/tools/check_v013_s09_p3_scope_reconciliation_replay.py`
+- scope: S09-P3 replay only; Stage 9 review and GitHub upload not performed.
+
+product_version: 0.1.3-s09p3-scope-reconciliation-replay
+version_matrix_product_version_reference: 0.1.3-s09p3-scope-reconciliation-replay
+
 ## 2026-07-03 - 0.1.3-s09p1-project-cost-fact-layer-replay
 
 - task_id: `KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703`
