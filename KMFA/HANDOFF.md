@@ -1,6 +1,6 @@
 # KMFA Handoff
 
-更新时间: 2026-07-02
+更新时间: 2026-07-03
 
 ## 当前目标
 
@@ -9,17 +9,18 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s08p3-entity-matching-quality-replay`
-- 当前已完成: `v0.1.3 S08-P3 entity matching quality replay`
-- 证据目录: `KMFA/stage_artifacts/V013_S08_P3_ENTITY_MATCHING_QUALITY_REPLAY/`
+- 当前版本: `0.1.3-s08-stage-review`
+- 当前已完成: `v0.1.3 Stage 8 overall review`
+- 证据目录: `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/`
 - Stage 7 复审结论: S07-P1/S07-P2/S07-P3 replay validators 全部 PASS；legacy S07-P1 finance adapter validator/unit、legacy S07-P2 WPS adapter validator/unit、legacy S07-P3 Redcircle postponement validator/unit 均 PASS；Stage 7 review validator 和 focused unit test PASS。复审确认 phase_results=`S07-P1=PASS, S07-P2=PASS, S07-P3=PASS`、open findings=`0`、Q5 allowed count=`0`、formal report allowed count=`0`、Redcircle automatic connector allowed=`false`、data quality=`Q4`、report grade=`D`、release permission=`blocked`、`s08_p1_performed=false`、`github_upload_performed=false`。
 - upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4、Stage 5、Stage 6 或 Stage 7 单独 upload 作为 active next step。
 - S08-P1 结论: 已重放既有 public-safe 项目组合键能力，锁定 8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条人工复核队列、1 条 strong auto match、10000 bps 权重总和、8500/7000/5000 bps 阈值。
-- S08-P2 结论: 已重放既有 public-safe 业务实体模型能力，锁定 8 类实体、14 条关系、32 条 lifecycle statuses、每类实体 4 个状态；实体值保持 hash/ref only，关系保持 schema-only，生命周期保持 status-only；S08-P3/Stage 8 review 和 GitHub upload 均未执行。
-- S08-P3 结论: 已重放既有 public-safe 匹配质量能力，锁定 4 类质量场景、4 条 quality cases、3 条 manual review queue、1 份 entity_matching_report 和 high=2/medium=1/low=1 风险汇总；人工复核队列 `auto_merge_allowed=false`，Stage 8 review 和 GitHub upload 均未执行。
-- raw boundary: 本轮 S08-P3 replay 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe matching quality replay evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值、Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
-- 未执行: Stage 8 review、GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 Stage 8 overall review` 或用户明确指定的单一 phase；不得执行 GitHub upload、S09、raw value matching、正式报告或业务动作。
+- S08-P2 结论: 已重放既有 public-safe 业务实体模型能力，锁定 8 类实体、14 条关系、32 条 lifecycle statuses、每类实体 4 个状态；实体值保持 hash/ref only，关系保持 schema-only，生命周期保持 status-only；S08-P3 已由后续 phase 完成，GitHub upload 未执行。
+- S08-P3 结论: 已重放既有 public-safe 匹配质量能力，锁定 4 类质量场景、4 条 quality cases、3 条 manual review queue、1 份 entity_matching_report 和 high=2/medium=1/low=1 风险汇总；人工复核队列 `auto_merge_allowed=false`，Stage 8 review 已由本轮完成，GitHub upload 未执行。
+- Stage 8 review 结论: S08-P1/S08-P2/S08-P3 replay validators 全部 PASS；focused unit test 和 Stage 8 review validator PASS；phase_results=`S08-P1=PASS, S08-P2=PASS, S08-P3=PASS`、open findings=`0`、fixed findings=`1`、Q5 allowed count=`0`、formal report allowed count=`0`、legacy Stage 8 upload artifacts current gate=`false`、data quality=`Q4`、report grade=`D`、release permission=`blocked`、`s09_p1_performed=false`、`github_upload_performed=false`。
+- raw boundary: 本轮 Stage 8 review 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe Stage 8 review evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值、Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
+- 未执行: S09-P1、GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S09-P1 public-safe project cost fact layer replay` 或用户明确指定的单一 phase；不得执行 GitHub upload、S09-P2/S09-P3、raw value matching、正式报告或业务动作。
 
 ## 持久本机 raw boundary
 
@@ -125,7 +126,7 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - S08-P3 不提交 raw business data、zip、Excel、PDF、私有 CSV、字段明文、来源表头明文或真实业务值；不做 Stage 8 review、事实层、lineage、正式报告、UI、外部接口或 GitHub upload。
 - Stage 8 整体复审已本地通过：新增 `KMFA/stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md`、`KMFA/stage_artifacts/S08_STAGE_REVIEW/human/test_results.md` 和 `KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_review_manifest.json`。
 - Stage 8 复审复跑 S08-P1/S08-P2/S08-P3 validators、全量 KMFA tests、治理 validator、raw/secret scan、YAML/JSON/JSONL/CSV parse、diff check 和 evidence consistency check；复审步骤本身未执行 GitHub upload。
-- Stage 8 final GitHub upload 已完成：新增 `KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json`。
+- Stage 8 final GitHub upload 为历史 legacy 证据：`KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json` 记录旧基线上传；该证据非当前 v0.1.3 active upload gate，当前 GitHub main 未上传。
 - Stage 8 upload 基于最新 `origin/main` commit `ce2881204c49a56da463893db5314ff180c7812d` rebase Stage 8 栈，复跑 validators、治理 validator、raw/secret scan、parse checks、dry-run push、push 和 post-push parity。
 - `S10-P1` 已完成本地实现与验证：新增 `KMFA/tools/report_templates.py`、`KMFA/tools/check_s10_p1_report_templates.py`、`KMFA/tests/test_report_templates.py`、`KMFA/metadata/reports/report_template_manifest.json`、`KMFA/metadata/reports/report_templates.jsonl`、`KMFA/metadata/reports/report_template_sections.jsonl` 和 `KMFA/stage_artifacts/S10_P1_report_templates/`。
 - S10-P1 覆盖 2 个模板和 11 个章节：项目成本专题报告含经营摘要、项目毛利、成本结构、风险事项；经营总览报告含经营总览、收入、开票、回款、现金、项目、税务。

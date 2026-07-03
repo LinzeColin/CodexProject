@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260703-V013-S08-P3-ENTITY-MATCHING-QUALITY-REPLAY"
+as_of_event_id: "EVENT-KMFA-20260703-V013-S08-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "f6ecc4c029b8a08deab9cf08d1afcc32bdf5fa7b"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S08_P1_COMMIT"
 snapshot_event_time: "2026-07-03T10:55:00+10:00"
-generator_version: "manual-v013-s08-p3-entity-matching-quality-replay"
+generator_version: "manual-v013-s08-stage-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 553
+    total_active_parameters: 559
     total_active_formulas: 53
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
@@ -144,6 +144,11 @@ dimensions:
       - "KMFA/stage_artifacts/V013_S08_P3_ENTITY_MATCHING_QUALITY_REPLAY/machine/entity_matching_quality_replay_manifest.json"
       - "KMFA/tools/check_v013_s08_p3_entity_matching_quality_replay.py"
       - "KMFA/tools/v013_s08_p3_entity_matching_quality_replay.py"
+      - "KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/human/stage8_review_report.md"
+      - "KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/machine/stage8_review_manifest.json"
+      - "KMFA/tools/check_v013_s08_stage_review.py"
+      - "KMFA/tools/v013_s08_stage_review.py"
       - "KMFA/tools/check_v013_s07_p2_wps_file_adapter_replay.py"
       - "KMFA/tools/v013_s07_p2_wps_file_adapter_replay.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
