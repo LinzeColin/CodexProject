@@ -14,6 +14,7 @@ ENTRY = PURSUE_ROOT / "STAGE022_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE022_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE022_PHASE2_DATA_PRIORITY_QUEUE_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE022_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE022_PHASE4_CLOSEOUT.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 SCRIPT = ROOT / "scripts" / "check_data_priority_queue.py"
 QUEUED_AT = "2026-07-02T23:40:12Z"
@@ -122,6 +123,7 @@ class Stage022DataPriorityQueuePhase1Tests(unittest.TestCase):
             'status: "stage022_phase1_in_progress"',
             'status: "stage022_phase2_in_progress"',
             'status: "stage022_phase3_in_progress"',
+            'status: "stage022_completed_local_pending_stage023"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_status_terms),
@@ -132,6 +134,7 @@ class Stage022DataPriorityQueuePhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE022-P1"',
             'current_task_id: "IDS-V0_1-STAGE022-P2"',
             'current_task_id: "IDS-V0_1-STAGE022-P3"',
+            'current_task_id: "IDS-V0_1-STAGE022-P4"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_task_terms),
@@ -451,6 +454,104 @@ class Stage022DataPriorityQueuePhase1Tests(unittest.TestCase):
             "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "NO_PHASE4",
+        ]:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_phase4_owner_feedback_summary_returns_closeout_contract_without_outputs(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            docs = base / "priority-closeout"
+            docs.mkdir()
+            shutil.copy2(ENTRY, docs / "critical-repair-plan.md")
+            shutil.copy2(PHASE1, docs / "equipment-reference.csv")
+            (docs / "owner-candidate.zip").write_bytes(b"PK\x03\x04ids-structural-archive-candidate")
+            (docs / "scan-page.png").write_bytes(b"\x89PNG\r\n\x1a\nids-structural-scan-candidate")
+            (docs / "unknown-format.weird").write_bytes(b"ids-structural-unknown-format-candidate")
+
+            queue_report = module.evaluate_data_priority_queue(
+                source_uris=[docs.as_uri()],
+                queued_at=QUEUED_AT,
+                oversized_file_threshold_bytes=1,
+            )
+            feedback = module.build_data_priority_queue_owner_feedback_summary(
+                queue_report,
+                recorded_at=QUEUED_AT,
+                stage_review_findings=[
+                    "Phase 4 records closeout evidence without creating runtime outputs.",
+                    "BATCH021_030 upload remains blocked until STAGE-021..030 are complete and reviewed.",
+                ],
+            )
+
+        self.assertEqual(feedback["schema_version"], "ids.stage022.data_priority_queue.owner_feedback.v1")
+        self.assertEqual(feedback["stage"], "STAGE-022")
+        self.assertEqual(feedback["phase"], "Phase 4")
+        self.assertEqual(feedback["task_id"], "IDS-V0_1-STAGE022-P4")
+        self.assertEqual(feedback["acceptance_id"], "ACC-STAGE-022")
+        self.assertEqual(feedback["recorded_at"], QUEUED_AT)
+        self.assertEqual(feedback["report_sample"]["schema_version"], "ids.stage022.data_priority_queue.v1")
+        self.assertIn("priority_buckets", feedback["report_sample"])
+        self.assertIn("priority_queue_summary", feedback["report_sample"])
+        self.assertIn("human_product_entrance_payload", feedback["report_sample"])
+        self.assertIn("ui_component_contract", feedback["report_sample"])
+        self.assertIn("embedding_token_estimate", feedback["report_sample"])
+        self.assertIn("ocr_page_estimate", feedback["report_sample"])
+        self.assertIn("index_size_estimate", feedback["report_sample"])
+        self.assertIn("COST_ARCHIVE_REVIEW_REQUIRED", feedback["risk_checklist"])
+        self.assertIn("COST_UNKNOWN_FORMAT_PRESENT", feedback["risk_checklist"])
+        self.assertIn("P3_LOW_VALUE_OR_DEFERRED_DATA", feedback["priority_feedback"])
+        self.assertGreaterEqual(len(feedback["user_confirmation_flow_log"]), 6)
+        self.assertTrue(any("P0" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("保存" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("取消" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("分批" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("高风险" in step for step in feedback["user_confirmation_flow_log"]))
+        self.assertTrue(any("Embedding" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("OCR" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("外部 API" in item for item in feedback["estimation_uncertainty"]))
+        self.assertTrue(any("索引" in item for item in feedback["estimation_uncertainty"]))
+        self.assertIn("PRIORITY_QUEUE_BLOCKED", feedback["failure_explanations"])
+        self.assertIn("PRIORITY_QUEUE_OWNER_REVIEW_REQUIRED", feedback["failure_explanations"])
+        self.assertGreaterEqual(len(feedback["rollback_steps"]), 4)
+        self.assertEqual(feedback["whole_stage_review"]["result"], "passed_with_local_evidence")
+        self.assertEqual(feedback["whole_stage_review"]["next_stage"], "STAGE-023")
+        self.assertFalse(feedback["whole_stage_review"]["batch_upload_allowed"])
+        self.assertEqual(feedback["whole_stage_review"]["next_batch_gate"], "IDS-STAGE023-P1-GATE")
+        self.assertEqual(feedback["whole_stage_review"]["unresolved_findings"], [])
+        for value in feedback["processing_guard"].values():
+            self.assertEqual(value, 0)
+        for value in feedback["no_persistence_deltas"].values():
+            self.assertEqual(value, 0)
+        self.assertTrue(feedback["does_not_create_screenshots"])
+        self.assertTrue(feedback["does_not_write_report_files"])
+        self.assertTrue(feedback["does_not_push_to_github"])
+        self.assertTrue(feedback["does_not_reinstall_app_entries"])
+        self.assertTrue(feedback["does_not_enter_stage023"])
+
+    def test_phase4_evidence_document_records_delivery_review_raw_boundary_and_no_stage023(self):
+        self.assertTrue(PHASE4.is_file(), f"missing phase4 closeout: {PHASE4}")
+        text = PHASE4.read_text(encoding="utf-8")
+
+        for term in [
+            "IDS-V0_1-STAGE022-P4",
+            "ACC-STAGE-022",
+            "优先级队列报告样例",
+            "风险清单",
+            "用户确认流程日志",
+            "估算不确定性",
+            "失败解释文案",
+            "回滚方式",
+            "Whole-Stage Review",
+            "STAGE-022 已在本地完成",
+            "IDS-STAGE023-P1-GATE",
+            "push_allowed=false",
+            "P0/P1/P2/P3",
+            "DataPriorityQueuePanel",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_STAGE023",
+            "不执行 GitHub upload、PR、merge 或 app reinstall",
         ]:
             with self.subTest(term=term):
                 self.assertIn(term, text)

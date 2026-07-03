@@ -2747,6 +2747,73 @@ next_gate_id: "IDS-STAGE022-P4-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage022_phase4_data_priority_queue_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-021:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-022"
+    current_task_id: "IDS-V0_1-STAGE021-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE022-P1-GATE"
+  STAGE-022:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-023"
+    current_task_id: "IDS-V0_1-STAGE022-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE023-P1-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE022"
+current_phase_id: "IDS-STAGE022-P4"
+current_task_id: "IDS-V0_1-STAGE022-P4"
+next_gate_id: "IDS-STAGE023-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE021-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE022-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE022-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_phase_state_allows_stage020_phase2_import_cost_estimator_slice(self):
         module = self._load_module()
         batch_text = """
