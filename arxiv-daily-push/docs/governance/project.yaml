@@ -24,7 +24,7 @@ limitations:
     unknown_task_ids:
       - "LOCAL_SMTP_SMOKE"
   -
-    statement: "evidence_freshness 仍为 PARTIAL：14 tree-bound events、10 commit-bound events、334 legacy unbound events、40 precommit pending events；这是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断；当前唯一 S3 阻断仍是持久 DAILY_OPERATION 授权 artifact 缺失，不能把所有历史事件写成 PR CI attested。"
+    statement: "evidence_freshness 仍为 PARTIAL：15 tree-bound events、10 commit-bound events、334 legacy unbound events、40 precommit pending events；这是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断；当前唯一 S3 阻断仍是持久 DAILY_OPERATION 授权 artifact 缺失，不能把所有历史事件写成 PR CI attested。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-ASSURANCE-STATUS"

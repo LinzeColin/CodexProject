@@ -1,6 +1,6 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-03 04:23:14 Australia/Sydney
+更新时间：2026-07-03 13:02:57 Australia/Sydney
 
 ## 当前结论
 
@@ -20,6 +20,17 @@
 | DAILY_OPERATION 专用 root gate | 当前必须 `status=FAIL` / exit 2 | `python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2` |
 | DAILY_OPERATION enablement preflight root gate | 当前必须 `status=FAIL / exit 2`，`enablement_preflight_ready=false`，阻断原因为 `persistent_daily_operation_authorization_missing` | `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` |
 | Root 执行根校验 | 正确 CodexProject 仓库根必须输出 `repo_root_valid=true`、`root_validation_errors=[]`、`required_paths_missing=[]`；误传项目子目录时必须 fail-closed 为 `codexproject_repo_root_invalid` | `python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2` / `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` |
+
+## 最新 MVP 复审准备进展
+
+本节是 S3 first-read 同步，不是追逐 current main 提交号的改写；它只同步后续复审 agent 必须先知道的 owner-facing 证据路径和安全边界。
+
+| 项目 | 当前口径 | 证据 |
+|---|---|---|
+| 最新 MVP 准备任务 | `ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP` 已把动态证据新鲜度计数从浅层 MVP 页面移出，避免 owner 页面复制漂移数字 | [MVP 准备与复审修补](../arxiv-daily-push/用户中心/MVP准备与复审修补.md) |
+| 当前治理 gate | `EVIDENCE_FRESHNESS_DYNAMIC_COUNT_DEDUP_NO_RUNTIME_ENABLEMENT`；该 gate 只说明证据展示去重和 no-runtime 边界，不授权 DAILY_OPERATION | `arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml` |
+| 当前计数来源 | 证据新鲜度的实时计数只读 [OWNER_STATUS 第 14 节](../arxiv-daily-push/docs/governance/OWNER_STATUS.md#14-证据新鲜度)，本 handoff 不复制动态计数 | `arxiv-daily-push/docs/governance/OWNER_STATUS.md` |
+| S3/MVP 边界 | 仍不得创建持久授权 artifact，不得启用 SMTP、scheduler、Release、restore 或 DAILY_OPERATION | `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` 仍缺失 |
 
 ## 不要误读
 
