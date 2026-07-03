@@ -2644,6 +2644,28 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| 下一步 | `S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION` |", traceability_section)
         self.assertNotIn("| 剩余阻断 | owner DAILY_OPERATION authorization 未记录；`daily_operation_enabled=false` |", traceability_section)
 
+    def test_key_decisions_daily_operation_preflight_history_uses_historical_headers(self):
+        decisions = (USER_CENTER / "关键结论与用户决策.md").read_text(encoding="utf-8")
+        historical_sections = {
+            "20:12 gh equivalent repair": _section(
+                decisions,
+                "## 2026-07-01 20:12:13 Australia/Sydney - ",
+                "## 2026-07-01 19:43:41 Australia/Sydney - ",
+            ),
+            "19:43 authorization preflight": _section(
+                decisions,
+                "## 2026-07-01 19:43:41 Australia/Sydney - ",
+                "## 2026-07-01 19:04:10 Australia/Sydney - ",
+            ),
+        }
+
+        for label, section in historical_sections.items():
+            with self.subTest(section=label):
+                self.assertIn("历史：", section)
+                self.assertIn("| 历史当时结论 | 默认动作 | 验收证据 |", section)
+                self.assertNotIn("| 当前结论 | 默认动作 | 验收证据 |", section)
+                self.assertIn("当前不再把这些 blocker 当作最新 DAILY_OPERATION 阻断", section)
+
     def test_roadmap_marks_request_only_daily_operation_sections_as_historical_consumed(self):
         roadmap = (USER_CENTER / "路线图与停止门.md").read_text(encoding="utf-8")
         request_mainline = _section(
