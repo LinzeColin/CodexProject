@@ -571,6 +571,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'status: "stage025_phase2_in_progress"',
             'status: "stage025_phase3_in_progress"',
             'status: "stage025_completed_local_pending_stage026"',
+            'status: "stage026_phase1_in_progress"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
 
@@ -578,6 +579,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE025-P2"',
             'current_task_id: "IDS-V0_1-STAGE025-P3"',
             'current_task_id: "IDS-V0_1-STAGE025-P4"',
+            'current_task_id: "IDS-V0_1-STAGE026-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
 
@@ -592,6 +594,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE025-P3-GATE"',
             'next_gate: "IDS-STAGE025-P4-GATE"',
             'next_gate: "IDS-STAGE026-P1-GATE"',
+            'next_gate: "IDS-STAGE026-P2-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
 
@@ -621,12 +624,14 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
         allowed_status_terms = [
             'status: "stage025_phase3_in_progress"',
             'status: "stage025_completed_local_pending_stage026"',
+            'status: "stage026_phase1_in_progress"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
 
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE025-P3"',
             'current_task_id: "IDS-V0_1-STAGE025-P4"',
+            'current_task_id: "IDS-V0_1-STAGE026-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
 
@@ -639,6 +644,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
         allowed_gate_terms = [
             'next_gate: "IDS-STAGE025-P4-GATE"',
             'next_gate: "IDS-STAGE026-P1-GATE"',
+            'next_gate: "IDS-STAGE026-P2-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
 
@@ -648,7 +654,6 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
 
         required_terms = [
             'batch_id: "IDS-V0_1-BATCH-021-030"',
-            'status: "stage025_completed_local_pending_stage026"',
             "STAGE-025:",
             'status: "completed_local"',
             '      - "Phase 1"',
@@ -666,7 +671,6 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage025_safe_extraction_engine.py",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
-            'next_allowed_task_id: "IDS-V0_1-STAGE026-P1"',
             'github_upload_allowed: false',
         ]
 
@@ -731,6 +735,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'status: "stage025_phase2_in_progress"',
             'status: "stage025_phase3_in_progress"',
             'status: "stage025_completed_local_pending_stage026"',
+            'status: "stage026_phase1_in_progress"',
         ]
         self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
 
@@ -739,6 +744,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE025-P2"',
             'current_task_id: "IDS-V0_1-STAGE025-P3"',
             'current_task_id: "IDS-V0_1-STAGE025-P4"',
+            'current_task_id: "IDS-V0_1-STAGE026-P1"',
         ]
         self.assertTrue(any(term in text for term in allowed_task_terms), allowed_task_terms)
 
@@ -755,6 +761,7 @@ class Stage025SafeExtractionEnginePhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE025-P3-GATE"',
             'next_gate: "IDS-STAGE025-P4-GATE"',
             'next_gate: "IDS-STAGE026-P1-GATE"',
+            'next_gate: "IDS-STAGE026-P2-GATE"',
         ]
         self.assertTrue(any(term in text for term in allowed_gate_terms), allowed_gate_terms)
 

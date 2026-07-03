@@ -136,6 +136,7 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'status: "stage025_phase2_in_progress"',
             'status: "stage025_phase3_in_progress"',
             'status: "stage025_completed_local_pending_stage026"',
+            'status: "stage026_phase1_in_progress"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_status_terms),
@@ -152,6 +153,7 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE025-P2"',
             'current_task_id: "IDS-V0_1-STAGE025-P3"',
             'current_task_id: "IDS-V0_1-STAGE025-P4"',
+            'current_task_id: "IDS-V0_1-STAGE026-P1"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_task_terms),
@@ -174,6 +176,7 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE025-P3-GATE"',
             'next_gate: "IDS-STAGE025-P4-GATE"',
             'next_gate: "IDS-STAGE026-P1-GATE"',
+            'next_gate: "IDS-STAGE026-P2-GATE"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_gate_terms),
