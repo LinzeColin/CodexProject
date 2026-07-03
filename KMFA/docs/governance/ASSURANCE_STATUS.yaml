@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260704-V014-S03-P3-SOURCE-PRIORITY-FINAL-VALIDATION"
+as_of_event_id: "EVENT-KMFA-20260704-V014-S03-STAGE-REVIEW-FINAL-VALIDATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "39201eecaefd445553b066c27c7e73601c5afe18"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-04T00:45:00+10:00"
-generator_version: "manual-v014-s03-p3-source-priority"
+snapshot_event_time: "2026-07-04T01:15:00+10:00"
+generator_version: "manual-v014-s03-stage-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 659
-    total_active_formulas: 62
+    total_active_parameters: 662
+    total_active_formulas: 63
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -128,6 +128,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/machine/source_priority_manifest.json"
       - "KMFA/tools/check_v014_s03_p3_source_priority.py"
       - "KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S03_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S03_STAGE_REVIEW/machine/stage3_review_manifest.json"
+      - "KMFA/tools/check_v014_s03_stage_review.py"
       - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
       - "KMFA/tools/check_v014_s02_p2_immutability_policy.py"
       - "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/test_results.md"

@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s03p3-source-priority`
+- version: `0.1.4-s03-stage-review`
 - current_stage: `S03`
-- current_phase: `v0.1.4 S03-P3 source priority`
-- status: `completed_validated_local_only_no_go_upload_deferred`
+- current_phase: `v0.1.4 Stage 3 review`
+- status: `review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 Stage 3 review completed local-only: S03-P1/S03-P2/S03-P3 validators PASS, open findings=0, public_raw_file_count=5, matrix_row_count=5, source_priority_record_count=5, source_priority_order_count=9, GitHub upload=false, S04-P1=false.
 - v0.1.4 S03-P3 source priority completed local-only: source_priority_records=5, source_priority_order_count=9, same_source_policy_event_count=1, cross_source_difference_queue_item_count=1, auto_selection_allowed=false, raw_root_read=false, github_upload=false.
 - v0.1.4 S03-P1 文件型导入登记已本地完成：证据位于 `KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/`，validator 为 `KMFA/tools/check_v014_s03_p1_file_registration.py`，focused unit 为 `KMFA/tests/test_v014_s03_p1_file_registration.py`；本 phase 对 `/Users/linzezhang/Downloads/KMFA_MetaData` 执行授权只读 list/stat/read/hash，公开登记 file_count=5、supported_file_count=5、total_size_bytes=62788056，raw 文件明细和内容 hash 仅写入 git-ignored `KMFA/.codex_private_runtime/`；未执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、字段映射、正式报告或业务执行。
 - v0.1.4 S02-P3 数据质量等级已本地完成：证据位于 `KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/`，validator 为 `KMFA/tools/check_v014_s02_p3_quality_gate.py`，focused unit 为 `KMFA/tests/test_v014_s02_p3_quality_gate.py`；本 phase 锁定 Q0-Q5 数据质量、A/B/C/D 报告可信等级、quality-to-release gate 和 missing-evidence block 策略；未读取、列出、盘点、修改或写入 raw inbox，未执行 Stage 2 review、GitHub upload、raw value matching、正式报告或业务执行。

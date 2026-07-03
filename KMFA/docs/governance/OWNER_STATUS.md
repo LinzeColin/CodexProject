@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S03-P3 源优先级；基于 S03-P2 public matrix/status events 生成 `5` 条 public-safe source priority records、`9` 级 priority order、`1` 条 same-source rerun policy event 和 `1` 条 cross-source manual difference queue item。证据位于 `KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/`，validator 为 `KMFA/tools/check_v014_s03_p3_source_priority.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取 raw root，未写入、删除、移动、重命名、覆盖或转换 raw inbox，未执行 Stage 3 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 Stage 3 整体复审；S03-P1/S03-P2/S03-P3 validators 全部 PASS，open findings=0，public raw files=`5`、matrix rows=`5`、source priority records=`5`、priority order=`9`。证据位于 `KMFA/stage_artifacts/V014_S03_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s03_stage_review.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取 raw root，未写入、删除、移动、重命名、覆盖或转换 raw inbox，未进入 S04，未执行 raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 Stage 3 整体复审已确认 S03-P1/S03-P2/S03-P3 validators 全部 PASS，open findings=0；Stage review 未读取 raw root，未进入 S04，未执行 GitHub upload，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S03-P3 已确认 public-safe source priority 通过本地 validator；raw/upload/authorized/processed 排序已锁定，处理后数据低于原始上传/授权导出，同源不一致只失效缓存并请求重跑，跨源冲突只进入人工差异队列且 `auto_selection_allowed=false`，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S03-P2 已确认 public-safe source check matrix/status events 通过本地 validator；matrix/status 只使用 S03-P1 public file ids、维度、状态和 private refs，不包含 raw 文件名、raw hash、字段/表头明文、row values 或业务值，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S03-P1 已确认 raw root read-only registration 通过本地 validator，公开证据只保存聚合计数、类型、大小、状态和 private refs，raw 文件明细和内容 hash 留在 git-ignored private runtime，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
@@ -153,4 +154,4 @@ KMFA 已完成 v0.1.4 S03-P3 源优先级；基于 S03-P2 public matrix/status e
 
 ## 下一步
 
-下一步只能另起 run work 执行 v0.1.3 Stage 1-10 GitHub upload gate 或用户明确指定的单一 phase；不得跳过该 upload gate 的 validators、安全扫描、分支集成检查、`NO_GO`、D 级报告、12 条 pending reconciliation 和 public-safe 边界直接进入正式报告、raw value matching、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只能另起 run work 执行 `v0.1.4 S04-P1｜金额精度与基础工具`；不得跳到 GitHub upload、raw value matching、field mapping、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
