@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-03 - 0.1.3-s09-stage-review
+
+- task_id: `KMFA-V013-S09-STAGE-REVIEW-20260703`
+- status: `review_passed_upload_deferred_until_stage10_batch_no_go`
+- evidence: `KMFA/stage_artifacts/V013_S09_STAGE_REVIEW/machine/stage9_review_manifest.json`
+- validator: `KMFA/tools/check_v013_s09_stage_review.py`
+- scope: Stage 9 review only; S10-P1 and GitHub upload not performed.
+- result: phase_results all PASS, open_findings=0, fixed_findings=1, pending_resolutions=12, upload_deferred/no_go.
+
+product_version: 0.1.3-s09-stage-review
+version_matrix_product_version_reference: 0.1.3-s09-stage-review
+
 ## 2026-07-03 - 0.1.3-s09p3-scope-reconciliation-replay
 
 - task_id: `KMFA-V013-S09-P3-SCOPE-RECONCILIATION-REPLAY-20260703`

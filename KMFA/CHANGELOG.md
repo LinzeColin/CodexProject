@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3-s09-stage-review - 2026-07-03
+
+- 完成 v0.1.3 Stage 9 overall review：复跑 S09-P1/S09-P2/S09-P3 replay validators 和 legacy S09 validators，确认 phase_results 全部 PASS、open findings=0、fixed findings=1、pending resolutions=12。
+- 新增 `KMFA/tools/v013_s09_stage_review.py`、`KMFA/tools/check_v013_s09_stage_review.py`、`KMFA/tests/test_v013_s09_stage_review.py` 和 `KMFA/stage_artifacts/V013_S09_STAGE_REVIEW/`。
+- GitHub main 未上传，仍延期到 Stage 1-10 batch gate；未执行 S10-P1、raw value matching、lineage full check、正式报告或业务执行。
+
 ## 0.1.3-s09p3-scope-reconciliation-replay - 2026-07-03
 
 - 完成 `v0.1.3 S09-P3｜scope reconciliation replay` 本地验证：复用既有 S09-P3 public-safe 口径转换与差异核对 artifacts，并验证 v0.1.3 S09-P2 replay dependency。
