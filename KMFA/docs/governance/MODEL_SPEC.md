@@ -176,6 +176,16 @@ product_version: 0.1.4-s06p3-validation-evidence
 - boundary_validation: `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/human/test_results.md`
 - limitation: S06-P3 只证明 public-safe validation evidence 和 metadata/quality 写入；不关闭差异，不执行 Stage 6 review、GitHub upload、actual business raw value matching、lineage full check、正式报告或 business execution。
 
+### FORM-KMFA-V014-S06-STAGE-REVIEW-001
+
+- type: deterministic public-safe Stage 6 review gate
+- purpose: 复跑 S06-P1/S06-P2/S06-P3 validators，锁定 Stage 6 本地整体复审证据，确认 open findings 为 0 且 GitHub upload 延后到 v1.4 Stage 1-18 完整复审后。
+- fact_level: EXTRACTED
+- expression: `s06_stage_review_valid = S06-P1 PASS AND S06-P2 PASS AND S06-P3 PASS AND open_review_finding_count == 0 AND queue_item_count == 1 AND blocked_project_status_count == 2 AND q5_allowed_count == 0 AND report_grade_a_allowed_count == 0 AND raw_inbox_read_by_this_review == false AND github_upload_performed == false AND s07_p1_started == false AND current_go_no_go == NO_GO`
+- evidence: `KMFA/tools/v014_s06_stage_review.py`, `KMFA/tools/check_v014_s06_stage_review.py`, `KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/machine/stage6_review_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/human/test_results.md`
+- limitation: Stage 6 review 只证明 S06 public-safe local review closure；不证明 GitHub upload、S07-P1、difference closure、raw value matching、lineage full check、正式报告或 business execution。
+
 ### FORM-KMFA-AMOUNT-001
 
 - type: deterministic amount normalization

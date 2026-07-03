@@ -86,7 +86,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s06p3-validation-evidence"
+    model_version: "0.1.4-s06-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -117,6 +117,7 @@ models:
       - "FORM-KMFA-V014-S06P1-ZERO-DELTA-VALIDATOR-001"
       - "FORM-KMFA-V014-S06P2-DIFFERENCE-QUEUE-001"
       - "FORM-KMFA-V014-S06P3-VALIDATION-EVIDENCE-001"
+      - "FORM-KMFA-V014-S06-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -168,6 +169,9 @@ models:
       - "PARAM-KMFA-1061"
       - "PARAM-KMFA-1064"
       - "PARAM-KMFA-1070"
+      - "PARAM-KMFA-1071"
+      - "PARAM-KMFA-1072"
+      - "PARAM-KMFA-1073"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -298,7 +302,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s06p3-validation-evidence"
+    model_version: "0.1.4-s06-stage-review"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -313,6 +317,7 @@ models:
       - "FORM-KMFA-V014-S06P1-ZERO-DELTA-VALIDATOR-001"
       - "FORM-KMFA-V014-S06P2-DIFFERENCE-QUEUE-001"
       - "FORM-KMFA-V014-S06P3-VALIDATION-EVIDENCE-001"
+      - "FORM-KMFA-V014-S06-STAGE-REVIEW-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"

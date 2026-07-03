@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S06-P3 validation evidence；S06-P1/S06-P2 public-safe 结果已输出 sanitized zero-delta、mismatch report 和 project validation status，并写入 `metadata/quality`，当前 Q5 allowed=`0`、report grade A allowed=`0`、状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/`，validator 为 `KMFA/tools/check_v014_s06_p3_validation_evidence.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 6 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 Stage 6 整体复审；S06-P1/S06-P2/S06-P3 validators 全部 PASS，open findings=`0`，当前 Q5 allowed=`0`、report grade A allowed=`0`、状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s06_stage_review.py`。本 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S07-P1、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 Stage 6 整体复审已确认本地 validator 通过；S06-P1/S06-P2/S06-P3 validators 全部 PASS，open findings=0，queue items=`1`、blocked project statuses=`2`、Q5 allowed=`0`、report grade A allowed=`0`；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S06-P1 zero-delta validator 已确认本地 validator 通过；public-safe pass fixture 比较 `8` 个整数分字段且 mismatch count=`0`，1 cent mismatch 被捕获并生成 mismatch report；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S06-P3 validation evidence 已确认本地 validator 通过；metadata/quality 写入只包含 public-safe hash/ref/status/evidence，project status count=`2`、blocked=`2`、Q5 allowed=`0`、report grade A allowed=`0`；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 Stage 5 整体复审已确认本地 validator 通过；S05-P1/S05-P2/S05-P3 validators 全部 PASS，open findings=0；公开证据只保存 phase result、聚合计数、validator 结果和 NO_GO/upload-deferred 边界，不保存 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
@@ -164,4 +165,4 @@ KMFA 已完成 v0.1.4 S06-P3 validation evidence；S06-P1/S06-P2 public-safe 结
 
 ## 下一步
 
-下一步只能另起 run work 执行 `v0.1.4 Stage 6 整体复审`；不得跳到 GitHub upload、S07、raw value matching、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只能另起 run work 执行 `v0.1.4 S07-P1｜财务文件适配`；不得跳到 GitHub upload、S07-P2、S07-P3、Stage 7 review、raw value matching、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。

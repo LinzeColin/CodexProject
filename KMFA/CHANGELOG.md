@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s06-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 6 整体复审`。
+- 新增 Stage 6 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S06-P1/S06-P2/S06-P3 validators，phase_results 全部 PASS，open findings=`0`；锁定 queue items=`1`、blocked project statuses=`2`、metadata zero-delta/data-quality/source-difference/mismatch writes=`1/2/1/1`、Q5 allowed=`0`、report grade A allowed=`0`、NO_GO/Q4/D/blocked。
+- 本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values、PDF/Excel source values 或真实业务值。
+- 本轮未执行 GitHub upload、S07-P1、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s06p3-validation-evidence - 2026-07-04
 
 - 完成 `v0.1.4 S06-P3｜validation evidence output`。
