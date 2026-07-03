@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `Stage 6 整体复审`：`KMFA/tools/v014_s06_stage_review.py`、`KMFA/tools/check_v014_s06_stage_review.py`、`KMFA/tests/test_v014_s06_stage_review.py` 和 Stage 6 review evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/`。本 review 复跑 v0.1.4 S06-P1/S06-P2/S06-P3 public-safe validators，phase results 全部 `PASS`，open findings=`0`；锁定 queue items=`1`、blocked project statuses=`2`、metadata zero-delta/data-quality/source-difference/mismatch writes=`1/2/1/1`、Q5 allowed=`0`、report grade A allowed=`0`、hard blocks=`zero_delta_failed` 和 `unresolved_critical_difference`。本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row/cell values、PDF/Excel source values 或真实业务值。未执行 GitHub upload、S07-P1、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S07-P1｜财务文件适配`，不得在本轮补做 GitHub upload 或 S07-P1。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S07-P1｜财务文件适配`：`KMFA/tools/v014_s07_p1_finance_file_adapter.py`、`KMFA/tools/check_v014_s07_p1_finance_file_adapter.py`、`KMFA/tests/test_v014_s07_p1_finance_file_adapter.py` 和 S07-P1 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/`。本 phase 复用既有 public-safe finance adapter baseline，登记 source categories=`9`、source registry=`9`、field candidates=`45`、hash-only candidates=`45`、readonly field reports=`9`、source header fingerprints=`45`，Q4/Q5/formal report allowed 均为 `0`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row/cell values、PDF/Excel source values 或真实业务值。未执行 S07-P2、S07-P3、Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S07-P2｜WPS 文件适配`，不得在本轮补做 Stage 7 review 或 GitHub upload。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s06-stage-review`
-- 当前已完成: `v0.1.4 Stage 6 review`
-- 证据目录: `KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/`
-- validator: `KMFA/tools/check_v014_s06_stage_review.py`
-- focused test: `KMFA/tests/test_v014_s06_stage_review.py`
+- 当前版本: `0.1.4-s07p1-finance-file-adapter`
+- 当前已完成: `v0.1.4 S07-P1 finance file adapter`
+- 证据目录: `KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/`
+- validator: `KMFA/tools/check_v014_s07_p1_finance_file_adapter.py`
+- focused test: `KMFA/tests/test_v014_s07_p1_finance_file_adapter.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: Stage 6 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复跑 S06-P1/S06-P2/S06-P3 public-safe validators。
-- 未执行: GitHub upload、S07-P1、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- raw boundary: S07-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe baseline 并输出 hash/ref/fingerprint-only evidence。
+- 未执行: S07-P2、S07-P3、Stage 7 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
 
 ## v0.1.3 历史状态
 

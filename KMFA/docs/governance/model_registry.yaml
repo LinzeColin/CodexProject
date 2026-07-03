@@ -78,6 +78,13 @@ assumptions:
       - "KMFA/metadata/quality/v014_s03_p3_cross_source_difference_queue.jsonl"
       - "KMFA/stage_artifacts/V014_S03_P3_SOURCE_PRIORITY/machine/source_priority_manifest.json"
       - "KMFA/metadata/sources/source_priority_policy.yaml"
+  - assumption_id: "ASM-KMFA-014"
+    statement: "v0.1.4 S07-P1 finance file adapter may only create public-safe source refs, field candidate refs, fingerprints, aggregate counts and validation evidence; it cannot publish source field/header plaintext, raw file information, row or cell values, business values, S07-P2/S07-P3 output, Stage 7 review, GitHub upload or formal reports."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/human/finance_file_adapter_report.md"
+      - "KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/machine/finance_file_adapter_manifest.json"
 models:
   - model_id: "MOD-KMFA-GOV-001"
     name: "KMFA phase governance and public repository boundary"
