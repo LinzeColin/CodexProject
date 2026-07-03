@@ -9,9 +9,9 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-s09p1-project-cost-fact-layer-replay`
-- 当前已完成: `v0.1.3 S09-P1 project cost fact layer replay`
-- 证据目录: `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/`
+- 当前版本: `0.1.3-s09p2-margin-cash-margin-replay`
+- 当前已完成: `v0.1.3 S09-P2 margin and cash margin replay`
+- 证据目录: `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/`
 - Stage 7 复审结论: S07-P1/S07-P2/S07-P3 replay validators 全部 PASS；legacy S07-P1 finance adapter validator/unit、legacy S07-P2 WPS adapter validator/unit、legacy S07-P3 Redcircle postponement validator/unit 均 PASS；Stage 7 review validator 和 focused unit test PASS。复审确认 phase_results=`S07-P1=PASS, S07-P2=PASS, S07-P3=PASS`、open findings=`0`、Q5 allowed count=`0`、formal report allowed count=`0`、Redcircle automatic connector allowed=`false`、data quality=`Q4`、report grade=`D`、release permission=`blocked`、`s08_p1_performed=false`、`github_upload_performed=false`。
 - upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4、Stage 5、Stage 6 或 Stage 7 单独 upload 作为 active next step。
 - S08-P1 结论: 已重放既有 public-safe 项目组合键能力，锁定 8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条人工复核队列、1 条 strong auto match、10000 bps 权重总和、8500/7000/5000 bps 阈值。
@@ -19,9 +19,10 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - S08-P3 结论: 已重放既有 public-safe 匹配质量能力，锁定 4 类质量场景、4 条 quality cases、3 条 manual review queue、1 份 entity_matching_report 和 high=2/medium=1/low=1 风险汇总；人工复核队列 `auto_merge_allowed=false`，Stage 8 review 已由本轮完成，GitHub upload 未执行。
 - Stage 8 review 结论: S08-P1/S08-P2/S08-P3 replay validators 全部 PASS；focused unit test 和 Stage 8 review validator PASS；phase_results=`S08-P1=PASS, S08-P2=PASS, S08-P3=PASS`、open findings=`0`、fixed findings=`1`、Q5 allowed count=`0`、formal report allowed count=`0`、legacy Stage 8 upload artifacts current gate=`false`、data quality=`Q4`、report grade=`D`、release permission=`blocked`、`s09_p1_performed=false`、`github_upload_performed=false`。
 - S09-P1 结论: 已重放既有 public-safe 项目成本事实层能力并验证 v0.1.3 Stage 8 review dependency；锁定 required metrics=`6`、cost categories=`9`、fact records=`4`、unallocated pool=`9`、authority locked fields=`40`、excluded fields=`5`、business entity types=`8`、project identity profiles=`4`、manual review queue=`3`、unresolved differences=`1`、blocked quality results=`2`；metric/cost category value 均保持 hash/private-ref only，formal calculation allowed=`0`，report grade=`D`，release permission=`blocked`，`s09_p2_performed=false`、`s09_p3_performed=false`、`stage9_review_performed=false`、`github_upload_performed=false`。
-- raw boundary: 本轮 S09-P1 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe Stage 9 P1 evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值、Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
-- 未执行: S09-P2、S09-P3、Stage 9 review、GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 S09-P2 public-safe margin and cash margin replay` 或用户明确指定的单一 phase；不得执行 GitHub upload、S09-P3、Stage 9 review、raw value matching、正式报告或业务动作。
+- S09-P2 结论: 已重放既有 public-safe 毛利与现金毛利层能力并验证 v0.1.3 S09-P1 dependency；锁定 required margin metrics=`4`、project cost fact records=`4`、margin records=`4`、scope difference summary records=`12`、authority field groups=`8`、manual review queue=`3`、unresolved differences=`1`、zero-delta fail count=`1`、blocked quality results=`2`；authority/system/cash value 均保持 hash/private-ref only，authority/system overwrite allowed=`0`，public amount values committed=`0`，formal report allowed=`false`，`s09_p3_performed=false`、`stage9_review_performed=false`、`github_upload_performed=false`。
+- raw boundary: 本轮 S09-P2 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe Stage 9 P2 evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF 原值、Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
+- 未执行: S09-P3、Stage 9 review、GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
+- 下一步: 另起 run work 执行 `v0.1.3 S09-P3 public-safe scope reconciliation replay` 或用户明确指定的单一 phase；不得执行 GitHub upload、Stage 9 review、raw value matching、正式报告或业务动作。
 
 ## 持久本机 raw boundary
 

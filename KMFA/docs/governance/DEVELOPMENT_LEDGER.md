@@ -165,12 +165,13 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | `KMFA-V013-S05-P3-AUTHORITY-BASELINE-REPLAY-20260702` | v0.1.3 S05-P3 权威基准锁定 replay 本地通过：baseline version 和 content hash 已复算锁定，authority records=45、Q5 locked fields=40、excluded fields=5；未读取或写入 raw data inbox，未执行 Stage 5 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/human/authority_baseline_replay_report.md` |
 | `KMFA-V013-S08-STAGE-REVIEW-20260703` | v0.1.3 Stage 8 overall review 本地通过，completed_version=`0.1.3-s08-stage-review`：复跑 S08-P1/S08-P2/S08-P3 replay validators，phase_results 全部 PASS，open findings=0，fixed findings=1，legacy upload 非当前 gate；未读取或写入 raw data inbox，未执行 S09-P1、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/human/stage8_review_report.md` |
 | `KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703` | v0.1.3 S09-P1 project cost fact layer replay 本地通过，completed_version=`0.1.3-s09p1-project-cost-fact-layer-replay`：重放 6 个 required metrics、9 个 cost categories、4 条 fact records 和 9 条 unallocated pool records；formal calculation、S09-P2/S09-P3、Stage 9 review、GitHub upload、raw value matching、正式报告和业务执行均未执行 | `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/human/project_cost_fact_layer_replay_report.md` |
+| `KMFA-V013-S09-P2-MARGIN-CASH-MARGIN-REPLAY-20260703` | v0.1.3 S09-P2 margin and cash margin replay 本地通过，completed_version=`0.1.3-s09p2-margin-cash-margin-replay`：重放 4 个 required margin metrics、4 条 margin records 和 12 条 scope difference summary records；S09-P3、Stage 9 review、GitHub upload、raw value matching、正式报告和业务执行均未执行 | `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/human/margin_cash_margin_replay_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| 无 | v0.1.3 S09-P1 完成后，下一步只能另起 run 执行 v0.1.3 S09-P2 public-safe margin and cash margin replay 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/human/test_results.md` |
+| 无 | v0.1.3 S09-P2 完成后，下一步只能另起 run 执行 v0.1.3 S09-P3 public-safe scope reconciliation replay 或用户明确指定的单一 phase；GitHub main upload 延期到 Stage 1-10 全部完成并整体复审后；正式报告和业务执行仍未执行 | `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/human/test_results.md` |
 
 ## Not Completed
 
@@ -179,4 +180,4 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
-| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S09-P1 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S09-P2 或用户明确指定的单一 phase |
+| GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S09-P2 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S09-P3 或用户明确指定的单一 phase |
