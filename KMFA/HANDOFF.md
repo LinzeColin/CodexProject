@@ -9,11 +9,11 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 ## v0.1.3 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.3-stage1-10-batch-review`
-- 当前已完成: `v0.1.3 Stage 1-10 batch overall review`
-- 证据目录: `KMFA/stage_artifacts/V013_STAGE1_10_BATCH_REVIEW/`
+- 当前版本: `0.1.3-stage1-10-github-upload`
+- 当前已完成: `v0.1.3 Stage 1-10 GitHub upload gate local validation`
+- 证据目录: `KMFA/stage_artifacts/V013_STAGE1_10_GITHUB_UPLOAD/`
 - Stage 7 复审结论: S07-P1/S07-P2/S07-P3 replay validators 全部 PASS；legacy S07-P1 finance adapter validator/unit、legacy S07-P2 WPS adapter validator/unit、legacy S07-P3 Redcircle postponement validator/unit 均 PASS；Stage 7 review validator 和 focused unit test PASS。复审确认 phase_results=`S07-P1=PASS, S07-P2=PASS, S07-P3=PASS`、open findings=`0`、Q5 allowed count=`0`、formal report allowed count=`0`、Redcircle automatic connector allowed=`false`、data quality=`Q4`、report grade=`D`、release permission=`blocked`、`s08_p1_performed=false`、`github_upload_performed=false`。
-- upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；GitHub main 未上传。GitHub main upload 必须延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得把 Stage 4、Stage 5、Stage 6 或 Stage 7 单独 upload 作为 active next step。
+- upload policy: v1.3 不按单个 Stage 做 GitHub upload gate；Stage 1-10 已全部完成并完成 batch overall review，当前只允许执行一次性 Stage 1-10 GitHub upload gate。不得把 Stage 4、Stage 5、Stage 6、Stage 7、Stage 8、Stage 9 或 Stage 10 单独 upload 作为 active next step。
 - S08-P1 结论: 已重放既有 public-safe 项目组合键能力，锁定 8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条人工复核队列、1 条 strong auto match、10000 bps 权重总和、8500/7000/5000 bps 阈值。
 - S08-P2 结论: 已重放既有 public-safe 业务实体模型能力，锁定 8 类实体、14 条关系、32 条 lifecycle statuses、每类实体 4 个状态；实体值保持 hash/ref only，关系保持 schema-only，生命周期保持 status-only；S08-P3 已由后续 phase 完成，GitHub upload 未执行。
 - S08-P3 结论: 已重放既有 public-safe 匹配质量能力，锁定 4 类质量场景、4 条 quality cases、3 条 manual review queue、1 份 entity_matching_report 和 high=2/medium=1/low=1 风险汇总；人工复核队列 `auto_merge_allowed=false`，Stage 8 review 已由本轮完成，GitHub upload 未执行。
@@ -27,9 +27,10 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - S10-P3 结论: 已本地完成 v0.1.3 report export replay；验证 v0.1.3 S10-P2 dependency 并复用 legacy S10-P3 public-safe report export artifacts，锁定 report_export_record_count=`2`、html_export_count=`2`、csv_appendix_count=`2`、excel_compatible_download_count=`2`、committed_pdf_file_count=`0`、committed_excel_file_count=`0`、formal_report_count=`0`、business_decision_basis_count=`0`、pending_reconciliation_count=`12`、grade_distribution=`D:2`；HTML 继承蓝色商务样板，Excel 下载保持 compatible CSV，PDF 仅 private-runtime-only policy；`stage10_review_performed=false`、`github_upload_performed=false`。
 - Stage 10 review 结论: 已本地完成 v0.1.3 Stage 10 overall review；复跑 S10-P1/S10-P2/S10-P3 replay validators、legacy S10 validators、legacy Stage 10 review validator、v0.1.3 Stage 10 review validator 和 focused unit test，phase_results=`S10-P1=PASS, S10-P2=PASS, S10-P3=PASS`，open findings=`0`，fixed findings=`2`，report_template_count=`2`，report_grade_record_count=`2`，report_export_record_count=`2`，html_export_count=`2`，csv_appendix_count=`2`，excel_compatible_download_count=`2`，pending_reconciliation_count=`12`，confirmed_resolution_count=`0`，formal_report_count=`0`，business_decision_basis_count=`0`，legacy Stage 10 upload artifacts current gate=`false`，GitHub upload status=`not_uploaded_deferred_until_stage1_10_batch`。
 - Stage 1-10 batch review 结论: 已本地完成 v0.1.3 Stage 1-10 batch overall review；复核 S01-S10 共 10 个 v0.1.3 stage review manifest，stage_results 全部 `PASS`，open_stage_review_finding_count=`0`，open_batch_finding_count=`0`，fixed_batch_finding_count=`1`，legacy_individual_stage_upload_artifacts_current_gate=`false`，github_upload_ready_next_gate=`true`，github_upload_performed=`false`，github_upload_status=`not_uploaded_ready_for_separate_stage1_10_github_upload_gate`。
-- raw boundary: 本轮 Stage 10 review 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只复跑 public-safe S10 replay validators 和既有 public-safe HTML/CSV artifacts。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF/Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
-- 未执行: GitHub main upload、raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
-- 下一步: 另起 run work 执行 `v0.1.3 Stage 1-10 GitHub upload gate`；该 gate 必须先复跑 validators、安全扫描和分支集成检查，再按一次性上传规则 push；不得执行 raw value matching、正式报告、lineage full check、live connector 或业务动作。
+- Stage 1-10 GitHub upload gate 结论: 已完成 local validation；已 unshallow/fetch/rebase 到 latest `origin/main`，upload base=`387f2bdd1e4cb06d3fced781417f057f854c2901`，reviewed batch commit=`494a166779fa8fdc1a282d1ebbdca293e3e78886`；upload validator、focused upload unit、focused batch unit、full KMFA tests 326、S01-S10 validators、no-float、no-omission、governance validators、raw/private path scan、strict secret scan、public-safe semantic scan 和 diff check 均 PASS。本 gate 仍保持 `delivery_allowed=false`、`formal_report_allowed=false`、`business_execution_allowed=false`、report grade=`D`、data quality=`Q4`、pending reconciliation=`12`。
+- raw boundary: 本轮 GitHub upload gate 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只处理 public-safe governance、validator、test 和 evidence。公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF/Excel 原值、connector secret 或 Redcircle native file；未新增 private diagnostic。
+- 未执行: raw value matching、lineage full check、formal report、live connector、Redcircle automatic connector、OpMe deep coupling、business execution。
+- 下一步: 若 push 和 post-push parity 完成，则 v0.1.3 Stage 1-10 GitHub upload gate 关闭；后续只能由用户指定下一个单一 phase，不得自动推进 raw value matching、正式报告、lineage full check、live connector 或业务动作。
 
 ## 持久本机 raw boundary
 

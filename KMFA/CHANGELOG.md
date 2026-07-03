@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3-stage1-10-github-upload - 2026-07-03
+
+- 完成 `v0.1.3 Stage 1-10 GitHub upload gate` 本地验证：基于最新 `origin/main` 完成 rebase，复跑 Stage 1-10 batch validator、S01-S10 stage review validators、治理 validators、安全扫描和全量 KMFA tests。
+- 新增 public-safe upload evidence：`KMFA/stage_artifacts/V013_STAGE1_10_GITHUB_UPLOAD/`，并新增 `KMFA/tools/check_v013_stage1_10_github_upload.py`、`KMFA/tests/test_v013_stage1_10_github_upload.py`。
+- 本 gate 仅允许将 Stage 1-10 reviewed public-safe stack 上传 GitHub main；仍不执行 raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行。
+- 项目仍为 `NO_GO`，`delivery_allowed=false`，2 条报告仍为 D 级，12 条 pending reconciliation 继续阻断正式报告和经营决策依据。
+
 ## 0.1.3-stage1-10-batch-review - 2026-07-03
 
 - 完成 `v0.1.3 Stage 1-10 batch overall review` 本地验证：复核 S01-S10 共 10 个 v0.1.3 stage review manifest，stage_results 全部 PASS，open stage review findings=0，open batch findings=0。

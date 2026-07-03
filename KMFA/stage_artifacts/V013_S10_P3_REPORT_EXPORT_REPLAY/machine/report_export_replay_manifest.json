@@ -33,7 +33,7 @@
     "KMFA/tools/check_v013_s10_p3_report_export_replay.py",
     "KMFA/tests/test_v013_s10_p3_report_export_replay.py"
   ],
-  "generated_at": "2026-07-03T17:49:03+10:00",
+  "generated_at": "2026-07-03T19:47:54+10:00",
   "github_upload": {
     "github_upload_deferred_until_stage10_batch": true,
     "github_upload_performed": false,
@@ -212,7 +212,7 @@
     "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001",
     "upstream_template_content_hash": "sha256:dc02a28d14ef445af3da1df03a42ecd8117942b8ab1ab03872c6fa0c9fb8401d"
   },
-  "reviewed_head": "416b932537cc2b0a4646af437dfc2b8977259a16",
+  "reviewed_head": "494a166779fa8fdc1a282d1ebbdca293e3e78886",
   "s10_p2_dependency_status": "completed_validated_local_only_no_go_upload_deferred_report_grade_runtime_replayed",
   "s10_p2_dependency_validated": true,
   "schema_version": "kmfa.v013_s10_p3_report_export_replay.v1",

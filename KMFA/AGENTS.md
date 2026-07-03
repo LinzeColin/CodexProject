@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.3 Stage 1-10 batch overall review`
-- 当前 Phase: `v0.1.3 Stage 1-10 batch overall review 已本地完成；GitHub main 仍未上传；下一步只能独立进入 v0.1.3 Stage 1-10 GitHub upload gate 或用户明确指定的单一 phase`
+- 当前 Stage: `v0.1.3 Stage 1-10 GitHub upload gate`
+- 当前 Phase: `v0.1.3 Stage 1-10 GitHub upload gate 已完成本地验证并准备一次性上传 GitHub main；本 gate 不改变 NO_GO、D 级报告、12 条 pending reconciliation 或 business execution 阻断`
 
 ## Execution Rules
 

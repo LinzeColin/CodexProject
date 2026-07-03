@@ -28,7 +28,7 @@
     "KMFA/tools/check_v013_s10_p1_report_templates_replay.py",
     "KMFA/tests/test_v013_s10_p1_report_templates_replay.py"
   ],
-  "generated_at": "2026-07-03T16:34:47+10:00",
+  "generated_at": "2026-07-03T19:47:45+10:00",
   "github_upload": {
     "github_upload_deferred_until_stage10_batch": true,
     "github_upload_performed": false,
@@ -178,7 +178,7 @@
     "trusted_grade_assignment_allowed_count": 0,
     "ui_scope_count": 0
   },
-  "reviewed_head": "3606b21793ae26de7b0eb7dc1f15b217fd6da4e8",
+  "reviewed_head": "494a166779fa8fdc1a282d1ebbdca293e3e78886",
   "s09_stage_review_dependency_validated": true,
   "s09_stage_review_status": "review_passed_upload_deferred_until_stage10_batch_no_go",
   "schema_version": "kmfa.v013_s10_p1_report_templates_replay.v1",
