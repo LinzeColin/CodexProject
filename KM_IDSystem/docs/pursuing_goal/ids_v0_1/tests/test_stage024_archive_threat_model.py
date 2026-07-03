@@ -15,6 +15,7 @@ PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE024_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE024_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE024_PHASE2_SAFE_EXTRACTION_SLICE.md"
+PHASE3 = PURSUE_ROOT / "STAGE024_PHASE3_SCENARIO_VALIDATION.md"
 BATCH_LOCK = PURSUE_ROOT / "BATCH021_030_UPLOAD_LOCK.yaml"
 SCRIPT = ROOT / "scripts" / "check_archive_threat_model.py"
 EXTRACTED_AT = "2026-07-03T03:12:44Z"
@@ -128,6 +129,7 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'status: "stage023_completed_local_pending_stage024"',
             'status: "stage024_phase1_in_progress"',
             'status: "stage024_phase2_in_progress"',
+            'status: "stage024_phase3_in_progress"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_status_terms),
@@ -138,10 +140,27 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE023-P4"',
             'current_task_id: "IDS-V0_1-STAGE024-P1"',
             'current_task_id: "IDS-V0_1-STAGE024-P2"',
+            'current_task_id: "IDS-V0_1-STAGE024-P3"',
         ]
         self.assertTrue(
             any(term in text for term in allowed_task_terms),
             f"batch lock did not contain an allowed STAGE-024 current task: {allowed_task_terms}",
+        )
+        allowed_acceptance_terms = [
+            'acceptance_status: "phase2_safe_extraction_slice_complete"',
+            'acceptance_status: "phase3_scenario_validation_complete"',
+        ]
+        self.assertTrue(
+            any(term in text for term in allowed_acceptance_terms),
+            f"batch lock did not contain an allowed STAGE-024 acceptance status: {allowed_acceptance_terms}",
+        )
+        allowed_gate_terms = [
+            'next_gate: "IDS-STAGE024-P3-GATE"',
+            'next_gate: "IDS-STAGE024-P4-GATE"',
+        ]
+        self.assertTrue(
+            any(term in text for term in allowed_gate_terms),
+            f"batch lock did not contain an allowed STAGE-024 next gate: {allowed_gate_terms}",
         )
 
         required_terms = [
@@ -153,8 +172,6 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             'status: "completed_local"',
             'status: "in_progress"',
             'acceptance_id: "ACC-STAGE-024"',
-            'acceptance_status: "phase2_safe_extraction_slice_complete"',
-            'next_gate: "IDS-STAGE024-P3-GATE"',
             'push_allowed: false',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE024_PHASE1_SCOPE_BOUNDARY.md",
@@ -163,6 +180,188 @@ class Stage024ArchiveThreatModelPhase1Tests(unittest.TestCase):
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage024_archive_threat_model.py",
             "/Users/linzezhang/Downloads/IDS_MetaData",
             "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content",
+        ]
+
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def _write_zip(self, archive_path, entries):
+        with zipfile.ZipFile(archive_path, "w") as archive:
+            for entry_path, payload in entries.items():
+                archive.writestr(entry_path, payload)
+
+    def _phase3_scenario_archives(self, base):
+        scenarios = {}
+        scenario_entries = {
+            "path_traversal": {"../escape.txt": b"escape"},
+            "absolute_path": {"/absolute.txt": b"absolute"},
+            "archive_bomb": {"huge.bin": b"0123456789"},
+            "nested_archive": {"nested/inner.zip": b"PK\x03\x04"},
+            "garbled_filename": {"bad-\ufffd-name.txt": b"garbled"},
+            "too_many_files": {"safe/one.txt": b"one", "safe/two.txt": b"two"},
+        }
+        scenario_limits = {
+            "path_traversal": {},
+            "absolute_path": {},
+            "archive_bomb": {"archive_total_size_limit_bytes": 4},
+            "nested_archive": {"archive_nested_depth_limit": 0},
+            "garbled_filename": {},
+            "too_many_files": {"archive_file_count_limit": 1},
+        }
+        for scenario_id, entries in scenario_entries.items():
+            archive_path = base / f"{scenario_id}.zip"
+            staging = base / f"{scenario_id}-staging"
+            staging.mkdir()
+            self._write_zip(archive_path, entries)
+            scenarios[scenario_id] = {
+                "archive_uri": archive_path.as_uri(),
+                "staging_area_uri": staging.as_uri(),
+                **scenario_limits[scenario_id],
+            }
+        return scenarios
+
+    def test_phase3_scenario_report_covers_required_threat_samples_and_risk_codes(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            scenarios = self._phase3_scenario_archives(Path(tmp))
+            report = module.build_stage024_scenario_report(
+                scenario_archives=scenarios,
+                evaluated_at=EXTRACTED_AT,
+            )
+
+        self.assertEqual(report["schema_version"], "ids.stage024.archive_threat_model.scenario_validation.v1")
+        self.assertEqual(report["stage"], "STAGE-024")
+        self.assertEqual(report["phase"], "Phase 3")
+        self.assertEqual(report["task_id"], "IDS-V0_1-STAGE024-P3")
+        self.assertEqual(report["acceptance_id"], "ACC-STAGE-024")
+        self.assertEqual(report["validation_state"], "ARCHIVE_THREAT_SCENARIO_VALIDATION_PASSED")
+        self.assertTrue(report["required_scenarios_covered"])
+        self.assertEqual(report["scenario_count"], 6)
+        self.assertEqual(set(report["required_scenarios"]), {
+            "path_traversal",
+            "absolute_path",
+            "archive_bomb",
+            "nested_archive",
+            "garbled_filename",
+            "too_many_files",
+        })
+
+        by_id = {item["scenario_id"]: item for item in report["scenario_results"]}
+        expected_risks = {
+            "path_traversal": "ARCHIVE_PATH_TRAVERSAL_BLOCKED",
+            "absolute_path": "ARCHIVE_ABSOLUTE_PATH_BLOCKED",
+            "archive_bomb": "ARCHIVE_TOTAL_SIZE_LIMIT_EXCEEDED",
+            "nested_archive": "ARCHIVE_NESTED_DEPTH_LIMIT_EXCEEDED",
+            "garbled_filename": "ARCHIVE_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+            "too_many_files": "ARCHIVE_FILE_COUNT_LIMIT_EXCEEDED",
+        }
+        for scenario_id, risk_code in expected_risks.items():
+            with self.subTest(scenario_id=scenario_id):
+                self.assertIn(risk_code, by_id[scenario_id]["risk_codes"])
+                self.assertEqual(by_id[scenario_id]["expected_risk_code"], risk_code)
+                self.assertEqual(by_id[scenario_id]["scenario_state"], "ARCHIVE_THREAT_SCENARIO_VALIDATED")
+                self.assertIn("archive_threat_model", by_id[scenario_id])
+
+        serialized = json.dumps(report, ensure_ascii=False)
+        self.assertTrue(report["does_not_read_raw_metadata"])
+        self.assertEqual(report["processing_guard"]["actual_hash_jobs_started"], 0)
+        self.assertEqual(report["processing_guard"]["actual_manifest_jobs_started"], 0)
+        self.assertEqual(report["processing_guard"]["actual_dedup_jobs_started"], 0)
+        self.assertEqual(report["processing_guard"]["actual_parser_jobs_started"], 0)
+        self.assertNotIn("/Users/linzezhang/Downloads/IDS_MetaData/raw-source", serialized)
+
+    def test_phase3_reingest_validation_confirms_extracted_files_reenter_hash_manifest_dedup_parser(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            archive_path = base / "safe-reingest.zip"
+            staging = base / "safe-reingest-staging"
+            staging.mkdir()
+            self._write_zip(archive_path, {"safe/reingest-note.txt": b"safe"})
+            report = module.build_stage024_scenario_report(
+                scenario_archives={
+                    "safe_reingest": {
+                        "archive_uri": archive_path.as_uri(),
+                        "staging_area_uri": staging.as_uri(),
+                    }
+                },
+                evaluated_at=EXTRACTED_AT,
+                required_scenarios=("safe_reingest",),
+            )
+
+        reingest = report["reingest_validation"]
+        self.assertEqual(reingest["state"], "POST_EXTRACT_REINGEST_VALIDATED")
+        self.assertEqual(reingest["required_pipeline"], ["hash", "manifest", "dedup", "parser"])
+        self.assertGreaterEqual(reingest["safe_extracted_file_count"], 1)
+        for pipeline_state in reingest["pipeline_stage_states"].values():
+            with self.subTest(pipeline_state=pipeline_state):
+                self.assertIn("_REQUIRED", pipeline_state)
+        self.assertEqual(report["processing_guard"]["actual_hash_jobs_started"], 0)
+        self.assertEqual(report["processing_guard"]["actual_manifest_jobs_started"], 0)
+        self.assertEqual(report["processing_guard"]["actual_dedup_jobs_started"], 0)
+        self.assertEqual(report["processing_guard"]["actual_parser_jobs_started"], 0)
+
+    def test_phase3_cleanup_validation_only_allows_staging_temp_files(self):
+        module = self._load_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            archive_path = base / "cleanup.zip"
+            staging = base / "cleanup-staging"
+            staging.mkdir()
+            self._write_zip(archive_path, {"safe/cleanup-note.txt": b"safe"})
+            report = module.build_stage024_scenario_report(
+                scenario_archives={
+                    "safe_cleanup": {
+                        "archive_uri": archive_path.as_uri(),
+                        "staging_area_uri": staging.as_uri(),
+                    }
+                },
+                evaluated_at=EXTRACTED_AT,
+                required_scenarios=("safe_cleanup",),
+            )
+            archive_uri = archive_path.as_uri()
+
+        cleanup = report["cleanup_validation"]
+        self.assertEqual(cleanup["state"], "ARCHIVE_CLEANUP_ALLOWLIST_VALIDATED")
+        self.assertTrue(cleanup["cleanup_targets_are_staging_temp_files_only"])
+        self.assertTrue(cleanup["protected_refs_preserved"])
+        self.assertFalse(cleanup["original_archive_in_cleanup_allowlist"])
+        self.assertNotIn(archive_uri, cleanup["cleanup_allowlist_uris"])
+        self.assertEqual(set(cleanup["allowed_cleanup_classes"]), {"ARCHIVE_STAGING_TEMP_FILE"})
+
+    def test_phase3_evidence_document_records_scenarios_reingest_cleanup_no_raw_data_no_phase4(self):
+        self.assertTrue(PHASE3.is_file(), f"missing phase3 evidence: {PHASE3}")
+        text = PHASE3.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE024-P3",
+            "ACC-STAGE-024",
+            "ids.stage024.archive_threat_model.scenario_validation.v1",
+            "build_stage024_scenario_report",
+            "路径穿越",
+            "绝对路径",
+            "压缩炸弹",
+            "嵌套包",
+            "乱码文件名",
+            "超大文件数",
+            "ARCHIVE_PATH_TRAVERSAL_BLOCKED",
+            "ARCHIVE_ABSOLUTE_PATH_BLOCKED",
+            "ARCHIVE_TOTAL_SIZE_LIMIT_EXCEEDED",
+            "ARCHIVE_NESTED_DEPTH_LIMIT_EXCEEDED",
+            "ARCHIVE_GARBLED_FILENAME_OWNER_REVIEW_REQUIRED",
+            "ARCHIVE_FILE_COUNT_LIMIT_EXCEEDED",
+            "POST_EXTRACT_REINGEST_VALIDATED",
+            "hash",
+            "manifest",
+            "dedup",
+            "parser",
+            "ARCHIVE_CLEANUP_ALLOWLIST_VALIDATED",
+            "只清理允许的临时文件",
+            "不删除原始文件",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_PHASE4",
         ]
 
         for term in required_terms:
