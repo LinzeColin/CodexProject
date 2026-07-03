@@ -1,0 +1,6 @@
+subject_id,subject_label,message_count,conversation_count,sender_count,inbound_count,outbound_count,system_count,first_timestamp_ms,last_timestamp_ms,time_span_hours,top_message_type
+S1_mxr_yan,马祥荣 / 雁,100,1,2,50,49,1,1774056844000,1774780330000,200.97,text
+S2_spouse,老婆,100,1,2,49,49,2,1718538285000,1719017857000,133.21,text
+S3_payment_invoice_amount,付款/发票/金额相关联系人,100,1,8,78,17,5,1772244255000,1773650420000,390.6,text
+S4_recent_high_frequency,近期高频联系人,100,1,12,91,0,9,1764208462000,1764383876000,48.73,image
+S5_weak_noise_sample,弱匹配/噪音样本,100,1,3,49,48,3,1766822017000,1773051857000,1730.51,text
