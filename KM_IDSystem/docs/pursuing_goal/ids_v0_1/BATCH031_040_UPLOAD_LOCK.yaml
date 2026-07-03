@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-03T08:51:49Z"
-status: "stage031_phase2_in_progress"
+updated_at_utc: "2026-07-03T09:04:00Z"
+status: "stage031_phase3_in_progress"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -43,15 +43,17 @@ stage_progress:
     completed_phases:
       - "Phase 1"
       - "Phase 2"
-    next_phase: "Phase 3"
-    next_gate: "IDS-STAGE031-P3-GATE"
-    current_task_id: "IDS-V0_1-STAGE031-P2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    next_gate: "IDS-STAGE031-P4-GATE"
+    current_task_id: "IDS-V0_1-STAGE031-P3"
     acceptance_id: "ACC-STAGE-031"
-    acceptance_status: "phase2_safety_slice_defined"
+    acceptance_status: "phase3_scenario_validation_defined"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE2_SCHEMA_MIGRATION_SAFETY_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE3_SCENARIO_VALIDATION.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/schema_migration_safety/stage031_migration_safety_index.json"
       - "KM_IDSystem/scripts/check_schema_migration_safety.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage031_schema_migration_safety.py"
@@ -59,8 +61,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE031-P2"
-  next_allowed_task_id: "IDS-V0_1-STAGE031-P3"
+  current_task_id: "IDS-V0_1-STAGE031-P3"
+  next_allowed_task_id: "IDS-V0_1-STAGE031-P4"
   github_upload_allowed: false
-  current_run: "STAGE-031 Phase 2 implements a static schema migration safety checker and machine-readable index for the committed STAGE-030 control-plane schema contract; it validates dry-run, backup checkpoint, validation, rollback, recovery smoke, audit, owner stop-gate, database size, connection pool, and storage quality guardrails without connecting to PostgreSQL, executing migrations, reading raw metadata content, uploading to GitHub, creating a PR, merging, or reinstalling app entries."
-  no_upload_reason: "BATCH031_040 has only STAGE-031 Phase 1 and Phase 2 local evidence; upload is blocked until STAGE-031..040 are completed, reviewed, repaired, and a separate batch upload gate runs."
+  current_run: "STAGE-031 Phase 3 validates schema migration safety scenarios for dry-run, repeat execution, failure rollback, backup/restore checkpoint, recovery smoke, raw payload blocking, connection pool boundary, transaction boundary, and constraint-error explanations from tracked Git contracts only; it does not connect to PostgreSQL, execute migrations, read raw metadata content, upload to GitHub, create a PR, merge, or reinstall app entries."
+  no_upload_reason: "BATCH031_040 has only STAGE-031 Phase 1, Phase 2, and Phase 3 local evidence; upload is blocked until STAGE-031..040 are completed, reviewed, repaired, and a separate batch upload gate runs."
