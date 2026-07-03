@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 355
+- task_count: 356
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-03 13:45:55 Australia/Sydney - MVP page latest handoff gate mainline attestation
+
+- Task: `ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-MAINLINE-ATTESTATION`
+- Result: `pass_mvp_page_latest_handoff_gate_mainline_attested_no_runtime_enablement`
+- Evidence: `governance/run_manifests/ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-MAINLINE-ATTESTATION-20260703.json`; `arxiv-daily-push/用户中心/MVP准备与复审修补.md`; `arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml`; `arxiv-daily-push/tests/test_governance_current_state.py`.
+- Current state: the latest MVP page handoff gate sync is now bound to GitHub main commit `996986b0e00b458c376c84ea037dd06f4c548ad0` / tree `4375e46be3b7c9f712f8b21962a0a0c69da57a3f` instead of relying on a precommit/PENDING source event.
+- Boundary: this mainline attestation does not create `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`, does not send SMTP, and does not enable scheduler, Release, production restore, or DAILY_OPERATION.
+- Verification: target TDD red/green governance-current-state regression, user-center regression, generated governance dashboard, project governance, governance sync, fail-closed daily-operation readiness/preflight, V7.2 validator, final acceptance bundle verifier, and git whitespace scan.
 
 ## 2026-07-03 13:30:04 Australia/Sydney - MVP page latest handoff gate sync
 

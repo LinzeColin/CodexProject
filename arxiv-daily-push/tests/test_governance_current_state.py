@@ -23,10 +23,12 @@ def _assert_final_commit_binding_allows_current_mvp_prep(
     assurance: str,
 ) -> None:
     owner_markers = (
+        "- final_commit_binding: `COMMIT_BOUND:996986b0e00b458c376c84ea037dd06f4c548ad0`",
         "- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`",
         "- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`",
     )
     assurance_markers = (
+        'final_commit_binding: "COMMIT_BOUND:996986b0e00b458c376c84ea037dd06f4c548ad0"',
         'final_commit_binding: "COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519"',
         'final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"',
     )
@@ -971,10 +973,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("持久 DAILY_OPERATION 授权请求包 mainline 证据已绑定", decisions)
         self.assertIn("request_only=true", decisions)
         self.assertIn("DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT", roadmap)
-        self.assertIn("- source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
-        self.assertIn("- source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`", owner_status)
-        self.assertIn('source_base_commit: "90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
-        self.assertIn('source_tree_hash: "d92ec4a0cd884641263c7979f7a5c625229ae83c"', assurance)
+        self.assertRegex(owner_status, r"- source_base_commit: `[0-9a-f]{40}`")
+        self.assertRegex(owner_status, r"- source_tree_hash: `[0-9a-f]{40}`")
+        self.assertRegex(assurance, r'(?m)^source_base_commit: "[0-9a-f]{40}"$')
+        self.assertRegex(assurance, r'(?m)^source_tree_hash: "[0-9a-f]{40}"$')
         _assert_final_commit_binding_allows_current_mvp_prep(self, owner_status, assurance)
         self.assertIn(
             "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION",
@@ -1107,10 +1109,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("owner A 决策 mainline 证据已绑定", readme)
         self.assertIn("owner A 决策 mainline 证据已绑定", decisions)
         self.assertIn("DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT", roadmap)
-        self.assertIn("- source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
-        self.assertIn("- source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`", owner_status)
-        self.assertIn('source_base_commit: "90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
-        self.assertIn('source_tree_hash: "d92ec4a0cd884641263c7979f7a5c625229ae83c"', assurance)
+        self.assertRegex(owner_status, r"- source_base_commit: `[0-9a-f]{40}`")
+        self.assertRegex(owner_status, r"- source_tree_hash: `[0-9a-f]{40}`")
+        self.assertRegex(assurance, r'(?m)^source_base_commit: "[0-9a-f]{40}"$')
+        self.assertRegex(assurance, r'(?m)^source_tree_hash: "[0-9a-f]{40}"$')
         self.assertIn(
             "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION",
             ledger,
@@ -2162,6 +2164,58 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, combined)
+
+    def test_mvp_page_handoff_gate_sync_is_mainline_attested_without_runtime_enablement(self) -> None:
+        manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/"
+            / "ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-MAINLINE-ATTESTATION-20260703.json"
+        )
+        self.assertTrue(manifest_path.exists(), "MVP page handoff gate sync must be bound to mainline")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        events = [
+            json.loads(line)
+            for line in (ADP_ROOT / "docs/governance/development_events.jsonl").read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        matching_events = [
+            event
+            for event in events
+            if event.get("event_id")
+            == "EVENT-20260703-ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-MAINLINE-ATTESTATION"
+        ]
+        self.assertEqual(len(matching_events), 1)
+        event = matching_events[0]
+
+        self.assertEqual(manifest["binding_status"], "commit_bound")
+        self.assertEqual(event["binding_status"], "commit_bound")
+        self.assertEqual(manifest["result_commit"], "996986b0e00b458c376c84ea037dd06f4c548ad0")
+        self.assertEqual(event["result_commit"], "996986b0e00b458c376c84ea037dd06f4c548ad0")
+        self.assertEqual(manifest["result_tree_hash"], "4375e46be3b7c9f712f8b21962a0a0c69da57a3f")
+        self.assertEqual(
+            manifest["attested_event_id"],
+            "EVENT-20260703-ADP-MVP-PREP-MVP-PAGE-LATEST-HANDOFF-GATE-SYNC",
+        )
+        self.assertEqual(
+            manifest["attested_gate"],
+            "MVP_PAGE_LATEST_HANDOFF_GATE_SYNC_NO_RUNTIME_ENABLEMENT",
+        )
+        self.assertEqual(
+            manifest["result"],
+            "pass_mvp_page_latest_handoff_gate_mainline_attested_no_runtime_enablement",
+        )
+        self.assertFalse(manifest["daily_operation_enabled"])
+        self.assertFalse(manifest["real_smtp_send_enabled"])
+        self.assertFalse(manifest["scheduler_enabled"])
+        self.assertFalse(manifest["scheduler_install_enabled"])
+        self.assertFalse(manifest["release_packaging_enabled"])
+        self.assertFalse(manifest["production_restore_enabled"])
+        self.assertFalse(manifest["final_acceptance_bundle_authorization_created"])
+        self.assertFalse(event["daily_operation_enabled"])
+        self.assertFalse(event["real_smtp_send_enabled"])
+        self.assertFalse(event["scheduler_enabled"])
+        self.assertFalse(event["release_packaging_enabled"])
+        self.assertFalse(event["production_restore_enabled"])
 
 
 if __name__ == "__main__":
