@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 348
+- task_count: 349
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-03 11:33:00 Australia/Sydney - V7.2 product contract current pointer policy aligned
+
+- Task: `ADP-MVP-PREP-V72-PRODUCT-CONTRACT-CURRENT-POINTER-POLICY`
+- Result: `pass_v72_product_contract_current_pointer_policy_aligned_no_runtime_enablement`
+- Evidence: `arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml`; `arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`; `arxiv-daily-push/tests/test_v7_2_roadmap_machine_gate.py`.
+- Current pointer policy: `global_current_task=S2PMT07`; `shadow_source_next=NONE_WHILE_S2PMT07_BLOCKED`; `product_contract_sha256=e123aa93b07ba9a33ed6629ff3446c1ab53ce67191d1c4a587eaaa26d6161c74`.
+- Boundary: this MVP preparation does not create `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`, does not send SMTP, and does not enable scheduler, Release, production restore, or DAILY_OPERATION.
+- Verification: TDD red/green for product-contract pointer drift, V7.2 validator, project governance, full ADP unittest, and fail-closed daily-operation readiness/preflight.
 
 ## 2026-07-01 23:35:39 Australia/Sydney - S2PMT07 owner A keep-disabled decision mainline attestation
 

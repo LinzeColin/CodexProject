@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "ADP-MVP-PREP-V72-PRODUCT-CONTRACT-CURRENT-POINTER-POLICY"
+    phase: "S2PL"
+    objective: "Align the V7.2 product contract current pointer policy with the S3/S2PMT07 gate so completed S2PCT02 shadow-source work is not exposed as current executable work."
+    scope: "V7.2 product contract current_pointer_policy, V7.2 root lock/hash manifests, VERSION_MATRIX hash/current gate, governance status views, three-base records, traceability, and regression tests."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, CURRENT.yaml mutation, V7.1 historical baseline mutation, or DAILY_OPERATION enablement."
+    status: "completed"
+    dependencies: ["ADP-PRODUCT-CONTRACT-V7.2", "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/CONTRACT_HASH.txt", "arxiv-daily-push/docs/pursuing_goal/v7_2/MANIFEST.sha256", "arxiv-daily-push/tests/test_v7_2_roadmap_machine_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD red/green: python3 -B -m unittest arxiv-daily-push/tests/test_v7_2_roadmap_machine_gate.py -q", "V7.2 validator: python3 -B arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "Project governance: python3 -B scripts/validate_project_governance.py --project arxiv-daily-push", "Full ADP unittest: python3 -B -m unittest discover -s arxiv-daily-push/tests -q", "Daily readiness fail-closed: ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_readiness.py --root .", "Daily enablement preflight fail-closed: ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_enablement_preflight.py --root ."]
+    test_results: ["TDD red failed on stale product contract policy global_current_task=S2PCT02", "TDD green target passed with global_current_task=S2PMT07 and shadow_source_next=NONE_WHILE_S2PMT07_BLOCKED", "V7.2 validator PASS", "Project governance errors=0 warnings=0", "Full ADP unittest 875 OK", "Daily readiness/preflight fail closed because persistent_daily_operation_authorization_missing", "Full semantic extractor did not pass: ValueError on implementation reference without :: in scripts/validate_semantic_extractors.py"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/CONTRACT_HASH.txt", "arxiv-daily-push/docs/pursuing_goal/v7_2/MANIFEST.sha256", "arxiv-daily-push/tests/test_v7_2_roadmap_machine_gate.py"]
+    risk: "Future agents could restart completed S2PCT02 source-shadow work or bypass the S2PMT07/S3 gate if the product contract exposes stale current pointer policy."
+    rollback: "Revert the V7.2 product contract pointer-policy change, regenerated hashes/manifests, governance sync, three-base records, and regression test; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PMT07-DAILY-OPERATION-OWNER-DECISION-AFTER-REQUEST-MAINLINE-ATTESTATION"
     phase: "S2PL"
     objective: "Bind the already-pushed owner option-A keep-disabled response to current mainline evidence without authorizing or enabling runtime production."

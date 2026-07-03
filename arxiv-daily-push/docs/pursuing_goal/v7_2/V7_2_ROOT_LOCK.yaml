@@ -6,7 +6,7 @@ as_of: "2026-06-24"
 current_contract:
   contract_version: ADP-PRODUCT-CONTRACT-V7.2
   contract_path: docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml
-  contract_sha256: a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d
+  contract_sha256: e123aa93b07ba9a33ed6629ff3446c1ab53ce67191d1c4a587eaaa26d6161c74
   current_pointer_path: docs/pursuing_goal/CURRENT.yaml
   roadmap_version: ADP-ROADMAP-V7.2
   roadmap_path: docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml

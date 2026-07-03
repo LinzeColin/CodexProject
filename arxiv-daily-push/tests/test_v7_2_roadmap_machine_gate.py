@@ -37,6 +37,25 @@ class V72RoadmapMachineGateTests(unittest.TestCase):
         self.assertGreaterEqual(metrics["registered_stop_code_count"], 9)
         self.assertEqual(metrics["roadmap_stop_condition_count"], 3)
 
+    def test_product_contract_current_pointer_policy_matches_s3_gate(self) -> None:
+        product = self.validator.load_yaml(V72_ROOT / "machine_readable" / "product_contract_v7_2.yaml")
+        roadmap = self.validator.load_yaml(V72_ROOT / "machine_readable" / "roadmap_v7_2.yaml")
+        pointer = self.validator.load_yaml(V72_ROOT / "machine_readable" / "current_pointer_registry_v7_2.yaml")
+        policy = product["current_pointer_policy"]
+
+        self.assertEqual(roadmap["global_current_task"], policy["global_current_task"])
+        self.assertEqual(
+            pointer["contextual_next_tasks"]["global_current_task"]["task_id"],
+            policy["global_current_task"],
+        )
+        self.assertEqual(roadmap["stage2_shadow_source_next"], policy["shadow_source_next"])
+        self.assertEqual(
+            pointer["contextual_next_tasks"]["shadow_source_next"]["task_id"],
+            policy["shadow_source_next"],
+        )
+        self.assertNotEqual("S2PCT02", policy["global_current_task"])
+        self.assertNotEqual("S2PCT02", policy["shadow_source_next"])
+
     def test_unknown_stop_code_is_rejected(self) -> None:
         roadmap = {
             "workstreams": [
