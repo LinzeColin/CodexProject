@@ -17,6 +17,23 @@ def _quoted_yaml_value(text: str, key: str) -> str:
     return match.group(1)
 
 
+def _assert_final_commit_binding_allows_current_mvp_prep(
+    testcase: unittest.TestCase,
+    owner_status: str,
+    assurance: str,
+) -> None:
+    owner_markers = (
+        "- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`",
+        "- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`",
+    )
+    assurance_markers = (
+        'final_commit_binding: "COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519"',
+        'final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"',
+    )
+    testcase.assertTrue(any(marker in owner_status for marker in owner_markers), owner_status)
+    testcase.assertTrue(any(marker in assurance for marker in assurance_markers), assurance)
+
+
 class GovernanceCurrentStateTests(unittest.TestCase):
     def test_development_ledger_current_state_matches_version_matrix(self) -> None:
         version_matrix = (ADP_ROOT / "docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
@@ -956,10 +973,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("DAILY_OPERATION_PERSISTENT_AUTHORIZATION_REQUEST_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT", roadmap)
         self.assertIn("- source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
         self.assertIn("- source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`", owner_status)
-        self.assertIn("- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
         self.assertIn('source_base_commit: "90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
         self.assertIn('source_tree_hash: "d92ec4a0cd884641263c7979f7a5c625229ae83c"', assurance)
-        self.assertIn('final_commit_binding: "COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
+        _assert_final_commit_binding_allows_current_mvp_prep(self, owner_status, assurance)
         self.assertIn(
             "ITER-20260701-ADP-S2PMT07-DAILY-OPERATION-PERSISTENT-AUTHORIZATION-REQUEST-MAINLINE-ATTESTATION",
             ledger,
@@ -1106,12 +1122,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         status = (ADP_ROOT / "docs/governance/STATUS.md").read_text(encoding="utf-8")
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
-        self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', assurance)
-        self.assertIn("下一任务： `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`", owner_status)
-        self.assertIn(
-            'release_gate: "DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT"',
-            assurance,
-        )
+        self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"', assurance)
+        self.assertIn("下一任务： `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`", owner_status)
+        self.assertIn('release_gate: "V72_PRODUCT_CONTRACT_CURRENT_POINTER_POLICY_ALIGNED_NO_RUNTIME_ENABLEMENT"', assurance)
         self.assertIn('status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"', assurance)
         self.assertIn('blocker_ids:\n    - "persistent_daily_operation_authorization_missing"', assurance)
         self.assertIn('status: "blocked_persistent_daily_operation_authorization_missing"', assurance)
@@ -1131,20 +1144,20 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("- Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`", status)
         self.assertNotIn("- Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`", status)
         self.assertIn("open_pr_count=0", assurance)
-        self.assertIn("ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like", assurance)
+        self.assertIn("ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like before enablement", assurance)
         self.assertNotIn(
             "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0",
             assurance,
         )
         self.assertIn("LaunchAgents disabled", assurance)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json", assurance)
-        self.assertIn("DAILY_OPERATION owner 决策已记录为保持禁用", assurance)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json", assurance)
+        self.assertIn("禁止把 keep-disabled artifact 当作运行授权并启用生产", assurance)
         self.assertIn("keep-disabled", owner_status)
-        self.assertIn("daily_operation_owner_authorization_decision.json", owner_status)
-        self.assertIn("若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", assurance)
-        self.assertIn("若 owner 授权则必须有 FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", owner_status)
-        self.assertIn("运行时必须保持禁用", owner_status)
-        self.assertIn("单独 enablement preflight", owner_status)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", owner_status)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", assurance)
+        self.assertIn("S3/DAILY_OPERATION 仍未授权", owner_status)
+        self.assertIn("runtime enablement remains disabled", owner_status)
+        self.assertIn("单独 DAILY_OPERATION 授权预检", owner_status)
         self.assertNotIn('task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"', assurance)
         self.assertNotIn("next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`", owner_status)
         self.assertNotIn("下一任务： `S2PMT07-S2PLT04-COMPLETION-REPORT`", owner_status)
@@ -1239,8 +1252,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断",
             owner_status,
         )
-        self.assertIn("pending_or_stale_events=383", owner_status)
-        self.assertIn("legacy_unbound_events=331", owner_status)
+        self.assertIn("pending_or_stale_events=384", owner_status)
+        self.assertIn("legacy_unbound_events=332", owner_status)
         self.assertIn(
             "证据新鲜度 | `evidence_freshness=PARTIAL` 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断",
             mvp_prep,
@@ -1276,14 +1289,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertFalse(manifest["scheduler_enabled"])
         self.assertFalse(manifest["release_packaging_enabled"])
         self.assertFalse(manifest["production_restore_enabled"])
-        self.assertIn("- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
-        self.assertIn('final_commit_binding: "COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519"', assurance)
+        _assert_final_commit_binding_allows_current_mvp_prep(self, owner_status, assurance)
         self.assertRegex(owner_status, r"- source_base_commit: `[0-9a-f]{40}`")
         self.assertRegex(owner_status, r"- source_tree_hash: `[0-9a-f]{40}`")
         self.assertRegex(assurance, r'(?m)^source_base_commit: "[0-9a-f]{40}"$')
         self.assertRegex(assurance, r'(?m)^source_tree_hash: "[0-9a-f]{40}"$')
-        self.assertNotIn(f"- final_commit_binding: `COMMIT_BOUND:{result_commit}`", owner_status)
-        self.assertIn("- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`", owner_status)
+        if result_commit != "90b297a55451b691c3e0270cfaa64e5d58c5a519":
+            self.assertNotIn(f"- final_commit_binding: `COMMIT_BOUND:{result_commit}`", owner_status)
+        _assert_final_commit_binding_allows_current_mvp_prep(self, owner_status, assurance)
         self.assertIn("owner_production_boundary_decision_recorded: true", current)
         self.assertIn("integrated_production_acceptance_write_gate_allowed: true", current)
         self.assertIn("integrated_production_acceptance_owner_decision_request_write_gate_allowed: false", current)

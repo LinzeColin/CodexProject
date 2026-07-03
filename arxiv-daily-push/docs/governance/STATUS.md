@@ -4,17 +4,17 @@
 
 - source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
 - source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
-- source_snapshot_hash: `sha256:20fadb45b19a51ef16399aeff7e1010b4111648c059642f695154d77beb05fb4`
-- snapshot_event_time: `2026-07-01T23:35:39+10:00`
+- source_snapshot_hash: `sha256:a9383e446f1857011cb51bfb8c258928932a06bdf41c69657a5e658db031fe68`
+- snapshot_event_time: `2026-07-03T11:33:00+10:00`
 - generator_version: `4.0.1`
-- final_commit_binding: `COMMIT_BOUND:90b297a55451b691c3e0270cfaa64e5d58c5a519`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`
+- Phase/Gate: `S2PL / V72_PRODUCT_CONTRACT_CURRENT_POINTER_POLICY_ALIGNED_NO_RUNTIME_ENABLEMENT`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`
-- Release gate: `DAILY_OPERATION_OWNER_DECISION_AFTER_REQUEST_MAINLINE_ATTESTED_KEEP_DISABLED_NO_RUNTIME_ENABLEMENT`
+- Release gate: `V72_PRODUCT_CONTRACT_CURRENT_POINTER_POLICY_ALIGNED_NO_RUNTIME_ENABLEMENT`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
-- V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
+- V7 contract hash: `e123aa93b07ba9a33ed6629ff3446c1ab53ce67191d1c4a587eaaa26d6161c74`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
 - V7.1 parallel audit: `ADP-V7.2-FINAL-BASELINE-REVIEW`
 - V7.1 audit hash: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
@@ -49,9 +49,9 @@
 - Stage 2 integrated accepted: `true`
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
-- Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
-- Pending/stale events: `383`
+- Next executable task: `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`
+- Pending/stale events: `384`
 - Tree-bound events: `13`
 - Commit-bound events: `10`
-- Legacy unbound events: `331`
+- Legacy unbound events: `332`
 - Unresolved fact IDs: `0`
