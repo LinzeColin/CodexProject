@@ -2,9 +2,14 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE030"
-current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
-current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
-next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+current_phase_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+current_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"
+current_transition_history:
+  previous_state:
+    current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+    next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
 total_estimated_hours: 158
 completed_estimated_hours: 279
 stages:
@@ -7327,3 +7332,68 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
             risk: "如果本地复审门被误当成 upload gate，可能绕过 GitHub PR/merge、app-entry reinstall、open PR/issue cleanup 和 app/local/GitHub parity 验证；如果 raw data boundary 被误读，可能触碰 IDS_MetaData 原始数据库。"
             rollback: "Revert BATCH021_030_REVIEW_GATE.md, BATCH021_030_UPLOAD_LOCK.yaml review status fields, Stage005 validator/test updates, roadmap/event changes, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, persisted manifests, evidence ledgers, audit logs, indexes, app entries, GitHub state, upload gate, or STAGE-031."
+      -
+        phase_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+        name: "STAGE-021..030 批次上传门"
+        objective: "把已完成并复审的 STAGE-021..030 作为一个批次通过 PR 上传并合并到 GitHub main，随后重装 app 入口并验证 GitHub/app/local 开发记录一致；不进入 STAGE-031。"
+        status: "in_progress"
+        stop_conditions:
+          - "STAGE-021..030 未全部完成并通过 BATCH021_030_REVIEW_GATE"
+          - "GitHub precheck 发现已有 open PR 或 open issue 需要先处理"
+          - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "直接 push HEAD:main 而不是通过 PR 合并 diverged branch"
+          - "app entry reinstall 失败或入口不指向当前 KM_IDS/KM_IDSystem worktree"
+          - "进入 STAGE-031 或执行单个 stage upload gate"
+        validation:
+          commands:
+            - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression -q"
+            - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+            - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+            - "check-render --project KM_IDSystem"
+            - "git diff --check"
+            - "GitHub connector/public API open PR/open issue precheck and post-merge check"
+            - "scripts/install_app_entries.sh and launcher path checks"
+          pass_conditions:
+            - "BATCH021_030_UPLOAD_GATE.md exists and records PR-to-main strategy"
+            - "Stage005 governance regression accepts local_batch_upload_gate_passed_pending_github_merge"
+            - "PR #272 to main merges successfully"
+            - "open PRs and open issues are 0 after merge"
+            - "app entries are reinstalled and point to KM_IDS/KM_IDSystem"
+        tasks:
+          -
+            task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+            name: "BATCH021-030 GitHub main upload"
+            objective: "执行 STAGE-021..030 批次 upload gate：本地验证、push branch、PR to main、merge、重装 app entry、验证无遗留 PR/issue 和 GitHub/app/local 记录一致。"
+            status: "in_progress"
+            estimated_hours: 2
+            total_hours_percent: "1.25%"
+            dependencies:
+              - "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+            acceptance_ids:
+              - "ACC-STAGE-021"
+              - "ACC-STAGE-022"
+              - "ACC-STAGE-023"
+              - "ACC-STAGE-024"
+              - "ACC-STAGE-025"
+              - "ACC-STAGE-026"
+              - "ACC-STAGE-027"
+              - "ACC-STAGE-028"
+              - "ACC-STAGE-029"
+              - "ACC-STAGE-030"
+            test_commands:
+              - "python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "check-render --project KM_IDSystem"
+              - "git diff --check"
+              - "GitHub connector/public API PR/issue checks"
+              - "KM_IDSystem/scripts/install_app_entries.sh"
+            test_results: "RED/GREEN local upload-gate validation complete: Stage005 upload-gate RED failed as expected with 2 failures because BATCH021_030_UPLOAD_GATE.md did not exist and IDS-V0_1-BATCH-021-030-UPLOAD-GATE pending-merge state was not accepted. GREEN passed after adding BATCH021_030_UPLOAD_GATE.md, updating BATCH021_030_UPLOAD_LOCK.yaml to local_batch_upload_gate_passed_pending_github_merge, adding BATCH021 upload event, extending Stage005 validator/test acceptance for the upload-gate state, and updating Stage021-030 compatibility tests for the legal post-review upload-gate state. Stage005 governance regression ran 97 tests OK; Stage005 validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, tracked forbidden runtime files, or raw data boundary gaps; full IDS v0.1 pursuing-goal discover ran 357 tests OK; py_compile passed for Stage005 validator/regression and Stage021-030 compatibility tests; events.jsonl parsed with 139 events and 0 duplicate ids. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit /Users/linzezhang/Downloads/IDS_MetaData raw metadata database content. Remote merge, app-entry reinstall, post-merge no-open-PR/no-open-issue check, and final main evidence are pending."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py"
+            risk: "如果 upload gate 被误当成单 stage upload 或 direct main push，可能绕过十阶段批次规则、PR merge 证据、app reinstall 和 open PR/issue cleanup；如果 raw data boundary 被误读，可能触碰 IDS_MetaData 原始数据库。"
+            rollback: "If pre-merge validation fails, revert BATCH021_030_UPLOAD_GATE.md, BATCH021_030_UPLOAD_LOCK.yaml upload status, validator/test updates, roadmap/event changes, and rendered owner-file changes; if PR #272 cannot merge, close or leave an explicit blocker and do not enter STAGE-031."

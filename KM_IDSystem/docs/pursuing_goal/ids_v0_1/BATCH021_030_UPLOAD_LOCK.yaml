@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-021-030"
 created_at_utc: "2026-07-02T22:43:25Z"
-updated_at_utc: "2026-07-03T07:47:56Z"
-status: "reviewed_ready_for_upload_no_github_upload"
+updated_at_utc: "2026-07-03T08:06:10Z"
+status: "local_batch_upload_gate_passed_pending_github_merge"
 review_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
 review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md"
 
@@ -27,7 +27,7 @@ data_boundary:
   local_existence_check: "IDS_METADATA_ROOT_EXISTS"
 
 upload_gate:
-  push_allowed: false
+  push_allowed: true
   review_gate: "BATCH021_030_REVIEW_GATE"
   required_before_push:
     - "STAGE-021 through STAGE-030 all completed."
@@ -40,6 +40,7 @@ upload_gate:
     - "After the STAGE-021..030 batch is reviewed and repaired, reinstall app entries and verify GitHub, app entry, and local development records are consistent."
   github_target: "main"
   gate_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md"
   remote_strategy: "after the ten-stage batch gate only: push branch, create PR to main, merge PR, reinstall app entries, verify app/local/GitHub parity, verify no open PRs or issues"
 
 stage_progress:
@@ -267,11 +268,13 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_stage: "STAGE-030"
-  current_phase: "batch_review_gate"
-  current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
-  next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
-  github_upload_allowed: false
-  no_upload_reason: "STAGE-021..030 batch is locally reviewed and repair findings are recorded, but the separate upload gate was not executed in this run."
-  no_app_reinstall_reason: "App entry reinstall is deferred until the next ten-stage batch upload gate."
-  no_raw_data_access: true
+  current_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+  next_allowed_task_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"
+  transition_history:
+    previous_state:
+      status: "reviewed_ready_for_upload_no_github_upload"
+      current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"
+      next_allowed_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"
+      github_upload_allowed: false
+  current_run: "BATCH021_030_UPLOAD_GATE passed local pre-push checks and may push the reviewed STAGE-021..030 batch branch, use PR #272 targeting main, merge the PR, reinstall app entries, and verify app/local/GitHub parity; no raw metadata content access or STAGE-031 work is performed."
+  no_upload_reason: "NONE for this gate. Direct HEAD:main push remains prohibited because origin/main and this branch are diverged; upload must proceed through PR and GitHub merge."

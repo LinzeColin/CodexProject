@@ -38,6 +38,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
@@ -271,6 +272,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE030-P3-20260703-001",
     "EVT-IDS-V0_1-STAGE030-P4-20260703-001",
     "EVT-IDS-V0_1-BATCH-021-030-REVIEW-GATE-20260703-001",
+    "EVT-IDS-V0_1-BATCH-021-030-UPLOAD-GATE-20260703-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -290,6 +292,7 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_REVIEW_GATE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
     "KM_IDSystem/scripts/check_safe_mode_baseline.py",
@@ -1328,6 +1331,17 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"' in roadmap_text
         and 'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in roadmap_text
     )
+    batch021_030_upload_gate_active = (
+        'status: "local_batch_upload_gate_passed_pending_github_merge"' in batch_text
+        and 'push_allowed: true' in batch_text
+        and 'gate_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in batch_text
+        and 'gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_GATE.md"'
+        in batch_text
+        and 'current_stage_id: "IDS-STAGE030"' in roadmap_text
+        and 'current_phase_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"' in roadmap_text
+        and 'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -1414,6 +1428,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or stage030_phase3_active
         or stage030_phase4_closeout
         or batch021_030_reviewed_pending_upload
+        or batch021_030_upload_gate_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
@@ -1449,6 +1464,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or 'next_stage: "STAGE-028"' in batch_text
         or 'next_stage: "STAGE-029"' in batch_text
         or 'next_stage: "STAGE-030"' in batch_text
+        or 'next_stage: "STAGE-031"' in batch_text
     )
     current_phase_allowed = (
         'current_phase_id: "IDS-STAGE005-P2"' in roadmap_text

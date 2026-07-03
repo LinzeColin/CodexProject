@@ -478,7 +478,7 @@ class Stage023PreflightScenarioTestsPhase1Tests(unittest.TestCase):
             'STAGE-023:',
             'status: "completed_local"',
             'acceptance_id: "ACC-STAGE-023"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE023_PHASE3_SCENARIO_VALIDATION.md",

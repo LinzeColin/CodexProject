@@ -178,7 +178,7 @@ class Stage022DataPriorityQueuePhase1Tests(unittest.TestCase):
             'batch_id: "IDS-V0_1-BATCH-021-030"',
             'stage_range: "STAGE-021..STAGE-030"',
             'acceptance_range: "ACC-STAGE-021..ACC-STAGE-030"',
-            'push_allowed: false',
+            'push_allowed:',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE022_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage022_data_priority_queue.py",
