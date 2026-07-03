@@ -1,6 +1,6 @@
 # MVP 准备与复审修补
 
-更新时间：2026-07-03 12:32:10 Australia/Sydney
+更新时间：2026-07-03 12:55:02 Australia/Sydney
 
 本页是 ADP 在 Stage 2 integrated acceptance 已记录、但不进入 S3/DAILY_OPERATION 的前提下，为后续 MVP 复审和修补准备的 GitHub 浅层入口。
 
@@ -14,7 +14,7 @@
 | Enablement preflight | 已有只读组合 root gate：`S2PMT07-DAILY-OPERATION-ENABLEMENT-PREFLIGHT`；当前因 `persistent_daily_operation_authorization_missing` 必须 `enablement_preflight_ready=false` | `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` |
 | 一次受控真实运行窗口 | 一次受控真实运行窗口只允许临时切换 `ADP_ALLOW_SMTP_SEND`；窗口结束后必须恢复为 `UNSET` 或 false-like，重新运行 enablement preflight 并确认仍 `status=FAIL / exit 2`；不得把一次受控真实运行当作持久 DAILY_OPERATION 授权 | [S3 handoff](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md) |
 | Root 执行根 | 正确 root 必须显示 `repo_root_valid=true`；误传 `--root arxiv-daily-push` 等子目录必须 JSON fail-closed、exit 2，并给出 `codexproject_repo_root_invalid` | `python3 -B tools/verify_daily_operation_readiness.py --root .; ec=$?; echo "EXPECTED_READINESS_EXIT=$ec"; test "$ec" -eq 2` / `python3 -B tools/verify_daily_operation_enablement_preflight.py --root .; ec=$?; echo "EXPECTED_PREFLIGHT_EXIT=$ec"; test "$ec" -eq 2` |
-| 证据新鲜度 | `evidence_freshness=PARTIAL` 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断；`pending_or_stale_events=385`、`legacy_unbound_events=333` 只说明历史事件绑定仍可继续治理 | 当前唯一 S3 阻断仍是持久授权 artifact 缺失；不要把 pending/stale events 当作生产开关或 Stage 2 回退依据 |
+| 证据新鲜度 | `evidence_freshness=PARTIAL` 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断；当前计数以 [OWNER_STATUS 第 14 节](../docs/governance/OWNER_STATUS.md#14-证据新鲜度) 为准，不在本页重复写死 | 当前唯一 S3 阻断仍是持久授权 artifact 缺失；不要把 pending/stale events 当作生产开关或 Stage 2 回退依据 |
 | MVP 准备 | 只做复审、修补、用户向可读性、证据同步、测试补强和低风险局部修复 | 本页 |
 | 开发基线 | 每轮从 GitHub `origin/main` 的干净隔离工作树开始；本机脏工作树、detached HEAD 或临时 worktree 结果不能单独当作交付基线 | `git status` / GitHub `main` |
 

@@ -78,17 +78,17 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 ## 13. 测试与验收
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `KEY_DECISIONS_HISTORICAL_PREFLIGHT_HEADERS_ALIGNED_NO_RUNTIME_ENABLEMENT`
+- release_gate: `EVIDENCE_FRESHNESS_DYNAMIC_COUNT_DEDUP_NO_RUNTIME_ENABLEMENT`
 
 ## 14. 证据新鲜度
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
-- tree_bound_events: `13`
+- tree_bound_events: `14`
 - commit_bound_events: `10`
 - legacy_unbound_events: `334`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `386`
-- freshness_counts: `pending_or_stale_events=386; legacy_unbound_events=334`
+- pending_or_stale_events: `387`
+- freshness_counts: `pending_or_stale_events=387; legacy_unbound_events=334`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
@@ -100,11 +100,11 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 
 - source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
 - source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
-- source_snapshot_hash: `sha256:26df93912078fabf158921dbc9ae743cf6d208e5f201185bab90770eeca28b5e`
-- snapshot_event_time: `2026-07-03T12:28:16+10:00`
+- source_snapshot_hash: `sha256:deaa910ffce781497750c6469943963fc9f8888a6f3f89f9784d285b1f328bed`
+- snapshot_event_time: `2026-07-03T12:46:36+10:00`
 - generator_version: `4.0.1`
 - version: `0.23.1`
-- phase/gate: `S2PL / KEY_DECISIONS_HISTORICAL_PREFLIGHT_HEADERS_ALIGNED_NO_RUNTIME_ENABLEMENT`
+- phase/gate: `S2PL / EVIDENCE_FRESHNESS_DYNAMIC_COUNT_DEDUP_NO_RUNTIME_ENABLEMENT`
 
 ## 17. 下一唯一任务
 

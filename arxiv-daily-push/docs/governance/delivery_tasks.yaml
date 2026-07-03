@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "ADP-MVP-PREP-EVIDENCE-FRESHNESS-DYNAMIC-COUNT-DEDUP"
+    phase: "S2PL"
+    objective: "Prevent the MVP shallow owner page from duplicating dynamic evidence freshness counts that belong to generated governance status."
+    scope: "MVP preparation page, regression test, governance delivery task, development event, traceability, current gate metadata, three-base records, generated governance status views, and user-center traceability page."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, CURRENT.yaml mutation, V7.1 historical baseline mutation, V7.2 contract mutation, final-bundle verifier mutation, or DAILY_OPERATION enablement."
+    status: "completed"
+    dependencies: ["ADP-MVP-PREP-KEY-DECISIONS-HISTORICAL-PREFLIGHT-HEADERS", "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"]
+    required_files: ["arxiv-daily-push/用户中心/MVP准备与复审修补.md", "arxiv-daily-push/docs/governance/OWNER_STATUS.md", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD red/green: python3 -B -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q", "User-center regression: python3 -B -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q", "Dashboard generation: python3 -B scripts/generate_governance_dashboard.py --write --project arxiv-daily-push", "Project governance: python3 -B scripts/validate_project_governance.py --project arxiv-daily-push", "Governance sync: python3 -B scripts/validate_governance_sync.py", "Changed-only semantic governance: python3 -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "Daily readiness/preflight fail-closed: ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_readiness.py --root .; ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_enablement_preflight.py --root ."]
+    test_results: ["TDD red: MVP preparation page duplicated pending_or_stale_events / legacy_unbound_events instead of linking the generated current source", "TDD green: MVP page now links OWNER_STATUS section 14 and regression rejects hard-coded freshness counters from returning", "Runtime enablement remains unchanged: persistent_daily_operation_authorized=false, daily_operation_enabled=false, real_smtp_send_enabled=false, scheduler_enabled=false, release_packaging_enabled=false, production_restore_enabled=false"]
+    evidence_refs: ["arxiv-daily-push/用户中心/MVP准备与复审修补.md", "arxiv-daily-push/docs/governance/OWNER_STATUS.md", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    risk: "Future agents could treat stale copied event counts in shallow owner pages as current blockers or regress Stage 2/S3 state interpretation."
+    rollback: "Revert the MVP evidence freshness row, regression assertion, governance sync files, delivery task, traceability row, and development event; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "ADP-MVP-PREP-KEY-DECISIONS-HISTORICAL-PREFLIGHT-HEADERS"
     phase: "S2PL"
     objective: "Prevent consumed 2026-07-01 DAILY_OPERATION preflight and gh-equivalent repair sections from being misread as current decisions."
