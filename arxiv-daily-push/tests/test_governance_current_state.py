@@ -1456,6 +1456,25 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("persistent_daily_operation_authorized=false", summary)
         self.assertIn("daily_operation_enabled=false", summary)
 
+    def test_model_spec_governance_notes_do_not_reopen_consumed_final_bundle_gaps(self) -> None:
+        model_spec = (ADP_ROOT / "docs/governance/MODEL_SPEC.md").read_text(encoding="utf-8")
+        read_rule = model_spec.split("- `S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION`", 1)[0]
+        zero_proof_note = model_spec.split("- `S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION`", 1)[1].split(
+            "\n- `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`",
+            1,
+        )[0]
+
+        self.assertIn("CURRENT.yaml 和 `FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json`", read_rule)
+        self.assertIn("Stage 2 integrated acceptance 已记录并保持", read_rule)
+        self.assertIn("final bundle 已通过且 `missing_items=[]`", read_rule)
+        self.assertIn("当前唯一 S3 阻断仍是 `persistent_daily_operation_authorization_missing`", read_rule)
+        self.assertIn("历史写入时 final-bundle readiness 仍为 `blocked`", zero_proof_note)
+        self.assertIn("当前 final bundle 已被 Stage 2 integrated acceptance 消费", zero_proof_note)
+        self.assertNotIn(
+            "Final bundle readiness remains `blocked` because S2PLT02 terminal delivery proof",
+            zero_proof_note,
+        )
+
     def test_s3_daily_operation_handoff_records_post_acceptance_blocker(self) -> None:
         handoff = (REPO_ROOT / "HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md").read_text(encoding="utf-8")
         readme = (ADP_ROOT / "用户中心/README.md").read_text(encoding="utf-8")

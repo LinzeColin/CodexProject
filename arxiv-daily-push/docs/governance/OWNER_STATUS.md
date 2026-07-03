@@ -100,7 +100,7 @@ Stage 2 integrated acceptance 和 final bundle ready 状态会保持，但 S3/DA
 
 - source_base_commit: `90b297a55451b691c3e0270cfaa64e5d58c5a519`
 - source_tree_hash: `d92ec4a0cd884641263c7979f7a5c625229ae83c`
-- source_snapshot_hash: `sha256:e98c113a59645c22fe2e7b8f71f342a8b6e83dd904e300a4e65d072c99d12d0a`
+- source_snapshot_hash: `sha256:019ddb17dd22a6fff5f5def961211b210b4c95c8e9d0e584789c0f74d2ac383d`
 - snapshot_event_time: `2026-07-01T23:35:39+10:00`
 - generator_version: `4.0.1`
 - version: `0.23.1`
