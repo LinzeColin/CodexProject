@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.3 Stage 1-10 GitHub upload gate`
-- 当前 Phase: `v0.1.3 Stage 1-10 GitHub upload gate 已完成本地验证并准备一次性上传 GitHub main；本 gate 不改变 NO_GO、D 级报告、12 条 pending reconciliation 或 business execution 阻断`
+- 当前 Stage: `v0.1.4 Stage 1`
+- 当前 Phase: `S01-P1｜只读检查与范围锁定 已完成本地验证；本 phase 只锁定 v1.4 taskpack/roadmap/raw-readonly/UIUX gate 范围，不读取或列出 raw inbox，不启动 S01-P2/S01-P3，不执行 GitHub upload`
 
 ## Execution Rules
 
@@ -17,6 +17,7 @@
 - 每次 run work 最多解决一个 Phase。
 - 中间 Phase 完成不上传 GitHub。
 - v1.3 本轮目标下，GitHub main upload 统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得按单个 Stage 做 GitHub upload gate。
+- v1.4 本轮目标下，GitHub main upload 统一延期到 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行；不得按单个 Stage 做 GitHub upload gate。
 - 时间是资源参考，不是质量豁免；质量门禁通过可以提前交付，未通过不得交付。
 - 后续开发基线必须读取 `KMFA/taskpack/v1_2/`；涉及 UI、报告、前端或验收时必须读取 `20_HTML_UIUX_报告预览/`。
 
@@ -40,6 +41,7 @@
 
 ## Current Non-Goals
 
+- v0.1.4 S01-P1 只完成只读检查与范围锁定；不得执行 S01-P2 项目骨架同步、S01-P3 防遗漏基线、Stage 1 整体复审、raw inventory、raw value matching、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 - Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成；S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已完成。Stage 18 review-level Go/No-Go 仍为 `NO_GO`；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

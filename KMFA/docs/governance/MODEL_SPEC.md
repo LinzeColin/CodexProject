@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s18p3-integration-preparation
+product_version: 0.1.4-s01p1-read-only-scope-lock
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出、Stage 10 整体复审与 GitHub main 上传、S11-P1 public-safe 首页与导航、S11-P2 public-safe 数据源检查板、S11-P3 public-safe 项目成本页面、Stage 11 整体复审与 GitHub main 上传、S12-P1 public-safe 人工处理事件、S12-P2 public-safe 影响预览、S12-P3 public-safe 重跑机制、Stage 12/13/14/15 复审与上传、S16-P1 public-safe 外协采购归集、S16-P2 public-safe 项目状态生命周期、S16-P3 public-safe 客户经营分析、Stage 16 整体复审与 GitHub main 上传、S17-P1 public-safe 权限与安全策略、S17-P2 public-safe metadata outbox-only 通知提醒、S17-P3 public-safe metadata-only 运维 SOP、Stage 17 整体复审和 Stage 17 GitHub main 上传、S18-P1 public-safe 精度与压力测试、S18-P2 public-safe 全量回归验收和 NO_GO 门禁、S18-P3 public-safe 后续接入准备。不声明 Stage 18 review、GitHub upload、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
+当前模型说明覆盖 v0.1.4 S01-P1 只读检查与范围锁定，以及既有 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传、S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出、Stage 10 整体复审与 GitHub main 上传、S11-P1 public-safe 首页与导航、S11-P2 public-safe 数据源检查板、S11-P3 public-safe 项目成本页面、Stage 11 整体复审与 GitHub main 上传、S12-P1 public-safe 人工处理事件、S12-P2 public-safe 影响预览、S12-P3 public-safe 重跑机制、Stage 12/13/14/15 复审与上传、S16-P1 public-safe 外协采购归集、S16-P2 public-safe 项目状态生命周期、S16-P3 public-safe 客户经营分析、Stage 16 整体复审与 GitHub main 上传、S17-P1 public-safe 权限与安全策略、S17-P2 public-safe metadata outbox-only 通知提醒、S17-P3 public-safe metadata-only 运维 SOP、Stage 17 整体复审和 Stage 17 GitHub main 上传、S18-P1 public-safe 精度与压力测试、S18-P2 public-safe 全量回归验收和 NO_GO 门禁、S18-P3 public-safe 后续接入准备。v0.1.4 S01-P1 只声明 taskpack/roadmap/raw-readonly/UIUX gate scope lock；不声明 S01-P2、S01-P3、raw inventory、Stage 1 review、GitHub upload、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策已经实现。
 
 ## Active Model
 
@@ -13,7 +13,8 @@ product_version: 0.1.0-s18p3-integration-preparation
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py`, `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json`
+- current_v014_scope_lock: `S01-P1 only; S01-P2/S01-P3/Stage 1 review/GitHub upload/raw inventory/raw value matching/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -280,7 +281,7 @@ product_version: 0.1.0-s18p3-integration-preparation
 
 - active models: 7
 - active formulas: 53
-- active parameters: 459
+- active parameters: 629
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 1

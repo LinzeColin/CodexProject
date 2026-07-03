@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4-s01p1-read-only-scope-lock - 2026-07-03
+
+- 完成 `v0.1.4 S01-P1｜只读检查与范围锁定` 本地验证：登记 v1.4 HUMAN_FLOW_VERIFIED 修补包 SHA256、9 个 public-safe source 条目、raw-readonly policy、Codex read-only prompt、roadmap gate 和 HTML human-flow audit 聚合结果。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/`，并新增 `KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py`、`KMFA/tests/test_v014_s01_p1_read_only_scope_lock.py`。
+- v1.4 GitHub upload 明确延期到 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行；本 phase 未执行 S01-P2、S01-P3、Stage 1 review 或 GitHub upload。
+- 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未抽取 raw/private payload，未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值或 credentials。
+
 ## 0.1.3-stage1-10-github-upload - 2026-07-03
 
 - 完成 `v0.1.3 Stage 1-10 GitHub upload gate` 本地验证：基于最新 `origin/main` 完成 rebase，复跑 Stage 1-10 batch validator、S01-S10 stage review validators、治理 validators、安全扫描和全量 KMFA tests。

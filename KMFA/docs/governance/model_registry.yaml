@@ -81,7 +81,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s18-stage-review"
+    model_version: "0.1.4-s01p1-read-only-scope-lock"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -147,6 +147,9 @@ models:
       - "PARAM-KMFA-637"
       - "PARAM-KMFA-638"
       - "PARAM-KMFA-639"
+      - "PARAM-KMFA-1000"
+      - "PARAM-KMFA-1001"
+      - "PARAM-KMFA-1002"
     inputs:
       - "user objective"
       - "KMFA TaskPack and Roadmap"
@@ -164,6 +167,7 @@ models:
       - "S18-P2 full regression acceptance NO_GO local gate"
       - "S18-P3 integration preparation local gate"
       - "S18 stage review upload-ready local NO_GO gate"
+      - "v1.4 S01-P1 read-only scope lock local gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
@@ -180,6 +184,7 @@ models:
       - "KMFA/tools/check_s18_p2_full_regression_acceptance.py"
       - "KMFA/tools/integration_preparation.py"
       - "KMFA/tools/check_s18_p3_integration_preparation.py"
+      - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
@@ -190,6 +195,7 @@ models:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p1_precision_stress.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p2_full_regression_acceptance.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s18_p3_integration_preparation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py --require-source-package-present"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
@@ -209,6 +215,8 @@ models:
       - "KMFA/stage_artifacts/S18_P2_full_regression_acceptance/machine/s18_p2_manifest.json"
       - "KMFA/stage_artifacts/S18_P3_integration_preparation/human/s18_p3_completion_record.md"
       - "KMFA/stage_artifacts/S18_P3_integration_preparation/machine/s18_p3_manifest.json"
+      - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/implementation_plan.md"
+      - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"

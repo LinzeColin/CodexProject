@@ -30,6 +30,8 @@ formulas:
       - "One run work solves at most one Phase."
       - "Intermediate Phase completion does not upload to GitHub."
       - "Stage upload requires stage review and fixing review findings."
+      - "v1.4 GitHub upload is deferred until Stage 1-18 complete overall review and fixed findings."
+      - "v1.4 S01-P1 must not read list mutate or write the raw inbox and must not extract raw private payload."
       - "Quality gates override time reference."
       - "Public repository cannot contain raw sensitive business data."
     missing_policy: "If gate evidence is missing, treat the action as blocked."
@@ -37,12 +39,16 @@ formulas:
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/HANDOFF.md"
+      - "KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py --require-source-package-present"
     evidence_refs:
       - "KMFA/docs/governance/project.yaml"
       - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
+      - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/implementation_plan.md"
+      - "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json"
   - formula_id: "FORM-KMFA-AMOUNT-001"
     model_id: "MOD-KMFA-COST-001"
     assumption_ids:

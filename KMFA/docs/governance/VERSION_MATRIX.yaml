@@ -1,7 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.3-stage1-10-github-upload"
-product_version_status: "github_upload_gate_validated_public_safe_ready_to_push_no_go"
+product_version: "0.1.4-s01p1-read-only-scope-lock"
+product_version_status: "completed_validated_local_only_no_go_upload_deferred"
 version_file_value: "0.1.0-post-s18-final-no-go-backup-upload"
 schema_version: "1.0.0"
 model_versions:
@@ -55,6 +55,7 @@ parameter_profile_versions:
   kmfa_v013_s10_stage_review: "0.1.3-s10-stage-review"
   kmfa_v013_stage1_10_batch_review: "0.1.3-stage1-10-batch-review"
   kmfa_v013_stage1_10_github_upload: "0.1.3-stage1-10-github-upload"
+  kmfa_v014_s01_p1_read_only_scope_lock: "0.1.4-s01p1-read-only-scope-lock"
   kmfa_stage7_review: "0.1.0-s07-stage-review"
   kmfa_stage7_github_upload: "0.1.0-s07-github-upload"
   kmfa_project_composite_key: "0.1.0-s08p1-project-composite-key"

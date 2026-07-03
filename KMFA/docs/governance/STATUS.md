@@ -5,17 +5,18 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-stage1-10-github-upload`
-- current_stage: `S01-S10`
-- current_phase: `v0.1.3 Stage 1-10 GitHub upload gate`
-- status: `github_upload_gate_validated_public_safe_ready_to_push_no_go`
+- version: `0.1.4-s01p1-read-only-scope-lock`
+- current_stage: `S01`
+- current_phase: `v0.1.4 S01-P1 read-only scope lock`
+- status: `completed_validated_local_only_no_go_upload_deferred`
 - production_ready: `false`
-- github_upload_ready: `true_stage1_10_upload_gate_validated`
+- github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
 
+- v0.1.4 S01-P1 只读检查与范围锁定已本地完成：证据位于 `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/`，validator 为 `KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py`，focused unit 为 `KMFA/tests/test_v014_s01_p1_read_only_scope_lock.py`；本 phase 只锁定 v1.4 source package、公开 taskpack/roadmap/raw-readonly/UIUX gate hash、canonical worktree 路径、raw inbox 禁区和 no-upload/no-go 边界；未读取或列出 raw inbox，未抽取 raw/private payload，未执行 S01-P2/S01-P3/Stage 1 review/GitHub upload。
 - S01-P1 只读计划与范围锁定。
 - S01-P2 项目骨架、中文入口、治理配置草案和时间质量规则。
 - S01-P2 项目治理验证通过：errors 0 / warnings 0。
