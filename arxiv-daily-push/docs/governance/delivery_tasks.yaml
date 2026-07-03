@@ -1,6 +1,23 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 tasks:
+  - task_id: "ADP-MVP-PREP-THREE-BASE-TEMPLATE-HISTORICAL-BLOCKER-WORDING"
+    phase: "S2PL"
+    objective: "Prevent 2026-06-29 three-base template-history records from being misread as current Stage 2/S3 blockers."
+    scope: "Three-base historical wording, regression test, governance delivery task, development event, traceability, current gate metadata, and generated governance status views."
+    non_scope: "No persistent DAILY_OPERATION authorization artifact creation, no SMTP send, scheduler enable/install, Release packaging, production restore, public schema/DB/source/ranking/queue mutation, CURRENT.yaml mutation, V7.1 historical baseline mutation, V7.2 contract mutation, final-bundle verifier mutation, or DAILY_OPERATION enablement."
+    status: "completed"
+    dependencies: ["S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION", "ADP-MVP-PREP-V72-PRODUCT-CONTRACT-CURRENT-POINTER-POLICY"]
+    required_files: ["arxiv-daily-push/功能清单.md", "arxiv-daily-push/开发记录.md", "arxiv-daily-push/模型参数文件.md", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PL-DAILY-OPERATION-AUTHORIZATION"]
+    test_commands: ["TDD red/green: python3 -B -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q", "Project governance: python3 -B scripts/validate_project_governance.py --project arxiv-daily-push", "Governance sync: python3 -B scripts/validate_governance_sync.py", "Changed-only semantic governance: python3 -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "Daily enablement preflight fail-closed: ADP_ALLOW_SMTP_SEND='' python3 -B tools/verify_daily_operation_enablement_preflight.py --root ."]
+    test_results: ["TDD red: stale current-blocked wording was still present in two 2026-06-29 功能清单 template history records", "TDD green: stale current-blocked wording is now historical write-time state and the regression test rejects it", "Runtime enablement remains unchanged: persistent_daily_operation_authorized=false, daily_operation_enabled=false, real_smtp_send_enabled=false, scheduler_enabled=false, release_packaging_enabled=false, production_restore_enabled=false"]
+    evidence_refs: ["arxiv-daily-push/功能清单.md", "arxiv-daily-push/开发记录.md", "arxiv-daily-push/模型参数文件.md", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    risk: "Future agents could reopen consumed 2026-06-29 template blockers as current S3/MVP blockers and waste the next run on already-consumed Stage 2 acceptance gaps."
+    rollback: "Revert the three-base wording changes, regression assertion, governance sync files, delivery task, traceability row, and development event; no runtime production state is changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "ADP-MVP-PREP-V72-PRODUCT-CONTRACT-CURRENT-POINTER-POLICY"
     phase: "S2PL"
     objective: "Align the V7.2 product contract current pointer policy with the S3/S2PMT07 gate so completed S2PCT02 shadow-source work is not exposed as current executable work."

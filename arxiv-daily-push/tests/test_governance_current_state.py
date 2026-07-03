@@ -1122,9 +1122,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         status = (ADP_ROOT / "docs/governance/STATUS.md").read_text(encoding="utf-8")
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
-        self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT"', assurance)
-        self.assertIn("下一任务： `S2PMT07-DAILY-OPERATION-AUTHORIZATION-PREFLIGHT`", owner_status)
-        self.assertIn('release_gate: "V72_PRODUCT_CONTRACT_CURRENT_POINTER_POLICY_ALIGNED_NO_RUNTIME_ENABLEMENT"', assurance)
+        self.assertIn('task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"', assurance)
+        self.assertIn("下一任务： `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`", owner_status)
+        self.assertIn('release_gate: "THREE_BASE_TEMPLATE_HISTORY_BLOCKER_WORDING_CURRENT_STATE_ALIGNED_NO_RUNTIME_ENABLEMENT"', assurance)
         self.assertIn('status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"', assurance)
         self.assertIn('blocker_ids:\n    - "persistent_daily_operation_authorization_missing"', assurance)
         self.assertIn('status: "blocked_persistent_daily_operation_authorization_missing"', assurance)
@@ -1144,20 +1144,20 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("- Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`", status)
         self.assertNotIn("- Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`", status)
         self.assertIn("open_pr_count=0", assurance)
-        self.assertIn("ADP_ALLOW_SMTP_SEND raw value is UNSET or false-like before enablement", assurance)
+        self.assertIn("ADP_ALLOW_SMTP_SEND 原始值为 UNSET 或 false-like", assurance)
         self.assertNotIn(
             "persistent ADP_ALLOW_SMTP_SEND=false, LaunchAgents disabled, open_pr_count=0",
             assurance,
         )
         self.assertIn("LaunchAgents disabled", assurance)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/integrated_production_acceptance.json", assurance)
-        self.assertIn("禁止把 keep-disabled artifact 当作运行授权并启用生产", assurance)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization_gate.json", assurance)
+        self.assertIn("禁止把一次受控运行验收或 keep-disabled 决策当作持久运行授权", assurance)
         self.assertIn("keep-disabled", owner_status)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", owner_status)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json", assurance)
         self.assertIn("S3/DAILY_OPERATION 仍未授权", owner_status)
-        self.assertIn("runtime enablement remains disabled", owner_status)
-        self.assertIn("单独 DAILY_OPERATION 授权预检", owner_status)
+        self.assertIn("继续保持 DAILY_OPERATION 禁用", owner_status)
+        self.assertIn("单独 enablement preflight", owner_status)
         self.assertNotIn('task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"', assurance)
         self.assertNotIn("next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`", owner_status)
         self.assertNotIn("下一任务： `S2PMT07-S2PLT04-COMPLETION-REPORT`", owner_status)
@@ -1241,7 +1241,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         mvp_prep = (ADP_ROOT / "用户中心/MVP准备与复审修补.md").read_text(encoding="utf-8")
 
         self.assertIn(
-            "evidence_freshness 仍为 PARTIAL：13 tree-bound events、10 commit-bound events、331 legacy unbound events、40 precommit pending events",
+            "evidence_freshness 仍为 PARTIAL：13 tree-bound events、10 commit-bound events、333 legacy unbound events、40 precommit pending events",
             project_yaml,
         )
         self.assertNotIn(
@@ -1252,8 +1252,8 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断",
             owner_status,
         )
-        self.assertIn("pending_or_stale_events=384", owner_status)
-        self.assertIn("legacy_unbound_events=332", owner_status)
+        self.assertIn("pending_or_stale_events=385", owner_status)
+        self.assertIn("legacy_unbound_events=333", owner_status)
         self.assertIn(
             "证据新鲜度 | `evidence_freshness=PARTIAL` 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断",
             mvp_prep,
@@ -2116,6 +2116,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             "7 个当前 blocker：`reviewer_independence_not_proven`",
             "当前阻断原因 | `s2plt01_not_accepted`",
             "INTEGRATED_PRODUCTION_ACCEPTED` 未通过",
+            "当前 S2PLT02/S2PLT03/S2PLT04/S2PMT07 与 integrated production acceptance 仍 blocked",
         ):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, combined)

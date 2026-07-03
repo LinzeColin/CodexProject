@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 349
+- task_count: 350
 - acceptance_count: 129
 
 ## Delivery Tasks
+
+## 2026-07-03 12:08:05 Australia/Sydney - Three-base template-history blocker wording aligned
+
+- Task: `ADP-MVP-PREP-THREE-BASE-TEMPLATE-HISTORICAL-BLOCKER-WORDING`
+- Result: `pass_three_base_template_history_blocker_wording_current_state_aligned_no_runtime_enablement`
+- Evidence: `arxiv-daily-push/功能清单.md`; `arxiv-daily-push/开发记录.md`; `arxiv-daily-push/模型参数文件.md`; `arxiv-daily-push/tests/test_governance_current_state.py`.
+- Current state: two 2026-06-29 template-history blocker lines are now historical write-time state; Stage 2 integrated acceptance remains recorded, and the current S3 blocker remains `persistent_daily_operation_authorization_missing`.
+- Boundary: this MVP preparation does not create `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`, does not send SMTP, and does not enable scheduler, Release, production restore, or DAILY_OPERATION.
+- Verification: target TDD red/green governance current-state regression, user-center traceability regression, project governance, governance sync, changed-only semantic governance, fail-closed daily-operation enablement preflight, and git whitespace scan.
 
 ## 2026-07-03 11:33:00 Australia/Sydney - V7.2 product contract current pointer policy aligned
 
