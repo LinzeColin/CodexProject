@@ -1,0 +1,62 @@
+schema_version: "ids.v0_1.batch_upload_lock.v1"
+batch_id: "IDS-V0_1-BATCH-031-040"
+created_at_utc: "2026-07-03T08:32:56Z"
+updated_at_utc: "2026-07-03T08:32:56Z"
+status: "stage031_phase1_in_progress"
+
+repository:
+  owner_repo: "LinzeColin/CodexProject"
+  worktree_path: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS"
+  target_project_path: "KM_IDSystem"
+  local_branch: "codex/ids-v0-1-stages-001-010"
+  upstream_policy: "do_not_push_until_batch_complete_reviewed_and_repaired"
+
+scope:
+  version: "v0.1"
+  stage_range: "STAGE-031..STAGE-040"
+  acceptance_range: "ACC-STAGE-031..ACC-STAGE-040"
+  source_index: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
+  previous_batch_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+
+data_boundary:
+  ids_metadata_raw_root: "/Users/linzezhang/Downloads/IDS_MetaData"
+  boundary_record: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  raw_root_policy: "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content"
+  real_data_only_policy: "All IDS runtime corpus, database-backed content, analytics inputs, reports, indexes, manifests, and committed examples must use real user-approved data; fake business data and fabricated evidence are forbidden."
+  local_existence_check: "IDS_METADATA_ROOT_EXISTS"
+
+upload_gate:
+  push_allowed: false
+  blocked_until:
+    - "STAGE-031 through STAGE-040 all completed."
+    - "Every completed Stage has durable local evidence."
+    - "Tenth-stage review gate completes and repairs findings."
+    - "Separate batch upload gate runs after review; no single-stage GitHub upload gate."
+    - "App entries are reinstalled only after the whole ten-stage batch is uploaded to GitHub main."
+  github_target: "main"
+  next_batch_review_gate: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+  next_batch_upload_gate: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+
+stage_progress:
+  STAGE-031:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE031-P2-GATE"
+    current_task_id: "IDS-V0_1-STAGE031-P1"
+    acceptance_id: "ACC-STAGE-031"
+    acceptance_status: "phase1_scope_boundary_defined"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage031_schema_migration_safety.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+
+decision:
+  current_task_id: "IDS-V0_1-STAGE031-P1"
+  next_allowed_task_id: "IDS-V0_1-STAGE031-P2"
+  github_upload_allowed: false
+  current_run: "STAGE-031 Phase 1 defines schema migration safety scope, inputs, outputs, boundaries, dry-run, backup, validation, rollback, recovery, and owner stop-gate requirements; no migration implementation, PostgreSQL connection, raw metadata content access, GitHub upload, PR, merge, or app reinstall is performed."
+  no_upload_reason: "BATCH031_040 has only STAGE-031 Phase 1 local evidence; upload is blocked until STAGE-031..040 are completed, reviewed, repaired, and a separate batch upload gate runs."

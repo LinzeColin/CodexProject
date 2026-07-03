@@ -368,6 +368,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE030-P4"',
             'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE030-P1"',
+            'current_phase_id: "IDS-STAGE031-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
@@ -389,6 +390,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE030-P4"',
             'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P1"',
             'next_gate_id: "IDS-STAGE026-P2-GATE"',
             'next_gate_id: "IDS-STAGE026-P3-GATE"',
             'next_gate_id: "IDS-STAGE026-P4-GATE"',
@@ -411,6 +413,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
+            'next_gate_id: "IDS-STAGE031-P2-GATE"',
         ]
         allowed_phase_terms = [term for term in allowed_current_terms if term.startswith("current_phase_id")]
         allowed_task_terms = [term for term in allowed_current_terms if term.startswith("current_task_id")]
@@ -996,6 +999,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_stage_id: "IDS-STAGE028"',
             'current_stage_id: "IDS-STAGE029"',
             'current_stage_id: "IDS-STAGE030"',
+            'current_stage_id: "IDS-STAGE031"',
             'current_phase_id: "IDS-STAGE026-P4"',
             'current_phase_id: "IDS-STAGE027-P1"',
             'current_phase_id: "IDS-STAGE027-P2"',
@@ -1014,6 +1018,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE030-P4"',
             'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_phase_id: "IDS-STAGE030-P1"',
+            'current_phase_id: "IDS-STAGE031-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P4"',
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
@@ -1032,6 +1037,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE030-P4"',
             'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'current_task_id: "IDS-V0_1-STAGE030-P1"',
+            'current_task_id: "IDS-V0_1-STAGE031-P1"',
             'next_gate_id: "IDS-STAGE027-P1-GATE"',
             'next_gate_id: "IDS-STAGE027-P2-GATE"',
             'next_gate_id: "IDS-STAGE027-P3-GATE"',
@@ -1051,6 +1057,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
             'next_gate_id: "IDS-V0_1-BATCH-021-030-GITHUB-MERGE"',
+            'next_gate_id: "IDS-STAGE031-P2-GATE"',
         ]
         allowed_stage_terms = [term for term in allowed_current_terms if term.startswith("current_stage_id")]
         allowed_phase_terms = [term for term in allowed_current_terms if term.startswith("current_phase_id")]
