@@ -566,7 +566,6 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
         text = BATCH_LOCK.read_text(encoding="utf-8")
 
         required_terms = [
-            'status: "stage028_completed_local_pending_stage029"',
             "STAGE-028:",
             'status: "completed_local"',
             '      - "Phase 1"',
@@ -579,7 +578,6 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
             'acceptance_status: "local_passed"',
             'next_gate: "IDS-STAGE029-P1-GATE"',
             'push_allowed: false',
-            'next_allowed_task_id: "IDS-V0_1-STAGE029-P1"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE028_PHASE2_ARCHIVE_ADVERSARIAL_SLICE.md",
@@ -593,6 +591,16 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
         for term in required_terms:
             with self.subTest(term=term):
                 self.assertIn(term, text)
+        allowed_status_terms = [
+            'status: "stage028_completed_local_pending_stage029"',
+            'status: "stage029_phase1_in_progress"',
+        ]
+        allowed_next_terms = [
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P1"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE029-P2"',
+        ]
+        self.assertTrue(any(term in text for term in allowed_status_terms), allowed_status_terms)
+        self.assertTrue(any(term in text for term in allowed_next_terms), allowed_next_terms)
 
     def test_roadmap_and_events_track_stage028_phase4_closeout_local_gate(self):
         self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
@@ -601,10 +609,6 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
         events_text = EVENTS.read_text(encoding="utf-8")
 
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE028"',
-            'current_phase_id: "IDS-STAGE028-P4"',
-            'current_task_id: "IDS-V0_1-STAGE028-P4"',
-            'next_gate_id: "IDS-STAGE029-P1-GATE"',
             'stage_id: "IDS-STAGE028"',
             'name: "STAGE-028 · 压缩包对抗测试"',
             'phase_id: "IDS-STAGE028-P4"',
@@ -615,7 +619,7 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE028-P4-20260703-001"',
-            '"event_type":"validation"',
+            '"event_type":"stage_closeout"',
             '"task_id":"IDS-V0_1-STAGE028-P4"',
             '"ACC-STAGE-028"',
             "STAGE028_PHASE4_CLOSEOUT.md",
@@ -625,6 +629,26 @@ class Stage028ArchiveAdversarialTestsPhase1Tests(unittest.TestCase):
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        allowed_roadmap_stage_terms = [
+            'current_stage_id: "IDS-STAGE028"',
+            'current_stage_id: "IDS-STAGE029"',
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE028-P4"',
+            'current_phase_id: "IDS-STAGE029-P1"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE028-P4"',
+            'current_task_id: "IDS-V0_1-STAGE029-P1"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE029-P1-GATE"',
+            'next_gate_id: "IDS-STAGE029-P2-GATE"',
+        ]
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_stage_terms), allowed_roadmap_stage_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)

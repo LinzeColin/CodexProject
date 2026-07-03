@@ -4879,6 +4879,65 @@ next_gate_id: "IDS-STAGE029-P1-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage029_phase1_archive_cleanup_allowlist_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage029_phase1_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-028:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_stage: "STAGE-029"
+    current_task_id: "IDS-V0_1-STAGE028-P4"
+    acceptance_status: "local_passed"
+    next_gate: "IDS-STAGE029-P1-GATE"
+  STAGE-029:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    current_task_id: "IDS-V0_1-STAGE029-P1"
+    acceptance_status: "phase1_scope_boundary_defined"
+    next_gate: "IDS-STAGE029-P2-GATE"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE029"
+current_phase_id: "IDS-STAGE029-P1"
+current_task_id: "IDS-V0_1-STAGE029-P1"
+next_gate_id: "IDS-STAGE029-P2-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE028-P4"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE029-P1"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_phase_state_allows_completed_batch_upload_gate_after_stage005(self):
         module = self._load_module()
         batch_text = """
