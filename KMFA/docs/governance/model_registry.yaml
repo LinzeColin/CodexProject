@@ -86,7 +86,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s05p3-authority-baseline-lock"
+    model_version: "0.1.4-s05-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -113,6 +113,7 @@ models:
       - "FORM-KMFA-V014-S05P1-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-V014-S05P2-FIELD-GOLDEN-BASELINE-001"
       - "FORM-KMFA-V014-S05P3-AUTHORITY-BASELINE-LOCK-001"
+      - "FORM-KMFA-V014-S05-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -159,6 +160,9 @@ models:
       - "PARAM-KMFA-1050"
       - "PARAM-KMFA-1054"
       - "PARAM-KMFA-1058"
+      - "PARAM-KMFA-1059"
+      - "PARAM-KMFA-1060"
+      - "PARAM-KMFA-1061"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -289,7 +293,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s05p3-authority-baseline-lock"
+    model_version: "0.1.4-s05-stage-review"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -300,6 +304,7 @@ models:
       - "FORM-KMFA-V014-S05P1-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-V014-S05P2-FIELD-GOLDEN-BASELINE-001"
       - "FORM-KMFA-V014-S05P3-AUTHORITY-BASELINE-LOCK-001"
+      - "FORM-KMFA-V014-S05-STAGE-REVIEW-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
