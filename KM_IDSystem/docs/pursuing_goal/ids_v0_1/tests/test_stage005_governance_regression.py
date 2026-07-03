@@ -5189,6 +5189,37 @@ next_gate_id: "IDS-STAGE030-P2-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage030_phase2_postgresql_control_plane_slice(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-021-030"
+status: "stage030_phase2_in_progress"
+stage_progress:
+  STAGE-030:
+    status: "in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    next_gate: "IDS-STAGE030-P3-GATE"
+    current_task_id: "IDS-V0_1-STAGE030-P2"
+    acceptance_status: "phase2_schema_migration_slice_complete"
+upload_gate:
+  push_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE030"
+current_phase_id: "IDS-STAGE030-P2"
+current_task_id: "IDS-V0_1-STAGE030-P2"
+next_gate_id: "IDS-STAGE030-P3-GATE"
+        phase_id: "IDS-STAGE030-P2"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
 
 if __name__ == "__main__":
     unittest.main()
