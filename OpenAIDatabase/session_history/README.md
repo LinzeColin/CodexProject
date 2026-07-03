@@ -3,6 +3,8 @@
 This directory stores imported Codex session history snapshots for future RAG,
 behavior analysis, data analysis, and Memory Atlas updates.
 
+不允许删除，codex-session-history-encrypted-20260703T063940Z.key的密码是600，删除该信息则彻底丢失密码，不允许删除
+
 These files are historical snapshots only. They must not be copied over a live
 `~/.codex/sessions` directory.
 
