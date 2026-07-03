@@ -2709,3 +2709,47 @@ formulas:
     evidence_refs:
       - "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/human/test_results.md"
       - "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/machine/s02_p1_metadata_protocol_manifest.json"
+
+  - formula_id: "FORM-KMFA-V014-S02P2-IMMUTABILITY-POLICY-001"
+    model_id: "MOD-KMFA-IMMUTABILITY-001"
+    assumption_ids:
+      - "ASM-KMFA-005"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "s02p2_valid = immutable_fields == 5 AND derived_actions == 4 AND control_event_types == 6 AND raw_inbox_read == false AND raw_inbox_listed == false AND raw_inventory_performed == false AND github_upload_performed == false"
+    variables:
+      - name: "immutable_fields"
+        data_type: "integer"
+        unit: "field_count"
+        input_domain: "5"
+      - name: "derived_actions"
+        data_type: "integer"
+        unit: "action_count"
+        input_domain: "4"
+      - name: "control_event_types"
+        data_type: "integer"
+        unit: "event_type_count"
+        input_domain: "6"
+      - name: "raw_inbox_read"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+      - name: "github_upload_performed"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "S02-P2 defines immutability policy only and must not perform raw inventory."
+      - "S02-P2 must not start S02-P3, Stage 2 review or GitHub upload."
+      - "S02-P2 public evidence must not include raw filenames, raw hashes, field/header plaintext, row values or business values."
+    missing_policy: "Missing immutability policy lock, legacy immutability validator evidence, v014 focused validator evidence or false scope gates fails S02-P2 validation."
+    output_range: "v014_s02_p2_immutability_policy_manifest"
+    code_refs:
+      - "KMFA/tools/check_v014_s02_p2_immutability_policy.py"
+      - "KMFA/tools/immutability_policy_check.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s02_p2_immutability_policy.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/immutability_policy_check.py"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/machine/s02_p2_immutability_policy_manifest.json"

@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S02-P1 metadata目录协议；七类 metadata 目录、五类核心标识符、`raw_data_roots_v1_4.json` raw/private 根目录协议、validator 和 focused unit test 均已本地验证。证据位于 `KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/`，validator 为 `KMFA/tools/check_v014_s02_p1_metadata_protocol.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出、盘点或修改 raw inbox，未执行 S02-P2/S02-P3、Stage 2 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S02-P2 不可污染原则；raw manifest append-only、derived version append-only、control event no-raw-write、`immutability_policy_lock_v1_4.json`、validator 和 focused unit test 均已本地验证。证据位于 `KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/`，validator 为 `KMFA/tools/check_v014_s02_p2_immutability_policy.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出、盘点或修改 raw inbox，未执行 S02-P3、Stage 2 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S02-P2 已确认 raw manifest、derived versions 和 control events 的 append-only/no-raw-write 协议通过本地 validator，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S02-P1 已确认 metadata 目录协议、标识符协议、公开仓库隐私边界和 raw-root 协议通过本地 validator，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 Stage 1 整体复审已确认 S01-P1/S01-P2/S01-P3 全部通过，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S01-P2 已把 v1.4 public-safe baseline 同步到 `KMFA/taskpack/v1_4/`，并用 normalized repo paths + SHA256 绑定，未提交 source package member paths 或 raw/private payload。

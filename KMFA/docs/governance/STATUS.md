@@ -5,9 +5,9 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s02p1-metadata-protocol`
+- version: `0.1.4-s02p2-immutability-policy`
 - current_stage: `S02`
-- current_phase: `v0.1.4 S02-P1 metadata protocol`
+- current_phase: `v0.1.4 S02-P2 immutability policy`
 - status: `completed_validated_local_only_no_go_upload_deferred`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S02-P2 不可污染原则已本地完成：证据位于 `KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/`，validator 为 `KMFA/tools/check_v014_s02_p2_immutability_policy.py`，focused unit 为 `KMFA/tests/test_v014_s02_p2_immutability_policy.py`；本 phase 锁定 raw manifest append-only、derived version append-only、control event no-raw-write 和 raw/private inbox no-read/no-list/no-mutation 协议；未读取、列出、盘点、修改或写入 raw inbox，未执行 S02-P3、Stage 2 review、GitHub upload、raw value matching、正式报告或业务执行。
 - v0.1.4 S02-P1 metadata目录协议已本地完成：证据位于 `KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/`，validator 为 `KMFA/tools/check_v014_s02_p1_metadata_protocol.py`，focused unit 为 `KMFA/tests/test_v014_s02_p1_metadata_protocol.py`；本 phase 复用并验证七类 metadata 目录和五类核心标识符，新增 `KMFA/metadata/protocol/raw_data_roots_v1_4.json` 锁定 raw/private inbox 协议；未读取、列出、盘点、修改或写入 raw inbox，未执行 S02-P2/S02-P3、Stage 2 review、GitHub upload、raw value matching、正式报告或业务执行。
 - v0.1.4 Stage 1 整体复审已本地完成：证据位于 `KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s01_stage_review.py`，focused unit 为 `KMFA/tests/test_v014_s01_stage_review.py`；复审确认 S01-P1/S01-P2/S01-P3 validators 全部 PASS，open findings=0，GitHub upload deferred until v1.4 Stage 1-18 complete overall review；未读取或列出 raw inbox，未执行 S02/raw inventory/GitHub upload。
 - v0.1.4 S01-P3 no-omission baseline 已本地完成：证据位于 `KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/`，validator 为 `KMFA/tools/check_v014_s01_p3_no_omission_baseline.py`，focused unit 为 `KMFA/tests/test_v014_s01_p3_no_omission_baseline.py`；本 phase 锁定 legacy requirements=20、P0=9、P1=8，v1.4 overlay requirements=5，v1.4 roadmap registry=18 Stage/54 Phase/162 Task；未读取或列出 raw inbox，未执行 Stage 1 review/S02/GitHub upload。
