@@ -11,11 +11,11 @@
 - created_at: `2026-06-26 19:51:01 Australia/Sydney`
 - refreshed_at: `2026-06-27 23:58:35 Australia/Sydney`
 
-This receipt organizes the inherited V7.1 P1 evidence set for later independent review. It is not an independent reviewer signoff, does not close any P0/P1 finding, and does not unblock integrated production acceptance.
+This receipt organizes the inherited V7.1 P1 evidence set for later independent review. It is not an independent reviewer signoff and does not close any P0/P1 finding. Current-state note: this receipt's own status fields are write-time historical evidence; current Stage 2 integrated acceptance is recorded, and the current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 ## Scope
 
-- Record the 37 inherited V7.1 P1 findings that still block production acceptance until S2PMT07 independent review closes them explicitly.
+- Record the 37 inherited V7.1 P1 findings that blocked production acceptance at write time until S2PMT07 independent review closed them explicitly.
 - Bind each P1 finding to the current evidence surface or known evidence gap that should be reviewed.
 - Preserve explicit no-production boundaries while S2PMT07 remains blocked.
 
@@ -120,7 +120,7 @@ not change inherited counters, and does not provide independent final signoff.
 - review_phase_record: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A006_A009_TECHNICAL_REVIEW.md`
 - reviewed_findings: `A-006`, `A-007`, `A-008`, `A-009`
 - p1_closure_claimed: `false`
-- stage2_integrated_production_accepted: `false`
+- write-time stage2_integrated_production_accepted: `false`; current Stage 2 integrated acceptance is recorded and current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 
 ## Finding-Level Technical Review 2026-06-27 A010-A016
@@ -171,27 +171,29 @@ not change inherited counters, and does not provide independent final signoff.
 - `release_packaging_enabled`: `false`
 - `production_restore_enabled`: `false`
 - `daily_operation_enabled`: `false`
-- `integrated_production_accepted`: `false`
+- write-time `integrated_production_accepted=false`; current Stage 2 integrated
+  acceptance is recorded and current S3 blocker is
+  `persistent_daily_operation_authorization_missing`.
 - `current_pointer_changed`: `false`
 - `v7_1_baseline_changed`: `false`
 - `v7_2_contract_files_changed`: `false`
 
 ## Next
 
-An independent reviewer must re-run or inspect the referenced evidence, decide each P1 closure explicitly, and produce a separate signoff before inherited P1 counters can change. Until then, S2PMT07 remains blocked and Stage 2 integrated production acceptance remains false.
+An independent reviewer must re-run or inspect the referenced evidence, decide each P1 closure explicitly, and produce a separate signoff before inherited P1 counters can change. At write time this meant S2PMT07 final gate precheck remained blocked; current Stage 2 integrated acceptance is recorded, and the current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 ## Finding-Level Technical Review 2026-06-27 B002-B004-B005-B015
 
-`S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW` reviewed lifecycle/cache/transaction findings `B-002`, `B-004`, `B-005`, and `B-015` against current local code, phase records, manifests, and `test_stage2_lifecycle_cache.py`. All four are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state still block Stage 2 integrated production acceptance.
+`S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW` reviewed lifecycle/cache/transaction findings `B-002`, `B-004`, `B-005`, and `B-015` against current local code, phase records, manifests, and `test_stage2_lifecycle_cache.py`. All four are technical closure candidates only. P1 closure is not claimed; inherited counters remained P0=`8`, P1=`37` at write time; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state blocked Stage 2 integrated production acceptance at write time. Current Stage 2 integrated acceptance is recorded, and the current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 ## Finding-Level Technical Review 2026-06-27 B003-B011
 
-`S2PMT07-P1-B003-B011-TECHNICAL-REVIEW` reviewed S2PMT03 watchdog stale-lock recovery and M4 cycle-watermark findings `B-003` and `B-011` against current local code, phase records, manifests, and `test_stage2_lease_fencing.py`. Both are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state still block Stage 2 integrated production acceptance.
+`S2PMT07-P1-B003-B011-TECHNICAL-REVIEW` reviewed S2PMT03 watchdog stale-lock recovery and M4 cycle-watermark findings `B-003` and `B-011` against current local code, phase records, manifests, and `test_stage2_lease_fencing.py`. Both are technical closure candidates only. P1 closure is not claimed; inherited counters remained P0=`8`, P1=`37` at write time; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state blocked Stage 2 integrated production acceptance at write time. Current Stage 2 integrated acceptance is recorded, and the current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 
 ## Finding-Level Technical Review 2026-06-27 B006-B009-B010-B012-B013-B014
 
-`S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW` reviewed S2PMT05 capacity, fault-injection, time-policy, 35-day E2E, result-validity, and backpressure findings `B-006`, `B-009`, `B-010`, `B-012`, `B-013`, and `B-014` against current local code, phase records, manifests, and `test_stage2_stress_e2e.py`. All six are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state still block Stage 2 integrated production acceptance.
+`S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW` reviewed S2PMT05 capacity, fault-injection, time-policy, 35-day E2E, result-validity, and backpressure findings `B-006`, `B-009`, `B-010`, `B-012`, `B-013`, and `B-014` against current local code, phase records, manifests, and `test_stage2_stress_e2e.py`. All six are technical closure candidates only. P1 closure is not claimed; inherited counters remained P0=`8`, P1=`37` at write time; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state blocked Stage 2 integrated production acceptance at write time. Current Stage 2 integrated acceptance is recorded, and the current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 - manifest: [`ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json`](../../../governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json)
 - phase record: [`PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md`](./PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md)
@@ -203,7 +205,7 @@ An independent reviewer must re-run or inspect the referenced evidence, decide e
 
 ## 2026-06-27 A-020 Technical Review Refresh
 
-`S2PMT07-P1-A020-TECHNICAL-REVIEW` reviewed the current S2PMT01 supply-chain baseline after the SBOM and CI enforcement refresh. `A-020` is now a finding-level technical closure candidate only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state still block Stage 2 integrated production acceptance.
+`S2PMT07-P1-A020-TECHNICAL-REVIEW` reviewed the current S2PMT01 supply-chain baseline after the SBOM and CI enforcement refresh. `A-020` is a finding-level technical closure candidate only. P1 closure is not claimed; inherited counters remained P0=`8`, P1=`37` at write time; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state blocked Stage 2 integrated production acceptance at write time. Current Stage 2 integrated acceptance is recorded, and the current S3 blocker is `persistent_daily_operation_authorization_missing`.
 
 - reviewed findings: `A-020`
 - latest technical review manifest: `governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json`

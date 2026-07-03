@@ -2055,6 +2055,29 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, owner_status)
 
+    def test_p0_p1_review_receipts_do_not_reopen_stage2_acceptance_false(self) -> None:
+        p0_receipt = (
+            ADP_ROOT / "docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md"
+        ).read_text(encoding="utf-8")
+        p1_receipt = (
+            ADP_ROOT / "docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
+        ).read_text(encoding="utf-8")
+        combined = "\n".join([p0_receipt, p1_receipt])
+
+        self.assertIn("write-time `integrated_production_accepted=false`", combined)
+        self.assertIn("current Stage 2 integrated acceptance is recorded", combined)
+        self.assertIn("current S3 blocker is `persistent_daily_operation_authorization_missing`", combined)
+
+        for forbidden in (
+            "integrated production acceptance remains false",
+            "Stage 2 integrated production acceptance remains false",
+            "still block Stage 2 integrated production acceptance",
+            "`integrated_production_accepted`: `false`",
+            "- stage2_integrated_production_accepted: `false`",
+        ):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, combined)
+
 
 if __name__ == "__main__":
     unittest.main()

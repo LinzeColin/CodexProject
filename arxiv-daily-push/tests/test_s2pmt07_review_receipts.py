@@ -27,7 +27,9 @@ class S2PMT07ReviewReceiptTests(unittest.TestCase):
         self.assertIn("does not close any P0/P1 finding", receipt)
         self.assertIn("P1 findings retained open | 37", receipt)
         self.assertIn("p1_closure_not_claimed", receipt)
-        self.assertIn("integrated_production_accepted`: `false`", receipt)
+        self.assertIn("write-time `integrated_production_accepted=false`", receipt)
+        self.assertIn("current Stage 2 integrated acceptance is recorded", receipt)
+        self.assertIn("current S3 blocker is `persistent_daily_operation_authorization_missing`", receipt)
         self.assertNotIn("P1 closed", receipt)
         self.assertNotIn("INTEGRATED_PRODUCTION_ACCEPTED` claim: `true`", receipt)
 
@@ -57,7 +59,9 @@ class S2PMT07ReviewReceiptTests(unittest.TestCase):
         self.assertIn("status: `review_receipt_ready_no_closure_claim`", receipt)
         self.assertIn("p0_closure_not_claimed", receipt)
         self.assertIn("p1_closure_not_claimed", receipt)
-        self.assertIn("integrated_production_accepted`: `false`", receipt)
+        self.assertIn("write-time `integrated_production_accepted=false`", receipt)
+        self.assertIn("current Stage 2 integrated acceptance is recorded", receipt)
+        self.assertIn("current S3 blocker is `persistent_daily_operation_authorization_missing`", receipt)
 
 
 if __name__ == "__main__":
