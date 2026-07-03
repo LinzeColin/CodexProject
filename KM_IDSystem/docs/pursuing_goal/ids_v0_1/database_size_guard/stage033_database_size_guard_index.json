@@ -1,0 +1,220 @@
+{
+  "schema_version": "ids.stage033.database_size_guard.index.v1",
+  "stage": "STAGE-033",
+  "phase": "Phase 2",
+  "task_id": "IDS-V0_1-STAGE033-P2",
+  "acceptance_id": "ACC-STAGE-033",
+  "local_code": "D06-S004",
+  "domain": "D06 · PostgreSQL 控制面",
+  "entrance": "IDS 系统运营入口",
+  "database_size_guard_contract_id": "ids_stage033_database_size_guard_static_slice",
+  "source_refs": {
+    "phase1_scope_ref": "../STAGE033_PHASE1_SCOPE_BOUNDARY.md",
+    "stage030_control_plane_schema_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
+    "stage030_control_plane_index_ref": "../postgresql_control_plane/control_plane_schema_index.json",
+    "stage031_migration_safety_index_ref": "../schema_migration_safety/stage031_migration_safety_index.json",
+    "stage031_migration_safety_checker_ref": "../../../../scripts/check_schema_migration_safety.py",
+    "stage032_connection_pool_index_ref": "../database_connection_pool/stage032_connection_pool_index.json",
+    "stage032_connection_pool_checker_ref": "../../../../scripts/check_database_connection_pool.py",
+    "raw_data_boundary_ref": "../IDS_METADATA_RAW_DATA_BOUNDARY.md",
+    "phase2_checker_ref": "../../../../scripts/check_database_size_guard.py"
+  },
+  "schema_change_plan": {
+    "mode": "static_database_size_guard_contract_only",
+    "future_migration_id": "ids_stage033_database_size_guard_static_policy",
+    "sql_file_created": false,
+    "migration_executed": false,
+    "connection_config_created": false,
+    "recovery_smoke_executed": false,
+    "live_schema_diff_executed": false,
+    "tracked_constraints": [
+      "postgres_control_plane_scope_only",
+      "no_raw_content_storage",
+      "no_ocr_full_text_storage",
+      "no_large_file_or_report_binary_storage",
+      "bounded_derived_artifacts_only",
+      "bounded_row_payload_policy",
+      "owner_stop_gate_before_cleanup",
+      "rollback_verification_required"
+    ]
+  },
+  "guardrails": {
+    "postgres_storage_scope_guard": {
+      "stores_control_plane_metadata": true,
+      "stores_state_refs": true,
+      "stores_audit_refs": true,
+      "stores_evidence_refs": true,
+      "stores_migration_state": true,
+      "stores_job_state": true,
+      "stores_bounded_hot_index_metadata": true,
+      "stores_raw_files": false,
+      "stores_raw_database_rows": false,
+      "stores_document_bodies": false,
+      "stores_ocr_full_text": false,
+      "stores_vector_payloads": false,
+      "stores_report_binaries": false,
+      "stores_unbounded_derived_artifacts": false,
+      "owner_summary": "PostgreSQL 只存控制面、状态和热索引"
+    },
+    "raw_content_block_guard": {
+      "blocked_payloads": [
+        "500GB raw files",
+        "raw metadata database content",
+        "raw database rows",
+        "protected-root payloads",
+        "source file bodies",
+        "archive bodies"
+      ],
+      "stores_raw_content_allowed": false,
+      "owner_summary": "PostgreSQL 不存 500GB 原始文件"
+    },
+    "ocr_full_text_block_guard": {
+      "blocked_payloads": [
+        "OCR full text",
+        "full document text",
+        "unbounded extracted text",
+        "chunk body text"
+      ],
+      "stores_ocr_full_text_allowed": false,
+      "owner_summary": "PostgreSQL 不存 OCR 全文"
+    },
+    "large_file_block_guard": {
+      "blocked_payloads": [
+        "report binaries",
+        "PDF bodies",
+        "ZIP archives",
+        "media blobs",
+        "large vector payloads",
+        "unbounded JSON dumps"
+      ],
+      "stores_large_files_allowed": false,
+      "owner_summary": "PostgreSQL 不存大文件正文或报告二进制"
+    },
+    "derived_artifact_limit_guard": {
+      "allowed_artifacts": [
+        "manifest_ref",
+        "evidence_ref",
+        "audit_ref",
+        "report_ref",
+        "source_ref",
+        "bounded_hot_index_metadata",
+        "recreatable_state_ref"
+      ],
+      "unbounded_derived_artifacts_allowed": false,
+      "requires_recreatable_or_path_only_ref": true,
+      "owner_summary": "PostgreSQL 不存无限制派生产物"
+    },
+    "database_size_budget_guard": {
+      "budget_mode": "policy_threshold_not_measured_runtime_size",
+      "internal_disk_budget_gib": 800,
+      "warning_threshold_gib": 20,
+      "hard_stop_threshold_gib": 40,
+      "owner_stop_reason_required": true,
+      "runtime_size_query_allowed": false,
+      "auto_cleanup_allowed": false,
+      "protects_internal_disk": true,
+      "owner_summary": "保护 800GB 内置盘"
+    },
+    "table_size_guard": {
+      "max_control_plane_table_gib": 8,
+      "max_hot_index_table_gib": 12,
+      "raw_payload_columns_allowed": false,
+      "owner_exception_required": true,
+      "runtime_table_scan_allowed": false
+    },
+    "index_bloat_guard": {
+      "warning_percent": 30,
+      "hard_stop_percent": 50,
+      "automatic_reindex_allowed": false,
+      "owner_rebuild_decision_ref_required": true,
+      "runtime_bloat_query_allowed": false
+    },
+    "row_payload_guard": {
+      "max_control_plane_payload_bytes": 1048576,
+      "max_single_scalar_text_bytes": 65536,
+      "stores_raw_content_allowed": false,
+      "stores_ocr_full_text_allowed": false,
+      "stores_vector_payloads_allowed": false,
+      "stores_report_binaries_allowed": false
+    },
+    "retention_cleanup_guard": {
+      "cleanup_default_mode": "dry_run_only",
+      "auto_delete_allowed": false,
+      "owner_stop_gate_required": true,
+      "rollback_ref_required": true,
+      "backup_restore_ref_required": true,
+      "runtime_cleanup_allowed": false
+    },
+    "connection_pool_budget_guard": {
+      "stage032_connection_pool_ref": "../database_connection_pool/stage032_connection_pool_index.json",
+      "aggregate_max_pool_size": 10,
+      "max_overflow": 0,
+      "backpressure_required": true,
+      "size_guard_does_not_increase_pool": true
+    },
+    "quality_constraint_guard": {
+      "required_constraints": [
+        "no_raw_content_stored",
+        "payload_size_bounded",
+        "fact_level_required",
+        "owner_stop_reason_required",
+        "rollback_ref_required",
+        "real_data_only"
+      ],
+      "fake_data_allowed": false,
+      "fabricated_evidence_allowed": false
+    },
+    "rollback_verification_guard": {
+      "requires_stage031_migration_safety_ref": true,
+      "requires_backup_restore_plan": true,
+      "requires_post_cleanup_verification": true,
+      "requires_owner_stop_gate_for_deletion": true,
+      "runtime_rollback_allowed": false,
+      "runtime_restore_allowed": false
+    },
+    "raw_metadata_boundary": {
+      "path": "/Users/linzezhang/Downloads/IDS_MetaData",
+      "path_only": true,
+      "content_access_allowed": false,
+      "recursive_listing_allowed": false,
+      "hashing_allowed": false,
+      "copy_allowed": false,
+      "modify_allowed": false,
+      "delete_allowed": false,
+      "dump_allowed": false,
+      "scan_allowed": false,
+      "normalize_allowed": false
+    },
+    "real_data_only_guard": {
+      "policy": "All IDS runtime corpus, database-backed content, analytics inputs, reports, indexes, manifests, and committed examples must use real user-approved data only.",
+      "forbidden": [
+        "fake IDS business data",
+        "fake database rows",
+        "fake source documents",
+        "placeholder corpus",
+        "fabricated evidence",
+        "plaintext secrets"
+      ]
+    }
+  },
+  "runtime_policy": {
+    "connect_to_postgres": false,
+    "execute_migration": false,
+    "create_database": false,
+    "create_schema": false,
+    "create_connection_config": false,
+    "run_size_queries": false,
+    "execute_cleanup": false,
+    "execute_vacuum": false,
+    "execute_reindex": false,
+    "execute_backup": false,
+    "execute_restore": false,
+    "write_runtime_outputs": false,
+    "read_raw_metadata": false,
+    "write_raw_metadata": false,
+    "install_dependencies": false,
+    "start_services": false,
+    "github_upload": false,
+    "app_reinstall": false
+  }
+}
