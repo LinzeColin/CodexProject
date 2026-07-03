@@ -2,15 +2,15 @@
 
 ## Current Goal
 
-Execute WDA Stage 2 Sprint 2M-B first-batch subject coverage import validation.
+Execute WDA Stage 2 Sprint 2N import-readiness and Data Core boundary planning.
 
 ## Current Status
 
 - Local worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/WDA`
 - Project directory: `WDA/`
 - Branch: `codex/wda`
-- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is subject coverage import validation, not RAG/Web/Matrix buildout
-- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, and Sprint 2M-B subject coverage import validation artifacts generated; no runtime code yet
+- Product scope: WDA Control Plane for WeChat data analysis feasibility; current scope is import-readiness and Data Core boundary planning, not database implementation or RAG/Web/Matrix buildout
+- Implementation status: Sprint 2B-A/2B-B/2B-C, Sprint 2C contract, Sprint 2D discovery, Sprint 2E route decision, Sprint 2F acquisition contract, Sprint 2G automated route feasibility, Sprint 2I report validation, Sprint 2J-B raw import validation, Sprint 2K-B bounded raw import validation, Sprint 2L subject coverage plan, Sprint 2M-B subject coverage import validation, and Sprint 2N import-readiness/Data Core boundary artifacts generated; no runtime code yet
 - Latest Sprint 1C outputs: `WDA/docs/stage2_sprint1c/`
 - Latest Sprint 2 outputs: `WDA/docs/stage2_sprint2_safe_readability/`
 - Latest Sprint 2B-A outputs: `WDA/docs/stage2_sprint2b_candidate_bundle/`
@@ -26,6 +26,7 @@ Execute WDA Stage 2 Sprint 2M-B first-batch subject coverage import validation.
 - Latest Sprint 2K-B outputs: `WDA/docs/stage2_sprint2k_b_bounded_raw_import_validation/`
 - Latest Sprint 2L outputs: `WDA/docs/stage2_sprint2l_subject_coverage_plan/`
 - Latest Sprint 2M-B outputs: `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/`
+- Latest Sprint 2N outputs: `WDA/docs/stage2_sprint2n_import_readiness_data_core_boundary/`
 - Local Sprint 2B copied bundle: `/Users/linzezhang/Downloads/WDA_MetaData/raw_ferry/sprint2b_candidate_db_bundle_20260703`
 - Latest Sprint 2M-B local Raw Import Pack: `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2m_b_subject_coverage_import_validation/`
 - Raw Gate: `First-Batch Subject Coverage Proven`; full Raw Gate Go is not proven
@@ -79,6 +80,9 @@ Execute WDA Stage 2 Sprint 2M-B first-batch subject coverage import validation.
 - Sprint 2M-B validated the transfer bundle on the new computer and generated a local WDA Raw Import Pack under `/Users/linzezhang/Downloads/WDA_MetaData/stage2_outputs/sprint2m_b_subject_coverage_import_validation/`.
 - Sprint 2M-B generated local `messages.jsonl` with `500` rows, `conversations.jsonl` with `5` rows, `contacts.jsonl` with `23` rows, and empty `media_index.csv`.
 - Sprint 2M-B advances Raw Gate to `First-Batch Subject Coverage Proven`, not full Go.
+- Sprint 2N validated import readiness for a minimal local Data Core seed and did not modify/regenerate `messages.jsonl`.
+- Sprint 2N does not create a database. It defines Sprint 2O as the first allowed minimal local Data Core seed sprint.
+- Sprint 2O must use only the bounded Sprint 2M-B 500-row Raw Import Pack and store local DB files under `/Users/linzezhang/Downloads/WDA_MetaData/data_core/sprint2o_minimal_seed/`.
 - RAG/Web/Matrix remain blocked until repeatable broader import-readiness and Data Core readiness are proven.
 
 ## Files To Read First
@@ -150,6 +154,11 @@ Execute WDA Stage 2 Sprint 2M-B first-batch subject coverage import validation.
 - `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/wda_contract_mapping_report.md`
 - `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/raw_gate_decision.md`
 - `WDA/docs/stage2_sprint2m_b_subject_coverage_import_validation/next_sprint2n_plan.md`
+- `WDA/docs/stage2_sprint2n_import_readiness_data_core_boundary/README.md`
+- `WDA/docs/stage2_sprint2n_import_readiness_data_core_boundary/data_core_minimum_table_plan.md`
+- `WDA/docs/stage2_sprint2n_import_readiness_data_core_boundary/data_core_storage_boundary.md`
+- `WDA/docs/stage2_sprint2n_import_readiness_data_core_boundary/sprint2o_minimal_data_core_seed_plan.md`
+- `WDA/docs/stage2_sprint2n_import_readiness_data_core_boundary/risk_and_stop_conditions.md`
 
 ## Validation
 
@@ -341,6 +350,22 @@ Latest Sprint 2M-B subject coverage import validation:
 - RAG/Web/Matrix: blocked
 - Raw Gate: `First-Batch Subject Coverage Proven`, not full Go
 
+Latest Sprint 2N import-readiness and Data Core boundary:
+
+- Required Sprint 2N repo-safe outputs present: true
+- Input local Raw Import Pack exists: true
+- Required local files present: true
+- Local `messages.jsonl` modified or regenerated: false
+- Database created: false
+- Local checksum entries checked: `12`
+- Local checksum mismatches: `0`
+- Local row counts: `500` messages, `5` conversations, `23` contacts, `0` media rows
+- Minimum Sprint 2O tables: `import_batches`, `import_files`, `conversations`, `contacts`, `conversation_participants`, `messages`, `message_media_refs`, `media_index`, `import_validation_events`
+- Sprint 2O allowed storage root: `/Users/linzezhang/Downloads/WDA_MetaData/data_core/sprint2o_minimal_seed/`
+- Sprint 2O may start: yes, bounded to the Sprint 2M-B 500-row pack only
+- RAG/Web/Matrix: blocked
+- Raw Gate: `First-Batch Subject Coverage Proven`, not full Go
+
 ## Next Step
 
-Run Sprint 2N on the new computer as an import-readiness and Data Core boundary planning sprint. Do not run WeChat exporter tools, do not access the external hard drive, do not enable media handling, and do not start RAG/Web/Matrix from the bounded 2M-B evidence.
+Run Sprint 2O on the new computer as a minimal local Data Core seed sprint if approved. Sprint 2O must ingest only the bounded 500-row Sprint 2M-B Raw Import Pack, write local database files only under `/Users/linzezhang/Downloads/WDA_MetaData/data_core/sprint2o_minimal_seed/`, and keep RAG/Web/Matrix, full export, media paths, and ChatGPT Pack using raw messages blocked.
