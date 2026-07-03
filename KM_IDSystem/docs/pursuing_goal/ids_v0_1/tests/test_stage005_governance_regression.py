@@ -5909,6 +5909,71 @@ next_gate_id: "IDS-STAGE032-P4-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage032_phase4_database_connection_pool_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage032_completed_local_pending_review"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-031:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-032"
+    current_task_id: "IDS-V0_1-STAGE031-REVIEW"
+    acceptance_status: "reviewed_local_passed"
+  STAGE-032:
+    status: "stage032_completed_local_pending_review"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_phase: "stage_review_gate"
+    next_gate: "IDS-STAGE032-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE032-P4"
+    acceptance_id: "ACC-STAGE-032"
+    acceptance_status: "local_passed_pending_stage_review"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE032"
+current_phase_id: "IDS-STAGE032-P4"
+current_task_id: "IDS-V0_1-STAGE032-P4"
+next_gate_id: "IDS-STAGE032-REVIEW-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE032-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE032-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE032-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE032-P4"
+          status: "passed_with_local_evidence"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
 
 if __name__ == "__main__":
     unittest.main()

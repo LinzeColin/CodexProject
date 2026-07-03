@@ -14,6 +14,7 @@ from typing import Any
 
 SCHEMA_VERSION = "ids.stage032.database_connection_pool.phase2.v1"
 SCENARIO_SCHEMA_VERSION = "ids.stage032.database_connection_pool.phase3.v1"
+DELIVERY_SCHEMA_VERSION = "ids.stage032.database_connection_pool.phase4.v1"
 INDEX_SCHEMA_VERSION = "ids.stage032.database_connection_pool.index.v1"
 STAGE = "STAGE-032"
 PHASE = "Phase 2"
@@ -330,16 +331,137 @@ def build_stage032_scenario_validation_report(index_path: Path) -> dict[str, Any
     }
 
 
+def build_stage032_delivery_report(index_path: Path) -> dict[str, Any]:
+    index = _load_json(index_path)
+    phase2_report = build_stage032_connection_pool_report(index_path)
+    scenario_report = build_stage032_scenario_validation_report(index_path)
+    profiles = phase2_report["profile_results"]
+    guardrails = phase2_report["guardrail_results"]
+    runtime_policy = phase2_report["runtime_policy_results"]
+    scenario_results = scenario_report["scenario_results"]
+    source_refs = index.get("source_refs", {})
+    pool_guard = index.get("guardrails", {}).get("pool_size_guard", {})
+    timeout_guard = index.get("guardrails", {}).get("timeout_guard", {})
+    retry_guard = index.get("guardrails", {}).get("retry_backoff_guard", {})
+    healthcheck_guard = index.get("guardrails", {}).get("healthcheck_guard", {})
+    storage_guard = index.get("guardrails", {}).get("storage_boundary_guard", {})
+    raw_boundary = index.get("guardrails", {}).get("raw_metadata_boundary", {})
+
+    return {
+        "schema_version": DELIVERY_SCHEMA_VERSION,
+        "stage": STAGE,
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE032-P4",
+        "acceptance_id": ACCEPTANCE_ID,
+        "next_gate": "IDS-STAGE032-REVIEW-GATE",
+        "stage_review_status": "pending_next_run",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "schema_diff": {
+            "mode": "static_connection_pool_contract_diff_not_executed",
+            "baseline": "STAGE-032 Phase 2/3 tracked connection-pool index and scenario validation without Phase 4 closeout evidence",
+            "target_connection_pool_index_ref": index_path.as_posix(),
+            "connection_pool_contract_id": index.get("connection_pool_contract_id"),
+            "source_refs": source_refs,
+            "profiles_added": sorted(profiles),
+            "guardrails_added": sorted(guardrails),
+            "scenario_ids": sorted(scenario_results),
+            "aggregate_max_pool_size": pool_guard.get("aggregate_max_pool_size"),
+            "statement_timeout_ms": timeout_guard.get("statement_timeout_ms"),
+            "raw_payload_columns_added": [],
+            "credential_fields_added": [],
+            "notes": "This is a tracked-contract connection-pool diff only; no live database schema diff was executed.",
+        },
+        "migration_output": {
+            "mode": "static_connection_pool_migration_output_not_executed",
+            "migration_dependency_ref": source_refs.get("stage031_migration_safety_index_ref"),
+            "expected_static_result": "all Phase2 profiles/guardrails/runtime policy checks true; all Phase3 scenario statuses PASS",
+            "profile_results": profiles,
+            "guardrail_results": guardrails,
+            "runtime_policy_results": runtime_policy,
+            "scenario_results": scenario_results,
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_LIVE_POSTGRESQL_CONNECTION",
+        },
+        "recovery_test_log": {
+            "mode": "static_connection_pool_recovery_log_not_executed",
+            "checks": [
+                "safe_healthcheck_only",
+                "healthcheck_writes_database_false",
+                "raw_metadata_boundary_path_only",
+                "transaction_rollback_required",
+                "retry_non_retryable_raw_boundary_violation",
+                "storage_boundary_no_raw_payloads",
+                "backup_restore_steps_defined",
+                "rollback_steps_defined",
+            ],
+            "result": "static PASS from tracked connection-pool index and scenario validation contracts",
+            "healthcheck_future_query_ref": healthcheck_guard.get("future_query_ref"),
+            "live_restore_log_ref": "NOT_AVAILABLE_BY_POLICY_NO_BACKUP_OR_RESTORE_EXECUTION",
+        },
+        "destructive_migration_confirmation": {
+            "required": True,
+            "destructive_allowed_by_default": False,
+            "current_contract_value": False,
+            "manual_confirmation_required_before_change": True,
+            "non_retryable_ref": "destructive_migration_required"
+            in retry_guard.get("non_retryable_errors", []),
+            "owner_message": "任何破坏性 schema 迁移、连接池上限放大、raw payload 存储或凭证策略放宽必须单独人工确认，默认阻断。",
+        },
+        "rollback_steps": [
+            "Stop before live database connection or pool rollout if the static contract cannot explain the schema, pool, timeout, transaction, retry, healthcheck, storage, raw-boundary, or real-data-only change.",
+            "Revert the Phase 4 helper, closeout evidence, batch lock, roadmap/event updates, Stage005 validator/tests, Stage032 focused tests, compatibility tests, and rendered owner files only.",
+            "Do not touch PostgreSQL data directories, DSN/secret stores, runtime outputs, app entries, GitHub PR state, or /Users/linzezhang/Downloads/IDS_MetaData.",
+            "Keep connection_pool_contract_id stable unless a future authorized stage explicitly changes the pool contract.",
+        ],
+        "backup_restore_steps": [
+            "Before any future live PostgreSQL migration or pool rollout, create an owner-approved logical backup in a separate authorized run.",
+            "Record backup location, checksum, migration id, dry-run evidence, pool contract id, and owner approval in future run evidence.",
+            "If a future apply fails, run the approved rollback command from the migration-safety contract with ON_ERROR_STOP=1 and single-transaction semantics where supported.",
+            "Restore from the approved backup only in a future authorized restore run, then re-run safe healthcheck and keep raw metadata path-only.",
+        ],
+        "known_limits": [
+            "PostgreSQL live connection, pool instantiation, migration dry-run, apply, rollback, backup, restore, and schema diff were not executed in this phase.",
+            "The report proves tracked connection-pool contract readiness, not production database readiness.",
+            "No DSN, credential-bearing config, runtime database rows, document/chunk/job rows, indexes, reports, screenshots, PDFs, manifests, ledgers, audit logs, JSON output files, or service state were generated.",
+            "Raw metadata remains path-only at /Users/linzezhang/Downloads/IDS_MetaData and was not inspected.",
+            "STAGE-032 review is blocked until a separate stage review run; BATCH031_040 upload remains blocked until STAGE-031..040 are complete, reviewed, and repaired.",
+        ],
+        "chinese_owner_feedback": (
+            "STAGE-032 已完成 Phase 4：当前交付的是数据库连接与连接池基线的静态工程合同、"
+            "schema diff 摘要、migration 输出说明、恢复测试日志、已知限制、破坏性迁移人工确认、"
+            "数据库回滚步骤、备份恢复步骤和中文反馈。它不是生产 PostgreSQL 连接、迁移或连接池上线授权；"
+            "下一步应进入 STAGE-032 复审，而不是 GitHub upload 或 app reinstall。"
+        ),
+        "phase2_report": phase2_report,
+        "scenario_report": scenario_report,
+        "raw_metadata_boundary": {
+            "path": raw_boundary.get("path"),
+            "path_only": raw_boundary.get("path_only") is True,
+            "no_raw_content_access": raw_boundary.get("content_access_allowed") is False,
+            "copy_allowed": raw_boundary.get("copy_allowed") is True,
+            "modify_allowed": raw_boundary.get("modify_allowed") is True,
+            "dump_allowed": raw_boundary.get("dump_allowed") is True,
+        },
+        "does_not_connect_to_postgres": True,
+        "does_not_execute_migration": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_write_runtime_outputs": True,
+        "does_not_use_fake_ids_business_data": True,
+    }
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     pursue_root = root / "docs" / "pursuing_goal" / "ids_v0_1"
     index_path = pursue_root / "database_connection_pool" / "stage032_connection_pool_index.json"
     report = build_stage032_connection_pool_report(index_path)
     scenario_report = build_stage032_scenario_validation_report(index_path)
+    delivery_report = build_stage032_delivery_report(index_path)
     print(json.dumps(
         {
             "connection_pool_report": report,
             "scenario_report": scenario_report,
+            "delivery_report": delivery_report,
         },
         ensure_ascii=False,
         sort_keys=True,
@@ -354,6 +476,12 @@ def main() -> int:
             for scenario in scenario_report["scenario_results"].values()
         ]
         + [
+            delivery_report["schema_diff"]["mode"] == "static_connection_pool_contract_diff_not_executed",
+            delivery_report["migration_output"]["mode"] == "static_connection_pool_migration_output_not_executed",
+            delivery_report["recovery_test_log"]["mode"] == "static_connection_pool_recovery_log_not_executed",
+            delivery_report["stage_review_status"] == "pending_next_run",
+            delivery_report["github_upload_allowed"] is False,
+            delivery_report["app_reinstall_allowed"] is False,
             report["index_schema_version"] == INDEX_SCHEMA_VERSION,
             report["does_not_connect_to_postgres"],
             report["does_not_execute_migration"],
