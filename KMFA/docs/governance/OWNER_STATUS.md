@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S06-P1 zero-delta validator；public-safe pass fixture 比较 `8` 个整数分字段且 mismatch count=`0`，1 cent mismatch 被捕获并生成 mismatch report。证据位于 `KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/`，validator 为 `KMFA/tools/check_v014_s06_p1_zero_delta_validator.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P2/S06-P3、Stage 6 review、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S06-P2 difference queue；public-safe PDF/Excel 同项目同字段 `1` cent conflict 已进入人工差异队列，自动修正、平均、四舍五入掩盖和自动选边均被禁止，差异未关闭前 A 级报告被阻断。证据位于 `KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/`，validator 为 `KMFA/tools/check_v014_s06_p2_difference_queue.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P3、Stage 6 review、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S06-P1 zero-delta validator 已确认本地 validator 通过；public-safe pass fixture 比较 `8` 个整数分字段且 mismatch count=`0`，1 cent mismatch 被捕获并生成 mismatch report；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 Stage 5 整体复审已确认本地 validator 通过；S05-P1/S05-P2/S05-P3 validators 全部 PASS，open findings=0；公开证据只保存 phase result、聚合计数、validator 结果和 NO_GO/upload-deferred 边界，不保存 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S05-P3 权威基准锁定已确认本地 validator 通过；公开证据只保存 authority refs、field role、lock/exclusion status、private-only anchor/hash status、baseline version/content hash、聚合计数和 NO_GO/upload-deferred 边界，不保存 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S05-P2 字段级黄金基准已确认本地 validator 通过；公开证据只保存 field contract/candidate refs、private-only anchor/hash status、active owner/授权降级状态、聚合计数和 NO_GO/upload-deferred 边界，不保存 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。

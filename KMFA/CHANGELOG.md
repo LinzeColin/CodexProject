@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s06p2-difference-queue - 2026-07-04
+
+- 完成 `v0.1.4 S06-P2｜cross-source difference queue`。
+- 新增 S06-P2 evidence generator、validator、focused unit test、public-safe PDF/Excel conflict fixture、source difference queue、report grade gate、risk register、rollback plan 和 machine manifest。
+- 复用 `KMFA/tools/cross_source_difference_queue.py`，确认 PDF/Excel 同项目同字段 `1` cent 差异进入人工队列，禁止自动修正、平均、四舍五入掩盖和自动选边；差异未关闭前 `report_grade_a_allowed=false`。
+- 本轮未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或真实业务值。
+- 本轮未执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s06p1-zero-delta-validator - 2026-07-04
 
 - 完成 `v0.1.4 S06-P1｜zero-delta validator`。

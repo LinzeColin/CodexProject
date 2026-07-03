@@ -156,6 +156,16 @@ product_version: 0.1.4-s06p1-zero-delta-validator
 - boundary_validation: `KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/human/test_results.md`
 - limitation: S06-P1 只证明 public-safe validator 行为；不创建 S06-P2 差异队列，不写 S06-P3 metadata quality，不执行 Stage 6 review、GitHub upload、actual business zero-delta、raw value matching、lineage full check、正式报告或 business execution。
 
+### FORM-KMFA-V014-S06P2-DIFFERENCE-QUEUE-001
+
+- type: deterministic public-safe cross-source difference queue gate
+- purpose: 验证 v0.1.4 S06-P2 difference queue，覆盖 S06-P1 dependency、PDF/Excel 同项目同字段 1 cent conflict、人工队列、禁止自动处理、未关闭差异阻断 A 级报告、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s06p2_valid = s06_p1_dependency == PASS AND pdf_excel_conflict_detected == true AND queue_item_count == 1 AND difference_cents == 1 AND auto_correction_allowed == false AND averaging_allowed == false AND rounding_mask_allowed == false AND auto_selection_allowed == false AND report_grade_a_allowed == false AND metadata_quality_written == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s06_p2_difference_queue.py`, `KMFA/tools/check_v014_s06_p2_difference_queue.py`, `KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/machine/difference_queue_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/human/test_results.md`
+- limitation: S06-P2 只证明 public-safe unresolved difference queue 行为；不写 S06-P3 metadata quality，不关闭差异，不执行 Stage 6 review、GitHub upload、actual business raw value matching、lineage full check、正式报告或 business execution。
+
 ### FORM-KMFA-AMOUNT-001
 
 - type: deterministic amount normalization
