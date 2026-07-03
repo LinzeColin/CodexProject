@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s07-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 7 整体复审` 本地验证：复跑 S07-P1/S07-P2/S07-P3 replay validators、legacy S07 validators、治理 validator、raw/secret/public-safe scans，并生成 Stage 7 review evidence。
+- 新增 `KMFA/tools/v013_s07_stage_review.py`、`KMFA/tools/check_v013_s07_stage_review.py`、`KMFA/tests/test_v013_s07_stage_review.py` 和 `KMFA/stage_artifacts/V013_S07_STAGE_REVIEW/`。
+- 复审确认 phase_results=`S07-P1=PASS, S07-P2=PASS, S07-P3=PASS`，open findings=`0`，Q5 allowed count=`0`，formal report allowed count=`0`，data quality=`Q4`，report grade=`D`，release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 S08-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s07p3-redcircle-postponement-replay - 2026-07-03
 
 - 完成 `v0.1.3 S07-P3｜Redcircle postponement replay` 本地验证：复用既有 S07-P3 public-safe 红圈后置策略，并验证 v0.1.3 Stage 6 review、S07-P1 replay、S07-P2 replay 与 legacy S07-P3 dependencies。
