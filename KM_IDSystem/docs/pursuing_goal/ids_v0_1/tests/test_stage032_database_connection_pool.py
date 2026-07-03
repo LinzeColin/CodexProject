@@ -145,25 +145,29 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
         allowed_lock_status_terms = [
             'status: "stage032_completed_local_pending_review"',
             'status: "stage032_completed_reviewed_local"',
+            'status: "stage033_phase1_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "stage_review_gate"',
             'next_stage: "STAGE-033"',
+            'next_phase: "Phase 2"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE032-REVIEW-GATE"',
             'next_gate: "IDS-STAGE033-P1-GATE"',
+            'next_gate: "IDS-STAGE033-P2-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
             'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE033-P1"',
         ]
         allowed_lock_acceptance_terms = [
             'acceptance_status: "local_passed_pending_stage_review"',
             'acceptance_status: "reviewed_local_passed"',
+            'acceptance_status: "phase1_scope_boundary_defined"',
         ]
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE032"',
             'stage_id: "IDS-STAGE032"',
             'name: "STAGE-032 · 数据库连接与连接池基线"',
             'phase_id: "IDS-STAGE032-P1"',
@@ -175,17 +179,24 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'phase_id: "IDS-STAGE032-P4"',
             'status: "passed_with_local_evidence"',
         ]
+        allowed_roadmap_stage_terms = [
+            'current_stage_id: "IDS-STAGE032"',
+            'current_stage_id: "IDS-STAGE033"',
+        ]
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE032-P4"',
             'current_phase_id: "IDS-STAGE032-REVIEW"',
+            'current_phase_id: "IDS-STAGE033-P1"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
             'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE033-P1"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE033-P1-GATE"',
+            'next_gate_id: "IDS-STAGE033-P2-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE032-P4-20260703-001"',
@@ -211,6 +222,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_stage_terms), allowed_roadmap_stage_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
@@ -562,7 +574,6 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
         events_text = EVENTS.read_text(encoding="utf-8")
 
         lock_terms = [
-            'status: "stage032_completed_reviewed_local"',
             'STAGE-032:',
             'status: "completed_reviewed_local"',
             '      - "Phase 1"',
@@ -577,6 +588,18 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_STAGE_REVIEW.md",
             'push_allowed: false',
         ]
+        allowed_lock_status_terms = [
+            'status: "stage032_completed_reviewed_local"',
+            'status: "stage033_phase1_in_progress"',
+        ]
+        allowed_lock_gate_terms = [
+            'next_gate: "IDS-STAGE033-P1-GATE"',
+            'next_gate: "IDS-STAGE033-P2-GATE"',
+        ]
+        allowed_lock_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE033-P1"',
+        ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE032"',
             'current_phase_id: "IDS-STAGE032-REVIEW"',
@@ -586,6 +609,22 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'task_id: "IDS-V0_1-STAGE032-REVIEW"',
             'status: "completed"',
             "STAGE032_STAGE_REVIEW.md",
+        ]
+        allowed_roadmap_stage_terms = [
+            'current_stage_id: "IDS-STAGE032"',
+            'current_stage_id: "IDS-STAGE033"',
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE032-REVIEW"',
+            'current_phase_id: "IDS-STAGE033-P1"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE033-P1"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE033-P1-GATE"',
+            'next_gate_id: "IDS-STAGE033-P2-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE032-REVIEW-20260703-001"',
@@ -599,9 +638,16 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
         for term in lock_terms:
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)
-        for term in roadmap_terms:
+        self.assertTrue(any(term in lock_text for term in allowed_lock_status_terms), allowed_lock_status_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_gate_terms), allowed_lock_gate_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_task_terms), allowed_lock_task_terms)
+        for term in roadmap_terms[4:]:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_stage_terms), allowed_roadmap_stage_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
