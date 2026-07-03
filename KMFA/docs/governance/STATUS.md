@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s02-stage-review`
-- current_stage: `S02`
-- current_phase: `v0.1.4 Stage 2 review`
-- status: `review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete`
+- version: `0.1.4-s03p1-file-registration`
+- current_stage: `S03`
+- current_phase: `v0.1.4 S03-P1 file registration`
+- status: `completed_validated_local_only_no_go_upload_deferred`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S03-P1 文件型导入登记已本地完成：证据位于 `KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/`，validator 为 `KMFA/tools/check_v014_s03_p1_file_registration.py`，focused unit 为 `KMFA/tests/test_v014_s03_p1_file_registration.py`；本 phase 对 `/Users/linzezhang/Downloads/KMFA_MetaData` 执行授权只读 list/stat/read/hash，公开登记 file_count=5、supported_file_count=5、total_size_bytes=62788056，raw 文件明细和内容 hash 仅写入 git-ignored `KMFA/.codex_private_runtime/`；未执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、字段映射、正式报告或业务执行。
 - v0.1.4 S02-P3 数据质量等级已本地完成：证据位于 `KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/`，validator 为 `KMFA/tools/check_v014_s02_p3_quality_gate.py`，focused unit 为 `KMFA/tests/test_v014_s02_p3_quality_gate.py`；本 phase 锁定 Q0-Q5 数据质量、A/B/C/D 报告可信等级、quality-to-release gate 和 missing-evidence block 策略；未读取、列出、盘点、修改或写入 raw inbox，未执行 Stage 2 review、GitHub upload、raw value matching、正式报告或业务执行。
 - v0.1.4 S02-P2 不可污染原则已本地完成：证据位于 `KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/`，validator 为 `KMFA/tools/check_v014_s02_p2_immutability_policy.py`，focused unit 为 `KMFA/tests/test_v014_s02_p2_immutability_policy.py`；本 phase 锁定 raw manifest append-only、derived version append-only、control event no-raw-write 和 raw/private inbox no-read/no-list/no-mutation 协议；未读取、列出、盘点、修改或写入 raw inbox，未执行 S02-P3、Stage 2 review、GitHub upload、raw value matching、正式报告或业务执行。
 - v0.1.4 S02-P1 metadata目录协议已本地完成：证据位于 `KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/`，validator 为 `KMFA/tools/check_v014_s02_p1_metadata_protocol.py`，focused unit 为 `KMFA/tests/test_v014_s02_p1_metadata_protocol.py`；本 phase 复用并验证七类 metadata 目录和五类核心标识符，新增 `KMFA/metadata/protocol/raw_data_roots_v1_4.json` 锁定 raw/private inbox 协议；未读取、列出、盘点、修改或写入 raw inbox，未执行 S02-P2/S02-P3、Stage 2 review、GitHub upload、raw value matching、正式报告或业务执行。

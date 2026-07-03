@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s03p1-file-registration - 2026-07-03
+
+- 完成 `v0.1.4 S03-P1｜文件型导入登记`。
+- 新增 `KMFA/tools/v014_s03_p1_raw_file_registration.py`、`KMFA/tools/check_v014_s03_p1_file_registration.py`、`KMFA/tests/test_v014_s03_p1_file_registration.py` 和 `KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/`。
+- 对 `/Users/linzezhang/Downloads/KMFA_MetaData` 执行本 phase 授权只读 list/stat/read/hash，公开登记 file_count=5、supported_file_count=5、total_size_bytes=62788056。
+- 真实 raw 文件明细和内容 hash 只写入 git-ignored `KMFA/.codex_private_runtime/`；公开仓库只保存聚合计数、类型、大小、状态和 private refs。
+- 未执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、字段映射、正式报告或业务执行。
+
 ## 0.1.4-s02-stage-review - 2026-07-03
 
 - 完成 `v0.1.4 Stage 2 整体复审`。

@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 Stage 2 整体复审；S02-P1 metadata protocol、S02-P2 immutability policy、S02-P3 quality gate 和 Stage 2 review validators 均已本地通过，open findings=0。证据位于 `KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s02_stage_review.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮未读取、列出、盘点或修改 raw inbox，未执行 S03-P1、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S03-P1 文件型导入登记；本机 raw root 只读登记文件数 `5`、支持类型数 `5`、总字节数 `62788056`。证据位于 `KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/`，validator 为 `KMFA/tools/check_v014_s03_p1_file_registration.py`。最新状态仍为 `NO_GO`，`delivery_allowed=false`；本轮只对 raw inbox 执行授权 read-only list/stat/read/hash，未写入、删除、移动、重命名、覆盖或转换 raw inbox，未执行 S03-P2、Stage 3 review、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S03-P1 已确认 raw root read-only registration 通过本地 validator，公开证据只保存聚合计数、类型、大小、状态和 private refs，raw 文件明细和内容 hash 留在 git-ignored private runtime，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 Stage 2 整体复审已确认 S02-P1/S02-P2/S02-P3 validators 全部 PASS，open findings=0，当前仍为 NO_GO/Q0/D/blocked，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S02-P3 已确认 Q0-Q5、A/B/C/D 和 quality-to-release gate 通过本地 validator，当前仍为 NO_GO/D/blocked，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
 - v0.1.4 S02-P2 已确认 raw manifest、derived versions 和 control events 的 append-only/no-raw-write 协议通过本地 validator，并保持 GitHub upload deferred until v1.4 Stage 1-18 complete overall review。
