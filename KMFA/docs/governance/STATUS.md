@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.3-s08p2-business-entity-model-replay`
+- version: `0.1.3-s08p3-entity-matching-quality-replay`
 - current_stage: `S08`
-- current_phase: `v0.1.3 S08-P2 business entity model replay`
-- status: `local_s08_p2_completed_upload_deferred_until_stage10_batch_no_go`
+- current_phase: `v0.1.3 S08-P3 entity matching quality replay`
+- status: `local_s08_p3_completed_upload_deferred_until_stage10_batch_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_stage1_10_batch_gate`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -66,6 +66,7 @@
 - v0.1.3 Stage 7 整体复审已本地完成，证据位于 `KMFA/stage_artifacts/V013_S07_STAGE_REVIEW/`；复审复跑 S07-P1/S07-P2/S07-P3 replay validators、legacy S07 validators、Stage 7 review validator、治理 validator、raw/secret/public-safe scans 和结构化解析，phase_results 全部 PASS、open findings=0、Q5/formal report allowed count 均为 0、data quality=`Q4`、report grade=`D`、release permission=`blocked`。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S08-P1、GitHub upload、raw value matching、正式报告、lineage full check、Redcircle automatic connector、live connector 或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - v0.1.3 S08-P1 project composite key replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S08_P1_PROJECT_COMPOSITE_KEY_REPLAY/`；复用既有 S08-P1 public-safe 项目组合键能力并验证 v0.1.3 Stage 7 review dependency，确认 components=8、profiles=4、matches=3、manual review queue=2、strong auto match=1、matching weights sum=10000 bps、strong/human review thresholds=8500/7000 bps，低于强匹配阈值进入人工复核且不自动合并。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S08-P2、S08-P3、Stage 8 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - v0.1.3 S08-P2 business entity model replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S08_P2_BUSINESS_ENTITY_MODEL_REPLAY/`；复用既有 S08-P2 public-safe 业务实体模型并验证 v0.1.3 S08-P1 dependency，确认 required entity types=8、relationships=14、lifecycle statuses=32、每类实体 4 个 lifecycle statuses，实体值保持 hash/ref only，关系保持 schema-only，生命周期保持 status-only。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S08-P3、Stage 8 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+- v0.1.3 S08-P3 entity matching quality replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S08_P3_ENTITY_MATCHING_QUALITY_REPLAY/`；复用既有 S08-P3 public-safe 匹配质量 artifacts 并验证 v0.1.3 S08-P2 dependency，确认 scenario_count=4、quality_case_count=4、manual_review_queue_count=3、entity_matching_report_count=1、risk_summary high=2 medium=1 low=1，人工复核队列继续 auto_merge_allowed=false。本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 8 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行；v1.3 GitHub main upload 仍延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
 - v0.1.3 S06-P1 zero-delta validator replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P1_ZERO_DELTA_REPLAY/`；本 phase 复用既有 `zero_delta_validator.py` 和 public-safe synthetic/taskpack fixture，确认 8 次字段比较全部零差异通过、pass mismatch_count=0，并验证 0.01 元/1 分差异必须失败且生成 mismatch report。`metadata_quality_written=false`、`difference_queue_created=false`、`stage6_review_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P2、S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - v0.1.3 S06-P2 cross-source difference queue replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/`；本 phase 复用既有 `cross_source_difference_queue.py` 和 public-safe synthetic PDF/Excel conflict fixture，确认 PDF/Excel 同项目同字段 1 分差异进入人工队列，禁止自动修正、平均、四舍五入掩盖和自动选边，未关闭差异阻断 A 级报告。`metadata_quality_written=false`、`source_difference_queue_metadata_written=false`、`stage6_review_performed=false`、`s06_p3_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
 - v0.1.3 S06-P3 validation evidence replay 已本地完成，证据位于 `KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/`；本 phase 只消费 S06-P1/S06-P2 public-safe evidence，输出 zero_delta_result、sanitized mismatch report、project validation statuses，并追加写入 metadata/quality public-safe records。`metadata_quality_written=true`、`project_status_count=2`、`blocked_project_status_count=2`、`q5_allowed_count=0`、`report_grade_a_allowed_count=0`、`stage6_review_performed=false`、`github_upload_performed=false`；本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 6 review、GitHub upload、raw value matching、正式报告、lineage full check 或业务执行。
@@ -165,7 +166,7 @@
 ## 未完成
 
 - lineage 完整检查、正式报告、差异关闭和外部接口尚未完成；S09-P3 reconciliation layer 仍有 12 条 pending owner/授权复核记录；Stage 18 upload 只证明 reviewed public-safe stack 已进入 GitHub main。
-- v0.1.3 S07-P3 Redcircle postponement replay 已本地完成；侧聊纠正后，GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 S08-P3 entity matching quality replay` 或用户明确指定的单一 phase，不得跳到 GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
+- v0.1.3 S07-P3 Redcircle postponement replay 已本地完成；侧聊纠正后，GitHub main upload 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。下一轮只能另起 run work 执行 `v0.1.3 Stage 8 overall review` 或用户明确指定的单一 phase，不得跳到 GitHub upload、正式报告、lineage full check、raw value matching、live connector、Redcircle automatic connector 或业务执行。
 
 ## 阻塞条件
 

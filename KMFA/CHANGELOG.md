@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s08p3-entity-matching-quality-replay - 2026-07-03
+
+- 完成 `v0.1.3 S08-P3｜entity matching quality replay` 本地验证：验证 v0.1.3 S08-P2 dependency，并复用既有 S08-P3 public-safe 匹配质量 artifacts。
+- 新增 `KMFA/tools/v013_s08_p3_entity_matching_quality_replay.py`、`KMFA/tools/check_v013_s08_p3_entity_matching_quality_replay.py`、`KMFA/tests/test_v013_s08_p3_entity_matching_quality_replay.py` 和 `KMFA/stage_artifacts/V013_S08_P3_ENTITY_MATCHING_QUALITY_REPLAY/`。
+- 锁定 scenario_count=`4`、quality_case_count=`4`、manual_review_queue_count=`3`、entity_matching_report_count=`1`、risk_summary=`high=2; medium=1; low=1`；manual review queue 继续 `auto_merge_allowed=false`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values 或业务值。
+- 未执行 Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s08p2-business-entity-model-replay - 2026-07-03
 
 - 完成 `v0.1.3 S08-P2｜business entity model replay` 本地验证：复用既有 S08-P2 public-safe 业务实体模型，并验证 v0.1.3 S08-P1 replay dependency。
