@@ -1,0 +1,24 @@
+{
+  "event_time": "2026-07-04T11:40:00+10:00",
+  "evidence_ref": "KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/machine/pdf_excel_conflict_fixture.json",
+  "excel_source_ref": {
+    "source_anchor_ref": "sha256:synthetic-v014-s06p2-excel-anchor",
+    "source_class": "authorized_export",
+    "source_id": "SRC-V014-S06P2-EXCEL-SYNTHETIC",
+    "source_type": "excel"
+  },
+  "excel_value_cents": 9999,
+  "field": "contract_amount_cents",
+  "fixture_id": "KMFA-V014-S06P2-PDF-EXCEL-CONFLICT-PUBLIC-SAFE",
+  "pdf_source_ref": {
+    "source_anchor_ref": "sha256:synthetic-v014-s06p2-pdf-anchor",
+    "source_class": "raw_upload",
+    "source_id": "SRC-V014-S06P2-PDF-SYNTHETIC",
+    "source_type": "pdf"
+  },
+  "pdf_value_cents": 10000,
+  "project_ref": "V014-SYN-PROJECT-S06P2-001",
+  "public_safe_fixture_only": true,
+  "raw_business_data_used": false,
+  "schema_version": "kmfa.v014_s06_p2.pdf_excel_conflict_fixture.v1"
+}

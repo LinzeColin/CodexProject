@@ -115,6 +115,7 @@ models:
       - "FORM-KMFA-V014-S05P3-AUTHORITY-BASELINE-LOCK-001"
       - "FORM-KMFA-V014-S05-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S06P1-ZERO-DELTA-VALIDATOR-001"
+      - "FORM-KMFA-V014-S06P2-DIFFERENCE-QUEUE-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -295,7 +296,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s06p1-zero-delta-validator"
+    model_version: "0.1.4-s06p2-difference-queue"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -308,6 +309,7 @@ models:
       - "FORM-KMFA-V014-S05P3-AUTHORITY-BASELINE-LOCK-001"
       - "FORM-KMFA-V014-S05-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S06P1-ZERO-DELTA-VALIDATOR-001"
+      - "FORM-KMFA-V014-S06P2-DIFFERENCE-QUEUE-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -649,6 +651,8 @@ models:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/human/authority_baseline_lock_report.md"
       - "KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/machine/authority_baseline_lock_manifest.json"
+      - "KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/human/difference_queue_report.md"
+      - "KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/machine/difference_queue_manifest.json"
       - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md"
       - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/s06_p2_completion_record.md"
       - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md"

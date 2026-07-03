@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S06-P1｜zero-delta validator`：`KMFA/tools/v014_s06_p1_zero_delta_validator.py`、`KMFA/tools/check_v014_s06_p1_zero_delta_validator.py`、`KMFA/tests/test_v014_s06_p1_zero_delta_validator.py` 和 S06-P1 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/`。本 phase 依赖 v0.1.4 Stage 5 review，复用 public-safe synthetic fixture 比较 `8` 个整数分字段，pass fixture mismatch count=`0`，1 cent mismatch 被捕获并生成 `mismatch_report.csv`，报告列包含 source、field、authoritative/system cents 和 difference cents。本 phase 未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row/cell values 或真实业务值。未执行 S06-P2、S06-P3、Stage 6 review、GitHub upload、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S06-P2｜跨源差异队列`，不得在本轮补做 GitHub upload。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S06-P2｜cross-source difference queue`：`KMFA/tools/v014_s06_p2_difference_queue.py`、`KMFA/tools/check_v014_s06_p2_difference_queue.py`、`KMFA/tests/test_v014_s06_p2_difference_queue.py` 和 S06-P2 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/`。本 phase 依赖 v0.1.4 S06-P1，复用 public-safe PDF/Excel synthetic conflict fixture，生成 `1` 条人工差异队列，difference_cents=`1`，auto correction/averaging/rounding mask/auto selection 全部为 `false`，差异未关闭前 `report_grade_a_allowed=false`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet 名、ZIP member 名、row/cell values 或真实业务值。未执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S06-P3｜校验证据输出`，不得在本轮补做 Stage 6 review 或 GitHub upload。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s06p1-zero-delta-validator`
-- 当前已完成: `v0.1.4 S06-P1 zero-delta validator`
-- 证据目录: `KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/`
-- validator: `KMFA/tools/check_v014_s06_p1_zero_delta_validator.py`
-- focused test: `KMFA/tests/test_v014_s06_p1_zero_delta_validator.py`
+- 当前版本: `0.1.4-s06p2-difference-queue`
+- 当前已完成: `v0.1.4 S06-P2 difference queue`
+- 证据目录: `KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/`
+- validator: `KMFA/tools/check_v014_s06_p2_difference_queue.py`
+- focused test: `KMFA/tests/test_v014_s06_p2_difference_queue.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S06-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；只使用 public-safe synthetic fixture 和 Stage 5 public-safe review evidence。
-- 未执行: GitHub upload、S06-P2、S06-P3、Stage 6 review、raw value matching、raw source field/header plaintext publication、metadata/quality 写入、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- raw boundary: S06-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只使用 public-safe synthetic PDF/Excel conflict fixture 和 S06-P1 public-safe evidence。
+- 未执行: GitHub upload、S06-P3、Stage 6 review、raw value matching、raw source field/header plaintext publication、metadata/quality 写入、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
 
 ## v0.1.3 历史状态
 
