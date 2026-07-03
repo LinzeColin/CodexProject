@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260703-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY"
+as_of_event_id: "EVENT-KMFA-20260703-V013-S09-P2-MARGIN-CASH-MARGIN-REPLAY"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "f6ecc4c029b8a08deab9cf08d1afcc32bdf5fa7b"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S09_P1_COMMIT"
-snapshot_event_time: "2026-07-03T15:20:00+10:00"
-generator_version: "manual-v013-s09-p1-project-cost-fact-layer-replay"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S09_P2_COMMIT"
+snapshot_event_time: "2026-07-03T16:20:00+10:00"
+generator_version: "manual-v013-s09-p2-margin-cash-margin-replay"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 567
+    total_active_parameters: 575
     total_active_formulas: 53
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"

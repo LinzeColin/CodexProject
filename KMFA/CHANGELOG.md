@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3-s09p2-margin-cash-margin-replay - 2026-07-03
+
+- 完成 `v0.1.3 S09-P2｜margin and cash margin replay` 本地验证：复用既有 S09-P2 public-safe 毛利与现金毛利 artifacts，并验证 v0.1.3 S09-P1 replay dependency。
+- 新增 `KMFA/tools/v013_s09_p2_margin_cash_margin_replay.py`、`KMFA/tools/check_v013_s09_p2_margin_cash_margin_replay.py`、`KMFA/tests/test_v013_s09_p2_margin_cash_margin_replay.py` 和 `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/`。
+- 锁定 required margin metrics=`4`、project cost fact records=`4`、margin records=`4`、scope difference summary records=`12`、authority field groups=`8`、manual review queue=`3`、unresolved differences=`1`、zero-delta fail count=`1`、blocked quality results=`2`；authority/system/cash value 均保持 hash/private-ref only。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values、业务金额或业务值。
+- 未执行 S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
 ## 0.1.3-s09p1-project-cost-fact-layer-replay - 2026-07-03
 
 - 完成 `v0.1.3 S09-P1｜project cost fact layer replay` 本地验证：复用既有 S09-P1 public-safe 项目成本事实层 artifacts，并验证 v0.1.3 Stage 8 review dependency。
