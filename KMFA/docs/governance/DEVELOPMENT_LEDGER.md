@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S13-P1 Financial Operating Report
+- Product version: `0.1.4-s13p1-financial-operating-report`.
+- Scope: S13-P1 only; public-safe financial operating report drafts under Stage 12 review dependency and v1.4 HTML/UIUX baseline.
+- Evidence: `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/`.
+- Verification: `KMFA/tools/check_v014_s13_p1_financial_operating_report.py`; `KMFA/tests/test_v014_s13_p1_financial_operating_report.py`.
+- blocker_state: source_lanes=4, sources=8, field_mappings=39, draft_reports=2, html_drafts=2, pending_reconciliation=12, report_grade=D, formal_report=0, business_decision_basis=0, S13-P2=false, S13-P3=false, Stage13 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+product_version: 0.1.4-s13p1-financial-operating-report
+version_matrix_product_version_reference: 0.1.4-s13p1-financial-operating-report
+
 # KMFA v0.1.4 Stage 12 Review
 - Product version: `0.1.4-s12-stage-review`.
 - Scope: Stage 12 review only; replayed S12-P1/S12-P2/S12-P3 validators and legacy Stage 12 review under v1.4 upload-deferred policy.

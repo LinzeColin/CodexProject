@@ -8585,3 +8585,47 @@ tasks:
       lineage_full_check: false
       formal_report: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S13-P1-FINANCIAL-OPERATING-REPORT-20260705"
+    task_name: "v0.1.4 S13-P1 财务经营报表"
+    stage_id: "V014-S13"
+    phase_id: "S13-P1"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT"
+    validator: "KMFA/tools/check_v014_s13_p1_financial_operating_report.py"
+    focused_test: "KMFA/tests/test_v014_s13_p1_financial_operating_report.py"
+    acceptance_id: "ACC-V014-S13-P1-FINANCIAL-OPERATING-REPORT"
+    acceptance_ids:
+      - "ACC-V014-S13-P1-FINANCIAL-OPERATING-REPORT"
+    next_phase: "S13-P2"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s13p1-financial-operating-report"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s13_p1_financial_operating_report.py KMFA/tools/check_v014_s13_p1_financial_operating_report.py KMFA/tests/test_v014_s13_p1_financial_operating_report.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s13_p1_financial_operating_report.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s13_p1_financial_operating_report.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_p1_financial_operating_report.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s13_p1_financial_operating_report -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: Stage 12 review dependency, legacy S13-P1 and v0.1.4 S13-P1 validators passed."
+      - "PASS: focused unit test ran 1 test and passed."
+      - "PASS: governance validators, no-float, no-omission, structured parse checks, raw/private suffix scan, high-signal secret scan, scoped artifact boundary scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/human/financial_operating_report.md"
+      - "KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json"
+      - "KMFA/tools/check_v014_s13_p1_financial_operating_report.py"
+    forbidden_scope:
+      s13_p2: false
+      s13_p3: false
+      stage13_review: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      business_execution: false
