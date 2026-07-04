@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 13`
-- 当前 Phase: `v0.1.4 Stage 13 整体复审已本地完成并通过 validator；锁定 phase_results=3/3 PASS、open findings=0、fixed findings=1、financial lanes=4、collection lanes=5、review dimensions=4、difference queue=4、quality report=1、HTML exports=4、pending reconciliation=12、report grade=D、formal report=0、business decision basis=0、difference closure=0；GitHub upload 继续延期到 v1.4 Stage 1-18 完成并整体复审修复后；下一步只能另起 run work 执行 S14-P1，不执行 GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe、催收、法务、付款、开票、税务或业务执行`
+- 当前 Stage: `v0.1.4 Stage 14`
+- 当前 Phase: `v0.1.4 S14-P1 资金计划现金贷款已本地完成并通过 validator；锁定 source lanes=4、sources=5、field mappings=25、cash pressure records=4、loan due alerts=3、account balance summaries=3、HTML overview=1、pending reconciliation=12、report grade=D、payment/bank/loan actions=0；GitHub upload 继续延期到 v1.4 Stage 1-18 完成并整体复审修复后；下一步只能另起 run work 执行 S14-P2，不执行 S14-P3、Stage 14 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe、付款、银行、贷款管理、开票、税务、政策申报、补贴申报或业务执行`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 Stage 13 整体复审本轮只允许完成本地验证和本地 commit；下一轮只能在用户明确开启后单独执行 `S14-P1 资金计划现金贷款`。不得直接执行 GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、催收、法务、付款、开票、税务或任何业务动作。
+- v0.1.4 S14-P1 资金计划现金贷款本轮只允许完成本地验证和本地 commit；下一轮只能在用户明确开启后单独执行 `S14-P2 发票税务计划`。不得直接执行 S14-P3、Stage 14 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、付款、银行、贷款管理、开票、税务、政策申报、补贴申报或任何业务动作。
 - Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成；S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已完成。Stage 18 review-level Go/No-Go 仍为 `NO_GO`；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

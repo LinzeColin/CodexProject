@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S14-P1 Fund Cash Loan Plan
+- Product version: `0.1.4-s14p1-fund-cash-loan-plan`.
+- Scope: S14-P1 only; public-safe fund cash loan plan with source lanes, cash pressure signals, loan due alerts, account balance summaries and HTML overview.
+- Evidence: `KMFA/stage_artifacts/V014_S14_P1_FUND_CASH_LOAN_PLAN/`.
+- Verification: `KMFA/tools/check_v014_s14_p1_fund_cash_loan_plan.py`; `KMFA/tests/test_v014_s14_p1_fund_cash_loan_plan.py`.
+- blocker_state: source_lanes=4, sources=5, field_mappings=25, cash_pressure=4, loan_due=3, account_summaries=3, html_outputs=1, pending_reconciliation=12, report_grade=D, payment=false, bank=false, loan_management=false, S14-P2=false, S14-P3=false, Stage14 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+product_version: 0.1.4-s14p1-fund-cash-loan-plan
+version_matrix_product_version_reference: 0.1.4-s14p1-fund-cash-loan-plan
+
 # KMFA v0.1.4 Stage 13 Review
 - Product version: `0.1.4-s13-stage-review`.
 - Scope: Stage 13 review only; public-safe replay of S13-P1/S13-P2/S13-P3 validators, legacy Stage 13 review, v1.4 Stage 13 review validator and focused unit test.
@@ -854,6 +863,7 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | `KMFA-V013-S09-P2-MARGIN-CASH-MARGIN-REPLAY-20260703` | v0.1.3 S09-P2 margin and cash margin replay 本地通过，completed_version=`0.1.3-s09p2-margin-cash-margin-replay`：重放 4 个 required margin metrics、4 条 margin records 和 12 条 scope difference summary records；S09-P3、Stage 9 review、GitHub upload、raw value matching、正式报告和业务执行均未执行 | `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/human/margin_cash_margin_replay_report.md` |
 | `KMFA-V014-S01-P1-READ-ONLY-SCOPE-LOCK-20260703` | v0.1.4 S01-P1 只读检查与范围锁定本地通过：登记 v1.4 修补包 source package、9 个 public-safe source 条目、raw-readonly policy、HTML human-flow audit 54/0/0 和 no-upload/no-go 边界；未读取、列出、修改或写入 raw inbox，未执行 S01-P2、S01-P3、Stage 1 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/implementation_plan.md` |
 | `KMFA-V014-S12-P3-MANUAL-RERUN-MECHANISM-20260705` | v0.1.4 S12-P3 重跑机制本地通过：验证 S12-P2 dependency，生成 2 条 cache invalidation、8 条四层 rerun step、2 条 same-source consistency check，旧版本保留且新版本追加；未读取 raw inbox，未执行 Stage 12 review、GitHub upload、protected source matching、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/human/manual_rerun_mechanism_report.md` |
+| `KMFA-V014-S14-P1-FUND-CASH-LOAN-PLAN-20260705` | v0.1.4 S14-P1 资金计划现金贷款本地通过：验证 Stage 13 review dependency、legacy S14-P1 validator 和 v1.4 S14-P1 validator，生成 4 条 source lanes、4 条 cash pressure signals、3 条 loan due alerts、3 条 account balance summaries 和 1 个 HTML overview；未读取 raw inbox，未执行 S14-P2、S14-P3、Stage 14 review、GitHub upload、protected source matching、lineage full check、正式报告、付款、银行、贷款管理、开票、税务、政策申报、补贴申报或业务执行 | `KMFA/stage_artifacts/V014_S14_P1_FUND_CASH_LOAN_PLAN/human/fund_cash_loan_plan_report.md` |
 
 ## In Progress
 
