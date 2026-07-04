@@ -4,11 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S11-P2 数据源检查板；13 行 public-safe 检查矩阵、11 列、5 种状态、搜索反馈、状态点击详情、5 个状态变更控制动作、1 个控制事件日志、蓝灰低干扰样式和 v1.4 human-flow search/status/detail baseline 均已由 validator 证明。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/`，validator 为 `KMFA/tools/check_v014_s11_p2_source_check_board.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S11-P3、Stage 11 review、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S11-P3 项目成本页面；4 条 public-safe 项目列表记录、7 列项目页面、9 类成本结构、4 条毛利记录、12 条 pending reconciliation、项目详情、来源证据、待处理事项、报告预览分段、附录导出反馈、打印/保存反馈和 v1.4 human-flow project-detail/report-section baseline 均已由 validator 证明。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/`，validator 为 `KMFA/tools/check_v014_s11_p3_project_cost_page.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 11 review、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
-- v0.1.4 S11-P2 数据源检查板已确认本地 validator 通过；13 行矩阵、11 列、5 种状态、搜索、状态详情、状态变更控制事件和 v1.4 human-flow baseline 反映均为 public-safe 本地证据。S11-P2 只证明数据源检查板，不证明 S11-P3 项目成本页、Stage 11 复审、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；下一步只能 S11-P3。
+- v0.1.4 S11-P3 项目成本页面已确认本地 validator 通过；4 条项目列表记录、7 列项目页面、9 类成本结构、4 条毛利记录、12 条 pending reconciliation、项目详情、来源证据、待处理事项、D 级报告预览、报告分段切换、附录导出反馈和打印/保存反馈均为 public-safe 本地证据。S11-P3 只证明项目成本页面，不证明 Stage 11 复审、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；下一步只能 Stage 11 整体复审。
 - v0.1.4 Stage 10 整体复审已确认本地 validator 通过；S10-P1/S10-P2/S10-P3 validators 全部 PASS，legacy Stage 10 review 与 v0.1.3 Stage 10 review 通过，open findings=0，fixed findings=2。Stage 10 只证明报告模板、可信等级和 public-safe 导出证据在本地复审闭环；12 条 reconciliation 仍 pending、zero-delta=false、缺少完整 lineage 和人工确认，因此正式报告、经营决策依据和 delivery 继续阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S10-P2 报告可信等级已确认本地 validator 通过；2 条报告等级记录均为 D，12 条 reconciliation 仍 pending、0 条 confirmed resolution、zero-delta=false、缺少完整 lineage 和人工确认，因此完整可信报告、正式报告、经营决策依据和导出 release 继续阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S10-P1 报告模板已确认本地 validator 通过；2 个报告模板和 11 个管理可读章节已锁定，v1.4 HTML/UIUX audit FAIL=0 被作为后续报告交互基线引用；S10-P1 只证明模板结构，不生成 HTML/CSV/PDF 导出，不发布正式报告；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。

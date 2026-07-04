@@ -630,3 +630,10 @@ product_version: 0.1.4-s11p2-source-check-board
 - Inputs: v0.1.4 S11-P1 dependency, legacy S11-P2 public-safe source check board artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
 - Outputs: `KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json` and public-safe human evidence under the same artifact directory.
 - Controls: S11-P3, Stage 11 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, and raw/private inbox read/list/stat/hash/mutation must remain false.
+
+## FORM-KMFA-V014-S11P3-PROJECT-COST-PAGE-001
+- Version: `0.1.4-s11p3-project-cost-page`.
+- Purpose: lock S11-P3 project cost page evidence for public-safe project rows, list columns, cost structure, margin records, collection/difference status, project detail panels, source evidence, pending action panels, D-grade report preview, and v1.4 human-flow baseline reflection.
+- Inputs: v0.1.4 S11-P2 dependency, legacy S11-P3 public-safe project cost page artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
+- Outputs: `KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/machine/project_cost_page_manifest.json`, `KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/machine/project_cost_page_projects.jsonl`, `KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/exports/html/kmfa_project_cost_page.html`, and public-safe human evidence under the same artifact directory.
+- Controls: Stage 11 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, and raw/private inbox read/list/stat/hash/mutation must remain false.
