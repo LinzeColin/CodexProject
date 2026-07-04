@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s08-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 8 整体复审`。
+- 新增 Stage 8 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S08-P1/S08-P2/S08-P3 validators 与 legacy Stage 8 review validator，phase_results 全部 PASS，open findings=`0`，fixed findings=`1`；锁定 project identity components=`8`、business entity types=`8`、relationships=`14`、lifecycle statuses=`32`、quality scenarios=`4`、quality cases=`4`、manual review queue=`3`。
+- 复审锁定 legacy Stage 8 upload artifacts 非当前 gate；本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox，未执行 S09-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s08p3-entity-matching-quality - 2026-07-04
 
 - 完成 `v0.1.4 S08-P3｜实体匹配质量`。

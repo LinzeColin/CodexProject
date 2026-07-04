@@ -1,0 +1,65 @@
+import unittest
+
+from KMFA.tools.check_v014_s08_stage_review import validate_v014_s08_stage_review
+
+
+class TestV014S08StageReview(unittest.TestCase):
+    def test_stage_review_closes_s08_without_upload_raw_matching_or_s09(self) -> None:
+        result = validate_v014_s08_stage_review()
+
+        self.assertEqual(result["stage_id"], "S08")
+        self.assertEqual(result["review_scope"], "v014_s08_stage_review_only")
+        self.assertEqual(result["phase_count"], 3)
+        self.assertEqual(result["phase_results"], {"S08-P1": "PASS", "S08-P2": "PASS", "S08-P3": "PASS"})
+        self.assertTrue(result["s08_p1_dependency_validated"])
+        self.assertTrue(result["s08_p2_dependency_validated"])
+        self.assertTrue(result["s08_p3_dependency_validated"])
+        self.assertTrue(result["stage_review_performed"])
+        self.assertFalse(result["s09_p1_performed"])
+        self.assertFalse(result["github_upload_performed"])
+        self.assertFalse(result["github_upload_ready_next_gate"])
+        self.assertTrue(result["github_upload_deferred_until_v014_stage1_18_complete"])
+        self.assertFalse(result["legacy_stage8_upload_artifacts_current_gate"])
+        self.assertFalse(result["app_reinstall_performed"])
+        self.assertFalse(result["raw_value_matching_performed"])
+        self.assertFalse(result["lineage_full_check_completed"])
+        self.assertFalse(result["formal_report_performed"])
+        self.assertEqual(result["open_review_finding_count"], 0)
+        self.assertEqual(result["fixed_review_finding_count"], 1)
+        self.assertEqual(result["review_findings"][0]["status"], "fixed")
+        gate = result["stage_gate"]
+        self.assertEqual(gate["project_identity_required_component_count"], 8)
+        self.assertEqual(gate["project_identity_profile_count"], 4)
+        self.assertEqual(gate["project_identity_match_result_count"], 3)
+        self.assertEqual(gate["project_identity_manual_review_queue_count"], 2)
+        self.assertEqual(gate["business_entity_required_type_count"], 8)
+        self.assertEqual(gate["business_entity_relationship_count"], 14)
+        self.assertEqual(gate["business_entity_lifecycle_status_count"], 32)
+        self.assertEqual(gate["entity_matching_scenario_count"], 4)
+        self.assertEqual(gate["entity_matching_quality_case_count"], 4)
+        self.assertEqual(gate["entity_matching_manual_review_queue_count"], 3)
+        self.assertEqual(gate["entity_matching_risk_high_count"], 2)
+        self.assertEqual(gate["entity_matching_risk_medium_count"], 1)
+        self.assertEqual(gate["entity_matching_risk_low_count"], 1)
+        self.assertEqual(gate["entity_matching_auto_merge_allowed_for_review_queue_count"], 0)
+        self.assertEqual(gate["q5_calculation_baseline_allowed_count"], 0)
+        self.assertEqual(gate["formal_report_allowed_count"], 0)
+        self.assertEqual(result["release_state"]["current_data_quality_grade"], "Q4")
+        self.assertEqual(result["release_state"]["current_report_grade"], "D")
+        self.assertEqual(result["release_state"]["current_go_no_go"], "NO_GO")
+        self.assertFalse(result["release_state"]["delivery_allowed"])
+        self.assertFalse(result["release_state"]["github_main_upload_allowed"])
+        self.assertFalse(result["raw_data_boundary"]["raw_inbox_read_by_this_review"])
+        self.assertFalse(result["raw_data_boundary"]["raw_inbox_listed_by_this_review"])
+        self.assertFalse(result["raw_data_boundary"]["raw_inbox_hashed_by_this_review"])
+        self.assertFalse(result["raw_data_boundary"]["raw_inbox_mutated_by_this_review"])
+        self.assertTrue(result["raw_data_boundary"]["s08_p1_raw_inbox_all_false"])
+        self.assertTrue(result["raw_data_boundary"]["s08_p2_raw_inbox_all_false"])
+        self.assertTrue(result["raw_data_boundary"]["s08_p3_raw_inbox_all_false"])
+        self.assertEqual(result["next_recommended_phase"], "S09-P1")
+        self.assertIn("Stage 1-18", result["next_phase_instruction"])
+        self.assertIn("separate run", result["next_phase_instruction"])
+
+
+if __name__ == "__main__":
+    unittest.main()

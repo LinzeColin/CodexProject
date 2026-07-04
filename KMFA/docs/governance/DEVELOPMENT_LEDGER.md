@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s08-stage-review
+
+- task_id: `KMFA-V014-S08-STAGE-REVIEW-20260704`
+- status: `review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete`
+- scope: v0.1.4 Stage 8 review only; replayed S08-P1/S08-P2/S08-P3 validators and legacy Stage 8 review validator without reading raw inbox, starting S09-P1, or performing GitHub upload.
+- evidence: `KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/human/stage8_review_report.md`, `KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/human/test_results.md`, `KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/machine/stage8_review_manifest.json`, `KMFA/tools/check_v014_s08_stage_review.py`
+- counts: phase_results=S08-P1 PASS/S08-P2 PASS/S08-P3 PASS, open_review_finding_count=0, fixed_review_finding_count=1, project_identity_required_component_count=8, business_entity_required_type_count=8, business_entity_relationship_count=14, business_entity_lifecycle_status_count=32, entity_matching_scenario_count=4, entity_matching_quality_case_count=4, entity_matching_manual_review_queue_count=3, q5_calculation_baseline_allowed_count=0, formal_report_allowed_count=0.
+- blocker_state: legacy_stage8_upload_artifacts_current_gate=false, S09-P1=false, GitHub upload=false, raw value matching=false, lineage full check=false, formal_report_allowed=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+- raw_boundary: raw inbox read/list/stat/hash/mutation=false in this review; public raw filenames/hash/member names/sheet names/field or header plaintext/row values/PDF or Excel source values/business values/entity matching plaintext committed=false.
+
+product_version: 0.1.4-s08-stage-review
+version_matrix_product_version_reference: 0.1.4-s08-stage-review
+
 ## 2026-07-04 - 0.1.4-s08p3-entity-matching-quality
 
 - task_id: `KMFA-V014-S08-P3-ENTITY-MATCHING-QUALITY-20260704`
