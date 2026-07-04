@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s08p3-entity-matching-quality - 2026-07-04
+
+- 完成 `v0.1.4 S08-P3｜实体匹配质量`。
+- 新增 S08-P3 evidence generator、validator、focused unit test、public-safe manifest、entity matching quality report、risk register、rollback plan 和 test results。
+- 验证 S08-P2 dependency 与 legacy S08-P3 public-safe validator，锁定 4 类匹配质量场景、4 条 quality cases、3 条 manual review queue、1 份 entity matching quality report 和 risk summary high=2/medium=1/low=1。
+- 中高风险匹配必须进入人工复核，manual review queue `auto_merge_allowed=false`；quality report 不是正式经营报告。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s08p2-business-entity-model - 2026-07-04
 
 - 完成 `v0.1.4 S08-P2｜业务实体模型`。
