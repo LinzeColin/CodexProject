@@ -1,7 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s07p1-finance-file-adapter"
-product_version_status: "completed_validated_local_only_no_go_upload_deferred_finance_file_adapter"
+product_version: "0.1.4-s07p2-wps-file-adapter"
+product_version_status: "completed_validated_local_only_no_go_upload_deferred_wps_file_adapter"
 version_file_value: "0.1.0-post-s18-final-no-go-backup-upload"
 schema_version: "1.0.0"
 model_versions:
@@ -12,7 +12,7 @@ model_versions:
   MOD-KMFA-FILE-IMPORT-001: "0.1.4-s03p1-file-registration"
   MOD-KMFA-SOURCE-CHECK-001: "0.1.4-s03p2-source-check-matrix"
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
-  MOD-KMFA-COST-001: "0.1.4-s07p1-finance-file-adapter"
+  MOD-KMFA-COST-001: "0.1.4-s07p2-wps-file-adapter"
 parameter_profile_versions:
   kmfa_governance_contract: "0.1.4-s06-stage-review"
   kmfa_metadata_protocol: "0.1.4-s02p1-metadata-protocol"
@@ -34,6 +34,7 @@ parameter_profile_versions:
   kmfa_v014_s06_p3_validation_evidence: "0.1.4-s06p3-validation-evidence"
   kmfa_v014_s06_stage_review: "0.1.4-s06-stage-review"
   kmfa_v014_s07_p1_finance_file_adapter: "0.1.4-s07p1-finance-file-adapter"
+  kmfa_v014_s07_p2_wps_file_adapter: "0.1.4-s07p2-wps-file-adapter"
   kmfa_a0_golden_fixture_contract: "0.1.0-s05p2-private-backfill-partial"
   kmfa_s05p2_owner_decision_application_preview: "0.1.0-s05p2-application-preview"
   kmfa_s05p2_owner_decision_record: "0.1.0-s05p2-owner-downgrade"

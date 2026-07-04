@@ -85,6 +85,13 @@ assumptions:
     evidence_refs:
       - "KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/human/finance_file_adapter_report.md"
       - "KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/machine/finance_file_adapter_manifest.json"
+  - assumption_id: "ASM-KMFA-015"
+    statement: "v0.1.4 S07-P2 WPS file adapter may only create public-safe source refs, mapping refs, fingerprints, aggregate counts, conversion guidance and validation evidence; it cannot publish WPS source field/header plaintext, raw file information, row or cell values, business values, S07-P3 output, Stage 7 review, GitHub upload or formal reports."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/human/wps_file_adapter_report.md"
+      - "KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/machine/wps_file_adapter_manifest.json"
 models:
   - model_id: "MOD-KMFA-GOV-001"
     name: "KMFA phase governance and public repository boundary"
@@ -309,9 +316,11 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s06-stage-review"
+    model_version: "0.1.4-s07p2-wps-file-adapter"
     assumptions:
       - "ASM-KMFA-003"
+      - "ASM-KMFA-014"
+      - "ASM-KMFA-015"
     formula_ids:
       - "FORM-KMFA-AMOUNT-001"
       - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
@@ -325,6 +334,8 @@ models:
       - "FORM-KMFA-V014-S06P2-DIFFERENCE-QUEUE-001"
       - "FORM-KMFA-V014-S06P3-VALIDATION-EVIDENCE-001"
       - "FORM-KMFA-V014-S06-STAGE-REVIEW-001"
+      - "FORM-KMFA-V014-S07P1-FINANCE-FILE-ADAPTER-001"
+      - "FORM-KMFA-V014-S07P2-WPS-FILE-ADAPTER-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -539,6 +550,12 @@ models:
       - "PARAM-KMFA-1040"
       - "PARAM-KMFA-1042"
       - "PARAM-KMFA-1043"
+      - "PARAM-KMFA-1074"
+      - "PARAM-KMFA-1075"
+      - "PARAM-KMFA-1076"
+      - "PARAM-KMFA-1077"
+      - "PARAM-KMFA-1078"
+      - "PARAM-KMFA-1079"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
