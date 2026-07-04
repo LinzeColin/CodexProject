@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s10p1-report-templates"
+    model_version: "0.1.4-s10p2-report-trust-grade"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -149,6 +149,7 @@ models:
       - "FORM-KMFA-V014-S09P3-SCOPE-RECONCILIATION-001"
       - "FORM-KMFA-V014-S09-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S10P1-REPORT-TEMPLATES-001"
+      - "FORM-KMFA-V014-S10P2-REPORT-TRUST-GRADE-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -220,6 +221,9 @@ models:
       - "PARAM-KMFA-1110"
       - "PARAM-KMFA-1111"
       - "PARAM-KMFA-1112"
+      - "PARAM-KMFA-1113"
+      - "PARAM-KMFA-1114"
+      - "PARAM-KMFA-1115"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -381,7 +385,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s10p1-report-templates"
+    model_version: "0.1.4-s10p2-report-trust-grade"
     assumptions:
       - "ASM-KMFA-003"
       - "ASM-KMFA-014"
@@ -411,6 +415,7 @@ models:
       - "FORM-KMFA-V014-S09P3-SCOPE-RECONCILIATION-001"
       - "FORM-KMFA-V014-S09-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S10P1-REPORT-TEMPLATES-001"
+      - "FORM-KMFA-V014-S10P2-REPORT-TRUST-GRADE-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -652,6 +657,9 @@ models:
       - "PARAM-KMFA-1110"
       - "PARAM-KMFA-1111"
       - "PARAM-KMFA-1112"
+      - "PARAM-KMFA-1113"
+      - "PARAM-KMFA-1114"
+      - "PARAM-KMFA-1115"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"

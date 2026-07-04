@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s10p1-report-templates
+product_version: 0.1.4-s10p2-report-trust-grade
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S10-P1 报告模板、v0.1.4 Stage 9 整体复审、v0.1.4 S09-P3 口径转换与差异核对、v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S10-P1 只证明报告模板结构和 v1.4 human-flow HTML/UIUX baseline 对齐：template_count=2，section_count=11，project_cost_section_count=4，business_overview_section_count=7，pending reconciliation=12，formal report count=0，export artifact count=0，当前仍为 NO_GO/Q4/D/blocked。本 phase 未读取 raw inbox，不执行 S10-P2、S10-P3、Stage 10 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
+当前模型说明覆盖 v0.1.4 S10-P2 报告可信等级、v0.1.4 S10-P1 报告模板、v0.1.4 Stage 9 整体复审、v0.1.4 S09-P3 口径转换与差异核对、v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S10-P2 只证明报告可信等级运行时和版本绑定：report_grade_record_count=2，grade_distribution=D:2，pending reconciliation=12，confirmed resolution=0，source_quality_grade=Q4，zero_delta=false，record_version_binding_count=2，formal report count=0，export artifact count=0，当前仍为 NO_GO/Q4/D/blocked。本 phase 未读取 raw inbox，不执行 S10-P3、Stage 10 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s10p1-report-templates
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s10_p1_report_templates.py`, `KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/machine/report_templates_manifest.json`
-- current_v014_scope_lock: `S10-P1 completed; S10-P2/S10-P3/Stage 10 review/GitHub upload/raw value matching/lineage full check/formal report/UI runtime/live connector/app reinstall/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s10_p2_report_trust_grade.py`, `KMFA/stage_artifacts/V014_S10_P2_REPORT_TRUST_GRADE/machine/report_trust_grade_manifest.json`
+- current_v014_scope_lock: `S10-P2 completed; S10-P3/Stage 10 review/GitHub upload/raw value matching/lineage full check/formal report/UI runtime/live connector/app reinstall/business execution all false`
 
 ### FORM-KMFA-V014-S10P1-REPORT-TEMPLATES-001
 
@@ -24,6 +24,15 @@ product_version: 0.1.4-s10p1-report-templates
 - expression: `s10p1_valid = template_count == 2 AND section_count == 11 AND project_cost_section_count == 4 AND business_overview_section_count == 7 AND pending_reconciliation_count == 12 AND formal_report_count == 0 AND export_artifact_count == 0 AND s10_p2_performed == false AND s10_p3_performed == false AND stage10_review_performed == false AND github_upload_performed == false`
 - evidence: `KMFA/tools/v014_s10_p1_report_templates.py`, `KMFA/tools/check_v014_s10_p1_report_templates.py`, `KMFA/tests/test_v014_s10_p1_report_templates.py`, `KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/machine/report_templates_manifest.json`, `KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/human/report_templates_report.md`
 - limitation: 只证明 public-safe 报告模板结构和 v1.4 HTML/UIUX baseline 对齐；不证明 S10-P2 报告可信等级、S10-P3 导出、Stage 10 review、raw value matching、lineage full check、正式报告、UI runtime、GitHub upload 或业务执行。
+
+### FORM-KMFA-V014-S10P2-REPORT-TRUST-GRADE-001
+
+- type: deterministic public-safe report trust grade gate
+- purpose: 验证 v0.1.4 S10-P2 报告可信等级，覆盖 S10-P1 dependency、legacy S10-P2 runtime、v0.1.3 S10-P2 replay、A/B/C/D 等级驱动、版本绑定和 no-export/no-formal-report/no-upload 边界。
+- fact_level: EXTRACTED
+- expression: `s10p2_valid = report_grade_record_count == 2 AND grade_distribution == D:2 AND pending_reconciliation_count == 12 AND confirmed_resolution_count == 0 AND source_quality_grade == Q4 AND zero_delta_passed == false AND record_version_binding_count == 2 AND formal_report_count == 0 AND export_artifact_count == 0 AND s10_p3_performed == false AND stage10_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s10_p2_report_trust_grade.py`, `KMFA/tools/check_v014_s10_p2_report_trust_grade.py`, `KMFA/tests/test_v014_s10_p2_report_trust_grade.py`, `KMFA/stage_artifacts/V014_S10_P2_REPORT_TRUST_GRADE/machine/report_trust_grade_manifest.json`, `KMFA/stage_artifacts/V014_S10_P2_REPORT_TRUST_GRADE/human/report_trust_grade_report.md`
+- limitation: 只证明 public-safe 报告可信等级运行时和版本绑定；不证明 S10-P3 导出、Stage 10 review、raw value matching、lineage full check、正式报告、UI runtime、GitHub upload 或业务执行。
 
 ### MOD-KMFA-METADATA-001
 

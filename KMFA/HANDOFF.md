@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S10-P1 报告模板`：`KMFA/tools/v014_s10_p1_report_templates.py`、`KMFA/tools/check_v014_s10_p1_report_templates.py`、`KMFA/tests/test_v014_s10_p1_report_templates.py` 和 S10-P1 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/`。本 phase 验证 v0.1.4 Stage 9 review dependency、legacy S10-P1 public-safe artifacts、v0.1.3 S10-P1 replay validator 和 v1.4 human-flow HTML/UIUX baseline，锁定 template_count=`2`、section_count=`11`、project_cost_section_count=`4`、business_overview_section_count=`7`、pending_reconciliation_count=`12`、formal_report_count=`0`、export_artifact_count=`0`、v1.4 HTML/UIUX audit fail count=`0`。S10-P1 证据只保存聚合计数、hash/ref/status、validator 结果和治理引用，不公开 source 文件名、raw hash、字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、业务金额、接口凭证或真实业务值。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S10-P2、S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 S10-P2 报告可信等级`，不得在本轮补做 S10-P3、Stage 10 review 或 GitHub upload。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S10-P2 报告可信等级`：`KMFA/tools/v014_s10_p2_report_trust_grade.py`、`KMFA/tools/check_v014_s10_p2_report_trust_grade.py`、`KMFA/tests/test_v014_s10_p2_report_trust_grade.py` 和 S10-P2 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S10_P2_REPORT_TRUST_GRADE/`。本 phase 验证 v0.1.4 S10-P1 dependency、legacy S10-P2 public-safe report grade runtime 和 v0.1.3 S10-P2 replay validator，锁定 report_grade_record_count=`2`、grade_distribution=`D:2`、pending_reconciliation_count=`12`、confirmed_resolution_count=`0`、source_quality_grade=`Q4`、zero_delta_passed=`false`、record_version_binding_count=`2`、formal_report_count=`0`、export_artifact_count=`0`。S10-P2 证据只保存聚合计数、hash/ref/status、validator 结果和治理引用，不公开 source 文件名、raw hash、字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、业务金额、接口凭证或真实业务值。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 S10-P3 报告导出`，不得在本轮补做 Stage 10 review 或 GitHub upload。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s10p1-report-templates`
-- 当前已完成: `v0.1.4 S10-P1 report templates`
-- 证据目录: `KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/`
-- validator: `KMFA/tools/check_v014_s10_p1_report_templates.py`
-- focused test: `KMFA/tests/test_v014_s10_p1_report_templates.py`
+- 当前版本: `0.1.4-s10p2-report-trust-grade`
+- 当前已完成: `v0.1.4 S10-P2 report trust grade`
+- 证据目录: `KMFA/stage_artifacts/V014_S10_P2_REPORT_TRUST_GRADE/`
+- validator: `KMFA/tools/check_v014_s10_p2_report_trust_grade.py`
+- focused test: `KMFA/tests/test_v014_s10_p2_report_trust_grade.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S10-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe Stage 9 review、legacy S10-P1 和 v1.4 HTML/UIUX baseline evidence。
-- 未执行: S10-P2、S10-P3、Stage 10 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `S10-P2 报告可信等级`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S10-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S10-P1 dependency、legacy S10-P2 和 v0.1.3 S10-P2 replay evidence。
+- 未执行: S10-P3、Stage 10 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `S10-P3 报告导出`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 
