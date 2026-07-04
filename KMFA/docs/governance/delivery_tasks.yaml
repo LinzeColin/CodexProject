@@ -8653,7 +8653,7 @@ tasks:
     test_results:
       - "PASS: S13-P1 dependency, legacy S13-P2 and v0.1.4 S13-P2 validators passed."
       - "PASS: focused unit test ran 1 test and passed."
-      - "PENDING: governance validators and safety scans are captured in final validation before commit."
+      - "PASS: governance validators, no-float, no-omission, structured parse checks, Ruby YAML parse checks, raw/private suffix scan, high-signal secret scan, scoped artifact boundary scan and diff check passed."
     evidence_refs:
       - "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/human/collection_receivable_aging_report.md"
       - "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/human/test_results.md"
@@ -8669,6 +8669,53 @@ tasks:
       protected_source_matching: false
       lineage_full_check: false
       formal_report: false
+      legal_collection: false
+      payment_or_bank_operation: false
+      invoice_or_tax_operation: false
+      business_execution: false
+
+
+  - task_id: "KMFA-V014-S13-P3-CROSS-TABLE-REVIEW-20260705"
+    task_name: "v0.1.4 S13-P3 跨表复核"
+    stage_id: "V014-S13"
+    phase_id: "S13-P3"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW"
+    validator: "KMFA/tools/check_v014_s13_p3_cross_table_review.py"
+    focused_test: "KMFA/tests/test_v014_s13_p3_cross_table_review.py"
+    acceptance_id: "ACC-V014-S13-P3-CROSS-TABLE-REVIEW"
+    acceptance_ids:
+      - "ACC-V014-S13-P3-CROSS-TABLE-REVIEW"
+    next_phase: "S13_STAGE_REVIEW"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s13p3-cross-table-review"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s13_p3_cross_table_review.py KMFA/tools/check_v014_s13_p3_cross_table_review.py KMFA/tests/test_v014_s13_p3_cross_table_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s13_p3_cross_table_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_p3_cross_table_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s13_p3_cross_table_review -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S13-P1/S13-P2 dependencies, legacy S13-P3 and v0.1.4 S13-P3 validators passed."
+      - "PASS: focused unit test ran 1 test and passed."
+      - "PASS: governance validators, no-float, no-omission, structured parse checks, Ruby YAML parse checks, raw/private suffix scan, high-signal secret scan, scoped artifact boundary scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/human/cross_table_review_report.md"
+      - "KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/machine/cross_table_review_manifest.json"
+      - "KMFA/tools/check_v014_s13_p3_cross_table_review.py"
+    forbidden_scope:
+      stage13_review: false
+      s14: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      difference_auto_resolution: false
+      difference_closure: false
       legal_collection: false
       payment_or_bank_operation: false
       invoice_or_tax_operation: false

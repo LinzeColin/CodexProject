@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S13-P3 Cross Table Review
+- Product version: `0.1.4-s13p3-cross-table-review`.
+- Scope: S13-P3 only; public-safe cross-table consistency checks, difference queue and operating report quality report under S13-P1/S13-P2 dependencies and v1.4 HTML/UIUX baseline.
+- Evidence: `KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/`.
+- Verification: `KMFA/tools/check_v014_s13_p3_cross_table_review.py`; `KMFA/tests/test_v014_s13_p3_cross_table_review.py`.
+- blocker_state: review_dimensions=4, difference_queue=4, quality_report=1, html_draft=1, pending_reconciliation=12, report_grade=D, formal_report=0, business_decision_basis=0, difference_auto_resolution=0, difference_closure=0, Stage13 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+product_version: 0.1.4-s13p3-cross-table-review
+version_matrix_product_version_reference: 0.1.4-s13p3-cross-table-review
+
 # KMFA v0.1.4 S13-P2 Collection Receivable Aging
 - Product version: `0.1.4-s13p2-collection-receivable-aging`.
 - Scope: S13-P2 only; public-safe collection receivable aging priority and responsibility drafts under S13-P1 dependency and v1.4 HTML/UIUX baseline.

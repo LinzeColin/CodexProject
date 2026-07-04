@@ -1,0 +1,98 @@
+{
+  "business_decision_basis_allowed": false,
+  "complete_trusted_report_display_allowed": false,
+  "cross_table_review_status": "completed_with_pending_differences",
+  "difference_queue_count": 4,
+  "field_plaintext_allowed": false,
+  "formal_report_allowed": false,
+  "formula_version": "FORM-KMFA-S13P3-CROSS-TABLE-QUALITY-001",
+  "generated_at": "2026-07-05T07:40:00+10:00",
+  "github_upload_scope_included": false,
+  "html_quality_ref": "KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/exports/html/cross_table_quality_report.html",
+  "legal_collection_decision_allowed": false,
+  "lineage_full_check_included": false,
+  "maximum_report_grade_allowed": "D",
+  "owner_next_actions": [
+    "复核跨表项目口径是否与经营报表和回款应收一致。",
+    "复核客户或对手方口径是否可进入老板版摘要。",
+    "关闭 S09-P3 未解决金额差异后再考虑报告等级提升。",
+    "确认期间、回款日期、账龄和开票计划的同一复核窗口。"
+  ],
+  "payment_or_bank_operation_allowed": false,
+  "pending_reconciliation_count": 12,
+  "project_id": "KMFA",
+  "public_amount_values_allowed": false,
+  "quality_findings": [
+    {
+      "finding_id": "S13P3-QF-001",
+      "finding_status": "pending_owner_or_authorized_review",
+      "formal_report_blocked": true,
+      "review_dimension": "project_consistency",
+      "visible_dimension_label": "项目一致性"
+    },
+    {
+      "finding_id": "S13P3-QF-002",
+      "finding_status": "pending_owner_or_authorized_review",
+      "formal_report_blocked": true,
+      "review_dimension": "customer_consistency",
+      "visible_dimension_label": "客户一致性"
+    },
+    {
+      "finding_id": "S13P3-QF-003",
+      "finding_status": "pending_owner_or_authorized_review",
+      "formal_report_blocked": true,
+      "review_dimension": "amount_consistency",
+      "visible_dimension_label": "金额一致性"
+    },
+    {
+      "finding_id": "S13P3-QF-004",
+      "finding_status": "pending_owner_or_authorized_review",
+      "formal_report_blocked": true,
+      "review_dimension": "time_consistency",
+      "visible_dimension_label": "时间一致性"
+    }
+  ],
+  "quality_report_id": "S13P3-OPERATING-QUALITY-REPORT-001",
+  "raw_business_values_allowed": false,
+  "record_type": "operating_report_quality_report",
+  "release_block_reason": "pending_cross_table_differences_s09_reconciliation_lineage_and_stage13_review",
+  "report_grade_visible": "D",
+  "report_version": "RPT-KMFA-S13P3-CROSS-TABLE-REVIEW-001",
+  "review_dimension_count": 4,
+  "schema_version": "kmfa.operating_report_quality_report.v1",
+  "source_summary": {
+    "pending_reconciliation_count": 12,
+    "pending_reconciliation_ids": [
+      "S09P3-REC-001",
+      "S09P3-REC-002",
+      "S09P3-REC-003",
+      "S09P3-REC-004",
+      "S09P3-REC-005",
+      "S09P3-REC-006",
+      "S09P3-REC-007",
+      "S09P3-REC-008",
+      "S09P3-REC-009",
+      "S09P3-REC-010",
+      "S09P3-REC-011",
+      "S09P3-REC-012"
+    ],
+    "s13_p1_draft_count": 2,
+    "s13_p1_lane_count": 4,
+    "s13_p1_manifest_hash": "sha256:53c27cbaad8fad399f49e44885418352693b63c88ddbfd12060383d5f75ce35c",
+    "s13_p2_lane_count": 5,
+    "s13_p2_manifest_hash": "sha256:a25572215dcc393f214094c79ff9c3ea884e538f79b5d0210c563e8151ccdc09",
+    "s13_p2_priority_item_count": 4,
+    "s13_p2_responsibility_item_count": 4
+  },
+  "stage13_review_scope_included": false,
+  "stage_phase": "S13-P3",
+  "tax_filing_allowed": false,
+  "v014_review_ref": "KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/machine/cross_table_review_manifest.json",
+  "visible_dimension_labels": [
+    "项目一致性",
+    "客户一致性",
+    "金额一致性",
+    "时间一致性"
+  ],
+  "visible_summary": "项目、客户、金额、时间跨表复核已完成公开安全检查；所有未闭合项进入人工差异队列。"
+}

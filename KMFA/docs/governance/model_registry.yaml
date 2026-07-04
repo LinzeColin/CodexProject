@@ -161,6 +161,7 @@ models:
       - "FORM-KMFA-V014-S12-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S13P1-FINANCIAL-OPERATING-REPORT-001"
       - "FORM-KMFA-V014-S13P2-COLLECTION-RECEIVABLE-AGING-001"
+      - "FORM-KMFA-V014-S13P3-CROSS-TABLE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -1237,3 +1238,11 @@ v014_s13p2_collection_receivable_aging_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING
   validator: KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py
   scope: S13-P2 collection receivable aging only; no S13-P3/Stage 13 review/upload/raw inbox access/raw matching/lineage/formal report/legal collection/payment/invoice/tax/business execution.
+
+v014_s13p3_cross_table_review_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S13P3-CROSS-TABLE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW
+  validator: KMFA/tools/check_v014_s13_p3_cross_table_review.py
+  scope: S13-P3 cross table review only; no Stage 13 review, S14, upload, raw inbox access, raw matching, lineage, formal report, difference closure or business execution.
