@@ -1,14 +1,14 @@
 # KMFA Owner Status
 
-更新时间: 2026-07-04
+更新时间: 2026-07-05
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S13-P1 财务经营报表；Stage 12 review dependency、legacy S13-P1 public-safe validator 和 v1.4 S13-P1 validator 均通过，锁定 4 条 source lanes、39 条 field mappings、2 份经营周/月报 draft、2 个 HTML draft、12 条 pending reconciliation、报告等级 D、formal report=0、business decision basis=0。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/`，validator 为 `KMFA/tools/check_v014_s13_p1_financial_operating_report.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S13-P2、S13-P3、Stage 13 review、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S13-P2 回款应收账龄；S13-P1 dependency、legacy S13-P2 public-safe validator 和 v1.4 S13-P2 validator 均通过，锁定 5 条 source lanes、25 条 field mappings、4 类问题候选、4 条回款优先级草案、4 条责任事项草案、1 个 HTML draft、12 条 pending reconciliation、报告等级 D、formal report=0、business decision basis=0、legal/payment/bank action=0。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/`，validator 为 `KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S13-P3、Stage 13 review、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload、催收、法务、付款、开票、税务或任何业务动作。
 
 ## 你现在能信任什么
 
-- v0.1.4 S13-P1 财务经营报表已确认本地 validator 通过；source lanes=4、sources=8、field mappings=39、draft reports=2、HTML drafts=2、pending reconciliation=12、report grade=D。S13-P1 只证明 public-safe 经营周/月报初稿和限制展示闭环，不证明 S13-P2、S13-P3、Stage 13 review、GitHub upload、protected source matching、lineage full check、正式报告或业务执行；下一步只能 S13-P2。
+- v0.1.4 S13-P2 回款应收账龄已确认本地 validator 通过；source lanes=5、sources=5、field mappings=25、issue types=4、priority items=4、responsibility items=4、HTML draft=1、pending reconciliation=12、report grade=D。S13-P2 只证明 public-safe 回款优先级草案和责任事项草案，不证明 S13-P3、Stage 13 review、GitHub upload、protected source matching、lineage full check、正式报告、催收、法务、付款、开票、税务或业务执行；下一步只能 S13-P3。
 - v0.1.4 Stage 10 整体复审已确认本地 validator 通过；S10-P1/S10-P2/S10-P3 validators 全部 PASS，legacy Stage 10 review 与 v0.1.3 Stage 10 review 通过，open findings=0，fixed findings=2。Stage 10 只证明报告模板、可信等级和 public-safe 导出证据在本地复审闭环；12 条 reconciliation 仍 pending、zero-delta=false、缺少完整 lineage 和人工确认，因此正式报告、经营决策依据和 delivery 继续阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S10-P2 报告可信等级已确认本地 validator 通过；2 条报告等级记录均为 D，12 条 reconciliation 仍 pending、0 条 confirmed resolution、zero-delta=false、缺少完整 lineage 和人工确认，因此完整可信报告、正式报告、经营决策依据和导出 release 继续阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S10-P1 报告模板已确认本地 validator 通过；2 个报告模板和 11 个管理可读章节已锁定，v1.4 HTML/UIUX audit FAIL=0 被作为后续报告交互基线引用；S10-P1 只证明模板结构，不生成 HTML/CSV/PDF 导出，不发布正式报告；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。

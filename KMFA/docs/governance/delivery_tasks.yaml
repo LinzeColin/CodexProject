@@ -8629,3 +8629,47 @@ tasks:
       lineage_full_check: false
       formal_report: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S13-P2-COLLECTION-RECEIVABLE-AGING-20260705"
+    task_name: "v0.1.4 S13-P2 回款应收账龄"
+    stage_id: "V014-S13"
+    phase_id: "S13-P2"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING"
+    validator: "KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py"
+    focused_test: "KMFA/tests/test_v014_s13_p2_collection_receivable_aging.py"
+    acceptance_id: "ACC-V014-S13-P2-COLLECTION-RECEIVABLE-AGING"
+    acceptance_ids:
+      - "ACC-V014-S13-P2-COLLECTION-RECEIVABLE-AGING"
+    next_phase: "S13-P3"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s13p2-collection-receivable-aging"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s13_p2_collection_receivable_aging.py KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py KMFA/tests/test_v014_s13_p2_collection_receivable_aging.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s13_p2_collection_receivable_aging.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s13_p2_collection_receivable_aging -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S13-P1 dependency, legacy S13-P2 and v0.1.4 S13-P2 validators passed."
+      - "PASS: focused unit test ran 1 test and passed."
+      - "PENDING: governance validators and safety scans are captured in final validation before commit."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/human/collection_receivable_aging_report.md"
+      - "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/machine/collection_receivable_aging_manifest.json"
+      - "KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py"
+    forbidden_scope:
+      s13_p3: false
+      stage13_review: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      legal_collection: false
+      payment_or_bank_operation: false
+      invoice_or_tax_operation: false
+      business_execution: false

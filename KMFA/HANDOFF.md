@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S13-P1 财务经营报表`：新增 `KMFA/tools/v014_s13_p1_financial_operating_report.py`、`KMFA/tools/check_v014_s13_p1_financial_operating_report.py`、`KMFA/tests/test_v014_s13_p1_financial_operating_report.py` 和 `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/` public-safe evidence。该 phase 验证 Stage 12 review dependency，复用 legacy public-safe S13-P1 财务经营报表模型，锁定 4 条 source lanes、8 个 source refs、39 条 field mappings、2 份经营周/月报 draft、2 个 HTML draft、12 条 pending reconciliation、报告等级 D、formal report count 0、business decision basis count 0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S13-P2、S13-P3、Stage 13 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S13-P2`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S13-P2 回款应收账龄`：新增 `KMFA/tools/v014_s13_p2_collection_receivable_aging.py`、`KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py`、`KMFA/tests/test_v014_s13_p2_collection_receivable_aging.py` 和 `KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/` public-safe evidence。该 phase 验证 S13-P1 dependency，复用 legacy public-safe S13-P2 回款应收账龄模型，锁定 5 条 source lanes、5 个 source refs、25 条 field mappings、4 类问题候选、4 条回款优先级草案、4 条责任事项草案、1 个 HTML draft、12 条 pending reconciliation、报告等级 D、formal report count 0、business decision basis count 0、legal/payment/bank action count 0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S13-P3、Stage 13 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、催收、法务、付款、开票、税务或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S13-P3`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s13p1-financial-operating-report`
-- 当前已完成: `v0.1.4 S13-P1 财务经营报表`
-- 证据目录: `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/`
-- validator: `KMFA/tools/check_v014_s13_p1_financial_operating_report.py`
-- focused test: `KMFA/tests/test_v014_s13_p1_financial_operating_report.py`
+- 当前版本: `0.1.4-s13p2-collection-receivable-aging`
+- 当前已完成: `v0.1.4 S13-P2 回款应收账龄`
+- 证据目录: `KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/`
+- validator: `KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py`
+- focused test: `KMFA/tests/test_v014_s13_p2_collection_receivable_aging.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S13-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe Stage 12 review 和 legacy S13-P1 evidence。
-- 未执行: S13-P2、S13-P3、Stage 13 review、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `S13-P2`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S13-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S13-P1 和 legacy S13-P2 evidence。
+- 未执行: S13-P3、Stage 13 review、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、催收、法务、付款、开票、税务、business execution。
+- 下一步: 仅在用户明确开启后执行 `S13-P3`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 
