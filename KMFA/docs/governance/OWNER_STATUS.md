@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S09-P3 口径转换与差异核对；S09-P2 dependency、legacy S09-P3 validator 和 v0.1.4 S09-P3 validator 全部 PASS，reconciliation records=`12`、domain controls=`6`、confirmed resolutions=`0`、pending resolutions=`12`，状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S09_P3_SCOPE_RECONCILIATION/`，validator 为 `KMFA/tools/check_v014_s09_p3_scope_reconciliation.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 9 review、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 Stage 9 整体复审；S09-P1/S09-P2/S09-P3 validators 和 legacy Stage 9 review validator 全部 PASS，open findings=`0`，fixed findings=`1`，reconciliation records=`12`、domain controls=`6`、confirmed resolutions=`0`、pending resolutions=`12`，状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S09_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s09_stage_review.py`。本 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S10-P1、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 Stage 9 整体复审已确认本地 validator 通过；S09-P1/S09-P2/S09-P3 validators 全部 PASS，open findings=0，fixed findings=1，12 条 reconciliation records、6 条 domain controls、0 条 confirmed resolutions 和 12 条 pending resolutions 已锁定；legacy Stage 9 upload/batch-gate artifacts 明确不是当前 v0.1.4 gate；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S09-P3 口径转换与差异核对已确认本地 validator 通过；12 条 reconciliation records、6 条 domain controls、0 条 confirmed resolutions 和 12 条 pending resolutions 已锁定；所有差异继续 pending owner/授权复核，derived metric rerun 与 formal report rerun 均为 false；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S09-P2 毛利与现金毛利已确认本地 validator 通过；4 个 margin metrics、4 条 public-safe margin records、12 条 scope difference summary records、8 个 authority field groups、3 条人工复核队列和 1 条 unresolved difference 已锁定；authority/system/cash values 保持 hash/private-ref only，authority/system overwrite allowed=false，public amount values committed=0；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S09-P1 项目成本事实层已确认本地 validator 通过；6 个项目成本指标、9 类成本分类、4 条 public-safe fact records、9 条 unallocated pool records、40 条 authority locked fields、5 条 excluded fields、3 条人工复核队列和 1 条 unresolved difference 已锁定；formal calculation/report 继续因 upstream quality gates 阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。

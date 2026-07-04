@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4-s09-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 9 整体复审`。
+- 新增 Stage 9 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S09-P1/S09-P2/S09-P3 validators 与 legacy Stage 9 review validator，phase_results 全部 PASS，open findings=`0`，fixed findings=`1`；锁定 cost metrics=`6`、margin metrics=`4`、reconciliation records=`12`、domain controls=`6`、confirmed resolutions=`0`、pending resolutions=`12`。
+- 复审锁定 legacy Stage 9 upload/batch-gate artifacts 非当前 v0.1.4 gate；当前仍为 `NO_GO/Q4/D/blocked`。
+- 本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S10-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s09p3-scope-reconciliation - 2026-07-04
 
 - 完成 `v0.1.4 S09-P3｜口径转换与差异核对`。
