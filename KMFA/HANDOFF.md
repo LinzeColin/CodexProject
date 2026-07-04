@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `Stage 8 整体复审`：`KMFA/tools/v014_s08_stage_review.py`、`KMFA/tools/check_v014_s08_stage_review.py`、`KMFA/tests/test_v014_s08_stage_review.py` 和 Stage 8 review evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/`。本 review 复跑 v0.1.4 S08-P1/S08-P2/S08-P3 validators，并验证 legacy Stage 8 review validator，phase_results 全部 PASS，open findings=`0`，fixed findings=`1`，project identity components=`8`，business entity types=`8`，relationships=`14`，lifecycle statuses=`32`，quality scenarios=`4`，quality cases=`4`，manual review queue=`3`。复审修复/锁定 legacy Stage 8 upload artifacts 非当前 gate，GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。Stage 8 review 证据只保存聚合计数、状态门禁和治理引用，不公开 source 文件名、raw hash、字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、接口凭证或真实业务值。本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S09-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S09-P1`，不得在本轮补做 GitHub upload。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S09-P1 项目成本事实层`：`KMFA/tools/v014_s09_p1_project_cost_fact_layer.py`、`KMFA/tools/check_v014_s09_p1_project_cost_fact_layer.py`、`KMFA/tests/test_v014_s09_p1_project_cost_fact_layer.py` 和 S09-P1 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/`。本 phase 验证 v0.1.4 Stage 8 review dependency，并复用 legacy public-safe S09-P1 证据，锁定 required metrics=`6`、cost categories=`9`、fact records=`4`、unallocated pool=`9`、authority locked fields=`40`、excluded fields=`5`、business entity types=`8`、project identity profiles=`4`、manual review queue=`3`、unresolved difference=`1`、zero-delta fail=`1`、blocked quality results=`2`。S09-P1 证据只保存聚合计数、hash/ref/status、validator 结果和治理引用，不公开 source 文件名、raw hash、字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、业务金额、接口凭证或真实业务值。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S09-P2、S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 S09-P2`，不得在本轮补做 GitHub upload 或 Stage 9 review。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s08-stage-review`
-- 当前已完成: `v0.1.4 Stage 8 overall review`
-- 证据目录: `KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/`
-- validator: `KMFA/tools/check_v014_s08_stage_review.py`
-- focused test: `KMFA/tests/test_v014_s08_stage_review.py`
+- 当前版本: `0.1.4-s09p1-project-cost-fact-layer`
+- 当前已完成: `v0.1.4 S09-P1 project cost fact layer`
+- 证据目录: `KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/`
+- validator: `KMFA/tools/check_v014_s09_p1_project_cost_fact_layer.py`
+- focused test: `KMFA/tests/test_v014_s09_p1_project_cost_fact_layer.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: Stage 8 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S08-P1/S08-P2/S08-P3 validator/control evidence。
-- 未执行: S09-P1、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、app reinstall、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `S09-P1`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S09-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe legacy S09-P1 validator/control evidence。
+- 未执行: S09-P2、S09-P3、Stage 9 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、app reinstall、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `S09-P2`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

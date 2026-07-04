@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4-s09p1-project-cost-fact-layer - 2026-07-04
+
+- 完成 `v0.1.4 S09-P1｜项目成本事实层`。
+- 新增 S09-P1 evidence generator、validator、focused unit test、project cost fact layer report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 Stage 8 review dependency，并复用 legacy public-safe S09-P1 artifacts，锁定 required metrics=`6`、cost categories=`9`、fact records=`4`、unallocated pool=`9`、authority locked fields=`40`、excluded fields=`5`、business entity types=`8`、project identity profiles=`4`、manual review queue=`3`、unresolved difference=`1`、zero-delta fail=`1`、blocked quality results=`2`。
+- formal calculation/report 继续被 upstream zero-delta、source difference 和 entity matching manual review queue 阻断；当前仍为 `NO_GO/Q4/D/blocked`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S09-P2、S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s08-stage-review - 2026-07-04
 
 - 完成 `v0.1.4 Stage 8 整体复审`。

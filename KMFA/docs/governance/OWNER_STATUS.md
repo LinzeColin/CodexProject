@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 Stage 8 整体复审；S08-P1/S08-P2/S08-P3 validators 与 legacy Stage 8 review validator 全部 PASS，open findings=`0`，fixed findings=`1`，legacy Stage 8 upload artifacts current gate=`false`，状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s08_stage_review.py`。本 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S09-P1、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S09-P1 项目成本事实层；Stage 8 review dependency、legacy S09-P1 validator 和 v0.1.4 S09-P1 validator 全部 PASS，required metrics=`6`、cost categories=`9`、fact records=`4`、unallocated pool=`9`、manual review queue=`3`、unresolved difference=`1`，状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/`，validator 为 `KMFA/tools/check_v014_s09_p1_project_cost_fact_layer.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S09-P2、S09-P3、Stage 9 review、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S09-P1 项目成本事实层已确认本地 validator 通过；6 个项目成本指标、9 类成本分类、4 条 public-safe fact records、9 条 unallocated pool records、40 条 authority locked fields、5 条 excluded fields、3 条人工复核队列和 1 条 unresolved difference 已锁定；formal calculation/report 继续因 upstream quality gates 阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 Stage 8 整体复审已确认本地 validator 通过；S08-P1/S08-P2/S08-P3 validators 与 legacy Stage 8 review validator 全部 PASS，open findings=`0`，fixed findings=`1`，项目身份组件、业务实体模型和匹配质量证据均保持 public-safe；legacy Stage 8 upload artifacts 明确不是当前 gate；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S08-P3 实体匹配质量已确认本地 validator 通过；4 类匹配质量场景、4 条 quality cases、3 条 manual review queue 和 1 份 entity matching quality report 已 public-safe 锁定；中高风险匹配必须进入人工复核，manual review queue `auto_merge_allowed=false`，quality report 不是正式经营报告；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S08-P2 业务实体模型已确认本地 validator 通过；8 类业务实体、14 条关系、32 条 lifecycle statuses、每类实体 4 个状态、8 个 schema entity definitions 和 7 条 required graph links 已 public-safe 锁定；entity values 仅 hash/ref，relationships 仅 schema，lifecycle values 仅 status；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
