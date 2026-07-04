@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s08p2-business-entity-model - 2026-07-04
+
+- 完成 `v0.1.4 S08-P2｜业务实体模型`。
+- 新增 S08-P2 evidence generator、validator、focused unit test、public-safe manifest、business entity model report、risk register、rollback plan 和 test results。
+- 验证 S08-P1 dependency 与 legacy S08-P2 public-safe validator，锁定 8 类实体、14 条 schema-only 关系、32 条 lifecycle statuses、每类实体 4 个状态、8 个 schema entity definitions 和 7 条 required graph links。
+- entity values 保持 hash/ref only，relationship values 保持 schema-only，lifecycle values 保持 status-only。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s08p1-project-composite-key - 2026-07-04
 
 - 完成 `v0.1.4 S08-P1｜项目组合键`。
