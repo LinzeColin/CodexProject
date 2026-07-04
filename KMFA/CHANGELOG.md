@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s07p2-wps-file-adapter - 2026-07-04
+
+- 完成 `v0.1.4 S07-P2｜WPS 文件适配`。
+- 新增 S07-P2 WPS adapter generator、validator、focused unit test、public-safe manifest、field mapping mirror、WPS export source registry、mapping rule versions、conversion guidance、readonly field report、risk register、rollback plan 和 test results。
+- 复用既有 public-safe WPS adapter baseline，锁定 WPS export types=`4`、source registry=`4`、field mappings=`20`、hash-only mappings=`20`、conversion guidance=`4`、readonly field reports=`4`、mapping rule versions=`1`、source header fingerprints=`20`、Q4/Q5/formal report allowed=`0`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、tab labels、字段/表头明文、row/cell values、PDF/Excel source values 或真实业务值。
+- 本轮未执行 S07-P3、Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s07p1-finance-file-adapter - 2026-07-04
 
 - 完成 `v0.1.4 S07-P1｜财务文件适配`。
