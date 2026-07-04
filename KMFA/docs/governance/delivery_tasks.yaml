@@ -8381,3 +8381,41 @@ tasks:
       raw_inbox_access: false
       formal_report: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S11-STAGE-REVIEW-20260704"
+    task_name: "v0.1.4 Stage 11 整体复审"
+    stage_id: "V014-S11"
+    phase_id: "S11-STAGE-REVIEW"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S11_STAGE_REVIEW"
+    validator: "KMFA/tools/check_v014_s11_stage_review.py"
+    focused_test: "KMFA/tests/test_v014_s11_stage_review.py"
+    acceptance_id: "ACC-V014-S11-STAGE-REVIEW"
+    acceptance_ids:
+      - "ACC-V014-S11-STAGE-REVIEW"
+    next_phase: "S12-P1"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s11-stage-review"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s11_stage_review.py KMFA/tools/check_v014_s11_stage_review.py KMFA/tests/test_v014_s11_stage_review.py KMFA/tools/check_v014_s11_p3_project_cost_page.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s11_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s11_stage_review -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S11-P1 S11-P2 S11-P3 legacy S11 and v0.1.4 S11 review validators passed."
+      - "PASS: open findings 0 fixed findings 2 navigation modules 8 source rows 13 project rows 4 html exports 3 pending reconciliations 12 locked."
+      - "PASS: S12 GitHub upload raw matching lineage full check formal report and business execution were not performed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/human/stage11_review_report.md"
+      - "KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
+      - "KMFA/tools/check_v014_s11_stage_review.py"
+    forbidden_scope:
+      s12: false
+      github_upload: false
+      raw_inbox_access: false
+      formal_report: false
+      business_execution: false

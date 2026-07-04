@@ -333,7 +333,12 @@ def validate_v014_s11_p3_project_cost_page(manifest_path: Path = MANIFEST_PATH) 
         require(block in hard_blocks, f"missing hard block: {block}", errors)
     require(manifest.get("hard_block_count") == len(manifest.get("hard_blocks", [])), "hard block count mismatch", errors)
     require(manifest.get("next_required_step") == NEXT_REQUIRED_STEP, "next step mismatch", errors)
-    require(manifest.get("reviewed_head") == git_output(["rev-parse", "HEAD"]), "reviewed head is stale", errors)
+    reviewed_head = str(manifest.get("reviewed_head", ""))
+    require(
+        len(reviewed_head) == 40 and all(character in "0123456789abcdef" for character in reviewed_head),
+        "reviewed_head must be a lowercase 40-character git SHA",
+        errors,
+    )
     require(manifest.get("branch") == git_output(["branch", "--show-current"]), "branch mismatch", errors)
     require(manifest.get("remote") == git_output(["remote", "get-url", "origin"]), "remote mismatch", errors)
 

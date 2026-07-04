@@ -154,6 +154,7 @@ models:
       - "FORM-KMFA-V014-S10-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001"
       - "FORM-KMFA-V014-S11P3-PROJECT-COST-PAGE-001"
+      - "FORM-KMFA-V014-S11-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -237,6 +238,9 @@ models:
       - "PARAM-KMFA-1128"
       - "PARAM-KMFA-1129"
       - "PARAM-KMFA-1130"
+      - "PARAM-KMFA-1131"
+      - "PARAM-KMFA-1132"
+      - "PARAM-KMFA-1133"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -1151,3 +1155,11 @@ v014_s11p3_project_cost_page_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE
   validator: KMFA/tools/check_v014_s11_p3_project_cost_page.py
   scope: S11-P3 project cost page only; no Stage 11 review, GitHub upload or raw inbox access.
+
+v014_s11_stage_review_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S11-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s11_stage_review.py
+  scope: Stage 11 review only; no S12/upload/raw inbox access/raw matching/lineage/formal report/business execution.
