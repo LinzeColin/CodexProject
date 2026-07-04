@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s12p1-manual-resolution-events"
+    model_version: "0.1.4-s12p2-manual-impact-preview"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -155,6 +155,8 @@ models:
       - "FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001"
       - "FORM-KMFA-V014-S11P3-PROJECT-COST-PAGE-001"
       - "FORM-KMFA-V014-S11-STAGE-REVIEW-001"
+      - "FORM-KMFA-V014-S12P1-MANUAL-RESOLUTION-EVENTS-001"
+      - "FORM-KMFA-V014-S12P2-MANUAL-IMPACT-PREVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -241,6 +243,12 @@ models:
       - "PARAM-KMFA-1131"
       - "PARAM-KMFA-1132"
       - "PARAM-KMFA-1133"
+      - "PARAM-KMFA-1134"
+      - "PARAM-KMFA-1135"
+      - "PARAM-KMFA-1136"
+      - "PARAM-KMFA-1137"
+      - "PARAM-KMFA-1138"
+      - "PARAM-KMFA-1139"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -1172,3 +1180,12 @@ v014_s12p1_manual_resolution_events_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS
   validator: KMFA/tools/check_v014_s12_p1_manual_resolution_events.py
   scope: S12-P1 manual resolution events only; no S12-P2/S12-P3/review/upload/raw inbox access.
+
+
+v014_s12p2_manual_impact_preview_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12P2-MANUAL-IMPACT-PREVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW
+  validator: KMFA/tools/check_v014_s12_p2_manual_impact_preview.py
+  scope: S12-P2 manual impact preview only; no S12-P3/review/upload/raw inbox access/formal report/business execution.
