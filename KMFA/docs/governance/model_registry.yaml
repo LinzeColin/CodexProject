@@ -1295,3 +1295,12 @@ v014_s14_stage_review_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S14_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s14_stage_review.py
   scope: Stage 14 overall review only; no S15-P1, upload, raw inbox access, raw matching, lineage, formal report, policy filing, tax filing, invoice issuance, payment, bank, loan management, salary, bonus, payroll export, final payment or business execution.
+
+v014_s15p1_performance_fact_fields_registry_note:
+  version: "0.1.4-s15p1-performance-fact-fields"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S15P1-PERFORMANCE-FACT-FIELDS-001
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P1_PERFORMANCE_FACT_FIELDS
+  validator: KMFA/tools/check_v014_s15_p1_performance_fact_fields.py
+  scope: S15-P1 performance fact fields only; no S15-P2 review list, S15-P3 salary boundary, Stage 15 review, upload, raw inbox access, raw matching, lineage, formal report, salary calculation, bonus approval, payroll export, final payment, payment execution or business execution.
