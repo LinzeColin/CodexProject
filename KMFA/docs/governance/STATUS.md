@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s11p1-home-navigation`
+- version: `0.1.4-s11p2-source-check-board`
 - current_stage: `S11`
-- current_phase: `v0.1.4 S11-P1 home navigation`
-- status: `completed_validated_local_only_no_go_upload_deferred_home_navigation_locked`
+- current_phase: `v0.1.4 S11-P2 source check board`
+- status: `completed_validated_local_only_no_go_upload_deferred_source_check_board_locked`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,7 +16,7 @@
 
 ## 已完成
 
-- v0.1.4 S11-P1 home navigation completed local-only: Stage 10 review dependency PASS, legacy S11-P1 validator PASS, navigation_modules=8, nav_buttons=8, module_action_buttons=8, visible_feedback_panels=1, target_href_count=8, existing_navigation_target_count=8, KM mark=true, blue business style=true, all Chinese=true, v1.4 audit files=6, v1.4 audit rows=54, pass=54, warn=0, fail=0, implementation reflects clickable navigation/visible feedback/report center entry=true, formal report=0, business decision basis=0, raw inbox read/list/stat/hash/mutation=false by this phase, S11-P2=false, S11-P3=false, Stage11_review=false, github_upload=false.
+- v0.1.4 S11-P2 source check board completed local-only: S11-P1 dependency PASS, legacy S11-P2 validator PASS, matrix_rows=13, required_columns=11, allowed_statuses=5, html_export_count=1, search_input=1, search_feedback=true, status_click_detail=true, status_change_actions=5, control_event_log=1, blue_gray_surface=true, large_yellow_surface=0, v1.4 audit files=6, v1.4 audit rows=54, pass=54, warn=0, fail=0, implementation reflects search/status change/detail preview=true, formal report=0, business decision basis=0, raw inbox read/list/stat/hash/mutation=false by this phase, S11-P3=false, Stage11_review=false, github_upload=false.
 - v0.1.4 Stage 10 review completed local-only: S10-P1/S10-P2/S10-P3 validators PASS, legacy Stage 10 review PASS, v0.1.3 Stage 10 review PASS, phase_results all PASS, open findings=0, fixed findings=2, report_template_count=2, report_grade_record_count=2, report_export_record_count=2, html_export_count=2, csv_appendix_count=2, excel_compatible_download_count=2, pending_reconciliation_count=12, confirmed_resolution_count=0, formal_report_count=0, business_decision_basis_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this review, S11=false, github_upload=false.
 - v0.1.4 S10-P3 report export completed local-only: S10-P2 dependency PASS, legacy S10-P3 public-safe runtime PASS, v0.1.3 S10-P3 replay PASS, report_export_record_count=2, html_export_count=2, csv_appendix_count=2, excel_compatible_download_count=2, committed_pdf_file_count=0, committed_excel_file_count=0, formal_report_count=0, business_decision_basis_count=0, pending_reconciliation_count=12, grade_distribution=D:2, PDF private-runtime-only policy=true, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, Stage10_review=false, github_upload=false.
 - v0.1.4 S10-P2 report trust grade completed local-only: S10-P1 dependency PASS, legacy S10-P2 public-safe runtime PASS, v0.1.3 S10-P2 replay PASS, report_grade_record_count=2, grade_distribution=D:2, pending_reconciliation_count=12, confirmed_resolution_count=0, source_quality_grade=Q4, zero_delta_passed=false, record_version_binding_count=2, complete trusted report=false, formal_report_count=0, export_artifact_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, Stage10_review=false, github_upload=false.

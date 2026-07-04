@@ -1,3 +1,11 @@
+## 2026-07-04 - v0.1.4 S11-P2 数据源检查板
+- Product version: `0.1.4-s11p2-source-check-board`.
+- Scope: one phase only, `S11-P2 数据源检查板`.
+- Deliverables: public-safe source check board evidence, v1.4 human-flow baseline reflection, generator, validator, focused unit test, governance records.
+- Evidence: `KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/`.
+- Verification: `KMFA/tools/check_v014_s11_p2_source_check_board.py`; `KMFA/tests/test_v014_s11_p2_source_check_board.py`.
+- Boundaries: no S11-P3, no Stage 11 review, no GitHub upload, no raw/private inbox access, no raw value matching, no formal report or business execution.
+
 ## 2026-07-04 - v0.1.4 S11-P1 首页导航
 - Product version: `0.1.4-s11p1-home-navigation`.
 - Scope: one phase only, `S11-P1 首页导航`.

@@ -1,6 +1,6 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s11p1-home-navigation
+product_version: 0.1.4-s11p2-source-check-board
 
 ## Scope
 
@@ -623,3 +623,10 @@ product_version: 0.1.4-s11p1-home-navigation
 - Inputs: legacy S11-P1 local-only navigation artifacts, v0.1.4 Stage 10 review manifest, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
 - Outputs: `KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION/machine/home_navigation_manifest.json` and public-safe human evidence under the same artifact directory.
 - Controls: S11-P2, S11-P3, Stage 11 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, and raw/private inbox read/list/stat/hash/mutation must remain false.
+
+## FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001
+- Version: `0.1.4-s11p2-source-check-board`.
+- Purpose: lock S11-P2 source check board evidence for public-safe matrix rows, required columns, allowed statuses, search feedback, status detail, status-change control events, blue-gray low-interference style, and v1.4 human-flow baseline reflection.
+- Inputs: v0.1.4 S11-P1 dependency, legacy S11-P2 public-safe source check board artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
+- Outputs: `KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json` and public-safe human evidence under the same artifact directory.
+- Controls: S11-P3, Stage 11 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, and raw/private inbox read/list/stat/hash/mutation must remain false.

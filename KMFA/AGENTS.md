@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.4 Stage 11`
-- 当前 Phase: `v0.1.4 S11-P1 首页导航已本地通过；8 个中文首页模块、8 个导航按钮、8 个模块动作按钮、1 个可见反馈区、8 个 href target 且目标全部存在；KM 标识、蓝色商务风、全中文入口和 v1.4 human-flow clickable navigation / visible feedback / report center entry 均已由 validator 锁定。下一步只能另起 run work 执行 S11-P2 数据源检查提示；不执行 S11-P3、Stage 11 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 或业务执行`
+- 当前 Phase: `v0.1.4 S11-P2 数据源检查板已本地通过；13 行 public-safe 检查矩阵、11 列、5 种状态、搜索反馈、状态点击详情、5 个状态变更控制动作、1 个控制事件日志、蓝灰低干扰样式和 v1.4 human-flow search/status/detail baseline 均已由 validator 锁定。下一步只能另起 run work 执行 S11-P3 项目成本页面；不执行 Stage 11 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 或业务执行`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 S11-P1 首页导航已完成；下一轮只能在用户明确开启后单独执行 `S11-P2 数据源检查提示`。不得直接执行 S11-P3、Stage 11 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或任何业务动作。
+- v0.1.4 S11-P2 数据源检查板已完成；下一轮只能在用户明确开启后单独执行 `S11-P3 项目成本页面`。不得直接执行 Stage 11 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或任何业务动作。
 - Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成；S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已完成。Stage 18 review-level Go/No-Go 仍为 `NO_GO`；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s11p1-home-navigation"
+    model_version: "0.1.4-s11p2-source-check-board"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -152,6 +152,7 @@ models:
       - "FORM-KMFA-V014-S10P2-REPORT-TRUST-GRADE-001"
       - "FORM-KMFA-V014-S10P3-REPORT-EXPORT-001"
       - "FORM-KMFA-V014-S10-STAGE-REVIEW-001"
+      - "FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
