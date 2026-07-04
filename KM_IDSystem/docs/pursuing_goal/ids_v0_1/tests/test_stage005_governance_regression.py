@@ -5989,6 +5989,74 @@ next_gate_id: "IDS-STAGE033-P4-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage033_phase4_database_size_guard_closeout(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage033_completed_local_pending_review"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-031:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    current_task_id: "IDS-V0_1-STAGE031-REVIEW"
+    acceptance_status: "reviewed_local_passed"
+  STAGE-032:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-033"
+    current_task_id: "IDS-V0_1-STAGE032-REVIEW"
+    acceptance_status: "reviewed_local_passed"
+  STAGE-033:
+    status: "stage033_completed_local_pending_review"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    next_gate: "IDS-STAGE033-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE033-P4"
+    acceptance_id: "ACC-STAGE-033"
+    acceptance_status: "phase4_closeout_complete"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE033"
+current_phase_id: "IDS-STAGE033-P4"
+current_task_id: "IDS-V0_1-STAGE033-P4"
+next_gate_id: "IDS-STAGE033-REVIEW-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE033-P4"
+          status: "passed_no_github_upload_until_stage_review"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
     def test_phase_state_allows_stage032_phase2_database_connection_pool_slice(self):
         module = self._load_module()
         batch_text = """
