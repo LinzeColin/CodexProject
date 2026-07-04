@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s08p1-project-composite-key
+
+- task_id: `KMFA-V014-S08-P1-PROJECT-COMPOSITE-KEY-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred_project_composite_key`
+- scope: v0.1.4 S08-P1 project composite key only; validated Stage 7 review dependency and reused legacy public-safe S08-P1 artifacts without reading raw inbox, starting S08-P2/S08-P3/Stage 8 review, or performing GitHub upload.
+- evidence: `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/human/project_composite_key_report.md`, `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/human/test_results.md`, `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/machine/project_composite_key_manifest.json`, `KMFA/tools/check_v014_s08_p1_project_composite_key.py`
+- counts: Stage7 dependency PASS, legacy S08-P1 PASS, required_component_count=8, profile_count=4, match_result_count=3, manual_review_queue_count=2, strong_auto_match_count=1, human_review_required_count=2, matching_weights_sum_bps=10000, thresholds_bps=8500/7000/5000, missing_single_component_blocks_all_matching=false, below_strong_threshold_enters_manual_review=true, auto_merge_allowed_for_review_queue_count=0.
+- blocker_state: S08-P2=false, S08-P3=false, Stage8_review=false, GitHub upload=false, raw value matching=false, lineage full check=false, formal_report_allowed=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+- raw_boundary: raw inbox read/list/stat/hash/mutation=false in S08-P1; public raw filenames/hash/member names/sheet names/field or header plaintext/row values/PDF or Excel source values/business values committed=false.
+
+product_version: 0.1.4-s08p1-project-composite-key
+version_matrix_product_version_reference: 0.1.4-s08p1-project-composite-key
+
 ## 2026-07-04 - 0.1.4-s07-stage-review
 
 - task_id: `KMFA-V014-S07-STAGE-REVIEW-20260704`

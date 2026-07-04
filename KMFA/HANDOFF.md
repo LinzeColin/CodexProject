@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `Stage 7 整体复审`：`KMFA/tools/v014_s07_stage_review.py`、`KMFA/tools/check_v014_s07_stage_review.py`、`KMFA/tests/test_v014_s07_stage_review.py` 和 Stage 7 review evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S07_STAGE_REVIEW/`。本 review 复跑 S07-P1/S07-P2/S07-P3 validators 与 legacy S07 validators，phase_results 全部 `PASS`，open findings=`0`，fixed findings=`1`。复审修复了 S07-P1/S07-P2 validator dependency finding：v0.1.4 dependency checks 现在读取 locked manifests，不再递归触发上游整链 validator。Stage gate 锁定 finance field candidates=`45`、WPS field mappings=`20`、Redcircle reserved templates=`4`、Redcircle rollback plans=`4`、total structural mappings=`65`、Q4/Q5/formal report allowed=`0`、Redcircle automatic connector allowed=`false`。本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、接口凭证或真实业务值。未执行 S08-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S08-P1｜项目组合键`，不得在本轮补做 GitHub upload。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S08-P1 项目组合键`：`KMFA/tools/v014_s08_p1_project_composite_key.py`、`KMFA/tools/check_v014_s08_p1_project_composite_key.py`、`KMFA/tests/test_v014_s08_p1_project_composite_key.py` 和 S08-P1 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/`。本 phase 验证 v0.1.4 Stage 7 review dependency，并复用 legacy public-safe S08-P1 artifacts，锁定 required components=`8`、profiles=`4`、match results=`3`、manual review queue=`2`、strong auto match=`1`、human review required=`2`、matching weights sum=`10000` bps、strong/human/weak thresholds=`8500/7000/5000` bps。单字段缺失不全阻断，低于 strong threshold 进入人工复核队列且 `auto_merge_allowed=false`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、接口凭证或真实业务值。未执行 S08-P2、S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S08-P2｜业务实体模型`，不得在本轮补做 GitHub upload。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s07-stage-review`
-- 当前已完成: `v0.1.4 Stage 7 review`
-- 证据目录: `KMFA/stage_artifacts/V014_S07_STAGE_REVIEW/`
-- validator: `KMFA/tools/check_v014_s07_stage_review.py`
-- focused test: `KMFA/tests/test_v014_s07_stage_review.py`
+- 当前版本: `0.1.4-s08p1-project-composite-key`
+- 当前已完成: `v0.1.4 S08-P1 project composite key`
+- 证据目录: `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/`
+- validator: `KMFA/tools/check_v014_s08_p1_project_composite_key.py`
+- focused test: `KMFA/tests/test_v014_s08_p1_project_composite_key.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: Stage 7 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe phase evidence 并输出 review/validator/control evidence。
-- 未执行: S08-P1、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `S08-P1｜项目组合键`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S08-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe legacy S08-P1 evidence 并输出 v0.1.4 validator/control evidence。
+- 未执行: S08-P2、S08-P3、Stage 8 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `S08-P2｜业务实体模型`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

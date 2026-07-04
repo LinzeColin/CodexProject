@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s08p1-project-composite-key - 2026-07-04
+
+- 完成 `v0.1.4 S08-P1｜项目组合键`。
+- 新增 S08-P1 evidence generator、validator、focused unit test、public-safe manifest、project composite key report、risk register、rollback plan 和 test results。
+- 复用 legacy public-safe S08-P1 项目组合键能力，锁定 8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条 manual review queue、1 条 strong auto match、10000 bps 权重总和和 8500/7000/5000 bps 阈值。
+- 单字段缺失不全阻断；低于 strong threshold 的候选进入人工复核队列，`auto_merge_allowed=false`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S08-P2、S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s07-stage-review - 2026-07-04
 
 - 完成 `v0.1.4 Stage 7 整体复审`。
