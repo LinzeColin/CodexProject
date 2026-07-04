@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KMFA 跨表复核质量报告</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #132238;
+      --muted: #5c6675;
+      --line: #d9e2ef;
+      --blue: #1459a8;
+      --sky: #eef6ff;
+      --warn: #8a4b00;
+      --warn-bg: #fff6e6;
+      --bg: #f7f9fc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.55;
+    }
+    main {
+      width: min(1120px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 32px 0 40px;
+    }
+    header {
+      border-bottom: 2px solid var(--blue);
+      padding-bottom: 18px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+    .subline { color: var(--muted); font-size: 14px; }
+    .status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 92px;
+    }
+    .metric b { display: block; font-size: 24px; color: var(--blue); }
+    .metric span { color: var(--muted); font-size: 13px; }
+    .notice {
+      border: 1px solid #efc46c;
+      background: var(--warn-bg);
+      color: var(--warn);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 18px 0;
+      font-weight: 600;
+    }
+    section {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      margin-top: 16px;
+    }
+    h2 { margin: 0 0 12px; font-size: 18px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 10px 8px;
+      vertical-align: top;
+    }
+    th { color: var(--muted); background: var(--sky); }
+    .summary { margin: 0; color: var(--ink); }
+    @media (max-width: 760px) {
+      main { width: min(100vw - 20px, 1120px); padding-top: 20px; }
+      .status { grid-template-columns: 1fr; }
+      table { font-size: 13px; }
+      h1 { font-size: 23px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>KMFA 跨表复核质量报告</h1>
+      <div class="subline">S13-P3 public-safe evidence · generated 2026-07-05T07:40:00+10:00</div>
+    </header>
+    <p class="summary">项目、客户、金额、时间跨表复核已完成公开安全检查；所有未闭合项进入人工差异队列。</p>
+    <div class="status" aria-label="质量状态">
+      <div class="metric"><b>D</b><span>当前可见报告等级</span></div>
+      <div class="metric"><b>4</b><span>人工差异队列事项</span></div>
+      <div class="metric"><b>12</b><span>未关闭复核差异</span></div>
+    </div>
+    <div class="notice">不可作为正式经营报告或经营决策依据；不得触发开票、付款、银行、税务或法务催收动作。</div>
+    <section>
+      <h2>跨表复核结果</h2>
+      <table>
+        <thead>
+          <tr><th>复核维度</th><th>复核结果</th><th>处理状态</th><th>责任角色</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>项目一致性</td><td>difference_queue_required</td><td>pending_owner_or_authorized_review</td><td>project_owner</td></tr>
+<tr><td>客户一致性</td><td>difference_queue_required</td><td>pending_owner_or_authorized_review</td><td>sales_owner</td></tr>
+<tr><td>金额一致性</td><td>difference_queue_required</td><td>pending_owner_or_authorized_review</td><td>finance_owner</td></tr>
+<tr><td>时间一致性</td><td>difference_queue_required</td><td>pending_owner_or_authorized_review</td><td>finance_owner</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
