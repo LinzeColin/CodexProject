@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S15-P1｜绩效事实字段`：新增 `KMFA/tools/v014_s15_p1_performance_fact_fields.py`、`KMFA/tools/check_v014_s15_p1_performance_fact_fields.py`、`KMFA/tests/test_v014_s15_p1_performance_fact_fields.py` 和 `KMFA/stage_artifacts/V014_S15_P1_PERFORMANCE_FACT_FIELDS/` public-safe evidence。该 phase 验证 Stage 14 review dependency、legacy S15-P1 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S15-P1 validator 和 focused unit test，锁定 field definitions=6、field bindings=6、manual review fields=4、required fields=`invoice_amount/gross_margin_rate/settlement_speed/collection_speed/audit_variance/customer_relationship_rate`、manual review fields=`settlement_speed/collection_speed/audit_variance/customer_relationship_rate`、report grade=D、performance fact table=0、abnormal project review list=0、salary calculation=0、bonus approval=0、payroll export=0、final payment=0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S15-P2、S15-P3、Stage 15 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、工资计算、奖金审批、薪资导出、最终发放、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S15-P2`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S15-P2｜绩效复核清单`：新增 `KMFA/tools/v014_s15_p2_performance_review_list.py`、`KMFA/tools/check_v014_s15_p2_performance_review_list.py`、`KMFA/tests/test_v014_s15_p2_performance_review_list.py` 和 `KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST/` public-safe evidence。该 phase 验证 S15-P1 dependency、legacy S15-P2 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S15-P2 validator 和 focused unit test，锁定 performance fact rows=4、abnormal review items=16、manual review fields=4、required fields=`invoice_amount/gross_margin_rate/settlement_speed/collection_speed/audit_variance/customer_relationship_rate`、manual review fields=`settlement_speed/collection_speed/audit_variance/customer_relationship_rate`、report grade=D、salary calculation=0、wage calculation=0、bonus approval=0、payroll export=0、final compensation decision=0、final payment=0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S15-P3、Stage 15 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、工资计算、奖金审批、薪资导出、最终发放、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S15-P3`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s15p1-performance-fact-fields`
-- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`
-- 证据目录: `KMFA/stage_artifacts/V014_S15_P1_PERFORMANCE_FACT_FIELDS/`
-- validator: `KMFA/tools/check_v014_s15_p1_performance_fact_fields.py`
-- focused test: `KMFA/tests/test_v014_s15_p1_performance_fact_fields.py`
+- 当前版本: `0.1.4-s15p2-performance-review-list`
+- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`
+- 证据目录: `KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST/`
+- validator: `KMFA/tools/check_v014_s15_p2_performance_review_list.py`
+- focused test: `KMFA/tests/test_v014_s15_p2_performance_review_list.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S15-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe Stage 14 review、项目成本、毛利、回款应收、发票税务和跨表复核证据。
-- 未执行: S15-P2、S15-P3、Stage 15 review、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、工资计算、奖金审批、薪资导出、最终发放、付款、银行或 business execution。
-- 下一步: 仅在用户明确开启后执行 `S15-P2`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S15-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S15-P1、项目成本、毛利、回款应收和跨表复核证据。
+- 未执行: S15-P3、Stage 15 review、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、工资计算、奖金审批、薪资导出、最终发放、付款、银行或 business execution。
+- 下一步: 仅在用户明确开启后执行 `S15-P3`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

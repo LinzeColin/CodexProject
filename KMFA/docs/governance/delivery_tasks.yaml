@@ -9035,3 +9035,56 @@ tasks:
       payment_execution: false
       bank_operation: false
       business_execution: false
+  - task_id: "KMFA-V014-S15-P2-PERFORMANCE-REVIEW-LIST-20260705"
+    task_name: "v0.1.4 S15-P2 绩效复核清单"
+    stage_id: "V014-S15"
+    phase_id: "S15-P2"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST"
+    validator: "KMFA/tools/check_v014_s15_p2_performance_review_list.py"
+    focused_test: "KMFA/tests/test_v014_s15_p2_performance_review_list.py"
+    acceptance_id: "ACC-V014-S15-P2-PERFORMANCE-REVIEW-LIST"
+    acceptance_ids:
+      - "ACC-V014-S15-P2-PERFORMANCE-REVIEW-LIST"
+    next_phase: "S15-P3"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s15p2-performance-review-list"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s15_p2_performance_review_list.py KMFA/tools/check_v014_s15_p2_performance_review_list.py KMFA/tests/test_v014_s15_p2_performance_review_list.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s15_p2_performance_review_list.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p1_performance_fact_fields.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s15_p2_performance_review_list.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p2_performance_review_list.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s15_p2_performance_review_list -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S15-P1 dependency, legacy S15-P2 baseline and v0.1.4 S15-P2 validator passed before final validation capture."
+      - "PASS: focused unit test ran 1 test and passed before final validation capture."
+      - "PASS: governance validators, no-float, no-omission, structured parse checks, Ruby YAML parse checks, raw/private suffix scan, high-signal secret scan, scoped S15-P2 public artifact boundary scan and diff check passed after final validation."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST/human/performance_review_list_report.md"
+      - "KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST/machine/performance_review_manifest.json"
+      - "KMFA/tools/check_v014_s15_p2_performance_review_list.py"
+    forbidden_scope:
+      s15_p3: false
+      stage15_review: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      live_connector: false
+      app_reinstall: false
+      opme_integration: false
+      salary_calculation: false
+      wage_calculation: false
+      bonus_approval: false
+      payroll_export: false
+      final_compensation_decision: false
+      final_payment_execution: false
+      payment_execution: false
+      bank_operation: false
+      business_execution: false
