@@ -701,3 +701,10 @@ product_version: 0.1.4-s13p3-cross-table-review
 - Inputs: v0.1.4 Stage 12 review dependency, legacy S13-P1 public-safe financial operating report artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
 - Outputs: `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json`, `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_source_lanes.jsonl`, `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_drafts.jsonl`, two public-safe HTML drafts, and public-safe human evidence under the same artifact directory.
 - Controls: S13-P2, S13-P3, Stage 13 review, GitHub upload, protected source matching, lineage full check, formal report release, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.
+
+## FORM-KMFA-V014-S13-STAGE-REVIEW-001
+- Version: `0.1.4-s13-stage-review`.
+- Purpose: lock v0.1.4 Stage 13 overall review evidence after replaying S13-P1, S13-P2, S13-P3, legacy Stage 13 review, v1.4 Stage 13 review validator, and focused unit test.
+- Inputs: v0.1.4 S13 phase manifests, legacy Stage 13 review manifest as historical context, v1.4 human-flow baseline evidence, governance validators, and deterministic public-safe validator outputs.
+- Outputs: `KMFA/stage_artifacts/V014_S13_STAGE_REVIEW/machine/stage13_review_manifest.json` and public-safe human review evidence under `KMFA/stage_artifacts/V014_S13_STAGE_REVIEW/`.
+- Controls: S14, GitHub upload, protected source matching, lineage full check, formal report release, app reinstall, live connector, OpMe deep coupling, difference closure, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.
