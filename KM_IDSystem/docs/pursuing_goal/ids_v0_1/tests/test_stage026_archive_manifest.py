@@ -266,6 +266,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
         ]
         allowed_acceptance_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_retention_table_slice_defined"',
             'acceptance_status: "phase2_size_guard_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase2_archive_manifest_slice_complete"',
@@ -381,6 +382,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE033-P2"',
             'current_phase_id: "IDS-STAGE033-P3"',
             'current_phase_id: "IDS-STAGE034-P1"',
+            'current_phase_id: "IDS-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P1"',
             'current_task_id: "IDS-V0_1-STAGE026-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P3"',
@@ -413,6 +415,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE033-P2"',
             'current_task_id: "IDS-V0_1-STAGE033-P3"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'next_gate_id: "IDS-STAGE026-P2-GATE"',
             'next_gate_id: "IDS-STAGE026-P3-GATE"',
             'next_gate_id: "IDS-STAGE026-P4-GATE"',
@@ -447,6 +450,7 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE033-P3-GATE"',
             'next_gate_id: "IDS-STAGE033-P4-GATE"',
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
+            'next_gate_id: "IDS-STAGE034-P3-GATE"',
         ]
         allowed_phase_terms = [term for term in allowed_current_terms if term.startswith("current_phase_id")]
         allowed_task_terms = [term for term in allowed_current_terms if term.startswith("current_task_id")]
@@ -1065,10 +1069,12 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE033-P2"',
             'current_phase_id: "IDS-STAGE033-P3"',
             'current_phase_id: "IDS-STAGE034-P1"',
+            'current_phase_id: "IDS-STAGE034-P2"',
             'current_phase_id: "IDS-STAGE033-P1"',
             'current_phase_id: "IDS-STAGE033-P2"',
             'current_phase_id: "IDS-STAGE033-P3"',
             'current_phase_id: "IDS-STAGE034-P1"',
+            'current_phase_id: "IDS-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE026-P4"',
             'current_task_id: "IDS-V0_1-STAGE027-P1"',
             'current_task_id: "IDS-V0_1-STAGE027-P2"',
@@ -1098,10 +1104,12 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE033-P2"',
             'current_task_id: "IDS-V0_1-STAGE033-P3"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
             'current_task_id: "IDS-V0_1-STAGE033-P2"',
             'current_task_id: "IDS-V0_1-STAGE033-P3"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'next_gate_id: "IDS-STAGE027-P1-GATE"',
             'next_gate_id: "IDS-STAGE027-P2-GATE"',
             'next_gate_id: "IDS-STAGE027-P3-GATE"',
@@ -1133,10 +1141,12 @@ class Stage026ArchiveManifestPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE033-P3-GATE"',
             'next_gate_id: "IDS-STAGE033-P4-GATE"',
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
+            'next_gate_id: "IDS-STAGE034-P3-GATE"',
             'next_gate_id: "IDS-STAGE033-P2-GATE"',
             'next_gate_id: "IDS-STAGE033-P3-GATE"',
             'next_gate_id: "IDS-STAGE033-P4-GATE"',
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
+            'next_gate_id: "IDS-STAGE034-P3-GATE"',
         ]
         allowed_stage_terms = [term for term in allowed_current_terms if term.startswith("current_stage_id")]
         allowed_phase_terms = [term for term in allowed_current_terms if term.startswith("current_phase_id")]

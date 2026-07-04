@@ -138,6 +138,7 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
             'status: "stage033_completed_local_pending_review"',
             'status: "stage033_completed_reviewed_local"',
             'status: "stage034_phase1_in_progress"',
+            'status: "stage034_phase2_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 2"',
@@ -148,6 +149,7 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE033-REVIEW-GATE"',
             'next_gate: "IDS-STAGE034-P1-GATE"',
             'next_gate: "IDS-STAGE034-P2-GATE"',
+            'next_gate: "IDS-STAGE034-P3-GATE"',
         ]
         typo_guard_terms = [
             'acceptance_id: "ACC-STAGE-033"',
@@ -164,14 +166,17 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE033-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
         ]
         allowed_acceptance_status_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_retention_table_slice_defined"',
             'acceptance_status: "phase2_size_guard_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
             'acceptance_status: "reviewed_local_passed"',
             'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_retention_table_slice_defined"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE033"',
@@ -187,6 +192,7 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE033-P4"',
             'current_phase_id: "IDS-STAGE033-REVIEW"',
             'current_phase_id: "IDS-STAGE034-P1"',
+            'current_phase_id: "IDS-STAGE034-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
@@ -195,6 +201,7 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE033-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE033-P2-GATE"',
@@ -203,6 +210,7 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE033-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE034-P1-GATE"',
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
+            'next_gate_id: "IDS-STAGE034-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE033-P1-20260703-001"',
@@ -359,24 +367,28 @@ class Stage033DatabaseSizeGuardPhase3Tests(unittest.TestCase):
             'status: "stage033_completed_local_pending_review"',
             'status: "stage033_completed_reviewed_local"',
             'status: "stage034_phase1_in_progress"',
+            'status: "stage034_phase2_in_progress"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE033-P4-GATE"',
             'next_gate: "IDS-STAGE033-REVIEW-GATE"',
             'next_gate: "IDS-STAGE034-P1-GATE"',
             'next_gate: "IDS-STAGE034-P2-GATE"',
+            'next_gate: "IDS-STAGE034-P3-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P3"',
             'current_task_id: "IDS-V0_1-STAGE033-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
         ]
         allowed_acceptance_status_terms = [
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
             'acceptance_status: "reviewed_local_passed"',
             'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_retention_table_slice_defined"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE033"',
@@ -389,18 +401,21 @@ class Stage033DatabaseSizeGuardPhase3Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE033-P4"',
             'current_phase_id: "IDS-STAGE033-REVIEW"',
             'current_phase_id: "IDS-STAGE034-P1"',
+            'current_phase_id: "IDS-STAGE034-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P3"',
             'current_task_id: "IDS-V0_1-STAGE033-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE033-P4-GATE"',
             'next_gate_id: "IDS-STAGE033-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE034-P1-GATE"',
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
+            'next_gate_id: "IDS-STAGE034-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE033-P3-20260703-001"',
@@ -566,21 +581,25 @@ class Stage033DatabaseSizeGuardPhase4Tests(unittest.TestCase):
             'status: "stage033_completed_local_pending_review"',
             'status: "stage033_completed_reviewed_local"',
             'status: "stage034_phase1_in_progress"',
+            'status: "stage034_phase2_in_progress"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE033-REVIEW-GATE"',
             'next_gate: "IDS-STAGE034-P1-GATE"',
             'next_gate: "IDS-STAGE034-P2-GATE"',
+            'next_gate: "IDS-STAGE034-P3-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
         ]
         allowed_acceptance_status_terms = [
             'acceptance_status: "phase4_closeout_complete"',
             'acceptance_status: "reviewed_local_passed"',
             'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_retention_table_slice_defined"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE033"',
@@ -592,16 +611,19 @@ class Stage033DatabaseSizeGuardPhase4Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE033-P4"',
             'current_phase_id: "IDS-STAGE033-REVIEW"',
             'current_phase_id: "IDS-STAGE034-P1"',
+            'current_phase_id: "IDS-STAGE034-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE033-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE034-P1-GATE"',
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
+            'next_gate_id: "IDS-STAGE034-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE033-P4-20260703-001"',
@@ -683,31 +705,52 @@ class Stage033DatabaseSizeGuardReviewTests(unittest.TestCase):
             '      - "Phase 4"',
             'review_status: "passed"',
             'next_stage: "STAGE-034"',
-            'next_gate: "IDS-STAGE034-P1-GATE"',
-            'next_gate: "IDS-STAGE034-P2-GATE"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
-            'current_task_id: "IDS-V0_1-STAGE034-P1"',
             'acceptance_status: "reviewed_local_passed"',
-            'acceptance_status: "phase1_scope_boundary_defined"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_STAGE_REVIEW.md",
             'push_allowed: false',
         ]
         allowed_lock_status_terms = [
             'status: "stage033_completed_reviewed_local"',
             'status: "stage034_phase1_in_progress"',
+            'status: "stage034_phase2_in_progress"',
+        ]
+        allowed_lock_gate_terms = [
+            'next_gate: "IDS-STAGE034-P1-GATE"',
+            'next_gate: "IDS-STAGE034-P2-GATE"',
+            'next_gate: "IDS-STAGE034-P3-GATE"',
+        ]
+        allowed_lock_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
+        ]
+        allowed_acceptance_status_terms = [
+            'acceptance_status: "reviewed_local_passed"',
+            'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_retention_table_slice_defined"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE033"',
-            'current_phase_id: "IDS-STAGE033-REVIEW"',
-            'current_phase_id: "IDS-STAGE034-P1"',
-            'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
-            'current_task_id: "IDS-V0_1-STAGE034-P1"',
-            'next_gate_id: "IDS-STAGE034-P1-GATE"',
-            'next_gate_id: "IDS-STAGE034-P2-GATE"',
             'review_id: "IDS-STAGE033-REVIEW"',
             'task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'status: "completed"',
             "STAGE033_STAGE_REVIEW.md",
+        ]
+        allowed_roadmap_phase_terms = [
+            'current_phase_id: "IDS-STAGE033-REVIEW"',
+            'current_phase_id: "IDS-STAGE034-P1"',
+            'current_phase_id: "IDS-STAGE034-P2"',
+        ]
+        allowed_roadmap_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
+        ]
+        allowed_roadmap_gate_terms = [
+            'next_gate_id: "IDS-STAGE034-P1-GATE"',
+            'next_gate_id: "IDS-STAGE034-P2-GATE"',
+            'next_gate_id: "IDS-STAGE034-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE033-REVIEW-20260704-001"',
@@ -722,9 +765,18 @@ class Stage033DatabaseSizeGuardReviewTests(unittest.TestCase):
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)
         self.assertTrue(any(term in lock_text for term in allowed_lock_status_terms), allowed_lock_status_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_gate_terms), allowed_lock_gate_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_task_terms), allowed_lock_task_terms)
+        self.assertTrue(
+            any(term in lock_text for term in allowed_acceptance_status_terms),
+            allowed_acceptance_status_terms,
+        )
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_phase_terms), allowed_roadmap_phase_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_task_terms), allowed_roadmap_task_terms)
+        self.assertTrue(any(term in roadmap_text for term in allowed_roadmap_gate_terms), allowed_roadmap_gate_terms)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
@@ -894,6 +946,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'status: "stage033_completed_local_pending_review"',
             'status: "stage033_completed_reviewed_local"',
             'status: "stage034_phase1_in_progress"',
+            'status: "stage034_phase2_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 3"',
@@ -903,6 +956,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE033-REVIEW-GATE"',
             'next_gate: "IDS-STAGE034-P1-GATE"',
             'next_gate: "IDS-STAGE034-P2-GATE"',
+            'next_gate: "IDS-STAGE034-P3-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P2"',
@@ -910,6 +964,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE033-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
         ]
         allowed_acceptance_status_terms = [
             'acceptance_status: "phase2_size_guard_slice_defined"',
@@ -917,6 +972,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'acceptance_status: "phase4_closeout_complete"',
             'acceptance_status: "reviewed_local_passed"',
             'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_retention_table_slice_defined"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE033"',
@@ -930,6 +986,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE033-P4"',
             'current_phase_id: "IDS-STAGE033-REVIEW"',
             'current_phase_id: "IDS-STAGE034-P1"',
+            'current_phase_id: "IDS-STAGE034-P2"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE033-P2"',
@@ -937,6 +994,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE033-P4"',
             'current_task_id: "IDS-V0_1-STAGE033-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
+            'current_task_id: "IDS-V0_1-STAGE034-P2"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE033-P3-GATE"',
@@ -944,6 +1002,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE033-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE034-P1-GATE"',
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
+            'next_gate_id: "IDS-STAGE034-P3-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE033-P2-20260703-001"',

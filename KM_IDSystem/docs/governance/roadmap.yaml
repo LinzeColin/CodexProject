@@ -2,22 +2,22 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE034"
-current_phase_id: "IDS-STAGE034-P1"
-current_task_id: "IDS-V0_1-STAGE034-P1"
-next_gate_id: "IDS-STAGE034-P2-GATE"
+current_phase_id: "IDS-STAGE034-P2"
+current_task_id: "IDS-V0_1-STAGE034-P2"
+next_gate_id: "IDS-STAGE034-P3-GATE"
 current_transition_history:
   previous_state:
+    current_stage_id: "IDS-STAGE034"
+    current_phase_id: "IDS-STAGE034-P1"
+    current_task_id: "IDS-V0_1-STAGE034-P1"
+    next_gate_id: "IDS-STAGE034-P2-GATE"
+  earlier_state:
     current_stage_id: "IDS-STAGE033"
     current_phase_id: "IDS-STAGE033-REVIEW"
     current_task_id: "IDS-V0_1-STAGE033-REVIEW"
     next_gate_id: "IDS-STAGE034-P1-GATE"
-  earlier_state:
-    current_stage_id: "IDS-STAGE033"
-    current_phase_id: "IDS-STAGE033-P4"
-    current_task_id: "IDS-V0_1-STAGE033-P4"
-    next_gate_id: "IDS-STAGE033-REVIEW-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 285
+completed_estimated_hours: 286
 stages:
   -
     stage_id: "S5"
@@ -8116,20 +8116,26 @@ stages:
       - "写 runtime output、database、manifest、evidence ledger、audit log、index、report、PDF、screenshot、JSON output、retention output、cleanup output、deletion output 或 production data artifact"
       - "提交 secrets、API key、数据库密码、credential-bearing DSN 或云端凭证"
       - "使用虚构 IDS 业务数据、虚构数据库行、虚构源文档、placeholder corpus 或伪造证据"
-      - "执行 GitHub upload、PR、merge、app reinstall、batch review 或进入 Phase 2"
+      - "执行 GitHub upload、PR、merge、app reinstall、batch review 或进入 Phase 3"
     stop_gate:
-      gate_id: "IDS-STAGE034-P1-GATE"
+      gate_id: "IDS-STAGE034-P2-GATE"
       status: "passed_with_local_evidence"
       pass_conditions:
         - "STAGE034_ENTRY_CONTRACT.md 已记录 P0 taskpack identity、前置依赖、Phase 1 合同、non-goals 和验收证据"
         - "STAGE034_PHASE1_SCOPE_BOUNDARY.md 已定义 data retention table 字段、输入、输出、状态、边界、停止条件和 rollback"
+        - "STAGE034_PHASE2_DATA_RETENTION_TABLE_SLICE.md 已记录静态数据保留表切片、guardrails、non-goals、验收证据和 rollback"
+        - "stage034_data_retention_table_index.json 已定义 retention subject、TTL、owner hold、cleanup dry-run、deletion stop gate、audit evidence、rollback/restore、raw boundary 和 real-data-only guardrails"
+        - "check_data_retention_table.py 只输出 stdout JSON，不连接 PostgreSQL、不执行 migration/cleanup/deletion、不写 runtime output"
         - "保留策略字段覆盖临时文件、缓存、旧索引、日志和报告快照"
-        - "Phase 1 明确不执行删除、清理、retention、migration、PostgreSQL 连接或 runtime 输出"
-        - "Stage005 governance regression 已接受 STAGE-034 Phase 1 当前态"
+        - "Phase 2 明确不执行删除、清理、retention、migration、PostgreSQL 连接或 runtime 输出"
+        - "Stage005 governance regression 已接受 STAGE-034 Phase 2 当前态"
         - "BATCH031_040_UPLOAD_LOCK.yaml 仍保持 push_allowed=false"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_ENTRY_CONTRACT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE1_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE2_DATA_RETENTION_TABLE_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/data_retention_table/stage034_data_retention_table_index.json"
+        - "KM_IDSystem/scripts/check_data_retention_table.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage034_data_retention_table.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
@@ -8179,3 +8185,50 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "如果 Phase 1 合同被误读为已实现清理、删除、retention scheduler 或 PostgreSQL 表迁移，可能提前删除缓存/日志/报告快照、写 runtime 状态、绕过 owner stop gate 或读取 raw metadata。"
             rollback: "Revert STAGE034 entry/scope evidence, BATCH031_040 lock, Stage034/Stage005 tests, Stage005 validator updates, roadmap/event changes, compatibility-test updates, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, 00_ORIGINAL_RAW_DATA, runtime data, reports, outputs, app entries, GitHub state, PostgreSQL data directories, retention outputs, cleanup outputs, deletion outputs, or Phase 2 artifacts."
+      -
+        phase_id: "IDS-STAGE034-P2"
+        name: "数据保留表 实现、接入与最小可运行切片"
+        objective: "新增 data_retention_table 静态 JSON 索引和 stdout-only checker，验证 retention subject、TTL、owner hold、cleanup dry-run、deletion stop gate、audit evidence、rollback/restore、PostgreSQL storage scope、database-size dependency、connection-pool dependency、raw boundary 和 real-data-only guardrails。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "连接 PostgreSQL 或创建真实数据保留表"
+          - "创建 live schema、migration、connection config、DSN、cleanup/deletion job、runtime output 或 data directory"
+          - "读取或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+          - "执行删除、清理、retention scan、log compaction、cache eviction、old-index rebuild 或 report snapshot pruning"
+          - "进入 Phase 3、stage review、batch review 或执行 GitHub upload/app reinstall"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE034-P2"
+            name: "Data retention table static slice"
+            objective: "实现静态数据保留表工程合同切片：tracked machine index、stdout-only checker、governance state、event evidence 和 no-upload 交付证据。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "8.33%"
+            dependencies:
+              - "IDS-V0_1-STAGE034-P1"
+              - "IDS-V0_1-STAGE030-P2"
+              - "IDS-V0_1-STAGE031-P2"
+              - "IDS-V0_1-STAGE032-P2"
+              - "IDS-V0_1-STAGE033-P2"
+            acceptance_ids:
+              - "ACC-STAGE-034"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage034_data_retention_table.Stage034DataRetentionTablePhase2Tests -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage034_phase2_data_retention_table_slice -q"
+              - "python3 -B KM_IDSystem/scripts/check_data_retention_table.py"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/lean_governance.py validate --project KM_IDSystem --semantic"
+            test_results: "RED failed as expected because STAGE034 Phase 2 document, data_retention_table index, check_data_retention_table.py, batch/roadmap/event evidence, and Stage005 P2 state acceptance were missing before implementation. GREEN passed after adding STAGE034 Phase 2 static data-retention-table evidence, data_retention_table machine index, stdout-only checker, BATCH031_040 stage034_phase2_in_progress state, roadmap/event evidence, Stage034 focused tests, Stage005 validator/test acceptance, and Stage026-033 compatibility allowances for the later STAGE-034 P2 no-upload state. Stage034 Phase2 focused tests ran 4 tests OK; Stage005 focused Stage034 P2 state test ran 1 test OK; check_data_retention_table.py returned all guardrail_results and runtime_policy_results true for retention subjects temporary_file/cache/old_index/log/report_snapshot, raw_metadata_boundary path_only=true, and no raw content access. Stage034 focused file ran 8 tests OK; Stage031-034 aggregate tests ran 50 tests OK; Stage005 governance regression ran 116 tests OK; full IDS v0.1 pursuing-goal discovery ran 426 tests OK; Stage005 validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, tracked forbidden runtime files, or raw data boundary gaps; py_compile passed for changed tests, validator, and checker; events.jsonl parsed with 158 events, 0 duplicate ids, and 0 JSON errors. Final owner render/check-render, git diff --check, and semantic validate were rerun after this roadmap evidence update; semantic validate remains the expected sparse-worktree diagnostic and no unrelated project expansion was performed. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit /Users/linzezhang/Downloads/IDS_MetaData raw metadata database content. This run does not connect to PostgreSQL, create live schema or migration files, create DSNs or credential-bearing configs, run retention scan, execute cleanup/deletion/log compaction/cache eviction/old-index rebuild/report snapshot pruning, execute migration dry-run/apply/rollback/backup/restore/schema diff, write runtime output, start services, install dependencies, push to GitHub, create or merge a PR, reinstall app entries, run stage review, run batch review, or enter Phase 3. Fake IDS business data, fake database rows, fake source documents, placeholder corpus, and fabricated evidence remain forbidden."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE2_DATA_RETENTION_TABLE_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/data_retention_table/stage034_data_retention_table_index.json"
+              - "KM_IDSystem/scripts/check_data_retention_table.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage034_data_retention_table.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "如果 Phase 2 静态切片被误读为 live schema/migration/cleanup/deletion 授权，可能提前删除缓存、日志、旧索引或报告快照，或将 raw metadata 写入 PostgreSQL。"
+            rollback: "Revert STAGE034 Phase 2 evidence, data_retention_table index, check_data_retention_table.py, batch lock, Stage034/Stage005 tests, Stage005 validator updates, roadmap/event changes, compatibility-test updates, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, app entries, GitHub state, PostgreSQL data directories, retention outputs, cleanup outputs, deletion outputs, or Phase 3 artifacts."
