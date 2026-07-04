@@ -36,6 +36,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             'current_stage_id: "IDS-STAGE031"',
             'current_stage_id: "IDS-STAGE032"',
             'current_stage_id: "IDS-STAGE033"',
+            'current_stage_id: "IDS-STAGE034"',
         ]
         allowed_phase_terms = [
             'current_phase_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
@@ -49,6 +50,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE033-P1"',
             'current_phase_id: "IDS-STAGE033-P2"',
             'current_phase_id: "IDS-STAGE033-P3"',
+            'current_phase_id: "IDS-STAGE034-P1"',
         ]
         allowed_task_terms = [
             'current_task_id: "IDS-V0_1-BATCH-021-030-REVIEW-GATE"',
@@ -62,6 +64,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE033-P1"',
             'current_task_id: "IDS-V0_1-STAGE033-P2"',
             'current_task_id: "IDS-V0_1-STAGE033-P3"',
+            'current_task_id: "IDS-V0_1-STAGE034-P1"',
         ]
         allowed_gate_terms = [
             'next_gate_id: "IDS-V0_1-BATCH-021-030-UPLOAD-GATE"',
@@ -76,6 +79,7 @@ class Stage030PostgreSQLControlPlaneTests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE033-P2-GATE"',
             'next_gate_id: "IDS-STAGE033-P3-GATE"',
             'next_gate_id: "IDS-STAGE033-P4-GATE"',
+            'next_gate_id: "IDS-STAGE034-P2-GATE"',
         ]
         self.assertTrue(any(term in roadmap_text for term in allowed_stage_terms), allowed_stage_terms)
         self.assertTrue(any(term in roadmap_text for term in allowed_phase_terms), allowed_phase_terms)
