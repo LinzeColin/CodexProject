@@ -162,6 +162,7 @@ models:
       - "FORM-KMFA-V014-S13P1-FINANCIAL-OPERATING-REPORT-001"
       - "FORM-KMFA-V014-S13P2-COLLECTION-RECEIVABLE-AGING-001"
       - "FORM-KMFA-V014-S13P3-CROSS-TABLE-REVIEW-001"
+      - "FORM-KMFA-V014-S13-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -266,6 +267,12 @@ models:
       - "PARAM-KMFA-1149"
       - "PARAM-KMFA-1150"
       - "PARAM-KMFA-1151"
+      - "PARAM-KMFA-1152"
+      - "PARAM-KMFA-1153"
+      - "PARAM-KMFA-1154"
+      - "PARAM-KMFA-1155"
+      - "PARAM-KMFA-1156"
+      - "PARAM-KMFA-1157"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -1246,3 +1253,11 @@ v014_s13p3_cross_table_review_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW
   validator: KMFA/tools/check_v014_s13_p3_cross_table_review.py
   scope: S13-P3 cross table review only; no Stage 13 review, S14, upload, raw inbox access, raw matching, lineage, formal report, difference closure or business execution.
+
+v014_s13_stage_review_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S13-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S13_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s13_stage_review.py
+  scope: Stage 13 review only; no S14, upload, raw inbox access, raw matching, lineage, formal report, difference closure or business execution.

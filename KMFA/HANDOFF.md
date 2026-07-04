@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S13-P3 跨表复核`：新增 `KMFA/tools/v014_s13_p3_cross_table_review.py`、`KMFA/tools/check_v014_s13_p3_cross_table_review.py`、`KMFA/tests/test_v014_s13_p3_cross_table_review.py` 和 `KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/` public-safe evidence。该 phase 验证 S13-P1/S13-P2 dependencies，复用 legacy public-safe S13-P3 跨表复核模型，锁定 4 个复核维度、4 条差异队列、1 份经营报表质量报告、1 个 HTML draft、12 条 pending reconciliation、报告等级 D、formal report count 0、business decision basis count 0、difference auto resolution count 0、difference closure count 0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 13 review、S14、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、催收、法务、付款、开票、税务、差异关闭或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `Stage 13 整体复审`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 Stage 13 整体复审`：新增 `KMFA/tools/v014_s13_stage_review.py`、`KMFA/tools/check_v014_s13_stage_review.py`、`KMFA/tests/test_v014_s13_stage_review.py` 和 `KMFA/stage_artifacts/V014_S13_STAGE_REVIEW/` public-safe evidence。该 review 复核 S13-P1/S13-P2/S13-P3 manifests、legacy Stage 13 review validator 和 v0.1.4 Stage 13 review validator，锁定 phase_results=3/3 PASS、open findings=0、fixed findings=1、financial lanes=4、collection lanes=5、review dimensions=4、difference queue=4、quality report=1、HTML exports=4、pending reconciliation=12、report grade=D、formal report count 0、business decision basis count 0、difference auto resolution count 0、difference closure count 0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S14、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、催收、法务、付款、开票、税务、差异关闭或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S14-P1 资金计划现金贷款`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s13p3-cross-table-review`
-- 当前已完成: `v0.1.4 S13-P3 跨表复核`
-- 证据目录: `KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/`
-- validator: `KMFA/tools/check_v014_s13_p3_cross_table_review.py`
-- focused test: `KMFA/tests/test_v014_s13_p3_cross_table_review.py`
+- 当前版本: `0.1.4-s13-stage-review`
+- 当前已完成: `v0.1.4 Stage 13 整体复审`
+- 证据目录: `KMFA/stage_artifacts/V014_S13_STAGE_REVIEW/`
+- validator: `KMFA/tools/check_v014_s13_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s13_stage_review.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S13-P3 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S13-P1/S13-P2 和 legacy S13-P3 evidence。
-- 未执行: Stage 13 review、S14、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、催收、法务、付款、开票、税务、difference closure、business execution。
-- 下一步: 仅在用户明确开启后执行 `Stage 13 整体复审`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: Stage 13 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S13-P1/S13-P2/S13-P3 和 legacy Stage 13 review evidence。
+- 未执行: S14、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、催收、法务、付款、开票、税务、difference closure、business execution。
+- 下一步: 仅在用户明确开启后执行 `S14-P1 资金计划现金贷款`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 
