@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s08p3-entity-matching-quality"
+    model_version: "0.1.4-s08-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -143,6 +143,7 @@ models:
       - "FORM-KMFA-V014-S08P1-PROJECT-COMPOSITE-KEY-001"
       - "FORM-KMFA-V014-S08P2-BUSINESS-ENTITY-MODEL-001"
       - "FORM-KMFA-V014-S08P3-ENTITY-MATCHING-QUALITY-001"
+      - "FORM-KMFA-V014-S08-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -203,6 +204,8 @@ models:
       - "PARAM-KMFA-1088"
       - "PARAM-KMFA-1091"
       - "PARAM-KMFA-1094"
+      - "PARAM-KMFA-1096"
+      - "PARAM-KMFA-1097"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -266,6 +269,7 @@ models:
       - "v1.4 S01-P1 read-only scope lock local gate"
       - "v1.4 S07 stage review upload-deferred local NO_GO gate"
       - "v1.4 S08-P3 entity matching quality local NO_GO upload-deferred gate"
+      - "v1.4 Stage 8 review local NO_GO upload-deferred gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
@@ -293,6 +297,8 @@ models:
       - "KMFA/tools/check_v014_s08_p2_business_entity_model.py"
       - "KMFA/tools/v014_s08_p3_entity_matching_quality.py"
       - "KMFA/tools/check_v014_s08_p3_entity_matching_quality.py"
+      - "KMFA/tools/v014_s08_stage_review.py"
+      - "KMFA/tools/check_v014_s08_stage_review.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
@@ -310,6 +316,7 @@ models:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s07_stage_review.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s08_p2_business_entity_model.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s08_p3_entity_matching_quality.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s08_stage_review.py"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
@@ -345,6 +352,8 @@ models:
       - "KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/machine/business_entity_model_manifest.json"
       - "KMFA/stage_artifacts/V014_S08_P3_ENTITY_MATCHING_QUALITY/human/entity_matching_quality_report.md"
       - "KMFA/stage_artifacts/V014_S08_P3_ENTITY_MATCHING_QUALITY/machine/entity_matching_quality_manifest.json"
+      - "KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/human/stage8_review_report.md"
+      - "KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/machine/stage8_review_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"
@@ -352,7 +361,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s08p3-entity-matching-quality"
+    model_version: "0.1.4-s08-stage-review"
     assumptions:
       - "ASM-KMFA-003"
       - "ASM-KMFA-014"
@@ -606,6 +615,7 @@ models:
       - "PARAM-KMFA-1090"
       - "PARAM-KMFA-1092"
       - "PARAM-KMFA-1093"
+      - "PARAM-KMFA-1095"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
