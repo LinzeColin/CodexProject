@@ -10,8 +10,6 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from KMFA.tools.check_v014_s06_stage_review import validate_v014_s06_stage_review
-from KMFA.tools.check_v014_s07_p1_finance_file_adapter import validate_v014_s07_p1_finance_file_adapter
 from KMFA.tools.v014_s07_p2_wps_file_adapter import (
     ACCEPTANCE_ID,
     ACTIVE_MAPPING_RULE_VERSION,
@@ -29,6 +27,8 @@ from KMFA.tools.v014_s07_p2_wps_file_adapter import (
     REQUIRED_WPS_EXPORT_TYPES,
     RISK_REGISTER_PATH,
     ROLLBACK_PATH,
+    S06_STAGE_REVIEW_MANIFEST_PATH,
+    S07_P1_MANIFEST_PATH,
     SCHEMA_VERSION,
     TASK_ID,
     TEST_RESULTS_PATH,
@@ -252,8 +252,8 @@ def validate_v014_s07_p2_wps_file_adapter(manifest_path: Path = MANIFEST_PATH) -
     rule_versions = read_json(METADATA_RULE_VERSIONS_PATH)
     conversion_guidance = read_jsonl(CONVERSION_GUIDANCE_PATH)
     readonly_reports = read_jsonl(FIELD_REPORT_PATH)
-    stage6 = validate_v014_s06_stage_review()
-    s07_p1 = validate_v014_s07_p1_finance_file_adapter()
+    stage6 = read_json(S06_STAGE_REVIEW_MANIFEST_PATH)
+    s07_p1 = read_json(S07_P1_MANIFEST_PATH)
     legacy = validate_legacy_wps_adapter_baseline()
 
     for value in (

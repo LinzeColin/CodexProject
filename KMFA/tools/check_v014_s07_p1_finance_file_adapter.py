@@ -10,7 +10,6 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from KMFA.tools.check_v014_s06_stage_review import validate_v014_s06_stage_review
 from KMFA.tools.finance_file_adapter import (
     REQUIRED_FINANCE_CATEGORIES,
     build_default_finance_adapter,
@@ -29,6 +28,7 @@ from KMFA.tools.v014_s07_p1_finance_file_adapter import (
     REPORT_PATH,
     RISK_REGISTER_PATH,
     ROLLBACK_PATH,
+    S06_STAGE_REVIEW_MANIFEST_PATH,
     SCHEMA_VERSION,
     TASK_ID,
     TEST_RESULTS_PATH,
@@ -233,7 +233,7 @@ def validate_v014_s07_p1_finance_file_adapter(manifest_path: Path = MANIFEST_PAT
     source_registry = read_json(METADATA_SOURCE_REGISTRY_PATH)
     candidates = read_jsonl(METADATA_CANDIDATES_PATH)
     readonly_reports = read_jsonl(FIELD_REPORT_PATH)
-    stage6 = validate_v014_s06_stage_review()
+    stage6 = read_json(S06_STAGE_REVIEW_MANIFEST_PATH)
     legacy = validate_legacy_finance_adapter_baseline()
 
     for value in (manifest, adapter_manifest, source_registry, candidates, readonly_reports):

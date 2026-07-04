@@ -4,11 +4,12 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S07-P3 红圈导出后置策略；Redcircle export types=`4`、reserved templates=`4`、registry sources=`4`、rollback plans=`4`、connector policy=`1`、D15 automatic connector allowed=`false`，read-only/hash/rollback/manual approval controls=`4/4/4/4`，当前 Q4/Q5/formal report allowed 均为 `0`，状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/`，validator 为 `KMFA/tools/check_v014_s07_p3_redcircle_postponement.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 7 review、S08-P1、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 Stage 7 整体复审；S07-P1/S07-P2/S07-P3 phase_results 全部 `PASS`，open findings=`0`，fixed findings=`1`，finance candidates=`45`，WPS mappings=`20`，Redcircle templates=`4`，Q4/Q5/formal report allowed 均为 `0`，状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S07_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s07_stage_review.py`。本 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S08-P1、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
 - v0.1.4 S07-P3 红圈导出后置策略已确认本地 validator 通过；4 类红圈预留导出、4 条预留模板、4 条 source registry、4 条 rollback plan、1 条 connector policy、D15 automatic connector allowed=false 和后续只读/hash/rollback/manual approval 控制已 public-safe 锁定；未公开字段/表头明文、raw 文件信息、sheet/tab labels、row/cell values、接口凭证或真实业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+- v0.1.4 Stage 7 整体复审已确认本地 validator 通过；S07-P1/S07-P2/S07-P3 validators 与 legacy S07 validators 全部 PASS，open findings=0，fixed findings=1；复审修复 S07-P1/S07-P2 recursive dependency finding，GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S07-P2 WPS 文件适配已确认本地 validator 通过；4 类 WPS 导出、20 条 hash-only 字段映射、4 条转换提示、4 条只读字段报告和 1 个映射规则版本已 public-safe 锁定；未公开来源字段/表头明文、raw 文件信息、tab labels、row/cell values 或真实业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S07-P1 财务文件适配已确认本地 validator 通过；9 类财务支撑源、45 条 hash-only 字段候选和 9 条只读字段报告已 public-safe 锁定；未公开来源字段/表头明文、raw 文件信息、row/cell values 或真实业务值；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 Stage 6 整体复审已确认本地 validator 通过；S06-P1/S06-P2/S06-P3 validators 全部 PASS，open findings=0，queue items=`1`、blocked project statuses=`2`、Q5 allowed=`0`、report grade A allowed=`0`；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。

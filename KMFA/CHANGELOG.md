@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s07-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 7 整体复审`。
+- 新增 Stage 7 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S07-P1/S07-P2/S07-P3 validators 与 legacy S07 validators，phase_results 全部 PASS，open findings=`0`，fixed findings=`1`；锁定 finance field candidates=`45`、WPS field mappings=`20`、Redcircle reserved templates=`4`、Redcircle rollback plans=`4`、total structural mappings=`65`、Q4/Q5/formal report allowed=`0`。
+- 修复复审 finding：v0.1.4 S07-P1/S07-P2 dependency checks 改为读取 locked manifests，避免递归触发上游整链 validator。
+- 本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S08-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s07p3-redcircle-postponement - 2026-07-04
 
 - 完成 `v0.1.4 S07-P3｜红圈导出后置策略`。
