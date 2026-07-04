@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S08-P2 业务实体模型`：`KMFA/tools/v014_s08_p2_business_entity_model.py`、`KMFA/tools/check_v014_s08_p2_business_entity_model.py`、`KMFA/tests/test_v014_s08_p2_business_entity_model.py` 和 S08-P2 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/`。本 phase 验证 v0.1.4 S08-P1 dependency，并复用 legacy public-safe S08-P2 artifacts，锁定 required entity types=`8`、relationships=`14`、lifecycle statuses=`32`、lifecycle statuses per entity=`4`、schema entity definitions=`8`、required graph links=`7`。entity values 保持 hash/ref only，relationships 保持 schema-only，lifecycle values 保持 status-only。Stage 8 当前完成 2/3 phases，进度 `66.67%`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、接口凭证或真实业务值。未执行 S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S08-P3｜实体匹配质量`，不得在本轮补做 GitHub upload。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S08-P3 实体匹配质量`：`KMFA/tools/v014_s08_p3_entity_matching_quality.py`、`KMFA/tools/check_v014_s08_p3_entity_matching_quality.py`、`KMFA/tests/test_v014_s08_p3_entity_matching_quality.py` 和 S08-P3 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S08_P3_ENTITY_MATCHING_QUALITY/`。本 phase 验证 v0.1.4 S08-P2 dependency，并复用 legacy public-safe S08-P3 artifacts，锁定 scenario_count=`4`、quality_case_count=`4`、manual_review_queue_count=`3`、entity_matching_report_count=`1`、risk_summary=`high=2; medium=1; low=1`、manual review queue auto_merge_allowed count=`0`。Stage 8 当前完成 3/3 phases，进度 `100.00%`，但 Stage 8 整体复审尚未执行。实体匹配质量证据只保存聚合计数、risk category、review queue 状态和治理引用，不公开 source 文件名、raw hash、字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、接口凭证或真实业务值。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 Stage 8 整体复审`，不得在本轮补做 GitHub upload。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s08p2-business-entity-model`
-- 当前已完成: `v0.1.4 S08-P2 business entity model`
-- 证据目录: `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/`
-- validator: `KMFA/tools/check_v014_s08_p2_business_entity_model.py`
-- focused test: `KMFA/tests/test_v014_s08_p2_business_entity_model.py`
+- 当前版本: `0.1.4-s08p3-entity-matching-quality`
+- 当前已完成: `v0.1.4 S08-P3 entity matching quality`
+- 证据目录: `KMFA/stage_artifacts/V014_S08_P3_ENTITY_MATCHING_QUALITY/`
+- validator: `KMFA/tools/check_v014_s08_p3_entity_matching_quality.py`
+- focused test: `KMFA/tests/test_v014_s08_p3_entity_matching_quality.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S08-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe legacy S08-P2 evidence 并输出 v0.1.4 validator/control evidence。
-- 未执行: S08-P3、Stage 8 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `S08-P3｜实体匹配质量`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S08-P3 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe legacy S08-P3 aggregate quality evidence 并输出 v0.1.4 validator/control evidence。
+- 未执行: Stage 8 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `Stage 8 整体复审`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

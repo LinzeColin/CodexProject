@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s08p2-business-entity-model`
+- version: `0.1.4-s08p3-entity-matching-quality`
 - current_stage: `S08`
-- current_phase: `v0.1.4 S08-P2 business entity model`
-- status: `completed_validated_local_only_no_go_upload_deferred_business_entity_model`
+- current_phase: `v0.1.4 S08-P3 entity matching quality`
+- status: `completed_validated_local_only_no_go_upload_deferred_entity_matching_quality`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S08-P3 entity matching quality completed local-only: S08-P2 dependency PASS, legacy S08-P3 public-safe validator PASS, scenario_count=4, quality_case_count=4, manual_review_queue_count=3, manual_review_case_count=3, entity_matching_report_count=1, risk_summary high=2 medium=1 low=1, medium_high_risk_requires_manual_review=true, manual_review_queue_auto_merge_allowed=false, quality_report_is_formal_report=false, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, Stage8_review=false, github_upload=false.
 - v0.1.4 S08-P2 business entity model completed local-only: S08-P1 dependency PASS, legacy S08-P2 public-safe validator PASS, required_entity_type_count=8, relationship_count=14, lifecycle_status_count=32, lifecycle_status_per_entity_count=4, schema_entity_definition_count=8, relationship_graph_required_link_count=7, relationship_graph_required_links_present=true, entity_values_hash_ref_only=true, relationship_values_schema_only=true, lifecycle_values_status_only=true, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, S08-P3=false, Stage8_review=false, github_upload=false.
 - v0.1.4 S08-P1 project composite key completed local-only: Stage 7 review dependency PASS, legacy S08-P1 public-safe project composite key validation PASS, required_component_count=8, profile_count=4, match_result_count=3, manual_review_queue_count=2, strong_auto_match_count=1, human_review_required_count=2, matching_weights_sum_bps=10000, thresholds=8500/7000/5000, missing_single_component_blocks_all_matching=false, below_strong_threshold_enters_manual_review=true, auto_merge_allowed_for_review_queue_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, S08-P2=false, S08-P3=false, Stage8_review=false, github_upload=false.
 - v0.1.4 Stage 7 review completed local-only: S07-P1/S07-P2/S07-P3 validators PASS, legacy S07 validators PASS, open findings=0, fixed findings=1, finance_field_candidate_count=45, WPS field_mapping_count=20, Redcircle reserved_template_count=4, Redcircle rollback_plan_count=4, total_structural_mapping_count=65, q4_count=0, q5_allowed_count=0, formal_report_allowed_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this review, S08-P1=false, github_upload=false.

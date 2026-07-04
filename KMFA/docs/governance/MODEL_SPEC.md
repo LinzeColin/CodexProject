@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s08p2-business-entity-model
+product_version: 0.1.4-s08p3-entity-matching-quality
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S08-P2 只证明业务实体模型 schema/ref/count/status evidence 已锁定：8 类实体、14 条 schema-only 关系、32 条 lifecycle statuses、每类实体 4 个状态、8 个 schema entity definitions 和 7 条 required graph links；entity values 保持 hash/ref only，relationships 保持 schema-only，lifecycle values 保持 status-only。本 phase 未读取 raw inbox，不执行 S08-P3、Stage 8 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
+当前模型说明覆盖 v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S08-P3 只证明实体匹配质量 public-safe aggregate evidence 已锁定：4 个 scenarios、4 条 quality cases、3 条 manual review queue、1 份非正式 quality report、risk high/medium/low 为 2/1/1，medium/high risk 需要人工复核，review queue auto merge 为 false。本 phase 未读取 raw inbox，不执行 Stage 8 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s08p2-business-entity-model
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s08_p2_business_entity_model.py`, `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/machine/business_entity_model_manifest.json`
-- current_v014_scope_lock: `S08-P2 business entity model completed; S08-P3/Stage 8 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s08_p3_entity_matching_quality.py`, `KMFA/stage_artifacts/V014_S08_P3_ENTITY_MATCHING_QUALITY/machine/entity_matching_quality_manifest.json`
+- current_v014_scope_lock: `S08-P3 entity matching quality completed; Stage 8 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -235,6 +235,16 @@ product_version: 0.1.4-s08p2-business-entity-model
 - evidence: `KMFA/tools/v014_s08_p2_business_entity_model.py`, `KMFA/tools/check_v014_s08_p2_business_entity_model.py`, `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/machine/business_entity_model_manifest.json`
 - boundary_validation: `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/human/test_results.md`
 - limitation: S08-P2 只证明 public-safe business entity model schema/ref/count/status evidence；不证明 S08-P3 匹配质量、Stage 8 review、raw value matching、lineage full check、正式报告、GitHub upload readiness 或 business execution。
+
+### FORM-KMFA-V014-S08P3-ENTITY-MATCHING-QUALITY-001
+
+- type: deterministic public-safe entity matching quality gate
+- purpose: 验证 v0.1.4 S08-P3 实体匹配质量，覆盖 S08-P2 dependency、legacy public-safe S08-P3 dependency、scenario/case/review/report counts、risk summary、manual-review no-auto-merge policy、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s08p3_valid = s08_p2_dependency == PASS AND legacy_s08_p3_dependency == PASS AND scenario_count == 4 AND quality_case_count == 4 AND manual_review_queue_count == 3 AND entity_matching_report_count == 1 AND risk_high == 2 AND risk_medium == 1 AND risk_low == 1 AND medium_high_risk_requires_manual_review == true AND manual_review_queue_auto_merge_allowed == false AND quality_report_is_formal_report == false AND raw_inbox_read_by_this_phase == false AND stage8_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s08_p3_entity_matching_quality.py`, `KMFA/tools/check_v014_s08_p3_entity_matching_quality.py`, `KMFA/stage_artifacts/V014_S08_P3_ENTITY_MATCHING_QUALITY/machine/entity_matching_quality_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S08_P3_ENTITY_MATCHING_QUALITY/human/test_results.md`
+- limitation: S08-P3 只证明 public-safe entity matching quality aggregate evidence；不证明 Stage 8 review、raw business value correctness、raw value matching、lineage full check、正式报告、GitHub upload readiness、live connector 或 business execution。
 
 ### FORM-KMFA-AMOUNT-001
 
@@ -465,8 +475,8 @@ product_version: 0.1.4-s08p2-business-entity-model
 ## Counts
 
 - active models: 8
-- active formulas: 81
-- active parameters: 718
+- active formulas: 82
+- active parameters: 721
 - planned models: 0
 - planned formulas: 0
 - planned parameters: 1
