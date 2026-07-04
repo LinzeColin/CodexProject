@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-S13-P1-FINANCIAL-OPERATING-REPORT"
+as_of_event_id: "EVENT-KMFA-20260705-V014-S13-P2-COLLECTION-RECEIVABLE-AGING"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "119eab025062c596d338ebab235a5591f53d2ce1"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-05T04:20:00+10:00"
-generator_version: "manual-v014-s13p1-financial-operating-report"
+snapshot_event_time: "2026-07-05T06:25:00+10:00"
+generator_version: "manual-v014-s13p2-collection-receivable-aging"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 775
-    total_active_formulas: 100
+    total_active_parameters: 778
+    total_active_formulas: 101
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"

@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S13-P2 Collection Receivable Aging
+- Product version: `0.1.4-s13p2-collection-receivable-aging`.
+- Scope: S13-P2 only; public-safe collection receivable aging priority and responsibility drafts under S13-P1 dependency and v1.4 HTML/UIUX baseline.
+- Evidence: `KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/`.
+- Verification: `KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py`; `KMFA/tests/test_v014_s13_p2_collection_receivable_aging.py`.
+- blocker_state: source_lanes=5, sources=5, field_mappings=25, issue_types=4, priority_items=4, responsibility_items=4, html_drafts=1, pending_reconciliation=12, report_grade=D, formal_report=0, business_decision_basis=0, legal_collection=0, payment_or_bank=0, S13-P3=false, Stage13 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+product_version: 0.1.4-s13p2-collection-receivable-aging
+version_matrix_product_version_reference: 0.1.4-s13p2-collection-receivable-aging
+
 # KMFA v0.1.4 S13-P1 Financial Operating Report
 - Product version: `0.1.4-s13p1-financial-operating-report`.
 - Scope: S13-P1 only; public-safe financial operating report drafts under Stage 12 review dependency and v1.4 HTML/UIUX baseline.
