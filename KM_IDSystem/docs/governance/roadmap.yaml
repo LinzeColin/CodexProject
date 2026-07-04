@@ -2,18 +2,18 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE033"
-current_phase_id: "IDS-STAGE033-P4"
-current_task_id: "IDS-V0_1-STAGE033-P4"
-next_gate_id: "IDS-STAGE033-REVIEW-GATE"
+current_phase_id: "IDS-STAGE033-REVIEW"
+current_task_id: "IDS-V0_1-STAGE033-REVIEW"
+next_gate_id: "IDS-STAGE034-P1-GATE"
 current_transition_history:
   previous_state:
+    current_phase_id: "IDS-STAGE033-P4"
+    current_task_id: "IDS-V0_1-STAGE033-P4"
+    next_gate_id: "IDS-STAGE033-REVIEW-GATE"
+  earlier_state:
     current_phase_id: "IDS-STAGE033-P3"
     current_task_id: "IDS-V0_1-STAGE033-P3"
     next_gate_id: "IDS-STAGE033-P4-GATE"
-  earlier_state:
-    current_phase_id: "IDS-STAGE033-P2"
-    current_task_id: "IDS-V0_1-STAGE033-P2"
-    next_gate_id: "IDS-STAGE033-P3-GATE"
 total_estimated_hours: 158
 completed_estimated_hours: 284
 stages:
@@ -7878,7 +7878,7 @@ stages:
     stage_id: "IDS-STAGE033"
     name: "STAGE-033 · 数据库体积护栏"
     person_goal: "防止 PostgreSQL 无边界存 raw/OCR/大文件派生产物，保护 800GB 内置盘。"
-    status: "completed_local_pending_review"
+    status: "completed_reviewed_local"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
       - "连接 PostgreSQL 或执行真实 migration dry-run/apply/rollback/backup/restore/schema diff、VACUUM、清理或体积统计查询"
@@ -7905,6 +7905,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE2_DATABASE_SIZE_GUARD_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_STAGE_REVIEW.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json"
         - "KM_IDSystem/scripts/check_database_size_guard.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
@@ -8086,3 +8087,16 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "如果 Phase 4 closeout 被误解为已执行 live schema diff、migration、recovery、size query 或 cleanup，会造成错误生产判断；如果人工确认和 rollback/backup 步骤不清晰，后续 review 会缺少可操作风险边界。"
             rollback: "Revert STAGE033 Phase 4 evidence, check_database_size_guard.py delivery-report changes, batch lock, Stage033/Stage005 tests, validator updates, roadmap/event changes, compatibility-test updates, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, app entries, GitHub state, PostgreSQL data directories, size-statistics outputs, cleanup outputs, or stage review artifacts."
+    review:
+      review_id: "IDS-STAGE033-REVIEW"
+      task_id: "IDS-V0_1-STAGE033-REVIEW"
+      status: "completed"
+      reviewed_at_utc: "2026-07-04T00:02:57Z"
+      acceptance_ids:
+        - "ACC-STAGE-033"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_STAGE_REVIEW.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/governance/events.jsonl"
+      test_results: "STAGE-033 whole-stage review verified the P0 taskpack binding, Phase 1-4 evidence, static database size-guard checker, scenario coverage, closeout evidence, raw data boundary, owner/governance state, and no-upload state. RED evidence: Stage033 review test failed as expected because STAGE033_STAGE_REVIEW.md was missing, and Stage005 reviewed-local test failed as expected because IDS-V0_1-STAGE033-REVIEW / IDS-STAGE034-P1-GATE were not accepted. GREEN validation after repair: Stage033 review focused tests ran 2 OK; Stage005 reviewed-local focused test ran 1 OK; Stage033 focused tests ran 16 OK; Stage031/Stage032 compatibility tests ran 26 OK; Stage005 governance regression ran 114 OK; Stage031-033 aggregate compatibility/focused tests ran 42 OK; full IDS v0.1 pursuing-goal discovery ran 416 OK; Stage005 validator returned valid=true with no missing required files, missing event ids, JSONL errors, forbidden changed paths, unexpected changed paths, tracked forbidden runtime files, or data-boundary gaps; check_database_size_guard.py returned the tracked static Phase4 delivery report with no_raw=True and no_fake=True; py_compile passed for changed tests, validator, and checker; events.jsonl parsed with 156 events, 0 duplicate ids, and 0 JSON errors; render --project KM_IDSystem --write updated 3 owner files and check-render returned drift_count=0; git diff --check passed. Full semantic validate returned the expected sparse-worktree diagnostic rc=1 with sync validation errors=0, warnings=0, and 29 missing root schema/workflow/hook/unrelated registered-project errors, so this run did not expand sparse checkout. This run did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit /Users/linzezhang/Downloads/IDS_MetaData raw metadata database content. This run did not connect to PostgreSQL, create live schema or migration files, create DSNs or credential-bearing configs, run size-statistics queries, execute VACUUM, reindex, cleanup, retention deletion, backup, restore, migration dry-run/apply/rollback/schema diff, write runtime output, start services, install dependencies, push to GitHub, create or merge a PR, reinstall app entries, run batch review, or enter STAGE-034. Fake IDS business data, fake database rows, fake source documents, placeholder corpus, and fabricated evidence remain forbidden."
+      decision: "ACC-STAGE-033 locally reviewed and passed; no GitHub upload, no app reinstall, and no STAGE-034 work in this run."
