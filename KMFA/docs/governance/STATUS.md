@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s08p1-project-composite-key`
+- version: `0.1.4-s08p2-business-entity-model`
 - current_stage: `S08`
-- current_phase: `v0.1.4 S08-P1 project composite key`
-- status: `completed_validated_local_only_no_go_upload_deferred_project_composite_key`
+- current_phase: `v0.1.4 S08-P2 business entity model`
+- status: `completed_validated_local_only_no_go_upload_deferred_business_entity_model`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S08-P2 business entity model completed local-only: S08-P1 dependency PASS, legacy S08-P2 public-safe validator PASS, required_entity_type_count=8, relationship_count=14, lifecycle_status_count=32, lifecycle_status_per_entity_count=4, schema_entity_definition_count=8, relationship_graph_required_link_count=7, relationship_graph_required_links_present=true, entity_values_hash_ref_only=true, relationship_values_schema_only=true, lifecycle_values_status_only=true, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, S08-P3=false, Stage8_review=false, github_upload=false.
 - v0.1.4 S08-P1 project composite key completed local-only: Stage 7 review dependency PASS, legacy S08-P1 public-safe project composite key validation PASS, required_component_count=8, profile_count=4, match_result_count=3, manual_review_queue_count=2, strong_auto_match_count=1, human_review_required_count=2, matching_weights_sum_bps=10000, thresholds=8500/7000/5000, missing_single_component_blocks_all_matching=false, below_strong_threshold_enters_manual_review=true, auto_merge_allowed_for_review_queue_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, S08-P2=false, S08-P3=false, Stage8_review=false, github_upload=false.
 - v0.1.4 Stage 7 review completed local-only: S07-P1/S07-P2/S07-P3 validators PASS, legacy S07 validators PASS, open findings=0, fixed findings=1, finance_field_candidate_count=45, WPS field_mapping_count=20, Redcircle reserved_template_count=4, Redcircle rollback_plan_count=4, total_structural_mapping_count=65, q4_count=0, q5_allowed_count=0, formal_report_allowed_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this review, S08-P1=false, github_upload=false.
 - v0.1.4 S07-P3 Redcircle postponement completed local-only: Stage 6 review dependency PASS, S07-P1 dependency PASS, S07-P2 dependency PASS, legacy Redcircle postponement baseline PASS, redcircle_export_type_count=4, reserved_template_count=4, registry_source_count=4, rollback_plan_count=4, connector_policy_count=1, automatic_connector_allowed_count=0, d15_automatic_connector_allowed=false, read_only/hash_retention/rollback_plan/manual_approval required counts=4/4/4/4, q4_count=0, q5_allowed_count=0, formal_report_allowed_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, Stage7_review=false, S08-P1=false, github_upload=false.

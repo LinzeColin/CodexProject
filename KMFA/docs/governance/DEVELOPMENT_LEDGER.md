@@ -1,5 +1,18 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s08p2-business-entity-model
+
+- task_id: `KMFA-V014-S08-P2-BUSINESS-ENTITY-MODEL-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred_business_entity_model`
+- scope: v0.1.4 S08-P2 business entity model only; validated S08-P1 dependency and reused legacy public-safe S08-P2 artifacts without reading raw inbox, starting S08-P3/Stage 8 review, or performing GitHub upload.
+- evidence: `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/human/business_entity_model_report.md`, `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/human/test_results.md`, `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/machine/business_entity_model_manifest.json`, `KMFA/tools/check_v014_s08_p2_business_entity_model.py`
+- counts: S08-P1 dependency PASS, legacy S08-P2 PASS, required_entity_type_count=8, relationship_count=14, lifecycle_status_count=32, lifecycle_status_per_entity_count=4, schema_entity_definition_count=8, relationship_graph_required_link_count=7, relationship_graph_required_links_present=true, entity_values_hash_ref_only=true, relationship_values_schema_only=true, lifecycle_values_status_only=true.
+- blocker_state: S08-P3=false, Stage8_review=false, GitHub upload=false, raw value matching=false, lineage full check=false, formal_report_allowed=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+- raw_boundary: raw inbox read/list/stat/hash/mutation=false in S08-P2; public raw filenames/hash/member names/sheet names/field or header plaintext/row values/PDF or Excel source values/business values/entity plaintext committed=false.
+
+product_version: 0.1.4-s08p2-business-entity-model
+version_matrix_product_version_reference: 0.1.4-s08p2-business-entity-model
+
 ## 2026-07-04 - 0.1.4-s08p1-project-composite-key
 
 - task_id: `KMFA-V014-S08-P1-PROJECT-COMPOSITE-KEY-20260704`
