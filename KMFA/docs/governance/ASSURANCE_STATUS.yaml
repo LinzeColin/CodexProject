@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-S14-P2-INVOICE-TAX-PLAN"
+as_of_event_id: "EVENT-KMFA-20260705-V014-S14-P3-POLICY-EVIDENCE-PLAN"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "119eab025062c596d338ebab235a5591f53d2ce1"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-05T07:20:00+10:00"
-generator_version: "manual-v014-s14p2-invoice-tax-plan"
+snapshot_event_time: "2026-07-05T08:05:00+10:00"
+generator_version: "manual-v014-s14p3-policy-evidence-plan"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 790
-    total_active_formulas: 105
+    total_active_parameters: 793
+    total_active_formulas: 106
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
