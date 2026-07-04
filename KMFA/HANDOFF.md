@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S10-P3 报告导出`：`KMFA/tools/v014_s10_p3_report_export.py`、`KMFA/tools/check_v014_s10_p3_report_export.py`、`KMFA/tests/test_v014_s10_p3_report_export.py` 和 S10-P3 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S10_P3_REPORT_EXPORT/`。本 phase 验证 v0.1.4 S10-P2 dependency、legacy S10-P3 public-safe report export runtime 和 v0.1.3 S10-P3 replay validator，锁定 report_export_record_count=`2`、html_export_count=`2`、csv_appendix_count=`2`、excel_compatible_download_count=`2`、committed_pdf_file_count=`0`、committed_excel_file_count=`0`、formal_report_count=`0`、business_decision_basis_count=`0`、pending_reconciliation_count=`12`、grade_distribution=`D:2`。S10-P3 证据只保存导出计数、hash/ref/status、validator 结果和治理引用，不公开 source 文件名、raw hash、字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、业务金额、接口凭证或真实业务值。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 Stage 10 整体复审`，不得在本轮补做 GitHub upload、S11、raw value matching、lineage full check 或正式报告。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `Stage 10 整体复审`：`KMFA/tools/v014_s10_stage_review.py`、`KMFA/tools/check_v014_s10_stage_review.py`、`KMFA/tests/test_v014_s10_stage_review.py` 和 Stage 10 review evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S10_STAGE_REVIEW/`。本 review 复跑 v0.1.4 S10-P1/S10-P2/S10-P3 validators、legacy Stage 10 review validator 和 v0.1.3 Stage 10 review validator，锁定 phase_results=`S10-P1=PASS,S10-P2=PASS,S10-P3=PASS`、open findings=`0`、fixed findings=`2`、report_template_count=`2`、report_grade_record_count=`2`、report_export_record_count=`2`、html_export_count=`2`、csv_appendix_count=`2`、excel_compatible_download_count=`2`、pending_reconciliation_count=`12`、confirmed_resolution_count=`0`、formal_report_count=`0`、business_decision_basis_count=`0`、current_report_grade=`D`。复审修复旧 upload-ready wording 与 S10-P3 test evidence stale 两类 governance findings，并确认 legacy Stage 10 upload artifacts 不是当前 v0.1.4 gate。本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S11、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 S11-P1 首页导航`，不得在本轮补做 GitHub upload、S11-P2/S11-P3、raw value matching、lineage full check 或正式报告。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s10p3-report-export`
-- 当前已完成: `v0.1.4 S10-P3 report export`
-- 证据目录: `KMFA/stage_artifacts/V014_S10_P3_REPORT_EXPORT/`
-- validator: `KMFA/tools/check_v014_s10_p3_report_export.py`
-- focused test: `KMFA/tests/test_v014_s10_p3_report_export.py`
+- 当前版本: `0.1.4-s10-stage-review`
+- 当前已完成: `v0.1.4 Stage 10 overall review`
+- 证据目录: `KMFA/stage_artifacts/V014_S10_STAGE_REVIEW/`
+- validator: `KMFA/tools/check_v014_s10_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s10_stage_review.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S10-P3 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S10-P2 dependency、legacy S10-P3 和 v0.1.3 S10-P3 replay evidence。
-- 未执行: Stage 10 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `Stage 10 整体复审`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: Stage 10 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S10-P1/S10-P2/S10-P3 validators 与既有 review evidence。
+- 未执行: S11、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `S11-P1 首页导航`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

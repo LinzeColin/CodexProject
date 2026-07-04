@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4-s10-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 10 整体复审`。
+- 新增 Stage 10 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 v0.1.4 S10-P1/S10-P2/S10-P3 validators、legacy Stage 10 review validator 和 v0.1.3 Stage 10 review validator；phase_results 全部 PASS，open findings=`0`，fixed findings=`2`。
+- 锁定 report_template_count=`2`、report_grade_record_count=`2`、report_export_record_count=`2`、HTML exports=`2`、CSV appendices=`2`、Excel-compatible CSV downloads=`2`、pending reconciliation=`12`、confirmed resolution=`0`、formal report=`0`、business decision basis=`0`、current report grade=`D`。
+- 本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S11、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s10p3-report-export - 2026-07-04
 
 - 完成 `v0.1.4 S10-P3｜报告导出`。
