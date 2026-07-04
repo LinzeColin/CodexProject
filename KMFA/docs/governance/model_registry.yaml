@@ -92,6 +92,13 @@ assumptions:
     evidence_refs:
       - "KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/human/wps_file_adapter_report.md"
       - "KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/machine/wps_file_adapter_manifest.json"
+  - assumption_id: "ASM-KMFA-016"
+    statement: "v0.1.4 S07-P3 Redcircle postponement may only create public-safe template refs, registry refs, connector postponement policy, future rollback plan, aggregate counts and validation evidence; it cannot publish Redcircle source field/header plaintext, raw file information, row or cell values, connector credentials, business values, Stage 7 review, S08-P1 output, GitHub upload or formal reports."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/human/redcircle_postponement_report.md"
+      - "KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/machine/redcircle_postponement_manifest.json"
 models:
   - model_id: "MOD-KMFA-GOV-001"
     name: "KMFA phase governance and public repository boundary"
@@ -316,11 +323,12 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s07p2-wps-file-adapter"
+    model_version: "0.1.4-s07p3-redcircle-postponement"
     assumptions:
       - "ASM-KMFA-003"
       - "ASM-KMFA-014"
       - "ASM-KMFA-015"
+      - "ASM-KMFA-016"
     formula_ids:
       - "FORM-KMFA-AMOUNT-001"
       - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
@@ -336,6 +344,7 @@ models:
       - "FORM-KMFA-V014-S06-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S07P1-FINANCE-FILE-ADAPTER-001"
       - "FORM-KMFA-V014-S07P2-WPS-FILE-ADAPTER-001"
+      - "FORM-KMFA-V014-S07P3-REDCIRCLE-POSTPONEMENT-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -556,6 +565,9 @@ models:
       - "PARAM-KMFA-1077"
       - "PARAM-KMFA-1078"
       - "PARAM-KMFA-1079"
+      - "PARAM-KMFA-1080"
+      - "PARAM-KMFA-1081"
+      - "PARAM-KMFA-1082"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -585,6 +597,8 @@ models:
       - "KMFA/tools/check_s07_p2_wps_file_adapter.py"
       - "KMFA/tools/redcircle_postponement_policy.py"
       - "KMFA/tools/check_s07_p3_redcircle_postponement.py"
+      - "KMFA/tools/v014_s07_p3_redcircle_postponement.py"
+      - "KMFA/tools/check_v014_s07_p3_redcircle_postponement.py"
       - "KMFA/tools/project_composite_key.py"
       - "KMFA/tools/check_s08_p1_project_composite_key.py"
       - "KMFA/tools/business_entity_model.py"

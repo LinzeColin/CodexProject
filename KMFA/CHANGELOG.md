@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4-s07p3-redcircle-postponement - 2026-07-04
+
+- 完成 `v0.1.4 S07-P3｜红圈导出后置策略`。
+- 新增 S07-P3 Redcircle postponement generator、validator、focused unit test、public-safe manifest、reserved export templates、Redcircle export source registry、connector postponement policy、future rollback plan、risk register、rollback plan 和 test results。
+- 复用既有 public-safe Redcircle postponement baseline，锁定 Redcircle export types=`4`、reserved templates=`4`、registry sources=`4`、rollback plans=`4`、connector policy=`1`、D15 automatic connector allowed=`false`、read-only/hash/rollback/manual approval controls=`4/4/4/4`、Q4/Q5/formal report allowed=`0`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet/tab labels、字段/表头明文、row/cell values、PDF/Excel source values、接口凭证或真实业务值。
+- 本轮未执行 Stage 7 review、S08-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s07p2-wps-file-adapter - 2026-07-04
 
 - 完成 `v0.1.4 S07-P2｜WPS 文件适配`。

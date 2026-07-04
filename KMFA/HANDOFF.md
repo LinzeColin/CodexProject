@@ -4,19 +4,19 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S07-P2｜WPS 文件适配`：`KMFA/tools/v014_s07_p2_wps_file_adapter.py`、`KMFA/tools/check_v014_s07_p2_wps_file_adapter.py`、`KMFA/tests/test_v014_s07_p2_wps_file_adapter.py` 和 S07-P2 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/`。本 phase 复用既有 public-safe WPS adapter baseline，登记 WPS export types=`4`、source registry=`4`、field mappings=`20`、hash-only mappings=`20`、conversion guidance=`4`、readonly field reports=`4`、mapping rule versions=`1`、source header fingerprints=`20`，Q4/Q5/formal report allowed 均为 `0`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、tab labels、ZIP member 名、row/cell values、PDF/Excel source values 或真实业务值。未执行 S07-P3、Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 S07-P3｜红圈导出后置策略`，不得在本轮补做 Stage 7 review 或 GitHub upload。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `S07-P3｜红圈导出后置策略`：`KMFA/tools/v014_s07_p3_redcircle_postponement.py`、`KMFA/tools/check_v014_s07_p3_redcircle_postponement.py`、`KMFA/tests/test_v014_s07_p3_redcircle_postponement.py` 和 S07-P3 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/`。本 phase 复用既有 public-safe Redcircle postponement baseline，登记 Redcircle export types=`4`、reserved templates=`4`、registry sources=`4`、rollback plans=`4`、connector policy=`1`、D15 automatic connector allowed=`false`、read-only/hash/rollback/manual approval controls=`4/4/4/4`，Q4/Q5/formal report allowed 均为 `0`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、raw source 字段/表头明文、sheet/tab labels、ZIP member 名、row/cell values、PDF/Excel source values、接口凭证或真实业务值。未执行 Stage 7 review、S08-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。下一步只能另起 run work 执行 `v0.1.4 Stage 7 整体复审`，不得在本轮补做 S08-P1 或 GitHub upload。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s07p2-wps-file-adapter`
-- 当前已完成: `v0.1.4 S07-P2 WPS file adapter`
-- 证据目录: `KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/`
-- validator: `KMFA/tools/check_v014_s07_p2_wps_file_adapter.py`
-- focused test: `KMFA/tests/test_v014_s07_p2_wps_file_adapter.py`
+- 当前版本: `0.1.4-s07p3-redcircle-postponement`
+- 当前已完成: `v0.1.4 S07-P3 Redcircle postponement`
+- 证据目录: `KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/`
+- validator: `KMFA/tools/check_v014_s07_p3_redcircle_postponement.py`
+- focused test: `KMFA/tests/test_v014_s07_p3_redcircle_postponement.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S07-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe baseline 并输出 hash/ref/fingerprint-only evidence。
-- 未执行: S07-P3、Stage 7 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
+- raw boundary: S07-P3 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe baseline 并输出 hash/ref/template/rollback/control evidence。
+- 未执行: Stage 7 review、S08-P1、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、live connector、OpMe deep coupling、business execution。
 
 ## v0.1.3 历史状态
 
