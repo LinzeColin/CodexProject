@@ -1,3 +1,10 @@
+## 0.1.4-s12p3-manual-rerun-mechanism - 2026-07-05
+- Completed v0.1.4 S12-P3 重跑机制 locally with v0.1.4 S12-P2 dependency, public-safe cache invalidation, four-layer rerun records, same-source consistency checks, validator, focused unit test, and evidence.
+- Locked source_preview_count=5, eligible_event_count=2, blocked_preview_count=3, cache_invalidation_count=2, rerun_step_count=8, same_source_consistency_check_count=2, old_version_retained_count=8, new_version_appended_count=8.
+- Confirmed only publish-allowed previews enter cache invalidation and rerun; blocked previews remain outside the rerun chain.
+- Confirmed no Stage 12 review, GitHub upload, protected source matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
 ## 0.1.4-s12p2-manual-impact-preview - 2026-07-05
 - Completed v0.1.4 S12-P2 影响预览 locally with v0.1.4 S12-P1 dependency, legacy public-safe S12-P2 impact preview replay, v1.4 human-flow baseline, validator, focused unit test, and public-safe evidence.
 - Locked impact_preview_count=5, affected_project_count=8, affected_metric_count=11, affected_report_count=5, high_risk_count=3, second_confirmation_required_count=3, blocked_publish_count=3, publish_allowed_count=2.

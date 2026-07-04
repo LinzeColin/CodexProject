@@ -659,3 +659,11 @@ product_version: 0.1.4-s12p1-manual-resolution-events
 - Inputs: v0.1.4 S12-P1 dependency, legacy S12-P2 public-safe impact preview artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
 - Outputs: `KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/machine/manual_impact_preview_manifest.json`, `KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/machine/manual_impact_previews.jsonl`, `KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/exports/html/kmfa_manual_impact_preview.html`, and public-safe human evidence under the same artifact directory.
 - Controls: S12-P3, Stage 12 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.
+
+
+## FORM-KMFA-V014-S12P3-MANUAL-RERUN-MECHANISM-001
+- Version: `0.1.4-s12p3-manual-rerun-mechanism`.
+- Purpose: lock v0.1.4 S12-P3 manual rerun mechanism evidence for cache invalidation, four-layer rerun steps, same-source consistency checks, blocked-preview exclusion, old-version retention, new-version append-only behavior, and v1.4 human-flow baseline reflection.
+- Inputs: v0.1.4 S12-P2 dependency, public-safe S12-P2 impact preview records, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
+- Outputs: `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/machine/manual_rerun_manifest.json`, `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/machine/manual_rerun_cache_invalidations.jsonl`, `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/machine/manual_rerun_steps.jsonl`, `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/machine/manual_rerun_consistency_checks.jsonl`, `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/exports/html/kmfa_manual_rerun_mechanism.html`, and public-safe human evidence under the same artifact directory.
+- Controls: Stage 12 review, GitHub upload, protected source matching, lineage full check, formal report release, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.

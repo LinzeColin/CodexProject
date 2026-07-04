@@ -4,11 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S12-P2 影响预览；5 条 public-safe impact previews、8 个受影响项目引用、11 个受影响指标引用、5 个受影响报告引用、3 条高风险二次确认阻断、2 条可发布预览和 v1.4 human-flow impact-preview baseline 均已由 validator 证明。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/`，validator 为 `KMFA/tools/check_v014_s12_p2_manual_impact_preview.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S12-P3 重跑、Stage 12 review、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S12-P3 重跑机制；2 条 publish-allowed preview 已进入 public-safe 派生缓存失效，生成 8 条四层重跑步骤和 2 条同源引用一致性检查，3 条 blocked preview 未进入重跑。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/`，validator 为 `KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 Stage 12 review、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
-- v0.1.4 S12-P2 影响预览已确认本地 validator 通过；5 条 impact previews、8 个受影响项目引用、11 个受影响指标引用、5 个受影响报告引用、3 条高风险二次确认阻断、2 条可发布预览和 HTML 影响预览均为 public-safe 本地证据。S12-P2 只证明影响预览，不证明 S12-P3 重跑、Stage 12 复审、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；下一步只能 S12-P3。
+- v0.1.4 S12-P3 重跑机制已确认本地 validator 通过；2 条 publish-allowed preview 进入 cache invalidation，8 条四层重跑步骤追加新版本并保留旧版本，2 条同源引用一致性检查通过。S12-P3 只证明 public-safe 重跑机制，不证明 Stage 12 复审、GitHub upload、protected source matching、lineage full check、正式报告或业务执行；下一步只能 Stage 12 整体复审。
 - v0.1.4 Stage 10 整体复审已确认本地 validator 通过；S10-P1/S10-P2/S10-P3 validators 全部 PASS，legacy Stage 10 review 与 v0.1.3 Stage 10 review 通过，open findings=0，fixed findings=2。Stage 10 只证明报告模板、可信等级和 public-safe 导出证据在本地复审闭环；12 条 reconciliation 仍 pending、zero-delta=false、缺少完整 lineage 和人工确认，因此正式报告、经营决策依据和 delivery 继续阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S10-P2 报告可信等级已确认本地 validator 通过；2 条报告等级记录均为 D，12 条 reconciliation 仍 pending、0 条 confirmed resolution、zero-delta=false、缺少完整 lineage 和人工确认，因此完整可信报告、正式报告、经营决策依据和导出 release 继续阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S10-P1 报告模板已确认本地 validator 通过；2 个报告模板和 11 个管理可读章节已锁定，v1.4 HTML/UIUX audit FAIL=0 被作为后续报告交互基线引用；S10-P1 只证明模板结构，不生成 HTML/CSV/PDF 导出，不发布正式报告；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。

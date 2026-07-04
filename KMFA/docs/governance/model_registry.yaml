@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s12p2-manual-impact-preview"
+    model_version: "0.1.4-s12p3-manual-rerun-mechanism"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -1189,3 +1189,11 @@ v014_s12p2_manual_impact_preview_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW
   validator: KMFA/tools/check_v014_s12_p2_manual_impact_preview.py
   scope: S12-P2 manual impact preview only; no S12-P3/review/upload/raw inbox access/formal report/business execution.
+
+v014_s12p3_manual_rerun_mechanism_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12P3-MANUAL-RERUN-MECHANISM-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM
+  validator: KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py
+  scope: S12-P3 manual rerun mechanism only; no Stage 12 review/upload/raw inbox access/formal report/business execution.

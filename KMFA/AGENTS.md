@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.4 Stage 12`
-- 当前 Phase: `v0.1.4 S12-P2 影响预览已本地生成并通过 validator；基于 v0.1.4 S12-P1 manual resolution events dependency、legacy S12-P2 public-safe impact preview 和 v1.4 human-flow baseline，锁定 5 条影响预览、8 个受影响项目引用、11 个受影响指标引用、5 个受影响报告引用、3 条高风险二次确认阻断和 2 条可发布预览；下一步只能另起 run work 执行 S12-P3，不执行 Stage 12 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 或业务执行`
+- 当前 Phase: `v0.1.4 S12-P3 重跑机制已本地生成并通过 validator；基于 v0.1.4 S12-P2 manual impact preview dependency 和 v1.4 human-flow baseline，只让 2 条 publish-allowed preview 进入派生缓存失效和四层重跑，3 条 blocked preview 不进入重跑；锁定 cache invalidations=2、rerun steps=8、same-source consistency checks=2、old versions retained=8、new versions appended=8；下一步只能另起 run work 执行 Stage 12 整体复审，不执行 GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 或业务执行`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 S12-P2 影响预览本轮只允许完成本地验证和本地 commit；下一轮只能在用户明确开启后单独执行 `S12-P3`。不得直接执行 Stage 12 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或任何业务动作。
+- v0.1.4 S12-P3 重跑机制本轮只允许完成本地验证和本地 commit；下一轮只能在用户明确开启后单独执行 `Stage 12 整体复审`。不得直接执行 GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或任何业务动作。
 - Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成；S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已完成。Stage 18 review-level Go/No-Go 仍为 `NO_GO`；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
