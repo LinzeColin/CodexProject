@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4-s09p3-scope-reconciliation - 2026-07-04
+
+- 完成 `v0.1.4 S09-P3｜口径转换与差异核对`。
+- 新增 S09-P3 evidence generator、validator、focused unit test、scope reconciliation report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 S09-P2 dependency，并复用 legacy public-safe S09-P3 artifacts，锁定 reconciliation records=`12`、domain controls=`6`、required reconciliation domains=`6`、required human fields=`8`、confirmed resolutions=`0`、pending resolutions=`12`。
+- 所有差异继续 pending owner/授权复核，derived metric rerun、formal report rerun、formal report release、Stage 9 review 和 GitHub upload 均保持 `false`；当前仍为 `NO_GO/Q4/D/blocked`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s09p2-margin-cash-margin - 2026-07-04
 
 - 完成 `v0.1.4 S09-P2｜毛利与现金毛利`。
