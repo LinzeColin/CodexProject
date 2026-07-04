@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s11p3-project-cost-page"
+    model_version: "0.1.4-s12p1-manual-resolution-events"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -1163,3 +1163,12 @@ v014_s11_stage_review_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S11_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s11_stage_review.py
   scope: Stage 11 review only; no S12/upload/raw inbox access/raw matching/lineage/formal report/business execution.
+
+
+v014_s12p1_manual_resolution_events_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12P1-MANUAL-RESOLUTION-EVENTS-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS
+  validator: KMFA/tools/check_v014_s12_p1_manual_resolution_events.py
+  scope: S12-P1 manual resolution events only; no S12-P2/S12-P3/review/upload/raw inbox access.

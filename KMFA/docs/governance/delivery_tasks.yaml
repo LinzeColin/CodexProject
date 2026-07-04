@@ -8419,3 +8419,43 @@ tasks:
       raw_inbox_access: false
       formal_report: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S12-P1-MANUAL-RESOLUTION-EVENTS-20260704"
+    task_name: "v0.1.4 S12-P1 人工处理事件"
+    stage_id: "V014-S12"
+    phase_id: "S12-P1"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS"
+    validator: "KMFA/tools/check_v014_s12_p1_manual_resolution_events.py"
+    focused_test: "KMFA/tests/test_v014_s12_p1_manual_resolution_events.py"
+    acceptance_id: "ACC-V014-S12-P1-MANUAL-RESOLUTION-EVENTS"
+    acceptance_ids:
+      - "ACC-V014-S12-P1-MANUAL-RESOLUTION-EVENTS"
+    next_phase: "S12-P2"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s12p1-manual-resolution-events"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s12_p1_manual_resolution_events.py KMFA/tools/check_v014_s12_p1_manual_resolution_events.py KMFA/tests/test_v014_s12_p1_manual_resolution_events.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s12_p1_manual_resolution_events.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s12_p1_manual_resolution_events.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p1_manual_resolution_events.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s12_p1_manual_resolution_events -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PENDING_FINAL_VALIDATION"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/human/manual_resolution_events_report.md"
+      - "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/machine/manual_resolution_events_manifest.json"
+      - "KMFA/tools/check_v014_s12_p1_manual_resolution_events.py"
+    forbidden_scope:
+      s12_p2: false
+      s12_p3: false
+      stage12_review: false
+      github_upload: false
+      raw_inbox_access: false
+      formal_report: false
+      business_execution: false

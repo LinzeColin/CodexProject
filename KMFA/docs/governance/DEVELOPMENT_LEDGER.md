@@ -1,3 +1,10 @@
+# KMFA v0.1.4 S12-P1 Manual Resolution Events
+- Product version: `0.1.4-s12p1-manual-resolution-events`.
+- Scope: S12-P1 only; public-safe append-only manual resolution event replay under v1.4 human-flow baseline.
+- Evidence: `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/`.
+- Verification: `KMFA/tools/check_v014_s12_p1_manual_resolution_events.py`; `KMFA/tests/test_v014_s12_p1_manual_resolution_events.py`.
+- blocker_state: manual_event_count=5, action_kinds=4, approved_events=1, reverse_events=1, S12-P2=false, S12-P3=false, Stage12 review=false, GitHub upload=false, raw inbox access=false, formal_report_allowed=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+
 ## 2026-07-04 - v0.1.4 Stage 11 整体复审
 - Product version: `0.1.4-s11-stage-review`.
 - Scope: one review gate only, `Stage 11 整体复审`.

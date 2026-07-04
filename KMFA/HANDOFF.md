@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 Stage 11 整体复审`：新增 `KMFA/tools/v014_s11_stage_review.py`、`KMFA/tools/check_v014_s11_stage_review.py`、`KMFA/tests/test_v014_s11_stage_review.py` 和 `KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/` public-safe evidence。复审复跑 v0.1.4 S11-P1/S11-P2/S11-P3 validators、legacy S11 review validator、v1.4 S11 review validator 和 focused unit test；phase_results=`S11-P1=PASS, S11-P2=PASS, S11-P3=PASS`，open findings=`0`，fixed findings=`2`。复审修复两项 findings：legacy Stage 11 upload-ready wording 只作为历史依赖，不作为当前 v1.4 GitHub upload gate；S11-P3 validator 的 reviewed_head 检查从 current HEAD equality 改为有效 40 位 git SHA，避免提交后证据天然 stale。Stage gate 锁定 navigation modules=`8`、source board rows=`13`、project rows=`4`、cost categories=`9`、pending reconciliations=`12`、HTML exports=`3`、v1.4 audit rows=`54`、audit fail=`0`、formal report=`0`、business decision basis=`0`、current report grade=`D`、release permission=`blocked`。本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S12、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S12-P1`，不得在本轮补做 GitHub upload、S12-P2/S12-P3、raw value matching、lineage full check 或正式报告。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S12-P1｜人工处理事件`：新增 `KMFA/tools/v014_s12_p1_manual_resolution_events.py`、`KMFA/tools/check_v014_s12_p1_manual_resolution_events.py`、`KMFA/tests/test_v014_s12_p1_manual_resolution_events.py` 和 `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/` public-safe evidence。该 phase 基于 v0.1.4 Stage 11 review dependency、legacy S12-P1 public-safe manual resolution events 和 v1.4 HTML/UIUX human-flow baseline，锁定 manual events=`5`、manual action kinds=`4`、event types=`4`、approved events=`1`、reverse events=`1`、HTML exports=`1`。工作台只代表字段映射、项目匹配、差异处理和备注控制事件的追加写入；已批准事件不得静默改写，只能追加反向事件。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S12-P2 影响预览、S12-P3 重跑、Stage 12 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S12-P2`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s11-stage-review`
-- 当前已完成: `v0.1.4 Stage 11 整体复审`
-- 证据目录: `KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/`
-- validator: `KMFA/tools/check_v014_s11_stage_review.py`
-- focused test: `KMFA/tests/test_v014_s11_stage_review.py`
+- 当前版本: `0.1.4-s12p1-manual-resolution-events`
+- 当前已完成: `v0.1.4 S12-P1 人工处理事件`
+- 证据目录: `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/`
+- validator: `KMFA/tools/check_v014_s12_p1_manual_resolution_events.py`
+- focused test: `KMFA/tests/test_v014_s12_p1_manual_resolution_events.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: Stage 11 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S11-P1/S11-P2/S11-P3、legacy S11 review 和 v1.4 HTML/UIUX baseline evidence。
-- 未执行: S12、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `S12-P1`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S12-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe Stage 11 review、legacy S12-P1 和 v1.4 HTML/UIUX baseline evidence。
+- 未执行: S12-P2、S12-P3、Stage 12 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `S12-P2`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

@@ -1,3 +1,10 @@
+## 0.1.4-s12p1-manual-resolution-events - 2026-07-04
+- Completed v0.1.4 S12-P1 人工处理事件 locally with Stage 11 review dependency, legacy public-safe S12-P1 event replay, v1.4 human-flow baseline, validator, focused unit test, and public-safe evidence.
+- Locked manual_event_count=5, manual_action_kind_count=4, event_type_count=4, approved_event_count=1, reverse_event_count=1, html_export_count=1.
+- Confirmed approved events cannot be silently rewritten and can only be changed through appended reverse events.
+- Confirmed no S12-P2 impact preview, S12-P3 rerun, Stage 12 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
 ## 0.1.4-s11-stage-review - 2026-07-04
 - Completed v0.1.4 Stage 11 整体复审 locally with S11-P1/S11-P2/S11-P3 validators, legacy S11 review, v1.4 Stage 11 review validator, and focused unit test passing.
 - Locked phase_results S11-P1/S11-P2/S11-P3 all PASS, open findings=0, fixed findings=2, navigation modules=8, source rows=13, project rows=4, HTML exports=3, pending reconciliations=12, formal report=0, and business decision basis=0.

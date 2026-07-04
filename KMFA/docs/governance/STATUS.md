@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s11p3-project-cost-page`
-- current_stage: `S11`
-- current_phase: `v0.1.4 S11-P3 project cost page`
-- status: `completed_validated_local_only_no_go_upload_deferred_project_cost_page_locked`
+- version: `0.1.4-s12p1-manual-resolution-events`
+- current_stage: `S12`
+- current_phase: `v0.1.4 S12-P1 manual resolution events`
+- status: `completed_validated_local_only_no_go_upload_deferred_manual_resolution_events_locked`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
