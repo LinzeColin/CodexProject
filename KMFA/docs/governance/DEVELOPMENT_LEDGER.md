@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Stage 14 Review
+- Product version: `0.1.4-s14-stage-review`.
+- Scope: Stage 14 review only; public-safe replay of S14-P1/S14-P2/S14-P3 validators, legacy Stage 14 review, v1.4 Stage 14 review validator and focused unit test.
+- Evidence: `KMFA/stage_artifacts/V014_S14_STAGE_REVIEW/`.
+- Verification: `KMFA/tools/check_v014_s14_stage_review.py`; `KMFA/tests/test_v014_s14_stage_review.py`.
+- blocker_state: phase_results=3/3 PASS, open_findings=0, fixed_findings=1, fund_lanes=4, invoice_tax_lanes=3, policy_dirs=5, policy_gaps=5, policy_risk_tips=5, html_exports=3, pending_reconciliation=12, report_grade=D, formal_report=0, business_decision_basis=0, payment_bank_loan_tax_invoice_policy_subsidy_actions=0, S15-P1=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+product_version: 0.1.4-s14-stage-review
+version_matrix_product_version_reference: 0.1.4-s14-stage-review
+
 # KMFA v0.1.4 S14-P2 Invoice Tax Plan
 - Product version: `0.1.4-s14p2-invoice-tax-plan`.
 - Scope: S14-P2 only; public-safe invoice tax plan with source lanes, issue candidates, cash summaries and HTML overview.

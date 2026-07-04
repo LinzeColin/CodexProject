@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s14p3-policy-evidence-plan`
+- version: `0.1.4-s14-stage-review`
 - current_stage: `S14`
-- current_phase: `v0.1.4 S14-P3 policy evidence plan`
-- status: `completed_validated_local_only_no_go_upload_deferred_invoice_tax_plan_locked`
+- current_phase: `v0.1.4 Stage 14 overall review`
+- status: `review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 Stage 14 overall review completed local-only: S14-P1/S14-P2/S14-P3 validators PASS, legacy Stage 14 review PASS, v0.1.4 Stage 14 review validator PASS, focused unit test PASS, phase_results=3/3 PASS, open findings=0, fixed findings=1, fund_lanes=4, invoice_tax_lanes=3, policy_directories=5, policy_gaps=5, policy_risk_tips=5, html_exports=3, pending_reconciliation_count=12, report_grade=D, formal_report_count=0, business_decision_basis_count=0, payment_or_bank_operation_count=0, loan_management_action_count=0, tax_filing_count=0, invoice_issuance_count=0, policy_submission_count=0, subsidy_application_count=0, raw inbox read/list/stat/hash/mutation=false by this review, S15-P1=false, github_upload=false.
 - v0.1.4 S14-P3 policy evidence plan completed local-only: S14-P2 dependency PASS, legacy S14-P3 validator PASS, v0.1.4 S14-P3 validator PASS, focused unit test PASS, policy_program_count=5, evidence_directory_count=5, evidence_gap_count=5, risk_tip_count=5, html_output_count=1, pending_reconciliation_count=12, report_grade=D, formal_policy_conclusion_count=0, policy_application_submission_count=0, subsidy_application_count=0, external_connector_action_count=0, raw inbox read/list/stat/hash/mutation=false by this phase, Stage14_review=false, github_upload=false.
 - v0.1.4 S14-P2 invoice tax plan completed local-only: S14-P1 dependency PASS, legacy S14-P2 validator PASS, v0.1.4 S14-P2 validator PASS, focused unit test PASS, source_lanes=3, sources=6, field_mappings=30, issue_candidates=3, cash_summaries=3, html_output_count=1, pending_reconciliation_count=12, report_grade=D, invoice_issuance_count=0, tax_filing_count=0, payment_or_bank_operation_count=0, external_connector_action_count=0, raw inbox read/list/stat/hash/mutation=false by this phase, S14-P3=false, Stage14_review=false, github_upload=false.
 - v0.1.4 S14-P1 fund cash loan plan completed local-only: Stage 13 review dependency PASS, legacy S14-P1 validator PASS, v0.1.4 S14-P1 validator PASS, focused unit test PASS, source_lanes=4, sources=5, field_mappings=25, cash_pressure_records=4, loan_due_alerts=3, account_balance_summaries=3, html_output_count=1, pending_reconciliation_count=12, report_grade=D, payment_operation_count=0, bank_operation_count=0, loan_management_action_count=0, raw inbox read/list/stat/hash/mutation=false by this phase, S14-P2=false, S14-P3=false, Stage14_review=false, github_upload=false.
