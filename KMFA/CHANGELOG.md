@@ -4,6 +4,12 @@
 - Added public-safe S11-P1 evidence, validator, and focused unit test; confirmed no S11-P2/S11-P3, Stage 11 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
 - GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
 
+## 0.1.4-s11p2-source-check-board - 2026-07-04
+- Completed v0.1.4 S11-P2 数据源检查板 locally with 13 public-safe matrix rows, 11 required columns, five allowed statuses, search feedback, status-click detail preview, status-change control events, and low-interference blue-gray styling.
+- Locked v1.4 human-flow baseline reflection for search, status change, and detail preview without exposing raw business data, source filenames, field/header plaintext, account numbers, business values, or private source hashes.
+- Added public-safe S11-P2 evidence, validator, and focused unit test; confirmed no S11-P3, Stage 11 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
 # Changelog
 
 ## 0.1.4-s10-stage-review - 2026-07-04

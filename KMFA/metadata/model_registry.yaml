@@ -1,4 +1,4 @@
-version: "0.1.4-s11p1-home-navigation"
+version: "0.1.4-s11p2-source-check-board"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -40,6 +40,7 @@ active_formula_ids:
   - "FORM-KMFA-V014-S10P2-REPORT-TRUST-GRADE-001"
   - "FORM-KMFA-V014-S10P3-REPORT-EXPORT-001"
   - "FORM-KMFA-V014-S10-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001"
   - "FORM-KMFA-FIELD-STANDARDIZATION-001"
   - "FORM-KMFA-A0-FILE-REGISTRATION-001"
   - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -109,3 +110,11 @@ v014_s11p1_home_navigation_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION
   validator: KMFA/tools/check_v014_s11_p1_home_navigation.py
   scope: S11-P1 home navigation only; no S11-P2/S11-P3/review/upload/raw inbox access.
+
+v014_s11p2_source_check_board_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD
+  validator: KMFA/tools/check_v014_s11_p2_source_check_board.py
+  scope: S11-P2 source check board only; no S11-P3/review/upload/raw inbox access.

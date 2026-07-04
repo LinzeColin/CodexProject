@@ -8301,3 +8301,43 @@ tasks:
       raw_inbox_access: false
       formal_report: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S11-P2-SOURCE-CHECK-BOARD-20260704"
+    task_name: "v0.1.4 S11-P2 数据源检查板"
+    stage_id: "V014-S11"
+    phase_id: "S11-P2"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD"
+    validator: "KMFA/tools/check_v014_s11_p2_source_check_board.py"
+    focused_test: "KMFA/tests/test_v014_s11_p2_source_check_board.py"
+    acceptance_id: "ACC-V014-S11-P2-SOURCE-CHECK-BOARD"
+    acceptance_ids:
+      - "ACC-V014-S11-P2-SOURCE-CHECK-BOARD"
+    next_phase: "S11-P3"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s11p2-source-check-board"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s11_p2_source_check_board.py KMFA/tools/check_v014_s11_p2_source_check_board.py KMFA/tests/test_v014_s11_p2_source_check_board.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s11_p2_source_check_board.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p1_home_navigation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s11_p2_source_check_board.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p2_source_check_board.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s11_p2_source_check_board -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S11-P2 py_compile generator S11-P1 dependency legacy S11-P2 validator v0.1.4 validator and focused unit test passed."
+      - "PASS: matrix rows 13, required columns 11, statuses 5, html export 1, search feedback true, status detail true, status change actions 5, control event log 1, v1.4 audit rows 54 and fail count 0 locked."
+      - "PASS: raw inbox read/list/stat/hash/mutation, S11-P3, Stage 11 review, GitHub upload, raw value matching, lineage full check, formal report and business execution were not performed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/human/source_check_board_report.md"
+      - "KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json"
+      - "KMFA/tools/check_v014_s11_p2_source_check_board.py"
+    forbidden_scope:
+      s11_p3: false
+      stage11_review: false
+      raw_inbox_access: false
+      formal_report: false
+      business_execution: false
