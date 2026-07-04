@@ -1,3 +1,11 @@
+## 2026-07-04 - v0.1.4 Stage 11 整体复审
+- Product version: `0.1.4-s11-stage-review`.
+- Scope: one review gate only, `Stage 11 整体复审`.
+- Deliverables: public-safe Stage 11 review evidence, v1.4 S11 review generator, validator, focused unit test, governance records, and fixed review findings.
+- Evidence: `KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/`.
+- Verification: `KMFA/tools/check_v014_s11_stage_review.py`; `KMFA/tests/test_v014_s11_stage_review.py`.
+- Boundaries: no S12, no GitHub upload, no raw/private inbox access, no raw value matching, no lineage full check, no formal report or business execution.
+
 ## 2026-07-04 - v0.1.4 S11-P3 项目成本页面
 - Product version: `0.1.4-s11p3-project-cost-page`.
 - Scope: one phase only, `S11-P3 项目成本页面`.

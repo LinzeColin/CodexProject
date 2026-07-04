@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `v0.1.4 S11-P3 项目成本页面`：`KMFA/tools/v014_s11_p3_project_cost_page.py`、`KMFA/tools/check_v014_s11_p3_project_cost_page.py`、`KMFA/tests/test_v014_s11_p3_project_cost_page.py` 和 S11-P3 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/`。本 phase 验证 v0.1.4 S11-P2 dependency、legacy S11-P3 public-safe project cost page artifacts 和 v1.4 HTML human-flow audit baseline，锁定 project_rows=`4`、project_list_columns=`7`、cost_categories=`9`、margin_records=`4`、pending_reconciliations=`12`、html_exports=`1`、project_detail_click=`true`、report_section_switch=`true`、appendix_export_feedback=`true`、print_save_feedback=`true`、report_grade=`D`、quality_bypass=`false`、v14 audit files=`6`、v14 audit rows=`54`、v14 audit pass=`54`、v14 audit warn/fail=`0/0`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 11 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 Stage 11 整体复审`，不得在本轮补做 GitHub upload、S12、raw value matching、lineage full check 或正式报告。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 Stage 11 整体复审`：新增 `KMFA/tools/v014_s11_stage_review.py`、`KMFA/tools/check_v014_s11_stage_review.py`、`KMFA/tests/test_v014_s11_stage_review.py` 和 `KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/` public-safe evidence。复审复跑 v0.1.4 S11-P1/S11-P2/S11-P3 validators、legacy S11 review validator、v1.4 S11 review validator 和 focused unit test；phase_results=`S11-P1=PASS, S11-P2=PASS, S11-P3=PASS`，open findings=`0`，fixed findings=`2`。复审修复两项 findings：legacy Stage 11 upload-ready wording 只作为历史依赖，不作为当前 v1.4 GitHub upload gate；S11-P3 validator 的 reviewed_head 检查从 current HEAD equality 改为有效 40 位 git SHA，避免提交后证据天然 stale。Stage gate 锁定 navigation modules=`8`、source board rows=`13`、project rows=`4`、cost categories=`9`、pending reconciliations=`12`、HTML exports=`3`、v1.4 audit rows=`54`、audit fail=`0`、formal report=`0`、business decision basis=`0`、current report grade=`D`、release permission=`blocked`。本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S12、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S12-P1`，不得在本轮补做 GitHub upload、S12-P2/S12-P3、raw value matching、lineage full check 或正式报告。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s11p3-project-cost-page`
-- 当前已完成: `v0.1.4 S11-P3 项目成本页面`
-- 证据目录: `KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/`
-- validator: `KMFA/tools/check_v014_s11_p3_project_cost_page.py`
-- focused test: `KMFA/tests/test_v014_s11_p3_project_cost_page.py`
+- 当前版本: `0.1.4-s11-stage-review`
+- 当前已完成: `v0.1.4 Stage 11 整体复审`
+- 证据目录: `KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/`
+- validator: `KMFA/tools/check_v014_s11_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s11_stage_review.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S11-P3 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S11-P2、legacy S11-P3 和 v1.4 HTML/UIUX baseline evidence。
-- 未执行: Stage 11 review、GitHub upload、S12、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `Stage 11 整体复审`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: Stage 11 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S11-P1/S11-P2/S11-P3、legacy S11 review 和 v1.4 HTML/UIUX baseline evidence。
+- 未执行: S12、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `S12-P1`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 
