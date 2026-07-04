@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S15-P1 Performance Fact Fields
+- Product version: `0.1.4-s15p1-performance-fact-fields`.
+- Scope: S15-P1 only; public-safe performance fact field definitions, source bindings, hash refs and manual-review markers.
+- Evidence: `KMFA/stage_artifacts/V014_S15_P1_PERFORMANCE_FACT_FIELDS/`.
+- Verification: `KMFA/tools/check_v014_s15_p1_performance_fact_fields.py`; `KMFA/tests/test_v014_s15_p1_performance_fact_fields.py`.
+- blocker_state: field_definitions=6, field_bindings=6, manual_review_fields=4, performance_fact_table=0, abnormal_project_review_list=0, salary=0, bonus=0, payroll_export=0, final_payment=0, report_grade=D, S15-P2=false, S15-P3=false, Stage15 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, formal_report=false, business_execution_allowed=false.
+product_version: 0.1.4-s15p1-performance-fact-fields
+version_matrix_product_version_reference: 0.1.4-s15p1-performance-fact-fields
+
 # KMFA v0.1.4 Stage 14 Review
 - Product version: `0.1.4-s14-stage-review`.
 - Scope: Stage 14 review only; public-safe replay of S14-P1/S14-P2/S14-P3 validators, legacy Stage 14 review, v1.4 Stage 14 review validator and focused unit test.
