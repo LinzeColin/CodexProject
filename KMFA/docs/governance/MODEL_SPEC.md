@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s07p3-redcircle-postponement
+product_version: 0.1.4-s08p1-project-composite-key
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S07-P3 只证明红圈导出后置 public-safe template refs、source registry refs、connector postponement policy、future rollback plan 和只读/hash/rollback/manual approval evidence 已锁定；本 phase 未读取 raw inbox，不执行 Stage 7 review、S08-P1、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
+当前模型说明覆盖 v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S08-P1 只证明项目组合键 public-safe hash-only 组件、profiles、match results、manual review queue、权重阈值和 scope gate 已锁定；本 phase 未读取 raw inbox，不执行 S08-P2、S08-P3、Stage 8 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s07p3-redcircle-postponement
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s06_p3_validation_evidence.py`, `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/machine/validation_evidence_manifest.json`
-- current_v014_scope_lock: `S07-P3 Redcircle postponement completed; Stage 7 review/S08-P1/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s08_p1_project_composite_key.py`, `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/machine/project_composite_key_manifest.json`
+- current_v014_scope_lock: `S08-P1 project composite key completed; S08-P2/S08-P3/Stage 8 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -215,6 +215,16 @@ product_version: 0.1.4-s07p3-redcircle-postponement
 - evidence: `KMFA/tools/v014_s07_p3_redcircle_postponement.py`, `KMFA/tools/check_v014_s07_p3_redcircle_postponement.py`, `KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/machine/redcircle_postponement_manifest.json`
 - boundary_validation: `KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/human/test_results.md`
 - limitation: S07-P3 只证明 public-safe local Redcircle postponement evidence；不证明 Stage 7 review、S08-P1、raw value matching、lineage full check、正式报告、GitHub upload、delivery readiness 或 business execution。
+
+### FORM-KMFA-V014-S08P1-PROJECT-COMPOSITE-KEY-001
+
+- type: deterministic public-safe project identity matching gate
+- purpose: 验证 v0.1.4 S08-P1 项目组合键，覆盖 Stage 7 review dependency、legacy public-safe S08-P1 dependency、8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条 manual review queue、权重阈值、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s08p1_valid = stage7_review_dependency == PASS AND legacy_s08_p1_dependency == PASS AND required_component_count == 8 AND profile_count == 4 AND match_result_count == 3 AND manual_review_queue_count == 2 AND strong_auto_match_count == 1 AND matching_weights_sum_bps == 10000 AND strong_threshold_bps == 8500 AND human_review_threshold_bps == 7000 AND weak_candidate_threshold_bps == 5000 AND missing_single_component_blocks_all_matching == false AND below_strong_threshold_enters_manual_review == true AND auto_merge_allowed_for_review_queue_count == 0 AND raw_inbox_read_by_this_phase == false AND s08_p2_performed == false AND s08_p3_performed == false AND stage8_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s08_p1_project_composite_key.py`, `KMFA/tools/check_v014_s08_p1_project_composite_key.py`, `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/machine/project_composite_key_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/human/test_results.md`
+- limitation: S08-P1 只证明 public-safe project composite key evidence；不证明 S08-P2 业务实体模型、S08-P3 匹配质量、Stage 8 review、raw value matching、lineage full check、正式报告、GitHub upload readiness 或 business execution。
 
 ### FORM-KMFA-AMOUNT-001
 
