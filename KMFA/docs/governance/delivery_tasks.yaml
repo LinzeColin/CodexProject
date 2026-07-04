@@ -8501,3 +8501,43 @@ tasks:
       raw_inbox_access: false
       formal_report: false
       business_execution: false
+
+
+  - task_id: "KMFA-V014-S12-P3-MANUAL-RERUN-MECHANISM-20260705"
+    task_name: "v0.1.4 S12-P3 重跑机制"
+    stage_id: "V014-S12"
+    phase_id: "S12-P3"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM"
+    validator: "KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py"
+    focused_test: "KMFA/tests/test_v014_s12_p3_manual_rerun_mechanism.py"
+    acceptance_id: "ACC-V014-S12-P3-MANUAL-RERUN-MECHANISM"
+    acceptance_ids:
+      - "ACC-V014-S12-P3-MANUAL-RERUN-MECHANISM"
+    next_phase: "S12-STAGE-REVIEW"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s12p3-manual-rerun-mechanism"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s12_p3_manual_rerun_mechanism.py KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py KMFA/tests/test_v014_s12_p3_manual_rerun_mechanism.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s12_p3_manual_rerun_mechanism.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p2_manual_impact_preview.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s12_p3_manual_rerun_mechanism -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S12-P2 dependency and v0.1.4 S12-P3 validator passed."
+      - "PASS: focused unit test ran 1 test and passed."
+      - "PASS: governance validators, no-float, no-omission, structured parse checks, raw/private suffix scan, high-signal secret scan, scoped artifact boundary scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/human/manual_rerun_mechanism_report.md"
+      - "KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/machine/manual_rerun_manifest.json"
+      - "KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py"
+    forbidden_scope:
+      stage12_review: false
+      github_upload: false
+      raw_inbox_access: false
+      formal_report: false
+      business_execution: false

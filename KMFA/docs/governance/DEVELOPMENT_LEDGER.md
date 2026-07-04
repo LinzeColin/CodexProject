@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S12-P3 Manual Rerun Mechanism
+- Product version: `0.1.4-s12p3-manual-rerun-mechanism`.
+- Scope: S12-P3 only; public-safe manual rerun mechanism replay under v1.4 human-flow baseline.
+- Evidence: `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/`.
+- Verification: `KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py`; `KMFA/tests/test_v014_s12_p3_manual_rerun_mechanism.py`.
+- blocker_state: eligible_event_count=2, blocked_preview_count=3, cache_invalidation_count=2, rerun_step_count=8, consistency_check_count=2, S12-P3=true, Stage12 review=false, GitHub upload=false, raw inbox access=false, formal_report_allowed=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+product_version: 0.1.4-s12p3-manual-rerun-mechanism
+version_matrix_product_version_reference: 0.1.4-s12p3-manual-rerun-mechanism
+
 # KMFA v0.1.4 S12-P2 Manual Impact Preview
 - Product version: `0.1.4-s12p2-manual-impact-preview`.
 - Scope: S12-P2 only; public-safe manual impact preview replay under v1.4 human-flow baseline.
@@ -799,6 +808,7 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | `KMFA-V013-S09-P1-PROJECT-COST-FACT-LAYER-REPLAY-20260703` | v0.1.3 S09-P1 project cost fact layer replay 本地通过，completed_version=`0.1.3-s09p1-project-cost-fact-layer-replay`：重放 6 个 required metrics、9 个 cost categories、4 条 fact records 和 9 条 unallocated pool records；formal calculation、S09-P2/S09-P3、Stage 9 review、GitHub upload、raw value matching、正式报告和业务执行均未执行 | `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/human/project_cost_fact_layer_replay_report.md` |
 | `KMFA-V013-S09-P2-MARGIN-CASH-MARGIN-REPLAY-20260703` | v0.1.3 S09-P2 margin and cash margin replay 本地通过，completed_version=`0.1.3-s09p2-margin-cash-margin-replay`：重放 4 个 required margin metrics、4 条 margin records 和 12 条 scope difference summary records；S09-P3、Stage 9 review、GitHub upload、raw value matching、正式报告和业务执行均未执行 | `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/human/margin_cash_margin_replay_report.md` |
 | `KMFA-V014-S01-P1-READ-ONLY-SCOPE-LOCK-20260703` | v0.1.4 S01-P1 只读检查与范围锁定本地通过：登记 v1.4 修补包 source package、9 个 public-safe source 条目、raw-readonly policy、HTML human-flow audit 54/0/0 和 no-upload/no-go 边界；未读取、列出、修改或写入 raw inbox，未执行 S01-P2、S01-P3、Stage 1 review、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/human/implementation_plan.md` |
+| `KMFA-V014-S12-P3-MANUAL-RERUN-MECHANISM-20260705` | v0.1.4 S12-P3 重跑机制本地通过：验证 S12-P2 dependency，生成 2 条 cache invalidation、8 条四层 rerun step、2 条 same-source consistency check，旧版本保留且新版本追加；未读取 raw inbox，未执行 Stage 12 review、GitHub upload、protected source matching、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/human/manual_rerun_mechanism_report.md` |
 
 ## In Progress
 
