@@ -1,23 +1,23 @@
 # KMFA Handoff
 
-更新时间: 2026-07-04
+更新时间: 2026-07-05
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S12-P3｜重跑机制`：新增 `KMFA/tools/v014_s12_p3_manual_rerun_mechanism.py`、`KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py`、`KMFA/tests/test_v014_s12_p3_manual_rerun_mechanism.py` 和 `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/` public-safe evidence。该 phase 基于 v0.1.4 S12-P2 manual impact preview dependency 和 v1.4 HTML/UIUX human-flow baseline，锁定 source previews=`5`、eligible events=`2`、blocked previews=`3`、cache invalidations=`2`、rerun steps=`8`、same-source consistency checks=`2`、old versions retained=`8`、new versions appended=`8`。只有 publish-allowed previews 进入派生缓存失效和四层重跑；blocked previews 不进入重跑。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 12 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `Stage 12 overall review`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 Stage 12 整体复审`：新增 `KMFA/tools/v014_s12_stage_review.py`、`KMFA/tools/check_v014_s12_stage_review.py`、`KMFA/tests/test_v014_s12_stage_review.py` 和 `KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/` public-safe evidence。该 review 复跑 S12-P1/S12-P2/S12-P3 validators 与 legacy Stage 12 review，锁定 phase_results 全部 `PASS`、open findings=`0`、fixed findings=`1`、manual events=`5`、impact previews=`5`、cache invalidations=`2`、rerun steps=`8`、same-source consistency checks=`2`、HTML exports=`3`。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S13、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S13-P1`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s12p3-manual-rerun-mechanism`
-- 当前已完成: `v0.1.4 S12-P3 重跑机制`
-- 证据目录: `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/`
-- validator: `KMFA/tools/check_v014_s12_p2_manual_impact_preview.py`
-- focused test: `KMFA/tests/test_v014_s12_p2_manual_impact_preview.py`
+- 当前版本: `0.1.4-s12-stage-review`
+- 当前已完成: `v0.1.4 Stage 12 整体复审`
+- 证据目录: `KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/`
+- validator: `KMFA/tools/check_v014_s12_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s12_stage_review.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S12-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S12-P1 dependency、legacy S12-P2 和 v1.4 HTML/UIUX baseline evidence。
-- 未执行: Stage 12 review、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `Stage 12 overall review`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: Stage 12 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S12-P1/S12-P2/S12-P3 和 legacy Stage 12 review evidence。
+- 未执行: S13、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `S13-P1`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s12p3-manual-rerun-mechanism"
+    model_version: "0.1.4-s12-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -157,6 +157,8 @@ models:
       - "FORM-KMFA-V014-S11-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S12P1-MANUAL-RESOLUTION-EVENTS-001"
       - "FORM-KMFA-V014-S12P2-MANUAL-IMPACT-PREVIEW-001"
+      - "FORM-KMFA-V014-S12P3-MANUAL-RERUN-MECHANISM-001"
+      - "FORM-KMFA-V014-S12-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -249,6 +251,12 @@ models:
       - "PARAM-KMFA-1137"
       - "PARAM-KMFA-1138"
       - "PARAM-KMFA-1139"
+      - "PARAM-KMFA-1140"
+      - "PARAM-KMFA-1141"
+      - "PARAM-KMFA-1142"
+      - "PARAM-KMFA-1143"
+      - "PARAM-KMFA-1144"
+      - "PARAM-KMFA-1145"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -1197,3 +1205,11 @@ v014_s12p3_manual_rerun_mechanism_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM
   validator: KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py
   scope: S12-P3 manual rerun mechanism only; no Stage 12 review/upload/raw inbox access/formal report/business execution.
+
+v014_s12_stage_review_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s12_stage_review.py
+  scope: Stage 12 review only; no S13/upload/raw inbox access/raw matching/lineage/formal report/business execution.

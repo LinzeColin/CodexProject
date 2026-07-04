@@ -8541,3 +8541,47 @@ tasks:
       raw_inbox_access: false
       formal_report: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S12-STAGE-REVIEW-20260705"
+    task_name: "v0.1.4 Stage 12 整体复审"
+    stage_id: "V014-S12"
+    phase_id: "S12-STAGE-REVIEW"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S12_STAGE_REVIEW"
+    validator: "KMFA/tools/check_v014_s12_stage_review.py"
+    focused_test: "KMFA/tests/test_v014_s12_stage_review.py"
+    acceptance_id: "ACC-V014-S12-STAGE-REVIEW"
+    acceptance_ids:
+      - "ACC-V014-S12-STAGE-REVIEW"
+    next_phase: "S13-P1"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s12-stage-review"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s12_stage_review.py KMFA/tools/check_v014_s12_stage_review.py KMFA/tests/test_v014_s12_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s12_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p1_manual_resolution_events.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p2_manual_impact_preview.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s12_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s12_stage_review -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S12-P1, S12-P2, S12-P3, legacy Stage 12 and v0.1.4 Stage 12 review validators passed."
+      - "PASS: focused unit test ran 1 test and passed."
+      - "PASS: governance validators, no-float, no-omission, structured parse checks, raw/private suffix scan, high-signal secret scan, scoped artifact boundary scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/human/stage12_review_report.md"
+      - "KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/machine/stage12_review_manifest.json"
+      - "KMFA/tools/check_v014_s12_stage_review.py"
+    forbidden_scope:
+      s13_p1: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      business_execution: false

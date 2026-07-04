@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Stage 12 Review
+- Product version: `0.1.4-s12-stage-review`.
+- Scope: Stage 12 review only; replayed S12-P1/S12-P2/S12-P3 validators and legacy Stage 12 review under v1.4 upload-deferred policy.
+- Evidence: `KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/`.
+- Verification: `KMFA/tools/check_v014_s12_stage_review.py`; `KMFA/tests/test_v014_s12_stage_review.py`.
+- blocker_state: phase_results all PASS, open_findings=0, fixed_findings=1, manual_events=5, impact_previews=5, cache_invalidations=2, rerun_steps=8, consistency_checks=2, S13=false, GitHub upload=false, raw inbox access=false, formal_report_allowed=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+product_version: 0.1.4-s12-stage-review
+version_matrix_product_version_reference: 0.1.4-s12-stage-review
+
 # KMFA v0.1.4 S12-P3 Manual Rerun Mechanism
 - Product version: `0.1.4-s12p3-manual-rerun-mechanism`.
 - Scope: S12-P3 only; public-safe manual rerun mechanism replay under v1.4 human-flow baseline.
