@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4-s10p2-report-trust-grade - 2026-07-04
+
+- 完成 `v0.1.4 S10-P2｜报告可信等级`。
+- 新增 S10-P2 v1.4 evidence generator、validator、focused unit test、report trust grade report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 S10-P1 dependency、legacy public-safe S10-P2 runtime 和 v0.1.3 S10-P2 replay；锁定 report_grade_record_count=`2`、grade_distribution=`D:2`、pending_reconciliation_count=`12`、confirmed_resolution_count=`0`、source_quality_grade=`Q4`、zero_delta_passed=`false`。
+- 缺少已关闭差异、zero-delta、完整 lineage 和人工确认时，完整可信报告、正式报告和经营决策依据继续阻断；record/template/formula/mapping/field mapping/grade policy/release gate version binding count=`2`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s10p1-report-templates - 2026-07-04
 
 - 完成 `v0.1.4 S10-P1｜报告模板`。
