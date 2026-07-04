@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 12`
-- 当前 Phase: `v0.1.4 Stage 12 整体复审已本地完成并通过 validator；复跑 S12-P1/S12-P2/S12-P3 validators 与 legacy Stage 12 review，锁定 phase_results 全部 PASS、open findings=0、fixed findings=1、manual events=5、impact previews=5、cache invalidations=2、rerun steps=8、same-source consistency checks=2；GitHub upload 继续延期到 v1.4 Stage 1-18 完成并整体复审修复后；下一步只能另起 run work 执行 S13-P1，不执行 GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 或业务执行`
+- 当前 Stage: `v0.1.4 Stage 13`
+- 当前 Phase: `v0.1.4 S13-P1 财务经营报表已本地完成并通过 validator；锁定 source lanes=4、sources=8、field mappings=39、draft reports=2、HTML drafts=2、pending reconciliation=12、report grade=D、formal report=0、business decision basis=0；GitHub upload 继续延期到 v1.4 Stage 1-18 完成并整体复审修复后；下一步只能另起 run work 执行 S13-P2，不执行 S13-P3、Stage 13 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 或业务执行`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 Stage 12 整体复审本轮只允许完成本地验证和本地 commit；下一轮只能在用户明确开启后单独执行 `S13-P1 财务经营报表`。不得直接执行 GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或任何业务动作。
+- v0.1.4 S13-P1 财务经营报表本轮只允许完成本地验证和本地 commit；下一轮只能在用户明确开启后单独执行 `S13-P2 回款与应收账龄`。不得直接执行 S13-P3、Stage 13 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或任何业务动作。
 - Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成；S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已完成。Stage 18 review-level Go/No-Go 仍为 `NO_GO`；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

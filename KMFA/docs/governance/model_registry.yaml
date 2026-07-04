@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s12-stage-review"
+    model_version: "0.1.4-s13p1-financial-operating-report"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -159,6 +159,7 @@ models:
       - "FORM-KMFA-V014-S12P2-MANUAL-IMPACT-PREVIEW-001"
       - "FORM-KMFA-V014-S12P3-MANUAL-RERUN-MECHANISM-001"
       - "FORM-KMFA-V014-S12-STAGE-REVIEW-001"
+      - "FORM-KMFA-V014-S13P1-FINANCIAL-OPERATING-REPORT-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -257,6 +258,9 @@ models:
       - "PARAM-KMFA-1143"
       - "PARAM-KMFA-1144"
       - "PARAM-KMFA-1145"
+      - "PARAM-KMFA-1146"
+      - "PARAM-KMFA-1147"
+      - "PARAM-KMFA-1148"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -1213,3 +1217,11 @@ v014_s12_stage_review_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S12_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s12_stage_review.py
   scope: Stage 12 review only; no S13/upload/raw inbox access/raw matching/lineage/formal report/business execution.
+
+v014_s13p1_financial_operating_report_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S13P1-FINANCIAL-OPERATING-REPORT-001
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT
+  validator: KMFA/tools/check_v014_s13_p1_financial_operating_report.py
+  scope: S13-P1 financial operating report only; no S13-P2/S13-P3/Stage 13 review/upload/raw inbox access/raw matching/lineage/formal report/business execution.

@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s12-stage-review
+product_version: 0.1.4-s13p1-financial-operating-report
 
 ## Scope
 
-当前 v0.1.4 scope lock：Stage 12 整体复审已本地通过，复跑 S12-P1/S12-P2/S12-P3 validators、legacy Stage 12 review、v1.4 Stage 12 review validator 和 focused unit test；phase_results 全部 PASS，open findings=0，fixed findings=1，当前仍为 NO_GO/Q4/D/blocked。该 review 未执行 S13、GitHub upload、protected source matching、lineage full check、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
+当前 v0.1.4 scope lock：S13-P1 财务经营报表已本地通过，验证 Stage 12 review dependency、legacy S13-P1 public-safe 模型、v1.4 HTML/UIUX baseline、validator 和 focused unit test；source lanes=4、source count=8、field mappings=39、draft reports=2、HTML drafts=2、pending reconciliation=12、report grade=D、formal report=0、business decision basis=0，当前仍为 NO_GO/Q4/D/blocked。该 phase 未执行 S13-P2、S13-P3、Stage 13 review、GitHub upload、protected source matching、lineage full check、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
 当前模型说明覆盖 v0.1.4 Stage 10 整体复审、v0.1.4 S10-P3 报告导出、v0.1.4 S10-P2 报告可信等级、v0.1.4 S10-P1 报告模板、v0.1.4 Stage 9 整体复审、v0.1.4 S09-P3 口径转换与差异核对、v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 Stage 10 review 只证明 S10-P1/S10-P2/S10-P3 public-safe 报告层本地复审闭环：phase_results 全部 PASS，open findings=0，fixed findings=2，report templates=2，report grade records=2，report exports=2，HTML exports=2，CSV appendices=2，Excel-compatible CSV downloads=2，pending reconciliation=12，confirmed resolution=0，formal report=0，business decision basis=0，当前仍为 NO_GO/Q4/D/blocked。本 review 未读取 raw inbox，不执行 S11、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
@@ -15,8 +15,8 @@ product_version: 0.1.4-s12-stage-review
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s12_stage_review.py`, `KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/machine/stage12_review_manifest.json`
-- current_v014_scope_lock: `Stage 12 review completed; S13/GitHub upload/protected source matching/lineage full check/formal report/UI runtime/live connector/app reinstall/OpMe/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s13_p1_financial_operating_report.py`, `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json`
+- current_v014_scope_lock: `S13-P1 completed; S13-P2/S13-P3/Stage13 review/GitHub upload/protected source matching/lineage full check/formal report/UI runtime/live connector/app reinstall/OpMe/business execution all false`
 
 ### FORM-KMFA-V014-S10-STAGE-REVIEW-001
 
@@ -563,8 +563,8 @@ product_version: 0.1.4-s12-stage-review
 ## Counts
 
 - active models: 8
-- active formulas: 83
-- active parameters: 724
+- active formulas: 100
+- active parameters: 775
 - planned models: 0
 - planned formulas: 0
 - planned parameters: 1
@@ -676,3 +676,10 @@ product_version: 0.1.4-s12-stage-review
 - Inputs: v0.1.4 S12 phase manifests, legacy Stage 12 review manifest as historical context, v1.4 human-flow baseline evidence, governance validators, and deterministic public-safe validator outputs.
 - Outputs: `KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/machine/stage12_review_manifest.json` and public-safe human review evidence under `KMFA/stage_artifacts/V014_S12_STAGE_REVIEW/`.
 - Controls: S13, GitHub upload, protected source matching, lineage full check, formal report release, app reinstall, live connector, OpMe deep coupling, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.
+
+## FORM-KMFA-V014-S13P1-FINANCIAL-OPERATING-REPORT-001
+- Version: `0.1.4-s13p1-financial-operating-report`.
+- Purpose: lock v0.1.4 S13-P1 financial operating report evidence for operating situation, expense tax asset, cash situation and loan detail lanes plus weekly and monthly draft reports with visible data status and limitations.
+- Inputs: v0.1.4 Stage 12 review dependency, legacy S13-P1 public-safe financial operating report artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
+- Outputs: `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json`, `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_source_lanes.jsonl`, `KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_drafts.jsonl`, two public-safe HTML drafts, and public-safe human evidence under the same artifact directory.
+- Controls: S13-P2, S13-P3, Stage 13 review, GitHub upload, protected source matching, lineage full check, formal report release, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.
