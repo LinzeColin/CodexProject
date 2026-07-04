@@ -1,5 +1,5 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260704-V014-S10-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260704-V014-S11-P1-HOME-NAVIGATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "39201eecaefd445553b066c27c7e73601c5afe18"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 748
-    total_active_formulas: 91
+    total_active_parameters: 751
+    total_active_formulas: 92
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -656,3 +656,19 @@ delivery_readiness:
     - "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED"
     - "S09_PENDING_RECONCILIATION_12"
     - "REPORT_GRADE_D_BLOCKS_BUSINESS_DECISION"
+
+
+v014_s11p1_home_navigation:
+  status: completed_validated_local_only_no_go_upload_deferred_home_navigation_locked
+  phase: S11-P1
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION
+  validator: KMFA/tools/check_v014_s11_p1_home_navigation.py
+  focused_test: KMFA/tests/test_v014_s11_p1_home_navigation.py
+  github_upload: deferred_until_v014_stage1_18_complete
+  forbidden_scope:
+    s11_p2: false
+    s11_p3: false
+    stage11_review: false
+    raw_inbox_access: false
+    formal_report: false
+    business_execution: false

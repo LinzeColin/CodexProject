@@ -1,6 +1,6 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s10-stage-review
+product_version: 0.1.4-s11p1-home-navigation
 
 ## Scope
 
@@ -615,3 +615,11 @@ product_version: 0.1.4-s10-stage-review
 - expression: `s02p2_valid = immutable_fields == 5 AND derived_actions == 4 AND control_event_types == 6 AND raw_inbox_read == false AND raw_inbox_listed == false AND raw_inventory_performed == false AND github_upload_performed == false`
 - evidence: `KMFA/tools/check_v014_s02_p2_immutability_policy.py`, `KMFA/tools/immutability_policy_check.py`, `KMFA/metadata/protocol/immutability_policy_lock_v1_4.json`, `KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/machine/s02_p2_immutability_policy_manifest.json`
 - limitation: 不证明 raw readiness、raw inventory、raw value matching、S02-P3、Stage 2 review、正式报告、GitHub upload 或 delivery readiness。
+
+
+## FORM-KMFA-V014-S11P1-HOME-NAVIGATION-001
+- Version: `0.1.4-s11p1-home-navigation`.
+- Purpose: lock S11-P1 homepage navigation evidence for eight required Chinese modules, clickable navigation/actions, visible feedback, report-center entry, KM mark, blue business style, and v1.4 human-flow baseline reflection.
+- Inputs: legacy S11-P1 local-only navigation artifacts, v0.1.4 Stage 10 review manifest, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
+- Outputs: `KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION/machine/home_navigation_manifest.json` and public-safe human evidence under the same artifact directory.
+- Controls: S11-P2, S11-P3, Stage 11 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, and raw/private inbox read/list/stat/hash/mutation must remain false.

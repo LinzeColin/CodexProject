@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s10-stage-review"
+    model_version: "0.1.4-s11p1-home-navigation"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -1129,3 +1129,12 @@ models:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s03_p3_source_priority -q"
     evidence_refs:
       - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"
+
+
+v014_s11p1_home_navigation_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S11P1-HOME-NAVIGATION-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION
+  validator: KMFA/tools/check_v014_s11_p1_home_navigation.py
+  scope: S11-P1 home navigation only; no S11-P2/S11-P3/review/upload/raw inbox access.

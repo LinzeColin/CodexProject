@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 Stage 10 整体复审；S10-P1/S10-P2/S10-P3 validators、legacy Stage 10 review 和 v0.1.3 Stage 10 review 均已通过，phase_results 全部 PASS，open findings=0，fixed findings=2，锁定 2 个报告模板、2 条报告等级记录、2 条导出记录、2 个 HTML exports、2 个 CSV appendices、2 个 Excel-compatible CSV downloads、12 条 pending reconciliation、0 条 confirmed resolution、0 个 formal report、0 个 business decision basis 和 report grade D，状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S10_STAGE_REVIEW/`，validator 为 `KMFA/tools/check_v014_s10_stage_review.py`。本 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S11、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
+KMFA 已完成 v0.1.4 S11-P1 首页导航；8 个中文首页模块、8 个导航按钮、8 个模块动作按钮、1 个可见反馈区、8 个目标链接且目标全部存在，KM 标识、蓝色商务风、v1.4 human-flow clickable navigation / visible feedback / report center entry 均已由 validator 证明。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION/`，validator 为 `KMFA/tools/check_v014_s11_p1_home_navigation.py`。本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox，未执行 S11-P2、S11-P3、Stage 11 review、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、GitHub upload 或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S11-P1 首页导航已确认本地 validator 通过；8 个首页模块、导航按钮、动作按钮、反馈区、报告中心入口和 v1.4 human-flow baseline 反映均为 public-safe 本地证据。S11-P1 只证明首页导航入口，不证明 S11-P2 数据源检查提示、S11-P3 项目成本页、Stage 11 复审、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；下一步只能 S11-P2。
 - v0.1.4 Stage 10 整体复审已确认本地 validator 通过；S10-P1/S10-P2/S10-P3 validators 全部 PASS，legacy Stage 10 review 与 v0.1.3 Stage 10 review 通过，open findings=0，fixed findings=2。Stage 10 只证明报告模板、可信等级和 public-safe 导出证据在本地复审闭环；12 条 reconciliation 仍 pending、zero-delta=false、缺少完整 lineage 和人工确认，因此正式报告、经营决策依据和 delivery 继续阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S10-P2 报告可信等级已确认本地 validator 通过；2 条报告等级记录均为 D，12 条 reconciliation 仍 pending、0 条 confirmed resolution、zero-delta=false、缺少完整 lineage 和人工确认，因此完整可信报告、正式报告、经营决策依据和导出 release 继续阻断；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
 - v0.1.4 S10-P1 报告模板已确认本地 validator 通过；2 个报告模板和 11 个管理可读章节已锁定，v1.4 HTML/UIUX audit FAIL=0 被作为后续报告交互基线引用；S10-P1 只证明模板结构，不生成 HTML/CSV/PDF 导出，不发布正式报告；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
