@@ -1,3 +1,9 @@
+## 0.1.4-s11p1-home-navigation - 2026-07-04
+- Completed v0.1.4 S11-P1 首页导航 locally with eight required Chinese home modules, KM mark, blue business style, clickable navigation buttons, per-module action buttons, visible feedback panel, and report-center entry.
+- Locked v1.4 human-flow baseline reflection for clickable navigation, visible feedback, and report-center entry without exposing raw business data or private source headers.
+- Added public-safe S11-P1 evidence, validator, and focused unit test; confirmed no S11-P2/S11-P3, Stage 11 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
 # Changelog
 
 ## 0.1.4-s10-stage-review - 2026-07-04

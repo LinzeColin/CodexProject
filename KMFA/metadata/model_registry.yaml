@@ -1,4 +1,4 @@
-version: "0.1.4-s10-stage-review"
+version: "0.1.4-s11p1-home-navigation"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -100,3 +100,12 @@ source_of_truth:
   - "KMFA/docs/governance/parameter_registry.csv"
 notes:
   - "This file is a machine-readable mirror for KMFA internal metadata; root governance remains under docs/governance."
+
+
+v014_s11p1_home_navigation_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S11P1-HOME-NAVIGATION-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION
+  validator: KMFA/tools/check_v014_s11_p1_home_navigation.py
+  scope: S11-P1 home navigation only; no S11-P2/S11-P3/review/upload/raw inbox access.

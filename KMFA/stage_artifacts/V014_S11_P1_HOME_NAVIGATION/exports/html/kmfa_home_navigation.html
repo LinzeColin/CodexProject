@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 经营分析系统 首页导航</title>
+  <style>
+    :root {
+      --navy:#082143;
+      --navy-2:#103a72;
+      --blue:#1d4ed8;
+      --blue-soft:#eaf3ff;
+      --line:#d8e4f5;
+      --text:#142033;
+      --muted:#63718a;
+      --card:#ffffff;
+      --warning:#b45309;
+      --warning-bg:#fff7ed;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      background:#f5f8fc;
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+    }
+    .app { display:grid; grid-template-columns:264px 1fr; min-height:100vh; }
+    aside { background:#082143; color:#fff; padding:24px 20px; }
+    .brand { display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+    .logo {
+      width:48px; height:48px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+      background:#1d4ed8; border:1px solid rgba(255,255,255,.32); font-weight:800; font-size:18px;
+    }
+    .logo .ui-icon { width:20px; height:20px; }
+    .logo-text { font-size:12px; line-height:1; letter-spacing:0; }
+    .brand strong { display:block; font-size:18px; }
+    .brand span { display:block; color:#c7dcff; font-size:13px; margin-top:3px; }
+    nav { display:grid; gap:6px; }
+    nav button {
+      width:100%; border:0; border-radius:8px; padding:11px 12px; color:#dbeafe; background:transparent;
+      text-align:left; font-size:15px; cursor:pointer; transition:background .16s ease,color .16s ease,transform .16s ease;
+    }
+    nav button.active, nav button:hover { background:rgba(255,255,255,.12); color:#fff; }
+    nav button:active { transform:translateY(1px); }
+    nav button:focus-visible, .module-action:focus-visible { outline:3px solid rgba(29,78,216,.35); outline-offset:2px; }
+    .nav-button-content { display:flex; align-items:center; gap:10px; }
+    .ui-icon { width:18px; height:18px; flex:0 0 18px; }
+    main { padding:28px 34px 34px; }
+    .topbar { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:18px; }
+    h1 { margin:0 0 8px; font-size:28px; color:#0b2b59; letter-spacing:0; }
+    .subline { margin:0; color:var(--muted); line-height:1.6; }
+    .status-strip { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .pill {
+      border:1px solid #bfdbfe; background:var(--blue-soft); color:#1d4ed8;
+      border-radius:999px; padding:6px 10px; font-size:12px; font-weight:700; white-space:nowrap;
+    }
+    .overview { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px 0; }
+    .metric { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; }
+    .metric b { display:block; color:#0f2f5f; font-size:22px; margin-bottom:4px; }
+    .metric span { color:var(--muted); font-size:13px; }
+    .module-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .module-card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; min-height:184px; transition:border-color .16s ease,box-shadow .16s ease; }
+    .module-card.active { border-color:#93c5fd; box-shadow:0 0 0 3px rgba(29,78,216,.10); }
+    .module-top { display:flex; gap:8px; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+    h2 { margin:0; color:#0b2b59; font-size:18px; letter-spacing:0; }
+    .module-card p { margin:0 0 16px; color:#475569; line-height:1.65; min-height:78px; }
+    .tag { display:inline-flex; align-items:center; border-radius:999px; padding:4px 8px; font-size:12px; font-weight:700; white-space:nowrap; }
+    .tag.blue { color:#1d4ed8; background:#eff6ff; border:1px solid #bfdbfe; }
+    .tag.warning_tag { color:var(--warning); background:var(--warning-bg); border:1px solid #fed7aa; }
+    .module-action {
+      display:inline-flex; align-items:center; gap:8px; border:1px solid #bfdbfe; background:#fff; color:#1d4ed8;
+      border-radius:8px; padding:9px 11px; font-weight:700; cursor:pointer; transition:background .16s ease,border-color .16s ease,transform .16s ease;
+    }
+    .module-action:hover { background:#eff6ff; border-color:#93c5fd; }
+    .module-action:active { transform:translateY(1px); }
+    .action-panel {
+      display:flex; justify-content:space-between; gap:18px; align-items:flex-start; margin-top:16px; background:#fff;
+      border:1px solid var(--line); border-radius:8px; padding:16px; line-height:1.7;
+    }
+    .action-panel h2 { margin:0 0 4px; }
+    .action-panel p { margin:0; color:#475569; }
+    .notice { margin-top:16px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; line-height:1.7; }
+    .notice b { color:#0b2b59; }
+    footer { color:var(--muted); font-size:12px; padding:16px 0 0; }
+    @media(max-width:1100px) { .module-grid,.overview { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:820px) {
+      .app { grid-template-columns:1fr; }
+      main { padding:22px; }
+      .topbar { display:block; }
+      .status-strip { justify-content:flex-start; margin-top:12px; }
+      .module-grid,.overview { grid-template-columns:1fr; }
+      .action-panel { display:block; }
+    }
+    @media(prefers-reduced-motion:reduce) {
+      nav button, .module-card, .module-action { transition:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand"><div class="logo" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-6"/></svg><span class="logo-text">KM</span></div><div><strong>KMFA</strong><span>经营分析系统</span></div></div>
+      <nav aria-label="首页导航">
+        <button type="button" data-target="business_overview" class="active" aria-current="page"><span class="nav-button-content"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-6"/></svg><span>经营总览</span></span></button>
+        <button type="button" data-target="project_cost" aria-current="false"><span class="nav-button-content"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/></svg><span>项目成本</span></span></button>
+        <button type="button" data-target="receivable_collection" aria-current="false"><span class="nav-button-content"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14"/><path d="M5 12h14"/><path d="M5 16h10"/><path d="M17 14l2 2 3-4"/></svg><span>回款应收</span></span></button>
+        <button type="button" data-target="financial_cash" aria-current="false"><span class="nav-button-content"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg><span>财务资金</span></span></button>
+        <button type="button" data-target="invoice_tax" aria-current="false"><span class="nav-button-content"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-2-1-2 1-2-1-2 1-2-1z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h3"/></svg><span>开票纳税</span></span></button>
+        <button type="button" data-target="source_check" aria-current="false"><span class="nav-button-content"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7c0-2 14-2 14 0s-14 2-14 0z"/><path d="M5 7v5c0 2 14 2 14 0V7"/><path d="M5 12v5c0 2 14 2 14 0v-5"/></svg><span>数据源检查</span></span></button>
+        <button type="button" data-target="pending_actions" aria-current="false"><span class="nav-button-content"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M8 9l2 2 4-4"/><path d="M8 15h7"/></svg><span>待处理事项</span></span></button>
+        <button type="button" data-target="report_center" aria-current="false"><span class="nav-button-content"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l3 3v15H7z"/><path d="M14 3v4h4"/><path d="M9 12h6"/><path d="M9 16h6"/></svg><span>报告中心</span></span></button>
+      </nav>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div>
+          <h1>KMFA 经营分析系统</h1>
+          <p class="subline">首页与导航 · 蓝色商务版 · 全中文业务入口 · 不展示真实经营明细</p>
+        </div>
+        <div class="status-strip">
+          <span class="pill">报告等级 D</span>
+          <span class="pill">不可作为正式经营报告</span>
+          <span class="pill">公开安全样张</span>
+        </div>
+      </header>
+      <section class="overview" aria-label="首页状态">
+        <div class="metric"><b>8</b><span>首页模块</span></div>
+        <div class="metric"><b>KM</b><span>品牌标识</span></div>
+        <div class="metric"><b>蓝色</b><span>商务视觉基调</span></div>
+        <div class="metric"><b>受控</b><span>报告发布状态</span></div>
+      </section>
+      <section class="module-grid" aria-label="业务模块">
+        <article class="module-card" id="business_overview">
+          <div class="module-top">
+            <h2>经营总览</h2>
+            <span class="tag blue">可预览</span>
+          </div>
+          <p>集中查看经营健康、回款压力、成本风险和本期重点事项。</p>
+          <button type="button" class="module-action" data-target="business_overview" data-href="../../../S10_P3_report_export/exports/html/business_overview_report.html"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-6"/></svg><span>查看经营概览</span></button>
+        </article>
+        <article class="module-card" id="project_cost">
+          <div class="module-top">
+            <h2>项目成本</h2>
+            <span class="tag blue">受控预览</span>
+          </div>
+          <p>进入项目成本专题入口，保留质量等级和差异阻断提示。</p>
+          <button type="button" class="module-action" data-target="project_cost" data-href="../../../S11_P3_project_cost_page/exports/html/kmfa_project_cost_page.html"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/></svg><span>查看成本入口</span></button>
+        </article>
+        <article class="module-card" id="receivable_collection">
+          <div class="module-top">
+            <h2>回款应收</h2>
+            <span class="tag blue">待复核</span>
+          </div>
+          <p>展示回款、应收和逾期压力的公开安全摘要入口。</p>
+          <button type="button" class="module-action" data-target="receivable_collection" data-href="../../../S13_P2_collection_receivable_aging/exports/html/collection_receivable_aging_priority.html"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14"/><path d="M5 12h14"/><path d="M5 16h10"/><path d="M17 14l2 2 3-4"/></svg><span>查看回款入口</span></button>
+        </article>
+        <article class="module-card" id="financial_cash">
+          <div class="module-top">
+            <h2>财务资金</h2>
+            <span class="tag blue">可预览</span>
+          </div>
+          <p>查看现金、资金计划和财务口径说明的入口。</p>
+          <button type="button" class="module-action" data-target="financial_cash" data-href="../../../S14_P1_fund_cash_loan_plan/exports/html/fund_cash_loan_plan_overview.html"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg><span>查看资金入口</span></button>
+        </article>
+        <article class="module-card" id="invoice_tax">
+          <div class="module-top">
+            <h2>开票纳税</h2>
+            <span class="tag warning_tag">提示</span>
+          </div>
+          <p>查看开票、税务和合规提醒入口，不执行开票或报税。</p>
+          <button type="button" class="module-action" data-target="invoice_tax" data-href="../../../S14_P2_invoice_tax_plan/exports/html/invoice_tax_plan_overview.html"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-2-1-2 1-2-1-2 1-2-1z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h3"/></svg><span>查看税务入口</span></button>
+        </article>
+        <article class="module-card" id="source_check">
+          <div class="module-top">
+            <h2>数据源检查</h2>
+            <span class="tag blue">下一阶段展开</span>
+          </div>
+          <p>进入数据源检查板入口；矩阵明细留到 S11-P2。</p>
+          <button type="button" class="module-action" data-target="source_check" data-href="../../../S11_P2_source_check_board/exports/html/kmfa_source_check_board.html"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7c0-2 14-2 14 0s-14 2-14 0z"/><path d="M5 7v5c0 2 14 2 14 0V7"/><path d="M5 12v5c0 2 14 2 14 0v-5"/></svg><span>查看检查入口</span></button>
+        </article>
+        <article class="module-card" id="pending_actions">
+          <div class="module-top">
+            <h2>待处理事项</h2>
+            <span class="tag blue">受控</span>
+          </div>
+          <p>汇总差异处理、人工确认和报告发布前的待办入口。</p>
+          <button type="button" class="module-action" data-target="pending_actions" data-href="../../../S12_P1_manual_resolution_events/exports/html/kmfa_manual_resolution_workbench.html"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M8 9l2 2 4-4"/><path d="M8 15h7"/></svg><span>查看待办入口</span></button>
+        </article>
+        <article class="module-card" id="report_center">
+          <div class="module-top">
+            <h2>报告中心</h2>
+            <span class="tag blue">报告等级 D</span>
+          </div>
+          <p>查看报告样张和发布限制，正式报告继续受质量等级阻断。</p>
+          <button type="button" class="module-action" data-target="report_center" data-href="../../../S13_P1_financial_operating_report/exports/html/financial_operating_monthly_draft.html"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l3 3v15H7z"/><path d="M14 3v4h4"/><path d="M9 12h6"/><path d="M9 16h6"/></svg><span>查看报告入口</span></button>
+        </article>
+      </section>
+      <section class="action-panel" id="module_action_panel" aria-live="polite" data-module="business_overview">
+        <div>
+          <h2 id="module_action_title">经营总览入口已选中</h2>
+          <p id="module_action_body">当前打开的是经营总览的公开安全入口预览。查看经营概览会打开对应本地页面，不读取或写入原始数据。</p>
+        </div>
+        <span class="pill">受控入口</span>
+      </section>
+      <section class="notice">
+        <b>范围说明：</b>S11-P1 只锁定首页与导航，覆盖 经营总览、项目成本、回款应收、财务资金、开票纳税、数据源检查、待处理事项、报告中心。数据源检查矩阵留到 S11-P2，项目成本详情留到 S11-P3；当前页面不提交原始业务数据，不执行外部接口，不绕过质量等级。
+      </section>
+      <footer>KMFA 经营分析系统 · S11-P1 首页与导航 · 样张不包含真实经营数据</footer>
+    </main>
+  </div>
+  <script>
+    const moduleState = {"business_overview":{"body":"当前打开的是经营总览的公开安全入口预览。查看经营概览会打开对应本地页面，不读取或写入原始数据。","href":"../../../S10_P3_report_export/exports/html/business_overview_report.html","title":"经营总览入口已选中"},"financial_cash":{"body":"当前打开的是财务资金的公开安全入口预览。查看资金入口会打开对应本地页面，不读取或写入原始数据。","href":"../../../S14_P1_fund_cash_loan_plan/exports/html/fund_cash_loan_plan_overview.html","title":"财务资金入口已选中"},"invoice_tax":{"body":"当前打开的是开票纳税的公开安全入口预览。查看税务入口会打开对应本地页面，不读取或写入原始数据。","href":"../../../S14_P2_invoice_tax_plan/exports/html/invoice_tax_plan_overview.html","title":"开票纳税入口已选中"},"pending_actions":{"body":"当前打开的是待处理事项的公开安全入口预览。查看待办入口会打开对应本地页面，不读取或写入原始数据。","href":"../../../S12_P1_manual_resolution_events/exports/html/kmfa_manual_resolution_workbench.html","title":"待处理事项入口已选中"},"project_cost":{"body":"当前打开的是项目成本的公开安全入口预览。查看成本入口会打开对应本地页面，不读取或写入原始数据。","href":"../../../S11_P3_project_cost_page/exports/html/kmfa_project_cost_page.html","title":"项目成本入口已选中"},"receivable_collection":{"body":"当前打开的是回款应收的公开安全入口预览。查看回款入口会打开对应本地页面，不读取或写入原始数据。","href":"../../../S13_P2_collection_receivable_aging/exports/html/collection_receivable_aging_priority.html","title":"回款应收入口已选中"},"report_center":{"body":"当前打开的是报告中心的公开安全入口预览。查看报告入口会打开对应本地页面，不读取或写入原始数据。","href":"../../../S13_P1_financial_operating_report/exports/html/financial_operating_monthly_draft.html","title":"报告中心入口已选中"},"source_check":{"body":"当前打开的是数据源检查的公开安全入口预览。查看检查入口会打开对应本地页面，不读取或写入原始数据。","href":"../../../S11_P2_source_check_board/exports/html/kmfa_source_check_board.html","title":"数据源检查入口已选中"}};
+    const panel = document.getElementById("module_action_panel");
+    const panelTitle = document.getElementById("module_action_title");
+    const panelBody = document.getElementById("module_action_body");
+
+    function selectModule(moduleId, options = { scrollTarget:false, scrollPanel:false }) {
+      const target = document.getElementById(moduleId);
+      const state = moduleState[moduleId];
+      if (!target || !state) return;
+      document.querySelectorAll("nav button").forEach((item) => {
+        const isActive = item.dataset.target === moduleId;
+        item.classList.toggle("active", isActive);
+        item.setAttribute("aria-current", isActive ? "page" : "false");
+      });
+      document.querySelectorAll(".module-card").forEach((card) => card.classList.toggle("active", card.id === moduleId));
+      panel.dataset.module = moduleId;
+      panelTitle.textContent = state.title;
+      panelBody.textContent = state.body;
+      if (options.scrollTarget) target.scrollIntoView({ behavior:"smooth", block:"center" });
+      if (options.scrollPanel) panel.scrollIntoView({ behavior:"smooth", block:"nearest" });
+    }
+
+    function openModulePage(moduleId, href) {
+      selectModule(moduleId, { scrollTarget:false, scrollPanel:false });
+      if (!href) return;
+      window.location.href = href;
+    }
+
+    document.querySelectorAll("nav button").forEach((button) => {
+      button.addEventListener("click", () => selectModule(button.dataset.target, { scrollTarget:true, scrollPanel:false }));
+    });
+    document.querySelectorAll(".module-action").forEach((button) => {
+      button.addEventListener("click", () => openModulePage(button.dataset.target, button.dataset.href));
+    });
+    selectModule("business_overview");
+  </script>
+</body>
+</html>

@@ -8259,3 +8259,45 @@ tasks:
     rollback: "Revert V014_S10_STAGE_REVIEW artifacts, v014 Stage 10 review validator, unit test and governance rows. Raw data directory must not be modified."
     target_version: "0.1.4-s10-stage-review"
     completed_version: "0.1.4-s10-stage-review"
+
+
+  - task_id: "KMFA-V014-S11-P1-HOME-NAVIGATION-20260704"
+    task_name: "v0.1.4 S11-P1 首页导航"
+    stage_id: "V014-S11"
+    phase_id: "S11-P1"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION"
+    validator: "KMFA/tools/check_v014_s11_p1_home_navigation.py"
+    focused_test: "KMFA/tests/test_v014_s11_p1_home_navigation.py"
+    acceptance_id: "ACC-V014-S11-P1-HOME-NAVIGATION"
+    acceptance_ids:
+      - "ACC-V014-S11-P1-HOME-NAVIGATION"
+    next_phase: "S11-P2"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s11p1-home-navigation"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s11_p1_home_navigation.py KMFA/tools/check_v014_s11_p1_home_navigation.py KMFA/tests/test_v014_s11_p1_home_navigation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s11_p1_home_navigation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s11_p1_home_navigation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p1_home_navigation.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s11_p1_home_navigation -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S11-P1 py_compile generator Stage 10 dependency legacy S11-P1 validator v0.1.4 validator and focused unit test passed."
+      - "PASS: navigation modules 8, nav buttons 8, module action buttons 8, visible feedback 1, existing targets 8, v1.4 audit rows 54 and fail count 0 locked."
+      - "PASS: raw inbox read/list/stat/hash/mutation, S11-P2, S11-P3, Stage 11 review, GitHub upload, raw value matching, lineage full check, formal report and business execution were not performed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION/human/home_navigation_report.md"
+      - "KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION/machine/home_navigation_manifest.json"
+      - "KMFA/tools/check_v014_s11_p1_home_navigation.py"
+    forbidden_scope:
+      s11_p2: false
+      s11_p3: false
+      stage11_review: false
+      raw_inbox_access: false
+      formal_report: false
+      business_execution: false
