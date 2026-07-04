@@ -1286,3 +1286,12 @@ v014_s14p3_policy_evidence_plan_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S14_P3_POLICY_EVIDENCE_PLAN
   validator: KMFA/tools/check_v014_s14_p3_policy_evidence_plan.py
   scope: S14-P3 policy evidence plan only; no Stage 14 review, upload, raw inbox access, raw matching, lineage, formal report, policy eligibility conclusion, policy filing, subsidy application, tax filing, invoice issuance, payment, bank, loan management or business execution.
+
+v014_s14_stage_review_registry_note:
+  version: "0.1.4-s14-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S14-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S14_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s14_stage_review.py
+  scope: Stage 14 overall review only; no S15-P1, upload, raw inbox access, raw matching, lineage, formal report, policy filing, tax filing, invoice issuance, payment, bank, loan management, salary, bonus, payroll export, final payment or business execution.
