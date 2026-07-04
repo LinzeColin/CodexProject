@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s09p2-margin-cash-margin
+
+- task_id: `KMFA-V014-S09-P2-MARGIN-CASH-MARGIN-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred_margin_cash_margin`
+- scope: v0.1.4 S09-P2 margin and cash margin only; validated v0.1.4 S09-P1 dependency and legacy public-safe S09-P2 artifacts without reading raw inbox, starting S09-P3/Stage 9 review, or performing GitHub upload.
+- evidence: `KMFA/stage_artifacts/V014_S09_P2_MARGIN_CASH_MARGIN/human/margin_cash_margin_report.md`, `KMFA/stage_artifacts/V014_S09_P2_MARGIN_CASH_MARGIN/human/test_results.md`, `KMFA/stage_artifacts/V014_S09_P2_MARGIN_CASH_MARGIN/machine/margin_cash_margin_manifest.json`
+- tests: `KMFA/tools/check_v014_s09_p2_margin_cash_margin.py`, `KMFA/tests/test_v014_s09_p2_margin_cash_margin.py`, legacy S09-P2 validator/test, v0.1.4 S09-P1 dependency validator, governance validators and safety scans.
+- blocker_state: required_margin_metrics=4, project_cost_fact_records=4, margin_records=4, scope_difference_summary_records=12, authority_field_groups=8, manual_review_queue=3, unresolved_difference=1, zero_delta_fail_count=1, blocked_quality_result_count=2, authority_system_overwrite_allowed=false, public_amount_values_committed=0, S09-P3=false, Stage9_review=false, GitHub upload=false, raw value matching=false, lineage full check=false, formal_report_allowed=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+- privacy: no raw business data, zip, Excel, PDF, private CSV, raw file identifiers, field/header plaintext, true business values, credentials or connector secrets committed.
+product_version: 0.1.4-s09p2-margin-cash-margin
+version_matrix_product_version_reference: 0.1.4-s09p2-margin-cash-margin
+
 ## 2026-07-04 - 0.1.4-s09p1-project-cost-fact-layer
 
 - task_id: `KMFA-V014-S09-P1-PROJECT-COST-FACT-LAYER-20260704`

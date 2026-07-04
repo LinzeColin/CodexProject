@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s09p1-project-cost-fact-layer
+product_version: 0.1.4-s09p2-margin-cash-margin
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S09-P1 只证明项目成本事实层 public-safe 结构已本地通过：Stage 8 review dependency、legacy S09-P1 validator 与 v0.1.4 S09-P1 validator 全部 PASS，required metrics=6，cost categories=9，fact records=4，unallocated pool=9，manual review queue=3，unresolved difference=1，当前仍为 NO_GO/Q4/D/blocked。本 phase 未读取 raw inbox，不执行 S09-P2、S09-P3、Stage 9 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
+当前模型说明覆盖 v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S09-P2 只证明毛利与现金毛利 public-safe 结构已本地通过：S09-P1 dependency、legacy S09-P2 validator 与 v0.1.4 S09-P2 validator 全部 PASS，margin metrics=4，margin records=4，scope difference summary=12，authority field groups=8，manual review queue=3，unresolved difference=1，authority/system overwrite count=0，当前仍为 NO_GO/Q4/D/blocked。本 phase 未读取 raw inbox，不执行 S09-P3、Stage 9 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
 ## Active Model
 
@@ -13,8 +13,8 @@ product_version: 0.1.4-s09p1-project-cost-fact-layer
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s09_p1_project_cost_fact_layer.py`, `KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/machine/project_cost_fact_layer_manifest.json`
-- current_v014_scope_lock: `S09-P1 completed; S09-P2/S09-P3/Stage 9 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/app reinstall/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s09_p2_margin_cash_margin.py`, `KMFA/stage_artifacts/V014_S09_P2_MARGIN_CASH_MARGIN/machine/margin_cash_margin_manifest.json`
+- current_v014_scope_lock: `S09-P2 completed; S09-P3/Stage 9 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/app reinstall/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -265,6 +265,16 @@ product_version: 0.1.4-s09p1-project-cost-fact-layer
 - evidence: `KMFA/tools/v014_s09_p1_project_cost_fact_layer.py`, `KMFA/tools/check_v014_s09_p1_project_cost_fact_layer.py`, `KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/machine/project_cost_fact_layer_manifest.json`
 - boundary_validation: `KMFA/tests/test_v014_s09_p1_project_cost_fact_layer.py`, `KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/human/test_results.md`
 - limitation: S09-P1 只证明 public-safe project cost fact layer aggregate/schema evidence；不证明 S09-P2 毛利/现金毛利、S09-P3 差异核对、Stage 9 review、raw business value correctness、raw value matching、lineage full check、正式报告、GitHub upload readiness、live connector、app reinstall、OpMe 深度耦合或 business execution。
+
+### FORM-KMFA-V014-S09P2-MARGIN-CASH-MARGIN-001
+
+- type: deterministic public-safe margin and cash margin gate
+- purpose: 验证 v0.1.4 S09-P2 毛利与现金毛利，覆盖 S09-P1 dependency、legacy public-safe S09-P2 dependency、4 个 margin metrics、4 条 margin records、12 条 scope difference summary、8 个 authority field groups、NO_GO/Q4/D/blocked、authority/system no-overwrite 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `s09p2_valid = s09p1_dependency == PASS AND legacy_s09_p2_dependency == PASS AND required_margin_metric_count == 4 AND margin_record_count == 4 AND difference_summary_count == 12 AND authority_system_overwrite_allowed_count == 0 AND public_amount_values_committed_count == 0 AND raw_inbox_read_by_this_phase == false AND s09_p3_performed == false AND stage9_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s09_p2_margin_cash_margin.py`, `KMFA/tools/check_v014_s09_p2_margin_cash_margin.py`, `KMFA/stage_artifacts/V014_S09_P2_MARGIN_CASH_MARGIN/machine/margin_cash_margin_manifest.json`
+- boundary_validation: `KMFA/tests/test_v014_s09_p2_margin_cash_margin.py`, `KMFA/stage_artifacts/V014_S09_P2_MARGIN_CASH_MARGIN/human/test_results.md`
+- limitation: S09-P2 只证明 public-safe margin/cash-margin aggregate/hash-ref evidence；不证明 S09-P3 差异核对、Stage 9 review、raw business value correctness、raw value matching、lineage full check、正式报告、GitHub upload readiness、live connector、app reinstall、OpMe 深度耦合或 business execution。
 
 ### FORM-KMFA-AMOUNT-001
 

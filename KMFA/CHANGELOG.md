@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4-s09p2-margin-cash-margin - 2026-07-04
+
+- 完成 `v0.1.4 S09-P2｜毛利与现金毛利`。
+- 新增 S09-P2 evidence generator、validator、focused unit test、margin/cash margin report、test results 和 machine manifest。
+- 验证 v0.1.4 S09-P1 dependency，并复用 legacy public-safe S09-P2 artifacts，锁定 required margin metrics=`4`、project cost fact records=`4`、margin records=`4`、scope difference summary records=`12`、authority field groups=`8`、manual review queue=`3`、unresolved difference=`1`、zero-delta fail=`1`、blocked quality results=`2`。
+- 权威显示值、系统复算值和现金口径保持 hash/private-ref only，authority/system overwrite allowed=`false`，public amount values committed=`0`；当前仍为 `NO_GO/Q4/D/blocked`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s09p1-project-cost-fact-layer - 2026-07-04
 
 - 完成 `v0.1.4 S09-P1｜项目成本事实层`。
