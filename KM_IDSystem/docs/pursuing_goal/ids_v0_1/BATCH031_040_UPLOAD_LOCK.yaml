@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-03T23:43:21Z"
-status: "stage033_completed_local_pending_review"
+updated_at_utc: "2026-07-04T00:02:57Z"
+status: "stage033_completed_reviewed_local"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -89,23 +89,25 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-033:
-    status: "stage033_completed_local_pending_review"
+    status: "completed_reviewed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
       - "Phase 4"
-    review_status: "pending_next_run"
-    next_gate: "IDS-STAGE033-REVIEW-GATE"
-    current_task_id: "IDS-V0_1-STAGE033-P4"
+    review_status: "passed"
+    next_stage: "STAGE-034"
+    next_gate: "IDS-STAGE034-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE033-REVIEW"
     acceptance_id: "ACC-STAGE-033"
-    acceptance_status: "phase4_closeout_complete"
+    acceptance_status: "reviewed_local_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE2_DATABASE_SIZE_GUARD_SLICE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE3_SCENARIO_VALIDATION.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_STAGE_REVIEW.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json"
       - "KM_IDSystem/scripts/check_database_size_guard.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage033_database_size_guard.py"
@@ -113,8 +115,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE033-P4"
-  next_allowed_task_id: "IDS-V0_1-STAGE033-REVIEW"
+  current_task_id: "IDS-V0_1-STAGE033-REVIEW"
+  next_allowed_task_id: "IDS-V0_1-STAGE034-P1"
   github_upload_allowed: false
-  current_run: "STAGE-033 Phase 4 closes local database size-guard delivery evidence with static schema diff, static migration output, static recovery test log, known limits, destructive migration confirmation, rollback steps, backup restore steps, and Chinese owner feedback from tracked Git contracts only. It does not connect to PostgreSQL, create live schema or migrations, create connection configs or DSNs, run size-statistics queries, execute VACUUM/reindex/cleanup/backup/restore, read raw metadata content, write runtime outputs, upload to GitHub, create a PR, merge, reinstall app entries, run batch review, run stage review, or enter STAGE-034."
-  no_upload_reason: "BATCH031_040 has STAGE-031 and STAGE-032 completed/reviewed locally plus STAGE-033 completed locally pending review; upload remains blocked until STAGE-033..040 are completed, reviewed, repaired, and a separate batch upload gate runs."
+  current_run: "STAGE-033 whole-stage review verifies P0 source binding, Phase 1-4 evidence, static database size-guard checker, scenario validation, closeout, raw data boundary, owner/governance render path, and no-upload state; ACC-STAGE-033 is locally reviewed and passed. It does not connect to PostgreSQL, create live schema or migrations, create connection configs or DSNs, run size-statistics queries, execute VACUUM/reindex/cleanup/backup/restore, read raw metadata content, write runtime outputs, upload to GitHub, create a PR, merge, reinstall app entries, run batch review, or enter STAGE-034."
+  no_upload_reason: "BATCH031_040 has STAGE-031, STAGE-032, and STAGE-033 completed/reviewed locally; upload remains blocked until STAGE-034..040 are completed, reviewed, repaired, and a separate batch upload gate runs."
