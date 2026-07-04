@@ -1,4 +1,4 @@
-version: "0.1.4-s11p2-source-check-board"
+version: "0.1.4-s11p3-project-cost-page"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -41,6 +41,7 @@ active_formula_ids:
   - "FORM-KMFA-V014-S10P3-REPORT-EXPORT-001"
   - "FORM-KMFA-V014-S10-STAGE-REVIEW-001"
   - "FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001"
+  - "FORM-KMFA-V014-S11P3-PROJECT-COST-PAGE-001"
   - "FORM-KMFA-FIELD-STANDARDIZATION-001"
   - "FORM-KMFA-A0-FILE-REGISTRATION-001"
   - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -118,3 +119,11 @@ v014_s11p2_source_check_board_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD
   validator: KMFA/tools/check_v014_s11_p2_source_check_board.py
   scope: S11-P2 source check board only; no S11-P3/review/upload/raw inbox access.
+
+v014_s11p3_project_cost_page_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S11P3-PROJECT-COST-PAGE-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE
+  validator: KMFA/tools/check_v014_s11_p3_project_cost_page.py
+  scope: S11-P3 project cost page only; no stage review/upload/raw inbox access.

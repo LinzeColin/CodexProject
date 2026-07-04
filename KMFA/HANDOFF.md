@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `v0.1.4 S11-P2 数据源检查板`：`KMFA/tools/v014_s11_p2_source_check_board.py`、`KMFA/tools/check_v014_s11_p2_source_check_board.py`、`KMFA/tests/test_v014_s11_p2_source_check_board.py` 和 S11-P2 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/`。本 phase 验证 v0.1.4 S11-P1 dependency、legacy S11-P2 public-safe source check board artifacts 和 v1.4 HTML human-flow audit baseline，锁定 matrix_rows=`13`、required_columns=`11`、allowed_statuses=`5`、html_exports=`1`、search_input=`1`、status_change_actions=`5`、status_detail=`true`、control_event_log=`1`、large_yellow_surface=`0`、v14 audit files=`6`、v14 audit rows=`54`、v14 audit pass=`54`、v14 audit warn/fail=`0/0`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S11-P3、Stage 11 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 S11-P3 项目成本页面`，不得在本轮补做 Stage 11 review、GitHub upload、raw value matching、lineage full check 或正式报告。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。当前已完成 `v0.1.4 S11-P3 项目成本页面`：`KMFA/tools/v014_s11_p3_project_cost_page.py`、`KMFA/tools/check_v014_s11_p3_project_cost_page.py`、`KMFA/tests/test_v014_s11_p3_project_cost_page.py` 和 S11-P3 evidence 已建立；证据位于 `KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/`。本 phase 验证 v0.1.4 S11-P2 dependency、legacy S11-P3 public-safe project cost page artifacts 和 v1.4 HTML human-flow audit baseline，锁定 project_rows=`4`、project_list_columns=`7`、cost_categories=`9`、margin_records=`4`、pending_reconciliations=`12`、html_exports=`1`、project_detail_click=`true`、report_section_switch=`true`、appendix_export_feedback=`true`、print_save_feedback=`true`、report_grade=`D`、quality_bypass=`false`、v14 audit files=`6`、v14 audit rows=`54`、v14 audit pass=`54`、v14 audit warn/fail=`0/0`。本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 11 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 Stage 11 整体复审`，不得在本轮补做 GitHub upload、S12、raw value matching、lineage full check 或正式报告。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s11p2-source-check-board`
-- 当前已完成: `v0.1.4 S11-P2 数据源检查板`
-- 证据目录: `KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD/`
-- validator: `KMFA/tools/check_v014_s11_p2_source_check_board.py`
-- focused test: `KMFA/tests/test_v014_s11_p2_source_check_board.py`
+- 当前版本: `0.1.4-s11p3-project-cost-page`
+- 当前已完成: `v0.1.4 S11-P3 项目成本页面`
+- 证据目录: `KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/`
+- validator: `KMFA/tools/check_v014_s11_p3_project_cost_page.py`
+- focused test: `KMFA/tests/test_v014_s11_p3_project_cost_page.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S11-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S11-P1、legacy S11-P2 和 v1.4 HTML/UIUX baseline evidence。
-- 未执行: S11-P3、Stage 11 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
-- 下一步: 仅在用户明确开启后执行 `S11-P3 项目成本页面`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S11-P3 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S11-P2、legacy S11-P3 和 v1.4 HTML/UIUX baseline evidence。
+- 未执行: Stage 11 review、GitHub upload、S12、raw value matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、business execution。
+- 下一步: 仅在用户明确开启后执行 `Stage 11 整体复审`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

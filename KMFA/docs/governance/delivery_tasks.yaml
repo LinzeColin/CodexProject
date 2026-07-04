@@ -8341,3 +8341,43 @@ tasks:
       raw_inbox_access: false
       formal_report: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S11-P3-PROJECT-COST-PAGE-20260704"
+    task_name: "v0.1.4 S11-P3 项目成本页面"
+    stage_id: "V014-S11"
+    phase_id: "S11-P3"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE"
+    validator: "KMFA/tools/check_v014_s11_p3_project_cost_page.py"
+    focused_test: "KMFA/tests/test_v014_s11_p3_project_cost_page.py"
+    acceptance_id: "ACC-V014-S11-P3-PROJECT-COST-PAGE"
+    acceptance_ids:
+      - "ACC-V014-S11-P3-PROJECT-COST-PAGE"
+    next_phase: "S11-STAGE-REVIEW"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s11p3-project-cost-page"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s11_p3_project_cost_page.py KMFA/tools/check_v014_s11_p3_project_cost_page.py KMFA/tests/test_v014_s11_p3_project_cost_page.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s11_p3_project_cost_page.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p2_source_check_board.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s11_p3_project_cost_page.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p3_project_cost_page.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s11_p3_project_cost_page -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S11-P3 py_compile generator S11-P2 dependency legacy S11-P3 validator v0.1.4 validator and focused unit test passed."
+      - "PASS: project rows 4, list columns 7, cost categories 9, margin records 4, pending reconciliations 12, html export 1, detail/report/appendix/print feedback true, v1.4 audit rows 54 and fail count 0 locked."
+      - "PASS: raw inbox read/list/stat/hash/mutation, Stage 11 review, GitHub upload, raw value matching, lineage full check, formal report and business execution were not performed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/human/project_cost_page_report.md"
+      - "KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE/machine/project_cost_page_manifest.json"
+      - "KMFA/tools/check_v014_s11_p3_project_cost_page.py"
+    forbidden_scope:
+      stage11_review: false
+      github_upload: false
+      raw_inbox_access: false
+      formal_report: false
+      business_execution: false

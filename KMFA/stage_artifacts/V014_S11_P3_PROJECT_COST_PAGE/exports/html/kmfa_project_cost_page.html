@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 项目成本页面</title>
+  <style>
+    :root {
+      --navy:#0b1f3a; --blue:#2563eb; --blue2:#dbeafe; --line:#d8e4f5;
+      --text:#152033; --muted:#64748b; --bg:#f6f9fe; --card:#ffffff;
+      --blocked:#b91c1c; --ok:#0f766e;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+    .header { background:linear-gradient(135deg,var(--navy),#123a70 62%,#2563eb); color:#fff; padding:28px 36px; }
+    .brand { display:flex; gap:14px; align-items:center; }
+    .logo { width:52px; height:52px; border-radius:8px; border:1px solid rgba(255,255,255,.45); display:flex; align-items:center; justify-content:center; font-weight:800; background:rgba(255,255,255,.12); }
+    h1 { margin:0; font-size:28px; letter-spacing:0; }
+    .sub { margin-top:8px; color:#d6e7ff; line-height:1.65; }
+    .wrap { max-width:1240px; margin:0 auto; padding:24px; }
+    .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+    .metric,.panel,.preview,.toolbar { background:var(--card); border:1px solid var(--line); border-radius:8px; box-shadow:0 10px 28px rgba(17,45,88,.06); }
+    .metric { padding:15px; }
+    .metric span { display:block; color:var(--muted); font-size:13px; }
+    .metric b { display:block; color:#0b2b59; font-size:26px; margin:6px 0; }
+    .metric small { color:#475569; }
+    .toolbar { display:grid; grid-template-columns:1.4fr .9fr; gap:12px; padding:14px; margin-bottom:14px; align-items:center; }
+    label { display:block; color:#334155; font-size:13px; font-weight:700; margin-bottom:7px; }
+    input { width:100%; border:1px solid #bfdbfe; border-radius:8px; padding:10px 12px; font-size:14px; }
+    .gate { color:#1e3a5f; line-height:1.6; }
+    .gate strong { color:#1d4ed8; }
+    .table-wrap { overflow:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
+    table { width:100%; min-width:1120px; border-collapse:separate; border-spacing:0; }
+    th { background:#0f2f5f; color:#fff; text-align:left; font-size:13px; padding:12px; border-bottom:1px solid #244d86; }
+    td { padding:12px; font-size:13px; line-height:1.55; border-bottom:1px solid #edf2f7; vertical-align:top; }
+    tr:hover td { background:#f8fbff; }
+    .badge { display:inline-flex; align-items:center; border-radius:999px; padding:5px 10px; font-size:12px; font-weight:800; color:#991b1b; background:#fee2e2; }
+    button { border:1px solid #bfdbfe; background:#eff6ff; color:#1d4ed8; border-radius:8px; padding:8px 11px; font-weight:800; cursor:pointer; }
+    button:hover { background:#dbeafe; }
+    .detail { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:16px; }
+    .panel { padding:16px; min-height:132px; }
+    .panel h2,.preview h2 { margin:0 0 10px; color:#0b2b59; font-size:18px; }
+    .panel p,.preview p { margin:0; color:#475569; line-height:1.75; }
+    .preview { margin-top:16px; padding:16px; }
+    .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .feedback { margin-top:12px; border:1px solid #bfdbfe; background:#f8fbff; border-radius:8px; padding:12px; color:#1e3a5f; line-height:1.7; }
+    .events { margin-top:12px; color:#475569; font-size:12px; line-height:1.65; }
+    .footer { margin-top:14px; color:#64748b; font-size:12px; line-height:1.6; }
+    @media(max-width:980px) { .metrics,.detail,.toolbar { grid-template-columns:1fr 1fr; } }
+    @media(max-width:640px) { .metrics,.detail,.toolbar { grid-template-columns:1fr; } .wrap { padding:16px; } .header { padding:24px; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand"><div class="logo">KM</div><div><h1>KMFA 项目成本页面</h1><div class="sub">项目列表、毛利、成本结构、回款、差异状态、来源证据、待处理事项和报告预览。报告预览可直接查看，但不可绕过质量等级。</div></div></div>
+  </header>
+  <main class="wrap">
+    <section class="metrics" aria-label="项目成本摘要"><div class="metric"><span>项目分组</span><b>4</b><small>公开安全列表</small></div><div class="metric"><span>成本结构</span><b>9</b><small>分类状态</small></div><div class="metric"><span>差异事项</span><b>12</b><small>待人工复核</small></div><div class="metric"><span>报告等级</span><b>D</b><small>不可绕过</small></div></section>
+    <section class="toolbar" aria-label="筛选和质量门禁">
+      <div><label for="projectSearch">筛选项目分组</label><input id="projectSearch" type="search" placeholder="输入项目分组或差异状态"></div>
+      <div id="qualityGateFeedback" class="gate"><strong>报告等级 D</strong>：预览可查看，但正式报告、完整可信报告和经营决策依据均被质量门禁阻断。</div>
+    </section>
+    <section class="table-wrap" aria-label="项目列表">
+      <table>
+        <thead><tr><th>项目分组</th><th>毛利状态</th><th>成本结构</th><th>回款状态</th><th>差异状态</th><th>报告预览</th><th>下一步</th></tr></thead>
+        <tbody id="projectRows">
+          <tr data-project-row data-search="项目分组 001 3 项差异待复核">
+            <td>项目分组 001</td>
+            <td>毛利指标已记录，正式结论阻断</td>
+            <td>人工、材料、机械、外协、运输、差旅、税费、管理费、利息</td>
+            <td>回款口径已登记，现金毛利待授权复核</td>
+            <td><span class="badge blocked">3 项差异待复核</span></td>
+            <td>可查看报告预览，报告等级 D，不可作为经营决策依据</td>
+            <td><button type="button" class="detail-button" data-evidence="事实层、毛利层、差异核对和报告等级证据已绑定" data-pending="复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级" data-preview="可查看报告预览，报告等级 D，不可作为经营决策依据">查看详情</button></td>
+          </tr>
+          <tr data-project-row data-search="项目分组 002 3 项差异待复核">
+            <td>项目分组 002</td>
+            <td>毛利指标已记录，正式结论阻断</td>
+            <td>人工、材料、机械、外协、运输、差旅、税费、管理费、利息</td>
+            <td>回款口径已登记，现金毛利待授权复核</td>
+            <td><span class="badge blocked">3 项差异待复核</span></td>
+            <td>可查看报告预览，报告等级 D，不可作为经营决策依据</td>
+            <td><button type="button" class="detail-button" data-evidence="事实层、毛利层、差异核对和报告等级证据已绑定" data-pending="复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级" data-preview="可查看报告预览，报告等级 D，不可作为经营决策依据">查看详情</button></td>
+          </tr>
+          <tr data-project-row data-search="项目分组 003 3 项差异待复核">
+            <td>项目分组 003</td>
+            <td>毛利指标已记录，正式结论阻断</td>
+            <td>人工、材料、机械、外协、运输、差旅、税费、管理费、利息</td>
+            <td>回款口径已登记，现金毛利待授权复核</td>
+            <td><span class="badge blocked">3 项差异待复核</span></td>
+            <td>可查看报告预览，报告等级 D，不可作为经营决策依据</td>
+            <td><button type="button" class="detail-button" data-evidence="事实层、毛利层、差异核对和报告等级证据已绑定" data-pending="复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级" data-preview="可查看报告预览，报告等级 D，不可作为经营决策依据">查看详情</button></td>
+          </tr>
+          <tr data-project-row data-search="项目分组 004 3 项差异待复核">
+            <td>项目分组 004</td>
+            <td>毛利指标已记录，正式结论阻断</td>
+            <td>人工、材料、机械、外协、运输、差旅、税费、管理费、利息</td>
+            <td>回款口径已登记，现金毛利待授权复核</td>
+            <td><span class="badge blocked">3 项差异待复核</span></td>
+            <td>可查看报告预览，报告等级 D，不可作为经营决策依据</td>
+            <td><button type="button" class="detail-button" data-evidence="事实层、毛利层、差异核对和报告等级证据已绑定" data-pending="复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级" data-preview="可查看报告预览，报告等级 D，不可作为经营决策依据">查看详情</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="detail" aria-label="项目详情">
+      <div class="panel"><h2>项目详情</h2><p id="detailText">当前选择展示公开安全项目分组，金额槽位只保留状态，不展示真实金额、客户名称、合同明细、账号或原始文件。</p></div>
+      <div class="panel"><h2>来源证据</h2><p id="evidenceText">事实层、毛利层、差异核对和报告等级证据已绑定</p></div>
+      <div class="panel"><h2>待处理事项</h2><p id="pendingText">复核权威毛利与系统复算差异；确认现金毛利口径和回款证据；补齐完整追溯和人工确认后再考虑报告升级</p></div>
+    </section>
+    <section class="preview" aria-label="报告预览">
+      <h2>报告预览</h2>
+      <div class="tabs">
+        <button type="button" data-report-section="经营摘要">经营摘要</button>
+        <button type="button" data-report-section="项目毛利">项目毛利</button>
+        <button type="button" data-report-section="成本结构">成本结构</button>
+        <button type="button" data-report-section="风险事项">风险事项</button>
+      </div>
+      <p id="reportSectionText">经营摘要：当前仅为 D 级预览，展示状态和待处理事项，不构成正式报告。</p>
+      <p id="previewText">可查看报告预览，报告等级 D，不可作为经营决策依据</p>
+      <div class="actions">
+        <button type="button" id="exportAppendixButton">导出公开附表CSV</button>
+        <button type="button" id="printSaveButton">打印/另存流程</button>
+      </div>
+      <div id="actionFeedback" class="feedback">等待操作。任何预览、导出或打印动作都不会写入原始数据，也不会绕过质量等级。</div>
+      <ol id="controlEventLog" class="events"></ol>
+    </section>
+    <div class="footer">KMFA 经营分析系统 · S11-P3 项目成本页面 · 本页面不执行 Stage 11 整体复审、GitHub upload、完整追溯检查、外部接口或业务动作。</div>
+  </main>
+  <script>
+    const controlEvents = [];
+    const detail = {
+      detail: document.getElementById("detailText"),
+      evidence: document.getElementById("evidenceText"),
+      pending: document.getElementById("pendingText"),
+      preview: document.getElementById("previewText"),
+      action: document.getElementById("actionFeedback"),
+      log: document.getElementById("controlEventLog")
+    };
+    function logControlEvent(action) {
+      const event = { action, rawLayerWrite: false, qualityGateBypass: false, formalReportReleased: false };
+      controlEvents.push(event);
+      const li = document.createElement("li");
+      li.textContent = `${action} · rawLayerWrite=false · qualityGateBypass=false`;
+      detail.log.appendChild(li);
+    }
+    function selectProject(button) {
+      detail.detail.textContent = "已选择公开安全项目分组；页面只更新展示状态，不写回任何原始数据。";
+      detail.evidence.textContent = button.dataset.evidence;
+      detail.pending.textContent = button.dataset.pending;
+      detail.preview.textContent = button.dataset.preview;
+      detail.action.textContent = "项目详情已切换；报告等级仍为 D，不允许生成正式报告或经营决策依据。";
+      logControlEvent("project_detail_preview");
+    }
+    function switchReportSection(section) {
+      detail.action.textContent = `已切换到${section}预览；该预览仍受 D 级质量门禁约束。`;
+      document.getElementById("reportSectionText").textContent = `${section}：当前仅展示 public-safe 状态、口径说明和待处理事项。`;
+      logControlEvent("report_section_switch");
+    }
+    function exportAppendix() {
+      detail.action.textContent = "公开附表 CSV 导出流程已触发预览；不会生成 Excel、PDF 或私有业务文件。";
+      logControlEvent("public_appendix_csv_preview");
+    }
+    function printSavePreview() {
+      detail.action.textContent = "打印/另存流程已触发预览；质量门禁仍阻断正式报告发布。";
+      logControlEvent("print_save_preview");
+    }
+    function filterProjects() {
+      const query = document.getElementById("projectSearch").value.trim().toLowerCase();
+      document.querySelectorAll("[data-project-row]").forEach((row) => {
+        row.style.display = row.dataset.search.toLowerCase().includes(query) ? "" : "none";
+      });
+      logControlEvent("project_filter");
+    }
+    document.querySelectorAll(".detail-button").forEach((button) => button.addEventListener("click", () => selectProject(button)));
+    document.querySelectorAll("[data-report-section]").forEach((button) => button.addEventListener("click", () => switchReportSection(button.dataset.reportSection)));
+    document.getElementById("exportAppendixButton").addEventListener("click", exportAppendix);
+    document.getElementById("printSaveButton").addEventListener("click", printSavePreview);
+    document.getElementById("projectSearch").addEventListener("input", filterProjects);
+  </script>
+</body>
+</html>

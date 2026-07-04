@@ -1,3 +1,9 @@
+## 0.1.4-s11p3-project-cost-page - 2026-07-04
+- Completed v0.1.4 S11-P3 项目成本页面 locally with four public-safe project rows, seven list columns, nine cost categories, four margin records, twelve pending reconciliations, project detail/evidence/pending panels, and D-grade report preview.
+- Locked v1.4 human-flow baseline reflection for project detail clicks, report-section switching, appendix export feedback, print/save feedback, and quality gate blocking without exposing raw business data, source filenames, field/header plaintext, account numbers, business values, or private source hashes.
+- Added public-safe S11-P3 evidence, validator, and focused unit test; confirmed no Stage 11 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
 ## 0.1.4-s11p1-home-navigation - 2026-07-04
 - Completed v0.1.4 S11-P1 首页导航 locally with eight required Chinese home modules, KM mark, blue business style, clickable navigation buttons, per-module action buttons, visible feedback panel, and report-center entry.
 - Locked v1.4 human-flow baseline reflection for clickable navigation, visible feedback, and report-center entry without exposing raw business data or private source headers.
