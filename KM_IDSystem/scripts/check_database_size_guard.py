@@ -14,6 +14,7 @@ from typing import Any
 
 SCHEMA_VERSION = "ids.stage033.database_size_guard.phase2.v1"
 SCENARIO_SCHEMA_VERSION = "ids.stage033.database_size_guard.phase3.v1"
+DELIVERY_SCHEMA_VERSION = "ids.stage033.database_size_guard.phase4.v1"
 INDEX_SCHEMA_VERSION = "ids.stage033.database_size_guard.index.v1"
 STAGE = "STAGE-033"
 PHASE = "Phase 2"
@@ -429,17 +430,143 @@ def build_stage033_scenario_validation_report(index_path: Path) -> dict[str, Any
     }
 
 
+def build_stage033_delivery_report(index_path: Path) -> dict[str, Any]:
+    index = _load_json(index_path)
+    phase2_report = build_stage033_database_size_guard_report(index_path)
+    scenario_report = build_stage033_scenario_validation_report(index_path)
+    guardrails = phase2_report["guardrail_results"]
+    runtime_policy = phase2_report["runtime_policy_results"]
+    scenario_results = scenario_report["scenario_results"]
+    source_refs = index.get("source_refs", {})
+    budget = index.get("guardrails", {}).get("database_size_budget_guard", {})
+    table = index.get("guardrails", {}).get("table_size_guard", {})
+    bloat = index.get("guardrails", {}).get("index_bloat_guard", {})
+    row = index.get("guardrails", {}).get("row_payload_guard", {})
+    cleanup = index.get("guardrails", {}).get("retention_cleanup_guard", {})
+    rollback = index.get("guardrails", {}).get("rollback_verification_guard", {})
+    raw_boundary = index.get("guardrails", {}).get("raw_metadata_boundary", {})
+
+    return {
+        "schema_version": DELIVERY_SCHEMA_VERSION,
+        "stage": STAGE,
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE033-P4",
+        "acceptance_id": ACCEPTANCE_ID,
+        "next_gate": "IDS-STAGE033-REVIEW-GATE",
+        "stage_review_status": "pending_next_run",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "schema_diff": {
+            "mode": "static_database_size_guard_contract_diff_not_executed",
+            "baseline": "STAGE-033 Phase 2/3 tracked database-size guard index and scenario validation without Phase 4 closeout evidence",
+            "target_database_size_guard_index_ref": index_path.as_posix(),
+            "database_size_guard_contract_id": index.get("database_size_guard_contract_id"),
+            "source_refs": source_refs,
+            "guardrails_added": sorted(guardrails),
+            "scenario_ids": sorted(scenario_results),
+            "warning_threshold_gib": budget.get("warning_threshold_gib"),
+            "hard_stop_threshold_gib": budget.get("hard_stop_threshold_gib"),
+            "max_control_plane_table_gib": table.get("max_control_plane_table_gib"),
+            "max_hot_index_table_gib": table.get("max_hot_index_table_gib"),
+            "index_bloat_hard_stop_percent": bloat.get("hard_stop_percent"),
+            "max_control_plane_payload_bytes": row.get("max_control_plane_payload_bytes"),
+            "raw_payload_columns_added": [],
+            "large_file_columns_added": [],
+            "credential_fields_added": [],
+            "notes": "This is a tracked-contract database-size guard diff only; no live PostgreSQL schema diff was executed.",
+        },
+        "migration_output": {
+            "mode": "static_database_size_guard_migration_output_not_executed",
+            "migration_dependency_ref": source_refs.get("stage031_migration_safety_index_ref"),
+            "expected_static_result": "all Phase2 guardrail/runtime policy checks true; all Phase3 scenario statuses PASS",
+            "guardrail_results": guardrails,
+            "runtime_policy_results": runtime_policy,
+            "scenario_results": scenario_results,
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_LIVE_POSTGRESQL_CONNECTION",
+        },
+        "recovery_test_log": {
+            "mode": "static_database_size_guard_recovery_log_not_executed",
+            "checks": [
+                "raw_metadata_boundary_path_only",
+                "runtime_size_query_blocked",
+                "cleanup_default_mode_dry_run_only",
+                "auto_delete_blocked",
+                "rollback_verification_required",
+                "backup_restore_steps_defined",
+                "post_cleanup_verification_required",
+                "no_raw_or_ocr_payloads_in_postgres",
+            ],
+            "result": "static PASS from tracked database-size guard index and scenario validation contracts",
+            "cleanup_default_mode": cleanup.get("cleanup_default_mode"),
+            "requires_backup_restore_plan": rollback.get("requires_backup_restore_plan"),
+            "requires_post_cleanup_verification": rollback.get("requires_post_cleanup_verification"),
+            "live_restore_log_ref": "NOT_AVAILABLE_BY_POLICY_NO_BACKUP_OR_RESTORE_EXECUTION",
+        },
+        "destructive_migration_confirmation": {
+            "required": True,
+            "destructive_allowed_by_default": False,
+            "current_contract_value": False,
+            "manual_confirmation_required_before_change": True,
+            "owner_message": "任何破坏性 schema 迁移、自动清理、retention deletion、VACUUM/reindex、raw/OCR/large-file 入库或体积阈值放宽必须单独人工确认，默认阻断。",
+        },
+        "rollback_steps": [
+            "Stop before any live PostgreSQL connection, migration, size query, cleanup, VACUUM, reindex, backup, restore, or schema diff if the static contract cannot explain the storage scope, table/index/payload limits, cleanup gate, raw-boundary, real-data-only policy, or rollback verification.",
+            "Revert the Phase 4 helper, closeout evidence, batch lock, roadmap/event updates, Stage005 validator/tests, Stage033 focused tests, compatibility tests, and rendered owner files only.",
+            "Do not touch PostgreSQL data directories, DSN/secret stores, runtime outputs, app entries, GitHub PR state, or /Users/linzezhang/Downloads/IDS_MetaData.",
+            "Keep database_size_guard_contract_id stable unless a future authorized stage explicitly changes the database size-guard contract.",
+        ],
+        "backup_restore_steps": [
+            "Before any future live PostgreSQL migration, size-policy rollout, cleanup, VACUUM, reindex, retention deletion, or raw-payload storage change, create an owner-approved logical backup in a separate authorized run.",
+            "Record backup location, checksum, migration id, dry-run evidence, database_size_guard_contract_id, and owner approval in future run evidence.",
+            "If a future apply or cleanup fails, stop writes immediately and run the approved rollback command from the migration-safety contract with ON_ERROR_STOP=1 and single-transaction semantics where supported.",
+            "Restore from the approved backup only in a future authorized restore run, then re-run safe healthcheck, size-budget verification, and raw metadata path-only checks.",
+        ],
+        "known_limits": [
+            "PostgreSQL live connection, migration dry-run, apply, rollback, backup, restore, schema diff, size queries, VACUUM, reindex, cleanup, retention deletion, and recovery smoke were not executed in this phase.",
+            "The report proves tracked database-size guard contract readiness, not production database readiness or measured runtime database size.",
+            "No DSN, credential-bearing config, runtime database rows, document/chunk/job rows, indexes, reports, screenshots, PDFs, manifests, ledgers, audit logs, JSON output files, size statistics, cleanup outputs, or service state were generated.",
+            "Raw metadata remains path-only at /Users/linzezhang/Downloads/IDS_MetaData and was not inspected.",
+            "STAGE-033 review is blocked until a separate stage review run; BATCH031_040 upload remains blocked until STAGE-031..040 are complete, reviewed, and repaired.",
+        ],
+        "chinese_owner_feedback": (
+            "STAGE-033 已完成 Phase 4：当前交付的是数据库体积护栏的静态工程合同、schema diff 摘要、"
+            "migration 输出说明、恢复测试日志、已知限制、破坏性迁移人工确认、数据库回滚步骤、"
+            "备份恢复步骤和中文反馈。它不是生产 PostgreSQL 连接、迁移、体积统计或清理授权；"
+            "下一步应进入 STAGE-033 复审，而不是 GitHub upload 或 app reinstall。"
+        ),
+        "phase2_report": phase2_report,
+        "scenario_report": scenario_report,
+        "raw_metadata_boundary": {
+            "path": raw_boundary.get("path"),
+            "path_only": raw_boundary.get("path_only") is True,
+            "no_raw_content_access": raw_boundary.get("content_access_allowed") is False,
+            "copy_allowed": raw_boundary.get("copy_allowed") is True,
+            "modify_allowed": raw_boundary.get("modify_allowed") is True,
+            "dump_allowed": raw_boundary.get("dump_allowed") is True,
+        },
+        "does_not_connect_to_postgres": True,
+        "does_not_execute_migration": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_write_runtime_outputs": True,
+        "does_not_use_fake_ids_business_data": True,
+        "does_not_run_size_queries": True,
+        "does_not_execute_cleanup": True,
+    }
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     pursue_root = root / "docs" / "pursuing_goal" / "ids_v0_1"
     index_path = pursue_root / "database_size_guard" / "stage033_database_size_guard_index.json"
     report = build_stage033_database_size_guard_report(index_path)
     scenario_report = build_stage033_scenario_validation_report(index_path)
+    delivery_report = build_stage033_delivery_report(index_path)
     print(
         json.dumps(
             {
                 "database_size_guard_report": report,
                 "scenario_report": scenario_report,
+                "delivery_report": delivery_report,
             },
             ensure_ascii=False,
             sort_keys=True,
@@ -462,6 +589,14 @@ def main() -> int:
             report["does_not_use_fake_ids_business_data"],
             report["does_not_run_size_queries"],
             report["does_not_execute_cleanup"],
+            delivery_report["schema_diff"]["mode"] == "static_database_size_guard_contract_diff_not_executed",
+            delivery_report["migration_output"]["mode"] == "static_database_size_guard_migration_output_not_executed",
+            delivery_report["recovery_test_log"]["mode"] == "static_database_size_guard_recovery_log_not_executed",
+            delivery_report["stage_review_status"] == "pending_next_run",
+            delivery_report["github_upload_allowed"] is False,
+            delivery_report["app_reinstall_allowed"] is False,
+            delivery_report["does_not_run_size_queries"],
+            delivery_report["does_not_execute_cleanup"],
         ]
     )
     return 0 if all(checks) else 1
