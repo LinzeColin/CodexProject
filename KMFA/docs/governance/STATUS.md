@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s08-stage-review`
-- current_stage: `S08`
-- current_phase: `v0.1.4 Stage 8 review`
-- status: `review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete`
+- version: `0.1.4-s09p1-project-cost-fact-layer`
+- current_stage: `S09`
+- current_phase: `v0.1.4 S09-P1 project cost fact layer`
+- status: `completed_validated_local_only_no_go_upload_deferred_project_cost_fact_layer`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S09-P1 project cost fact layer completed local-only: Stage 8 review dependency PASS, legacy S09-P1 public-safe validator PASS, v0.1.4 S09-P1 validator PASS, required metrics=6, cost categories=9, fact records=4, unallocated pool=9, authority locked fields=40, excluded fields=5, business entity types=8, project identity profiles=4, manual review queue=3, unresolved difference=1, zero-delta fail count=1, blocked quality results=2, formal calculation blocked=true, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, S09-P2=false, S09-P3=false, Stage9_review=false, github_upload=false.
 - v0.1.4 Stage 8 review completed local-only: S08-P1/S08-P2/S08-P3 validators PASS, legacy Stage 8 review validator PASS, open findings=0, fixed findings=1, project identity components=8, business entity types=8, relationships=14, lifecycle statuses=32, matching scenarios=4, quality cases=4, manual review queue=3, legacy Stage 8 upload artifacts current gate=false, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this review, S09-P1=false, github_upload=false.
 - v0.1.4 S08-P3 entity matching quality completed local-only: S08-P2 dependency PASS, legacy S08-P3 public-safe validator PASS, scenario_count=4, quality_case_count=4, manual_review_queue_count=3, manual_review_case_count=3, entity_matching_report_count=1, risk_summary high=2 medium=1 low=1, medium_high_risk_requires_manual_review=true, manual_review_queue_auto_merge_allowed=false, quality_report_is_formal_report=false, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, Stage8_review=false, github_upload=false.
 - v0.1.4 S08-P2 business entity model completed local-only: S08-P1 dependency PASS, legacy S08-P2 public-safe validator PASS, required_entity_type_count=8, relationship_count=14, lifecycle_status_count=32, lifecycle_status_per_entity_count=4, schema_entity_definition_count=8, relationship_graph_required_link_count=7, relationship_graph_required_links_present=true, entity_values_hash_ref_only=true, relationship_values_schema_only=true, lifecycle_values_status_only=true, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, S08-P3=false, Stage8_review=false, github_upload=false.

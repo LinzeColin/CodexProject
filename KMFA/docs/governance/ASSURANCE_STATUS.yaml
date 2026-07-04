@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260704-V014-S08-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260704-V014-S09-P1-PROJECT-COST-FACT-LAYER"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "39201eecaefd445553b066c27c7e73601c5afe18"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-04T17:35:00+10:00"
-generator_version: "manual-v014-s08-stage-review"
+snapshot_event_time: "2026-07-04T18:20:00+10:00"
+generator_version: "manual-v014-s09-p1-project-cost-fact-layer"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 724
-    total_active_formulas: 83
+    total_active_parameters: 727
+    total_active_formulas: 84
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -230,6 +230,11 @@ dimensions:
       - "KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/machine/project_cost_fact_layer_replay_manifest.json"
       - "KMFA/tools/check_v013_s09_p1_project_cost_fact_layer_replay.py"
       - "KMFA/tools/v013_s09_p1_project_cost_fact_layer_replay.py"
+      - "KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/human/project_cost_fact_layer_report.md"
+      - "KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/machine/project_cost_fact_layer_manifest.json"
+      - "KMFA/tools/check_v014_s09_p1_project_cost_fact_layer.py"
+      - "KMFA/tools/v014_s09_p1_project_cost_fact_layer.py"
       - "KMFA/tools/check_v013_s07_p2_wps_file_adapter_replay.py"
       - "KMFA/tools/v013_s07_p2_wps_file_adapter_replay.py"
       - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"

@@ -45,7 +45,7 @@
     "public_safety_false_count": 5,
     "quality_gate_false_count": 7
   },
-  "generated_at": "2026-07-03T19:47:37+10:00",
+  "generated_at": "2026-07-04T18:03:05+10:00",
   "github_upload": {
     "github_upload_deferred_until_stage10_batch": true,
     "github_upload_performed": false,
@@ -179,7 +179,7 @@
     "private_runtime_output_dir": "KMFA/.codex_private_runtime/"
   },
   "remote": "git@github.com:LinzeColin/CodexProject.git",
-  "reviewed_head": "494a166779fa8fdc1a282d1ebbdca293e3e78886",
+  "reviewed_head": "2575544e09bcb07f8514b1a0175fded27eee1e2b",
   "s08_stage_review_dependency_validated": true,
   "s08_stage_review_status": "review_passed_upload_deferred_until_stage10_batch_no_go",
   "schema_version": "kmfa.v013_s09_p1_project_cost_fact_layer_replay.v1",

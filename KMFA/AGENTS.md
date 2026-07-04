@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 8`
-- 当前 Phase: `v0.1.4 Stage 8 整体复审已本地通过；S08-P1/S08-P2/S08-P3 validators 与 legacy Stage 8 review validator 全部 PASS，open findings=0，fixed findings=1，legacy Stage 8 upload artifacts current gate=false；下一步只能另起 run work 执行 S09-P1，不执行 GitHub upload、raw value matching、lineage full check 或正式报告`
+- 当前 Stage: `v0.1.4 Stage 9`
+- 当前 Phase: `v0.1.4 S09-P1 项目成本事实层已本地通过；Stage 8 review dependency、legacy S09-P1 validator 和 v0.1.4 S09-P1 validator 全部 PASS，required metrics=6，cost categories=9，fact records=4，unallocated pool=9，manual review queue=3，unresolved difference=1；下一步只能另起 run work 执行 S09-P2，不执行 GitHub upload、S09-P3、Stage 9 review、raw value matching、lineage full check 或正式报告`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 Stage 8 整体复审已完成；下一轮只能在用户明确开启后执行 `S09-P1`。不得直接执行 GitHub upload、S09-P2/S09-P3、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或任何业务动作。
+- v0.1.4 S09-P1 项目成本事实层已完成；下一轮只能在用户明确开启后执行 `S09-P2`。不得直接执行 GitHub upload、S09-P3、Stage 9 整体复审、raw value matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合或任何业务动作。
 - Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成；S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已完成。Stage 18 review-level Go/No-Go 仍为 `NO_GO`；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
