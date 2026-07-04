@@ -1,3 +1,10 @@
+## 0.1.4-s14p2-invoice-tax-plan - 2026-07-05
+- Completed v0.1.4 S14-P2 发票税务计划 locally with S14-P1 dependency, legacy S14-P2 validator, v1.4 S14-P2 validator, focused unit test, and public-safe evidence.
+- Locked source_lanes=3, source_count=6, field_mapping_count=30, issue_candidate_count=3, cash_summary_count=3, html_output_count=1, pending_reconciliation=12, report_grade=D, invoice_issuance=0, tax_filing=0, payment_or_bank_operation=0, and external_connector_action=0.
+- Confirmed S14-P2 creates planning candidates only and does not create tax filing, tax declaration generation, invoice issuance, invoice API, payment, bank, loan-management, policy, subsidy, formal report, business decision, or business execution instructions.
+- Confirmed no S14-P3, Stage 14 review, GitHub upload, protected source matching, lineage full check, formal report release, live connector, app reinstall, OpMe deep coupling, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
 ## 0.1.4-s14p1-fund-cash-loan-plan - 2026-07-05
 - Completed v0.1.4 S14-P1 资金计划现金贷款 locally with Stage 13 review dependency, legacy S14-P1 validator, v1.4 S14-P1 validator, focused unit test, and public-safe evidence.
 - Locked source_lanes=4, source_count=5, field_mapping_count=25, cash_pressure_record_count=4, loan_due_alert_count=3, account_balance_summary_count=3, html_output_count=1, pending_reconciliation=12, report_grade=D, payment_operation=0, bank_operation=0, and loan_management_action=0.

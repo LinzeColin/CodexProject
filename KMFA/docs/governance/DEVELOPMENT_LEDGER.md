@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S14-P2 Invoice Tax Plan
+- Product version: `0.1.4-s14p2-invoice-tax-plan`.
+- Scope: S14-P2 only; public-safe invoice tax plan with source lanes, issue candidates, cash summaries and HTML overview.
+- Evidence: `KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/`.
+- Verification: `KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py`; `KMFA/tests/test_v014_s14_p2_invoice_tax_plan.py`.
+- blocker_state: source_lanes=3, sources=6, field_mappings=30, issue_candidates=3, cash_summaries=3, html_outputs=1, pending_reconciliation=12, report_grade=D, invoice_issuance=0, tax_filing=0, payment_or_bank=0, external_connector=0, S14-P3=false, Stage14 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+product_version: 0.1.4-s14p2-invoice-tax-plan
+version_matrix_product_version_reference: 0.1.4-s14p2-invoice-tax-plan
+
 # KMFA v0.1.4 S14-P1 Fund Cash Loan Plan
 - Product version: `0.1.4-s14p1-fund-cash-loan-plan`.
 - Scope: S14-P1 only; public-safe fund cash loan plan with source lanes, cash pressure signals, loan due alerts, account balance summaries and HTML overview.

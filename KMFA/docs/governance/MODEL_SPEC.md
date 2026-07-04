@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s13p3-cross-table-review
+product_version: 0.1.4-s14p2-invoice-tax-plan
 
 ## Scope
 
-当前 v0.1.4 scope lock：S13-P3 跨表复核已本地通过，验证 S13-P1/S13-P2 dependencies、legacy S13-P3 public-safe 模型、v1.4 HTML/UIUX baseline、validator 和 focused unit test；review dimensions=4、difference queue=4、quality report=1、HTML draft=1、pending reconciliation=12、report grade=D、formal report=0、business decision basis=0、difference auto resolution=0、difference closure=0，当前仍为 NO_GO/Q4/D/blocked。该 phase 未执行 Stage 13 review、S14、GitHub upload、protected source matching、lineage full check、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、税务、法律决策或差异关闭。
+当前 v0.1.4 scope lock：S14-P2 发票税务计划已本地通过，验证 S14-P1 dependency、legacy S14-P2 public-safe 模型、v1.4 HTML/UIUX baseline、validator 和 focused unit test；source lanes=3、sources=6、field mappings=30、issue candidates=3、cash summaries=3、HTML overview=1、pending reconciliation=12、report grade=D、invoice issuance=0、tax filing=0、payment/bank=0、external connector=0，当前仍为 NO_GO/Q4/D/blocked。该 phase 未执行 S14-P3、Stage 14 review、GitHub upload、protected source matching、lineage full check、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、贷款管理、开票、纳税申报、政策申报、补贴申报或业务执行。
 
 当前模型说明覆盖 v0.1.4 Stage 10 整体复审、v0.1.4 S10-P3 报告导出、v0.1.4 S10-P2 报告可信等级、v0.1.4 S10-P1 报告模板、v0.1.4 Stage 9 整体复审、v0.1.4 S09-P3 口径转换与差异核对、v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 Stage 10 review 只证明 S10-P1/S10-P2/S10-P3 public-safe 报告层本地复审闭环：phase_results 全部 PASS，open findings=0，fixed findings=2，report templates=2，report grade records=2，report exports=2，HTML exports=2，CSV appendices=2，Excel-compatible CSV downloads=2，pending reconciliation=12，confirmed resolution=0，formal report=0，business decision basis=0，当前仍为 NO_GO/Q4/D/blocked。本 review 未读取 raw inbox，不执行 S11、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
@@ -15,8 +15,17 @@ product_version: 0.1.4-s13p3-cross-table-review
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s13_p3_cross_table_review.py`, `KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW/machine/cross_table_review_manifest.json`
-- current_v014_scope_lock: `S13-P3 completed; Stage13 review/S14/GitHub upload/protected source matching/lineage full check/formal report/UI runtime/live connector/app reinstall/OpMe/legal collection/payment/invoice/tax/difference closure/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py`, `KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/machine/invoice_tax_plan_manifest.json`
+- current_v014_scope_lock: `S14-P2 completed; S14-P3/Stage14 review/GitHub upload/protected source matching/lineage full check/formal report/UI runtime/live connector/app reinstall/OpMe/payment/bank/loan_management/invoice/tax/policy/subsidy/business execution all false`
+
+### FORM-KMFA-V014-S14P2-INVOICE-TAX-PLAN-001
+
+- type: deterministic public-safe invoice tax plan gate
+- purpose: 验证 v0.1.4 S14-P2 发票税务计划证据，覆盖 S14-P1 dependency、legacy S14-P2 public-safe artifacts、v1.4 human-flow HTML/UIUX baseline、3 条 source lanes、3 类候选事项、3 条资金汇总状态、1 个 HTML overview 和 no-review/no-upload/no-tax-or-invoice-operation 边界。
+- fact_level: EXTRACTED
+- expression: `s14p2_valid = s14p1_dependency_PASS AND legacy_s14p2_validator_PASS AND source_lane_count == 3 AND source_count == 6 AND field_mapping_count == 30 AND issue_candidate_count == 3 AND cash_summary_count == 3 AND html_output_count == 1 AND pending_reconciliation_count == 12 AND report_grade == D AND invoice_issuance_count == 0 AND tax_filing_count == 0 AND payment_or_bank_operation_count == 0 AND external_connector_action_count == 0 AND s14_p3_performed == false AND stage14_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s14_p2_invoice_tax_plan.py`, `KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py`, `KMFA/tests/test_v014_s14_p2_invoice_tax_plan.py`, `KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/machine/invoice_tax_plan_manifest.json`, `KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/human/invoice_tax_plan_report.md`
+- limitation: 只证明 S14-P2 public-safe 开票纳税候选和资金汇总状态；不证明 S14-P3、Stage 14 review、raw value matching、lineage full check、正式报告、纳税申报、发票开具、付款、银行、贷款管理、政策申报、补贴申报、GitHub upload、live connector 或业务执行。
 
 ### FORM-KMFA-V014-S13P3-CROSS-TABLE-REVIEW-001
 

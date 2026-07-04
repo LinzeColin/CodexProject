@@ -220,3 +220,12 @@ v014_s14p1_fund_cash_loan_plan_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S14_P1_FUND_CASH_LOAN_PLAN
   validator: KMFA/tools/check_v014_s14_p1_fund_cash_loan_plan.py
   scope: S14-P1 fund cash loan plan only; no S14-P2, S14-P3, Stage 14 review, upload, raw inbox access, raw matching, lineage, formal report, payment, bank, loan management, invoice, tax, policy, subsidy or business execution.
+
+v014_s14p2_invoice_tax_plan_registry_note:
+  version: "0.1.4-s14p2-invoice-tax-plan"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S14P2-INVOICE-TAX-PLAN-001
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN
+  validator: KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py
+  scope: S14-P2 invoice tax plan only; no S14-P3, Stage 14 review, upload, raw inbox access, raw matching, lineage, formal report, tax filing, invoice issuance, payment, bank, loan management, policy, subsidy or business execution.
