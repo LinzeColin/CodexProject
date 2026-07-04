@@ -1,6 +1,6 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s11p2-source-check-board
+product_version: 0.1.4-s12p1-manual-resolution-events
 
 ## Scope
 
@@ -644,3 +644,10 @@ product_version: 0.1.4-s11p2-source-check-board
 - Inputs: v0.1.4 S11 phase manifests, legacy Stage 11 review manifest, v1.4 human-flow baseline evidence, and deterministic public-safe validator outputs.
 - Outputs: `KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/machine/stage11_review_manifest.json` and public-safe human review evidence under `KMFA/stage_artifacts/V014_S11_STAGE_REVIEW/`.
 - Controls: S12, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.
+
+## FORM-KMFA-V014-S12P1-MANUAL-RESOLUTION-EVENTS-001
+- Version: `0.1.4-s12p1-manual-resolution-events`.
+- Purpose: lock v0.1.4 S12-P1 manual resolution event evidence for append-only field mapping, project matching, difference handling, note events, approved-event immutability, reverse-event chain, visible workbench feedback, and v1.4 human-flow baseline reflection.
+- Inputs: v0.1.4 Stage 11 review dependency, legacy S12-P1 public-safe manual event artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
+- Outputs: `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/machine/manual_resolution_events_manifest.json`, `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/machine/manual_resolution_events.jsonl`, `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/exports/html/kmfa_manual_resolution_workbench.html`, and public-safe human evidence under the same artifact directory.
+- Controls: S12-P2, S12-P3, Stage 12 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.

@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 760
-    total_active_formulas: 95
+    total_active_parameters: 763
+    total_active_formulas: 96
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -670,5 +670,28 @@ v014_s11p1_home_navigation:
     s11_p3: false
     stage11_review: false
     raw_inbox_access: false
+    formal_report: false
+    business_execution: false
+
+
+v014_s12p1_manual_resolution_events:
+  status: completed_validated_local_only_no_go_upload_deferred_manual_resolution_events_locked
+  phase: S12-P1
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS
+  validator: KMFA/tools/check_v014_s12_p1_manual_resolution_events.py
+  focused_test: KMFA/tests/test_v014_s12_p1_manual_resolution_events.py
+  github_upload: deferred_until_v014_stage1_18_complete
+  counts:
+    manual_event_count: 5
+    manual_action_kind_count: 4
+    approved_event_count: 1
+    reverse_event_count: 1
+    html_export_count: 1
+  forbidden_scope:
+    s12_p2: false
+    s12_p3: false
+    stage12_review: false
+    raw_inbox_access: false
+    github_upload: false
     formal_report: false
     business_execution: false
