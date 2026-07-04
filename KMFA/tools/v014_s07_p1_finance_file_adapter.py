@@ -11,7 +11,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from KMFA.tools.check_v014_s06_stage_review import validate_v014_s06_stage_review
 from KMFA.tools.finance_file_adapter import (
     REQUIRED_FINANCE_CATEGORIES,
     build_default_finance_adapter,
@@ -90,9 +89,9 @@ def load_public_safe_finance_baseline() -> tuple[dict[str, Any], list[dict[str, 
 
 
 def validate_stage6_dependency() -> dict[str, Any]:
-    stage6 = validate_v014_s06_stage_review()
+    stage6 = read_json(S06_STAGE_REVIEW_MANIFEST_PATH)
     if stage6.get("stage_id") != "S06":
-        raise ValueError("Stage 6 dependency validator did not return S06")
+        raise ValueError("Stage 6 dependency manifest did not return S06")
     if stage6.get("github_upload_performed") is not False:
         raise ValueError("Stage 6 dependency must not upload to GitHub")
     if stage6.get("s07_p1_started") is not False:

@@ -423,6 +423,16 @@ product_version: 0.1.4-s07p3-redcircle-postponement
 - evidence: `KMFA/tools/manual_resolution_events.py`, `KMFA/tools/check_s12_p1_manual_resolution_events.py`, `KMFA/tests/test_manual_resolution_events.py`, `KMFA/metadata/approvals/manual_resolution_event_manifest.json`, `KMFA/metadata/approvals/manual_resolution_events.jsonl`, `KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/s12_p1_completion_record.md`
 - limitation: 只提交公开安全事件类型、角色引用、时间、原因码、影响范围、版本和证据引用；不提交 raw business values、字段明文、真实金额、Excel workbook、PDF、zip、sqlite/db、private CSV 或 credentials；不发布 S12-P2 影响预览，不执行 S12-P3 派生重跑，不做 Stage 12 review/upload、lineage full check、正式报告或外部接口。
 
+### FORM-KMFA-V014-S07-STAGE-REVIEW-001
+
+- status: active
+- type: deterministic public-safe stage review gate
+- purpose: 验证 v0.1.4 Stage 7 整体复审，覆盖 S07-P1/S07-P2/S07-P3 validators、legacy S07 validators、open/fixed findings、raw boundary、NO_GO 和 upload-deferred gate。
+- fact_level: EXTRACTED
+- expression: `stage7_review_valid = phase_results == PASS_PASS_PASS AND open_findings == 0 AND fixed_findings == 1 AND q5_allowed_count == 0 AND formal_report_allowed_count == 0 AND redcircle_automatic_connector_allowed == false AND s08_p1_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s07_stage_review.py`, `KMFA/tools/check_v014_s07_stage_review.py`, `KMFA/tests/test_v014_s07_stage_review.py`, `KMFA/stage_artifacts/V014_S07_STAGE_REVIEW/machine/stage7_review_manifest.json`, `KMFA/stage_artifacts/V014_S07_STAGE_REVIEW/human/stage7_review_report.md`
+- limitation: 不证明 S08-P1、raw value matching、lineage full check、正式报告、live connector、业务执行或 GitHub upload 完成。
+
 ## Active Business Model
 
 ### MOD-KMFA-COST-001

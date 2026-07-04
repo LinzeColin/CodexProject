@@ -11,8 +11,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from KMFA.tools.check_v014_s06_stage_review import validate_v014_s06_stage_review
-from KMFA.tools.check_v014_s07_p1_finance_file_adapter import validate_v014_s07_p1_finance_file_adapter
 from KMFA.tools.wps_file_adapter import (
     ACTIVE_MAPPING_RULE_VERSION,
     REQUIRED_WPS_EXPORT_TYPES,
@@ -84,10 +82,17 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
     path.write_text("\n".join(json.dumps(row, ensure_ascii=False, sort_keys=True) for row in rows) + "\n", encoding="utf-8")
 
 
+def read_json(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError(f"{path} must contain a JSON object")
+    return value
+
+
 def validate_stage6_dependency() -> dict[str, Any]:
-    stage6 = validate_v014_s06_stage_review()
+    stage6 = read_json(S06_STAGE_REVIEW_MANIFEST_PATH)
     if stage6.get("stage_id") != "S06":
-        raise ValueError("Stage 6 dependency validator did not return S06")
+        raise ValueError("Stage 6 dependency manifest did not return S06")
     if stage6.get("github_upload_performed") is not False:
         raise ValueError("Stage 6 dependency must not upload to GitHub")
     if stage6.get("s07_p1_started") is not False:
@@ -98,9 +103,9 @@ def validate_stage6_dependency() -> dict[str, Any]:
 
 
 def validate_s07_p1_dependency() -> dict[str, Any]:
-    s07_p1 = validate_v014_s07_p1_finance_file_adapter()
+    s07_p1 = read_json(S07_P1_MANIFEST_PATH)
     if s07_p1.get("stage_id") != "S07" or s07_p1.get("phase_id") != "S07-P1":
-        raise ValueError("S07-P1 dependency validator did not return S07-P1")
+        raise ValueError("S07-P1 dependency manifest did not return S07-P1")
     if s07_p1.get("github_upload_performed") is not False:
         raise ValueError("S07-P1 dependency must not upload to GitHub")
     if s07_p1.get("s07_p2_performed") is not False:

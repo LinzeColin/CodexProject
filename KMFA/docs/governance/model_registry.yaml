@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s06-stage-review"
+    model_version: "0.1.4-s07-stage-review"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -139,6 +139,7 @@ models:
       - "FORM-KMFA-V014-S06P2-DIFFERENCE-QUEUE-001"
       - "FORM-KMFA-V014-S06P3-VALIDATION-EVIDENCE-001"
       - "FORM-KMFA-V014-S06-STAGE-REVIEW-001"
+      - "FORM-KMFA-V014-S07-STAGE-REVIEW-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -193,6 +194,9 @@ models:
       - "PARAM-KMFA-1071"
       - "PARAM-KMFA-1072"
       - "PARAM-KMFA-1073"
+      - "PARAM-KMFA-1083"
+      - "PARAM-KMFA-1084"
+      - "PARAM-KMFA-1085"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -254,6 +258,7 @@ models:
       - "S18-P3 integration preparation local gate"
       - "S18 stage review upload-ready local NO_GO gate"
       - "v1.4 S01-P1 read-only scope lock local gate"
+      - "v1.4 S07 stage review upload-deferred local NO_GO gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
@@ -275,6 +280,8 @@ models:
       - "KMFA/tools/check_v014_s04_stage_review.py"
       - "KMFA/tools/v014_s05_p2_field_golden_baseline.py"
       - "KMFA/tools/check_v014_s05_p2_field_golden_baseline.py"
+      - "KMFA/tools/v014_s07_stage_review.py"
+      - "KMFA/tools/check_v014_s07_stage_review.py"
     test_refs:
       - "python3 scripts/lean_governance.py validate --project KMFA"
       - "python3 scripts/validate_project_governance.py --project KMFA"
@@ -289,6 +296,7 @@ models:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s04_stage_review.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s05_p2_field_golden_baseline.py"
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s05_p3_authority_baseline_lock.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s07_stage_review.py"
     evidence_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
@@ -316,6 +324,8 @@ models:
       - "KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json"
       - "KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/human/authority_baseline_lock_report.md"
       - "KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/machine/authority_baseline_lock_manifest.json"
+      - "KMFA/stage_artifacts/V014_S07_STAGE_REVIEW/human/stage7_review_report.md"
+      - "KMFA/stage_artifacts/V014_S07_STAGE_REVIEW/machine/stage7_review_manifest.json"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"
