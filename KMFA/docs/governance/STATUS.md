@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s10p2-report-trust-grade`
+- version: `0.1.4-s10p3-report-export`
 - current_stage: `S10`
-- current_phase: `v0.1.4 S10-P2 report trust grade`
-- status: `completed_validated_local_only_no_go_upload_deferred_report_trust_grade_locked`
+- current_phase: `v0.1.4 S10-P3 report export`
+- status: `completed_validated_local_only_no_go_upload_deferred_report_export_locked`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,7 +16,8 @@
 
 ## 已完成
 
-- v0.1.4 S10-P2 report trust grade completed local-only: S10-P1 dependency PASS, legacy S10-P2 public-safe runtime PASS, v0.1.3 S10-P2 replay PASS, report_grade_record_count=2, grade_distribution=D:2, pending_reconciliation_count=12, confirmed_resolution_count=0, source_quality_grade=Q4, zero_delta_passed=false, record_version_binding_count=2, complete trusted report=false, formal_report_count=0, export_artifact_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, S10-P3=false, Stage10_review=false, github_upload=false.
+- v0.1.4 S10-P3 report export completed local-only: S10-P2 dependency PASS, legacy S10-P3 public-safe runtime PASS, v0.1.3 S10-P3 replay PASS, report_export_record_count=2, html_export_count=2, csv_appendix_count=2, excel_compatible_download_count=2, committed_pdf_file_count=0, committed_excel_file_count=0, formal_report_count=0, business_decision_basis_count=0, pending_reconciliation_count=12, grade_distribution=D:2, PDF private-runtime-only policy=true, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, Stage10_review=false, github_upload=false.
+- v0.1.4 S10-P2 report trust grade completed local-only: S10-P1 dependency PASS, legacy S10-P2 public-safe runtime PASS, v0.1.3 S10-P2 replay PASS, report_grade_record_count=2, grade_distribution=D:2, pending_reconciliation_count=12, confirmed_resolution_count=0, source_quality_grade=Q4, zero_delta_passed=false, record_version_binding_count=2, complete trusted report=false, formal_report_count=0, export_artifact_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, Stage10_review=false, github_upload=false.
 - v0.1.4 S10-P1 report templates completed local-only: Stage 9 review dependency PASS, legacy S10-P1 public-safe report template artifacts PASS, v1.4 HTML/UIUX baseline PASS with audit FAIL=0/PASS=54, template_count=2, section_count=11, project_cost_section_count=4, business_overview_section_count=7, pending_reconciliation_count=12, formal_report_count=0, export_artifact_count=0, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, S10-P2=false at S10-P1 boundary, S10-P3=false, Stage10_review=false, github_upload=false.
 - v0.1.4 Stage 9 review completed local-only: S09-P1/S09-P2/S09-P3 validators PASS, legacy Stage 9 review validator PASS, phase_results all PASS, open findings=0, fixed findings=1, required cost metrics=6, margin metrics=4, reconciliation records=12, domain controls=6, confirmed resolutions=0, pending resolutions=12, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this review, S10-P1=false, github_upload=false.
 - v0.1.4 S09-P3 scope reconciliation completed local-only: S09-P2 dependency PASS, legacy S09-P3 public-safe validator PASS, v0.1.4 S09-P3 validator PASS, required reconciliation domains=6, required human fields=8, upstream margin records=4, source difference summary records=12, reconciliation records=12, domain controls=6, confirmed resolutions=0, pending resolutions=12, derived metric rerun=false, formal report rerun=false, current data quality=Q4, report grade=D, release permission=blocked, raw inbox read/list/stat/hash/mutation=false by this phase, Stage9_review=false at phase boundary, github_upload=false.

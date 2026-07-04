@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4-s10p3-report-export - 2026-07-04
+
+- 完成 `v0.1.4 S10-P3｜报告导出`。
+- 新增 S10-P3 v1.4 evidence generator、validator、focused unit test、report export report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 S10-P2 dependency、legacy public-safe S10-P3 runtime 和 v0.1.3 S10-P3 replay；锁定 report_export_record_count=`2`、html_export_count=`2`、csv_appendix_count=`2`、excel_compatible_download_count=`2`、committed_pdf_file_count=`0`、committed_excel_file_count=`0`。
+- PDF 仅保留 private-runtime-only policy；Excel 下载保留 compatible CSV，不提交 workbook；formal_report_count=`0`、business_decision_basis_count=`0`、pending_reconciliation_count=`12`、grade_distribution=`D:2`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
 ## 0.1.4-s10p2-report-trust-grade - 2026-07-04
 
 - 完成 `v0.1.4 S10-P2｜报告可信等级`。

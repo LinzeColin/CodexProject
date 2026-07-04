@@ -1,5 +1,17 @@
 # KMFA Development Ledger
 
+## 2026-07-04 - 0.1.4-s10p3-report-export
+
+- task_id: `KMFA-V014-S10-P3-REPORT-EXPORT-20260704`
+- status: `completed_validated_local_only_no_go_upload_deferred_report_export_locked`
+- scope: v0.1.4 S10-P3 report export only; validated v0.1.4 S10-P2 dependency, legacy public-safe S10-P3 runtime and v0.1.3 S10-P3 replay without reading raw inbox, running Stage 10 review, or performing GitHub upload.
+- evidence: `KMFA/stage_artifacts/V014_S10_P3_REPORT_EXPORT/human/report_export_report.md`, `KMFA/stage_artifacts/V014_S10_P3_REPORT_EXPORT/human/test_results.md`, `KMFA/stage_artifacts/V014_S10_P3_REPORT_EXPORT/machine/report_export_manifest.json`
+- tests: `KMFA/tools/check_v014_s10_p3_report_export.py`, `KMFA/tests/test_v014_s10_p3_report_export.py`, S10-P2 dependency validator, legacy S10-P3 validator, v0.1.3 S10-P3 replay validator, governance validators and safety scans.
+- blocker_state: report_export_record_count=2, html_export_count=2, csv_appendix_count=2, excel_compatible_download_count=2, pdf_private_runtime_only=true, committed_pdf_file_count=0, committed_excel_file_count=0, formal_report_count=0, business_decision_basis_count=0, pending_reconciliation_count=12, grade_distribution=D:2, Stage10_review=false, GitHub upload=false, raw value matching=false, lineage full check=false, formal_report_allowed=false, ui_runtime=false, business_execution_allowed=false, current_go_no_go=NO_GO, current_data_quality_grade=Q4, current_report_grade=D, release_permission=blocked.
+- privacy: no raw business data, zip, Excel workbook, PDF, private CSV, raw file identifiers, field/header plaintext, true business values, credentials or connector secrets committed.
+product_version: 0.1.4-s10p3-report-export
+version_matrix_product_version_reference: 0.1.4-s10p3-report-export
+
 ## 2026-07-04 - 0.1.4-s10p2-report-trust-grade
 
 - task_id: `KMFA-V014-S10-P2-REPORT-TRUST-GRADE-20260704`
