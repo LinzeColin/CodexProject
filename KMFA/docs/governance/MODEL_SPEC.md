@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s07p2-wps-file-adapter
+product_version: 0.1.4-s07p3-redcircle-postponement
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S07-P2 只证明 WPS 文件适配 public-safe source refs、字段映射 refs、转换提示、只读字段报告和规则版本 evidence 已锁定；本 phase 未读取 raw inbox，不执行 S07-P3、Stage 7 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
+当前模型说明覆盖 v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S07-P3 只证明红圈导出后置 public-safe template refs、source registry refs、connector postponement policy、future rollback plan 和只读/hash/rollback/manual approval evidence 已锁定；本 phase 未读取 raw inbox，不执行 Stage 7 review、S08-P1、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
 ## Active Model
 
@@ -14,7 +14,7 @@ product_version: 0.1.4-s07p2-wps-file-adapter
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
 - evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s06_p3_validation_evidence.py`, `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/machine/validation_evidence_manifest.json`
-- current_v014_scope_lock: `S06-P3 validation evidence completed; Stage 6 review/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
+- current_v014_scope_lock: `S07-P3 Redcircle postponement completed; Stage 7 review/S08-P1/GitHub upload/raw value matching/lineage full check/formal report/live connector/business execution all false`
 
 ### MOD-KMFA-METADATA-001
 
@@ -205,6 +205,16 @@ product_version: 0.1.4-s07p2-wps-file-adapter
 - evidence: `KMFA/tools/v014_s07_p2_wps_file_adapter.py`, `KMFA/tools/check_v014_s07_p2_wps_file_adapter.py`, `KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/machine/wps_file_adapter_manifest.json`
 - boundary_validation: `KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/human/test_results.md`
 - limitation: S07-P2 只证明 public-safe local WPS file adapter evidence；不证明 S07-P3、Stage 7 review、raw value matching、lineage full check、正式报告、GitHub upload、delivery readiness 或 business execution。
+
+### FORM-KMFA-V014-S07P3-REDCIRCLE-POSTPONEMENT-001
+
+- type: deterministic public-safe Redcircle postponement gate
+- purpose: 复用 public-safe Redcircle postponement baseline，锁定 v0.1.4 S07-P3 红圈预留导出模板、source registry、connector postponement policy、future rollback plan、质量边界和 no-upload/no-review scope gate。
+- fact_level: EXTRACTED
+- expression: `s07p3_valid = S06 stage review PASS AND S07-P1 PASS AND S07-P2 PASS AND legacy Redcircle postponement PASS AND redcircle_export_type_count == 4 AND reserved_template_count == 4 AND registry_source_count == 4 AND rollback_plan_count == 4 AND connector_policy_count == 1 AND d15_automatic_connector_allowed == false AND read_only_required_count == 4 AND hash_retention_required_count == 4 AND rollback_plan_required_count == 4 AND manual_approval_required_count == 4 AND q5_allowed_count == 0 AND formal_report_allowed_count == 0 AND stage7_review_performed == false AND s08_p1_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s07_p3_redcircle_postponement.py`, `KMFA/tools/check_v014_s07_p3_redcircle_postponement.py`, `KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/machine/redcircle_postponement_manifest.json`
+- boundary_validation: `KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/human/test_results.md`
+- limitation: S07-P3 只证明 public-safe local Redcircle postponement evidence；不证明 Stage 7 review、S08-P1、raw value matching、lineage full check、正式报告、GitHub upload、delivery readiness 或 business execution。
 
 ### FORM-KMFA-AMOUNT-001
 
