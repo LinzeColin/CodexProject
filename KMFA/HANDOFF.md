@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S15-P3｜与工资项目边界`：新增 `KMFA/tools/v014_s15_p3_salary_boundary.py`、`KMFA/tools/check_v014_s15_p3_salary_boundary.py`、`KMFA/tests/test_v014_s15_p3_salary_boundary.py` 和 `KMFA/stage_artifacts/V014_S15_P3_SALARY_BOUNDARY/` public-safe evidence。该 phase 验证 S15-P2 dependency、legacy S15-P3 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S15-P3 validator 和 focused unit test，锁定 fact output interface contracts=1、future salary readiness draft rows=4、human approval boundary count=4、pending review items=16、report grade=D、salary calculation=0、wage calculation=0、bonus approval=0、payroll export=0、final compensation decision=0、final payment=0、payment execution=0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 15 review、GitHub upload、S16、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、工资计算、奖金审批、薪资导出、最终发放、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `Stage 15 整体复审`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 Stage 15 整体复审`：新增 `KMFA/tools/v014_s15_stage_review.py`、`KMFA/tools/check_v014_s15_stage_review.py`、`KMFA/tests/test_v014_s15_stage_review.py` 和 `KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/` public-safe evidence。该 review 复跑 S15-P1/S15-P2/S15-P3 validators、legacy Stage 15 review、v0.1.4 Stage 15 review validator 和 focused unit test，锁定 phase_results=3/3 PASS、open findings=0、fixed findings=1、field definitions=6、field bindings=6、manual review fields=4、performance fact rows=4、abnormal review items=16、fact output interface contracts=1、future salary readiness rows=4、human approval boundary count=4、pending review items=16、report grade=D、salary calculation=0、wage calculation=0、bonus approval=0、payroll export=0、final compensation decision=0、final payment=0、payment execution=0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S16、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、工资计算、奖金审批、薪资导出、最终发放、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S16-P1`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s15p3-salary-boundary`
-- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`
-- 证据目录: `KMFA/stage_artifacts/V014_S15_P3_SALARY_BOUNDARY/`
-- validator: `KMFA/tools/check_v014_s15_p3_salary_boundary.py`
-- focused test: `KMFA/tests/test_v014_s15_p3_salary_boundary.py`
+- 当前版本: `0.1.4-s15-stage-review`
+- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`
+- 证据目录: `KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/`
+- validator: `KMFA/tools/check_v014_s15_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s15_stage_review.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S15-P3 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S15-P2、legacy S15-P3 和任务包/roadmap 证据。
-- 未执行: Stage 15 review、GitHub upload、S16、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、工资计算、奖金审批、薪资导出、最终发放、付款、银行或 business execution。
-- 下一步: 仅在用户明确开启后执行 `Stage 15 整体复审`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: Stage 15 review 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S15-P1/S15-P2/S15-P3、legacy Stage 15 review 和任务包/roadmap 证据。
+- 未执行: GitHub upload、S16、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、工资计算、奖金审批、薪资导出、最终发放、付款、银行或 business execution。
+- 下一步: 仅在用户明确开启后执行 `S16-P1`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

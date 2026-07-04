@@ -9146,3 +9146,63 @@ tasks:
       payment_execution: false
       bank_operation: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S15-STAGE-REVIEW-20260705"
+    task_name: "v0.1.4 Stage 15 整体复审"
+    stage_id: "V014-S15"
+    phase_id: "S15-STAGE-REVIEW"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S15_STAGE_REVIEW"
+    validator: "KMFA/tools/check_v014_s15_stage_review.py"
+    focused_test: "KMFA/tests/test_v014_s15_stage_review.py"
+    acceptance_id: "ACC-V014-S15-STAGE-REVIEW"
+    acceptance_ids:
+      - "ACC-V014-S15-STAGE-REVIEW"
+    next_phase: "S16-P1"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s15-stage-review"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s15_stage_review.py KMFA/tools/check_v014_s15_stage_review.py KMFA/tests/test_v014_s15_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s15_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p1_performance_fact_fields.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p2_performance_review_list.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p3_salary_boundary.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s15_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s15_stage_review -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: py_compile, generator, S15-P1/S15-P2/S15-P3 validators, legacy Stage 15 review, v0.1.4 Stage 15 review validator and focused unit test passed."
+      - "PASS: project governance, lean governance, changed-only governance sync, no-float, no-omission, diff check, structured parse checks and Ruby YAML parse checks passed."
+      - "PASS: raw/private suffix scan, high-signal secret scan and scoped S15 review public artifact boundary scan passed after fixing a public-safe key-name false positive."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/human/stage15_review_report.md"
+      - "KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/machine/stage15_review_manifest.json"
+      - "KMFA/tools/check_v014_s15_stage_review.py"
+    forbidden_scope:
+      s16_p1: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      live_connector: false
+      app_reinstall: false
+      opme_integration: false
+      live_salary_system_integration: false
+      api_endpoint: false
+      connector: false
+      file_export: false
+      scheduled_sync: false
+      salary_calculation: false
+      wage_calculation: false
+      bonus_approval: false
+      payroll_export: false
+      final_compensation_decision: false
+      final_payment: false
+      payment_execution: false
+      bank_operation: false
+      business_execution: false
