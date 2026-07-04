@@ -107,7 +107,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s09p2-margin-cash-margin"
+    model_version: "0.1.4-s09p3-scope-reconciliation"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
@@ -146,6 +146,7 @@ models:
       - "FORM-KMFA-V014-S08-STAGE-REVIEW-001"
       - "FORM-KMFA-V014-S09P1-PROJECT-COST-FACT-LAYER-001"
       - "FORM-KMFA-V014-S09P2-MARGIN-CASH-MARGIN-001"
+      - "FORM-KMFA-V014-S09P3-SCOPE-RECONCILIATION-001"
     parameter_ids:
       - "PARAM-KMFA-001"
       - "PARAM-KMFA-002"
@@ -210,6 +211,7 @@ models:
       - "PARAM-KMFA-1097"
       - "PARAM-KMFA-1100"
       - "PARAM-KMFA-1103"
+      - "PARAM-KMFA-1106"
       - "PARAM-KMFA-610"
       - "PARAM-KMFA-611"
       - "PARAM-KMFA-612"
@@ -365,7 +367,7 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s09p2-margin-cash-margin"
+    model_version: "0.1.4-s09p3-scope-reconciliation"
     assumptions:
       - "ASM-KMFA-003"
       - "ASM-KMFA-014"
@@ -392,6 +394,7 @@ models:
       - "FORM-KMFA-V014-S08P3-ENTITY-MATCHING-QUALITY-001"
       - "FORM-KMFA-V014-S09P1-PROJECT-COST-FACT-LAYER-001"
       - "FORM-KMFA-V014-S09P2-MARGIN-CASH-MARGIN-001"
+      - "FORM-KMFA-V014-S09P3-SCOPE-RECONCILIATION-001"
       - "FORM-KMFA-FIELD-STANDARDIZATION-001"
       - "FORM-KMFA-A0-FILE-REGISTRATION-001"
       - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -626,6 +629,8 @@ models:
       - "PARAM-KMFA-1099"
       - "PARAM-KMFA-1101"
       - "PARAM-KMFA-1102"
+      - "PARAM-KMFA-1104"
+      - "PARAM-KMFA-1105"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
