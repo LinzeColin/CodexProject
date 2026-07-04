@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S14-P1 资金计划现金贷款`：新增 `KMFA/tools/v014_s14_p1_fund_cash_loan_plan.py`、`KMFA/tools/check_v014_s14_p1_fund_cash_loan_plan.py`、`KMFA/tests/test_v014_s14_p1_fund_cash_loan_plan.py` 和 `KMFA/stage_artifacts/V014_S14_P1_FUND_CASH_LOAN_PLAN/` public-safe evidence。该 phase 验证 Stage 13 review dependency、legacy S14-P1 validator 和 v0.1.4 S14-P1 validator，锁定 source lanes=4、sources=5、field mappings=25、cash pressure records=4、loan due alerts=3、account balance summaries=3、HTML overview=1、pending reconciliation=12、report grade=D、payment operation count 0、bank operation count 0、loan management action count 0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S14-P2、S14-P3、Stage 14 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、付款、银行、贷款管理、开票、税务、政策申报、补贴申报或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S14-P2 发票税务计划`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S14-P2 发票税务计划`：新增 `KMFA/tools/v014_s14_p2_invoice_tax_plan.py`、`KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py`、`KMFA/tests/test_v014_s14_p2_invoice_tax_plan.py` 和 `KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/` public-safe evidence。该 phase 验证 S14-P1 dependency、legacy S14-P2 validator 和 v0.1.4 S14-P2 validator，锁定 source lanes=3、sources=6、field mappings=30、issue candidates=3、cash summaries=3、HTML overview=1、pending reconciliation=12、report grade=D、invoice issuance count 0、tax filing count 0、payment/bank operation count 0、external connector count 0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S14-P3、Stage 14 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、发票开具、纳税申报、付款、银行、贷款管理、政策申报、补贴申报或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S14-P3 政策证据计划`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s14p1-fund-cash-loan-plan`
-- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`
-- 证据目录: `KMFA/stage_artifacts/V014_S14_P1_FUND_CASH_LOAN_PLAN/`
-- validator: `KMFA/tools/check_v014_s14_p1_fund_cash_loan_plan.py`
-- focused test: `KMFA/tests/test_v014_s14_p1_fund_cash_loan_plan.py`
+- 当前版本: `0.1.4-s14p2-invoice-tax-plan`
+- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`
+- 证据目录: `KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/`
+- validator: `KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py`
+- focused test: `KMFA/tests/test_v014_s14_p2_invoice_tax_plan.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S14-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe Stage 13 review 和 legacy S14-P1 evidence。
-- 未执行: S14-P2、S14-P3、Stage 14 review、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、付款、银行、贷款管理、开票、税务、政策申报、补贴申报、business execution。
-- 下一步: 仅在用户明确开启后执行 `S14-P2 发票税务计划`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S14-P2 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe S14-P1 和 legacy S14-P2 evidence。
+- 未执行: S14-P3、Stage 14 review、GitHub upload、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、发票开具、纳税申报、付款、银行、贷款管理、政策申报、补贴申报、business execution。
+- 下一步: 仅在用户明确开启后执行 `S14-P3 政策证据计划`，继续保持 public-safe/no raw/no upload 边界。
 
 ## v0.1.3 历史状态
 

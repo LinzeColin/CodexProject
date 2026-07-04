@@ -8820,3 +8820,55 @@ tasks:
       policy_filing: false
       subsidy_application: false
       business_execution: false
+
+  - task_id: "KMFA-V014-S14-P2-INVOICE-TAX-PLAN-20260705"
+    task_name: "v0.1.4 S14-P2 发票税务计划"
+    stage_id: "V014-S14"
+    phase_id: "S14-P2"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN"
+    validator: "KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py"
+    focused_test: "KMFA/tests/test_v014_s14_p2_invoice_tax_plan.py"
+    acceptance_id: "ACC-V014-S14-P2-INVOICE-TAX-PLAN"
+    acceptance_ids:
+      - "ACC-V014-S14-P2-INVOICE-TAX-PLAN"
+    next_phase: "S14-P3"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s14p2-invoice-tax-plan"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s14_p2_invoice_tax_plan.py KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py KMFA/tests/test_v014_s14_p2_invoice_tax_plan.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s14_p2_invoice_tax_plan.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s14_p2_invoice_tax_plan.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s14_p2_invoice_tax_plan -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S14-P1 dependency, legacy S14-P2 and v0.1.4 S14-P2 validators passed."
+      - "PASS: focused unit test ran 1 test and passed."
+      - "PASS: governance validators, no-float, no-omission, structured parse checks, Ruby YAML parse checks, raw/private suffix scan, high-signal secret scan, scoped S14-P2 public artifact boundary scan and diff check pending final validation capture."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/human/invoice_tax_plan_report.md"
+      - "KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/machine/invoice_tax_plan_manifest.json"
+      - "KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py"
+    forbidden_scope:
+      s14_p3: false
+      stage14_review: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      tax_filing: false
+      tax_declaration_generation: false
+      invoice_issuance: false
+      invoice_operation: false
+      payment_approval: false
+      payment_execution: false
+      bank_operation: false
+      loan_management_action: false
+      policy_filing: false
+      subsidy_application: false
+      business_execution: false
