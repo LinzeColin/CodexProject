@@ -1,3 +1,10 @@
+## 0.1.4-s12-stage-review - 2026-07-05
+- Completed v0.1.4 Stage 12 overall review locally with v0.1.4 S12-P1/S12-P2/S12-P3 validators, legacy Stage 12 review validator, v1.4 Stage 12 review validator, focused unit test, and public-safe evidence.
+- Locked phase_results S12-P1/S12-P2/S12-P3 all PASS, open findings=0, fixed findings=1, manual events=5, impact previews=5, cache invalidations=2, rerun steps=8, same-source consistency checks=2, and HTML exports=3.
+- Fixed the review finding that legacy Stage 12 upload-ready wording is not the current v1.4 upload gate.
+- Confirmed no S13, GitHub upload, protected source matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
 ## 0.1.4-s12p3-manual-rerun-mechanism - 2026-07-05
 - Completed v0.1.4 S12-P3 重跑机制 locally with v0.1.4 S12-P2 dependency, public-safe cache invalidation, four-layer rerun records, same-source consistency checks, validator, focused unit test, and evidence.
 - Locked source_preview_count=5, eligible_event_count=2, blocked_preview_count=3, cache_invalidation_count=2, rerun_step_count=8, same_source_consistency_check_count=2, old_version_retained_count=8, new_version_appended_count=8.

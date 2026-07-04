@@ -1,4 +1,4 @@
-version: "0.1.4-s12p3-manual-rerun-mechanism"
+version: "0.1.4-s12-stage-review"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -45,6 +45,8 @@ active_formula_ids:
   - "FORM-KMFA-V014-S11-STAGE-REVIEW-001"
   - "FORM-KMFA-V014-S12P1-MANUAL-RESOLUTION-EVENTS-001"
   - "FORM-KMFA-V014-S12P2-MANUAL-IMPACT-PREVIEW-001"
+  - "FORM-KMFA-V014-S12P3-MANUAL-RERUN-MECHANISM-001"
+  - "FORM-KMFA-V014-S12-STAGE-REVIEW-001"
   - "FORM-KMFA-FIELD-STANDARDIZATION-001"
   - "FORM-KMFA-A0-FILE-REGISTRATION-001"
   - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -164,3 +166,11 @@ v014_s12p3_manual_rerun_mechanism_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM
   validator: KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py
   scope: S12-P3 manual rerun mechanism only; no Stage 12 review/upload/raw inbox access/formal report/business execution.
+
+v014_s12_stage_review_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s12_stage_review.py
+  scope: Stage 12 review only; no S13/upload/raw inbox access/raw matching/lineage/formal report/business execution.
