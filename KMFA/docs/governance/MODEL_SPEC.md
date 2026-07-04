@@ -651,3 +651,11 @@ product_version: 0.1.4-s12p1-manual-resolution-events
 - Inputs: v0.1.4 Stage 11 review dependency, legacy S12-P1 public-safe manual event artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
 - Outputs: `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/machine/manual_resolution_events_manifest.json`, `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/machine/manual_resolution_events.jsonl`, `KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/exports/html/kmfa_manual_resolution_workbench.html`, and public-safe human evidence under the same artifact directory.
 - Controls: S12-P2, S12-P3, Stage 12 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.
+
+
+## FORM-KMFA-V014-S12P2-MANUAL-IMPACT-PREVIEW-001
+- Version: `0.1.4-s12p2-manual-impact-preview`.
+- Purpose: lock v0.1.4 S12-P2 manual impact preview evidence for affected project refs, affected metric refs, affected report refs, high-risk second confirmation, blocked publish gates, allowed previews, visible impact-preview feedback, and v1.4 human-flow baseline reflection.
+- Inputs: v0.1.4 S12-P1 dependency, legacy S12-P2 public-safe impact preview artifacts, v1.4 HTML human-flow audit report, and deterministic public-safe validator outputs.
+- Outputs: `KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/machine/manual_impact_preview_manifest.json`, `KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/machine/manual_impact_previews.jsonl`, `KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/exports/html/kmfa_manual_impact_preview.html`, and public-safe human evidence under the same artifact directory.
+- Controls: S12-P3, Stage 12 review, GitHub upload, raw value matching, lineage full check, formal report release, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation must remain false.

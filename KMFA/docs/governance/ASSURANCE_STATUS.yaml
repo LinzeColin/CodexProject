@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260704-V014-S11-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260705-V014-S12-P2-MANUAL-IMPACT-PREVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "119eab025062c596d338ebab235a5591f53d2ce1"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-04T23:38:34+10:00"
-generator_version: "manual-v014-s11-stage-review"
+snapshot_event_time: "2026-07-05T00:52:30+10:00"
+generator_version: "manual-v014-s12p2-manual-impact-preview"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 763
-    total_active_formulas: 96
+    total_active_parameters: 766
+    total_active_formulas: 97
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -689,6 +689,32 @@ v014_s12p1_manual_resolution_events:
     html_export_count: 1
   forbidden_scope:
     s12_p2: false
+    s12_p3: false
+    stage12_review: false
+    raw_inbox_access: false
+    github_upload: false
+    formal_report: false
+    business_execution: false
+
+
+v014_s12p2_manual_impact_preview:
+  status: completed_validated_local_only_no_go_upload_deferred_manual_impact_preview_locked
+  phase: S12-P2
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW
+  validator: KMFA/tools/check_v014_s12_p2_manual_impact_preview.py
+  focused_test: KMFA/tests/test_v014_s12_p2_manual_impact_preview.py
+  github_upload: deferred_until_v014_stage1_18_complete
+  counts:
+    source_event_count: 5
+    impact_preview_count: 5
+    affected_project_count: 8
+    affected_metric_count: 11
+    affected_report_count: 5
+    high_risk_count: 3
+    second_confirmation_required_count: 3
+    blocked_publish_count: 3
+    publish_allowed_count: 2
+  forbidden_scope:
     s12_p3: false
     stage12_review: false
     raw_inbox_access: false

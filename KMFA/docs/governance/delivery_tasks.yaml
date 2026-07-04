@@ -8459,3 +8459,45 @@ tasks:
       raw_inbox_access: false
       formal_report: false
       business_execution: false
+
+
+  - task_id: "KMFA-V014-S12-P2-MANUAL-IMPACT-PREVIEW-20260705"
+    task_name: "v0.1.4 S12-P2 影响预览"
+    stage_id: "V014-S12"
+    phase_id: "S12-P2"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW"
+    validator: "KMFA/tools/check_v014_s12_p2_manual_impact_preview.py"
+    focused_test: "KMFA/tests/test_v014_s12_p2_manual_impact_preview.py"
+    acceptance_id: "ACC-V014-S12-P2-MANUAL-IMPACT-PREVIEW"
+    acceptance_ids:
+      - "ACC-V014-S12-P2-MANUAL-IMPACT-PREVIEW"
+    next_phase: "S12-P3"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s12p2-manual-impact-preview"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s12_p2_manual_impact_preview.py KMFA/tools/check_v014_s12_p2_manual_impact_preview.py KMFA/tests/test_v014_s12_p2_manual_impact_preview.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s12_p2_manual_impact_preview.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p1_manual_resolution_events.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s12_p2_manual_impact_preview.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p2_manual_impact_preview.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s12_p2_manual_impact_preview -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: S12-P1 dependency, legacy S12-P2 and v0.1.4 S12-P2 validators passed."
+      - "PASS: focused unit test ran 1 test in 145.656s and passed."
+      - "PASS: governance validators, no-float, no-omission, structured parse, artifact boundary scan, secret scan and diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/human/manual_impact_preview_report.md"
+      - "KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/machine/manual_impact_preview_manifest.json"
+      - "KMFA/tools/check_v014_s12_p2_manual_impact_preview.py"
+    forbidden_scope:
+      s12_p3: false
+      stage12_review: false
+      github_upload: false
+      raw_inbox_access: false
+      formal_report: false
+      business_execution: false
