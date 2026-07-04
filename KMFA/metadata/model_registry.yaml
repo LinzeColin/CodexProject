@@ -1,4 +1,4 @@
-version: "0.1.4-s13-stage-review"
+version: "0.1.4-s15p2-performance-review-list"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -51,6 +51,7 @@ active_formula_ids:
   - "FORM-KMFA-V014-S13P2-COLLECTION-RECEIVABLE-AGING-001"
   - "FORM-KMFA-V014-S13P3-CROSS-TABLE-REVIEW-001"
   - "FORM-KMFA-V014-S13-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S15P2-PERFORMANCE-REVIEW-LIST-001"
   - "FORM-KMFA-FIELD-STANDARDIZATION-001"
   - "FORM-KMFA-A0-FILE-REGISTRATION-001"
   - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -256,3 +257,11 @@ v014_s15p1_performance_fact_fields_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S15_P1_PERFORMANCE_FACT_FIELDS
   validator: KMFA/tools/check_v014_s15_p1_performance_fact_fields.py
   scope: S15-P1 performance fact fields only; no S15-P2 review list, S15-P3 salary boundary, Stage 15 review, upload, raw inbox access, raw matching, lineage, formal report, salary calculation, bonus approval, payroll export, final payment, payment execution or business execution.
+v014_s15p2_performance_review_list_registry_note:
+  version: "0.1.4-s15p2-performance-review-list"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S15P2-PERFORMANCE-REVIEW-LIST-001
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST
+  validator: KMFA/tools/check_v014_s15_p2_performance_review_list.py
+  scope: S15-P2 performance review list only; no S15-P3 salary boundary, Stage 15 review, upload, raw inbox access, raw matching, lineage, formal report, salary calculation, bonus approval, payroll export, final compensation, final payment, payment execution or business execution.

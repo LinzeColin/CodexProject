@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S15-P2 Performance Review List
+- Product version: `0.1.4-s15p2-performance-review-list`.
+- Scope: S15-P2 only; public-safe performance fact table rows, abnormal review items, refs, hash refs and manual-review statuses.
+- Evidence: `KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST/`.
+- Verification: `KMFA/tools/check_v014_s15_p2_performance_review_list.py`; `KMFA/tests/test_v014_s15_p2_performance_review_list.py`.
+- blocker_state: fact_rows=4, review_items=16, manual_review_fields=4, salary=0, wage=0, bonus=0, payroll_export=0, final_compensation=0, final_payment=0, report_grade=D, S15-P3=false, Stage15 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, formal_report=false, business_execution_allowed=false.
+product_version: 0.1.4-s15p2-performance-review-list
+version_matrix_product_version_reference: 0.1.4-s15p2-performance-review-list
+
 # KMFA v0.1.4 S15-P1 Performance Fact Fields
 - Product version: `0.1.4-s15p1-performance-fact-fields`.
 - Scope: S15-P1 only; public-safe performance fact field definitions, source bindings, hash refs and manual-review markers.

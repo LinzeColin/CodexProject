@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s15p1-performance-fact-fields`
+- version: `0.1.4-s15p2-performance-review-list`
 - current_stage: `S15`
-- current_phase: `v0.1.4 S15-P1 performance fact fields`
-- status: `completed_validated_local_only_no_go_upload_deferred_performance_fact_fields_locked`
+- current_phase: `v0.1.4 S15-P2 performance review list`
+- status: `completed_validated_local_only_no_go_upload_deferred_performance_review_list_created`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S15-P2 performance review list completed local-only: S15-P1 dependency PASS, legacy S15-P2 public-safe baseline PASS, v1.4 taskpack/roadmap requirements PASS, v0.1.4 S15-P2 validator PASS, focused unit test PASS, performance fact rows=4, abnormal review items=16, manual review fields=4, required fields invoice_amount/gross_margin_rate/settlement_speed/collection_speed/audit_variance/customer_relationship_rate, manual review fields settlement_speed/collection_speed/audit_variance/customer_relationship_rate, salary calculation=0, wage calculation=0, bonus approval=0, payroll export=0, final compensation decision=0, final payment=0, report grade=D, raw inbox read/list/stat/hash/mutation=false by this phase, S15-P3=false, Stage15 review=false, github_upload=false.
 - v0.1.4 S15-P1 performance fact fields completed local-only: Stage 14 review dependency PASS, legacy S15-P1 public-safe baseline PASS, v1.4 taskpack/roadmap requirements PASS, v0.1.4 S15-P1 validator PASS, focused unit test PASS, field definitions=6, field bindings=6, manual review fields=4, required fields invoice_amount/gross_margin_rate/settlement_speed/collection_speed/audit_variance/customer_relationship_rate, manual review fields settlement_speed/collection_speed/audit_variance/customer_relationship_rate, performance fact table=0, abnormal project review list=0, salary calculation=0, bonus approval=0, payroll export=0, final payment=0, report grade=D, raw inbox read/list/stat/hash/mutation=false by this phase, S15-P2=false, S15-P3=false, Stage15 review=false, github_upload=false.
 - v0.1.4 Stage 14 overall review completed local-only: S14-P1/S14-P2/S14-P3 validators PASS, legacy Stage 14 review PASS, v0.1.4 Stage 14 review validator PASS, focused unit test PASS, phase_results=3/3 PASS, open findings=0, fixed findings=1, fund_lanes=4, invoice_tax_lanes=3, policy_directories=5, policy_gaps=5, policy_risk_tips=5, html_exports=3, pending_reconciliation_count=12, report_grade=D, formal_report_count=0, business_decision_basis_count=0, payment_or_bank_operation_count=0, loan_management_action_count=0, tax_filing_count=0, invoice_issuance_count=0, policy_submission_count=0, subsidy_application_count=0, raw inbox read/list/stat/hash/mutation=false by this review, S15-P1=false, github_upload=false.
 - v0.1.4 S14-P3 policy evidence plan completed local-only: S14-P2 dependency PASS, legacy S14-P3 validator PASS, v0.1.4 S14-P3 validator PASS, focused unit test PASS, policy_program_count=5, evidence_directory_count=5, evidence_gap_count=5, risk_tip_count=5, html_output_count=1, pending_reconciliation_count=12, report_grade=D, formal_policy_conclusion_count=0, policy_application_submission_count=0, subsidy_application_count=0, external_connector_action_count=0, raw inbox read/list/stat/hash/mutation=false by this phase, Stage14_review=false, github_upload=false.

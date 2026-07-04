@@ -1,0 +1,22 @@
+# KMFA v0.1.4 S15-P2 Test Results
+
+- py_compile: PASS
+- generator: PASS
+- s15_p1_dependency_validator: PASS
+- legacy_s15_p2_validator: PASS
+- v014_s15_p2_validator: PASS
+- focused_unittest: PASS, 1 test
+- project_governance_validator: PASS
+- lean_governance_validator: PASS
+- governance_sync_changed_only: PASS
+- no_float_money: PASS
+- no_omission_check: PASS
+- diff_check: PASS
+- structured_parse_checks: PASS
+- ruby_yaml_parse: PASS
+- raw_private_suffix_scan: PASS
+- high_signal_secret_scan: PASS
+- scoped_public_artifact_boundary_scan: PASS
+- github_upload: NOT_PERFORMED
+- s15_p3: NOT_PERFORMED
+- stage15_review: NOT_PERFORMED
