@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s09-stage-review
+product_version: 0.1.4-s10p1-report-templates
 
 ## Scope
 
-当前模型说明覆盖 v0.1.4 Stage 9 整体复审、v0.1.4 S09-P3 口径转换与差异核对、v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 Stage 9 review 只证明 S09-P1/S09-P2/S09-P3 public-safe 结构已整体复审通过：三 phase validators 全部 PASS，legacy Stage 9 review validator PASS，open findings=0，fixed findings=1，reconciliation records=12，pending resolutions=12，当前仍为 NO_GO/Q4/D/blocked。本 review 未读取 raw inbox，不执行 S10-P1、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
+当前模型说明覆盖 v0.1.4 S10-P1 报告模板、v0.1.4 Stage 9 整体复审、v0.1.4 S09-P3 口径转换与差异核对、v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 S10-P1 只证明报告模板结构和 v1.4 human-flow HTML/UIUX baseline 对齐：template_count=2，section_count=11，project_cost_section_count=4，business_overview_section_count=7，pending reconciliation=12，formal report count=0，export artifact count=0，当前仍为 NO_GO/Q4/D/blocked。本 phase 未读取 raw inbox，不执行 S10-P2、S10-P3、Stage 10 review、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
 ## Active Model
 
@@ -13,8 +13,17 @@ product_version: 0.1.4-s09-stage-review
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s09_stage_review.py`, `KMFA/stage_artifacts/V014_S09_STAGE_REVIEW/machine/stage9_review_manifest.json`
-- current_v014_scope_lock: `Stage 9 review completed; S10-P1/GitHub upload/raw value matching/lineage full check/formal report/live connector/app reinstall/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s10_p1_report_templates.py`, `KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/machine/report_templates_manifest.json`
+- current_v014_scope_lock: `S10-P1 completed; S10-P2/S10-P3/Stage 10 review/GitHub upload/raw value matching/lineage full check/formal report/UI runtime/live connector/app reinstall/business execution all false`
+
+### FORM-KMFA-V014-S10P1-REPORT-TEMPLATES-001
+
+- type: deterministic public-safe report template gate
+- purpose: 验证 v0.1.4 S10-P1 报告模板结构，覆盖 Stage 9 review dependency、legacy S10-P1 public-safe artifacts、v1.4 human-flow HTML/UIUX baseline、两个模板、十一章结构和 no-export/no-formal-report/no-upload 边界。
+- fact_level: EXTRACTED
+- expression: `s10p1_valid = template_count == 2 AND section_count == 11 AND project_cost_section_count == 4 AND business_overview_section_count == 7 AND pending_reconciliation_count == 12 AND formal_report_count == 0 AND export_artifact_count == 0 AND s10_p2_performed == false AND s10_p3_performed == false AND stage10_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s10_p1_report_templates.py`, `KMFA/tools/check_v014_s10_p1_report_templates.py`, `KMFA/tests/test_v014_s10_p1_report_templates.py`, `KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/machine/report_templates_manifest.json`, `KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/human/report_templates_report.md`
+- limitation: 只证明 public-safe 报告模板结构和 v1.4 HTML/UIUX baseline 对齐；不证明 S10-P2 报告可信等级、S10-P3 导出、Stage 10 review、raw value matching、lineage full check、正式报告、UI runtime、GitHub upload 或业务执行。
 
 ### MOD-KMFA-METADATA-001
 
@@ -520,13 +529,13 @@ product_version: 0.1.4-s09-stage-review
 - status: active with v0.1.4 S05-P3 authority baseline lock evidence and existing public-safe cost-analysis formulas
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
-- current limitation: S18-P1 precision stress, S18-P2 full regression acceptance and S18-P3 integration preparation are local-only; S18-P2 Go/No-Go remains NO_GO; Stage 18 review/upload, lineage full check, official report generation, live connectors and OpMe deep coupling are not implemented; S10-P3 exports and S11 public-safe pages remain D-grade/public-safe previews and are not decision-grade reports.
+- current limitation: v0.1.4 S10-P1 report templates are local-only public-safe template structure evidence; S10-P2 trust grade runtime, S10-P3 export, Stage 10 review, lineage full check, official report generation, live connectors and OpMe deep coupling are not completed in this run; current Go/No-Go remains NO_GO and D-grade reports are not decision-grade reports.
 
 ## Counts
 
 - active models: 8
-- active formulas: 82
-- active parameters: 721
+- active formulas: 83
+- active parameters: 724
 - planned models: 0
 - planned formulas: 0
 - planned parameters: 1
