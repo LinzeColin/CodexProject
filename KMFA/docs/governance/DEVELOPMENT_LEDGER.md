@@ -1,9 +1,18 @@
+# KMFA v0.1.4 Stage 15 Review
+- Product version: `0.1.4-s15-stage-review`.
+- Scope: Stage 15 review only; public-safe replay of S15-P1/S15-P2/S15-P3 validators, legacy Stage 15 review, v1.4 Stage 15 review validator and focused unit test.
+- Evidence: `KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/`.
+- Verification: `KMFA/tools/check_v014_s15_stage_review.py`; `KMFA/tests/test_v014_s15_stage_review.py`.
+- blocker_state: phase_results=3/3 PASS, open_findings=0, fixed_findings=1, field_definitions=6, field_bindings=6, performance_fact_rows=4, review_items=16, readiness_rows=4, salary=0, wage=0, bonus=0, payroll_export=0, final_compensation=0, final_payment=0, payment_execution=0, report_grade=D, S16=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, formal_report=false, business_execution_allowed=false.
+product_version: 0.1.4-s15-stage-review
+version_matrix_product_version_reference: 0.1.4-s15-stage-review
+
 # KMFA v0.1.4 S15-P3 Salary Boundary
 - Product version: `0.1.4-s15p3-salary-boundary`.
 - Scope: S15-P3 only; public-safe fact output interface contract, future salary-system readiness draft, human final approval and payment release boundary.
 - Evidence: `KMFA/stage_artifacts/V014_S15_P3_SALARY_BOUNDARY/`.
 - Verification: `KMFA/tools/check_v014_s15_p3_salary_boundary.py`; `KMFA/tests/test_v014_s15_p3_salary_boundary.py`.
-- blocker_state: interface_contracts=1, readiness_rows=4, human_approval_boundary=4, pending_review_items=16, salary=0, wage=0, bonus=0, payroll_export=0, final_compensation=0, final_payment=0, payment_execution=0, report_grade=D, Stage15 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, formal_report=false, business_execution_allowed=false.
+- blocker_state: interface_contracts=1, readiness_rows=4, human_approval_boundary=4, pending_review_items=16, salary=0, wage=0, bonus=0, payroll_export=0, final_compensation=0, final_payment=0, payment_execution=0, report_grade=D, Stage15 review=completed later, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, formal_report=false, business_execution_allowed=false.
 product_version: 0.1.4-s15p3-salary-boundary
 version_matrix_product_version_reference: 0.1.4-s15p3-salary-boundary
 

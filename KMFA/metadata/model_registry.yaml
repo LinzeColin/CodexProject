@@ -1,4 +1,4 @@
-version: "0.1.4-s15p3-salary-boundary"
+version: "0.1.4-s15-stage-review"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -53,6 +53,7 @@ active_formula_ids:
   - "FORM-KMFA-V014-S13-STAGE-REVIEW-001"
   - "FORM-KMFA-V014-S15P2-PERFORMANCE-REVIEW-LIST-001"
   - "FORM-KMFA-V014-S15P3-SALARY-BOUNDARY-001"
+  - "FORM-KMFA-V014-S15-STAGE-REVIEW-001"
   - "FORM-KMFA-FIELD-STANDARDIZATION-001"
   - "FORM-KMFA-A0-FILE-REGISTRATION-001"
   - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -275,3 +276,12 @@ v014_s15p3_salary_boundary_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S15_P3_SALARY_BOUNDARY
   validator: KMFA/tools/check_v014_s15_p3_salary_boundary.py
   scope: S15-P3 salary boundary only; reserve fact output interface and future salary-system readiness draft only; no Stage 15 review, upload, raw inbox access, raw matching, lineage, formal report, live salary integration, salary calculation, wage calculation, bonus approval, payroll export, final compensation, final payment, payment execution or business execution.
+
+v014_s15_stage_review_registry_note:
+  version: "0.1.4-s15-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S15-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S15_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s15_stage_review.py
+  scope: Stage 15 overall review only; no S16-P1, upload, raw inbox access, raw matching, lineage, formal report, live salary integration, salary calculation, wage calculation, bonus approval, payroll export, final compensation, final payment, payment execution or business execution.
