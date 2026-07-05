@@ -1,12 +1,14 @@
 # KMFA Owner Status
 
-更新时间: 2026-07-05
+更新时间: 2026-07-06
 
 ## 一句话状态
 
-KMFA 当前版本 `0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed` 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION` 本地 gate：用户在当前 Codex 线程确认激活后，Codex 已在 git-ignored runtime 内物化并消费 active owner-authorized fill record。该 active record 仅包含 113 条 `keep_pending`，没有提供 authorized processed-value source，也没有新增 source-map records 或 authorized fingerprints；因此 source_map_gap_resolution_complete=false，仍不能执行 processed value materialization replay，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。next_required_input=`owner_or_authorized_delegate_supplies_authorized_processed_value_sources`。
+KMFA 当前版本 `0.1.4-raw-processed-comparability-diagnostic` 已完成 `V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC` 本地 gate：Codex 对 raw diagnostic、processed target staging、partial source-map、owner worklist 和 active keep-pending record 做了只读可比对性诊断。当前 raw unique numeric fingerprints=330，processed target slots=149，但 staged processed value fingerprints=0，raw/processed structural key intersection=0，comparable value pairs=0；因此仍不能证明处理数据与原始数据一致，raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。next_required_input=`owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`。
 
 ## 你现在能信任什么
+
+- v0.1.4 raw/processed comparability diagnostic 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：raw root files=5、prior raw value fingerprint records=871、raw unique numeric fingerprints=330、processed target slots=149、staged processed value fingerprints=0、existing processed source-map records=36、unresolved owner worklist items=113、active keep-pending items=113、raw/processed structural key intersection=0、comparable pairs=0。该 phase 对 raw root 只读 list/stat/hash，不修改原始文件；私有诊断只留在 git-ignored runtime。不证明 raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。next_required_input=`owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`。
 
 - v0.1.4 owner-authorized private processed source-map fill application 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：source unresolved gap items=113、private intake request items=113、candidate active fill record paths=2、existing active fill records=1、active fill record items=113、keep pending items=113、active authorized fill record found=true、fill application performed=true、source map records applied=0、new authorized fingerprints=0。该 phase 不读取 raw inbox，不公开 private active record 明细；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。next_required_input=`owner_or_authorized_delegate_supplies_authorized_processed_value_sources`。
 
