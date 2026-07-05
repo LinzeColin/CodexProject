@@ -1791,3 +1791,10 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 修复 `S01-P3 no-omission baseline` validator 的历史 review 记录漂移问题：implementation coverage 改为按 `SxxP1-P3` / `SxxP*Txx` 唯一 ID 计数，不把后续 review status append 误算为 roadmap phase。
 - 当前 Go/No-Go 仍为 `NO_GO`：raw alignment 未证明完整、local raw package hash/size mismatch、lineage full check 未完成、formal report release 未允许、pending reconciliation=12。
 - 未执行 GitHub upload、app reinstall、raw inbox read/mutation、lineage full check completion、formal report release、production restore、external/live connector、OpMe 深度耦合或业务执行。
+
+## 0.1.4-value-consistency-scope-gate - 2026-07-05
+
+- 完成 `V014_VALUE_CONSISTENCY_SCOPE_GATE` 本地 public-safe gate：新增 value consistency scope generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/` 证据。
+- 锁定 6 条 value consistency lanes、3 次独立交叉验证最低要求、raw inbox mutation guard 和 repeated mismatch 差异报告义务。
+- 本 phase 不抽取、不标准化、不比较、不提交 raw 或 processed business values；raw inbox 仅做 before/after stat guard，不 read/list/hash/write/delete/move/rename/overwrite/copy/normalize。
+- 当前 Go/No-Go 仍为 `NO_GO`：raw value matching、processed-data reconciliation、business value consistency、lineage full check、formal report release、GitHub upload、app reinstall 和 business execution 均未执行。

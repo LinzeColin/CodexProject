@@ -5,16 +5,18 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-raw-consistency-cross-validation-gate`
-- current_stage: `raw-consistency-cross-validation`
-- current_phase: `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE`
-- status: `completed_public_safe_authoritative_raw_baseline_locked_no_go`
+- version: `0.1.4-value-consistency-scope-gate`
+- current_stage: `value-consistency-scope`
+- current_phase: `V014_VALUE_CONSISTENCY_SCOPE_GATE`
+- status: `completed_public_safe_value_consistency_scope_locked_no_go`
 - production_ready: `false`
-- github_upload_ready: `false_blocked_by_raw_source_identity_and_lineage`
+- github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 value consistency scope gate completed local-only: value_consistency_scope_locked=true，raw_inbox_mutation_guard_locked=true，difference_report_required_on_repeated_mismatch=true；raw_value_matching_performed=false，processed_data_reconciliation_performed=false，business_value_consistency_verified=false，lineage_full_check_complete=false，current Go/No-Go=NO_GO。Raw inbox only stat-guarded by this phase；read/list/hash/write/delete/move/rename/overwrite/copy/normalize=false；public evidence aggregate/status/ref only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。
 
 - v0.1.4 raw consistency cross-validation gate completed local-only: owner decision code confirm_current_container_as_authoritative 已应用；authoritative_raw_baseline_locked=true，source_container_consistency_verified=true，cross-run private hash profile matches prior diagnostic=true；business_value_consistency_verified=false，raw_alignment_complete=false，public_member_hash_backfill_allowed=false，current Go/No-Go=NO_GO。Raw inbox only read/list/stat/hash by this phase; mutation/write/delete/move/rename/overwrite/copy/normalize=false；public evidence aggregate-only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。
 

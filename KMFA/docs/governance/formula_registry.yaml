@@ -6941,3 +6941,40 @@ formulas:
       - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/human/raw_consistency_cross_validation_report.md"
       - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/human/test_results.md"
       - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-VALUE-CONSISTENCY-SCOPE-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 value consistency scope gate
+    version: "0.1.4-value-consistency-scope-gate"
+    status: active
+    fact_level: EXTRACTED
+    expression: "authoritative_raw_baseline_locked=true AND value_consistency_scope_locked=true AND raw_inbox_mutation_guard_locked=true AND difference_report_required_on_repeated_mismatch=true -> raw_value_matching_performed=false, processed_data_reconciliation_performed=false, business_value_consistency_verified=false, lineage_full_check_complete=false, github_upload_allowed=false"
+    variables:
+      - name: "scope_lane_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "6"
+      - name: "minimum_independent_validation_passes"
+        data_type: "integer"
+        unit: "pass"
+        input_domain: "3"
+      - name: "business_value_consistency_verified"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "This phase locks value-consistency scope only; it does not extract or compare raw business values."
+      - "Repeated mismatch must trigger a difference report at final goal closeout."
+      - "Lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing scope manifest, scope matrix, difference report contract, private stat guard, validator, focused unit test or governance record fails validation."
+    output_range: "v014_value_consistency_scope_manifest"
+    code_refs:
+      - "KMFA/tools/v014_value_consistency_scope_gate.py"
+      - "KMFA/tools/check_v014_value_consistency_scope_gate.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_value_consistency_scope_gate.py --require-private-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_value_consistency_scope_gate -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/human/value_consistency_scope_report.md"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_manifest.json"

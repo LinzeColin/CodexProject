@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-RAW-CONSISTENCY-CROSS-VALIDATION-GATE"
+as_of_event_id: "EVENT-KMFA-20260705-V014-VALUE-CONSISTENCY-SCOPE-GATE"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "461b0a40b7e7ffb7f8250cf0414db27a3dafb815"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-05T23:58:00+10:00"
-generator_version: "manual-0.1.4-raw-consistency-cross-validation-gate"
+snapshot_event_time: "2026-07-05T23:59:30+10:00"
+generator_version: "manual-0.1.4-value-consistency-scope-gate"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 859
-    total_active_formulas: 128
+    total_active_parameters: 862
+    total_active_formulas: 129
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -779,4 +779,32 @@ v014_s12p3_manual_rerun_mechanism:
     raw_inbox_access: false
     github_upload: false
     formal_report: false
+    business_execution: false
+
+
+v014_value_consistency_scope_gate:
+  status: completed_public_safe_value_consistency_scope_locked_no_go
+  phase: V014_VALUE_CONSISTENCY_SCOPE_GATE
+  evidence_dir: KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE
+  validator: KMFA/tools/check_v014_value_consistency_scope_gate.py
+  focused_test: KMFA/tests/test_v014_value_consistency_scope_gate.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    scope_lane_count: 6
+    minimum_independent_validation_passes: 3
+  gates:
+    authoritative_raw_baseline_locked: true
+    value_consistency_scope_locked: true
+    raw_inbox_mutation_guard_locked: true
+    difference_report_required_on_repeated_mismatch: true
+    raw_value_matching_performed: false
+    processed_data_reconciliation_performed: false
+    business_value_consistency_verified: false
+    lineage_full_check_complete: false
+  forbidden_scope:
+    raw_value_matching: false
+    processed_data_reconciliation: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
     business_execution: false

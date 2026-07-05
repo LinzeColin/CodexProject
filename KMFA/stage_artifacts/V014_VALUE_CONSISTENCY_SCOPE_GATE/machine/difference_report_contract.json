@@ -1,0 +1,29 @@
+{
+  "blocked_release_until_resolved": true,
+  "enabled": true,
+  "final_goal_closeout_must_include_difference_report_if_triggered": true,
+  "minimum_independent_validation_passes": 3,
+  "multi_pass_cross_validation_required_before_consistency_claim": true,
+  "phase_id": "V014_VALUE_CONSISTENCY_SCOPE_GATE",
+  "private_detail_report_location": "KMFA/.codex_private_runtime/",
+  "project_id": "KMFA",
+  "public_difference_report_contains_field_header_plaintext": false,
+  "public_difference_report_contains_raw_filenames": false,
+  "public_difference_report_contains_raw_values": false,
+  "public_safe_fields_required": [
+    "difference_id",
+    "scope_lane_id",
+    "source_ref",
+    "processed_ref",
+    "mismatch_class",
+    "severity",
+    "responsible_role",
+    "blocker_id",
+    "next_action"
+  ],
+  "raw_inbox_mutation_allowed": false,
+  "record_type": "v014_difference_report_contract",
+  "schema_version": "kmfa.v014_difference_report_contract.v1",
+  "trigger": "repeated_cross_validation_cannot_keep_processed_data_consistent_with_raw_data",
+  "version": "0.1.4"
+}

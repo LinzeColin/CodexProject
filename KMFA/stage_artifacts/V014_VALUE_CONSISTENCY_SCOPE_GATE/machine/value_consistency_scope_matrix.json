@@ -1,0 +1,80 @@
+{
+  "all_lanes_public_safe": true,
+  "field_header_plaintext_in_public_scope_matrix": false,
+  "lane_count": 6,
+  "lanes": [
+    {
+      "lane_id": "VC-L01",
+      "name": "raw source container identity",
+      "private_output_policy": "hash_profile_private_runtime_only",
+      "public_output_policy": "aggregate_status_only",
+      "required_before_business_value_go": true,
+      "source_layer": "authoritative_raw_container",
+      "status": "completed_by_prior_gate",
+      "target_layer": "private_source_profile",
+      "verification_method": "hash_profile_cross_run_lock"
+    },
+    {
+      "lane_id": "VC-L02",
+      "name": "raw schema and mapping readiness",
+      "private_output_policy": "schema_header_details_private_runtime_only",
+      "public_output_policy": "hash_or_ref_only",
+      "required_before_business_value_go": true,
+      "source_layer": "raw_private_schema_or_header_profile",
+      "status": "scope_locked_not_executed_this_phase",
+      "target_layer": "field_mapping_contract",
+      "verification_method": "private_schema_header_diagnostic_then_public_safe_mapping_ids"
+    },
+    {
+      "lane_id": "VC-L03",
+      "name": "raw value extraction and canonical staging",
+      "private_output_policy": "local_value_diagnostic_private_runtime_only",
+      "public_output_policy": "no_raw_or_processed_business_values",
+      "required_before_business_value_go": true,
+      "source_layer": "raw_row_cell_or_document_value",
+      "status": "not_performed_this_phase",
+      "target_layer": "canonical_staging_fact",
+      "verification_method": "read_only_extract_normalize_compare_with_source_anchor"
+    },
+    {
+      "lane_id": "VC-L04",
+      "name": "processed fact and derived metric reconciliation",
+      "private_output_policy": "raw_processed_value_pairs_private_runtime_only",
+      "public_output_policy": "status_mismatch_class_and_refs_only",
+      "required_before_business_value_go": true,
+      "source_layer": "canonical_staging_fact",
+      "status": "blocked_until_raw_value_matching",
+      "target_layer": "fact_metric_report_runtime",
+      "verification_method": "zero_delta_and_lineage_reference_replay"
+    },
+    {
+      "lane_id": "VC-L05",
+      "name": "lineage full check and report release dependency",
+      "private_output_policy": "no_private_output_expected",
+      "public_output_policy": "gate_flags_and_counts_only",
+      "required_before_business_value_go": true,
+      "source_layer": "field_metric_report_lineage",
+      "status": "blocked_until_value_consistency_verified",
+      "target_layer": "formal_report_release_gate",
+      "verification_method": "lineage_full_check_after_value_consistency"
+    },
+    {
+      "lane_id": "VC-L06",
+      "name": "unresolved mismatch and difference report",
+      "private_output_policy": "local_private_detail_report_if_needed",
+      "public_output_policy": "sanitized_summary_without_values",
+      "required_before_business_value_go": true,
+      "source_layer": "cross_validation_mismatch",
+      "status": "armed_not_triggered_this_phase",
+      "target_layer": "owner_readable_difference_report",
+      "verification_method": "multi_pass_cross_validation_failure_report"
+    }
+  ],
+  "phase_id": "V014_VALUE_CONSISTENCY_SCOPE_GATE",
+  "project_id": "KMFA",
+  "raw_business_values_in_public_scope_matrix": false,
+  "raw_filenames_in_public_scope_matrix": false,
+  "record_type": "v014_value_consistency_scope_matrix",
+  "schema_version": "kmfa.v014_value_consistency_scope_matrix.v1",
+  "version": "0.1.4"
+}

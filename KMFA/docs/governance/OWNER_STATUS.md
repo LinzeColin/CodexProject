@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE` 本地 gate：用户确认当前容器为权威后，Codex 只读重算 source-container 私有哈希剖面并与上一轮私有诊断一致，已 public-safe 锁定 authoritative raw baseline；但业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_VALUE_CONSISTENCY_SCOPE_GATE` 本地 gate：已把“处理数据必须和原始数据保持一致、反复交叉验证不一致则最终提供差异报告”固化为 public-safe 范围、validator 和治理记录；但 raw value matching、processed-data reconciliation、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
+
+- v0.1.4 value consistency scope gate 已确认本地 validator 通过；公开证据只显示 scope lanes、gate flags 和差异报告义务：scope lanes=6，minimum independent validation passes=3，difference report required on repeated mismatch=true。该 phase 只锁定下一轮 raw value matching 的只读边界和差异报告触发条件，不抽取、不比较、不公开 raw 或 processed business values，不证明业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 raw consistency cross-validation gate 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：raw files=5、archives=3、spreadsheets=2、selected candidate=1、business members=9、documents=8、workbooks=1、private member hash baseline locked=true。该 phase 只证明 source-container 级一致，不证明业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
