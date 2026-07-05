@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION"
+as_of_event_id: "EVENT-KMFA-20260705-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-RECORD-DRAFT-FINAL-VALIDATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "9b5abfd826a5af58fc2824a43dd5ebd4ae015b2f"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-05T23:59:59+10:00"
-generator_version: "manual-0.1.4-private-processed-value-source-map-owner-authorized-fill-application"
+generator_version: "manual-0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 890
-    total_active_formulas: 138
+    total_active_parameters: 893
+    total_active_formulas: 139
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -40,6 +40,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/human/test_results.md"
       - "KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_application.py"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/human/test_results.md"
+      - "KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_record_draft.py"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/machine/private_processed_value_source_map_owner_authorized_fill_record_draft_manifest.json"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/test_results.md"
       - "KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_intake.py"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_intake_manifest.json"

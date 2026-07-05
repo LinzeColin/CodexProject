@@ -107,13 +107,14 @@ models:
     owner: "KMFA"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "0.1.4-s13p1-financial-operating-report"
+    model_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft"
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
       - "ASM-KMFA-007"
     formula_ids:
       - "FORM-KMFA-GOV-001"
+      - "FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-RECORD-DRAFT-001"
       - "FORM-KMFA-S17P1-ACCESS-SECURITY-001"
       - "FORM-KMFA-S17P2-NOTIFICATION-001"
       - "FORM-KMFA-S17P3-OPERATIONS-SOP-001"
@@ -315,6 +316,9 @@ models:
       - "PARAM-KMFA-1009"
       - "PARAM-KMFA-1010"
       - "PARAM-KMFA-1011"
+      - "PARAM-KMFA-1264"
+      - "PARAM-KMFA-1265"
+      - "PARAM-KMFA-1266"
     inputs:
       - "user objective"
       - "KMFA TaskPack and Roadmap"
@@ -338,6 +342,7 @@ models:
       - "v1.4 S08-P3 entity matching quality local NO_GO upload-deferred gate"
       - "v1.4 Stage 8 review local NO_GO upload-deferred gate"
       - "v1.4 S10-P1 report templates local NO_GO upload-deferred gate"
+      - "v1.4 owner-authorized fill record draft local NO_GO gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
