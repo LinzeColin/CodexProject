@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION` 本地 gate：上一轮 149 个 fill request items 中已有 36 个填入 private source map，剩余 113 个 gap 已被锁定为需要 owner/授权 private value source intake；source_map_gap_resolution_complete=false，所以还不能执行 processed value materialization replay，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE` 本地 gate：上一轮剩余 113 个 source-map gap 已被转成 owner/授权填补入口和 public-safe intake contract；private intake request 只在 git-ignored runtime，公开仓库只有聚合计数、schema、gate flags 和证据引用。当前尚未提供 active owner fill record，new authorized fingerprints=0，source_map_gap_resolution_complete=false，所以还不能执行 processed value materialization replay，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
+
+- v0.1.4 owner-authorized private processed source-map fill intake 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：source unresolved gap items=113、unique private refs=101、duplicate unresolved gap items=12、existing source-map records=36、private intake request items=113、allowed intake actions=3、new authorized fingerprints=0。该 phase 不读取 raw inbox，不创建 active owner fill record；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。用户已要求 raw 原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须给出差异报告。
 
 - v0.1.4 source-map authorized-fill gap resolution 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：previous fill request items=149、previous authorized filled=36、unresolved gap items=113、unresolved unique private refs=101、private owner worklist items=113、new authorized fingerprints=0、source-map gap resolution complete=false。该 phase 不读取 raw inbox，private owner worklist 只保留在 git-ignored runtime；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 

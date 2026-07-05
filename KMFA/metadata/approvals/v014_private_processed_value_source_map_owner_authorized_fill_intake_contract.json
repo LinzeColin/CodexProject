@@ -1,0 +1,96 @@
+{
+  "accepted_record_type": "v014_private_processed_value_source_map_owner_authorized_fill_record",
+  "allowed_actor_roles": [
+    "owner",
+    "authorized_delegate"
+  ],
+  "allowed_intake_action_codes": [
+    "supply_authorized_processed_value_fingerprint",
+    "map_existing_metadata_hash_sibling",
+    "keep_pending"
+  ],
+  "app_reinstall_allowed_by_intake": false,
+  "basis_refs": [
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_manifest.json",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_go_no_go_report.json"
+  ],
+  "basis_summary": {
+    "business_value_consistency_verified": false,
+    "source_blocker_ids": [
+      "OWNER_AUTHORIZED_PRIVATE_VALUE_SOURCE_INTAKE_REQUIRED",
+      "AUTHORIZED_PROCESSED_VALUE_SOURCE_MAP_INCOMPLETE",
+      "PROCESSED_VALUE_MATERIALIZATION_REPLAY_BLOCKED",
+      "RAW_TO_PROCESSED_VALUE_COMPARISON_BLOCKED",
+      "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+      "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+      "FORMAL_REPORT_BLOCKED",
+      "GITHUB_UPLOAD_DEFERRED",
+      "APP_REINSTALL_BLOCKED",
+      "BUSINESS_EXECUTION_BLOCKED"
+    ],
+    "source_decision": "NO_GO",
+    "source_duplicate_unresolved_gap_item_count": 12,
+    "source_existing_source_map_record_count": 36,
+    "source_map_gap_resolution_complete": false,
+    "source_owner_authorized_fill_intake_required": true,
+    "source_phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION",
+    "source_private_owner_worklist_item_count": 113,
+    "source_status": "completed_validated_local_only_no_go_authorized_fill_gap_resolution_locked",
+    "source_task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705",
+    "source_unresolved_gap_item_count": 113,
+    "source_unresolved_unique_private_ref_count": 101
+  },
+  "business_execution_allowed_by_intake": false,
+  "business_value_allowed_in_public_repo": false,
+  "conditional_fill_item_fields": {
+    "keep_pending": [
+      "reason_pending",
+      "next_review_trigger"
+    ],
+    "map_existing_metadata_hash_sibling": [
+      "authorized_metadata_hash_sibling_ref"
+    ],
+    "supply_authorized_processed_value_fingerprint": [
+      "authorized_processed_value_fingerprint"
+    ]
+  },
+  "current_gate": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-GATE",
+  "fill_record_status": "no_owner_authorized_fill_record_supplied",
+  "forbidden_public_metadata_categories": [
+    "raw or normalized business values",
+    "plaintext source extracts",
+    "private processed refs",
+    "local source paths",
+    "worksheet labels",
+    "archive member labels",
+    "credentials and private keys"
+  ],
+  "formal_report_allowed_by_intake": false,
+  "generated_at": "2026-07-05T23:59:59+10:00",
+  "github_upload_allowed_by_intake": false,
+  "lineage_full_check_allowed_by_intake": false,
+  "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE",
+  "private_processed_ref_allowed_in_public_repo": false,
+  "processed_value_materialization_allowed_by_intake": false,
+  "project_id": "KMFA",
+  "raw_or_plaintext_allowed": false,
+  "raw_to_processed_comparison_allowed_by_intake": false,
+  "readiness_status": "ready_for_owner_authorized_fill_record",
+  "record_type": "v014_private_processed_value_source_map_owner_authorized_fill_intake_contract",
+  "required_common_fields": [
+    "actor_role",
+    "actor_ref",
+    "decision_time",
+    "fill_record_scope",
+    "basis_refs",
+    "fill_items"
+  ],
+  "required_fill_item_fields": [
+    "target_slot_id",
+    "action_code",
+    "basis_note"
+  ],
+  "schema_version": "kmfa.v014_private_processed_value_source_map_owner_authorized_fill_intake_contract.v1",
+  "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-INTAKE-20260705",
+  "version": "0.1.4"
+}

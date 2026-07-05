@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Owner-Authorized Private Processed Source-Map Fill Intake
+- Product version: `0.1.4-private-processed-value-source-map-owner-authorized-fill-intake`.
+- Scope: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE` only; consume prior gap evidence and ignored private owner worklist, write ignored private intake request, and keep public evidence aggregate/schema-only.
+- Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/`.
+- Verification: `KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_intake.py`; `KMFA/tests/test_v014_private_processed_value_source_map_owner_authorized_fill_intake.py`.
+- blocker_state: source_unresolved_gap_items=113, source_unresolved_unique_private_refs=101, private_intake_request_items=113, allowed_intake_actions=3, owner_authorized_fill_record_supplied=false, active_authorized_fill_record_created=false, new_authorized_fingerprints=0, source_map_gap_resolution_complete=false, processed_value_materialization_replay=false, comparable_value_pairs=0, business_value_consistency_verified=false, raw_inbox_access=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-private-processed-value-source-map-owner-authorized-fill-intake
+version_matrix_product_version_reference: 0.1.4-private-processed-value-source-map-owner-authorized-fill-intake
+
 # KMFA v0.1.4 Source-Map Authorized-Fill Gap Resolution
 - Product version: `0.1.4-private-processed-value-source-map-gap-resolution`.
 - Scope: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION` only; classify remaining authorized-fill gaps, write ignored private owner worklist, and keep public evidence aggregate-only.

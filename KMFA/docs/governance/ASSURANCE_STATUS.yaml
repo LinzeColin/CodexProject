@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-GAP-RESOLUTION"
+as_of_event_id: "EVENT-KMFA-20260705-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-INTAKE"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "461b0a40b7e7ffb7f8250cf0414db27a3dafb815"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-05T23:59:59+10:00"
-generator_version: "manual-0.1.4-private-processed-value-source-map-gap-resolution"
+generator_version: "manual-0.1.4-private-processed-value-source-map-owner-authorized-fill-intake"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 883
-    total_active_formulas: 136
+    total_active_parameters: 886
+    total_active_formulas: 137
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/test_results.md"
+      - "KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_intake.py"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_intake_manifest.json"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/human/test_results.md"
       - "KMFA/tools/check_v014_private_processed_value_source_map_authorized_fill.py"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_manifest.json"
