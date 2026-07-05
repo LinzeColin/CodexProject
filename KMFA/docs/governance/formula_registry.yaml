@@ -7221,3 +7221,46 @@ formulas:
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/human/private_processed_value_source_map_authorized_fill_report.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/human/test_results.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-GAP-RESOLUTION-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 source-map authorized-fill gap resolution gate
+    version: "0.1.4-private-processed-value-source-map-gap-resolution"
+    status: active
+    fact_level: EXTRACTED
+    expression: "previous_fill_request_item_count=149 AND previous_authorized_filled_item_count=36 AND unresolved_gap_item_count=113 AND private_owner_worklist_item_count=113 -> source_map_gap_resolution_complete=false, owner_authorized_fill_intake_required=true, processed_value_materialization_replay_ready=false, business_value_consistency_verified=false, decision=NO_GO"
+    variables:
+      - name: "previous_fill_request_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "149"
+      - name: "previous_authorized_filled_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "36"
+      - name: "unresolved_gap_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "113"
+      - name: "owner_authorized_fill_intake_required"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true"
+    constraints:
+      - "Gap resolution classifies prior authorized-fill gaps only."
+      - "Private owner worklist stays in git-ignored runtime."
+      - "Public evidence contains aggregate counts, statuses and evidence refs only."
+      - "No processed values, private refs, raw filenames, field/header/sheet/entry plaintext or raw values may be committed."
+      - "Materialization replay, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, Go/No-Go report, summary, gap matrix, private owner worklist, validator, focused unit test or governance record fails validation."
+    output_range: "v014_private_processed_value_source_map_gap_resolution_manifest"
+    code_refs:
+      - "KMFA/tools/v014_private_processed_value_source_map_gap_resolution.py"
+      - "KMFA/tools/check_v014_private_processed_value_source_map_gap_resolution.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_gap_resolution.py --require-private-owner-worklist"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_gap_resolution -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/private_processed_value_source_map_gap_resolution_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_manifest.json"

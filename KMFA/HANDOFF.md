@@ -4,28 +4,28 @@
 
 ## 当前目标
 
-本轮只完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL`：基于上一 phase 的 ignored fill request 和项目内既有 metadata hash sibling，执行授权 private processed value source-map 部分填充，生成 public-safe evidence、validator、治理记录和 ignored private source map。本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、不声称业务值一致。当前 149 个 fill request items 中，仅 36 个可由既有授权 metadata hash sibling 填充，113 个仍未填；source_map_authorized_fill_complete=false，Go/No-Go 仍为 `NO_GO`，lineage full check、正式报告、GitHub upload、app reinstall 和业务执行继续阻断。
+本轮只完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION`：基于上一 phase 的 partial authorized fill 结果和 ignored private capture/worklist，锁定剩余 113 个 source-map gap 的 public-safe 缺口分类、private-only owner worklist、validator、治理记录和 NO_GO gate。本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、不声称业务值一致。当前 previous fill request items=149，previous authorized filled=36，unresolved gap items=113，unresolved unique private refs=101，duplicate unresolved gap items=12，new authorized fingerprints=0；source_map_gap_resolution_complete=false，Go/No-Go 仍为 `NO_GO`，lineage full check、正式报告、GitHub upload、app reinstall 和业务执行继续阻断。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-private-processed-value-source-map-authorized-fill`
-- 当前已完成: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL`
-- 证据目录: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/`
-- validator: `KMFA/tools/check_v014_private_processed_value_source_map_authorized_fill.py`
-- focused test: `KMFA/tests/test_v014_private_processed_value_source_map_authorized_fill.py`
-- manifest: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_manifest.json`
-- go_no_go: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_go_no_go_report.json`
-- summary: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_summary.json`
-- metadata copies: `KMFA/metadata/quality/v014_private_processed_value_source_map_authorized_fill_manifest.json`, `KMFA/metadata/quality/v014_private_processed_value_source_map_authorized_fill_go_no_go_report.json`, `KMFA/metadata/quality/v014_private_processed_value_source_map_authorized_fill_summary.json`
-- private authorized fill/runtime source map: git-ignored `KMFA/.codex_private_runtime/v014_private_processed_value_source_map_authorized_fill/`
-- staged future materialization source map: git-ignored `KMFA/.codex_private_runtime/v014_private_processed_value_materialization/private_processed_value_source_map.json`; materialization replay 本轮未执行。
-- current_gate: `KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-20260705`
-- current_state: fill_request_item_count=`149`, unique_private_ref_count=`137`, duplicate_private_ref_item_count=`12`, authorized_filled_item_count=`36`, authorized_unfilled_item_count=`113`, source_map_records_written_count=`36`, source_map_authorized_fill_complete=`false`, raw_to_processed_value_comparison_performed=`false`, comparable_value_pair_count=`0`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
-- raw boundary: 本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖、复制、标准化或写入 raw inbox；只消费上一 phase 的 ignored fill request/capture 诊断与项目内 public metadata hash sibling，把授权填充诊断和 source map 写入 git-ignored private runtime。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
+- 当前版本: `0.1.4-private-processed-value-source-map-gap-resolution`
+- 当前已完成: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION`
+- 证据目录: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/`
+- validator: `KMFA/tools/check_v014_private_processed_value_source_map_gap_resolution.py`
+- focused test: `KMFA/tests/test_v014_private_processed_value_source_map_gap_resolution.py`
+- manifest: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_manifest.json`
+- go_no_go: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_go_no_go_report.json`
+- summary: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_summary.json`
+- matrix: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_matrix.json`
+- metadata copies: `KMFA/metadata/quality/v014_private_processed_value_source_map_gap_resolution_manifest.json`, `KMFA/metadata/quality/v014_private_processed_value_source_map_gap_resolution_go_no_go_report.json`, `KMFA/metadata/quality/v014_private_processed_value_source_map_gap_resolution_summary.json`, `KMFA/metadata/quality/v014_private_processed_value_source_map_gap_resolution_matrix.json`
+- private owner worklist: git-ignored `KMFA/.codex_private_runtime/v014_private_processed_value_source_map_gap_resolution/private_owner_authorized_fill_worklist.json`
+- current_gate: `KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705`
+- current_state: previous_fill_request_item_count=`149`, previous_authorized_filled_item_count=`36`, unresolved_gap_item_count=`113`, unresolved_unique_private_ref_count=`101`, duplicate_unresolved_gap_item_count=`12`, private_owner_worklist_item_count=`113`, new_authorized_fingerprint_count=`0`, source_map_gap_resolution_complete=`false`, owner_authorized_fill_intake_required=`true`, raw_to_processed_value_comparison_ready=`false`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
+- raw boundary: 本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖、复制、标准化或写入 raw inbox；只消费上一 phase 的 ignored fill/capture 诊断与 partial private source map，把 owner worklist 和 gap diagnostic 写入 git-ignored private runtime。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
 - upload policy: v1.4 不按单个 Stage 或补充 gate 上传；GitHub main upload 必须等 owner raw source identity、raw alignment application、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
-- 未完成/阻断: authorized source-map fill incomplete；authorized_unfilled_item_count=113；processed value materialization replay=false；raw-to-processed comparison=false；comparable raw/processed value pairs=0；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
-- 下一步: 只能另开单一 phase 执行 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION` 或用户指定的等价 authorized fill gap-resolution phase；不得自动执行 materialization replay、raw-to-processed comparison、GitHub upload、重装 app、发布正式报告或执行业务动作。
+- 未完成/阻断: owner-authorized private value source intake required；unresolved_gap_item_count=113；new_authorized_fingerprint_count=0；source_map_gap_resolution_complete=false；processed value materialization replay=false；raw-to-processed comparison=false；comparable raw/processed value pairs=0；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
+- 下一步: 只能另开单一 phase 执行 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE` 或用户指定的等价 owner/authorized fill intake phase；不得自动执行 materialization replay、raw-to-processed comparison、GitHub upload、重装 app、发布正式报告或执行业务动作。
 
 ## v0.1.3 历史状态
 
