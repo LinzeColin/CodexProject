@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S17-P1 Access Security
+- Product version: `0.1.4-s17p1-access-security`.
+- Scope: S17-P1 only; public-safe role permission, sensitive public repository policy and audit-log policy lock using S16 Stage review dependency and legacy S17-P1 public-safe baseline.
+- Evidence: `KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/`.
+- Verification: `KMFA/tools/check_v014_s17_p1_access_security.py`; `KMFA/tests/test_v014_s17_p1_access_security.py`.
+- blocker_state: roles=4, sensitive_policy_categories=15, audit_action_types=5, notification_delivery=0, full_report_email_body=0, external_connector=0, formal_report=0, business_decision_basis=0, business_execution=0, raw_inbox_access=0, report_grade=D, S17-P2=false, S17-P3=false, Stage17 review=false, GitHub upload=false, protected source matching=false, lineage full check=false, app_reinstall=false.
+product_version: 0.1.4-s17p1-access-security
+version_matrix_product_version_reference: 0.1.4-s17p1-access-security
+
 # KMFA v0.1.4 Stage 16 Review
 - Product version: `0.1.4-s16-stage-review`.
 - Scope: Stage 16 review only; public-safe replay of S16-P1/S16-P2/S16-P3 validators, v0.1.4 Stage 16 review validator and focused unit test.

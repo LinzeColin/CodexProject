@@ -1,3 +1,10 @@
+## 0.1.4-s17p1-access-security - 2026-07-05
+- Completed v0.1.4 S17-P1 access and security locally with S16 Stage review dependency, legacy S17-P1 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S17-P1 validator, focused unit test, and public-safe evidence.
+- Locked role permission coverage for management, finance, reviewer and readonly roles; sensitive public-repo policy categories=15; audit action types=5 for import, processing, report, export and notification events.
+- Confirmed notification delivery=0, full report email body=0, external connector=0, formal report=0, business decision basis=0, business execution=0 and raw inbox access=0.
+- Confirmed no S17-P2, S17-P3, Stage 17 review, GitHub upload, protected source matching, lineage full check, app reinstall, raw/private publication or business action.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
 ## 0.1.4-s16-stage-review - 2026-07-05
 - Completed v0.1.4 Stage 16 overall review locally with S16-P1/S16-P2/S16-P3 validators, v0.1.4 Stage 16 review validator, focused unit test, and public-safe evidence.
 - Locked phase_results=3/3 PASS, open findings=0, fixed findings=1, source_lanes_total=17, project_matches=5, lifecycle_records=4, customer_summaries=4, pending_reconciliation=12, report_grade=D, and release_permission=blocked.

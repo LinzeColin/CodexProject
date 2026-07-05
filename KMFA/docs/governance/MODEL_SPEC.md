@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-S17P1-ACCESS-SECURITY-001
+- version: `0.1.4-s17p1-access-security`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe S17-P1 access/security gate.
+- expression: `s17p1_valid = s16_stage_review_dependency_PASS AND legacy_s17p1_baseline_PASS AND role_count == 4 AND sensitive_policy_category_count == 15 AND audit_action_type_count == 5 AND notification_delivery_count == 0 AND full_report_email_body_count == 0 AND external_connector_count == 0 AND formal_report_count == 0 AND business_execution_count == 0 AND raw_inbox_access_count == 0 AND s17_p2_performed == false AND s17_p3_performed == false AND stage17_review_performed == false AND github_upload_performed == false`.
+- inputs: role permission matrix, sensitive public repository policy lock, audit-log policy lock, v1.4 S17-P1 taskpack/roadmap anchors and S16 review manifest.
+- missing_policy: missing dependency, role coverage, sensitive-data policy, audit action coverage, public-safe boundaries, focused test, validator or evidence fails S17-P1 validation.
+- outputs: `KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/machine/access_security_manifest.json` and paired JSONL locks.
+- forbidden_scope: S17-P2, S17-P3, Stage17 review, GitHub upload, protected source matching, lineage full check, notification delivery, full report body, formal report, external connector, app reinstall, raw inbox access and business execution.
+
 # KMFA Model Spec
 
 product_version: 0.1.4-s16p3-customer-business-analysis
