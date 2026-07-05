@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S17-P3 Operations SOP
+- Product version: `0.1.4-s17p3-operations-sop`.
+- Scope: S17-P3 only; public-safe operations runbooks, finance SOP knowledge index and error/backup drill lock using S17-P2 dependency and legacy S17-P3 public-safe baseline.
+- Evidence: `KMFA/stage_artifacts/V014_S17_P3_OPERATIONS_SOP/`.
+- Verification: `KMFA/tools/check_v014_s17_p3_operations_sop.py`; `KMFA/tests/test_v014_s17_p3_operations_sop.py`.
+- blocker_state: operation_runbooks=4, knowledge_items=2, drill_logs=2, runbook_types=4, knowledge_item_types=2, drill_types=2, production_restore=0, external_service_call=0, live_connector=0, business_execution=0, raw_inbox_access=0, app_reinstall=0, report_grade=D, Stage17 review=false, GitHub upload=false, protected source matching=false, lineage full check=false, formal_report=false, full_report_email=false, production_restore=false, business_decision_basis=false.
+product_version: 0.1.4-s17p3-operations-sop
+version_matrix_product_version_reference: 0.1.4-s17p3-operations-sop
+
 # KMFA v0.1.4 S17-P2 Notification Policy
 - Product version: `0.1.4-s17p2-notification-policy`.
 - Scope: S17-P2 only; public-safe notification rule/event/metadata dispatch log lock using S17-P1 dependency and legacy S17-P2 public-safe baseline.

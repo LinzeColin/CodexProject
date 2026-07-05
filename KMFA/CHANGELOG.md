@@ -1,3 +1,10 @@
+## 0.1.4-s17p3-operations-sop - 2026-07-05
+- Completed v0.1.4 S17-P3 operations SOP locally with S17-P2 dependency, legacy S17-P3 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S17-P3 validator, focused unit test, and public-safe evidence.
+- Locked operation runbooks=4 for import, review, publish and rollback; knowledge-index items=2 for finance SOP and handoff materials; metadata-only drill logs=2 for error handling and backup recovery.
+- Confirmed production restore=0, external service calls=0, live connector calls=0, app reinstall=0, formal report=0, business execution=0 and raw inbox access=0.
+- Confirmed no Stage 17 review, GitHub upload, S18, protected source matching, lineage full check, raw/private publication or business action.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
 ## 0.1.4-s17p2-notification-policy - 2026-07-05
 - Completed v0.1.4 S17-P2 notification policy locally with S17-P1 dependency, legacy S17-P2 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S17-P2 validator, focused unit test, and public-safe evidence.
 - Locked notification rules=3, notification events=3, metadata dispatch logs=3 and trigger types=3 for report-ready, major-risk and missing-source reminders.
