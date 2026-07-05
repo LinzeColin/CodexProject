@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION` 本地 gate：149 个 private processed target slots 已进入 materialization 尝试，但 private value source map 当前缺失，materialized processed value fingerprints=0、comparable value pairs=0，所以还不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION` 本地 gate：149 个 processed target slots 的 source-map 要求已锁定，但可用 private processed value source map=0、resolved source=0、unresolved source=149，所以还不能 materialize processed value fingerprint，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
+
+- v0.1.4 private processed value source resolution 已确认本地 validator 通过；公开证据只显示 aggregate counts、source-map schema requirement 和 gate flags：processed target slots=149、usable private source map=0、resolved sources=0、unresolved sources=149、source resolution complete=false。该 phase 不读取 raw inbox，slot 级 source-resolution 诊断只保留在 git-ignored runtime；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 private processed value staging 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：processed target slots=149、approved private processed target slots=149、processed value fingerprints=0、comparable pairs=0、business value consistency verified=false。该 phase 不读取 raw inbox，私有 target slot 明细只保留在 git-ignored runtime；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 

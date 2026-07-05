@@ -10065,3 +10065,37 @@ tasks:
     raw_to_processed_value_comparison_performed: false
     business_value_consistency_verified: false
     raw_inbox_access_by_this_phase: false
+
+  - task_id: "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-RESOLUTION-20260705"
+    phase: "V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION"
+    objective: "Lock private processed value source-map requirement and NO_GO gate."
+    scope:
+      - "source resolution evidence"
+      - "public-safe validator"
+      - "governance records"
+    non_scope:
+      - "raw inbox mutation"
+      - "raw-to-processed comparison"
+      - "GitHub upload"
+      - "formal report"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-V014-PRIVATE-PROCESSED-VALUE-MATERIALIZATION-20260705"
+    required_files:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_summary.json"
+    acceptance_ids:
+      - "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-RESOLUTION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_resolution.py --require-private-source-resolution"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_resolution -q"
+    test_results:
+      - "PASS: source resolution validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/human/private_processed_value_source_resolution_report.md"
+    risk: "Processed value source map remains unresolved; keep NO_GO until private source map capture succeeds."
+    rollback: "Remove current phase artifacts, tool, validator, test and governance entries."
+    target_version: "0.1.4-private-processed-value-source-resolution"
+    completed_version: "0.1.4-private-processed-value-source-resolution"

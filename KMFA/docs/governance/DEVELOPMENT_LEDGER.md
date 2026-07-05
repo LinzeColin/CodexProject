@@ -1060,6 +1060,7 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 
 | `KMFA-V014-RAW-ALIGNMENT-REMEDIATION-20260705` | v0.1.4 raw alignment remediation 本地完成，product_version=`0.1.4-raw-alignment-remediation`：只读读取/list/stat/hash 配置 raw inbox，锁定 aggregate counts、private ignored diagnostic、container hash/size mismatch、NO_GO 和 owner source identity decision gate；未提交 raw 文件名/raw hash/archive member/sheet/header/value/private 文件，未执行 GitHub upload、app reinstall、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/human/raw_alignment_remediation_report.md` |
 
+| `KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-RESOLUTION-20260705` | v0.1.4 private processed value source resolution 本地通过：source-map schema locked，processed target slots=149，usable source map=0，resolved sources=0，unresolved sources=149，NO_GO；未读取 raw inbox，未执行 comparison、formal report、GitHub upload、app reinstall 或业务执行 | `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/human/private_processed_value_source_resolution_report.md` |
 ## In Progress
 
 | Task | Result | Evidence |
@@ -1091,4 +1092,12 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - Capability: consumes private processed target staging and attempts processed value fingerprint materialization in ignored runtime; current source map missing leaves 149 slots unmaterialized and zero comparable pairs.
 - Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/`.
 - Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_materialization.py --require-private-materialization`.
+- Boundary: no raw inbox access, no raw-to-processed comparison, no processed data reconciliation, no lineage full check, no formal report, no GitHub upload, no app reinstall, and no business execution.
+
+## FEAT-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-RESOLUTION
+- product_version: 0.1.4-private-processed-value-source-resolution
+- Status: completed locally; upload deferred; NO_GO.
+- Capability: locks private processed value source-map schema and unresolved source count after materialization found no usable source map.
+- Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/`.
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_resolution.py --require-private-source-resolution`.
 - Boundary: no raw inbox access, no raw-to-processed comparison, no processed data reconciliation, no lineage full check, no formal report, no GitHub upload, no app reinstall, and no business execution.

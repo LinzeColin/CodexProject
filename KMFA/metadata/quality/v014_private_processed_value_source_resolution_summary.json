@@ -1,0 +1,16 @@
+{
+  "business_value_consistency_verified": false,
+  "comparable_value_pair_count": 0,
+  "previous_unmaterialized_processed_target_slot_count": 149,
+  "processed_target_slot_count": 149,
+  "raw_to_processed_value_comparison_performed": false,
+  "required_source_map_schema_locked": true,
+  "resolved_processed_value_source_count": 0,
+  "source_map_candidate_count": 2,
+  "source_map_candidate_present_count": 0,
+  "source_resolution_complete": false,
+  "source_resolution_status": "blocked_required_private_processed_value_source_map_missing",
+  "unmaterialized_processed_target_slot_count": 149,
+  "unresolved_processed_value_source_count": 149,
+  "usable_private_processed_value_source_map_count": 0
+}

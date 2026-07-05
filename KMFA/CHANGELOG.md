@@ -1,4 +1,12 @@
 # KMFA v0.1.4 Private Processed Value Materialization
+
+## 0.1.4-private-processed-value-source-resolution - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION` 本地 public-safe gate。
+- 新增 source resolution generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/` 证据。
+- 锁定 required source-map schema：processed target slots=149、usable source map=0、resolved sources=0、unresolved sources=149、source_resolution_complete=false。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 raw-to-processed comparison、不做 processed-data reconciliation、不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行。
 - Product version: `0.1.4-private-processed-value-materialization`.
 - Scope: `V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION` only; consume private processed staging, attempt materialization in ignored private runtime, and keep public evidence aggregate-only.
 - Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/`.
