@@ -9147,6 +9147,67 @@ tasks:
       bank_operation: false
       business_execution: false
 
+  - task_id: "KMFA-V014-S16-P1-SUBCONTRACT-PROCUREMENT-20260705"
+    task_name: "v0.1.4 S16-P1 外协采购归集"
+    stage_id: "V014-S16"
+    phase_id: "S16-P1"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT"
+    validator: "KMFA/tools/check_v014_s16_p1_subcontract_procurement.py"
+    focused_test: "KMFA/tests/test_v014_s16_p1_subcontract_procurement.py"
+    acceptance_id: "ACC-V014-S16-P1-SUBCONTRACT-PROCUREMENT"
+    acceptance_ids:
+      - "ACC-V014-S16-P1-SUBCONTRACT-PROCUREMENT"
+    next_phase: "S16-P2"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s16p1-subcontract-procurement"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s16_p1_subcontract_procurement.py KMFA/tools/check_v014_s16_p1_subcontract_procurement.py KMFA/tests/test_v014_s16_p1_subcontract_procurement.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s16_p1_subcontract_procurement.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s16_p1_subcontract_procurement.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p1_subcontract_procurement.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s16_p1_subcontract_procurement -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 scripts/validate_project_governance.py --project KMFA"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 scripts/lean_governance.py validate --project KMFA"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 scripts/validate_governance_sync.py --changed-only --enforce-sync"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+      - "changed/untracked JSON/JSONL/CSV structured parse checks"
+      - "changed/untracked Ruby YAML parse checks"
+      - "changed/untracked raw/private suffix scan"
+      - "high-signal secret scan across changed/untracked KMFA text files"
+      - "scoped S16-P1 public artifact boundary scan"
+      - "git diff --check -- KMFA scripts"
+    test_results:
+      - "PASS"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/human/subcontract_procurement_report.md"
+      - "KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json"
+      - "KMFA/tools/check_v014_s16_p1_subcontract_procurement.py"
+    forbidden_scope:
+      s16_p2: false
+      s16_p3: false
+      stage16_review: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      live_connector: false
+      app_reinstall: false
+      opme_integration: false
+      procurement_execution: false
+      payment_approval: false
+      payment_execution: false
+      bank_operation: false
+      collection_action: false
+      legal_action: false
+      business_execution: false
+
   - task_id: "KMFA-V014-S15-STAGE-REVIEW-20260705"
     task_name: "v0.1.4 Stage 15 整体复审"
     stage_id: "V014-S15"

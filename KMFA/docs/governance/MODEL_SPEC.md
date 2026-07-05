@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s15-stage-review
+product_version: 0.1.4-s16p1-subcontract-procurement
 
 ## Scope
 
-当前 v0.1.4 scope lock：Stage 15 整体复审已本地通过，复跑 S15-P1/S15-P2/S15-P3 validators、legacy Stage 15 review、v1.4 Stage 15 review validator 和 focused unit test；phase_results=3/3 PASS、open findings=0、fixed findings=1、field definitions=6、field bindings=6、manual review fields=4、performance fact rows=4、abnormal review items=16、fact output interface contracts=1、future salary readiness draft rows=4、human approval boundary count=4、pending review items=16、salary calculation=0、wage calculation=0、bonus approval=0、payroll export=0、final compensation decision=0、final payment=0、payment execution=0、report grade=D，当前仍为 NO_GO/Q4/D/blocked。该 review 未执行 S16、GitHub upload、protected source matching、lineage full check、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、贷款管理、工资计算、奖金审批、薪资导出、最终发放或业务执行。
+当前 v0.1.4 scope lock：S16-P1 外协采购归集已本地通过，验证 Stage 15 review dependency、legacy S16-P1 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S16-P1 validator 和 focused unit test；source lanes=4、project matches=5、unallocated cost pool=2、anomaly candidates=4、duplicate payment candidates=2、cross-project cost candidates=2、pending reconciliation=12、procurement execution=0、payment approval=0、payment execution=0、bank operation=0、formal report=0、business decision basis=0、report grade=D，当前仍为 NO_GO/Q4/D/blocked。该 phase 未执行 S16-P2、S16-P3、Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、催收、法务或业务执行。
 
 当前模型说明覆盖 v0.1.4 Stage 10 整体复审、v0.1.4 S10-P3 报告导出、v0.1.4 S10-P2 报告可信等级、v0.1.4 S10-P1 报告模板、v0.1.4 Stage 9 整体复审、v0.1.4 S09-P3 口径转换与差异核对、v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 Stage 10 review 只证明 S10-P1/S10-P2/S10-P3 public-safe 报告层本地复审闭环：phase_results 全部 PASS，open findings=0，fixed findings=2，report templates=2，report grade records=2，report exports=2，HTML exports=2，CSV appendices=2，Excel-compatible CSV downloads=2，pending reconciliation=12，confirmed resolution=0，formal report=0，business decision basis=0，当前仍为 NO_GO/Q4/D/blocked。本 review 未读取 raw inbox，不执行 S11、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
@@ -15,8 +15,17 @@ product_version: 0.1.4-s15-stage-review
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s15_stage_review.py`, `KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/machine/stage15_review_manifest.json`
-- current_v014_scope_lock: `Stage 15 review completed; GitHub upload/S16/protected source matching/lineage full check/formal report/UI runtime/live connector/app reinstall/OpMe/payment/bank/loan_management/salary/bonus/payroll/final_payment/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s16_p1_subcontract_procurement.py`, `KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json`
+- current_v014_scope_lock: `S16-P1 completed; GitHub upload/S16-P2/S16-P3/Stage16 review/protected source matching/lineage full check/formal report/UI runtime/live connector/app reinstall/OpMe/procurement execution/payment/bank/collection/legal/business execution all false`
+
+### FORM-KMFA-V014-S16P1-SUBCONTRACT-PROCUREMENT-001
+
+- type: deterministic public-safe subcontract procurement gate
+- purpose: 验证 v0.1.4 S16-P1 外协采购归集证据，覆盖 Stage 15 review dependency、legacy S16-P1 public-safe baseline、v1.4 taskpack/roadmap requirements、source lanes、project matches、unallocated cost pool、duplicate payment candidates、cross-project cost candidates 和 no-procurement/no-payment/no-upload 边界。
+- fact_level: EXTRACTED
+- expression: `s16p1_valid = stage15_review_dependency_PASS AND legacy_s16p1_public_safe_baseline_PASS AND v014_s16p1_validator_PASS AND focused_unit_test_PASS AND source_lane_count == 4 AND project_match_count == 5 AND unallocated_cost_pool_count == 2 AND anomaly_candidate_count == 4 AND duplicate_payment_candidate_count == 2 AND cross_project_cost_candidate_count == 2 AND pending_reconciliation_count == 12 AND procurement_execution_count == 0 AND payment_approval_count == 0 AND payment_execution_count == 0 AND bank_operation_count == 0 AND formal_report_count == 0 AND business_decision_basis_count == 0 AND s16_p2_performed == false AND s16_p3_performed == false AND stage16_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s16_p1_subcontract_procurement.py`, `KMFA/tools/check_v014_s16_p1_subcontract_procurement.py`, `KMFA/tests/test_v014_s16_p1_subcontract_procurement.py`, `KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json`, `KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/human/subcontract_procurement_report.md`
+- limitation: 只证明外协/采购/付款归集 public-safe review queue；不证明 S16-P2、S16-P3、Stage 16 review、GitHub upload、raw value matching、lineage full check、正式报告、采购执行、付款审批、付款执行、银行、催收、法务或业务执行。
 
 ### FORM-KMFA-V014-S15-STAGE-REVIEW-001
 

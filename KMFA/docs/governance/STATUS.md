@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s15-stage-review`
-- current_stage: `S15`
-- current_phase: `v0.1.4 Stage 15 review`
-- status: `review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete`
+- version: `0.1.4-s16p1-subcontract-procurement`
+- current_stage: `S16`
+- current_phase: `v0.1.4 S16-P1 subcontract procurement`
+- status: `completed_validated_local_only_no_go_upload_deferred_subcontract_procurement_locked`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S16-P1 subcontract procurement completed local-only: Stage 15 review dependency PASS, legacy S16-P1 public-safe baseline PASS, v1.4 taskpack/roadmap requirements PASS, v0.1.4 S16-P1 validator PASS, focused unit test PASS, source lanes=4, project matches=5, unallocated cost pool=2, anomaly candidates=4, duplicate payment candidates=2, cross-project cost candidates=2, pending reconciliation=12, current report grade=D, procurement execution=0, payment approval=0, payment execution=0, bank operation=0, formal report=0, business decision basis=0, raw inbox read/list/stat/hash/mutation=false by this phase, S16-P2=false, S16-P3=false, Stage16 review=false, github_upload=false.
 - v0.1.4 Stage 15 overall review completed local-only: S15-P1/S15-P2/S15-P3 validators PASS, legacy Stage 15 review PASS, v0.1.4 Stage 15 review validator PASS, focused unit test PASS, phase_results=3/3 PASS, open findings=0, fixed findings=1, field definitions=6, field bindings=6, manual review fields=4, performance fact rows=4, abnormal review items=16, fact output interface contracts=1, future salary readiness draft rows=4, human approval boundary count=4, pending review items=16, current report grade=D, release permission=blocked, salary calculation=0, wage calculation=0, bonus approval=0, payroll export=0, final compensation decision=0, final payment=0, payment execution=0, raw inbox read/list/stat/hash/mutation=false by this review, S16=false, github_upload=false.
 - v0.1.4 S15-P3 salary boundary completed local-only: S15-P2 dependency PASS, legacy S15-P3 public-safe baseline PASS, v1.4 taskpack/roadmap requirements PASS, v0.1.4 S15-P3 validator PASS, focused unit test PASS, fact output interface contracts=1, future salary readiness draft rows=4, human approval boundary count=4, pending review items=16, salary calculation=0, wage calculation=0, bonus approval=0, payroll export=0, final compensation decision=0, final payment=0, payment execution=0, report grade=D, raw inbox read/list/stat/hash/mutation=false by this phase, Stage15 review completed later, github_upload=false.
 - v0.1.4 S15-P2 performance review list completed local-only: S15-P1 dependency PASS, legacy S15-P2 public-safe baseline PASS, v1.4 taskpack/roadmap requirements PASS, v0.1.4 S15-P2 validator PASS, focused unit test PASS, performance fact rows=4, abnormal review items=16, manual review fields=4, required fields invoice_amount/gross_margin_rate/settlement_speed/collection_speed/audit_variance/customer_relationship_rate, manual review fields settlement_speed/collection_speed/audit_variance/customer_relationship_rate, salary calculation=0, wage calculation=0, bonus approval=0, payroll export=0, final compensation decision=0, final payment=0, report grade=D, raw inbox read/list/stat/hash/mutation=false by this phase, S15-P3 completed in later phase, Stage15 review=false, github_upload=false.
