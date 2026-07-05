@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Stage 17 Review
+- Product version: `0.1.4-s17-stage-review`.
+- Scope: Stage 17 review only; public-safe replay of S17-P1/S17-P2/S17-P3 validators, v0.1.4 Stage 17 review validator and focused unit test.
+- Evidence: `KMFA/stage_artifacts/V014_S17_STAGE_REVIEW/`.
+- Verification: `KMFA/tools/check_v014_s17_stage_review.py`; `KMFA/tests/test_v014_s17_stage_review.py`.
+- blocker_state: phase_results=3/3 PASS, open_findings=0, fixed_findings=1, roles=4, sensitive_policy_categories=15, audit_action_types=5, notification_rules=3, notification_dispatch_logs=3, operation_runbooks=4, knowledge_items=2, drill_logs=2, real_notification_delivery=0, full_report_email_body=0, report_attachment=0, recipient_address_plaintext=0, production_restore=0, external_service_call=0, live_connector=0, app_reinstall=0, formal_report=0, business_decision_basis=0, business_execution=0, raw_inbox_access=0, S18-P1=false, GitHub upload=false, protected source matching=false, lineage full check=false.
+product_version: 0.1.4-s17-stage-review
+version_matrix_product_version_reference: 0.1.4-s17-stage-review
+
 # KMFA v0.1.4 S17-P3 Operations SOP
 - Product version: `0.1.4-s17p3-operations-sop`.
 - Scope: S17-P3 only; public-safe operations runbooks, finance SOP knowledge index and error/backup drill lock using S17-P2 dependency and legacy S17-P3 public-safe baseline.
