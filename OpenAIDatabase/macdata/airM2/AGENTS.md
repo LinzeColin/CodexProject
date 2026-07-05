@@ -7,7 +7,7 @@
 3. 不采集 Time Machine。
 4. 不使用 iCloud。
 5. 不设置 launchd、cron、后台服务或自动启动脚本。
-6. 仅在 raw 数据已上传且远程 hash 验证成功后，执行用户确认过的受控 Docker、Homebrew、用户态系统缓存、项目缓存清理。
+6. 不自动清理 Docker、Homebrew、系统缓存、项目缓存。
 7. 不读取 API key、token、password、cookie、session、Keychain、shell history、完整环境变量、`.env` 原文。
 8. 除凭证类数据外，用户允许设备明文指标进入 GitHub。
 9. 首次运行和设备差异时必须先问用户。

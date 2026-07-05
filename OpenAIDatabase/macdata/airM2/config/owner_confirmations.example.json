@@ -1,6 +1,5 @@
 {
   "allow_delete_local_macdata_older_than_3_days_after_verified_upload": true,
-  "allow_controlled_development_cache_cleanup": true,
   "allow_github_upload": true,
   "allow_plaintext_device_metrics_to_github": true,
   "archive_branch": "macdata-airM2",

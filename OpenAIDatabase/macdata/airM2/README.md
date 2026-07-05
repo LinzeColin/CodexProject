@@ -9,7 +9,7 @@
 - Codex Automation 是唯一调度入口；脚本只是被调用的确定性工具。
 - 每次运行都会生成全中文明文指标和报告。
 - 每次运行都会 commit + push 到 GitHub 归档分支 `macdata-airM2`。
-- 只有远程验证成功后，才删除本机 3 天以前的 `airM2` macdata 数据、报告、记录和 macdata 临时缓存，并执行用户确认过的受控 Docker、Homebrew、用户态系统缓存、项目缓存清理。
+- 只有远程验证成功后，才删除本机 3 天以前的 `airM2` macdata 数据、报告、记录和 macdata 临时缓存。
 - Time Machine 不采集，iCloud 不使用。
 
 ## 目录
@@ -18,13 +18,8 @@
 OpenAIDatabase/macdata/airM2/
   README.md
   AGENTS.md
-  HANDOFF.md
-  功能清单.md
-  开发记录.md
-  模型参数文件.md
   config/
     device_config.json
-    owner_confirmations.json
     owner_confirmations.example.json
   scripts/
     run_controlled_cycle.py
@@ -93,6 +88,6 @@ python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root
 ## 禁止事项
 
 - 不要把本包改成 launchd、cron 或本地守护进程。
-- 不要使用 sudo、`docker system prune -a`、Docker volumes 删除、`rm -rf ~/Library/Caches/*` 或删除项目源码/数据；清理只允许走脚本里的受控目标和命令。
+- 不要自动清理 Docker、Homebrew、系统缓存、项目缓存。
 - 不要读取 API key、token、password、cookie、session、Keychain、shell history、完整环境变量、`.env` 原文。
 - 不要让 `airM2` 任务读取或合并另一台设备的数据。

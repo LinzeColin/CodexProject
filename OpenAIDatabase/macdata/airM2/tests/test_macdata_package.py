@@ -66,26 +66,6 @@ class MacDataPackageTests(unittest.TestCase):
             self.assertTrue((base / 'not-a-date').exists())
             self.assertGreaterEqual(result['deleted_dirs'], 1)
 
-    def test_project_cache_cleanup_is_bounded(self):
-        with tempfile.TemporaryDirectory() as td:
-            repo = Path(td)
-            cache = repo / 'pkg' / '__pycache__'
-            git_dir = repo / '.git' / '__pycache__'
-            cache.mkdir(parents=True)
-            git_dir.mkdir(parents=True)
-            (cache / 'x.pyc').write_text('x', encoding='utf-8')
-            (git_dir / 'keep.pyc').write_text('x', encoding='utf-8')
-            config = {
-                'controlled_development_cleanup': {
-                    'project_cache_names': ['__pycache__'],
-                    'project_cache_max_deleted_paths': 20,
-                }
-            }
-            result = macdata_cycle.cleanup_project_cache_targets(repo, config)
-            self.assertFalse(cache.exists())
-            self.assertTrue(git_dir.exists())
-            self.assertEqual(result['status'], '已执行项目缓存清理')
-
 
 if __name__ == '__main__':
     unittest.main()

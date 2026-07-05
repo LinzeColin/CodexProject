@@ -2,30 +2,8 @@
   "codex_model": "gpt-5.3-codex-spark",
   "collect_air_ladder_status": true,
   "collect_brew": true,
-  "collect_development_load": true,
-  "collect_docker": true,
-  "controlled_development_cleanup": {
-    "command_timeout_seconds": 120,
-    "docker_cleanup": true,
-    "enabled": true,
-    "homebrew_cleanup": true,
-    "project_cache_cleanup": true,
-    "project_cache_max_deleted_paths": 200,
-    "project_cache_names": [
-      "__pycache__",
-      ".pytest_cache",
-      ".mypy_cache",
-      ".ruff_cache",
-      ".cache"
-    ],
-    "user_cache_cleanup": true,
-    "user_cache_targets": [
-      "~/Library/Caches/com.openai.codex",
-      "~/Library/Caches/ms-playwright",
-      "~/Library/Caches/com.google.GoogleUpdater",
-      "~/Library/Caches/GeoServices"
-    ]
-  },
+  "collect_development_load": false,
+  "collect_docker": false,
   "default_archive_branch": "macdata-airM2",
   "default_remote": "origin",
   "device_key": "airM2",
