@@ -10006,3 +10006,62 @@ tasks:
     rollback: "Remove this phase evidence, validator, focused test, metadata records and ignored private staging; do not modify raw inbox."
     target_version: "0.1.4-private-processed-value-staging"
     completed_version: "0.1.4-private-processed-value-staging"
+
+
+  - task_id: "KMFA-V014-PRIVATE-PROCESSED-VALUE-MATERIALIZATION-20260705"
+    phase: "V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION"
+    objective: "在不访问 raw inbox、不提交 slot 级明细的前提下，对 private processed target slots 执行 materialization gate 并锁定 processed value source missing 的 NO_GO 状态。"
+    scope:
+      - "private processed value materialization gate"
+      - "private runtime diagnostics"
+      - "public-safe aggregate manifest"
+      - "NO_GO release gate preservation"
+      - "validator and focused test"
+    non_scope:
+      - "raw inbox access"
+      - "raw-to-processed comparison"
+      - "processed data reconciliation"
+      - "business value consistency claim"
+      - "lineage full check"
+      - "Stage review"
+      - "GitHub upload"
+      - "app reinstall"
+      - "formal report"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-V014-PRIVATE-PROCESSED-VALUE-STAGING-20260705"
+    required_files:
+      - "KMFA/tools/v014_private_processed_value_materialization.py"
+      - "KMFA/tools/check_v014_private_processed_value_materialization.py"
+      - "KMFA/tests/test_v014_private_processed_value_materialization.py"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/machine/private_processed_value_materialization_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/machine/private_processed_value_materialization_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/machine/private_processed_value_materialization_summary.json"
+    acceptance_ids:
+      - "ACC-V014-PRIVATE-PROCESSED-VALUE-MATERIALIZATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m py_compile KMFA/tools/v014_private_processed_value_materialization.py KMFA/tools/check_v014_private_processed_value_materialization.py KMFA/tests/test_v014_private_processed_value_materialization.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_private_processed_value_materialization.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_materialization.py --require-private-materialization"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_materialization -q"
+    test_results:
+      - "PASS: private processed value materialization gate generated aggregate evidence"
+      - "PASS: validator confirms processed value source missing and release gates blocked"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/human/private_processed_value_materialization_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/machine/private_processed_value_materialization_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/machine/private_processed_value_materialization_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/machine/private_processed_value_materialization_summary.json"
+    risk: "Processed target slots remain unmaterialized, so no business consistency claim is allowed."
+    rollback: "Remove this phase evidence, validator, focused test, metadata records and ignored private materialization diagnostics; do not modify raw inbox."
+    target_version: "0.1.4-private-processed-value-materialization"
+    completed_version: "0.1.4-private-processed-value-materialization"
+    processed_target_slot_count: 149
+    materialized_processed_value_fingerprint_count: 0
+    processed_value_materialization_complete: false
+    raw_to_processed_value_comparison_performed: false
+    business_value_consistency_verified: false
+    raw_inbox_access_by_this_phase: false

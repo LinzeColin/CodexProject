@@ -1,0 +1,14 @@
+{
+  "business_value_consistency_verified": false,
+  "comparable_value_pair_count": 0,
+  "materialization_status": "blocked_private_processed_value_source_missing_or_incomplete",
+  "materialized_processed_value_fingerprint_count": 0,
+  "private_processed_value_source_count": 0,
+  "private_processed_value_source_map_present": false,
+  "private_processed_values_committed_publicly": false,
+  "processed_business_values_committed_publicly": false,
+  "processed_target_slot_count": 149,
+  "processed_value_materialization_complete": false,
+  "raw_to_processed_value_comparison_performed": false,
+  "unmaterialized_processed_target_slot_count": 149
+}

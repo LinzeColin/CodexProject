@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_STAGING` 本地 gate：已从既有 public-safe processed metadata 中 staged 149 个 private processed target slots，但 processed value fingerprints 仍为 0、comparable value pairs=0，所以还不能证明处理数据与原始数据一致；processed value materialization、raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION` 本地 gate：149 个 private processed target slots 已进入 materialization 尝试，但 private value source map 当前缺失，materialized processed value fingerprints=0、comparable value pairs=0，所以还不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
 
