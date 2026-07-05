@@ -1577,3 +1577,18 @@ kmfa_v014_processed_value_source_map_completion_readiness_recheck:
   evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK
   validator: KMFA/tools/check_v014_processed_value_source_map_completion_readiness_recheck.py
   scope: Processed value source-map completion readiness recheck only; private template checked as still unfilled and private diagnostic written to ignored runtime; public evidence aggregate-only; no raw inbox access, source-map reapplication, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_processed_value_source_map_completion_blocker_audit:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-processed-value-source-map-completion-blocker-audit"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-BLOCKER-AUDIT-001
+  parameter_refs:
+    - PARAM-KMFA-1285
+    - PARAM-KMFA-1286
+    - PARAM-KMFA-1287
+  evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT
+  validator: KMFA/tools/check_v014_processed_value_source_map_completion_blocker_audit.py
+  scope: Processed value source-map completion blocker audit only; third consecutive authorization blocker is recorded; private diagnostic written to ignored runtime; public evidence aggregate-only; no raw inbox access, source-map reapplication, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.

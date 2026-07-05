@@ -4,23 +4,23 @@
 
 ## 当前目标
 
-最近一个完成的 phase 是 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK`：Codex 重新检查上一轮 git-ignored private completion template，确认 113 条 target slots 仍为 pending owner/authorized delegate input，valid completion items=0，source-map completion reapplication ready=false，source-map records applied=0，authorized processed value fingerprints=0，comparable raw/processed value pairs=0，business value consistency verified=false。本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private recheck diagnostic 保留在 `.codex_private_runtime` 且不会提交。下一步仍必须填写 private completion template 并提供授权 processed value source evidence；不得自动执行 reapplication、materialization replay、raw-to-processed comparison、GitHub upload、重装 app、发布正式报告或业务动作。用户要求 raw 原始数据不得修改增删；后续如补齐授权 source-map 后多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供 public-safe 差异报告。
+最近一个完成的 phase 是 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT`：Codex 第三次复核同一 git-ignored private completion template 授权阻断，确认 113 条 target slots 仍为 pending owner/authorized delegate input，valid completion items=0，consecutive goal-turn blocker count=3，blocked audit threshold met=true，source-map completion reapplication ready=false，source-map records applied=0，authorized processed value fingerprints=0，comparable raw/processed value pairs=0，business value consistency verified=false。本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private blocker audit diagnostic 保留在 `.codex_private_runtime` 且不会提交。下一步仍必须填写 private completion template 并提供授权 processed value source evidence；不得自动执行 reapplication、materialization replay、raw-to-processed comparison、GitHub upload、重装 app、发布正式报告或业务动作。用户要求 raw 原始数据不得修改增删；后续如补齐授权 source-map 后多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供 public-safe 差异报告。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-processed-value-source-map-completion-readiness-recheck`
-- 当前已完成: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK`
-- 证据目录: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/`
-- validator: `KMFA/tools/check_v014_processed_value_source_map_completion_readiness_recheck.py --require-private-diagnostic`
-- focused test: `KMFA/tests/test_v014_processed_value_source_map_completion_readiness_recheck.py`
-- manifest: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/machine/processed_value_source_map_completion_readiness_recheck_manifest.json`
-- go_no_go: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/machine/processed_value_source_map_completion_readiness_recheck_go_no_go_report.json`
-- summary: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/machine/processed_value_source_map_completion_readiness_recheck_summary.json`
-- owner/agent recheck packet: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/human/owner_agent_readiness_recheck_packet.md`
-- metadata copies: `KMFA/metadata/quality/v014_processed_value_source_map_completion_readiness_recheck_manifest.json`, `KMFA/metadata/quality/v014_processed_value_source_map_completion_readiness_recheck_go_no_go_report.json`, `KMFA/metadata/quality/v014_processed_value_source_map_completion_readiness_recheck_summary.json`
-- current_gate: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-READINESS-RECHECK-GATE`
-- current_state: completion_template_item_count=`113`, pending_selected_action_count=`113`, valid_completion_item_count=`0`, invalid_or_pending_completion_item_count=`113`, source_map_completion_reapplication_ready=`false`, authorized_processed_value_fingerprint_count=`0`, source_map_records_applied_count=`0`, raw_processed_structural_key_intersection_count=`0`, comparable_value_pair_count=`0`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
+- 当前版本: `0.1.4-processed-value-source-map-completion-blocker-audit`
+- 当前已完成: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT`
+- 证据目录: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/`
+- validator: `KMFA/tools/check_v014_processed_value_source_map_completion_blocker_audit.py --require-private-diagnostic`
+- focused test: `KMFA/tests/test_v014_processed_value_source_map_completion_blocker_audit.py`
+- manifest: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/machine/processed_value_source_map_completion_blocker_audit_manifest.json`
+- go_no_go: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/machine/processed_value_source_map_completion_blocker_audit_go_no_go_report.json`
+- summary: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/machine/processed_value_source_map_completion_blocker_audit_summary.json`
+- owner/agent blocker packet: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/human/owner_agent_blocker_packet.md`
+- metadata copies: `KMFA/metadata/quality/v014_processed_value_source_map_completion_blocker_audit_manifest.json`, `KMFA/metadata/quality/v014_processed_value_source_map_completion_blocker_audit_go_no_go_report.json`, `KMFA/metadata/quality/v014_processed_value_source_map_completion_blocker_audit_summary.json`
+- current_gate: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-BLOCKER-AUDIT-GATE`
+- current_state: consecutive_goal_turn_blocker_count=`3`, blocked_audit_threshold_met=`true`, completion_template_item_count=`113`, pending_selected_action_count=`113`, valid_completion_item_count=`0`, invalid_or_pending_completion_item_count=`113`, source_map_completion_reapplication_ready=`false`, authorized_processed_value_fingerprint_count=`0`, source_map_records_applied_count=`0`, raw_processed_structural_key_intersection_count=`0`, comparable_value_pair_count=`0`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
 - raw boundary: 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；只写入 git-ignored private recheck diagnostic 和 public-safe aggregate evidence。用户要求原始数据不得修改增删；后续如补齐授权 source-map 后多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
 - upload policy: v1.4 不按单个 Stage 或补充 gate 上传；GitHub main upload 必须等 owner raw source identity、raw alignment application、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
 - 未完成/阻断: private completion template 仍未被 owner/authorized delegate 填写；valid completion items=0；source-map completion reapplication ready=false；authorized processed value fingerprints=0；source_map_records_applied=0；processed value materialization replay=false；raw-to-processed comparison=false；comparable raw/processed value pairs=0；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
