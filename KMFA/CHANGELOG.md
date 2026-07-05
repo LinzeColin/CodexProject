@@ -1,3 +1,18 @@
+# KMFA v0.1.4 Private Processed Value Materialization
+- Product version: `0.1.4-private-processed-value-materialization`.
+- Scope: `V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION` only; consume private processed staging, attempt materialization in ignored private runtime, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/`.
+- Verification: `KMFA/tools/check_v014_private_processed_value_materialization.py`; `KMFA/tests/test_v014_private_processed_value_materialization.py`.
+- blocker_state: processed_target_slot_count=149, private_processed_value_source_map_present=false, private_processed_value_source_count=0, materialized_processed_value_fingerprint_count=0, comparable_value_pair_count=0, business_value_consistency_verified=false, go_no_go=NO_GO, raw_inbox_access=false, GitHub upload=false, app_reinstall=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-private-processed-value-materialization
+version_matrix_product_version_reference: 0.1.4-private-processed-value-materialization
+
+## 0.1.4-private-processed-value-materialization - 2026-07-05
+- Completed `V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION` locally as processed value materialization gate, not as raw-to-processed comparison or business-value verification.
+- Added public-safe aggregate evidence, metadata copies, validator and focused tests.
+- Slot-level materialization diagnostics remain only under git-ignored runtime; public evidence contains aggregate counts and gate flags only.
+- Current Go/No-Go remains `NO_GO`; processed value source resolution, raw-to-processed comparison, business-value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+
 # KMFA v0.1.4 Private Processed Value Staging
 - Product version: `0.1.4-private-processed-value-staging`.
 - Scope: `V014_PRIVATE_PROCESSED_VALUE_STAGING` only; scan existing public-safe processed metadata, stage private processed target slots in ignored runtime, and keep public evidence aggregate-only.
