@@ -11,6 +11,7 @@
 - 每次运行都会 commit + push 到 GitHub 归档分支 `macdata-proM2`。
 - 只有远程验证成功后，才删除本机 3 天以前的 `proM2` macdata 数据、报告、记录和 macdata 临时缓存。
 - 只有远程验证成功后，才按 owner 确认的白名单策略清理 Docker、Homebrew、系统缓存和项目缓存。
+- 只有远程验证成功后，才清理 automation/Codex 创建且已合入 `main` 的临时 PR/branch/managed issue；保护 `main` 和 `macdata-proM2` 归档分支。
 - Time Machine 不采集，iCloud 不使用。
 
 ## 目录
@@ -90,5 +91,6 @@ python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root
 
 - 不要把本包改成 launchd、cron 或本地守护进程。
 - 不要扩大 Docker/Homebrew/系统缓存/项目缓存清理边界；Docker 默认不使用 `-a`，不清理 volumes；项目缓存只按白名单目录删除。
+- 不要删除 `main`、`macdata-proM2` 或任何未证明已合入 `main` 的分支；不要关闭没有 managed marker 的 issue。
 - 不要读取 API key、token、password、cookie、session、Keychain、shell history、完整环境变量、`.env` 原文。
 - 不要让 `proM2` 任务读取或合并另一台设备的数据。

@@ -11,9 +11,9 @@ tasks:
     required_files: ["OpenAIDatabase/macdata/proM2/config/device_config.json", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json", "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"]
     acceptance_ids: ["ACC-MACDATA-PROM2-SETUP-20260705"]
     test_commands: ["python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q", "python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only", "git ls-remote origin refs/heads/macdata-proM2"]
-    test_results: ["PASS: package unittest ran 6 tests OK", "PASS: preflight detected MacBook Pro / Mac14,5 / Apple M2 Max / 32GB", "PASS: last_run_status shape covers raw/report archive verification", "PENDING: final archive branch verification after status-fix push"]
+    test_results: ["PASS: package unittest ran 8 tests OK", "PASS: preflight detected MacBook Pro / Mac14,5 / Apple M2 Max / 32GB", "PASS: last_run_status shape covers raw/report archive verification", "PASS: post-run hygiene branch policy protects main and macdata-proM2", "PENDING: final archive branch verification after hygiene push"]
     evidence_refs: ["OpenAIDatabase/macdata/proM2/config/device_config.json", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py", "OpenAIDatabase/macdata/proM2/data/latest/last_run_status.json"]
-    risk: "Cleanup must remain remote-verified and whitelist-bound."
+    risk: "Cleanup must remain remote-verified and whitelist-bound; PR/branch/issue hygiene must only touch managed objects already merged to main."
     rollback: "Revert setup commit; delete macdata-proM2 remote branch only after confirming archive history is not needed."
     target_version: "0.2.0"
     completed_version: ""

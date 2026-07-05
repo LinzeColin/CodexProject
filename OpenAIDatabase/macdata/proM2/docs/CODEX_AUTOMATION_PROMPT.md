@@ -28,7 +28,8 @@
 4. 请确认每天运行后必须 commit + push 到 `macdata-proM2` 归档分支，并在远程验证成功后才清理本机旧数据。
 5. 请确认本机只保留最近 3 天的 `proM2` macdata 数据、报告、运行记录和 macdata 临时缓存。
 6. 请确认不使用 Time Machine、不使用 iCloud；远程上传验证成功后，允许按白名单策略自动清理 Docker/Homebrew/系统缓存/项目缓存。
-7. 如果本机配置与预期不同，例如型号、芯片、内存、角色、目录、Git remote、归档分支不同，必须列出差异并请用户明确是否继续。
+7. 请确认远程上传验证成功后，允许清理 automation/Codex 创建且已合入 `main` 的临时 PR、临时 branch 和带 managed marker 的 issue；必须保护 `main` 与 `macdata-proM2` 归档分支。
+8. 如果本机配置与预期不同，例如型号、芯片、内存、角色、目录、Git remote、归档分支不同，必须列出差异并请用户明确是否继续。
 
 用户确认后，创建 `OpenAIDatabase/macdata/proM2/config/owner_confirmations.json`，内容参考 `owner_confirmations.example.json`。不要在该文件里写入任何 API key、token、password、cookie、session 或 Keychain 内容。
 
@@ -49,11 +50,12 @@ python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root
 python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --execute
 ```
 
-6. 完整流程必须完成：采集 → 生成全中文明文报告 → 凭证扫描 → commit → push → 远程验证 → 验证成功后清理本机 3 天以前数据、macdata 临时缓存和受控开发环境缓存 → 输出全中文明文报告。
+6. 完整流程必须完成：采集 → 生成全中文明文报告 → 凭证扫描 → commit → push → 远程验证 → 验证成功后清理本机 3 天以前数据、macdata 临时缓存、受控开发环境缓存、已合并临时 PR/branch/managed issue → 输出全中文明文报告。
 7. 如果 push 或远程验证失败，不允许清理本机旧数据。
 8. 不允许运行越界破坏性清理命令，例如 `docker system prune -a`、`docker system prune --volumes`、`rm -rf ~/Library/Caches/*`、删除 `node_modules` 或 `.venv`；只允许配置白名单内的受控清理。
 9. 不允许读取 shell history、完整环境变量、Keychain、cookies、sessions、`.env` 原文。
-10. Codex session 最终输出必须是全中文，必须包含明文指标、GitHub 上传状态、清理状态、ROI、风险、SWOT 和失败项。
+10. 不允许删除 `main`、`macdata-proM2`、未合入 `main` 的分支、没有 managed marker 的 issue，或任何非本 automation/Codex 创建的协作对象。
+11. Codex session 最终输出必须是全中文，必须包含明文指标、GitHub 上传状态、清理状态、PR/branch/issue 收尾状态、ROI、风险、SWOT 和失败项。
 
 ## Automation 建议设置
 
@@ -74,4 +76,5 @@ python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root
 - 远程 hash 与本地提交 hash 一致。
 - 本机只保留最近 3 天 `proM2` 数据和记录。
 - Docker/Homebrew/系统缓存/项目缓存清理状态进入中文报告。
+- 已合入 `main` 的 automation/Codex 临时 PR/branch/managed issue 收尾状态进入中文报告；`main` 和 `macdata-proM2` 必须仍存在。
 - Codex Automation run 在 Triage/Automation 面板中可查看。

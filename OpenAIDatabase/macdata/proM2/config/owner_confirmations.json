@@ -3,6 +3,7 @@
   "allow_development_cache_cleanup_after_verified_upload": true,
   "allow_github_upload": true,
   "allow_plaintext_device_metrics_to_github": true,
+  "allow_post_run_github_hygiene_after_verified_upload": true,
   "archive_branch": "macdata-proM2",
   "confirmed_at": "2026-07-05T21:32:29+10:00",
   "confirmed_device_key": "proM2",

@@ -7,9 +7,10 @@ This script is intentionally NOT self-scheduling. It is only a deterministic too
 that Codex Automation or the user may call after explicit approval. It never
 installs launchd/cron jobs. After a verified GitHub upload it may run the
 owner-confirmed cleanup policy for Docker, Homebrew, system cache best-effort
-purge, project cache whitelist paths, and its own macdata cache. It writes
-records inside its own macdata device directory and uses a short-lived temporary
-clone to upload daily records to a device-specific GitHub archive branch.
+purge, project cache whitelist paths, GitHub/Codex collaboration hygiene, and
+its own macdata cache. It writes records inside its own macdata device directory
+and uses a short-lived temporary clone to upload daily records to a
+device-specific GitHub archive branch.
 """
 from __future__ import annotations
 
@@ -465,6 +466,7 @@ def require_owner_confirmations(config: Dict[str, Any]) -> Dict[str, Any]:
         'allow_github_upload',
         'allow_delete_local_macdata_older_than_3_days_after_verified_upload',
         'allow_development_cache_cleanup_after_verified_upload',
+        'allow_post_run_github_hygiene_after_verified_upload',
         'understand_no_timemachine_no_icloud',
         'understand_scripts_do_not_auto_schedule',
     ]
@@ -698,6 +700,121 @@ def cleanup_development_environment(repo_root: Path, config: Dict[str, Any], dry
     }
 
 
+def normalized_branch_name(branch: str, remote: str = 'origin') -> str:
+    branch = (branch or '').strip()
+    prefix = f'{remote}/'
+    if branch.startswith(prefix):
+        branch = branch[len(prefix):]
+    return branch
+
+
+def is_managed_temporary_branch(branch: str, config: Dict[str, Any]) -> bool:
+    policy = config.get('post_run_hygiene_policy', {})
+    branch = normalized_branch_name(branch, config.get('default_remote', 'origin'))
+    if not branch:
+        return False
+    protected = set(policy.get('protected_branches', []))
+    protected.add(policy.get('default_main_branch', 'main'))
+    protected.add(config.get('default_archive_branch', ''))
+    if branch in protected:
+        return False
+    prefixes = policy.get('temporary_branch_prefixes', [])
+    if prefixes and not any(branch.startswith(prefix) for prefix in prefixes):
+        return False
+    required = policy.get('temporary_branch_required_substrings', [])
+    return all(token in branch for token in required)
+
+
+def gh_json(args: List[str], timeout: int = 30, cwd: Optional[Path] = None) -> List[Dict[str, Any]]:
+    res = cmd(['gh'] + args, cwd=cwd, timeout=timeout)
+    if not res.get('ok') or not res.get('stdout'):
+        return []
+    try:
+        data = json.loads(res['stdout'])
+    except json.JSONDecodeError:
+        return []
+    return data if isinstance(data, list) else []
+
+
+def cleanup_github_hygiene(repo_root: Path, config: Dict[str, Any], dry_run: bool = False) -> Dict[str, Any]:
+    policy = config.get('post_run_hygiene_policy', {})
+    if not policy.get('enabled'):
+        return {'status': '未启用', 'target': 'github_hygiene', 'dry_run': dry_run}
+    remote = config.get('default_remote', 'origin')
+    main_branch = policy.get('default_main_branch', 'main')
+    main_ref = f'{remote}/{main_branch}'
+    result: Dict[str, Any] = {
+        'status': '已执行' if not dry_run else 'dry_run',
+        'target': 'github_hygiene',
+        'dry_run': dry_run,
+        'protected_branches': sorted(set(policy.get('protected_branches', []) + [main_branch, config.get('default_archive_branch', '')])),
+        'candidate_branches': [],
+        'deleted_remote_branches': [],
+        'closed_prs': [],
+        'closed_issues': [],
+        'skipped': [],
+    }
+    if policy.get('git_fetch_prune', True):
+        fetch = cmd(['git', '-C', str(repo_root), 'fetch', remote, '--prune'], timeout=60)
+        result['fetch_prune'] = {'ok': fetch.get('ok'), 'stderr': fetch.get('stderr'), 'stdout': fetch.get('stdout')}
+    gh_available = cmd(['gh', '--version'], timeout=10)
+    result['github_cli_available'] = bool(gh_available.get('ok'))
+    branches = cmd(['git', '-C', str(repo_root), 'for-each-ref', '--format=%(refname:short)', f'refs/remotes/{remote}'], timeout=30)
+    if not branches.get('ok'):
+        result['status'] = '执行失败'
+        result['error'] = branches.get('stderr') or branches.get('stdout') or '无法列出远程分支'
+        return result
+    for ref in branches.get('stdout', '').splitlines():
+        ref = ref.strip()
+        if not ref or ref == f'{remote}/HEAD':
+            continue
+        branch = normalized_branch_name(ref, remote)
+        if not is_managed_temporary_branch(branch, config):
+            continue
+        merged = cmd(['git', '-C', str(repo_root), 'merge-base', '--is-ancestor', ref, main_ref], timeout=20)
+        item = {'branch': branch, 'remote_ref': ref, 'merged_to_main': bool(merged.get('ok'))}
+        result['candidate_branches'].append(item)
+        if not merged.get('ok'):
+            result['skipped'].append({'object': branch, 'reason': '未证明已合入 main'})
+            continue
+        prs = []
+        if result['github_cli_available'] and policy.get('close_open_prs_for_merged_temporary_branches', True):
+            prs = gh_json(['pr', 'list', '--state', 'open', '--head', branch, '--json', 'number,title,headRefName,url'], timeout=30, cwd=repo_root)
+            for pr in prs:
+                number = str(pr.get('number'))
+                if not number:
+                    continue
+                if dry_run:
+                    result['closed_prs'].append({'number': number, 'branch': branch, 'dry_run': True})
+                    continue
+                close = cmd(['gh', 'pr', 'close', number, '--delete-branch'], timeout=60)
+                result['closed_prs'].append({'number': number, 'branch': branch, 'ok': close.get('ok'), 'stderr': close.get('stderr'), 'stdout': close.get('stdout')})
+        if policy.get('delete_remote_temporary_branches_after_merged', True):
+            if dry_run:
+                result['deleted_remote_branches'].append({'branch': branch, 'dry_run': True})
+                continue
+            remote_ref_exists = cmd(['git', 'ls-remote', '--exit-code', '--heads', remote, branch], cwd=repo_root, timeout=30)
+            if not remote_ref_exists.get('ok'):
+                result['skipped'].append({'object': branch, 'reason': '远程分支已不存在或已由 PR close 删除'})
+                continue
+            delete = cmd(['git', '-C', str(repo_root), 'push', remote, '--delete', branch], timeout=60)
+            result['deleted_remote_branches'].append({'branch': branch, 'ok': delete.get('ok'), 'stderr': delete.get('stderr'), 'stdout': delete.get('stdout')})
+    if result['github_cli_available'] and policy.get('close_managed_issues', True):
+        for marker in policy.get('managed_issue_title_markers', []):
+            issues = gh_json(['issue', 'list', '--state', 'open', '--search', marker, '--json', 'number,title,url'], timeout=30, cwd=repo_root)
+            for issue in issues:
+                title = str(issue.get('title') or '')
+                number = str(issue.get('number') or '')
+                if not number or marker not in title:
+                    continue
+                if dry_run:
+                    result['closed_issues'].append({'number': number, 'title': title, 'dry_run': True})
+                    continue
+                close = cmd(['gh', 'issue', 'close', number, '--comment', 'Closed by macdata proM2 post-run hygiene after verified run completion.'], timeout=60)
+                result['closed_issues'].append({'number': number, 'title': title, 'ok': close.get('ok'), 'stderr': close.get('stderr'), 'stdout': close.get('stdout')})
+    return result
+
+
 def render_cn_report(metrics: Dict[str, Any], config: Dict[str, Any], upload_status: Optional[Dict[str, Any]] = None, cleanup_status: Optional[Dict[str, Any]] = None) -> str:
     upload_status = upload_status or {'status': '待上传', 'message': '本报告生成时尚未完成 GitHub 上传验证。'}
     cleanup_status = cleanup_status or {'status': '待清理', 'message': '上传验证完成后才允许清理本机旧数据。'}
@@ -715,6 +832,7 @@ def render_cn_report(metrics: Dict[str, Any], config: Dict[str, Any], upload_sta
     docker_cleanup = development_cleanup.get('docker', {}) if isinstance(development_cleanup, dict) else {}
     homebrew_cleanup = development_cleanup.get('homebrew', {}) if isinstance(development_cleanup, dict) else {}
     system_cleanup = development_cleanup.get('system_cache', {}) if isinstance(development_cleanup, dict) else {}
+    github_hygiene = cleanup_status.get('github_hygiene', {}) if isinstance(cleanup_status, dict) else {}
     is_air = config['device_key'].lower().startswith('air')
     device_title = f"{config['device_key']} 每日明文健康报告"
 
@@ -899,6 +1017,10 @@ Top 内存进程原文摘要，尽量只包含进程名称，不采集命令行�
 | 系统缓存清理命令 | {val(system_cleanup.get('command'))} |
 | 项目缓存候选数量 | {val(project_cleanup.get('candidate_count'))} |
 | 项目缓存释放空间 | {val(project_cleanup.get('freed_mb'))} MB |
+| GitHub/Codex 收尾状态 | {val(github_hygiene.get('status'))} |
+| 已删除临时远程分支数量 | {val(len(github_hygiene.get('deleted_remote_branches', [])) if isinstance(github_hygiene.get('deleted_remote_branches'), list) else None)} |
+| 已关闭 PR 数量 | {val(len(github_hygiene.get('closed_prs', [])) if isinstance(github_hygiene.get('closed_prs'), list) else None)} |
+| 已关闭 managed issue 数量 | {val(len(github_hygiene.get('closed_issues', [])) if isinstance(github_hygiene.get('closed_issues'), list) else None)} |
 
 十二、缺失项与失败项
 
@@ -908,6 +1030,7 @@ Top 内存进程原文摘要，尽量只包含进程名称，不采集命令行�
 | iCloud | 未采集 | 用户明确不要 iCloud |
 | API key / token / password | 未采集 | 凭证类数据禁止进入 GitHub |
 | Docker/Homebrew/系统缓存/项目缓存 | {val(development_cleanup.get('status', '待清理'))} | 仅在远程上传验证成功后执行；Docker 不清 volumes、不使用 -a，除非配置显式打开 |
+| PR/branch/issue 收尾 | {val(github_hygiene.get('status', '待执行'))} | 只清理 automation/Codex 创建且已合入 main 的临时对象；保护 main 和归档分支 |
 
 十三、下一次检查重点
 
@@ -1128,6 +1251,7 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
         'confirmed_at': owner.get('confirmed_at'),
         'allow_plaintext_device_metrics_to_github': owner.get('allow_plaintext_device_metrics_to_github'),
         'allow_github_upload': owner.get('allow_github_upload'),
+        'allow_post_run_github_hygiene_after_verified_upload': owner.get('allow_post_run_github_hygiene_after_verified_upload'),
     }
     current_date = date_dir()
     raw_path = DEVICE_ROOT / 'data' / 'current_3days' / 'raw' / current_date / f'{rid}.json'
@@ -1166,7 +1290,8 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     cleanup_cache_status = cleanup_cache()
     cleanup_status['cache_cleanup'] = cleanup_cache_status
     cleanup_status['development_cleanup'] = cleanup_development_environment(repo_root, config, dry_run=False)
-    cleanup_status['status'] = '已在 raw 数据上传验证成功后清理本机旧数据、macdata 临时缓存和受控开发环境缓存'
+    cleanup_status['github_hygiene'] = cleanup_github_hygiene(repo_root, config, dry_run=False)
+    cleanup_status['status'] = '已在 raw 数据上传验证成功后清理本机旧数据、macdata 临时缓存、受控开发环境缓存和 GitHub/Codex 临时协作痕迹'
 
     final_upload = {
         'status': data_archive.get('status'),
@@ -1209,6 +1334,7 @@ def write_owner_template_if_requested() -> None:
         'allow_github_upload': True,
         'allow_delete_local_macdata_older_than_3_days_after_verified_upload': True,
         'allow_development_cache_cleanup_after_verified_upload': True,
+        'allow_post_run_github_hygiene_after_verified_upload': True,
         'understand_no_timemachine_no_icloud': True,
         'understand_scripts_do_not_auto_schedule': True,
         'repo_remote_name': config['default_remote'],

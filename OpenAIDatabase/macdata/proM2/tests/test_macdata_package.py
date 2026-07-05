@@ -29,6 +29,35 @@ class MacDataPackageTests(unittest.TestCase):
         self.assertTrue(cleanup['homebrew']['enabled'])
         self.assertTrue(cleanup['system_cache']['enabled'])
         self.assertTrue(cleanup['project_cache']['enabled'])
+        hygiene = config['post_run_hygiene_policy']
+        self.assertTrue(hygiene['enabled'])
+        self.assertIn('main', hygiene['protected_branches'])
+        self.assertIn('macdata-proM2', hygiene['protected_branches'])
+
+    def test_post_run_hygiene_branch_policy_is_narrow(self):
+        config = json.loads((ROOT / 'config' / 'device_config.json').read_text(encoding='utf-8'))
+        self.assertTrue(macdata_cycle.is_managed_temporary_branch('origin/codex/macdata-proM2-setup-20260705', config))
+        self.assertFalse(macdata_cycle.is_managed_temporary_branch('origin/main', config))
+        self.assertFalse(macdata_cycle.is_managed_temporary_branch('origin/macdata-proM2', config))
+        self.assertFalse(macdata_cycle.is_managed_temporary_branch('origin/codex/unrelated-work', config))
+
+    def test_gh_json_uses_repo_context(self):
+        calls = []
+
+        def fake_cmd(args, cwd=None, timeout=30, allow_fail=True):
+            calls.append({'args': args, 'cwd': cwd, 'timeout': timeout, 'allow_fail': allow_fail})
+            return {'ok': True, 'stdout': '[]', 'stderr': '', 'returncode': 0}
+
+        original_cmd = macdata_cycle.cmd
+        try:
+            macdata_cycle.cmd = fake_cmd
+            result = macdata_cycle.gh_json(['pr', 'list'], cwd=ROOT)
+        finally:
+            macdata_cycle.cmd = original_cmd
+
+        self.assertEqual(result, [])
+        self.assertEqual(calls[0]['cwd'], ROOT)
+        self.assertEqual(calls[0]['args'], ['gh', 'pr', 'list'])
 
     def test_project_cache_cleanup_dry_run_uses_safe_whitelist(self):
         config = json.loads((ROOT / 'config' / 'device_config.json').read_text(encoding='utf-8'))
