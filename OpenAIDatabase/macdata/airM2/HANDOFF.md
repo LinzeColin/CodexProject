@@ -10,11 +10,12 @@
 - 任务包已安装到 `OpenAIDatabase/macdata/airM2`。
 - 用户确认文件已创建：`config/owner_confirmations.json`。
 - 已修复上一轮错误扩展：恢复原始任务包语义，不自动清理 Docker、Homebrew、系统缓存、项目缓存。
-- GitHub `main` 上一轮已推送：`be257db9483b0fb463d5a8d1e95f33e34c4caaf7`；本轮修复提交后以最新远程 hash 为准。
+- GitHub `main` 上一轮已推送：`d6d6d15ffb53ff1ecfe914cad3e4f421e29e8d9c`；本轮 `.txt` 报告修复提交后以最新远程 hash 为准。
 - GitHub 归档分支 `macdata-airM2` 已创建并验证：`c40633e9ab6130e78afaeb063422f60336b171ec`。
 - Codex Automation 已创建并启用：`macdata-airm2-daily-controlled-archive`。
 - 本次完整运行成功：raw commit `3f5c9c61bf7197de13ab7aa1e7d046c45bfb807f`，report commit `c40633e9ab6130e78afaeb063422f60336b171ec`。
 - 旧运行曾错误执行 Homebrew/用户态/项目缓存清理；本轮已从代码、配置、文档和 automation prompt 中移除该行为。后续如需电脑大清理，应另建独立 cleanup 任务。
+- 本轮正在按用户要求把全中文报告文件从 `.md` 改为 `.txt`，目标最新报告路径为 `reports/latest/latest_report.txt`。
 
 关键决策：
 
@@ -34,4 +35,4 @@
 
 - `python3 -m unittest discover -s OpenAIDatabase/macdata/airM2/tests -p 'test_*.py'`：4 tests OK。
 - `python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`：ok true。
-- `git ls-remote https://github.com/LinzeColin/CodexProject.git refs/heads/main refs/heads/macdata-airM2`：main 与归档分支 hash 需在本轮修复 commit 后重新核对。
+- `git ls-remote https://github.com/LinzeColin/CodexProject.git refs/heads/main refs/heads/macdata-airM2`：main 与归档分支 hash 需在本轮 `.txt` 修复和运行后重新核对。
