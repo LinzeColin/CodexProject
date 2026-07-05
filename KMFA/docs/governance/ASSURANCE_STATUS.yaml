@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION"
+as_of_event_id: "EVENT-KMFA-20260705-V014-RAW-CONSISTENCY-CROSS-VALIDATION-GATE"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "461b0a40b7e7ffb7f8250cf0414db27a3dafb815"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-05T23:05:00+10:00"
-generator_version: "manual-0.1.4-raw-source-identity-decision-application"
+snapshot_event_time: "2026-07-05T23:58:00+10:00"
+generator_version: "manual-0.1.4-raw-consistency-cross-validation-gate"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 856
-    total_active_formulas: 127
+    total_active_parameters: 859
+    total_active_formulas: 128
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -61,6 +61,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/human/test_results.md"
       - "KMFA/tools/check_v014_raw_alignment_remediation.py"
       - "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/machine/raw_alignment_remediation_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/human/test_results.md"
+      - "KMFA/tools/check_v014_raw_consistency_cross_validation_gate.py"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_manifest.json"
       - "KMFA/stage_artifacts/V014_S17_STAGE_REVIEW/human/test_results.md"
       - "KMFA/tools/check_v014_s17_stage_review.py"
       - "KMFA/stage_artifacts/V014_S17_P3_OPERATIONS_SOP/human/test_results.md"
