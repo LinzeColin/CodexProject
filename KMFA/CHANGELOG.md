@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Raw/Processed Comparability Diagnostic
+
+## 0.1.4-raw-processed-comparability-diagnostic - 2026-07-06
+
+- 完成 `V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC` 本地 public-safe/private-runtime diagnostic gate。
+- 只读核验 raw diagnostic、processed target staging、partial source-map、owner worklist 和 active keep-pending record，确认当前 raw/processed 仍无法形成可比较 value pairs。
+- 锁定结论：raw root files=5、prior raw value fingerprint records=871、raw unique numeric fingerprints=330、processed target slots=149、staged processed value fingerprints=0、existing processed source-map records=36、unresolved owner worklist items=113、active keep-pending items=113、raw/processed structural key intersection=0、comparable pairs=0、Go/No-Go=NO_GO。
+- 本 phase 对 raw root 只读 list/stat/hash，未写入、删除、移动、重命名、复制、覆盖或标准化 raw source；私有 hash 诊断只写入 git-ignored runtime。
+- 未执行 raw-to-processed comparison、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution；下一步只能提供 owner-authorized target-slot to processed-value source-map。
+
 # KMFA v0.1.4 Owner-Authorized Fill Application Active Consumed
 
 ## 0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed - 2026-07-06

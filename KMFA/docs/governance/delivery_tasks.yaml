@@ -10262,3 +10262,24 @@ tasks:
     rollback: "Remove active-consumed public evidence edits, tool and validator deltas, focused test deltas, ignored private active fill record and governance entries; do not modify raw inbox."
     target_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed"
     completed_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed"
+
+  - task_id: "KMFA-V014-RAW-PROCESSED-COMPARABILITY-DIAGNOSTIC-20260706"
+    phase_id: "V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RAW-PROCESSED-COMPARABILITY-DIAGNOSTIC"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_raw_processed_comparability_diagnostic.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_processed_comparability_diagnostic.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_processed_comparability_diagnostic -q"
+    test_results:
+      - "PASS: raw/processed comparability diagnostic validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/human/raw_processed_comparability_diagnostic_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/machine/raw_processed_comparability_diagnostic_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/machine/raw_processed_comparability_diagnostic_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/machine/raw_processed_comparability_diagnostic_summary.json"
+    risk: "Raw numeric fingerprints exist, but processed target slots still have no staged value fingerprints and no shared raw join keys; do not run materialization, raw comparison or claim business consistency until a target-slot source map is supplied."
+    rollback: "Remove current phase artifacts, metadata copies, tool, validator, focused test, ignored private diagnostic and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-raw-processed-comparability-diagnostic"
+    completed_version: "0.1.4-raw-processed-comparability-diagnostic"

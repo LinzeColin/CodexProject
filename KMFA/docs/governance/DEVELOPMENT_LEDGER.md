@@ -1185,3 +1185,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_owner_authorized_fill_application -q`
 - boundary: active owner-authorized fill record was materialized from the existing private draft after owner/authorized-delegate confirmation and consumed as keep-pending only; no raw inbox access, no raw mutation, no source-map write, no materialization replay, no raw-to-processed comparison, no formal report, no GitHub upload, no app reinstall, and no business execution.
 - next_required_input: `owner_or_authorized_delegate_supplies_authorized_processed_value_sources`
+
+## 2026-07-06 - V014 Raw Processed Comparability Diagnostic
+
+- task_id: `KMFA-V014-RAW-PROCESSED-COMPARABILITY-DIAGNOSTIC-20260706`
+- phase_id: `V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC`
+- product_version: `0.1.4-raw-processed-comparability-diagnostic`
+- status: `completed_validated_local_only_no_go_raw_processed_comparability_blocked`
+- evidence_dir: `KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_processed_comparability_diagnostic.py`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_processed_comparability_diagnostic -q`
+- boundary: raw root was read/list/stat/hash checked only; private diagnostics remain ignored; public evidence is aggregate-only; no raw mutation, no raw-to-processed comparison, no business consistency claim, no lineage full check, no formal report, no GitHub upload, no app reinstall, and no business execution.
+- next_required_input: `owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`

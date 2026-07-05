@@ -1,16 +1,16 @@
 # KMFA Status
 
-更新时间: 2026-07-05
+更新时间: 2026-07-06
 
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed`
+- version: `0.1.4-raw-processed-comparability-diagnostic`
 - current_stage: `value-consistency`
-- current_phase: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION`
-- status: `completed_validated_local_only_no_go_active_owner_authorized_fill_record_consumed_keep_pending`
-- current_blocker: `authorized_processed_value_source_not_supplied`
-- next_required_input: `owner_or_authorized_delegate_supplies_authorized_processed_value_sources`
+- current_phase: `V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC`
+- status: `completed_validated_local_only_no_go_raw_processed_comparability_blocked`
+- current_blocker: `processed_target_slots_lack_authorized_value_fingerprints_and_shared_raw_join_keys`
+- next_required_input: `owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`
 - blocked_next_steps: `processed value materialization replay; raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 raw/processed comparability diagnostic completed local-only: raw_root_file_count=5，prior_raw_value_fingerprint_record_count=871，prior_raw_unique_numeric_fingerprint_count=330，processed_target_slot_count=149，staged_processed_value_fingerprint_count=0，existing_processed_source_map_record_count=36，unresolved_owner_worklist_item_count=113，active_fill_record_keep_pending_count=113，raw_processed_structural_key_intersection_count=0，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。Raw root read/list/stat/hash=true；write/delete/move/rename/copy/normalize/mutation=false；private diagnostic and local comparability gap report remain in git-ignored runtime；public evidence aggregate/status/ref only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。next_required_input=`owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`。用户要求 raw 原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，final goal closeout 必须提供差异报告。
 
 - v0.1.4 owner-authorized private processed value source-map fill application active record consumed local-only: source_unresolved_gap_item_count=113，private_intake_request_item_count=113，candidate_active_fill_record_path_count=2，existing_active_fill_record_path_count=1，active_fill_record_item_count=113，active_fill_record_keep_pending_count=113，owner_authorized_fill_record_supplied=true，active_authorized_fill_record_found=true，fill_application_performed=true，source_map_records_applied_count=0，new_authorized_fingerprint_count=0，source_map_gap_resolution_complete=false，processed_value_materialization_replay_performed=false，raw_to_processed_value_comparison_performed=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。Active record remains in git-ignored runtime and contains only keep_pending actions；raw inbox read/list/stat/hash/fingerprint/mutation=false by this phase；public evidence aggregate/status/ref/schema-only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。next_required_input=`owner_or_authorized_delegate_supplies_authorized_processed_value_sources`。用户要求 raw 原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，final goal closeout 必须提供差异报告。
 

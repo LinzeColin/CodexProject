@@ -833,3 +833,12 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - Inputs: v0.1.4 S16 phase manifests, v1.4 taskpack/roadmap Stage 16 requirements, governance validators, and deterministic public-safe validator outputs.
 - Outputs: `KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/machine/stage16_review_manifest.json` and public-safe human review evidence under `KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/`.
 - Controls: S17-P1, GitHub upload, protected source matching, lineage full check, formal report release, app reinstall, live connector, OpMe deep coupling, procurement execution, payment approval, payment execution, bank operation, site operation, signature operation, invoice issuance, customer contact, collection action, legal decision, tax filing, business decision basis, business execution, and raw/private inbox read/list/stat/hash/mutation by this review must remain false.
+
+## FORM-KMFA-V014-RAW-PROCESSED-COMPARABILITY-DIAGNOSTIC-001
+- Version: `0.1.4-raw-processed-comparability-diagnostic`.
+- Purpose: diagnose whether current private raw numeric fingerprints and existing processed target slots can form public-safe comparable pairs before any value comparison, materialization replay, lineage full check, formal report, upload or execution.
+- Inputs: prior private raw value matching diagnostic, private processed value staging metadata, partial private processed value source map, unresolved owner worklist, active owner-authorized fill application record, and raw-root readonly list/stat/hash snapshot.
+- Outputs: `KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/machine/raw_processed_comparability_diagnostic_manifest.json`, aggregate public-safe summary and Go/No-Go report, plus ignored private diagnostics under `.codex_private_runtime`.
+- Controls: public evidence must stay aggregate-only; private diagnostics must remain git-ignored and untracked; raw root may not be modified, deleted, moved, copied, normalized or overwritten; raw-to-processed value comparison and business consistency verification remain false while comparable value pairs equal zero.
+- Current result: `raw_unique_numeric_fingerprint_count=330`, `processed_target_slot_count=149`, `staged_processed_value_fingerprint_count=0`, `raw_processed_structural_key_intersection_count=0`, `comparable_value_pair_count=0`, `go_no_go=NO_GO`.
+- Next input: owner or authorized delegate supplies target-slot to processed-value source-map evidence sufficient to create comparable pairs.
