@@ -1,0 +1,31 @@
+{
+  "app_reinstall_allowed": false,
+  "blocker_ids": [
+    "RAW_ALIGNMENT_NOT_PROVEN_COMPLETE",
+    "RAW_PACKAGE_HASH_OR_SIZE_MISMATCH",
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "S09_PENDING_RECONCILIATION_12",
+    "GITHUB_UPLOAD_BLOCKED_BY_RAW_ALIGNMENT_AND_LINEAGE",
+    "APP_REINSTALL_BLOCKED_UNTIL_GITHUB_PARITY_AND_RELEASE_GATE"
+  ],
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "decision_reason": "Stage review evidence is locally complete, but raw alignment, lineage completeness, official report release, GitHub main upload, and app reinstall remain blocked.",
+  "delivery_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_required_phase": "V014_RAW_ALIGNMENT_REMEDIATION",
+  "official_report_release_allowed": false,
+  "pending_reconciliation_count": 12,
+  "phase_id": "V014_STAGE1_18_OVERALL_REVIEW",
+  "project_id": "KMFA",
+  "raw_alignment_complete": false,
+  "record_type": "v014_stage1_18_overall_go_no_go_report",
+  "resolved_blocker_ids": [
+    "S18_STAGE_REVIEW_PENDING",
+    "V014_STAGE1_18_OVERALL_REVIEW_PENDING"
+  ],
+  "task_id": "KMFA-V014-STAGE1-18-OVERALL-REVIEW-20260705",
+  "version": "0.1.4"
+}

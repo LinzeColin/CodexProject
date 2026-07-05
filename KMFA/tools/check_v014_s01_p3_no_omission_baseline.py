@@ -28,6 +28,8 @@ LEGACY_REQUIREMENTS_PATH = Path("KMFA/metadata/traceability/requirements.csv")
 V14_REQUIREMENTS_PATH = Path("KMFA/metadata/traceability/v1_4_no_omission_requirements.csv")
 V14_STATUS_PATH = Path("KMFA/metadata/traceability/v1_4_stage_phase_task_status.jsonl")
 LEGACY_NO_OMISSION_TOOL = Path("KMFA/tools/no_omission_check.py")
+IMPLEMENTATION_PHASE_RE = re.compile(r"^S\d{2}P[123]$")
+IMPLEMENTATION_TASK_RE = re.compile(r"^S\d{2}P[123]T\d{2}$")
 EVIDENCE_FILES = [
     Path("KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/s01_p3_completion_record.md"),
     Path("KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/risk_register.md"),
@@ -159,9 +161,13 @@ def load_v14_status() -> tuple[list[dict[str, Any]], set[str], set[str], set[str
         if value.get("record_type") == "stage":
             stage_ids.add(str(value.get("stage_id")))
         elif value.get("record_type") == "phase":
-            phase_ids.add(str(value.get("phase_id")))
+            phase_id = str(value.get("phase_id"))
+            if IMPLEMENTATION_PHASE_RE.fullmatch(phase_id):
+                phase_ids.add(phase_id)
         elif value.get("record_type") == "task":
-            task_ids.add(str(value.get("task_id")))
+            task_id = str(value.get("task_id"))
+            if IMPLEMENTATION_TASK_RE.fullmatch(task_id):
+                task_ids.add(task_id)
 
     if len(stage_ids) != 18:
         raise ValidationError(f"expected 18 v1.4 stages, found {len(stage_ids)}")
@@ -169,16 +175,21 @@ def load_v14_status() -> tuple[list[dict[str, Any]], set[str], set[str], set[str
         raise ValidationError(f"expected 54 v1.4 phases, found {len(phase_ids)}")
     if len(task_ids) != 162:
         raise ValidationError(f"expected 162 v1.4 tasks, found {len(task_ids)}")
-    if len(records) != 234:
-        raise ValidationError(f"expected 234 v1.4 status records, found {len(records)}")
+    if len(stage_ids) + len(phase_ids) + len(task_ids) != 234:
+        raise ValidationError("expected 234 unique v1.4 implementation ids")
 
     phases_by_stage: dict[str, set[str]] = defaultdict(set)
     tasks_by_phase: dict[str, set[str]] = defaultdict(set)
     for record in records:
         if record.get("record_type") == "phase":
-            phases_by_stage[str(record["stage_id"])].add(str(record["phase_id"]))
+            phase_id = str(record["phase_id"])
+            if IMPLEMENTATION_PHASE_RE.fullmatch(phase_id):
+                phases_by_stage[str(record["stage_id"])].add(phase_id)
         elif record.get("record_type") == "task":
-            tasks_by_phase[str(record["phase_id"])].add(str(record["task_id"]))
+            phase_id = str(record["phase_id"])
+            task_id = str(record["task_id"])
+            if IMPLEMENTATION_PHASE_RE.fullmatch(phase_id) and IMPLEMENTATION_TASK_RE.fullmatch(task_id):
+                tasks_by_phase[phase_id].add(task_id)
     for stage in stage_ids:
         if len(phases_by_stage[stage]) != 3:
             raise ValidationError(f"{stage} must have 3 phases")
@@ -256,7 +267,7 @@ def validate_v014_s01_p3_no_omission_baseline(
 
     manifest = read_json(manifest_path)
     s01p2 = read_json(S01P2_MANIFEST_PATH)
-    records, v14_stage_ids, _v14_phase_ids, v14_task_ids = load_v14_status()
+    records, v14_stage_ids, v14_phase_ids, v14_task_ids = load_v14_status()
     legacy_rows = read_csv(LEGACY_REQUIREMENTS_PATH)
     v14_rows = read_csv(V14_REQUIREMENTS_PATH)
     legacy_counts = Counter(row["priority"].strip() for row in legacy_rows)
@@ -357,7 +368,7 @@ def validate_v014_s01_p3_no_omission_baseline(
         "v14_overlay_requirements": len(v14_rows),
         "v14_overlay_p0": v14_counts.get("P0", 0),
         "v14_overlay_p1": v14_counts.get("P1", 0),
-        "v14_stage_status_records": len(records),
+        "v14_stage_status_records": len(v14_stage_ids) + len(v14_phase_ids) + len(v14_task_ids),
         "v14_stages": baseline["v14_stages"],
         "v14_phases": baseline["v14_phases"],
         "v14_tasks": baseline["v14_tasks"],

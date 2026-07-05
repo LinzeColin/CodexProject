@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 Stage 18 整体复审`：新增 `KMFA/tools/v014_s18_stage_review.py`、`KMFA/tools/check_v014_s18_stage_review.py`、`KMFA/tests/test_v014_s18_stage_review.py` 和 `KMFA/stage_artifacts/V014_S18_STAGE_REVIEW/` public-safe evidence。该 review 复跑 S18-P1/S18-P2/S18-P3 validators、v0.1.4 Stage 18 review validator 和 focused unit test；锁定 phase_results=`S18-P1=PASS; S18-P2=PASS; S18-P3=PASS`、open findings=`0`、fixed findings=`1`、precision scenarios=`5`、full regression check categories=`5`、stage evidence records=`18`、HTML audit fail=`0`、connector plans=`3`、OpMe entry surfaces=`4`、backlog items=`6`、Go/No-Go=`NO_GO`。复审修复 S18-P3 final validation summary/test_results stale pending finding。未读取 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、zip/Excel/PDF/private CSV/sqlite/db 或 credentials；未执行 GitHub upload、lineage full check completion、protected source matching、live connector、external service call、production restore、app reinstall、OpMe 深度耦合、正式报告或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 整体复审/最终 gate 通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `v0.1.4 Stage 1-18 整体复审` 或用户指定的最终 gate；不得自动上传。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 Stage 1-18 整体复审`：新增 `KMFA/tools/v014_stage1_18_overall_review.py`、`KMFA/tools/check_v014_stage1_18_overall_review.py`、`KMFA/tests/test_v014_stage1_18_overall_review.py` 和 `KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/` public-safe evidence。该 review 汇总并验证 Stage 1-18 全部本地 stage review evidence，validator 以缓存方式实际复跑 18 个 stage review validators，确认 stage reviews=`18/18 PASS`、implementation coverage=`54 phases / 162 tasks`、open findings=`0`、HTML audit fail=`0`、pending reconciliation=`12`、current Go/No-Go=`NO_GO`、report grade=`D`。本轮修复 `S01-P3 no-omission baseline` validator 的历史 review status append 计数漂移问题。未读取或修改 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、zip/Excel/PDF/private CSV/sqlite/db 或 credentials；未执行 GitHub upload、app reinstall、lineage full check completion、protected source matching、live connector、external service call、production restore、OpMe 深度耦合、正式报告或业务执行。GitHub main upload 继续被 raw alignment、lineage completeness、formal report release 和 pending reconciliation 阻断。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s18-stage-review`
-- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`、`v0.1.4 S16-P2 项目状态生命周期`、`v0.1.4 S16-P3 客户经营分析`、`v0.1.4 Stage 16 整体复审`、`v0.1.4 S17-P1 权限与安全`、`v0.1.4 S17-P2 通知策略`、`v0.1.4 S17-P3 运维与SOP`、`v0.1.4 Stage 17 整体复审`、`v0.1.4 S18-P1 精度与压力测试`、`v0.1.4 S18-P2 全量回归和验收`、`v0.1.4 S18-P3 后续接入准备`、`v0.1.4 Stage 18 整体复审`
-- 证据目录: `KMFA/stage_artifacts/V014_S18_P3_INTEGRATION_PREPARATION/`
-- validator: `KMFA/tools/check_v014_s18_p3_integration_preparation.py`
-- focused test: `KMFA/tests/test_v014_s18_p3_integration_preparation.py`
-- upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S18-P3 未读取、列出、stat、hash 或修改 raw inbox；公开证据只包含 public-safe proposal-only connector plan、OpMe light-entry plan、backlog、Go/No-Go、状态、evidence refs 和 validator evidence，不发布 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、Office/PDF/zip/private CSV/sqlite/db、完整报告正文、附件或 credentials。
-- 未执行: GitHub upload、Stage18 review、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、full report email body、live connector、external service call、production restore、app reinstall、OpMe deep coupling、客户联络、催收、法务、开票、付款、银行或 business execution。
-- 下一步: 仅在用户明确开启后执行 `v0.1.4 Stage 1-18 整体复审` 或最终 gate；继续保持 public-safe/no raw publication/no upload/no production restore/no external connector/no formal report/no business execution 边界。
+- 当前版本: `0.1.4-stage1-18-overall-review`
+- 当前已完成: `v0.1.4 Stage 1-18 整体复审`
+- 证据目录: `KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/`
+- validator: `KMFA/tools/check_v014_stage1_18_overall_review.py`
+- focused test: `KMFA/tests/test_v014_stage1_18_overall_review.py`
+- upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 raw alignment、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
+- raw boundary: 本 phase 未读取、列出、stat、hash 或修改 raw inbox；公开证据只包含 public-safe aggregate counts、status、blocked gate、evidence refs 和 validator evidence。
+- 未完成/阻断: raw alignment complete=false；local raw package hash/size match=false；lineage full check complete=false；official report release allowed=false；pending reconciliation=12；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
+- 下一步: 仅在用户明确开启后执行 `V014_RAW_ALIGNMENT_REMEDIATION` 或等价的 raw alignment / lineage completion gate；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
 
 ## v0.1.3 历史状态
 

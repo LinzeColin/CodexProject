@@ -1723,3 +1723,11 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 新增 `KMFA/tools/check_v014_s02_p1_metadata_protocol.py` 与 `KMFA/tests/test_v014_s02_p1_metadata_protocol.py`，复用 `metadata_protocol_check.py` 并额外验证 S01 review dependency、raw boundary、no-upload/no-go、evidence refs 和 Git 状态。
 - 新增 `KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/` public-safe evidence。
 - 未执行 S02-P2、S02-P3、Stage 2 review、GitHub upload、raw inventory、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
+
+## 0.1.4-stage1-18-overall-review - 2026-07-05
+
+- 完成 `v0.1.4 Stage 1-18 整体复审` 本地 public-safe gate：新增 overall review generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/` 证据。
+- 新 validator 复跑并缓存 18 个 v0.1.4 stage review validators，确认 Stage review 18/18、Phase 54、Task 162、open findings 0。
+- 修复 `S01-P3 no-omission baseline` validator 的历史 review 记录漂移问题：implementation coverage 改为按 `SxxP1-P3` / `SxxP*Txx` 唯一 ID 计数，不把后续 review status append 误算为 roadmap phase。
+- 当前 Go/No-Go 仍为 `NO_GO`：raw alignment 未证明完整、local raw package hash/size mismatch、lineage full check 未完成、formal report release 未允许、pending reconciliation=12。
+- 未执行 GitHub upload、app reinstall、raw inbox read/mutation、lineage full check completion、formal report release、production restore、external/live connector、OpMe 深度耦合或业务执行。
