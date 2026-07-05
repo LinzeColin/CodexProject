@@ -1330,3 +1330,12 @@ v014_s15_stage_review_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S15_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s15_stage_review.py
   scope: Stage 15 overall review only; no S16-P1, upload, raw inbox access, raw matching, lineage, formal report, live salary integration, salary calculation, wage calculation, bonus approval, payroll export, final compensation, final payment, payment execution or business execution.
+
+v014_s16p1_subcontract_procurement_registry_note:
+  version: "0.1.4-s16p1-subcontract-procurement"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S16P1-SUBCONTRACT-PROCUREMENT-001
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT
+  validator: KMFA/tools/check_v014_s16_p1_subcontract_procurement.py
+  scope: S16-P1 subcontract procurement only; no S16-P2, S16-P3, Stage 16 review, upload, raw inbox access, raw matching, lineage, formal report, procurement execution, payment approval, payment execution, bank operation, collection action, legal action or business execution.

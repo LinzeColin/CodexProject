@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S16-P1 Subcontract Procurement
+- Product version: `0.1.4-s16p1-subcontract-procurement`.
+- Scope: S16-P1 only; public-safe subcontract, procurement and payment aggregation baseline lock using Stage 15 review dependency and legacy S16-P1 public-safe evidence.
+- Evidence: `KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/`.
+- Verification: `KMFA/tools/check_v014_s16_p1_subcontract_procurement.py`; `KMFA/tests/test_v014_s16_p1_subcontract_procurement.py`.
+- blocker_state: source_lanes=4, project_matches=5, unallocated_pool=2, anomaly_candidates=4, duplicate_payment_candidates=2, cross_project_cost_candidates=2, pending_reconciliation=12, report_grade=D, procurement_execution=0, payment_approval=0, payment_execution=0, bank_operation=0, formal_report=0, business_decision_basis=0, S16-P2=false, S16-P3=false, Stage16 review=false, GitHub upload=false, raw inbox access=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+product_version: 0.1.4-s16p1-subcontract-procurement
+version_matrix_product_version_reference: 0.1.4-s16p1-subcontract-procurement
+
 # KMFA v0.1.4 Stage 15 Review
 - Product version: `0.1.4-s15-stage-review`.
 - Scope: Stage 15 review only; public-safe replay of S15-P1/S15-P2/S15-P3 validators, legacy Stage 15 review, v1.4 Stage 15 review validator and focused unit test.
