@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S18-P2 Full Regression Acceptance
+- Product version: `0.1.4-s18p2-full-regression-acceptance`.
+- Scope: S18-P2 only; public-safe full regression acceptance replay, v1.4 HTML human-flow audit, 18-stage evidence index and Go/No-Go lock.
+- Evidence: `KMFA/stage_artifacts/V014_S18_P2_FULL_REGRESSION_ACCEPTANCE/`.
+- Verification: `KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py`; `KMFA/tests/test_v014_s18_p2_full_regression_acceptance.py`.
+- blocker_state: check_categories=5, stage_evidence=18, html_files=6, html_rows=54, html_pass=54, html_warn=0, html_fail=0, go_no_go=NO_GO, report_grade=D, delivery_allowed=false, raw_inbox_access=0, S18-P3=false, Stage18 review=false, GitHub upload=false, protected source matching=false, lineage full check=false, app reinstall=false, production restore=false, external connector=false, live connector=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-s18p2-full-regression-acceptance
+version_matrix_product_version_reference: 0.1.4-s18p2-full-regression-acceptance
+
 # KMFA v0.1.4 S18-P1 Precision Stress
 - Product version: `0.1.4-s18p1-precision-stress`.
 - Scope: S18-P1 only; public-safe precision/stress replay of amount precision, zero-delta, duplicate import, bad file, missing field, 3 consecutive import consistency, synthetic large-batch performance and HTML/UIUX baseline reading.

@@ -4,11 +4,12 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S17-P1 权限与安全；S16 Stage review dependency、legacy S17-P1 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S17-P1 validator 和 focused unit test 均通过；roles=4、sensitive policy categories=15、audit action types=5，管理层/财务/复核/只读角色权限、敏感公开仓库禁止项和导入/处理/报告/导出/通知审计动作已锁定。提醒发送、完整报告邮件正文、外部连接器、正式报告、经营决策依据、业务执行和 raw inbox 访问均为 0/false。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/`，validator 为 `KMFA/tools/check_v014_s17_p1_access_security.py`。本 phase 未执行 S17-P2、S17-P3、Stage17 review、protected source matching、lineage full check、app reinstall、GitHub upload、正式报告或任何业务动作。
+KMFA 已完成 v0.1.4 S18-P2 全量回归和验收；S18-P1 dependency、legacy S18-P2 public-safe baseline、v1.4 taskpack/roadmap requirements、v1.4 HTML human-flow audit、v0.1.4 S18-P2 validator 和 focused unit test 均通过。当前锁定 checks=5、stage evidence=18、HTML audit files=6/rows=54/pass=54/warn=0/fail=0、Go/No-Go=`NO_GO`、report grade=`D`。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S18_P2_FULL_REGRESSION_ACCEPTANCE/`，validator 为 `KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py`。本 phase 未执行 S18-P3、Stage18 review、GitHub upload、protected source matching、lineage full check、app reinstall、生产恢复、外部连接器、正式报告或任何业务动作。
 
 ## 你现在能信任什么
 
 - v0.1.4 S17-P1 权限与安全已确认本地 validator 通过；4 类角色、15 类敏感公开仓库禁止项和 5 类审计动作均为 public-safe governance evidence。S17-P1 只证明权限/安全/审计策略锁定，不证明提醒发送、完整报告邮件正文、S17-P2、S17-P3、Stage17 review、GitHub upload、lineage full check、正式报告、经营决策依据、外部连接器、app reinstall 或业务执行；下一步只能 S17-P2 单独 run。
+- v0.1.4 S18-P2 全量回归和验收已确认本地 validator 通过；5 类检查、18 个 Stage evidence、HTML human-flow audit FAIL=0 和 Go/No-Go 报告均为 public-safe local evidence。S18-P2 只证明回归验收和 NO_GO 状态锁定，不证明 S18-P3、Stage18 review、GitHub upload、lineage full check、正式报告、经营决策依据、生产恢复、外部连接器、app reinstall 或业务执行；下一步只能 S18-P3 单独 run。
 - v0.1.4 Stage 16 整体复审已确认本地 validator 通过；S16-P1/S16-P2/S16-P3 均为 PASS，open findings=0，fixed findings=1。Stage 16 review 只证明外协采购归集、项目状态生命周期和客户经营分析的 public-safe 本地证据闭环，不证明 GitHub upload、S17-P1、protected source matching、lineage full check、正式报告、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、客户联络、催收、法务、税务或业务执行；下一步只能 S17-P1 单独 run。
 - v0.1.4 S16-P3 客户经营分析已确认本地 validator 通过；7 条 source lane、4 类客户价值维度、4 条价值信号、4 条风险信号、4 条客户经营摘要和 4 条人工 handoff guard 均为 public-safe review queue 证据。S16-P3 只证明客户价值、项目毛利、回款质量、账龄风险的结构化复核摘要，不证明 GitHub upload、Stage 16 review、protected source matching、lineage full check、正式报告、客户联络、催收、法务、付款、银行、开票或业务执行；下一步只能 Stage 16 整体复审单独 run。
 - v0.1.4 S16-P2 项目状态生命周期已确认本地 validator 通过；6 条 source lane、4 条生命周期记录、3 条异常事项和 3 条人工 handoff guard 均为 public-safe review queue 证据。S16-P2 只证明项目状态生命周期与异常事项锁定，不证明 GitHub upload、S16-P3、Stage 16 review、protected source matching、lineage full check、正式报告、现场施工、安全签字、技术签字、开票、催收、付款、银行、法务或业务执行；下一步只能 S16-P3 单独 run。

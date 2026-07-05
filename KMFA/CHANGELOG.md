@@ -1,3 +1,10 @@
+## 0.1.4-s18p2-full-regression-acceptance - 2026-07-05
+- Completed v0.1.4 S18-P2 full regression and acceptance locally with S18-P1 dependency, legacy S18-P2 public-safe baseline, v1.4 roadmap/taskpack anchors, v1.4 HTML human-flow audit, v0.1.4 S18-P2 validator, focused unit test, and public-safe evidence.
+- Locked check_category_count=5, stage_evidence_count=18, HTML audit files=6, rows=54, pass=54, warn=0, fail=0, Go/No-Go decision=NO_GO, maximum report grade=D, and next_required_phase=S18-P3.
+- Confirmed no-omission, zero-delta, schema, lineage, UI, stage evidence and Go/No-Go gates are recorded, while lineage full check, official report release, business decision basis and delivery remain blocked.
+- Confirmed no S18-P3, Stage 18 review, GitHub upload, raw inbox read/list/stat/hash/mutation, protected source matching, app reinstall, production restore, external connector, live connector, formal report or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
 ## 0.1.4-s18p1-precision-stress - 2026-07-05
 - Completed v0.1.4 S18-P1 precision and stress testing locally with S17 Stage review dependency, legacy S18-P1 public-safe baseline, v1.4 roadmap/taskpack anchors, v1.4 HTML/UIUX baseline reading, v0.1.4 S18-P1 validator, focused unit test, and public-safe evidence.
 - Locked scenario_count=5, scenario_type_count=5, consecutive_import_run_count=3, unique_import_result_hash_count=1, large_batch_file_count=1200, elapsed_ms=348/500, error_report_count=2, minimum_fail_difference_cents=1, html_baseline_refs=3, and report grade=D.

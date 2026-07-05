@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s18p1-precision-stress`
+- version: `0.1.4-s18p2-full-regression-acceptance`
 - current_stage: `S18`
-- current_phase: `v0.1.4 S18-P1 precision stress`
-- status: `completed_validated_local_only_no_go_upload_deferred_precision_stress_locked`
+- current_phase: `v0.1.4 S18-P2 full regression acceptance`
+- status: `completed_validated_local_only_no_go_upload_deferred_full_regression_locked`
 - production_ready: `false`
 - github_upload_ready: `false_deferred_until_v014_stage1_18_complete_overall_review`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,6 +16,7 @@
 
 ## 已完成
 
+- v0.1.4 S18-P2 full regression acceptance completed local-only: S18-P1 dependency PASS, legacy S18-P2 public-safe baseline PASS, v1.4 roadmap/taskpack requirements PASS, v1.4 HTML human-flow audit PASS with files=6 rows=54 pass=54 warn=0 fail=0, v0.1.4 S18-P2 validator PASS, focused unit test PASS, check categories=5, stage evidence records=18, Go/No-Go=NO_GO, report grade=D, delivery_allowed=false, raw inbox read/list/stat/hash/mutation=false, S18-P3=false, Stage18 review=false, github_upload=false, protected source matching=false, lineage full check=false, app reinstall=false, production restore=false, external/live connector=false, formal report=false, business execution=false.
 - v0.1.4 S18-P1 precision stress completed local-only: S17 Stage review dependency PASS, legacy S18-P1 public-safe baseline PASS, v1.4 roadmap/taskpack requirements PASS, v1.4 HTML/UIUX baseline refs read=3, v0.1.4 S18-P1 validator PASS, focused unit test PASS, scenarios=5, scenario types=5, consecutive import runs=3, unique import result hashes=1, large synthetic batch=1200 files in 348ms under 500ms budget, error reports=2, one-cent fail gate=true, report grade=D, raw inbox read/list/stat/hash/mutation=false, S18-P2=false, S18-P3=false, Stage18 review=false, github_upload=false, protected source matching=false, lineage full check=false, app reinstall=false, production restore=false, external/live connector=false, formal report=false, business execution=false.
 - v0.1.4 Stage 17 overall review completed local-only: S17-P1/S17-P2/S17-P3 validators PASS, v0.1.4 Stage 17 review validator PASS, focused unit test PASS, phase_results=3/3 PASS, open findings=0, fixed findings=1, roles=4, sensitive policy categories=15, audit action types=5, notification rules=3, notification events=3, dispatch logs=3, operation runbooks=4, knowledge items=2, drill logs=2, current report grade=D, release permission=blocked, real notification delivery=0, full report email body=0, report attachment=0, recipient address plaintext=0, production restore=0, external service call=0, live connector=0, app reinstall=0, formal report=0, business decision basis=0, business execution=0, raw inbox read/list/stat/hash/mutation=false, S18-P1=false, github_upload=false.
 - v0.1.4 S17-P3 operations SOP completed local-only: S17-P2 dependency PASS, legacy S17-P3 public-safe operations baseline PASS, v1.4 taskpack/roadmap requirements PASS, v0.1.4 S17-P3 validator PASS, focused unit test PASS, operation runbooks=4, finance SOP knowledge index items=2, error/backup drill logs=2, production restore=0, external service call=0, live connector=0, app reinstall=0, formal report=0, full report email=0, business decision basis=0, business execution=0, raw inbox read/list/stat/hash/mutation=false, Stage17 review=false, github_upload=false.
