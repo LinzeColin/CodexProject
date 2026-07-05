@@ -7264,3 +7264,46 @@ formulas:
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/private_processed_value_source_map_gap_resolution_report.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/test_results.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-INTAKE-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 owner-authorized private processed source-map fill intake gate
+    version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-intake"
+    status: active
+    fact_level: EXTRACTED
+    expression: "source_unresolved_gap_item_count=113 AND private_intake_request_item_count=113 AND allowed_intake_action_count=3 AND owner_authorized_fill_record_supplied=false -> source_map_gap_resolution_complete=false, processed_value_materialization_replay_ready=false, raw_to_processed_value_comparison_ready=false, business_value_consistency_verified=false, decision=NO_GO"
+    variables:
+      - name: "source_unresolved_gap_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "113"
+      - name: "private_intake_request_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "113"
+      - name: "allowed_intake_action_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "3"
+      - name: "owner_authorized_fill_record_supplied"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "Owner-authorized fill intake prepares templates and request only; it does not create an active fill record."
+      - "Private intake request stays in git-ignored runtime."
+      - "Public evidence contains aggregate counts, schema contracts, statuses and evidence refs only."
+      - "No processed values, private refs, raw filenames, field/header/sheet/entry plaintext or raw values may be committed."
+      - "Materialization replay, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, Go/No-Go report, summary, intake packet, intake contract, templates, private intake request, validator, focused unit test or governance record fails validation."
+    output_range: "v014_private_processed_value_source_map_owner_authorized_fill_intake_manifest"
+    code_refs:
+      - "KMFA/tools/v014_private_processed_value_source_map_owner_authorized_fill_intake.py"
+      - "KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_intake.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_intake.py --require-private-intake-request"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_owner_authorized_fill_intake -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/private_processed_value_source_map_owner_authorized_fill_intake_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_intake_manifest.json"

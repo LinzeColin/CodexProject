@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Owner-Authorized Fill Intake
+
+## 0.1.4-private-processed-value-source-map-owner-authorized-fill-intake - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE` 本地 public-safe gate。
+- 新增 owner-authorized fill intake generator、validator、focused unit test、private-only intake request 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/` 证据。
+- 锁定结论：source unresolved gap items=113、unique private refs=101、duplicate unresolved gap items=12、existing source-map records=36、private intake request items=113、allowed intake actions=3、new authorized fingerprints=0。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不创建 owner 授权填补记录，不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行；下一步只能 owner/授权填补应用或继续 pending。
+
 # KMFA v0.1.4 Source-Map Authorized-Fill Gap Resolution
 
 ## 0.1.4-private-processed-value-source-map-gap-resolution - 2026-07-05
