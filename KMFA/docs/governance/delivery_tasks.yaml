@@ -9753,3 +9753,51 @@ tasks:
     rollback: "Remove this phase evidence, validator, governance records and metadata copies."
     target_version: "0.1.4-raw-source-identity-decision-application"
     completed_version: "0.1.4-raw-source-identity-decision-application"
+
+  - task_id: "KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-OWNER-CONFIRMATION-20260705"
+    phase: "V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION"
+    objective: "应用用户提供的 public-safe owner decision code confirm_current_container_as_authoritative；只记录源身份确认，不解锁 hash backfill、lineage、正式报告、GitHub upload、app reinstall 或业务执行。"
+    scope:
+      - "public-safe owner confirmation decision record"
+      - "decision application preview with owner_decision_supplied=true"
+      - "NO_GO downstream gate preservation"
+      - "validator and focused test update"
+    non_scope:
+      - "raw inbox read or mutation"
+      - "raw data consistency cross-validation"
+      - "public member hash backfill"
+      - "lineage full check completion"
+      - "GitHub upload"
+      - "app reinstall"
+      - "formal report"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-20260705"
+    required_files:
+      - "KMFA/tools/v014_raw_source_identity_decision_application.py"
+      - "KMFA/tools/check_v014_raw_source_identity_decision_application.py"
+      - "KMFA/tests/test_v014_raw_source_identity_decision_application.py"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/owner_decision_records/current_raw_source_identity_owner_decision.json"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_go_no_go_report.json"
+    acceptance_ids:
+      - "ACC-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m py_compile KMFA/tools/v014_raw_source_identity_decision_application.py KMFA/tools/check_v014_raw_source_identity_decision_application.py KMFA/tests/test_v014_raw_source_identity_decision_application.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_source_identity_decision_application.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_source_identity_decision_application -q"
+    test_results:
+      - "PASS: raw source identity decision application validator passed with owner confirmation recorded and downstream gates blocked"
+      - "PASS: focused unit test covered no-decision, keep-pending and owner-confirmation application paths"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/human/raw_source_identity_decision_application_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/owner_decision_records/current_raw_source_identity_owner_decision.json"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_preview.json"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_go_no_go_report.json"
+    risk: "Owner confirmation resolves only the source identity decision application blocker; public member hash backfill, raw consistency cross-validation, lineage closure and release gates remain separate required phases."
+    rollback: "Revert this owner-confirmation application commit; restore previous no-decision application evidence; do not modify raw inbox."
+    target_version: "0.1.4-raw-source-identity-decision-application-owner-confirmation"
+    completed_version: "0.1.4-raw-source-identity-decision-application-owner-confirmation"

@@ -20,15 +20,22 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from KMFA.tools.check_v014_owner_raw_source_identity_decision import (  # noqa: E402
+    validate_owner_decision_payload,
     validate_owner_decision_record,
 )
 from KMFA.tools.v014_owner_raw_source_identity_decision import (  # noqa: E402
     ALLOWED_ACTOR_ROLES,
     ALLOWED_DECISION_CODES,
+    CURRENT_GATE as OWNER_CURRENT_GATE,
+    DECISION_SCHEMA_VERSION,
     DECISION_PACKET_PATH,
     GO_NO_GO_PATH as OWNER_GO_NO_GO_PATH,
     INTAKE_CONTRACT_PATH,
     MANIFEST_PATH as OWNER_MANIFEST_PATH,
+    PHASE_ID as OWNER_PHASE_ID,
+    RAW_ALIGNMENT_GO_NO_GO_PATH,
+    RAW_ALIGNMENT_MANIFEST_PATH,
+    TASK_ID as OWNER_TASK_ID,
 )
 
 
@@ -52,6 +59,7 @@ HUMAN_DIR = OUTPUT_DIR / "human"
 MANIFEST_PATH = MACHINE_DIR / "raw_source_identity_decision_application_manifest.json"
 GO_NO_GO_PATH = MACHINE_DIR / "raw_source_identity_decision_application_go_no_go_report.json"
 APPLICATION_PREVIEW_PATH = MACHINE_DIR / "raw_source_identity_decision_application_preview.json"
+OWNER_DECISION_RECORD_PATH = MACHINE_DIR / "owner_decision_records/current_raw_source_identity_owner_decision.json"
 REPORT_PATH = HUMAN_DIR / "raw_source_identity_decision_application_report.md"
 GO_NO_GO_RECORD_PATH = HUMAN_DIR / "go_no_go_record.md"
 TEST_RESULTS_PATH = HUMAN_DIR / "test_results.md"
@@ -61,6 +69,7 @@ ROLLBACK_PATH = HUMAN_DIR / "rollback_plan.md"
 METADATA_MANIFEST_PATH = Path("KMFA/metadata/quality/v014_raw_source_identity_decision_application_manifest.json")
 METADATA_GO_NO_GO_PATH = Path("KMFA/metadata/quality/v014_raw_source_identity_decision_application_go_no_go_report.json")
 METADATA_PREVIEW_PATH = Path("KMFA/metadata/approvals/v014_raw_source_identity_decision_application_preview.json")
+METADATA_OWNER_DECISION_RECORD_PATH = Path("KMFA/metadata/approvals/v014_raw_source_identity_owner_decision_record.json")
 
 
 def _now(generated_at: str | None = None) -> str:
@@ -100,6 +109,7 @@ def _git_output(args: list[str]) -> str:
 def _public_safety() -> dict[str, bool]:
     return {
         "public_safe_application_status_only": True,
+        "public_safe_owner_decision_metadata_only": True,
         "raw_business_data_committed": False,
         "compressed_raw_package_committed": False,
         "office_workbook_committed": False,
@@ -117,6 +127,78 @@ def _public_safety() -> dict[str, bool]:
         "row_or_cell_values_committed": False,
         "business_values_committed": False,
     }
+
+
+def _build_owner_decision_record(
+    *,
+    decision_code: str,
+    generated_at: str,
+    actor_role: str,
+    actor_ref: str,
+    confirmation_scope: str | None = None,
+    corrected_package_private_ref: str | None = None,
+    reason_pending: str | None = None,
+    next_review_trigger: str | None = None,
+) -> dict[str, Any]:
+    if decision_code not in ALLOWED_DECISION_CODES:
+        raise ValueError(f"unsupported decision_code: {decision_code}")
+    if actor_role not in ALLOWED_ACTOR_ROLES:
+        raise ValueError(f"unsupported actor_role: {actor_role}")
+
+    decision: dict[str, Any] = {
+        "record_type": "v014_raw_source_identity_owner_decision",
+        "schema_version": DECISION_SCHEMA_VERSION,
+        "project_id": PROJECT_ID,
+        "version": VERSION,
+        "phase_id": OWNER_PHASE_ID,
+        "task_id": OWNER_TASK_ID,
+        "current_gate": OWNER_CURRENT_GATE,
+        "decision_code": decision_code,
+        "actor_role": actor_role,
+        "actor_ref": actor_ref,
+        "decision_time": generated_at,
+        "basis_refs": [
+            RAW_ALIGNMENT_MANIFEST_PATH.as_posix(),
+            RAW_ALIGNMENT_GO_NO_GO_PATH.as_posix(),
+        ],
+        "source_identity_scope": "raw_container_identity_only",
+        "raw_business_data_committed": False,
+        "raw_filename_committed": False,
+        "raw_hash_committed": False,
+        "private_diagnostic_committed": False,
+        "public_hash_backfill_performed": False,
+        "raw_alignment_complete_claimed_by_intake": False,
+        "lineage_full_check_performed": False,
+        "formal_report_performed": False,
+        "github_upload_performed": False,
+        "app_reinstall_performed": False,
+        "business_execution_performed": False,
+    }
+    if decision_code == "confirm_current_container_as_authoritative":
+        decision.update(
+            {
+                "raw_container_authoritative_confirmed": True,
+                "confirmation_scope": confirmation_scope
+                or "current_private_container_identity_for_raw_container_identity_only",
+            }
+        )
+    elif decision_code == "register_corrected_source_package":
+        decision.update(
+            {
+                "corrected_package_private_ref": corrected_package_private_ref
+                or "corrected_source_package_private_reference_pending_public_safe_registry",
+                "current_container_superseded": True,
+            }
+        )
+    else:
+        decision.update(
+            {
+                "reason_pending": reason_pending or "owner_keeps_source_identity_pending",
+                "next_review_trigger": next_review_trigger or "owner_supplies_confirmation_or_corrected_source_registry",
+            }
+        )
+    validate_owner_decision_payload(decision)
+    return decision
 
 
 def _load_basis() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -182,6 +264,7 @@ def _application_preview(decision_code: str | None) -> dict[str, Any]:
                 "blocker": "no_active_owner_or_authorized_decision_record",
                 "application_effect": "keeps_all_downstream_gates_blocked",
                 "next_required_input": NEXT_REQUIRED_INPUT,
+                "active_owner_decision_record_ref": None,
             }
         )
     elif decision_code == "keep_pending":
@@ -194,6 +277,7 @@ def _application_preview(decision_code: str | None) -> dict[str, Any]:
                 "blocker": "owner_decision_keeps_source_identity_pending",
                 "application_effect": "keeps_all_downstream_gates_blocked",
                 "next_required_input": NEXT_REQUIRED_INPUT,
+                "active_owner_decision_record_ref": OWNER_DECISION_RECORD_PATH.as_posix(),
             }
         )
     elif decision_code == "confirm_current_container_as_authoritative":
@@ -206,6 +290,7 @@ def _application_preview(decision_code: str | None) -> dict[str, Any]:
                 "blocker": "separate_public_member_hash_backfill_gate_required",
                 "application_effect": "records_authoritative_source_identity_without_backfill_or_lineage_unlock",
                 "next_required_input": "separate_public_safe_hash_backfill_and_lineage_gate",
+                "active_owner_decision_record_ref": OWNER_DECISION_RECORD_PATH.as_posix(),
             }
         )
     elif decision_code == "register_corrected_source_package":
@@ -218,6 +303,7 @@ def _application_preview(decision_code: str | None) -> dict[str, Any]:
                 "blocker": "corrected_source_package_registry_gate_required",
                 "application_effect": "keeps_current_source_identity_no_go_until_corrected_source_is_registered",
                 "next_required_input": "corrected_source_registry_and_validation_gate",
+                "active_owner_decision_record_ref": OWNER_DECISION_RECORD_PATH.as_posix(),
             }
         )
     else:
@@ -227,7 +313,6 @@ def _application_preview(decision_code: str | None) -> dict[str, Any]:
 
 def _go_no_go(preview: dict[str, Any]) -> dict[str, Any]:
     blocker_ids = [
-        "RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED",
         "PUBLIC_MEMBER_HASH_BACKFILL_STILL_BLOCKED",
         "LINEAGE_FULL_CHECK_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION",
         "FORMAL_REPORT_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION",
@@ -237,16 +322,30 @@ def _go_no_go(preview: dict[str, Any]) -> dict[str, Any]:
     resolved = ["OWNER_DECISION_INTAKE_READY"]
     if preview["decision_code"] == "none":
         blocker_ids.insert(0, "RAW_SOURCE_IDENTITY_OWNER_DECISION_NOT_SUPPLIED")
+        blocker_ids.insert(1, "RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED")
     elif preview["decision_code"] == "keep_pending":
         blocker_ids.insert(0, "RAW_SOURCE_IDENTITY_OWNER_DECISION_KEPT_PENDING")
+        blocker_ids.insert(1, "RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED")
         resolved.append("OWNER_DECISION_RECORD_VALIDATED_PUBLIC_SAFE")
     elif preview["decision_code"] == "confirm_current_container_as_authoritative":
         blocker_ids.insert(0, "PUBLIC_MEMBER_HASH_BACKFILL_SEPARATE_GATE_REQUIRED")
         resolved.append("OWNER_DECISION_RECORD_VALIDATED_PUBLIC_SAFE")
+        resolved.append("RAW_SOURCE_IDENTITY_OWNER_CONFIRMATION_APPLIED")
     elif preview["decision_code"] == "register_corrected_source_package":
         blocker_ids.insert(0, "CORRECTED_SOURCE_REGISTRY_GATE_REQUIRED")
+        blocker_ids.insert(1, "RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED")
         resolved.append("OWNER_DECISION_RECORD_VALIDATED_PUBLIC_SAFE")
 
+    decision_reason = (
+        "Owner confirmation has been recorded public-safely, but later gates must still complete public member "
+        "hash backfill, raw-alignment closure, lineage closure and release checks before upload, app reinstall, "
+        "formal report or business execution can proceed."
+        if preview["decision_code"] == "confirm_current_container_as_authoritative"
+        else (
+            "Raw source identity application remains blocked until an active public-safe owner decision resolves "
+            "the source identity and later gates complete hash backfill, lineage closure and release checks."
+        )
+    )
     return {
         "record_type": "v014_raw_source_identity_decision_application_go_no_go_report",
         "schema_version": GO_NO_GO_SCHEMA_VERSION,
@@ -255,10 +354,7 @@ def _go_no_go(preview: dict[str, Any]) -> dict[str, Any]:
         "phase_id": PHASE_ID,
         "task_id": TASK_ID,
         "decision": "NO_GO",
-        "decision_reason": (
-            "Raw source identity application is blocked until an active public-safe owner decision resolves "
-            "the source identity and later gates complete hash backfill, lineage closure and release checks."
-        ),
+        "decision_reason": decision_reason,
         "application_status": preview["application_status"],
         "decision_code": preview["decision_code"],
         "blocker_ids": blocker_ids,
@@ -284,7 +380,28 @@ def _manifest(
     basis_summary: dict[str, Any],
     preview: dict[str, Any],
     go_no_go: dict[str, Any],
+    owner_decision_record: dict[str, Any] | None,
 ) -> dict[str, Any]:
+    evidence_refs = [
+        REPORT_PATH.as_posix(),
+        GO_NO_GO_RECORD_PATH.as_posix(),
+        TEST_RESULTS_PATH.as_posix(),
+        RISK_REGISTER_PATH.as_posix(),
+        ROLLBACK_PATH.as_posix(),
+        MANIFEST_PATH.as_posix(),
+        GO_NO_GO_PATH.as_posix(),
+        APPLICATION_PREVIEW_PATH.as_posix(),
+        METADATA_MANIFEST_PATH.as_posix(),
+        METADATA_GO_NO_GO_PATH.as_posix(),
+        METADATA_PREVIEW_PATH.as_posix(),
+    ]
+    if owner_decision_record is not None:
+        evidence_refs.extend(
+            [
+                OWNER_DECISION_RECORD_PATH.as_posix(),
+                METADATA_OWNER_DECISION_RECORD_PATH.as_posix(),
+            ]
+        )
     return {
         "schema_version": SCHEMA_VERSION,
         "project_id": PROJECT_ID,
@@ -300,11 +417,24 @@ def _manifest(
         "remote": _git_output(["remote", "get-url", "origin"]),
         "reviewed_head": _git_output(["rev-parse", "HEAD"]),
         "basis_summary": basis_summary,
+        "active_owner_decision_record": {
+            "supplied": owner_decision_record is not None,
+            "record_ref": OWNER_DECISION_RECORD_PATH.as_posix() if owner_decision_record is not None else None,
+            "metadata_record_ref": METADATA_OWNER_DECISION_RECORD_PATH.as_posix()
+            if owner_decision_record is not None
+            else None,
+            "decision_code": owner_decision_record.get("decision_code") if owner_decision_record else "none",
+            "actor_role": owner_decision_record.get("actor_role") if owner_decision_record else None,
+            "owner_decision_authored_by_codex": False if owner_decision_record is not None else None,
+            "materialized_from_user_safe_decision_code": owner_decision_record is not None,
+            "raw_plaintext_or_hash_in_decision_record": False,
+        },
         "decision_application": preview,
         "phase_scope_controls": {
             "current_phase_only": True,
             "application_gate_only": True,
-            "owner_decision_record_created_by_this_phase": False,
+            "owner_decision_record_materialized_from_user_input_by_this_phase": owner_decision_record is not None,
+            "owner_decision_record_authored_by_codex": False if owner_decision_record is not None else None,
             "source_container_selected_by_this_phase": False,
             "raw_inbox_read_performed_by_this_phase": False,
             "raw_inbox_list_performed_by_this_phase": False,
@@ -325,19 +455,8 @@ def _manifest(
         "github_upload_status": "not_uploaded_blocked_by_raw_source_identity_application",
         "next_required_input": go_no_go["next_required_input"],
         "next_recommended_action": NEXT_RECOMMENDED_ACTION,
-        "evidence_refs": [
-            REPORT_PATH.as_posix(),
-            GO_NO_GO_RECORD_PATH.as_posix(),
-            TEST_RESULTS_PATH.as_posix(),
-            RISK_REGISTER_PATH.as_posix(),
-            ROLLBACK_PATH.as_posix(),
-            MANIFEST_PATH.as_posix(),
-            GO_NO_GO_PATH.as_posix(),
-            APPLICATION_PREVIEW_PATH.as_posix(),
-            METADATA_MANIFEST_PATH.as_posix(),
-            METADATA_GO_NO_GO_PATH.as_posix(),
-            METADATA_PREVIEW_PATH.as_posix(),
-        ],
+        "raw_data_consistency_verification_status": "not_performed_in_this_phase_deferred_to_later_cross_validation_gate",
+        "evidence_refs": evidence_refs,
         "source_evidence_refs": [
             OWNER_MANIFEST_PATH.as_posix(),
             OWNER_GO_NO_GO_PATH.as_posix(),
@@ -386,7 +505,13 @@ def _validation_commands() -> list[str]:
     ]
 
 
-def _write_human_files(generated_at: str, basis_summary: dict[str, Any], preview: dict[str, Any], go_no_go: dict[str, Any]) -> None:
+def _write_human_files(
+    generated_at: str,
+    basis_summary: dict[str, Any],
+    preview: dict[str, Any],
+    go_no_go: dict[str, Any],
+    owner_decision_record: dict[str, Any] | None,
+) -> None:
     _write_text(
         REPORT_PATH,
         "\n".join(
@@ -415,7 +540,10 @@ def _write_human_files(generated_at: str, basis_summary: dict[str, Any], preview
                 "## Application Boundary",
                 "",
                 "- This phase applies only the public-safe decision gate state.",
-                "- It does not create an owner decision record or select a private source container.",
+                "- It materializes the user-supplied public-safe owner decision code when provided; Codex does not author the owner decision.",
+                "- It does not select, modify, delete, move, rename, overwrite, normalize, copy or write the private source inbox.",
+                f"- owner_decision_record_ref: `{preview['active_owner_decision_record_ref']}`",
+                f"- raw_data_consistency_verification_status: `not_performed_in_this_phase_deferred_to_later_cross_validation_gate`",
                 "- Hash backfill, lineage full check, official report release, GitHub upload, app reinstall and business execution remain blocked.",
                 "- Public evidence contains no source names, source digests, member names, worksheet names, field/header plaintext, row values, business values, private diagnostics, source documents, office workbooks or credentials.",
                 "",
@@ -497,12 +625,29 @@ def generate(
     *,
     generated_at: str | None = None,
     decision_path: Path | None = None,
+    decision_code: str | None = None,
+    actor_role: str = "owner",
+    actor_ref: str = "owner_chat_decision_v014_20260705",
+    confirmation_scope: str | None = None,
     write: bool = True,
 ) -> dict[str, Any]:
     timestamp = _now(generated_at)
     owner_manifest, owner_go_no_go, owner_packet = _load_basis()
     basis_summary = _basis_summary(owner_manifest, owner_go_no_go, owner_packet)
-    decision_code = validate_owner_decision_record(decision_path) if decision_path is not None else None
+    if decision_path is not None and decision_code is not None:
+        raise ValueError("Use either decision_path or decision_code, not both")
+    owner_decision_record: dict[str, Any] | None = None
+    if decision_path is not None:
+        owner_decision_record = _read_json(decision_path)
+        decision_code = validate_owner_decision_payload(owner_decision_record)
+    elif decision_code is not None:
+        owner_decision_record = _build_owner_decision_record(
+            decision_code=decision_code,
+            generated_at=timestamp,
+            actor_role=actor_role,
+            actor_ref=actor_ref,
+            confirmation_scope=confirmation_scope,
+        )
     preview = _application_preview(decision_code)
     go_no_go = _go_no_go(preview)
     manifest = _manifest(
@@ -510,16 +655,20 @@ def generate(
         basis_summary=basis_summary,
         preview=preview,
         go_no_go=go_no_go,
+        owner_decision_record=owner_decision_record,
     )
 
     if write:
+        if owner_decision_record is not None:
+            _write_json(OWNER_DECISION_RECORD_PATH, owner_decision_record)
+            _write_json(METADATA_OWNER_DECISION_RECORD_PATH, owner_decision_record)
         _write_json(APPLICATION_PREVIEW_PATH, preview)
         _write_json(METADATA_PREVIEW_PATH, preview)
         _write_json(GO_NO_GO_PATH, go_no_go)
         _write_json(METADATA_GO_NO_GO_PATH, go_no_go)
         _write_json(MANIFEST_PATH, manifest)
         _write_json(METADATA_MANIFEST_PATH, manifest)
-        _write_human_files(timestamp, basis_summary, preview, go_no_go)
+        _write_human_files(timestamp, basis_summary, preview, go_no_go, owner_decision_record)
     return manifest
 
 
@@ -565,6 +714,10 @@ def mark_final_validation_pass(*, validated_at: str | None = None) -> dict[str, 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate KMFA v0.1.4 raw source identity decision application evidence.")
     parser.add_argument("--decision", type=Path)
+    parser.add_argument("--decision-code", choices=ALLOWED_DECISION_CODES)
+    parser.add_argument("--actor-role", default="owner", choices=ALLOWED_ACTOR_ROLES)
+    parser.add_argument("--actor-ref", default="owner_chat_decision_v014_20260705")
+    parser.add_argument("--confirmation-scope")
     parser.add_argument("--generated-at")
     parser.add_argument("--mark-final-validation-pass", action="store_true")
     args = parser.parse_args(argv)
@@ -572,7 +725,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.mark_final_validation_pass:
         manifest = mark_final_validation_pass(validated_at=args.generated_at)
     else:
-        manifest = generate(generated_at=args.generated_at, decision_path=args.decision)
+        manifest = generate(
+            generated_at=args.generated_at,
+            decision_path=args.decision,
+            decision_code=args.decision_code,
+            actor_role=args.actor_role,
+            actor_ref=args.actor_ref,
+            confirmation_scope=args.confirmation_scope,
+        )
     print(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 

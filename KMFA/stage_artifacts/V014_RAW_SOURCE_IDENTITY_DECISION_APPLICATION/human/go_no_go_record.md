@@ -1,10 +1,10 @@
 # Go/No-Go Record
 
 - decision: `NO_GO`
-- application_status: `blocked_no_active_owner_decision`
+- application_status: `owner_confirmation_recorded_for_separate_backfill_gate`
 - owner_decision_intake_ready: `true`
-- owner_decision_supplied: `false`
-- decision_applied: `false`
+- owner_decision_supplied: `true`
+- decision_applied: `true`
 - raw_alignment_complete: `false`
 - public_member_hash_backfill_allowed: `false`
 - lineage_full_check_complete: `false`
@@ -12,4 +12,4 @@
 - app_reinstall_allowed: `false`
 - formal_report_allowed: `false`
 - business_execution_allowed: `false`
-- next_required_input: `active_owner_decision_record_or_corrected_registered_source_package`
+- next_required_input: `separate_public_safe_hash_backfill_and_lineage_gate`

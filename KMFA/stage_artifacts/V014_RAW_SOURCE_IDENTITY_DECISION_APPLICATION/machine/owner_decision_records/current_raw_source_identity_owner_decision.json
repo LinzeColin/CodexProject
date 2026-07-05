@@ -1,0 +1,31 @@
+{
+  "actor_ref": "owner_chat_decision_v014_20260705",
+  "actor_role": "owner",
+  "app_reinstall_performed": false,
+  "basis_refs": [
+    "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/machine/raw_alignment_remediation_manifest.json",
+    "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/machine/raw_alignment_go_no_go_report.json"
+  ],
+  "business_execution_performed": false,
+  "confirmation_scope": "current_private_container_identity_for_raw_container_identity_only",
+  "current_gate": "KMFA-V014-RAW-SOURCE-IDENTITY-OWNER-GATE",
+  "decision_code": "confirm_current_container_as_authoritative",
+  "decision_time": "2026-07-05T23:40:00+10:00",
+  "formal_report_performed": false,
+  "github_upload_performed": false,
+  "lineage_full_check_performed": false,
+  "phase_id": "V014_OWNER_RAW_SOURCE_IDENTITY_DECISION",
+  "private_diagnostic_committed": false,
+  "project_id": "KMFA",
+  "public_hash_backfill_performed": false,
+  "raw_alignment_complete_claimed_by_intake": false,
+  "raw_business_data_committed": false,
+  "raw_container_authoritative_confirmed": true,
+  "raw_filename_committed": false,
+  "raw_hash_committed": false,
+  "record_type": "v014_raw_source_identity_owner_decision",
+  "schema_version": "kmfa.v014_raw_source_identity_owner_decision.v1",
+  "source_identity_scope": "raw_container_identity_only",
+  "task_id": "KMFA-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION-20260705",
+  "version": "0.1.4"
+}
