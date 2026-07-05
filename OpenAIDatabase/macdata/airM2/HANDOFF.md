@@ -2,7 +2,7 @@
 
 更新时间：2026-07-05T22:55:45+10:00
 
-当前目标：维护 `airM2` macdata Codex Automation，确保全中文明文报告以 `.txt` 输出并归档。
+当前目标：维护 `airM2` macdata Codex Automation，确保全中文明文报告以 `.md` 输出并归档。
 
 当前状态：
 
@@ -15,8 +15,8 @@
 - Codex Automation 已创建并启用：`macdata-airm2-daily-controlled-archive`。
 - 本次完整运行成功：raw commit `34cadf46449b0009862fbe3e669403de38e1363a`，report commit `453556e977d2582463e0551e2f690f21e9415eec`。
 - 旧运行曾错误执行 Homebrew/用户态/项目缓存清理；本轮已从代码、配置、文档和 automation prompt 中移除该行为。后续如需电脑大清理，应另建独立 cleanup 任务。
-- 本轮已按用户要求把全中文报告文件从 `.md` 改为 `.txt`，目标最新报告路径为 `reports/latest/latest_report.txt`。
-- 脚本会在写入 `latest_report.txt` 前删除 stale `reports/latest/latest_report.md`；归档分支当前 `reports/latest/` 只保留 `latest_report.txt`。
+- 2026-07-06 已按用户要求回退 `.txt` 设置，目标最新报告路径恢复为 `reports/latest/latest_report.md`。
+- 脚本会在写入 `latest_report.md` 前删除 stale `reports/latest/latest_report.txt`，避免 latest 目录同时出现 md/txt 双入口。
 
 关键决策：
 
@@ -37,4 +37,4 @@
 - `python3 -m unittest discover -s OpenAIDatabase/macdata/airM2/tests -p 'test_*.py'`：4 tests OK。
 - `python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`：ok true。
 - `git ls-remote https://github.com/LinzeColin/CodexProject.git refs/heads/main refs/heads/macdata-airM2`：main `e6da5ce116e7f2c4b9747ca0d900478d63764b65`，归档分支 `453556e977d2582463e0551e2f690f21e9415eec`。
-- 归档分支 `reports/latest/`：仅有 `.gitkeep` 和 `latest_report.txt`，没有 stale `latest_report.md`。
+- 归档分支 `reports/latest/`：回退运行后应仅有 `.gitkeep` 和 `latest_report.md`，没有 stale `latest_report.txt`。

@@ -49,13 +49,13 @@ class MacDataPackageTests(unittest.TestCase):
         self.assertIn('Time Machine：本任务不采集', report)
         self.assertIn('iCloud：本任务不使用', report)
 
-    def test_report_files_use_txt_extension(self):
+    def test_report_files_use_md_extension(self):
         source = SCRIPT.read_text(encoding='utf-8')
-        self.assertIn('latest_report.txt', source)
-        self.assertIn("_draft.txt'", source)
-        self.assertIn("_final.txt'", source)
-        md_lines = [line for line in source.splitlines() if 'latest_report.md' in line]
-        self.assertEqual(md_lines, ["    stale_latest_report = DEVICE_ROOT / 'reports' / 'latest' / 'latest_report.md'"])
+        self.assertIn('latest_report.md', source)
+        self.assertIn("_draft.md'", source)
+        self.assertIn("_final.md'", source)
+        txt_lines = [line for line in source.splitlines() if 'latest_report.txt' in line]
+        self.assertEqual(txt_lines, ["    stale_latest_report = DEVICE_ROOT / 'reports' / 'latest' / 'latest_report.txt'"])
         self.assertIn('stale_latest_report.unlink()', source)
 
     def test_retention_deletes_only_old_date_dirs(self):

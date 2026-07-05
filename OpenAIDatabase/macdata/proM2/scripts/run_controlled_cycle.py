@@ -1256,8 +1256,11 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     current_date = date_dir()
     raw_path = DEVICE_ROOT / 'data' / 'current_3days' / 'raw' / current_date / f'{rid}.json'
     latest_raw = DEVICE_ROOT / 'data' / 'latest' / 'latest_metrics.json'
-    draft_report_path = DEVICE_ROOT / 'reports' / 'current_3days' / current_date / f'{rid}_draft.txt'
-    latest_report = DEVICE_ROOT / 'reports' / 'latest' / 'latest_report.txt'
+    draft_report_path = DEVICE_ROOT / 'reports' / 'current_3days' / current_date / f'{rid}_draft.md'
+    latest_report = DEVICE_ROOT / 'reports' / 'latest' / 'latest_report.md'
+    stale_latest_report = DEVICE_ROOT / 'reports' / 'latest' / 'latest_report.txt'
+    if stale_latest_report.exists():
+        stale_latest_report.unlink()
     write_json(raw_path, metrics)
     write_json(latest_raw, metrics)
     draft_report = render_cn_report(metrics, config)
@@ -1301,7 +1304,7 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
         'remote_verified': data_archive.get('remote_verified'),
     }
     final_report = render_cn_report(metrics, config, upload_status=final_upload, cleanup_status=cleanup_status)
-    final_report_path = DEVICE_ROOT / 'reports' / 'current_3days' / current_date / f'{rid}_final.txt'
+    final_report_path = DEVICE_ROOT / 'reports' / 'current_3days' / current_date / f'{rid}_final.md'
     write_text(final_report_path, final_report)
     write_text(latest_report, final_report)
     final_status_path = DEVICE_ROOT / 'data' / 'latest' / 'last_run_status.json'
