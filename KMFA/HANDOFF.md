@@ -487,3 +487,37 @@ Next allowed step:
 - Owner/authorized delegate must review the private candidate draft and answer/confirm the Chinese question list before any active completion template or source-map application phase.
 - Do not run source-map reapplication, materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
 - Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
+
+## 2026-07-06 Latest Handoff - V014 Processed Value Source-map Completion Owner Review Intake Prep
+
+Current phase completed locally: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_REVIEW_INTAKE_PREP`.
+
+Current state:
+- `review_group_count=22`
+- `response_template_row_count=113`
+- `candidate_catalog_record_count=304`
+- `source_auto_ambiguous_candidate_item_count=101`
+- `source_auto_unmatched_item_count=4`
+- `source_non_numeric_or_calculation_context_item_count=8`
+- `go_no_go=NO_GO`
+- `github_upload_performed=false`
+- `app_reinstall_performed=false`
+- raw inbox was not read by this phase; it only consumed the prior ignored private candidate draft.
+
+Private outputs:
+- Grouped private review intake, response template, candidate catalog and grouped Chinese question list are under `KMFA/.codex_private_runtime/v014_processed_value_source_map_completion_owner_review_intake_prep/`.
+- These private outputs may contain raw-derived candidate detail and must not be committed to GitHub.
+
+Evidence:
+- `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_REVIEW_INTAKE_PREP/machine/processed_value_source_map_completion_owner_review_intake_prep_manifest.json`
+- `KMFA/tools/check_v014_processed_value_source_map_completion_owner_review_intake_prep.py`
+- `KMFA/tests/test_v014_processed_value_source_map_completion_owner_review_intake_prep.py`
+
+Verified:
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_review_intake_prep.py --require-private-intake`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_review_intake_prep -q`
+
+Next allowed step:
+- Owner/authorized delegate must fill the private owner-review response template before any active completion template or source-map application phase.
+- Do not run source-map reapplication, materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
+- Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
