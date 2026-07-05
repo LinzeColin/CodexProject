@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Raw/Processed Alignment Blocker Report
+
+## 0.1.4-raw-processed-alignment-blocker-report - 2026-07-06
+
+- 完成 `V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT` 本地 public-safe 诊断包 phase。
+- 汇总既有公开 value-consistency summaries/go-no-go，生成可转发给 ChatGPT 或其他 agent 的原因诊断包；不读取 raw inbox，不读取私有诊断明细。
+- 锁定结论：raw value fingerprints=871、raw unique numeric fingerprints=330、processed target slots=149、staged processed value fingerprints=0、usable source-map=0、authorized filled/unfilled=36/113、unresolved gaps=113、active keep-pending=113、structural key intersection=0、comparable pairs=0、Go/No-Go=NO_GO。
+- 该报告说明当前是证据不足无法形成可比对 pair，不是已完成业务值差异比较；final discrepancy report 当前不触发，但若补齐授权 source-map 后多次交叉验证仍无法对齐，最终 goal closeout 必须输出 public-safe 差异报告。
+- 未执行 raw-to-processed comparison、materialization replay、lineage full check、formal report、GitHub upload、app reinstall 或 business execution；下一步仍只能由 owner/authorized delegate 提供 target-slot to processed-value source-map。
+
 # KMFA v0.1.4 Raw/Processed Comparability Diagnostic
 
 ## 0.1.4-raw-processed-comparability-diagnostic - 2026-07-06

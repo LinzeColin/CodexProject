@@ -1517,3 +1517,18 @@ kmfa_v014_raw_processed_comparability_diagnostic:
   evidence_dir: KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC
   validator: KMFA/tools/check_v014_raw_processed_comparability_diagnostic.py
   scope: Raw processed comparability diagnostic only; raw root list stat hash readonly snapshot and private ignored diagnostics; public evidence aggregate-only; comparable pairs remain zero; no raw mutation, processed value materialization replay, raw-to-processed business value comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_raw_processed_alignment_blocker_report:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-raw-processed-alignment-blocker-report"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RAW-PROCESSED-ALIGNMENT-BLOCKER-REPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1273
+    - PARAM-KMFA-1274
+    - PARAM-KMFA-1275
+  evidence_dir: KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT
+  validator: KMFA/tools/check_v014_raw_processed_alignment_blocker_report.py
+  scope: Raw processed alignment blocker report only; public-safe aggregate source artifacts and external-agent diagnostic packet; comparable pairs remain zero; no raw inbox access, private diagnostic detail read, processed value reconciliation, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.

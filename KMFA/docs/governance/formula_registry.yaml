@@ -7443,3 +7443,52 @@ formulas:
       - "KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/human/raw_processed_comparability_diagnostic_report.md"
       - "KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/human/test_results.md"
       - "KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/machine/raw_processed_comparability_diagnostic_manifest.json"
+
+  - formula_id: "FORM-KMFA-V014-RAW-PROCESSED-ALIGNMENT-BLOCKER-REPORT-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-006"
+    name: KMFA v0.1.4 raw processed alignment blocker report gate
+    version: "0.1.4-raw-processed-alignment-blocker-report"
+    status: active
+    fact_level: EXTRACTED
+    expression: "source_artifact_count=10 AND processed_target_slot_count=149 AND staged_processed_value_fingerprint_count=0 AND usable_processed_source_map_count=0 AND raw_processed_structural_key_intersection_count=0 AND comparable_value_pair_count=0 -> raw_to_processed_value_comparison_performed=false, business_value_consistency_verified=false, decision=NO_GO"
+    variables:
+      - name: "source_artifact_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "10"
+      - name: "processed_target_slot_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "149"
+      - name: "usable_processed_source_map_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "0"
+      - name: "comparable_value_pair_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "0"
+    constraints:
+      - "This report reads existing public-safe aggregate artifacts only."
+      - "No raw inbox read, list, stat, hash, write, delete, move, copy, normalize or overwrite is allowed in this phase."
+      - "No private diagnostic detail, raw source name, field/header plaintext, row/cell coordinate or business value may be committed."
+      - "Raw-to-processed business value consistency is not verified while comparable_value_pair_count is zero."
+      - "The generated diagnostic packet is for external-agent debugging only and is not a formal report, upload gate, app reinstall gate or business execution gate."
+      - "Final goal closeout must include a public-safe discrepancy report if later repeated cross-validation cannot reconcile derived outputs to raw-source evidence."
+    missing_policy: "Missing source aggregate artifacts, manifest, Go/No-Go report, summary, diagnostic packet, validator, focused unit test or governance record fails validation."
+    output_range: "v014_raw_processed_alignment_blocker_report_manifest"
+    code_refs:
+      - "KMFA/tools/v014_raw_processed_alignment_blocker_report.py"
+      - "KMFA/tools/check_v014_raw_processed_alignment_blocker_report.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_processed_alignment_blocker_report.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_processed_alignment_blocker_report -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/human/raw_processed_alignment_blocker_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/human/chatgpt_agent_diagnostic_packet.md"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/machine/raw_processed_alignment_blocker_manifest.json"

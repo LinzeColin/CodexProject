@@ -842,3 +842,12 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - Controls: public evidence must stay aggregate-only; private diagnostics must remain git-ignored and untracked; raw root may not be modified, deleted, moved, copied, normalized or overwritten; raw-to-processed value comparison and business consistency verification remain false while comparable value pairs equal zero.
 - Current result: `raw_unique_numeric_fingerprint_count=330`, `processed_target_slot_count=149`, `staged_processed_value_fingerprint_count=0`, `raw_processed_structural_key_intersection_count=0`, `comparable_value_pair_count=0`, `go_no_go=NO_GO`.
 - Next input: owner or authorized delegate supplies target-slot to processed-value source-map evidence sufficient to create comparable pairs.
+
+## FORM-KMFA-V014-RAW-PROCESSED-ALIGNMENT-BLOCKER-REPORT-001
+- Version: `0.1.4-raw-processed-alignment-blocker-report`.
+- Purpose: produce a public-safe blocker report and external-agent diagnostic packet explaining why raw-to-processed value alignment cannot yet be verified.
+- Inputs: existing public-safe value consistency scope gate, private dry-run aggregate Go/No-Go report, processed value staging/source-map aggregate summaries, active owner-authorized fill application summary, raw/processed comparability diagnostic summary, and Stage 1-18 overall review Go/No-Go report.
+- Outputs: `KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/machine/raw_processed_alignment_blocker_manifest.json`, aggregate summary, Go/No-Go report, human blocker report, ChatGPT/agent diagnostic packet, test results, risk register and rollback plan.
+- Controls: evidence remains public-safe and aggregate-only; this phase must not read, list, stat, hash, write, delete, move, copy, normalize or overwrite the raw inbox; private diagnostic details, raw source names, field/header plaintext, row/cell coordinates and business values remain out of public artifacts.
+- Current result: `source_artifact_count=10`, `raw_value_fingerprint_count=871`, `raw_unique_numeric_fingerprint_count=330`, `processed_target_slot_count=149`, `staged_processed_value_fingerprint_count=0`, `usable_processed_source_map_count=0`, `authorized_filled_item_count=36`, `authorized_unfilled_item_count=113`, `raw_processed_structural_key_intersection_count=0`, `comparable_value_pair_count=0`, `go_no_go=NO_GO`.
+- Next input: owner or authorized delegate supplies target-slot to processed-value source-map evidence sufficient to create comparable pairs.
