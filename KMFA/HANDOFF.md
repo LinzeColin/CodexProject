@@ -4,31 +4,32 @@
 
 ## 当前目标
 
-本轮只完成 `V014_VALUE_CONSISTENCY_SCOPE_GATE`：基于已锁定的 authoritative raw baseline 和用户新增 raw 只读/差异报告要求，建立 public-safe raw-to-processed value consistency scope、差异报告义务、validator、focused test 和治理记录。本 phase 只锁定下一轮业务值一致性核验范围；不执行 raw value matching、不比较 raw/processed business values、不提交 raw hash/name/member/sheet/field/value、不做 lineage full check、正式报告、GitHub upload、app reinstall 或业务执行。
+本轮只完成 `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN`：基于已锁定的 authoritative raw baseline 和 `V014_VALUE_CONSISTENCY_SCOPE_GATE`，只读抽取 raw private value fingerprints，扫描 processed value target 可比对性，并生成 public-safe NO_GO/gap evidence。本 phase 已生成私有 raw value fingerprints，但 approved private processed value targets=0、comparable value pairs=0，因此不能声称原始数据与处理数据已对上；不提交 raw hash/name/entry/sheet/field/value、不做 processed-data reconciliation、lineage full check、正式报告、GitHub upload、app reinstall 或业务执行。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-value-consistency-scope-gate`
-- 当前已完成: `V014_VALUE_CONSISTENCY_SCOPE_GATE`
-- 证据目录: `KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/`
-- validator: `KMFA/tools/check_v014_value_consistency_scope_gate.py`
-- focused test: `KMFA/tests/test_v014_value_consistency_scope_gate.py`
-- manifest: `KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_manifest.json`
-- go_no_go: `KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_go_no_go_report.json`
-- scope_matrix: `KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_matrix.json`
-- difference_report_contract: `KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/difference_report_contract.json`
+- 当前版本: `0.1.4-raw-value-matching-private-dry-run`
+- 当前已完成: `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN`
+- 证据目录: `KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/`
+- validator: `KMFA/tools/check_v014_raw_value_matching_private_dry_run.py`
+- focused test: `KMFA/tests/test_v014_raw_value_matching_private_dry_run.py`
+- manifest: `KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/machine/raw_value_matching_private_dry_run_manifest.json`
+- go_no_go: `KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/machine/raw_value_matching_private_dry_run_go_no_go_report.json`
+- gap_summary: `KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/machine/raw_value_matching_private_dry_run_gap_summary.json`
+- private_gap_report: `KMFA/.codex_private_runtime/v014_raw_value_matching_private_dry_run/local_gap_report.md`
+- upstream_scope_manifest: `KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_manifest.json`
 - baseline_lock: `KMFA/metadata/baseline/v014_authoritative_raw_baseline_lock.json`
 - active_owner_decision_record: `KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/owner_decision_records/current_raw_source_identity_owner_decision.json`
 - upstream_decision_packet: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_packet.json`
 - upstream_intake_contract: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_intake_contract.json`
 - allowed_decision_codes: `confirm_current_container_as_authoritative`, `register_corrected_source_package`, `keep_pending`
-- current_gate: `KMFA-V014-VALUE-CONSISTENCY-SCOPE-GATE`
-- current_state: authoritative_raw_baseline_locked=`true`, value_consistency_scope_locked=`true`, raw_inbox_mutation_guard_locked=`true`, difference_report_required_on_repeated_mismatch=`true`, raw_value_matching_performed=`false`, processed_data_reconciliation_performed=`false`, business_value_consistency_verified=`false`, lineage_full_check_complete=`false`, Go/No-Go=`NO_GO`
-- raw boundary: 本 phase 只对 raw inbox 做 before/after stat guard；未读取业务值、未列出公开文件名、未 hash、未修改、删除、移动、重命名、覆盖、复制、标准化或写入 raw inbox。私有 stat guard 只写入 git-ignored `KMFA/.codex_private_runtime/`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、archive member name、sheet name、raw package、office workbook、source document、private table、database 或 credentials。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
+- current_gate: `KMFA-V014-RAW-VALUE-MATCHING-PRIVATE-DRY-RUN`
+- current_state: authoritative_raw_baseline_locked=`true`, value_consistency_scope_locked=`true`, raw_value_fingerprints_generated=`true`, raw_value_fingerprint_count=`871`, approved_private_processed_value_target_count=`0`, comparable_value_pair_count=`0`, processed_data_reconciliation_performed=`false`, business_value_consistency_verified=`false`, lineage_full_check_complete=`false`, Go/No-Go=`NO_GO`
+- raw boundary: 本 phase 只读 raw inbox 并生成 private value fingerprints；未修改、删除、移动、重命名、覆盖、复制、标准化或写入 raw inbox。私有诊断和 gap report 只写入 git-ignored `KMFA/.codex_private_runtime/`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、archive entry name、sheet name、raw package、office workbook、source document、private table、database 或 credentials。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 owner raw source identity、raw alignment application、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
-- 未完成/阻断: raw value matching=false；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
-- 下一步: 只能另开单一 phase 执行 `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN` 或用户指定的等价 value-matching phase；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
+- 未完成/阻断: approved private processed value targets=0；comparable raw/processed value pairs=0；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
+- 下一步: 只能另开单一 phase 执行 `V014_PRIVATE_PROCESSED_VALUE_STAGING` 或用户指定的等价 processed value staging phase；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
 
 ## v0.1.3 历史状态
 

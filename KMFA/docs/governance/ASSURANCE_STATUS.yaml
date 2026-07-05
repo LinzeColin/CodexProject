@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-VALUE-CONSISTENCY-SCOPE-GATE"
+as_of_event_id: "EVENT-KMFA-20260705-V014-RAW-VALUE-MATCHING-PRIVATE-DRY-RUN"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "461b0a40b7e7ffb7f8250cf0414db27a3dafb815"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-05T23:59:30+10:00"
-generator_version: "manual-0.1.4-value-consistency-scope-gate"
+snapshot_event_time: "2026-07-05T23:59:58+10:00"
+generator_version: "manual-0.1.4-raw-value-matching-private-dry-run"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 862
-    total_active_formulas: 129
+    total_active_parameters: 865
+    total_active_formulas: 130
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -804,6 +804,42 @@ v014_value_consistency_scope_gate:
   forbidden_scope:
     raw_value_matching: false
     processed_data_reconciliation: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
+
+
+v014_raw_value_matching_private_dry_run:
+  status: completed_validated_local_only_no_go_private_raw_value_fingerprints_processed_targets_missing
+  phase: V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN
+  evidence_dir: KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN
+  validator: KMFA/tools/check_v014_raw_value_matching_private_dry_run.py
+  focused_test: KMFA/tests/test_v014_raw_value_matching_private_dry_run.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    raw_value_fingerprint_count: 871
+    approved_private_processed_value_target_count: 0
+    comparable_value_pair_count: 0
+    processed_artifact_files_scanned: 602
+    processed_candidate_records_seen: 1794
+    gap_count: 1
+  gates:
+    raw_value_fingerprints_generated: true
+    processed_value_targets_available: false
+    raw_to_processed_value_comparison_performed: false
+    business_value_consistency_verified: false
+    dry_run_gap_report_generated: true
+    raw_root_stat_unchanged_after_dry_run: true
+  forbidden_scope:
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
+    processed_data_reconciliation: false
+    lineage_full_check: false
     formal_report: false
     github_upload: false
     app_reinstall: false
