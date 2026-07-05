@@ -1257,3 +1257,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_blocker_audit -q`
 - boundary: git-ignored private completion template checked as still unfilled for the third consecutive goal turn; private diagnostic remains ignored; public evidence is aggregate-only; no raw inbox access or mutation, no source-map reapplication, no materialization, no raw-to-processed comparison, no formal report, no GitHub upload, no app reinstall, and no business execution.
 - next_required_input: `owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`
+
+## 2026-07-06 - V014 Processed Value Source-map Completion Auto Candidate Draft
+
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-AUTO-CANDIDATE-DRAFT-20260706`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_AUTO_CANDIDATE_DRAFT`
+- product_version: `0.1.4-processed-value-source-map-completion-auto-candidate-draft`
+- status: `completed_validated_local_only_no_go_private_candidate_draft_owner_review_required`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_AUTO_CANDIDATE_DRAFT/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_auto_candidate_draft.py --require-private-draft`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_auto_candidate_draft -q`
+- boundary: owner-authorized raw inbox read-only access was used to build a private raw numeric candidate index, private candidate completion template draft and private Chinese question list; public evidence is aggregate-only. Raw source mutation, completion template overwrite, active owner-authorized fill record write, source-map reapplication, materialization, raw-to-processed comparison, formal report, GitHub upload, app reinstall and business execution were not performed.
+- next_required_input: `owner_or_authorized_delegate_reviews_private_candidate_draft_and_confirms_authorized_completion_template`
