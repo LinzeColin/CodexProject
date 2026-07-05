@@ -1396,3 +1396,12 @@ v014_s17p3_operations_sop_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S17_P3_OPERATIONS_SOP
   validator: KMFA/tools/check_v014_s17_p3_operations_sop.py
   scope: S17-P3 operations SOP only; public-safe operation runbooks, finance SOP knowledge refs and error/backup drill evidence; no Stage17 review, upload, raw inbox access, raw matching, lineage, production restore, external service call, live connector, full report email, formal report, app reinstall or business execution.
+
+v014_s17_stage_review_registry_note:
+  version: "0.1.4-s17-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S17-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S17_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s17_stage_review.py
+  scope: Stage 17 overall review only; public-safe replay of S17-P1 S17-P2 and S17-P3; no S18-P1, upload, raw inbox access, raw matching, lineage, real notification delivery, full report email, report attachment, recipient address publication, production restore, external service call, live connector, app reinstall, formal report or business execution.
