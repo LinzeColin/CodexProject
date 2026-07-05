@@ -104,7 +104,7 @@ class MacDataPackageTests(unittest.TestCase):
             config,
             'proM2-test',
             'data/current_3days/raw/test.json',
-            'reports/current_3days/test_final.md',
+            'reports/current_3days/test_final.txt',
             raw_archive,
             cleanup,
             report_archive,
