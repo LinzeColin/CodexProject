@@ -1,0 +1,73 @@
+{
+  "accepted_record_type": "v014_raw_source_identity_owner_decision",
+  "allowed_actor_roles": [
+    "owner",
+    "authorized_delegate"
+  ],
+  "allowed_decision_codes": [
+    "confirm_current_container_as_authoritative",
+    "register_corrected_source_package",
+    "keep_pending"
+  ],
+  "app_reinstall_allowed_by_intake": false,
+  "basis_refs": [
+    "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/machine/raw_alignment_remediation_manifest.json",
+    "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/machine/raw_alignment_go_no_go_report.json"
+  ],
+  "business_execution_allowed_by_intake": false,
+  "current_gate": "KMFA-V014-RAW-SOURCE-IDENTITY-OWNER-GATE",
+  "decision_record_status": "no_owner_decision_recorded",
+  "forbidden_public_metadata_categories": [
+    "raw container digest fields",
+    "archive member digest fields",
+    "raw or normalized business values",
+    "plaintext source extracts",
+    "local source identifiers",
+    "archive member labels",
+    "worksheet labels",
+    "credentials and private keys"
+  ],
+  "formal_report_allowed_by_intake": false,
+  "generated_at": "2026-07-05T22:30:00+10:00",
+  "github_upload_allowed_by_intake": false,
+  "lineage_full_check_allowed_by_intake": false,
+  "phase_id": "V014_OWNER_RAW_SOURCE_IDENTITY_DECISION",
+  "post_intake_rules": {
+    "confirm_current_container_as_authoritative": [
+      "raw_container_authoritative_confirmed must be true",
+      "confirmation_scope is required",
+      "no raw hash or filename may be committed",
+      "public member hash backfill remains a later separate phase"
+    ],
+    "keep_pending": [
+      "reason_pending is required",
+      "next_review_trigger is required",
+      "all upload, app, lineage, formal report and business gates remain blocked"
+    ],
+    "register_corrected_source_package": [
+      "corrected_package_private_ref is required",
+      "current_container_superseded must be true",
+      "the corrected source must remain private until a public-safe registry gate"
+    ]
+  },
+  "private_diagnostic_allowed_in_public_repo": false,
+  "project_id": "KMFA",
+  "public_hash_backfill_allowed_by_intake": false,
+  "raw_alignment_complete_allowed_by_intake": false,
+  "raw_hash_allowed": false,
+  "raw_or_plaintext_allowed": false,
+  "readiness_status": "ready_for_owner_decision_record",
+  "record_type": "v014_raw_source_identity_owner_decision_intake_contract",
+  "required_common_fields": [
+    "actor_role",
+    "actor_ref",
+    "decision_time",
+    "decision_code",
+    "basis_refs",
+    "source_identity_scope"
+  ],
+  "schema_version": "kmfa.v014_raw_source_identity_owner_decision_intake_contract.v1",
+  "source_identity_scope": "raw_container_identity_only",
+  "task_id": "KMFA-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION-20260705",
+  "version": "0.1.4"
+}

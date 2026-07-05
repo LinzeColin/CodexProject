@@ -1,3 +1,18 @@
+# KMFA v0.1.4 Owner Raw Source Identity Decision Intake
+- Product version: `0.1.4-owner-raw-source-identity-decision`.
+- Scope: `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION` only; generate a public-safe owner or authorized-delegate decision intake gate, packet, templates, validator and governance records.
+- Evidence: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/`.
+- Verification: `KMFA/tools/check_v014_owner_raw_source_identity_decision.py`; `KMFA/tests/test_v014_owner_raw_source_identity_decision.py`.
+- blocker_state: owner_decision_intake_ready=true, owner_decision_supplied=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, lineage_full_check_complete=false, GitHub upload=false, app reinstall=false, formal report=false, business execution=false, next_required_input=owner_decision_code_or_corrected_registered_source_package.
+product_version: 0.1.4-owner-raw-source-identity-decision
+version_matrix_product_version_reference: 0.1.4-owner-raw-source-identity-decision
+
+## 0.1.4-owner-raw-source-identity-decision - 2026-07-05
+- Completed `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION` locally as a decision intake/gate, not as an owner authorization.
+- Added public-safe decision packet and templates for `confirm_current_container_as_authoritative`, `register_corrected_source_package`, and `keep_pending`.
+- Kept current Go/No-Go as `NO_GO` because no active owner decision record has been supplied.
+- Confirmed this phase did not read, list, stat, hash, mutate, delete, move, rename, overwrite, or write files in the raw inbox; it did not perform public hash backfill, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 # KMFA v0.1.4 Raw Alignment Remediation
 - Product version: `0.1.4-raw-alignment-remediation`.
 - Scope: `V014_RAW_ALIGNMENT_REMEDIATION` only; read/list/stat/hash the configured raw inbox for local source identity diagnostics, write private hashes only to ignored runtime, and publish aggregate-only NO_GO evidence.

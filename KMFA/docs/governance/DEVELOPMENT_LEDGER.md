@@ -1053,6 +1053,7 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | Task | Reason | Next |
 |---|---|---|
 | lineage full check / formal report release | 尚未实现；Stage 18 upload 不改变 review-level `NO_GO`、D 级报告和 pending reconciliation 阻断 | 后续必须另开独立目标确认 lineage/report gate 范围 |
+| `KMFA-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION-20260705` | v0.1.4 owner raw source identity decision intake 本地完成，product_version=`0.1.4-owner-raw-source-identity-decision`：生成 public-safe decision packet、intake contract、3 个模板、validator 和治理记录；未创建 active owner decision record，未读取 raw inbox，未提交 raw 文件名/raw hash/字段明文/private diagnostic，未执行 public hash backfill、lineage full check、正式报告、GitHub upload、app reinstall 或业务执行 | `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/human/owner_raw_source_identity_decision_report.md` |
 | release / delivery / formal report | final backup/upload 不改变 NO_GO；0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告仍阻断 | 后续必须另开 owner-scope 目标处理 lineage/reconciliation/formal report release |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
 | GitHub main upload | 侧聊纠正后 v1.3 不再按单个 Stage 做 GitHub upload gate；本轮 S09-P2 不执行 upload，GitHub main 未上传 | 延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一步只能另起 run work 执行 S09-P3 或用户明确指定的单一 phase |

@@ -5,16 +5,18 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-raw-alignment-remediation`
-- current_stage: `raw-alignment-remediation`
-- current_phase: `V014_RAW_ALIGNMENT_REMEDIATION`
-- status: `raw_alignment_remediation_reported_no_go_owner_source_identity_required`
+- version: `0.1.4-owner-raw-source-identity-decision`
+- current_stage: `raw-source-identity-owner-decision`
+- current_phase: `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION`
+- status: `owner_raw_source_identity_decision_intake_ready_no_active_decision_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_raw_source_identity_and_lineage`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 owner raw source identity decision intake completed local-only: allowed_decision_codes=3, allowed_actor_roles=2, owner_decision_intake_ready=true, owner_decision_supplied=false, active_owner_decision_record_created=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, current Go/No-Go=NO_GO. Raw inbox read/list/stat/hash/mutation=false by this phase; public evidence decision-code/aggregate-ref only; GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
 
 - v0.1.4 raw alignment remediation completed local-only: raw_root_file_count=5, archive_count=3, spreadsheet_count=2, selected_candidate_count=1, selected archive openable=true, business_member_count=9, document_member_count=8, workbook_member_count=1, business_shape_matches_expected_a0=true, package_hash_matches_registered=false, package_size_matches_registered=false, private_member_hashes_recorded=true, public_member_hash_backfill_allowed=false, raw_alignment_complete=false, current Go/No-Go=NO_GO. Raw inbox mutation=false; public evidence aggregate-only; GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
 

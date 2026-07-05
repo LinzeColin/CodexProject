@@ -4,22 +4,25 @@
 
 ## 当前目标
 
-本轮只完成 `V014_RAW_ALIGNMENT_REMEDIATION`：新增 public-safe raw alignment remediation 证据、validator 和 governance 记录。该 phase 只读读取/list/stat/hash 配置的 raw inbox，用于解释本机 A0 source identity mismatch；私有包哈希/member 哈希只写入 git-ignored runtime，公开仓库只保存 aggregate counts、gate flags、NO_GO 和 evidence refs。
+本轮只完成 `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION`：新增 public-safe owner raw source identity decision intake/gate、decision packet、templates、validator、focused test 和 governance 记录。本 phase 不替 owner 作授权判断，不创建 active owner decision record，不读取 raw inbox，不做 public member hash backfill、lineage full check、正式报告、GitHub upload、app reinstall 或业务执行。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-raw-alignment-remediation`
-- 当前已完成: `V014_RAW_ALIGNMENT_REMEDIATION`
-- 证据目录: `KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/`
-- validator: `KMFA/tools/check_v014_raw_alignment_remediation.py`
-- focused test: `KMFA/tests/test_v014_raw_alignment_remediation.py`
-- raw aggregate: files=`5`, archives=`3`, spreadsheets=`2`, selected_candidate=`1`, business_members=`9`, documents=`8`, workbooks=`1`
-- blocker_state: business_shape_matches_expected_a0=`true`, package_hash_matches_registered=`false`, package_size_matches_registered=`false`, raw_alignment_complete=`false`, Go/No-Go=`NO_GO`
-- upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 raw alignment、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
-- raw boundary: 本 phase 未修改、删除、移动、重命名、覆盖或写入 raw inbox；公开证据不包含 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、archive member name、sheet name、raw package、office workbook、source document、private table、database 或 credentials。
-- 未完成/阻断: owner source identity decision 未完成；public member hash backfill=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
-- 下一步: 仅在用户明确开启后执行 `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION` 或等价 raw source identity owner decision/corrected registered package gate；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
+- 当前版本: `0.1.4-owner-raw-source-identity-decision`
+- 当前已完成: `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION`
+- 证据目录: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/`
+- validator: `KMFA/tools/check_v014_owner_raw_source_identity_decision.py`
+- focused test: `KMFA/tests/test_v014_owner_raw_source_identity_decision.py`
+- decision_packet: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_packet.json`
+- intake_contract: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_intake_contract.json`
+- allowed_decision_codes: `confirm_current_container_as_authoritative`, `register_corrected_source_package`, `keep_pending`
+- current_gate: `KMFA-V014-RAW-SOURCE-IDENTITY-OWNER-GATE`
+- blocker_state: owner_decision_intake_ready=`true`, owner_decision_supplied=`false`, raw_alignment_complete=`false`, public_member_hash_backfill_allowed=`false`, lineage_full_check_complete=`false`, Go/No-Go=`NO_GO`
+- raw boundary: 本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 raw inbox；公开证据不包含 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、archive member name、sheet name、raw package、office workbook、source document、private table、database 或 credentials。
+- upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 owner raw source identity、raw alignment application、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
+- 未完成/阻断: active owner decision record 未供应；raw source identity application 未执行；public member hash backfill=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
+- 下一步: 等 owner 提供 safe decision code 或 corrected registered source package 后，只能另开单一 phase 执行 `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` 或等价 public-safe application gate；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
 
 ## v0.1.3 历史状态
 
