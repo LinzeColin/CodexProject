@@ -54,6 +54,7 @@ active_formula_ids:
   - "FORM-KMFA-V014-S15P2-PERFORMANCE-REVIEW-LIST-001"
   - "FORM-KMFA-V014-S15P3-SALARY-BOUNDARY-001"
   - "FORM-KMFA-V014-S15-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S16-STAGE-REVIEW-001"
   - "FORM-KMFA-FIELD-STANDARDIZATION-001"
   - "FORM-KMFA-A0-FILE-REGISTRATION-001"
   - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -312,3 +313,13 @@ v014_s16p3_customer_business_analysis_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS
   validator: KMFA/tools/check_v014_s16_p3_customer_business_analysis.py
   scope: S16-P3 customer business analysis only; read-only raw/private aggregate alignment allowed with no public raw names hashes headers customer project or values; no Stage 16 review, upload, raw matching, lineage, formal report, customer contact, collection action, legal decision, invoice issuance, payment execution, bank operation or business execution.
+
+
+v014_s16_stage_review_registry_note:
+  version: "0.1.4-s16-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S16-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S16_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s16_stage_review.py
+  scope: Stage 16 overall review only; no S17-P1, upload, raw inbox access by review, raw matching, lineage, formal report, procurement execution, payment approval, payment execution, bank operation, site operation, signature operation, invoice issuance, customer contact, collection action, legal decision, tax filing or business execution.
