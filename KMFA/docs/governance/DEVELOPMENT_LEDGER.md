@@ -1173,3 +1173,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_owner_authorized_fill_record_draft -q`
 - boundary: private draft only; no raw inbox access, no raw mutation, no active fill record creation, no materialization replay, no raw-to-processed comparison, no formal report, no GitHub upload, no app reinstall, no business execution.
 - next_required_input: `owner_or_authorized_delegate_activation_of_draft_fill_record`
+
+## 2026-07-06 - V014 Owner Authorized Fill Application Active Consumed
+
+- task_id: `KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION-20260705`
+- phase_id: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION`
+- product_version: `0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed`
+- status: `completed_validated_local_only_no_go_active_owner_authorized_fill_record_consumed_keep_pending`
+- evidence_dir: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_application.py --require-private-application-diagnostic`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_owner_authorized_fill_application -q`
+- boundary: active owner-authorized fill record was materialized from the existing private draft after owner/authorized-delegate confirmation and consumed as keep-pending only; no raw inbox access, no raw mutation, no source-map write, no materialization replay, no raw-to-processed comparison, no formal report, no GitHub upload, no app reinstall, and no business execution.
+- next_required_input: `owner_or_authorized_delegate_supplies_authorized_processed_value_sources`

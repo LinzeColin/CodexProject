@@ -31,12 +31,13 @@ VERSION = "0.1.4"
 PHASE_ID = "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION"
 TASK_ID = "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION-20260705"
 ACCEPTANCE_ID = "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION"
-STATUS = "owner_authorized_fill_application_blocked_no_active_fill_record_no_go"
+STATUS = "owner_authorized_fill_application_consumed_active_keep_pending_no_go"
 CURRENT_GATE = "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION-GATE"
 SOURCE_GATE = "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-GATE"
-NEXT_REQUIRED_INPUT = "active_owner_or_authorized_delegate_fill_record"
+NEXT_REQUIRED_INPUT = "owner_or_authorized_delegate_supplies_authorized_processed_value_sources"
 NEXT_RECOMMENDED_PHASE = "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION"
 GIT_COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
+ACTIVE_RECORD_SCHEMA_VERSION = "kmfa.private.v014_active_owner_authorized_fill_record.v1"
 
 OUTPUT_DIR = Path("KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION")
 MACHINE_DIR = OUTPUT_DIR / "machine"
@@ -74,6 +75,9 @@ PRIVATE_INTAKE_REQUEST_PATH = Path(
 
 PRIVATE_OUTPUT_DIR = Path("KMFA/.codex_private_runtime/v014_private_processed_value_source_map_owner_authorized_fill_application")
 PRIVATE_APPLICATION_DIAGNOSTIC_PATH = PRIVATE_OUTPUT_DIR / "private_owner_authorized_fill_application_diagnostic.json"
+DRAFT_FILL_RECORD_PATH = Path(
+    "KMFA/.codex_private_runtime/v014_private_processed_value_source_map_owner_authorized_fill_record_draft/draft_owner_authorized_fill_record.json"
+)
 ACTIVE_FILL_RECORD_CANDIDATE_PATHS = [
     PRIVATE_OUTPUT_DIR / "active_owner_authorized_fill_record.json",
     Path("KMFA/.codex_private_runtime/v014_private_processed_value_source_map_owner_authorized_fill_intake/active_owner_authorized_fill_record.json"),
@@ -200,16 +204,95 @@ def _basis_summary(
     }
 
 
+def materialize_active_record_from_draft(*, generated_at: str | None = None) -> dict[str, Any]:
+    timestamp = _now(generated_at)
+    draft = _read_json(DRAFT_FILL_RECORD_PATH)
+    template = draft.get("proposed_active_record_template", {})
+    if not isinstance(template, dict):
+        raise ValueError("draft missing proposed_active_record_template")
+    fill_items = template.get("fill_items", [])
+    if not isinstance(fill_items, list):
+        raise ValueError("draft proposed fill_items must be a list")
+    active_record = {
+        "schema_version": ACTIVE_RECORD_SCHEMA_VERSION,
+        "classification": "private_active_owner_authorized_fill_record_do_not_commit",
+        "record_type": "v014_private_processed_value_source_map_owner_authorized_fill_record",
+        "project_id": PROJECT_ID,
+        "version": VERSION,
+        "phase_id": PHASE_ID,
+        "task_id": TASK_ID,
+        "activated_at": timestamp,
+        "activation_confirmed": True,
+        "activation_source": "owner_or_authorized_delegate_confirmation_in_current_codex_thread",
+        "activation_scope": "activate_existing_draft_keep_pending_only",
+        "actor_role": "owner_or_authorized_delegate",
+        "actor_ref": "current_codex_thread_user_confirmation",
+        "draft_ref": "private_runtime_draft_owner_authorized_fill_record",
+        "draft_only_not_active": False,
+        "basis_refs": template.get("basis_refs", []),
+        "fill_record_scope": template.get("fill_record_scope"),
+        "fill_items": fill_items,
+        "raw_readonly_boundary": _raw_readonly_boundary(),
+    }
+    _write_json(ACTIVE_FILL_RECORD_CANDIDATE_PATHS[0], active_record)
+    return active_record
+
+
 def _active_record_status() -> dict[str, Any]:
     existing = [path for path in ACTIVE_FILL_RECORD_CANDIDATE_PATHS if path.exists()]
+    active_record: dict[str, Any] | None = None
+    fill_items: list[Any] = []
+    action_counts = {
+        "keep_pending": 0,
+        "supply_authorized_fingerprint": 0,
+        "map_existing_metadata_hash_sibling": 0,
+        "unsupported": 0,
+    }
+    if existing:
+        active_record = _read_json(existing[0])
+        raw_fill_items = active_record.get("fill_items", [])
+        if isinstance(raw_fill_items, list):
+            fill_items = raw_fill_items
+        for item in fill_items:
+            action_code = item.get("action_code") if isinstance(item, dict) else None
+            if action_code in action_counts:
+                action_counts[action_code] += 1
+            else:
+                action_counts["unsupported"] += 1
+    activation_confirmed = (
+        isinstance(active_record, dict)
+        and active_record.get("activation_confirmed") is True
+        and active_record.get("draft_only_not_active") is False
+    )
     return {
         "candidate_active_fill_record_path_count": len(ACTIVE_FILL_RECORD_CANDIDATE_PATHS),
         "active_fill_record_found": bool(existing),
         "existing_active_fill_record_path_count": len(existing),
+        "active_fill_record_valid": activation_confirmed,
+        "active_fill_record_item_count": len(fill_items),
+        "active_fill_record_keep_pending_count": action_counts["keep_pending"],
+        "active_fill_record_supply_authorized_fingerprint_count": action_counts["supply_authorized_fingerprint"],
+        "active_fill_record_map_existing_metadata_hash_sibling_count": action_counts["map_existing_metadata_hash_sibling"],
+        "active_fill_record_unsupported_action_count": action_counts["unsupported"],
+        "active_fill_record_created_by_this_phase": activation_confirmed,
+        "active_fill_record_materialized_from_user_input_by_this_phase": activation_confirmed,
     }
 
 
 def _application_summary(basis_summary: dict[str, Any], active_record_status: dict[str, Any]) -> dict[str, Any]:
+    active_record_valid = active_record_status["active_fill_record_found"] and active_record_status["active_fill_record_valid"]
+    source_map_records_applied_count = (
+        active_record_status["active_fill_record_supply_authorized_fingerprint_count"]
+        + active_record_status["active_fill_record_map_existing_metadata_hash_sibling_count"]
+    )
+    if not active_record_status["active_fill_record_found"]:
+        application_status = "blocked_no_active_owner_authorized_fill_record"
+    elif active_record_status["active_fill_record_unsupported_action_count"]:
+        application_status = "blocked_active_owner_authorized_fill_record_contains_unsupported_actions"
+    elif source_map_records_applied_count == 0:
+        application_status = "completed_active_owner_authorized_fill_record_consumed_keep_pending_no_go"
+    else:
+        application_status = "completed_active_owner_authorized_fill_record_consumed_partial_no_go"
     return {
         "source_unresolved_gap_item_count": basis_summary["source_unresolved_gap_item_count"],
         "source_unresolved_unique_private_ref_count": basis_summary["source_unresolved_unique_private_ref_count"],
@@ -218,19 +301,28 @@ def _application_summary(basis_summary: dict[str, Any], active_record_status: di
         "private_intake_request_item_count": basis_summary["private_intake_request_item_count"],
         "candidate_active_fill_record_path_count": active_record_status["candidate_active_fill_record_path_count"],
         "existing_active_fill_record_path_count": active_record_status["existing_active_fill_record_path_count"],
+        "active_fill_record_item_count": active_record_status["active_fill_record_item_count"],
+        "active_fill_record_keep_pending_count": active_record_status["active_fill_record_keep_pending_count"],
+        "active_fill_record_supply_authorized_fingerprint_count": active_record_status[
+            "active_fill_record_supply_authorized_fingerprint_count"
+        ],
+        "active_fill_record_map_existing_metadata_hash_sibling_count": active_record_status[
+            "active_fill_record_map_existing_metadata_hash_sibling_count"
+        ],
+        "active_fill_record_unsupported_action_count": active_record_status["active_fill_record_unsupported_action_count"],
         "owner_authorized_fill_intake_ready": basis_summary["owner_authorized_fill_intake_ready"],
-        "owner_authorized_fill_record_supplied": False,
-        "active_authorized_fill_record_found": False,
-        "fill_application_performed": False,
-        "source_map_records_applied_count": 0,
-        "new_authorized_fingerprint_count": 0,
+        "owner_authorized_fill_record_supplied": active_record_valid,
+        "active_authorized_fill_record_found": active_record_valid,
+        "fill_application_performed": active_record_valid,
+        "source_map_records_applied_count": source_map_records_applied_count,
+        "new_authorized_fingerprint_count": active_record_status["active_fill_record_supply_authorized_fingerprint_count"],
         "source_map_gap_resolution_complete": False,
         "processed_value_materialization_replay_ready": False,
         "raw_to_processed_value_comparison_ready": False,
         "raw_processed_consistency_cross_validation_performed": False,
         "processed_raw_consistency_verified": False,
         "final_discrepancy_report_required_if_later_cross_validation_fails": True,
-        "application_status": "blocked_no_active_owner_authorized_fill_record",
+        "application_status": application_status,
     }
 
 
@@ -246,12 +338,12 @@ def _application_preview(generated_at: str, summary: dict[str, Any]) -> dict[str
         "source_gate": SOURCE_GATE,
         "generated_at": generated_at,
         "application_status": summary["application_status"],
-        "owner_authorized_fill_record_supplied": False,
-        "active_authorized_fill_record_found": False,
-        "fill_application_performed": False,
+        "owner_authorized_fill_record_supplied": summary["owner_authorized_fill_record_supplied"],
+        "active_authorized_fill_record_found": summary["active_authorized_fill_record_found"],
+        "fill_application_performed": summary["fill_application_performed"],
         "application_effect": "keeps_all_downstream_gates_blocked",
-        "source_map_records_applied_count": 0,
-        "new_authorized_fingerprint_count": 0,
+        "source_map_records_applied_count": summary["source_map_records_applied_count"],
+        "new_authorized_fingerprint_count": summary["new_authorized_fingerprint_count"],
         "source_map_gap_resolution_complete": False,
         "processed_value_materialization_replay_allowed_by_application": False,
         "raw_to_processed_value_comparison_allowed_by_application": False,
@@ -274,7 +366,12 @@ def _build_go_no_go(summary: dict[str, Any]) -> dict[str, Any]:
         "phase_id": PHASE_ID,
         "task_id": TASK_ID,
         "decision": "NO_GO",
-        "decision_reason": "No active owner or authorized-delegate fill record was found in the project-controlled ignored runtime.",
+        "decision_reason": (
+            "An active owner-authorized fill record was consumed, but it keeps all pending slots pending and supplies "
+            "no authorized processed-value sources; downstream consistency, lineage and release gates remain blocked."
+            if summary["active_authorized_fill_record_found"]
+            else "No active owner or authorized-delegate fill record was found in the project-controlled ignored runtime."
+        ),
         "application_status": summary["application_status"],
         "owner_authorized_fill_intake_ready": summary["owner_authorized_fill_intake_ready"],
         "owner_authorized_fill_record_supplied": summary["owner_authorized_fill_record_supplied"],
@@ -296,11 +393,14 @@ def _build_go_no_go(summary: dict[str, Any]) -> dict[str, Any]:
         "next_recommended_phase": NEXT_RECOMMENDED_PHASE,
         "resolved_blocker_ids": [
             "OWNER_AUTHORIZED_FILL_APPLICATION_GATE_CREATED",
+            "ACTIVE_OWNER_AUTHORIZED_FILL_RECORD_SUPPLIED",
+            "ACTIVE_OWNER_AUTHORIZED_FILL_RECORD_CONSUMED",
             "RAW_INBOX_MUTATION_NOT_PERFORMED_BY_THIS_PHASE",
             "RAW_READONLY_CONSISTENCY_POLICY_RECORDED",
         ],
         "blocker_ids": [
-            "ACTIVE_OWNER_AUTHORIZED_FILL_RECORD_NOT_FOUND",
+            "OWNER_AUTHORIZED_FILL_RECORD_CONSUMED_KEEP_PENDING_ONLY",
+            "AUTHORIZED_PROCESSED_VALUE_SOURCE_NOT_SUPPLIED",
             "AUTHORIZED_PROCESSED_VALUE_SOURCE_MAP_INCOMPLETE",
             "PROCESSED_VALUE_MATERIALIZATION_REPLAY_BLOCKED",
             "RAW_TO_PROCESSED_VALUE_COMPARISON_BLOCKED",
@@ -485,11 +585,21 @@ def generate(*, generated_at: str | None = None) -> dict[str, Any]:
             "candidate_active_fill_record_path_count": active_record_status["candidate_active_fill_record_path_count"],
             "active_fill_record_found": active_record_status["active_fill_record_found"],
             "existing_active_fill_record_path_count": active_record_status["existing_active_fill_record_path_count"],
+            "active_fill_record_valid": active_record_status["active_fill_record_valid"],
+            "active_fill_record_item_count": active_record_status["active_fill_record_item_count"],
+            "active_fill_record_keep_pending_count": active_record_status["active_fill_record_keep_pending_count"],
+            "active_fill_record_supply_authorized_fingerprint_count": active_record_status[
+                "active_fill_record_supply_authorized_fingerprint_count"
+            ],
+            "active_fill_record_map_existing_metadata_hash_sibling_count": active_record_status[
+                "active_fill_record_map_existing_metadata_hash_sibling_count"
+            ],
+            "active_fill_record_unsupported_action_count": active_record_status["active_fill_record_unsupported_action_count"],
             "private_intake_request_file_present": basis_summary["private_intake_request_file_present"],
             "private_intake_request_summary_item_count": basis_summary["private_intake_request_summary_item_count"],
             "raw_inbox_read_performed_by_this_phase": False,
             "raw_inbox_mutation_performed_by_this_phase": False,
-            "fill_application_performed": False,
+            "fill_application_performed": summary["fill_application_performed"],
         },
     }
     manifest = {
@@ -517,8 +627,10 @@ def generate(*, generated_at: str | None = None) -> dict[str, Any]:
             "current_phase_only": True,
             "owner_authorized_fill_application_gate_only": True,
             "active_fill_record_authored_by_codex": False,
-            "active_fill_record_created_by_this_phase": False,
-            "active_fill_record_materialized_from_user_input_by_this_phase": False,
+            "active_fill_record_created_by_this_phase": active_record_status["active_fill_record_created_by_this_phase"],
+            "active_fill_record_materialized_from_user_input_by_this_phase": active_record_status[
+                "active_fill_record_materialized_from_user_input_by_this_phase"
+            ],
             "private_source_map_records_applied_by_this_phase": False,
             "new_fingerprints_materialized": False,
             "processed_value_materialization_replay_performed": False,
@@ -595,7 +707,10 @@ def generate(*, generated_at: str | None = None) -> dict[str, Any]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--generated-at", default=None)
+    parser.add_argument("--activate-draft-confirmation", action="store_true")
     args = parser.parse_args(argv)
+    if args.activate_draft_confirmation:
+        materialize_active_record_from_draft(generated_at=args.generated_at)
     manifest = generate(generated_at=args.generated_at)
     summary = manifest["owner_authorized_fill_application_summary"]
     print(

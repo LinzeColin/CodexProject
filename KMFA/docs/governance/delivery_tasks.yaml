@@ -10240,3 +10240,25 @@ tasks:
     rollback: "Remove draft phase artifacts, tool, validator, focused test, ignored private draft and governance entries; do not modify raw inbox."
     target_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft"
     completed_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft"
+
+  - task_id: "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION-ACTIVE-CONSUMED-20260706"
+    phase_id: "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_private_processed_value_source_map_owner_authorized_fill_application.py --activate-draft-confirmation --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_application.py --require-private-application-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_owner_authorized_fill_application -q"
+    test_results:
+      - "PASS: active owner-authorized fill record was consumed as keep-pending only; validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/human/private_processed_value_source_map_owner_authorized_fill_application_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_summary.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_preview.json"
+    risk: "Active record contains 113 keep-pending items and no authorized processed value sources; do not run materialization, raw comparison or claim business consistency until actual authorized processed-value sources are supplied and applied."
+    rollback: "Remove active-consumed public evidence edits, tool and validator deltas, focused test deltas, ignored private active fill record and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed"
+    completed_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed"

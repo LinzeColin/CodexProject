@@ -172,11 +172,16 @@ def _validate_summary(summary: dict[str, Any], errors: list[str]) -> None:
         "source_existing_source_map_record_count": 36,
         "private_intake_request_item_count": 113,
         "candidate_active_fill_record_path_count": 2,
-        "existing_active_fill_record_path_count": 0,
+        "existing_active_fill_record_path_count": 1,
+        "active_fill_record_item_count": 113,
+        "active_fill_record_keep_pending_count": 113,
+        "active_fill_record_supply_authorized_fingerprint_count": 0,
+        "active_fill_record_map_existing_metadata_hash_sibling_count": 0,
+        "active_fill_record_unsupported_action_count": 0,
         "owner_authorized_fill_intake_ready": True,
-        "owner_authorized_fill_record_supplied": False,
-        "active_authorized_fill_record_found": False,
-        "fill_application_performed": False,
+        "owner_authorized_fill_record_supplied": True,
+        "active_authorized_fill_record_found": True,
+        "fill_application_performed": True,
         "source_map_records_applied_count": 0,
         "new_authorized_fingerprint_count": 0,
         "source_map_gap_resolution_complete": False,
@@ -185,7 +190,7 @@ def _validate_summary(summary: dict[str, Any], errors: list[str]) -> None:
         "raw_processed_consistency_cross_validation_performed": False,
         "processed_raw_consistency_verified": False,
         "final_discrepancy_report_required_if_later_cross_validation_fails": True,
-        "application_status": "blocked_no_active_owner_authorized_fill_record",
+        "application_status": "completed_active_owner_authorized_fill_record_consumed_keep_pending_no_go",
     }
     for key, expected in expected_summary.items():
         require(summary.get(key) == expected, f"summary {key} mismatch: {summary.get(key)!r} != {expected!r}", errors)
@@ -204,12 +209,12 @@ def _validate_preview(preview: dict[str, Any], summary: dict[str, Any], errors: 
     require(preview.get("task_id") == TASK_ID, "preview task mismatch", errors)
     require(preview.get("current_gate") == CURRENT_GATE, "preview gate mismatch", errors)
     require(preview.get("application_status") == summary.get("application_status"), "preview status mismatch", errors)
-    require(preview.get("next_required_input") == "active_owner_or_authorized_delegate_fill_record", "preview next input mismatch", errors)
+    require(
+        preview.get("next_required_input") == "owner_or_authorized_delegate_supplies_authorized_processed_value_sources",
+        "preview next input mismatch",
+        errors,
+    )
     for key in (
-        "owner_authorized_fill_record_supplied",
-        "active_authorized_fill_record_found",
-        "fill_application_performed",
-        "source_map_gap_resolution_complete",
         "processed_value_materialization_replay_allowed_by_application",
         "raw_to_processed_value_comparison_allowed_by_application",
         "raw_processed_consistency_cross_validation_allowed_by_application",
@@ -220,6 +225,13 @@ def _validate_preview(preview: dict[str, Any], summary: dict[str, Any], errors: 
         "business_execution_allowed_by_application",
     ):
         require(preview.get(key) is False, f"preview.{key} must be false", errors)
+    for key in (
+        "owner_authorized_fill_record_supplied",
+        "active_authorized_fill_record_found",
+        "fill_application_performed",
+    ):
+        require(preview.get(key) is True, f"preview.{key} must be true", errors)
+    require(preview.get("source_map_gap_resolution_complete") is False, "preview.source_map_gap_resolution_complete must be false", errors)
     require(preview.get("source_map_records_applied_count") == 0, "preview applied count mismatch", errors)
     require(preview.get("new_authorized_fingerprint_count") == 0, "preview fingerprint count mismatch", errors)
 
@@ -231,7 +243,6 @@ def check_private_application_diagnostic(*, require_private_application_diagnost
     for path in ACTIVE_FILL_RECORD_CANDIDATE_PATHS:
         require(".codex_private_runtime/" in path.as_posix(), f"active record candidate path mismatch: {path}", errors)
         require(git_check_ignore(path), f"active record candidate must be git-ignored: {path}", errors)
-        require(not path.exists(), f"active record candidate unexpectedly exists for this NO_GO phase: {path}", errors)
     if not require_private_application_diagnostic:
         return
     require(PRIVATE_APPLICATION_DIAGNOSTIC_PATH.exists(), f"private diagnostic must exist: {PRIVATE_APPLICATION_DIAGNOSTIC_PATH}", errors)
@@ -246,12 +257,26 @@ def check_private_application_diagnostic(*, require_private_application_diagnost
     )
     summary = diagnostic.get("application_diagnostic_summary", {})
     require(summary.get("candidate_active_fill_record_path_count") == 2, "private diagnostic candidate count mismatch", errors)
-    require(summary.get("active_fill_record_found") is False, "private diagnostic active record flag must be false", errors)
-    require(summary.get("existing_active_fill_record_path_count") == 0, "private diagnostic active path count mismatch", errors)
+    require(summary.get("active_fill_record_found") is True, "private diagnostic active record flag must be true", errors)
+    require(summary.get("existing_active_fill_record_path_count") == 1, "private diagnostic active path count mismatch", errors)
+    require(summary.get("active_fill_record_valid") is True, "private diagnostic active record valid flag mismatch", errors)
+    require(summary.get("active_fill_record_item_count") == 113, "private diagnostic active item count mismatch", errors)
+    require(summary.get("active_fill_record_keep_pending_count") == 113, "private diagnostic keep pending count mismatch", errors)
+    require(
+        summary.get("active_fill_record_supply_authorized_fingerprint_count") == 0,
+        "private diagnostic authorized fingerprint count mismatch",
+        errors,
+    )
+    require(
+        summary.get("active_fill_record_map_existing_metadata_hash_sibling_count") == 0,
+        "private diagnostic hash sibling count mismatch",
+        errors,
+    )
+    require(summary.get("active_fill_record_unsupported_action_count") == 0, "private diagnostic unsupported action count mismatch", errors)
     require(summary.get("private_intake_request_summary_item_count") == 113, "private diagnostic intake count mismatch", errors)
     require(summary.get("raw_inbox_read_performed_by_this_phase") is False, "private diagnostic raw read flag must be false", errors)
     require(summary.get("raw_inbox_mutation_performed_by_this_phase") is False, "private diagnostic raw mutation flag must be false", errors)
-    require(summary.get("fill_application_performed") is False, "private diagnostic application flag must be false", errors)
+    require(summary.get("fill_application_performed") is True, "private diagnostic application flag must be true", errors)
 
 
 def check_tracked_sensitive_suffixes(errors: list[str]) -> None:
@@ -315,10 +340,19 @@ def validate_v014_private_processed_value_source_map_owner_authorized_fill_appli
     require(go_no_go.get("decision") == "NO_GO", "go/no-go decision mismatch", errors)
     require(go_no_go.get("application_status") == summary.get("application_status"), "go/no-go status mismatch", errors)
     require(go_no_go.get("owner_authorized_fill_intake_ready") is True, "go/no-go intake readiness mismatch", errors)
-    require(go_no_go.get("owner_authorized_fill_record_supplied") is False, "go/no-go supplied flag mismatch", errors)
-    require(go_no_go.get("active_authorized_fill_record_found") is False, "go/no-go active flag mismatch", errors)
-    require(go_no_go.get("fill_application_performed") is False, "go/no-go application flag mismatch", errors)
-    require("ACTIVE_OWNER_AUTHORIZED_FILL_RECORD_NOT_FOUND" in go_no_go.get("blocker_ids", []), "missing active-record blocker", errors)
+    require(go_no_go.get("owner_authorized_fill_record_supplied") is True, "go/no-go supplied flag mismatch", errors)
+    require(go_no_go.get("active_authorized_fill_record_found") is True, "go/no-go active flag mismatch", errors)
+    require(go_no_go.get("fill_application_performed") is True, "go/no-go application flag mismatch", errors)
+    require(
+        "ACTIVE_OWNER_AUTHORIZED_FILL_RECORD_NOT_FOUND" not in go_no_go.get("blocker_ids", []),
+        "active-record missing blocker must be resolved",
+        errors,
+    )
+    require(
+        "OWNER_AUTHORIZED_FILL_RECORD_CONSUMED_KEEP_PENDING_ONLY" in go_no_go.get("blocker_ids", []),
+        "missing keep-pending-only blocker",
+        errors,
+    )
     for key in (
         "source_map_gap_resolution_complete",
         "processed_value_materialization_replay_allowed",
@@ -338,8 +372,6 @@ def validate_v014_private_processed_value_source_map_owner_authorized_fill_appli
     require(scope.get("owner_authorized_fill_application_gate_only") is True, "scope application gate flag must be true", errors)
     for key in (
         "active_fill_record_authored_by_codex",
-        "active_fill_record_created_by_this_phase",
-        "active_fill_record_materialized_from_user_input_by_this_phase",
         "private_source_map_records_applied_by_this_phase",
         "new_fingerprints_materialized",
         "processed_value_materialization_replay_performed",
@@ -354,6 +386,11 @@ def validate_v014_private_processed_value_source_map_owner_authorized_fill_appli
         "next_phase_started",
     ):
         require(scope.get(key) is False, f"phase_scope_controls.{key} must be false", errors)
+    for key in (
+        "active_fill_record_created_by_this_phase",
+        "active_fill_record_materialized_from_user_input_by_this_phase",
+    ):
+        require(scope.get(key) is True, f"phase_scope_controls.{key} must be true", errors)
 
     raw_boundary = manifest.get("raw_readonly_boundary", {})
     for key in (
