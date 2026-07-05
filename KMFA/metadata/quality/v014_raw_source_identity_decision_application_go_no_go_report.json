@@ -1,0 +1,36 @@
+{
+  "app_reinstall_allowed": false,
+  "application_status": "blocked_no_active_owner_decision",
+  "blocker_ids": [
+    "RAW_SOURCE_IDENTITY_OWNER_DECISION_NOT_SUPPLIED",
+    "RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED",
+    "PUBLIC_MEMBER_HASH_BACKFILL_STILL_BLOCKED",
+    "LINEAGE_FULL_CHECK_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION",
+    "FORMAL_REPORT_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION",
+    "GITHUB_UPLOAD_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION",
+    "APP_REINSTALL_BLOCKED_BY_SOURCE_IDENTITY_APPLICATION"
+  ],
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "decision_applied": false,
+  "decision_code": "none",
+  "decision_reason": "Raw source identity application is blocked until an active public-safe owner decision resolves the source identity and later gates complete hash backfill, lineage closure and release checks.",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_recommended_action": "rerun_this_application_gate_after_owner_decision",
+  "next_required_input": "active_owner_decision_record_or_corrected_registered_source_package",
+  "owner_decision_intake_ready": true,
+  "owner_decision_supplied": false,
+  "phase_id": "V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION",
+  "project_id": "KMFA",
+  "public_member_hash_backfill_allowed": false,
+  "raw_alignment_complete": false,
+  "record_type": "v014_raw_source_identity_decision_application_go_no_go_report",
+  "resolved_blocker_ids": [
+    "OWNER_DECISION_INTAKE_READY"
+  ],
+  "schema_version": "kmfa.v014_raw_source_identity_decision_application_go_no_go.v1",
+  "task_id": "KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-20260705",
+  "version": "0.1.4"
+}

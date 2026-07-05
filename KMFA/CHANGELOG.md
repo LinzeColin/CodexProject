@@ -1,3 +1,18 @@
+# KMFA v0.1.4 Raw Source Identity Decision Application
+- Product version: `0.1.4-raw-source-identity-decision-application`.
+- Scope: `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` only; generate a public-safe application gate for the owner raw source identity decision state.
+- Evidence: `KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/`.
+- Verification: `KMFA/tools/check_v014_raw_source_identity_decision_application.py`; `KMFA/tests/test_v014_raw_source_identity_decision_application.py`.
+- blocker_state: owner_decision_intake_ready=true, owner_decision_supplied=false, decision_applied=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, lineage_full_check_complete=false, GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
+product_version: 0.1.4-raw-source-identity-decision-application
+version_matrix_product_version_reference: 0.1.4-raw-source-identity-decision-application
+
+## 0.1.4-raw-source-identity-decision-application - 2026-07-05
+- Completed `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` locally as a decision application gate, not as an owner authorization.
+- Added a public-safe application preview, Go/No-Go report, validator and focused tests for the no-decision blocker and a keep-pending preview path.
+- Kept current Go/No-Go as `NO_GO` because no active owner decision record has been supplied.
+- Confirmed this phase did not read, list, stat, hash, mutate, delete, move, rename, overwrite, or write files in the raw inbox; it did not perform public hash backfill, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 # KMFA v0.1.4 Owner Raw Source Identity Decision Intake
 - Product version: `0.1.4-owner-raw-source-identity-decision`.
 - Scope: `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION` only; generate a public-safe owner or authorized-delegate decision intake gate, packet, templates, validator and governance records.
