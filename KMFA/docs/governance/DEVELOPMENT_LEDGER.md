@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S18-P3 Integration Preparation
+- Product version: `0.1.4-s18p3-integration-preparation`.
+- Scope: S18-P3 only; public-safe proposal-only read-only future connector plans, OpMe light entry integration plan and next-stage backlog.
+- Evidence: `KMFA/stage_artifacts/V014_S18_P3_INTEGRATION_PREPARATION/`.
+- Verification: `KMFA/tools/check_v014_s18_p3_integration_preparation.py`; `KMFA/tests/test_v014_s18_p3_integration_preparation.py`.
+- blocker_state: connector_plans=3, read_only_connector_plans=3, opme_entry_surfaces=4, backlog_items=6, go_no_go=NO_GO, delivery_allowed=false, raw_inbox_access=0, Stage18 review=false, GitHub upload=false, protected source matching=false, lineage full check=false, app reinstall=false, production restore=false, external connector call=false, live connector=false, source mutation=false, OpMe deep coupling=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-s18p3-integration-preparation
+version_matrix_product_version_reference: 0.1.4-s18p3-integration-preparation
+
 # KMFA v0.1.4 S18-P2 Full Regression Acceptance
 - Product version: `0.1.4-s18p2-full-regression-acceptance`.
 - Scope: S18-P2 only; public-safe full regression acceptance replay, v1.4 HTML human-flow audit, 18-stage evidence index and Go/No-Go lock.
