@@ -16,9 +16,18 @@
 - Product version: `0.2.0`
 - Phase/Gate: `D / S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
 - Latest maintenance task: `TASK-OAI-D-003 / OpenAIDatabase CI evidence-schema repair`
-- Models/Formulas/Parameters total: `11 / 11 / 94`
-- Active formulas/parameters: `11 / 94`
+- Latest controlled sub-workflow setup: `MACDATA-PROM2-SETUP-20260705 / proM2 MacData archive and cleanup automation`
+- Models/Formulas/Parameters total: `12 / 12 / 98`
+- Active formulas/parameters: `12 / 98`
 - Machine checked formulas/parameters: `10 / 28`
+
+## macdata proM2 Controlled Archive
+
+- Status: `in_progress`
+- Device truth: `MacBook Pro / Mac14,5 / Apple M2 Max / 32GB`
+- Archive branch: `macdata-proM2`
+- Cleanup gate: remote upload hash verification must pass before macdata retention cleanup or Docker/Homebrew/system/project cache cleanup runs.
+- Secret boundary: API keys, tokens, passwords, cookies, sessions, Keychain, shell history, full environment dumps, and `.env` raw content are out of scope.
 
 ## Assurance
 

@@ -3,9 +3,9 @@ roadmap_kind: "product"
 project_id: "OpenAIDatabase"
 current_stage_id: "S5"
 current_phase_id: "S5PB"
-current_task_id: "S5PBT03"
+current_task_id: "MACDATA-PROM2-SETUP-20260705"
 next_gate_id: "S5PB-GATE-IN-PROGRESS"
-total_estimated_hours: 4
+total_estimated_hours: 5
 completed_estimated_hours: 4
 stages:
   -
@@ -70,3 +70,24 @@ stages:
               - "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
             risk: "范围扩张、事实失真或治理回归"
             rollback: "Revert only this task commit; retain the read-only audit evidence."
+          -
+            task_id: "MACDATA-PROM2-SETUP-20260705"
+            name: "proM2 MacData 归档与清理自动化设置"
+            objective: "安装 OpenAIDatabase/macdata/proM2 任务包，按本机 M2 Max 覆盖设备预期，生成 owner confirmations，配置 GitHub 归档分支，并固定远程验证后受控清理策略。"
+            status: "in_progress"
+            estimated_hours: 1
+            total_hours_percent: "0.51%"
+            dependencies:
+              - "S5PBT03"
+            acceptance_ids:
+              - "ACC-MACDATA-PROM2-SETUP-20260705"
+            test_commands:
+              - "python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q"
+              - "python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only"
+              - "git ls-remote origin refs/heads/macdata-proM2"
+            evidence_refs:
+              - "OpenAIDatabase/macdata/proM2/config/device_config.json"
+              - "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json"
+              - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+            risks: "Docker/Homebrew/系统缓存/项目缓存清理必须受远程验证和白名单约束；不得读取凭证、Time Machine、iCloud、Keychain、shell history、完整环境变量或 .env 原文。"
+            rollback: "Revert setup commit；删除远程 macdata-proM2 分支前必须确认不再需要其历史。"
