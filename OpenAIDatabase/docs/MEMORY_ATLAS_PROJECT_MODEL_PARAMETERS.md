@@ -3252,6 +3252,67 @@ Stage 9 整体复审已确认：
 - 本 review 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 review 不执行 GitHub main 上传。
 
+## 73. v1.1.7 Stage 1 Phase 1.1 Universe State Schema
+
+状态：`phase_1_1_universe_state_schema_completed_pending_stage1_review`。
+
+验收 ID：`ACC-MA-V117-S1P01`。
+
+模型假设：
+
+- `universe_state_snapshot.v1` 可以继续作为 v1.1.7 Stage 1 的共享状态版本；
+  本 phase 只扩展 consumer_map，不改评分公式。
+- Roadmap v2 后续 Data Map、Search、Review/Summary/Iteration 必须从同一份
+  Universe State 派生，避免每个页面各自计算事实。
+- 所有 recommended next actions 仍是 proposal-only，不表示前端或 agent 可以直接写
+  active memory。
+
+输入：
+
+- `docs/architecture/universe_state_snapshot.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/models/universeState.ts`
+- `apps/memory-atlas/src/fixtures/universe_state.schema.json`
+- `apps/memory-atlas/src/fixtures/universe_state.sample.json`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase1_universe_state_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase1.cjs`
+
+处理方法：
+
+- 扩展 Universe State `consumer_map`，新增 `data_map_2_0`、`search_2_0` 和
+  `review_summary_iteration`。
+- 保留既有 `memory_overview`、`memory_starfield`、`memory_river`、`inspector`
+  和 `roi_dashboard` 映射。
+- 使用 `validate:universe-state-spike` 证明 deterministic sample 与 generator 输出一致。
+- 使用 `validate:v1.1.7-stage1-phase1` 检查 schema、sample、model、参数模板、
+  acceptance、records、proposal-only 和 privacy false gate。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S1P01-001 stage1_phase1_status = phase_1_1_universe_state_schema_completed_pending_stage1_review`
+- `PARAM-MA-V117-S1P01-002 stage1_phase1_required_validator = validate:v1.1.7-stage1-phase1`
+- `PARAM-MA-V117-S1P01-003 stage1_phase1_state_fields = memory_weather;dominant_clusters;rising_clusters;declining_clusters;conflict_zones;black_holes;proto_stars;stale_orbits;memory_terrain;river_pulse;mini_starfield;recommended_next_actions`
+- `PARAM-MA-V117-S1P01-004 stage1_phase1_consumer_map = memory_overview;memory_starfield;memory_river;data_map_2_0;search_2_0;review_summary_iteration;inspector;roi_dashboard`
+- `PARAM-MA-V117-S1P01-005 stage1_phase1_proposal_boundary = recommended_next_actions.proposal_only=true;no_direct_writeback`
+- `PARAM-MA-V117-S1P01-006 stage1_phase1_deferred_work = Phase 1.2 suggested_action_detail;Phase 1.3 tier_asset_detail;Phase 1.4 topic_classification_detail;Stage 2 proposal editor;Stage 7 Search 2.0 UI;Stage 8 summary proposal export`
+
+输出：
+
+- v1.1.7 Universe State architecture addendum。
+- v1.1.7 Universe State parameter gate。
+- Updated deterministic Universe State sample and schema.
+- Stage 1 Phase 1.1 acceptance and validator。
+
+边界：
+
+- 本 phase 不进入 Phase 1.2，不实现 Action Detail Drawer。
+- 本 phase 不实现 tier asset、topic classification、proposal editor、Search 2.0
+  runtime UI、Review workflow、Data Map production UI 或 Summary proposal export。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不运行 browser screenshot、production build、本地 app install、deploy 或
+  GitHub main 上传。
+
 ## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
 
 状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。

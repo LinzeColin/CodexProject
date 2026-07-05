@@ -59,7 +59,16 @@
     },
     "consumer_map": {
       "type": "object",
-      "required": ["memory_overview", "memory_starfield", "memory_river", "inspector", "roi_dashboard"]
+      "required": [
+        "memory_overview",
+        "memory_starfield",
+        "memory_river",
+        "data_map_2_0",
+        "search_2_0",
+        "review_summary_iteration",
+        "inspector",
+        "roi_dashboard"
+      ]
     },
     "diagnostics": {
       "type": "object",

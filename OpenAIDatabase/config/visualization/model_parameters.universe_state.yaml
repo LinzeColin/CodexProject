@@ -67,3 +67,39 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+v1_1_7_stage1_phase1:
+  task_id: MA-V117-S1P01
+  acceptance_id: ACC-MA-V117-S1P01
+  status: phase_1_1_universe_state_schema_completed_pending_stage1_review
+  required_validator: validate:v1.1.7-stage1-phase1
+  schema_version_retained: universe_state_snapshot.v1
+  required_state_fields:
+    - memory_weather
+    - dominant_clusters
+    - rising_clusters
+    - declining_clusters
+    - conflict_zones
+    - black_holes
+    - proto_stars
+    - stale_orbits
+    - memory_terrain
+    - river_pulse
+    - mini_starfield
+    - recommended_next_actions
+  required_consumer_maps:
+    - memory_overview
+    - memory_starfield
+    - memory_river
+    - data_map_2_0
+    - search_2_0
+    - review_summary_iteration
+    - inspector
+    - roi_dashboard
+  proposal_only_required: true
+  deferred_to_later_phases:
+    - suggested_action_detail_runtime
+    - tier_asset_detail_model
+    - topic_classification_detail_model
+    - proposal_editor
+    - production_ui_replacement
+    - browser_screenshot_acceptance

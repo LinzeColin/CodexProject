@@ -277,6 +277,58 @@ Required fields:
 | `mini_starfield` | preview module | target view state | not primary | preview explanation | not primary |
 | `recommended_next_actions` | action list | object callouts | range callouts | action evidence | action ranking |
 
+## v1.1.7 Stage 1 Phase 1 Addendum
+
+- Task ID: `MA-V117-S1P01`
+- Acceptance ID: `ACC-MA-V117-S1P01`
+- Status: `phase_1_1_universe_state_schema_completed_pending_stage1_review`
+- Validator: `validate:v1.1.7-stage1-phase1`
+
+Roadmap v2 requires Universe State to be the shared source for detail
+visibility, Data Map 2.0, Search 2.0 and Review / Summary / Iteration, not only
+the earlier overview, starfield and river surfaces. This addendum keeps the
+existing `universe_state_snapshot.v1` schema version and deterministic
+generator, but expands the required consumer map for v1.1.7 Stage 1.
+
+Required v1.1.7 state fields for this phase:
+
+1. `memory_weather`
+2. `dominant_clusters`
+3. `rising_clusters`
+4. `declining_clusters`
+5. `conflict_zones`
+6. `black_holes`
+7. `proto_stars`
+8. `stale_orbits`
+9. `memory_terrain`
+10. `river_pulse`
+11. `mini_starfield`
+12. `recommended_next_actions`
+
+Required v1.1.7 consumer map:
+
+| Consumer | Required fields | Deferred enrichment |
+|---|---|---|
+| `memory_overview` | `memory_weather`, `dominant_clusters`, `proto_stars`, `black_holes`, `river_pulse`, `recommended_next_actions` | Full default-home replacement belongs to Stage 3. |
+| `memory_starfield` | `dominant_clusters`, `rising_clusters`, `declining_clusters`, `black_holes`, `proto_stars`, `stale_orbits`, `memory_terrain` | Production visual integration belongs to Stage 4. |
+| `memory_river` | `river_pulse`, `dominant_clusters`, `black_holes`, `proto_stars`, `conflict_zones`, `stale_orbits` | Production river integration belongs to Stage 5. |
+| `data_map_2_0` | `source_snapshot`, `dominant_clusters`, `rising_clusters`, `declining_clusters`, `stale_orbits`, `memory_terrain`, `recommended_next_actions` | Tier asset expansion belongs to Phase 1.3 and Stage 6. |
+| `search_2_0` | `source_snapshot`, `memory_weather`, `dominant_clusters`, `rising_clusters`, `declining_clusters`, `conflict_zones`, `black_holes`, `proto_stars`, `stale_orbits`, `recommended_next_actions` | Search result UI and saved review state belong to Stage 7. |
+| `review_summary_iteration` | `memory_weather`, `rising_clusters`, `declining_clusters`, `conflict_zones`, `black_holes`, `proto_stars`, `stale_orbits`, `recommended_next_actions` | Proposal export and iteration closure belong to Stage 8. |
+| `inspector` | `memory_weather`, `conflict_zones`, `black_holes`, `proto_stars`, `stale_orbits`, `memory_terrain` | Inspector 2.0 synchronization belongs to Stage 9. |
+| `roi_dashboard` | `dominant_clusters`, `rising_clusters`, `declining_clusters`, `black_holes`, `recommended_next_actions` | Ranking UI changes are out of this phase. |
+
+Phase 1.1 is accepted only when `universe_state.schema.json`,
+`universe_state.sample.json`, `src/models/universeState.ts` and
+`model_parameters.universe_state.yaml` all preserve this map, the sample still
+matches deterministic generator output, and all `recommended_next_actions`
+remain `proposal_only: true`.
+
+This phase does not implement Phase 1.2 suggested-action detail UI, Phase 1.3
+tier asset model, Phase 1.4 topic detail model, proposal editing, direct
+writeback, browser screenshots, production build, deploy or GitHub main upload.
+No raw/private/cookie/session/secret data is allowed in this phase.
+
 ## Lifecycle
 
 Universe State v1 has five lifecycle states:
