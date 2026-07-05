@@ -146,7 +146,7 @@
   },
   "record_type": "v014_private_processed_value_source_map_authorized_fill_manifest",
   "schema_version": "kmfa.v014_private_processed_value_source_map_authorized_fill.v1",
-  "source_commit": "5b98333dea4863f515f0deefb114d8fb147695cf",
+  "source_commit": "c07ffbc3837cee98e6821afcbd218e5649cb8011",
   "status": "completed_validated_local_only_no_go_partial_authorized_processed_value_source_map_fill",
   "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-20260705",
   "value_matching_readiness": {

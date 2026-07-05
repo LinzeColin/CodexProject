@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 
 from KMFA.tools.check_v014_private_processed_value_source_map_authorized_fill import (
@@ -8,11 +10,27 @@ from KMFA.tools.check_v014_private_processed_value_source_map_authorized_fill im
 )
 from KMFA.tools.v014_private_processed_value_source_map_authorized_fill import (
     PRIVATE_SOURCE_MAP_PATH,
+    stable_source_commit,
     generate,
 )
 
 
 class V014PrivateProcessedValueSourceMapAuthorizedFillTest(unittest.TestCase):
+    def test_stable_source_commit_preserves_existing_manifest_commit(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            manifest_path = Path(tmpdir) / "manifest.json"
+            existing_commit = "a" * 40
+            current_commit = "b" * 40
+            manifest_path.write_text(json.dumps({"source_commit": existing_commit}), encoding="utf-8")
+
+            self.assertEqual(
+                stable_source_commit(
+                    manifest_path=manifest_path,
+                    fallback_git_commit=lambda: current_commit,
+                ),
+                existing_commit,
+            )
+
     def test_authorized_fill_writes_partial_private_source_map(self) -> None:
         manifest = generate(generated_at="2026-07-05T23:59:59+10:00")
         validated = validate_v014_private_processed_value_source_map_authorized_fill(

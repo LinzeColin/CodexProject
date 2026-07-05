@@ -10,12 +10,13 @@ in ignored runtime; public artifacts contain aggregate status only.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -25,6 +26,7 @@ SCHEMA_VERSION = "kmfa.v014_private_processed_value_source_map_authorized_fill.v
 GO_NO_GO_SCHEMA_VERSION = "kmfa.v014_private_processed_value_source_map_authorized_fill_go_no_go.v1"
 PRIVATE_SCHEMA_VERSION = "kmfa.private.v014_private_processed_value_source_map_authorized_fill.v1"
 PRIVATE_SOURCE_MAP_SCHEMA_VERSION = "kmfa.private.v014_private_processed_value_source_map.v1"
+GIT_COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 PROJECT_ID = "KMFA"
 VERSION = "0.1.4"
 PHASE_ID = "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL"
@@ -80,6 +82,26 @@ def _git_output(args: list[str]) -> str:
     if result.returncode != 0:
         return "UNKNOWN"
     return result.stdout.strip()
+
+
+def _current_git_commit() -> str:
+    return _git_output(["rev-parse", "HEAD"])
+
+
+def stable_source_commit(
+    *,
+    manifest_path: Path = MANIFEST_PATH,
+    fallback_git_commit: Callable[[], str] = _current_git_commit,
+) -> str:
+    if manifest_path.exists():
+        try:
+            existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            existing = {}
+        source_commit = existing.get("source_commit") if isinstance(existing, dict) else None
+        if isinstance(source_commit, str) and GIT_COMMIT_RE.fullmatch(source_commit):
+            return source_commit
+    return fallback_git_commit()
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -373,7 +395,7 @@ def generate(*, generated_at: str | None = None) -> dict[str, Any]:
         "acceptance_ids": [ACCEPTANCE_ID],
         "status": STATUS,
         "generated_at": timestamp,
-        "source_commit": _git_output(["rev-parse", "HEAD"]),
+        "source_commit": stable_source_commit(),
         "branch": _git_output(["branch", "--show-current"]),
         "dependencies": {
             "private_processed_value_source_map_capture_manifest": CAPTURE_MANIFEST_PATH.as_posix(),
