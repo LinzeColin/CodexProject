@@ -1,8 +1,8 @@
 # airM2 macdata HANDOFF
 
-更新时间：2026-07-05T22:15:00+10:00
+更新时间：2026-07-05T22:55:45+10:00
 
-当前目标：安装并启用 `airM2` macdata Codex Automation 任务包，提交到 `LinzeColin/CodexProject`，并建立 `macdata-airM2` 归档分支。
+当前目标：维护 `airM2` macdata Codex Automation，确保全中文明文报告以 `.txt` 输出并归档。
 
 当前状态：
 
@@ -10,12 +10,13 @@
 - 任务包已安装到 `OpenAIDatabase/macdata/airM2`。
 - 用户确认文件已创建：`config/owner_confirmations.json`。
 - 已修复上一轮错误扩展：恢复原始任务包语义，不自动清理 Docker、Homebrew、系统缓存、项目缓存。
-- GitHub `main` 上一轮已推送：`d6d6d15ffb53ff1ecfe914cad3e4f421e29e8d9c`；本轮 `.txt` 报告修复提交后以最新远程 hash 为准。
-- GitHub 归档分支 `macdata-airM2` 已创建并验证：`c40633e9ab6130e78afaeb063422f60336b171ec`。
+- GitHub `main` 本轮代码修复已推送：`e6da5ce116e7f2c4b9747ca0d900478d63764b65`。
+- GitHub 归档分支 `macdata-airM2` 已保留并验证：`453556e977d2582463e0551e2f690f21e9415eec`。
 - Codex Automation 已创建并启用：`macdata-airm2-daily-controlled-archive`。
-- 本次完整运行成功：raw commit `3f5c9c61bf7197de13ab7aa1e7d046c45bfb807f`，report commit `c40633e9ab6130e78afaeb063422f60336b171ec`。
+- 本次完整运行成功：raw commit `34cadf46449b0009862fbe3e669403de38e1363a`，report commit `453556e977d2582463e0551e2f690f21e9415eec`。
 - 旧运行曾错误执行 Homebrew/用户态/项目缓存清理；本轮已从代码、配置、文档和 automation prompt 中移除该行为。后续如需电脑大清理，应另建独立 cleanup 任务。
-- 本轮正在按用户要求把全中文报告文件从 `.md` 改为 `.txt`，目标最新报告路径为 `reports/latest/latest_report.txt`。
+- 本轮已按用户要求把全中文报告文件从 `.md` 改为 `.txt`，目标最新报告路径为 `reports/latest/latest_report.txt`。
+- 脚本会在写入 `latest_report.txt` 前删除 stale `reports/latest/latest_report.md`；归档分支当前 `reports/latest/` 只保留 `latest_report.txt`。
 
 关键决策：
 
@@ -35,4 +36,5 @@
 
 - `python3 -m unittest discover -s OpenAIDatabase/macdata/airM2/tests -p 'test_*.py'`：4 tests OK。
 - `python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`：ok true。
-- `git ls-remote https://github.com/LinzeColin/CodexProject.git refs/heads/main refs/heads/macdata-airM2`：main 与归档分支 hash 需在本轮 `.txt` 修复和运行后重新核对。
+- `git ls-remote https://github.com/LinzeColin/CodexProject.git refs/heads/main refs/heads/macdata-airM2`：main `e6da5ce116e7f2c4b9747ca0d900478d63764b65`，归档分支 `453556e977d2582463e0551e2f690f21e9415eec`。
+- 归档分支 `reports/latest/`：仅有 `.gitkeep` 和 `latest_report.txt`，没有 stale `latest_report.md`。
