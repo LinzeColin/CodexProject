@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 当前版本 `0.1.4-processed-value-source-map-completion-application` 已完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_APPLICATION` 本地 gate：Codex 检查了 private completion template，113 条 target slots 仍为 pending owner/authorized delegate input，valid completion items=0、source-map records applied=0、comparable value pairs=0；因此仍不能证明处理数据与原始数据一致。next_required_input=`owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`。
+KMFA 当前版本 `0.1.4-processed-value-source-map-completion-readiness-recheck` 已完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK` 本地 gate：Codex 重新检查了 private completion template，113 条 target slots 仍为 pending owner/authorized delegate input，valid completion items=0、source-map completion reapplication ready=false、source-map records applied=0、comparable value pairs=0；因此仍不能证明处理数据与原始数据一致。next_required_input=`owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`。
 
 ## 你现在能信任什么
+
+- v0.1.4 processed value source-map completion readiness recheck 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：completion template items=113、pending selected actions=113、valid completion items=0、source-map completion reapplication ready=false、source-map records applied=0、comparable pairs=0。该 phase 只重新检查 git-ignored private completion template，不读取或修改 raw inbox，不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 processed value source-map completion application 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：completion template items=113、pending selected actions=113、valid completion items=0、source-map records applied=0、comparable pairs=0。该 phase 只检查 git-ignored private completion template，不读取或修改 raw inbox，不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
