@@ -1367,3 +1367,13 @@ v014_s16_stage_review_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S16_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s16_stage_review.py
   scope: Stage 16 overall review only; no S17-P1, upload, raw inbox access by review, raw matching, lineage, formal report, procurement execution, payment approval, payment execution, bank operation, site operation, signature operation, invoice issuance, customer contact, collection action, legal decision, tax filing or business execution.
+
+
+v014_s17p1_access_security_registry_note:
+  version: "0.1.4-s17p1-access-security"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S17P1-ACCESS-SECURITY-001
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY
+  validator: KMFA/tools/check_v014_s17_p1_access_security.py
+  scope: S17-P1 access/security only; public-safe role permissions, sensitive public repository policy and audit-log policy; no S17-P2 notification delivery, S17-P3 operations, Stage17 review, upload, raw inbox access, raw matching, lineage, full report email body, formal report, external connector, app reinstall or business execution.

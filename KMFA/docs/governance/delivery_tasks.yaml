@@ -9442,3 +9442,52 @@ tasks:
       legal_action: false
       tax_filing: false
       business_execution: false
+
+
+  - task_id: "KMFA-V014-S17-P1-ACCESS-SECURITY-20260705"
+    task_name: "v0.1.4 S17-P1 权限与安全"
+    stage_id: "V014-S17"
+    phase_id: "S17-P1"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY"
+    validator: "KMFA/tools/check_v014_s17_p1_access_security.py"
+    focused_test: "KMFA/tests/test_v014_s17_p1_access_security.py"
+    acceptance_id: "ACC-V014-S17-P1-ACCESS-SECURITY"
+    acceptance_ids:
+      - "ACC-V014-S17-P1-ACCESS-SECURITY"
+    next_phase: "S17-P2"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s17p1-access-security"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s17_p1_access_security.py KMFA/tools/check_v014_s17_p1_access_security.py KMFA/tests/test_v014_s17_p1_access_security.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s17_p1_access_security.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_p1_access_security.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s17_p1_access_security -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: py_compile, generator, v0.1.4 S17-P1 validator and focused unit test passed."
+      - "PASS: project governance, lean governance, changed-only governance sync, no-float, no-omission, structured parse checks, Ruby YAML parse checks and diff check passed."
+      - "PASS: raw/private suffix scan, high-signal secret scan and scoped S17-P1 public artifact boundary scan passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/human/access_security_report.md"
+      - "KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/machine/access_security_manifest.json"
+      - "KMFA/tools/check_v014_s17_p1_access_security.py"
+    forbidden_scope:
+      s17_p2: false
+      s17_p3: false
+      stage17_review: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      notification_delivery: false
+      full_report_email_body: false
+      formal_report: false
+      live_connector: false
+      app_reinstall: false
+      external_connector: false
+      business_decision_basis: false
+      business_execution: false
