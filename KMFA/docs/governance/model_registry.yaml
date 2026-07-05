@@ -1348,3 +1348,12 @@ v014_s16p2_project_status_lifecycle_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE
   validator: KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py
   scope: S16-P2 project status lifecycle only; read-only raw/private aggregate alignment allowed with no public raw names hashes headers or values; no S16-P3, Stage 16 review, upload, raw matching, lineage, formal report, site construction, safety signature, technical signature, invoice issuance, collection action, payment execution, bank operation, legal action or business execution.
+
+v014_s16p3_customer_business_analysis_registry_note:
+  version: "0.1.4-s16p3-customer-business-analysis"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S16P3-CUSTOMER-BUSINESS-ANALYSIS-001
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS
+  validator: KMFA/tools/check_v014_s16_p3_customer_business_analysis.py
+  scope: S16-P3 customer business analysis only; read-only raw/private aggregate alignment allowed with no public raw names hashes headers customer project or values; no Stage 16 review, upload, raw matching, lineage, formal report, customer contact, collection action, legal decision, invoice issuance, payment execution, bank operation or business execution.

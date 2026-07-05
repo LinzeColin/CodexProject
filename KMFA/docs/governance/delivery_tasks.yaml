@@ -9172,7 +9172,7 @@ tasks:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s16_p2_project_status_lifecycle -q"
       - "governance validators and safety scans"
     test_results:
-      - "PENDING_FINAL_VALIDATION"
+      - "PASS"
     evidence_refs:
       - "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/human/project_status_lifecycle_report.md"
       - "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/human/test_results.md"
@@ -9205,6 +9205,63 @@ tasks:
       payment_execution: false
       bank_operation: false
       legal_action: false
+      business_execution: false
+
+  - task_id: "KMFA-V014-S16-P3-CUSTOMER-BUSINESS-ANALYSIS-20260705"
+    task_name: "v0.1.4 S16-P3 客户经营分析"
+    stage_id: "V014-S16"
+    phase_id: "S16-P3"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS"
+    validator: "KMFA/tools/check_v014_s16_p3_customer_business_analysis.py"
+    focused_test: "KMFA/tests/test_v014_s16_p3_customer_business_analysis.py"
+    acceptance_id: "ACC-V014-S16-P3-CUSTOMER-BUSINESS-ANALYSIS"
+    acceptance_ids:
+      - "ACC-V014-S16-P3-CUSTOMER-BUSINESS-ANALYSIS"
+    next_phase: "S16_STAGE_REVIEW"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s16p3-customer-business-analysis"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s16_p3_customer_business_analysis.py KMFA/tools/check_v014_s16_p3_customer_business_analysis.py KMFA/tests/test_v014_s16_p3_customer_business_analysis.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s16_p3_customer_business_analysis.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p3_customer_business_analysis.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s16_p3_customer_business_analysis -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: py_compile, generator, S16-P2 dependency validator, v0.1.4 S16-P3 validator and focused unit test passed."
+      - "PASS: project governance, lean governance, changed-only governance sync, no-float, no-omission, structured parse checks, Ruby YAML parse checks and diff check passed."
+      - "PASS: raw/private suffix scan, high-signal secret scan and scoped S16-P3 public artifact boundary scan passed after fixing a public-safe key-name false positive."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/human/customer_business_analysis_report.md"
+      - "KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/machine/customer_business_analysis_manifest.json"
+      - "KMFA/tools/check_v014_s16_p3_customer_business_analysis.py"
+    local_private_evidence_refs:
+      - "KMFA/.codex_private_runtime/v014_s16_p3_customer_business_analysis/raw_alignment_report.json"
+    forbidden_scope:
+      stage16_review: false
+      github_upload: false
+      raw_publication: false
+      raw_file_name_publication: false
+      raw_hash_publication: false
+      field_header_publication: false
+      customer_project_plaintext_publication: false
+      raw_inbox_mutation: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      live_connector: false
+      app_reinstall: false
+      opme_integration: false
+      customer_contact_action: false
+      collection_action: false
+      legal_collection_decision: false
+      invoice_issuance: false
+      payment_execution: false
+      bank_operation: false
       business_execution: false
 
   - task_id: "KMFA-V014-S16-P1-SUBCONTRACT-PROCUREMENT-20260705"

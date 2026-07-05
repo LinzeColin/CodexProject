@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.4-s16p2-project-status-lifecycle
+product_version: 0.1.4-s16p3-customer-business-analysis
 
 ## Scope
 
-当前 v0.1.4 scope lock：S16-P2 项目状态生命周期已本地通过，验证 S16-P1 dependency、legacy S16-P2 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S16-P2 validator 和 focused unit test；source lanes=6、lifecycle records=4、exception items=3、handoff guards=3、pending reconciliation=12、site/signature/invoice/collection/payment/bank/formal report/business decision basis=0、report grade=D，当前仍为 NO_GO/Q4/D/blocked。该 phase 仅只读执行 raw/private aggregate alignment 且公开证据不发布 raw 文件名、hash、字段/表头明文或业务值；未执行 S16-P3、Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、现场施工、安全签字、技术签字、开票、催收、法务、付款、银行操作或业务执行。
+当前 v0.1.4 scope lock：S16-P3 客户经营分析已本地通过，验证 S16-P2 dependency、S08/S09/S13 public-safe fact manifests、v1.4 taskpack/roadmap requirements、v0.1.4 S16-P3 validator 和 focused unit test；source lanes=7、customer value dimensions=4、value signals=4、risk signals=4、customer summaries=4、handoff guards=4、pending reconciliation=12、formal report/business decision basis/customer contact/collection/legal/payment/bank=0、report grade=D，当前仍为 NO_GO/Q4/D/blocked。该 phase 仅只读执行 raw/private aggregate alignment 且公开证据不发布 raw 文件名、hash、字段/表头明文、客户/项目明文或业务值；未执行 Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、客户联络、催收、法务、开票、付款、银行操作或业务执行。
 
 当前模型说明覆盖 v0.1.4 Stage 10 整体复审、v0.1.4 S10-P3 报告导出、v0.1.4 S10-P2 报告可信等级、v0.1.4 S10-P1 报告模板、v0.1.4 Stage 9 整体复审、v0.1.4 S09-P3 口径转换与差异核对、v0.1.4 S09-P2 毛利与现金毛利、v0.1.4 S09-P1 项目成本事实层、v0.1.4 Stage 8 整体复审、v0.1.4 S08-P3 实体匹配质量、v0.1.4 S08-P2 业务实体模型、v0.1.4 S08-P1 项目组合键、v0.1.4 Stage 7 整体复审、v0.1.4 S07-P3 Redcircle postponement、v0.1.4 S07-P2 WPS file adapter、v0.1.4 S07-P1 finance file adapter、v0.1.4 Stage 6 整体复审、v0.1.4 S06-P3 validation evidence、v0.1.4 S06-P2 difference queue、v0.1.4 S06-P1 zero-delta validator、v0.1.4 Stage 5 整体复审、v0.1.4 S05-P3 权威基准锁定、v0.1.4 S05-P2 字段级黄金基准、v0.1.4 S05-P1 A0 文件登记、v0.1.4 Stage 4 整体复审、v0.1.4 S04-P3 基础工具测试、v0.1.4 S04-P2 字段标准化、v0.1.4 S04-P1 金额精度与基础工具、v0.1.4 Stage 3 整体复审、v0.1.4 S03-P3 源优先级、v0.1.4 S03-P2 数据源检查矩阵、v0.1.4 S03-P1 文件型导入登记、v0.1.4 Stage 2 整体复审、v0.1.4 S02-P3 数据质量等级、v0.1.4 S02-P2 不可污染原则、v0.1.4 S02-P1 metadata 协议、v0.1.4 Stage 1 整体复审、v0.1.4 S01-P3 no-omission baseline、v0.1.4 S01-P2 public-safe baseline sync、v0.1.4 S01-P1 只读检查与范围锁定，以及既有 public-safe KMFA 治理、metadata、质量门禁、文件导入、源优先级、金额精度、字段标准化、A0 基准、差异队列、报告、UI、人工处理、财务经营、通知、运维和回归验收模型。v0.1.4 Stage 10 review 只证明 S10-P1/S10-P2/S10-P3 public-safe 报告层本地复审闭环：phase_results 全部 PASS，open findings=0，fixed findings=2，report templates=2，report grade records=2，report exports=2，HTML exports=2，CSV appendices=2，Excel-compatible CSV downloads=2，pending reconciliation=12，confirmed resolution=0，formal report=0，business decision basis=0，当前仍为 NO_GO/Q4/D/blocked。本 review 未读取 raw inbox，不执行 S11、GitHub upload、actual business raw value matching、lineage 完整检查、正式报告生成、UI runtime、live connector、app reinstall、OpMe 深度耦合、外部邮件连接器、完整报告邮件正文、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收或法律决策。
 
@@ -15,8 +15,17 @@ product_version: 0.1.4-s16p2-project-status-lifecycle
 - type: deterministic governance contract
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
-- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py`, `KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/machine/project_status_lifecycle_manifest.json`
-- current_v014_scope_lock: `S16-P2 completed; GitHub upload/S16-P3/Stage16 review/protected source matching/lineage full check/formal report/UI runtime/live connector/app reinstall/OpMe/site/safety/technical/invoice/collection/payment/bank/legal/business execution all false`
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`, `KMFA/tools/check_v014_s16_p3_customer_business_analysis.py`, `KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/machine/customer_business_analysis_manifest.json`
+- current_v014_scope_lock: `S16-P3 completed; GitHub upload/Stage16 review/protected source matching/lineage full check/formal report/UI runtime/live connector/app reinstall/OpMe/customer contact/collection/legal/invoice/payment/bank/business execution all false`
+
+### FORM-KMFA-V014-S16P3-CUSTOMER-BUSINESS-ANALYSIS-001
+
+- type: deterministic public-safe customer business analysis gate
+- purpose: 验证 v0.1.4 S16-P3 客户经营分析证据，覆盖 S16-P2 dependency、S08/S09/S13 public-safe fact manifests、v1.4 taskpack/roadmap requirements、客户价值、项目毛利、回款质量、账龄风险、客户经营摘要、handoff guards、只读 raw/private aggregate alignment 和 no-contact/no-collection/no-legal/no-payment/no-upload 边界。
+- fact_level: EXTRACTED
+- expression: `s16p3_valid = s16p2_dependency_PASS AND upstream_public_safe_fact_manifests_PASS AND v014_s16p3_validator_PASS AND focused_unit_test_PASS AND source_lane_count == 7 AND customer_value_dimension_count == 4 AND customer_value_signal_count == 4 AND customer_risk_signal_count == 4 AND customer_summary_count == 4 AND handoff_guard_count == 4 AND pending_reconciliation_count == 12 AND raw_private_alignment_readonly == true AND raw_filename_hash_header_value_customer_project_committed == false AND formal_report_count == 0 AND business_decision_basis_count == 0 AND customer_contact_action_count == 0 AND collection_action_count == 0 AND legal_collection_decision_count == 0 AND payment_execution_count == 0 AND bank_operation_count == 0 AND stage16_review_performed == false AND github_upload_performed == false`
+- evidence: `KMFA/tools/v014_s16_p3_customer_business_analysis.py`, `KMFA/tools/check_v014_s16_p3_customer_business_analysis.py`, `KMFA/tests/test_v014_s16_p3_customer_business_analysis.py`, `KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/machine/customer_business_analysis_manifest.json`, `KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/human/customer_business_analysis_report.md`
+- limitation: 只证明客户经营分析 public-safe review queue 与人工 handoff guard；不证明 Stage 16 review、GitHub upload、raw value matching、lineage full check、正式报告、客户联络、催收、法务、开票、付款、银行或业务执行。
 
 ### FORM-KMFA-V014-S16P2-PROJECT-STATUS-LIFECYCLE-001
 
