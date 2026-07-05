@@ -1405,3 +1405,12 @@ v014_s17_stage_review_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S17_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s17_stage_review.py
   scope: Stage 17 overall review only; public-safe replay of S17-P1 S17-P2 and S17-P3; no S18-P1, upload, raw inbox access, raw matching, lineage, real notification delivery, full report email, report attachment, recipient address publication, production restore, external service call, live connector, app reinstall, formal report or business execution.
+
+v014_s18p1_precision_stress_registry_note:
+  version: "0.1.4-s18p1-precision-stress"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S18P1-PRECISION-STRESS-001
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P1_PRECISION_STRESS
+  validator: KMFA/tools/check_v014_s18_p1_precision_stress.py
+  scope: S18-P1 precision and stress testing only; public-safe synthetic precision zero-delta duplicate import bad-file missing-field import consistency large-batch and HTML baseline reading evidence; no S18-P2, S18-P3, Stage18 review, upload, raw inbox access, raw matching, lineage full check, app reinstall, production restore, external service, live connector, formal report or business execution.

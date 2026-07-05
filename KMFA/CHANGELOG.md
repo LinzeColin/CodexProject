@@ -1,3 +1,10 @@
+## 0.1.4-s18p1-precision-stress - 2026-07-05
+- Completed v0.1.4 S18-P1 precision and stress testing locally with S17 Stage review dependency, legacy S18-P1 public-safe baseline, v1.4 roadmap/taskpack anchors, v1.4 HTML/UIUX baseline reading, v0.1.4 S18-P1 validator, focused unit test, and public-safe evidence.
+- Locked scenario_count=5, scenario_type_count=5, consecutive_import_run_count=3, unique_import_result_hash_count=1, large_batch_file_count=1200, elapsed_ms=348/500, error_report_count=2, minimum_fail_difference_cents=1, html_baseline_refs=3, and report grade=D.
+- Confirmed amount precision, zero-delta, duplicate import, bad file, missing field, import consistency and synthetic large-batch gates pass with metadata-only public evidence.
+- Confirmed no S18-P2, S18-P3, Stage 18 review, GitHub upload, raw inbox read/list/stat/hash/mutation, protected source matching, lineage full check, app reinstall, production restore, external connector, live connector, formal report or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
 ## 0.1.4-s17-stage-review - 2026-07-05
 - Completed v0.1.4 Stage 17 overall review locally with S17-P1/S17-P2/S17-P3 validators, v0.1.4 Stage 17 review validator, focused unit test, and public-safe evidence.
 - Locked phase_results=3/3 PASS, open findings=0, fixed findings=1, roles=4, sensitive policy categories=15, audit action types=5, notification rules=3, notification dispatch logs=3, operation runbooks=4, knowledge items=2, drill logs=2, report grade=D, and release permission=blocked.
