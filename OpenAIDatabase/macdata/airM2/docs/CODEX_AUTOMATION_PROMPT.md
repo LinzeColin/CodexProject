@@ -27,7 +27,7 @@
 3. 请确认允许把除 API key / token / password 及等价凭证以外的设备明文指标上传到 GitHub。
 4. 请确认每天运行后必须 commit + push 到 `macdata-airM2` 归档分支，并在远程验证成功后才清理本机旧数据。
 5. 请确认本机只保留最近 3 天的 `airM2` macdata 数据、报告、运行记录和 macdata 临时缓存。
-6. 请确认不使用 Time Machine、不使用 iCloud，并确认 raw 数据远程验证成功后执行受控 Docker/Homebrew/用户态系统缓存/项目缓存清理。
+6. 请确认不使用 Time Machine、不使用 iCloud、不自动清理 Docker/Homebrew/系统缓存/项目缓存。
 7. 如果本机配置与预期不同，例如型号、芯片、内存、角色、目录、Git remote、归档分支不同，必须列出差异并请用户明确是否继续。
 
 用户确认后，创建 `OpenAIDatabase/macdata/airM2/config/owner_confirmations.json`，内容参考 `owner_confirmations.example.json`。不要在该文件里写入任何 API key、token、password、cookie、session 或 Keychain 内容。
@@ -49,9 +49,9 @@ python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root
 python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root . --execute
 ```
 
-6. 完整流程必须完成：采集 → 生成全中文明文报告 → 凭证扫描 → commit → push → 远程验证 → 验证成功后清理本机 3 天以前数据、macdata 临时缓存、受控 Docker/Homebrew/用户态系统缓存/项目缓存 → 输出全中文明文报告。
+6. 完整流程必须完成：采集 → 生成全中文明文报告 → 凭证扫描 → commit → push → 远程验证 → 验证成功后清理本机 3 天以前数据和 macdata 临时缓存 → 输出全中文明文报告。
 7. 如果 push 或远程验证失败，不允许清理本机旧数据。
-8. 不允许运行任何超出受控策略的破坏性清理命令，例如 `docker system prune -a`、删除 Docker volumes、`rm -rf ~/Library/Caches/*`、删除项目源码或数据。
+8. 不允许运行任何破坏性清理命令，例如 `docker system prune -a`、`rm -rf ~/Library/Caches/*`、删除项目缓存等。
 9. 不允许读取 shell history、完整环境变量、Keychain、cookies、sessions、`.env` 原文。
 10. Codex session 最终输出必须是全中文，必须包含明文指标、GitHub 上传状态、清理状态、ROI、风险、SWOT 和失败项。
 

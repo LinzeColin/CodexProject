@@ -5,11 +5,10 @@ macdata controlled Codex Automation tool.
 
 This script is intentionally NOT self-scheduling. It is only a deterministic tool
 that Codex Automation or the user may call after explicit approval. It never
-installs launchd/cron jobs. With explicit owner confirmation, it may run bounded
-Docker, Homebrew, user-cache, and project-cache cleanup only after GitHub raw
-data upload has been remotely verified. It writes macdata artifacts inside its
-own device directory and uses a short-lived temporary clone to upload daily
-records to a device-specific GitHub archive branch.
+installs launchd/cron jobs and never cleans system, Docker, Homebrew, or project
+caches. It only writes inside its own macdata device directory and uses a
+short-lived temporary clone to upload daily records to a device-specific GitHub
+archive branch.
 """
 from __future__ import annotations
 
@@ -357,7 +356,7 @@ def collect_metrics(repo_root: Path, config: Dict[str, Any], run_id_value: str) 
             '本记录不采集 Time Machine。',
             '本记录不使用 iCloud。',
             '本记录不采集 API key、token、password、cookie、session、Keychain、shell history、完整环境变量。',
-            '脚本仅在 owner 确认且 raw 数据远程验证成功后执行受控 Docker、Homebrew、用户态系统缓存和项目缓存清理。',
+            '脚本不会自动清理 Docker、Homebrew、系统缓存或项目缓存。',
         ],
     }
     metrics['risk'] = evaluate_risk(metrics, config)
@@ -452,67 +451,6 @@ def preflight_device(config: Dict[str, Any], owner: Optional[Dict[str, Any]] = N
     return ok, messages, hardware
 
 
-def normalize_remote_url(url: str) -> str:
-    value = (url or '').strip()
-    if value.startswith('git@github.com:'):
-        value = 'https://github.com/' + value.split(':', 1)[1]
-    if value.endswith('.git'):
-        value = value[:-4]
-    return value
-
-
-def preflight_repo(repo_root: Path, config: Dict[str, Any], owner: Optional[Dict[str, Any]] = None) -> Tuple[bool, List[str], Dict[str, Any]]:
-    messages: List[str] = []
-    details: Dict[str, Any] = {'repo_root': str(repo_root)}
-    ok = True
-    if not repo_root.exists():
-        return False, [f'仓库目录不存在：{repo_root}'], details
-    inside = cmd(['git', '-C', str(repo_root), 'rev-parse', '--is-inside-work-tree'], timeout=10)
-    if not (inside.get('ok') and inside.get('stdout') == 'true'):
-        return False, [f'不是 Git 工作树：{repo_root}'], details
-    remote_name = config.get('default_remote', 'origin')
-    remote = cmd(['git', '-C', str(repo_root), 'remote', 'get-url', remote_name], timeout=10)
-    push_remote = cmd(['git', '-C', str(repo_root), 'remote', 'get-url', '--push', remote_name], timeout=10)
-    branch = cmd(['git', '-C', str(repo_root), 'rev-parse', '--abbrev-ref', 'HEAD'], timeout=10)
-    remote_url = remote.get('stdout', '')
-    push_remote_url = push_remote.get('stdout', '') if push_remote.get('ok') else remote_url
-    normalized = normalize_remote_url(remote_url)
-    details.update({
-        'remote_name': remote_name,
-        'remote_url': remote_url,
-        'push_remote_url': push_remote_url,
-        'normalized_remote_url': normalized,
-        'branch': branch.get('stdout', ''),
-        'archive_branch': config.get('default_archive_branch'),
-    })
-    if not remote.get('ok'):
-        ok = False
-        messages.append(f'无法读取 git remote {remote_name}。')
-    elif normalized != 'https://github.com/LinzeColin/CodexProject':
-        ok = False
-        messages.append(f'Git remote 不匹配：{remote_url}；预期 LinzeColin/CodexProject。')
-    if not branch.get('ok') or branch.get('stdout') != 'main':
-        ok = False
-        messages.append(f'当前分支不是 main：{branch.get("stdout") or branch.get("stderr") or "未采集"}。')
-    if owner:
-        if owner.get('repo_remote_name') != remote_name:
-            ok = False
-            messages.append(f'owner repo_remote_name 不匹配：{owner.get("repo_remote_name")} != {remote_name}。')
-        if owner.get('archive_branch') != config.get('default_archive_branch'):
-            ok = False
-            messages.append(f'owner archive_branch 不匹配：{owner.get("archive_branch")} != {config.get("default_archive_branch")}。')
-    if ok:
-        archive_branch = config.get('default_archive_branch')
-        branch_exists = cmd(['git', 'ls-remote', '--exit-code', '--heads', remote_url, archive_branch], timeout=30)
-        details['archive_branch_exists'] = bool(branch_exists.get('ok'))
-        if branch_exists.get('ok'):
-            details['archive_branch_remote_hash'] = (branch_exists.get('stdout') or '').split('\t')[0]
-            messages.append(f'仓库预检通过；归档分支 {archive_branch} 已存在。')
-        else:
-            messages.append(f'仓库预检通过；归档分支 {archive_branch} 尚不存在，将由首次上传创建。')
-    return ok, messages, details
-
-
 def require_owner_confirmations(config: Dict[str, Any]) -> Dict[str, Any]:
     if not OWNER_CONFIRMATIONS_PATH.exists():
         raise SystemExit(
@@ -528,8 +466,6 @@ def require_owner_confirmations(config: Dict[str, Any]) -> Dict[str, Any]:
         'understand_no_timemachine_no_icloud',
         'understand_scripts_do_not_auto_schedule',
     ]
-    if config.get('controlled_development_cleanup', {}).get('enabled'):
-        required_true.append('allow_controlled_development_cache_cleanup')
     missing = [k for k in required_true if owner.get(k) is not True]
     if missing:
         raise SystemExit(f'owner_confirmations.json 未确认必要项：{missing}')
@@ -608,166 +544,6 @@ def cleanup_cache() -> Dict[str, Any]:
     return {'cache_path': str(archive_cache), 'freed_mb': round(size / (1024 ** 2), 2), 'status': '已清理 macdata 临时上传缓存'}
 
 
-def is_safe_user_cache_target(path: Path) -> bool:
-    home = Path.home().resolve()
-    resolved = path.expanduser().resolve()
-    try:
-        rel = resolved.relative_to(home)
-    except ValueError:
-        return False
-    parts = rel.parts
-    if len(parts) < 3:
-        return False
-    if parts[0] != 'Library' or parts[1] != 'Caches':
-        return False
-    forbidden = {
-        home,
-        home / 'Library',
-        home / 'Library' / 'Caches',
-    }
-    return resolved not in {p.resolve() for p in forbidden}
-
-
-def remove_tree(path: Path) -> Dict[str, Any]:
-    expanded = path.expanduser()
-    if not expanded.exists():
-        return {'path': str(expanded), 'status': '不存在，跳过', 'freed_mb': 0.0, 'ok': True}
-    size = path_size_bytes(expanded)
-    try:
-        if expanded.is_dir():
-            shutil.rmtree(expanded)
-        else:
-            expanded.unlink()
-        return {'path': str(expanded), 'status': '已删除', 'freed_mb': round(size / (1024 ** 2), 2), 'ok': True}
-    except Exception as e:
-        return {'path': str(expanded), 'status': f'删除失败：{e}', 'freed_mb': 0.0, 'ok': False}
-
-
-def cleanup_user_cache_targets(config: Dict[str, Any]) -> Dict[str, Any]:
-    policy = config.get('controlled_development_cleanup', {})
-    targets = policy.get('user_cache_targets', [])
-    deleted: List[Dict[str, Any]] = []
-    skipped: List[Dict[str, Any]] = []
-    freed_mb = 0.0
-    for raw in targets:
-        path = Path(os.path.expanduser(str(raw)))
-        if not is_safe_user_cache_target(path):
-            skipped.append({'path': str(path), 'status': '不在用户 Library/Caches 的安全子目录内，跳过'})
-            continue
-        result = remove_tree(path)
-        if result.get('ok'):
-            freed_mb += float(result.get('freed_mb') or 0.0)
-            deleted.append(result)
-        else:
-            skipped.append(result)
-    return {
-        'status': '已执行用户态系统缓存清理',
-        'deleted_count': len([d for d in deleted if d.get('status') == '已删除']),
-        'skipped_count': len(skipped),
-        'freed_mb': round(freed_mb, 2),
-        'deleted': deleted[:50],
-        'skipped': skipped[:50],
-    }
-
-
-def project_cache_match(path: Path, repo_root: Path, names: List[str]) -> bool:
-    if path.name in names:
-        return True
-    try:
-        parts = path.relative_to(repo_root).parts
-    except ValueError:
-        return False
-    return len(parts) >= 2 and (parts[-2], parts[-1]) in {
-        ('node_modules', '.cache'),
-        ('.next', 'cache'),
-    }
-
-
-def cleanup_project_cache_targets(repo_root: Path, config: Dict[str, Any]) -> Dict[str, Any]:
-    policy = config.get('controlled_development_cleanup', {})
-    names = [str(v) for v in policy.get('project_cache_names', [])]
-    max_deleted = int(policy.get('project_cache_max_deleted_paths', 200))
-    deleted: List[Dict[str, Any]] = []
-    skipped: List[Dict[str, Any]] = []
-    freed_mb = 0.0
-    if not repo_root.exists():
-        return {'status': '仓库目录不存在，跳过项目缓存清理', 'deleted_count': 0, 'freed_mb': 0.0}
-    for root, dirs, _files in os.walk(repo_root):
-        current = Path(root)
-        if '.git' in current.parts:
-            dirs[:] = []
-            continue
-        matches = [d for d in list(dirs) if project_cache_match(current / d, repo_root, names)]
-        for dirname in matches:
-            target = current / dirname
-            if len(deleted) >= max_deleted:
-                skipped.append({'path': str(target), 'status': f'达到上限 {max_deleted}，跳过剩余项目缓存'})
-                dirs[:] = []
-                break
-            result = remove_tree(target)
-            dirs[:] = [d for d in dirs if d != dirname]
-            if result.get('ok'):
-                freed_mb += float(result.get('freed_mb') or 0.0)
-                deleted.append(result)
-            else:
-                skipped.append(result)
-    return {
-        'status': '已执行项目缓存清理',
-        'deleted_count': len([d for d in deleted if d.get('status') == '已删除']),
-        'skipped_count': len(skipped),
-        'freed_mb': round(freed_mb, 2),
-        'deleted': deleted[:100],
-        'skipped': skipped[:50],
-    }
-
-
-def cleanup_command(label: str, args: List[str], timeout: int) -> Dict[str, Any]:
-    availability = cmd([args[0], '--version'], timeout=10)
-    if not availability.get('ok'):
-        return {'label': label, 'status': f'{args[0]} 不可用，跳过', 'ok': True, 'stdout': '', 'stderr': availability.get('stderr', '')}
-    result = cmd(args, timeout=timeout)
-    return {
-        'label': label,
-        'status': '已执行' if result.get('ok') else '执行失败',
-        'ok': bool(result.get('ok')),
-        'stdout': first_lines(result.get('stdout', ''), 12),
-        'stderr': first_lines(result.get('stderr', ''), 12),
-        'seconds': result.get('seconds'),
-    }
-
-
-def run_controlled_development_cleanup(repo_root: Path, config: Dict[str, Any], owner: Dict[str, Any]) -> Dict[str, Any]:
-    policy = config.get('controlled_development_cleanup', {})
-    if not policy.get('enabled'):
-        return {'status': '配置未启用，跳过开发缓存清理', 'enabled': False}
-    if owner.get('allow_controlled_development_cache_cleanup') is not True:
-        return {'status': 'owner 未确认，跳过开发缓存清理', 'enabled': False}
-    status: Dict[str, Any] = {
-        'enabled': True,
-        'status': '已在 raw 数据远程验证成功后执行受控开发缓存清理',
-        'started_at_local': now_local_iso(),
-    }
-    timeout = int(policy.get('command_timeout_seconds', 120))
-    if policy.get('docker_cleanup'):
-        status['docker'] = cleanup_command('Docker 受控清理', ['docker', 'system', 'prune', '-f'], timeout)
-    else:
-        status['docker'] = {'status': '配置未启用，跳过'}
-    if policy.get('homebrew_cleanup'):
-        status['homebrew'] = cleanup_command('Homebrew 受控清理', ['brew', 'cleanup', '-s'], timeout)
-    else:
-        status['homebrew'] = {'status': '配置未启用，跳过'}
-    if policy.get('user_cache_cleanup'):
-        status['user_cache'] = cleanup_user_cache_targets(config)
-    else:
-        status['user_cache'] = {'status': '配置未启用，跳过'}
-    if policy.get('project_cache_cleanup'):
-        status['project_cache'] = cleanup_project_cache_targets(repo_root, config)
-    else:
-        status['project_cache'] = {'status': '配置未启用，跳过'}
-    status['finished_at_local'] = now_local_iso()
-    return status
-
-
 def render_cn_report(metrics: Dict[str, Any], config: Dict[str, Any], upload_status: Optional[Dict[str, Any]] = None, cleanup_status: Optional[Dict[str, Any]] = None) -> str:
     upload_status = upload_status or {'status': '待上传', 'message': '本报告生成时尚未完成 GitHub 上传验证。'}
     cleanup_status = cleanup_status or {'status': '待清理', 'message': '上传验证完成后才允许清理本机旧数据。'}
@@ -780,7 +556,6 @@ def render_cn_report(metrics: Dict[str, Any], config: Dict[str, Any], upload_sta
     sizes = metrics.get('sizes', {})
     docker = metrics.get('docker', {})
     brew = metrics.get('brew', {})
-    dev_cleanup = cleanup_status.get('controlled_development_cleanup', {}) if isinstance(cleanup_status, dict) else {}
     is_air = config['device_key'].lower().startswith('air')
     device_title = f"{config['device_key']} 每日明文健康报告"
 
@@ -957,11 +732,6 @@ Top 内存进程原文摘要，尽量只包含进程名称，不采集命令行�
 | 删除旧文件数量 | {val(cleanup_status.get('deleted_files'))} |
 | 释放空间 | {val(cleanup_status.get('freed_mb'))} MB |
 | 清理说明 | {val(cleanup_status.get('message', cleanup_status.get('status')))} |
-| 开发缓存清理总状态 | {val(dev_cleanup.get('status'))} |
-| Docker 清理状态 | {val(dev_cleanup.get('docker', {}).get('status') if isinstance(dev_cleanup.get('docker'), dict) else None)} |
-| Homebrew 清理状态 | {val(dev_cleanup.get('homebrew', {}).get('status') if isinstance(dev_cleanup.get('homebrew'), dict) else None)} |
-| 用户态系统缓存释放 | {val(dev_cleanup.get('user_cache', {}).get('freed_mb') if isinstance(dev_cleanup.get('user_cache'), dict) else None)} MB |
-| 项目缓存释放 | {val(dev_cleanup.get('project_cache', {}).get('freed_mb') if isinstance(dev_cleanup.get('project_cache'), dict) else None)} MB |
 
 十二、缺失项与失败项
 
@@ -970,10 +740,8 @@ Top 内存进程原文摘要，尽量只包含进程名称，不采集命令行�
 | Time Machine | 未采集 | 用户明确要求暂不采集 |
 | iCloud | 未采集 | 用户明确不要 iCloud |
 | API key / token / password | 未采集 | 凭证类数据禁止进入 GitHub |
-| Docker 清理 | {val(dev_cleanup.get('docker', {}).get('status') if isinstance(dev_cleanup.get('docker'), dict) else '等待 raw 上传验证')} | 仅在 owner 确认且 raw 远程验证成功后执行 `docker system prune -f` |
-| Homebrew 清理 | {val(dev_cleanup.get('homebrew', {}).get('status') if isinstance(dev_cleanup.get('homebrew'), dict) else '等待 raw 上传验证')} | 仅在 owner 确认且 raw 远程验证成功后执行 `brew cleanup -s` |
-| 系统缓存清理 | {val(dev_cleanup.get('user_cache', {}).get('status') if isinstance(dev_cleanup.get('user_cache'), dict) else '等待 raw 上传验证')} | 仅清理配置列出的用户态 `~/Library/Caches/*` 子目录，不使用 sudo |
-| 项目缓存清理 | {val(dev_cleanup.get('project_cache', {}).get('status') if isinstance(dev_cleanup.get('project_cache'), dict) else '等待 raw 上传验证')} | 仅清理 `.pytest_cache`、`__pycache__` 等可重建缓存，不删除源码和数据 |
+| Docker 清理 | 未执行 | 本任务只观察，不自动清理开发环境 |
+| 系统缓存清理 | 未执行 | 本任务只清理 macdata 自身临时缓存 |
 
 十三、下一次检查重点
 
@@ -1055,8 +823,6 @@ def archive_to_github(repo_root: Path, config: Dict[str, Any], stage: str, messa
     if not origin['ok'] or not origin['stdout']:
         return {'ok': False, 'status': '上传失败', 'message': f'无法读取 git remote {remote}: {origin.get("stderr") or origin.get("stdout")}' }
     origin_url = origin['stdout']
-    push_origin = cmd(['git', '-C', str(repo_root), 'remote', 'get-url', '--push', remote], timeout=10)
-    push_origin_url = push_origin['stdout'] if push_origin.get('ok') and push_origin.get('stdout') else origin_url
     tmp_parent = DEVICE_ROOT / 'data' / 'cache' / 'archive_push'
     tmp_parent.mkdir(parents=True, exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix=f'{config["device_key"]}-{stage}-', dir=str(tmp_parent)))
@@ -1067,7 +833,6 @@ def archive_to_github(repo_root: Path, config: Dict[str, Any], stage: str, messa
             clone = cmd(['git', 'clone', '--depth', '1', '--single-branch', '--branch', branch, origin_url, str(work)], timeout=120)
             if not clone['ok']:
                 return {'ok': False, 'status': '上传失败', 'message': f'临时浅克隆失败：{clone.get("stderr") or clone.get("stdout")}' }
-            cmd(['git', 'remote', 'set-url', '--push', 'origin', push_origin_url], cwd=work, timeout=20)
         else:
             work.mkdir(parents=True, exist_ok=True)
             init = cmd(['git', 'init'], cwd=work, timeout=20)
@@ -1075,10 +840,7 @@ def archive_to_github(repo_root: Path, config: Dict[str, Any], stage: str, messa
             remote_add = cmd(['git', 'remote', 'add', 'origin', origin_url], cwd=work, timeout=20)
             if not (init['ok'] and checkout['ok'] and remote_add['ok']):
                 return {'ok': False, 'status': '上传失败', 'message': '初始化临时归档分支失败'}
-            cmd(['git', 'remote', 'set-url', '--push', 'origin', push_origin_url], cwd=work, timeout=20)
 
-        cmd(['git', 'config', 'user.name', 'Codex Automation'], cwd=work, timeout=10)
-        cmd(['git', 'config', 'user.email', 'codex-automation@users.noreply.github.com'], cwd=work, timeout=10)
         dest_device_root = work / device_rel
         dest_device_root.mkdir(parents=True, exist_ok=True)
         # Copy only live data/report/latest directories, not scripts/docs, to keep archive branch lightweight.
@@ -1159,16 +921,14 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
         return 0
     owner = require_owner_confirmations(config)
     pre_ok, pre_messages, pre_hw = preflight_device(config, owner)
-    repo_ok, repo_messages, repo_preflight = preflight_repo(repo_root, config, owner)
-    if not (pre_ok and repo_ok):
-        print('预检失败。Codex 必须把以下问题明确问用户，得到确认后才可继续：')
-        for m in pre_messages + repo_messages:
+    if not pre_ok:
+        print('设备预检失败。Codex 必须把以下问题明确问用户，得到确认后才可继续：')
+        for m in pre_messages:
             print(f'- {m}')
         return 20
     rid = run_id(config['device_key'])
     metrics = collect_metrics(repo_root, config, rid)
-    metrics['preflight_messages'] = pre_messages + repo_messages
-    metrics['repo_preflight'] = repo_preflight
+    metrics['preflight_messages'] = pre_messages
     metrics['owner_confirmations_summary'] = {
         'confirmed_device_key': owner.get('confirmed_device_key'),
         'confirmed_at': owner.get('confirmed_at'),
@@ -1211,8 +971,7 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     ], int(config['retention_days']), dry_run=False)
     cleanup_cache_status = cleanup_cache()
     cleanup_status['cache_cleanup'] = cleanup_cache_status
-    cleanup_status['controlled_development_cleanup'] = run_controlled_development_cleanup(repo_root, config, owner)
-    cleanup_status['status'] = '已在 raw 数据上传验证成功后清理本机旧数据、macdata 临时缓存和受控开发缓存'
+    cleanup_status['status'] = '已在 raw 数据上传验证成功后清理本机旧数据和 macdata 临时缓存'
 
     final_upload = {
         'status': data_archive.get('status'),
@@ -1242,7 +1001,6 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     console_upload['status'] = '全部上传成功并已验证' if console_upload['remote_verified'] else '报告上传验证失败'
     console_upload['message'] = report_archive.get('message', '')
     console_report = render_cn_report(metrics, config, upload_status=console_upload, cleanup_status=cleanup_status)
-    write_text(latest_report, console_report)
     print(console_report)
     if not report_archive.get('ok'):
         print('报告归档失败：', report_archive)
@@ -1260,7 +1018,6 @@ def write_owner_template_if_requested() -> None:
         'allow_plaintext_device_metrics_to_github': True,
         'allow_github_upload': True,
         'allow_delete_local_macdata_older_than_3_days_after_verified_upload': True,
-        'allow_controlled_development_cache_cleanup': True,
         'understand_no_timemachine_no_icloud': True,
         'understand_scripts_do_not_auto_schedule': True,
         'repo_remote_name': config['default_remote'],
@@ -1285,9 +1042,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.preflight_only:
         owner = load_json(OWNER_CONFIRMATIONS_PATH) if OWNER_CONFIRMATIONS_PATH.exists() else None
         ok, messages, hardware = preflight_device(config, owner)
-        repo_ok, repo_messages, repo_preflight = preflight_repo(repo_root, config, owner)
-        print(json.dumps({'ok': ok and repo_ok, 'messages': messages + repo_messages, 'hardware': hardware, 'repo': repo_preflight}, ensure_ascii=False, indent=2))
-        return 0 if ok and repo_ok else 20
+        print(json.dumps({'ok': ok, 'messages': messages, 'hardware': hardware}, ensure_ascii=False, indent=2))
+        return 0 if ok else 20
     return controlled_cycle(repo_root, args.execute)
 
 

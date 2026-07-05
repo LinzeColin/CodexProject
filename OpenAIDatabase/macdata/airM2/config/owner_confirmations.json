@@ -1,12 +1,11 @@
 {
-  "allow_controlled_development_cache_cleanup": true,
   "allow_delete_local_macdata_older_than_3_days_after_verified_upload": true,
   "allow_github_upload": true,
   "allow_plaintext_device_metrics_to_github": true,
   "archive_branch": "macdata-airM2",
   "confirmed_at": "2026-07-05T21:36:51+10:00",
   "confirmed_device_key": "airM2",
-  "notes_cn": "用户确认：芯片配置以本机为主；用户命令优先级高于任务包默认边界；不要在此文件写入 API key、token、password、cookie、session 或 Keychain 内容。",
+  "notes_cn": "按原始任务包语义确认：不自动清理 Docker、Homebrew、系统缓存、项目缓存；不要在此文件写入 API key、token、password、cookie、session 或 Keychain 内容。",
   "repo_remote_name": "origin",
   "run_full_cycle_confirmed": true,
   "understand_no_timemachine_no_icloud": true,

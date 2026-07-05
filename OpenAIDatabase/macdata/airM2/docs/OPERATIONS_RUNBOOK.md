@@ -20,7 +20,7 @@ python3 OpenAIDatabase/macdata/airM2/scripts/run_controlled_cycle.py --repo-root
 6. 凭证扫描。
 7. 上传 raw 数据到 `macdata-airM2`。
 8. 远程 hash 验证。
-9. 验证成功后清理本机 3 天以前数据、macdata 临时缓存、受控 Docker/Homebrew/用户态系统缓存/项目缓存。
+9. 验证成功后清理本机 3 天以前数据和 macdata 临时缓存。
 10. 生成最终中文报告。
 11. 上传最终报告到 `macdata-airM2`。
 12. Codex session 输出全中文报告。
@@ -45,18 +45,14 @@ OpenAIDatabase/macdata/airM2/data/current_3days/raw/ 中 3 天以前日期目录
 OpenAIDatabase/macdata/airM2/reports/current_3days/ 中 3 天以前日期目录
 OpenAIDatabase/macdata/airM2/data/run_logs/ 中 3 天以前日期目录
 OpenAIDatabase/macdata/airM2/data/cache/archive_push/ 临时浅克隆缓存
-docker system prune -f，不含 volumes，不含 -a
-brew cleanup -s，不使用 sudo
-配置列出的 ~/Library/Caches/* 子目录
-.pytest_cache / .mypy_cache / .ruff_cache / __pycache__ / node_modules/.cache / .next/cache
 ```
 
 不允许删除：
 
 ```text
-Docker volumes
-docker system prune -a
-~/Library/Caches 根目录
-项目 node_modules / .venv / build / dist / 源码 / 数据
+Docker images / volumes / build cache
+Homebrew cache
+~/Library/Caches
+项目 node_modules / .venv / build / dist
 任何 OpenAIDatabase/macdata/proM2 内容
 ```
