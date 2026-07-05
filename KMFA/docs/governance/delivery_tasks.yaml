@@ -9849,3 +9849,53 @@ tasks:
     rollback: "Remove this phase evidence, validator, focused test, metadata records and ignored private diagnostic; do not modify raw inbox."
     target_version: "0.1.4-raw-consistency-cross-validation-gate"
     completed_version: "0.1.4-raw-consistency-cross-validation-gate"
+
+  - task_id: "KMFA-V014-VALUE-CONSISTENCY-SCOPE-GATE-20260705"
+    phase: "V014_VALUE_CONSISTENCY_SCOPE_GATE"
+    objective: "锁定 raw-to-processed value consistency 的 public-safe 执行范围、raw inbox mutation guard 和 repeated mismatch 差异报告义务；不执行 raw value matching 或正式报告。"
+    scope:
+      - "value consistency scope matrix"
+      - "difference report contract"
+      - "raw inbox readonly stat guard"
+      - "NO_GO downstream gate preservation"
+      - "validator and focused test"
+    non_scope:
+      - "raw value extraction"
+      - "processed-data reconciliation"
+      - "business value consistency claim"
+      - "lineage full check completion"
+      - "GitHub upload"
+      - "app reinstall"
+      - "formal report"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-V014-RAW-CONSISTENCY-CROSS-VALIDATION-GATE-20260705"
+    required_files:
+      - "KMFA/tools/v014_value_consistency_scope_gate.py"
+      - "KMFA/tools/check_v014_value_consistency_scope_gate.py"
+      - "KMFA/tests/test_v014_value_consistency_scope_gate.py"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_manifest.json"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_matrix.json"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/difference_report_contract.json"
+    acceptance_ids:
+      - "ACC-V014-VALUE-CONSISTENCY-SCOPE-GATE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m py_compile KMFA/tools/v014_value_consistency_scope_gate.py KMFA/tools/check_v014_value_consistency_scope_gate.py KMFA/tests/test_v014_value_consistency_scope_gate.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_value_consistency_scope_gate.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_value_consistency_scope_gate.py --require-private-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_value_consistency_scope_gate -q"
+    test_results:
+      - "PASS: value consistency scope gate generated and validated with release gates blocked"
+      - "PASS: focused unit test confirms scope lock and no business-value consistency claim"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/human/value_consistency_scope_report.md"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_manifest.json"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_matrix.json"
+      - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/difference_report_contract.json"
+    risk: "This phase locks scope only; actual raw value matching and processed-data reconciliation remain separate blocked gates."
+    rollback: "Remove this phase evidence, validator, focused test, metadata records and ignored private stat guard; do not modify raw inbox."
+    target_version: "0.1.4-value-consistency-scope-gate"
+    completed_version: "0.1.4-value-consistency-scope-gate"
