@@ -10200,3 +10200,21 @@ tasks:
     rollback: "Remove current phase artifacts, tool, validator, test, ignored private runtime diagnostic and governance entries."
     target_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application"
     completed_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application"
+
+  - task_id: "KMFA-V014-CURRENT-STATE-POINTER-REPAIR-20260705"
+    phase_id: "V014_CURRENT_STATE_POINTER_REPAIR"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-CURRENT-STATE-POINTER-REPAIR"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_current_state_pointer_repair.py --write-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_current_state_pointer_repair -q"
+    test_results:
+      - "PASS: current-state pointer repair validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_CURRENT_STATE_POINTER_REPAIR/human/current_state_pointer_repair_report.md"
+      - "KMFA/stage_artifacts/V014_CURRENT_STATE_POINTER_REPAIR/machine/current_state_pointer_repair_manifest.json"
+    risk: "This repair does not create an active owner-authorized fill record; materialization, raw comparison, formal report, GitHub upload and app reinstall remain blocked."
+    rollback: "Revert the current-state pointer edits, validator, focused test, evidence and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-current-state-pointer-repair"
+    completed_version: "0.1.4-current-state-pointer-repair"

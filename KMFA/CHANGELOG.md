@@ -1892,3 +1892,11 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 固定检查 2 个 git-ignored active fill record 候选路径，当前 `active_authorized_fill_record_found=false`、`fill_application_performed=false`、`source_map_records_applied_count=0`。
 - 记录 raw data immutable policy：本 phase 未读取、列出、fingerprint、写入、删除、移动、重命名、覆盖、标准化或复制 raw source；后续交叉验证必须与 raw source truth 一致，反复不一致时最终 goal 交付差异报告。
 - 未执行 materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-current-state-pointer-repair - 2026-07-05
+
+- 完成 `V014_CURRENT_STATE_POINTER_REPAIR` 本地 governance repair。
+- 修正 `HANDOFF.md`、`STATUS.md`、`OWNER_STATUS.md`、`功能清单.md`、`模型参数文件.md` 的当前状态指针：最新 completed phase 统一为 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION`。
+- 新增 `KMFA/tools/check_v014_current_state_pointer_repair.py`、focused unit test 和 `KMFA/stage_artifacts/V014_CURRENT_STATE_POINTER_REPAIR/` public-safe evidence。
+- 当前仍为 `NO_GO`：`active_owner_or_authorized_delegate_fill_record` 缺失，materialization replay、raw-to-processed comparison、GitHub upload、app reinstall、formal report 和业务执行继续阻断。
+- 本 repair 未读取、列出、修改、删除、移动、重命名、覆盖、标准化、复制或写入 raw inbox。
