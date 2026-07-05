@@ -234,10 +234,11 @@ OpenAIDatabase CI evidence-schema repair run.
 - assumptions: the user explicitly confirmed that local hardware truth overrides the original task pack's M2 Pro expectation and that user commands override the task pack where cleanup policy conflicted.
 - files read: root/OpenAIDatabase AGENTS, route output, task pack files, hardware profile, Git remote and worktree state.
 - files changed: `OpenAIDatabase/macdata/proM2/**`, OpenAIDatabase canonical governance files, rendered owner files, and `scripts/lean_governance.py` newline compatibility fix.
+- follow-up status fix: `run_controlled_cycle.py` now rewrites `last_run_status.json` after report archive upload so top-level `ok`, `archive_branch`, `remote_verified`, and `report_archive` are present; `test_macdata_package.py` covers this shape.
 - model changes: added `MOD-MACDATA-PROM2-001` for device preflight and archive cleanup policy.
 - parameter changes: added `PARAM-MACDATA-PROM2-001` through `PARAM-MACDATA-PROM2-004`.
 - commands: `python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q`; `python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`; `python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase`.
-- test results: package unittest PASS with 5 tests OK; preflight PASS on MacBook Pro / Mac14,5 / Apple M2 Max / 32GB; check-render PASS with drift_count 0.
+- test results: package unittest PASS with 6 tests OK; preflight PASS on MacBook Pro / Mac14,5 / Apple M2 Max / 32GB; check-render PASS with drift_count 0.
 - successes: owner confirmations created without credentials; task pack now fails closed on chip mismatch unless local M2 Max truth is present; cleanup remains gated behind successful remote upload verification.
 - failures: full archive cycle and remote branch verification are pending until setup commit is pushed and the script is executed.
 - decisions: keep product version at 0.2.0 and do not promote OpenAIDatabase delivery readiness; macdata is a controlled archive sub-workflow.

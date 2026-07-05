@@ -7,6 +7,7 @@
 - Added owner confirmations for GitHub upload, plaintext non-credential device metrics, no Time Machine, no iCloud, and verified-upload-before-cleanup.
 - Added remote-verified cleanup policy for Docker, Homebrew, system cache best-effort purge, and project cache whitelist deletion.
 - Added focused package tests and governance records for the macdata setup.
+- Fixed `last_run_status.json` so it records raw archive, report archive, top-level `ok`, archive branch, and final remote verification after the report upload completes.
 
 No API key, token, password, cookie, session, Keychain item, shell history, full environment dump, `.env` raw content, Time Machine data, or iCloud data is collected.
 

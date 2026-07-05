@@ -27,6 +27,7 @@
 - Device truth: `MacBook Pro / Mac14,5 / Apple M2 Max / 32GB`
 - Archive branch: `macdata-proM2`
 - Cleanup gate: remote upload hash verification must pass before macdata retention cleanup or Docker/Homebrew/system/project cache cleanup runs.
+- Status file: `last_run_status.json` records raw/report archive results, top-level `ok`, archive branch, and remote verification after report upload completes.
 - Secret boundary: API keys, tokens, passwords, cookies, sessions, Keychain, shell history, full environment dumps, and `.env` raw content are out of scope.
 
 ## Assurance
