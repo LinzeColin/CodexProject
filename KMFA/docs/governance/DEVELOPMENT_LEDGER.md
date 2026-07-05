@@ -1,9 +1,18 @@
+# KMFA v0.1.4 S16-P3 Customer Business Analysis
+- Product version: `0.1.4-s16p3-customer-business-analysis`.
+- Scope: S16-P3 only; public-safe customer business analysis lock using S16-P2 dependency and S08/S09/S13 public-safe fact manifests.
+- Evidence: `KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/`.
+- Verification: `KMFA/tools/check_v014_s16_p3_customer_business_analysis.py`; `KMFA/tests/test_v014_s16_p3_customer_business_analysis.py`.
+- blocker_state: source_lanes=7, customer_value_dimensions=4, value_signals=4, risk_signals=4, summaries=4, handoff_guards=4, pending_reconciliation=12, report_grade=D, formal_report=0, business_decision_basis=0, customer_contact=0, collection_action=0, legal_decision=0, payment_execution=0, bank_operation=0, Stage16 review=false, GitHub upload=false, raw_publication=false, raw_mutation=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+product_version: 0.1.4-s16p3-customer-business-analysis
+version_matrix_product_version_reference: 0.1.4-s16p3-customer-business-analysis
+
 # KMFA v0.1.4 S16-P2 Project Status Lifecycle
 - Product version: `0.1.4-s16p2-project-status-lifecycle`.
 - Scope: S16-P2 only; public-safe project status lifecycle baseline lock using S16-P1 dependency and legacy S16-P2 public-safe evidence.
 - Evidence: `KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/`.
 - Verification: `KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py`; `KMFA/tests/test_v014_s16_p2_project_status_lifecycle.py`.
-- blocker_state: source_lanes=6, lifecycle_records=4, exception_items=3, handoff_guards=3, pending_reconciliation=12, report_grade=D, site_operation=0, signature_operation=0, invoice_issuance=0, collection_action=0, payment_execution=0, bank_operation=0, formal_report=0, business_decision_basis=0, S16-P3=false, Stage16 review=false, GitHub upload=false, raw_publication=false, raw_mutation=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
+- blocker_state: source_lanes=6, lifecycle_records=4, exception_items=3, handoff_guards=3, pending_reconciliation=12, report_grade=D, site_operation=0, signature_operation=0, invoice_issuance=0, collection_action=0, payment_execution=0, bank_operation=0, formal_report=0, business_decision_basis=0, S16-P3=completed later, Stage16 review=false, GitHub upload=false, raw_publication=false, raw_mutation=false, protected source matching=false, lineage full check=false, business_execution_allowed=false.
 product_version: 0.1.4-s16p2-project-status-lifecycle
 version_matrix_product_version_reference: 0.1.4-s16p2-project-status-lifecycle
 
