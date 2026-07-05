@@ -1377,3 +1377,13 @@ v014_s17p1_access_security_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY
   validator: KMFA/tools/check_v014_s17_p1_access_security.py
   scope: S17-P1 access/security only; public-safe role permissions, sensitive public repository policy and audit-log policy; no S17-P2 notification delivery, S17-P3 operations, Stage17 review, upload, raw inbox access, raw matching, lineage, full report email body, formal report, external connector, app reinstall or business execution.
+
+
+v014_s17p2_notification_policy_registry_note:
+  version: "0.1.4-s17p2-notification-policy"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S17P2-NOTIFICATION-POLICY-001
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY
+  validator: KMFA/tools/check_v014_s17_p2_notification_policy.py
+  scope: "S17-P2 notification policy only; metadata outbox/log evidence for report-ready, risk and missing-source reminders; no S17-P3, Stage17 review, upload, raw inbox access, raw matching, lineage, full report email body, report attachment, recipient address plaintext, real notification delivery, external connector, app reinstall, formal report or business execution."

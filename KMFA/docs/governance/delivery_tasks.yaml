@@ -9491,3 +9491,56 @@ tasks:
       external_connector: false
       business_decision_basis: false
       business_execution: false
+
+
+  - task_id: "KMFA-V014-S17-P2-NOTIFICATION-POLICY-20260705"
+    task_name: "v0.1.4 S17-P2 通知策略"
+    stage_id: "V014-S17"
+    phase_id: "S17-P2"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY"
+    validator: "KMFA/tools/check_v014_s17_p2_notification_policy.py"
+    focused_test: "KMFA/tests/test_v014_s17_p2_notification_policy.py"
+    acceptance_id: "ACC-V014-S17-P2-NOTIFICATION-POLICY"
+    acceptance_ids:
+      - "ACC-V014-S17-P2-NOTIFICATION-POLICY"
+    next_phase: "S17-P3"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s17p2-notification-policy"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s17_p2_notification_policy.py KMFA/tools/check_v014_s17_p2_notification_policy.py KMFA/tests/test_v014_s17_p2_notification_policy.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s17_p2_notification_policy.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_p2_notification_policy.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s17_p2_notification_policy -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: py_compile, generator, v0.1.4 S17-P2 validator and focused unit test passed."
+      - "PASS: final governance validation, lean governance, governance sync, no-float, no-omission, structured parse checks, Ruby YAML parse checks, raw/private suffix scan, high-signal secret scan, scoped S17-P2 artifact boundary scan and git diff check passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/human/notification_policy_report.md"
+      - "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/machine/notification_policy_manifest.json"
+      - "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/machine/notification_rule_lock.jsonl"
+      - "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/machine/notification_event_log.jsonl"
+      - "KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/machine/notification_dispatch_log.jsonl"
+      - "KMFA/metadata/notifications/v014_s17_p2_notification_manifest.json"
+      - "KMFA/tools/check_v014_s17_p2_notification_policy.py"
+    forbidden_scope:
+      s17_p3: false
+      stage17_review: false
+      github_upload: false
+      raw_inbox_access: false
+      protected_source_matching: false
+      lineage_full_check: false
+      real_notification_delivery: false
+      full_report_email_body: false
+      report_attachment: false
+      recipient_address_plaintext: false
+      formal_report: false
+      live_connector: false
+      app_reinstall: false
+      external_connector: false
+      business_decision_basis: false
+      business_execution: false

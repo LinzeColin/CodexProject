@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S17-P2 Notification Policy
+- Product version: `0.1.4-s17p2-notification-policy`.
+- Scope: S17-P2 only; public-safe notification rule/event/metadata dispatch log lock using S17-P1 dependency and legacy S17-P2 public-safe baseline.
+- Evidence: `KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/`.
+- Verification: `KMFA/tools/check_v014_s17_p2_notification_policy.py`; `KMFA/tests/test_v014_s17_p2_notification_policy.py`.
+- blocker_state: notification_rules=3, notification_events=3, metadata_dispatch_logs=3, trigger_types=3, real_notification_delivery=0, full_report_email_body=0, report_attachment=0, recipient_address_plaintext=0, external_connector=0, formal_report=0, business_decision_basis=0, business_execution=0, raw_inbox_access=0, report_grade=D, S17-P3=false, Stage17 review=false, GitHub upload=false, protected source matching=false, lineage full check=false, app_reinstall=false.
+product_version: 0.1.4-s17p2-notification-policy
+version_matrix_product_version_reference: 0.1.4-s17p2-notification-policy
+
 # KMFA v0.1.4 S17-P1 Access Security
 - Product version: `0.1.4-s17p1-access-security`.
 - Scope: S17-P1 only; public-safe role permission, sensitive public repository policy and audit-log policy lock using S16 Stage review dependency and legacy S17-P1 public-safe baseline.
@@ -993,3 +1002,4 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 
 | `2026-07-03T23:10:00+10:00` | implementation | v0.1.4 S01-P3 no-omission baseline 本地完成，completed_version=`0.1.4-s01p3-no-omission-baseline`：legacy requirements=20/P0=9/P1=8，v1.4 overlay requirements=5，roadmap registry=18 Stage/54 Phase/162 Task；未读取、列出、修改、删除、移动、重命名、覆盖或写入 raw inbox；未执行 Stage 1 review、S02、GitHub upload、raw value matching、正式报告或业务执行 | `KMFA-V014-S01-P3-NO-OMISSION-BASELINE-20260703` | EXTRACTED | `KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/s01_p3_completion_record.md` |
 | `KMFA-V014-S16-STAGE-REVIEW-20260705` | v0.1.4 Stage 16 review completed local-only with S16-P1/S16-P2/S16-P3 validators, Stage 16 review validator, focused unit test and public-safe evidence; no S17-P1, GitHub upload, protected source matching, lineage full check, formal report, procurement/payment/bank/site/signature/invoice/customer/collection/legal/tax action or business execution | `KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/human/stage16_review_report.md` |
+| `2026-07-05T14:45:00+10:00` | implementation | v0.1.4 S17-P2 notification policy 本地完成：验证 S17-P1 dependency、legacy S17-P2 public-safe baseline 和 v1.4 roadmap；锁定三类提醒规则、事件、metadata dispatch log 和 metadata copy parity；真实通知发送、完整报告邮件正文、附件、收件地址明文、外部连接器、S17-P3、Stage17 review、GitHub upload、正式报告和业务执行均未执行 | `KMFA-V014-S17-P2-NOTIFICATION-POLICY-20260705` | EXTRACTED | `KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/human/notification_policy_report.md` |
