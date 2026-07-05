@@ -54,7 +54,9 @@ class MacDataPackageTests(unittest.TestCase):
         self.assertIn('latest_report.txt', source)
         self.assertIn("_draft.txt'", source)
         self.assertIn("_final.txt'", source)
-        self.assertNotIn('latest_report' + '.md', source)
+        md_lines = [line for line in source.splitlines() if 'latest_report.md' in line]
+        self.assertEqual(md_lines, ["    stale_latest_report = DEVICE_ROOT / 'reports' / 'latest' / 'latest_report.md'"])
+        self.assertIn('stale_latest_report.unlink()', source)
 
     def test_retention_deletes_only_old_date_dirs(self):
         with tempfile.TemporaryDirectory() as td:
