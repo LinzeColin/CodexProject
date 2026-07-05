@@ -31,7 +31,7 @@ Codex 官方文档说明，project-scoped automations 运行时，本机 Codex a
 3. 查看当天 run 是否成功。
 4. 查看 Triage 中的中文明文报告。
 5. 查看 GitHub 归档分支 `macdata-airM2` 是否出现当天 commit。
-6. 查看本机 `OpenAIDatabase/macdata/airM2/reports/latest/latest_report.txt`。
+6. 查看本机 `OpenAIDatabase/macdata/airM2/reports/latest/latest_report.md`。
 
 ## 成功状态
 
