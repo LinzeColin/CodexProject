@@ -17,9 +17,9 @@ dimensions:
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
     checked_active_parameters: 28
-    total_active_parameters: 94
+    total_active_parameters: 98
     checked_active_formulas: 10
-    total_active_formulas: 11
+    total_active_formulas: 12
     unresolved_fact_ids:
       - "FACT-OpenAIDatabase-IMPLEMENTATION-FORMULA-REVIEW"
       - "FACT-OpenAIDatabase-IMPLEMENTATION-PARAMETER-REVIEW"
@@ -30,7 +30,7 @@ dimensions:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
     checked_active_parameters: 28
-    total_active_parameters: 94
+    total_active_parameters: 98
     evidence_refs:
       - "OpenAIDatabase/docs/governance/parameter_registry.csv"
   methodological_rationale:

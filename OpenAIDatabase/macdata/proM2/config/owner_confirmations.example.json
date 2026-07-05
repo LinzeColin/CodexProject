@@ -1,0 +1,14 @@
+{
+  "allow_delete_local_macdata_older_than_3_days_after_verified_upload": true,
+  "allow_development_cache_cleanup_after_verified_upload": true,
+  "allow_github_upload": true,
+  "allow_plaintext_device_metrics_to_github": true,
+  "archive_branch": "macdata-proM2",
+  "confirmed_at": "<Codex 根据用户确认填写 ISO 时间>",
+  "confirmed_device_key": "proM2",
+  "notes_cn": "不要在此文件写入 API key、token、password、cookie、session 或 Keychain 内容。",
+  "repo_remote_name": "origin",
+  "run_full_cycle_confirmed": true,
+  "understand_no_timemachine_no_icloud": true,
+  "understand_scripts_do_not_auto_schedule": true
+}

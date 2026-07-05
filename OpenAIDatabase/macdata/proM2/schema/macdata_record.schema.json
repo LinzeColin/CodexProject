@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "collected_at_local": {
+      "type": "string"
+    },
+    "device_key": {
+      "const": "proM2"
+    },
+    "hardware": {
+      "type": "object"
+    },
+    "memory": {
+      "type": "object"
+    },
+    "risk": {
+      "type": "object"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "storage": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "device_key",
+    "run_id",
+    "collected_at_local",
+    "hardware",
+    "storage",
+    "memory",
+    "risk"
+  ],
+  "title": "macdata proM2 record",
+  "type": "object"
+}

@@ -222,6 +222,29 @@ OpenAIDatabase CI evidence-schema repair run.
 - rollback: revert TASK-OAI-D-003 script and governance changes; OpenAIDatabase CI would return to the known failing state.
 - next step: rerun changed-only governance and push main; confirm GitHub OpenAIDatabase CI passes on the new commit.
 
+### ITER-20260705-MACDATA-PROM2-SETUP
+
+- date: 2026-07-05
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- result commit: PENDING
+- task IDs: MACDATA-PROM2-SETUP-20260705, ACC-MACDATA-PROM2-SETUP-20260705
+- objective: install the proM2 macdata controlled archive task pack, align device preflight with the local Apple M2 Max MacBook Pro, and set up GitHub archive branch behavior with verified-upload-before-cleanup.
+- assumptions: the user explicitly confirmed that local hardware truth overrides the original task pack's M2 Pro expectation and that user commands override the task pack where cleanup policy conflicted.
+- files read: root/OpenAIDatabase AGENTS, route output, task pack files, hardware profile, Git remote and worktree state.
+- files changed: `OpenAIDatabase/macdata/proM2/**`, OpenAIDatabase canonical governance files, rendered owner files, and `scripts/lean_governance.py` newline compatibility fix.
+- model changes: added `MOD-MACDATA-PROM2-001` for device preflight and archive cleanup policy.
+- parameter changes: added `PARAM-MACDATA-PROM2-001` through `PARAM-MACDATA-PROM2-004`.
+- commands: `python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q`; `python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`; `python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase`.
+- test results: package unittest PASS with 5 tests OK; preflight PASS on MacBook Pro / Mac14,5 / Apple M2 Max / 32GB; check-render PASS with drift_count 0.
+- successes: owner confirmations created without credentials; task pack now fails closed on chip mismatch unless local M2 Max truth is present; cleanup remains gated behind successful remote upload verification.
+- failures: full archive cycle and remote branch verification are pending until setup commit is pushed and the script is executed.
+- decisions: keep product version at 0.2.0 and do not promote OpenAIDatabase delivery readiness; macdata is a controlled archive sub-workflow.
+- remaining risks: Docker/Homebrew/system/project cache cleanup must stay within the configured whitelist and command boundaries.
+- rollback: revert this setup commit; delete the remote `macdata-proM2` branch only after confirming its history is no longer needed.
+- next step: commit and push setup, then run the full controlled cycle to create and verify the archive branch.
+
 ## Reconstructed Development Events
 
 Scoped git history reviewed with:

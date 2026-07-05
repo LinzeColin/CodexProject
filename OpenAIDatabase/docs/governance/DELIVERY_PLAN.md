@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 13
+task_count: 14
 
 ## Phase A - Discovery and Baseline
 
@@ -209,6 +209,22 @@ task_count: 13
 - completed version: 0.2.0
 
 ## Phase E - Delivery and Operation
+
+### MACDATA-PROM2-SETUP-20260705
+
+- task_id: MACDATA-PROM2-SETUP-20260705
+- phase: MACDATA
+- objective: Install proM2 MacData controlled archive workflow using the local Apple M2 Max MacBook Pro as device truth.
+- scope: `OpenAIDatabase/macdata/proM2`, OpenAIDatabase governance records, GitHub archive branch `macdata-proM2`.
+- non_scope: Time Machine, iCloud, API keys, tokens, passwords, cookies, sessions, Keychain, shell history, full environment dumps, `.env` raw content, and other macdata devices.
+- status: in_progress
+- dependencies: S5PBT03
+- required files: `device_config.json`, `owner_confirmations.json`, `run_controlled_cycle.py`, `test_macdata_package.py`
+- acceptance_ids: ACC-MACDATA-PROM2-SETUP-20260705
+- test commands: `python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q`; `python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`; full `--execute` archive cycle after setup push.
+- evidence: local package tests and preflight pass on MacBook Pro / Mac14,5 / Apple M2 Max / 32GB; full archive branch verification is pending until setup is pushed.
+- risk: Docker/Homebrew/system/project-cache cleanup must remain gated by remote hash verification and project-cache whitelist rules.
+- rollback: revert setup commit; delete remote `macdata-proM2` only after confirming archive history is no longer needed.
 
 ### TASK-OAI-E-001
 

@@ -1,6 +1,22 @@
 governance_spec_version: "1.0.0"
 project_id: "OpenAIDatabase"
 tasks:
+  - task_id: "MACDATA-PROM2-SETUP-20260705"
+    phase: "MACDATA"
+    objective: "Install proM2 macdata controlled archive workflow and align preflight/cleanup policy with owner-confirmed local hardware and cleanup requirements."
+    scope: ["OpenAIDatabase/macdata/proM2", "OpenAIDatabase governance records", "GitHub archive branch macdata-proM2"]
+    non_scope: ["Time Machine", "iCloud", "API keys", "tokens", "passwords", "cookies", "sessions", "Keychain", "shell history", "full environment dumps", ".env raw content", "other macdata devices"]
+    status: "in_progress"
+    dependencies: ["S5PBT03"]
+    required_files: ["OpenAIDatabase/macdata/proM2/config/device_config.json", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json", "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"]
+    acceptance_ids: ["ACC-MACDATA-PROM2-SETUP-20260705"]
+    test_commands: ["python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q", "python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only", "git ls-remote origin refs/heads/macdata-proM2"]
+    test_results: ["PASS: package unittest ran 5 tests OK", "PASS: preflight detected MacBook Pro / Mac14,5 / Apple M2 Max / 32GB", "PENDING: archive branch verification after full cycle"]
+    evidence_refs: ["OpenAIDatabase/macdata/proM2/config/device_config.json", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"]
+    risk: "Cleanup must remain remote-verified and whitelist-bound."
+    rollback: "Revert setup commit; delete macdata-proM2 remote branch only after confirming archive history is not needed."
+    target_version: "0.2.0"
+    completed_version: ""
   - task_id: "TASK-OAI-A-001"
     phase: "A"
     objective: "Complete P10 read-only audit for OpenAIDatabase."

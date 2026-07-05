@@ -8,7 +8,7 @@ owner_role: "privacy_owner + product_owner"
 current_status: "failed_delivery_readiness"
 limitations:
   -
-    statement: "实现一致性为 PARTIAL：28/92 active parameters 和 10/11 active formulas 有机器抽取/指纹证据；64 个 active parameters 与 FORM-010 仍为 HUMAN_REVIEW_REQUIRED。"
+    statement: "实现一致性为 PARTIAL：28/98 active parameters 和 10/12 active formulas 有机器抽取/指纹证据；70 个 active parameters 与 FORM-010、FORM-MACDATA-PROM2-001 仍为 HUMAN_REVIEW_REQUIRED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-OAIDB-ASSURANCE-STATUS"
@@ -255,6 +255,51 @@ features:
     evidence_refs:
       - "EVID-OAIDB-TRACEABILITY-MATRIX"
       - "EVID-OAIDB-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-MACDATA-PROM2-001"
+    name: "proM2 每日 MacData 归档"
+    description: "采集本机明文硬件、存储、内存、Docker、Homebrew 和仓库体积指标，生成中文报告，凭证扫描后 commit + push 到 `macdata-proM2`，远程 hash 验证成功后清理本机 3 天以前 macdata 记录。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-MACDATA-PROM2-001"
+    formula_ids:
+      - "FORM-MACDATA-PROM2-001"
+    parameter_ids:
+      - "PARAM-MACDATA-PROM2-001"
+      - "PARAM-MACDATA-PROM2-002"
+      - "PARAM-MACDATA-PROM2-003"
+      - "PARAM-MACDATA-PROM2-004"
+    requirement_ids:
+      - "REQ-MACDATA-PROM2-001"
+    code_refs:
+      - "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+    test_refs:
+      - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+    evidence_refs:
+      - "EVID-MACDATA-PROM2-CONFIG"
+      - "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
+  -
+    feature_id: "FEAT-MACDATA-PROM2-002"
+    name: "上传后受控开发环境清理"
+    description: "owner 覆盖任务包旧边界：远程验证成功后执行 Docker `system prune -f`、Homebrew `cleanup`、系统缓存 `purge` best-effort、项目缓存白名单删除；不清 Docker volumes，不使用 `-a`，不删 `node_modules` / `.venv` / `build` / `dist` 根目录。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-MACDATA-PROM2-001"
+    formula_ids:
+      - "FORM-MACDATA-PROM2-001"
+    parameter_ids:
+      - "PARAM-MACDATA-PROM2-004"
+    requirement_ids:
+      - "REQ-MACDATA-PROM2-002"
+    code_refs:
+      - "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+    test_refs:
+      - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+    evidence_refs:
+      - "EVID-MACDATA-PROM2-CONFIG"
+      - "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
 models:
   -
     model_id: "MOD-001"
@@ -558,6 +603,27 @@ models:
     evidence_refs:
       - "EVID-OAIDB-MODEL-REGISTRY"
       - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    model_id: "MOD-MACDATA-PROM2-001"
+    name: "Device preflight and archive cleanup policy"
+    purpose: "将 proM2 设备预检、GitHub 归档、凭证扫描、远程验证后清理策略固定为可测试规则。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    formula_ids:
+      - "FORM-MACDATA-PROM2-001"
+    parameter_ids:
+      - "PARAM-MACDATA-PROM2-001"
+      - "PARAM-MACDATA-PROM2-002"
+      - "PARAM-MACDATA-PROM2-003"
+      - "PARAM-MACDATA-PROM2-004"
+    code_refs:
+      - "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+    test_refs:
+      - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+    evidence_refs:
+      - "EVID-MACDATA-PROM2-CONFIG"
+      - "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
 formulas:
   -
     formula_id: "FORM-001"
@@ -746,7 +812,105 @@ formulas:
     evidence_refs:
       - "EVID-OAIDB-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-OAIDB-MANIFEST"
+  -
+    formula_id: "FORM-MACDATA-PROM2-001"
+    model_id: "MOD-MACDATA-PROM2-001"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    expression: "preflight passes only on macOS when model contains MacBook Pro, chip contains owner-confirmed M2 Max, memory >= 32GB, and owner_confirmations.confirmed_device_key == proM2. Full run writes metrics/report, scans for credential patterns, pushes raw archive to macdata-proM2, verifies remote hash, then cleans macdata retention and owner-confirmed development caches. If push or remote verification fails, cleanup is not executed."
+    code_refs:
+      - "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+    test_refs:
+      - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+    evidence_refs:
+      - "EVID-MACDATA-PROM2-CONFIG"
+      - "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
 parameters:
+  -
+    parameter_id: "PARAM-MACDATA-PROM2-001"
+    model_id: "MOD-MACDATA-PROM2-001"
+    formula_id: "FORM-MACDATA-PROM2-001"
+    symbol: "expected_chip_keywords"
+    name: "owner-confirmed chip preflight keyword"
+    value: "M2 Max"
+    source: "USER_CONFIRMED: 芯片配置以本机为主；本机实测 Apple M2 Max。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+    config_refs:
+      - "OpenAIDatabase/macdata/proM2/config/device_config.json"
+    test_refs:
+      - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+    evidence_refs:
+      - "EVID-MACDATA-PROM2-CONFIG"
+      - "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
+  -
+    parameter_id: "PARAM-MACDATA-PROM2-002"
+    model_id: "MOD-MACDATA-PROM2-001"
+    formula_id: "FORM-MACDATA-PROM2-001"
+    symbol: "expected_memory_gb_min"
+    name: "minimum physical memory for proM2 preflight"
+    value: "32"
+    source: "USER_CONFIRMED and system_profiler preflight."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+    config_refs:
+      - "OpenAIDatabase/macdata/proM2/config/device_config.json"
+    test_refs:
+      - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+    evidence_refs:
+      - "EVID-MACDATA-PROM2-CONFIG"
+  -
+    parameter_id: "PARAM-MACDATA-PROM2-003"
+    model_id: "MOD-MACDATA-PROM2-001"
+    formula_id: "FORM-MACDATA-PROM2-001"
+    symbol: "default_archive_branch"
+    name: "GitHub archive branch for proM2 MacData history"
+    value: "macdata-proM2"
+    source: "USER_CONFIRMED"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+    config_refs:
+      - "OpenAIDatabase/macdata/proM2/config/device_config.json"
+    test_refs:
+      - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+    evidence_refs:
+      - "EVID-MACDATA-PROM2-CONFIG"
+      - "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
+  -
+    parameter_id: "PARAM-MACDATA-PROM2-004"
+    model_id: "MOD-MACDATA-PROM2-001"
+    formula_id: "FORM-MACDATA-PROM2-001"
+    symbol: "post_upload_cleanup_policy"
+    name: "remote-verified post-upload cleanup policy"
+    value: "docker system prune -f without -a or --volumes; brew cleanup; purge best-effort; project cache whitelist only"
+    source: "USER_CONFIRMED: 用户命令优先级高于任务包，要求自动清理 Docker、Homebrew、系统缓存、项目缓存。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py"
+    config_refs:
+      - "OpenAIDatabase/macdata/proM2/config/device_config.json"
+      - "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json"
+    test_refs:
+      - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+    evidence_refs:
+      - "EVID-MACDATA-PROM2-CONFIG"
+      - "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
   -
     parameter_id: "PARAM-001"
     model_id: "MOD-001"
@@ -2690,6 +2854,21 @@ delivery_readiness:
     - "EVID-OAIDB-ASSURANCE-STATUS"
     - "EVID-OAIDB-TRACEABILITY-MATRIX"
 evidence_refs:
+  -
+    evidence_id: "EVID-MACDATA-PROM2-CONFIG"
+    kind: "file"
+    ref: "OpenAIDatabase/macdata/proM2/config/device_config.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
+    kind: "file"
+    ref: "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-MACDATA-PROM2-TESTS"
+    kind: "test"
+    ref: "python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q"
+    fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OAIDB-MODEL-REGISTRY"
     kind: "file"

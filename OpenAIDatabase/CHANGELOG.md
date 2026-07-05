@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased - macdata proM2 Controlled Archive
+
+- Added `OpenAIDatabase/macdata/proM2` as a controlled Codex Automation task pack for this MacBook Pro.
+- Updated the device preflight to use the owner-confirmed local hardware truth: MacBook Pro / Mac14,5 / Apple M2 Max / 32GB.
+- Added owner confirmations for GitHub upload, plaintext non-credential device metrics, no Time Machine, no iCloud, and verified-upload-before-cleanup.
+- Added remote-verified cleanup policy for Docker, Homebrew, system cache best-effort purge, and project cache whitelist deletion.
+- Added focused package tests and governance records for the macdata setup.
+
+No API key, token, password, cookie, session, Keychain item, shell history, full environment dump, `.env` raw content, Time Machine data, or iCloud data is collected.
+
 ## Unreleased - Memory Atlas v1.1.7 Pre Stage 0
 
 - Added `docs/product/memory_atlas_v1_1_7_gap_remediation_upgrade_contract.md`.
