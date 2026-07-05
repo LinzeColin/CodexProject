@@ -7135,3 +7135,46 @@ formulas:
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/human/private_processed_value_source_resolution_report.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/human/test_results.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_manifest.json"
+
+
+  - formula_id: FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-CAPTURE-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 private processed value source-map capture gate
+    version: "0.1.4-private-processed-value-source-map-capture"
+    status: active
+    fact_level: EXTRACTED
+    expression: "processed_target_slot_count=149 AND path_only_private_ref_slot_count=149 AND captured_processed_value_fingerprint_count=0 AND authorized_fill_required_slot_count=149 -> source_map_capture_complete=false, business_value_consistency_verified=false, decision=NO_GO, github_upload_allowed=false, app_reinstall_allowed=false"
+    variables:
+      - name: "processed_target_slot_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "149"
+      - name: "captured_processed_value_fingerprint_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "0"
+      - name: "authorized_fill_required_slot_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "149"
+      - name: "business_value_consistency_verified"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "Slot-level capture diagnostics and fill requests stay in git-ignored private runtime."
+      - "Public evidence contains aggregate counts, statuses and evidence refs only."
+      - "No processed values, private refs, raw filenames, field/header/sheet/entry plaintext or raw values may be committed."
+      - "Raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, Go/No-Go report, summary, private capture diagnostic, private fill request, validator, focused unit test or governance record fails validation."
+    output_range: "v014_private_processed_value_source_map_capture_manifest"
+    code_refs:
+      - "KMFA/tools/v014_private_processed_value_source_map_capture.py"
+      - "KMFA/tools/check_v014_private_processed_value_source_map_capture.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_capture.py --require-private-capture"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_capture -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/human/private_processed_value_source_map_capture_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/machine/private_processed_value_source_map_capture_manifest.json"

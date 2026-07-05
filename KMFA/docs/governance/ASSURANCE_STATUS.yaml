@@ -4,7 +4,7 @@ source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "461b0a40b7e7ffb7f8250cf0414db27a3dafb815"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-05T23:59:59+10:00"
-generator_version: "manual-0.1.4-private-processed-value-source-resolution"
+generator_version: "manual-0.1.4-private-processed-value-source-map-capture"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 874
-    total_active_formulas: 133
+    total_active_parameters: 877
+    total_active_formulas: 134
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/human/test_results.md"
+      - "KMFA/tools/check_v014_private_processed_value_source_map_capture.py"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/machine/private_processed_value_source_map_capture_manifest.json"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/human/test_results.md"
       - "KMFA/tools/check_v014_private_processed_value_source_resolution.py"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_manifest.json"

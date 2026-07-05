@@ -1,0 +1,32 @@
+# Test Results
+
+- phase: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE`
+- status: `PASS`
+- red_test_recorded: `true`
+- raw_inbox_access_performed: `false`
+- raw_inbox_mutation_performed: `false`
+- raw_private_source_folder_mutation_performed: `false`
+- result: source-map capture local validation passed; 149 staged processed private refs are path-only, captured processed value fingerprints remain 0, authorized private value-source fill required slots remain 149, Go/No-Go remains `NO_GO`.
+- validation_commands:
+  - `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m py_compile KMFA/tools/v014_private_processed_value_source_map_capture.py KMFA/tools/check_v014_private_processed_value_source_map_capture.py KMFA/tests/test_v014_private_processed_value_source_map_capture.py`
+  - `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_private_processed_value_source_map_capture.py`
+  - `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_capture.py --require-private-capture`
+  - `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_capture -q`
+  - `PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_project_governance.py --project KMFA --mode required`
+  - `PYTHONDONTWRITEBYTECODE=1 python3 scripts/lean_governance.py validate --project KMFA`
+  - `PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_governance_sync.py --changed-only --enforce-sync`
+  - `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py KMFA/tools KMFA/tests`
+  - `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py`
+  - `git diff --check -- KMFA scripts`
+  - `changed/untracked JSON JSONL CSV structured parse`
+  - `changed YAML parse via Ruby`
+  - `changed/untracked forbidden suffix and private/raw path scan`
+  - `high-signal secret scan`
+  - `scoped current-phase public artifact boundary scan`
+  - `private runtime tracked/untracked/ignored scan`
+- validation_results:
+  - `PASS: phase py_compile, generator, validator and focused unit test passed`
+  - `PASS: project governance, lean governance, changed-only governance sync, no-float and no-omission passed`
+  - `PASS: diff check, structured parse, YAML parse, forbidden suffix/private path scan, high-signal secret scan and scoped public artifact boundary scan passed`
+  - `PASS: private runtime capture/fill request remains ignored and untracked`
+- non_goals_not_performed: raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.

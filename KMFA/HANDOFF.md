@@ -4,27 +4,27 @@
 
 ## 当前目标
 
-本轮只完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION`：基于上一 phase 的 processed value materialization 结果，锁定 private processed value source-map schema、缺口证据、validator 和治理记录。该 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 raw-to-processed comparison、不做 processed-data reconciliation、不声称业务值一致。当前没有可用 private processed value source map，因此 processed target slots=149、resolved sources=0、unresolved sources=149、source_resolution_complete=false，Go/No-Go 仍为 `NO_GO`，lineage full check、正式报告、GitHub upload、app reinstall 和业务执行继续阻断。
+本轮只完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE`：基于上一 phase 的 source-resolution 结果和 private staging slot，判断 private processed refs 是否能自动捕获 processed value fingerprint，并生成 public-safe source-map capture 证据、validator、治理记录和 ignored private fill request。该 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 raw-to-processed comparison、不做 processed-data reconciliation、不声称业务值一致。当前 149 个 processed target slots 全部为 path-only private refs，direct processed value literals=0，captured processed value fingerprints=0，usable source-map records=0，authorized_fill_required_slot_count=149，source_map_capture_complete=false，Go/No-Go 仍为 `NO_GO`，lineage full check、正式报告、GitHub upload、app reinstall 和业务执行继续阻断。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-private-processed-value-source-resolution`
-- 当前已完成: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION`
-- 证据目录: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/`
-- validator: `KMFA/tools/check_v014_private_processed_value_source_resolution.py`
-- focused test: `KMFA/tests/test_v014_private_processed_value_source_resolution.py`
-- manifest: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_manifest.json`
-- go_no_go: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_go_no_go_report.json`
-- summary: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_summary.json`
-- metadata copies: `KMFA/metadata/quality/v014_private_processed_value_source_resolution_manifest.json`, `KMFA/metadata/quality/v014_private_processed_value_source_resolution_go_no_go_report.json`, `KMFA/metadata/quality/v014_private_processed_value_source_resolution_summary.json`
-- private source resolution: git-ignored `KMFA/.codex_private_runtime/v014_private_processed_value_source_resolution/`
-- current_gate: `KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-RESOLUTION`
-- current_state: processed_target_slot_count=`149`, usable_private_processed_value_source_map_count=`0`, resolved_processed_value_source_count=`0`, unresolved_processed_value_source_count=`149`, required_source_map_schema_locked=`true`, source_resolution_complete=`false`, raw_to_processed_value_comparison_performed=`false`, comparable_value_pair_count=`0`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
-- raw boundary: 本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖、复制、标准化或写入 raw inbox；只消费上一 phase 的 private materialization 诊断与 public-safe evidence，并把 source-resolution 诊断写入 git-ignored private runtime。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
+- 当前版本: `0.1.4-private-processed-value-source-map-capture`
+- 当前已完成: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE`
+- 证据目录: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/`
+- validator: `KMFA/tools/check_v014_private_processed_value_source_map_capture.py`
+- focused test: `KMFA/tests/test_v014_private_processed_value_source_map_capture.py`
+- manifest: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/machine/private_processed_value_source_map_capture_manifest.json`
+- go_no_go: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/machine/private_processed_value_source_map_capture_go_no_go_report.json`
+- summary: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/machine/private_processed_value_source_map_capture_summary.json`
+- metadata copies: `KMFA/metadata/quality/v014_private_processed_value_source_map_capture_manifest.json`, `KMFA/metadata/quality/v014_private_processed_value_source_map_capture_go_no_go_report.json`, `KMFA/metadata/quality/v014_private_processed_value_source_map_capture_summary.json`
+- private source-map capture: git-ignored `KMFA/.codex_private_runtime/v014_private_processed_value_source_map_capture/`
+- current_gate: `KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-CAPTURE`
+- current_state: processed_target_slot_count=`149`, path_only_private_ref_slot_count=`149`, direct_processed_value_literal_count=`0`, captured_processed_value_fingerprint_count=`0`, usable_private_processed_value_source_map_record_count=`0`, authorized_fill_required_slot_count=`149`, source_map_capture_complete=`false`, raw_to_processed_value_comparison_performed=`false`, comparable_value_pair_count=`0`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
+- raw boundary: 本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖、复制、标准化或写入 raw inbox；只消费上一 phase 的 private staging/source-resolution 诊断与 public-safe evidence，并把 source-map capture 诊断和 fill request 写入 git-ignored private runtime。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
 - upload policy: v1.4 不按单个 Stage 或补充 gate 上传；GitHub main upload 必须等 owner raw source identity、raw alignment application、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
-- 未完成/阻断: private processed value source map missing；resolved_processed_value_source_count=0；processed value materialization still incomplete；raw-to-processed comparison=false；comparable raw/processed value pairs=0；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
-- 下一步: 只能另开单一 phase 执行 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE` 或用户指定的等价 private source-map capture phase；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
+- 未完成/阻断: authorized private processed value source-map fill required；captured_processed_value_fingerprint_count=0；usable source-map records=0；processed value materialization still incomplete；raw-to-processed comparison=false；comparable raw/processed value pairs=0；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
+- 下一步: 只能另开单一 phase 执行 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL` 或用户指定的等价 authorized private source-map fill phase；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
 
 ## v0.1.3 历史状态
 

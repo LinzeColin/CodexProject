@@ -290,6 +290,15 @@ version_matrix_product_version_reference: 0.1.4-s12p3-manual-rerun-mechanism
 
 # KMFA Development Ledger
 
+## KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-CAPTURE-20260705
+
+- product_version: `0.1.4-private-processed-value-source-map-capture`
+- scope: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE` only; classify staged processed private refs and create ignored private fill request without writing usable source-map records.
+- evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/human/private_processed_value_source_map_capture_report.md`, `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/human/test_results.md`, `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/machine/private_processed_value_source_map_capture_manifest.json`
+- counts: processed_target_slot_count=149, path_only_private_ref_slot_count=149, direct_processed_value_literal_count=0, captured_processed_value_fingerprint_count=0, usable_private_processed_value_source_map_record_count=0, authorized_fill_required_slot_count=149.
+- blocker_state: source_map_capture_complete=false, raw_to_processed_value_comparison_performed=false, business_value_consistency_verified=false, lineage_full_check=false, formal_report=false, GitHub upload=false, app reinstall=false, business_execution=false.
+- raw_boundary: raw inbox read/list/stat/hash/mutation=false in this phase; private capture diagnostics and fill request remain git-ignored.
+
 ## 2026-07-05 - 0.1.4-s14p3-policy-evidence-plan
 
 - task_id: `KMFA-V014-S14-P3-POLICY-EVIDENCE-PLAN-20260705`
@@ -1101,3 +1110,4 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/`.
 - Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_resolution.py --require-private-source-resolution`.
 - Boundary: no raw inbox access, no raw-to-processed comparison, no processed data reconciliation, no lineage full check, no formal report, no GitHub upload, no app reinstall, and no business execution.
+| `KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-CAPTURE-20260705` | v0.1.4 private processed value source-map capture 本地通过：149 个 processed target slots 全部为 path-only private refs，captured fingerprints=0，usable source-map records=0，authorized fill required=149，NO_GO；未读取 raw inbox，未执行 comparison、formal report、GitHub upload、app reinstall 或业务执行 | `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/human/private_processed_value_source_map_capture_report.md` |

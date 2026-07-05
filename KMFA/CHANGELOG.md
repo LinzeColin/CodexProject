@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Private Processed Value Source-Map Capture
+
+## 0.1.4-private-processed-value-source-map-capture - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE` 本地 public-safe gate。
+- 新增 source-map capture generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/` 证据。
+- 锁定结论：processed target slots=149、path-only private refs=149、direct value literals=0、captured processed value fingerprints=0、usable source-map records=0、authorized fill required=149。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 raw-to-processed comparison、不做 processed-data reconciliation、不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行。
+
 # KMFA v0.1.4 Private Processed Value Materialization
 
 ## 0.1.4-private-processed-value-source-resolution - 2026-07-05

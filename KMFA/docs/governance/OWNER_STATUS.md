@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION` 本地 gate：149 个 processed target slots 的 source-map 要求已锁定，但可用 private processed value source map=0、resolved source=0、unresolved source=149，所以还不能 materialize processed value fingerprint，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE` 本地 gate：149 个 processed target slots 全部为 path-only private refs，direct value literals=0、captured processed value fingerprints=0、usable source-map records=0、authorized fill required=149，所以还不能 materialize processed value fingerprint，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
 
