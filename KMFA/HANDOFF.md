@@ -449,3 +449,41 @@ Next allowed step:
 - Only run one follow-up phase after an active owner/authorized fill record is supplied, or another explicitly named single phase.
 - Do not run materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
 - Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
+
+## 2026-07-06 Latest Handoff - V014 Processed Value Source-map Completion Auto Candidate Draft
+
+Current phase completed locally: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_AUTO_CANDIDATE_DRAFT`.
+
+Current state:
+- `candidate_draft_item_count=113`
+- `auto_unique_candidate_item_count=0`
+- `auto_ambiguous_candidate_item_count=101`
+- `auto_unmatched_item_count=4`
+- `non_numeric_or_calculation_context_item_count=8`
+- `unresolved_question_item_count=113`
+- `raw_numeric_candidate_count=351453`
+- `raw_unique_numeric_fingerprint_count=22453`
+- `raw_root_stat_unchanged_after_auto_candidate_draft=true`
+- `go_no_go=NO_GO`
+- `github_upload_performed=false`
+- `app_reinstall_performed=false`
+- raw inbox was read/list/stat/fingerprinted only under owner authorization; raw source mutation, copying into Git, overwrite, move, rename, delete and normalization were not performed.
+
+Private outputs:
+- Private raw source index, candidate completion template draft, auto match diagnostic and Chinese question list are under `KMFA/.codex_private_runtime/v014_processed_value_source_map_completion_auto_candidate_draft/`.
+- These private outputs contain raw filenames, source context, table/header/value diagnostics and must not be committed to GitHub.
+
+Evidence:
+- `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_AUTO_CANDIDATE_DRAFT/machine/processed_value_source_map_completion_auto_candidate_draft_manifest.json`
+- `KMFA/tools/check_v014_processed_value_source_map_completion_auto_candidate_draft.py`
+- `KMFA/tests/test_v014_processed_value_source_map_completion_auto_candidate_draft.py`
+
+Verified:
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 KMFA/tools/check_v014_processed_value_source_map_completion_auto_candidate_draft.py --require-private-draft`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_auto_candidate_draft -q`
+- governance validators passed; strict credential scan returned no hits; tracked raw/private suffix scan returned no hits.
+
+Next allowed step:
+- Owner/authorized delegate must review the private candidate draft and answer/confirm the Chinese question list before any active completion template or source-map application phase.
+- Do not run source-map reapplication, materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
+- Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
