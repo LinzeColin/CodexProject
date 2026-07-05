@@ -1293,3 +1293,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_response_readiness_recheck -q`
 - boundary: this phase reads only the ignored private owner-review response template and confirms all 113 rows remain pending; it does not read raw inbox, fill owner decisions, write an active authorization record, overwrite completion template, apply source-map records, materialize processed values, compare raw to processed values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `owner_or_authorized_delegate_fills_private_owner_review_response_template`
+
+## 2026-07-06 - V014 Processed Value Source-map Completion Owner Response Decision Options
+
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-RESPONSE-DECISION-OPTIONS-20260706`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_RESPONSE_DECISION_OPTIONS`
+- product_version: `0.1.4-processed-value-source-map-completion-owner-response-decision-options`
+- status: `completed_validated_local_only_no_go_owner_decision_options_ready`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_RESPONSE_DECISION_OPTIONS/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_response_decision_options.py --require-private-options`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_response_decision_options -q`
+- boundary: this phase reads only ignored private response/intake/readiness artifacts and prepares private confirmation options plus non-active drafts; it does not read raw inbox, fill owner decisions, write an active authorization record, overwrite completion template, apply source-map records, materialize processed values, compare raw to processed values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `owner_or_authorized_delegate_confirms_private_decision_option_or_fills_response_template`

@@ -554,3 +554,36 @@ Next allowed step:
 - Owner/authorized delegate must fill the private owner-review response template before any active completion template or source-map application phase.
 - Do not run source-map reapplication, materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
 - Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
+
+## 2026-07-06 Latest Handoff - V014 Processed Value Source-map Completion Owner Response Decision Options
+
+Current phase completed locally: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_RESPONSE_DECISION_OPTIONS`.
+
+Current state:
+- `source_response_row_count=113`
+- `source_pending_owner_decision_count=113`
+- `decision_option_count=3`
+- `non_active_draft_row_count=113`
+- `active_owner_authorized_fill_record_ready=false`
+- `go_no_go=NO_GO`
+- `github_upload_performed=false`
+- `app_reinstall_performed=false`
+- raw inbox was not read by this phase; it only consumed ignored private response/intake/readiness artifacts.
+
+Private outputs:
+- Private decision options, confirmation codes, non-active draft and diagnostic are under `KMFA/.codex_private_runtime/v014_processed_value_source_map_completion_owner_response_decision_options/`.
+- These private outputs are not authorization records and must not be committed to GitHub.
+
+Evidence:
+- `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_RESPONSE_DECISION_OPTIONS/machine/processed_value_source_map_completion_owner_response_decision_options_manifest.json`
+- `KMFA/tools/check_v014_processed_value_source_map_completion_owner_response_decision_options.py`
+- `KMFA/tests/test_v014_processed_value_source_map_completion_owner_response_decision_options.py`
+
+Verified:
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_response_decision_options.py --require-private-options`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_response_decision_options -q`
+
+Next allowed step:
+- Owner/authorized delegate must confirm one private decision option or fill the private owner-review response template before any active completion template or source-map application phase.
+- Do not run source-map reapplication, materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
+- Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
