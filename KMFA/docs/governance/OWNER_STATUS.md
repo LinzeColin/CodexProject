@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN` 本地 gate：已只读生成 raw private value fingerprints，并确认当前 approved private processed value targets=0、comparable value pairs=0，所以还不能证明处理数据与原始数据一致；processed-data reconciliation、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_STAGING` 本地 gate：已从既有 public-safe processed metadata 中 staged 149 个 private processed target slots，但 processed value fingerprints 仍为 0、comparable value pairs=0，所以还不能证明处理数据与原始数据一致；processed value materialization、raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
+
+- v0.1.4 private processed value staging 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：processed target slots=149、approved private processed target slots=149、processed value fingerprints=0、comparable pairs=0、business value consistency verified=false。该 phase 不读取 raw inbox，私有 target slot 明细只保留在 git-ignored runtime；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 raw value matching private dry-run 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：raw private value fingerprints=871、processed artifacts scanned=602、approved private processed value targets=0、comparable pairs=0、business value consistency verified=false。该 phase 已生成本地私有 gap report，但不公开 raw 文件名、entry 名、sheet 名、字段/表头、cell/PDF text 或业务值；不证明 processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 

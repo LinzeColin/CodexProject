@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Private Processed Value Staging
+- Product version: `0.1.4-private-processed-value-staging`.
+- Scope: `V014_PRIVATE_PROCESSED_VALUE_STAGING` only; public-safe processed metadata scan and ignored private runtime staging for target slots.
+- Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_STAGING/`.
+- Verification: `KMFA/tools/check_v014_private_processed_value_staging.py`; `KMFA/tests/test_v014_private_processed_value_staging.py`.
+- blocker_state: processed_target_slots=149, processed_value_fingerprints=0, comparable_value_pairs=0, business_value_consistency_verified=false, raw_inbox_access=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-private-processed-value-staging
+version_matrix_product_version_reference: 0.1.4-private-processed-value-staging
+
 # KMFA v0.1.4 Raw Value Matching Private Dry Run
 - Product version: `0.1.4-raw-value-matching-private-dry-run`.
 - Scope: `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN` only; private raw value fingerprint extraction, processed target availability scan, local gap report and NO_GO lock.

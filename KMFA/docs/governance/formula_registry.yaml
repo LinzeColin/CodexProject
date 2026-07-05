@@ -7016,3 +7016,41 @@ formulas:
       - "KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/human/raw_value_matching_private_dry_run_report.md"
       - "KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/human/test_results.md"
       - "KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/machine/raw_value_matching_private_dry_run_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-STAGING-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 private processed value staging gate
+    version: "0.1.4-private-processed-value-staging"
+    status: active
+    fact_level: EXTRACTED
+    expression: "processed_target_slots_staged=true AND private_processed_value_fingerprint_count=0 AND comparable_value_pair_count=0 -> business_value_consistency_verified=false, decision=NO_GO, github_upload_allowed=false, app_reinstall_allowed=false"
+    variables:
+      - name: "processed_target_slot_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "149"
+      - name: "private_processed_value_fingerprint_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "0"
+      - name: "business_value_consistency_verified"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "Private processed target slot details stay in git-ignored private runtime."
+      - "Public evidence contains aggregate counts, statuses and evidence refs only."
+      - "No private refs, processed business values, raw filenames, field/header/sheet/entry plaintext or raw values may be committed."
+      - "Processed value materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, Go/No-Go report, staging summary, private staging, validator, focused unit test or governance record fails validation."
+    output_range: "v014_private_processed_value_staging_manifest"
+    code_refs:
+      - "KMFA/tools/v014_private_processed_value_staging.py"
+      - "KMFA/tools/check_v014_private_processed_value_staging.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_staging.py --require-private-staging"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_staging -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_STAGING/human/private_processed_value_staging_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_STAGING/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_STAGING/machine/private_processed_value_staging_manifest.json"

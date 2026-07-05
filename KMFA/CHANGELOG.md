@@ -1,3 +1,18 @@
+# KMFA v0.1.4 Private Processed Value Staging
+- Product version: `0.1.4-private-processed-value-staging`.
+- Scope: `V014_PRIVATE_PROCESSED_VALUE_STAGING` only; scan existing public-safe processed metadata, stage private processed target slots in ignored runtime, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_STAGING/`.
+- Verification: `KMFA/tools/check_v014_private_processed_value_staging.py`; `KMFA/tests/test_v014_private_processed_value_staging.py`.
+- blocker_state: processed_target_slot_count=149, approved_private_processed_target_slot_count=149, private_processed_value_fingerprint_count=0, comparable_value_pair_count=0, business_value_consistency_verified=false, go_no_go=NO_GO, raw_inbox_access=false, GitHub upload=false, app_reinstall=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-private-processed-value-staging
+version_matrix_product_version_reference: 0.1.4-private-processed-value-staging
+
+## 0.1.4-private-processed-value-staging - 2026-07-05
+- Completed `V014_PRIVATE_PROCESSED_VALUE_STAGING` locally as processed target slot staging, not as processed value materialization or business-value verification.
+- Added public-safe aggregate evidence, metadata copies, validator and focused tests.
+- Private target slot details remain only under git-ignored runtime; public evidence contains aggregate counts and gate flags only.
+- Current Go/No-Go remains `NO_GO`; processed value materialization, raw-to-processed comparison, business-value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+
 # KMFA v0.1.4 Raw Consistency Cross-Validation Gate
 - Product version: `0.1.4-raw-consistency-cross-validation-gate`.
 - Scope: `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE` only; consume the owner confirmation, read-only recompute the current source-container private hash profile, cross-check it against prior private diagnostics, and publish aggregate-only baseline lock evidence.
