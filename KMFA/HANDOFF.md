@@ -4,28 +4,29 @@
 
 ## 当前目标
 
-本轮只完成 `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` owner-confirmation application 路径：应用用户提供的 safe decision code `confirm_current_container_as_authoritative`，生成 public-safe owner decision record、application preview、Go/No-Go、validator、focused test 和 governance 记录。本 phase 不替 owner 作授权判断，不读取或修改 raw inbox，不做 public member hash backfill、raw consistency cross-validation、lineage full check、正式报告、GitHub upload、app reinstall 或业务执行。
+本轮只完成 `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE`：基于用户已提供的 safe decision code `confirm_current_container_as_authoritative`，只读重新计算当前 raw container 的私有 source-hash profile，与上一轮私有诊断交叉验证一致后，生成 public-safe 权威 raw baseline lock 证据、validator、focused test 和治理记录。本 phase 只证明 source-container 级一致性；不执行业务值级一致性核验、不提交 raw hash/name/member/sheet/field/value、不做 lineage full check、正式报告、GitHub upload、app reinstall 或业务执行。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-raw-source-identity-decision-application-owner-confirmation`
-- 当前已完成: `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` owner-confirmation application path
-- 证据目录: `KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/`
-- validator: `KMFA/tools/check_v014_raw_source_identity_decision_application.py`
-- focused test: `KMFA/tests/test_v014_raw_source_identity_decision_application.py`
-- application_preview: `KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_preview.json`
-- go_no_go: `KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_go_no_go_report.json`
+- 当前版本: `0.1.4-raw-consistency-cross-validation-gate`
+- 当前已完成: `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE`
+- 证据目录: `KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/`
+- validator: `KMFA/tools/check_v014_raw_consistency_cross_validation_gate.py`
+- focused test: `KMFA/tests/test_v014_raw_consistency_cross_validation_gate.py`
+- manifest: `KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_manifest.json`
+- go_no_go: `KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_go_no_go_report.json`
+- baseline_lock: `KMFA/metadata/baseline/v014_authoritative_raw_baseline_lock.json`
 - active_owner_decision_record: `KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/owner_decision_records/current_raw_source_identity_owner_decision.json`
 - upstream_decision_packet: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_packet.json`
 - upstream_intake_contract: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_intake_contract.json`
 - allowed_decision_codes: `confirm_current_container_as_authoritative`, `register_corrected_source_package`, `keep_pending`
 - current_gate: `KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-GATE`
-- current_state: application_status=`owner_confirmation_recorded_for_separate_backfill_gate`, decision_code=`confirm_current_container_as_authoritative`, owner_decision_intake_ready=`true`, owner_decision_supplied=`true`, decision_applied=`true`, raw_alignment_complete=`false`, public_member_hash_backfill_allowed=`false`, lineage_full_check_complete=`false`, Go/No-Go=`NO_GO`
-- raw boundary: 本 phase 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖、复制、标准化或写入 raw inbox；公开证据不包含 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、archive member name、sheet name、raw package、office workbook、source document、private table、database 或 credentials。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
+- current_state: decision_code=`confirm_current_container_as_authoritative`, owner_decision_supplied=`true`, decision_applied=`true`, authoritative_raw_baseline_locked=`true`, source_container_consistency_verified=`true`, cross_run_private_hash_profile_matches_prior_diagnostic=`true`, business_value_consistency_verified=`false`, raw_alignment_complete=`false`, public_member_hash_backfill_allowed=`false`, lineage_full_check_complete=`false`, Go/No-Go=`NO_GO`
+- raw boundary: 本 phase 只读读取、列出、stat、hash raw inbox 以完成 source-container consistency gate；未修改、删除、移动、重命名、覆盖、复制、标准化或写入 raw inbox。私有哈希剖面只写入 git-ignored `KMFA/.codex_private_runtime/`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、archive member name、sheet name、raw package、office workbook、source document、private table、database 或 credentials。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 owner raw source identity、raw alignment application、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
-- 未完成/阻断: public member hash backfill=false；raw consistency cross-validation 未执行；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
-- 下一步: 只能另开单一 phase 执行 public-safe hash backfill/raw consistency cross-validation gate 或等价 source registry continuation；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
+- 未完成/阻断: business value consistency verified=false；public member hash backfill=false；raw_alignment_complete=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
+- 下一步: 只能另开单一 phase 执行 owner-scoped value consistency / lineage full-check scope gate 或等价 raw value matching authorization gate；不得自动上传 GitHub、重装 app、发布正式报告或执行业务动作。
 
 ## v0.1.3 历史状态
 

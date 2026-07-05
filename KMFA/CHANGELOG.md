@@ -1,3 +1,18 @@
+# KMFA v0.1.4 Raw Consistency Cross-Validation Gate
+- Product version: `0.1.4-raw-consistency-cross-validation-gate`.
+- Scope: `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE` only; consume the owner confirmation, read-only recompute the current source-container private hash profile, cross-check it against prior private diagnostics, and publish aggregate-only baseline lock evidence.
+- Evidence: `KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/`.
+- Verification: `KMFA/tools/check_v014_raw_consistency_cross_validation_gate.py`; `KMFA/tests/test_v014_raw_consistency_cross_validation_gate.py`.
+- blocker_state: authoritative_raw_baseline_locked=true, source_container_consistency_verified=true, business_value_consistency_verified=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, lineage_full_check_complete=false, GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
+product_version: 0.1.4-raw-consistency-cross-validation-gate
+version_matrix_product_version_reference: 0.1.4-raw-consistency-cross-validation-gate
+
+## 0.1.4-raw-consistency-cross-validation-gate - 2026-07-05
+- Completed `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE` locally as a source-container consistency gate, not as business-value verification.
+- Added public-safe authoritative raw baseline lock evidence, metadata copies, validator and focused tests.
+- Private source hashes and member hashes remain only under git-ignored runtime; public evidence contains aggregate counts and gate flags only.
+- Current Go/No-Go remains `NO_GO`; business-value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+
 # KMFA v0.1.4 Raw Source Identity Decision Application
 - Product version: `0.1.4-raw-source-identity-decision-application`.
 - Scope: `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` only; generate a public-safe application gate for the owner raw source identity decision state.

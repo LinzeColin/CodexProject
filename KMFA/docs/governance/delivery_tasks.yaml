@@ -9801,3 +9801,51 @@ tasks:
     rollback: "Revert this owner-confirmation application commit; restore previous no-decision application evidence; do not modify raw inbox."
     target_version: "0.1.4-raw-source-identity-decision-application-owner-confirmation"
     completed_version: "0.1.4-raw-source-identity-decision-application-owner-confirmation"
+
+  - task_id: "KMFA-V014-RAW-CONSISTENCY-CROSS-VALIDATION-GATE-20260705"
+    phase: "V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE"
+    objective: "基于 owner confirmation 只读重算当前 source-container 私有哈希剖面，交叉验证与上一轮私有诊断一致，并 public-safe 锁定 authoritative raw baseline。"
+    scope:
+      - "read-only source-container private hash cross-validation"
+      - "public-safe authoritative raw baseline lock"
+      - "NO_GO release gate preservation"
+      - "validator and focused test"
+    non_scope:
+      - "raw inbox mutation or copy"
+      - "raw filenames or raw hashes in public artifacts"
+      - "business value consistency verification"
+      - "public member hash backfill"
+      - "lineage full check completion"
+      - "GitHub upload"
+      - "app reinstall"
+      - "formal report"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-OWNER-CONFIRMATION-20260705"
+    required_files:
+      - "KMFA/tools/v014_raw_consistency_cross_validation_gate.py"
+      - "KMFA/tools/check_v014_raw_consistency_cross_validation_gate.py"
+      - "KMFA/tests/test_v014_raw_consistency_cross_validation_gate.py"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_go_no_go_report.json"
+      - "KMFA/metadata/baseline/v014_authoritative_raw_baseline_lock.json"
+    acceptance_ids:
+      - "ACC-V014-RAW-CONSISTENCY-CROSS-VALIDATION-GATE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_raw_consistency_cross_validation_gate.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_consistency_cross_validation_gate.py --require-private-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_consistency_cross_validation_gate -q"
+    test_results:
+      - "PASS: source-container private hash profile cross-validation gate generated and validated"
+      - "PASS: focused unit test confirms baseline lock with release gates blocked"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/human/raw_consistency_cross_validation_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_go_no_go_report.json"
+      - "KMFA/metadata/baseline/v014_authoritative_raw_baseline_lock.json"
+    risk: "This phase verifies source-container hash profile consistency only; business-value consistency and lineage remain separate blocked gates."
+    rollback: "Remove this phase evidence, validator, focused test, metadata records and ignored private diagnostic; do not modify raw inbox."
+    target_version: "0.1.4-raw-consistency-cross-validation-gate"
+    completed_version: "0.1.4-raw-consistency-cross-validation-gate"

@@ -4,11 +4,15 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` 本地 application gate：现在有 public-safe 应用预览、Go/No-Go、validator 和 focused test；由于还没有 active owner decision record，当前正确结论仍是 `NO_GO`，不能上传 GitHub、不能重装 app、不能发布正式报告、不能执行业务动作。
+KMFA 已完成 `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE` 本地 gate：用户确认当前容器为权威后，Codex 只读重算 source-container 私有哈希剖面并与上一轮私有诊断一致，已 public-safe 锁定 authoritative raw baseline；但业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
 
-- v0.1.4 owner raw source identity decision intake 已确认本地 validator 通过；公开证据只显示 decision codes、aggregate basis refs 和 gate flags：allowed_decision_codes=3，allowed_actor_roles=2，owner_decision_intake_ready=true，owner_decision_supplied=false。该 phase 不等于 owner 已确认权威源；raw_alignment_complete=false，public member hash backfill=false，lineage full check、formal report、GitHub upload 和 app reinstall 全部继续 blocked。
+- v0.1.4 raw consistency cross-validation gate 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：raw files=5、archives=3、spreadsheets=2、selected candidate=1、business members=9、documents=8、workbooks=1、private member hash baseline locked=true。该 phase 只证明 source-container 级一致，不证明业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
+
+- v0.1.4 raw source identity decision application owner-confirmation 已确认本地 validator 通过；用户提供的 `confirm_current_container_as_authoritative` 已物化为 public-safe owner decision record，owner_decision_supplied=true，decision_applied=true。该确认只解决 source identity owner decision blocker，不自动执行 public member hash backfill、business value matching、lineage full check、formal report、GitHub upload 或 app reinstall。
+
+- v0.1.4 owner raw source identity decision intake 已确认本地 validator 通过；公开证据只显示 decision codes、aggregate basis refs 和 gate flags：allowed_decision_codes=3，allowed_actor_roles=2，owner_decision_intake_ready=true。后续 owner confirmation 已在单独 application phase materialized；raw_alignment_complete=false，public member hash backfill=false，lineage full check、formal report、GitHub upload 和 app reinstall 全部继续 blocked。
 
 - v0.1.4 raw alignment remediation 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：raw 文件总数=5、archive=3、spreadsheet=2、selected candidate=1、business members=9、documents=8、workbooks=1。business shape 符合 A0 预期，但 container hash/size 不匹配登记 source package，所以 raw_alignment_complete=false，public member hash backfill=false，lineage full check、formal report、GitHub upload 和 app reinstall 全部继续 blocked。
 

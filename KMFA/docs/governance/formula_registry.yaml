@@ -6904,3 +6904,40 @@ formulas:
       - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/human/raw_source_identity_decision_application_report.md"
       - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/human/test_results.md"
       - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-RAW-CONSISTENCY-CROSS-VALIDATION-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 raw consistency cross-validation gate
+    version: "0.1.4-raw-consistency-cross-validation-gate"
+    status: active
+    fact_level: EXTRACTED
+    expression: "owner_current_container_authoritative_confirmed=true AND source_container_consistency_verified=true AND cross_run_private_hash_profile_matches_prior=true -> authoritative_raw_baseline_locked=true; business_value_consistency_verified=false keeps lineage=false, upload=false, app=false, formal_report=false, business_execution=false"
+    variables:
+      - name: "owner_current_container_authoritative_confirmed"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true"
+      - name: "source_container_consistency_verified"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true"
+      - name: "business_value_consistency_verified"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "This phase verifies source-container consistency only; it does not verify business values."
+      - "Private hashes and member hashes stay in git-ignored private runtime."
+      - "Lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, baseline lock, private diagnostic, validator, focused unit test or governance record fails validation."
+    output_range: "v014_raw_consistency_cross_validation_manifest"
+    code_refs:
+      - "KMFA/tools/v014_raw_consistency_cross_validation_gate.py"
+      - "KMFA/tools/check_v014_raw_consistency_cross_validation_gate.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_consistency_cross_validation_gate.py --require-private-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_consistency_cross_validation_gate -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/human/raw_consistency_cross_validation_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/machine/raw_consistency_cross_validation_manifest.json"

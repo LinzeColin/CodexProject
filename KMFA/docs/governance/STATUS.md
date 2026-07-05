@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-raw-source-identity-decision-application`
-- current_stage: `raw-source-identity-decision-application`
-- current_phase: `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION`
-- status: `raw_source_identity_decision_application_blocked_no_active_owner_decision_no_go`
+- version: `0.1.4-raw-consistency-cross-validation-gate`
+- current_stage: `raw-consistency-cross-validation`
+- current_phase: `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE`
+- status: `completed_public_safe_authoritative_raw_baseline_locked_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_raw_source_identity_and_lineage`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
@@ -16,7 +16,9 @@
 
 ## 已完成
 
-- v0.1.4 raw source identity decision application completed local-only: application_status=blocked_no_active_owner_decision, owner_decision_intake_ready=true, owner_decision_supplied=false, decision_applied=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, current Go/No-Go=NO_GO. Raw inbox read/list/stat/hash/mutation=false by this phase; public evidence status/count/gate-ref only; GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
+- v0.1.4 raw consistency cross-validation gate completed local-only: owner decision code confirm_current_container_as_authoritative 已应用；authoritative_raw_baseline_locked=true，source_container_consistency_verified=true，cross-run private hash profile matches prior diagnostic=true；business_value_consistency_verified=false，raw_alignment_complete=false，public_member_hash_backfill_allowed=false，current Go/No-Go=NO_GO。Raw inbox only read/list/stat/hash by this phase; mutation/write/delete/move/rename/overwrite/copy/normalize=false；public evidence aggregate-only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。
+
+- v0.1.4 raw source identity decision application owner-confirmation completed local-only: owner_decision_supplied=true, decision_applied=true, application_status=owner_confirmation_recorded_for_separate_backfill_gate, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, current Go/No-Go=NO_GO. Raw inbox read/list/stat/hash/mutation=false by that phase; GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
 
 - v0.1.4 owner raw source identity decision intake completed local-only: allowed_decision_codes=3, allowed_actor_roles=2, owner_decision_intake_ready=true, owner_decision_supplied=false, active_owner_decision_record_created=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, current Go/No-Go=NO_GO. Raw inbox read/list/stat/hash/mutation=false by this phase; public evidence decision-code/aggregate-ref only; GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
 
