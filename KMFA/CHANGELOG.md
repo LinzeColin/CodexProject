@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Owner-Authorized Fill Application Active Consumed
+
+## 0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed - 2026-07-06
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION` 本地 public-safe gate。
+- 基于用户在当前 Codex 线程回复“确认”的 owner/authorized delegate activation，把既有 private draft 物化为 git-ignored active owner-authorized fill record，并消费该 active record。
+- 锁定结论：active fill record items=113、keep pending items=113、source-map records applied=0、new authorized fingerprints=0、source_map_gap_resolution_complete=false、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行；下一步只能 owner/authorized delegate 提供实际 authorized processed-value sources 或继续 pending。
+
 # KMFA v0.1.4 Owner-Authorized Fill Record Draft
 
 ## 0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft - 2026-07-05

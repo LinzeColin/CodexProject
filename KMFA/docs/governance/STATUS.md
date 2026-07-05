@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft`
+- version: `0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed`
 - current_stage: `value-consistency`
-- current_phase: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT`
-- status: `completed_validated_local_only_no_go_owner_authorized_fill_record_draft_pending_activation`
-- current_blocker: `owner_or_authorized_delegate_activation_of_draft_fill_record_missing`
-- next_required_input: `owner_or_authorized_delegate_activation_of_draft_fill_record`
+- current_phase: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION`
+- status: `completed_validated_local_only_no_go_active_owner_authorized_fill_record_consumed_keep_pending`
+- current_blocker: `authorized_processed_value_source_not_supplied`
+- next_required_input: `owner_or_authorized_delegate_supplies_authorized_processed_value_sources`
 - blocked_next_steps: `processed value materialization replay; raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 owner-authorized private processed value source-map fill application active record consumed local-only: source_unresolved_gap_item_count=113，private_intake_request_item_count=113，candidate_active_fill_record_path_count=2，existing_active_fill_record_path_count=1，active_fill_record_item_count=113，active_fill_record_keep_pending_count=113，owner_authorized_fill_record_supplied=true，active_authorized_fill_record_found=true，fill_application_performed=true，source_map_records_applied_count=0，new_authorized_fingerprint_count=0，source_map_gap_resolution_complete=false，processed_value_materialization_replay_performed=false，raw_to_processed_value_comparison_performed=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。Active record remains in git-ignored runtime and contains only keep_pending actions；raw inbox read/list/stat/hash/fingerprint/mutation=false by this phase；public evidence aggregate/status/ref/schema-only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。next_required_input=`owner_or_authorized_delegate_supplies_authorized_processed_value_sources`。用户要求 raw 原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，final goal closeout 必须提供差异报告。
 
 - v0.1.4 owner-authorized private processed value source-map fill record draft completed local-only: source_unresolved_gap_item_count=113，private_intake_request_item_count=113，draft_fill_item_count=113，draft_keep_pending_item_count=113，draft_supply_authorized_fingerprint_item_count=0，draft_map_existing_metadata_hash_sibling_item_count=0，active_authorized_fill_record_created=false，owner_authorized_fill_record_supplied=false，fill_application_performed=false，source_map_records_applied_count=0，new_authorized_fingerprint_count=0，source_map_gap_resolution_complete=false，processed_value_materialization_replay_performed=false，raw_to_processed_value_comparison_performed=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。Private draft remains in git-ignored runtime and is not an active owner authorization record；raw inbox read/list/stat/hash/fingerprint/mutation=false by this phase；public evidence aggregate/status/ref/schema-only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。next_required_input=`owner_or_authorized_delegate_activation_of_draft_fill_record`。用户要求 raw 原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，final goal closeout 必须提供差异报告。
 

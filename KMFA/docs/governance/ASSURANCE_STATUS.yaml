@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 893
+    total_active_parameters: 896
     total_active_formulas: 139
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"

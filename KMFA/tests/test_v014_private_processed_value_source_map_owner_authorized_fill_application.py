@@ -9,11 +9,15 @@ from KMFA.tools.check_v014_private_processed_value_source_map_owner_authorized_f
 from KMFA.tools.v014_private_processed_value_source_map_owner_authorized_fill_application import (
     PRIVATE_APPLICATION_DIAGNOSTIC_PATH,
     generate,
+    materialize_active_record_from_draft,
 )
 
 
 class V014PrivateProcessedValueSourceMapOwnerAuthorizedFillApplicationTest(unittest.TestCase):
-    def test_no_active_fill_record_locks_no_go_application(self) -> None:
+    def setUp(self) -> None:
+        materialize_active_record_from_draft(generated_at="2026-07-06T00:00:00+10:00")
+
+    def test_active_keep_pending_fill_record_locks_no_go_application(self) -> None:
         manifest = generate(generated_at="2026-07-05T23:59:59+10:00")
         validated = validate_v014_private_processed_value_source_map_owner_authorized_fill_application(
             require_private_application_diagnostic=True
@@ -29,9 +33,12 @@ class V014PrivateProcessedValueSourceMapOwnerAuthorizedFillApplicationTest(unitt
         self.assertEqual(summary["source_unresolved_unique_private_ref_count"], 101)
         self.assertEqual(summary["private_intake_request_item_count"], 113)
         self.assertEqual(summary["candidate_active_fill_record_path_count"], 2)
-        self.assertFalse(summary["owner_authorized_fill_record_supplied"])
-        self.assertFalse(summary["active_authorized_fill_record_found"])
-        self.assertFalse(summary["fill_application_performed"])
+        self.assertEqual(summary["existing_active_fill_record_path_count"], 1)
+        self.assertEqual(summary["active_fill_record_item_count"], 113)
+        self.assertEqual(summary["active_fill_record_keep_pending_count"], 113)
+        self.assertTrue(summary["owner_authorized_fill_record_supplied"])
+        self.assertTrue(summary["active_authorized_fill_record_found"])
+        self.assertTrue(summary["fill_application_performed"])
         self.assertEqual(summary["source_map_records_applied_count"], 0)
         self.assertEqual(summary["new_authorized_fingerprint_count"], 0)
         self.assertFalse(summary["source_map_gap_resolution_complete"])
@@ -65,7 +72,8 @@ class V014PrivateProcessedValueSourceMapOwnerAuthorizedFillApplicationTest(unitt
         private_diagnostic = json.loads(PRIVATE_APPLICATION_DIAGNOSTIC_PATH.read_text(encoding="utf-8"))
 
         self.assertEqual(private_diagnostic["application_diagnostic_summary"]["candidate_active_fill_record_path_count"], 2)
-        self.assertFalse(private_diagnostic["application_diagnostic_summary"]["active_fill_record_found"])
+        self.assertTrue(private_diagnostic["application_diagnostic_summary"]["active_fill_record_found"])
+        self.assertEqual(private_diagnostic["application_diagnostic_summary"]["active_fill_record_keep_pending_count"], 113)
         self.assertFalse(manifest["go_no_go"]["processed_value_materialization_replay_allowed"])
         self.assertFalse(manifest["go_no_go"]["raw_to_processed_value_comparison_allowed"])
         self.assertFalse(manifest["go_no_go"]["business_value_consistency_verified"])
