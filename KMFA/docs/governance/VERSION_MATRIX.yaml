@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-owner-raw-source-identity-decision"
-product_version_status: "owner_raw_source_identity_decision_intake_ready_local_only_no_go"
-version_file_value: "0.1.4-owner-raw-source-identity-decision"
+product_version: "0.1.4-raw-source-identity-decision-application"
+product_version_status: "raw_source_identity_decision_application_blocked_no_active_owner_decision_local_only_no_go"
+version_file_value: "0.1.4-raw-source-identity-decision-application"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-owner-raw-source-identity-decision"
+  MOD-KMFA-GOV-001: "0.1.4-raw-source-identity-decision-application"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_raw_source_identity_decision_application: "0.1.4-raw-source-identity-decision-application"
   kmfa_v014_owner_raw_source_identity_decision: "0.1.4-owner-raw-source-identity-decision"
   kmfa_v014_raw_alignment_remediation: "0.1.4-raw-alignment-remediation"
   kmfa_governance_contract: "0.1.4-stage1-18-overall-review"

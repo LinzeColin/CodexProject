@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION"
+as_of_event_id: "EVENT-KMFA-20260705-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "c207cc2e70cbf81dd9731430b15467a173b456d9"
+source_base_commit: "461b0a40b7e7ffb7f8250cf0414db27a3dafb815"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-05T22:30:00+10:00"
-generator_version: "manual-0.1.4-owner-raw-source-identity-decision"
+snapshot_event_time: "2026-07-05T23:05:00+10:00"
+generator_version: "manual-0.1.4-raw-source-identity-decision-application"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 853
-    total_active_formulas: 126
+    total_active_parameters: 856
+    total_active_formulas: 127
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -52,6 +52,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/human/test_results.md"
       - "KMFA/tools/check_v014_stage1_18_overall_review.py"
       - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/machine/stage1_18_overall_review_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/human/test_results.md"
+      - "KMFA/tools/check_v014_raw_source_identity_decision_application.py"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_manifest.json"
       - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/human/test_results.md"
       - "KMFA/tools/check_v014_owner_raw_source_identity_decision.py"
       - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_manifest.json"

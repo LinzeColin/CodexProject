@@ -5,16 +5,18 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-owner-raw-source-identity-decision`
-- current_stage: `raw-source-identity-owner-decision`
-- current_phase: `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION`
-- status: `owner_raw_source_identity_decision_intake_ready_no_active_decision_no_go`
+- version: `0.1.4-raw-source-identity-decision-application`
+- current_stage: `raw-source-identity-decision-application`
+- current_phase: `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION`
+- status: `raw_source_identity_decision_application_blocked_no_active_owner_decision_no_go`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_raw_source_identity_and_lineage`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 raw source identity decision application completed local-only: application_status=blocked_no_active_owner_decision, owner_decision_intake_ready=true, owner_decision_supplied=false, decision_applied=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, current Go/No-Go=NO_GO. Raw inbox read/list/stat/hash/mutation=false by this phase; public evidence status/count/gate-ref only; GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
 
 - v0.1.4 owner raw source identity decision intake completed local-only: allowed_decision_codes=3, allowed_actor_roles=2, owner_decision_intake_ready=true, owner_decision_supplied=false, active_owner_decision_record_created=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, current Go/No-Go=NO_GO. Raw inbox read/list/stat/hash/mutation=false by this phase; public evidence decision-code/aggregate-ref only; GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
 

@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION` 本地 decision intake/gate：现在有 public-safe 决策包、模板和 validator，但还没有 active owner decision record，因此当前正确结论仍是 `NO_GO`，不能上传 GitHub、不能重装 app、不能发布正式报告、不能执行业务动作。
+KMFA 已完成 `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` 本地 application gate：现在有 public-safe 应用预览、Go/No-Go、validator 和 focused test；由于还没有 active owner decision record，当前正确结论仍是 `NO_GO`，不能上传 GitHub、不能重装 app、不能发布正式报告、不能执行业务动作。
 
 ## 你现在能信任什么
 

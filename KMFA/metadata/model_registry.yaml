@@ -420,3 +420,18 @@ kmfa_v014_owner_raw_source_identity_decision:
   evidence_dir: KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION
   validator: KMFA/tools/check_v014_owner_raw_source_identity_decision.py
   scope: Owner raw source identity decision intake only; public-safe decision packet and templates; no active owner decision, raw inbox access, public hash backfill, lineage full check, GitHub upload, app reinstall, formal report or business execution.
+
+kmfa_v014_raw_source_identity_decision_application:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-raw-source-identity-decision-application"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1227
+    - PARAM-KMFA-1228
+    - PARAM-KMFA-1229
+  evidence_dir: KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION
+  validator: KMFA/tools/check_v014_raw_source_identity_decision_application.py
+  scope: Raw source identity decision application gate only; no active owner decision supplied, decision_applied=false, no raw inbox access, public hash backfill, lineage full check, GitHub upload, app reinstall, formal report or business execution.

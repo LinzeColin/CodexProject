@@ -6867,3 +6867,40 @@ formulas:
       - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/human/owner_raw_source_identity_decision_report.md"
       - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/human/test_results.md"
       - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 raw source identity decision application gate
+    version: "0.1.4-raw-source-identity-decision-application"
+    status: active
+    fact_level: EXTRACTED
+    expression: "owner_decision_intake_ready=true AND owner_decision_supplied=false AND decision_applied=false -> NO_GO with upload=false, app=false, lineage=false, formal_report=false, business_execution=false"
+    variables:
+      - name: "application_status"
+        data_type: "status"
+        unit: "status"
+        input_domain: "blocked_no_active_owner_decision"
+      - name: "owner_decision_supplied"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+      - name: "decision_applied"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "This phase applies only the public-safe decision gate state; it does not create an owner decision record."
+      - "Committed application evidence must remain blocked when no active owner or authorized decision is supplied."
+      - "Raw alignment, public hash backfill, lineage closure, formal report, GitHub upload and app reinstall remain blocked."
+    missing_policy: "Missing application preview, Go/No-Go report, validator, focused unit test or governance record fails validation."
+    output_range: "v014_raw_source_identity_decision_application_manifest"
+    code_refs:
+      - "KMFA/tools/v014_raw_source_identity_decision_application.py"
+      - "KMFA/tools/check_v014_raw_source_identity_decision_application.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_source_identity_decision_application.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_source_identity_decision_application -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/human/raw_source_identity_decision_application_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/machine/raw_source_identity_decision_application_manifest.json"
