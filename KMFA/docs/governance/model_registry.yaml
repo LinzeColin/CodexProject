@@ -1414,3 +1414,12 @@ v014_s18p1_precision_stress_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S18_P1_PRECISION_STRESS
   validator: KMFA/tools/check_v014_s18_p1_precision_stress.py
   scope: S18-P1 precision and stress testing only; public-safe synthetic precision zero-delta duplicate import bad-file missing-field import consistency large-batch and HTML baseline reading evidence; no S18-P2, S18-P3, Stage18 review, upload, raw inbox access, raw matching, lineage full check, app reinstall, production restore, external service, live connector, formal report or business execution.
+
+v014_s18p2_full_regression_acceptance_registry_note:
+  version: "0.1.4-s18p2-full-regression-acceptance"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S18P2-FULL-REGRESSION-ACCEPTANCE-001
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P2_FULL_REGRESSION_ACCEPTANCE
+  validator: KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py
+  scope: S18-P2 full regression acceptance only; public-safe checks, 18-stage evidence index, HTML human-flow audit and Go/No-Go lock; no S18-P3, Stage18 review, upload, raw inbox access, raw matching, lineage full check, formal report, production restore, external connector, app reinstall or business execution.

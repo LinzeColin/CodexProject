@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S18-P1｜精度与压力测试`：新增 `KMFA/tools/v014_s18_p1_precision_stress.py`、`KMFA/tools/check_v014_s18_p1_precision_stress.py`、`KMFA/tests/test_v014_s18_p1_precision_stress.py` 和 `KMFA/stage_artifacts/V014_S18_P1_PRECISION_STRESS/` public-safe evidence。该 phase 验证 S17 Stage review dependency、legacy S18-P1 public-safe baseline、v1.4 roadmap/taskpack anchors、v1.4 HTML/UIUX baseline reading、v0.1.4 S18-P1 validator 和 focused unit test；锁定 amount precision、zero-delta、duplicate import、bad file、missing field 五类场景，三次连续导入一致，synthetic 大批量 1200 files 用时 348ms 低于 500ms budget，错误报告 2 条。未读取 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、zip/Excel/PDF/private CSV/sqlite/db 或 credentials；未执行 S18-P2、S18-P3、Stage18 review、GitHub upload、protected source matching、lineage full check、UI runtime、live connector、external service call、production restore、app reinstall、OpMe 深度耦合、正式报告或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S18-P2｜全量回归和验收`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S18-P2｜全量回归和验收`：新增 `KMFA/tools/v014_s18_p2_full_regression_acceptance.py`、`KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py`、`KMFA/tests/test_v014_s18_p2_full_regression_acceptance.py` 和 `KMFA/stage_artifacts/V014_S18_P2_FULL_REGRESSION_ACCEPTANCE/` public-safe evidence。该 phase 验证 S18-P1 dependency、legacy S18-P2 public-safe baseline、v1.4 roadmap/taskpack anchors、v1.4 HTML human-flow audit、v0.1.4 S18-P2 validator 和 focused unit test；锁定 check categories=5、stage evidence=18、HTML audit files=6、rows=54、PASS=54、WARN=0、FAIL=0、Go/No-Go=`NO_GO`、report grade=`D`。本轮还从 v1.4 public-safe delivery pack 补齐 `KMFA/taskpack/v1_4/html_uiux/` 的 5 个缺失 HTML 样板，使入口页链接完整并真实执行 audit。未读取 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、zip/Excel/PDF/private CSV/sqlite/db 或 credentials；未执行 S18-P3、Stage18 review、GitHub upload、protected source matching、lineage full check、live connector、external service call、production restore、app reinstall、OpMe 深度耦合、正式报告或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S18-P3｜后续接入准备`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s18p1-precision-stress`
-- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`、`v0.1.4 S16-P2 项目状态生命周期`、`v0.1.4 S16-P3 客户经营分析`、`v0.1.4 Stage 16 整体复审`、`v0.1.4 S17-P1 权限与安全`、`v0.1.4 S17-P2 通知策略`、`v0.1.4 S17-P3 运维与SOP`、`v0.1.4 Stage 17 整体复审`、`v0.1.4 S18-P1 精度与压力测试`
-- 证据目录: `KMFA/stage_artifacts/V014_S18_P1_PRECISION_STRESS/`
-- validator: `KMFA/tools/check_v014_s18_p1_precision_stress.py`
-- focused test: `KMFA/tests/test_v014_s18_p1_precision_stress.py`
+- 当前版本: `0.1.4-s18p2-full-regression-acceptance`
+- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`、`v0.1.4 S16-P2 项目状态生命周期`、`v0.1.4 S16-P3 客户经营分析`、`v0.1.4 Stage 16 整体复审`、`v0.1.4 S17-P1 权限与安全`、`v0.1.4 S17-P2 通知策略`、`v0.1.4 S17-P3 运维与SOP`、`v0.1.4 Stage 17 整体复审`、`v0.1.4 S18-P1 精度与压力测试`、`v0.1.4 S18-P2 全量回归和验收`
+- 证据目录: `KMFA/stage_artifacts/V014_S18_P2_FULL_REGRESSION_ACCEPTANCE/`
+- validator: `KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py`
+- focused test: `KMFA/tests/test_v014_s18_p2_full_regression_acceptance.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S18-P1 未读取、列出、stat、hash 或修改 raw inbox；公开证据只包含 synthetic scenario locks、import consistency hashes、aggregate performance/error status、HTML baseline refs、状态、evidence refs 和 validator evidence，不发布 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、Office/PDF/zip/private CSV/sqlite/db、完整报告正文、附件或 credentials。
-- 未执行: GitHub upload、S18-P2、S18-P3、Stage18 review、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、full report email body、UI runtime、live connector、external service call、production restore、app reinstall、OpMe deep coupling、客户联络、催收、法务、开票、付款、银行或 business execution。
-- 下一步: 仅在用户明确开启后执行 `S18-P2｜全量回归和验收`，继续保持 public-safe/no raw publication/no upload/no production restore/no external connector/no formal report 边界。
+- raw boundary: S18-P2 未读取、列出、stat、hash 或修改 raw inbox；公开证据只包含 public-safe check results、18-stage evidence index、HTML audit CSV/summary、Go/No-Go、状态、evidence refs 和 validator evidence，不发布 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、Office/PDF/zip/private CSV/sqlite/db、完整报告正文、附件或 credentials。
+- 未执行: GitHub upload、S18-P3、Stage18 review、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、full report email body、live connector、external service call、production restore、app reinstall、OpMe deep coupling、客户联络、催收、法务、开票、付款、银行或 business execution。
+- 下一步: 仅在用户明确开启后执行 `S18-P3｜后续接入准备`，继续保持 public-safe/no raw publication/no upload/no production restore/no external connector/no formal report 边界。
 
 ## v0.1.3 历史状态
 
