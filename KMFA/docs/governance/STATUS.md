@@ -5,11 +5,11 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-raw-processed-comparability-diagnostic`
+- version: `0.1.4-raw-processed-alignment-blocker-report`
 - current_stage: `value-consistency`
-- current_phase: `V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC`
-- status: `completed_validated_local_only_no_go_raw_processed_comparability_blocked`
-- current_blocker: `processed_target_slots_lack_authorized_value_fingerprints_and_shared_raw_join_keys`
+- current_phase: `V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT`
+- status: `completed_validated_local_only_no_go_alignment_blocker_report`
+- current_blocker: `no_comparable_raw_processed_value_pairs_due_to_incomplete_authorized_source_map`
 - next_required_input: `owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`
 - blocked_next_steps: `processed value materialization replay; raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 raw/processed alignment blocker report completed local-only: source_artifact_count=10，raw_value_fingerprint_count=871，raw_unique_numeric_fingerprint_count=330，processed_target_slot_count=149，staged_processed_value_fingerprint_count=0，usable_processed_source_map_count=0，authorized_filled_item_count=36，authorized_unfilled_item_count=113，unresolved_gap_item_count=113，active_fill_record_keep_pending_count=113，source_map_records_applied_count=0，raw_processed_structural_key_intersection_count=0，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads only public-safe evidence artifacts and generates a shareable diagnostic packet for external agent review；raw inbox read/write/mutation=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。final discrepancy report required now=false；required if repeated mismatch after authorized map=true。next_required_input=`owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`。
 
 - v0.1.4 raw/processed comparability diagnostic completed local-only: raw_root_file_count=5，prior_raw_value_fingerprint_record_count=871，prior_raw_unique_numeric_fingerprint_count=330，processed_target_slot_count=149，staged_processed_value_fingerprint_count=0，existing_processed_source_map_record_count=36，unresolved_owner_worklist_item_count=113，active_fill_record_keep_pending_count=113，raw_processed_structural_key_intersection_count=0，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。Raw root read/list/stat/hash=true；write/delete/move/rename/copy/normalize/mutation=false；private diagnostic and local comparability gap report remain in git-ignored runtime；public evidence aggregate/status/ref only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。next_required_input=`owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`。用户要求 raw 原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，final goal closeout 必须提供差异报告。
 

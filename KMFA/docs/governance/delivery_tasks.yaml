@@ -10283,3 +10283,25 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, tool, validator, focused test, ignored private diagnostic and governance entries; do not modify raw inbox."
     target_version: "0.1.4-raw-processed-comparability-diagnostic"
     completed_version: "0.1.4-raw-processed-comparability-diagnostic"
+
+  - task_id: "KMFA-V014-RAW-PROCESSED-ALIGNMENT-BLOCKER-REPORT-20260706"
+    phase_id: "V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RAW-PROCESSED-ALIGNMENT-BLOCKER-REPORT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_raw_processed_alignment_blocker_report.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_processed_alignment_blocker_report.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_processed_alignment_blocker_report -q"
+    test_results:
+      - "PASS: raw/processed alignment blocker report validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/human/raw_processed_alignment_blocker_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/human/chatgpt_agent_diagnostic_packet.md"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/machine/raw_processed_alignment_blocker_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/machine/raw_processed_alignment_blocker_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/machine/raw_processed_alignment_blocker_summary.json"
+    risk: "The report explains insufficient evidence and zero comparable pairs; do not treat it as a value discrepancy conclusion, formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-raw-processed-alignment-blocker-report"
+    completed_version: "0.1.4-raw-processed-alignment-blocker-report"

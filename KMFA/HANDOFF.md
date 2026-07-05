@@ -4,24 +4,24 @@
 
 ## 当前目标
 
-最近一个完成的 phase 是 `V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC`：Codex 对既有 private raw value matching diagnostic、private processed value staging、partial source map、owner worklist 和 active keep-pending fill record 做了只读可比对性诊断。结果确认 raw unique numeric fingerprints=330、processed target slots=149，但 staged processed value fingerprints=0、raw/processed structural key intersection=0、comparable value pairs=0；因此当前仍不能证明处理数据与原始数据一致。Raw root 本 phase 只读 list/stat/hash，未写入、删除、移动、重命名、复制、覆盖或标准化；private diagnostic 和 local gap report 留在 git-ignored runtime。下一步必须由 owner/authorized delegate 提供 target-slot to processed-value source-map；不得自动执行 materialization replay、raw-to-processed comparison、GitHub upload、重装 app、发布正式报告或执行业务动作。用户要求 raw 原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
+最近一个完成的 phase 是 `V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT`：Codex 只读取既有 public-safe value-consistency summaries/go-no-go，生成了可转发给 ChatGPT 或其他 agent 的 raw/processed 对不上的原因诊断包。结果确认 raw value fingerprints=871、raw unique numeric fingerprints=330、processed target slots=149，但 staged processed value fingerprints=0、usable processed source-map=0、authorized filled/unfilled=36/113、unresolved gaps=113、active keep-pending=113、raw/processed structural key intersection=0、comparable value pairs=0；因此当前仍不能证明处理数据与原始数据一致。本 phase 不读取 raw inbox、不读取私有诊断明细、不执行 materialization replay 或 raw-to-processed comparison。下一步仍必须由 owner/authorized delegate 提供 target-slot to processed-value source-map；不得自动执行 GitHub upload、重装 app、发布正式报告或执行业务动作。用户要求 raw 原始数据不得修改增删；后续如补齐授权 source-map 后多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供 public-safe 差异报告。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-raw-processed-comparability-diagnostic`
-- 当前已完成: `V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC`
-- 证据目录: `KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/`
-- validator: `KMFA/tools/check_v014_raw_processed_comparability_diagnostic.py`
-- focused test: `KMFA/tests/test_v014_raw_processed_comparability_diagnostic.py`
-- manifest: `KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/machine/raw_processed_comparability_diagnostic_manifest.json`
-- go_no_go: `KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/machine/raw_processed_comparability_diagnostic_go_no_go_report.json`
-- summary: `KMFA/stage_artifacts/V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC/machine/raw_processed_comparability_diagnostic_summary.json`
-- metadata copies: `KMFA/metadata/quality/v014_raw_processed_comparability_diagnostic_manifest.json`, `KMFA/metadata/quality/v014_raw_processed_comparability_diagnostic_go_no_go_report.json`, `KMFA/metadata/quality/v014_raw_processed_comparability_diagnostic_summary.json`
-- private diagnostic: git-ignored `KMFA/.codex_private_runtime/v014_raw_processed_comparability_diagnostic/private_raw_processed_comparability_diagnostic.json`
-- current_gate: `KMFA-V014-RAW-PROCESSED-COMPARABILITY-DIAGNOSTIC-GATE`
-- current_state: raw_root_file_count=`5`, prior_raw_value_fingerprint_record_count=`871`, prior_raw_unique_numeric_fingerprint_count=`330`, processed_target_slot_count=`149`, staged_processed_value_fingerprint_count=`0`, existing_processed_source_map_record_count=`36`, unresolved_owner_worklist_item_count=`113`, active_fill_record_keep_pending_count=`113`, raw_processed_structural_key_intersection_count=`0`, comparable_value_pair_count=`0`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
-- raw boundary: 本 phase 对 raw root 只读 list/stat/hash；write/delete/move/rename/copy/normalize/mutation=false；public evidence 不包含 raw 文件名、raw hash、ZIP member、sheet、cell、row value 或业务值。用户要求原始数据不得修改增删；后续如多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
+- 当前版本: `0.1.4-raw-processed-alignment-blocker-report`
+- 当前已完成: `V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT`
+- 证据目录: `KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/`
+- validator: `KMFA/tools/check_v014_raw_processed_alignment_blocker_report.py`
+- focused test: `KMFA/tests/test_v014_raw_processed_alignment_blocker_report.py`
+- manifest: `KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/machine/raw_processed_alignment_blocker_manifest.json`
+- go_no_go: `KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/machine/raw_processed_alignment_blocker_go_no_go_report.json`
+- summary: `KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/machine/raw_processed_alignment_blocker_summary.json`
+- shareable diagnostic packet: `KMFA/stage_artifacts/V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT/human/chatgpt_agent_diagnostic_packet.md`
+- metadata copies: `KMFA/metadata/quality/v014_raw_processed_alignment_blocker_manifest.json`, `KMFA/metadata/quality/v014_raw_processed_alignment_blocker_go_no_go_report.json`, `KMFA/metadata/quality/v014_raw_processed_alignment_blocker_summary.json`
+- current_gate: `KMFA-V014-RAW-PROCESSED-ALIGNMENT-BLOCKER-REPORT-GATE`
+- current_state: source_artifact_count=`10`, raw_value_fingerprint_count=`871`, raw_unique_numeric_fingerprint_count=`330`, processed_target_slot_count=`149`, staged_processed_value_fingerprint_count=`0`, usable_processed_source_map_count=`0`, authorized_filled_item_count=`36`, authorized_unfilled_item_count=`113`, unresolved_gap_item_count=`113`, active_fill_record_keep_pending_count=`113`, raw_processed_structural_key_intersection_count=`0`, comparable_value_pair_count=`0`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
+- raw boundary: 本 phase 不读取 raw inbox、不读取私有诊断明细；只读取 public-safe evidence artifacts；public evidence 不包含 raw 文件名、raw digest、ZIP member、sheet、cell、row value 或业务值。用户要求原始数据不得修改增删；后续如补齐授权 source-map 后多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
 - upload policy: v1.4 不按单个 Stage 或补充 gate 上传；GitHub main upload 必须等 owner raw source identity、raw alignment application、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
 - 未完成/阻断: processed target slots 缺少授权 value fingerprints，raw/processed structural join key intersection=0；仍需 owner/authorized delegate 提供 target-slot to processed-value source-map；source_map_gap_resolution_complete=false；processed value materialization replay=false；raw-to-processed comparison=false；comparable raw/processed value pairs=0；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
 - 下一步: 只有在 owner/authorized delegate 提供 target-slot to processed-value source-map 后，才能另起一个单一 follow-up phase 执行 source-map application/materialization readiness；不得自动执行 materialization replay、raw-to-processed comparison、GitHub upload、重装 app、发布正式报告或执行业务动作。

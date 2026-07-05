@@ -1,0 +1,25 @@
+{
+  "app_reinstall_performed": false,
+  "blocker_ids": [
+    "NO_COMPARABLE_RAW_PROCESSED_VALUE_PAIRS",
+    "PROCESSED_VALUE_SOURCE_MAP_INCOMPLETE",
+    "AUTHORIZED_PROCESSED_VALUE_FINGERPRINTS_MISSING",
+    "RAW_TO_PROCESSED_COMPARISON_BLOCKED"
+  ],
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "comparable_value_pair_count": 0,
+  "decision": "NO_GO",
+  "github_upload_performed": false,
+  "next_required_input": "owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map",
+  "phase_id": "V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT",
+  "raw_to_processed_value_comparison_performed": false,
+  "resolved_blocker_ids": [
+    "RAW_SOURCE_CONTAINER_AUTHORITY_RECORDED",
+    "RAW_ROOT_READONLY_MUTATION_GUARD_RECHECKED",
+    "PUBLIC_SAFE_BLOCKER_REPORT_GENERATED"
+  ],
+  "status": "completed_validated_local_only_no_go_alignment_blocker_report",
+  "task_id": "KMFA-V014-RAW-PROCESSED-ALIGNMENT-BLOCKER-REPORT-20260706",
+  "version": "0.1.4-raw-processed-alignment-blocker-report"
+}
