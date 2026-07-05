@@ -1,0 +1,24 @@
+{
+  "blocker_ids": [
+    "STAGE18_REVIEW_PENDING",
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "GITHUB_UPLOAD_DEFERRED_UNTIL_V014_STAGE1_18_COMPLETE"
+  ],
+  "business_decision_basis_allowed": false,
+  "decision": "NO_GO",
+  "decision_reason": "S18-P3 is complete but Stage18 review, lineage full check and official report release remain pending",
+  "delivery_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_required_phase": "S18_STAGE_REVIEW",
+  "official_report_release_allowed": false,
+  "phase_id": "S18-P3",
+  "project_id": "KMFA",
+  "record_type": "v014_s18_p3_go_no_go_report",
+  "s18_p3_pending": false,
+  "stage18_review_performed": false,
+  "stage_id": "S18",
+  "task_id": "S18P3T03",
+  "version": "0.1.4"
+}

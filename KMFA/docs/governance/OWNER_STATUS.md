@@ -4,10 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S18-P2 全量回归和验收；S18-P1 dependency、legacy S18-P2 public-safe baseline、v1.4 taskpack/roadmap requirements、v1.4 HTML human-flow audit、v0.1.4 S18-P2 validator 和 focused unit test 均通过。当前锁定 checks=5、stage evidence=18、HTML audit files=6/rows=54/pass=54/warn=0/fail=0、Go/No-Go=`NO_GO`、report grade=`D`。状态仍为 `NO_GO`，`delivery_allowed=false`。证据位于 `KMFA/stage_artifacts/V014_S18_P2_FULL_REGRESSION_ACCEPTANCE/`，validator 为 `KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py`。本 phase 未执行 S18-P3、Stage18 review、GitHub upload、protected source matching、lineage full check、app reinstall、生产恢复、外部连接器、正式报告或任何业务动作。
+KMFA 已完成 v0.1.4 S18-P3 后续接入准备；S18-P2 dependency、legacy S18-P3 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S18-P3 validator 和 focused unit test 均通过。当前锁定 read-only future connector plans=3（redcircle/kingdee/wps）、OpMe entry surfaces=4、next-stage backlog items=6、Go/No-Go=`NO_GO`、delivery_allowed=false、external/live connector calls=0、source mutation allowed=0、OpMe deep coupling=false。证据位于 `KMFA/stage_artifacts/V014_S18_P3_INTEGRATION_PREPARATION/`，validator 为 `KMFA/tools/check_v014_s18_p3_integration_preparation.py`。本 phase 未执行 Stage18 review、GitHub upload、protected source matching、lineage full check、app reinstall、生产恢复、外部连接器调用、live connector、正式报告或任何业务动作。
 
 ## 你现在能信任什么
 
+- v0.1.4 S18-P3 后续接入准备已确认本地 validator 通过；红圈、金蝶、WPS 的未来只读接入方案、OpMe 轻入口集成方案和下一阶段 backlog 均为 public-safe proposal-only evidence。S18-P3 只证明后续接入准备材料锁定，不证明 Stage18 review、GitHub upload、lineage full check、正式报告、经营决策依据、生产恢复、外部连接器调用、app reinstall、OpMe 深度耦合或业务执行；下一步只能 Stage 18 整体复审单独 run。
 - v0.1.4 S17-P1 权限与安全已确认本地 validator 通过；4 类角色、15 类敏感公开仓库禁止项和 5 类审计动作均为 public-safe governance evidence。S17-P1 只证明权限/安全/审计策略锁定，不证明提醒发送、完整报告邮件正文、S17-P2、S17-P3、Stage17 review、GitHub upload、lineage full check、正式报告、经营决策依据、外部连接器、app reinstall 或业务执行；下一步只能 S17-P2 单独 run。
 - v0.1.4 S18-P2 全量回归和验收已确认本地 validator 通过；5 类检查、18 个 Stage evidence、HTML human-flow audit FAIL=0 和 Go/No-Go 报告均为 public-safe local evidence。S18-P2 只证明回归验收和 NO_GO 状态锁定，不证明 S18-P3、Stage18 review、GitHub upload、lineage full check、正式报告、经营决策依据、生产恢复、外部连接器、app reinstall 或业务执行；下一步只能 S18-P3 单独 run。
 - v0.1.4 Stage 16 整体复审已确认本地 validator 通过；S16-P1/S16-P2/S16-P3 均为 PASS，open findings=0，fixed findings=1。Stage 16 review 只证明外协采购归集、项目状态生命周期和客户经营分析的 public-safe 本地证据闭环，不证明 GitHub upload、S17-P1、protected source matching、lineage full check、正式报告、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、客户联络、催收、法务、税务或业务执行；下一步只能 S17-P1 单独 run。

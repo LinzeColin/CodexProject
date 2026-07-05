@@ -1,3 +1,10 @@
+## 0.1.4-s18p3-integration-preparation - 2026-07-05
+- Completed v0.1.4 S18-P3 integration preparation locally with S18-P2 dependency, legacy S18-P3 public-safe baseline, v1.4 roadmap/taskpack anchors, v0.1.4 S18-P3 validator, focused unit test, and public-safe evidence.
+- Locked read-only future connector plans=3 for redcircle, kingdee and wps; OpMe entry surfaces=4; next-stage backlog items=6; Go/No-Go decision=NO_GO; next_required_phase=S18_STAGE_REVIEW.
+- Confirmed all connector plans are proposal-only/read-only and no credential, live connector call, external service call, source mutation, raw payload, raw filename, field/header plaintext, business value or private artifact is committed.
+- Confirmed no Stage18 review, GitHub upload, protected source matching, lineage full check, app reinstall, production restore, formal report, OpMe deep coupling or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
 ## 0.1.4-s18p2-full-regression-acceptance - 2026-07-05
 - Completed v0.1.4 S18-P2 full regression and acceptance locally with S18-P1 dependency, legacy S18-P2 public-safe baseline, v1.4 roadmap/taskpack anchors, v1.4 HTML human-flow audit, v0.1.4 S18-P2 validator, focused unit test, and public-safe evidence.
 - Locked check_category_count=5, stage_evidence_count=18, HTML audit files=6, rows=54, pass=54, warn=0, fail=0, Go/No-Go decision=NO_GO, maximum report grade=D, and next_required_phase=S18-P3.
