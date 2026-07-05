@@ -1,0 +1,22 @@
+# Runtime records stay local-current only on main/local checkout.
+# They are uploaded to the device-specific GitHub archive branch by the controlled script.
+data/current_3days/**
+!data/current_3days/
+!data/current_3days/raw/
+!data/current_3days/raw/.gitkeep
+data/latest/**
+!data/latest/
+!data/latest/.gitkeep
+data/run_logs/**
+!data/run_logs/
+!data/run_logs/.gitkeep
+data/cache/**
+!data/cache/
+!data/cache/archive_push/
+!data/cache/archive_push/.gitkeep
+reports/current_3days/**
+!reports/current_3days/
+!reports/current_3days/.gitkeep
+reports/latest/**
+!reports/latest/
+!reports/latest/.gitkeep
