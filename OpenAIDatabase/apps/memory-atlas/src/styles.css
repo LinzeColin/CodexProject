@@ -1703,16 +1703,16 @@ h3 {
 
 .home-action-list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
 
 .home-action-list button {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   gap: 6px;
   min-width: 0;
-  min-height: 118px;
+  min-height: 188px;
   border: 1px solid rgba(244, 241, 232, 0.12);
   border-radius: 8px;
   background: rgba(9, 10, 13, 0.42);
@@ -1733,6 +1733,209 @@ h3 {
   color: #ffffff;
   font-size: 14px;
   line-height: 1.25;
+}
+
+.home-action-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.home-action-meta-grid i {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(143, 211, 255, 0.16);
+  border-radius: 6px;
+  background: rgba(143, 211, 255, 0.055);
+  color: #c9ecff;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 5px 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-action-next-step {
+  display: block;
+  overflow: hidden;
+  color: #a9a397;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1.35;
+}
+
+.action-detail-drawer {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid rgba(126, 232, 212, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(126, 232, 212, 0.09), rgba(9, 10, 13, 0)),
+    rgba(9, 10, 13, 0.6);
+  color: #f4f1e8;
+  padding: 14px;
+}
+
+.action-detail-drawer > p {
+  margin: 0;
+  color: #d9d4ca;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.action-detail-drawer-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+}
+
+.action-detail-drawer-heading span,
+.action-detail-section span {
+  color: #8fd3ff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.action-detail-drawer-heading h4 {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+  color: #ffffff;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.action-detail-drawer-heading button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(244, 241, 232, 0.14);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.06);
+  color: #f4f1e8;
+}
+
+.action-detail-drawer-heading button:hover,
+.action-detail-drawer-heading button:focus-visible,
+.action-detail-open-target:hover,
+.action-detail-open-target:focus-visible {
+  border-color: rgba(126, 232, 212, 0.7);
+  background: rgba(126, 232, 212, 0.12);
+  outline: none;
+}
+
+.action-detail-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0;
+}
+
+.action-detail-drawer-grid div {
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.045);
+  padding: 7px;
+}
+
+.action-detail-drawer-grid dt {
+  overflow: hidden;
+  color: #a9a397;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-detail-drawer-grid dd {
+  margin: 3px 0 0;
+  overflow: hidden;
+  color: #f4f1e8;
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-detail-section {
+  display: grid;
+  gap: 5px;
+}
+
+.action-detail-section p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #d9d4ca;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.action-detail-evidence-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.action-detail-evidence-list li {
+  overflow: hidden;
+  border: 1px solid rgba(244, 241, 232, 0.08);
+  border-radius: 6px;
+  background: rgba(244, 241, 232, 0.04);
+  color: #b6b1a6;
+  font-size: 11px;
+  padding: 5px 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-detail-safety-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.action-detail-safety-strip span {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(126, 232, 212, 0.18);
+  border-radius: 7px;
+  background: rgba(126, 232, 212, 0.055);
+  color: #b8f4e8;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-detail-open-target {
+  width: fit-content;
+  min-height: 34px;
+  border: 1px solid rgba(126, 232, 212, 0.28);
+  border-radius: 7px;
+  background: rgba(126, 232, 212, 0.08);
+  color: #f4f1e8;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 0 12px;
+}
+
+@media (max-width: 760px) {
+  .action-detail-drawer-grid,
+  .action-detail-safety-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .action-detail-open-target {
+    width: 100%;
+  }
 }
 
 .home-inspector-panel {

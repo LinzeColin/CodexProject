@@ -21,6 +21,35 @@ No Cloudflare live deploy, Access policy mutation, memoryatlas.linzezhang.com pu
 - Restored proM2 MacData Chinese report artifacts to Markdown `.md` files for latest, draft, and final reports per owner instruction.
 
 No API key, token, password, cookie, session, Keychain item, shell history, full environment dump, `.env` raw content, Time Machine data, or iCloud data is collected.
+## Unreleased - Memory Atlas v1.1.7 Stage 1 Phase 1.2
+
+- Added `docs/architecture/next_action_model.md` with the
+  `next_action_model_v1_1_7_stage1_phase2` model contract for sortable
+  Next Action details.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage1_phase2_next_action_acceptance.md`.
+- Added `apps/memory-atlas/src/components/ActionDetailDrawer.tsx` and updated
+  `App.tsx` / `styles.css` so Home Overview renders Top 5 Next Action cards
+  and an Action Detail Drawer with `roi_score`, effort cost, `urgency`,
+  source, evidence, status, linked context, next step and `proposal_only`
+  safety hints.
+- Updated `config/visualization/model_parameters.universe_state.yaml` to
+  register `MA-V117-S1P02` / `ACC-MA-V117-S1P02`, required action fields,
+  `next_action_sort_weights`, `top_action_limit: 5` and proposal-only gates.
+- Added `validate:v1.1.7-stage1-phase2` to verify the model contract,
+  runtime implementation, drawer, styles, records and changed-path boundary.
+- Registered status
+  `phase_1_2_next_action_detail_completed_pending_stage1_review`.
+
+No Phase 1.3 tier asset model, Phase 1.4 topic classification model,
+proposal editor, raw/private data read, direct writeback, proposal write,
+agent apply, production build, local app install, browser screenshot, deploy or
+GitHub main upload was added.
+
+Machine-readable boundary summary: Next Action runtime detail only; Action
+Detail Drawer is proposal_only; No direct writeback; No GitHub main upload
+before whole Stage 0-8 completion.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 1 Phase 1
 
 - Updated `docs/architecture/universe_state_snapshot.md` with the v1.1.7

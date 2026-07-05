@@ -3313,6 +3313,67 @@ Stage 9 整体复审已确认：
 - 本 phase 不运行 browser screenshot、production build、本地 app install、deploy 或
   GitHub main 上传。
 
+## 74. v1.1.7 Stage 1 Phase 1.2 Next Action Detail
+
+状态：`phase_1_2_next_action_detail_completed_pending_stage1_review`。
+
+验收 ID：`ACC-MA-V117-S1P02`。
+
+模型假设：
+
+- Next Action 只从已筛选的 redacted atlas nodes、graph edges 和 delta stats 派生；
+  本 phase 不读取 raw/private/cookie/session/secret。
+- `nextActionSortScore` 是展示排序启发式，不是长期记忆写回公式。
+- Action Detail Drawer 是只读解释层；任何重要性、优先级或状态调整仍必须进入后续
+  proposal-only 工作区。
+
+输入：
+
+- `docs/architecture/next_action_model.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/ActionDetailDrawer.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase2_next_action_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase2.cjs`
+
+处理方法：
+
+- 使用 `buildNextActionDetails` 生成最多 Top 5 Next Action。
+- 使用 `nextActionSortScore = roi_score * 0.40 + urgency_score * 0.25 +
+  confidence * 0.25 - effort_penalty * 0.10` 排序。
+- 在 Home Overview card 上显示 priority、title、reason、`roi_score`、effort
+  cost、`urgency`、evidence count 和 next step。
+- 点击 card 后打开 Action Detail Drawer，展示 source、status、evidence_refs、
+  matched_reason、linked_topic_ids、linked_asset_ids、proposal_hint、rollback_hint
+  和 `proposal_only`。
+- 使用 `validate:v1.1.7-stage1-phase2` 检查模型、实现、样式、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S1P02-001 stage1_phase2_status = phase_1_2_next_action_detail_completed_pending_stage1_review`
+- `PARAM-MA-V117-S1P02-002 stage1_phase2_required_validator = validate:v1.1.7-stage1-phase2`
+- `PARAM-MA-V117-S1P02-003 next_action_required_fields = action_id;title;action_type;reason;roi_score;effort_cost;urgency;confidence;source;status;evidence_count;evidence_refs;matched_reason;linked_topic_ids;linked_asset_ids;next_step;recommended_time_window;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P02-004 next_action_sort_weights = roi_weight=0.40;urgency_weight=0.25;confidence_weight=0.25;effort_penalty_weight=0.10`
+- `PARAM-MA-V117-S1P02-005 next_action_top_limit = Top 5`
+- `PARAM-MA-V117-S1P02-006 action_detail_drawer_fields = reason;roi_score;effort_cost;urgency;source;evidence_refs;status;linked_topic_ids;linked_asset_ids;next_step;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P02-007 stage1_phase2_deferred_work = Phase 1.3 tier_asset_detail;Phase 1.4 topic_classification_detail;Stage 2 proposal editor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+输出：
+
+- Next Action model contract。
+- Action Detail Drawer runtime component。
+- Home Overview Top 5 Next Action cards。
+- Stage 1 Phase 1.2 acceptance and validator。
+
+边界：
+
+- 本 phase 不进入 Phase 1.3，不实现 tier asset detail。
+- 本 phase 不进入 Phase 1.4，不实现 topic classification detail。
+- 本 phase 不写 proposal，不直接写 active memory，不执行 agent apply。
+- 本 phase 不运行 browser screenshot、production build、本地 app install、deploy 或
+  GitHub main 上传。
+
 ## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
 
 状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。
