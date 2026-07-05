@@ -63,6 +63,29 @@ class MacDataPackageTests(unittest.TestCase):
             self.assertFalse(ok)
             self.assertTrue(findings)
 
+    def test_run_status_includes_report_archive_after_final_upload(self):
+        config = {
+            'device_key': 'proM2',
+            'default_archive_branch': 'macdata-proM2',
+        }
+        raw_archive = {'archive_branch': 'macdata-proM2', 'remote_verified': True}
+        report_archive = {'archive_branch': 'macdata-proM2', 'remote_verified': True, 'local_commit_hash': 'abc123'}
+        cleanup = {'status': '已执行', 'development_cleanup': {'project_cache': {'candidate_count': 0}}}
+        status = macdata_cycle.build_run_status(
+            config,
+            'proM2-test',
+            'data/current_3days/raw/test.json',
+            'reports/current_3days/test_final.md',
+            raw_archive,
+            cleanup,
+            report_archive,
+        )
+        self.assertTrue(status['ok'])
+        self.assertTrue(status['remote_verified'])
+        self.assertEqual(status['archive_branch'], 'macdata-proM2')
+        self.assertEqual(status['report_archive']['local_commit_hash'], 'abc123')
+        self.assertEqual(status['development_cleanup']['project_cache']['candidate_count'], 0)
+
     def test_chinese_report_contains_required_sections(self):
         config = json.loads((ROOT / 'config' / 'device_config.json').read_text(encoding='utf-8'))
         metrics = {

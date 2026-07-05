@@ -1079,6 +1079,34 @@ def archive_to_github(repo_root: Path, config: Dict[str, Any], stage: str, messa
             pass
 
 
+def build_run_status(
+    config: Dict[str, Any],
+    rid: str,
+    raw_data_path: str,
+    final_report_path: str,
+    data_archive: Dict[str, Any],
+    cleanup_status: Dict[str, Any],
+    report_archive: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    raw_verified = bool(data_archive.get('remote_verified'))
+    report_verified = bool(report_archive.get('remote_verified')) if report_archive is not None else None
+    ok = (raw_verified and report_verified) if report_archive is not None else None
+    return {
+        'ok': ok,
+        'device_key': config['device_key'],
+        'run_id': rid,
+        'archive_branch': data_archive.get('archive_branch') or config['default_archive_branch'],
+        'remote_verified': ok,
+        'raw_data_path': raw_data_path,
+        'final_report_path': final_report_path,
+        'raw_archive': data_archive,
+        'report_archive': report_archive,
+        'cleanup': cleanup_status,
+        'development_cleanup': cleanup_status.get('development_cleanup'),
+        'created_at_local': now_local_iso(),
+    }
+
+
 def controlled_cycle(repo_root: Path, execute: bool) -> int:
     config = load_json(CONFIG_PATH)
     if not execute:
@@ -1152,17 +1180,11 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     write_text(final_report_path, final_report)
     write_text(latest_report, final_report)
     final_status_path = DEVICE_ROOT / 'data' / 'latest' / 'last_run_status.json'
-    write_json(final_status_path, {
-        'device_key': config['device_key'],
-        'run_id': rid,
-        'raw_data_path': str(raw_path.relative_to(DEVICE_ROOT)),
-        'final_report_path': str(final_report_path.relative_to(DEVICE_ROOT)),
-        'raw_archive': data_archive,
-        'cleanup': cleanup_status,
-        'development_cleanup': cleanup_status.get('development_cleanup'),
-        'created_at_local': now_local_iso(),
-    })
+    raw_rel = str(raw_path.relative_to(DEVICE_ROOT))
+    final_report_rel = str(final_report_path.relative_to(DEVICE_ROOT))
+    write_json(final_status_path, build_run_status(config, rid, raw_rel, final_report_rel, data_archive, cleanup_status))
     report_archive = archive_to_github(repo_root, config, 'report', rid, [final_report_path, latest_report, final_status_path])
+    write_json(final_status_path, build_run_status(config, rid, raw_rel, final_report_rel, data_archive, cleanup_status, report_archive))
     console_upload = dict(final_upload)
     console_upload['report_commit_hash'] = report_archive.get('local_commit_hash')
     console_upload['remote_verified'] = bool(data_archive.get('remote_verified')) and bool(report_archive.get('remote_verified'))

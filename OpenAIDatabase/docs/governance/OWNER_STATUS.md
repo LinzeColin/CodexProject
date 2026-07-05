@@ -53,6 +53,7 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 - delivery_readiness: `FAILED`
 
 macdata proM2 子流程不提升 OpenAIDatabase 生产交付状态；它只覆盖本机健康归档和清理自动化。
+`last_run_status.json` 的最终状态记录包含 raw/report 两阶段归档、远程验证和清理结果，供后续自动化读取。
 
 ## 9. A/B/C Choice Matrix
 
