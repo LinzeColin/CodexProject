@@ -10305,3 +10305,25 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-raw-processed-alignment-blocker-report"
     completed_version: "0.1.4-raw-processed-alignment-blocker-report"
+
+  - task_id: "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-INPUT-KIT-20260706"
+    phase_id: "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-INPUT-KIT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_processed_value_source_map_completion_input_kit.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_input_kit.py --require-private-template"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_input_kit -q"
+    test_results:
+      - "PASS: processed value source-map completion input kit validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT/human/processed_value_source_map_completion_input_kit_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT/human/owner_agent_completion_packet.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT/machine/processed_value_source_map_completion_input_kit_manifest.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT/machine/processed_value_source_map_completion_input_kit_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT/machine/processed_value_source_map_completion_input_kit_summary.json"
+    risk: "The private completion template is ready but still has zero authorized processed value fingerprints; do not treat this phase as value reconciliation, formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, private template, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-processed-value-source-map-completion-input-kit"
+    completed_version: "0.1.4-processed-value-source-map-completion-input-kit"

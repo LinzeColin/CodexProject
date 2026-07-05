@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-raw-processed-alignment-blocker-report"
-product_version_status: "raw_processed_alignment_blocker_report_no_go"
-version_file_value: "0.1.4-raw-processed-alignment-blocker-report"
+product_version: "0.1.4-processed-value-source-map-completion-input-kit"
+product_version_status: "processed_value_source_map_completion_input_kit_no_go"
+version_file_value: "0.1.4-processed-value-source-map-completion-input-kit"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-raw-processed-alignment-blocker-report"
+  MOD-KMFA-GOV-001: "0.1.4-processed-value-source-map-completion-input-kit"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_processed_value_source_map_completion_input_kit: "0.1.4-processed-value-source-map-completion-input-kit"
   kmfa_v014_raw_processed_alignment_blocker_report: "0.1.4-raw-processed-alignment-blocker-report"
   kmfa_v014_raw_processed_comparability_diagnostic: "0.1.4-raw-processed-comparability-diagnostic"
   kmfa_v014_private_processed_value_source_map_owner_authorized_fill_record_draft: "0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft"

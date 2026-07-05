@@ -1,3 +1,14 @@
+# KMFA v0.1.4 Processed Value Source-map Completion Input Kit
+
+## 0.1.4-processed-value-source-map-completion-input-kit - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT` 本地 private-template/public-safe evidence phase。
+- 基于既有 raw/processed blocker summary、private owner worklist 和 active keep-pending record，生成 113 条 private-only completion template items，供 owner/authorized delegate 或其他 agent 补齐授权 processed value source evidence。
+- 锁定结论：source worklist items=113、active fill record items=113、active keep-pending=113、private completion template items=113、unique target slots=113、authorized processed value fingerprints=0、source-map records applied=0、comparable pairs=0、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制、不标准化 raw inbox；private template 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能由 owner/authorized delegate 填写 private completion template 并提供授权 processed value source evidence。
+
 # KMFA v0.1.4 Raw/Processed Alignment Blocker Report
 
 ## 0.1.4-raw-processed-alignment-blocker-report - 2026-07-06

@@ -851,3 +851,12 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - Controls: evidence remains public-safe and aggregate-only; this phase must not read, list, stat, hash, write, delete, move, copy, normalize or overwrite the raw inbox; private diagnostic details, raw source names, field/header plaintext, row/cell coordinates and business values remain out of public artifacts.
 - Current result: `source_artifact_count=10`, `raw_value_fingerprint_count=871`, `raw_unique_numeric_fingerprint_count=330`, `processed_target_slot_count=149`, `staged_processed_value_fingerprint_count=0`, `usable_processed_source_map_count=0`, `authorized_filled_item_count=36`, `authorized_unfilled_item_count=113`, `raw_processed_structural_key_intersection_count=0`, `comparable_value_pair_count=0`, `go_no_go=NO_GO`.
 - Next input: owner or authorized delegate supplies target-slot to processed-value source-map evidence sufficient to create comparable pairs.
+
+## FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-INPUT-KIT-001
+- Version: `0.1.4-processed-value-source-map-completion-input-kit`.
+- Purpose: generate the private-only completion template required for owner/authorized-delegate source-map completion while keeping public evidence aggregate-only.
+- Inputs: v0.1.4 raw/processed alignment blocker summary, git-ignored owner worklist, and git-ignored active keep-pending fill record.
+- Outputs: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT/machine/processed_value_source_map_completion_input_kit_manifest.json`, aggregate summary, Go/No-Go report, owner/agent completion packet, and a git-ignored private completion template.
+- Controls: raw inbox access and mutation must remain false; private completion template must be git-ignored and untracked; public artifacts may contain counts/status/gate refs only; downstream comparison, reconciliation, lineage, release, upload and app reinstall remain false until authorized processed value sources are supplied and separately validated.
+- Current result: `source_worklist_item_count=113`, `active_fill_record_item_count=113`, `active_keep_pending_item_count=113`, `private_completion_template_item_count=113`, `private_completion_template_unique_target_slot_count=113`, `authorized_processed_value_fingerprint_count=0`, `source_map_records_applied_count=0`, `comparable_value_pair_count=0`, `go_no_go=NO_GO`.
+- Next input: owner or authorized delegate fills the private completion template with authorized processed value source evidence.

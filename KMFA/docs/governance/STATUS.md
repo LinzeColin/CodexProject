@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-raw-processed-alignment-blocker-report`
+- version: `0.1.4-processed-value-source-map-completion-input-kit`
 - current_stage: `value-consistency`
-- current_phase: `V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT`
-- status: `completed_validated_local_only_no_go_alignment_blocker_report`
-- current_blocker: `no_comparable_raw_processed_value_pairs_due_to_incomplete_authorized_source_map`
-- next_required_input: `owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`
+- current_phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT`
+- status: `completed_validated_local_only_no_go_completion_input_kit_ready`
+- current_blocker: `private_completion_template_waiting_for_authorized_processed_value_sources`
+- next_required_input: `owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`
 - blocked_next_steps: `processed value materialization replay; raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 processed value source-map completion input kit completed local-only: source_worklist_item_count=113，active_fill_record_item_count=113，active_keep_pending_item_count=113，private_completion_template_item_count=113，private_completion_template_unique_target_slot_count=113，authorized_processed_value_fingerprint_count=0，source_map_records_applied_count=0，raw_processed_structural_key_intersection_count=0，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase writes a private-only git-ignored completion template and public-safe aggregate evidence only；raw inbox read/list/stat/fingerprint/write/delete/move/rename/copy/normalize/mutation=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`。
 
 - v0.1.4 raw/processed alignment blocker report completed local-only: source_artifact_count=10，raw_value_fingerprint_count=871，raw_unique_numeric_fingerprint_count=330，processed_target_slot_count=149，staged_processed_value_fingerprint_count=0，usable_processed_source_map_count=0，authorized_filled_item_count=36，authorized_unfilled_item_count=113，unresolved_gap_item_count=113，active_fill_record_keep_pending_count=113，source_map_records_applied_count=0，raw_processed_structural_key_intersection_count=0，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads only public-safe evidence artifacts and generates a shareable diagnostic packet for external agent review；raw inbox read/write/mutation=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。final discrepancy report required now=false；required if repeated mismatch after authorized map=true。next_required_input=`owner_or_authorized_delegate_supplies_target_slot_to_processed_value_source_map`。
 
