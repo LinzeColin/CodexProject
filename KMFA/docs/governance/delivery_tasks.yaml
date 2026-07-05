@@ -10218,3 +10218,25 @@ tasks:
     rollback: "Revert the current-state pointer edits, validator, focused test, evidence and governance entries; do not modify raw inbox."
     target_version: "0.1.4-current-state-pointer-repair"
     completed_version: "0.1.4-current-state-pointer-repair"
+
+  - task_id: "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-RECORD-DRAFT-20260705"
+    phase_id: "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-RECORD-DRAFT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_private_processed_value_source_map_owner_authorized_fill_record_draft.py --generated-at 2026-07-05T23:59:59+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_record_draft.py --require-private-draft"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_owner_authorized_fill_record_draft -q"
+    test_results:
+      - "PASS: owner-authorized fill record draft generator, validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/human/private_processed_value_source_map_owner_authorized_fill_record_draft_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/machine/private_processed_value_source_map_owner_authorized_fill_record_draft_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/machine/private_processed_value_source_map_owner_authorized_fill_record_draft_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/machine/private_processed_value_source_map_owner_authorized_fill_record_draft_summary.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/machine/private_processed_value_source_map_owner_authorized_fill_record_draft_preview.json"
+    risk: "This draft is not an active owner-authorized fill record; materialization, raw comparison, formal report, GitHub upload and app reinstall remain blocked until owner or authorized delegate activation."
+    rollback: "Remove draft phase artifacts, tool, validator, focused test, ignored private draft and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft"
+    completed_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft"

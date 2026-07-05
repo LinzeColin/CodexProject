@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-RECORD-DRAFT-001
+- version: `0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe draft gate for owner-authorized private processed value source-map fill records.
+- expression: `draft_ready = private_intake_request_item_count == 113 AND draft_fill_item_count == 113 AND draft_keep_pending_item_count == 113 AND active_authorized_fill_record_created == false AND fill_application_performed == false AND source_map_records_applied_count == 0 AND new_authorized_fingerprint_count == 0 AND raw_inbox_access == false AND downstream_allowed == false`.
+- inputs: owner-authorized fill intake contract, public-safe intake packet, git-ignored private intake request, raw immutable boundary.
+- missing_policy: missing draft manifest, Go/No-Go report, summary, preview, private draft, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/machine/private_processed_value_source_map_owner_authorized_fill_record_draft_manifest.json` and paired public-safe summary/Go-No-Go evidence.
+- forbidden_scope: active owner authorization creation, source-map application, processed value materialization replay, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall, raw inbox access, raw inbox mutation and business execution.
+
 ## FORM-KMFA-V014-S17P1-ACCESS-SECURITY-001
 - version: `0.1.4-s17p1-access-security`
 - model_id: `MOD-KMFA-GOV-001`
