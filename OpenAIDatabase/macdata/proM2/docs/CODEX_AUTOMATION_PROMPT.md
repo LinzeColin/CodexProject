@@ -71,7 +71,7 @@ python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root
 ## 成功标准
 
 - `OpenAIDatabase/macdata/proM2/data/latest/latest_metrics.json` 存在。
-- `OpenAIDatabase/macdata/proM2/reports/latest/latest_report.md` 存在。
+- `OpenAIDatabase/macdata/proM2/reports/latest/latest_report.txt` 存在。
 - GitHub 归档分支 `macdata-proM2` 包含本次提交。
 - 远程 hash 与本地提交 hash 一致。
 - 本机只保留最近 3 天 `proM2` 数据和记录。

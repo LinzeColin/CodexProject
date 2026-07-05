@@ -25,7 +25,7 @@ parameter_profile_versions:
   personalization_routing: "personalization-routing-parameters-v0"
   macdata_prom2: "macdata-prom2-parameters-v1"
 data_snapshot_version: "public_redacted_read_only_visualization"
-current_iteration: "ITER-20260705-MACDATA-PROM2-HYGIENE"
+current_iteration: "ITER-20260705-MACDATA-PROM2-TXT-REPORT"
 current_phase: "D"
 current_gate: "S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED"
 legacy_version_labels:
@@ -41,3 +41,4 @@ notes:
   - "ITER-20260705-MACDATA-PROM2-SETUP installs a controlled macdata proM2 archive workflow for the local Apple M2 Max MacBook Pro; it does not change Memory Atlas delivery readiness."
   - "ITER-20260705-MACDATA-PROM2-STATUS-FIX records final raw/report archive verification in last_run_status.json after report upload completes."
   - "ITER-20260705-MACDATA-PROM2-HYGIENE adds verified-run cleanup for managed merged temporary PRs, branches, and issues while protecting main and macdata-proM2."
+  - "ITER-20260705-MACDATA-PROM2-TXT-REPORT changes the proM2 MacData Chinese report artifacts from Markdown to plain .txt files without changing collection scope, cleanup gates, product version, or delivery readiness."

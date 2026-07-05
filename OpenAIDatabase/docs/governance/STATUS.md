@@ -29,6 +29,7 @@
 - Cleanup gate: remote upload hash verification must pass before macdata retention cleanup or Docker/Homebrew/system/project cache cleanup runs.
 - Post-run hygiene: verified runs clean only managed merged temporary PRs/branches/issues; `main` and `macdata-proM2` are protected.
 - Status file: `last_run_status.json` records raw/report archive results, top-level `ok`, archive branch, and remote verification after report upload completes.
+- Report artifact: the full Chinese MacData report uses plain `.txt` files: `reports/latest/latest_report.txt`, current-day `*_draft.txt`, and current-day `*_final.txt`.
 - Secret boundary: API keys, tokens, passwords, cookies, sessions, Keychain, shell history, full environment dumps, and `.env` raw content are out of scope.
 
 ## Assurance
