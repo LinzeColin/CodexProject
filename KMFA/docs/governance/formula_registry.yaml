@@ -7307,3 +7307,49 @@ formulas:
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/private_processed_value_source_map_owner_authorized_fill_intake_report.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/test_results.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_intake_manifest.json"
+  - formula_id: "FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-006"
+    name: KMFA v0.1.4 owner-authorized private processed source-map fill application gate
+    version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application"
+    status: active
+    fact_level: EXTRACTED
+    expression: "source_unresolved_gap_item_count=113 AND private_intake_request_item_count=113 AND candidate_active_fill_record_path_count=2 AND active_authorized_fill_record_found=false AND fill_application_performed=false -> source_map_gap_resolution_complete=false, raw_to_processed_value_comparison_ready=false, business_value_consistency_verified=false, decision=NO_GO"
+    variables:
+      - name: "source_unresolved_gap_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "113"
+      - name: "private_intake_request_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "113"
+      - name: "candidate_active_fill_record_path_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "2"
+      - name: "active_authorized_fill_record_found"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "Application checks only fixed git-ignored active-record candidate paths."
+      - "No active fill record means no source-map record application and NO_GO remains active."
+      - "Raw data is immutable for Codex; this phase does not read, list, fingerprint, write, delete, move, rename, overwrite, normalize or copy raw sources."
+      - "Later cross-validation must reconcile derived outputs to raw source truth; repeated divergence requires a final discrepancy report."
+      - "Materialization replay, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, Go/No-Go report, summary, preview, private diagnostic, validator, focused unit test or governance record fails validation."
+    output_range: "v014_private_processed_value_source_map_owner_authorized_fill_application_manifest"
+    code_refs:
+      - "KMFA/tools/v014_private_processed_value_source_map_owner_authorized_fill_application.py"
+      - "KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_application.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_application.py --require-private-application-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_owner_authorized_fill_application -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/human/private_processed_value_source_map_owner_authorized_fill_application_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_manifest.json"

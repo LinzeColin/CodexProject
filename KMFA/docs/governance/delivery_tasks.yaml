@@ -10179,3 +10179,24 @@ tasks:
     rollback: "Remove current phase artifacts, tool, validator, test, ignored private runtime intake files and governance entries."
     target_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-intake"
     completed_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-intake"
+
+  - task_id: "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION-20260705"
+    phase_id: "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-APPLICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_application.py --require-private-application-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_owner_authorized_fill_application -q"
+    test_results:
+      - "PASS: owner-authorized fill application validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/human/private_processed_value_source_map_owner_authorized_fill_application_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_summary.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_preview.json"
+    risk: "Active owner-authorized fill record remains missing; do not run materialization, raw comparison or claim business consistency until an active authorized fill record is supplied and applied."
+    rollback: "Remove current phase artifacts, tool, validator, test, ignored private runtime diagnostic and governance entries."
+    target_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application"
+    completed_version: "0.1.4-private-processed-value-source-map-owner-authorized-fill-application"

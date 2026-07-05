@@ -427,3 +427,27 @@ git diff --check -- README.md governance/projects.yaml KMFA
 ## 下一步
 
 下一步只能另起 run work 执行 `v0.1.3 S10-P3 report export replay` 或用户明确指定的单一 phase；GitHub main upload 必须等 v1.3 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。本轮 S10-P2 未上传 GitHub；不得把旧 Stage 4/5/6/7/8/9/10 upload gate 作为 active next step，也不得推进 Stage 10 review、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行。
+## 2026-07-05 Latest Handoff - V014 Owner Authorized Fill Application
+
+Current phase completed locally: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION`.
+
+Current state:
+- `active_authorized_fill_record_found=false`
+- `fill_application_performed=false`
+- `source_map_records_applied_count=0`
+- `new_authorized_fingerprint_count=0`
+- `source_map_gap_resolution_complete=false`
+- `go_no_go=NO_GO`
+- `github_upload_performed=false`
+- `app_reinstall_performed=false`
+- raw data remains immutable for Codex; this phase did not read, list, fingerprint, write, delete, move, rename, overwrite, normalize or copy raw sources.
+
+Evidence:
+- `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/machine/private_processed_value_source_map_owner_authorized_fill_application_manifest.json`
+- `KMFA/tools/check_v014_private_processed_value_source_map_owner_authorized_fill_application.py`
+- `KMFA/tests/test_v014_private_processed_value_source_map_owner_authorized_fill_application.py`
+
+Next allowed step:
+- Only run one follow-up phase after an active owner/authorized fill record is supplied, or another explicitly named single phase.
+- Do not run materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
+- Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
