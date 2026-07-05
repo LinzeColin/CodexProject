@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S16-P1 外协采购归集`：新增 `KMFA/tools/v014_s16_p1_subcontract_procurement.py`、`KMFA/tools/check_v014_s16_p1_subcontract_procurement.py`、`KMFA/tests/test_v014_s16_p1_subcontract_procurement.py` 和 `KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/` public-safe evidence。该 phase 验证 Stage 15 review dependency、legacy S16-P1 public-safe baseline、v1.4 S16-P1 taskpack/roadmap requirements、v0.1.4 S16-P1 validator 和 focused unit test，锁定 source lanes=4、project matches=5、unallocated cost pool=2、anomaly candidates=4、duplicate payment candidates=2、cross-project cost candidates=2、pending reconciliation=12、report grade=D、procurement execution=0、payment approval=0、payment execution=0、bank operation=0、formal report=0、business decision basis=0。本 run 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S16-P2、S16-P3、Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、采购执行、付款审批、付款执行、银行、催收、法务或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S16-P2`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S16-P2 项目状态生命周期`：新增 `KMFA/tools/v014_s16_p2_project_status_lifecycle.py`、`KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py`、`KMFA/tests/test_v014_s16_p2_project_status_lifecycle.py` 和 `KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/` public-safe evidence。该 phase 验证 S16-P1 dependency、legacy S16-P2 public-safe baseline、v1.4 S16-P2 taskpack/roadmap requirements、v0.1.4 S16-P2 validator 和 focused unit test，锁定 source lanes=6、lifecycle records=4、exception items=3、handoff guards=3、completed_not_settled=1、settled_not_invoiced=1、invoiced_not_collected=1、pending reconciliation=12、report grade=D、site/signature/invoice/collection/payment/bank/formal report/business decision basis=0。本 run 对 operator-designated local raw/private inbox 仅做只读 aggregate/candidate alignment，并把私有诊断写入 git-ignored runtime；未修改、删除、移动、重命名、覆盖或写入 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文或业务值；未执行 S16-P3、Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、现场施工、安全签字、技术签字、开票、催收、法务、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S16-P3`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s16p1-subcontract-procurement`
-- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`
-- 证据目录: `KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/`
-- validator: `KMFA/tools/check_v014_s16_p1_subcontract_procurement.py`
-- focused test: `KMFA/tests/test_v014_s16_p1_subcontract_procurement.py`
+- 当前版本: `0.1.4-s16p2-project-status-lifecycle`
+- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`、`v0.1.4 S16-P2 项目状态生命周期`
+- 证据目录: `KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/`
+- validator: `KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py`
+- focused test: `KMFA/tests/test_v014_s16_p2_project_status_lifecycle.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S16-P1 未读取、列出、stat、hash、修改、删除、移动、重命名、覆盖或写入 operator-designated local raw/private inbox；只复用 public-safe legacy S16-P1、v0.1.4 Stage 15 review 和任务包/roadmap 证据。
-- 未执行: GitHub upload、S16-P2、S16-P3、Stage 16 review、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、采购执行、付款审批、付款执行、银行、催收、法务或 business execution。
-- 下一步: 仅在用户明确开启后执行 `S16-P2`，继续保持 public-safe/no raw/no upload 边界。
+- raw boundary: S16-P2 仅只读执行 aggregate/candidate alignment，公开 evidence 只保存聚合计数和状态；私有诊断保存在 git-ignored runtime，未提交 raw 文件名、raw hash、字段/表头明文、业务值、Excel/PDF/zip/private CSV/sqlite/db 或 credentials，未修改、删除、移动、重命名、覆盖或写入 raw inbox。
+- 未执行: GitHub upload、S16-P3、Stage 16 review、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、现场施工、安全签字、技术签字、开票、催收、法务、付款、银行或 business execution。
+- 下一步: 仅在用户明确开启后执行 `S16-P3`，继续保持 public-safe/no raw publication/no upload 边界。
 
 ## v0.1.3 历史状态
 

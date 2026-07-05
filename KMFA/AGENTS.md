@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.4 Stage 16`
-- 当前 Phase: `v0.1.4 S16-P1 外协采购归集已本地完成并通过 validator；Stage 15 review dependency、legacy S16-P1 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S16-P1 validator 和 focused unit 均 PASS；source lanes=4、project matches=5、unallocated cost pool=2、anomaly candidates=4、duplicate payment candidates=2、cross-project cost candidates=2、pending reconciliation=12、report grade=D；procurement execution/payment approval/payment execution/bank operation/formal report/business decision basis 均为 0/false；当前 GitHub upload 继续延期到 v1.4 Stage 1-18 完成并整体复审修复后；下一步只能另起 run work 执行 S16-P2，不执行 S16-P3、Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe、采购执行、付款审批、付款执行、银行、催收、法务或业务执行`
+- 当前 Phase: `v0.1.4 S16-P2 项目状态生命周期已本地完成并通过 validator；S16-P1 dependency、legacy S16-P2 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S16-P2 validator 和 focused unit 均 PASS；source lanes=6、lifecycle records=4、exception items=3、handoff guards=3、pending reconciliation=12、report grade=D；raw/private alignment 只读执行且 public evidence 只保存聚合计数与状态，raw inbox mutation、raw file/name/hash/header/value publication 均为 false；site/signature/invoice/collection/payment/bank/formal report/business decision basis 均为 0/false；当前 GitHub upload 继续延期到 v1.4 Stage 1-18 完成并整体复审修复后；下一步只能另起 run work 执行 S16-P3，不执行 Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe、现场施工、安全签字、技术签字、开票、催收、法务、付款、银行或业务执行`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 S16-P1 本轮只允许完成外协采购归集 public-safe lock、validator、治理记录和本地 commit；下一轮只能在用户明确开启后单独执行 `S16-P2`。不得直接执行 S16-P3、Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、采购执行、付款审批、付款执行、银行、催收、法务或任何业务动作。
+- v0.1.4 S16-P2 本轮只允许完成项目状态生命周期 public-safe lock、validator、治理记录和本地 commit；下一轮只能在用户明确开启后单独执行 `S16-P3`。不得直接执行 Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、现场施工、安全签字、技术签字、开票、催收、法务、付款、银行或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

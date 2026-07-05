@@ -8443,7 +8443,9 @@ tasks:
       - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s12_p1_manual_resolution_events -q"
       - "governance validators and safety scans"
     test_results:
-      - "PENDING_FINAL_VALIDATION"
+      - "PASS: py_compile, generator, S16-P1 dependency validator, legacy S16-P2 validator, v0.1.4 S16-P2 validator and focused unit test passed."
+      - "PASS: project governance, lean governance, changed-only governance sync, no-float, no-omission, structured parse checks and Ruby YAML parse checks passed."
+      - "PASS: raw/private suffix scan, high-signal secret scan, scoped S16-P2 public artifact boundary scan and diff check passed."
     evidence_refs:
       - "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/human/manual_resolution_events_report.md"
       - "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/human/test_results.md"
@@ -9145,6 +9147,64 @@ tasks:
       final_payment: false
       payment_execution: false
       bank_operation: false
+      business_execution: false
+
+  - task_id: "KMFA-V014-S16-P2-PROJECT-STATUS-LIFECYCLE-20260705"
+    task_name: "v0.1.4 S16-P2 项目状态生命周期"
+    stage_id: "V014-S16"
+    phase_id: "S16-P2"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE"
+    validator: "KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py"
+    focused_test: "KMFA/tests/test_v014_s16_p2_project_status_lifecycle.py"
+    acceptance_id: "ACC-V014-S16-P2-PROJECT-STATUS-LIFECYCLE"
+    acceptance_ids:
+      - "ACC-V014-S16-P2-PROJECT-STATUS-LIFECYCLE"
+    next_phase: "S16-P3"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s16p2-project-status-lifecycle"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s16_p2_project_status_lifecycle.py KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py KMFA/tests/test_v014_s16_p2_project_status_lifecycle.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s16_p2_project_status_lifecycle.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p1_subcontract_procurement.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s16_p2_project_status_lifecycle.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s16_p2_project_status_lifecycle -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PENDING_FINAL_VALIDATION"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/human/project_status_lifecycle_report.md"
+      - "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/machine/project_status_lifecycle_manifest.json"
+      - "KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py"
+    local_private_evidence_refs:
+      - "KMFA/.codex_private_runtime/v014_s16_p2_project_status_lifecycle/raw_alignment_report.json"
+    forbidden_scope:
+      s16_p3: false
+      stage16_review: false
+      github_upload: false
+      raw_publication: false
+      raw_file_name_publication: false
+      raw_hash_publication: false
+      field_header_publication: false
+      raw_inbox_mutation: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      live_connector: false
+      app_reinstall: false
+      opme_integration: false
+      site_construction: false
+      safety_signature: false
+      technical_signature: false
+      invoice_issuance: false
+      collection_action: false
+      payment_execution: false
+      bank_operation: false
+      legal_action: false
       business_execution: false
 
   - task_id: "KMFA-V014-S16-P1-SUBCONTRACT-PROCUREMENT-20260705"
