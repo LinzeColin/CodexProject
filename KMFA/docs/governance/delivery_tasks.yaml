@@ -10116,3 +10116,23 @@ tasks:
     rollback: "Remove current phase artifacts, tool, validator, test, ignored private runtime capture files and governance entries."
     target_version: "0.1.4-private-processed-value-source-map-capture"
     completed_version: "0.1.4-private-processed-value-source-map-capture"
+
+  - task_id: "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-20260705"
+    phase_id: "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_authorized_fill.py --require-private-authorized-fill"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_authorized_fill -q"
+    test_results:
+      - "PASS: authorized fill validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/human/private_processed_value_source_map_authorized_fill_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_summary.json"
+    risk: "Authorized fill remains partial; do not run materialization or claim business consistency until remaining source-map gaps are resolved."
+    rollback: "Remove current phase artifacts, tool, validator, test, ignored private runtime source-map files and governance entries."
+    target_version: "0.1.4-private-processed-value-source-map-authorized-fill"
+    completed_version: "0.1.4-private-processed-value-source-map-authorized-fill"

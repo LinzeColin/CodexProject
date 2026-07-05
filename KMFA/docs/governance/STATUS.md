@@ -5,16 +5,18 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-private-processed-value-source-map-capture`
+- version: `0.1.4-private-processed-value-source-map-authorized-fill`
 - current_stage: `value-consistency`
-- current_phase: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE`
-- status: `completed_validated_local_only_no_go_authorized_processed_value_source_map_fill_required`
+- current_phase: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL`
+- status: `completed_validated_local_only_no_go_partial_authorized_processed_value_source_map_fill`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 authorized private processed value source-map fill completed local-only: fill_request_item_count=149，unique_private_ref_count=137，duplicate_private_ref_item_count=12，authorized_filled_item_count=36，authorized_unfilled_item_count=113，source_map_records_written_count=36，source_map_authorized_fill_complete=false，processed_value_materialization_replay_performed=false，raw_to_processed_value_comparison_performed=false，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。Raw inbox read/list/stat/hash/mutation=false by this phase；partial private source map remains in git-ignored runtime；public evidence aggregate/status/ref only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。
 
 - v0.1.4 private processed value source-map capture completed local-only: processed_target_slot_count=149，path_only_private_ref_slot_count=149，direct_processed_value_literal_count=0，captured_processed_value_fingerprint_count=0，usable_private_processed_value_source_map_record_count=0，authorized_fill_required_slot_count=149，source_map_capture_complete=false，raw_to_processed_value_comparison_performed=false，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。Raw inbox read/list/stat/hash/mutation=false by this phase；slot-level capture diagnostics and fill request remain in git-ignored runtime；public evidence aggregate/status/ref only；GitHub upload=false，app reinstall=false，formal report=false，business execution=false。
 
