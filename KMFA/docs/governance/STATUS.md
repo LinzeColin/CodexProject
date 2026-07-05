@@ -5,11 +5,11 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-processed-value-source-map-completion-input-kit`
+- version: `0.1.4-processed-value-source-map-completion-application`
 - current_stage: `value-consistency`
-- current_phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT`
-- status: `completed_validated_local_only_no_go_completion_input_kit_ready`
-- current_blocker: `private_completion_template_waiting_for_authorized_processed_value_sources`
+- current_phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_APPLICATION`
+- status: `completed_validated_local_only_no_go_private_completion_template_unfilled`
+- current_blocker: `private_completion_template_unfilled_authorized_sources_not_supplied`
 - next_required_input: `owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`
 - blocked_next_steps: `processed value materialization replay; raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 processed value source-map completion application completed local-only: completion_template_item_count=113，pending_selected_action_count=113，valid_completion_item_count=0，invalid_or_pending_completion_item_count=113，authorized_processed_value_fingerprint_count=0，source_map_records_applied_count=0，raw_processed_structural_key_intersection_count=0，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads only the git-ignored private completion template and writes a git-ignored private application diagnostic plus public-safe aggregate evidence；raw inbox read/list/stat/fingerprint/write/delete/move/rename/copy/normalize/mutation=false；materialization=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`。
 
 - v0.1.4 processed value source-map completion input kit completed local-only: source_worklist_item_count=113，active_fill_record_item_count=113，active_keep_pending_item_count=113，private_completion_template_item_count=113，private_completion_template_unique_target_slot_count=113，authorized_processed_value_fingerprint_count=0，source_map_records_applied_count=0，raw_processed_structural_key_intersection_count=0，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase writes a private-only git-ignored completion template and public-safe aggregate evidence only；raw inbox read/list/stat/fingerprint/write/delete/move/rename/copy/normalize/mutation=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`。
 
