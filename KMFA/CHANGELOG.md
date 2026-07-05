@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Source-Map Authorized-Fill Gap Resolution
+
+## 0.1.4-private-processed-value-source-map-gap-resolution - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION` 本地 public-safe gate。
+- 新增 gap-resolution generator、validator、focused unit test、private-only owner worklist 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/` 证据。
+- 锁定结论：previous fill request items=149、previous authorized filled=36、unresolved gap items=113、unresolved unique private refs=101、duplicate unresolved gap items=12、new authorized fingerprints=0、source_map_gap_resolution_complete=false。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行；下一步只能 owner/授权填充 intake。
+
 # KMFA v0.1.4 Authorized Private Processed Source-Map Fill
 
 ## 0.1.4-private-processed-value-source-map-authorized-fill - 2026-07-05

@@ -10136,3 +10136,24 @@ tasks:
     rollback: "Remove current phase artifacts, tool, validator, test, ignored private runtime source-map files and governance entries."
     target_version: "0.1.4-private-processed-value-source-map-authorized-fill"
     completed_version: "0.1.4-private-processed-value-source-map-authorized-fill"
+
+  - task_id: "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705"
+    phase_id: "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_gap_resolution.py --require-private-owner-worklist"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_gap_resolution -q"
+    test_results:
+      - "PASS: source-map gap resolution validator and focused unit test passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/private_processed_value_source_map_gap_resolution_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_manifest.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_summary.json"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_matrix.json"
+    risk: "Owner-authorized private value source intake remains required; do not run materialization or claim business consistency until source-map gaps are filled."
+    rollback: "Remove current phase artifacts, tool, validator, test, ignored private runtime owner worklist and governance entries."
+    target_version: "0.1.4-private-processed-value-source-map-gap-resolution"
+    completed_version: "0.1.4-private-processed-value-source-map-gap-resolution"

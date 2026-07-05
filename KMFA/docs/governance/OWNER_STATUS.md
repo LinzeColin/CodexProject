@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL` 本地 gate：149 个 fill request items 中，36 个由既有授权 metadata hash sibling 填入 private source map，113 个仍未填；source_map_authorized_fill_complete=false，所以还不能执行 processed value materialization replay，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION` 本地 gate：上一轮 149 个 fill request items 中已有 36 个填入 private source map，剩余 113 个 gap 已被锁定为需要 owner/授权 private value source intake；source_map_gap_resolution_complete=false，所以还不能执行 processed value materialization replay，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
+
+- v0.1.4 source-map authorized-fill gap resolution 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：previous fill request items=149、previous authorized filled=36、unresolved gap items=113、unresolved unique private refs=101、private owner worklist items=113、new authorized fingerprints=0、source-map gap resolution complete=false。该 phase 不读取 raw inbox，private owner worklist 只保留在 git-ignored runtime；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 authorized private processed value source-map fill 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：fill request items=149、unique private refs=137、authorized filled items=36、authorized unfilled items=113、source-map records written=36、source-map complete=false。该 phase 不读取 raw inbox，partial private source map 只保留在 git-ignored runtime；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
