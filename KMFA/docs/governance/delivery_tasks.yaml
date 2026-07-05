@@ -10349,3 +10349,25 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-processed-value-source-map-completion-application"
     completed_version: "0.1.4-processed-value-source-map-completion-application"
+
+  - task_id: "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-READINESS-RECHECK-20260706"
+    phase_id: "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-READINESS-RECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_processed_value_source_map_completion_readiness_recheck.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_readiness_recheck.py --require-private-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_readiness_recheck -q"
+    test_results:
+      - "PASS: processed value source-map completion readiness recheck validator and focused unit test passed; no valid authorized completion items were supplied"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/human/processed_value_source_map_completion_readiness_recheck_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/human/owner_agent_readiness_recheck_packet.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/machine/processed_value_source_map_completion_readiness_recheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/machine/processed_value_source_map_completion_readiness_recheck_go_no_go_report.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/machine/processed_value_source_map_completion_readiness_recheck_summary.json"
+    risk: "The private completion template remains unfilled with zero valid authorized completion items; do not treat this phase as source-map reapplication, value reconciliation, formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, private diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-processed-value-source-map-completion-readiness-recheck"
+    completed_version: "0.1.4-processed-value-source-map-completion-readiness-recheck"

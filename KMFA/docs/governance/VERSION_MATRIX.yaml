@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-processed-value-source-map-completion-application"
-product_version_status: "processed_value_source_map_completion_application_no_go"
-version_file_value: "0.1.4-processed-value-source-map-completion-application"
+product_version: "0.1.4-processed-value-source-map-completion-readiness-recheck"
+product_version_status: "processed_value_source_map_completion_readiness_recheck_no_go"
+version_file_value: "0.1.4-processed-value-source-map-completion-readiness-recheck"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-processed-value-source-map-completion-application"
+  MOD-KMFA-GOV-001: "0.1.4-processed-value-source-map-completion-readiness-recheck"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_processed_value_source_map_completion_readiness_recheck: "0.1.4-processed-value-source-map-completion-readiness-recheck"
   kmfa_v014_processed_value_source_map_completion_application: "0.1.4-processed-value-source-map-completion-application"
   kmfa_v014_processed_value_source_map_completion_input_kit: "0.1.4-processed-value-source-map-completion-input-kit"
   kmfa_v014_raw_processed_alignment_blocker_report: "0.1.4-raw-processed-alignment-blocker-report"

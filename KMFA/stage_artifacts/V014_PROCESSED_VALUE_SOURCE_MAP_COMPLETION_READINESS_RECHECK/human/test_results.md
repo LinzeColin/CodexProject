@@ -1,0 +1,30 @@
+# KMFA v0.1.4 Processed Value Source-map Completion Readiness Recheck Test Results
+
+- status: `PASS`
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-READINESS-RECHECK-20260706`
+- generated_at: `2026-07-06T00:00:00+10:00`
+- py_compile: `PASS`
+- generator: `PASS`
+- validator: `PASS`
+- focused_unit_test: `PASS`
+- governance_validator: `PASS`
+- lean_governance_validator: `PASS`
+- governance_sync_validator: `PASS`
+- no_omission_check: `PASS`
+- no_float_money_check: `PASS`
+- csv_json_jsonl_parse: `PASS`
+- ruby_yaml_parse: `PASS`
+- private_diagnostic_gitignore_check: `PASS`
+- current_phase_public_artifact_boundary_scan: `PASS`
+- changed_untracked_raw_private_path_scan: `PASS`
+- high_signal_secret_scan: `PASS`
+- git_diff_check: `PASS`
+- current_decision: `NO_GO`
+- current_blocker: `private_completion_template_still_unfilled_authorized_sources_not_supplied`
+- valid_completion_item_count: `0`
+- source_map_completion_reapplication_ready: `false`
+- source_map_records_applied_count: `0`
+- raw_to_processed_value_comparison_performed: `false`
+- github_upload_performed: `false`
+- app_reinstall_performed: `false`
+- business_execution_performed: `false`
