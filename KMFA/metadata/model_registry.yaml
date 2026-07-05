@@ -370,3 +370,12 @@ v014_s18p3_integration_preparation_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_S18_P3_INTEGRATION_PREPARATION
   validator: KMFA/tools/check_v014_s18_p3_integration_preparation.py
   scope: S18-P3 integration preparation only; public-safe read-only future connector plans for redcircle kingdee wps, OpMe light entry plan and next-stage backlog; no Stage18 review, upload, raw inbox access, raw matching, lineage full check, formal report, production restore, external connector call, live connector call, app reinstall, OpMe deep coupling or business execution.
+
+v014_s18_stage_review_registry_note:
+  version: "0.1.4-s18-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S18-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S18_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s18_stage_review.py
+  scope: Stage 18 overall review only; public-safe replay of S18-P1 S18-P2 and S18-P3 validators, fixed stale S18-P3 validation-summary finding, NO_GO remains locked; no GitHub upload, raw inbox access, raw matching, lineage full check completion, formal report, production restore, external service call, live connector, app reinstall, OpMe deep coupling or business execution.

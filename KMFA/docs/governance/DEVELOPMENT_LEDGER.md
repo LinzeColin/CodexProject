@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Stage 18 Review
+- Product version: `0.1.4-s18-stage-review`.
+- Scope: Stage 18 review only; public-safe replay of S18-P1/S18-P2/S18-P3 validators, Stage 18 review validator, focused unit test and NO_GO release gate.
+- Evidence: `KMFA/stage_artifacts/V014_S18_STAGE_REVIEW/`.
+- Verification: `KMFA/tools/check_v014_s18_stage_review.py`; `KMFA/tests/test_v014_s18_stage_review.py`.
+- Finding fixed: S18-P3 final validation summary/test_results were stale pending records and are now treated as fixed by Stage 18 review replay.
+- blocker_state: phase_results=3/3 PASS, open_findings=0, fixed_findings=1, precision_scenarios=5, regression_checks=5, stage_evidence=18, html_fail=0, connector_plans=3, read_only_connectors=3, opme_entry_surfaces=4, backlog_items=6, go_no_go=NO_GO, report_grade=D, delivery_allowed=false, raw_inbox_access=0, GitHub upload=false, lineage full check=false, app reinstall=false, production_restore=false, external/live connector=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-s18-stage-review
+version_matrix_product_version_reference: 0.1.4-s18-stage-review
+
 # KMFA v0.1.4 S18-P3 Integration Preparation
 - Product version: `0.1.4-s18p3-integration-preparation`.
 - Scope: S18-P3 only; public-safe proposal-only read-only future connector plans, OpMe light entry integration plan and next-stage backlog.

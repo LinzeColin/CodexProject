@@ -25,7 +25,7 @@
   ],
   "content_hash": "sha256:c7fc4ba84299c2a33a18da9d1d060b2284ae5c8b0b321637904ab70ffa4a2f03",
   "generated_at": "2026-07-05T18:20:00+10:00",
-  "git_head": "c207cc2e70cbf81dd9731430b15467a173b456d9",
+  "git_head": "8789e0c6fb3e8ccb277e13e8527f13009d4fdf36",
   "github_upload": {
     "github_upload_deferred_until_v014_stage1_18_complete": true,
     "github_upload_performed": false,
