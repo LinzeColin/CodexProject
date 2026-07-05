@@ -1,3 +1,12 @@
+# KMFA v0.1.4 S18-P1 Precision Stress
+- Product version: `0.1.4-s18p1-precision-stress`.
+- Scope: S18-P1 only; public-safe precision/stress replay of amount precision, zero-delta, duplicate import, bad file, missing field, 3 consecutive import consistency, synthetic large-batch performance and HTML/UIUX baseline reading.
+- Evidence: `KMFA/stage_artifacts/V014_S18_P1_PRECISION_STRESS/`.
+- Verification: `KMFA/tools/check_v014_s18_p1_precision_stress.py`; `KMFA/tests/test_v014_s18_p1_precision_stress.py`.
+- blocker_state: scenarios=5, scenario_types=5, consecutive_import_runs=3, unique_import_result_hashes=1, large_batch_files=1200, large_batch_elapsed_ms=348, performance_budget_ms=500, error_reports=2, minimum_fail_difference_cents=1, html_baseline_refs=3, report_grade=D, raw_inbox_access=0, S18-P2=false, S18-P3=false, Stage18 review=false, GitHub upload=false, protected source matching=false, lineage full check=false, app reinstall=false, production restore=false, external connector=false, live connector=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-s18p1-precision-stress
+version_matrix_product_version_reference: 0.1.4-s18p1-precision-stress
+
 # KMFA v0.1.4 Stage 17 Review
 - Product version: `0.1.4-s17-stage-review`.
 - Scope: Stage 17 review only; public-safe replay of S17-P1/S17-P2/S17-P3 validators, v0.1.4 Stage 17 review validator and focused unit test.
