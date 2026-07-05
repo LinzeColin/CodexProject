@@ -77,6 +77,29 @@
       ]
     }
   },
+  "post_run_hygiene_policy": {
+    "enabled": true,
+    "git_fetch_prune": true,
+    "default_main_branch": "main",
+    "protected_branches": [
+      "main",
+      "macdata-proM2"
+    ],
+    "temporary_branch_prefixes": [
+      "codex/"
+    ],
+    "temporary_branch_required_substrings": [
+      "macdata",
+      "proM2"
+    ],
+    "delete_remote_temporary_branches_after_merged": true,
+    "close_open_prs_for_merged_temporary_branches": true,
+    "close_managed_issues": true,
+    "managed_issue_title_markers": [
+      "[macdata-proM2 automation]"
+    ],
+    "github_cli_best_effort": true
+  },
   "reasoning_effort": "xhigh",
   "retention_days": 3,
   "schedule_cron": "10 1 * * *",

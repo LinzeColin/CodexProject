@@ -3,6 +3,7 @@
   "allow_development_cache_cleanup_after_verified_upload": true,
   "allow_github_upload": true,
   "allow_plaintext_device_metrics_to_github": true,
+  "allow_post_run_github_hygiene_after_verified_upload": true,
   "archive_branch": "macdata-proM2",
   "confirmed_at": "<Codex 根据用户确认填写 ISO 时间>",
   "confirmed_device_key": "proM2",

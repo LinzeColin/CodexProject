@@ -21,9 +21,10 @@ python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root
 7. 上传 raw 数据到 `macdata-proM2`。
 8. 远程 hash 验证。
 9. 验证成功后清理本机 3 天以前数据、macdata 临时缓存和受控开发环境缓存。
-10. 生成最终中文报告。
-11. 上传最终报告到 `macdata-proM2`。
-12. Codex session 输出全中文报告。
+10. 验证成功后清理 automation/Codex 创建且已合入 `main` 的临时 PR、临时 branch 和带 managed marker 的 issue。
+11. 生成最终中文报告。
+12. 上传最终报告到 `macdata-proM2`。
+13. Codex session 输出全中文报告。
 
 ## 失败处理
 
@@ -35,6 +36,7 @@ python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root
 | Git push 失败 | 不清理本机旧数据 |
 | 远程验证失败 | 不清理本机旧数据 |
 | 清理失败 | 报告中明文写出失败原因 |
+| PR/branch/issue 收尾失败 | 报告中明文写出失败原因；不得影响已验证的 macdata 归档 |
 
 ## 本机减负边界
 
@@ -49,6 +51,9 @@ docker system prune -f（默认不使用 -a，不清理 volumes）
 brew cleanup
 purge（系统缓存 best-effort，权限不足则报告）
 项目内白名单缓存目录：__pycache__、.pytest_cache、.mypy_cache、.ruff_cache、.tox、.nox、.vite、node_modules/.cache、.next/cache、dist/.vite
+已合入 origin/main 的临时远程分支：仅限配置中的 codex/* 且包含 macdata/proM2 的分支
+打开的 PR：仅限上述已合并临时分支对应 PR
+打开的 issue：仅限标题含 `[macdata-proM2 automation]` managed marker 的 issue
 ```
 
 不允许删除：
@@ -58,5 +63,9 @@ Docker volumes
 Docker 全量 images prune（`-a`）
 ~/Library/Caches/* 全目录
 项目 node_modules / .venv / build / dist 根目录
+main 分支
+macdata-proM2 归档分支
+未证明已合入 main 的分支
+没有 managed marker 的 issue
 任何 OpenAIDatabase/macdata/airM2 内容
 ```

@@ -2,7 +2,7 @@
 
 ## 目标
 
-建立一个受控的 Codex Automation：每天 01:10 运行 `proM2` macdata，输出全中文明文指标和报告，上传到 GitHub 归档分支 `macdata-proM2`，验证成功后只保留本机最近 3 天记录，并执行受控 Docker/Homebrew/系统缓存/项目缓存清理。
+建立一个受控的 Codex Automation：每天 01:10 运行 `proM2` macdata，输出全中文明文指标和报告，上传到 GitHub 归档分支 `macdata-proM2`，验证成功后只保留本机最近 3 天记录，并执行受控 Docker/Homebrew/系统缓存/项目缓存清理和已合并临时 PR/branch/managed issue 收尾。
 
 ## 在 Codex 里创建 Automation
 
@@ -38,6 +38,8 @@ Codex 官方文档说明，project-scoped automations 运行时，本机 Codex a
 - 远程上传已验证。
 - 本机三天保留达成。
 - 受控开发环境清理状态进入报告。
+- 已合入 `main` 的临时 PR/branch/managed issue 收尾状态进入报告。
+- GitHub 上不应残留本 automation/Codex 创建的已合并临时分支；`macdata-proM2` 归档分支必须保留。
 - 没有凭证扫描失败。
 - 没有设备角色不匹配。
 - 报告为全中文。
