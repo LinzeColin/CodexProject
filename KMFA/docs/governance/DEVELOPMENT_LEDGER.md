@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Raw Value Matching Private Dry Run
+- Product version: `0.1.4-raw-value-matching-private-dry-run`.
+- Scope: `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN` only; private raw value fingerprint extraction, processed target availability scan, local gap report and NO_GO lock.
+- Evidence: `KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/`.
+- Verification: `KMFA/tools/check_v014_raw_value_matching_private_dry_run.py`; `KMFA/tests/test_v014_raw_value_matching_private_dry_run.py`.
+- blocker_state: raw_value_fingerprints=871, approved_private_processed_value_targets=0, comparable_value_pairs=0, business_value_consistency_verified=false, processed_target_status=missing_private_processed_value_targets, go_no_go=NO_GO, raw_inbox_mutation=false, raw_root_stat_unchanged=true, private_diagnostic_ignored=true, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-raw-value-matching-private-dry-run
+version_matrix_product_version_reference: 0.1.4-raw-value-matching-private-dry-run
+
 # KMFA v0.1.4 Stage 18 Review
 - Product version: `0.1.4-s18-stage-review`.
 - Scope: Stage 18 review only; public-safe replay of S18-P1/S18-P2/S18-P3 validators, Stage 18 review validator, focused unit test and NO_GO release gate.

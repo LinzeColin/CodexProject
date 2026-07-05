@@ -6978,3 +6978,41 @@ formulas:
       - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/human/value_consistency_scope_report.md"
       - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/human/test_results.md"
       - "KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/machine/value_consistency_scope_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-RAW-VALUE-MATCHING-PRIVATE-DRY-RUN-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 raw value matching private dry-run gate
+    version: "0.1.4-raw-value-matching-private-dry-run"
+    status: active
+    fact_level: EXTRACTED
+    expression: "raw_value_fingerprints_generated=true AND approved_private_processed_value_target_count=0 AND comparable_value_pair_count=0 -> business_value_consistency_verified=false, decision=NO_GO, github_upload_allowed=false, app_reinstall_allowed=false"
+    variables:
+      - name: "raw_value_fingerprint_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "871"
+      - name: "approved_private_processed_value_target_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "0"
+      - name: "business_value_consistency_verified"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "Private raw value fingerprints and local gap details stay in git-ignored private runtime."
+      - "Public evidence contains aggregate counts, statuses and evidence refs only."
+      - "No raw filenames, raw hashes, field/header/sheet/entry plaintext, raw values or processed business values may be committed."
+      - "Processed data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, Go/No-Go report, gap summary, private diagnostic, validator, focused unit test or governance record fails validation."
+    output_range: "v014_raw_value_matching_private_dry_run_manifest"
+    code_refs:
+      - "KMFA/tools/v014_raw_value_matching_private_dry_run.py"
+      - "KMFA/tools/check_v014_raw_value_matching_private_dry_run.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_value_matching_private_dry_run.py --require-private-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_raw_value_matching_private_dry_run -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/human/raw_value_matching_private_dry_run_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN/machine/raw_value_matching_private_dry_run_manifest.json"

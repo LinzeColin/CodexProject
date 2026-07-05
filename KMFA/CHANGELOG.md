@@ -1798,3 +1798,12 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 锁定 6 条 value consistency lanes、3 次独立交叉验证最低要求、raw inbox mutation guard 和 repeated mismatch 差异报告义务。
 - 本 phase 不抽取、不标准化、不比较、不提交 raw 或 processed business values；raw inbox 仅做 before/after stat guard，不 read/list/hash/write/delete/move/rename/overwrite/copy/normalize。
 - 当前 Go/No-Go 仍为 `NO_GO`：raw value matching、processed-data reconciliation、business value consistency、lineage full check、formal report release、GitHub upload、app reinstall 和 business execution 均未执行。
+
+## 0.1.4-raw-value-matching-private-dry-run - 2026-07-05
+
+- 完成 `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN` 本地 public-safe/private-runtime dry-run gate：新增 raw value matching private dry-run generator、validator、focused unit test 和证据包。
+- 在 ignored private runtime 生成 raw value fingerprint 诊断和本地 gap report；public artifacts 只保存 aggregate count、gate 状态和证据路径。
+- 当前 aggregate 结果：raw value fingerprints=871、approved private processed value targets=0、comparable value pairs=0、business value consistency=false、decision=`NO_GO`。
+- 阻断原因锁定为 processed private value targets missing；下一 phase 应建立 private processed value staging 后再比较。
+- 未修改/删除/移动/复制/覆盖 raw inbox；未提交 raw filename、raw hash、field/header/sheet/entry plaintext、business value、zip、Excel、PDF、SQLite/DB、credential 或 private diagnostic。
+- 未执行 Stage review、GitHub upload、app reinstall、formal report、lineage full check completion 或 business execution。

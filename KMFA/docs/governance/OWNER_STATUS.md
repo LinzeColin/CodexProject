@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_VALUE_CONSISTENCY_SCOPE_GATE` 本地 gate：已把“处理数据必须和原始数据保持一致、反复交叉验证不一致则最终提供差异报告”固化为 public-safe 范围、validator 和治理记录；但 raw value matching、processed-data reconciliation、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN` 本地 gate：已只读生成 raw private value fingerprints，并确认当前 approved private processed value targets=0、comparable value pairs=0，所以还不能证明处理数据与原始数据一致；processed-data reconciliation、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
+
+- v0.1.4 raw value matching private dry-run 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：raw private value fingerprints=871、processed artifacts scanned=602、approved private processed value targets=0、comparable pairs=0、business value consistency verified=false。该 phase 已生成本地私有 gap report，但不公开 raw 文件名、entry 名、sheet 名、字段/表头、cell/PDF text 或业务值；不证明 processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 value consistency scope gate 已确认本地 validator 通过；公开证据只显示 scope lanes、gate flags 和差异报告义务：scope lanes=6，minimum independent validation passes=3，difference report required on repeated mismatch=true。该 phase 只锁定下一轮 raw value matching 的只读边界和差异报告触发条件，不抽取、不比较、不公开 raw 或 processed business values，不证明业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
