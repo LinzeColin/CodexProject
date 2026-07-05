@@ -882,6 +882,44 @@ schema 可被后续 `data_map_2_0`、`search_2_0`、
 
 Machine-readable boundary summary: data_map_2_0; search_2_0; review_summary_iteration; No Phase 1.2 work; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
 
+## v1.1.7 Stage 1 Phase 1.2：Next Action Detail
+
+状态：`phase_1_2_next_action_detail_completed_pending_stage1_review`。
+
+任务 ID：`MA-V117-S1P02`。
+
+验收 ID：`ACC-MA-V117-S1P02`。
+
+本 phase 把 Home Overview 建议动作升级为可排序、可解释、可点击的 Next
+Action 明细。首页显示 Top 5 action cards；点击后打开 Action Detail Drawer，
+展示为什么建议、关联主题、预计收益、风险、对应证据、下一步和 proposal-only
+安全提示。
+
+新增/更新产物：
+
+- `docs/architecture/next_action_model.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/ActionDetailDrawer.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase2_next_action_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase2.cjs`
+- `validate:v1.1.7-stage1-phase2`
+
+验收边界：
+
+- 每条 Next Action 必须包含 `title`、`reason`、`roi_score`、`effort_cost`、
+  `urgency`、`source`、`evidence_refs`、`status`、`next_step` 和
+  `proposal_only`。
+- Action Detail Drawer 只读展示建议动作明细，不写 proposal JSON，不直接修改
+  active memory。
+- 本 phase 不实现 Phase 1.3 tier asset、Phase 1.4 topic classification、
+  proposal editor、Search 2.0、Review workflow、Data Map 2.0、浏览器截图、
+  production build、本地 app install、Cloudflare deploy 或 GitHub main 上传。
+- 整个 Stage 0-8 项目完成前不上传 GitHub main。
+
+Machine-readable boundary summary: Next Action; Action Detail Drawer; roi_score; urgency; proposal_only; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
+
 ### Stage 8 Phase 1：Release Rollback Contract
 
 Stage 8 Phase 1 状态：`phase_8_1_contract_created_pending_stage_review`。
