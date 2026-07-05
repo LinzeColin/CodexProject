@@ -7178,3 +7178,46 @@ formulas:
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/human/private_processed_value_source_map_capture_report.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/human/test_results.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/machine/private_processed_value_source_map_capture_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 authorized private processed value source-map fill gate
+    version: "0.1.4-private-processed-value-source-map-authorized-fill"
+    status: active
+    fact_level: EXTRACTED
+    expression: "fill_request_item_count=149 AND authorized_filled_item_count=36 AND authorized_unfilled_item_count=113 -> source_map_authorized_fill_complete=false, processed_value_materialization_replay_performed=false, business_value_consistency_verified=false, decision=NO_GO, github_upload_allowed=false, app_reinstall_allowed=false"
+    variables:
+      - name: "fill_request_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "149"
+      - name: "authorized_filled_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "36"
+      - name: "authorized_unfilled_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "113"
+      - name: "business_value_consistency_verified"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "Authorized fill uses existing metadata hash siblings only."
+      - "Partial private source map stays in git-ignored private runtime."
+      - "Public evidence contains aggregate counts, statuses and evidence refs only."
+      - "No processed values, private refs, raw filenames, field/header/sheet/entry plaintext or raw values may be committed."
+      - "Materialization replay, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, Go/No-Go report, summary, private authorized-fill diagnostic, private source map, validator, focused unit test or governance record fails validation."
+    output_range: "v014_private_processed_value_source_map_authorized_fill_manifest"
+    code_refs:
+      - "KMFA/tools/v014_private_processed_value_source_map_authorized_fill.py"
+      - "KMFA/tools/check_v014_private_processed_value_source_map_authorized_fill.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_map_authorized_fill.py --require-private-authorized-fill"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_map_authorized_fill -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/human/private_processed_value_source_map_authorized_fill_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_manifest.json"

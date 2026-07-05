@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE` 本地 gate：149 个 processed target slots 全部为 path-only private refs，direct value literals=0、captured processed value fingerprints=0、usable source-map records=0、authorized fill required=149，所以还不能 materialize processed value fingerprint，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
+KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL` 本地 gate：149 个 fill request items 中，36 个由既有授权 metadata hash sibling 填入 private source map，113 个仍未填；source_map_authorized_fill_complete=false，所以还不能执行 processed value materialization replay，也不能证明处理数据与原始数据一致；raw-to-processed comparison、业务值一致性、lineage full check、正式报告、GitHub upload、app reinstall 和业务执行仍全部阻断。
 
 ## 你现在能信任什么
+
+- v0.1.4 authorized private processed value source-map fill 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：fill request items=149、unique private refs=137、authorized filled items=36、authorized unfilled items=113、source-map records written=36、source-map complete=false。该 phase 不读取 raw inbox，partial private source map 只保留在 git-ignored runtime；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 private processed value source resolution 已确认本地 validator 通过；公开证据只显示 aggregate counts、source-map schema requirement 和 gate flags：processed target slots=149、usable private source map=0、resolved sources=0、unresolved sources=149、source resolution complete=false。该 phase 不读取 raw inbox，slot 级 source-resolution 诊断只保留在 git-ignored runtime；不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
@@ -213,4 +215,4 @@ KMFA 已完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE` 本地 gate：1
 
 ## 下一步
 
-下一步只能由 owner 提供 safe decision code 或 corrected registered source package 后，另起 run work 执行 `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` 或等价 public-safe application gate；不得跳到 GitHub upload、app reinstall、protected source matching、lineage full check、正式报告、完整报告邮件正文、外部连接器、live connector、OpMe 深度耦合、生产恢复、采购/付款/银行/开票/催收/工资/薪资/税务/政策申报或任何业务执行。
+下一步只能另起 run work 执行 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION` 或用户指定的等价 authorized fill gap-resolution phase；不得跳到 materialization replay、raw-to-processed comparison、GitHub upload、app reinstall、protected source matching、lineage full check、正式报告、完整报告邮件正文、外部连接器、live connector、OpMe 深度耦合、生产恢复、采购/付款/银行/开票/催收/工资/薪资/税务/政策申报或任何业务执行。

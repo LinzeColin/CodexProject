@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Authorized Private Processed Source-Map Fill
+
+## 0.1.4-private-processed-value-source-map-authorized-fill - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL` 本地 public-safe gate。
+- 新增 authorized fill generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/` 证据。
+- 锁定结论：fill request items=149、unique private refs=137、authorized filled items=36、authorized unfilled items=113、source-map records written=36、source_map_authorized_fill_complete=false。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行。
+
 # KMFA v0.1.4 Private Processed Value Source-Map Capture
 
 ## 0.1.4-private-processed-value-source-map-capture - 2026-07-05

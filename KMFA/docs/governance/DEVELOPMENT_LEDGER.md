@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Authorized Private Processed Source-Map Fill
+- Product version: `0.1.4-private-processed-value-source-map-authorized-fill`.
+- Scope: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL` only; consume ignored fill request and existing metadata hash siblings, write partial private source map, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/`.
+- Verification: `KMFA/tools/check_v014_private_processed_value_source_map_authorized_fill.py`; `KMFA/tests/test_v014_private_processed_value_source_map_authorized_fill.py`.
+- blocker_state: fill_request_items=149, authorized_filled_items=36, authorized_unfilled_items=113, source_map_records_written=36, source_map_authorized_fill_complete=false, processed_value_materialization_replay=false, comparable_value_pairs=0, business_value_consistency_verified=false, raw_inbox_access=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-private-processed-value-source-map-authorized-fill
+version_matrix_product_version_reference: 0.1.4-private-processed-value-source-map-authorized-fill
+
 # KMFA v0.1.4 Private Processed Value Staging
 - Product version: `0.1.4-private-processed-value-staging`.
 - Scope: `V014_PRIVATE_PROCESSED_VALUE_STAGING` only; public-safe processed metadata scan and ignored private runtime staging for target slots.
