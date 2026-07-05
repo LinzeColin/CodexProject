@@ -7093,3 +7093,45 @@ formulas:
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/human/private_processed_value_materialization_report.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/human/test_results.md"
       - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/machine/private_processed_value_materialization_manifest.json"
+
+  - formula_id: FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-RESOLUTION-001
+    model_id: MOD-KMFA-GOV-001
+    name: KMFA v0.1.4 private processed value source resolution gate
+    version: "0.1.4-private-processed-value-source-resolution"
+    status: active
+    fact_level: EXTRACTED
+    expression: "processed_target_slot_count=149 AND usable_private_processed_value_source_map_count=0 AND resolved_processed_value_source_count=0 -> source_resolution_complete=false, business_value_consistency_verified=false, decision=NO_GO, github_upload_allowed=false, app_reinstall_allowed=false"
+    variables:
+      - name: "processed_target_slot_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "149"
+      - name: "resolved_processed_value_source_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "0"
+      - name: "required_source_map_schema_locked"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true"
+      - name: "business_value_consistency_verified"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+    constraints:
+      - "Slot-level source resolution diagnostics stay in git-ignored private runtime."
+      - "Public evidence contains aggregate counts, statuses and evidence refs only."
+      - "No processed values, private refs, raw filenames, field/header/sheet/entry plaintext or raw values may be committed."
+      - "Raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked."
+    missing_policy: "Missing manifest, Go/No-Go report, summary, private source resolution diagnostic, validator, focused unit test or governance record fails validation."
+    output_range: "v014_private_processed_value_source_resolution_manifest"
+    code_refs:
+      - "KMFA/tools/v014_private_processed_value_source_resolution.py"
+      - "KMFA/tools/check_v014_private_processed_value_source_resolution.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_private_processed_value_source_resolution.py --require-private-source-resolution"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_private_processed_value_source_resolution -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/human/private_processed_value_source_resolution_report.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/machine/private_processed_value_source_resolution_manifest.json"
