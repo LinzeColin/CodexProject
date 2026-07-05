@@ -1,3 +1,10 @@
+## 0.1.4-s17p2-notification-policy - 2026-07-05
+- Completed v0.1.4 S17-P2 notification policy locally with S17-P1 dependency, legacy S17-P2 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S17-P2 validator, focused unit test, and public-safe evidence.
+- Locked notification rules=3, notification events=3, metadata dispatch logs=3 and trigger types=3 for report-ready, major-risk and missing-source reminders.
+- Confirmed real notification delivery=0, full report email body=0, report attachment=0, recipient address plaintext=0, external connector=0, formal report=0, business decision basis=0, business execution=0 and raw inbox access=0.
+- Confirmed no S17-P3, Stage 17 review, GitHub upload, protected source matching, lineage full check, app reinstall, raw/private publication or business action.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
 ## 0.1.4-s17p1-access-security - 2026-07-05
 - Completed v0.1.4 S17-P1 access and security locally with S16 Stage review dependency, legacy S17-P1 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S17-P1 validator, focused unit test, and public-safe evidence.
 - Locked role permission coverage for management, finance, reviewer and readonly roles; sensitive public-repo policy categories=15; audit action types=5 for import, processing, report, export and notification events.

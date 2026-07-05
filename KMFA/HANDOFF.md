@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S17-P1｜权限与安全`：新增 `KMFA/tools/v014_s17_p1_access_security.py`、`KMFA/tools/check_v014_s17_p1_access_security.py`、`KMFA/tests/test_v014_s17_p1_access_security.py` 和 `KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/` public-safe access/security evidence。该 phase 验证 S16 Stage review dependency、legacy S17-P1 public-safe baseline 和 v1.4 taskpack/roadmap requirements，锁定 roles=4、sensitive policy categories=15、audit action types=5、least privilege、public repo sensitive-data block 和 append-only audit policy。未读取 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、zip/Excel/PDF/private CSV/sqlite/db 或 credentials；未执行 S17-P2、S17-P3、Stage17 review、GitHub upload、protected source matching、lineage full check、提醒发送、完整报告邮件正文、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S17-P2`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S17-P2｜通知策略`：新增 `KMFA/tools/v014_s17_p2_notification_policy.py`、`KMFA/tools/check_v014_s17_p2_notification_policy.py`、`KMFA/tests/test_v014_s17_p2_notification_policy.py` 和 `KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/` public-safe notification policy evidence。该 phase 验证 S17-P1 dependency、legacy S17-P2 public-safe baseline 和 v1.4 taskpack/roadmap requirements，锁定 notification rules=3、events=3、dispatch logs=3、trigger types=3、metadata outbox logs=3；真实通知发送、完整报告邮件正文、附件、收件地址明文、外部连接器、正式报告、经营决策依据、业务执行和 raw inbox access 均为 0。未读取 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、zip/Excel/PDF/private CSV/sqlite/db 或 credentials；未执行 S17-P3、Stage17 review、GitHub upload、protected source matching、lineage full check、UI runtime、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S17-P3`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s17p1-access-security`
-- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`、`v0.1.4 S16-P2 项目状态生命周期`、`v0.1.4 S16-P3 客户经营分析`、`v0.1.4 Stage 16 整体复审`、`v0.1.4 S17-P1 权限与安全`
-- 证据目录: `KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY/`
-- validator: `KMFA/tools/check_v014_s17_p1_access_security.py`
-- focused test: `KMFA/tests/test_v014_s17_p1_access_security.py`
+- 当前版本: `0.1.4-s17p2-notification-policy`
+- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`、`v0.1.4 S16-P2 项目状态生命周期`、`v0.1.4 S16-P3 客户经营分析`、`v0.1.4 Stage 16 整体复审`、`v0.1.4 S17-P1 权限与安全`、`v0.1.4 S17-P2 通知策略`
+- 证据目录: `KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY/`
+- validator: `KMFA/tools/check_v014_s17_p2_notification_policy.py`
+- focused test: `KMFA/tests/test_v014_s17_p2_notification_policy.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S17-P1 未读取、列出、stat、hash 或修改 raw inbox；公开证据只包含 roles、policy category ids、audit action ids、状态、计数、refs 和 validator evidence，不发布 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、Office/PDF/zip/private CSV/sqlite/db 或 credentials。
-- 未执行: GitHub upload、S17-P2、S17-P3、Stage17 review、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、notification delivery、full report email body、UI runtime、live connector、app reinstall、OpMe deep coupling、客户联络、催收、法务、开票、付款、银行或 business execution。
-- 下一步: 仅在用户明确开启后执行 `S17-P2`，继续保持 public-safe/no raw publication/no upload/no notification delivery/no formal report 边界。
+- raw boundary: S17-P2 未读取、列出、stat、hash 或修改 raw inbox；公开证据只包含 notification trigger ids、role refs、状态、计数、metadata refs 和 validator evidence，不发布 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、Office/PDF/zip/private CSV/sqlite/db、收件地址明文、完整报告正文、附件或 credentials。
+- 未执行: GitHub upload、S17-P3、Stage17 review、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、real notification delivery、full report email body、report attachment、recipient address plaintext、UI runtime、live connector、app reinstall、OpMe deep coupling、客户联络、催收、法务、开票、付款、银行或 business execution。
+- 下一步: 仅在用户明确开启后执行 `S17-P3`，继续保持 public-safe/no raw publication/no upload/no real notification delivery/no formal report 边界。
 
 ## v0.1.3 历史状态
 
