@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-RAW-VALUE-MATCHING-PRIVATE-DRY-RUN"
+as_of_event_id: "EVENT-KMFA-20260705-V014-PRIVATE-PROCESSED-VALUE-STAGING"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "461b0a40b7e7ffb7f8250cf0414db27a3dafb815"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-05T23:59:58+10:00"
-generator_version: "manual-0.1.4-raw-value-matching-private-dry-run"
+snapshot_event_time: "2026-07-05T23:59:59+10:00"
+generator_version: "manual-0.1.4-private-processed-value-staging"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 865
-    total_active_formulas: 130
+    total_active_parameters: 868
+    total_active_formulas: 131
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -838,6 +838,43 @@ v014_raw_value_matching_private_dry_run:
     raw_inbox_copy: false
     raw_inbox_normalize: false
     raw_inbox_mutation: false
+    processed_data_reconciliation: false
+    lineage_full_check: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
+
+v014_private_processed_value_staging:
+  status: completed_validated_local_only_no_go_processed_target_slots_staged_value_fingerprints_missing
+  phase: V014_PRIVATE_PROCESSED_VALUE_STAGING
+  evidence_dir: KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_STAGING
+  validator: KMFA/tools/check_v014_private_processed_value_staging.py
+  focused_test: KMFA/tests/test_v014_private_processed_value_staging.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    processed_artifact_files_scanned: 132
+    processed_records_scanned: 411
+    private_ref_candidate_count: 161
+    excluded_private_ref_count: 12
+    processed_target_slot_count: 149
+    approved_private_processed_target_slot_count: 149
+    private_processed_value_fingerprint_count: 0
+  gates:
+    processed_target_slots_staged: true
+    processed_value_materialization_complete: false
+    raw_to_processed_value_comparison_performed: false
+    business_value_consistency_verified: false
+    raw_inbox_access_by_this_phase: false
+  forbidden_scope:
+    raw_inbox_read: false
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
+    processed_value_materialization: false
     processed_data_reconciliation: false
     lineage_full_check: false
     formal_report: false
