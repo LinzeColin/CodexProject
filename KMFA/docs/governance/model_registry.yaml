@@ -1467,3 +1467,18 @@ v014_raw_alignment_remediation_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION
   validator: KMFA/tools/check_v014_raw_alignment_remediation.py
   scope: Raw alignment remediation only; public-safe aggregate source identity counts and NO_GO owner decision gate; private hashes remain ignored; no public hash backfill, lineage full check completion, GitHub upload, app reinstall, formal report or business execution.
+
+kmfa_v014_owner_raw_source_identity_decision:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-owner-raw-source-identity-decision"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION-001
+  parameter_refs:
+    - PARAM-KMFA-1224
+    - PARAM-KMFA-1225
+    - PARAM-KMFA-1226
+  evidence_dir: KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION
+  validator: KMFA/tools/check_v014_owner_raw_source_identity_decision.py
+  scope: Owner raw source identity decision intake only; public-safe decision packet and templates; no active owner decision, raw inbox access, public hash backfill, lineage full check, GitHub upload, app reinstall, formal report or business execution.

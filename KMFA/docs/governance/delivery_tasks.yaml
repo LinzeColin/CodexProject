@@ -9673,3 +9673,43 @@ tasks:
     rollback: "Remove this phase evidence, validator, governance records and ignored private diagnostic."
     target_version: "0.1.4-raw-alignment-remediation"
     completed_version: "0.1.4-raw-alignment-remediation"
+
+  - task_id: "KMFA-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION-20260705"
+    phase: "V014_OWNER_RAW_SOURCE_IDENTITY_DECISION"
+    objective: "建立 v0.1.4 owner raw source identity decision intake/gate，不替 owner 作授权判断。"
+    scope:
+      - "public-safe owner decision packet"
+      - "decision intake contract and templates"
+      - "NO_GO decision gate"
+    non_scope:
+      - "active owner decision record"
+      - "raw inbox read or mutation"
+      - "public hash backfill"
+      - "lineage full check completion"
+      - "GitHub upload"
+      - "app reinstall"
+      - "formal report"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-V014-RAW-ALIGNMENT-REMEDIATION-20260705"
+    required_files:
+      - "KMFA/tools/v014_owner_raw_source_identity_decision.py"
+      - "KMFA/tools/check_v014_owner_raw_source_identity_decision.py"
+      - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_manifest.json"
+      - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_packet.json"
+    acceptance_ids:
+      - "ACC-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_owner_raw_source_identity_decision.py"
+    test_results:
+      - "PASS: owner raw source identity decision intake validator passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/human/owner_raw_source_identity_decision_report.md"
+      - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_manifest.json"
+      - "KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/machine/owner_raw_source_identity_decision_packet.json"
+    risk: "No active owner decision record means raw alignment and release gates remain blocked."
+    rollback: "Remove this phase evidence, validator, governance records and metadata copies."
+    target_version: "0.1.4-owner-raw-source-identity-decision"
+    completed_version: "0.1.4-owner-raw-source-identity-decision"
