@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260705-V014-STAGE1-18-OVERALL-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260705-V014-RAW-ALIGNMENT-REMEDIATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "c207cc2e70cbf81dd9731430b15467a173b456d9"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-05T20:30:00+10:00"
-generator_version: "manual-v014-stage1-18-overall-review"
+snapshot_event_time: "2026-07-05T21:30:00+10:00"
+generator_version: "manual-0.1.4-raw-alignment-remediation"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 847
-    total_active_formulas: 124
+    total_active_parameters: 850
+    total_active_formulas: 125
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -52,6 +52,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/human/test_results.md"
       - "KMFA/tools/check_v014_stage1_18_overall_review.py"
       - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/machine/stage1_18_overall_review_manifest.json"
+      - "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/human/test_results.md"
+      - "KMFA/tools/check_v014_raw_alignment_remediation.py"
+      - "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/machine/raw_alignment_remediation_manifest.json"
       - "KMFA/stage_artifacts/V014_S17_STAGE_REVIEW/human/test_results.md"
       - "KMFA/tools/check_v014_s17_stage_review.py"
       - "KMFA/stage_artifacts/V014_S17_P3_OPERATIONS_SOP/human/test_results.md"

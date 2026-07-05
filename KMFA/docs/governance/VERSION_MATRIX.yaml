@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-stage1-18-overall-review"
-product_version_status: "stage1_18_overall_review_passed_local_only_no_go_raw_alignment_lineage_upload_app_blocked"
-version_file_value: "0.1.4-stage1-18-overall-review"
+product_version: "0.1.4-raw-alignment-remediation"
+product_version_status: "raw_alignment_remediation_completed_local_only_no_go_owner_source_identity_required"
+version_file_value: "0.1.4-raw-alignment-remediation"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-stage1-18-overall-review"
+  MOD-KMFA-GOV-001: "0.1.4-raw-alignment-remediation"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_raw_alignment_remediation: "0.1.4-raw-alignment-remediation"
   kmfa_governance_contract: "0.1.4-stage1-18-overall-review"
   kmfa_metadata_protocol: "0.1.4-s02p1-metadata-protocol"
   kmfa_immutability_policy: "0.1.4-s02p2-immutability-policy"

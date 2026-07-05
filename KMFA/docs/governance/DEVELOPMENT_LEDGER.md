@@ -1040,6 +1040,8 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | `KMFA-V014-S12-P3-MANUAL-RERUN-MECHANISM-20260705` | v0.1.4 S12-P3 重跑机制本地通过：验证 S12-P2 dependency，生成 2 条 cache invalidation、8 条四层 rerun step、2 条 same-source consistency check，旧版本保留且新版本追加；未读取 raw inbox，未执行 Stage 12 review、GitHub upload、protected source matching、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/human/manual_rerun_mechanism_report.md` |
 | `KMFA-V014-S14-P1-FUND-CASH-LOAN-PLAN-20260705` | v0.1.4 S14-P1 资金计划现金贷款本地通过：验证 Stage 13 review dependency、legacy S14-P1 validator 和 v1.4 S14-P1 validator，生成 4 条 source lanes、4 条 cash pressure signals、3 条 loan due alerts、3 条 account balance summaries 和 1 个 HTML overview；未读取 raw inbox，未执行 S14-P2、S14-P3、Stage 14 review、GitHub upload、protected source matching、lineage full check、正式报告、付款、银行、贷款管理、开票、税务、政策申报、补贴申报或业务执行 | `KMFA/stage_artifacts/V014_S14_P1_FUND_CASH_LOAN_PLAN/human/fund_cash_loan_plan_report.md` |
 
+| `KMFA-V014-RAW-ALIGNMENT-REMEDIATION-20260705` | v0.1.4 raw alignment remediation 本地完成，product_version=`0.1.4-raw-alignment-remediation`：只读读取/list/stat/hash 配置 raw inbox，锁定 aggregate counts、private ignored diagnostic、container hash/size mismatch、NO_GO 和 owner source identity decision gate；未提交 raw 文件名/raw hash/archive member/sheet/header/value/private 文件，未执行 GitHub upload、app reinstall、lineage full check、正式报告或业务执行 | `KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/human/raw_alignment_remediation_report.md` |
+
 ## In Progress
 
 | Task | Result | Evidence |

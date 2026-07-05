@@ -1,0 +1,25 @@
+{
+  "app_reinstall_allowed": false,
+  "blocker_ids": [
+    "RAW_CONTAINER_HASH_SIZE_MISMATCH",
+    "RAW_SOURCE_IDENTITY_OWNER_DECISION_REQUIRED",
+    "PUBLIC_MEMBER_HASH_BACKFILL_BLOCKED",
+    "LINEAGE_FULL_CHECK_BLOCKED_BY_RAW_IDENTITY",
+    "GITHUB_UPLOAD_BLOCKED_BY_RAW_ALIGNMENT",
+    "APP_REINSTALL_BLOCKED_BY_RAW_ALIGNMENT"
+  ],
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "decision_reason": "Local raw archive business shape matches the public A0 expectation, but the container hash and size do not match the registered source package. Owner source identity confirmation is required before public hash backfill, lineage closure, report release, GitHub upload or app reinstall.",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_required_phase": "V014_OWNER_RAW_SOURCE_IDENTITY_DECISION",
+  "phase_id": "V014_RAW_ALIGNMENT_REMEDIATION",
+  "project_id": "KMFA",
+  "raw_alignment_complete": false,
+  "record_type": "v014_raw_alignment_go_no_go_report",
+  "resolved_blocker_ids": [],
+  "task_id": "KMFA-V014-RAW-ALIGNMENT-REMEDIATION-20260705",
+  "version": "0.1.4"
+}

@@ -1,3 +1,18 @@
+# KMFA v0.1.4 Raw Alignment Remediation
+- Product version: `0.1.4-raw-alignment-remediation`.
+- Scope: `V014_RAW_ALIGNMENT_REMEDIATION` only; read/list/stat/hash the configured raw inbox for local source identity diagnostics, write private hashes only to ignored runtime, and publish aggregate-only NO_GO evidence.
+- Evidence: `KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/`.
+- Verification: `KMFA/tools/check_v014_raw_alignment_remediation.py`; `KMFA/tests/test_v014_raw_alignment_remediation.py`.
+- blocker_state: raw_root_file_count=5, archives=3, spreadsheets=2, selected_candidates=1, business_members=9, documents=8, workbooks=1, business_shape_matches_expected_a0=true, package_hash_matches_registered=false, package_size_matches_registered=false, raw_alignment_complete=false, decision=NO_GO, next_required_phase=V014_OWNER_RAW_SOURCE_IDENTITY_DECISION.
+product_version: 0.1.4-raw-alignment-remediation
+version_matrix_product_version_reference: 0.1.4-raw-alignment-remediation
+
+## 0.1.4-raw-alignment-remediation - 2026-07-05
+- Completed `V014_RAW_ALIGNMENT_REMEDIATION` locally with public-safe evidence, private ignored diagnostic, focused unit test and validator.
+- Confirmed the local raw container has the expected public-safe A0 business shape, but registered package hash/size still mismatch, so public member hash backfill, lineage full check, official report release, GitHub upload and app reinstall remain blocked.
+- Public evidence contains only aggregate counts and gate flags; it does not commit raw file names, raw hashes, archive member names, sheet names, field/header plaintext, row/cell values, business values, raw packages, office workbooks, source documents, private tables, databases or credentials.
+- Raw inbox mutation, delete, move, rename, overwrite and generated-file write are false. GitHub upload, app reinstall, formal report and business execution are false.
+
 # KMFA v0.1.4 Stage 18 Review
 - Product version: `0.1.4-s18-stage-review`.
 - Scope: Stage 18 review only; public-safe replay of S18-P1/S18-P2/S18-P3 validators, Stage 18 review validator, focused unit test and NO_GO release gate.

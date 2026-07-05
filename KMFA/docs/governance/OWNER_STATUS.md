@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 已完成 v0.1.4 S18-P3 后续接入准备；S18-P2 dependency、legacy S18-P3 public-safe baseline、v1.4 taskpack/roadmap requirements、v0.1.4 S18-P3 validator 和 focused unit test 均通过。当前锁定 read-only future connector plans=3（redcircle/kingdee/wps）、OpMe entry surfaces=4、next-stage backlog items=6、Go/No-Go=`NO_GO`、delivery_allowed=false、external/live connector calls=0、source mutation allowed=0、OpMe deep coupling=false。证据位于 `KMFA/stage_artifacts/V014_S18_P3_INTEGRATION_PREPARATION/`，validator 为 `KMFA/tools/check_v014_s18_p3_integration_preparation.py`。本 phase 未执行 Stage18 review、GitHub upload、protected source matching、lineage full check、app reinstall、生产恢复、外部连接器调用、live connector、正式报告或任何业务动作。
+KMFA 已完成 `V014_RAW_ALIGNMENT_REMEDIATION` 本地 remediation/report：本机 raw container 的 public-safe business shape 与 A0 期望一致，但注册 source package 的 hash/size 仍不匹配，因此当前正确结论是 `NO_GO`，下一步需要 owner source identity decision 或 corrected registered package，不能上传 GitHub、不能重装 app、不能发布正式报告、不能执行业务动作。
 
 ## 你现在能信任什么
+
+- v0.1.4 raw alignment remediation 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：raw 文件总数=5、archive=3、spreadsheet=2、selected candidate=1、business members=9、documents=8、workbooks=1。business shape 符合 A0 预期，但 container hash/size 不匹配登记 source package，所以 raw_alignment_complete=false，public member hash backfill=false，lineage full check、formal report、GitHub upload 和 app reinstall 全部继续 blocked。
 
 - v0.1.4 S18-P3 后续接入准备已确认本地 validator 通过；红圈、金蝶、WPS 的未来只读接入方案、OpMe 轻入口集成方案和下一阶段 backlog 均为 public-safe proposal-only evidence。S18-P3 只证明后续接入准备材料锁定，不证明 Stage18 review、GitHub upload、lineage full check、正式报告、经营决策依据、生产恢复、外部连接器调用、app reinstall、OpMe 深度耦合或业务执行；下一步只能 Stage 18 整体复审单独 run。
 - v0.1.4 S17-P1 权限与安全已确认本地 validator 通过；4 类角色、15 类敏感公开仓库禁止项和 5 类审计动作均为 public-safe governance evidence。S17-P1 只证明权限/安全/审计策略锁定，不证明提醒发送、完整报告邮件正文、S17-P2、S17-P3、Stage17 review、GitHub upload、lineage full check、正式报告、经营决策依据、外部连接器、app reinstall 或业务执行；下一步只能 S17-P2 单独 run。
@@ -197,4 +199,4 @@ KMFA 已完成 v0.1.4 S18-P3 后续接入准备；S18-P2 dependency、legacy S18
 
 ## 下一步
 
-下一步只能另起 run work 执行 `v0.1.4 S14-P1 资金计划现金贷款`；不得跳到 GitHub upload、protected source matching、raw value matching、lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、app reinstall、OpMe 深度耦合、生产恢复、采购执行、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或自动接口。
+下一步只能另起 run work 执行 `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION` 或 corrected registered source package gate；不得跳到 GitHub upload、app reinstall、protected source matching、lineage full check、正式报告、完整报告邮件正文、外部连接器、live connector、OpMe 深度耦合、生产恢复、采购/付款/银行/开票/催收/工资/薪资/税务/政策申报或任何业务执行。

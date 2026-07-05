@@ -9640,3 +9640,36 @@ tasks:
       opme_deep_coupling: false
       business_decision_basis: false
       business_execution: false
+  - task_id: "KMFA-V014-RAW-ALIGNMENT-REMEDIATION-20260705"
+    phase: "V014_RAW_ALIGNMENT_REMEDIATION"
+    objective: "建立 v0.1.4 raw alignment remediation public-safe evidence、private ignored diagnostic、validator 和治理记录。"
+    scope:
+      - "raw source identity aggregate remediation"
+      - "NO_GO owner source identity decision gate"
+    non_scope:
+      - "GitHub upload"
+      - "app reinstall"
+      - "formal report"
+      - "lineage full check completion"
+      - "business execution"
+    status: "completed"
+    dependencies:
+      - "KMFA-V014-STAGE1-18-OVERALL-REVIEW-20260705"
+    required_files:
+      - "KMFA/tools/v014_raw_alignment_remediation.py"
+      - "KMFA/tools/check_v014_raw_alignment_remediation.py"
+      - "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/machine/raw_alignment_remediation_manifest.json"
+    acceptance_ids:
+      - "ACC-V014-RAW-ALIGNMENT-REMEDIATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_raw_alignment_remediation.py --require-private-diagnostic"
+    test_results:
+      - "PASS: raw alignment remediation validator passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/human/raw_alignment_remediation_report.md"
+      - "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/machine/raw_alignment_remediation_manifest.json"
+    risk: "Container hash/size mismatch blocks public member hash backfill and lineage closure until owner source identity decision."
+    rollback: "Remove this phase evidence, validator, governance records and ignored private diagnostic."
+    target_version: "0.1.4-raw-alignment-remediation"
+    completed_version: "0.1.4-raw-alignment-remediation"

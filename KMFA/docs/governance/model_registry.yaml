@@ -1454,3 +1454,16 @@ v014_stage1_18_overall_review_registry_note:
   evidence_dir: KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW
   validator: KMFA/tools/check_v014_stage1_18_overall_review.py
   scope: Stage 1-18 overall review only; public-safe replay and validation of 18 v0.1.4 stage review validators with NO_GO locked by raw alignment, lineage, official report release and pending reconciliation blockers; no GitHub upload, app reinstall, raw inbox access, raw matching completion, formal report, production restore, external service, live connector, OpMe deep coupling or business execution.
+
+v014_raw_alignment_remediation_registry_note:
+  version: "0.1.4-raw-alignment-remediation"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-RAW-ALIGNMENT-REMEDIATION-001
+  parameter_ids:
+    - PARAM-KMFA-1221
+    - PARAM-KMFA-1222
+    - PARAM-KMFA-1223
+  evidence_dir: KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION
+  validator: KMFA/tools/check_v014_raw_alignment_remediation.py
+  scope: Raw alignment remediation only; public-safe aggregate source identity counts and NO_GO owner decision gate; private hashes remain ignored; no public hash backfill, lineage full check completion, GitHub upload, app reinstall, formal report or business execution.
