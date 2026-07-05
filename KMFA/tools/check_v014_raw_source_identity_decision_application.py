@@ -24,7 +24,9 @@ from KMFA.tools.v014_raw_source_identity_decision_application import (  # noqa: 
     MANIFEST_PATH,
     METADATA_GO_NO_GO_PATH,
     METADATA_MANIFEST_PATH,
+    METADATA_OWNER_DECISION_RECORD_PATH,
     METADATA_PREVIEW_PATH,
+    OWNER_DECISION_RECORD_PATH,
     PHASE_ID,
     PREVIEW_SCHEMA_VERSION,
     REPORT_PATH,
@@ -35,6 +37,10 @@ from KMFA.tools.v014_raw_source_identity_decision_application import (  # noqa: 
     TASK_ID,
     TEST_RESULTS_PATH,
 )
+from KMFA.tools.check_v014_owner_raw_source_identity_decision import (  # noqa: E402
+    validate_owner_decision_payload,
+)
+from KMFA.tools.v014_owner_raw_source_identity_decision import ALLOWED_DECISION_CODES  # noqa: E402
 
 
 FORBIDDEN_PUBLIC_KEYS = {
@@ -158,10 +164,36 @@ def _validate_preview(preview: dict[str, Any], errors: list[str]) -> None:
     require(preview.get("phase_id") == PHASE_ID, "preview phase_id mismatch", errors)
     require(preview.get("task_id") == TASK_ID, "preview task_id mismatch", errors)
     require(preview.get("current_gate") == CURRENT_GATE, "preview gate mismatch", errors)
-    require(preview.get("decision_code") == "none", "current committed preview must not apply an owner decision", errors)
-    require(preview.get("application_status") == "blocked_no_active_owner_decision", "preview application status mismatch", errors)
-    require(preview.get("owner_decision_supplied") is False, "preview owner_decision_supplied must be false", errors)
-    require(preview.get("decision_applied") is False, "preview decision_applied must be false", errors)
+    decision_code = preview.get("decision_code")
+    require(decision_code in {"none", *ALLOWED_DECISION_CODES}, "preview decision_code mismatch", errors)
+    if decision_code == "none":
+        require(preview.get("application_status") == "blocked_no_active_owner_decision", "preview application status mismatch", errors)
+        require(preview.get("owner_decision_supplied") is False, "preview owner_decision_supplied must be false", errors)
+        require(preview.get("decision_applied") is False, "preview decision_applied must be false", errors)
+        require(preview.get("active_owner_decision_record_ref") is None, "preview decision ref must be none without decision", errors)
+    elif decision_code == "keep_pending":
+        require(preview.get("application_status") == "blocked_by_owner_keep_pending", "preview keep_pending status mismatch", errors)
+        require(preview.get("owner_decision_supplied") is True, "preview owner_decision_supplied must be true", errors)
+        require(preview.get("decision_applied") is False, "preview keep_pending must not apply", errors)
+        require(preview.get("active_owner_decision_record_ref") == OWNER_DECISION_RECORD_PATH.as_posix(), "preview decision ref mismatch", errors)
+    elif decision_code == "confirm_current_container_as_authoritative":
+        require(
+            preview.get("application_status") == "owner_confirmation_recorded_for_separate_backfill_gate",
+            "preview owner confirmation status mismatch",
+            errors,
+        )
+        require(preview.get("owner_decision_supplied") is True, "preview owner_decision_supplied must be true", errors)
+        require(preview.get("decision_applied") is True, "preview owner confirmation must be applied", errors)
+        require(preview.get("active_owner_decision_record_ref") == OWNER_DECISION_RECORD_PATH.as_posix(), "preview decision ref mismatch", errors)
+    elif decision_code == "register_corrected_source_package":
+        require(
+            preview.get("application_status") == "blocked_corrected_source_registration_required",
+            "preview corrected-source status mismatch",
+            errors,
+        )
+        require(preview.get("owner_decision_supplied") is True, "preview owner_decision_supplied must be true", errors)
+        require(preview.get("decision_applied") is False, "preview corrected-source must not apply current container", errors)
+        require(preview.get("active_owner_decision_record_ref") == OWNER_DECISION_RECORD_PATH.as_posix(), "preview decision ref mismatch", errors)
     for key in (
         "raw_alignment_complete_claimed_by_application",
         "public_member_hash_backfill_allowed_by_application",
@@ -174,8 +206,9 @@ def _validate_preview(preview: dict[str, Any], errors: list[str]) -> None:
         require(preview.get(key) is False, f"preview.{key} must be false", errors)
     public_safety = preview.get("public_repo_safety", {})
     require(public_safety.get("public_safe_application_status_only") is True, "preview public safety status flag mismatch", errors)
+    require(public_safety.get("public_safe_owner_decision_metadata_only") is True, "preview public safety decision metadata flag mismatch", errors)
     for key, value in public_safety.items():
-        if key == "public_safe_application_status_only":
+        if key in {"public_safe_application_status_only", "public_safe_owner_decision_metadata_only"}:
             continue
         require(value is False, f"preview.public_repo_safety.{key} must be false", errors)
 
@@ -207,12 +240,34 @@ def validate_v014_raw_source_identity_decision_application(
     require(manifest.get("status") == STATUS, "manifest status mismatch", errors)
     require(manifest.get("decision_application") == preview, "embedded preview mismatch", errors)
     require(manifest.get("go_no_go") == go_no_go, "embedded go/no-go mismatch", errors)
+    decision_code = preview.get("decision_code")
+    owner_decision = manifest.get("active_owner_decision_record", {})
+    require(owner_decision.get("decision_code") == decision_code, "active owner decision code mismatch", errors)
+    if decision_code == "none":
+        require(owner_decision.get("supplied") is False, "owner decision supplied must be false", errors)
+        require(owner_decision.get("record_ref") is None, "owner decision record ref must be none", errors)
+    else:
+        require(owner_decision.get("supplied") is True, "owner decision supplied must be true", errors)
+        require(owner_decision.get("record_ref") == OWNER_DECISION_RECORD_PATH.as_posix(), "owner decision record ref mismatch", errors)
+        require(owner_decision.get("metadata_record_ref") == METADATA_OWNER_DECISION_RECORD_PATH.as_posix(), "owner decision metadata ref mismatch", errors)
+        require(owner_decision.get("owner_decision_authored_by_codex") is False, "owner decision must not be authored by Codex", errors)
+        require(
+            owner_decision.get("materialized_from_user_safe_decision_code") is True,
+            "owner decision materialization flag mismatch",
+            errors,
+        )
+        require(owner_decision.get("raw_plaintext_or_hash_in_decision_record") is False, "owner decision raw/hash flag must be false", errors)
+        decision_record = read_json(OWNER_DECISION_RECORD_PATH)
+        metadata_decision_record = read_json(METADATA_OWNER_DECISION_RECORD_PATH)
+        require(metadata_decision_record == decision_record, "metadata owner decision record copy mismatch", errors)
+        validate_owner_decision_payload(decision_record)
+        require(decision_record.get("decision_code") == decision_code, "persisted owner decision code mismatch", errors)
 
     basis = manifest.get("basis_summary", {})
     require(basis.get("source_phase_id") == "V014_OWNER_RAW_SOURCE_IDENTITY_DECISION", "basis source phase mismatch", errors)
     require(basis.get("source_decision") == "NO_GO", "basis source decision mismatch", errors)
     require(basis.get("owner_decision_intake_ready") is True, "basis intake ready flag mismatch", errors)
-    require(basis.get("owner_decision_supplied") is False, "basis owner decision supplied must be false", errors)
+    require(basis.get("owner_decision_supplied") is False, "basis owner decision supplied must remain false for source intake phase", errors)
     require(basis.get("decision_record_status") == "no_owner_decision_recorded", "basis decision record status mismatch", errors)
     require(basis.get("allowed_decision_count") == 3, "basis allowed decision count mismatch", errors)
     require(basis.get("allowed_actor_role_count") == 2, "basis actor role count mismatch", errors)
@@ -227,7 +282,6 @@ def validate_v014_raw_source_identity_decision_application(
     require(scope.get("current_phase_only") is True, "scope current_phase_only must be true", errors)
     require(scope.get("application_gate_only") is True, "scope application_gate_only must be true", errors)
     for key in (
-        "owner_decision_record_created_by_this_phase",
         "source_container_selected_by_this_phase",
         "raw_inbox_read_performed_by_this_phase",
         "raw_inbox_list_performed_by_this_phase",
@@ -243,24 +297,55 @@ def validate_v014_raw_source_identity_decision_application(
         "next_phase_started",
     ):
         require(scope.get(key) is False, f"scope.{key} must be false", errors)
+    if decision_code == "none":
+        require(
+            scope.get("owner_decision_record_materialized_from_user_input_by_this_phase") is False,
+            "scope materialized decision flag must be false",
+            errors,
+        )
+        require(scope.get("owner_decision_record_authored_by_codex") is None, "scope authored flag must be none without decision", errors)
+    else:
+        require(
+            scope.get("owner_decision_record_materialized_from_user_input_by_this_phase") is True,
+            "scope materialized decision flag must be true",
+            errors,
+        )
+        require(scope.get("owner_decision_record_authored_by_codex") is False, "scope authored flag must be false", errors)
 
     public_safety = manifest.get("public_repo_safety", {})
     require(public_safety.get("public_safe_application_status_only") is True, "public safety status flag mismatch", errors)
+    require(public_safety.get("public_safe_owner_decision_metadata_only") is True, "public safety decision metadata flag mismatch", errors)
     for key, value in public_safety.items():
-        if key == "public_safe_application_status_only":
+        if key in {"public_safe_application_status_only", "public_safe_owner_decision_metadata_only"}:
             continue
         require(value is False, f"public_repo_safety.{key} must be false", errors)
 
     require(go_no_go.get("record_type") == "v014_raw_source_identity_decision_application_go_no_go_report", "go/no-go record type mismatch", errors)
     require(go_no_go.get("schema_version") == GO_NO_GO_SCHEMA_VERSION, "go/no-go schema mismatch", errors)
     require(go_no_go.get("decision") == "NO_GO", "go/no-go decision mismatch", errors)
-    require(go_no_go.get("application_status") == "blocked_no_active_owner_decision", "go/no-go application status mismatch", errors)
-    require(go_no_go.get("decision_code") == "none", "go/no-go decision code must be none", errors)
+    require(go_no_go.get("application_status") == preview.get("application_status"), "go/no-go application status mismatch", errors)
+    require(go_no_go.get("decision_code") == decision_code, "go/no-go decision code mismatch", errors)
     require(go_no_go.get("owner_decision_intake_ready") is True, "go/no-go intake ready flag mismatch", errors)
-    require(go_no_go.get("owner_decision_supplied") is False, "go/no-go supplied flag must be false", errors)
-    require(go_no_go.get("decision_applied") is False, "go/no-go applied flag must be false", errors)
-    require("RAW_SOURCE_IDENTITY_OWNER_DECISION_NOT_SUPPLIED" in go_no_go.get("blocker_ids", []), "missing owner decision blocker", errors)
-    require("RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED" in go_no_go.get("blocker_ids", []), "missing application blocker", errors)
+    require(go_no_go.get("owner_decision_supplied") is preview.get("owner_decision_supplied"), "go/no-go supplied flag mismatch", errors)
+    require(go_no_go.get("decision_applied") is preview.get("decision_applied"), "go/no-go applied flag mismatch", errors)
+    blocker_ids = go_no_go.get("blocker_ids", [])
+    if decision_code == "none":
+        require("RAW_SOURCE_IDENTITY_OWNER_DECISION_NOT_SUPPLIED" in blocker_ids, "missing owner decision blocker", errors)
+        require("RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED" in blocker_ids, "missing application blocker", errors)
+    elif decision_code == "keep_pending":
+        require("RAW_SOURCE_IDENTITY_OWNER_DECISION_KEPT_PENDING" in blocker_ids, "missing keep-pending blocker", errors)
+        require("RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED" in blocker_ids, "missing application blocker", errors)
+    elif decision_code == "confirm_current_container_as_authoritative":
+        require("PUBLIC_MEMBER_HASH_BACKFILL_SEPARATE_GATE_REQUIRED" in blocker_ids, "missing separate backfill blocker", errors)
+        require("RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED" not in blocker_ids, "confirmation should not keep application blocker", errors)
+        require(
+            "RAW_SOURCE_IDENTITY_OWNER_CONFIRMATION_APPLIED" in go_no_go.get("resolved_blocker_ids", []),
+            "missing owner confirmation resolved marker",
+            errors,
+        )
+    elif decision_code == "register_corrected_source_package":
+        require("CORRECTED_SOURCE_REGISTRY_GATE_REQUIRED" in blocker_ids, "missing corrected-source registry blocker", errors)
+        require("RAW_SOURCE_IDENTITY_DECISION_APPLICATION_BLOCKED" in blocker_ids, "missing application blocker", errors)
     require("OWNER_DECISION_INTAKE_READY" in go_no_go.get("resolved_blocker_ids", []), "missing intake-ready resolved marker", errors)
     for key in (
         "raw_alignment_complete",
@@ -274,6 +359,12 @@ def validate_v014_raw_source_identity_decision_application(
         require(go_no_go.get(key) is False, f"go_no_go.{key} must be false", errors)
     require(manifest.get("github_upload_performed") is False, "manifest github upload must be false", errors)
     require(manifest.get("github_upload_status") == "not_uploaded_blocked_by_raw_source_identity_application", "github upload status mismatch", errors)
+    require(
+        manifest.get("raw_data_consistency_verification_status")
+        == "not_performed_in_this_phase_deferred_to_later_cross_validation_gate",
+        "raw data consistency verification status mismatch",
+        errors,
+    )
 
     for ref in manifest.get("evidence_refs", []):
         check_public_text(Path(ref), errors)
@@ -284,6 +375,7 @@ def validate_v014_raw_source_identity_decision_application(
         METADATA_MANIFEST_PATH,
         METADATA_GO_NO_GO_PATH,
         METADATA_PREVIEW_PATH,
+        *( [OWNER_DECISION_RECORD_PATH, METADATA_OWNER_DECISION_RECORD_PATH] if decision_code != "none" else [] ),
         REPORT_PATH,
         GO_NO_GO_RECORD_PATH,
         TEST_RESULTS_PATH,
