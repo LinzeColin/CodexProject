@@ -1221,3 +1221,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_input_kit -q`
 - boundary: private completion template written to git-ignored runtime only; public evidence is aggregate-only; no raw inbox access or mutation, no authorized source evidence invented, no materialization, no raw-to-processed comparison, no formal report, no GitHub upload, no app reinstall, and no business execution.
 - next_required_input: `owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`
+
+## 2026-07-06 - V014 Processed Value Source-map Completion Application
+
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-APPLICATION-20260706`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_APPLICATION`
+- product_version: `0.1.4-processed-value-source-map-completion-application`
+- status: `completed_validated_local_only_no_go_private_completion_template_unfilled`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_APPLICATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_application.py --require-private-diagnostic`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_application -q`
+- boundary: git-ignored private completion template checked as unfilled; private diagnostic remains ignored; public evidence is aggregate-only; no raw inbox access or mutation, no source-map write, no materialization, no raw-to-processed comparison, no formal report, no GitHub upload, no app reinstall, and no business execution.
+- next_required_input: `owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`

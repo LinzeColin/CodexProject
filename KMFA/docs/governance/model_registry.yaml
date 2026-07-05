@@ -1547,3 +1547,18 @@ kmfa_v014_processed_value_source_map_completion_input_kit:
   evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT
   validator: KMFA/tools/check_v014_processed_value_source_map_completion_input_kit.py
   scope: Processed value source-map completion input kit only; private template written to ignored runtime; public evidence aggregate-only; no raw inbox access, authorized source evidence invention, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_processed_value_source_map_completion_application:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-processed-value-source-map-completion-application"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-APPLICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1279
+    - PARAM-KMFA-1280
+    - PARAM-KMFA-1281
+  evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_APPLICATION
+  validator: KMFA/tools/check_v014_processed_value_source_map_completion_application.py
+  scope: Processed value source-map completion application only; private template checked as unfilled and private diagnostic written to ignored runtime; public evidence aggregate-only; no raw inbox access, source-map write, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.
