@@ -878,3 +878,12 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - Controls: raw inbox access and mutation must remain false; private diagnostic must be git-ignored and untracked; public artifacts may contain counts/status/gate refs only; source-map reapplication, materialization, comparison, reconciliation, lineage, release, upload and app reinstall remain false while valid completion items equal zero.
 - Current result: `completion_template_item_count=113`, `pending_selected_action_count=113`, `valid_completion_item_count=0`, `source_map_completion_reapplication_ready=false`, `authorized_processed_value_fingerprint_count=0`, `source_map_records_applied_count=0`, `comparable_value_pair_count=0`, `business_value_consistency_verified=false`, `go_no_go=NO_GO`.
 - Next input: owner or authorized delegate fills the private completion template with authorized processed value source evidence.
+
+## FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-BLOCKER-AUDIT-001
+- Version: `0.1.4-processed-value-source-map-completion-blocker-audit`.
+- Purpose: record that the same owner/authorized-delegate source evidence blocker has repeated for three goal turns and stop before any source-map reapplication, materialization or raw-to-processed value comparison.
+- Inputs: v0.1.4 processed value source-map completion application summary, readiness recheck summary and git-ignored private completion template.
+- Outputs: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/machine/processed_value_source_map_completion_blocker_audit_manifest.json`, aggregate summary, Go/No-Go report, owner/agent blocker packet, and a git-ignored private blocker diagnostic.
+- Controls: raw inbox access and mutation must remain false; private diagnostic must be git-ignored and untracked; public artifacts may contain counts/status/gate refs only; source-map reapplication, materialization, comparison, reconciliation, lineage, release, upload and app reinstall remain false while valid completion items equal zero.
+- Current result: `consecutive_goal_turn_blocker_count=3`, `blocked_audit_threshold_met=true`, `completion_template_item_count=113`, `pending_selected_action_count=113`, `valid_completion_item_count=0`, `source_map_completion_reapplication_ready=false`, `source_map_records_applied_count=0`, `comparable_value_pair_count=0`, `business_value_consistency_verified=false`, `go_no_go=NO_GO`.
+- Next input: owner or authorized delegate fills the private completion template with authorized processed value source evidence.
