@@ -1885,3 +1885,10 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 阻断原因锁定为 processed private value targets missing；下一 phase 应建立 private processed value staging 后再比较。
 - 未修改/删除/移动/复制/覆盖 raw inbox；未提交 raw filename、raw hash、field/header/sheet/entry plaintext、business value、zip、Excel、PDF、SQLite/DB、credential 或 private diagnostic。
 - 未执行 Stage review、GitHub upload、app reinstall、formal report、lineage full check completion 或 business execution。
+## 0.1.4-private-processed-value-source-map-owner-authorized-fill-application - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION` 本地 public-safe NO_GO gate。
+- 新增 generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/` 证据。
+- 固定检查 2 个 git-ignored active fill record 候选路径，当前 `active_authorized_fill_record_found=false`、`fill_application_performed=false`、`source_map_records_applied_count=0`。
+- 记录 raw data immutable policy：本 phase 未读取、列出、fingerprint、写入、删除、移动、重命名、覆盖、标准化或复制 raw source；后续交叉验证必须与 raw source truth 一致，反复不一致时最终 goal 交付差异报告。
+- 未执行 materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
