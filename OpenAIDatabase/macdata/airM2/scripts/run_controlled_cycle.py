@@ -1242,6 +1242,7 @@ def controlled_cycle(repo_root: Path, execute: bool) -> int:
     console_upload['status'] = '全部上传成功并已验证' if console_upload['remote_verified'] else '报告上传验证失败'
     console_upload['message'] = report_archive.get('message', '')
     console_report = render_cn_report(metrics, config, upload_status=console_upload, cleanup_status=cleanup_status)
+    write_text(latest_report, console_report)
     print(console_report)
     if not report_archive.get('ok'):
         print('报告归档失败：', report_archive)
