@@ -9384,3 +9384,61 @@ tasks:
       payment_execution: false
       bank_operation: false
       business_execution: false
+
+
+  - task_id: "KMFA-V014-S16-STAGE-REVIEW-20260705"
+    task_name: "v0.1.4 Stage 16 整体复审"
+    stage_id: "V014-S16"
+    phase_id: "S16-STAGE-REVIEW"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_S16_STAGE_REVIEW"
+    validator: "KMFA/tools/check_v014_s16_stage_review.py"
+    focused_test: "KMFA/tests/test_v014_s16_stage_review.py"
+    acceptance_id: "ACC-V014-S16-STAGE-REVIEW"
+    acceptance_ids:
+      - "ACC-V014-S16-STAGE-REVIEW"
+    next_phase: "S17-P1"
+    github_upload: "deferred_until_v014_stage1_18_complete"
+    completed_version: "0.1.4-s16-stage-review"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_s16_stage_review.py KMFA/tools/check_v014_s16_stage_review.py KMFA/tests/test_v014_s16_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_s16_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p1_subcontract_procurement.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p3_customer_business_analysis.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_stage_review.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s16_stage_review -q"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: py_compile, generator, S16-P1/S16-P2/S16-P3 validators, v0.1.4 Stage 16 review validator and focused unit test passed."
+      - "PASS: project governance, lean governance, changed-only governance sync, no-float, no-omission, diff check, structured parse checks and Ruby YAML parse checks passed."
+      - "PASS: raw/private suffix scan, high-signal secret scan and scoped S16 review public artifact boundary scan passed."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/human/stage16_review_report.md"
+      - "KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/human/risk_register.md"
+      - "KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/human/rollback_plan.md"
+      - "KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/machine/stage16_review_manifest.json"
+      - "KMFA/tools/check_v014_s16_stage_review.py"
+    forbidden_scope:
+      s17_p1: false
+      github_upload: false
+      raw_inbox_access_by_review: false
+      protected_source_matching: false
+      lineage_full_check: false
+      formal_report: false
+      live_connector: false
+      app_reinstall: false
+      opme_integration: false
+      procurement_execution: false
+      payment_approval: false
+      payment_execution: false
+      bank_operation: false
+      site_operation: false
+      signature_operation: false
+      invoice_issuance: false
+      customer_contact_action: false
+      collection_action: false
+      legal_action: false
+      tax_filing: false
+      business_execution: false

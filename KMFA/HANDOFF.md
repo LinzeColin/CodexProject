@@ -4,20 +4,20 @@
 
 ## 当前目标
 
-v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 S16-P3 客户经营分析`：新增 `KMFA/tools/v014_s16_p3_customer_business_analysis.py`、`KMFA/tools/check_v014_s16_p3_customer_business_analysis.py`、`KMFA/tests/test_v014_s16_p3_customer_business_analysis.py` 和 `KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/` public-safe evidence。该 phase 验证 S16-P2 dependency、S08/S09/S13 public-safe fact manifests、v1.4 S16-P3 taskpack/roadmap requirements、v0.1.4 S16-P3 validator 和 focused unit test，锁定 source lanes=7、customer value dimensions=4、value signals=4、risk signals=4、customer summaries=4、handoff guards=4、pending reconciliation=12、report grade=D、formal report/business decision basis/customer contact/collection/legal/payment/bank=0。本 run 对 operator-designated local raw/private inbox 仅做只读 aggregate/candidate alignment，并把私有诊断写入 git-ignored runtime；未修改、删除、移动、重命名、覆盖或写入 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文或业务值；未执行 Stage 16 review、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `Stage 16 整体复审`。
+v0.1.4 HUMAN_FLOW_VERIFIED 修补包已继续执行。本轮只完成 `v0.1.4 Stage 16 整体复审`：新增 `KMFA/tools/v014_s16_stage_review.py`、`KMFA/tools/check_v014_s16_stage_review.py`、`KMFA/tests/test_v014_s16_stage_review.py` 和 `KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/` public-safe review evidence。该 review 复跑 S16-P1/S16-P2/S16-P3 validators，锁定 phase_results=3/3 PASS、open findings=0、fixed findings=1、source lanes total=17、project matches=5、lifecycle records=4、customer summaries=4、pending reconciliation=12、report grade=D、formal report/business decision basis/procurement/payment/bank/site/signature/invoice/customer contact/collection/legal/tax actions=0。复审修复/锁定的 finding 是：S16-P2/S16-P3 private alignment markers 仅代表只读聚合观察，不代表 raw publication。未读取 raw inbox，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文或业务值；未执行 S17-P1、GitHub upload、protected source matching、lineage full check、正式报告、UI runtime、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或业务执行。GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。下一步只能另起 run work 执行 `S17-P1`。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-s16p3-customer-business-analysis`
-- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`、`v0.1.4 S16-P2 项目状态生命周期`、`v0.1.4 S16-P3 客户经营分析`
-- 证据目录: `KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS/`
-- validator: `KMFA/tools/check_v014_s16_p3_customer_business_analysis.py`
-- focused test: `KMFA/tests/test_v014_s16_p3_customer_business_analysis.py`
+- 当前版本: `0.1.4-s16-stage-review`
+- 当前已完成: `v0.1.4 S14-P1 资金计划现金贷款`、`v0.1.4 S14-P2 发票税务计划`、`v0.1.4 S14-P3 政策证据计划`、`v0.1.4 Stage 14 整体复审`、`v0.1.4 S15-P1 绩效事实字段`、`v0.1.4 S15-P2 绩效复核清单`、`v0.1.4 S15-P3 与工资项目边界`、`v0.1.4 Stage 15 整体复审`、`v0.1.4 S16-P1 外协采购归集`、`v0.1.4 S16-P2 项目状态生命周期`、`v0.1.4 S16-P3 客户经营分析`、`v0.1.4 Stage 16 整体复审`
+- 证据目录: `KMFA/stage_artifacts/V014_S16_STAGE_REVIEW/`
+- validator: `KMFA/tools/check_v014_s16_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s16_stage_review.py`
 - upload policy: v1.4 不按单个 Stage 上传；GitHub main upload 必须等 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行。
-- raw boundary: S16-P3 仅只读执行 aggregate/candidate alignment，公开 evidence 只保存聚合计数和状态；私有诊断保存在 git-ignored runtime，未提交 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、Excel/PDF/zip/private CSV/sqlite/db 或 credentials，未修改、删除、移动、重命名、覆盖或写入 raw inbox。
-- 未执行: GitHub upload、Stage 16 review、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、客户联络、催收、法务、开票、付款、银行或 business execution。
-- 下一步: 仅在用户明确开启后执行 `Stage 16 整体复审`，继续保持 public-safe/no raw publication/no upload 边界。
+- raw boundary: Stage 16 review 未读取 raw inbox；S16-P2/S16-P3 既有 raw/private alignment 仅作为只读聚合观察进入复审，不发布 raw 文件名、raw hash、字段/表头明文、客户/项目明文、业务值、Excel/PDF/zip/private CSV/sqlite/db 或 credentials。
+- 未执行: GitHub upload、S17-P1、protected source matching、raw source field/header plaintext publication、lineage full check、formal report、UI runtime、live connector、app reinstall、OpMe deep coupling、客户联络、催收、法务、开票、付款、银行或 business execution。
+- 下一步: 仅在用户明确开启后执行 `S17-P1`，继续保持 public-safe/no raw publication/no upload 边界。
 
 ## v0.1.3 历史状态
 
