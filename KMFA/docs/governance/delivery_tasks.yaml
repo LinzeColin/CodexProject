@@ -9597,3 +9597,46 @@ tasks:
       formal_report: false
       business_decision_basis: false
       business_execution: false
+
+  - task_id: "KMFA-V014-STAGE1-18-OVERALL-REVIEW-20260705"
+    task_name: "v0.1.4 Stage 1-18 整体复审"
+    stage_id: "V014-S01-S18"
+    phase_id: "Stage1-18-Overall-Review"
+    status: "completed"
+    evidence_dir: "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW"
+    validator: "KMFA/tools/check_v014_stage1_18_overall_review.py"
+    focused_test: "KMFA/tests/test_v014_stage1_18_overall_review.py"
+    acceptance_id: "ACC-V014-STAGE1-18-OVERALL-REVIEW"
+    acceptance_ids:
+      - "ACC-V014-STAGE1-18-OVERALL-REVIEW"
+    next_phase: "V014_RAW_ALIGNMENT_REMEDIATION"
+    github_upload: "blocked_by_raw_alignment_and_lineage"
+    completed_version: "0.1.4-stage1-18-overall-review"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_stage1_18_overall_review -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_stage1_18_overall_review.py"
+      - "governance validators and safety scans"
+    test_results:
+      - "PASS: generator, focused unit test and Stage 1-18 overall review validator passed locally."
+      - "PENDING: final governance validation event to be appended after full validator replay."
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/human/overall_review_report.md"
+      - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/machine/stage1_18_overall_review_manifest.json"
+      - "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/machine/stage1_18_overall_go_no_go_report.json"
+      - "KMFA/tools/check_v014_stage1_18_overall_review.py"
+    forbidden_scope:
+      github_upload: false
+      app_reinstall: false
+      raw_inbox_access: false
+      raw_inbox_mutation: false
+      protected_source_matching: false
+      lineage_full_check_completion: false
+      formal_report: false
+      production_restore: false
+      live_connector: false
+      external_service_call: false
+      opme_deep_coupling: false
+      business_decision_basis: false
+      business_execution: false
