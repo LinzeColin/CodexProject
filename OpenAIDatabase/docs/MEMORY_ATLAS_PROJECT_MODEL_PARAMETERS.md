@@ -3374,6 +3374,66 @@ Stage 9 整体复审已确认：
 - 本 phase 不运行 browser screenshot、production build、本地 app install、deploy 或
   GitHub main 上传。
 
+## 75. v1.1.7 Stage 1 Phase 1.3 Level Asset Detail
+
+状态：`phase_1_3_tier_asset_detail_completed_pending_stage1_review`。
+
+验收 ID：`ACC-MA-V117-S1P03`。
+
+模型假设：
+
+- Level Asset 只从已筛选的 redacted atlas nodes、graph edges、Next Action map
+  和 Universe State 派生；本 phase 不读取 raw/private/cookie/session/secret。
+- `tierAssetSortScore` 是展示排序启发式，不是长期记忆写回公式。
+- AssetDetailPanel 是只读解释层；任何资产层级、重要性、优先级或状态调整仍必须进入后续
+  proposal-only 工作区。
+
+输入：
+
+- `docs/architecture/level_asset_model.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/AssetDetailPanel.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase3_tier_asset_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase3.cjs`
+
+处理方法：
+
+- 使用 `buildTierAssetDetails` 生成最多 Top 7 Level Asset。
+- 使用 `tierAssetSortScore = value_score * 0.35 + importance_score * 0.25 +
+  confidence * 0.25 - staleness_penalty * 0.15` 排序。
+- 在 Home Overview card 上显示 asset_tier、title、theme、`value_score`、
+  importance、`staleness_status`、evidence count 和 recommended asset action。
+- 点击 card 后打开 AssetDetailPanel，展示 summary、source_scope、linked_action_ids、
+  linked_topic_ids、last_seen_range、updated_at、evidence_refs、proposal_hint、
+  rollback_hint 和 `proposal_only`。
+- 使用 `validate:v1.1.7-stage1-phase3` 检查模型、实现、样式、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S1P03-001 stage1_phase3_status = phase_1_3_tier_asset_detail_completed_pending_stage1_review`
+- `PARAM-MA-V117-S1P03-002 stage1_phase3_required_validator = validate:v1.1.7-stage1-phase3`
+- `PARAM-MA-V117-S1P03-003 level_asset_required_fields = asset_id;asset_tier;title;summary;theme;value_score;updated_at;importance;priority;confidence;staleness_status;last_seen_range;evidence_count;evidence_refs;source_scope;linked_action_ids;linked_topic_ids;recommended_asset_action;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P03-004 tier_asset_sort_weights = value_weight=0.35;importance_weight=0.25;confidence_weight=0.25;staleness_penalty_weight=0.15`
+- `PARAM-MA-V117-S1P03-005 tier_asset_top_limit = Top 7`
+- `PARAM-MA-V117-S1P03-006 asset_detail_panel_fields = summary;theme;value_score;updated_at;importance;priority;confidence;staleness_status;last_seen_range;evidence_refs;source_scope;linked_action_ids;linked_topic_ids;recommended_asset_action;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P03-007 stage1_phase3_deferred_work = Phase 1.4 topic_classification_detail;Stage 2 proposal editor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+输出：
+
+- Level Asset model contract。
+- AssetDetailPanel runtime component。
+- Home Overview Level Asset cards。
+- Stage 1 Phase 1.3 acceptance and validator。
+
+边界：
+
+- 本 phase 不进入 Phase 1.4，不实现 topic classification detail。
+- 本 phase 不写 proposal，不直接写 active memory，不执行 agent apply。
+- 本 phase 不运行 browser screenshot、production build、本地 app install、deploy 或
+  GitHub main 上传。
+
 ## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
 
 状态：`phase_9_4_universe_state_fixture_continuity_ready_pending_stage_review`。

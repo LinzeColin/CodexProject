@@ -57,6 +57,7 @@ import {
 import { EmptyState } from "./components/EmptyState";
 import { ErrorState } from "./components/ErrorState";
 import { ActionDetailDrawer, type HomeActionDetail } from "./components/ActionDetailDrawer";
+import { AssetDetailPanel, type TierAssetDetail } from "./components/AssetDetailPanel";
 import { MemoryAtlasHelpPanel } from "./components/help/MemoryAtlasHelpPanel";
 import { zhCNCopy } from "./i18n/zh-CN";
 
@@ -326,6 +327,12 @@ interface HomeAction extends HomeActionDetail {
   node: AtlasNode | null;
 }
 
+interface HomeTierAsset extends TierAssetDetail {
+  id: string;
+  targetView: ViewKey;
+  node: AtlasNode | null;
+}
+
 interface MemoryWeatherV2 {
   label: string;
   summary: string;
@@ -497,6 +504,13 @@ const NEXT_ACTION_SORT_WEIGHTS = {
   urgency_weight: 0.25,
   confidence_weight: 0.25,
   effort_penalty_weight: 0.1,
+};
+const TIER_ASSET_TOP_LIMIT = 7;
+const TIER_ASSET_SORT_WEIGHTS = {
+  value_weight: 0.35,
+  importance_weight: 0.25,
+  confidence_weight: 0.25,
+  staleness_penalty_weight: 0.15,
 };
 const MEMORY_RIVER_MIN_X = 80;
 const MEMORY_RIVER_MAX_X = 960;
@@ -1158,6 +1172,7 @@ function HomeOverviewView({
   onSwitchView: (view: ViewKey) => void;
 }) {
   const [selectedActionDetail, setSelectedActionDetail] = useState<HomeActionDetail | null>(null);
+  const [selectedTierAsset, setSelectedTierAsset] = useState<TierAssetDetail | null>(null);
   const model = useMemo(
     () => buildHomeOverviewModel(nodes, graphEdges, deltaStats),
     [deltaStats, graphEdges, nodes],
@@ -1180,6 +1195,21 @@ function HomeOverviewView({
 
   function closeActionDetail() {
     setSelectedActionDetail(null);
+  }
+
+  function openTierAsset(asset: HomeTierAsset) {
+    setSelectedTierAsset(asset);
+  }
+
+  function openTierAssetTarget(asset: TierAssetDetail) {
+    const runtimeAsset = model.tierAssets.find((item) => item.asset_id === asset.asset_id);
+    if (!runtimeAsset) return;
+    if (runtimeAsset.node) onSelectNode(runtimeAsset.node);
+    onSwitchView(runtimeAsset.targetView);
+  }
+
+  function closeTierAsset() {
+    setSelectedTierAsset(null);
   }
 
   function jumpToPreview(node: AtlasNode | null, targetView: ViewKey) {
@@ -1340,6 +1370,43 @@ function HomeOverviewView({
               <span>{link.meta}</span>
             </button>
           ))}
+        </div>
+      </section>
+      <section className="home-tier-asset-panel" aria-label="层级资产明细">
+        <div className="panel-title-row">
+          <h3>层级资产明细</h3>
+          <span>proposal-only</span>
+        </div>
+        {model.tierAssets.length ? (
+          <div className="home-tier-asset-grid">
+            {model.tierAssets.map((asset) => (
+              <button
+                className="home-tier-asset-card"
+                data-tier-asset-card={asset.asset_id}
+                data-tier-asset-staleness={asset.staleness_status}
+                data-tier-asset-value={asset.value_score.toFixed(2)}
+                key={asset.id}
+                onClick={() => openTierAsset(asset)}
+                type="button"
+              >
+                <span>{asset.asset_tier}</span>
+                <strong>{asset.title}</strong>
+                <div className="tier-asset-meta-grid" aria-label="层级资产排序信号">
+                  <i>{asset.theme}</i>
+                  <i>Value {formatScore(asset.value_score)}</i>
+                  <i>{asset.importance}</i>
+                  <i>{asset.staleness_status}</i>
+                </div>
+                <small>{asset.summary}</small>
+                <em>{asset.evidence_count} 证据 · {asset.recommended_asset_action}</em>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="home-tier-asset-empty">当前筛选下没有足够的层级资产明细；请放宽筛选或等待新的 redacted snapshot。</div>
+        )}
+        <div data-asset-detail-panel-host="true">
+          <AssetDetailPanel asset={selectedTierAsset} onClose={closeTierAsset} onOpenTarget={openTierAssetTarget} />
         </div>
       </section>
       <section className="home-topic-strip" aria-label="主导主题趋势">
@@ -4054,6 +4121,7 @@ function buildHomeOverviewModel(
   blackHoleCount: number;
   signals: HomeSignalCard[];
   actions: HomeAction[];
+  tierAssets: HomeTierAsset[];
   miniStarfieldPoints: MiniStarfieldPoint[];
   miniStarfieldFocus: AtlasNode | null;
   miniStarfieldSummary: string;
@@ -4089,6 +4157,20 @@ function buildHomeOverviewModel(
   const miniStarfieldPoints = buildMiniStarfieldPreview(memoryNodes, graphEdges);
   const riverPulseSegments = buildRiverPulsePreview(recentNodes, olderComparableNodes);
   const riverPulseFocus = riverPulseSegments.find((segment) => segment.node)?.node ?? protoStarNode ?? highLeverageNode;
+  const actions = buildNextActionDetails({
+    blackHoleNode,
+    coreCount,
+    decisionCount,
+    deltaStats,
+    graphEdges,
+    highLeverageNode,
+    memoryNodes,
+    protoStarNode,
+    protoStarNodes,
+    recentNodes,
+    staleNodes,
+    topTopic,
+  });
 
   return {
     weatherLabel: weather.label,
@@ -4150,17 +4232,13 @@ function buildHomeOverviewModel(
         tone: "proto-star",
       },
     ],
-    actions: buildNextActionDetails({
-      blackHoleNode,
-      coreCount,
-      decisionCount,
-      deltaStats,
+    actions,
+    tierAssets: buildTierAssetDetails({
+      actions,
       graphEdges,
-      highLeverageNode,
+      latest,
       memoryNodes,
-      protoStarNode,
       protoStarNodes,
-      recentNodes,
       staleNodes,
       topTopic,
     }),
@@ -4171,6 +4249,219 @@ function buildHomeOverviewModel(
     riverPulseFocus,
     inspectorLinks: buildHomeInspectorLinks([protoStarNode, blackHoleNode, highLeverageNode], memoryNodes, graphEdges),
   };
+}
+
+function buildTierAssetDetails({
+  actions,
+  graphEdges,
+  latest,
+  memoryNodes,
+  protoStarNodes,
+  staleNodes,
+  topTopic,
+}: {
+  actions: HomeAction[];
+  graphEdges: AtlasEdge[];
+  latest: Date;
+  memoryNodes: AtlasNode[];
+  protoStarNodes: AtlasNode[];
+  staleNodes: AtlasNode[];
+  topTopic: { label: string; count: number };
+}): HomeTierAsset[] {
+  const assetTiers: HomeTierAsset["asset_tier"][] = [
+    "core_profile",
+    "project",
+    "decision",
+    "workflow",
+    "knowledge",
+    "opportunity",
+    "stale",
+  ];
+  const assets = assetTiers
+    .map((asset_tier) => {
+      const candidates = tierAssetCandidatesFor(asset_tier, memoryNodes, protoStarNodes, staleNodes);
+      const node = selectRepresentativeNode(candidates);
+      return node ? createTierAssetDetail(asset_tier, node, actions, graphEdges, latest, topTopic.label) : null;
+    })
+    .filter((asset): asset is HomeTierAsset => Boolean(asset));
+
+  return assets
+    .sort((left, right) => tierAssetSortScore(right) - tierAssetSortScore(left))
+    .slice(0, TIER_ASSET_TOP_LIMIT);
+}
+
+function tierAssetCandidatesFor(
+  assetTier: HomeTierAsset["asset_tier"],
+  memoryNodes: AtlasNode[],
+  protoStarNodes: AtlasNode[],
+  staleNodes: AtlasNode[],
+): AtlasNode[] {
+  if (assetTier === "core_profile") {
+    return memoryNodes.filter((node) => {
+      const category = normalizedNodeCategory(node);
+      return (
+        normalizeMemoryTier(node.memory_tier) === "核心画像" ||
+        category.includes("preference") ||
+        category.includes("answering_rule") ||
+        category.includes("security_boundary")
+      );
+    });
+  }
+  if (assetTier === "project") {
+    return memoryNodes.filter((node) => textSignalsForNode(node).some((value) => value.includes("project") || value.includes("项目")));
+  }
+  if (assetTier === "decision") {
+    return memoryNodes.filter((node) => node.category === "decision" || textSignalsForNode(node).some((value) => value.includes("决策")));
+  }
+  if (assetTier === "workflow") {
+    return memoryNodes.filter((node) =>
+      textSignalsForNode(node).some((value) =>
+        ["workflow", "process", "automation", "run_contract", "流程", "工作流", "规则"].some((token) => value.includes(token)),
+      ),
+    );
+  }
+  if (assetTier === "opportunity") return protoStarNodes;
+  if (assetTier === "stale") return staleNodes;
+
+  const reserved = new Set([
+    ...tierAssetCandidatesFor("core_profile", memoryNodes, protoStarNodes, staleNodes).map((node) => node.id),
+    ...tierAssetCandidatesFor("project", memoryNodes, protoStarNodes, staleNodes).map((node) => node.id),
+    ...tierAssetCandidatesFor("decision", memoryNodes, protoStarNodes, staleNodes).map((node) => node.id),
+    ...tierAssetCandidatesFor("workflow", memoryNodes, protoStarNodes, staleNodes).map((node) => node.id),
+    ...protoStarNodes.map((node) => node.id),
+    ...staleNodes.map((node) => node.id),
+  ]);
+  return memoryNodes.filter((node) => !reserved.has(node.id));
+}
+
+function createTierAssetDetail(
+  asset_tier: HomeTierAsset["asset_tier"],
+  node: AtlasNode,
+  actions: HomeAction[],
+  graphEdges: AtlasEdge[],
+  latest: Date,
+  fallbackTopic: string,
+): HomeTierAsset {
+  const value_score = roiScoreForNode(node, 0.48);
+  const confidence = confidenceForAction(node, 0.62);
+  const theme = compactThemeLabel(humanThemeLabel(node)) || fallbackTopic || "未归类主题";
+  const updated_at = node.date || latest.toISOString().slice(0, 10);
+  const staleness_status = stalenessStatusForAsset(asset_tier, node, latest);
+  const evidence_refs = evidenceRefsForNode(node, graphEdges, `level-asset:${asset_tier}`);
+  const linked_action_ids = actions
+    .filter((action) => action.linked_asset_ids.includes(node.id) || action.linked_topic_ids.includes(`topic:${theme}`))
+    .map((action) => action.action_id);
+  const recommended_asset_action = recommendedAssetActionFor(asset_tier, staleness_status, value_score, confidence);
+  const title = humanNodeDisplayTitle(node);
+
+  return {
+    asset_id: `${asset_tier}:${node.id}`,
+    asset_tier,
+    confidence,
+    evidence_count: evidence_refs.length,
+    evidence_refs,
+    id: `${asset_tier}:${node.id}`,
+    importance: importanceForAsset(value_score),
+    last_seen_range: lastSeenRangeForAsset(node, latest),
+    linked_action_ids,
+    linked_topic_ids: [`topic:${theme}`],
+    node,
+    priority: priorityForAsset(asset_tier, staleness_status, value_score),
+    proposal_hint: recommended_asset_action === "keep" && confidence >= 0.7 ? "proposal_not_needed" : "proposal_recommended",
+    proposal_only: true,
+    recommended_asset_action,
+    rollback_hint: "若资产判断不成立，只关闭面板或撤销后续 proposal 草稿；Phase 1.3 不写 active memory。",
+    source_scope: "redacted_atlas_snapshot",
+    staleness_status,
+    summary: `${title} 属于 ${asset_tier} 层级资产；主题 ${theme}，当前仅使用 redacted label、层级、分类、日期、ROI 与连接数生成说明。`,
+    targetView: "search",
+    theme,
+    title,
+    updated_at,
+    value_score,
+  };
+}
+
+function tierAssetSortScore(asset: TierAssetDetail): number {
+  return (
+    asset.value_score * TIER_ASSET_SORT_WEIGHTS.value_weight +
+    importanceScore(asset.importance) * TIER_ASSET_SORT_WEIGHTS.importance_weight +
+    asset.confidence * TIER_ASSET_SORT_WEIGHTS.confidence_weight -
+    stalenessPenalty(asset.staleness_status) * TIER_ASSET_SORT_WEIGHTS.staleness_penalty_weight
+  );
+}
+
+function textSignalsForNode(node: AtlasNode): string[] {
+  return [node.kind, node.category, node.label, node.source_label, humanCategoryLabel(node.category), normalizeMemoryTier(node.memory_tier)]
+    .filter((value): value is string => Boolean(value))
+    .map((value) => value.toLowerCase());
+}
+
+function normalizedNodeCategory(node: AtlasNode): string {
+  return (node.category || "").toLowerCase();
+}
+
+function stalenessStatusForAsset(
+  assetTier: HomeTierAsset["asset_tier"],
+  node: AtlasNode,
+  latest: Date,
+): HomeTierAsset["staleness_status"] {
+  if (assetTier === "stale" || node.metrics?.roi?.staleness_status?.includes("stale")) return "stale";
+  const day = parseDay(node.date);
+  if (!day) return "unknown";
+  const ageDays = Math.max(0, Math.round((latest.getTime() - day.getTime()) / 86_400_000));
+  return ageDays > 120 ? "needs_review" : "current";
+}
+
+function lastSeenRangeForAsset(node: AtlasNode, latest: Date): string {
+  const seen = node.date || "unknown";
+  return `${seen}..${latest.toISOString().slice(0, 10)}`;
+}
+
+function importanceForAsset(valueScore: number): HomeTierAsset["importance"] {
+  if (valueScore >= 0.72) return "high";
+  if (valueScore >= 0.45) return "medium";
+  return "low";
+}
+
+function importanceScore(importance: TierAssetDetail["importance"]): number {
+  if (importance === "high") return 1;
+  if (importance === "medium") return 0.62;
+  return 0.32;
+}
+
+function priorityForAsset(
+  assetTier: HomeTierAsset["asset_tier"],
+  stalenessStatus: HomeTierAsset["staleness_status"],
+  valueScore: number,
+): HomeTierAsset["priority"] {
+  if (stalenessStatus === "stale") return "p1";
+  if (assetTier === "core_profile" || valueScore >= 0.78) return "p0";
+  if (assetTier === "decision" || assetTier === "project" || valueScore >= 0.58) return "p1";
+  if (stalenessStatus === "needs_review") return "p2";
+  return "watch";
+}
+
+function stalenessPenalty(stalenessStatus: TierAssetDetail["staleness_status"]): number {
+  if (stalenessStatus === "stale") return 0.85;
+  if (stalenessStatus === "needs_review") return 0.45;
+  if (stalenessStatus === "unknown") return 0.25;
+  return 0.05;
+}
+
+function recommendedAssetActionFor(
+  assetTier: HomeTierAsset["asset_tier"],
+  stalenessStatus: HomeTierAsset["staleness_status"],
+  valueScore: number,
+  confidence: number,
+): HomeTierAsset["recommended_asset_action"] {
+  if (stalenessStatus === "stale") return "lower_priority";
+  if (stalenessStatus === "needs_review") return "review";
+  if (assetTier === "opportunity") return "validate";
+  if (assetTier === "workflow") return "consolidate";
+  if (confidence < 0.5) return "review";
+  if (valueScore < 0.35) return "defer";
+  return "keep";
 }
 
 function buildNextActionDetails({

@@ -920,6 +920,44 @@ Action 明细。首页显示 Top 5 action cards；点击后打开 Action Detail 
 
 Machine-readable boundary summary: Next Action; Action Detail Drawer; roi_score; urgency; proposal_only; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
 
+## v1.1.7 Stage 1 Phase 1.3：Level Asset Detail
+
+状态：`phase_1_3_tier_asset_detail_completed_pending_stage1_review`。
+
+任务 ID：`MA-V117-S1P03`。
+
+验收 ID：`ACC-MA-V117-S1P03`。
+
+本 phase 把层级资产从数字统计升级为可排序、可解释、可点击的 Level Asset 明细。
+首页显示 Level Asset cards；点击后打开 AssetDetailPanel，展示资产层级、主题、
+价值、更新时间、置信度、状态、证据、关联动作/主题、建议动作和 proposal-only
+安全提示。
+
+新增/更新产物：
+
+- `docs/architecture/level_asset_model.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/AssetDetailPanel.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase3_tier_asset_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase3.cjs`
+- `validate:v1.1.7-stage1-phase3`
+
+验收边界：
+
+- 每条 Level Asset 必须包含 `asset_tier`、theme、`value_score`、updated_at、
+  importance、priority、confidence、`staleness_status`、evidence_refs、
+  linked_action_ids、linked_topic_ids、recommended_asset_action 和 `proposal_only`。
+- AssetDetailPanel 只读展示层级资产明细，不写 proposal JSON，不直接修改
+  active memory。
+- 本 phase 不实现 Phase 1.4 topic classification、proposal editor、Search 2.0、
+  Review workflow、Data Map 2.0、浏览器截图、production build、本地 app install、
+  Cloudflare deploy 或 GitHub main 上传。
+- 整个 Stage 0-8 项目完成前不上传 GitHub main。
+
+Machine-readable boundary summary: Level Asset; AssetDetailPanel; value_score; staleness_status; proposal_only; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
+
 ### Stage 8 Phase 1：Release Rollback Contract
 
 Stage 8 Phase 1 状态：`phase_8_1_contract_created_pending_stage_review`。

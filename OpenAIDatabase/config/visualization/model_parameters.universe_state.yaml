@@ -145,3 +145,56 @@ v1_1_7_stage1_phase2:
     - browser_screenshot_acceptance
     - final_app_reinstall
     - github_main_upload
+v1_1_7_stage1_phase3:
+  task_id: MA-V117-S1P03
+  acceptance_id: ACC-MA-V117-S1P03
+  status: phase_1_3_tier_asset_detail_completed_pending_stage1_review
+  required_validator: validate:v1.1.7-stage1-phase3
+  top_asset_limit: 7
+  asset_tier_values:
+    - core_profile
+    - project
+    - decision
+    - workflow
+    - knowledge
+    - opportunity
+    - stale
+  tier_asset_sort_weights:
+    value_weight: 0.35
+    importance_weight: 0.25
+    confidence_weight: 0.25
+    staleness_penalty_weight: 0.15
+  required_asset_fields:
+    - asset_id
+    - asset_tier
+    - title
+    - summary
+    - theme
+    - value_score
+    - updated_at
+    - importance
+    - priority
+    - confidence
+    - staleness_status
+    - last_seen_range
+    - evidence_count
+    - evidence_refs
+    - source_scope
+    - linked_action_ids
+    - linked_topic_ids
+    - recommended_asset_action
+    - proposal_hint
+    - rollback_hint
+    - proposal_only
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_proposal_write_in_phase: true
+  deferred_to_later_phases:
+    - topic_classification_detail_model
+    - proposal_editor
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
