@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260706-V014-OUTSIDE-SCOPE-POST-DELEGATION-BLOCKER-AUDIT"
+as_of_event_id: "DEV-KMFA-20260706-V014-OUTSIDE-SCOPE-POST-DELEGATION-BLOCKER-THRESHOLD-RECHECK"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "bd870ee5192846d2e56503846badd2fad57b713c"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-06T00:00:00+10:00"
-generator_version: "manual-0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-audit"
+generator_version: "manual-0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 971
-    total_active_formulas: 164
+    total_active_parameters: 974
+    total_active_formulas: 165
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK/human/test_results.md"
+      - "KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_post_delegation_blocker_threshold_recheck.py"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK/machine/outside_scope_authorized_source_map_extension_post_delegation_blocker_threshold_recheck_manifest.json"
       - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION/human/test_results.md"
       - "KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision.py"
       - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION/machine/outside_scope_authorized_source_map_extension_delegated_keep_pending_decision_manifest.json"
