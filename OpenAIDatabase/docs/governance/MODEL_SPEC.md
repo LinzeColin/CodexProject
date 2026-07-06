@@ -5,8 +5,8 @@ evidence_level: EXTRACTED unless marked otherwise
 governance_spec_version: 1.0.0
 model_count: 12
 formula_count: 12
-parameter_count: 98
-task_count: 14
+parameter_count: 99
+task_count: 15
 
 ## A. Model Overview
 

@@ -24,6 +24,10 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def read_optional_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8") if path.exists() else ""
+
+
 def pass_check(checks: list[dict[str, str]], name: str, evidence: str) -> None:
     checks.append({"name": name, "status": "PASS", "evidence": evidence})
 
@@ -55,6 +59,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     checks: list[dict[str, str]] = []
 
     app_source = read_text(repo_root / "apps/memory-atlas/src/App.tsx")
+    i18n_source = read_optional_text(repo_root / "apps/memory-atlas/src/i18n/zh-CN.ts")
+    ui_source = app_source + "\n" + i18n_source
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
     starfield_params_source = read_text(repo_root / "apps/memory-atlas/src/config/memoryStarfieldParameters.ts")
     obsidian_source = read_text(repo_root / "apps/memory-atlas/src/components/ObsidianGraphScene.tsx")
@@ -77,16 +83,17 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     require(
         checks,
-        '{ key: "home", label: "记忆总览", icon: Home }' in app_source
+        ('{ key: "home", label: "记忆总览", icon: Home }' in app_source
+         or ('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }' in app_source and 'home: "记忆总览"' in i18n_source))
         and ('const [activeView, setActiveView] = useState<ViewKey>("home")' in app_source or "const activeView = sharedState.mode.activeView" in app_source)
         and 'if (activeView === "home")' in app_source
         and "function HomeOverviewView" in app_source
         and "function buildHomeOverviewModel" in app_source
-        and "Memory Weather" in app_source
-        and "Next Best Actions" in app_source
+        and "Memory Weather" in ui_source
+        and "Next Best Actions" in ui_source
         and "Black Hole 风险" in app_source
         and "Proto-Star 机会" in app_source
-        and "proposal-only，不直接写长期记忆" in app_source
+        and "proposal-only，不直接写长期记忆" in ui_source
         and ".home-overview-view" in css_source
         and ".home-status-grid" in css_source
         and ".home-action-list" in css_source
@@ -98,8 +105,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     require(
         checks,
-        "Mini Starfield" in app_source
-        and "River Pulse" in app_source
+        "Mini Starfield" in ui_source
+        and "River Pulse" in ui_source
         and "Inspector Deep Link" in app_source
         and "function buildMiniStarfieldPreview" in app_source
         and "function buildRiverPulsePreview" in app_source
@@ -400,7 +407,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and 'proposalIdPrefix: "atlas_preview"' in app_source
         and 'data-proposal-only="true"' in app_source
         and 'data-active-memory-mutation="false"' in app_source
-        and "JSON 提案预览" in app_source
+        and "JSON 提案预览" in ui_source
         and "direct_frontend_mutation_of_active_memory: false" in app_source
         and "requires_agent_or_human_apply: true" in app_source
         and ".inspector-explanation-panel" in css_source
@@ -484,7 +491,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "function buildProposalReview" in app_source
         and 'className="writeback-diff-grid"' in app_source
         and 'className="writeback-version-chain"' in app_source
-        and "生成回滚提案" in app_source
+        and "生成回滚提案" in ui_source
         and ".writeback-diff-grid" in css_source
         and ".writeback-version-chain" in css_source
         and "版本链" in readme
@@ -632,7 +639,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         '"wordcloud"' in app_source
-        and 'label: "词云洞察"' in app_source
+        and ('label: "词云洞察"' in app_source or ('label: uiCopy.navigation.views.wordcloud' in app_source and 'wordcloud: "词云洞察"' in i18n_source))
         and "function WordCloudView" in app_source
         and "buildSemanticInsights" in app_source
         and "SemanticInsight" in app_source
@@ -696,10 +703,10 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "dedupeDisplayItems" in app_source
         and "humanNodeDisplayTitle" in app_source
         and "未来回答需要遵守的一条长期规则" not in app_source
-        and "这条记忆说明了什么" in app_source
+        and "这条记忆说明了什么" in ui_source
         and "为什么重要" in app_source
-        and "未来应该怎么用" in app_source
-        and ("Agent 结构化字段 / 原始摘要" in app_source or "Debug / Agent Inspector" in app_source)
+        and "未来应该怎么用" in ui_source
+        and ("Agent 结构化字段 / 原始摘要" in ui_source or "Debug / Agent Inspector" in ui_source)
         and "Memory / Personalization" in app_source
         and "Agents.md / 执行规则" in app_source
         and "降权/不再默认使用" in app_source
@@ -712,7 +719,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         '"summary"' in app_source
-        and 'label: "总结与迭代"' in app_source
+        and ('label: "总结与迭代"' in app_source or ('label: uiCopy.navigation.views.summary' in app_source and 'summary: "总结与迭代"' in i18n_source))
         and "function SummaryIterationView" in app_source
         and "function ConfigMemoryPanel" in app_source
         and "Personalization / Agents.md 建议" in app_source

@@ -174,6 +174,9 @@ function validateSharedStateRuntime() {
 
 function validateInspectorProposalRuntime() {
   const app = readAppFile("src/App.tsx");
+  const i18nPath = path.join(appRoot, "src/i18n/zh-CN.ts");
+  const i18n = fs.existsSync(i18nPath) ? fs.readFileSync(i18nPath, "utf8") : "";
+  const uiSource = `${app}\n${i18n}`;
   const css = readAppFile("src/styles.css");
 
   assertCondition(
@@ -206,10 +209,11 @@ function validateInspectorProposalRuntime() {
       "data-proposal-only=\"true\"",
       "data-active-memory-mutation=\"false\"",
       "proposalJsonPreview",
-      "JSON 提案预览",
       "direct_frontend_mutation_of_active_memory: false",
       "requires_agent_or_human_apply: true",
       "requires_conflict_check: true",
+    ]) && hasAll(uiSource, [
+      "JSON 提案预览",
       "保存 JSON 提案",
     ]) && hasAll(css, [
       ".writeback-safety-strip",
@@ -228,6 +232,7 @@ function validateInspectorProposalRuntime() {
       "data-default-raw-summary=\"hidden\"",
       "className=\"inspector-debug-toggle\"",
       "data-debug-panel=\"true\"",
+    ]) && hasAll(uiSource, [
       "隐藏 Debug",
       "显示 Debug",
     ]) && hasAll(css, [
