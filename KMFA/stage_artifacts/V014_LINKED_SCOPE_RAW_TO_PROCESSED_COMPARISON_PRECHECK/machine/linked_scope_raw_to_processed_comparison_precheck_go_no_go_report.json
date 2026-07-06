@@ -1,0 +1,20 @@
+{
+  "app_reinstall_performed": false,
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "linked_scope_exact_fingerprint_match_count": 77,
+  "linked_scope_fingerprint_mismatch_count": 0,
+  "next_required_input": "run_linked_scope_raw_to_processed_comparison_dry_run_phase",
+  "phase_id": "V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK",
+  "project_id": "KMFA",
+  "reason": "linked_scope_private_fingerprint_precheck_passed_but_full_comparison_and_reconciliation_not_complete",
+  "record_type": "v014_linked_scope_comparison_precheck_go_no_go",
+  "schema_version": "kmfa.v014_linked_scope_comparison_precheck_go_no_go.v1",
+  "status": "completed_validated_local_only_linked_scope_comparison_precheck_no_go",
+  "task_id": "KMFA-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-20260706",
+  "version": "0.1.4-linked-scope-raw-to-processed-comparison-precheck"
+}

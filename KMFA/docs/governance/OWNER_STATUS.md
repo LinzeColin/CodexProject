@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 当前版本 `0.1.4-linked-materialization-replay` 已完成 `V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION` 本地 gate：77 条 linked materialization source-map records 已在 git-ignored private runtime 中 replay/materialized，149 个 processed target slots 中仍有 72 个不在本 phase linked replay 范围内；本 phase 没有读取原始数据、没有做 raw-to-processed comparison 或 reconciliation，所以仍是 `NO_GO`。下一步只能单独运行 linked-scope raw-to-processed comparison precheck phase；next_required_input=`run_linked_scope_raw_to_processed_comparison_precheck_phase`。
+KMFA 当前版本 `0.1.4-linked-scope-raw-to-processed-comparison-precheck` 已完成 `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK` 本地 gate：77 条 linked-scope private raw-derived fingerprints 与 77 条 processed replay fingerprints 预检一致、mismatch=0；但这只是 linked scope private fingerprint precheck，不是 full raw-to-processed comparison、reconciliation 或正式报告，所以仍是 `NO_GO`。下一步只能单独运行 linked-scope raw-to-processed comparison dry-run phase；next_required_input=`run_linked_scope_raw_to_processed_comparison_dry_run_phase`。
 
 ## 你现在能信任什么
+
+- v0.1.4 linked-scope raw-to-processed comparison precheck 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：processed target slots=149、linked materialized records=77、candidate catalog records=366、private fingerprint precheck pairs=77、exact fingerprint matches=77、mismatches=0、missing candidates=0、invalid materialized records=0、outside linked replay scope slots=72、full raw-to-processed comparison complete=false。该 phase 只在 git-ignored private runtime 中比对候选 raw-derived fingerprint 与 processed replay fingerprint，不读取或修改 raw inbox，不公开 raw 文件名、字段/表头、金额、明细、私有 hash 或业务值，不证明 full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
 
 - v0.1.4 linked materialization replay 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：processed target slots=149、linked materialization source-map records=77、linked materialized records=77、blocked linked materialization records=0、unique private value sources=12、outside linked replay scope slots=72、linked-scope raw-to-processed comparison ready=true、raw-to-processed comparison performed=false。该 phase 只在 git-ignored private runtime 写入 linked-scope replay/materialized records，不读取或修改 raw inbox，不证明 full materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
