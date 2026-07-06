@@ -1521,3 +1521,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_target_outside_linked_scope_resolution`
 - boundary: this phase classifies 72 outside linked-scope processed target slots and writes an ignored private resolution queue; it does not read raw inbox, write source-map extensions, complete raw-to-processed comparison, reconcile values, verify business consistency, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `owner_or_authorized_delegate_supplies_source_map_extension_for_72_outside_linked_scope_target_slots`
+
+## 2026-07-06 - V014 Outside-Scope Authorized Source-Map Extension
+
+- task_id: `KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-20260706`
+- phase_id: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION`
+- product_version: `0.1.4-outside-scope-authorized-source-map-extension`
+- status: `completed_validated_local_only_outside_scope_authorized_source_map_extension_input_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_authorized_source_map_extension.py --require-private-template`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_authorized_source_map_extension`
+- boundary: this phase prepares a private authorized source-map extension template for 72 outside-scope target slots; it does not read raw inbox, write source-map extensions, complete raw-to-processed comparison, reconcile values, verify business consistency, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `owner_or_authorized_delegate_fills_private_authorized_source_map_extension_template_for_72_slots`

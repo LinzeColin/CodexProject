@@ -1,0 +1,63 @@
+{
+  "checks": [
+    {
+      "check_code": "source_resolution_queue_available",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_required_count_preserved",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_template_prepared",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_input_absent_recorded",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "valid_extension_zero",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "missing_extension_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_not_written",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "outside_scope_authorized_source_map_extension_check_count": 8,
+  "outside_scope_authorized_source_map_extension_check_fail_count": 0,
+  "outside_scope_authorized_source_map_extension_check_pass_count": 8,
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_authorized_source_map_extension_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_authorized_source_map_extension_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-20260706",
+  "version": "0.1.4-outside-scope-authorized-source-map-extension"
+}
