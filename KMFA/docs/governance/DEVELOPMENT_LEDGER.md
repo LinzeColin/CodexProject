@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Intake After Packet
+
+- Product version: `0.1.4-outside-scope-candidate-review-intake-after-packet`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET` only; record a conservative Codex-authorized delegated intake response for the prior 72-item private review packet, without selecting private candidates, correcting source maps or running formal raw-to-processed comparison.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_intake_after_packet.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_intake_after_packet.py`.
+- gate_state: source_review_packet_items=72, intake_response_items=72, delegated_decisions=72, delegated_keep_pending=72, selected_private_candidates=0, corrected_source_map_references=0, authoritative_non_numeric_or_calculation_mappings=0, source_map_actionable_responses=0, source_map_correction_ready=false, full_raw_to_processed_comparison_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-intake-after-packet
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-intake-after-packet
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Packet After Alignment
 
 - Product version: `0.1.4-outside-scope-candidate-review-packet-after-alignment`.
