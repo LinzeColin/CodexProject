@@ -1,0 +1,22 @@
+{
+  "acceptance_id": "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-RECONCILIATION-READINESS-RECHECK",
+  "app_reinstall_performed": false,
+  "blocked_private_decision_count": 113,
+  "blocked_until": "corrected_private_source_or_owner_approved_resolution_before_full_reconciliation",
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "private_full_reconciliation_not_ready_resolution_decisions_still_blocked",
+  "full_reconciliation_ready": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_RECONCILIATION_READINESS_RECHECK",
+  "private_decision_queue_count": 113,
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_private_reconciliation_readiness_recheck_go_no_go",
+  "resolution_applied_decision_count": 0,
+  "schema_version": "kmfa.v014_private_reconciliation_readiness_recheck_go_no_go.v1",
+  "status": "completed_validated_local_only_private_reconciliation_readiness_recheck_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-RECONCILIATION-READINESS-RECHECK-20260706",
+  "version": "0.1.4-private-reconciliation-readiness-recheck"
+}
