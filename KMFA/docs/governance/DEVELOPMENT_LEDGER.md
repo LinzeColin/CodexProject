@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Outside-Scope Post-Delegation Blocker Audit
+- Product version: `0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-audit`.
+- Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_AUDIT` only; record the second post-delegation blocker observation and prove it still does not unlock source-map extension application.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_AUDIT/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_post_delegation_blocker_audit.py`; `KMFA/tests/test_v014_outside_scope_authorized_source_map_extension_post_delegation_blocker_audit.py`.
+- blocker_state: delegated_decisions=72, delegated_keep_pending=72, delegated_authorizations=0, delegated_application_allowed=0, valid_authorized_extension_records=0, source_map_application_ready=false, post_delegation_blocker_observation_count=2, post_delegation_blocked_audit_threshold_met=false, raw_inbox_access=false, raw_inbox_mutation=false, prior_private_diagnostic_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-audit
+version_matrix_product_version_reference: 0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-audit
+
 # KMFA v0.1.4 Outside-Scope Delegated Decision Readiness Recheck
 - Product version: `0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck`.
 - Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_DECISION_READINESS_RECHECK` only; recheck the prior delegated keep-pending response and prove it does not unlock source-map extension application.

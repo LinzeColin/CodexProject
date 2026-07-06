@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Post-Delegation Blocker Audit
+
+## 0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-audit - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_AUDIT` 本地单 phase。
+- 基于上一 phase public-safe summary 和 ignored private diagnostic，只做 post-delegation blocker audit：post-delegation blocker observation count 从 1 增至 2，blocked audit threshold 仍为 false。
+- 锁定结论：delegated decision records=72、delegated keep-pending decisions=72、delegated authorization decisions=0、application allowed decisions=0、source-map extension application ready=false、Go/No-Go=NO_GO。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；未改写 prior private diagnostic；private blocker audit diagnostic 只保留在 ignored runtime。
+- 未执行 source-map extension application、full raw-to-processed comparison、full reconciliation、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
 # KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Delegated Decision Readiness Recheck
 
 ## 0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck - 2026-07-06
