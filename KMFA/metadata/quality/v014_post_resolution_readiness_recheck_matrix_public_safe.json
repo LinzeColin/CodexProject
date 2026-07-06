@@ -1,0 +1,74 @@
+{
+  "checks": [
+    {
+      "check_code": "source_application_available",
+      "observed_public_safe": 36,
+      "required": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_exclusions_applied",
+      "observed_public_safe": 36,
+      "required": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "unlinked_blockers_closed",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_reapplication_candidates_ready",
+      "observed_public_safe": 77,
+      "required": 77,
+      "status": "PASS"
+    },
+    {
+      "check_code": "non_actionable_groups_preserved",
+      "observed_public_safe": 3,
+      "required": 3,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_records_not_applied",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_comparison_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "owner_exclusion_resolution_applied_count": 36,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK",
+  "post_resolution_actionable_group_decision_count": 19,
+  "post_resolution_blocker_group_count": 3,
+  "post_resolution_candidate_group_count": 15,
+  "post_resolution_check_count": 8,
+  "post_resolution_fail_count": 0,
+  "post_resolution_pass_count": 8,
+  "post_resolution_reapplication_candidate_count": 77,
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "record_type": "v014_post_resolution_readiness_recheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_post_resolution_readiness_recheck_matrix_public_safe.v1",
+  "source_map_completion_reapplication_performed_by_this_phase": false,
+  "source_map_completion_reapplication_ready": true,
+  "source_map_records_applied_count": 0,
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-POST-RESOLUTION-READINESS-RECHECK-20260706",
+  "version": "0.1.4-post-resolution-readiness-recheck"
+}

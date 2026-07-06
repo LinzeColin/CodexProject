@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-processed-value-source-map-completion-blocker-audit`
+- version: `0.1.4-post-resolution-readiness-recheck`
 - current_stage: `value-consistency`
-- current_phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT`
-- status: `completed_validated_local_only_goal_blocked_audit`
-- current_blocker: `private_completion_template_unfilled_authorized_sources_not_supplied`
-- next_required_input: `owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`
+- current_phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK`
+- status: `completed_validated_local_only_no_go_post_resolution_reapplication_ready`
+- current_blocker: `source_map_reapplication_not_yet_performed`
+- next_required_input: `run_linked_source_map_completion_reapplication_phase`
 - blocked_next_steps: `processed value materialization replay; raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 post-resolution source-map completion readiness recheck completed local-only: original_application_blocker_queue_count=113，source_linked_application_blocker_count=77，source_unlinked_application_blocker_count=36，owner_exclusion_resolution_applied_count=36，corrected_source_resolution_applied_count=0，post_resolution_actionable_group_decision_count=19，post_resolution_reapplication_candidate_group_count=15，post_resolution_reapplication_candidate_count=77，post_resolution_blocker_group_count=3，post_resolution_open_unlinked_blocker_count=0，source_map_completion_reapplication_ready=true，source_map_completion_reapplication_performed=false，source_map_records_applied_count=0，raw_to_processed_value_comparison_performed=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase writes private post-resolution diagnostic/candidate/blocker queues only in git-ignored runtime；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/write/delete/move/rename/copy/normalize/mutation=false；materialization=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_linked_source_map_completion_reapplication_phase`。
 
 - v0.1.4 processed value source-map completion blocker audit completed local-only: consecutive_goal_turn_blocker_count=3，blocked_audit_threshold_met=true，completion_template_item_count=113，pending_selected_action_count=113，valid_completion_item_count=0，invalid_or_pending_completion_item_count=113，source_map_completion_reapplication_ready=false，authorized_processed_value_fingerprint_count=0，source_map_records_applied_count=0，raw_processed_structural_key_intersection_count=0，comparable_value_pair_count=0，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase records the repeated authorization blocker only；raw inbox read/list/stat/fingerprint/write/delete/move/rename/copy/normalize/mutation=false；private blocker audit diagnostic remains git-ignored；reapplication=false；materialization=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`。
 

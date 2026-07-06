@@ -7980,3 +7980,55 @@ formulas:
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION/human/go_no_go_record.md"
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION/human/test_results.md"
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION/machine/processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_application_manifest.json"
+
+  - formula_id: "FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-POST-RESOLUTION-READINESS-RECHECK-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-006"
+    name: KMFA v0.1.4 post-resolution source-map completion readiness recheck gate
+    version: "0.1.4-post-resolution-readiness-recheck"
+    status: active
+    fact_level: EXTRACTED
+    expression: "owner_exclusion_resolution_applied_count=36 AND post_resolution_reapplication_candidate_count=77 AND source_map_completion_reapplication_ready=true AND source_map_completion_reapplication_performed=false AND source_map_records_applied_count=0 -> decision=NO_GO"
+    variables:
+      - name: "owner_exclusion_resolution_applied_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "36"
+      - name: "post_resolution_reapplication_candidate_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "77"
+      - name: "source_map_completion_reapplication_ready"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true"
+      - name: "source_map_completion_reapplication_performed"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "false"
+      - name: "source_map_records_applied_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "0"
+    constraints:
+      - "The private post-resolution diagnostic, linked candidate queue and blocker queue must remain git-ignored and untracked."
+      - "Public evidence contains aggregate counts, statuses and evidence refs only."
+      - "No raw inbox read, list, stat, fingerprint, parse, write, delete, move, copy, normalize or overwrite is allowed in this phase."
+      - "No raw source name, field/header plaintext, row/cell coordinate or business value may be committed."
+      - "Readiness does not equal source-map application and does not verify raw-to-processed business value consistency."
+    missing_policy: "Missing private readiness diagnostic, private linked candidate queue, private blocker queue, manifest, Go/No-Go report, summary, public-safe matrix, validator, focused unit test or governance record fails validation."
+    output_range: "v014_post_resolution_readiness_recheck_manifest"
+    code_refs:
+      - "KMFA/tools/v014_processed_value_source_map_completion_post_resolution_readiness_recheck.py"
+      - "KMFA/tools/check_v014_processed_value_source_map_completion_post_resolution_readiness_recheck.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_post_resolution_readiness_recheck.py --require-private-readiness"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_post_resolution_readiness_recheck"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK/human/processed_value_source_map_completion_post_resolution_readiness_recheck_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK/machine/processed_value_source_map_completion_post_resolution_readiness_recheck_manifest.json"
