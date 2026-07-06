@@ -1,0 +1,63 @@
+{
+  "blocker_audit_check_count": 8,
+  "blocker_audit_check_fail_count": 0,
+  "blocker_audit_check_pass_count": 8,
+  "checks": [
+    {
+      "check_code": "prior_extension_no_go",
+      "observed": "true",
+      "required": "NO_GO",
+      "status": "PASS"
+    },
+    {
+      "check_code": "prior_readiness_no_go",
+      "observed": "true",
+      "required": "NO_GO",
+      "status": "PASS"
+    },
+    {
+      "check_code": "third_observation_no_go",
+      "observed": "true",
+      "required": "NO_GO",
+      "status": "PASS"
+    },
+    {
+      "check_code": "threshold_met",
+      "observed": "true",
+      "required": "true",
+      "status": "PASS"
+    },
+    {
+      "check_code": "valid_authorization_absent",
+      "observed": "true",
+      "required": "0",
+      "status": "PASS"
+    },
+    {
+      "check_code": "missing_authorization_count",
+      "observed": "true",
+      "required": "72",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_application_not_ready",
+      "observed": "true",
+      "required": "false",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "observed": "true",
+      "required": "false",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_BLOCKER_AUDIT",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_authorized_source_map_extension_blocker_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_authorized_source_map_extension_blocker_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-BLOCKER-AUDIT-20260706",
+  "version": "0.1.4-outside-scope-authorized-source-map-extension-blocker-audit"
+}

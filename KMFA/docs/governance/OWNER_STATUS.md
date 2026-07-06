@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 当前版本 `0.1.4-outside-scope-authorized-source-map-extension-readiness-recheck` 已完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_READINESS_RECHECK` 本地 gate：Codex 已重新检查 72 个 outside-scope target slots 的 git-ignored private 授权 source-map extension template，仍未发现 owner/授权代理的有效 extension input；source-map application ready=false，所以仍是 `NO_GO`。下一步只能由 owner 或授权代理填充 private template；next_required_input=`owner_or_authorized_delegate_fills_private_authorized_source_map_extension_template_for_72_slots`。
+KMFA 当前版本 `0.1.4-outside-scope-authorized-source-map-extension-blocker-audit` 已完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_BLOCKER_AUDIT` 本地 blocker audit：同一 owner/授权代理 source-map extension input 缺失已经连续 3 次阻断当前 goal，72 个 outside-scope target slots 仍没有有效授权 extension record；source-map application ready=false，所以当前 goal 建议标记为 `blocked`，系统仍是 `NO_GO`。下一步只能由 owner 或授权代理填充 private template；next_required_input=`owner_or_authorized_delegate_fills_private_authorized_source_map_extension_template_for_72_slots`。
 
 ## 你现在能信任什么
+
+- v0.1.4 outside-scope authorized source-map extension blocker audit 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：consecutive goal-turn blocker count=3、blocked audit threshold met=true、goal status recommendation=blocked、private extension template items=72、valid authorized extension records=0、missing authorized extension records=72、source-map ready count=0、source-map blocker count=72、source-map application ready=false、full raw-to-processed comparison complete=false。该 phase 只记录重复授权输入缺失阻断，不读取或修改 raw inbox，不修改 private template，不应用 source-map extension，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
 
 - v0.1.4 outside-scope authorized source-map extension readiness recheck 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：private extension template items=72、pending queue items=72、valid authorized extension records=0、missing authorized extension records=72、source-map ready count=0、source-map blocker count=72、source-map application ready=false、full raw-to-processed comparison complete=false。该 phase 只重新检查 git-ignored private template，不读取或修改 raw inbox，不修改 private template，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 source-map application、full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
 
