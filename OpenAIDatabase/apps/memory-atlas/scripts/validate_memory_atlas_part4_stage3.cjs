@@ -137,26 +137,33 @@ function validateStage3OverallReview() {
 
 function validateHomeRuntime() {
   const app = readRepoFile("apps/memory-atlas/src/App.tsx");
+  const i18nPath = path.join(repoRoot, "apps/memory-atlas/src/i18n/zh-CN.ts");
+  const i18n = fs.existsSync(i18nPath) ? fs.readFileSync(i18nPath, "utf8") : "";
+  const uiSource = `${app}\n${i18n}`;
   const css = readRepoFile("apps/memory-atlas/src/styles.css");
+  const homeNavigationReady =
+    app.includes('{ key: "home", label: "记忆总览", icon: Home }') ||
+    (app.includes('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }') &&
+      i18n.includes('home: "记忆总览"'));
   assertCondition(
-    hasAll(app, [
-      "{ key: \"home\", label: \"记忆总览\", icon: Home }",
+    homeNavigationReady && hasAll(app, [
       "createSharedAtlasState({ activeView: \"home\"",
       "function HomeOverviewView",
       "buildHomeOverviewModel",
-      "Memory Weather v2",
-      "Black Hole",
-      "Proto-Star",
       "model.actions.map",
-      "proposal-only",
-      "Mini Starfield",
-      "River Pulse",
-      "Inspector Deep Link",
       "home-preview-card mini-starfield-preview",
       "home-preview-card river-pulse-preview",
       "jumpToPreview(model.miniStarfieldFocus, \"galaxy\")",
       "jumpToPreview(model.riverPulseFocus, \"timeline\")",
       "jumpToPreview(link.node, \"search\")",
+    ]) && hasAll(uiSource, [
+      "Memory Weather v2",
+      "Black Hole",
+      "Proto-Star",
+      "proposal-only",
+      "Mini Starfield",
+      "River Pulse",
+      "Inspector Deep Link",
     ]) && hasAll(css, [
       ".home-overview-view",
       ".home-preview-grid",
@@ -173,11 +180,14 @@ function validateHomeRuntime() {
 
 function validateVisualAcceptanceHooks() {
   const visualAudit = readRepoFile("scripts/audit_memory_atlas_visual_acceptance.py");
+  const homeNavigationAuditReady =
+    visualAudit.includes('{ key: "home", label: "记忆总览", icon: Home }') ||
+    (visualAudit.includes('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }') &&
+      visualAudit.includes('home: "记忆总览"'));
   assertCondition(
-    hasAll(visualAudit, [
+    homeNavigationAuditReady && hasAll(visualAudit, [
       "memory_home_default_overview_ready",
       "memory_home_preview_widgets_ready",
-      "{ key: \"home\", label: \"记忆总览\", icon: Home }",
       "const activeView = sharedState.mode.activeView",
       "if (activeView === \"home\")",
       "function HomeOverviewView",

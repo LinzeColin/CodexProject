@@ -179,6 +179,23 @@ tasks:
     target_version: "0.2.0"
     completed_version: "0.2.0"
     completed_commit: "PENDING"
+  - task_id: "TASK-OAI-D-004"
+    phase: "D"
+    objective: "Repair Memory Atlas Phase 1 live URL readiness gates so local validators correctly reflect the release contract before a protected Cloudflare Pages + Access deployment."
+    scope: ["Memory Atlas package script alias", "Stage 3 and Stage 6 validator drift", "whole-project validator aggregation", "visual acceptance audit validator", "release-safety removal of tracked encrypted session key"]
+    non_scope: ["Cloudflare live upload", "Cloudflare Access policy mutation", "publishing memoryatlas.linzezhang.com", "raw export ingestion", "plaintext secrets", "dist or node_modules commits", "delivery readiness promotion"]
+    status: "completed"
+    dependencies: ["TASK-OAI-D-001", "TASK-OAI-D-002"]
+    required_files: ["OpenAIDatabase/apps/memory-atlas/package.json", "OpenAIDatabase/apps/memory-atlas/scripts/validate_inspector_proposal.mjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part3_stage2.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part4_stage3.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part7_stage6.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py"]
+    acceptance_ids: ["ACC-OAI-D-004"]
+    test_commands: ["pnpm --dir OpenAIDatabase/apps/memory-atlas run lint", "pnpm --dir OpenAIDatabase/apps/memory-atlas run build", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-release-safety", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app-packaging", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:whole-project", "cd OpenAIDatabase && python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist", "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"]
+    test_results: ["PASS: lint completed", "PASS: build completed", "PASS: stage8 release safety completed", "PASS: stage8 local app completed", "PASS: stage8 local app packaging completed", "PASS: whole-project validator completed", "PASS: Cloudflare Pages + Access offline preflight completed", "PASS: changed-only governance CI decision SHIP"]
+    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/package.json", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py", "OpenAIDatabase/scripts/preflight_cloudflare_pages_access.py"]
+    risk: "This proves local readiness gates only; live Cloudflare deployment and Access verification remain unexecuted until credentials and explicit deploy authorization are provided."
+    rollback: "Revert TASK-OAI-D-004 validator/package/governance changes and restore the previous release gate behavior."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
+    completed_commit: "PENDING"
   - task_id: "TASK-OAI-E-001"
     phase: "E"
     objective: "Maintain OpenAIDatabase governance drift checks in required mode."

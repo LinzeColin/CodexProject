@@ -185,9 +185,12 @@ function validateStage2HistoricalReview() {
 
 function validateCurrentRuntimeIsLaterStage() {
   const app = readRepoFile("apps/memory-atlas/src/App.tsx");
+  const i18nPath = path.join(repoRoot, "apps/memory-atlas/src/i18n/zh-CN.ts");
+  const i18n = fs.existsSync(i18nPath) ? fs.readFileSync(i18nPath, "utf8") : "";
   assertCondition(
-    hasAll(app, [
-      "{ key: \"home\", label: \"记忆总览\"",
+    (app.includes("{ key: \"home\", label: \"记忆总览\"")
+      || (app.includes("{ key: \"home\", label: uiCopy.navigation.views.home") && i18n.includes("home: \"记忆总览\"")))
+    && hasAll(app, [
       "createSharedAtlasState({ activeView: \"home\"",
       "function GalaxyView",
       "GalaxyRendererMode",
