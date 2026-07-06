@@ -932,3 +932,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - Controls: raw inbox access and mutation must remain false; public artifacts may contain aggregate counts, statuses and evidence refs only; source-map mutation, partial authorization write, materialization, comparison, reconciliation, lineage, release, upload and app reinstall remain false until a later application phase.
 - Current result: `private_retry_item_count=36`, `owner_exclusion_retry_item_count=36`, `corrected_source_retry_item_count=0`, `retry_application_ready_item_count=36`, `retry_application_blocker_queue_count=0`, `resolution_application_ready=true`, `resolution_application_allowed=false`, `business_value_consistency_verified=false`, `go_no_go=NO_GO`.
 - Next input: run resolution application against the private retry readiness queue.
+## V014 Corrected Source Or Owner Exclusion Resolution Application
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-APPLICATION-001`
+- parameter_ids: `PARAM-KMFA-1303`, `PARAM-KMFA-1304`, `PARAM-KMFA-1305`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION`
+- version: `0.1.4-corrected-source-or-owner-exclusion-resolution-application`
+- rule: private readiness queue count 36 plus owner-exclusion application count 36 produces an ignored private application result; corrected-source application count remains 0 and source-map records applied remains 0.
+- gate: `NO_GO`; post-resolution readiness recheck, materialization, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private application diagnostic, result and queues stay under git-ignored runtime.

@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260706-V014-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-RETRY-APPLICATION-READINESS"
+as_of_event_id: "DEV-KMFA-20260706-V014-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-APPLICATION"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "97be90ad5668d05e432980eb8be97550e32f65a4"
+source_base_commit: "88c5d8a1b63811272b1b80be8871b5a25155783b"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-06T00:00:00+10:00"
-generator_version: "manual-0.1.4-corrected-source-or-owner-exclusion-resolution-retry-application-readiness"
+generator_version: "manual-0.1.4-corrected-source-or-owner-exclusion-resolution-application"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 929
-    total_active_formulas: 150
+    total_active_parameters: 932
+    total_active_formulas: 151
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
