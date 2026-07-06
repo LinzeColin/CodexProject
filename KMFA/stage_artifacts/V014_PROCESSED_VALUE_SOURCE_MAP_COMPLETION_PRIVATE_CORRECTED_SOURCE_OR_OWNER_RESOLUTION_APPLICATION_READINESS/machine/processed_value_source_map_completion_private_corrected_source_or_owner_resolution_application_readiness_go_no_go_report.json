@@ -1,0 +1,22 @@
+{
+  "acceptance_id": "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-CORRECTED-SOURCE-OR-OWNER-RESOLUTION-APPLICATION-READINESS",
+  "app_reinstall_performed": false,
+  "blocked_until": "owner_approved_private_resolution_input_or_corrected_source_package",
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "resolution_application_not_ready_missing_owner_approved_private_input",
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "missing_owner_input_count": 113,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_CORRECTED_SOURCE_OR_OWNER_RESOLUTION_APPLICATION_READINESS",
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_private_corrected_source_or_owner_resolution_application_readiness_go_no_go",
+  "resolution_application_performed": false,
+  "resolution_application_ready": false,
+  "schema_version": "kmfa.v014_private_corrected_source_or_owner_resolution_application_readiness_go_no_go.v1",
+  "status": "completed_validated_local_only_private_corrected_source_or_owner_resolution_application_readiness_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-CORRECTED-SOURCE-OR-OWNER-RESOLUTION-APPLICATION-READINESS-20260706",
+  "version": "0.1.4-private-corrected-source-or-owner-resolution-application-readiness"
+}
