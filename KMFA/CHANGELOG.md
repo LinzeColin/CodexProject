@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Raw Candidate Alignment After Full Precheck
+
+## 0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK` 本地单 phase。
+- 基于上一 phase 的 72 条 outside-scope blocker，只读解析授权 raw inbox 并生成 ignored private alignment diagnostic；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：outside-scope blockers=72、raw numeric candidates=351453、raw unique numeric fingerprints=22453、context groups=10、ambiguous candidates=24、unmatched items=40、non-numeric/calculation items=8、owner review required=72、direct source-ref matches=0、direct processed-fingerprint matches=0、Go/No-Go=`NO_GO`。
+- 本 phase 证明 outside-scope raw candidate alignment 仍不能自动解锁 full comparison；因此 source-map correction、正式 raw-to-processed comparison、full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 和 business execution 均保持关闭。
+- 本 phase 对 raw inbox 只读读取、列出、stat、value fingerprint、解析和抽取候选值；未写入、删除、移动、重命名、覆盖、复制、标准化或修改 raw inbox；raw 明细、文件名、字段、金额和候选记录只保留在 ignored private runtime。
+
 # KMFA v0.1.4 Full Raw-To-Processed Comparison Precheck After Full Materialization
 
 ## 0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization - 2026-07-07

@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-RAW-CANDIDATE-ALIGNMENT-AFTER-FULL-PRECHECK-001
+- version: `0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for diagnosing the 72 outside-scope full-comparison precheck blockers against authorized raw candidates while keeping all downstream value-consistency gates closed.
+- expression: `outside_scope_raw_candidate_alignment_valid = outside_scope_blocker_count == 72 AND raw_numeric_candidate_count == 351453 AND raw_unique_numeric_fingerprint_count == 22453 AND outside_scope_context_group_count == 10 AND auto_ambiguous_candidate_item_count == 24 AND auto_unmatched_item_count == 40 AND non_numeric_or_calculation_context_item_count == 8 AND direct_source_record_ref_match_count == 0 AND direct_processed_fingerprint_match_count == 0 AND owner_review_required_item_count == 72 AND full_raw_to_processed_value_comparison_complete == false AND business_value_consistency_verified == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: previous full comparison precheck public summary, ignored private blocker records, ignored private full materialized records, ignored private processed staging and current authorized read-only raw scan.
+- missing_policy: missing alignment manifest, Go/No-Go report, summary, matrix, private alignment, private diagnostic, private items, private review question list, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK/machine/outside_scope_raw_candidate_alignment_after_full_precheck_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox write/delete/move/copy/normalize/overwrite, source-map correction, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business content, formal raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-FULL-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-FULL-MATERIALIZATION-001
 - version: `0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization`
 - model_id: `MOD-KMFA-GOV-001`

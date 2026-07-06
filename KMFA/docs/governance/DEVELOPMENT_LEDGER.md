@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Raw Candidate Alignment After Full Precheck
+
+- Product version: `0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck`.
+- Scope: `V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK` only; build a private candidate alignment diagnostic for the 72 outside-scope full-precheck blockers by reading the authorized raw inbox read-only, without correcting source maps or running formal raw-to-processed comparison.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_raw_candidate_alignment_after_full_precheck.py`; `KMFA/tests/test_v014_outside_scope_raw_candidate_alignment_after_full_precheck.py`.
+- gate_state: outside_scope_blockers=72, raw_numeric_candidates=351453, raw_unique_numeric_fingerprints=22453, context_groups=10, ambiguous_candidate_items=24, unmatched_items=40, non_numeric_or_calculation_items=8, owner_review_required=72, direct_source_ref_matches=0, direct_processed_fingerprint_matches=0, full_raw_to_processed_comparison_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck
+version_matrix_product_version_reference: 0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck
+
 # KMFA v0.1.4 Full Raw-To-Processed Comparison Precheck After Full Materialization
 
 - Product version: `0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization`.

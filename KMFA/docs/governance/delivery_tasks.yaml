@@ -10917,3 +10917,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private full comparison precheck outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization"
     completed_version: "0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-RAW-CANDIDATE-ALIGNMENT-AFTER-FULL-PRECHECK-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-RAW-CANDIDATE-ALIGNMENT-AFTER-FULL-PRECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 KMFA/tools/v014_outside_scope_raw_candidate_alignment_after_full_precheck.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_raw_candidate_alignment_after_full_precheck.py --require-private-alignment"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m unittest KMFA.tests.test_v014_outside_scope_raw_candidate_alignment_after_full_precheck"
+    test_results:
+      - "PASS: outside-scope raw candidate alignment validator and focused unit test passed; 72 outside-scope records require owner review or source-map correction while full comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK/human/outside_scope_raw_candidate_alignment_after_full_precheck_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK/machine/outside_scope_raw_candidate_alignment_after_full_precheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK/machine/outside_scope_raw_candidate_alignment_after_full_precheck_matrix_public_safe.json"
+    risk: "The private alignment diagnostic can be mistaken for completed raw-to-processed comparison; this phase only prepares owner-review evidence and keeps all value consistency gates closed."
+    rollback: "Remove current phase artifacts, metadata copies, private alignment outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck"
+    completed_version: "0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck"
