@@ -1,3 +1,14 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-THRESHOLD-RECHECK-001
+
+- version: `0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for rechecking whether the same candidate-review keep-pending blocker has reached the strict blocked-goal threshold while keeping all value-consistency gates closed.
+- expression: `candidate_review_intake_blocker_threshold_recheck_valid = prior_review_intake_blocker_observation_count == 2 AND review_intake_blocker_observation_count == 3 AND review_intake_blocked_audit_threshold_met == true AND goal_status_recommendation == blocked AND delegated_decision_record_count == 72 AND delegated_keep_pending_response_count == 72 AND selected_private_candidate_count == 0 AND corrected_source_map_reference_count == 0 AND authoritative_non_numeric_or_calculation_mapping_count == 0 AND source_map_actionable_response_count == 0 AND source_map_correction_ready == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: prior blocker audit public-safe summary, prior blocker audit public-safe manifest, ignored prior private blocker audit diagnostic and raw immutable boundary.
+- missing_policy: missing threshold recheck manifest, Go/No-Go report, summary, matrix, private threshold recheck diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK/machine/outside_scope_candidate_review_intake_blocker_threshold_recheck_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, prior private blocker audit diagnostic mutation, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, private candidate selection, source-map correction, business content, formal raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-AUDIT-001
 
 - version: `0.1.4-outside-scope-candidate-review-intake-blocker-audit`
