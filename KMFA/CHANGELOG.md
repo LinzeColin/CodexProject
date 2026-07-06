@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Delegated Decision Readiness Recheck
+
+## 0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_DECISION_READINESS_RECHECK` 本地单 phase。
+- 基于上一 phase ignored private delegated decision record/queue 和 public-safe summary，只做 application feasibility/readiness recheck：delegated decision records=72、delegated keep-pending decisions=72、delegated authorization decisions=0、application allowed decisions=0。
+- 锁定结论：source-map extension application ready=false、post-delegation blocker observation count=1、blocked audit threshold met=false、Go/No-Go=NO_GO。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；未改写 prior private decision record/queue；private readiness diagnostic 只保留在 ignored runtime。
+- 未执行 source-map extension application、full raw-to-processed comparison、full reconciliation、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
 # KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Delegated Keep-Pending Decision
 
 ## 0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision - 2026-07-06

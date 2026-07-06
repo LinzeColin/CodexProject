@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision`
+- version: `0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck`
 - current_stage: `value-consistency`
-- current_phase: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION`
-- status: `completed_validated_local_only_outside_scope_authorized_extension_delegated_keep_pending_no_go`
+- current_phase: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_DECISION_READINESS_RECHECK`
+- status: `completed_validated_local_only_outside_scope_authorized_extension_delegated_decision_readiness_no_go`
 - current_blocker: `outside_scope_authorized_source_map_extension_not_authoritatively_proven`
 - next_required_input: `strong_authorized_source_map_extension_evidence_before_source_map_application_or_keep_no_go`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`

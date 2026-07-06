@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-DELEGATED-DECISION-READINESS-RECHECK-001
+- version: `0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for rechecking whether delegated outside-scope decisions authorize source-map extension application.
+- expression: `delegated_decision_readiness_valid = delegated_decision_record_count == 72 AND delegated_keep_pending_decision_count == 72 AND delegated_authorize_source_map_extension_count == 0 AND delegated_application_allowed_count == 0 AND valid_authorized_extension_record_count == 0 AND source_map_extension_application_ready == false AND post_delegation_blocked_audit_threshold_met == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: ignored prior private delegated decision record, ignored prior private delegated decision queue, prior public delegated keep-pending summary, raw immutable boundary.
+- missing_policy: missing readiness recheck manifest, Go/No-Go report, summary, matrix, private diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_DECISION_READINESS_RECHECK/machine/outside_scope_authorized_source_map_extension_delegated_decision_readiness_recheck_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, prior private decision mutation, source-map extension application, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business content, full raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-DELEGATED-KEEP-PENDING-DECISION-001
 - version: `0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision`
 - model_id: `MOD-KMFA-GOV-001`

@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"
-product_version_status: "outside_scope_authorized_source_map_extension_delegated_keep_pending_no_go"
-version_file_value: "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"
+product_version: "0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck"
+product_version_status: "outside_scope_authorized_source_map_extension_delegated_decision_readiness_no_go"
+version_file_value: "0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"
+  MOD-KMFA-GOV-001: "0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_outside_scope_authorized_source_map_extension_delegated_decision_readiness_recheck: "0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck"
   kmfa_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision: "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"
   kmfa_v014_outside_scope_authorized_source_map_extension_resumed_readiness_recheck: "0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck"
   kmfa_v014_outside_scope_authorized_source_map_extension_blocker_audit: "0.1.4-outside-scope-authorized-source-map-extension-blocker-audit"
