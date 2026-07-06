@@ -1,0 +1,67 @@
+{
+  "aggregate_affected_count_is_not_unique_target_count": true,
+  "blocker_class_count": 5,
+  "blockers": [
+    {
+      "affected_count": 149,
+      "blocker_code": "processed_materialization_value_fingerprints_missing",
+      "blocks_delivery_claim": true,
+      "blocks_full_reconciliation": true,
+      "owner_or_agent_action_required": true,
+      "public_safe_basis": "processed materialization has no comparable value fingerprints",
+      "severity": "blocking"
+    },
+    {
+      "affected_count": 36,
+      "blocker_code": "owner_authorized_fill_targets_unmatched_in_private_raw_index",
+      "blocks_delivery_claim": true,
+      "blocks_full_reconciliation": true,
+      "owner_or_agent_action_required": true,
+      "public_safe_basis": "owner-authorized fill targets did not match the private raw numeric index",
+      "severity": "blocking"
+    },
+    {
+      "affected_count": 77,
+      "blocker_code": "ambiguous_private_raw_index_matches",
+      "blocks_delivery_claim": true,
+      "blocks_full_reconciliation": true,
+      "owner_or_agent_action_required": true,
+      "public_safe_basis": "matching private raw numeric fingerprints are not unique",
+      "severity": "blocking"
+    },
+    {
+      "affected_count": 12,
+      "blocker_code": "residual_partial_application_blocked_targets",
+      "blocks_delivery_claim": true,
+      "blocks_full_reconciliation": true,
+      "owner_or_agent_action_required": true,
+      "public_safe_basis": "residual target slots remain blocked from partial application",
+      "severity": "blocking"
+    },
+    {
+      "affected_count": 6,
+      "blocker_code": "private_raw_index_parse_errors_present",
+      "blocks_delivery_claim": false,
+      "blocks_full_reconciliation": true,
+      "owner_or_agent_action_required": false,
+      "public_safe_basis": "private raw index recorded parse errors that require private diagnostic review",
+      "severity": "review_required"
+    }
+  ],
+  "business_value_consistency_verified": false,
+  "confirmed_mismatch_report_required_now": false,
+  "confirmed_value_mismatch_count": 0,
+  "decision": "NO_GO",
+  "final_goal_closeout_difference_report_required_if_repeated": true,
+  "final_goal_closeout_difference_report_required_now": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_MISMATCH_AND_BLOCKER_REPORT",
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_private_blocker_matrix_public_safe",
+  "repeated_cross_validation_mismatch_confirmed": false,
+  "schema_version": "kmfa.v014_private_blocker_matrix_public_safe.v1",
+  "source_gap_count": 4,
+  "source_phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_RAW_VALUE_MATCHING_DRY_RUN",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-MISMATCH-AND-BLOCKER-REPORT-20260706",
+  "version": "0.1.4-private-mismatch-and-blocker-report"
+}

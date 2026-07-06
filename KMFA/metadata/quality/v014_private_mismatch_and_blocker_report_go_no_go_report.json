@@ -1,0 +1,23 @@
+{
+  "acceptance_id": "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-MISMATCH-AND-BLOCKER-REPORT",
+  "app_reinstall_performed": false,
+  "blocked_until": "private_blocker_resolution_packet_before_any_full_raw_to_processed_reconciliation",
+  "blocker_class_count": 5,
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "confirmed_value_mismatch_count": 0,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "private_mismatch_and_blocker_report_completed_full_reconciliation_still_blocked",
+  "dry_run_ambiguous_raw_match_target_count": 77,
+  "dry_run_unmatched_target_count": 36,
+  "final_goal_closeout_difference_report_required_now": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_MISMATCH_AND_BLOCKER_REPORT",
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_private_mismatch_and_blocker_report_go_no_go",
+  "schema_version": "kmfa.v014_private_mismatch_and_blocker_report_go_no_go.v1",
+  "status": "completed_validated_local_only_private_mismatch_and_blocker_report_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-MISMATCH-AND-BLOCKER-REPORT-20260706",
+  "version": "0.1.4-private-mismatch-and-blocker-report"
+}
