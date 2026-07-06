@@ -12,25 +12,40 @@ class ProcessedValueSourceMapCompletionOwnerGroupDecisionResponseIntakeTest(unit
         cls.manifest = generator.generate(
             generated_at="2026-07-06T00:00:00+10:00",
             write_governance_event=False,
+            apply_codex_default_decisions=True,
         )
 
-    def test_template_decisions_remain_pending(self) -> None:
+    def test_delegated_default_decisions_are_intaken(self) -> None:
         summary = self.manifest["summary"]
         self.assertEqual(summary["decision"], "NO_GO")
         self.assertEqual(summary["source_decision"], "NO_GO")
         self.assertEqual(summary["review_group_count"], 22)
         self.assertEqual(summary["response_row_count"], 113)
-        self.assertEqual(summary["pending_group_decision_count"], 22)
-        self.assertEqual(summary["valid_group_decision_count"], 0)
+        self.assertEqual(summary["pending_group_decision_count"], 0)
+        self.assertEqual(summary["valid_group_decision_count"], 22)
         self.assertEqual(summary["invalid_group_decision_count"], 0)
-        self.assertFalse(summary["owner_group_decisions_supplied"])
+        self.assertEqual(summary["actionable_group_decision_count"], 19)
+        self.assertEqual(summary["non_actionable_group_decision_count"], 3)
+        self.assertEqual(
+            summary["owner_group_decision_code_counts"],
+            {
+                "CONFIRM_GROUP_CANDIDATE_RANK": 19,
+                "KEEP_PENDING": 2,
+                "REQUEST_MORE_DIAGNOSTICS": 1,
+            },
+        )
+        self.assertTrue(summary["owner_group_decisions_supplied"])
+        self.assertTrue(summary["all_group_decisions_valid"])
+        self.assertTrue(summary["codex_default_decision_fill_performed"])
+        self.assertEqual(summary["codex_default_decision_filled_group_count"], 22)
+        self.assertTrue(summary["owner_response_template_modified"])
 
     def test_downstream_gates_remain_closed(self) -> None:
         summary = self.manifest["summary"]
         self.assertFalse(summary["owner_group_decision_applied"])
         self.assertFalse(summary["active_owner_authorized_fill_record_ready"])
         self.assertFalse(summary["active_owner_authorized_fill_record_written"])
-        self.assertFalse(summary["owner_response_template_modified"])
+        self.assertTrue(summary["owner_response_template_modified"])
         self.assertFalse(summary["completion_template_overwritten"])
         self.assertFalse(summary["authorized_completion_record_supplied"])
         self.assertFalse(summary["source_map_completion_reapplication_ready"])
@@ -63,8 +78,8 @@ class ProcessedValueSourceMapCompletionOwnerGroupDecisionResponseIntakeTest(unit
 
     def test_validator_accepts_private_intake(self) -> None:
         manifest = validate(require_private_intake=True)
-        self.assertEqual(manifest["summary"]["pending_group_decision_count"], 22)
-        self.assertEqual(manifest["summary"]["valid_group_decision_count"], 0)
+        self.assertEqual(manifest["summary"]["pending_group_decision_count"], 0)
+        self.assertEqual(manifest["summary"]["valid_group_decision_count"], 22)
 
 
 if __name__ == "__main__":
