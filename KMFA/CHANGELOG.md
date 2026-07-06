@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Full Raw-To-Processed Comparison Precheck After Full Materialization
+
+## 0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization - 2026-07-07
+
+- 完成 `V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION` 本地单 phase。
+- 基于上一 phase ignored private full materialized records 和 private candidate catalog，只执行 full raw-to-processed comparison precheck；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：processed target slots=149、full materialized records=149、candidate catalog records=366、exact fingerprint matches=77、fingerprint mismatches=0、missing candidate records=72、outside-scope missing candidate records=72、unique processed-value fingerprints=84、Go/No-Go=`NO_GO`。
+- 本 phase 证明 full comparison precheck 已执行但未通过：72 条 outside-scope materialized records 缺少 raw-derived candidate records；因此 raw-to-processed comparison、full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 和 business execution 均保持关闭。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；private precheck、diagnostic、comparison records 和 blocker records 只保留在 ignored runtime。
+
 # KMFA v0.1.4 Full Materialization Replay After Outside-Scope Application
 
 ## 0.1.4-full-materialization-replay-after-outside-scope-application - 2026-07-07

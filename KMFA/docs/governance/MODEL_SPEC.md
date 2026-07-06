@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-FULL-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-FULL-MATERIALIZATION-001
+- version: `0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for prechecking all 149 full materialized processed-value records against ignored private raw-derived candidate fingerprints while keeping formal raw-to-processed comparison and downstream value-consistency gates closed.
+- expression: `full_comparison_precheck_valid = processed_target_slot_count == 149 AND full_materialized_record_count == 149 AND candidate_catalog_record_count == 366 AND full_scope_exact_fingerprint_match_count == 77 AND full_scope_fingerprint_mismatch_count == 0 AND full_scope_missing_candidate_count == 72 AND outside_scope_missing_candidate_count == 72 AND full_unique_processed_value_fingerprint_count == 84 AND full_raw_to_processed_value_comparison_precheck_passed == false AND raw_to_processed_value_comparison_performed == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: prior full materialization public summary, ignored private full replay, ignored private full materialized records, ignored private candidate catalog and raw immutable boundary.
+- missing_policy: missing full comparison precheck manifest, Go/No-Go report, summary, matrix, private precheck, private comparison records, private blocker records, private diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION/machine/full_raw_to_processed_comparison_precheck_after_full_materialization_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, source private replay mutation, source private materialized records mutation, source private candidate catalog mutation, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business content, formal raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-FULL-MATERIALIZATION-REPLAY-AFTER-OUTSIDE-SCOPE-APPLICATION-001
 - version: `0.1.4-full-materialization-replay-after-outside-scope-application`
 - model_id: `MOD-KMFA-GOV-001`

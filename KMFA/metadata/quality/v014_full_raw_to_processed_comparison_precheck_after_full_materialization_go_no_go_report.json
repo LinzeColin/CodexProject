@@ -1,0 +1,23 @@
+{
+  "app_reinstall_performed": false,
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "full_materialized_record_count": 149,
+  "full_raw_to_processed_value_comparison_complete": false,
+  "full_raw_to_processed_value_comparison_ready": false,
+  "full_scope_exact_fingerprint_match_count": 77,
+  "full_scope_missing_candidate_count": 72,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "github_upload_performed": false,
+  "next_required_input": "resolve_72_outside_scope_materialized_records_missing_raw_candidate_before_full_comparison",
+  "outside_scope_missing_candidate_count": 72,
+  "phase_id": "V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION",
+  "project_id": "KMFA",
+  "reason": "outside_scope_materialized_records_missing_raw_derived_candidate_records",
+  "record_type": "v014_full_comparison_precheck_go_no_go",
+  "schema_version": "kmfa.v014_full_comparison_precheck_go_no_go.v1",
+  "status": "completed_validated_local_only_full_comparison_precheck_blocked_no_go",
+  "task_id": "KMFA-V014-FULL-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-FULL-MATERIALIZATION-20260707",
+  "version": "0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization"
+}
