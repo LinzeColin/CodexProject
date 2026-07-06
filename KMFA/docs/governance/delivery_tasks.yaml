@@ -10393,3 +10393,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-processed-value-source-map-completion-blocker-audit"
     completed_version: "0.1.4-processed-value-source-map-completion-blocker-audit"
+
+  - task_id: "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-22-GROUP-DECISION-RESPONSE-INTAKE-20260706"
+    phase_id: "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-22-GROUP-DECISION-RESPONSE-INTAKE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py --require-private-response"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake"
+    test_results:
+      - "PASS: owner 22-group decision response intake validator and focused unit test passed; decision remains NO_GO because 36 unlinked application blockers remain unresolved"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/human/processed_value_source_map_completion_owner_22_group_decision_response_intake_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/machine/processed_value_source_map_completion_owner_22_group_decision_response_intake_manifest.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/machine/processed_value_source_map_completion_owner_22_group_decision_response_intake_matrix_public_safe.json"
+    risk: "Delegated group response intake can be mistaken for source-map application; do not treat this phase as value reconciliation, formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, private response outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-owner-22-group-decision-response-intake"
+    completed_version: "0.1.4-owner-22-group-decision-response-intake"

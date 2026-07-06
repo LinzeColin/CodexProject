@@ -1389,3 +1389,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_group_decision_blocker_audit -q`
 - boundary: this phase audits the repeated owner group-decision blocker across prior application, input-kit and response-intake evidence; it does not read raw inbox, mutate the response template, fill owner decisions, write active authorization, apply source-map records, materialize values, compare raw to processed values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `owner_or_authorized_delegate_replaces_pending_group_decision_codes`
+
+## 2026-07-06 - V014 Processed Value Source-map Completion Owner 22 Group Decision Response Intake
+
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-22-GROUP-DECISION-RESPONSE-INTAKE-20260706`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE`
+- product_version: `0.1.4-owner-22-group-decision-response-intake`
+- status: `completed_validated_local_only_owner_22_group_decision_response_intake_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py --require-private-response`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake`
+- boundary: this phase intakes delegated conservative 22-group owner decisions into ignored private response artifacts and public aggregate evidence; it does not read raw inbox, apply source-map records, write partial authorization, materialize values, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `corrected_source_or_owner_exclusion_resolution_for_36_unlinked_application_blockers`

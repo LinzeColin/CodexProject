@@ -1,0 +1,67 @@
+{
+  "all_group_decisions_valid": true,
+  "checks": [
+    {
+      "check_code": "source_22_group_checklist_available",
+      "observed_public_safe": 22,
+      "required": 22,
+      "status": "PASS"
+    },
+    {
+      "check_code": "delegated_default_decision_applied",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_22_group_decisions_valid",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "actionable_group_decisions_available",
+      "observed_public_safe": 19,
+      "required": 19,
+      "status": "PASS"
+    },
+    {
+      "check_code": "unlinked_application_blockers_resolved",
+      "observed_public_safe": 36,
+      "required": 0,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "non_actionable_group_decisions_resolved",
+      "observed_public_safe": 3,
+      "required": 0,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "resolution_application_allowed",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "full_reconciliation_allowed",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    }
+  ],
+  "decision": "NO_GO",
+  "decision_check_count": 8,
+  "decision_fail_count": 4,
+  "decision_pass_count": 4,
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "owner_response_complete": true,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE",
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_owner_22_group_decision_response_intake_matrix_public_safe",
+  "resolution_application_allowed": false,
+  "schema_version": "kmfa.v014_owner_22_group_decision_response_intake_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-22-GROUP-DECISION-RESPONSE-INTAKE-20260706",
+  "version": "0.1.4-owner-22-group-decision-response-intake"
+}

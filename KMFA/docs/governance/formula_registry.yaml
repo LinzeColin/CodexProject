@@ -7684,3 +7684,51 @@ formulas:
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/human/owner_agent_blocker_packet.md"
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/human/test_results.md"
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT/machine/processed_value_source_map_completion_blocker_audit_manifest.json"
+
+  - formula_id: "FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-22-GROUP-DECISION-RESPONSE-INTAKE-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-006"
+    name: KMFA v0.1.4 owner 22 group decision response intake gate
+    version: "0.1.4-owner-22-group-decision-response-intake"
+    status: active
+    fact_level: EXTRACTED
+    expression: "owner_22_group_count=22 AND owner_22_group_response_row_count=113 AND actionable_group_decision_count=19 AND non_actionable_group_decision_count=3 AND unlinked_application_blocker_count=36 AND source_map_records_applied_count=0 -> decision=NO_GO"
+    variables:
+      - name: "owner_22_group_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "22"
+      - name: "owner_22_group_response_row_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "113"
+      - name: "actionable_group_decision_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "19"
+      - name: "unlinked_application_blocker_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "36"
+    constraints:
+      - "The private response and diagnostics must remain git-ignored and untracked."
+      - "Public evidence contains aggregate counts, statuses and evidence refs only."
+      - "No raw inbox read, list, stat, fingerprint, parse, write, delete, move, copy, normalize or overwrite is allowed in this phase."
+      - "No raw source name, field/header plaintext, row/cell coordinate or business value may be committed."
+      - "Raw-to-processed business value consistency is not verified while unlinked application blockers remain unresolved."
+    missing_policy: "Missing private response, private diagnostic, followup queue, manifest, Go/No-Go report, summary, public-safe matrix, validator, focused unit test or governance record fails validation."
+    output_range: "v014_owner_22_group_decision_response_intake_manifest"
+    code_refs:
+      - "KMFA/tools/v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py"
+      - "KMFA/tools/check_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py --require-private-response"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/human/processed_value_source_map_completion_owner_22_group_decision_response_intake_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/machine/processed_value_source_map_completion_owner_22_group_decision_response_intake_manifest.json"

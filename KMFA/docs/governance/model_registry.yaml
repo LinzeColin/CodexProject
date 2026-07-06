@@ -1592,3 +1592,18 @@ kmfa_v014_processed_value_source_map_completion_blocker_audit:
   evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT
   validator: KMFA/tools/check_v014_processed_value_source_map_completion_blocker_audit.py
   scope: Processed value source-map completion blocker audit only; third consecutive authorization blocker is recorded; private diagnostic written to ignored runtime; public evidence aggregate-only; no raw inbox access, source-map reapplication, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_owner_22_group_decision_response_intake:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-owner-22-group-decision-response-intake"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-22-GROUP-DECISION-RESPONSE-INTAKE-001
+  parameter_refs:
+    - PARAM-KMFA-1288
+    - PARAM-KMFA-1289
+    - PARAM-KMFA-1290
+  evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE
+  validator: KMFA/tools/check_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py
+  scope: Owner 22-group decision response intake only; delegated conservative private response is written to ignored runtime; public evidence aggregate-only; no raw inbox access, source-map mutation, partial authorization write, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.

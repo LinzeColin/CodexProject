@@ -245,3 +245,11 @@ KMFA 当前版本 `0.1.4-processed-value-source-map-completion-blocker-audit` �
 - no active owner-authorized fill record was found in the two fixed ignored-runtime candidate locations.
 - Codex did not author, create or apply an owner fill record, did not touch raw source files, and did not claim business consistency.
 - next allowed run is a single follow-up phase after an active owner/authorized fill record is supplied, or another explicitly named single phase; no GitHub upload, app reinstall, formal report, raw comparison or business execution is allowed from this state.
+
+## 2026-07-06 Latest Owner Boundary - V014 Owner 22 Group Decision Response Intake
+
+- active phase completed locally: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE`
+- user delegated Codex to decide the 22 group checklist conservatively; Codex converted the previous recommendations into a private response package.
+- public-safe result: 22 group decisions intaken, 19 actionable group decisions, 3 non-actionable group decisions, and 36 unlinked application blockers still unresolved.
+- Codex did not apply source-map records, did not write partial authorization, did not touch raw source files, did not perform raw-to-processed comparison, and did not claim business consistency.
+- next allowed run is a single corrected-source or owner-exclusion resolution input phase for the 36 unresolved unlinked blockers; no GitHub upload, app reinstall, formal report, raw comparison or business execution is allowed from this state.
