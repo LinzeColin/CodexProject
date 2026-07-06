@@ -11001,3 +11001,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private readiness diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-intake-readiness-recheck"
     completed_version: "0.1.4-outside-scope-candidate-review-intake-readiness-recheck"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-AUDIT-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-AUDIT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_intake_blocker_audit.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_intake_blocker_audit.py --require-private-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_intake_blocker_audit"
+    test_results:
+      - "PASS: outside-scope candidate review intake blocker audit validator and focused unit test passed; 72 delegated responses remain keep-pending and blocker observation count is 2 while source-map correction, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT/human/outside_scope_candidate_review_intake_blocker_audit_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_intake_blocker_audit_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_intake_blocker_audit_matrix_public_safe.json"
+    risk: "The blocker audit can be mistaken for source-map correction approval or final blocked status; this phase records the second observation only and does not unlock value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private blocker audit diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-intake-blocker-audit"
+    completed_version: "0.1.4-outside-scope-candidate-review-intake-blocker-audit"

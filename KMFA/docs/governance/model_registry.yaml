@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_candidate_review_intake_blocker_audit:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-intake-blocker-audit"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-AUDIT-001
+  parameter_refs:
+    - PARAM-KMFA-1375
+    - PARAM-KMFA-1376
+    - PARAM-KMFA-1377
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_intake_blocker_audit.py
+  scope: Outside-scope candidate review intake blocker audit only; reads prior public-safe readiness summary and ignored private readiness diagnostic; records the second keep-pending blocker observation; public evidence aggregate-only; no raw inbox access, raw mutation, candidate selection, source-map correction, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_candidate_review_intake_readiness_recheck:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-candidate-review-intake-readiness-recheck"
