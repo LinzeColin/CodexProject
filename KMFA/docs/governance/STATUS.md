@@ -304,3 +304,14 @@
 - boundary: raw data is immutable for Codex; this phase did not read, list, fingerprint, write, delete, move, rename, overwrite, normalize or copy raw sources.
 - gate: materialization replay, raw-to-processed comparison, processed-data reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - final goal condition: later cross-validation must reconcile derived outputs to raw source truth; repeated divergence requires a final discrepancy report.
+
+## 2026-07-06 Latest - V014 Owner 22 Group Decision Response Intake
+
+- phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE`
+- status: `completed_validated_local_only_owner_22_group_decision_response_intake_no_go`
+- evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py --require-private-response`
+- locked counts: `owner_22_group_count=22`, `owner_22_group_response_row_count=113`, `application_blocker_queue_count=113`, `linked_application_blocker_count=77`, `unlinked_application_blocker_count=36`, `actionable_group_decision_count=19`, `non_actionable_group_decision_count=3`
+- boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
+- gate: resolution application, source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- next required input: `corrected_source_or_owner_exclusion_resolution_for_36_unlinked_application_blockers`

@@ -1984,3 +1984,11 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 新增 `KMFA/tools/check_v014_current_state_pointer_repair.py`、focused unit test 和 `KMFA/stage_artifacts/V014_CURRENT_STATE_POINTER_REPAIR/` public-safe evidence。
 - 当前仍为 `NO_GO`：`active_owner_or_authorized_delegate_fill_record` 缺失，materialization replay、raw-to-processed comparison、GitHub upload、app reinstall、formal report 和业务执行继续阻断。
 - 本 repair 未读取、列出、修改、删除、移动、重命名、覆盖、标准化、复制或写入 raw inbox。
+
+## 0.1.4-owner-22-group-decision-response-intake - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE` 本地单 phase。
+- 基于上一轮私有 22 group checklist/template，按用户授权的 Codex 保守默认决策生成私有 response package：22 个 group、113 行、19 个可执行 group decision、3 个非可执行 group decision、36 个 unlinked application blockers 继续阻断。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：不应用 source-map、不写 partial authorization record、不做 materialization replay、不做 raw-to-processed comparison、不做 full reconciliation、不做 GitHub upload、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有响应和诊断只保留在 ignored runtime。
