@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-FULL-MATERIALIZATION-REPLAY-AFTER-OUTSIDE-SCOPE-APPLICATION-001
+- version: `0.1.4-full-materialization-replay-after-outside-scope-application`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for materializing all 149 processed-value source-map records in ignored private runtime while keeping raw-to-processed comparison and downstream value-consistency gates closed.
+- expression: `full_materialization_replay_valid = processed_target_slot_count == 149 AND full_materialization_source_map_record_count == 149 AND full_materialized_record_count == 149 AND full_materialization_blocked_record_count == 0 AND linked_materialized_record_count == 77 AND outside_scope_materialized_record_count == 72 AND full_unique_private_value_source_count == 84 AND full_processed_value_materialization_complete == true AND raw_to_processed_value_comparison_ready == true AND raw_to_processed_value_comparison_performed == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: prior outside-scope application public summary, ignored private full source-map input, ignored private processed target staging and raw immutable boundary.
+- missing_policy: missing full materialization replay manifest, Go/No-Go report, summary, matrix, private replay, private materialized records, private diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION/machine/full_processed_value_materialization_replay_after_outside_scope_application_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, source private source-map mutation, source private staging mutation, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business content, raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-APPLICATION-001
 - version: `0.1.4-outside-scope-authorized-source-map-extension-application`
 - model_id: `MOD-KMFA-GOV-001`

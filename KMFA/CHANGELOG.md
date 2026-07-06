@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Full Materialization Replay After Outside-Scope Application
+
+## 0.1.4-full-materialization-replay-after-outside-scope-application - 2026-07-07
+
+- 完成 `V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION` 本地单 phase。
+- 基于上一 phase 生成的 ignored private full source-map input 和 private processed target staging，将 149 条 processed-value records materialize 到 ignored private runtime；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：processed target slots=149、full materialization source-map records=149、full materialized records=149、blocked records=0、linked materialized records=77、outside-scope materialized records=72、unique private value sources=84、Go/No-Go=`NO_GO`。
+- 本 phase 已完成 private full processed-value materialization replay，并使 raw-to-processed comparison ready=true；但未执行 raw-to-processed comparison、未完成 full reconciliation、未验证 business value consistency、未做 lineage full check、未发布 formal report、未上传 GitHub、未重装 app、未执行业务动作。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；private replay、diagnostic 和 materialized records 只保留在 ignored runtime。
+
 # KMFA v0.1.4 Outside-Scope Source-Map Extension Application
 
 ## 0.1.4-outside-scope-authorized-source-map-extension-application - 2026-07-07

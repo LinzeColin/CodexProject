@@ -10875,3 +10875,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private application outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-authorized-source-map-extension-application"
     completed_version: "0.1.4-outside-scope-authorized-source-map-extension-application"
+
+  - task_id: "KMFA-V014-FULL-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-OUTSIDE-SCOPE-APPLICATION-20260707"
+    phase_id: "V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-FULL-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-OUTSIDE-SCOPE-APPLICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_full_processed_value_materialization_replay_after_outside_scope_application.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_full_processed_value_materialization_replay_after_outside_scope_application.py --require-private-replay"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_full_processed_value_materialization_replay_after_outside_scope_application"
+    test_results:
+      - "PASS: full materialization replay validator and focused unit test passed; 149 processed-value source-map records are materialized privately while raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION/human/full_processed_value_materialization_replay_after_outside_scope_application_report.md"
+      - "KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION/machine/full_processed_value_materialization_replay_after_outside_scope_application_manifest.json"
+      - "KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION/machine/full_processed_value_materialization_replay_after_outside_scope_application_matrix_public_safe.json"
+    risk: "The full materialization replay can be mistaken for verified business value consistency; this phase only materializes private processed values and does not compare raw-to-processed values."
+    rollback: "Remove current phase artifacts, metadata copies, private full materialization replay outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-full-materialization-replay-after-outside-scope-application"
+    completed_version: "0.1.4-full-materialization-replay-after-outside-scope-application"

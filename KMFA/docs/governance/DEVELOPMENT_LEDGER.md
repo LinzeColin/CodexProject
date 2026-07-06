@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Full Materialization Replay After Outside-Scope Application
+- Product version: `0.1.4-full-materialization-replay-after-outside-scope-application`.
+- Scope: `V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION` only; materialize all 149 processed-value source-map records in ignored private runtime without running raw-to-processed comparison.
+- Evidence: `KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION/`.
+- Verification: `KMFA/tools/check_v014_full_processed_value_materialization_replay_after_outside_scope_application.py`; `KMFA/tests/test_v014_full_processed_value_materialization_replay_after_outside_scope_application.py`.
+- gate_state: processed_target_slots=149, full_source_map_records=149, full_materialized_records=149, blocked_records=0, linked_materialized_records=77, outside_scope_materialized_records=72, unique_private_value_sources=84, full_materialization_complete=true, raw_to_processed_comparison_ready=true, raw_to_processed_comparison_performed=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-full-materialization-replay-after-outside-scope-application
+version_matrix_product_version_reference: 0.1.4-full-materialization-replay-after-outside-scope-application
+
 # KMFA v0.1.4 Outside-Scope Source-Map Extension Application
 - Product version: `0.1.4-outside-scope-authorized-source-map-extension-application`.
 - Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION` only; apply 72 owner-authorized outside-scope source-map extension records in ignored private runtime and prepare a 149-record private materialization input without running materialization or raw-to-processed comparison.
