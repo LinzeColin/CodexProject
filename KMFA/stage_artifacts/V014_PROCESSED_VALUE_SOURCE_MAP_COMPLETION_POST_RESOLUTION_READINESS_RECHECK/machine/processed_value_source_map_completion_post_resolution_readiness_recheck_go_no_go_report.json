@@ -1,0 +1,23 @@
+{
+  "app_reinstall_performed": false,
+  "business_execution_performed": false,
+  "decision": "NO_GO",
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "next_required_input": "run_linked_source_map_completion_reapplication_phase",
+  "owner_exclusion_resolution_applied_count": 36,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK",
+  "post_resolution_reapplication_candidate_count": 77,
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "reason": "post_resolution_reapplication_candidates_ready_but_source_map_application_and_reconciliation_not_performed",
+  "record_type": "v014_post_resolution_readiness_recheck_go_no_go",
+  "schema_version": "kmfa.v014_post_resolution_readiness_recheck_go_no_go.v1",
+  "source_map_completion_reapplication_performed_by_this_phase": false,
+  "source_map_completion_reapplication_ready": true,
+  "source_map_records_applied_count": 0,
+  "status": "completed_validated_local_only_post_resolution_reapplication_ready_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-POST-RESOLUTION-READINESS-RECHECK-20260706",
+  "version": "0.1.4-post-resolution-readiness-recheck"
+}

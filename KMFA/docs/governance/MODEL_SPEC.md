@@ -942,3 +942,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: private readiness queue count 36 plus owner-exclusion application count 36 produces an ignored private application result; corrected-source application count remains 0 and source-map records applied remains 0.
 - gate: `NO_GO`; post-resolution readiness recheck, materialization, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private application diagnostic, result and queues stay under git-ignored runtime.
+
+## V014 Post-Resolution Readiness Recheck
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-POST-RESOLUTION-READINESS-RECHECK-001`
+- parameter_ids: `PARAM-KMFA-1306`, `PARAM-KMFA-1307`, `PARAM-KMFA-1308`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK`
+- version: `0.1.4-post-resolution-readiness-recheck`
+- rule: owner_exclusion_resolution_applied_count=36 closes the 36 unlinked blockers; the remaining linked blocker population yields 15 linked candidate groups and 77 source-map reapplication candidates.
+- gate: `NO_GO`; source-map reapplication is ready for a later single phase, but this phase does not apply records, materialize values, compare raw-to-processed values, run reconciliation, produce a formal report, upload GitHub, reinstall the app or execute business actions.
+- privacy: public artifacts contain aggregate counts and gate state only; private post-resolution diagnostic, candidate queue and blocker queue stay under git-ignored runtime.

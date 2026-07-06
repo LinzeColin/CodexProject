@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 当前版本 `0.1.4-processed-value-source-map-completion-blocker-audit` 已完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT` 本地 gate：Codex 第三次确认 private completion template 仍未由 owner/authorized delegate 补齐，113 条 target slots 仍 pending，valid completion items=0、source-map completion reapplication ready=false、source-map records applied=0、comparable value pairs=0；因此不能继续证明处理数据与原始数据一致。当前 pursuing goal 应等待外部授权输入后恢复；next_required_input=`owner_or_authorized_delegate_fills_private_completion_template_with_authorized_processed_value_sources`。
+KMFA 当前版本 `0.1.4-post-resolution-readiness-recheck` 已完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK` 本地 gate：36 条 owner-exclusion resolution 已应用，原 36 条 unlinked blockers 已关闭，剩余 linked blockers 形成 15 个 linked candidate groups / 77 条 source-map reapplication candidates；但本 phase 没有应用 source-map records、没有读取原始数据、没有做 raw-to-processed comparison 或 reconciliation，所以仍是 `NO_GO`。下一步只能单独运行 linked source-map completion reapplication phase；next_required_input=`run_linked_source_map_completion_reapplication_phase`。
 
 ## 你现在能信任什么
+
+- v0.1.4 post-resolution source-map completion readiness recheck 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：original blockers=113、linked blockers=77、unlinked blockers=36、owner exclusions applied=36、actionable group decisions=19、linked candidate groups=15、reapplication candidates=77、remaining unlinked blockers=0、source-map completion reapplication ready=true、source-map records applied=0。该 phase 只写入 git-ignored private readiness diagnostic/candidate queue/blocker queue，不读取或修改 raw inbox，不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 processed value source-map completion blocker audit 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：consecutive goal-turn blocker count=3、blocked audit threshold met=true、completion template items=113、pending selected actions=113、valid completion items=0、source-map completion reapplication ready=false、source-map records applied=0、comparable pairs=0。该 phase 只记录重复授权阻断，不读取或修改 raw inbox，不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 

@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Post-Resolution Readiness Recheck
+- Product version: `0.1.4-post-resolution-readiness-recheck`.
+- Scope: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK` only; consume prior owner-exclusion application summary and ignored private owner response, write ignored private post-resolution diagnostic/candidate queues, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK/`.
+- Verification: `KMFA/tools/check_v014_processed_value_source_map_completion_post_resolution_readiness_recheck.py`; `KMFA/tests/test_v014_processed_value_source_map_completion_post_resolution_readiness_recheck.py`.
+- blocker_state: original_blockers=113, linked_blockers=77, unlinked_blockers=36, owner_exclusions_applied=36, actionable_group_decisions=19, linked_candidate_groups=15, reapplication_candidates=77, remaining_unlinked_blockers=0, source_map_reapplication_ready=true, source_map_reapplication_performed=false, source_map_records_applied=0, raw_inbox_access=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-post-resolution-readiness-recheck
+version_matrix_product_version_reference: 0.1.4-post-resolution-readiness-recheck
+
 # KMFA v0.1.4 Owner-Authorized Private Processed Source-Map Fill Intake
 - Product version: `0.1.4-private-processed-value-source-map-owner-authorized-fill-intake`.
 - Scope: `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE` only; consume prior gap evidence and ignored private owner worklist, write ignored private intake request, and keep public evidence aggregate/schema-only.
