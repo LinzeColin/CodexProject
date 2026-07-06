@@ -1,0 +1,54 @@
+{
+  "all_retry_inputs_valid": true,
+  "checks": [
+    {
+      "check_code": "source_application_readiness_no_go_available",
+      "public_safe_observed_value": true,
+      "required_value": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_36_retry_items_generated",
+      "public_safe_observed_value": 36,
+      "required_value": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_retry_items_owner_exclusion",
+      "public_safe_observed_value": 36,
+      "required_value": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_access_not_performed",
+      "public_safe_observed_value": false,
+      "required_value": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_application_not_performed",
+      "public_safe_observed_value": false,
+      "required_value": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "next_readiness_check_allowed",
+      "public_safe_observed_value": true,
+      "required_value": true,
+      "status": "PASS"
+    }
+  ],
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY",
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "record_type": "v014_corrected_source_or_owner_exclusion_resolution_input_retry_matrix_public_safe",
+  "resolution_application_performed_by_this_phase": false,
+  "retry_check_count": 6,
+  "retry_check_fail_count": 0,
+  "retry_check_pass_count": 6,
+  "schema_version": "kmfa.v014_corrected_source_or_owner_exclusion_resolution_input_retry_matrix_public_safe.v1",
+  "source_map_mutation_performed_by_this_phase": false,
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-RETRY-20260706"
+}

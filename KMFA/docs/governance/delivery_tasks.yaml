@@ -10456,3 +10456,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-corrected-source-or-owner-exclusion-resolution-application-readiness"
     completed_version: "0.1.4-corrected-source-or-owner-exclusion-resolution-application-readiness"
+
+  - task_id: "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-RETRY-20260706"
+    phase_id: "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-RETRY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry.py --require-private-retry"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry"
+    test_results:
+      - "PASS: corrected-source or owner-exclusion resolution input retry validator and focused unit test passed; private retry is ready for a later application-readiness check"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY/human/processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY/machine/processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry_manifest.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY/machine/processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry_matrix_public_safe.json"
+    risk: "Input retry evidence can be mistaken for corrected-source application; do not treat this phase as value reconciliation, formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, private retry outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-corrected-source-or-owner-exclusion-resolution-input-retry"
+    completed_version: "0.1.4-corrected-source-or-owner-exclusion-resolution-input-retry"

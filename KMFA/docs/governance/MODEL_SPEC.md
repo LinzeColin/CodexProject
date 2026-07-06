@@ -914,3 +914,12 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - Controls: raw inbox access and mutation must remain false; public artifacts may contain aggregate counts, statuses and evidence refs only; source-map mutation, partial authorization write, materialization, comparison, reconciliation, lineage, release, upload and app reinstall remain false while valid owner input count is 0.
 - Current result: `private_resolution_item_count=36`, `private_pending_queue_count=36`, `valid_owner_input_count=0`, `missing_owner_input_count=36`, `application_blocker_queue_count=36`, `resolution_application_allowed=false`, `business_value_consistency_verified=false`, `go_no_go=NO_GO`.
 - Next input: owner or authorized delegate fills 36 corrected-source or owner-exclusion resolution items.
+
+## FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-RETRY-001
+- Version: `0.1.4-corrected-source-or-owner-exclusion-resolution-input-retry`.
+- Purpose: create a private delegated conservative owner-exclusion retry input package for the 36 no-match blockers before rerunning application readiness.
+- Inputs: v0.1.4 corrected-source or owner-exclusion input summary, application-readiness summary, ignored private 36-item template, ignored private readiness blocker queue, and ignored private no-match dry-run evidence.
+- Outputs: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY/machine/processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry_manifest.json`, aggregate summary, Go/No-Go report, public-safe matrix, human evidence and ignored private retry input artifacts.
+- Controls: raw inbox access and mutation must remain false; public artifacts may contain aggregate counts, statuses and evidence refs only; source-map mutation, partial authorization write, materialization, comparison, reconciliation, lineage, release, upload and app reinstall remain false until a later readiness/application phase.
+- Current result: `private_retry_item_count=36`, `owner_exclusion_retry_item_count=36`, `corrected_source_retry_item_count=0`, `retry_input_valid_count=36`, `retry_input_missing_count=0`, `resolution_application_readiness_allowed_next_phase=true`, `resolution_application_allowed=false`, `business_value_consistency_verified=false`, `go_no_go=NO_GO`.
+- Next input: run application readiness against the private retry template.

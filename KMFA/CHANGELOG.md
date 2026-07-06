@@ -2008,3 +2008,11 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
 - 当前仍为 `NO_GO`：36 项 owner/授权输入有效数为 0，missing owner input 为 36，resolution application 不允许执行。
 - 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 readiness diagnostic 和 blocker queue 只保留在 ignored runtime。
+
+## 0.1.4-corrected-source-or-owner-exclusion-resolution-input-retry - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY` 本地单 phase。
+- 基于上一轮 36 项 readiness NO_GO 证据和既有 private no-match dry-run 证据，生成 36 项 delegated conservative owner-exclusion retry input 草案。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：retry input 已准备好供下一轮 readiness 检查，但本 phase 不执行 source-map application、raw-to-processed comparison、full reconciliation、GitHub upload、app reinstall 或业务动作。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 retry template、queue 和 diagnostic 只保留在 ignored runtime。
