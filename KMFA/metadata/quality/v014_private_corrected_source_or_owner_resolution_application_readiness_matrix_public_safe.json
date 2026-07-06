@@ -1,0 +1,62 @@
+{
+  "application_readiness_check_count": 7,
+  "application_readiness_fail_count": 6,
+  "application_readiness_pass_count": 1,
+  "checks": [
+    {
+      "check_code": "source_intake_completed",
+      "observed_public_safe": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_CORRECTED_SOURCE_OR_OWNER_RESOLUTION_INTAKE",
+      "required": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_CORRECTED_SOURCE_OR_OWNER_RESOLUTION_INTAKE",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_intake_go",
+      "observed_public_safe": "NO_GO",
+      "required": "GO",
+      "status": "FAIL"
+    },
+    {
+      "check_code": "owner_approved_input_present",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "corrected_source_or_owner_input_present",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "all_pending_rows_have_valid_owner_input",
+      "observed_public_safe": 113,
+      "required": 0,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "application_rows_allowed",
+      "observed_public_safe": 0,
+      "required": "all_required_rows_true",
+      "status": "FAIL"
+    },
+    {
+      "check_code": "source_intake_allowed_application",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_reconciliation_allowed_after_application": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_CORRECTED_SOURCE_OR_OWNER_RESOLUTION_APPLICATION_READINESS",
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_private_corrected_source_or_owner_resolution_application_readiness_matrix_public_safe",
+  "resolution_application_allowed": false,
+  "resolution_application_ready": false,
+  "schema_version": "kmfa.v014_private_corrected_source_or_owner_resolution_application_readiness_matrix_public_safe.v1",
+  "source_intake_matrix_fail_count": 4,
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-CORRECTED-SOURCE-OR-OWNER-RESOLUTION-APPLICATION-READINESS-20260706",
+  "template_track_count": 5,
+  "version": "0.1.4-private-corrected-source-or-owner-resolution-application-readiness"
+}
