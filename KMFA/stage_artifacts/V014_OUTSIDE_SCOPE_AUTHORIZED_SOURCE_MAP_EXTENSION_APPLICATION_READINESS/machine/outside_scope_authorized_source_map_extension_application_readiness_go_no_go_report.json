@@ -1,0 +1,23 @@
+{
+  "app_reinstall_performed": false,
+  "application_blocker_count": 0,
+  "application_ready_record_count": 72,
+  "business_execution_performed": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "owner_authorized_source_map_extension_application_readiness_passed_application_not_performed",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "github_upload_performed": false,
+  "next_required_input": "run_outside_scope_source_map_extension_application_phase_before_materialization_or_full_comparison",
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION_READINESS",
+  "processed_consistency_verified": false,
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_source_map_extension_application_readiness_go_no_go",
+  "schema_version": "kmfa.v014_outside_scope_source_map_extension_application_readiness_go_no_go.v1",
+  "source_map_extension_application_performed_by_this_phase": false,
+  "source_map_extension_application_ready": true,
+  "source_map_extension_written_by_this_phase": false,
+  "status": "completed_validated_local_only_outside_scope_authorized_extension_application_readiness_ready_no_go",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-APPLICATION-READINESS-20260707",
+  "version": "0.1.4-outside-scope-authorized-source-map-extension-application-readiness"
+}
