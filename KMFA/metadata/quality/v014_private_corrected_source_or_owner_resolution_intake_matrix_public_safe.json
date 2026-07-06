@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "check_code": "previous_readiness_recheck_completed",
+      "observed_public_safe": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_RECONCILIATION_READINESS_RECHECK",
+      "required": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_RECONCILIATION_READINESS_RECHECK",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_owner_approved_resolution_input_present",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "private_corrected_source_package_present",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "blocked_private_decisions_resolved",
+      "observed_public_safe": 113,
+      "required": 0,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "resolution_application_allowed",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    }
+  ],
+  "corrected_private_source_package_present": false,
+  "decision": "NO_GO",
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "intake_check_count": 5,
+  "intake_fail_count": 4,
+  "intake_pass_count": 1,
+  "owner_approved_resolution_input_present": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_CORRECTED_SOURCE_OR_OWNER_RESOLUTION_INTAKE",
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_private_corrected_source_or_owner_resolution_intake_matrix_public_safe",
+  "resolution_application_allowed": false,
+  "schema_version": "kmfa.v014_private_corrected_source_or_owner_resolution_intake_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-CORRECTED-SOURCE-OR-OWNER-RESOLUTION-INTAKE-20260706",
+  "version": "0.1.4-private-corrected-source-or-owner-resolution-intake"
+}
