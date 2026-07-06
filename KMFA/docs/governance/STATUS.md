@@ -348,3 +348,14 @@
 - boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
 - gate: retry input is ready for a later readiness check, but resolution application, source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - next required input: `run_application_readiness_against_private_retry_template`
+
+## 2026-07-06 Latest - V014 Corrected Source Or Owner Exclusion Resolution Retry Application Readiness
+
+- phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_RETRY_APPLICATION_READINESS`
+- status: `completed_validated_local_only_corrected_source_or_owner_exclusion_retry_application_readiness_ready_no_go`
+- evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_RETRY_APPLICATION_READINESS/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_retry_application_readiness.py --require-private-readiness`
+- locked counts: `private_retry_item_count=36`, `owner_exclusion_retry_item_count=36`, `corrected_source_retry_item_count=0`, `retry_input_valid_count=36`, `retry_input_missing_count=0`, `retry_application_ready_item_count=36`, `retry_application_blocker_queue_count=0`
+- boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
+- gate: retry application readiness is ready for a later resolution application phase, but this phase performs no source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+- next required input: `run_resolution_application_against_private_retry_readiness_queue`
