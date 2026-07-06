@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_raw_candidate_alignment_after_full_precheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-RAW-CANDIDATE-ALIGNMENT-AFTER-FULL-PRECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1363
+    - PARAM-KMFA-1364
+    - PARAM-KMFA-1365
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK
+  validator: KMFA/tools/check_v014_outside_scope_raw_candidate_alignment_after_full_precheck.py
+  scope: Outside-scope raw candidate alignment after full precheck only; reads the authorized raw inbox read-only and writes private alignment diagnostics for 72 outside-scope blockers; public evidence aggregate-only; no raw mutation, source-map correction, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_full_raw_to_processed_comparison_precheck_after_full_materialization:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization"

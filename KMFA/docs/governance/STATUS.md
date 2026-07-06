@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization`
+- version: `0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck`
 - current_stage: `value-consistency`
-- current_phase: `V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION`
-- status: `completed_validated_local_only_full_comparison_precheck_blocked_no_go`
-- current_blocker: `outside_scope_materialized_records_missing_raw_derived_candidate_records`
-- next_required_input: `resolve_72_outside_scope_materialized_records_missing_raw_candidate_before_full_comparison`
+- current_phase: `V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK`
+- status: `completed_validated_local_only_outside_scope_raw_candidate_alignment_blocked_no_go`
+- current_blocker: `outside_scope_raw_candidate_alignment_requires_owner_review_or_source_map_correction`
+- next_required_input: `owner_or_authorized_delegate_reviews_private_outside_scope_candidate_alignment_before_full_comparison`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 outside-scope raw candidate alignment after full precheck completed local-only: outside_scope_blocker_count=72，raw_numeric_candidate_count=351453，raw_unique_numeric_fingerprint_count=22453，outside_scope_context_group_count=10，auto_ambiguous_candidate_item_count=24，auto_unmatched_item_count=40，non_numeric_or_calculation_context_item_count=8，owner_review_required_item_count=72，direct_source_record_ref_match_count=0，direct_processed_fingerprint_match_count=0，alignment_ready_count=0，source_map_correction_ready=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads the authorized raw inbox read-only to build private candidate alignment diagnostics；public evidence is aggregate-only；raw inbox write/delete/move/rename/copy/normalize/mutation=false；private alignment outputs stay in ignored runtime；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_reviews_private_outside_scope_candidate_alignment_before_full_comparison`。
 
 - v0.1.4 full raw-to-processed comparison precheck after full materialization completed local-only: processed_target_slot_count=149，full_materialized_record_count=149，candidate_catalog_record_count=366，full_scope_exact_fingerprint_match_count=77，full_scope_fingerprint_mismatch_count=0，full_scope_missing_candidate_count=72，outside_scope_missing_candidate_count=72，full_unique_processed_value_fingerprint_count=84，full_raw_to_processed_value_comparison_precheck_performed_by_this_phase=true，full_raw_to_processed_value_comparison_precheck_passed=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads ignored private full materialized records and private candidate catalog, writes ignored private comparison precheck/diagnostic/comparison records/blocker records only；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；source private full replay/materialized records/candidate catalog mutation=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`resolve_72_outside_scope_materialized_records_missing_raw_candidate_before_full_comparison`。
 
