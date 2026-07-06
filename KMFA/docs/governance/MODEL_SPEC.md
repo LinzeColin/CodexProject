@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-LINKED-REAPPLICATION-001
+- version: `0.1.4-linked-materialization-replay`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for replaying linked-scope processed value materialization after linked source-map reapplication.
+- expression: `linked_materialization_replay_valid = processed_target_slot_count == 149 AND linked_materialization_source_map_record_count == 77 AND linked_materialized_record_count == 77 AND linked_materialization_blocked_record_count == 0 AND processed_target_slot_outside_linked_replay_scope_count == 72 AND linked_scope_raw_to_processed_value_comparison_ready == true AND raw_to_processed_value_comparison_performed == false AND business_value_consistency_verified == false AND downstream_allowed == false`.
+- inputs: linked source-map reapplication public summary, git-ignored private materialization source-map input, git-ignored private processed target staging, raw immutable boundary.
+- missing_policy: missing linked replay manifest, Go/No-Go report, summary, matrix, private replay, private materialized records, private unmaterialized scope records, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION/machine/processed_value_materialization_replay_after_linked_reapplication_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, public raw source name, field/header plaintext, row/cell coordinate, business value, full processed value materialization claim, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-RECORD-DRAFT-001
 - version: `0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft`
 - model_id: `MOD-KMFA-GOV-001`

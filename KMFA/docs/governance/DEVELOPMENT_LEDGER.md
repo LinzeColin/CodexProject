@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Linked Materialization Replay
+- Product version: `0.1.4-linked-materialization-replay`.
+- Scope: `V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION` only; consume ignored private linked materialization source-map input and processed target staging, write ignored private linked materialization replay outputs, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION/`.
+- Verification: `KMFA/tools/check_v014_processed_value_materialization_replay_after_linked_reapplication.py`; `KMFA/tests/test_v014_processed_value_materialization_replay_after_linked_reapplication.py`.
+- blocker_state: processed_target_slots=149, linked_materialization_source_map_records=77, linked_materialized_records=77, linked_blocked_records=0, linked_unique_private_value_sources=12, outside_linked_replay_scope_slots=72, linked_scope_raw_to_processed_comparison_ready=true, full_materialization_complete=false, raw_to_processed_comparison=false, business_value_consistency_verified=false, raw_inbox_access=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-linked-materialization-replay
+version_matrix_product_version_reference: 0.1.4-linked-materialization-replay
+
 # KMFA v0.1.4 Linked Source-Map Reapplication
 - Product version: `0.1.4-linked-source-map-reapplication`.
 - Scope: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION` only; consume prior post-resolution candidate queue and private partial value-source fill, write ignored private linked reapplication outputs and private materialization source-map input, and keep public evidence aggregate-only.

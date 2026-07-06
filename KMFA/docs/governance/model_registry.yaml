@@ -1638,6 +1638,21 @@ kmfa_v014_corrected_source_or_owner_exclusion_resolution_application_readiness:
   validator: KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_application_readiness.py
   scope: Corrected-source or owner-exclusion application readiness only; private 36-item template is read from ignored runtime and private readiness diagnostics are written to ignored runtime; public evidence aggregate-only; no raw inbox access, source-map mutation, partial authorization write, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.
 
+kmfa_v014_linked_materialization_replay:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-linked-materialization-replay"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-LINKED-REAPPLICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1312
+    - PARAM-KMFA-1313
+    - PARAM-KMFA-1314
+  evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION
+  validator: KMFA/tools/check_v014_processed_value_materialization_replay_after_linked_reapplication.py
+  scope: Linked-scope materialization replay only; 77 linked private source-map records are materialized in ignored private runtime; public evidence aggregate-only; no raw inbox access, raw-to-processed comparison, full reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_corrected_source_or_owner_exclusion_resolution_input_retry:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-corrected-source-or-owner-exclusion-resolution-input-retry"

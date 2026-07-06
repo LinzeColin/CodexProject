@@ -1,3 +1,14 @@
+# KMFA v0.1.4 Linked Materialization Replay
+
+## 0.1.4-linked-materialization-replay - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION` 本地 materialization replay phase。
+- 基于上一轮 77 条 linked materialization source-map input，只在 git-ignored private runtime 物化 77 条 linked-scope records；149 个 processed target slots 中 72 个明确保持在本 phase linked replay 范围外。
+- 锁定结论：processed target slots=149、linked materialization input records=77、linked materialized records=77、blocked linked records=0、unique private value sources=12、linked-scope raw-to-processed comparison ready=true、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不解析、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private replay/materialized records 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 full materialization、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能单独运行 linked-scope raw-to-processed comparison precheck phase。
+
 # KMFA v0.1.4 Linked Source-Map Reapplication
 
 ## 0.1.4-linked-source-map-reapplication - 2026-07-06
