@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-processed-target-outside-linked-scope-resolution`
+- version: `0.1.4-outside-scope-authorized-source-map-extension`
 - current_stage: `value-consistency`
-- current_phase: `V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION`
-- status: `completed_validated_local_only_outside_linked_scope_resolution_no_go`
-- current_blocker: `outside_linked_scope_targets_require_authorized_source_map_extension`
-- next_required_input: `owner_or_authorized_delegate_supplies_source_map_extension_for_72_outside_linked_scope_target_slots`
+- current_phase: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION`
+- status: `completed_validated_local_only_outside_scope_authorized_source_map_extension_input_no_go`
+- current_blocker: `outside_scope_authorized_source_map_extension_input_missing`
+- next_required_input: `owner_or_authorized_delegate_fills_private_authorized_source_map_extension_template_for_72_slots`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 outside-scope authorized source-map extension intake completed local-only: source_outside_scope_resolution_queue_count=72，outside_scope_authorized_source_map_required_count=72，private_authorized_extension_template_item_count=72，private_authorized_extension_pending_queue_count=72，owner_authorized_extension_input_present=false，owner_authorized_extension_record_count=0，valid_authorized_extension_record_count=0，invalid_authorized_extension_record_count=0，missing_authorized_extension_record_count=72，source_map_extension_applied_count=0，source_map_extension_pending_count=72，source_map_extension_written_by_this_phase=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase prepares only a git-ignored private authorized extension template and pending queue；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；source-map extension write=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_fills_private_authorized_source_map_extension_template_for_72_slots`。
 
 - v0.1.4 processed target outside linked scope resolution completed local-only: processed_target_slot_count=149，linked_scope_resolved_target_slot_count=77，outside_linked_scope_target_slot_count=72，outside_scope_resolution_queue_record_count=72，outside_scope_verified_against_staging_count=72，outside_scope_already_has_source_map_count=0，outside_scope_auto_resolvable_count=0，outside_scope_authorized_source_map_required_count=72，outside_scope_resolution_applied_count=0，outside_scope_resolution_pending_count=72，source_map_extension_written_by_this_phase=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase classifies outside-linked-scope processed target slots and writes an ignored private resolution queue only；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；source-map extension=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_supplies_source_map_extension_for_72_outside_linked_scope_target_slots`。
 

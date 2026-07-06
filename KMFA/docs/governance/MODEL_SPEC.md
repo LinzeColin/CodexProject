@@ -1006,3 +1006,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: processed_target_slot_count=149, linked_scope_resolved_target_slot_count=77 and outside_linked_scope_target_slot_count=72 classify the remaining target slots outside linked replay scope; outside_scope_auto_resolvable_count=0 and outside_scope_authorized_source_map_required_count=72 block full comparison until authorized source-map extension is supplied.
 - gate: `NO_GO`; source-map extension, full raw-to-processed comparison, processed-data reconciliation, business value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private outside-scope resolution diagnostic, queue and report stay under git-ignored runtime.
+
+## V014 Outside-Scope Authorized Source-Map Extension
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-001`
+- parameter_ids: `PARAM-KMFA-1324`, `PARAM-KMFA-1325`, `PARAM-KMFA-1326`
+- phase_id: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION`
+- version: `0.1.4-outside-scope-authorized-source-map-extension`
+- rule: source_outside_scope_resolution_queue_count=72 and private_authorized_extension_template_item_count=72 prepare the private intake surface; valid_authorized_extension_record_count=0 and missing_authorized_extension_record_count=72 keep source-map extension write blocked.
+- gate: `NO_GO`; source-map extension write, full raw-to-processed comparison, processed-data reconciliation, business value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private extension template, pending queue, diagnostic and report stay under git-ignored runtime.
