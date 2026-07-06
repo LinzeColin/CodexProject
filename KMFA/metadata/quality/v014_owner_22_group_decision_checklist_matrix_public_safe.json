@@ -1,0 +1,69 @@
+{
+  "checks": [
+    {
+      "check_code": "source_application_readiness_available",
+      "observed_public_safe": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_CORRECTED_SOURCE_OR_OWNER_RESOLUTION_APPLICATION_READINESS",
+      "required": "latest_application_readiness_gate",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_application_readiness_locked_no_go",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_owner_review_groups_available",
+      "observed_public_safe": 22,
+      "required": 22,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_22_group_checklist_prepared",
+      "observed_public_safe": 22,
+      "required": 22,
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_group_decision_confirmed",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "owner_approved_resolution_input_present",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "resolution_application_allowed",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "full_reconciliation_allowed",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    }
+  ],
+  "decision": "NO_GO",
+  "decision_check_count": 8,
+  "decision_fail_count": 4,
+  "decision_pass_count": 4,
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "owner_22_group_decision_checklist_prepared": true,
+  "owner_approved_resolution_input_present": false,
+  "owner_group_decision_confirmed": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_CHECKLIST",
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_owner_22_group_decision_checklist_matrix_public_safe",
+  "resolution_application_allowed": false,
+  "schema_version": "kmfa.v014_owner_22_group_decision_checklist_matrix_public_safe.v1",
+  "source_application_readiness_fail_count": 6,
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-22-GROUP-DECISION-CHECKLIST-20260706",
+  "version": "0.1.4-owner-22-group-decision-checklist"
+}
