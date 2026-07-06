@@ -10561,3 +10561,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private linked reapplication outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-linked-source-map-reapplication"
     completed_version: "0.1.4-linked-source-map-reapplication"
+
+  - task_id: "KMFA-V014-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-LINKED-REAPPLICATION-20260706"
+    phase_id: "V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-LINKED-REAPPLICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_processed_value_materialization_replay_after_linked_reapplication.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_materialization_replay_after_linked_reapplication.py --require-private-replay"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_materialization_replay_after_linked_reapplication"
+    test_results:
+      - "PASS: linked materialization replay validator and focused unit test passed; 77 records materialized privately while raw comparison and full reconciliation remain closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION/human/processed_value_materialization_replay_after_linked_reapplication_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION/machine/processed_value_materialization_replay_after_linked_reapplication_manifest.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION/machine/processed_value_materialization_replay_after_linked_reapplication_matrix_public_safe.json"
+    risk: "Linked-scope materialization replay can be mistaken for full value reconciliation; do not treat this phase as formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, private linked replay outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-linked-materialization-replay"
+    completed_version: "0.1.4-linked-materialization-replay"
