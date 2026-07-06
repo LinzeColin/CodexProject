@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NAB IR Gap Analysis Roadshow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* === THEME TOKENS === */
+:root {
+    --stage-bg: #030306;
+    --slide-bg: #030306;
+    --ink: #fff8ef;
+    --muted: rgba(255,248,239,.68);
+    --dim: rgba(255,248,239,.36);
+    --line: rgba(255,248,239,.16);
+    --red: #e31824;
+    --red-soft: rgba(227,24,36,.24);
+    --cyan: #6ffaff;
+    --gold: #e8c47a;
+    --green: #75e0a7;
+    --panel: rgba(255,255,255,.075);
+    --panel-strong: rgba(255,255,255,.13);
+    --font-display: "Instrument Serif", serif;
+    --font-body: "IBM Plex Sans", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+}
+* { box-sizing: border-box; }
+/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   Include this ENTIRE file in every presentation.
+   Slides are authored at 1920×1080 and scaled as a whole.
+   =========================================== */
+
+/* 1. Lock the browser viewport */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 2. Full-window deck viewport */
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 3. Fixed 16:9 design canvas.
+   JavaScript sets transform: translate(...) scale(...). */
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+
+/* 4. Slides stack inside the fixed stage.
+   Content must be laid out at 1920×1080, not reflowed per device. */
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* 5. Keep media inside authored slide bounds */
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* 6. Presentation chrome stays outside the slide design system */
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+/* 7. Print one fixed-size slide per page */
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+
+    .slide {
+        position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    .deck-controls {
+        display: none !important;
+    }
+}
+
+/* 8. Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+
+/* === ATMOSPHERIC BACKGROUND === */
+body { color: var(--ink); font-family: var(--font-body); }
+#particleCanvas { position: absolute; inset: 0; width: 1920px; height: 1080px; z-index: 0; background: #050407; }
+.stage-vignette { position: absolute; inset: 0; z-index: 0; pointer-events: none; background:
+    radial-gradient(ellipse at 72% 28%, rgba(111,250,255,.16), transparent 34%),
+    radial-gradient(ellipse at 20% 74%, rgba(227,24,36,.15), transparent 38%),
+    radial-gradient(ellipse at 52% 52%, rgba(232,196,122,.055), transparent 42%),
+    linear-gradient(180deg, rgba(232,196,122,.07), transparent 34%, rgba(0,0,0,.48) 100%),
+    linear-gradient(90deg, rgba(0,0,0,.86), rgba(0,0,0,.10) 44%, rgba(0,0,0,.74));
+    mix-blend-mode: screen; opacity: .84; }
+.nebula-film { position: absolute; inset: -90px; z-index: 1; pointer-events: none; opacity: .78; filter: blur(22px) saturate(1.18); mix-blend-mode: screen; background:
+    radial-gradient(ellipse at 68% 25%, rgba(111,250,255,.18), transparent 28%),
+    radial-gradient(ellipse at 72% 72%, rgba(227,24,36,.18), transparent 30%),
+    radial-gradient(ellipse at 30% 64%, rgba(232,196,122,.12), transparent 34%);
+    animation: nebula-drift 18s ease-in-out infinite alternate; }
+.smoke-film { position: absolute; inset: -140px; z-index: 1; pointer-events: none; opacity: .36; filter: blur(28px); mix-blend-mode: screen; background:
+    conic-gradient(from 110deg at 30% 70%, transparent, rgba(111,250,255,.10), transparent 24%, rgba(227,24,36,.10), transparent 52%, rgba(232,196,122,.08), transparent 78%),
+    radial-gradient(ellipse at 58% 45%, rgba(255,255,255,.08), transparent 44%);
+    animation: smoke-roll 28s linear infinite; }
+@keyframes nebula-drift { from { transform: translate3d(-18px, 12px, 0) scale(1); } to { transform: translate3d(26px, -18px, 0) scale(1.04); } }
+@keyframes smoke-roll { from { transform: rotate(0deg) scale(1.05); } to { transform: rotate(360deg) scale(1.05); } }
+.deck-stage::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .08; background-image: linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 140px 140px; }
+.slide { padding: 74px 86px; background: transparent; z-index: 2; }
+.slide.active { z-index: 4; }
+/* === TYPOGRAPHY === */
+.slide-meta { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 17px; color: var(--gold); text-transform: uppercase; }
+.slide-title { margin: 68px 0 0; font-size: 27px; font-weight: 600; color: var(--cyan); }
+.slide-headline { margin: 20px 0 0; width: 1140px; font-family: var(--font-display); font-size: 88px; line-height: .98; font-weight: 400; }
+.slide-body { margin: 26px 0 0; width: 930px; font-size: 28px; line-height: 1.35; color: var(--muted); }
+.kicker { font-family: var(--font-mono); color: var(--cyan); text-transform: uppercase; font-size: 18px; }
+.cover-title { font-family: var(--font-display); font-size: 154px; line-height: .88; font-weight: 400; margin: 48px 0 20px; }
+.cover-subtitle { font-size: 37px; color: var(--muted); margin: 0; }
+.cover-small { color: var(--dim); font-size: 20px; }
+.cover-line { width: 720px; height: 2px; background: linear-gradient(90deg, var(--red), var(--gold), transparent); margin: 48px 0 20px; }
+/* === LAYOUTS === */
+.cover-grid { display: grid; grid-template-columns: 1.05fr .95fr; height: 100%; align-items: center; }
+.cover-copy { position: relative; z-index: 3; }
+.cover-object { position: relative; width: 680px; height: 680px; justify-self: center; transform-style: preserve-3d; transition: transform .45s var(--ease); }
+.ir-core { position: absolute; inset: 198px; border: 1px solid rgba(111,250,255,.34); display: grid; place-items: center; border-radius: 50%; font-family: var(--font-display); font-size: 112px; background: radial-gradient(circle at 40% 30%, rgba(111,250,255,.22), rgba(227,24,36,.12) 42%, rgba(0,0,0,.08)); box-shadow: 0 0 52px rgba(111,250,255,.18), inset 0 0 54px rgba(227,24,36,.13); }
+.orbit { position: absolute; inset: 70px; border: 1px solid rgba(255,248,239,.16); border-radius: 50%; transform: rotateX(64deg) rotateZ(18deg); animation: spin 34s linear infinite; }
+.orbit.o2 { inset: 128px; border-color: rgba(232,196,122,.22); transform: rotateX(58deg) rotateZ(74deg); animation-duration: 42s; }
+.orbit.o3 { inset: 30px; border-color: rgba(227,24,36,.20); transform: rotateX(70deg) rotateZ(-28deg); animation-duration: 54s; }
+@keyframes spin { to { transform: rotateX(64deg) rotateZ(378deg); } }
+.metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; width: 1180px; margin-top: 54px; }
+.metric-card, .bullet-card, .benchmark-card { border: 1px solid var(--line); background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.045)); backdrop-filter: blur(18px); transform-style: preserve-3d; transition: transform .55s var(--ease), border-color .55s var(--ease), background .55s var(--ease); }
+.metric-card:hover, .bullet-card:hover, .benchmark-card:hover { transform: perspective(980px) rotateX(3deg) rotateY(-5deg) translate3d(0,-8px,42px); border-color: rgba(111,250,255,.38); background: linear-gradient(135deg, rgba(111,250,255,.13), rgba(227,24,36,.075)); }
+.metric-card { height: 166px; padding: 30px 34px; }
+.metric-card strong { display: block; font-family: var(--font-display); font-size: 70px; line-height: .9; color: var(--ink); font-weight: 400; }
+.metric-card span { display: block; margin-top: 18px; color: var(--muted); font-size: 22px; }
+.bullet-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 1120px; margin-top: 42px; }
+.bullet-card { min-height: 86px; padding: 24px 26px; font-size: 23px; line-height: 1.25; border-left: 4px solid var(--red); }
+.takeaway { position: absolute; left: 86px; bottom: 74px; width: 1220px; font-family: var(--font-display); color: var(--gold); font-size: 42px; line-height: 1.02; }
+.heat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; width: 1320px; margin-top: 38px; }
+.heat-cell { min-height: 108px; padding: 17px 18px; border: 1px solid var(--line); background: var(--panel); position: relative; overflow: hidden; }
+.heat-cell::before { content: ""; position: absolute; inset: 0; opacity: .26; }
+.heat-cell.low::before { background: var(--red); }
+.heat-cell.midlow::before { background: #ff8b4a; }
+.heat-cell.mid::before { background: var(--gold); }
+.heat-cell.high::before { background: var(--green); }
+.heat-cell b { display: block; font-family: var(--font-mono); color: var(--ink); font-size: 19px; position: relative; }
+.heat-cell span { display: block; color: var(--muted); font-size: 16px; margin-top: 8px; position: relative; }
+.heat-cell strong { position: absolute; right: 16px; bottom: 10px; font-family: var(--font-display); font-size: 50px; font-weight: 400; }
+.type-heatmap .heat-grid { grid-template-columns: repeat(7, 1fr); gap: 12px; width: 1500px; margin-top: 34px; }
+.type-heatmap .heat-cell { min-height: 92px; padding: 14px 16px; }
+.type-heatmap .heat-cell strong { font-size: 42px; }
+.type-heatmap .heat-cell span { font-size: 14px; }
+.galaxy-map { position: absolute; right: 92px; top: 180px; width: 600px; height: 560px; }
+.node { position: absolute; padding: 17px 22px; border: 1px solid var(--line); background: rgba(255,255,255,.07); font-size: 19px; }
+.annual { left: 28px; top: 24px; } .climate { right: 20px; top: 80px; } .pillar { left: 70px; bottom: 120px; } .data { right: 60px; bottom: 40px; } .investor { left: 236px; top: 250px; }
+.spine { position: absolute; left: 154px; top: 172px; width: 300px; height: 168px; display: grid; place-items: center; text-align: center; border: 1px solid rgba(111,250,255,.55); color: var(--cyan); font-family: var(--font-display); font-size: 34px; background: rgba(111,250,255,.08); box-shadow: 0 0 50px rgba(111,250,255,.18); }
+.flywheel { position: absolute; right: 110px; top: 165px; width: 620px; height: 620px; border: 1px solid rgba(232,196,122,.28); border-radius: 50%; animation: slow-rotate 32s linear infinite; }
+.flywheel div { position: absolute; width: 180px; min-height: 70px; padding: 14px; display: grid; place-items: center; text-align: center; background: rgba(255,255,255,.08); border: 1px solid var(--line); font-size: 18px; }
+.flywheel div:nth-child(1) { left: 220px; top: -20px; } .flywheel div:nth-child(2) { right: -28px; top: 150px; } .flywheel div:nth-child(3) { right: 16px; bottom: 98px; } .flywheel div:nth-child(4) { left: 220px; bottom: -22px; } .flywheel div:nth-child(5) { left: -20px; bottom: 112px; } .flywheel div:nth-child(6) { left: -30px; top: 140px; }
+.fly-core { position: absolute; inset: 210px; display: grid; place-items: center; text-align: center; border-radius: 50%; background: rgba(227,24,36,.18); border: 1px solid rgba(227,24,36,.46); font-family: var(--font-display); font-size: 34px; color: var(--gold); animation: slow-rotate-reverse 32s linear infinite; }
+@keyframes slow-rotate { to { transform: rotate(360deg); } } @keyframes slow-rotate-reverse { to { transform: rotate(-360deg); } }
+.benchmark-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 34px; width: 1180px; margin-top: 54px; }
+.benchmark-card { min-height: 230px; padding: 34px; }
+.benchmark-card strong { font-family: var(--font-display); font-size: 54px; font-weight: 400; color: var(--gold); }
+.benchmark-card p { font-size: 24px; color: var(--muted); line-height: 1.33; }
+.system-flow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; width: 1420px; margin-top: 64px; }
+.system-flow div { min-height: 150px; display: grid; place-items: center; text-align: center; border: 1px solid var(--line); background: rgba(255,255,255,.075); font-size: 22px; color: var(--ink); }
+.system-flow div:nth-child(even) { transform: translateY(48px); background: rgba(227,24,36,.13); }
+.roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; width: 1320px; margin-top: 56px; }
+.roadmap div { min-height: 260px; border: 1px solid var(--line); background: rgba(255,255,255,.075); padding: 34px; }
+.roadmap b { display: block; font-family: var(--font-display); font-size: 54px; font-weight: 400; color: var(--cyan); }
+.roadmap span { display: block; margin-top: 24px; color: var(--muted); font-size: 24px; line-height: 1.3; }
+.refs { width: 1420px; margin-top: 40px; }
+.refs p { font-size: 22px; line-height: 1.35; color: var(--muted); }
+.notes { display: none; }
+/* === REVEAL MOTION === */
+.reveal { opacity: 0; transform: translateY(34px) scale(.985); filter: blur(8px); transition: opacity .86s var(--ease), transform .86s var(--ease), filter .86s var(--ease); }
+.slide.visible .reveal { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+.slide.visible .reveal:nth-child(2) { transition-delay: .08s; } .slide.visible .reveal:nth-child(3) { transition-delay: .16s; } .slide.visible .reveal:nth-child(4) { transition-delay: .24s; }
+/* === CONTROLS === */
+.deck-controls { display: flex; gap: 16px; align-items: center; padding: 10px 16px; border: 1px solid rgba(255,255,255,.18); background: rgba(0,0,0,.5); backdrop-filter: blur(14px); color: var(--ink); font-family: var(--font-mono); font-size: 14px; }
+.deck-controls button { appearance: none; border: 0; background: transparent; color: var(--ink); font-family: var(--font-mono); cursor: pointer; font-size: 18px; }
+.edit-hotzone { position: fixed; left: 0; top: 0; width: 80px; height: 80px; z-index: 10000; }
+.edit-toggle { position: fixed; left: 18px; top: 18px; z-index: 10001; opacity: 0; pointer-events: none; border: 1px solid rgba(255,255,255,.22); background: rgba(0,0,0,.55); color: var(--ink); padding: 9px 12px; }
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.editing [contenteditable="true"] { outline: 1px solid var(--cyan); background: rgba(111,250,255,.07); }
+body.low-power canvas, body.low-power .orbit, body.low-power .flywheel, body.low-power .fly-core, body.low-power .nebula-film, body.low-power .smoke-film { animation: none !important; }
+body.export-mode .reveal, body.export-mode .slide.visible .reveal { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+body.export-mode .deck-controls, body.export-mode .edit-hotzone, body.export-mode .edit-toggle { display: none !important; }
+body.export-mode .nebula-film, body.export-mode .smoke-film { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .orbit, .flywheel, .fly-core { animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+    <main class="deck-stage" id="deckStage">
+        <canvas id="particleCanvas" width="1920" height="1080"></canvas>
+        <div class="nebula-film"></div>
+        <div class="smoke-film"></div>
+        <div class="stage-vignette"></div>
+        <section class='slide cover-slide type-cover' data-index='0' data-title='From Mosaic to Model'>
+        <div class="cover-grid">
+            <div class="cover-copy">
+                <div class="kicker reveal">ACCT5925 Case Study | Senior Executive Roadshow</div>
+                <h1 class="cover-title reveal">From Mosaic to Model</h1>
+                <p class="cover-subtitle reveal">NAB 2025 Integrated Reporting Gap Analysis</p>
+                <div class="cover-line reveal"></div>
+                <p class="cover-small reveal">Prepared for NAB Senior Executives | Group members and signatures to be added on submission cover sheet</p>
+            </div>
+            <div class="cover-object reveal">
+                <div class="ir-core">IR</div>
+                <div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div>
+            </div>
+        </div>
+        <aside class='notes'>Set the executive frame: this is not a summary of NAB&#x27;s annual report; it is an architecture gap analysis against the 19 mandatory IR Framework requirements.</aside></section><section class='slide type-standard' data-index='1' data-title='Executive Verdict'>
+        <div class="slide-meta reveal"><span>Decision page</span><span>01</span></div>
+        <h2 class="slide-title reveal">Executive Verdict</h2>
+        <h3 class="slide-headline reveal">NAB is IR-referenced, not yet IR-compliant.</h3>
+        <p class="slide-body reveal">The Annual Report contains strong strategy, governance, performance, sustainability and assurance ingredients. The gap is that those ingredients are not yet assembled into a designated, board-owned integrated report.</p>
+    <div class='metric-row'><div class='metric-card reveal'><strong>2.9/5</strong><span>IR readiness</span></div><div class='metric-card reveal'><strong>4</strong><span>red-flag requirements</span></div><div class='metric-card reveal'><strong>90 days</strong><span>architecture sprint</span></div></div><div class='takeaway reveal'>The issue is not disclosure volume. The issue is reporting architecture.</div><aside class='notes'>The issue is not disclosure volume. The issue is reporting architecture.</aside></section><section class='slide type-standard' data-index='2' data-title='Method'>
+        <div class="slide-meta reveal"><span>Assessment design</span><span>02</span></div>
+        <h2 class="slide-title reveal">Method</h2>
+        <h3 class="slide-headline reveal">19 black-letter requirements, one evidence standard.</h3>
+        <p class="slide-body reveal">Each requirement was scored from 1 to 5 using NAB-specific evidence, then paired with one action and one good-practice benchmark example.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Evidence source: NAB Annual Report 2025</div><div class='bullet-card reveal'>Benchmark logic: DBS business-model clarity and Nedbank IR governance/basis</div><div class='bullet-card reveal'>Rubric target: authentic observations, linked recommendations, discussed examples</div></div><div class='takeaway reveal'>Quality matters more than page count.</div><aside class='notes'>Quality matters more than page count.</aside></section><section class='slide type-heatmap' data-index='3' data-title='Full Scorecard'>
+        <div class="slide-meta reveal"><span>19 requirements</span><span>03</span></div>
+        <h2 class="slide-title reveal">Full Scorecard</h2>
+        <h3 class="slide-headline reveal">Strong annual report. Moderate integrated-reporting readiness.</h3>
+        <p class="slide-body reveal">The strongest areas are strategy, organisational overview, governance and comparability. The largest gaps are framework designation, board responsibility, business model, connectivity and basis of preparation.</p>
+    <div class='heat-grid'><div class="heat-cell midlow">
+                <b>1.12</b><span>Framework use</span><strong>2.0</strong>
+            </div><div class="heat-cell low">
+                <b>1.17</b><span>Framework use</span><strong>1.0</strong>
+            </div><div class="heat-cell midlow">
+                <b>1.18</b><span>Framework use</span><strong>2.0</strong>
+            </div><div class="heat-cell low">
+                <b>1.20</b><span>Framework use</span><strong>1.0</strong>
+            </div><div class="heat-cell high">
+                <b>3.3</b><span>Guiding principle</span><strong>4.0</strong>
+            </div><div class="heat-cell mid">
+                <b>3.6</b><span>Guiding principle</span><strong>3.0</strong>
+            </div><div class="heat-cell mid">
+                <b>3.10</b><span>Guiding principle</span><strong>3.5</strong>
+            </div><div class="heat-cell mid">
+                <b>3.17</b><span>Guiding principle</span><strong>3.0</strong>
+            </div><div class="heat-cell midlow">
+                <b>3.36</b><span>Guiding principle</span><strong>2.5</strong>
+            </div><div class="heat-cell mid">
+                <b>3.39</b><span>Guiding principle</span><strong>3.5</strong>
+            </div><div class="heat-cell high">
+                <b>3.54</b><span>Guiding principle</span><strong>4.0</strong>
+            </div><div class="heat-cell high">
+                <b>4.4</b><span>Content element</span><strong>4.0</strong>
+            </div><div class="heat-cell mid">
+                <b>4.8</b><span>Content element</span><strong>3.5</strong>
+            </div><div class="heat-cell midlow">
+                <b>4.10</b><span>Content element</span><strong>2.5</strong>
+            </div><div class="heat-cell mid">
+                <b>4.24</b><span>Content element</span><strong>3.0</strong>
+            </div><div class="heat-cell mid">
+                <b>4.28</b><span>Content element</span><strong>3.5</strong>
+            </div><div class="heat-cell mid">
+                <b>4.31</b><span>Content element</span><strong>3.5</strong>
+            </div><div class="heat-cell mid">
+                <b>4.35</b><span>Content element</span><strong>3.0</strong>
+            </div><div class="heat-cell midlow">
+                <b>4.41</b><span>Content element</span><strong>2.5</strong>
+            </div></div><div class='takeaway reveal'>Architecture gaps suppress the value of otherwise strong disclosures.</div><aside class='notes'>Architecture gaps suppress the value of otherwise strong disclosures.</aside></section><section class='slide type-standard' data-index='4' data-title='Mandatory Architecture Gaps'>
+        <div class="slide-meta reveal"><span>1.12 / 1.17 / 1.18 / 1.20</span><span>04</span></div>
+        <h2 class="slide-title reveal">Mandatory Architecture Gaps</h2>
+        <h3 class="slide-headline reveal">NAB needs an IR spine before it can claim IR compliance.</h3>
+        <p class="slide-body reveal">The report says it &#x27;draws on aspects&#x27; of the Framework, but it does not designate an integrated report, map all 19 requirements, explain IR omissions, or include a board responsibility conclusion.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Designated communication: partial</div><div class='bullet-card reveal'>Full requirement application: low</div><div class='bullet-card reveal'>Omissions register: partial</div><div class='bullet-card reveal'>Board responsibility statement: major gap</div></div><div class='takeaway reveal'>Fastest visible win: one board-approved About this Integrated Report page.</div><aside class='notes'>Fastest visible win: one board-approved About this Integrated Report page.</aside></section><section class='slide type-standard' data-index='5' data-title='Strategy &amp; Future Orientation'>
+        <div class="slide-meta reveal"><span>3.3</span><span>05</span></div>
+        <h2 class="slide-title reveal">Strategy &amp; Future Orientation</h2>
+        <h3 class="slide-headline reveal">Clear strategy; implicit capital logic.</h3>
+        <p class="slide-body reveal">NAB&#x27;s customer-centric ambition and three priorities are strong. The next step is to show how each priority uses and changes financial, human, intellectual, social and natural capitals.</p>
+    <div class='metric-row'><div class='metric-card reveal'><strong>+7.4%</strong><span>customer deposits</span></div><div class='metric-card reveal'><strong>41%</strong><span>proprietary channel</span></div><div class='metric-card reveal'><strong>11.4%</strong><span>cash ROE</span></div></div><div class='takeaway reveal'>Strategy becomes IR-grade when it becomes a capital allocation map.</div><aside class='notes'>Strategy becomes IR-grade when it becomes a capital allocation map.</aside></section><section class='slide type-galaxy' data-index='6' data-title='Connectivity'>
+        <div class="slide-meta reveal"><span>3.6</span><span>06</span></div>
+        <h2 class="slide-title reveal">Connectivity</h2>
+        <h3 class="slide-headline reveal">NAB has the stars. It needs the constellation.</h3>
+        <p class="slide-body reveal">The reporting suite includes Annual Report, Climate Report, Investor Presentations, MD&amp;A, Pillar 3 and more. Readers should not have to assemble the value story themselves.</p>
+    
+        <div class="galaxy-map reveal">
+            <div class="node annual">Annual Report</div><div class="node climate">Climate Report</div><div class="node pillar">Pillar 3</div><div class="node data">Sustainability Data Pack</div><div class="node investor">Investor Pack</div>
+            <div class="spine">Integrated Value Creation Spine</div>
+        </div>
+        <div class='bullet-grid'><div class='bullet-card reveal'>Current state: reporting suite maze</div><div class='bullet-card reveal'>Target state: Value Creation Operating System</div><div class='bullet-card reveal'>Design task: connect strategy, risks, capitals, outcomes and assurance</div></div><div class='takeaway reveal'>Connectivity is the difference between disclosure and decision-useful reporting.</div><aside class='notes'>Connectivity is the difference between disclosure and decision-useful reporting.</aside></section><section class='slide type-standard' data-index='7' data-title='Stakeholders &amp; Materiality'>
+        <div class="slide-meta reveal"><span>3.10 / 3.17</span><span>07</span></div>
+        <h2 class="slide-title reveal">Stakeholders &amp; Materiality</h2>
+        <h3 class="slide-headline reveal">Sustainability materiality is good; integrated materiality is broader.</h3>
+        <p class="slide-body reveal">NAB&#x27;s four-stage sustainability materiality process is credible. An integrated report should also capture enterprise value drivers: trust, conduct, cyber/AI, regulatory licence and financial capital resilience.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Map stakeholder needs to material matters</div><div class='bullet-card reveal'>Classify by time horizon and affected capital</div><div class='bullet-card reveal'>Show NAB&#x27;s response, KPI and value consequence</div></div><div class='takeaway reveal'>Move from issue ranking to value-driver management.</div><aside class='notes'>Move from issue ranking to value-driver management.</aside></section><section class='slide type-standard' data-index='8' data-title='Conciseness, Reliability &amp; Comparability'>
+        <div class="slide-meta reveal"><span>3.36 / 3.39 / 3.54</span><span>08</span></div>
+        <h2 class="slide-title reveal">Conciseness, Reliability &amp; Comparability</h2>
+        <h3 class="slide-headline reveal">Make assurance visible as trust architecture.</h3>
+        <p class="slide-body reveal">NAB has EY audit and selected limited assurance over non-financial metrics. The gap is not assurance existence; it is that assurance level is not mapped to material value drivers inside the value story.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Audited: financial report and remuneration report</div><div class='bullet-card reveal'>Limited assured: selected non-financial metrics and RAP metrics</div><div class='bullet-card reveal'>Needed: metric-level confidence labels</div></div><div class='takeaway reveal'>Trust is easier to earn when assurance boundaries are visible.</div><aside class='notes'>Trust is easier to earn when assurance boundaries are visible.</aside></section><section class='slide type-standard' data-index='9' data-title='Organisational Overview'>
+        <div class="slide-meta reveal"><span>4.4</span><span>09</span></div>
+        <h2 class="slide-title reveal">Organisational Overview</h2>
+        <h3 class="slide-headline reveal">The company context is strong.</h3>
+        <p class="slide-body reveal">NAB explains its scale, major business units, BNZ, ubank, colleagues and customer base. The opportunity is to connect this context to strategic response and capital dependencies.</p>
+    <div class='metric-row'><div class='metric-card reveal'><strong>41,000+</strong><span>colleagues</span></div><div class='metric-card reveal'><strong>~10m</strong><span>customers</span></div><div class='metric-card reveal'><strong>3</strong><span>major AU customer units</span></div></div><div class='takeaway reveal'>Turn operating context into strategic implications.</div><aside class='notes'>Turn operating context into strategic implications.</aside></section><section class='slide type-standard' data-index='10' data-title='Governance'>
+        <div class="slide-meta reveal"><span>4.8</span><span>10</span></div>
+        <h2 class="slide-title reveal">Governance</h2>
+        <h3 class="slide-headline reveal">Strong governance; weak value map.</h3>
+        <p class="slide-body reveal">NAB&#x27;s governance framework covers strategy, culture, risk, customer outcomes, external reporting, people and remuneration. A senior-executive IR pack should show which committee owns each material value driver.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Board Audit Committee: reporting integrity and assurance</div><div class='bullet-card reveal'>Board Risk &amp; Compliance: resilience and risk appetite</div><div class='bullet-card reveal'>Board Customer Committee: customer outcomes and trust</div><div class='bullet-card reveal'>Board People &amp; Remuneration: culture and incentives</div></div><div class='takeaway reveal'>Governance becomes IR-grade when oversight is mapped to value creation.</div><aside class='notes'>Governance becomes IR-grade when oversight is mapped to value creation.</aside></section><section class='slide type-flywheel' data-index='11' data-title='Business Model'>
+        <div class="slide-meta reveal"><span>4.10</span><span>11</span></div>
+        <h2 class="slide-title reveal">Business Model</h2>
+        <h3 class="slide-headline reveal">The centrepiece needs redesign.</h3>
+        <p class="slide-body reveal">NAB&#x27;s current value page lists resources and value distributed. A full IR business model should show inputs, banking activities, outputs, outcomes, trade-offs and feedback loops.</p>
+    
+        <div class="flywheel reveal">
+            <div>Trust signals</div><div>Customer behaviour</div><div>Balance sheet strength</div><div>Risk discipline</div><div>Financial return</div><div>Reinvestment</div>
+            <span class="fly-core">Trust<br>Conversion<br>Engine</span>
+        </div>
+        <div class='takeaway reveal'>Trust conversion is NAB&#x27;s hidden value engine.</div><aside class='notes'>Trust conversion is NAB&#x27;s hidden value engine.</aside></section><section class='slide type-standard' data-index='12' data-title='Risks &amp; Opportunities'>
+        <div class="slide-meta reveal"><span>4.24</span><span>12</span></div>
+        <h2 class="slide-title reveal">Risks &amp; Opportunities</h2>
+        <h3 class="slide-headline reveal">Risk reporting is substantial; integration is uneven.</h3>
+        <p class="slide-body reveal">The gap is not missing risk content. It is the absence of one register that links risks and opportunities to capitals, time horizons, board ownership and mitigation effectiveness.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Credit and macro cycles</div><div class='bullet-card reveal'>Cyber, scams and operational resilience</div><div class='bullet-card reveal'>AI, technology and data ethics</div><div class='bullet-card reveal'>Climate transition and customer transition finance</div></div><div class='takeaway reveal'>Risk disclosure should show how the business model remains resilient.</div><aside class='notes'>Risk disclosure should show how the business model remains resilient.</aside></section><section class='slide type-standard' data-index='13' data-title='Strategy &amp; Resource Allocation'>
+        <div class="slide-meta reveal"><span>4.28</span><span>13</span></div>
+        <h2 class="slide-title reveal">Strategy &amp; Resource Allocation</h2>
+        <h3 class="slide-headline reveal">Priorities are clear. Resource allocation needs sharper proof.</h3>
+        <p class="slide-body reveal">For business banking, deposits and proprietary home lending, NAB should show investment, people capability, technology platform, risk appetite and expected value outcome.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Priority -&gt; resource commitment</div><div class='bullet-card reveal'>Resource -&gt; capital affected</div><div class='bullet-card reveal'>Capital -&gt; outcome metric</div><div class='bullet-card reveal'>Metric -&gt; assurance level</div></div><div class='takeaway reveal'>This is how a strategy page becomes a decision page.</div><aside class='notes'>This is how a strategy page becomes a decision page.</aside></section><section class='slide type-standard' data-index='14' data-title='Performance &amp; Outcomes'>
+        <div class="slide-meta reveal"><span>4.31</span><span>14</span></div>
+        <h2 class="slide-title reveal">Performance &amp; Outcomes</h2>
+        <h3 class="slide-headline reveal">Metrics are strong; capital effects are under-translated.</h3>
+        <p class="slide-body reveal">NAB reports financial and non-financial metrics, but not consistently as movements in capitals. The report should show positive and negative outcomes by capital.</p>
+    <div class='metric-row'><div class='metric-card reveal'><strong>$658bn</strong><span>deposits managed</span></div><div class='metric-card reveal'><strong>$103bn</strong><span>new home lending</span></div><div class='metric-card reveal'><strong>170c</strong><span>dividend</span></div></div><div class='takeaway reveal'>Performance is more than KPI delivery; it is capital movement over time.</div><aside class='notes'>Performance is more than KPI delivery; it is capital movement over time.</aside></section><section class='slide type-standard' data-index='15' data-title='Outlook'>
+        <div class="slide-meta reveal"><span>4.35</span><span>15</span></div>
+        <h2 class="slide-title reveal">Outlook</h2>
+        <h3 class="slide-headline reveal">Future orientation needs a radar, not a footnote.</h3>
+        <p class="slide-body reveal">NAB discusses macro and strategic risks across the suite. An integrated report should show how 2026-2030 uncertainty affects the business model and capitals.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Macro and credit cycle</div><div class='bullet-card reveal'>Housing affordability and deposits</div><div class='bullet-card reveal'>AI, cyber and scams</div><div class='bullet-card reveal'>Climate transition and regulation</div></div><div class='takeaway reveal'>A future-facing report explains resilience, not just risk factors.</div><aside class='notes'>A future-facing report explains resilience, not just risk factors.</aside></section><section class='slide type-standard' data-index='16' data-title='Basis of Preparation'>
+        <div class="slide-meta reveal"><span>4.41</span><span>16</span></div>
+        <h2 class="slide-title reveal">Basis of Preparation</h2>
+        <h3 class="slide-headline reveal">The reporting basis is the missing control surface.</h3>
+        <p class="slide-body reveal">NAB explains sustainability materiality and the reporting suite. It should also explain the integrated reporting boundary, methods, assumptions, frameworks, controls and assurance in one place.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Reporting boundary</div><div class='bullet-card reveal'>Integrated materiality method</div><div class='bullet-card reveal'>Frameworks and methods</div><div class='bullet-card reveal'>Controls and assurance</div><div class='bullet-card reveal'>Limitations and omissions</div></div><div class='takeaway reveal'>This page is small, but it changes the credibility of the whole report.</div><aside class='notes'>This page is small, but it changes the credibility of the whole report.</aside></section><section class='slide type-benchmarks' data-index='17' data-title='Good-Practice Benchmarks'>
+        <div class="slide-meta reveal"><span>Examples tied to recommendations</span><span>17</span></div>
+        <h2 class="slide-title reveal">Good-Practice Benchmarks</h2>
+        <h3 class="slide-headline reveal">Use benchmarks as design patterns, not decoration.</h3>
+        <p class="slide-body reveal">Nedbank is the strongest comparator for IR basis, assurance and board responsibility. DBS is the strongest banking-sector comparator for a concise business-model page.</p>
+    <div class='benchmark-row'><div class='benchmark-card reveal'><strong>Nedbank 2025</strong><p>Designated integrated report, Framework accordance, materiality determination, assurance labels and board responsibility statement.</p></div><div class='benchmark-card reveal'><strong>DBS 2025</strong><p>Concise banking business model connecting resources, strategy, governance, stakeholders and performance measurement.</p></div></div><div class='takeaway reveal'>Every external example must repair a specific NAB gap.</div><aside class='notes'>Every external example must repair a specific NAB gap.</aside></section><section class='slide type-system' data-index='18' data-title='Target State'>
+        <div class="slide-meta reveal"><span>NAB Value Creation OS</span><span>18</span></div>
+        <h2 class="slide-title reveal">Target State</h2>
+        <h3 class="slide-headline reveal">A board-owned value creation system.</h3>
+        <p class="slide-body reveal">The target state turns scattered disclosures into one causal model that investors can read in minutes and governance owners can maintain across reporting cycles.</p>
+    <div class='system-flow reveal'><div>Context</div><div>Capitals</div><div>Activities</div><div>Outputs</div><div>Outcomes</div><div>Assurance</div><div>Feedback</div></div><div class='takeaway reveal'>This is the report architecture NAB needs before adding more content.</div><aside class='notes'>This is the report architecture NAB needs before adding more content.</aside></section><section class='slide type-roadmap' data-index='19' data-title='90-Day Roadmap'>
+        <div class="slide-meta reveal"><span>Implementation</span><span>19</span></div>
+        <h2 class="slide-title reveal">90-Day Roadmap</h2>
+        <h3 class="slide-headline reveal">Three sprints to an investor-grade IR entry point.</h3>
+        <p class="slide-body reveal">The recommendations are deliberately staged so NAB can improve compliance without rebuilding every reporting document at once.</p>
+    <div class='roadmap reveal'><div><b>Days 1-30</b><span>Map 19 requirements; draft board statement; define boundary</span></div><div><b>Days 31-60</b><span>Build value model, stakeholder map, materiality radar and risk register</span></div><div><b>Days 61-90</b><span>Redesign entry point; add assurance labels; test with investors</span></div></div><div class='takeaway reveal'>Approve a 90-day architecture sprint, then move from &#x27;draws on aspects&#x27; to a credible IR position.</div><aside class='notes'>Approve a 90-day architecture sprint, then move from &#x27;draws on aspects&#x27; to a credible IR position.</aside></section><section class='slide type-standard' data-index='20' data-title='Decision Ask'>
+        <div class="slide-meta reveal"><span>Close</span><span>20</span></div>
+        <h2 class="slide-title reveal">Decision Ask</h2>
+        <h3 class="slide-headline reveal">NAB does not need a longer report. It needs a stronger spine.</h3>
+        <p class="slide-body reveal">Approve a board-owned integrated reporting architecture that designates the report, maps all 19 requirements, connects the value model and makes assurance visible.</p>
+    <div class='bullet-grid'><div class='bullet-card reveal'>Declare the IR ambition</div><div class='bullet-card reveal'>Build the value creation spine</div><div class='bullet-card reveal'>Map assurance to material value drivers</div></div><div class='takeaway reveal'>From mosaic to model.</div><aside class='notes'>From mosaic to model.</aside></section><section class='slide type-references' data-index='21' data-title='References'>
+        <div class="slide-meta reveal"><span>Excluded from 20-page count</span><span>21</span></div>
+        <h2 class="slide-title reveal">References</h2>
+        <h3 class="slide-headline reveal">Source base</h3>
+        <p class="slide-body reveal">Harvard-style reference list and source links used for the case study deck.</p>
+    <div class='refs'><p>International Integrated Reporting Council (IIRC) 2021, International &lt;IR&gt; Framework, IFRS Foundation, viewed 6 July 2026, &lt;https://www.ifrs.org/issued-standards/integrated-reporting/framework/&gt;.</p><p>IFRS Foundation 2026, Integrated Reporting, viewed 6 July 2026, &lt;https://www.ifrs.org/issued-standards/integrated-reporting/&gt;.</p><p>National Australia Bank Limited 2025, Annual Report 2025, NAB, Melbourne.</p><p>DBS Group Holdings Ltd 2026, Annual Report 2025: A beacon of stability, DBS, Singapore, viewed 6 July 2026, &lt;https://www.dbs.com/annualreports/2025/i/pdf/dbs-ar-2025.pdf&gt;.</p><p>Nedbank Group Limited 2026, Integrated Report 2025, Nedbank, Johannesburg, viewed 6 July 2026, &lt;https://group.nedbank.co.za/content/dam/group/pdf/21_integrated-reports/2025/integrated-report/2025-integrated-report-nedbank.pdf&gt;.</p></div><aside class='notes'>Primary evidence: case brief, rubric, NAB Annual Report 2025, IFRS IR Framework, DBS 2025, Nedbank 2025.</aside></section>
+    </main>
+</div>
+<div class="deck-controls"><button id="prevBtn" title="Previous slide">‹</button><span id="counter">1 / 22</span><button id="nextBtn" title="Next slide">›</button><span>B static · S notes · E edit</span></div>
+<div class="edit-hotzone"></div><button class="edit-toggle" id="editToggle" title="Edit mode (E)">Edit</button>
+<script>
+/* === NEBULA, SMOKE AND SOFT STAR FIELD === */
+const EXPORT_MODE = new URLSearchParams(location.search).has('export');
+if (EXPORT_MODE) document.body.classList.add('export-mode');
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+const particles = [];
+const smokeWisps = [];
+const count = 500;
+window.__particleCount = count;
+for (let i = 0; i < count; i++) {
+  particles.push({
+    x: Math.random()*1920,
+    y: Math.random()*1080,
+    z: Math.random(),
+    vx: (Math.random()-.5)*.075,
+    vy: (Math.random()-.5)*.055,
+    size: .7+Math.random()*1.55,
+    hue: Math.random(),
+    tw: Math.random()*Math.PI*2
+  });
+}
+for (let i = 0; i < 9; i++) {
+  smokeWisps.push({
+    x: 170 + Math.random()*1580,
+    y: 130 + Math.random()*820,
+    rx: 260 + Math.random()*520,
+    ry: 120 + Math.random()*260,
+    rot: Math.random()*Math.PI,
+    hue: Math.random(),
+    phase: Math.random()*Math.PI*2
+  });
+}
+let particleSlide = 0;
+function wispColor(w) {
+  if (w.hue > .72) return [111,250,255];
+  if (w.hue > .48) return [232,196,122];
+  return [227,24,36];
+}
+function drawEllipticalWisp(x, y, rx, ry, rot, rgb, alpha) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.scale(rx, ry);
+  const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+  grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`);
+  grad.addColorStop(.38, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha*.34})`);
+  grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0)`);
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(0, 0, 1, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+function drawParticles(t) {
+  ctx.clearRect(0,0,1920,1080);
+  const g = ctx.createLinearGradient(0,0,1920,1080);
+  g.addColorStop(0,'#040407'); g.addColorStop(.46,'#08080d'); g.addColorStop(1,'#120709');
+  ctx.fillStyle = g; ctx.fillRect(0,0,1920,1080);
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  const time = EXPORT_MODE ? 3600 + particleSlide * 120 : t;
+  for (const w of smokeWisps) {
+    const rgb = wispColor(w);
+    const drift = Math.sin(time/9000 + w.phase + particleSlide*.22);
+    drawEllipticalWisp(
+      w.x + drift*42,
+      w.y + Math.cos(time/11000 + w.phase)*28,
+      w.rx,
+      w.ry,
+      w.rot + drift*.04,
+      rgb,
+      .032 + w.hue*.018
+    );
+  }
+  ctx.globalCompositeOperation = 'lighter';
+  const cx = 960 + Math.sin(time/7800 + particleSlide)*52;
+  const cy = 510 + Math.cos(time/9200 + particleSlide*.7)*38;
+  for (const p of particles) {
+    const mode = particleSlide % 5;
+    if (!EXPORT_MODE) {
+      if (mode === 0) {
+        const a = Math.atan2(p.y-cy,p.x-cx)+.0028*(p.z+.2);
+        p.x += Math.cos(a)*(.045+p.z*.10) - (p.x-cx)*.00008;
+        p.y += Math.sin(a)*(.045+p.z*.10) - (p.y-cy)*.00008;
+      } else if (mode === 1) {
+        p.x += p.vx*.85; p.y += Math.sin((p.x+time*.006)*.006)*.055 + p.vy;
+      } else if (mode === 2) {
+        p.x += (cx-p.x)*.00038 + p.vx; p.y += (cy-p.y)*.00038 + p.vy;
+      } else {
+        p.x += p.vx; p.y += p.vy + Math.sin(time*.00045+p.x*.006)*.045;
+      }
+      if (p.x < -20) p.x = 1940; if (p.x > 1940) p.x = -20; if (p.y < -20) p.y = 1100; if (p.y > 1100) p.y = -20;
+    }
+    const color = p.hue > .84 ? '232,196,122' : (p.hue > .58 ? '111,250,255' : '227,24,36');
+    const twinkle = .5 + .5*Math.sin(time*.0008 + p.tw);
+    const alpha = .045 + p.z*.12 + twinkle*.035;
+    ctx.fillStyle = `rgba(${color},${alpha})`;
+    const s = p.size*(.55+p.z*.9);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, s, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+  if (!EXPORT_MODE && !document.body.classList.contains('low-power')) requestAnimationFrame(drawParticles);
+}
+drawParticles(0);
+/* === SUBTLE 3D PARALLAX === */
+document.addEventListener('mousemove', (e) => {
+  if (EXPORT_MODE || document.body.classList.contains('low-power')) return;
+  const mx = (e.clientX / window.innerWidth - .5);
+  const my = (e.clientY / window.innerHeight - .5);
+  const cover = document.querySelector('.cover-object');
+  if (cover) cover.style.transform = `perspective(1100px) rotateY(${mx*7}deg) rotateX(${-my*5}deg) translateZ(0)`;
+});
+/* === SLIDE CONTROLLER === */
+class SlidePresentation {
+  constructor() {
+    this.slides = [...document.querySelectorAll('.slide')];
+    this.stage = document.getElementById('deckStage');
+    const requested = parseInt(new URLSearchParams(location.search).get('slide') || '0', 10);
+    this.currentSlide = Number.isFinite(requested) ? requested : 0;
+    this.counter = document.getElementById('counter');
+    this.setupStageScale();
+    this.setupNav();
+    this.showSlide(this.currentSlide);
+  }
+  setupStageScale() {
+    const scale = () => {
+      const factor = Math.min(window.innerWidth/1920, window.innerHeight/1080);
+      const x = (window.innerWidth - 1920*factor)/2;
+      const y = (window.innerHeight - 1080*factor)/2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+    };
+    scale(); addEventListener('resize', scale);
+  }
+  setupNav() {
+    document.getElementById('prevBtn').onclick = () => this.showSlide(this.currentSlide-1);
+    document.getElementById('nextBtn').onclick = () => this.showSlide(this.currentSlide+1);
+    document.addEventListener('keydown', e => {
+      if (e.target && e.target.isContentEditable) return;
+      if (['ArrowRight','PageDown',' '].includes(e.key)) this.showSlide(this.currentSlide+1);
+      if (['ArrowLeft','PageUp'].includes(e.key)) this.showSlide(this.currentSlide-1);
+      if (e.key === 'b' || e.key === 'B') document.body.classList.toggle('low-power');
+      if (e.key === 's' || e.key === 'S') document.body.classList.toggle('show-notes');
+      if (e.key === 'e' || e.key === 'E') editor.toggle();
+    });
+    let last = 0;
+    document.addEventListener('wheel', e => {
+      const now = Date.now();
+      if (now - last < 620) return;
+      last = now;
+      this.showSlide(this.currentSlide + (e.deltaY > 0 ? 1 : -1));
+    }, {passive:true});
+    let sx = 0;
+    document.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive:true});
+    document.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 60) this.showSlide(this.currentSlide + (dx < 0 ? 1 : -1));
+    }, {passive:true});
+  }
+  showSlide(i) {
+    this.currentSlide = Math.max(0, Math.min(i, this.slides.length-1));
+    particleSlide = this.currentSlide;
+    this.slides.forEach((s, idx) => {
+      s.classList.toggle('active', idx === this.currentSlide);
+      s.classList.toggle('visible', idx === this.currentSlide);
+    });
+    this.counter.textContent = `${this.currentSlide+1} / ${this.slides.length}`;
+    history.replaceState(null, '', `?slide=${this.currentSlide}${EXPORT_MODE ? '&export=1' : ''}`);
+  }
+}
+/* === INLINE EDITING === */
+const editor = {
+  active: false,
+  toggle() {
+    this.active = !this.active;
+    document.body.classList.toggle('editing', this.active);
+    document.getElementById('editToggle').classList.toggle('active', this.active);
+    document.querySelectorAll('.slide h1,.slide h2,.slide h3,.slide p,.bullet-card,.metric-card span,.benchmark-card strong,.benchmark-card p,.takeaway').forEach(el => el.contentEditable = this.active);
+  }
+};
+const hotzone = document.querySelector('.edit-hotzone');
+const editToggle = document.getElementById('editToggle');
+let hideTimer = null;
+hotzone.addEventListener('mouseenter', () => { clearTimeout(hideTimer); editToggle.classList.add('show'); });
+hotzone.addEventListener('mouseleave', () => { hideTimer = setTimeout(() => { if (!editor.active) editToggle.classList.remove('show'); }, 400); });
+editToggle.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+editToggle.addEventListener('mouseleave', () => { hideTimer = setTimeout(() => { if (!editor.active) editToggle.classList.remove('show'); }, 400); });
+editToggle.addEventListener('click', () => editor.toggle());
+hotzone.addEventListener('click', () => editor.toggle());
+window.deck = new SlidePresentation();
+</script>
+</body>
+</html>
