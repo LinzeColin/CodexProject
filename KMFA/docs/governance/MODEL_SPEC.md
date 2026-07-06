@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-OWNER-AUTHORIZATION-INTAKE-001
+- version: `0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for intaking owner direct authorization for the 72 outside-scope source-map extension records into ignored private runtime while keeping all downstream value-consistency gates closed.
+- expression: `owner_authorization_intake_valid = source_private_template_item_count == 72 AND source_private_pending_queue_count == 72 AND owner_direct_authorization_present == true AND owner_authorized_extension_record_count == 72 AND valid_authorized_extension_record_count == 72 AND invalid_authorized_extension_record_count == 0 AND missing_authorized_extension_record_count == 0 AND source_map_extension_ready_count == 72 AND source_map_extension_blocker_count == 0 AND source_map_extension_application_ready == true AND source_map_extension_written_by_this_phase == false AND raw_to_processed_value_comparison_performed == false AND processed_consistency_verified == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: user direct authorization statement, ignored private authorized extension template, ignored private pending queue, prior public blocker threshold summary and raw immutable boundary.
+- missing_policy: missing owner authorization manifest, Go/No-Go report, summary, matrix, private active authorization record, private authorization queue, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE/machine/outside_scope_authorized_source_map_extension_owner_authorization_intake_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, source-map extension application, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business content, full raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-POST-DELEGATION-BLOCKER-THRESHOLD-RECHECK-001
 - version: `0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck`
 - model_id: `MOD-KMFA-GOV-001`

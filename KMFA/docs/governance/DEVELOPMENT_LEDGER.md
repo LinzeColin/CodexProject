@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Outside-Scope Source-Map Owner Authorization Intake
+- Product version: `0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake`.
+- Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE` only; record owner direct authorization for 72 outside-scope source-map extension records in ignored private runtime without applying source-map records or running raw-to-processed comparison.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_owner_authorization_intake.py`; `KMFA/tests/test_v014_outside_scope_authorized_source_map_extension_owner_authorization_intake.py`.
+- gate_state: source_template_items=72, owner_direct_authorization_present=true, valid_authorized_extension_records=72, source_map_application_ready=true, source_map_written=false, raw_to_processed_comparison=false, processed_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake
+version_matrix_product_version_reference: 0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake
+
 # KMFA v0.1.4 Outside-Scope Post-Delegation Blocker Threshold Recheck
 - Product version: `0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck`.
 - Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK` only; record the third post-delegation blocker observation and prove the strict blocked threshold is met without unlocking source-map extension application.

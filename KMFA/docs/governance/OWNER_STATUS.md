@@ -1,12 +1,14 @@
 # KMFA Owner Status
 
-更新时间: 2026-07-06
+更新时间: 2026-07-07
 
 ## 一句话状态
 
-KMFA 当前版本 `0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck` 已完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK` 本地单 phase：Codex 只读上一 phase public-safe summary 和 ignored private diagnostic，确认 delegated keep-pending blocker 第三次连续出现；post-delegation blocker observation count 从 2 增至 3，blocked audit threshold=true，goal status recommendation=blocked。72 条 delegated decision 仍全部 keep-pending、delegated authorization decisions=0、application allowed decisions=0，未应用 source-map，未执行 full raw-to-processed comparison。72 个 outside-scope target slots 仍没有有效授权 extension record；source-map application ready=false，系统仍是 `NO_GO`。next_required_input=`strong_authorized_source_map_extension_evidence_before_source_map_application_or_keep_no_go`。
+KMFA 当前版本 `0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake` 已完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE` 本地单 phase：基于用户“允许授权”的直接授权，72 条 outside-scope source-map extension 已写入 ignored private active authorization record。公开证据只显示 aggregate counts：owner-authorized extension records=72、valid authorized extension records=72、missing authorized extension records=0、source-map application ready=true。系统仍是 `NO_GO`，因为本 phase 未应用 source-map、未执行 materialization、未执行 full raw-to-processed comparison、未验证 processed consistency。next_required_input=`run_outside_scope_source_map_extension_application_readiness_before_any_full_comparison`。
 
 ## 你现在能信任什么
+
+- v0.1.4 outside-scope source-map owner authorization intake 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：source private template items=72、owner direct authorization present=true、owner-authorized extension records=72、valid authorized extension records=72、missing authorized extension records=0、source-map ready count=72、source-map blocker count=0、source-map application ready=true、full raw-to-processed comparison complete=false、processed consistency verified=false。该 phase 只读取既有 ignored private template/pending queue 并写入 ignored private active authorization record/queue/diagnostic，不读取或修改 raw inbox，不修改原 private template，不应用 source-map extension，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 full reconciliation、processed consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
 
 - v0.1.4 outside-scope post-delegation blocker threshold recheck 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：post-delegation blocker observation count=3、blocked audit threshold met=true、goal status recommendation=blocked、delegated decision records=72、delegated keep-pending decisions=72、delegated authorization decisions=0、application allowed decisions=0、valid authorized extension records=0、source-map ready count=0、source-map blocker count=72、source-map application ready=false、full raw-to-processed comparison complete=false。该 phase 只读取上一 phase public-safe summary 和 ignored private diagnostic，不读取或修改 raw inbox，不改写 prior private diagnostic，不应用 source-map extension，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 full reconciliation、processed consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
 
