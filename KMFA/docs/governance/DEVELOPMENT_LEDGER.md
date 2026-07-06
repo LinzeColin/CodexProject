@@ -1425,3 +1425,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_application_readiness`
 - boundary: this phase checks whether the ignored private 36-item corrected-source or owner-exclusion template has enough owner input to be applied; it does not read raw inbox, apply source-map records, write partial authorization, materialize values, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `owner_or_authorized_delegate_fills_36_corrected_source_or_exclusion_resolution_items`
+
+## 2026-07-06 - V014 Processed Value Source-map Completion Corrected Source Or Owner Exclusion Resolution Input Retry
+
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-RETRY-20260706`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY`
+- product_version: `0.1.4-corrected-source-or-owner-exclusion-resolution-input-retry`
+- status: `completed_validated_local_only_corrected_source_or_owner_exclusion_resolution_input_retry_ready_for_readiness_check`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry.py --require-private-retry`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry`
+- boundary: this phase writes a private delegated conservative owner-exclusion retry input package for the 36 no-match blockers; it does not read raw inbox, apply source-map records, write partial authorization, materialize values, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `run_application_readiness_against_private_retry_template`

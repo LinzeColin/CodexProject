@@ -337,3 +337,14 @@
 - boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
 - gate: resolution application, source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - next required input: `owner_or_authorized_delegate_fills_36_corrected_source_or_exclusion_resolution_items`
+
+## 2026-07-06 Latest - V014 Corrected Source Or Owner Exclusion Resolution Input Retry
+
+- phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY`
+- status: `completed_validated_local_only_corrected_source_or_owner_exclusion_resolution_input_retry_ready_for_readiness_check`
+- evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input_retry.py --require-private-retry`
+- locked counts: `private_retry_item_count=36`, `owner_exclusion_retry_item_count=36`, `corrected_source_retry_item_count=0`, `retry_input_valid_count=36`, `retry_input_missing_count=0`
+- boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
+- gate: retry input is ready for a later readiness check, but resolution application, source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- next required input: `run_application_readiness_against_private_retry_template`
