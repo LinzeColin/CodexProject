@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Outside-Scope Source-Map Extension Application
+- Product version: `0.1.4-outside-scope-authorized-source-map-extension-application`.
+- Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION` only; apply 72 owner-authorized outside-scope source-map extension records in ignored private runtime and prepare a 149-record private materialization input without running materialization or raw-to-processed comparison.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_application.py`; `KMFA/tests/test_v014_outside_scope_authorized_source_map_extension_application.py`.
+- gate_state: ready_queue_records=72, outside_scope_applied_records=72, application_blockers=0, duplicate_target_slots=0, linked_source_map_records=77, private_full_materialization_source_map_records=149, full_materialization_ready=true, full_materialization_performed=false, raw_to_processed_comparison=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-authorized-source-map-extension-application
+version_matrix_product_version_reference: 0.1.4-outside-scope-authorized-source-map-extension-application
+
 # KMFA v0.1.4 Outside-Scope Source-Map Extension Application Readiness
 - Product version: `0.1.4-outside-scope-authorized-source-map-extension-application-readiness`.
 - Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION_READINESS` only; verify 72 owner-authorized outside-scope source-map extension records are application-ready without applying source-map records or running raw-to-processed comparison.

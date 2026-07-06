@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-outside-scope-authorized-source-map-extension-application-readiness`
+- version: `0.1.4-outside-scope-authorized-source-map-extension-application`
 - current_stage: `value-consistency`
-- current_phase: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION_READINESS`
-- status: `completed_validated_local_only_outside_scope_authorized_extension_application_readiness_ready_no_go`
-- current_blocker: `outside_scope_source_map_extension_ready_but_not_applied_and_full_comparison_not_run`
-- next_required_input: `run_outside_scope_source_map_extension_application_phase_before_materialization_or_full_comparison`
+- current_phase: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION`
+- status: `completed_validated_local_only_outside_scope_authorized_extension_application_applied_no_go`
+- current_blocker: `outside_scope_source_map_extension_applied_but_full_materialization_and_full_comparison_not_run`
+- next_required_input: `run_full_processed_value_materialization_replay_before_full_raw_to_processed_comparison`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 outside-scope source-map extension application completed local-only: source_ready_queue_record_count=72，outside_scope_source_map_extension_applied_record_count=72，outside_scope_source_map_extension_blocker_count=0，outside_scope_source_map_extension_duplicate_target_slot_count=0，existing_linked_source_map_record_count=77，private_full_materialization_source_map_record_count=149，full_processed_value_materialization_ready=true，full_processed_value_materialization_performed=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads prior ignored private ready queue and linked private source-map, writes ignored private application diagnostic/result/applied records/extension source-map/full materialization source-map only；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；source private queue mutation=false；linked private source-map mutation=false；materialization=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_full_processed_value_materialization_replay_before_full_raw_to_processed_comparison`。
 
 - v0.1.4 outside-scope source-map extension application readiness completed local-only: private_active_authorization_record_count=72，private_authorization_queue_count=72，source_valid_authorized_extension_record_count=72，application_ready_record_count=72，application_blocker_count=0，duplicate_target_slot_count=0，source_map_extension_application_ready=true，source_map_extension_application_performed_by_this_phase=false，source_map_extension_written_by_this_phase=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，processed_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads prior ignored private owner authorization artifacts and writes ignored private readiness diagnostic/ready queue/blocker queue only；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；prior private authorization mutation=false；source-map application=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_outside_scope_source_map_extension_application_phase_before_materialization_or_full_comparison`。
 

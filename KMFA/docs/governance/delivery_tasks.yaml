@@ -10854,3 +10854,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-authorized-source-map-extension-application-readiness"
     completed_version: "0.1.4-outside-scope-authorized-source-map-extension-application-readiness"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-APPLICATION-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-APPLICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_authorized_source_map_extension_application.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_application.py --require-private-application"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_authorized_source_map_extension_application"
+    test_results:
+      - "PASS: outside-scope source-map extension application validator and focused unit test passed; 72 owner-authorized extension records are applied privately and a 149-record full materialization input is prepared while materialization and full comparison stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION/human/outside_scope_authorized_source_map_extension_application_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION/machine/outside_scope_authorized_source_map_extension_application_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION/machine/outside_scope_authorized_source_map_extension_application_matrix_public_safe.json"
+    risk: "The source-map application result can be mistaken for materialized or reconciled business value consistency; this phase only writes private source-map application outputs and does not materialize values or compare values."
+    rollback: "Remove current phase artifacts, metadata copies, private application outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-authorized-source-map-extension-application"
+    completed_version: "0.1.4-outside-scope-authorized-source-map-extension-application"

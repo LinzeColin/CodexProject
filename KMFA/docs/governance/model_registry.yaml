@@ -1818,6 +1818,21 @@ kmfa_v014_outside_scope_authorized_source_map_extension_blocker_audit:
   validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_blocker_audit.py
   scope: Outside-scope authorized source-map extension blocker audit only; records third consecutive missing owner/authorized extension input for 72 pending outside-scope target slots and recommends blocked goal status; public evidence aggregate-only; no raw inbox access, private template mutation, source-map extension application, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
 
+kmfa_v014_outside_scope_authorized_source_map_extension_application:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-authorized-source-map-extension-application"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-APPLICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1354
+    - PARAM-KMFA-1355
+    - PARAM-KMFA-1356
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION
+  validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_application.py
+  scope: Outside-scope source-map extension application only; applies 72 owner-authorized extension records in ignored private runtime and prepares a 149-record full private materialization source-map input; public evidence aggregate-only; no raw inbox access, source private ready queue mutation, linked private source-map mutation, materialization, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_authorized_source_map_extension_application_readiness:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-authorized-source-map-extension-application-readiness"
