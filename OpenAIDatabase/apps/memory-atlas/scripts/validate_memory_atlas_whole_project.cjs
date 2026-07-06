@@ -208,6 +208,9 @@ function runReleaseAudits() {
 
 function validateRoadmapFinalAcceptanceCoverage() {
   const app = readAppFile("src/App.tsx");
+  const i18nPath = path.join(appRoot, "src/i18n/zh-CN.ts");
+  const i18n = fs.existsSync(i18nPath) ? fs.readFileSync(i18nPath, "utf8") : "";
+  const uiSource = `${app}\n${i18n}`;
   const galaxy = readAppFile("src/components/GalaxyScene.tsx");
   const obsidian = readAppFile("src/components/ObsidianGraphScene.tsx");
   const visualFlags = readAppFile("src/config/visualFlags.ts");
@@ -215,13 +218,15 @@ function validateRoadmapFinalAcceptanceCoverage() {
   const visualAudit = readRepoFile("scripts/audit_memory_atlas_visual_acceptance.py");
   const releaseAudit = readRepoFile("scripts/audit_memory_atlas_release.py");
   const acceptanceAudit = readRepoFile("scripts/audit_memory_atlas_acceptance.py");
+  const homeNavigationReady =
+    app.includes('{ key: "home", label: "记忆总览", icon: Home }') ||
+    (app.includes('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }') &&
+      i18n.includes('home: "记忆总览"'));
 
   assertCondition(
-    hasAll(app, [
-      '{ key: "home", label: "记忆总览", icon: Home }',
+    homeNavigationReady && hasAll(app, [
       "function HomeOverviewView",
       "Memory Weather",
-      "Next Best Actions",
       "层级资产",
       "主题分类",
       "priority",
@@ -229,6 +234,8 @@ function validateRoadmapFinalAcceptanceCoverage() {
       "总结与迭代",
       "data-proposal-only=\"true\"",
       "proposal_only_pending_agent_apply",
+    ]) && hasAll(uiSource, [
+      "Next Best Actions",
     ]) && hasAll(galaxy, [
       "Production Memory Starfield Flow Field",
       "Flow Field",

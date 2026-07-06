@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 14
+task_count: 15
 
 ## Phase A - Discovery and Baseline
 

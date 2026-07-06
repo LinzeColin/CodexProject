@@ -6,17 +6,18 @@
 - product version status: provisional
 - current phase: D - Memory Atlas local release acceptance
 - current gate: MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED
-- confirmed iterations: 7
+- confirmed iterations: 10
 - reconstructed development events: 16
-- current task: TASK-OAI-D-002 blocked by Cloudflare authentication/env; latest completed task TASK-OAI-D-001 local release acceptance
+- current task: TASK-OAI-D-002 blocked by Cloudflare authentication/env; latest completed task TASK-OAI-D-004 Memory Atlas Phase 1 live URL readiness gate repair
 - blockers: live Wrangler authentication, Cloudflare account/token/hostname/allowed-email env, remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records eight confirmed iterations: the baseline run, three TASK-OAI-C-002
+records ten confirmed iterations: the baseline run, three TASK-OAI-C-002
 follow-up governance and personalization hardening runs, the semantic
 extractor rollout run, the S3PDT01 synthetic privacy-boundary run, the
 TASK-OAI-D-001 Memory Atlas local release/preflight run, and the TASK-OAI-D-003
-OpenAIDatabase CI evidence-schema repair run.
+OpenAIDatabase CI evidence-schema repair run, the macdata proM2 setup run, and
+the TASK-OAI-D-004 Memory Atlas Phase 1 live URL readiness gate repair run.
 
 ## Phase Matrix
 
@@ -25,7 +26,7 @@ OpenAIDatabase CI evidence-schema repair run.
 | A | Discovery and baseline | completed | `MODEL_SPEC.md`, registries, scoped git log |
 | B | Model and data specification | in_progress | `GOV-SEMANTIC-OAIDB-001` partial machine semantic coverage; `TASK-OAI-B-001` calibration evidence gap |
 | C | Implementation | completed | Existing app implementation plus TASK-OAI-C-002 personalization architecture, route, export, evaluation harness, and non-empty four-category run-log evidence |
-| D | Verification and hardening | in_progress | TASK-OAI-D-001 local release/visual/acceptance/Cloudflare preflight passed; TASK-OAI-D-002 live Cloudflare deploy remains auth-blocked |
+| D | Verification and hardening | in_progress | TASK-OAI-D-001 local release/visual/acceptance/Cloudflare preflight passed; TASK-OAI-D-004 local readiness gate repair passed; TASK-OAI-D-002 live Cloudflare deploy remains auth-blocked |
 | E | Delivery and operation | completed for governance baseline | OpenAIDatabase project validator passed and `governance/projects.yaml` ci_mode is required |
 
 ## Iteration Record
@@ -247,6 +248,29 @@ OpenAIDatabase CI evidence-schema repair run.
 - remaining risks: Docker/Homebrew/system/project cache cleanup must stay within the configured whitelist and command boundaries.
 - rollback: revert this setup commit; delete the remote `macdata-proM2` branch only after confirming its history is no longer needed.
 - next step: commit and push setup, then run the full controlled cycle to create and verify the archive branch.
+
+### ITER-20260707-OAIDB-D004
+
+- date: 2026-07-07
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- result commit: PENDING
+- task IDs: TASK-OAI-D-004, ACC-OAI-D-004
+- objective: repair Memory Atlas Phase 1 local live URL readiness gates before any protected Cloudflare Pages + Access deployment.
+- assumptions: the deploy boundary remains explicit; local build, release-safety, local-app, packaging, whole-project, and offline Cloudflare preflight can pass without executing live upload or mutating Access policy.
+- files read: Memory Atlas package scripts, Stage 3/Stage 6/Stage 8 validators, whole-project validator, visual acceptance audit, release-safety output, and current OpenAIDatabase governance records.
+- files changed: `OpenAIDatabase/apps/memory-atlas/package.json`, Memory Atlas validator scripts, `OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py`, removal of the tracked encrypted session-history key, and OpenAIDatabase governance records.
+- model changes: no memory extraction, retrieval, scoring, writeback, personalization, or production data model changed.
+- parameter changes: added `PARAM-095` to record the Stage 8 local app packaging gate alias and its release-validation boundary.
+- commands: `pnpm --dir OpenAIDatabase/apps/memory-atlas run lint`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run build`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-release-safety`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app-packaging`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:whole-project`; `cd OpenAIDatabase && python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist`; `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main`.
+- test results: lint PASS; build PASS; Stage 8 release safety PASS; Stage 8 local app PASS; Stage 8 local app packaging PASS; whole-project PASS; Cloudflare Pages + Access offline preflight PASS; changed-only governance CI PASS.
+- successes: canonical local readiness gates now include the Stage 8 packaging alias and validator false positives are repaired while keeping raw/private/session artifacts out of the PR.
+- failures: GitHub Actions governance initially failed because the clean PR lacked required OpenAIDatabase governance records; this iteration adds those records and reruns the gate locally.
+- decisions: keep product version 0.2.0 and delivery readiness FAILED; do not claim Cloudflare live deployment, Access verification, or production readiness from this local repair.
+- remaining risks: live Cloudflare upload, Access challenge verification, allowed-user app load, and custom-domain reachability remain unverified until the protected deployment phase.
+- rollback: revert TASK-OAI-D-004 package, validator, encrypted-key removal, and governance record changes; rerun release-safety and changed-only governance after rollback.
+- next step: wait for PR checks to pass, squash merge to main, pull main, and rerun smoke build plus offline Cloudflare preflight without live deploy.
 
 ## Reconstructed Development Events
 

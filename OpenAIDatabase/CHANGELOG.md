@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased - Memory Atlas Phase 1 Live URL Readiness Repair
+
+- Added the `validate:stage8-local-app-packaging` alias for the canonical local app packaging gate.
+- Repaired Stage 3, Stage 6, whole-project, and visual audit validators so local readiness gates do not fail on known false positives.
+- Removed a tracked encrypted session-history key from the release branch and recorded the governance boundary for the repair.
+- Re-ran local lint, build, Stage 8 release safety, local app, packaging, whole-project, offline Cloudflare Pages + Access preflight, and changed-only governance gates.
+
+No Cloudflare live deploy, Access policy mutation, memoryatlas.linzezhang.com publish, raw export ingestion, plaintext secret persistence, dist commit, or node_modules commit was added.
+
 ## Unreleased - macdata proM2 Controlled Archive
 
 - Added `OpenAIDatabase/macdata/proM2` as a controlled Codex Automation task pack for this MacBook Pro.

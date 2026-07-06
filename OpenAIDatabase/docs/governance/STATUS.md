@@ -15,11 +15,18 @@
 - Path: `OpenAIDatabase`
 - Product version: `0.2.0`
 - Phase/Gate: `D / S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
-- Latest maintenance task: `TASK-OAI-D-003 / OpenAIDatabase CI evidence-schema repair`
+- Latest maintenance task: `TASK-OAI-D-004 / Memory Atlas Phase 1 live URL readiness gate repair`
 - Latest controlled sub-workflow setup: `MACDATA-PROM2-SETUP-20260705 / proM2 MacData archive and cleanup automation`
-- Models/Formulas/Parameters total: `12 / 12 / 98`
-- Active formulas/parameters: `12 / 98`
+- Models/Formulas/Parameters total: `12 / 12 / 99`
+- Active formulas/parameters: `12 / 99`
 - Machine checked formulas/parameters: `10 / 28`
+
+## Memory Atlas Phase 1 Readiness Repair
+
+- Status: `local_go_passed_pending_pr_checks_and_merge`
+- Scope: Stage 8 packaging alias, Stage 3/Stage 6 validator drift, whole-project validator aggregation, visual acceptance audit validator, and release-safety removal of a tracked encrypted session-history key.
+- Validation: lint, build, Stage 8 release safety, Stage 8 local app, Stage 8 local app packaging, whole-project validation, offline Cloudflare Pages + Access preflight, and changed-only governance CI passed locally.
+- Deployment boundary: no Cloudflare live upload, Access policy mutation, or memoryatlas.linzezhang.com publish was executed.
 
 ## macdata proM2 Controlled Archive
 
@@ -49,7 +56,7 @@
 
 - Readiness: `FAILED`
 - Release gate: `S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
-- Next executable task: `TASK-OAI-B-001`; `TASK-OAI-D-003` is a completed CI repair and does not change delivery readiness.
+- Next executable task: `TASK-OAI-B-001`; `TASK-OAI-D-004` is a completed local readiness gate repair and does not change delivery readiness.
 - Pending/stale events: `9`
 - Tree-bound events: `0`
 - Commit-bound events: `1`

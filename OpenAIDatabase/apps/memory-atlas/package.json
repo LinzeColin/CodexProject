@@ -65,6 +65,7 @@
     "validate:stage7-privacy-accessibility": "node scripts/validate_stage7_privacy_accessibility.cjs",
     "validate:stage7": "node scripts/validate_memory_atlas_stage7.mjs",
     "validate:stage8-local-app": "node scripts/validate_stage8_local_app_packaging.cjs",
+    "validate:stage8-local-app-packaging": "node scripts/validate_stage8_local_app_packaging.cjs",
     "validate:stage8-release-safety": "node scripts/validate_stage8_release_safety.cjs",
     "validate:stage8": "node scripts/validate_memory_atlas_stage8.cjs",
     "validate:stage9-obsidian": "node scripts/validate_stage9_obsidian_iteration.cjs",
