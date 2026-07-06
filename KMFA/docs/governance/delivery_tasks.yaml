@@ -10603,3 +10603,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private linked-scope precheck outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-linked-scope-raw-to-processed-comparison-precheck"
     completed_version: "0.1.4-linked-scope-raw-to-processed-comparison-precheck"
+  - task_id: "KMFA-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-DRY-RUN-20260706"
+    phase_id: "V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-DRY-RUN"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_linked_scope_raw_to_processed_comparison_dry_run.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_linked_scope_raw_to_processed_comparison_dry_run.py --require-private-dry-run"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_linked_scope_raw_to_processed_comparison_dry_run"
+    test_results:
+      - "PASS: linked-scope comparison dry-run validator and focused unit test passed; 77 private fingerprint pairs matched while full comparison and reconciliation remain closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN/human/linked_scope_raw_to_processed_comparison_dry_run_report.md"
+      - "KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN/machine/linked_scope_raw_to_processed_comparison_dry_run_manifest.json"
+      - "KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN/machine/linked_scope_raw_to_processed_comparison_dry_run_matrix_public_safe.json"
+    risk: "Linked-scope fingerprint dry-run can be mistaken for full value reconciliation; 72 processed target slots remain outside linked replay scope, so do not treat this phase as formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, private linked-scope dry-run outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-linked-scope-raw-to-processed-comparison-dry-run"
+    completed_version: "0.1.4-linked-scope-raw-to-processed-comparison-dry-run"

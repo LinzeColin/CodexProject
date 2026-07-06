@@ -984,3 +984,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: post_resolution_reapplication_candidate_count=77 and linked_reapplication_applied_record_count=77 writes 77 private source-map records and stages 77 private materialization source-map inputs.
 - gate: `NO_GO`; materialization replay, raw-to-processed comparison, reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private linked reapplication diagnostic, result, applied records, source map and materialization input stay under git-ignored runtime.
+
+## V014 Linked-Scope Raw-To-Processed Comparison Dry Run
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-DRY-RUN-001`
+- parameter_ids: `PARAM-KMFA-1318`, `PARAM-KMFA-1319`, `PARAM-KMFA-1320`
+- phase_id: `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN`
+- version: `0.1.4-linked-scope-raw-to-processed-comparison-dry-run`
+- rule: linked_scope_dry_run_pair_count=77, exact_match_count=77, mismatch_count=0 and invalid_record_count=0 pass the linked-scope private fingerprint dry-run, but processed_target_slot_outside_linked_replay_scope_count=72 keeps full comparison incomplete.
+- gate: `NO_GO`; full raw-to-processed comparison, processed-data reconciliation, business value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private dry-run diagnostic and records stay under git-ignored runtime.

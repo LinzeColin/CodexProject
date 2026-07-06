@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-linked-scope-raw-to-processed-comparison-precheck`
+- version: `0.1.4-linked-scope-raw-to-processed-comparison-dry-run`
 - current_stage: `value-consistency`
-- current_phase: `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK`
-- status: `completed_validated_local_only_linked_scope_comparison_precheck_no_go`
-- current_blocker: `full_raw_to_processed_value_comparison_and_reconciliation_not_complete`
-- next_required_input: `run_linked_scope_raw_to_processed_comparison_dry_run_phase`
+- current_phase: `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN`
+- status: `completed_validated_local_only_linked_scope_comparison_dry_run_no_go`
+- current_blocker: `processed_target_slots_outside_linked_replay_scope_and_full_reconciliation_not_complete`
+- next_required_input: `resolve_72_processed_target_slots_outside_linked_replay_scope_before_full_raw_to_processed_comparison`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 linked-scope raw-to-processed comparison dry-run completed local-only: processed_target_slot_count=149，linked_materialized_record_count=77，candidate_catalog_record_count=366，linked_scope_private_fingerprint_precheck_pair_count=77，linked_scope_dry_run_pair_count=77，linked_scope_dry_run_exact_match_count=77，linked_scope_dry_run_mismatch_count=0，linked_scope_dry_run_invalid_record_count=0，linked_unique_source_record_ref_count=15，linked_unique_processed_value_fingerprint_count=12，processed_target_slot_outside_linked_replay_scope_count=72，linked_scope_raw_to_processed_value_comparison_dry_run_performed=true，linked_scope_raw_to_processed_value_comparison_dry_run_passed=true，linked_scope_private_fingerprint_consistency_dry_run_verified=true，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase compares only ignored private dry-run fingerprints derived from the precheck output；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`resolve_72_processed_target_slots_outside_linked_replay_scope_before_full_raw_to_processed_comparison`。
 
 - v0.1.4 linked-scope raw-to-processed comparison precheck completed local-only: processed_target_slot_count=149，linked_materialization_source_map_record_count=77，linked_materialized_record_count=77，candidate_catalog_record_count=366，linked_scope_candidate_record_match_count=77，linked_scope_private_fingerprint_precheck_pair_count=77，linked_scope_exact_fingerprint_match_count=77，linked_scope_fingerprint_mismatch_count=0，linked_scope_missing_candidate_count=0，linked_scope_invalid_materialized_record_count=0，linked_unique_source_record_ref_count=15，linked_unique_processed_value_fingerprint_count=12，processed_target_slot_outside_linked_replay_scope_count=72，linked_scope_raw_to_processed_value_comparison_precheck_performed=true，linked_scope_raw_to_processed_value_comparison_precheck_passed=true，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase compares only ignored private raw-derived candidate fingerprints with ignored private linked materialized replay fingerprints；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_linked_scope_raw_to_processed_comparison_dry_run_phase`。
 

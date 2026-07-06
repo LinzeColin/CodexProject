@@ -2076,3 +2076,11 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
 - 当前仍为 `NO_GO`：owner-exclusion application 已完成，但 source-map records applied 仍为 0；post-resolution readiness recheck、materialization replay、raw-to-processed comparison、full reconciliation、GitHub upload、app reinstall 和业务动作均未执行。
 - 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 application diagnostic、result 和 applied queue 只保留在 ignored runtime。
+
+## 0.1.4-linked-scope-raw-to-processed-comparison-dry-run - 2026-07-06
+
+- 完成 `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN` 本地单 phase。
+- 基于上一轮 linked-scope precheck 的 ignored private output，执行 77 条 linked-scope private fingerprint pair dry-run comparison；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：linked_scope_dry_run_pair_count=77、exact_match_count=77、mismatch_count=0、invalid_record_count=0、processed_target_slot_outside_linked_replay_scope_count=72、Go/No-Go=`NO_GO`。
+- 这不是 full raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步必须先解决 72 个 outside linked replay scope target slots。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 dry-run、diagnostic 和 records 只保留在 ignored runtime。
