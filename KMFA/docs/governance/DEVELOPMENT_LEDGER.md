@@ -1341,3 +1341,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_review_groups_path -q`
 - boundary: this phase prepares ignored private group routing and response drafts for option 1; it does not read raw inbox, modify owner response template, write active authorization, apply source-map records, materialize values, compare raw to processed values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `owner_or_authorized_delegate_applies_group_level_decisions_to_private_response_template`
+
+## 2026-07-06 - V014 Processed Value Source-map Completion Owner Group Decision Application
+
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-GROUP-DECISION-APPLICATION-20260706`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_GROUP_DECISION_APPLICATION`
+- product_version: `0.1.4-processed-value-source-map-completion-owner-group-decision-application`
+- status: `completed_validated_local_only_no_go_owner_group_decisions_missing`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_GROUP_DECISION_APPLICATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_group_decision_application.py --require-private-diagnostic`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_group_decision_application -q`
+- boundary: this phase checks ignored private owner review-groups response draft state and records that all 113 rows still need group-level owner decisions; it does not read raw inbox, modify owner response template, write active authorization, apply source-map records, materialize values, compare raw to processed values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `owner_or_authorized_delegate_supplies_group_level_decisions`
