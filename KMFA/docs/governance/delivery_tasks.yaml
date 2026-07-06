@@ -10938,3 +10938,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private alignment outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck"
     completed_version: "0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-PACKET-AFTER-ALIGNMENT-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-PACKET-AFTER-ALIGNMENT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_packet_after_alignment.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_packet_after_alignment.py --require-private-packet"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_packet_after_alignment"
+    test_results:
+      - "PASS: outside-scope candidate review packet validator and focused unit test passed; 72 review items are ready for owner or authorized delegate input while full comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT/human/outside_scope_candidate_review_packet_after_alignment_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT/machine/outside_scope_candidate_review_packet_after_alignment_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT/machine/outside_scope_candidate_review_packet_after_alignment_matrix_public_safe.json"
+    risk: "The private review packet can be mistaken for owner authorization or completed raw-to-processed comparison; this phase only prepares owner-review evidence and keeps all value consistency gates closed."
+    rollback: "Remove current phase artifacts, metadata copies, private review packet outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-packet-after-alignment"
+    completed_version: "0.1.4-outside-scope-candidate-review-packet-after-alignment"

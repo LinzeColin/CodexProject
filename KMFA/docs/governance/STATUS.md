@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck`
+- version: `0.1.4-outside-scope-candidate-review-packet-after-alignment`
 - current_stage: `value-consistency`
-- current_phase: `V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK`
-- status: `completed_validated_local_only_outside_scope_raw_candidate_alignment_blocked_no_go`
-- current_blocker: `outside_scope_raw_candidate_alignment_requires_owner_review_or_source_map_correction`
-- next_required_input: `owner_or_authorized_delegate_reviews_private_outside_scope_candidate_alignment_before_full_comparison`
+- current_phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT`
+- status: `completed_validated_local_only_outside_scope_candidate_review_packet_ready_no_go`
+- current_blocker: `outside_scope_candidate_review_packet_requires_owner_or_authorized_delegate_response`
+- next_required_input: `owner_or_authorized_delegate_completes_private_outside_scope_candidate_review_packet`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 outside-scope candidate review packet after alignment completed local-only: source_alignment_item_count=72，review_packet_item_count=72，review_group_count=10，ambiguous_review_item_count=24，unmatched_review_item_count=40，non_numeric_or_calculation_review_item_count=8，private_candidate_option_excerpt_count=240，candidate_record_observation_count=56748，candidate_unique_fingerprint_observation_count=19292，owner_review_required_item_count=72，owner_review_response_supplied=false，source_map_correction_ready=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads only prior ignored private alignment diagnostics and writes an ignored private owner/authorized-delegate review packet；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private review packet/items/markdown/diagnostic stay in ignored runtime；candidate selection=false；source-map correction=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_completes_private_outside_scope_candidate_review_packet`。
 
 - v0.1.4 outside-scope raw candidate alignment after full precheck completed local-only: outside_scope_blocker_count=72，raw_numeric_candidate_count=351453，raw_unique_numeric_fingerprint_count=22453，outside_scope_context_group_count=10，auto_ambiguous_candidate_item_count=24，auto_unmatched_item_count=40，non_numeric_or_calculation_context_item_count=8，owner_review_required_item_count=72，direct_source_record_ref_match_count=0，direct_processed_fingerprint_match_count=0，alignment_ready_count=0，source_map_correction_ready=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads the authorized raw inbox read-only to build private candidate alignment diagnostics；public evidence is aggregate-only；raw inbox write/delete/move/rename/copy/normalize/mutation=false；private alignment outputs stay in ignored runtime；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_reviews_private_outside_scope_candidate_alignment_before_full_comparison`。
 
