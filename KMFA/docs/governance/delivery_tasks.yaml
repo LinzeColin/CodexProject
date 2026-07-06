@@ -11022,3 +11022,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private blocker audit diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-intake-blocker-audit"
     completed_version: "0.1.4-outside-scope-candidate-review-intake-blocker-audit"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-THRESHOLD-RECHECK-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-THRESHOLD-RECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_intake_blocker_threshold_recheck.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_intake_blocker_threshold_recheck.py --require-private-diagnostic"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_intake_blocker_threshold_recheck"
+    test_results:
+      - "PASS: outside-scope candidate review intake blocker threshold recheck validator and focused unit test passed; 72 delegated responses remain keep-pending, observation count is 3, the strict blocked threshold is met, and source-map correction, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK/human/outside_scope_candidate_review_intake_blocker_threshold_recheck_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK/machine/outside_scope_candidate_review_intake_blocker_threshold_recheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK/machine/outside_scope_candidate_review_intake_blocker_threshold_recheck_matrix_public_safe.json"
+    risk: "The blocked threshold can be mistaken for permission to auto-correct source maps; this phase records blocked state only and does not select private candidates, correct source maps or unlock value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private threshold recheck diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck"
+    completed_version: "0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck"

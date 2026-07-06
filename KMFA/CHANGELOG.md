@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Intake Blocker Threshold Recheck
+
+## 0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe blocker audit summary/manifest 和 ignored private blocker audit diagnostic，只做第三次 blocker observation；72 条 delegated responses 仍全部 `keep_pending`。
+- 当前 aggregate 结果：delegated decisions=72、delegated keep-pending responses=72、selected private candidates=0、corrected source-map references=0、authoritative non-numeric/calculation mappings=0、source-map actionable responses=0、review intake blocker observation=3、blocked threshold met=true、goal status recommendation=`blocked`、source-map correction ready=false、Go/No-Go=`NO_GO`。
+- 本 phase 不读取 raw inbox、不选择候选、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private threshold recheck diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细或私有 fingerprint/hash。
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Intake Blocker Audit
 
 ## 0.1.4-outside-scope-candidate-review-intake-blocker-audit - 2026-07-07

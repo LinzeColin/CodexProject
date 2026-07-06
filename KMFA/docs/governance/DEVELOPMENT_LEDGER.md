@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Intake Blocker Threshold Recheck
+
+- Product version: `0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK` only; record the third keep-pending blocker observation, prove the strict blocked threshold is met, and keep source-map correction and raw comparison closed.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_intake_blocker_threshold_recheck.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_intake_blocker_threshold_recheck.py`.
+- gate_state: delegated_decisions=72, delegated_keep_pending=72, selected_private_candidates=0, corrected_source_map_references=0, authoritative_non_numeric_or_calculation_mappings=0, source_map_actionable_responses=0, prior_review_intake_blocker_observation_count=2, review_intake_blocker_observation_count=3, review_intake_blocked_audit_threshold_met=true, goal_status_recommendation=blocked, source_map_correction_ready=false, full_raw_to_processed_comparison_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Intake Blocker Audit
 
 - Product version: `0.1.4-outside-scope-candidate-review-intake-blocker-audit`.
