@@ -10540,3 +10540,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private post-resolution outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-post-resolution-readiness-recheck"
     completed_version: "0.1.4-post-resolution-readiness-recheck"
+
+  - task_id: "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-LINKED-REAPPLICATION-20260706"
+    phase_id: "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-LINKED-REAPPLICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_processed_value_source_map_completion_linked_reapplication.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_linked_reapplication.py --require-private-reapplication"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_linked_reapplication"
+    test_results:
+      - "PASS: linked source-map reapplication validator and focused unit test passed; 77 records applied privately while materialization and raw comparison remain closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION/human/processed_value_source_map_completion_linked_reapplication_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION/machine/processed_value_source_map_completion_linked_reapplication_manifest.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION/machine/processed_value_source_map_completion_linked_reapplication_matrix_public_safe.json"
+    risk: "Linked source-map reapplication can be mistaken for materialized value consistency; do not treat this phase as formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, private linked reapplication outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-linked-source-map-reapplication"
+    completed_version: "0.1.4-linked-source-map-reapplication"

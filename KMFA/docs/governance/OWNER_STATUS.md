@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 当前版本 `0.1.4-post-resolution-readiness-recheck` 已完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK` 本地 gate：36 条 owner-exclusion resolution 已应用，原 36 条 unlinked blockers 已关闭，剩余 linked blockers 形成 15 个 linked candidate groups / 77 条 source-map reapplication candidates；但本 phase 没有应用 source-map records、没有读取原始数据、没有做 raw-to-processed comparison 或 reconciliation，所以仍是 `NO_GO`。下一步只能单独运行 linked source-map completion reapplication phase；next_required_input=`run_linked_source_map_completion_reapplication_phase`。
+KMFA 当前版本 `0.1.4-linked-source-map-reapplication` 已完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION` 本地 gate：36 条 owner-exclusion resolution 已应用，剩余 15 个 linked candidate groups / 77 条 source-map reapplication records 已写入 git-ignored private runtime，并已私有 staged 77 条 materialization source-map input；但本 phase 没有执行 processed value materialization replay、没有读取原始数据、没有做 raw-to-processed comparison 或 reconciliation，所以仍是 `NO_GO`。下一步只能单独运行 processed value materialization replay phase；next_required_input=`run_processed_value_materialization_replay_phase`。
 
 ## 你现在能信任什么
+
+- v0.1.4 linked source-map reapplication 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：linked candidate groups=15、linked candidate records=77、linked applied groups=15、linked applied records=77、blocked linked records=0、source-map records applied=77、private materialization source-map input records=77、processed value materialization replay ready=true、processed value materialization replay performed=false。该 phase 只写入 git-ignored private reapplication result/source-map/materialization input，不读取或修改 raw inbox，不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 
 - v0.1.4 post-resolution source-map completion readiness recheck 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：original blockers=113、linked blockers=77、unlinked blockers=36、owner exclusions applied=36、actionable group decisions=19、linked candidate groups=15、reapplication candidates=77、remaining unlinked blockers=0、source-map completion reapplication ready=true、source-map records applied=0。该 phase 只写入 git-ignored private readiness diagnostic/candidate queue/blocker queue，不读取或修改 raw inbox，不证明 processed value materialization、raw-to-processed comparison、processed-data reconciliation、业务值一致、lineage full check、formal report、GitHub upload、app reinstall 或业务执行。
 

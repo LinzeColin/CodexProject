@@ -1,3 +1,14 @@
+# KMFA v0.1.4 Linked Source-Map Reapplication
+
+## 0.1.4-linked-source-map-reapplication - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION` 本地 reapplication phase。
+- 基于上一轮 15 个 linked candidate groups / 77 条 reapplication candidates，写入 77 条 private source-map records，并 staged 77 条 private materialization source-map input。
+- 锁定结论：linked reapplication applied groups=15、linked reapplication applied records=77、blocked linked records=0、source-map records applied=77、processed value materialization replay ready=true、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private linked reapplication result/source-map/materialization input 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能单独运行 processed value materialization replay phase。
+
 # KMFA v0.1.4 Post-Resolution Readiness Recheck
 
 ## 0.1.4-post-resolution-readiness-recheck - 2026-07-06
