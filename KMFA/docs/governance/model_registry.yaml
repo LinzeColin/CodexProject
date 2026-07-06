@@ -1742,3 +1742,18 @@ kmfa_v014_linked_scope_comparison_precheck:
   evidence_dir: KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK
   validator: KMFA/tools/check_v014_linked_scope_raw_to_processed_comparison_precheck.py
   scope: Linked-scope private fingerprint comparison precheck only; 77 linked materialized records are checked against private raw-derived candidate fingerprints in ignored runtime; public evidence aggregate-only; no raw inbox access, full raw-to-processed comparison, full reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_linked_scope_comparison_dry_run:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-linked-scope-raw-to-processed-comparison-dry-run"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-DRY-RUN-001
+  parameter_refs:
+    - PARAM-KMFA-1318
+    - PARAM-KMFA-1319
+    - PARAM-KMFA-1320
+  evidence_dir: KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN
+  validator: KMFA/tools/check_v014_linked_scope_raw_to_processed_comparison_dry_run.py
+  scope: Linked-scope private fingerprint comparison dry run only; 77 linked prechecked records are dry-run compared in ignored runtime; public evidence aggregate-only; no raw inbox access, full raw-to-processed comparison, full reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.

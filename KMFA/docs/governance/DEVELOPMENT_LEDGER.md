@@ -1497,3 +1497,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_application`
 - boundary: this phase applies 36 private delegated owner-exclusion decisions in ignored runtime; it does not read raw inbox, apply source-map records, write partial authorization, materialize values, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `run_post_resolution_source_map_readiness_recheck`
+
+## 2026-07-06 - V014 Linked-Scope Raw-To-Processed Comparison Dry Run
+
+- task_id: `KMFA-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-DRY-RUN-20260706`
+- phase_id: `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN`
+- product_version: `0.1.4-linked-scope-raw-to-processed-comparison-dry-run`
+- status: `completed_validated_local_only_linked_scope_comparison_dry_run_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_linked_scope_raw_to_processed_comparison_dry_run.py --require-private-dry-run`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_linked_scope_raw_to_processed_comparison_dry_run`
+- boundary: this phase dry-run compares 77 linked-scope private fingerprint pairs in ignored runtime; it does not read raw inbox, complete full raw-to-processed comparison, reconcile values, verify business consistency, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `resolve_72_processed_target_slots_outside_linked_replay_scope_before_full_raw_to_processed_comparison`
