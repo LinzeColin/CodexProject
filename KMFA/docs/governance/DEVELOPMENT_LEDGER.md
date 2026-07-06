@@ -1365,3 +1365,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_group_decision_input_kit -q`
 - boundary: this phase prepares an ignored private machine-checkable owner group-decision input kit for 22 groups and 113 represented rows; it does not read raw inbox, fill owner decisions, modify owner response template, write active authorization, apply source-map records, materialize values, compare raw to processed values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `owner_or_authorized_delegate_fills_private_group_decision_response_template`
+
+## 2026-07-06 - V014 Processed Value Source-map Completion Owner Group Decision Response Intake
+
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-OWNER-GROUP-DECISION-RESPONSE-INTAKE-20260706`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_GROUP_DECISION_RESPONSE_INTAKE`
+- product_version: `0.1.4-processed-value-source-map-completion-owner-group-decision-response-intake`
+- status: `completed_validated_local_only_no_go_owner_group_decisions_still_pending`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_GROUP_DECISION_RESPONSE_INTAKE/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_group_decision_response_intake.py --require-private-intake`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_group_decision_response_intake -q`
+- boundary: this phase checks the ignored private owner group-decision response template and records that all 22 groups remain pending; it does not read raw inbox, mutate the response template, fill owner decisions, write active authorization, apply source-map records, materialize values, compare raw to processed values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `owner_or_authorized_delegate_replaces_pending_group_decision_codes`
