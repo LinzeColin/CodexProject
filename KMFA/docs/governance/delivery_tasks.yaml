@@ -10959,3 +10959,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private review packet outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-packet-after-alignment"
     completed_version: "0.1.4-outside-scope-candidate-review-packet-after-alignment"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-AFTER-PACKET-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-AFTER-PACKET"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_intake_after_packet.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_intake_after_packet.py --require-private-response"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_intake_after_packet"
+    test_results:
+      - "PASS: outside-scope candidate review intake validator and focused unit test passed; 72 delegated responses remain keep-pending while source-map correction, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET/human/outside_scope_candidate_review_intake_after_packet_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET/machine/outside_scope_candidate_review_intake_after_packet_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET/machine/outside_scope_candidate_review_intake_after_packet_matrix_public_safe.json"
+    risk: "The delegated response can be mistaken for source-map correction authority; this phase records keep-pending only and does not select private candidates or unlock value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private delegated response outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-intake-after-packet"
+    completed_version: "0.1.4-outside-scope-candidate-review-intake-after-packet"
