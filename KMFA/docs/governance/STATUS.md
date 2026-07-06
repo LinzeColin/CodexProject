@@ -315,3 +315,14 @@
 - boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
 - gate: resolution application, source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - next required input: `corrected_source_or_owner_exclusion_resolution_for_36_unlinked_application_blockers`
+
+## 2026-07-06 Latest - V014 Corrected Source Or Owner Exclusion Resolution Input
+
+- phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT`
+- status: `completed_validated_local_only_corrected_source_or_owner_exclusion_resolution_input_no_go`
+- evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input.py --require-private-template`
+- locked counts: `private_resolution_item_count=36`, `unlinked_application_blocker_count=36`, `source_non_actionable_group_decision_count=3`
+- boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
+- gate: owner resolution input, all-36 resolution, resolution application, source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- next required input: `owner_or_authorized_delegate_supplies_36_corrected_source_or_exclusion_resolution_items`

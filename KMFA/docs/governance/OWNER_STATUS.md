@@ -253,3 +253,11 @@ KMFA 当前版本 `0.1.4-processed-value-source-map-completion-blocker-audit` �
 - public-safe result: 22 group decisions intaken, 19 actionable group decisions, 3 non-actionable group decisions, and 36 unlinked application blockers still unresolved.
 - Codex did not apply source-map records, did not write partial authorization, did not touch raw source files, did not perform raw-to-processed comparison, and did not claim business consistency.
 - next allowed run is a single corrected-source or owner-exclusion resolution input phase for the 36 unresolved unlinked blockers; no GitHub upload, app reinstall, formal report, raw comparison or business execution is allowed from this state.
+
+## 2026-07-06 Latest Owner Boundary - V014 Corrected Source Or Owner Exclusion Resolution Input
+
+- active phase completed locally: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT`
+- Codex prepared a private template for the 36 remaining unlinked blockers that require either corrected-source input or explicit owner exclusion.
+- public-safe result: `private_resolution_item_count=36`, `owner_resolution_input_present=false`, `all_36_unlinked_blockers_resolved=false`.
+- Codex did not apply source-map records, did not write partial authorization, did not touch raw source files, did not perform raw-to-processed comparison, and did not claim business consistency.
+- next allowed run is a single owner resolution application-readiness phase after the 36 private inputs are supplied; no GitHub upload, app reinstall, formal report, raw comparison or business execution is allowed from this state.

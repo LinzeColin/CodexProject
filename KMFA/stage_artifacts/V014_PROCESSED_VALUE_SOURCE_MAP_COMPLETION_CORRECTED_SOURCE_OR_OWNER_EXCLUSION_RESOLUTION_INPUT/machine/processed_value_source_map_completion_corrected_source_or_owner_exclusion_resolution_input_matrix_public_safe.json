@@ -1,0 +1,61 @@
+{
+  "all_36_unlinked_blockers_resolved": false,
+  "checks": [
+    {
+      "check_code": "owner_22_group_response_intaken",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "unlinked_blocker_count_locked",
+      "observed_public_safe": 36,
+      "required": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_resolution_input_template_prepared",
+      "observed_public_safe": 36,
+      "required": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_resolution_input_present",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "all_36_unlinked_blockers_resolved",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "resolution_application_allowed",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "full_reconciliation_allowed",
+      "observed_public_safe": false,
+      "required": true,
+      "status": "FAIL"
+    }
+  ],
+  "decision": "NO_GO",
+  "decision_check_count": 7,
+  "decision_fail_count": 4,
+  "decision_pass_count": 3,
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "owner_resolution_input_present": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT",
+  "project_id": "KMFA",
+  "record_type": "v014_corrected_source_or_owner_exclusion_resolution_input_matrix_public_safe",
+  "resolution_application_allowed": false,
+  "schema_version": "kmfa.v014_corrected_source_or_owner_exclusion_resolution_input_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-20260706",
+  "version": "0.1.4-corrected-source-or-owner-exclusion-resolution-input"
+}

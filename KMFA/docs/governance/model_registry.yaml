@@ -1607,3 +1607,18 @@ kmfa_v014_owner_22_group_decision_response_intake:
   evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE
   validator: KMFA/tools/check_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake.py
   scope: Owner 22-group decision response intake only; delegated conservative private response is written to ignored runtime; public evidence aggregate-only; no raw inbox access, source-map mutation, partial authorization write, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_corrected_source_or_owner_exclusion_resolution_input:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-corrected-source-or-owner-exclusion-resolution-input"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-001
+  parameter_refs:
+    - PARAM-KMFA-1291
+    - PARAM-KMFA-1292
+    - PARAM-KMFA-1293
+  evidence_dir: KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT
+  validator: KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input.py
+  scope: Corrected-source or owner-exclusion resolution input only; private 36-item template is written to ignored runtime; public evidence aggregate-only; no raw inbox access, source-map mutation, partial authorization write, materialization, raw-to-processed comparison, lineage full check, formal report, GitHub upload, app reinstall or business execution.
