@@ -1,0 +1,47 @@
+{
+  "allowed_next_phase": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_RAW_COMPARISON_PREFLIGHT",
+  "decision": "NO_GO",
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_RAW_SCOPE_INTAKE",
+  "project_id": "KMFA",
+  "record_type": "v014_raw_scope_matrix_public_safe",
+  "schema_version": "kmfa.v014_raw_scope_matrix_public_safe.v1",
+  "scope_item_count": 5,
+  "scope_items": [
+    {
+      "allowed_this_phase": true,
+      "performed_this_phase": true,
+      "public_description": "仅确认私有 raw 根目录存在且为目录。",
+      "raw_content_access": false,
+      "scope_code": "RAW_ROOT_EXISTENCE_PRECHECK"
+    },
+    {
+      "allowed_this_phase": false,
+      "performed_this_phase": false,
+      "public_description": "列出 raw 文件名或目录树。",
+      "raw_content_access": false,
+      "scope_code": "RAW_FILE_LISTING"
+    },
+    {
+      "allowed_this_phase": false,
+      "performed_this_phase": false,
+      "public_description": "对 raw 文件做 hash、解析、字段读取或值抽取。",
+      "raw_content_access": true,
+      "scope_code": "RAW_FILE_HASHING_OR_PARSE"
+    },
+    {
+      "allowed_this_phase": false,
+      "performed_this_phase": false,
+      "public_description": "执行 raw-to-processed value comparison。",
+      "raw_content_access": true,
+      "scope_code": "RAW_TO_PROCESSED_COMPARISON"
+    },
+    {
+      "allowed_this_phase": true,
+      "performed_this_phase": false,
+      "public_description": "登记新的修正源包。",
+      "raw_content_access": false,
+      "scope_code": "CORRECTED_SOURCE_PACKAGE_REGISTRATION"
+    }
+  ],
+  "version": "0.1.4-corrected-source-or-raw-scope-intake"
+}
