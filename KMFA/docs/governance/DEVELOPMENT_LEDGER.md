@@ -1401,3 +1401,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_22_group_decision_response_intake`
 - boundary: this phase intakes delegated conservative 22-group owner decisions into ignored private response artifacts and public aggregate evidence; it does not read raw inbox, apply source-map records, write partial authorization, materialize values, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `corrected_source_or_owner_exclusion_resolution_for_36_unlinked_application_blockers`
+
+## 2026-07-06 - V014 Processed Value Source-map Completion Corrected Source Or Owner Exclusion Resolution Input
+
+- task_id: `KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-20260706`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT`
+- product_version: `0.1.4-corrected-source-or-owner-exclusion-resolution-input`
+- status: `completed_validated_local_only_corrected_source_or_owner_exclusion_resolution_input_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input.py --require-private-template`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_input`
+- boundary: this phase prepares an ignored private input template for the remaining 36 unlinked corrected-source or owner-exclusion blockers; it does not read raw inbox, apply source-map records, write partial authorization, materialize values, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `owner_or_authorized_delegate_supplies_36_corrected_source_or_exclusion_resolution_items`
