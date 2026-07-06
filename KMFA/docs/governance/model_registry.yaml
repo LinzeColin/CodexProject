@@ -1817,3 +1817,18 @@ kmfa_v014_outside_scope_authorized_source_map_extension_blocker_audit:
   evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_BLOCKER_AUDIT
   validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_blocker_audit.py
   scope: Outside-scope authorized source-map extension blocker audit only; records third consecutive missing owner/authorized extension input for 72 pending outside-scope target slots and recommends blocked goal status; public evidence aggregate-only; no raw inbox access, private template mutation, source-map extension application, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_authorized_source_map_extension_resumed_readiness_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-RESUMED-READINESS-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1333
+    - PARAM-KMFA-1334
+    - PARAM-KMFA-1335
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_RESUMED_READINESS_RECHECK
+  validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_resumed_readiness_recheck.py
+  scope: Outside-scope authorized source-map extension resumed readiness recheck only; restarts resumed blocker audit counter after goal resume and confirms 72 pending outside-scope target slots still lack valid authorized extension records; public evidence aggregate-only; no raw inbox access, private template mutation, source-map extension application, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
