@@ -1017,3 +1017,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_outside_scope_resolution_queue_count=72 and private_authorized_extension_template_item_count=72 prepare the private intake surface; valid_authorized_extension_record_count=0 and missing_authorized_extension_record_count=72 keep source-map extension write blocked.
 - gate: `NO_GO`; source-map extension write, full raw-to-processed comparison, processed-data reconciliation, business value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private extension template, pending queue, diagnostic and report stay under git-ignored runtime.
+
+## V014 Outside-Scope Authorized Source-Map Extension Readiness Recheck
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-READINESS-RECHECK-001`
+- parameter_ids: `PARAM-KMFA-1327`, `PARAM-KMFA-1328`, `PARAM-KMFA-1329`
+- phase_id: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_READINESS_RECHECK`
+- version: `0.1.4-outside-scope-authorized-source-map-extension-readiness-recheck`
+- rule: private_authorized_extension_template_item_count=72 and valid_authorized_extension_record_count=0 prove application readiness is not met; source_map_extension_blocker_count=72 keeps source-map application and full comparison blocked.
+- gate: `NO_GO`; source-map application, full raw-to-processed comparison, processed-data reconciliation, business value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private readiness diagnostic, blocker queue and report stay under git-ignored runtime.
