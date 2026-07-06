@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Source-Map Extension Application Readiness
+
+## 0.1.4-outside-scope-authorized-source-map-extension-application-readiness - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION_READINESS` 本地单 phase。
+- 基于上一 phase ignored private active authorization record 和 queue，只验证 72 条 owner-authorized outside-scope source-map extension 是否可进入后续 application phase；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：private active authorization records=72、private authorization queue=72、application ready records=72、application blockers=0、source-map extension application ready=true、Go/No-Go=`NO_GO`。
+- 本 phase 不应用 source-map、不写 source-map extension、不做 materialization replay、不做 raw-to-processed comparison、不做 full reconciliation、不做 lineage full check、不发布 formal report、不上传 GitHub、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；private readiness diagnostic、ready queue、blocker queue 和 report 只保留在 ignored runtime。
+
 # KMFA v0.1.4 Outside-Scope Source-Map Owner Authorization Intake
 
 ## 0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake - 2026-07-07
