@@ -10812,3 +10812,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private threshold recheck diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck"
     completed_version: "0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-OWNER-AUTHORIZATION-INTAKE-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-OWNER-AUTHORIZATION-INTAKE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_authorized_source_map_extension_owner_authorization_intake.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_owner_authorization_intake.py --require-private-authorization"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_authorized_source_map_extension_owner_authorization_intake"
+    test_results:
+      - "PASS: outside-scope owner authorization intake validator and focused unit test passed; 72 owner-authorized extension records are ready for a later application-readiness phase while source-map write and full comparison stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE/human/outside_scope_authorized_source_map_extension_owner_authorization_intake_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE/machine/outside_scope_authorized_source_map_extension_owner_authorization_intake_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE/machine/outside_scope_authorized_source_map_extension_owner_authorization_intake_matrix_public_safe.json"
+    risk: "The owner authorization intake can be mistaken for source-map application; this phase records authorization only and does not write source-map records or compare values."
+    rollback: "Remove current phase artifacts, metadata copies, private owner authorization outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake"
+    completed_version: "0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake"

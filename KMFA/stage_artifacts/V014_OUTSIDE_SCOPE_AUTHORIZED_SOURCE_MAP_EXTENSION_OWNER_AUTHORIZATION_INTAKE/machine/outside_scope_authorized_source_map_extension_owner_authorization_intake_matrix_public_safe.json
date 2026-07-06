@@ -1,0 +1,63 @@
+{
+  "checks": [
+    {
+      "check_code": "source_template_count_preserved",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_direct_authorization_present",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "valid_authorization_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "missing_authorization_zero",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "application_ready_for_next_phase",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_not_written_this_phase",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "full_comparison_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "project_go_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "owner_authorization_intake_check_count": 8,
+  "owner_authorization_intake_check_fail_count": 0,
+  "owner_authorization_intake_check_pass_count": 8,
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_owner_authorization_intake_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_owner_authorization_intake_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-OWNER-AUTHORIZATION-INTAKE-20260707",
+  "version": "0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake"
+}

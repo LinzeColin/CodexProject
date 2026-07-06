@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck`
+- version: `0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake`
 - current_stage: `value-consistency`
-- current_phase: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK`
-- status: `completed_validated_local_only_outside_scope_authorized_extension_post_delegation_blocker_threshold_met_goal_blocked`
-- current_blocker: `outside_scope_authorized_source_map_extension_not_authoritatively_proven`
-- next_required_input: `strong_authorized_source_map_extension_evidence_before_source_map_application_or_keep_no_go`
+- current_phase: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE`
+- status: `completed_validated_local_only_outside_scope_authorized_extension_owner_authorization_intake_no_go`
+- current_blocker: `outside_scope_source_map_extension_not_applied_and_full_comparison_not_run`
+- next_required_input: `run_outside_scope_source_map_extension_application_readiness_before_any_full_comparison`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 outside-scope source-map owner authorization intake completed local-only: source_private_template_item_count=72，source_private_pending_queue_count=72，owner_direct_authorization_present=true，owner_authorized_extension_record_count=72，valid_authorized_extension_record_count=72，invalid_authorized_extension_record_count=0，missing_authorized_extension_record_count=0，source_map_extension_ready_count=72，source_map_extension_blocker_count=0，source_map_extension_application_ready=true，source_map_extension_written_by_this_phase=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，processed_consistency_verified=false，current Go/No-Go=NO_GO。This phase records owner direct authorization in ignored private runtime only；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；source private template mutation=false；source-map application=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_outside_scope_source_map_extension_application_readiness_before_any_full_comparison`。
 
 - v0.1.4 outside-scope authorized source-map extension post-delegation blocker threshold recheck completed local-only: prior_post_delegation_blocker_observation_count=2，post_delegation_blocker_observation_count=3，post_delegation_blocked_audit_threshold_met=true，goal_status_recommendation=blocked，delegated_decision_record_count=72，delegated_keep_pending_decision_count=72，delegated_authorize_source_map_extension_count=0，delegated_application_allowed_count=0，valid_authorized_extension_record_count=0，source_map_extension_ready_count=0，source_map_extension_blocker_count=72，source_map_extension_application_ready=false，source_map_extension_written_by_this_phase=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，processed_consistency_verified=false，current Go/No-Go=NO_GO。This phase records the third post-delegation blocker observation；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；prior private diagnostic mutation=false；source-map extension application=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`strong_authorized_source_map_extension_evidence_before_source_map_application_or_keep_no_go`。
 

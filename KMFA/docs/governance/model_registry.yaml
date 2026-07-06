@@ -1833,6 +1833,21 @@ kmfa_v014_outside_scope_authorized_source_map_extension_resumed_readiness_rechec
   validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_resumed_readiness_recheck.py
   scope: Outside-scope authorized source-map extension resumed readiness recheck only; restarts resumed blocker audit counter after goal resume and confirms 72 pending outside-scope target slots still lack valid authorized extension records; public evidence aggregate-only; no raw inbox access, private template mutation, source-map extension application, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
 
+kmfa_v014_outside_scope_authorized_source_map_extension_owner_authorization_intake:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-OWNER-AUTHORIZATION-INTAKE-001
+  parameter_refs:
+    - PARAM-KMFA-1348
+    - PARAM-KMFA-1349
+    - PARAM-KMFA-1350
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE
+  validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_owner_authorization_intake.py
+  scope: Outside-scope source-map owner authorization intake only; records 72 owner-authorized extension records in ignored private runtime; public evidence aggregate-only; no raw inbox access, source private template mutation, source-map extension application, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"

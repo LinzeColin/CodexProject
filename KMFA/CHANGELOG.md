@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Source-Map Owner Authorization Intake
+
+## 0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE` 本地单 phase。
+- 基于用户“允许授权”的直接授权，将 72 条 outside-scope source-map extension 记录写入 ignored private active authorization record；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source template items=72、owner-authorized extension records=72、valid authorized extension records=72、missing authorized extension records=0、source-map extension application ready=true、Go/No-Go=`NO_GO`。
+- 本 phase 不应用 source-map、不做 materialization replay、不做 raw-to-processed comparison、不做 full reconciliation、不做 lineage full check、不发布 formal report、不上传 GitHub、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 active authorization record、queue、diagnostic 和 report 只保留在 ignored runtime。
+
 # KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Post-Delegation Blocker Threshold Recheck
 
 ## 0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck - 2026-07-06
