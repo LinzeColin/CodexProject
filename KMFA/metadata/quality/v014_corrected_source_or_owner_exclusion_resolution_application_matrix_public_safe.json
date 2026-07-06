@@ -1,0 +1,73 @@
+{
+  "application_blocker_queue_count": 0,
+  "application_check_count": 8,
+  "application_fail_count": 0,
+  "application_pass_count": 8,
+  "checks": [
+    {
+      "check_code": "source_retry_readiness_available",
+      "observed_public_safe": 36,
+      "required": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "ready_queue_count_locked",
+      "observed_public_safe": 36,
+      "required": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocker_queue_clear",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_exclusion_application_performed",
+      "observed_public_safe": 36,
+      "required": 36,
+      "status": "PASS"
+    },
+    {
+      "check_code": "corrected_source_application_zero",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_records_not_mutated",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_comparison_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "corrected_source_resolution_applied_count": 0,
+  "decision": "NO_GO",
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "owner_exclusion_resolution_applied_count": 36,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION",
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "record_type": "v014_corrected_source_or_owner_exclusion_resolution_application_matrix_public_safe",
+  "resolution_application_performed_by_this_phase": true,
+  "schema_version": "kmfa.v014_corrected_source_or_owner_exclusion_resolution_application_matrix_public_safe.v1",
+  "source_map_mutation_performed_by_this_phase": false,
+  "source_map_records_applied_count": 0,
+  "source_retry_application_ready_item_count": 36,
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-APPLICATION-20260706",
+  "version": "0.1.4-corrected-source-or-owner-exclusion-resolution-application"
+}

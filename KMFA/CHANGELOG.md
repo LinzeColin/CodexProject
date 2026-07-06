@@ -2024,3 +2024,11 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
 - 当前仍为 `NO_GO`：本 phase 只允许下一 phase 执行 resolution application；本 phase 不执行 source-map application、raw-to-processed comparison、full reconciliation、GitHub upload、app reinstall 或业务动作。
 - 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 readiness diagnostic、ready queue 和 blocker queue 只保留在 ignored runtime。
+
+## 0.1.4-corrected-source-or-owner-exclusion-resolution-application - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION` 本地单 phase。
+- 基于上一轮 private retry application readiness queue，将 36 项 delegated owner-exclusion 决策应用到 ignored private application result。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：owner-exclusion application 已完成，但 source-map records applied 仍为 0；post-resolution readiness recheck、materialization replay、raw-to-processed comparison、full reconciliation、GitHub upload、app reinstall 和业务动作均未执行。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 application diagnostic、result 和 applied queue 只保留在 ignored runtime。

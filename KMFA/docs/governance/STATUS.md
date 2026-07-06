@@ -359,3 +359,14 @@
 - boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
 - gate: retry application readiness is ready for a later resolution application phase, but this phase performs no source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall or business execution.
 - next required input: `run_resolution_application_against_private_retry_readiness_queue`
+
+## 2026-07-06 Latest - V014 Corrected Source Or Owner Exclusion Resolution Application
+
+- phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION`
+- status: `completed_validated_local_only_owner_exclusion_resolution_application_no_go`
+- evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_corrected_source_or_owner_exclusion_resolution_application.py --require-private-application`
+- locked counts: `private_retry_item_count=36`, `owner_exclusion_resolution_applied_count=36`, `corrected_source_resolution_applied_count=0`, `resolution_application_blocker_queue_count=0`, `source_map_records_applied_count=0`
+- boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
+- gate: owner-exclusion resolution application is applied in ignored private runtime, but source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- next required input: `run_post_resolution_source_map_readiness_recheck`
