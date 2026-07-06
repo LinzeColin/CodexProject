@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_candidate_review_intake_readiness_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-intake-readiness-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-READINESS-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1372
+    - PARAM-KMFA-1373
+    - PARAM-KMFA-1374
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_READINESS_RECHECK
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_intake_readiness_recheck.py
+  scope: Outside-scope candidate review intake readiness recheck only; reads prior public-safe intake summary and ignored private delegated response artifacts; public evidence aggregate-only; no raw inbox access, raw mutation, candidate selection, source-map correction, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_candidate_review_intake_after_packet:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-candidate-review-intake-after-packet"
