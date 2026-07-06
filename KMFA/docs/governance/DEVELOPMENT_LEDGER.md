@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Outside-Scope Delegated Keep-Pending Decision
+- Product version: `0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision`.
+- Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION` only; record a private delegated Codex conservative keep-pending response for 72 outside-scope extension items after checking aggregate private evidence, without mutating the original template.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision.py`; `KMFA/tests/test_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision.py`.
+- blocker_state: delegated_decisions=72, delegated_keep_pending=72, candidate_catalog_records=366, context_overlap_rows=24, exact_source_record_ref_matches=0, exact_processed_ref_matches=0, valid_authorized_extension_records=0, source_map_application_ready=false, raw_inbox_access=false, raw_inbox_mutation=false, private_template_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision
+version_matrix_product_version_reference: 0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision
+
 # KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Resumed Readiness Recheck
 - Product version: `0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck`.
 - Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_RESUMED_READINESS_RECHECK` only; recheck the ignored private extension template after goal resume, restart the resumed blocker audit counter at one, and keep public evidence aggregate-only.

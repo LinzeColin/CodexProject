@@ -10729,3 +10729,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private resumed readiness diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck"
     completed_version: "0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-DELEGATED-KEEP-PENDING-DECISION-20260706"
+    phase_id: "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-DELEGATED-KEEP-PENDING-DECISION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision.py --require-private-decision"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision"
+    test_results:
+      - "PASS: outside-scope delegated keep-pending decision validator and focused unit test passed; 72 delegated keep-pending decisions recorded while source-map application and full comparison remain closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION/human/outside_scope_authorized_source_map_extension_delegated_keep_pending_decision_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION/machine/outside_scope_authorized_source_map_extension_delegated_keep_pending_decision_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION/machine/outside_scope_authorized_source_map_extension_delegated_keep_pending_decision_matrix_public_safe.json"
+    risk: "The delegated keep-pending response can be mistaken for source-map authorization; no source-map extension is authorized or applied and full comparison remains blocked."
+    rollback: "Remove current phase artifacts, metadata copies, private delegated decision outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"
+    completed_version: "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"
