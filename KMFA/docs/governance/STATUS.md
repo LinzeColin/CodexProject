@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-outside-scope-authorized-source-map-extension-application`
+- version: `0.1.4-full-materialization-replay-after-outside-scope-application`
 - current_stage: `value-consistency`
-- current_phase: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION`
-- status: `completed_validated_local_only_outside_scope_authorized_extension_application_applied_no_go`
-- current_blocker: `outside_scope_source_map_extension_applied_but_full_materialization_and_full_comparison_not_run`
-- next_required_input: `run_full_processed_value_materialization_replay_before_full_raw_to_processed_comparison`
+- current_phase: `V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION`
+- status: `completed_validated_local_only_full_materialization_replay_no_go`
+- current_blocker: `full_processed_value_materialized_but_raw_to_processed_comparison_not_run`
+- next_required_input: `run_full_raw_to_processed_comparison_precheck_after_full_materialization`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 full processed-value materialization replay after outside-scope application completed local-only: processed_target_slot_count=149，full_materialization_source_map_record_count=149，full_materialized_record_count=149，full_materialization_blocked_record_count=0，linked_materialized_record_count=77，outside_scope_materialized_record_count=72，full_unique_private_value_source_count=84，full_processed_value_materialization_complete=true，raw_to_processed_value_comparison_ready=true，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads ignored private full source-map and private processed target staging, writes ignored private full materialization replay/diagnostic/materialized records only；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；source private full source-map mutation=false；source private processed staging mutation=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_full_raw_to_processed_comparison_precheck_after_full_materialization`。
 
 - v0.1.4 outside-scope source-map extension application completed local-only: source_ready_queue_record_count=72，outside_scope_source_map_extension_applied_record_count=72，outside_scope_source_map_extension_blocker_count=0，outside_scope_source_map_extension_duplicate_target_slot_count=0，existing_linked_source_map_record_count=77，private_full_materialization_source_map_record_count=149，full_processed_value_materialization_ready=true，full_processed_value_materialization_performed=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads prior ignored private ready queue and linked private source-map, writes ignored private application diagnostic/result/applied records/extension source-map/full materialization source-map only；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；source private queue mutation=false；linked private source-map mutation=false；materialization=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_full_processed_value_materialization_replay_before_full_raw_to_processed_comparison`。
 

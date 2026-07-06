@@ -1,0 +1,23 @@
+{
+  "app_reinstall_performed": false,
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "full_materialized_record_count": 149,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "github_upload_performed": false,
+  "linked_materialized_record_count": 77,
+  "next_required_input": "run_full_raw_to_processed_comparison_precheck_after_full_materialization",
+  "outside_scope_materialized_record_count": 72,
+  "phase_id": "V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION",
+  "processed_target_slot_count": 149,
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "raw_to_processed_value_comparison_ready": true,
+  "reason": "full_processed_value_materialized_but_raw_to_processed_comparison_not_complete",
+  "record_type": "v014_full_materialization_replay_go_no_go",
+  "schema_version": "kmfa.v014_full_materialization_replay_go_no_go.v1",
+  "status": "completed_validated_local_only_full_materialization_replay_no_go",
+  "task_id": "KMFA-V014-FULL-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-OUTSIDE-SCOPE-APPLICATION-20260707",
+  "version": "0.1.4-full-materialization-replay-after-outside-scope-application"
+}

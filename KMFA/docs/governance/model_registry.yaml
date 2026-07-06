@@ -1937,3 +1937,18 @@ kmfa_v014_outside_scope_authorized_source_map_extension_post_delegation_blocker_
   evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK
   validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_post_delegation_blocker_threshold_recheck.py
   scope: Outside-scope post-delegation blocker threshold recheck only; records the third post-delegation blocker observation after delegated keep-pending readiness recheck and recommends blocked goal status; public evidence aggregate-only; no raw inbox access, prior private diagnostic mutation, source-map extension application, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_full_materialization_replay_after_outside_scope_application:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-full-materialization-replay-after-outside-scope-application"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-FULL-MATERIALIZATION-REPLAY-AFTER-OUTSIDE-SCOPE-APPLICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1357
+    - PARAM-KMFA-1358
+    - PARAM-KMFA-1359
+  evidence_dir: KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION
+  validator: KMFA/tools/check_v014_full_processed_value_materialization_replay_after_outside_scope_application.py
+  scope: Full processed-value materialization replay only; materializes 149 processed-value source-map records in ignored private runtime and makes raw-to-processed comparison ready; public evidence aggregate-only; no raw inbox access, source private input mutation, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
