@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Blocker Audit
+- Product version: `0.1.4-outside-scope-authorized-source-map-extension-blocker-audit`.
+- Scope: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_BLOCKER_AUDIT` only; record the third consecutive missing owner/authorized source-map extension input for 72 pending outside-scope target slots and recommend blocked goal status while keeping public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_BLOCKER_AUDIT/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_blocker_audit.py`; `KMFA/tests/test_v014_outside_scope_authorized_source_map_extension_blocker_audit.py`.
+- blocker_state: consecutive_goal_turn_blocker_count=3, blocked_audit_threshold_met=true, goal_status_recommendation=blocked, valid_authorized_extension_record_count=0, missing_authorized_extension_record_count=72, source_map_extension_application_ready=false, full_raw_to_processed_comparison=false, full_reconciliation=false, business_value_consistency_verified=false, raw_inbox_access=false, private_template_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-authorized-source-map-extension-blocker-audit
+version_matrix_product_version_reference: 0.1.4-outside-scope-authorized-source-map-extension-blocker-audit
+
 # KMFA v0.1.4 Linked-Scope Raw-To-Processed Comparison Precheck
 - Product version: `0.1.4-linked-scope-raw-to-processed-comparison-precheck`.
 - Scope: `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK` only; consume ignored private linked materialization replay records and private candidate catalog, write ignored private linked-scope comparison precheck records, and keep public evidence aggregate-only.

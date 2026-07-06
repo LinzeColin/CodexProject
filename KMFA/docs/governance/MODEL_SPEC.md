@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-BLOCKER-AUDIT-001
+- version: `0.1.4-outside-scope-authorized-source-map-extension-blocker-audit`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for auditing repeated owner/authorized source-map extension input blockers.
+- expression: `outside_scope_extension_blocker_audit_valid = consecutive_goal_turn_blocker_count == 3 AND blocked_audit_threshold_met == true AND valid_authorized_extension_record_count == 0 AND missing_authorized_extension_record_count == 72 AND source_map_extension_application_ready == false AND goal_status_recommendation == blocked AND downstream_allowed == false`.
+- inputs: prior outside-scope extension public summary, prior readiness public summary, git-ignored private blocker diagnostic, raw immutable boundary.
+- missing_policy: missing blocker audit manifest, Go/No-Go report, summary, matrix, private diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_BLOCKER_AUDIT/machine/outside_scope_authorized_source_map_extension_blocker_audit_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, private template mutation, source-map extension application, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business value, full raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-001
 - version: `0.1.4-linked-scope-raw-to-processed-comparison-precheck`
 - model_id: `MOD-KMFA-GOV-001`
