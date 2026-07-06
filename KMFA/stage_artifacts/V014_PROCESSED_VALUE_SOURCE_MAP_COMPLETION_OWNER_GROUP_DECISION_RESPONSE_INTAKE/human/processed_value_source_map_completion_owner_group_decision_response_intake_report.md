@@ -2,15 +2,18 @@
 
 Decision: NO_GO
 
-This phase checks the private owner group-decision response template. All groups remain pending, so no active authorization or source-map application is allowed.
+This phase checks the private owner group-decision response template after the owner delegated a conservative default decision to Codex. The delegated default does not read raw inbox data and does not create an active authorization record.
 
 ## Public-safe aggregate result
 
 - Review groups: 22
 - Response rows represented: 113
-- Pending group decisions: 22
-- Valid group decisions: 0
+- Pending group decisions: 0
+- Valid group decisions: 22
 - Invalid group decisions: 0
-- Owner group decisions supplied: `false`
+- Actionable group decisions: 19
+- Non-actionable group decisions: 3
+- Owner group decisions supplied: `true`
+- Full source-map reapplication ready: `false`
 
-Next required input: `owner_or_authorized_delegate_replaces_pending_group_decision_codes`.
+Next required input: `owner_or_authorized_delegate_resolves_non_actionable_group_decisions_before_full_source_map_application`.

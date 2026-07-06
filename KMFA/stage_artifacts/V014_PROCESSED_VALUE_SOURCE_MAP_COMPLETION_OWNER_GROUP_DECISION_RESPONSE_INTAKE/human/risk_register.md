@@ -1,6 +1,6 @@
 # Risk Register
 
-- Risk: treating pending response-template values as owner authorization.
-  Mitigation: the validator requires valid_group_decision_count=0 and keeps all downstream gates closed.
+- Risk: treating delegated default decisions as full active authorization.
+  Mitigation: non-actionable decisions keep source-map reapplication closed until a later phase explicitly resolves them.
 - Risk: leaking private group-level response context publicly.
   Mitigation: public artifacts contain only aggregate counts and gate flags; diagnostics stay in private runtime.
