@@ -1,0 +1,18 @@
+{
+  "app_reinstall_allowed": false,
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "github_upload_allowed": false,
+  "go_no_go": "NO_GO",
+  "goal_status_recommendation": "continue_waiting_for_owner_input",
+  "missing_authorized_extension_record_count": 72,
+  "next_required_input": "owner_or_authorized_delegate_fills_private_authorized_source_map_extension_template_for_72_slots",
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_RESUMED_READINESS_RECHECK",
+  "raw_to_processed_value_comparison_allowed": false,
+  "resumed_blocked_audit_threshold_met": false,
+  "resumed_goal_turn_blocker_count": 1,
+  "schema_version": "kmfa.v014_outside_scope_authorized_source_map_extension_resumed_readiness_go_no_go.v1",
+  "source_map_extension_application_ready": false,
+  "status": "completed_validated_local_only_outside_scope_authorized_source_map_extension_resumed_readiness_no_go",
+  "valid_authorized_extension_record_count": 0
+}

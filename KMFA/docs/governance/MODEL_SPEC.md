@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-RESUMED-READINESS-RECHECK-001
+- version: `0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for rechecking outside-scope authorized source-map extension readiness after goal resume.
+- expression: `outside_scope_extension_resumed_readiness_valid = resumed_goal_turn_blocker_count == 1 AND resumed_blocked_audit_threshold_met == false AND valid_authorized_extension_record_count == 0 AND missing_authorized_extension_record_count == 72 AND source_map_extension_application_ready == false AND goal_status_recommendation == continue_waiting_for_owner_input AND downstream_allowed == false`.
+- inputs: ignored private authorized extension template, prior public blocker audit summary, raw immutable boundary.
+- missing_policy: missing resumed readiness manifest, Go/No-Go report, summary, matrix, private diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_RESUMED_READINESS_RECHECK/machine/outside_scope_authorized_source_map_extension_resumed_readiness_recheck_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, private template mutation, source-map extension application, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business value, full raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-BLOCKER-AUDIT-001
 - version: `0.1.4-outside-scope-authorized-source-map-extension-blocker-audit`
 - model_id: `MOD-KMFA-GOV-001`

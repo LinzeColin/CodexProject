@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "check_id": "private_template_item_count",
+      "passed": true
+    },
+    {
+      "check_id": "valid_authorized_extension_record_count_zero",
+      "passed": true
+    },
+    {
+      "check_id": "missing_authorized_extension_record_count_72",
+      "passed": true
+    },
+    {
+      "check_id": "application_ready_false",
+      "passed": true
+    },
+    {
+      "check_id": "resumed_blocker_count_one",
+      "passed": true
+    },
+    {
+      "check_id": "resumed_threshold_not_met",
+      "passed": true
+    },
+    {
+      "check_id": "raw_inbox_untouched",
+      "passed": true
+    },
+    {
+      "check_id": "public_safe_aggregate_only",
+      "passed": true
+    }
+  ],
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_RESUMED_READINESS_RECHECK",
+  "resumed_readiness_recheck_count": 8,
+  "resumed_readiness_recheck_fail_count": 0,
+  "resumed_readiness_recheck_pass_count": 8,
+  "schema_version": "kmfa.v014_outside_scope_authorized_source_map_extension_resumed_readiness_matrix.v1"
+}
