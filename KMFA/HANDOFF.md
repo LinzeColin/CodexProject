@@ -622,3 +622,39 @@ Next allowed step:
 - Owner/authorized delegate must supply group-level decisions before any active completion template or source-map application phase.
 - Do not run source-map reapplication, materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
 - Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
+
+## 2026-07-06 Latest Handoff - V014 Processed Value Source-map Completion Owner Group Decision Input Kit
+
+Current phase completed locally: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_GROUP_DECISION_INPUT_KIT`.
+
+Current state:
+- `review_group_count=22`
+- `response_row_count=113`
+- `pending_group_template_count=22`
+- `allowed_owner_group_decision_code_count=5`
+- `owner_group_decisions_supplied=false`
+- `owner_group_decision_applied=false`
+- `active_owner_authorized_fill_record_ready=false`
+- `go_no_go=NO_GO`
+- `github_upload_performed=false`
+- `app_reinstall_performed=false`
+- raw inbox was not read by this phase; it only consumed ignored private pending queue, application diagnostic and review-groups packet artifacts.
+
+Private output:
+- Private owner group decision response template, codebook and diagnostic are under `KMFA/.codex_private_runtime/v014_processed_value_source_map_completion_owner_group_decision_input_kit/`.
+- These private outputs must not be committed to GitHub.
+
+Evidence:
+- `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_GROUP_DECISION_INPUT_KIT/machine/processed_value_source_map_completion_owner_group_decision_input_kit_manifest.json`
+- `KMFA/tools/check_v014_processed_value_source_map_completion_owner_group_decision_input_kit.py`
+- `KMFA/tests/test_v014_processed_value_source_map_completion_owner_group_decision_input_kit.py`
+
+Verified:
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_processed_value_source_map_completion_owner_group_decision_input_kit.py KMFA/tools/check_v014_processed_value_source_map_completion_owner_group_decision_input_kit.py KMFA/tests/test_v014_processed_value_source_map_completion_owner_group_decision_input_kit.py`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_value_source_map_completion_owner_group_decision_input_kit.py --require-private-kit`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_value_source_map_completion_owner_group_decision_input_kit -q`
+
+Next allowed step:
+- Owner/authorized delegate must fill the private group decision response template before any active completion template or source-map application phase.
+- Do not run source-map reapplication, materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
+- Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
