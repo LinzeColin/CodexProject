@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-FULL-MATERIALIZATION-REPLAY"
+as_of_event_id: "DEV-KMFA-20260707-V014-FULL-COMPARISON-PRECHECK"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "e8b1349110b80a21849f58663397e8d37e73e225"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-full-materialization-replay-after-outside-scope-application"
+generator_version: "manual-0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 986
-    total_active_formulas: 169
+    total_active_parameters: 989
+    total_active_formulas: 170
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION/human/test_results.md"
+      - "KMFA/tools/check_v014_full_raw_to_processed_comparison_precheck_after_full_materialization.py"
+      - "KMFA/stage_artifacts/V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION/machine/full_raw_to_processed_comparison_precheck_after_full_materialization_manifest.json"
       - "KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION/human/test_results.md"
       - "KMFA/tools/check_v014_full_processed_value_materialization_replay_after_outside_scope_application.py"
       - "KMFA/stage_artifacts/V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION/machine/full_processed_value_materialization_replay_after_outside_scope_application_manifest.json"

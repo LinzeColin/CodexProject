@@ -10896,3 +10896,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private full materialization replay outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-full-materialization-replay-after-outside-scope-application"
     completed_version: "0.1.4-full-materialization-replay-after-outside-scope-application"
+
+  - task_id: "KMFA-V014-FULL-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-FULL-MATERIALIZATION-20260707"
+    phase_id: "V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-FULL-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-FULL-MATERIALIZATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_full_raw_to_processed_comparison_precheck_after_full_materialization.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_full_raw_to_processed_comparison_precheck_after_full_materialization.py --require-private-precheck"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_full_raw_to_processed_comparison_precheck_after_full_materialization"
+    test_results:
+      - "PASS: full raw-to-processed comparison precheck validator and focused unit test passed; 77 exact private fingerprint pairs were found and 72 outside-scope missing candidate blockers keep raw comparison and downstream gates closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION/human/full_raw_to_processed_comparison_precheck_after_full_materialization_report.md"
+      - "KMFA/stage_artifacts/V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION/machine/full_raw_to_processed_comparison_precheck_after_full_materialization_manifest.json"
+      - "KMFA/stage_artifacts/V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION/machine/full_raw_to_processed_comparison_precheck_after_full_materialization_matrix_public_safe.json"
+    risk: "The precheck result can be mistaken for completed raw-to-processed comparison; this phase only identifies the outside-scope missing candidate blocker and does not verify business value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private full comparison precheck outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization"
+    completed_version: "0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization"

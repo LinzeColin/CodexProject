@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Full Raw-To-Processed Comparison Precheck After Full Materialization
+
+- Product version: `0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization`.
+- Scope: `V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION` only; precheck all 149 full materialized records against ignored private raw-derived candidate fingerprints without running the formal raw-to-processed comparison.
+- Evidence: `KMFA/stage_artifacts/V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION/`.
+- Verification: `KMFA/tools/check_v014_full_raw_to_processed_comparison_precheck_after_full_materialization.py`; `KMFA/tests/test_v014_full_raw_to_processed_comparison_precheck_after_full_materialization.py`.
+- gate_state: processed_target_slots=149, full_materialized_records=149, candidate_catalog_records=366, exact_fingerprint_matches=77, fingerprint_mismatches=0, missing_candidate_records=72, outside_scope_missing_candidate_records=72, unique_processed_value_fingerprints=84, precheck_passed=false, raw_to_processed_comparison_performed=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization
+version_matrix_product_version_reference: 0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization
+
 # KMFA v0.1.4 Full Materialization Replay After Outside-Scope Application
 - Product version: `0.1.4-full-materialization-replay-after-outside-scope-application`.
 - Scope: `V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION` only; materialize all 149 processed-value source-map records in ignored private runtime without running raw-to-processed comparison.
