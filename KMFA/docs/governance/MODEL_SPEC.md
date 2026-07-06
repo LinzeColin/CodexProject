@@ -1,3 +1,14 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-AUDIT-001
+
+- version: `0.1.4-outside-scope-candidate-review-intake-blocker-audit`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for recording the second keep-pending outside-scope candidate review blocker observation while keeping all value-consistency gates closed.
+- expression: `candidate_review_intake_blocker_audit_valid = delegated_decision_record_count == 72 AND delegated_keep_pending_response_count == 72 AND selected_private_candidate_count == 0 AND corrected_source_map_reference_count == 0 AND authoritative_non_numeric_or_calculation_mapping_count == 0 AND source_map_actionable_response_count == 0 AND review_intake_blocker_observation_count == 2 AND review_intake_blocked_audit_threshold_met == false AND source_map_correction_ready == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: prior public readiness summary, prior public readiness manifest, ignored private readiness diagnostic and raw immutable boundary.
+- missing_policy: missing blocker audit manifest, Go/No-Go report, summary, matrix, private blocker audit diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_intake_blocker_audit_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, prior private readiness diagnostic mutation, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, private candidate selection, source-map correction, business content, formal raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-READINESS-RECHECK-001
 
 - version: `0.1.4-outside-scope-candidate-review-intake-readiness-recheck`
