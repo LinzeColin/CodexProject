@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Linked Source-Map Reapplication
+- Product version: `0.1.4-linked-source-map-reapplication`.
+- Scope: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION` only; consume prior post-resolution candidate queue and private partial value-source fill, write ignored private linked reapplication outputs and private materialization source-map input, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION/`.
+- Verification: `KMFA/tools/check_v014_processed_value_source_map_completion_linked_reapplication.py`; `KMFA/tests/test_v014_processed_value_source_map_completion_linked_reapplication.py`.
+- blocker_state: linked_candidate_groups=15, linked_candidate_records=77, linked_applied_groups=15, linked_applied_records=77, linked_blocked_records=0, source_map_records_applied=77, private_materialization_source_map_records=77, materialization_replay_ready=true, materialization_replay_performed=false, raw_to_processed_comparison=false, business_value_consistency_verified=false, raw_inbox_access=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-linked-source-map-reapplication
+version_matrix_product_version_reference: 0.1.4-linked-source-map-reapplication
+
 # KMFA v0.1.4 Post-Resolution Readiness Recheck
 - Product version: `0.1.4-post-resolution-readiness-recheck`.
 - Scope: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK` only; consume prior owner-exclusion application summary and ignored private owner response, write ignored private post-resolution diagnostic/candidate queues, and keep public evidence aggregate-only.

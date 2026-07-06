@@ -953,3 +953,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: owner_exclusion_resolution_applied_count=36 closes the 36 unlinked blockers; the remaining linked blocker population yields 15 linked candidate groups and 77 source-map reapplication candidates.
 - gate: `NO_GO`; source-map reapplication is ready for a later single phase, but this phase does not apply records, materialize values, compare raw-to-processed values, run reconciliation, produce a formal report, upload GitHub, reinstall the app or execute business actions.
 - privacy: public artifacts contain aggregate counts and gate state only; private post-resolution diagnostic, candidate queue and blocker queue stay under git-ignored runtime.
+
+## V014 Linked Source-Map Reapplication
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-LINKED-REAPPLICATION-001`
+- parameter_ids: `PARAM-KMFA-1309`, `PARAM-KMFA-1310`, `PARAM-KMFA-1311`
+- phase_id: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION`
+- version: `0.1.4-linked-source-map-reapplication`
+- rule: post_resolution_reapplication_candidate_count=77 and linked_reapplication_applied_record_count=77 writes 77 private source-map records and stages 77 private materialization source-map inputs.
+- gate: `NO_GO`; materialization replay, raw-to-processed comparison, reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private linked reapplication diagnostic, result, applied records, source map and materialization input stay under git-ignored runtime.

@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-post-resolution-readiness-recheck`
+- version: `0.1.4-linked-source-map-reapplication`
 - current_stage: `value-consistency`
-- current_phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK`
-- status: `completed_validated_local_only_no_go_post_resolution_reapplication_ready`
-- current_blocker: `source_map_reapplication_not_yet_performed`
-- next_required_input: `run_linked_source_map_completion_reapplication_phase`
+- current_phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION`
+- status: `completed_validated_local_only_linked_source_map_reapplied_no_go`
+- current_blocker: `processed_value_materialization_replay_not_yet_performed`
+- next_required_input: `run_processed_value_materialization_replay_phase`
 - blocked_next_steps: `processed value materialization replay; raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 linked source-map reapplication completed local-only: owner_exclusion_resolution_applied_count=36，source_linked_application_blocker_count=77，post_resolution_reapplication_candidate_group_count=15，post_resolution_reapplication_candidate_count=77，linked_reapplication_applied_group_count=15，linked_reapplication_applied_record_count=77，linked_reapplication_blocked_record_count=0，source_map_completion_reapplication_ready=true，source_map_completion_reapplication_performed=true，source_map_records_applied_count=77，private_materialization_source_map_record_count=77，processed_value_materialization_replay_ready=true，processed_value_materialization_replay_performed=false，raw_to_processed_value_comparison_performed=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase writes linked source-map reapplication result/source-map/materialization input only in git-ignored runtime；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/write/delete/move/rename/copy/normalize/mutation=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_processed_value_materialization_replay_phase`。
 
 - v0.1.4 post-resolution source-map completion readiness recheck completed local-only: original_application_blocker_queue_count=113，source_linked_application_blocker_count=77，source_unlinked_application_blocker_count=36，owner_exclusion_resolution_applied_count=36，corrected_source_resolution_applied_count=0，post_resolution_actionable_group_decision_count=19，post_resolution_reapplication_candidate_group_count=15，post_resolution_reapplication_candidate_count=77，post_resolution_blocker_group_count=3，post_resolution_open_unlinked_blocker_count=0，source_map_completion_reapplication_ready=true，source_map_completion_reapplication_performed=false，source_map_records_applied_count=0，raw_to_processed_value_comparison_performed=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase writes private post-resolution diagnostic/candidate/blocker queues only in git-ignored runtime；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/write/delete/move/rename/copy/normalize/mutation=false；materialization=false；raw-to-processed comparison=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_linked_source_map_completion_reapplication_phase`。
 
