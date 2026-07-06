@@ -1509,3 +1509,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_linked_scope_raw_to_processed_comparison_dry_run`
 - boundary: this phase dry-run compares 77 linked-scope private fingerprint pairs in ignored runtime; it does not read raw inbox, complete full raw-to-processed comparison, reconcile values, verify business consistency, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `resolve_72_processed_target_slots_outside_linked_replay_scope_before_full_raw_to_processed_comparison`
+
+## 2026-07-06 - V014 Processed Target Outside Linked-Scope Resolution
+
+- task_id: `KMFA-V014-PROCESSED-TARGET-OUTSIDE-LINKED-SCOPE-RESOLUTION-20260706`
+- phase_id: `V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION`
+- product_version: `0.1.4-processed-target-outside-linked-scope-resolution`
+- status: `completed_validated_local_only_outside_linked_scope_resolution_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_target_outside_linked_scope_resolution.py --require-private-resolution`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_target_outside_linked_scope_resolution`
+- boundary: this phase classifies 72 outside linked-scope processed target slots and writes an ignored private resolution queue; it does not read raw inbox, write source-map extensions, complete raw-to-processed comparison, reconcile values, verify business consistency, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `owner_or_authorized_delegate_supplies_source_map_extension_for_72_outside_linked_scope_target_slots`

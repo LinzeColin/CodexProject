@@ -995,3 +995,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: linked_scope_dry_run_pair_count=77, exact_match_count=77, mismatch_count=0 and invalid_record_count=0 pass the linked-scope private fingerprint dry-run, but processed_target_slot_outside_linked_replay_scope_count=72 keeps full comparison incomplete.
 - gate: `NO_GO`; full raw-to-processed comparison, processed-data reconciliation, business value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private dry-run diagnostic and records stay under git-ignored runtime.
+
+## V014 Processed Target Outside Linked-Scope Resolution
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-PROCESSED-TARGET-OUTSIDE-LINKED-SCOPE-RESOLUTION-001`
+- parameter_ids: `PARAM-KMFA-1321`, `PARAM-KMFA-1322`, `PARAM-KMFA-1323`
+- phase_id: `V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION`
+- version: `0.1.4-processed-target-outside-linked-scope-resolution`
+- rule: processed_target_slot_count=149, linked_scope_resolved_target_slot_count=77 and outside_linked_scope_target_slot_count=72 classify the remaining target slots outside linked replay scope; outside_scope_auto_resolvable_count=0 and outside_scope_authorized_source_map_required_count=72 block full comparison until authorized source-map extension is supplied.
+- gate: `NO_GO`; source-map extension, full raw-to-processed comparison, processed-data reconciliation, business value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private outside-scope resolution diagnostic, queue and report stay under git-ignored runtime.

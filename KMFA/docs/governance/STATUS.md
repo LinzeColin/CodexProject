@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-linked-scope-raw-to-processed-comparison-dry-run`
+- version: `0.1.4-processed-target-outside-linked-scope-resolution`
 - current_stage: `value-consistency`
-- current_phase: `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN`
-- status: `completed_validated_local_only_linked_scope_comparison_dry_run_no_go`
-- current_blocker: `processed_target_slots_outside_linked_replay_scope_and_full_reconciliation_not_complete`
-- next_required_input: `resolve_72_processed_target_slots_outside_linked_replay_scope_before_full_raw_to_processed_comparison`
+- current_phase: `V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION`
+- status: `completed_validated_local_only_outside_linked_scope_resolution_no_go`
+- current_blocker: `outside_linked_scope_targets_require_authorized_source_map_extension`
+- next_required_input: `owner_or_authorized_delegate_supplies_source_map_extension_for_72_outside_linked_scope_target_slots`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 processed target outside linked scope resolution completed local-only: processed_target_slot_count=149，linked_scope_resolved_target_slot_count=77，outside_linked_scope_target_slot_count=72，outside_scope_resolution_queue_record_count=72，outside_scope_verified_against_staging_count=72，outside_scope_already_has_source_map_count=0，outside_scope_auto_resolvable_count=0，outside_scope_authorized_source_map_required_count=72，outside_scope_resolution_applied_count=0，outside_scope_resolution_pending_count=72，source_map_extension_written_by_this_phase=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase classifies outside-linked-scope processed target slots and writes an ignored private resolution queue only；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；source-map extension=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_supplies_source_map_extension_for_72_outside_linked_scope_target_slots`。
 
 - v0.1.4 linked-scope raw-to-processed comparison dry-run completed local-only: processed_target_slot_count=149，linked_materialized_record_count=77，candidate_catalog_record_count=366，linked_scope_private_fingerprint_precheck_pair_count=77，linked_scope_dry_run_pair_count=77，linked_scope_dry_run_exact_match_count=77，linked_scope_dry_run_mismatch_count=0，linked_scope_dry_run_invalid_record_count=0，linked_unique_source_record_ref_count=15，linked_unique_processed_value_fingerprint_count=12，processed_target_slot_outside_linked_replay_scope_count=72，linked_scope_raw_to_processed_value_comparison_dry_run_performed=true，linked_scope_raw_to_processed_value_comparison_dry_run_passed=true，linked_scope_private_fingerprint_consistency_dry_run_verified=true，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase compares only ignored private dry-run fingerprints derived from the precheck output；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`resolve_72_processed_target_slots_outside_linked_replay_scope_before_full_raw_to_processed_comparison`。
 
