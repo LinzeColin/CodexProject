@@ -1832,3 +1832,18 @@ kmfa_v014_outside_scope_authorized_source_map_extension_resumed_readiness_rechec
   evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_RESUMED_READINESS_RECHECK
   validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_resumed_readiness_recheck.py
   scope: Outside-scope authorized source-map extension resumed readiness recheck only; restarts resumed blocker audit counter after goal resume and confirms 72 pending outside-scope target slots still lack valid authorized extension records; public evidence aggregate-only; no raw inbox access, private template mutation, source-map extension application, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-DELEGATED-KEEP-PENDING-DECISION-001
+  parameter_refs:
+    - PARAM-KMFA-1336
+    - PARAM-KMFA-1337
+    - PARAM-KMFA-1338
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION
+  validator: KMFA/tools/check_v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_decision.py
+  scope: Outside-scope authorized source-map extension delegated decision only; records 72 conservative keep-pending decisions in ignored private runtime because exact source-record and processed-ref matches are zero; public evidence aggregate-only; no raw inbox access, original private template mutation, source-map extension application, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.

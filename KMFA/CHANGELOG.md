@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Delegated Keep-Pending Decision
+
+## 0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION` 本地单 phase。
+- 在用户授权 Codex 自主决定后，基于现有 private runtime 聚合证据记录 72 条 delegated `KEEP_PENDING` 决策；exact source-record ref matches=0、exact processed-ref matches=0，因此不生成授权 source-map extension。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：不改写原 private template、不应用 source-map、不做 raw-to-processed comparison、不做 full reconciliation、不做 GitHub upload、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 delegated response、queue 和 diagnostic 只保留在 ignored runtime。
+
 # KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Resumed Readiness Recheck
 
 ## 0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck - 2026-07-06

@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-DELEGATED-KEEP-PENDING-DECISION-001
+- version: `0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for recording delegated conservative outside-scope source-map extension decisions.
+- expression: `delegated_keep_pending_valid = delegated_decision_record_count == 72 AND delegated_keep_pending_decision_count == 72 AND exact_source_record_ref_match_count == 0 AND exact_processed_ref_match_count == 0 AND valid_authorized_extension_record_count == 0 AND source_map_extension_application_ready == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: ignored private authorized extension template, ignored private outside-scope resolution evidence, ignored private candidate catalog, raw immutable boundary.
+- missing_policy: missing delegated decision manifest, Go/No-Go report, summary, matrix, private decision record, private diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION/machine/outside_scope_authorized_source_map_extension_delegated_keep_pending_decision_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, original private template mutation, source-map extension application, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business value, full raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-RESUMED-READINESS-RECHECK-001
 - version: `0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck`
 - model_id: `MOD-KMFA-GOV-001`

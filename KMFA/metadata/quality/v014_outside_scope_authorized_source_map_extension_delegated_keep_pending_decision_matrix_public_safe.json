@@ -1,0 +1,63 @@
+{
+  "checks": [
+    {
+      "check_code": "template_row_count_preserved",
+      "observed_public_safe": null,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "delegated_decision_count_complete",
+      "observed_public_safe": null,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_delegated_decisions_keep_pending",
+      "observed_public_safe": null,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "exact_source_record_ref_match_absent",
+      "observed_public_safe": null,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "exact_processed_ref_match_absent",
+      "observed_public_safe": null,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_application_not_ready",
+      "observed_public_safe": null,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "observed_public_safe": null,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "observed_public_safe": null,
+      "required": false,
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "delegated_keep_pending_decision_check_count": 8,
+  "delegated_keep_pending_decision_check_fail_count": 0,
+  "delegated_keep_pending_decision_check_pass_count": 8,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_authorized_source_map_extension_delegated_keep_pending_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_delegated_keep_pending_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-DELEGATED-KEEP-PENDING-DECISION-20260706",
+  "version": "0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision"
+}
