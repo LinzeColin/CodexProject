@@ -1,0 +1,70 @@
+{
+  "business_value_consistency_verified": false,
+  "checks": [
+    {
+      "check_code": "source_dry_run_dependency_passed",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_unmaterialized_records_available",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "outside_count_preserved",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "outside_records_present_in_staging",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "outside_records_have_no_source_map",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "auto_resolution_not_allowed",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "full_comparison_not_claimed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "outside_linked_scope_target_slot_count": 72,
+  "outside_scope_authorized_source_map_required_count": 72,
+  "outside_scope_auto_resolvable_count": 0,
+  "outside_scope_resolution_check_count": 8,
+  "outside_scope_resolution_check_fail_count": 0,
+  "outside_scope_resolution_check_pass_count": 8,
+  "outside_scope_resolution_queue_record_count": 72,
+  "phase_id": "V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_linked_scope_resolution_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_linked_scope_resolution_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-PROCESSED-TARGET-OUTSIDE-LINKED-SCOPE-RESOLUTION-20260706",
+  "version": "0.1.4-processed-target-outside-linked-scope-resolution"
+}

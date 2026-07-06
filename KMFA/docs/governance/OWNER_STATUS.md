@@ -4,9 +4,11 @@
 
 ## 一句话状态
 
-KMFA 当前版本 `0.1.4-linked-scope-raw-to-processed-comparison-dry-run` 已完成 `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN` 本地 gate：77 条 linked-scope private fingerprint pairs dry-run 全部一致、mismatch=0；但仍有 72 个 processed target slots 不在 linked replay scope 内，所以这不是 full raw-to-processed comparison、reconciliation 或正式报告，当前仍是 `NO_GO`。下一步只能单独解决 outside-linked-scope 的 72 个 target slots；next_required_input=`resolve_72_processed_target_slots_outside_linked_replay_scope_before_full_raw_to_processed_comparison`。
+KMFA 当前版本 `0.1.4-processed-target-outside-linked-scope-resolution` 已完成 `V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION` 本地 gate：72 个 outside-linked-scope processed target slots 已被分类并写入 ignored private resolution queue；当前没有可自动补齐的 source-map，72 个都需要 owner/授权 source-map extension，所以仍是 `NO_GO`。下一步只能提供 72 个 outside-linked-scope target slots 的授权 source-map extension；next_required_input=`owner_or_authorized_delegate_supplies_source_map_extension_for_72_outside_linked_scope_target_slots`。
 
 ## 你现在能信任什么
+
+- v0.1.4 processed target outside linked scope resolution 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：processed target slots=149、linked-scope resolved slots=77、outside linked-scope slots=72、private resolution queue records=72、verified against staging=72、already has source-map=0、auto-resolvable=0、authorized source-map required=72、resolution applied=0、full raw-to-processed comparison complete=false。该 phase 只在 git-ignored private runtime 中生成 resolution queue，不读取或修改 raw inbox，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
 
 - v0.1.4 linked-scope raw-to-processed comparison dry-run 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：processed target slots=149、linked materialized records=77、candidate catalog records=366、private fingerprint precheck pairs=77、dry-run pairs=77、exact dry-run matches=77、mismatches=0、invalid dry-run records=0、outside linked replay scope slots=72、full raw-to-processed comparison complete=false。该 phase 只在 git-ignored private runtime 中 dry-run 比对上一 precheck 的 linked-scope fingerprints，不读取或修改 raw inbox，不公开 raw 文件名、字段/表头、金额、明细、私有 hash 或业务值，不证明 full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
 

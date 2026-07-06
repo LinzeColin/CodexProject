@@ -10623,3 +10623,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private linked-scope dry-run outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-linked-scope-raw-to-processed-comparison-dry-run"
     completed_version: "0.1.4-linked-scope-raw-to-processed-comparison-dry-run"
+
+  - task_id: "KMFA-V014-PROCESSED-TARGET-OUTSIDE-LINKED-SCOPE-RESOLUTION-20260706"
+    phase_id: "V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-PROCESSED-TARGET-OUTSIDE-LINKED-SCOPE-RESOLUTION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_processed_target_outside_linked_scope_resolution.py --generated-at 2026-07-06T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_processed_target_outside_linked_scope_resolution.py --require-private-resolution"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_processed_target_outside_linked_scope_resolution"
+    test_results:
+      - "PASS: outside linked-scope resolution validator and focused unit test passed; 72 processed target slots require authorized source-map extension while full comparison remains closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION/human/processed_target_outside_linked_scope_resolution_report.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION/machine/processed_target_outside_linked_scope_resolution_manifest.json"
+      - "KMFA/stage_artifacts/V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION/machine/processed_target_outside_linked_scope_resolution_matrix_public_safe.json"
+    risk: "Outside linked-scope resolution can be mistaken for source-map extension or full value reconciliation; 72 target slots still require authorized source-map extension, so do not treat this phase as formal report, upload gate, app reinstall gate or business execution clearance."
+    rollback: "Remove current phase artifacts, metadata copies, private outside-scope resolution outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-processed-target-outside-linked-scope-resolution"
+    completed_version: "0.1.4-processed-target-outside-linked-scope-resolution"

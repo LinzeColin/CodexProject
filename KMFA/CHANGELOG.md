@@ -2084,3 +2084,11 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 当前 aggregate 结果：linked_scope_dry_run_pair_count=77、exact_match_count=77、mismatch_count=0、invalid_record_count=0、processed_target_slot_outside_linked_replay_scope_count=72、Go/No-Go=`NO_GO`。
 - 这不是 full raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步必须先解决 72 个 outside linked replay scope target slots。
 - 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 dry-run、diagnostic 和 records 只保留在 ignored runtime。
+
+## 0.1.4-processed-target-outside-linked-scope-resolution - 2026-07-06
+
+- 完成 `V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION` 本地单 phase。
+- 基于上一轮 dry-run 的 public-safe summary、ignored private unmaterialized scope records、private processed staging 和 private source map，分类 72 个 outside linked-scope processed target slots。
+- 当前 aggregate 结果：processed_target_slot_count=149、linked_scope_resolved_target_slot_count=77、outside_linked_scope_target_slot_count=72、outside_scope_resolution_queue_record_count=72、outside_scope_authorized_source_map_required_count=72、outside_scope_auto_resolvable_count=0、outside_scope_resolution_applied_count=0、Go/No-Go=`NO_GO`。
+- 这不是 source-map extension、full raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步必须提供 72 个 outside linked-scope target slots 的授权 source-map extension。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 resolution queue、diagnostic 和 report 只保留在 ignored runtime。

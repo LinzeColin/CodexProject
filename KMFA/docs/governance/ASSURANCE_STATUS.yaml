@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260706-V014-LINKED-SCOPE-COMPARISON-DRY-RUN"
+as_of_event_id: "DEV-KMFA-20260706-V014-OUTSIDE-LINKED-SCOPE-RESOLUTION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "bd870ee5192846d2e56503846badd2fad57b713c"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-06T00:00:00+10:00"
-generator_version: "manual-0.1.4-linked-scope-raw-to-processed-comparison-dry-run"
+generator_version: "manual-0.1.4-processed-target-outside-linked-scope-resolution"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 947
-    total_active_formulas: 156
+    total_active_parameters: 950
+    total_active_formulas: 157
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION/human/test_results.md"
+      - "KMFA/tools/check_v014_processed_target_outside_linked_scope_resolution.py"
+      - "KMFA/stage_artifacts/V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION/machine/processed_target_outside_linked_scope_resolution_manifest.json"
       - "KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN/human/test_results.md"
       - "KMFA/tools/check_v014_linked_scope_raw_to_processed_comparison_dry_run.py"
       - "KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN/machine/linked_scope_raw_to_processed_comparison_dry_run_manifest.json"
