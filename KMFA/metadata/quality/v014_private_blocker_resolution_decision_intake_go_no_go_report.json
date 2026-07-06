@@ -1,0 +1,22 @@
+{
+  "acceptance_id": "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-BLOCKER-RESOLUTION-DECISION-INTAKE",
+  "app_reinstall_performed": false,
+  "blocked_until": "corrected_private_source_or_owner_approved_resolution_before_full_reconciliation",
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "decision_track_count": 5,
+  "diagnostic_conclusion": "conservative_blocker_resolution_decisions_intaken_no_resolution_applied",
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "keep_blocked_decision_count": 5,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_BLOCKER_RESOLUTION_DECISION_INTAKE",
+  "private_decision_queue_count": 113,
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_private_blocker_resolution_decision_intake_go_no_go",
+  "resolution_applied_decision_count": 0,
+  "schema_version": "kmfa.v014_private_blocker_resolution_decision_intake_go_no_go.v1",
+  "status": "completed_validated_local_only_private_blocker_resolution_decision_intake_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-BLOCKER-RESOLUTION-DECISION-INTAKE-20260706",
+  "version": "0.1.4-private-blocker-resolution-decision-intake"
+}

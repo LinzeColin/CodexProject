@@ -1,0 +1,76 @@
+{
+  "all_decisions_intaken": true,
+  "business_value_consistency_verified": false,
+  "corrected_private_source_provided": false,
+  "decision": "NO_GO",
+  "decision_rows": [
+    {
+      "blocker_code": "processed_materialization_value_fingerprints_missing",
+      "decision_basis": "no corrected private source, owner exclusion, or disambiguation evidence was provided",
+      "decision_code": "keep_blocked_no_resolution_evidence",
+      "delivery_claim_allowed_after_decision": false,
+      "full_reconciliation_allowed_after_decision": false,
+      "requires_corrected_private_source_or_owner_decision": true,
+      "resolution_applied": false,
+      "resolution_track_code": "prepare_or_reactivate_private_processed_value_sources",
+      "source_decision": "keep_blocked_until_private_processed_value_sources_are_materialized"
+    },
+    {
+      "blocker_code": "owner_authorized_fill_targets_unmatched_in_private_raw_index",
+      "decision_basis": "no corrected private source, owner exclusion, or disambiguation evidence was provided",
+      "decision_code": "keep_blocked_no_resolution_evidence",
+      "delivery_claim_allowed_after_decision": false,
+      "full_reconciliation_allowed_after_decision": false,
+      "requires_corrected_private_source_or_owner_decision": true,
+      "resolution_applied": false,
+      "resolution_track_code": "correct_or_explain_unmatched_owner_authorized_fill_targets",
+      "source_decision": "keep_unmatched_targets_excluded_from_delivery_claim"
+    },
+    {
+      "blocker_code": "ambiguous_private_raw_index_matches",
+      "decision_basis": "no corrected private source, owner exclusion, or disambiguation evidence was provided",
+      "decision_code": "keep_blocked_no_resolution_evidence",
+      "delivery_claim_allowed_after_decision": false,
+      "full_reconciliation_allowed_after_decision": false,
+      "requires_corrected_private_source_or_owner_decision": true,
+      "resolution_applied": false,
+      "resolution_track_code": "disambiguate_private_raw_index_matches",
+      "source_decision": "manual_disambiguation_required_no_auto_selection"
+    },
+    {
+      "blocker_code": "residual_partial_application_blocked_targets",
+      "decision_basis": "no corrected private source, owner exclusion, or disambiguation evidence was provided",
+      "decision_code": "keep_blocked_no_resolution_evidence",
+      "delivery_claim_allowed_after_decision": false,
+      "full_reconciliation_allowed_after_decision": false,
+      "requires_corrected_private_source_or_owner_decision": true,
+      "resolution_applied": false,
+      "resolution_track_code": "resolve_residual_partial_application_blockers",
+      "source_decision": "keep_residual_targets_blocked_until_authorized_source_map_update"
+    },
+    {
+      "blocker_code": "private_raw_index_parse_errors_present",
+      "decision_basis": "no corrected private source, owner exclusion, or disambiguation evidence was provided",
+      "decision_code": "keep_blocked_no_resolution_evidence",
+      "delivery_claim_allowed_after_decision": false,
+      "full_reconciliation_allowed_after_decision": false,
+      "requires_corrected_private_source_or_owner_decision": true,
+      "resolution_applied": false,
+      "resolution_track_code": "review_private_raw_index_parse_errors",
+      "source_decision": "private_diagnostic_review_required_before_relying_on_full_index"
+    }
+  ],
+  "decision_track_count": 5,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "keep_blocked_decision_count": 5,
+  "owner_exclusion_or_disambiguation_provided": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_BLOCKER_RESOLUTION_DECISION_INTAKE",
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "record_type": "v014_processed_value_source_map_completion_private_blocker_resolution_decision_matrix_public_safe",
+  "resolution_applied_decision_count": 0,
+  "schema_version": "kmfa.v014_private_blocker_resolution_decision_matrix_public_safe.v1",
+  "source_phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_BLOCKER_RESOLUTION_PACKET",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-BLOCKER-RESOLUTION-DECISION-INTAKE-20260706",
+  "version": "0.1.4-private-blocker-resolution-decision-intake"
+}
