@@ -1,0 +1,64 @@
+{
+  "business_value_consistency_verified": false,
+  "checks": [
+    {
+      "check_code": "linked_materialized_records_available",
+      "observed_public_safe": 77,
+      "required": 77,
+      "status": "PASS"
+    },
+    {
+      "check_code": "candidate_catalog_available",
+      "observed_public_safe": 366,
+      "required": 366,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_records_matched_to_candidates",
+      "observed_public_safe": 77,
+      "required": 77,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_fingerprint_precheck_exact",
+      "observed_public_safe": 77,
+      "required": 77,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_fingerprint_precheck_unblocked",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "full_comparison_not_claimed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "linked_materialized_record_count": 77,
+  "linked_scope_exact_fingerprint_match_count": 77,
+  "linked_scope_fingerprint_mismatch_count": 0,
+  "linked_scope_precheck_count": 7,
+  "linked_scope_precheck_fail_count": 0,
+  "linked_scope_precheck_pass_count": 7,
+  "phase_id": "V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK",
+  "processed_target_slot_count": 149,
+  "project_id": "KMFA",
+  "record_type": "v014_linked_scope_comparison_precheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_linked_scope_comparison_precheck_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-20260706",
+  "version": "0.1.4-linked-scope-raw-to-processed-comparison-precheck"
+}

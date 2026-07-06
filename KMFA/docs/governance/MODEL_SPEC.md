@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-LINKED-SCOPE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-001
+- version: `0.1.4-linked-scope-raw-to-processed-comparison-precheck`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for prechecking linked-scope private raw-derived fingerprints against processed replay fingerprints.
+- expression: `linked_scope_precheck_valid = linked_materialized_record_count == 77 AND linked_scope_private_fingerprint_precheck_pair_count == 77 AND linked_scope_exact_fingerprint_match_count == 77 AND linked_scope_fingerprint_mismatch_count == 0 AND linked_scope_missing_candidate_count == 0 AND linked_scope_invalid_materialized_record_count == 0 AND full_raw_to_processed_value_comparison_complete == false AND business_value_consistency_verified == false AND downstream_allowed == false`.
+- inputs: linked materialization replay public summary, git-ignored private linked materialized records, git-ignored private candidate catalog, raw immutable boundary.
+- missing_policy: missing linked-scope precheck manifest, Go/No-Go report, summary, matrix, private precheck, private diagnostic, private comparison records, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK/machine/linked_scope_raw_to_processed_comparison_precheck_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, business value, full raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-LINKED-REAPPLICATION-001
 - version: `0.1.4-linked-materialization-replay`
 - model_id: `MOD-KMFA-GOV-001`

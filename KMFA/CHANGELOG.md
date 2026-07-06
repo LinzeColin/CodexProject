@@ -1,3 +1,14 @@
+# KMFA v0.1.4 Linked-Scope Raw-To-Processed Comparison Precheck
+
+## 0.1.4-linked-scope-raw-to-processed-comparison-precheck - 2026-07-06
+
+- 完成 `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK` 本地 linked-scope private fingerprint precheck phase。
+- 基于上一轮 77 条 linked materialized records 和 private candidate catalog，只在 git-ignored private runtime 中比对 raw-derived candidate fingerprint 与 processed replay fingerprint。
+- 锁定结论：processed target slots=149、linked materialized records=77、candidate catalog records=366、precheck pairs=77、exact fingerprint matches=77、mismatches=0、missing candidates=0、invalid materialized records=0、outside linked replay scope slots=72、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不解析、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private comparison precheck records 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 full raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能单独运行 linked-scope raw-to-processed comparison dry-run phase。
+
 # KMFA v0.1.4 Linked Materialization Replay
 
 ## 0.1.4-linked-materialization-replay - 2026-07-06

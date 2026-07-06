@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260706-V014-LINKED-MATERIALIZATION-REPLAY"
+as_of_event_id: "DEV-KMFA-20260706-V014-LINKED-SCOPE-COMPARISON-PRECHECK"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "247f7d3c6afbdf1496f8accb4164182fe076cf4e"
+source_base_commit: "f5ba38cb4b1ad442055c2fe6d7973995f2f70b7c"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-06T00:00:00+10:00"
-generator_version: "manual-0.1.4-linked-materialization-replay"
+generator_version: "manual-0.1.4-linked-scope-raw-to-processed-comparison-precheck"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 941
-    total_active_formulas: 154
+    total_active_parameters: 944
+    total_active_formulas: 155
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -40,6 +40,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION/human/test_results.md"
       - "KMFA/tools/check_v014_processed_value_materialization_replay_after_linked_reapplication.py"
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION/machine/processed_value_materialization_replay_after_linked_reapplication_manifest.json"
+      - "KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK/human/test_results.md"
+      - "KMFA/tools/check_v014_linked_scope_raw_to_processed_comparison_precheck.py"
+      - "KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK/machine/linked_scope_raw_to_processed_comparison_precheck_manifest.json"
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/human/test_results.md"
       - "KMFA/tools/check_v014_processed_value_source_map_completion_readiness_recheck.py"
       - "KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK/machine/processed_value_source_map_completion_readiness_recheck_manifest.json"

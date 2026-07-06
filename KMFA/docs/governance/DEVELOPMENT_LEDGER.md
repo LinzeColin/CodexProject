@@ -1,3 +1,12 @@
+# KMFA v0.1.4 Linked-Scope Raw-To-Processed Comparison Precheck
+- Product version: `0.1.4-linked-scope-raw-to-processed-comparison-precheck`.
+- Scope: `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK` only; consume ignored private linked materialization replay records and private candidate catalog, write ignored private linked-scope comparison precheck records, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK/`.
+- Verification: `KMFA/tools/check_v014_linked_scope_raw_to_processed_comparison_precheck.py`; `KMFA/tests/test_v014_linked_scope_raw_to_processed_comparison_precheck.py`.
+- blocker_state: processed_target_slots=149, linked_materialized_records=77, candidate_catalog_records=366, precheck_pairs=77, exact_matches=77, mismatches=0, missing_candidates=0, invalid_materialized_records=0, outside_linked_replay_scope_slots=72, linked_scope_precheck_passed=true, full_raw_to_processed_comparison=false, full_reconciliation=false, business_value_consistency_verified=false, raw_inbox_access=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-linked-scope-raw-to-processed-comparison-precheck
+version_matrix_product_version_reference: 0.1.4-linked-scope-raw-to-processed-comparison-precheck
+
 # KMFA v0.1.4 Linked Materialization Replay
 - Product version: `0.1.4-linked-materialization-replay`.
 - Scope: `V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION` only; consume ignored private linked materialization source-map input and processed target staging, write ignored private linked materialization replay outputs, and keep public evidence aggregate-only.
