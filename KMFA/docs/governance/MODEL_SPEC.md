@@ -1,3 +1,14 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-PACKET-AFTER-ALIGNMENT-001
+
+- version: `0.1.4-outside-scope-candidate-review-packet-after-alignment`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for preparing owner/authorized-delegate review of 72 outside-scope alignment items while keeping all downstream value-consistency gates closed.
+- expression: `outside_scope_candidate_review_packet_valid = source_alignment_item_count == 72 AND review_packet_item_count == 72 AND review_group_count == 10 AND ambiguous_review_item_count == 24 AND unmatched_review_item_count == 40 AND non_numeric_or_calculation_review_item_count == 8 AND private_candidate_option_excerpt_count == 240 AND candidate_record_observation_count == 56748 AND candidate_unique_fingerprint_observation_count == 19292 AND owner_review_required_item_count == 72 AND owner_review_response_supplied == false AND source_map_correction_ready == false AND full_raw_to_processed_value_comparison_complete == false AND business_value_consistency_verified == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: previous public alignment summary, previous ignored private alignment packet/items and raw immutable boundary.
+- missing_policy: missing review packet manifest, Go/No-Go report, summary, matrix, private packet, private packet items, private markdown, private diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT/machine/outside_scope_candidate_review_packet_after_alignment_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, source private alignment mutation, candidate selection, source-map correction, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business content, formal raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-RAW-CANDIDATE-ALIGNMENT-AFTER-FULL-PRECHECK-001
 - version: `0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck`
 - model_id: `MOD-KMFA-GOV-001`

@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Packet After Alignment
+
+- Product version: `0.1.4-outside-scope-candidate-review-packet-after-alignment`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT` only; build a private owner/authorized-delegate review packet for the 72 outside-scope alignment items from prior ignored private diagnostics, without selecting candidates, correcting source maps or running formal raw-to-processed comparison.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_packet_after_alignment.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_packet_after_alignment.py`.
+- gate_state: source_alignment_items=72, review_packet_items=72, review_groups=10, ambiguous_review_items=24, unmatched_review_items=40, non_numeric_or_calculation_review_items=8, private_candidate_option_excerpts=240, candidate_record_observations=56748, candidate_unique_fingerprint_observations=19292, owner_review_required=72, owner_review_response_supplied=false, source_map_correction_ready=false, full_raw_to_processed_comparison_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-packet-after-alignment
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-packet-after-alignment
+
 # KMFA v0.1.4 Outside-Scope Raw Candidate Alignment After Full Precheck
 
 - Product version: `0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck`.

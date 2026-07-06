@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Packet After Alignment
+
+## 0.1.4-outside-scope-candidate-review-packet-after-alignment - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT` 本地单 phase。
+- 基于上一 phase 的 ignored private alignment diagnostics 生成 owner/授权代理 private review packet；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source alignment items=72、review packet items=72、review groups=10、ambiguous review items=24、unmatched review items=40、non-numeric/calculation review items=8、private candidate option excerpts=240、candidate record observations=56748、candidate unique fingerprint observations=19292、owner review required=72、owner review response supplied=false、Go/No-Go=`NO_GO`。
+- 本 phase 只读取上一 phase ignored private alignment，不读取 raw inbox、不选择候选、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private review packet、items、markdown 和 diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细或私有 fingerprint/hash。
+
 # KMFA v0.1.4 Outside-Scope Raw Candidate Alignment After Full Precheck
 
 ## 0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck - 2026-07-07

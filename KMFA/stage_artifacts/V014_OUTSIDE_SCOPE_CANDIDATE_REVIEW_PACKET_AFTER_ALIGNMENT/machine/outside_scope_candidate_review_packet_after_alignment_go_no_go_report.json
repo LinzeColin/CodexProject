@@ -1,0 +1,30 @@
+{
+  "acceptance_id": "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-PACKET-AFTER-ALIGNMENT",
+  "app_reinstall_performed": false,
+  "blocker_ids": [
+    "OUTSIDE_SCOPE_OWNER_REVIEW_RESPONSE_NOT_SUPPLIED",
+    "DIRECT_SOURCE_RECORD_REF_COVERAGE_ZERO",
+    "DIRECT_PROCESSED_FINGERPRINT_RAW_COVERAGE_ZERO",
+    "FULL_COMPARISON_STILL_BLOCKED"
+  ],
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "outside_scope_candidate_review_packet_ready_owner_review_required",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "full_raw_to_processed_value_comparison_ready": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "github_upload_performed": false,
+  "next_required_input": "owner_or_authorized_delegate_completes_private_outside_scope_candidate_review_packet",
+  "owner_review_required_item_count": 72,
+  "owner_review_response_supplied": false,
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_packet_go_no_go",
+  "review_packet_item_count": 72,
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_packet_go_no_go.v1",
+  "source_map_correction_ready": false,
+  "status": "completed_validated_local_only_outside_scope_candidate_review_packet_ready_no_go",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-PACKET-AFTER-ALIGNMENT-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-packet-after-alignment"
+}

@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_candidate_review_packet_after_alignment:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-packet-after-alignment"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-PACKET-AFTER-ALIGNMENT-001
+  parameter_refs:
+    - PARAM-KMFA-1366
+    - PARAM-KMFA-1367
+    - PARAM-KMFA-1368
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_packet_after_alignment.py
+  scope: Outside-scope candidate review packet after alignment only; reads prior ignored private alignment diagnostics and writes a private owner/authorized-delegate review packet for 72 outside-scope blockers; public evidence aggregate-only; no raw inbox access, raw mutation, candidate selection, source-map correction, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_raw_candidate_alignment_after_full_precheck:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck"
