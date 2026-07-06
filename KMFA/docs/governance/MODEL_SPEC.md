@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-POST-DELEGATION-BLOCKER-THRESHOLD-RECHECK-001
+- version: `0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for rechecking whether the same delegated keep-pending blocker has reached the strict post-delegation blocked-goal threshold.
+- expression: `post_delegation_blocker_threshold_recheck_valid = prior_post_delegation_blocker_observation_count == 2 AND post_delegation_blocker_observation_count == 3 AND post_delegation_blocked_audit_threshold_met == true AND goal_status_recommendation == blocked AND delegated_decision_record_count == 72 AND delegated_keep_pending_decision_count == 72 AND delegated_authorize_source_map_extension_count == 0 AND valid_authorized_extension_record_count == 0 AND source_map_extension_application_ready == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: prior post-delegation blocker audit public-safe summary, ignored prior private diagnostic, raw immutable boundary.
+- missing_policy: missing threshold recheck manifest, Go/No-Go report, summary, matrix, private diagnostic, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK/machine/outside_scope_authorized_source_map_extension_post_delegation_blocker_threshold_recheck_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, prior private diagnostic mutation, source-map extension application, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, business content, full raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-POST-DELEGATION-BLOCKER-AUDIT-001
 - version: `0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-audit`
 - model_id: `MOD-KMFA-GOV-001`
