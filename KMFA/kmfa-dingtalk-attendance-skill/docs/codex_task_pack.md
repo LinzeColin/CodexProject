@@ -55,13 +55,23 @@ current tests for S19 attendance logic
 
 ### Task 2 - Wire existing KMFA pipeline into stage-2 adapter
 
-Replace TODO in:
+Current status:
+
+- `scripts/run_stage2_evening.sh` has a portable offline replay path.
+- Set `KMFA_STAGE2_SOURCE_JSON` to an approved snapshot to write deterministic
+  stage-2 artifacts.
+- If no approved source is configured, the runner fails closed with
+  `STAGE2_ADAPTER_SOURCE_MISSING`.
+- The future live-safe repo adapter still needs explicit authorization and
+  validation before it may replace replay input.
+
+The live-safe adapter must eventually connect:
 
 ```text
 KMFA/kmfa-dingtalk-attendance-skill/scripts/run_stage2_evening.sh
 ```
 
-with the repo-specific command that:
+to the repo-specific command that:
 
 - acquires/replays DingTalk attendance result records
 - acquires/replays DingTalk attendance detail records
