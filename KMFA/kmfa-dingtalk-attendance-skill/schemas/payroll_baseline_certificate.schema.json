@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kmfa.local/schemas/payroll_baseline_certificate.schema.json",
+  "title": "Payroll Baseline Certificate",
+  "type": "object",
+  "required": ["target_month", "stage2_status", "accepted", "canonical_snapshot_hash", "run_hashes", "quality_grade"],
+  "properties": {
+    "target_month": {"type": "string", "pattern": "^[0-9]{6}$"},
+    "stage2_status": {"const": "accepted"},
+    "accepted": {"const": true},
+    "canonical_snapshot_hash": {"type": "string", "pattern": "^sha256:"},
+    "run_hashes": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"type": "string", "pattern": "^sha256:"}},
+    "quality_grade": {"const": "Q5"},
+    "generated_at": {"type": "string"},
+    "database_relation": {"type": "string"}
+  }
+}

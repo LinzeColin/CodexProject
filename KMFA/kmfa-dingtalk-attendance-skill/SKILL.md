@@ -1,6 +1,6 @@
 ---
 name: kmfa-dingtalk-attendance-skill
-description: Use when operating, reviewing, migrating, or modifying KMFA S19 DingTalk attendance automation in LinzeColin/CodexProject.
+description: Use when operating, reviewing, migrating, automating, or modifying KMFA S19 DingTalk attendance automation, DWS attendance, OneDrive/private runtime attendance archives, repo-scoped attendance skill files, stage-2 shadow payroll consensus, PostgreSQL attendance schema, payroll-baseline preparation, or Codex automation prompts in LinzeColin/CodexProject.
 ---
 
 # KMFA DingTalk Attendance Skill
@@ -10,13 +10,21 @@ description: Use when operating, reviewing, migrating, or modifying KMFA S19 Din
 This skill is the portable, public-safe operating entry for KMFA S19 DingTalk attendance automation.
 Use it only with a clone of `LinzeColin/CodexProject` and start from `main`.
 
+Canonical GitHub path:
+
+```text
+KMFA/kmfa-dingtalk-attendance-skill/
+```
+
 Before acting, read:
 
 1. `references/runbook.md`
 2. `references/configuration.md`
-3. `KMFA/HANDOFF.md`
-4. `KMFA/metadata/dingtalk_attendance/README.md`
-5. The exact source or test files you will touch
+3. `references/operating_contract.md` for v0.3 / stage-2 work
+4. `references/source_of_truth_contract.md`
+5. `KMFA/HANDOFF.md`
+6. `KMFA/metadata/dingtalk_attendance/README.md`
+7. The exact source or test files you will touch
 
 ## Hard Boundaries
 
@@ -26,6 +34,8 @@ Before acting, read:
 - Live DWS gate env: `KMFA_S19_ALLOW_DWS_COMMANDS`.
 - Use `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only` before any live consideration.
 - If changing behavior, use tests first and keep the change narrowly scoped.
+- Any skill or automation prompt change must be committed and pushed to GitHub `main` in the same run unless validation fails.
+- Local Codex automation state is not Git by itself. The canonical automation prompts must be mirrored under `automation/` in this folder before the local automation is updated.
 
 ## Current Attendance Rules
 
@@ -42,11 +52,54 @@ Before acting, read:
 - SQLite ledger is a rebuildable private index, not payroll basis and not a wage calculation source.
 - Private ledger path: `KMFA/metadata/dingtalk_attendance/private_runtime/attendance_ledger.sqlite`; never commit it.
 
+## Source And Data Boundaries
+
+- Public/repo metadata root: `KMFA/metadata/`.
+- DingTalk attendance metadata root: `KMFA/metadata/dingtalk_attendance/`.
+- Private runtime root: `KMFA/metadata/dingtalk_attendance/private_runtime/`.
+- Long-term private attendance archive root: `/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`.
+- Public GitHub may contain configs, schemas, validators, manifests, redacted status, docs, and deterministic synthetic fixtures.
+- Public GitHub must not contain real employee attendance plaintext, raw DingTalk JSON/JSONL/GZ, SQLite databases, webhook URLs, access tokens, app secrets, resolved openDingTalkId/group ids, or report bodies.
+
+When the user says "raw/original data is in `KMFA/metadata`", treat tracked `KMFA/metadata` as the public source-of-truth metadata/config layer. Real private DingTalk raw payloads remain private unless the user explicitly authorizes a different public-safe export.
+
+## Automation Rules
+
+Existing local Codex automation ids:
+
+- Morning: `automation-3`, daily 08:35 Beijing time.
+- Evening: `automation-4`, daily 18:15 Beijing time.
+
+Both automation prompts must invoke this skill by name:
+
+```text
+$kmfa-dingtalk-attendance-skill
+```
+
+If the current agent cannot auto-resolve repo-scoped skills, it must read this file directly and continue with the same rules.
+
+## Stage-2 / Payroll-Baseline Direction
+
+The v0.3 task pack extends the current S19 system toward database and shadow payroll readiness:
+
+1. Keep daily S19 attendance automation stable.
+2. Add PostgreSQL-compatible schema and deterministic import contracts.
+3. Preserve result/detail/location/trajectory evidence when available.
+4. Generate canonical monthly snapshots.
+5. On the 1st through 5th Beijing evening runs after a natural month ends, collect five independent canonical results for the previous month.
+6. Accept stage-2 only when all five canonical hashes match exactly, quality can reach the Q5 target, and there are no unresolved P0/P1 issues.
+7. Generate payroll baseline candidates only after accepted stage-2 consensus.
+
+SQLite remains a private transition ledger/cache, not the final payroll database.
+
 ## Portable Package
 
 - Config templates: `templates/`
-- Operating runbook: `references/runbook.md`
+- Operating runbook and v0.3 contracts: `references/`
 - Config map: `references/configuration.md`
+- PostgreSQL schema: `database/postgres_schema.sql`
+- Automation prompt mirrors: `automation/`
+- Stage-2 scripts and fixtures: `scripts/`, `tests/`
 - Skill conversion SWOT and downstream impact: `references/decision-impact.md`
 - Local package validator: `tools/validate_skill_package.py`
 

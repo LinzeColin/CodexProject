@@ -1,0 +1,15 @@
+{
+  "run_id": "20260805T120000Z-example",
+  "skill_name": "kmfa-dingtalk-attendance-skill",
+  "run_slot": "evening",
+  "target_month": "202607",
+  "stage2_run_index": 5,
+  "source_batches": ["batch_20260805T120000Z"],
+  "raw_hashes": ["sha256:example"],
+  "database_transaction_marker": "txid:example",
+  "canonical_snapshot_hash": "sha256:example",
+  "quality_grade": "Q4",
+  "unresolved_exceptions": {"P0": 0, "P1": 0, "P2": 0, "P3": 0},
+  "stage2_status": "pending",
+  "next_action": "wait_for_day_5_consensus_or_generate_certificate"
+}

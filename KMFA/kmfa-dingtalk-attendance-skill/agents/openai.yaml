@@ -1,0 +1,6 @@
+interface:
+  display_name: "KMFA DingTalk Attendance"
+  short_description: "Payroll-grade DingTalk attendance acquisition, validation, database readiness, and stage-2 consensus."
+  default_prompt: "Use $kmfa-dingtalk-attendance-skill for KMFA DingTalk attendance validation and monthly stage-2 consensus."
+policy:
+  allow_implicit_invocation: true

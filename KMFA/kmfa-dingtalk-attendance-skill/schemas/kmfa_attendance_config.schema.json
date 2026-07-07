@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kmfa.local/schemas/kmfa_attendance_config.schema.json",
+  "title": "KMFA Attendance Config",
+  "type": "object",
+  "required": ["project", "skill_name", "attendance_timezone", "stage2", "evidence", "database", "quality_thresholds"],
+  "properties": {
+    "project": {"const": "KMFA"},
+    "skill_name": {"const": "kmfa-dingtalk-attendance-skill"},
+    "attendance_timezone": {"type": "string"},
+    "month_boundary": {"enum": ["natural_month"]},
+    "stage2": {
+      "type": "object",
+      "required": ["enabled", "run_slot", "window_days", "required_exact_matches", "compare_mode"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "run_slot": {"const": "evening"},
+        "window_days": {"type": "array", "items": {"type": "integer", "minimum": 1, "maximum": 5}, "minItems": 5, "maxItems": 5},
+        "required_exact_matches": {"const": 5},
+        "min_quality_per_run": {"enum": ["Q4"]},
+        "acceptance_quality": {"enum": ["Q5"]},
+        "compare_mode": {"const": "exact_canonical_sha256"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["require_attendance_result", "require_attendance_detail", "require_location_fields", "require_trajectory_points", "store_full_raw_payload"],
+      "properties": {
+        "require_attendance_result": {"const": true},
+        "require_attendance_detail": {"const": true},
+        "require_location_fields": {"const": true},
+        "require_trajectory_points": {"const": true},
+        "store_full_raw_payload": {"const": true},
+        "do_not_infer_missing_coordinates": {"const": true}
+      }
+    },
+    "database": {
+      "type": "object",
+      "required": ["target", "schema", "write_mode"],
+      "properties": {
+        "target": {"const": "postgresql"},
+        "schema": {"const": "kmfa_attendance"},
+        "write_mode": {"const": "transactional_idempotent"}
+      }
+    },
+    "quality_thresholds": {"type": "object"}
+  }
+}
