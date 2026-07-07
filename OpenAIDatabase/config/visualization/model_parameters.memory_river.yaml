@@ -24,6 +24,37 @@ notes:
   purpose: "Production Stage 5.3 parameters for Timeline renderer flag, UTC day scale, Macro/Meso/Micro Memory River lanes, pan, brush, event card, safe feedback, and evidence layers."
   calibration_status: "heuristic layout, interaction, and evidence-layer constants; source-level and browser-smoke validated, not empirically calibrated"
   rollback: "Set timelineRenderer=legacy, timeline=legacy, VITE_MEMORY_ATLAS_TIMELINE_RENDERER=legacy, or localStorage memory-atlas.timeline-renderer=legacy."
+v1_1_7_stage5_phase3:
+  task_id: MA-V117-S5P03
+  phase_label: Phase 5.3
+  acceptance_id: ACC-MA-V117-S5P03
+  status: phase_5_3_timeline_integration_completed_pending_stage5_review
+  integration_version: memory_river_integration.v1_1_7_stage5_phase3
+  required_validator: validate:v1.1.7-stage5-phase3
+  browser_validator: validate:memory-river-integration-browser
+  default_renderer: default memory-river
+  legacy_renderer: legacy
+  rollback_label: legacy rollback
+  rollback_paths:
+    - in_app_legacy_toggle
+    - timelineRenderer=legacy
+    - timeline=legacy
+    - localStorage_memory_atlas_timeline_renderer_legacy
+    - VITE_MEMORY_ATLAS_TIMELINE_RENDERER=legacy
+  required_browser_checks:
+    - default_memory_river
+    - legacy_rollback
+    - url_rollback
+    - brush_interaction
+    - selected_range_metadata
+    - evidence_layers
+    - screenshot
+    - console_safety
+  safety_boundary:
+    raw_private_data_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No GitHub main upload; No Stage 5 review; No Stage 6"
 time:
   use_utc_scale: true
   date_parse_contract: "YYYY-MM-DD is parsed as Date.UTC(year, month, day)"
