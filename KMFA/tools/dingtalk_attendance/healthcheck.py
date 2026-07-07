@@ -14,6 +14,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT, STAGE_ID, TIMEZONE
+from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import robot_notification_status
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import RESOLVED_CHANNEL_PATH
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk_work_notification import work_notification_status
@@ -27,6 +28,7 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
     work_notification = work_notification_status(values)
     multi_target = _notification_targets_status() if env is None else _missing_notification_targets_status()
     resolved_personal = _resolved_personal_status() if env is None else _missing_resolved_personal_status()
+    dws_safety = dws_command_safety_status(env=values)
     ready_channels = [
         channel["channel"]
         for channel in (multi_target, resolved_personal, group_robot, work_notification)
@@ -48,7 +50,8 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
         "timezone": TIMEZONE,
         "onedrive_root": ONEDRIVE_ROOT,
         "backend": "dws",
-        "live_collection_allowed": True,
+        "live_collection_allowed": bool(dws_safety["dws_commands_allowed"]),
+        "dws_command_safety": dws_safety,
         "uses_sample_data": False,
         "missing": [] if notification_ready else sorted(set(group_robot["missing"] + work_notification["missing"])),
         "notification_ready": notification_ready,

@@ -9,6 +9,7 @@ from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
 
+from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status, dws_subprocess_env
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notification_template import (
     build_notification_message,
@@ -23,7 +24,19 @@ RESOLVED_CHANNEL_PATH = PRIVATE_RUNTIME_DIR / "notification_channel_resolved.jso
 
 
 def run_dws_command(args: list[str], *, timeout: int = 45) -> dict[str, Any]:
-    proc = subprocess.run(args, text=True, capture_output=True, timeout=timeout, check=False)
+    safety = dws_command_safety_status()
+    if safety["status"] != "READY":
+        return {
+            "returncode": 1,
+            "payload": {
+                "error": {
+                    "server_key": "local_preflight",
+                    "reason": "DWS_AUTH_REQUIRED",
+                    "message": safety["failure_reason"],
+                }
+            },
+        }
+    proc = subprocess.run(args, text=True, capture_output=True, timeout=timeout, check=False, env=dws_subprocess_env())
     payload_text = proc.stdout.strip() or proc.stderr.strip() or "{}"
     return {
         "returncode": proc.returncode,
@@ -32,7 +45,10 @@ def run_dws_command(args: list[str], *, timeout: int = 45) -> dict[str, Any]:
 
 
 def get_dws_help(command: list[str]) -> str:
-    proc = subprocess.run([*command, "--help"], text=True, capture_output=True, timeout=30, check=False)
+    safety = dws_command_safety_status()
+    if safety["status"] != "READY":
+        return ""
+    proc = subprocess.run([*command, "--help"], text=True, capture_output=True, timeout=30, check=False, env=dws_subprocess_env())
     return proc.stdout or proc.stderr or ""
 
 
