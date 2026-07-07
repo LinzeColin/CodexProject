@@ -511,3 +511,13 @@ KMFA 当前版本 `0.1.4-residual-difference-raw-to-processed-comparison-fingerp
 - aggregate result: `resolution_attempt_item_count=48`, `auto_resolved_raw_candidate_fingerprint_count=0`, `still_blocked_raw_candidate_fingerprint_count=48`, `provide_authoritative_source_reference_or_owner_exclusion_count=40`, `provide_formula_or_non_numeric_mapping_count=8`, `unresolved_difference_count=72`.
 - boundary: no raw inbox mutation, no raw-to-processed value consistency claim, no formal report, no GitHub upload and no app reinstall.
 - next owner action: provide authoritative raw candidate fingerprints/source references/exclusions or authorize a separate private evidence refresh phase.
+
+## 2026-07-07 Latest - V014 Raw Candidate Fingerprint Evidence Refresh After Final Threshold
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD`
+- status: `completed_validated_local_only_raw_candidate_fingerprint_evidence_refreshed_still_blocked_no_go`
+- owner-visible decision: `NO_GO`
+- owner-visible blocker: refreshed raw evidence still cannot safely bind 48 missing raw candidate fingerprint blockers to authoritative processed/raw fingerprint pairs.
+- aggregate result: `refresh_item_count=48`, `raw_numeric_candidate_count=351453`, `raw_unique_numeric_fingerprint_count=22453`, `deterministic_raw_candidate_fingerprint_match_count=0`, `still_blocked_after_raw_refresh_count=48`, `comparison_retry_ready_after_raw_refresh_count=0`, `provide_authoritative_source_reference_or_owner_exclusion_count=40`, `provide_formula_or_non_numeric_mapping_count=8`, `unresolved_difference_count=72`.
+- boundary: raw inbox was read-only refreshed; no raw mutation, no raw-to-processed value comparison, no business consistency claim, no formal report, no GitHub upload and no app reinstall.
+- next owner action: provide authoritative source reference, owner exclusion, or formula/non-numeric mapping for the 48 remaining blockers, or authorize a separate intake/application phase.

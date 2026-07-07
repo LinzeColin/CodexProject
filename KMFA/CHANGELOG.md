@@ -2606,3 +2606,12 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 这不是 raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check、formal report 或 release gate；当前 private evidence 无法自动恢复 48 个 raw candidate fingerprint blocker。
 - 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 resolution diagnostic、records 和 report 只保留在 ignored runtime。
 - 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD` 本地单 phase。
+- 在用户只读授权范围内刷新 raw inbox numeric fingerprint evidence；公开证据只保留 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_still_blocked_raw_candidate_fingerprint_count=48、refresh_item_count=48、raw_numeric_candidate_count=351453、raw_unique_numeric_fingerprint_count=22453、deterministic_raw_candidate_fingerprint_match_count=0、still_blocked_after_raw_refresh_count=48、comparison_retry_ready_after_raw_refresh_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check、formal report 或 release gate；当前 refreshed raw evidence 仍不能把 48 个 blocker 绑定到 authoritative fingerprint pair。
+- 本 phase 只读 raw inbox；私有 raw index、diagnostic、records 和 report 只保留在 ignored runtime；未写入、删除、移动、重命名、覆盖、复制、标准化或修改 raw inbox。
+- 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。

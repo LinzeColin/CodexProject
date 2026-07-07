@@ -1,0 +1,75 @@
+{
+  "check_count": 15,
+  "check_fail_count": 0,
+  "check_pass_count": 15,
+  "checks": [
+    {
+      "check_code": "source_resolution_phase_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_still_blocked_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_resolution_records_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_root_available",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_numeric_fingerprint_pool_refreshed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_unique_numeric_fingerprint_pool_refreshed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_root_unchanged_after_refresh",
+      "status": "PASS"
+    },
+    {
+      "check_code": "refresh_item_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "deterministic_match_count_zero_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "still_blocked_after_refresh_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "comparison_retry_ready_zero_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_refresh_outputs_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_raw_index_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_value_comparison_claimed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD",
+  "project_id": "KMFA",
+  "record_type": "v014_raw_candidate_fingerprint_evidence_refresh_after_final_threshold_matrix_public_safe",
+  "schema_version": "kmfa.v014_raw_candidate_fingerprint_evidence_refresh_after_final_threshold_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-EVIDENCE-REFRESH-AFTER-FINAL-THRESHOLD-20260707",
+  "version": "0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold"
+}

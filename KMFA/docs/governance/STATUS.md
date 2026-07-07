@@ -609,3 +609,14 @@
 - result: current ignored private evidence cannot recover any of the 48 missing raw candidate fingerprints; no comparison retry records are ready and no raw-to-processed value consistency is claimed.
 - boundary: raw inbox access/mutation, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: single phase only, private evidence refresh or owner-authorized source-reference/exclusion intake; no Stage review or upload from this phase.
+
+## 2026-07-07 Latest - V014 Raw Candidate Fingerprint Evidence Refresh After Final Threshold
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD`
+- status: `completed_validated_local_only_raw_candidate_fingerprint_evidence_refreshed_still_blocked_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold.py --require-private-refresh`
+- locked counts: `source_still_blocked_raw_candidate_fingerprint_count=48`, `refresh_item_count=48`, `raw_numeric_candidate_count=351453`, `raw_unique_numeric_fingerprint_count=22453`, `deterministic_raw_candidate_fingerprint_match_count=0`, `still_blocked_after_raw_refresh_count=48`, `comparison_retry_ready_after_raw_refresh_count=0`, `unresolved_difference_count=72`
+- result: raw inbox numeric fingerprint evidence was refreshed read-only, but 48 blockers remain unbound and value consistency remains unverified.
+- boundary: no raw mutation, no value comparison, no reconciliation, no formal report, no GitHub upload, no app reinstall and no business execution.
+- next: single phase only, authorized source reference / owner exclusion / formula mapping intake after raw refresh; no Stage review or upload from this phase.
