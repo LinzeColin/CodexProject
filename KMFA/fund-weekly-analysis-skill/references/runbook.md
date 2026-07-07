@@ -17,16 +17,17 @@ The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operat
 11. Build evidence index for screenshots and finance files.
 12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, fact ledgers, exception tasks, cross-review JSON, audit log, and run summary.
 13. Extract only real values with source trace. CSV files may be auto-extracted only when they contain the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type`; those rows become `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`, not management conclusions.
-14. Put low-confidence OCR/vision rows into review queue.
-15. Build funds ledger and net-flow ledger.
-16. Apply internal-transfer pairing before management rollups.
-17. Build daily balance continuity and company-bank matrix.
-18. Build tax/loan/wealth-management/deposit risk tables.
-19. Promote reviewed facts into Excel with exact sheet order and style spec.
-20. Hide audit/review sheets.
-21. Run validation checks.
-22. Write run summary.
-23. Commit/push skill or automation changes to GitHub main only after validation passes.
+14. When structured CSV facts exist, patch the copied native `.xlsx` workbook with the same traced facts in homepage KPI cards, visible flow/risk/matrix sheets, and hidden `H01/H02/H03`; preserve native chart parts and keep all values pending review.
+15. Put low-confidence OCR/vision rows into review queue.
+16. Build funds ledger and net-flow ledger.
+17. Apply internal-transfer pairing before management rollups.
+18. Build daily balance continuity and company-bank matrix.
+19. Build tax/loan/wealth-management/deposit risk tables.
+20. Promote reviewed facts into Excel with exact sheet order and style spec.
+21. Hide audit/review sheets.
+22. Run validation checks.
+23. Write run summary.
+24. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
 
