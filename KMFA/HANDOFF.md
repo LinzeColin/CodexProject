@@ -59,7 +59,7 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - 用户确认 KMFA 后续本机财务原始数据统一放在 `/Users/linzezhang/Downloads/KMFA_MetaData`。
 - 该目录属于 raw/private business data；Codex 只能在当前 phase 明确需要时只读读取，不得修改、删除、移动、重命名、覆盖或写入生成文件。
 - Codex 生成的私有 inventory、schema/header diagnostic、mapping diagnostic、scratch files 或本地报告只能写入项目受控且 Git 忽略的位置，例如 `KMFA/.codex_private_runtime/`，或另一个明确加入 `.gitignore` 的额外工作目录。
-- 公开 GitHub 只能保存 public-safe 结构、聚合计数、状态、hash/ref、证据索引、validator 结果和治理记录；不得提交 raw 文件、raw 文件名、字段/表头明文、sheet 名、row values、业务金额、credentials、银行流水、合同、薪资或税务材料。
+- 2026-07-08 owner 已改变 KMFA 数据治理规则：非 credential 类原始敏感经营文件、银行流水、合同、工资、税务申报、SQLite/数据库导出、明文报告正文等，可在当前线程或签名 upload manifest 明确授权、secret 扫描通过并登记到 `KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl` 后，以明文提交到 `KMFA/metadata/`；credential/secret 仍永久禁止进入 GitHub。
 
 ## 当前状态
 

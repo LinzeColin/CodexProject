@@ -30,7 +30,7 @@
 
 ## 数据登记
 
-每个输入文件登记以下 public-safe 字段：
+每个输入文件至少登记以下治理字段：
 
 - input slot
 - required/recommended 状态
@@ -40,6 +40,8 @@
 - symlink flag
 - sheet names count and sheet hash
 - matched pattern
+- owner authorized plaintext upload flag
+- upload manifest ref when plaintext is committed
 
-不登记原始敏感业务明细，不提交源表正文。
-
+默认不登记原始敏感业务明细；如提交源表正文或明文报告，必须先登记 owner 授权、
+secret 扫描结果和 `KMFA/metadata/` 下的 repo path。

@@ -44,12 +44,14 @@ KMFA/metadata/mgmt-monthly-report-skill/
 5. 运行 `scripts/validate_deliverables.py`。
 6. Excel 通过后生成 `董事会经营分析摘要 YYYYMM.pdf`。
 7. 再次登记 backup、validation、cleanup 状态。
-8. 本机运行区只保留最终报告；临时缓存、运行数据库和日志要清理或只保留在 GitHub
-   metadata 的 public-safe 形态。
+8. 如 owner 明确授权明文上传，先做 secret 扫描并登记
+   `KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl`。
+9. 本机运行区只保留最终报告；临时缓存、运行数据库和日志要清理或只保留在 GitHub
+   metadata 的治理形态。
 
 ## 重要限制
 
-KMFA 仓库契约禁止提交原始敏感经营数据、合同、银行、税务、工资、token 或明文报告正文。
-因此本 skill 默认只把 hash、manifest、schema、验收摘要、日志摘要和备份登记提交到
-GitHub。真实原始 Excel 和含敏感明文的报告文件留在本机报告目录或用户指定的私有介质。
-
+KMFA 当前仓库契约允许 owner 授权的原始敏感经营数据、合同、银行、税务、工资、
+SQLite/database 导出和明文报告正文进入 `KMFA/metadata/`，前提是有明确授权、secret 扫描
+和 upload manifest 登记。token、API key、webhook secret、signing key、账号密码和私钥仍
+禁止提交 GitHub。
