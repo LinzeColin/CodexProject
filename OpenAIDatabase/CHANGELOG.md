@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 9 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage9_review.md` to pin the
+  completed Stage 9 review gate.
+- Added `validate:v1.1.7-stage9` to validate Phase 9.1 Cross-board shared
+  state, records, package script and no-upload boundary.
+- Registered `MA-V117-S9-REVIEW` / `ACC-MA-V117-S9-REVIEW` with status
+  `stage_9_review_passed_pending_stage10_no_github_main_upload`.
+- Marked Stage 9 as review-passed and pending Stage 10 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+Phase 9.1 only. Cross-board shared state, synchronized filters and Inspector
+explanation layer are reviewed with `cross_board_shared_state.v1_1_7_stage9_phase1`,
+`inspector_explanation_layer.v1_1_7_stage9_phase1`, `shared_state_filters`,
+`synchronized_filters` and `inspector_explanation_layer`. No Stage 10 work,
+raw/private data read, direct active-memory writeback, proposal queue write,
+agent apply, local app install, deploy or GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 9 Phase 9.1 Cross-board Shared State
 
 - Implemented the Stage 9.1 cross-board shared-state runtime marker with
