@@ -680,3 +680,15 @@
 - result: current ignored private evidence contains zero active authoritative resolution applications, so no binding or comparison retry records are ready.
 - boundary: raw inbox access/mutation, authoritative binding, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: blocked until owner or authorized delegate supplies applicable source reference, owner exclusion, formula mapping or non-numeric mapping; no Stage review or upload from this phase.
+
+## 2026-07-08 Latest - V014 Authorized Source Reference Or Exclusion Application Blocked Handoff After Resolution Attempt
+
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKED_HANDOFF_AFTER_RESOLUTION_ATTEMPT`
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocked-handoff-after-resolution-attempt`
+- status: `completed_validated_local_only_authorized_source_reference_or_exclusion_application_blocked_handoff_after_resolution_attempt_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKED_HANDOFF_AFTER_RESOLUTION_ATTEMPT/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocked_handoff_after_resolution_attempt.py --require-private-handoff`
+- locked counts: `source_resolution_attempt_item_count=48`, `source_active_authoritative_resolution_application_count=0`, `source_auto_applied_authorized_resolution_count=0`, `source_still_blocked_authorized_resolution_application_count=48`, `blocked_handoff_item_count=48`, `owner_action_item_count=48`, `source_reference_or_owner_exclusion_handoff_item_count=40`, `formula_or_non_numeric_mapping_handoff_item_count=8`, `binding_ready_after_blocked_handoff_count=0`, `comparison_retry_ready_after_blocked_handoff_count=0`, `unresolved_difference_count=72`
+- result: a public-safe blocked handoff is prepared for all 48 unresolved items; no binding, comparison retry or value-consistency claim is ready.
+- boundary: raw inbox access/mutation, authoritative binding, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: blocked until owner or authorized delegate supplies applicable source reference, owner exclusion, formula mapping or non-numeric mapping; no Stage review or upload from this phase.

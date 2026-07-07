@@ -1668,3 +1668,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_application_blocker_final_threshold_recheck_item_count=48, source_application_blocker_observation_count=3, source_application_blocked_audit_threshold_met=true and source_private_application_blocker_final_threshold_record_count=48 prove this phase starts from final blocked threshold evidence; resolution_attempt_item_count=48, active_authoritative_resolution_application_count=0, auto_applied_authorized_resolution_count=0 and still_blocked_authorized_resolution_application_count=48 prove no authorized resolution can be applied from current private evidence.
 - gate: `NO_GO`; binding_ready_after_resolution_attempt_count=0, comparison_retry_ready_after_resolution_attempt_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private resolution diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.
+
+## V014 Residual Difference Authorized Source Reference Or Exclusion Application Blocked Handoff After Resolution Attempt
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKED-HANDOFF-AFTER-RESOLUTION-ATTEMPT-001`
+- parameter_ids: `PARAM-KMFA-1522`, `PARAM-KMFA-1523`, `PARAM-KMFA-1524`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKED_HANDOFF_AFTER_RESOLUTION_ATTEMPT`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocked-handoff-after-resolution-attempt`
+- rule: source_resolution_attempt_item_count=48, source_active_authoritative_resolution_application_count=0, source_auto_applied_authorized_resolution_count=0 and source_still_blocked_authorized_resolution_application_count=48 prove this phase starts from unresolved resolution-attempt evidence; blocked_handoff_item_count=48 and owner_action_item_count=48 prove every unresolved item is handed off without public details.
+- gate: `NO_GO`; binding_ready_after_blocked_handoff_count=0, comparison_retry_ready_after_blocked_handoff_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private blocked handoff diagnostic, records and packet stay under ignored runtime and raw inbox remains untouched by this phase.
