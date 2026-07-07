@@ -1,3 +1,11 @@
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-or-difference-report - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_OR_DIFFERENCE_REPORT` 本地单 phase。
+- 基于上一 owner-authorized anchor confirmation readiness public-safe artifacts 和 ignored private readiness/blocker queue，生成 private unresolved difference report；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source readiness blockers=72、readiness ready records=0、source anchor draft items=72、owner-authorized anchor confirmations=0、difference report items=72、unresolved differences=72、missing owner-authorized anchors=72、missing processed value fingerprints=72、missing raw candidate anchors=72、diagnostic tracks=24/40/8、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 owner-authorized anchor confirmation、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private difference report、diagnostic、unresolved queue、ready queue 和 markdown report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
 ## 0.1.4-residual-difference-raw-candidate-alignment-after-precheck - 2026-07-07
 
 - 完成 `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK` 本地单 phase。

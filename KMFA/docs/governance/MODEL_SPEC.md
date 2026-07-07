@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-OR-DIFFERENCE-REPORT-001
+
+- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-or-difference-report`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: Write an owner-authorized anchor difference report for 72 unresolved residual-difference records without reading raw inbox, confirming anchors, running formal raw-to-processed comparison, reconciling values, uploading, reinstalling or executing business steps.
+- rule: difference report is valid only when source readiness blockers=72, source anchor draft items=72, owner-authorized anchor ready records=0, difference report items=72, unresolved differences=72, owner-authorized confirmations=0, missing owner-authorized anchors=72, missing processed value fingerprints=72, missing raw candidate anchors=72, and comparison/reconciliation/release/execution gates remain false.
+- public_safety: public artifacts contain aggregate counts, status flags and evidence refs only; private unresolved difference report, diagnostic and queues remain ignored and untracked.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_or_difference_report.py --require-private-report`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_OR_DIFFERENCE_REPORT/machine/residual_difference_owner_authorized_anchor_confirmation_or_difference_report_manifest.json`
+
 ## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK-001
 
 - version: `0.1.4-residual-difference-raw-candidate-alignment-after-precheck`
