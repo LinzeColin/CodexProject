@@ -1,3 +1,30 @@
+## v1.1.7 Stage 2 Review：Proposal Layer Gate
+
+状态：`stage_2_review_passed_pending_stage3_no_github_main_upload`。
+
+任务 ID：`MA-V117-S2-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S2-REVIEW`。
+
+Stage 2 is review-passed and pending Stage 3. 本 review 固定两个已完成 phase：
+
+1. Phase 2.1：Editable Draft Model and Draft State Store。
+2. Phase 2.2：Proposal UI, Proposal Diff Preview and Export / Rollback Contract。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage2_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage2`
+- `ACC-MA-V117-S2-REVIEW`
+- Stage 1 review continuity、Phase 2.1 / Phase 2.2 validators、records、package script 和 no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Stage 2 Review; Phase 2.1; Phase 2.2; pending Stage 3; No GitHub main upload; No Stage 3 work; No raw/private data read; No direct active-memory writeback; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 2 Phase 2.2：Proposal UI
 
 状态：`phase_2_2_proposal_ui_completed_pending_stage2_review`。
