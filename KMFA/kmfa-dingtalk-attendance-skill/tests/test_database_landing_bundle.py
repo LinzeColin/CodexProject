@@ -327,6 +327,9 @@ def test_postgres_load_plan_execution_guard_requires_nonproduction_approval():
         assert executed_data["database_mutation_attempted"] is True
         assert executed_data["database_mutation_performed"] is True
         assert executed_data["live_dws_performed"] is False
+        assert "postgresql://localhost" not in executed.stdout
+        assert str(out_dir) not in executed.stdout
+        assert str(ROOT) not in executed.stdout
         fake_args = fake_log.read_text(encoding="utf-8")
         assert "postgresql://localhost/kmfa_attendance_local" in fake_args
         assert str(ROOT / "database" / "postgres_schema.sql") in fake_args

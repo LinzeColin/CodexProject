@@ -17,6 +17,8 @@
 - [x] Generate `postgres_load_payloads/*.jsonl`, `postgres_load_plan.sql`, and `postgres_load_plan_manifest.json` without opening PostgreSQL.
 - [x] Statically validate generated load plans against repo schema columns, load order, payload files, and `ON CONFLICT` targets.
 - [x] Provide a fail-closed PostgreSQL execution guard that refuses `psql` unless the target is explicitly marked non-production.
+- [x] Provide a pre-consensus DB landing bundle so database proof can be generated before accepted Stage-2 payroll baseline.
+- [x] Provide a DB proof application step that can set Stage-2 database gates true only from a non-production execution proof.
 - [ ] Execute the loader only against an explicitly configured non-production PostgreSQL target.
 
 ## Phase 0 - Local verification
@@ -53,4 +55,5 @@
 - [ ] Confirm day-5 consensus gate compares all five runs.
 - [ ] Confirm accepted certificate appears only when all five hashes match exactly.
 - [x] Confirm accepted certificate also requires per-run location, raw-to-derived, and database transaction commit/verification gates.
+- [x] Confirm pre-consensus DB proof can propagate database transaction commit/verification gates into Stage-2 run manifests without payroll acceptance.
 - [ ] Confirm payroll baseline rows appear only after accepted certificate.

@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
 import subprocess
 from pathlib import Path
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import urlsplit
 
 from validate_postgres_load_plan import validate as validate_load_plan
 
@@ -24,6 +25,10 @@ def tail(text: str, limit: int = 4000) -> str:
     return text[-limit:] if len(text) > limit else text
 
 
+def fingerprint(value: str) -> str:
+    return "sha256:" + hashlib.sha256(value.encode("utf-8")).hexdigest()[:16]
+
+
 def redact_database_url(database_url: str) -> str:
     if not database_url:
         return ""
@@ -31,14 +36,23 @@ def redact_database_url(database_url: str) -> str:
         parts = urlsplit(database_url)
     except ValueError:
         return "<invalid-url>"
-    if not parts.netloc:
-        return database_url
-    netloc = parts.netloc
-    if "@" in netloc:
-        userinfo, hostinfo = netloc.rsplit("@", 1)
-        username = userinfo.split(":", 1)[0]
-        netloc = f"{username}:***@{hostinfo}" if username else f"***@{hostinfo}"
-    return urlunsplit((parts.scheme, netloc, parts.path, parts.query, parts.fragment))
+    scheme = parts.scheme or "database"
+    return f"{scheme}-url:{fingerprint(database_url)}"
+
+
+def path_fingerprint(path: Path) -> str:
+    return fingerprint(str(path.expanduser().resolve()))
+
+
+def scrub_tail(text: str, *, database_url: str, paths: list[Path]) -> str:
+    scrubbed = tail(text)
+    if database_url:
+        scrubbed = scrubbed.replace(database_url, redact_database_url(database_url))
+    for path in paths:
+        value = str(path)
+        if value:
+            scrubbed = scrubbed.replace(value, path.name)
+    return scrubbed
 
 
 def database_url_looks_production(database_url: str) -> bool:
@@ -68,6 +82,21 @@ def build_psql_command(psql_bin: str, database_url: str, schema: Path, views: Pa
     ]
 
 
+def build_psql_command_summary(psql_bin: str, database_url: str, schema: Path, views: Path, sql: Path) -> list[str]:
+    return [
+        Path(psql_bin).name,
+        redact_database_url(database_url),
+        "--set",
+        "ON_ERROR_STOP=on",
+        "--file",
+        schema.name,
+        "--file",
+        views.name,
+        "--file",
+        sql.name,
+    ]
+
+
 def preflight(args: argparse.Namespace) -> dict[str, object]:
     schema = Path(args.schema)
     views = Path(args.views)
@@ -84,7 +113,7 @@ def preflight(args: argparse.Namespace) -> dict[str, object]:
         failures.append("static_validation_failed")
         failures.extend(str(item) for item in static_result.get("failures", []))
     if not views.is_file():
-        failures.append(f"views_sql_missing:{views}")
+        failures.append(f"views_sql_missing:{views.name}")
 
     if args.execute:
         if not allow_flag:
@@ -103,13 +132,15 @@ def preflight(args: argparse.Namespace) -> dict[str, object]:
     return {
         "status": "fail" if failures else "pass",
         "mode": "postgres_load_plan_execution_guard",
-        "schema": str(schema),
-        "views": str(views),
-        "bundle_dir": str(bundle_dir),
-        "sql": str(sql),
+        "schema_file": schema.name,
+        "views_file": views.name,
+        "bundle_dir_fingerprint": path_fingerprint(bundle_dir),
+        "sql_file": sql.name,
+        "sql_fingerprint": path_fingerprint(sql),
         "target_env": target_env,
         "target_env_source": "arg" if args.target_env else ("env" if os.environ.get(TARGET_ENV_ENV) else ""),
         "database_url_redacted": redact_database_url(database_url),
+        "database_url_fingerprint": fingerprint(database_url) if database_url else "",
         "execute_requested": bool(args.execute),
         "acknowledge_nonprod_mutation": bool(args.acknowledge_nonprod_mutation),
         "allow_env": ALLOW_ENV,
@@ -132,11 +163,12 @@ def preflight(args: argparse.Namespace) -> dict[str, object]:
 
 def execute(result: dict[str, object], args: argparse.Namespace) -> dict[str, object]:
     database_url = args.database_url or os.environ.get(DSN_ENV, "")
-    schema = Path(str(result["schema"]))
-    views = Path(str(result["views"]))
-    sql = Path(str(result["sql"]))
+    schema = Path(args.schema)
+    views = Path(args.views)
+    bundle_dir = Path(args.bundle_dir)
+    sql = Path(args.sql) if args.sql else bundle_dir / "postgres_load_plan.sql"
     command = build_psql_command(args.psql_bin, database_url, schema, views, sql)
-    redacted_command = build_psql_command(args.psql_bin, redact_database_url(database_url), schema, views, sql)
+    redacted_command = build_psql_command_summary(args.psql_bin, database_url, schema, views, sql)
     env = os.environ.copy()
     env.setdefault("PGAPPNAME", "kmfa_attendance_nonprod_loader")
     proc = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
@@ -147,8 +179,8 @@ def execute(result: dict[str, object], args: argparse.Namespace) -> dict[str, ob
         "database_mutation_performed": proc.returncode == 0,
         "psql_command_redacted": redacted_command,
         "psql_returncode": proc.returncode,
-        "psql_stdout_tail": tail(proc.stdout),
-        "psql_stderr_tail": tail(proc.stderr),
+        "psql_stdout_tail": scrub_tail(proc.stdout, database_url=database_url, paths=[schema, views, sql, Path(args.psql_bin)]),
+        "psql_stderr_tail": scrub_tail(proc.stderr, database_url=database_url, paths=[schema, views, sql, Path(args.psql_bin)]),
     })
     if proc.returncode != 0:
         result["status"] = "fail"
