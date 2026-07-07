@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "OABA01"
+    phase: "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT"
+    objective: "Record the first owner-authorized anchor confirmation blocker observation after the unresolved difference report."
+    scope:
+      - "public-safe aggregate blocker audit evidence"
+      - "ignored private blocker audit diagnostic and queue"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "owner-authorized anchor confirmation"
+      - "formal raw-to-processed comparison"
+      - "GitHub upload or app reinstall"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-audit"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_OR_DIFFERENCE_REPORT"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT/machine/residual_difference_owner_authorized_anchor_confirmation_blocker_audit_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_audit.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-AUDIT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_audit.py --require-private-audit"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_audit"
+    test_results:
+      - "PASS: residual-difference owner-authorized anchor blocker audit validator"
+      - "PASS: focused owner-authorized anchor blocker audit unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT/machine/residual_difference_owner_authorized_anchor_confirmation_blocker_audit_manifest.json"
+    risk: "A blocker audit can be misread as anchor confirmation; it is explicitly a NO_GO observation and keeps confirmation and comparison closed."
+    rollback: "Remove this phase public artifacts and ignored private blocker audit outputs; keep prior difference-report evidence intact."
+    target_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-audit"
+
   - task_id: "RDAD01"
     phase: "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_OR_DIFFERENCE_REPORT"
     objective: "Write an owner-authorized anchor difference report when residual differences cannot be confirmed."

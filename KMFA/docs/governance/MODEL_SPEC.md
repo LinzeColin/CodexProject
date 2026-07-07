@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-AUDIT-001
+
+- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-audit`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: Record the first owner-authorized anchor confirmation blocker observation for 72 unresolved residual-difference records without reading raw inbox, confirming anchors, running formal raw-to-processed comparison, reconciling values, uploading, reinstalling or executing business steps.
+- rule: blocker audit is valid only when source difference report items=72, source unresolved differences=72, source owner-authorized confirmations=0, blocker count=72, observation count=1, threshold met=false, owner-authorized confirmations=0, and comparison/reconciliation/release/execution gates remain false.
+- public_safety: public artifacts contain aggregate counts, status flags and evidence refs only; private blocker audit diagnostic and queue remain ignored and untracked.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_audit.py --require-private-audit`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT/machine/residual_difference_owner_authorized_anchor_confirmation_blocker_audit_manifest.json`
+
 ## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-OR-DIFFERENCE-REPORT-001
 
 - version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-or-difference-report`

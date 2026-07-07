@@ -1,0 +1,67 @@
+{
+  "check_count": 13,
+  "check_fail_count": 0,
+  "check_pass_count": 13,
+  "checks": [
+    {
+      "check_code": "source_difference_report_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_go_no_go_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_unresolved_differences_present",
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_authorized_anchor_blockers_present",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocker_audit_recorded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "threshold_not_met_on_first_observation",
+      "status": "PASS"
+    },
+    {
+      "check_code": "anchor_confirmation_count_zero",
+      "status": "PASS"
+    },
+    {
+      "check_code": "unresolved_difference_count_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_track_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_inputs_not_mutated",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_outputs_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT",
+  "project_id": "KMFA",
+  "record_type": "v014_owner_authorized_anchor_confirmation_blocker_audit_matrix_public_safe",
+  "schema_version": "kmfa.v014_owner_authorized_anchor_confirmation_blocker_audit_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-AUDIT-20260707",
+  "version": "0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-audit"
+}
