@@ -67,6 +67,55 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+stage8_phase1_summary_iteration_closure:
+  task_id: MA-V117-S8P01
+  phase_label: Phase 8.1
+  feature_label: Summary and iteration closure
+  acceptance_id: ACC-MA-V117-S8P01
+  status: phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review
+  runtime_version: summary_iteration_closure_runtime.v1_1_7_stage8_phase1
+  closure_schema_version: memory_atlas_summary_closure.v1_1_7_stage8_phase1
+  source_review_schema_version: memory_atlas_review_summary.v1_1_7_stage7_phase2
+  required_validator: validate:v1.1.7-stage8-phase1
+  browser_validator: validate:summary-iteration-closure-browser
+  runtime_hook: window.__memoryAtlasStage8Phase1
+  source_dependency: stage_7_review_passed_pending_stage8_no_github_main_upload
+  output_fields:
+    - change_comparison
+    - stale_conflict_signals
+    - proposal_candidates
+  panels:
+    - change_comparison
+    - stale_conflict_signals
+    - proposal_candidates
+  proposal_controls:
+    proposal_only: true
+    requires_conflict_check: true
+    requires_agent_or_human_apply: true
+  browser_checks:
+    - runtime_root
+    - change_comparison
+    - stale_conflict_signals
+    - proposal_candidates
+    - debug_signal
+    - screenshot
+    - console_safety
+  next_gate: pending Stage 8 review
+  boundary_label: "No Stage 8 review; No GitHub main upload"
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_stage8_review
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 stage7_phase1_search_2_0_runtime:
   task_id: MA-V117-S7P01
   phase_label: Phase 7.1
