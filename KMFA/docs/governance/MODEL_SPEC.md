@@ -1478,3 +1478,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: owner_authorized_anchor_blocker_count=72, prior_owner_authorized_anchor_blocker_observation_count=2 and owner_authorized_anchor_blocker_observation_count=3 meet the strict blocked threshold; owner_authorized_anchor_confirmation_count=0 and unresolved_difference_count=72 keep anchor confirmation and value consistency blocked.
 - gate: `NO_GO`; goal_status_recommendation=`blocked`, while owner-authorized anchor confirmation, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private final threshold diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Owner-Authorized Anchor Confirmation Authorization Intake
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-AUTHORIZATION-INTAKE-001`
+- parameter_ids: `PARAM-KMFA-1468`, `PARAM-KMFA-1469`, `PARAM-KMFA-1470`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_INTAKE`
+- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-intake`
+- rule: authorization_item_count=72, owner_authorization_intaken=true and owner_authorized_anchor_confirmation_preparation_allowed_next_phase=true record private preparation authorization; owner_authorized_anchor_confirmation_count=0 and unresolved_difference_count=72 keep anchor confirmation and value consistency blocked.
+- gate: `NO_GO`; anchor confirmation, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private authorization active record, queue, diagnostic and report stay under ignored runtime and raw inbox remains untouched.
