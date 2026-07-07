@@ -7,6 +7,10 @@ import os
 from pathlib import Path
 
 
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_RUNTIME_ENV_PATH = ROOT / "metadata" / "dingtalk_attendance" / "private_runtime" / ".env.local"
+
+
 def load_local_env(path: Path) -> dict[str, str]:
     values: dict[str, str] = {}
     if not path.exists():
@@ -20,7 +24,7 @@ def load_local_env(path: Path) -> dict[str, str]:
     return values
 
 
-def merged_runtime_env(env_path: Path | None = None) -> dict[str, str]:
+def merged_runtime_env(env_path: Path | None = DEFAULT_RUNTIME_ENV_PATH) -> dict[str, str]:
     values = dict(os.environ)
     if env_path is not None:
         values.update(load_local_env(env_path))

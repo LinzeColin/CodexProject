@@ -1,14 +1,20 @@
 import json
+import tempfile
 import unittest
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
+from KMFA.tools.dingtalk_attendance.notifier_dingtalk import (
+    build_signed_robot_url,
+    send_group_robot_markdown,
+)
 from KMFA.tools.dingtalk_attendance.report_renderer import (
     MANAGEMENT_REPORT_SECTIONS,
     HR_REPORT_SECTIONS,
 )
 from KMFA.tools.dingtalk_attendance.dws_attendance import collect_org_attendance
-from KMFA.tools.dingtalk_attendance.run_attendance import build_run_plan
+from KMFA.tools.dingtalk_attendance.run_attendance import build_run_plan, dispatch_reports_to_robot
 from KMFA.tools.dingtalk_attendance.check_s19_dingtalk_attendance import validate_s19_files
 from KMFA.tools.dingtalk_attendance.validate_no_sensitive_git import scan_payload_for_sensitive_text
 
@@ -83,16 +89,46 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertFalse(plan["public_repo_safety"]["credential_committed"])
         self.assertTrue(plan["live_only"])
 
-    def test_config_only_healthcheck_fails_closed_without_live_credentials(self) -> None:
+    def test_config_only_healthcheck_fails_closed_without_notification_channel(self) -> None:
         status = build_config_status(env={})
 
-        self.assertEqual(status["status"], "CONFIG_MISSING")
-        self.assertFalse(status["live_collection_allowed"])
+        self.assertEqual(status["status"], "NOTIFIER_CONFIG_MISSING")
+        self.assertFalse(status["notification_ready"])
         self.assertFalse(status["uses_sample_data"])
-        self.assertIn("DINGTALK_APP_KEY", status["missing"])
-        self.assertIn("DINGTALK_APP_CREDENTIAL", status["missing"])
-        self.assertIn("DINGTALK_CORP_ID", status["missing"])
-        self.assertIn("DINGTALK_AGENT_ID", status["missing"])
+        self.assertIn("DINGTALK_ROBOT_URL", status["group_robot_missing"])
+        self.assertIn("DINGTALK_APP_KEY", status["work_notification_missing"])
+
+    def test_config_only_healthcheck_marks_group_robot_ready_without_work_notification(self) -> None:
+        status = build_config_status(
+            env={
+                "DINGTALK_NOTIFY_MODE": "dingtalk_group_robot",
+                "DINGTALK_ROBOT_URL": "https://example.invalid/robot/send?token=masked",
+                "DINGTALK_ROBOT_SIGNING_KEY": "local-signing-key",
+            }
+        )
+
+        self.assertEqual(status["status"], "READY")
+        self.assertTrue(status["notification_ready"])
+        self.assertTrue(status["notifier_configured"])
+        self.assertEqual(status["active_notify_mode"], "dingtalk_group_robot")
+        self.assertEqual(status["notification_ready_channels"], ["dingtalk_group_robot"])
+        self.assertEqual(status["group_robot_missing"], [])
+        self.assertIn("DINGTALK_BOSS_USER_ID", status["work_notification_missing"])
+
+    def test_config_only_healthcheck_marks_work_notification_ready_without_group_robot(self) -> None:
+        status = build_config_status(
+            env={
+                "DINGTALK_BOSS_USER_ID": "boss-user",
+                "DINGTALK_APP_KEY": "app-key",
+                "DINGTALK_APP_CREDENTIAL": "credential",
+                "DINGTALK_CORP_ID": "corp-id",
+                "DINGTALK_AGENT_ID": "agent-id",
+            }
+        )
+
+        self.assertEqual(status["status"], "READY")
+        self.assertTrue(status["notification_ready"])
+        self.assertEqual(status["notification_ready_channels"], ["dingtalk_work_notification"])
 
     def test_report_templates_keep_management_and_hr_boundaries(self) -> None:
         self.assertEqual(
@@ -163,6 +199,95 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(len(li_record_calls), 2)
         self.assertTrue(li_record_calls[1][1])
         self.assertEqual(result["stats"]["record_success_count"], 3)
+
+    def test_group_robot_sender_signs_markdown_and_injects_required_keyword(self) -> None:
+        captured: dict[str, object] = {}
+
+        class FakeResponse:
+            status = 200
+
+            def __enter__(self) -> "FakeResponse":
+                return self
+
+            def __exit__(self, *args: object) -> None:
+                return None
+
+            def read(self) -> bytes:
+                return b'{"errcode":0,"errmsg":"ok"}'
+
+        def fake_urlopen(request: object, timeout: int = 0) -> FakeResponse:
+            captured["url"] = request.full_url
+            captured["body"] = request.data.decode("utf-8")
+            captured["timeout"] = timeout
+            return FakeResponse()
+
+        env = {
+            "DINGTALK_ROBOT_URL": "https://example.invalid/robot/send?token=masked",
+            "DINGTALK_ROBOT_SIGNING_KEY": "local-signing-key",
+        }
+        expected_url = build_signed_robot_url(
+            robot_url=env["DINGTALK_ROBOT_URL"],
+            signing_key=env["DINGTALK_ROBOT_SIGNING_KEY"],
+            timestamp_ms=1234567890,
+        )
+
+        result = send_group_robot_markdown(
+            title="管理报告",
+            markdown_text="## 一、总体情况\n已生成。",
+            env=env,
+            timestamp_ms=1234567890,
+            urlopen=fake_urlopen,
+        )
+
+        parsed_query = parse_qs(urlparse(str(captured["url"])).query)
+        expected_query = parse_qs(urlparse(expected_url).query)
+        self.assertEqual(result["status"], "SENT")
+        self.assertEqual(parsed_query["timestamp"], ["1234567890"])
+        self.assertEqual(parsed_query["sign"], expected_query["sign"])
+        self.assertIn("开明考勤", str(captured["body"]))
+        self.assertNotIn(env["DINGTALK_ROBOT_SIGNING_KEY"], json.dumps(result, ensure_ascii=False))
+
+    def test_dispatch_reports_to_robot_reads_private_reports_and_writes_receipt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            management = root / "run.management.md"
+            hr = root / "run.hr.md"
+            receipt = root / "run.dispatch.json"
+            management.write_text("# 开明考勤管理报告\n\n## 一、总体情况\n完成。\n", encoding="utf-8")
+            hr.write_text("# 开明考勤 HR 报告\n\n## 一、异常明细\n无。\n", encoding="utf-8")
+
+            sent_titles: list[str] = []
+            sent_bodies: list[str] = []
+
+            def fake_sender(*, title: str, markdown_text: str, env: dict[str, str]) -> dict[str, object]:
+                sent_titles.append(title)
+                sent_bodies.append(markdown_text)
+                self.assertIn("开明考勤", markdown_text)
+                return {"status": "SENT", "channel": "dingtalk_group_robot", "http_status": 200}
+
+            result = dispatch_reports_to_robot(
+                output_status={
+                    "management_report": str(management),
+                    "hr_report": str(hr),
+                    "dispatch_receipt": str(receipt),
+                },
+                env={
+                    "DINGTALK_NOTIFY_MODE": "dingtalk_group_robot",
+                    "DINGTALK_ROBOT_URL": "https://example.invalid/robot/send?token=masked",
+                    "DINGTALK_ROBOT_SIGNING_KEY": "local-signing-key",
+                },
+                sender=fake_sender,
+            )
+
+            receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
+            self.assertEqual(result["notification_status"], "SENT")
+            self.assertEqual(receipt_payload["notification_status"], "SENT")
+            self.assertEqual(sent_titles, ["开明考勤管理报告", "开明考勤 HR 报告"])
+            self.assertEqual(len(receipt_payload["messages"]), 2)
+            self.assertIn("## 一、总体情况", sent_bodies[0])
+            self.assertIn("## 一、异常明细", sent_bodies[1])
+            self.assertEqual(receipt_payload["messages"][0]["report"], "management_report")
+            self.assertEqual(receipt_payload["messages"][1]["report"], "hr_report")
 
 
 if __name__ == "__main__":
