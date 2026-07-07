@@ -1,3 +1,40 @@
+## 88. Memory Atlas v1.1.7 Stage 5 Phase 5.1 Interaction Contract
+
+状态：`phase_5_1_interaction_contract_completed_pending_stage5_review`。
+
+验收 ID：`ACC-MA-V117-S5P01`。
+
+模型参数：
+
+- Interaction Contract 固定为 `memory_river_interaction_contract.v1_1_7_stage5_phase1`。
+- Feedback Contract 固定为 `memory_river_feedback_contract.v1_1_7_stage5_phase1`。
+- `validate:v1.1.7-stage5-phase1` 是本 phase 必跑 validator。
+- 必备交互：`zoom`, `brush`, `theme_lanes`, `event_points`, `status_bands`, `detail_panel`。
+- 必备反馈控制：`visual_feedback`, `optional_audio`, `pseudo_haptic`, `reduced_motion`, `feedback_disable_control`, `audio_default_off`, `vibration_not_required`。
+- No Stage 5.2。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/product/memory_river_interaction_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage5_phase1_interaction_contract_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase1.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S5P01-001 stage5_phase1_status = phase_5_1_interaction_contract_completed_pending_stage5_review`
+- `PARAM-MA-V117-S5P01-002 stage5_phase1_required_validator = validate:v1.1.7-stage5-phase1`
+- `PARAM-MA-V117-S5P01-003 interaction_contract_version = memory_river_interaction_contract.v1_1_7_stage5_phase1`
+- `PARAM-MA-V117-S5P01-004 feedback_contract_version = memory_river_feedback_contract.v1_1_7_stage5_phase1`
+- `PARAM-MA-V117-S5P01-005 required_interactions = zoom;brush;theme_lanes;event_points;status_bands;detail_panel`
+- `PARAM-MA-V117-S5P01-006 required_feedback_controls = visual_feedback;optional_audio;pseudo_haptic;reduced_motion;feedback_disable_control;audio_default_off;vibration_not_required`
+
+验收信号：
+
+- Memory River interaction contract addendum。
+- `validate:v1.1.7-stage5-phase1` 检查 Stage 4 review continuity、interaction contract、feedback contract、records、package script 和 no-runtime/no-upload boundary。
+- Boundary includes No GitHub main upload, No Stage 5.2, No C3 River Spike, No Timeline replacement, No runtime UI/CSS, No raw/private read, No direct active-memory writeback and No agent apply。
+
 ## 87. Memory Atlas v1.1.7 Stage 4 Review Gate
 
 状态：`stage_4_review_passed_pending_stage5_no_github_main_upload`。

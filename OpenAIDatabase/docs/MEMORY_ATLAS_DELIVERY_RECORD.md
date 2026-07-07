@@ -1,3 +1,33 @@
+## v1.1.7 Stage 5 Phase 5.1：Memory River Interaction Contract
+
+状态：`phase_5_1_interaction_contract_completed_pending_stage5_review`。
+
+任务 ID：`MA-V117-S5P01`。
+
+验收 ID：`ACC-MA-V117-S5P01`。
+
+本 phase 固定 `memory_river_interaction_contract.v1_1_7_stage5_phase1` 和
+`memory_river_feedback_contract.v1_1_7_stage5_phase1`。Memory River 必须不是
+日期列表、表格或 static scatter；交互合同覆盖 zoom、brush、theme_lanes、
+event_points、status_bands 和 detail_panel；反馈合同覆盖 visual_feedback、
+optional_audio、pseudo_haptic、reduced_motion、feedback_disable_control、
+audio_default_off 和 vibration_not_required。
+
+涉及文件：
+
+- `docs/product/memory_river_interaction_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage5_phase1_interaction_contract_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage5-phase1`
+- `ACC-MA-V117-S5P01`
+- Stage 4 review continuity、interaction contract、feedback contract、acceptance、records、package script 和 no-runtime/no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Stage 5 Phase 5.1 Interaction Contract; MA-V117-S5P01; ACC-MA-V117-S5P01; phase_5_1_interaction_contract_completed_pending_stage5_review; memory_river_interaction_contract.v1_1_7_stage5_phase1; memory_river_feedback_contract.v1_1_7_stage5_phase1; No Stage 5.2; No C3 River Spike; No Timeline replacement; No runtime UI/CSS; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 4 Review：Memory Starfield Gate
 
 状态：`stage_4_review_passed_pending_stage5_no_github_main_upload`。
