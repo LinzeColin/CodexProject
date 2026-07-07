@@ -633,6 +633,11 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["onedrive_root"], "/Users/linzezhang/OneDrive/dingtalk_attendance")
         self.assertEqual(result["prompt_count"], 3)
         self.assertEqual(result["private_runtime_tracked_files"], [".gitkeep", "README.md"])
+        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_call_skill"])
+        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_use_beijing_time"])
+        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_preserve_github_sync"])
+        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_fail_closed_for_dws"])
+        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_protect_private_runtime"])
 
     def test_dws_attendance_collects_org_records_and_summaries_without_mock_data(self) -> None:
         runner = FakeDwsRunner()
