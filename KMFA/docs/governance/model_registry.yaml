@@ -1,3 +1,18 @@
+kmfa_v014_residual_difference_raw_candidate_alignment_after_precheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1438
+    - PARAM-KMFA-1439
+    - PARAM-KMFA-1440
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK
+  validator: KMFA/tools/check_v014_residual_difference_raw_candidate_alignment_after_precheck.py
+  scope: Residual-difference raw candidate alignment after precheck only; reads authorized raw inbox read-only and writes ignored private alignment diagnostics plus anchor draft while keeping owner authorization, formal comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution closed.
+
 kmfa_v014_residual_difference_raw_to_processed_comparison_precheck:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"

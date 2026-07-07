@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK-001
+
+- version: `0.1.4-residual-difference-raw-candidate-alignment-after-precheck`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: Build private residual-difference raw candidate anchor draft after precheck using read-only raw inbox access, without owner-authorizing anchors, running formal raw-to-processed comparison, reconciling values, uploading, reinstalling or executing business steps.
+- rule: alignment is valid only when source blockers=72, raw-comparison input records=72, raw numeric candidates=351453, raw unique numeric fingerprints=22453, owner-authorized anchors=0, owner review required=72, alignment ready=0, and comparison/reconciliation/release/execution gates remain false.
+- public_safety: public artifacts contain aggregate counts, status flags and evidence refs only; private alignment, anchor draft, question list and raw scan runtime remain ignored and untracked.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_candidate_alignment_after_precheck.py --require-private-alignment`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK/machine/residual_difference_raw_candidate_alignment_after_precheck_manifest.json`
+
 ## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-001
 
 - version: `0.1.4-residual-difference-raw-to-processed-comparison-precheck`

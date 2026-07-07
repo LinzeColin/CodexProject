@@ -1,3 +1,11 @@
+## 0.1.4-residual-difference-raw-candidate-alignment-after-precheck - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK` 本地单 phase。
+- 基于上一 residual-difference comparison precheck blockers 和 ignored private raw-comparison input，在授权只读 raw inbox 前提下生成 private raw candidate anchor draft。
+- 当前 aggregate 结果：source blockers=72、raw-comparison input records=72、raw numeric candidates=351453、raw unique numeric fingerprints=22453、diagnostic tracks=24/40/8、private candidate sample items=24、owner-authorized comparison anchors=0、alignment-ready records=0、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 owner-authorized anchor selection、正式 raw-to-processed comparison、full reconciliation、business value consistency、GitHub upload、app reinstall 或业务动作。
+- private alignment/diagnostic/items/anchor draft/question list/raw scan runtime 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
 ## 0.1.4-residual-difference-raw-to-processed-comparison-precheck - 2026-07-07
 
 - 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK` 本地单 phase。

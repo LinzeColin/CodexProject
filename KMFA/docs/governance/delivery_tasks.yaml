@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "RDRCA01"
+    phase: "V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK"
+    objective: "Build private residual-difference raw candidate anchor draft after comparison precheck."
+    scope:
+      - "public-safe residual raw candidate alignment evidence"
+      - "ignored private alignment, anchor draft and question list"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox mutation"
+      - "owner-authorized anchor selection"
+      - "formal raw-to-processed comparison"
+      - "GitHub upload or app reinstall"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK/machine/residual_difference_raw_candidate_alignment_after_precheck_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_raw_candidate_alignment_after_precheck.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_candidate_alignment_after_precheck.py --require-private-alignment"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_raw_candidate_alignment_after_precheck"
+    test_results:
+      - "PASS: residual-difference raw candidate alignment validator"
+      - "PASS: focused residual raw candidate alignment unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK/machine/residual_difference_raw_candidate_alignment_after_precheck_manifest.json"
+    risk: "Private raw candidate samples can be misread as owner-authorized comparison anchors; all anchors remain unapproved and formal comparison stays blocked."
+    rollback: "Remove this phase public artifacts and ignored private alignment outputs; keep prior comparison precheck intact."
+    target_version: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
+
   - task_id: "RDRCP01"
     phase: "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK"
     objective: "Precheck whether residual-difference materialized records can proceed to formal raw-to-processed comparison."
