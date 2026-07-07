@@ -2053,3 +2053,14 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py`
 - boundary: this phase prechecks confirmed private owner-authorized anchor handles only; it does not read raw inbox, run formal raw-to-processed comparison, reconcile values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `run_formal_raw_to_processed_comparison_after_owner_anchor_confirmation_precheck`
+## 2026-07-07 Latest - V014 Raw-To-Processed Comparison After Owner Anchor Confirmation
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- product_version: `0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation`
+- status: `completed_validated_local_only_raw_comparison_after_owner_anchor_confirmation_blocked_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py --require-private-comparison`
+- locked counts: `source_comparison_precheck_ready_record_count=72`, `source_comparison_precheck_blocker_record_count=0`, `formal_comparison_item_count=72`, `formal_comparison_exact_match_count=0`, `formal_comparison_mismatch_count=0`, `formal_comparison_blocker_count=72`, `missing_private_fingerprint_pair_count=72`, `unresolved_difference_count=72`
+- result: formal comparison was attempted, but all 72 items are blocked because complete private fingerprint pairs are missing; no raw-to-processed value consistency is claimed.
+- boundary: raw inbox access/mutation, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_AFTER_OWNER_ANCHOR_CONFIRMATION`, one phase only; no Stage review or upload.

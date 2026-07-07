@@ -11764,3 +11764,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private precheck outputs, tool, validator, focused test and governance entries; do not modify raw inbox or prior owner-anchor confirmation outputs."
     target_version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-owner-anchor-confirmation"
     completed_version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-owner-anchor-confirmation"
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-AFTER-OWNER-ANCHOR-CONFIRMATION-20260707"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-AFTER-OWNER-ANCHOR-CONFIRMATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py --require-private-comparison"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py"
+    test_results:
+      - "PASS: raw comparison after owner anchor confirmation validator and focused unit test passed; formal comparison was attempted for 72 items but all 72 are blocked by missing private fingerprint pairs, so value consistency remains unverified"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/human/residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/machine/residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/machine/residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation_matrix_public_safe.json"
+    risk: "Formal comparison attempt can be mistaken for completed value consistency; this phase records zero exact matches, zero mismatches, 72 blockers and keeps raw-to-processed value comparison performed=false."
+    rollback: "Remove current phase artifacts, metadata copies, private comparison outputs, tool, validator, focused test and governance entries; do not modify raw inbox or prior precheck outputs."
+    target_version: "0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation"
+    completed_version: "0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation"

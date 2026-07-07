@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-audit`
+- version: `0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation`
 - current_stage: `value-consistency`
-- current_phase: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT`
-- status: `completed_validated_local_only_owner_authorized_anchor_confirmation_blocker_audit_no_go`
-- current_blocker: `owner_authorized_private_raw_candidate_anchors_still_missing_blocker_audit_observation_recorded`
-- next_required_input: `owner_or_authorized_delegate_confirms_private_raw_candidate_anchors_before_formal_comparison`
+- current_phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- status: `completed_validated_local_only_raw_comparison_after_owner_anchor_confirmation_blocked_no_go`
+- current_blocker: `missing_private_fingerprint_pairs_for_all_72_formal_comparison_items`
+- next_required_input: `complete_private_raw_and_processed_fingerprint_pairs_for_72_owner_authorized_anchor_handles`
 - blocked_next_steps: `formal raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -551,3 +551,13 @@
 - locked counts: `source_owner_authorized_anchor_confirmation_count=72`, `source_anchor_confirmation_blocker_item_count=0`, `comparison_precheck_item_count=72`, `comparison_precheck_ready_record_count=72`, `comparison_precheck_blocker_record_count=0`, `unresolved_difference_count=72`
 - boundary: raw inbox access/mutation, formal raw-to-processed comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION`, one phase only; no Stage review or upload.
+## 2026-07-07 Latest - V014 Raw-To-Processed Comparison After Owner Anchor Confirmation
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- status: `completed_validated_local_only_raw_comparison_after_owner_anchor_confirmation_blocked_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py --require-private-comparison`
+- locked counts: `source_comparison_precheck_ready_record_count=72`, `source_comparison_precheck_blocker_record_count=0`, `formal_comparison_item_count=72`, `formal_comparison_exact_match_count=0`, `formal_comparison_mismatch_count=0`, `formal_comparison_blocker_count=72`, `missing_private_fingerprint_pair_count=72`, `unresolved_difference_count=72`
+- result: formal comparison was attempted, but all 72 items are blocked because complete private fingerprint pairs are missing; no raw-to-processed value consistency is claimed.
+- boundary: raw inbox access/mutation, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_AFTER_OWNER_ANCHOR_CONFIRMATION`, one phase only; no Stage review or upload.
