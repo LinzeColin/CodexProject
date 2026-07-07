@@ -45,6 +45,7 @@ scripts/run_stage2_evening.sh
 scripts/stage2_consensus_gate.py
 scripts/validate_database_contract.py
 scripts/validate_offline.sh
+scripts/validate_postgres_load_plan.py
 scripts/write_stage2_run_artifacts.py
 source_checksums.sha256
 source_manifest.txt

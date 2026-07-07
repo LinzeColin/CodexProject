@@ -101,6 +101,9 @@ Current status:
 - `scripts/prepare_postgres_landing_loader.py` generates private normalized
   JSONL load payloads plus `postgres_load_plan.sql` with JSONB staging tables
   and idempotent `ON CONFLICT DO NOTHING` inserts.
+- `scripts/validate_postgres_load_plan.py` statically validates the generated
+  plan against `database/postgres_schema.sql` for table order, inserted
+  columns, payload presence, and schema-backed conflict targets.
 - The dry-run uses no PostgreSQL connection, no database mutation, no private
   raw data, and no live DWS.
 
@@ -110,7 +113,7 @@ Remaining work:
 2. Add idempotent import batch logic.
 3. Add raw result/detail ingestion.
 4. Add derived fact insertion.
-5. Review the generated PostgreSQL JSONB/COPY loader SQL.
+5. Review and statically validate the generated PostgreSQL JSONB/COPY loader SQL.
 6. Run against an explicitly configured non-production PostgreSQL target.
 
 ### Task 4 - Enforce location and trajectory evidence

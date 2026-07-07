@@ -16,3 +16,4 @@ The test suite verifies:
 4. PostgreSQL schema/view contract supports the stage-2 -> payroll baseline path.
 5. Accepted stage-2 artifacts can generate an offline private DB landing bundle without database mutation or live DWS.
 6. The private DB landing bundle is FK-complete and can generate a PostgreSQL JSONB/COPY load plan without opening PostgreSQL.
+7. The generated PostgreSQL load plan is statically validated against schema columns, load order, payload files, and schema-backed `ON CONFLICT` targets.
