@@ -76,9 +76,11 @@ function run(command, args, options = {}) {
     encoding: "utf8",
     stdio: "pipe",
     maxBuffer: 64 * 1024 * 1024,
+    timeout: options.timeout || 0,
   });
   if (result.status !== 0) {
-    const error = new Error(`${command} ${args.join(" ")} failed with ${result.status}`);
+    const reason = result.error?.code === "ETIMEDOUT" ? " timed out" : "";
+    const error = new Error(`${command} ${args.join(" ")} failed${reason} with ${result.status}`);
     error.stdout = result.stdout;
     error.stderr = result.stderr;
     throw error;
@@ -221,25 +223,40 @@ function validateMachinePlane() {
     "Machine governance README is incomplete",
   );
 
+  const p2Deferral = hasAll(runGateReadme, [
+    "S01 P2",
+    "S01 P3",
+    "v1.2需求冻结清单",
+    "本 phase 不写入需求冻结配置",
+    "No GitHub main upload in this phase",
+  ]);
+  const p3Completion = hasAll(runGateReadme, [
+    "当前阶段是 S01 P3",
+    "v1.2需求冻结清单",
+    "MA-V12-S01P3",
+    "下一步是 S01 整体复审",
+    "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    hasAll(runGateReadme, [
-      "S01 P2",
-      "S01 P3",
-      "v1.2需求冻结清单",
-      "本 phase 不写入需求冻结配置",
-      "No GitHub main upload in this phase",
-    ]),
+    p2Deferral || p3Completion,
     "s01p2_machine_run_gate_readme",
-    "Run gate README records that requirements freeze config is deferred to S01 P3",
-    "Run gate README is missing S01 P3 deferral",
+    "Run gate README records either the original S01 P2 deferral or the later S01 P3 freeze completion",
+    "Run gate README is missing S01 P2 deferral and S01 P3 completion markers",
   );
 
   const freezeConfig = path.join(repoRoot, "机器治理/运行门禁/v1.2需求冻结清单.json");
+  const freezeConfigValid =
+    !fs.existsSync(freezeConfig) ||
+    hasAll(readRepoFile("机器治理/运行门禁/v1.2需求冻结清单.json"), [
+      "v1.2 四线14Stage升级",
+      "raw_public_authorization",
+      "credentials_exclusion",
+    ]);
   assertCondition(
-    !fs.existsSync(freezeConfig),
+    freezeConfigValid,
     "s01p2_no_requirements_freeze_config",
-    "S01 P2 does not write the v1.2 requirements freeze config reserved for S01 P3",
-    "S01 P2 wrote the S01 P3 requirements freeze config",
+    "Requirements freeze config is either absent during S01 P2 or present as the later S01 P3 artifact",
+    "Requirements freeze config exists but is not a valid S01 P3 freeze artifact",
   );
 }
 
@@ -312,7 +329,10 @@ function validateGitBoundary() {
     { branch, branchName },
   );
 
-  const remoteDev = run("git", ["ls-remote", "--heads", "origin", branchName], { cwd: worktreeRoot }).stdout.trim();
+  const remoteDev = run("git", ["ls-remote", "--heads", "origin", branchName], {
+    cwd: worktreeRoot,
+    timeout: 60000,
+  }).stdout.trim();
   assertCondition(
     remoteDev === "",
     "s01p2_no_remote_development_branch",

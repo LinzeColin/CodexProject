@@ -1,3 +1,41 @@
+## v1.2 S01 P3 Requirements Freeze
+
+状态：`phase_s01_p3_requirements_freeze_completed_pending_s01_review`。
+
+任务 ID：`MA-V12-S01P3`。
+
+验收 ID：`ACC-MA-V12-S01P3`。
+
+S01 P3 写入 v1.2 需求冻结：四线范围、14 Stage 执行规则、raw 公开授权、凭证排除、
+后续其他 agent source registry 扩展规则进入机器门禁。README、AGENTS、人类入口和
+运行门禁说明已桥接旧 raw/private 边界。
+
+涉及文件：
+
+- `机器治理/运行门禁/v1.2需求冻结清单.json`
+- `docs/reviews/memory_atlas_v1_2_s01_p3_requirements_freeze.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p3.cjs`
+
+验收：
+
+- `validate:v1.2-s01-p3`
+- `ACC-MA-V12-S01P3`
+- S01 P3
+- `v1.2需求冻结清单.json`
+- README/AGENTS bridge
+- No GitHub main upload in this phase
+
+边界：
+
+- No S01 review.
+- No S02.
+- No app reinstall.
+- No GitHub main upload in this phase.
+- No apps/scripts/tests/config move.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P3 Requirements Freeze; MA-V12-S01P3; ACC-MA-V12-S01P3; phase_s01_p3_requirements_freeze_completed_pending_s01_review; validate:v1.2-s01-p3; memory_atlas_v1_2_s01_p3_requirements_freeze.md; v1.2需求冻结清单.json; S01 P3; No GitHub main upload in this phase; No S01 review; No S02; No app reinstall; No apps/scripts/tests/config move; No raw archive change.
+
 ## v1.2 S01 P2 Double Plane Creation
 
 状态：`phase_s01_p2_double_plane_created_pending_s01_p3`。

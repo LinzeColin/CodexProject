@@ -1,3 +1,24 @@
+## 107. Memory Atlas v1.2 S01 P3 Requirements Freeze Parameters
+
+状态：`phase_s01_p3_requirements_freeze_completed_pending_s01_review`。
+
+验收 ID：`ACC-MA-V12-S01P3`。
+
+S01 P3 固定以下参数：
+
+- `MA-V12-S01P3`
+- `validate:v1.2-s01-p3`
+- `memory_atlas_v1_2_s01_p3_requirements_freeze.md`
+- `v1.2需求冻结清单.json`
+- 四线范围：Anthropic 化行为智能；信息 ROI / 全中文 / 多维可视化；ChatGPT/Codex/后续其他 agent 自动同步备份进 GitHub；UIUX 多模态交互 / 参数公式模型治理 / 维护简化。
+- raw 公开授权：ChatGPT、Codex、后续其他 agent 的 raw data / transcript 可在用户授权后明文公开进 GitHub。
+- 凭证排除：cookies、session tokens、passwords、API keys、private keys、OAuth tokens 和 browser credential store 不得提交。
+- S01 P3 完成后下一步为 S01 review，不进入 S02。
+- No GitHub main upload in this phase。
+- No app reinstall、No apps/scripts/tests/config move、No raw archive change。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P3 Requirements Freeze; MA-V12-S01P3; ACC-MA-V12-S01P3; phase_s01_p3_requirements_freeze_completed_pending_s01_review; validate:v1.2-s01-p3; memory_atlas_v1_2_s01_p3_requirements_freeze.md; v1.2需求冻结清单.json; S01 P3; No GitHub main upload in this phase; No S01 review; No S02; No app reinstall; No apps/scripts/tests/config move; No raw archive change.
+
 ## 106. Memory Atlas v1.2 S01 P2 Double Plane Creation Parameters
 
 状态：`phase_s01_p2_double_plane_created_pending_s01_p3`。
