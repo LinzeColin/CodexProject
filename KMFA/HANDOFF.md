@@ -1,3 +1,46 @@
+## 2026-07-07 Latest Handoff - V014 Residual Difference Owner / Agent Diagnostic Response Import
+
+Current phase completed locally: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT`.
+
+Current state:
+- `source_template_item_count=72`
+- `source_pending_queue_item_count=72`
+- `source_owner_authorized_report_item_count=72`
+- `target_slot_match_count=72`
+- `valid_diagnostic_response_imported_count=72`
+- `valid_diagnostic_response_count=72`
+- `pending_diagnostic_response_count=0`
+- `diagnostic_response_blocker_count=0`
+- `non_actionable_diagnostic_response_count=72`
+- `actionable_resolution_count=0`
+- `source_map_actionable_response_count=0`
+- `open_residual_difference_count=72`
+- `closed_discrepancy_count=0`
+- `safe_auto_resolution_count=0`
+- `go_no_go=NO_GO`
+- `github_upload_performed=false`
+- `app_reinstall_performed=false`
+- raw inbox was not read, listed, parsed, fingerprinted, copied, moved, renamed, deleted, overwritten, normalized or written by this phase.
+
+Private output:
+- Private response import record/items/non-actionable queue/report are under the project ignored private runtime directory for this phase.
+- These private outputs must not be committed to GitHub.
+
+Evidence:
+- `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT/machine/outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import_manifest.json`
+- `KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py`
+- `KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py`
+
+Verified:
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py --require-private-import`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import`
+
+Next allowed step:
+- Single phase only: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_RESPONSE_IMPORT_READINESS_RECHECK` or a source-map correction / authoritative value resolution phase if evidence becomes available.
+- Do not run formal raw-to-processed comparison, full reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
+- Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, goal closeout must include the private/public-safe discrepancy report boundary.
+
 # KMFA Handoff
 
 更新时间: 2026-07-07

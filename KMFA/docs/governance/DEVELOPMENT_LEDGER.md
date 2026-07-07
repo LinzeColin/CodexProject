@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Response Import
+
+- Product version: `0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT` only; import 72 owner/agent diagnostic responses from existing ignored private discrepancy evidence without closing discrepancies, correcting source maps or mutating raw data.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py`.
+- gate_state: source_template_items=72, source_pending_queue_items=72, owner_authorized_report_items=72, target_slot_match=72, valid_diagnostic_responses=72, pending_diagnostic_responses=0, diagnostic_response_blockers=0, non_actionable_diagnostic_responses=72, open_residual_differences=72, closed_discrepancies=0, source_map_actionable_responses=0, source_map_correction_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Discrepancy Closure Blocker Audit
 
 - Product version: `0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit`.
