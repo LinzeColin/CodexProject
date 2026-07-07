@@ -12071,3 +12071,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private diagnostic packet outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior blocked-handoff outputs."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-diagnostic-packet-after-blocked-handoff"
     completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-diagnostic-packet-after-blocked-handoff"
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-INTAKE-AFTER-PACKET-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-INTAKE-AFTER-PACKET"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet.py --require-private-intake"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet"
+    test_results:
+      - "PASS: owner/agent diagnostic intake validator and focused unit test passed; 48 private response template items were prepared, zero valid responses or actionable resolutions are available, and value consistency remains unverified"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET/human/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet_matrix_public_safe.json"
+    risk: "Response template can be mistaken for valid owner/agent response import; this phase prepares private intake only and keeps binding, value comparison, reconciliation, report, upload, reinstall and business execution closed."
+    rollback: "Remove current phase artifacts, metadata copies, private intake outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior diagnostic-packet outputs."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-intake-after-packet"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-intake-after-packet"
