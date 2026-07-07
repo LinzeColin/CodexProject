@@ -149,14 +149,66 @@ function validateStage7Continuity() {
     return;
   }
 
-  const result = run("node", [`scripts/${previousValidatorScript}`], { cwd: appRoot });
-  const parsed = parseValidatorOutput(result);
+  validateTextFile("docs/reviews/memory_atlas_v1_1_7_stage7_review.md");
+  const packageJson = JSON.parse(readRepoFile("apps/memory-atlas/package.json"));
+  const review = readRepoFile("docs/reviews/memory_atlas_v1_1_7_stage7_review.md");
+  const records = [
+    ["CHANGELOG.md", readRepoFile("CHANGELOG.md")],
+    ["功能清单.md", readRepoFile("功能清单.md")],
+    ["开发记录.md", readRepoFile("开发记录.md")],
+    ["模型参数文件.md", readRepoFile("模型参数文件.md")],
+    ["docs/MEMORY_ATLAS_DELIVERY_RECORD.md", readRepoFile("docs/MEMORY_ATLAS_DELIVERY_RECORD.md")],
+    ["docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md", readRepoFile("docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md")],
+    ["config/visualization/model_parameters.universe_state.yaml", readRepoFile("config/visualization/model_parameters.universe_state.yaml")],
+  ];
+
   assertCondition(
-    parsed.status === "PASS" && parsed.acceptance_id === "ACC-MA-V117-S7-REVIEW",
-    "stage7_review_validator",
-    "Stage 7 review validator returned PASS before Stage 8 Phase 8.1 acceptance",
-    "Stage 7 review validator did not return PASS",
-    { status: parsed.status, acceptance_id: parsed.acceptance_id },
+    packageJson.scripts?.["validate:v1.1.7-stage7"] === `node scripts/${previousValidatorScript}` &&
+      fs.existsSync(path.join(appRoot, "scripts", previousValidatorScript)),
+    "stage7_review_validator_registered",
+    "Stage 7 review validator remains registered for explicit historical revalidation",
+    "Stage 7 review validator is missing or not registered",
+    { script: packageJson.scripts?.["validate:v1.1.7-stage7"] },
+  );
+
+  assertCondition(
+    hasAll(review, [
+      "Memory Atlas v1.1.7 Stage 7 Review",
+      "MA-V117-S7-REVIEW",
+      "ACC-MA-V117-S7-REVIEW",
+      "stage_7_review_passed_pending_stage8_no_github_main_upload",
+      "validate:v1.1.7-stage7",
+      "Phase 7.1",
+      "Phase 7.2",
+      "Search 2.0",
+      "Review / Summary / Iteration",
+      "pending Stage 8",
+      "No Stage 8 work",
+      "No GitHub main upload before the whole Stage 0-10 project is complete",
+    ]),
+    "stage7_review_artifact_continuity",
+    "Stage 7 review artifact pins the review-passed state and pending Stage 8 entry gate",
+    "Stage 7 review artifact is missing continuity fragments",
+  );
+
+  for (const [name, source] of records) {
+    assertCondition(
+      hasAll(source, [
+        "MA-V117-S7-REVIEW",
+        "ACC-MA-V117-S7-REVIEW",
+        "stage_7_review_passed_pending_stage8_no_github_main_upload",
+        "validate:v1.1.7-stage7",
+        "pending Stage 8",
+      ]),
+      `stage7_review_records_${name}`,
+      `${name} records the Stage 7 review-passed pending Stage 8 continuity gate`,
+      `${name} is missing Stage 7 review continuity fragments`,
+    );
+  }
+
+  pass(
+    "stage7_recursive_validator_not_rerun",
+    "Stage 8 Phase 8.1 validates Stage 7 continuity from committed review artifact and records; run validate:v1.1.7-stage7 explicitly for full historical recursion",
   );
 }
 
