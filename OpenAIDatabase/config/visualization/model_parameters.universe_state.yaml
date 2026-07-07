@@ -67,6 +67,44 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+stage9_review:
+  task_id: MA-V117-S9-REVIEW
+  acceptance_id: ACC-MA-V117-S9-REVIEW
+  status: stage_9_review_passed_pending_stage10_no_github_main_upload
+  required_validator: validate:v1.1.7-stage9
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage9_review.md
+  phase_coverage:
+    - Phase 9.1
+    - Cross-board shared state
+    - synchronized filters
+    - Inspector explanation layer
+  phase_validators:
+    - validate:v1.1.7-stage9-phase1
+  browser_validators:
+    - validate:cross-board-shared-state-browser
+  runtime_versions:
+    - cross_board_shared_state.v1_1_7_stage9_phase1
+    - inspector_explanation_layer.v1_1_7_stage9_phase1
+  output_fields:
+    - shared_state_filters
+    - synchronized_filters
+    - inspector_explanation_layer
+  next_gate: pending Stage 10
+  boundary_label: "No Stage 10 work; No GitHub main upload"
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_stage10_work
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 stage9_phase1_cross_board_shared_state:
   task_id: MA-V117-S9P01
   phase_label: Phase 9.1
