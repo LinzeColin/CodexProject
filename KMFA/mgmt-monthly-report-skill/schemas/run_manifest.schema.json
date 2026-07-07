@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Management Monthly Report Run Manifest",
+  "type": "object",
+  "required": ["period", "run_id", "status", "input_slots", "outputs", "metadata_policy"],
+  "properties": {
+    "period": {"type": "string", "pattern": "^[0-9]{6}$"},
+    "run_id": {"type": "string"},
+    "status": {"type": "string"},
+    "input_slots": {"type": "array"},
+    "outputs": {"type": "object"},
+    "metadata_policy": {"type": "object"}
+  }
+}
+

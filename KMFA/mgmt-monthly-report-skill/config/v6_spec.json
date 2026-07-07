@@ -1,0 +1,218 @@
+{
+  "version": "v6-baseline",
+  "period_format": "YYYYMM",
+  "output_files": {
+    "excel": "经营管理分析报表 {YYYYMM}.xlsx",
+    "pdf": "董事会经营分析摘要 {YYYYMM}.pdf",
+    "internal_validation_json": "自动验收报告 {YYYYMM}.json"
+  },
+  "visible_sheet_order": [
+    "00_首页总览",
+    "01_回款应收项目",
+    "02_开票纳税汇总",
+    "03_2026年销售回款",
+    "04_2026年资金汇总",
+    "05_客户市场",
+    "06_资质人力产能",
+    "07_保证金履约",
+    "08_趋势预测",
+    "09_经营口径核对",
+    "10_口径说明与分析方向"
+  ],
+  "tab_colors": {
+    "00_首页总览": "000B1F33",
+    "01_回款应收项目": "000F766E",
+    "02_开票纳税汇总": "001D4ED8",
+    "03_2026年销售回款": "00059669",
+    "04_2026年资金汇总": "00DC2626",
+    "05_客户市场": "000891B2",
+    "06_资质人力产能": "007C3AED",
+    "07_保证金履约": "00F59E0B",
+    "08_趋势预测": "002563EB",
+    "09_经营口径核对": "0064748B",
+    "10_口径说明与分析方向": "00334155"
+  },
+  "global_style": {
+    "font": "Microsoft YaHei",
+    "title_font_size": 18,
+    "section_title_font_size": 13,
+    "header_font_size": 11,
+    "body_font_size": 10,
+    "dark_title_fill": "#0B1F33",
+    "teal_header_fill": "#0F766E",
+    "blue_header_fill": "#1D4ED8",
+    "red_header_fill": "#DC2626",
+    "amber_fill": "#FEF3C7",
+    "green_fill": "#DCFCE7",
+    "blue_fill": "#DBEAFE",
+    "red_fill": "#FEE2E2",
+    "border_color": "#CBD5E1",
+    "alignment": "center_center_wrap"
+  },
+  "forbidden_visible_terms": [
+    "Series1",
+    "Series2",
+    "Series 1",
+    "Series 2",
+    "责任角色",
+    "CxO",
+    "CEO",
+    "CFO",
+    "COO",
+    "CMO",
+    "CTO",
+    "Source_Catalog",
+    "源文件状态",
+    "AI",
+    "机器",
+    "测试数据",
+    "假设数据",
+    "模拟数据"
+  ],
+  "chart_requirements": {
+    "00_首页总览": [
+      "月度回款与开票趋势（万元）"
+    ],
+    "01_回款应收项目": [
+      "月度回款与开票趋势（万元）"
+    ],
+    "03_2026年销售回款": [
+      "外部营业开票额｜最近三年同期对比（元）",
+      "销售回款｜最近三年同期对比（元）",
+      "保证金回款｜最近三年同期对比（元）"
+    ],
+    "04_2026年资金汇总": [
+      "资金流入、流出与累计净流量（元）"
+    ],
+    "05_客户市场": [
+      "行业2026累计回款"
+    ],
+    "06_资质人力产能": [
+      "三类人员与特种设备人员缺口（人）",
+      "组织与产能画像（人）"
+    ],
+    "07_保证金履约": [
+      "按支付类型未退余额（元）",
+      "按账龄未退金额（元）"
+    ],
+    "08_趋势预测": [
+      "未来13周回款预测（万元）"
+    ]
+  },
+  "input_business_groups": [
+    {
+      "id": "collection_2026",
+      "display_name": "WPS 武汉开明 2026年回款表",
+      "required": true,
+      "patterns": [
+        "*2026*回款表*.xlsx",
+        "*2026*回款*.xlsx"
+      ]
+    },
+    {
+      "id": "invoice_tax_cash",
+      "display_name": "开票纳税资金汇总表",
+      "required": true,
+      "patterns": [
+        "*开票*纳税*资金汇总*.xlsx"
+      ],
+      "required_sheet_groups": [
+        {
+          "canonical": "开票纳税汇总",
+          "aliases": [
+            "开票纳税汇总",
+            "*开票*纳税*汇总*",
+            "*各个主体*开票*纳税*"
+          ]
+        },
+        {
+          "canonical": "2026年销售回款",
+          "aliases": [
+            "2026年销售回款",
+            "*销售回款*",
+            "*回2026年合同款*",
+            "*回款*合同款*"
+          ]
+        },
+        {
+          "canonical": "2026年资金汇总",
+          "aliases": [
+            "2026年资金汇总",
+            "*资金汇总*",
+            "*资金流汇总*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "receivable_contract",
+      "display_name": "应收账款合同登记",
+      "required": true,
+      "patterns": [
+        "*应收账款*合同登记*.xlsx",
+        "*合同登记*.xlsx"
+      ]
+    },
+    {
+      "id": "aging",
+      "display_name": "应收账龄表",
+      "required": true,
+      "patterns": [
+        "*应收账龄*.xlsx"
+      ]
+    },
+    {
+      "id": "deposit",
+      "display_name": "2026年保证金",
+      "required": true,
+      "patterns": [
+        "*保证金2026*.xlsx",
+        "*保证金*.xlsx"
+      ]
+    },
+    {
+      "id": "project_contract_status_pack",
+      "display_name": "项目合同状态包（三大项目/生产项目状态表/红圈主合同）",
+      "required": true,
+      "patterns": [
+        "*三大项目*.xlsx",
+        "*生产项目状态表*.xlsx",
+        "*红圈主合同*.xlsx"
+      ],
+      "mode": "business_pack"
+    }
+  ],
+  "industry_standard_values": [
+    "化工盐化",
+    "钢铁冶金",
+    "建材水泥",
+    "新能源材料",
+    "化肥"
+  ],
+  "funds_sheet_formula_rules": {
+    "inflow_label": "资金总流入",
+    "inflow_components": [
+      "销售回款2026",
+      "保证金回款",
+      "3、其他回款（借支、付款退回等）",
+      "4、旧物、利息及补贴收入",
+      "5、贷款增加"
+    ],
+    "outflow_label": "资金总流出",
+    "outflow_components": [
+      "1、日常费用支出",
+      "2、项目成本支出",
+      "3、保证金支出（2026）",
+      "4、还本金额及利息",
+      "5、贷款居间及过桥费",
+      "6、贴现",
+      "7、其他支出（借支+押金）",
+      "8、购车",
+      "9、其他（林总+小张总）"
+    ],
+    "cumulative_net_row": 30,
+    "cumulative_net_label": "累计资金净流量",
+    "inflow_total_label": "资金总流入合计",
+    "outflow_total_label": "资金总流出合计"
+  }
+}
