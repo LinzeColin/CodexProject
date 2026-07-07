@@ -1352,6 +1352,17 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - gate: `NO_GO`; discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private diagnostic handoff packet, queue and report stay under git-ignored runtime.
 
+## V014 Residual Difference Owner-Authorized Anchor Confirmation Readiness
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-READINESS-001`
+- parameter_ids: `PARAM-KMFA-1453`, `PARAM-KMFA-1454`, `PARAM-KMFA-1455`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_READINESS`
+- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-readiness`
+- rule: source_after_alignment_blocker_count=72 and source_anchor_draft_item_count=72 are required inputs; owner_authorized_anchor_ready_count=0, owner_authorized_anchor_blocker_count=72, missing_owner_authorized_anchor_count=72, missing_processed_value_fingerprint_count=72 and missing_raw_candidate_anchor_count=72 keep anchor confirmation and raw-to-processed comparison blocked.
+- gate: `NO_GO`; owner anchor authorization, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private readiness, diagnostic, ready queue, blocker queue and report stay under git-ignored runtime.
+
 ## V014 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Intake
 
 - model_id: `MOD-KMFA-GOV-001`
