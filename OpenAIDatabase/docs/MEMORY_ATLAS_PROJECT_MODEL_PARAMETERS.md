@@ -1,3 +1,43 @@
+## 89. Memory Atlas v1.1.7 Stage 5 Phase 5.2 C3 River Spike
+
+状态：`phase_5_2_c3_river_spike_completed_pending_stage5_review`。
+
+验收 ID：`ACC-MA-V117-S5P02`。
+
+模型参数：
+
+- Spike version 固定为 `memory_river_c3_spike.v1_1_7_stage5_phase2`。
+- `validate:v1.1.7-stage5-phase2` 是本 phase 必跑 validator。
+- `validate:memory-river-spike-browser` 是本 phase 浏览器 validator。
+- Time scale levels: `year`, `month`, `week`, `day`。
+- Required runtime controls: `zoom`, `brush_selection`, `selected_range_summary`, `theme_lanes`, `black_hole_band`, `proto_star_marker`, `reduced_motion`。
+- Required theme trends: `rising`, `declining`, `stable`, `conflict`。
+- No production Timeline replacement。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/experiments/memory-river-spike/fixture.ts`
+- `apps/memory-atlas/src/experiments/memory-river-spike/main.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_river_spike_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S5P02-001 stage5_phase2_status = phase_5_2_c3_river_spike_completed_pending_stage5_review`
+- `PARAM-MA-V117-S5P02-002 stage5_phase2_required_validator = validate:v1.1.7-stage5-phase2`
+- `PARAM-MA-V117-S5P02-003 stage5_phase2_browser_validator = validate:memory-river-spike-browser`
+- `PARAM-MA-V117-S5P02-004 spike_version = memory_river_c3_spike.v1_1_7_stage5_phase2`
+- `PARAM-MA-V117-S5P02-005 time_scale_levels = year;month;week;day`
+- `PARAM-MA-V117-S5P02-006 theme_trends = rising;declining;stable;conflict`
+
+验收信号：
+
+- Static validator checks Stage 5 Phase 5.1 continuity, spike files, product/acceptance docs, records, production isolation, canonical remote and no-upload boundary。
+- Browser validator checks year/month/week/day time levels, zoom, brush selected range themes/events, Black Hole / Proto-Star positioning, reduced motion, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Stage 5 Phase 5.2 C3 River Spike; MA-V117-S5P02; ACC-MA-V117-S5P02; phase_5_2_c3_river_spike_completed_pending_stage5_review; validate:v1.1.7-stage5-phase2; validate:memory-river-spike-browser; memory_river_c3_spike.v1_1_7_stage5_phase2; Phase 5.2; No production Timeline replacement; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply; No Stage 5.3.
+
 ## 88. Memory Atlas v1.1.7 Stage 5 Phase 5.1 Interaction Contract
 
 状态：`phase_5_1_interaction_contract_completed_pending_stage5_review`。

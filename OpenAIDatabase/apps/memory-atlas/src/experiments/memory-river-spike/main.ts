@@ -5,19 +5,53 @@ import {
   type RiverEventFixture,
   type RiverLaneFixture,
   type RiverMarkerFixture,
+  type RiverTimeLevel,
 } from "./fixture";
 
+const STAGE5_PHASE2_SPIKE_VERSION = "memory_river_c3_spike.v1_1_7_stage5_phase2";
+const TIME_LEVELS = ["year", "month", "week", "day"] as const satisfies RiverTimeLevel[];
+const TIME_LEVEL_TOKENS: Record<RiverTimeLevel, string> = {
+  year: "year_level",
+  month: "month_level",
+  week: "week_level",
+  day: "day_level",
+};
+const TREND_LABELS = {
+  rising: "trend: rising",
+  declining: "trend: declining",
+  stable: "trend: stable",
+  conflict: "trend: conflict",
+} as const;
+
 type RiverMetrics = {
+  spikeVersion: string;
   laneCount: number;
   eventCount: number;
   zoomK: number;
+  activeTimeLevel: RiverTimeLevel;
+  availableTimeLevels: RiverTimeLevel[];
   brushRange: [string, string] | null;
+  selectedRangeSummary: SelectedRangeSummary | null;
   hoveredId: string | null;
   reducedMotion: boolean;
   consoleErrors: number;
   d3ScaleUtc: boolean;
   d3Zoom: boolean;
   d3Brush: boolean;
+  signalPositions: {
+    blackHoleBandCount: number;
+    protoStarCount: number;
+    positionedSignals: string[];
+  };
+};
+
+type SelectedRangeSummary = {
+  themeCount: number;
+  eventCount: number;
+  signalCount: number;
+  themes: string[];
+  events: string[];
+  signals: string[];
 };
 
 declare global {
@@ -28,6 +62,9 @@ declare global {
       api: {
         reset: () => void;
         setReducedMotion: (value: boolean) => void;
+        setTimeLevel: (value: RiverTimeLevel) => void;
+        setBrushRange: (startIso: string, endIso: string) => void;
+        getDateScreenX: (dateIso: string) => number;
       };
     };
   }
@@ -38,11 +75,16 @@ const laneCountElement = requireElement<HTMLElement>("laneCount");
 const eventCountElement = requireElement<HTMLElement>("eventCount");
 const zoomReadoutElement = requireElement<HTMLElement>("zoomReadout");
 const brushReadoutElement = requireElement<HTMLElement>("brushReadout");
+const timeLevelReadoutElement = requireElement<HTMLElement>("timeLevelReadout");
 const statusLine = requireElement<HTMLElement>("statusLine");
 const hoverCard = requireElement<HTMLElement>("hoverCard");
 const modeControl = requireElement<HTMLSelectElement>("modeControl");
+const timeLevelControl = requireElement<HTMLSelectElement>("timeLevelControl");
 const reducedMotionControl = requireElement<HTMLInputElement>("reducedMotionControl");
 const resetButton = requireElement<HTMLButtonElement>("resetButton");
+const selectedRangeThemes = requireElement<HTMLElement>("selectedRangeThemes");
+const selectedRangeEvents = requireElement<HTMLElement>("selectedRangeEvents");
+const selectedRangeSignals = requireElement<HTMLElement>("selectedRangeSignals");
 const smokeStatus = requireElement<HTMLElement>("smokeStatus");
 
 const smokeMode = new URLSearchParams(window.location.search).get("smoke") === "1";
@@ -57,16 +99,25 @@ const bands = memoryRiverFixture.blackHoleBands;
 const protoStars = memoryRiverFixture.protoStars;
 
 const metrics: RiverMetrics = {
+  spikeVersion: STAGE5_PHASE2_SPIKE_VERSION,
   laneCount: lanes.length,
   eventCount: events.length,
   zoomK: 1,
+  activeTimeLevel: "month",
+  availableTimeLevels: [...TIME_LEVELS],
   brushRange: null,
+  selectedRangeSummary: null,
   hoveredId: null,
   reducedMotion: false,
   consoleErrors: 0,
   d3ScaleUtc: true,
   d3Zoom: true,
   d3Brush: true,
+  signalPositions: {
+    blackHoleBandCount: bands.length,
+    protoStarCount: protoStars.length,
+    positionedSignals: [],
+  },
 };
 
 window.addEventListener("error", () => {
@@ -78,10 +129,13 @@ window.__memoryRiverSpike = {
   metrics,
   fixture: memoryRiverFixture,
   api: {
-    reset,
-    setReducedMotion,
-  },
-};
+      reset,
+      setReducedMotion,
+      setTimeLevel,
+      setBrushRange,
+      getDateScreenX,
+    },
+  };
 
 const svg = d3
   .select(app)
@@ -131,6 +185,7 @@ const zoomBehavior = d3
   .on("zoom", (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
     currentX = event.transform.rescaleX(baseX);
     metrics.zoomK = Number(event.transform.k.toFixed(2));
+    setTimeLevel(inferTimeLevel(metrics.zoomK), { render: false });
     renderScene();
     syncMetrics();
   });
@@ -144,6 +199,7 @@ const brushBehavior = d3
     if (!event.selection) {
       activeBrushRange = null;
       metrics.brushRange = null;
+      showSelectedRangeSummary(null);
       statusLine.textContent = "Brush cleared. 时间河恢复为全窗口可读状态。";
       syncMetrics();
       return;
@@ -151,16 +207,15 @@ const brushBehavior = d3
     const [x0, x1] = event.selection as [number, number];
     const start = currentX.invert(x0);
     const end = currentX.invert(x1);
-    activeBrushRange = start <= end ? [start, end] : [end, start];
-    metrics.brushRange = [dateFormat(activeBrushRange[0]), dateFormat(activeBrushRange[1])];
-    statusLine.textContent = `Brush locked ${dateFormat(activeBrushRange[0])} -> ${dateFormat(activeBrushRange[1])}`;
-    pulseFeedback(selectionCrossesSignal(activeBrushRange));
-    syncMetrics();
+    applyBrushRange(start, end, { moveBrush: false, reason: "brush" });
   });
 
 svgSelection.call(zoomBehavior);
 resetButton.addEventListener("click", reset);
 reducedMotionControl.addEventListener("change", () => setReducedMotion(reducedMotionControl.checked));
+timeLevelControl.addEventListener("change", () => {
+  setTimeLevel(assertTimeLevel(timeLevelControl.value));
+});
 modeControl.addEventListener("change", () => renderScene());
 window.addEventListener("resize", () => {
   resize();
@@ -172,11 +227,9 @@ renderScene();
 syncMetrics();
 
 if (smokeMode) {
-  const smokeStart = new Date("2026-03-01T00:00:00Z");
-  const smokeEnd = new Date("2026-05-01T00:00:00Z");
-  activeBrushRange = [smokeStart, smokeEnd];
-  metrics.brushRange = [dateFormat(smokeStart), dateFormat(smokeEnd)];
-  moveBrushToRange(activeBrushRange);
+  const smokeStart = memoryRiverFixture.selectedRangeDefault.startAt;
+  const smokeEnd = memoryRiverFixture.selectedRangeDefault.endAt;
+  setBrushRange(smokeStart, smokeEnd);
   statusLine.textContent = "Smoke brush range applied.";
   syncMetrics();
 }
@@ -293,10 +346,12 @@ function drawLanes() {
   entered.append("line");
   entered.append("text").attr("class", "lane-label");
   entered.append("text").attr("class", "lane-level");
+  entered.append("text").attr("class", "lane-trend");
 
   const merged = entered
     .merge(laneSelection)
     .attr("transform", (_lane, index) => `translate(0 ${laneCenter(index)})`)
+    .attr("data-trend", (lane) => trendClass(lane))
     .on("pointerover", (_event, lane) => showLaneCard(lane))
     .on("pointerout", clearHover);
 
@@ -320,6 +375,15 @@ function drawLanes() {
     .attr("x", 24)
     .attr("y", 13)
     .text((lane) => `${lane.level} · ${lane.evidenceCount} evidence`);
+
+  merged
+    .select(".lane-trend")
+    .attr("x", margin.left - 88)
+    .attr("y", -4)
+    .attr("fill", (lane) => trendColor(lane.trend))
+    .attr("font-size", 10)
+    .attr("font-weight", 700)
+    .text((lane) => TREND_LABELS[lane.trend]);
 }
 
 function drawRiverCurrents() {
@@ -421,12 +485,14 @@ function drawEvents() {
 
 function drawAxis() {
   axisGroup.attr("transform", `translate(0 ${height - margin.bottom + 14})`);
-  const ticks = width < 780 ? 5 : 8;
+  const level = metrics.activeTimeLevel;
+  const ticks = tickArgumentsForLevel(level);
+  const formatter = tickFormatterForLevel(level);
   axisGroup.call(
     d3
       .axisBottom<Date>(currentX)
       .ticks(ticks)
-      .tickFormat((date) => tickFormat(date)),
+      .tickFormat((date) => formatter(date)),
   );
   axisGroup.selectAll("path,line").attr("stroke", "rgba(210, 235, 255, 0.32)");
   axisGroup.selectAll("text").attr("fill", "#c5d9ec").attr("font-size", 11);
@@ -444,6 +510,20 @@ function drawAxis() {
     .attr("fill", "#6f859a")
     .attr("font-size", 10)
     .text((date) => monthFormat(date));
+}
+
+function tickArgumentsForLevel(level: RiverTimeLevel): d3.TimeInterval | number {
+  if (level === "year") return d3.utcYear.every(1) ?? 2;
+  if (level === "month") return d3.utcMonth.every(1) ?? 6;
+  if (level === "week") return d3.utcWeek.every(width < 780 ? 2 : 1) ?? 8;
+  return d3.utcDay.every(width < 780 ? 14 : 7) ?? 10;
+}
+
+function tickFormatterForLevel(level: RiverTimeLevel) {
+  if (level === "year") return d3.utcFormat("%Y");
+  if (level === "month") return d3.utcFormat("%b %Y");
+  if (level === "week") return d3.utcFormat("W%U");
+  return d3.utcFormat("%b %d");
 }
 
 function drawBrush() {
@@ -465,11 +545,14 @@ function moveBrushToRange(range: [Date, Date]) {
 function reset() {
   activeBrushRange = null;
   metrics.brushRange = null;
+  metrics.selectedRangeSummary = null;
   metrics.zoomK = 1;
   currentX = baseX.copy();
+  setTimeLevel("month", { render: false });
   svgSelection.call(zoomBehavior.transform, d3.zoomIdentity);
   brushGroup.call(brushBehavior.move, null);
   statusLine.textContent = "Zoom and brush reset.";
+  showSelectedRangeSummary(null);
   renderScene();
 }
 
@@ -479,6 +562,88 @@ function setReducedMotion(value: boolean) {
   document.body.dataset.reducedMotion = value ? "true" : "false";
   statusLine.textContent = value ? "Reduced motion enabled. 连续河流动画已关闭。" : "Reduced motion disabled. 河流反馈动画恢复。";
   syncMetrics();
+}
+
+function setTimeLevel(value: RiverTimeLevel, options: { render?: boolean } = {}) {
+  metrics.activeTimeLevel = value;
+  timeLevelControl.value = value;
+  timeLevelReadoutElement.textContent = value;
+  if (options.render !== false) {
+    renderScene();
+  }
+  syncMetrics();
+}
+
+function assertTimeLevel(value: string): RiverTimeLevel {
+  if (TIME_LEVELS.includes(value as RiverTimeLevel)) return value as RiverTimeLevel;
+  return "month";
+}
+
+function inferTimeLevel(zoomK: number): RiverTimeLevel {
+  if (zoomK >= 6.8) return "day";
+  if (zoomK >= 3.2) return "week";
+  if (zoomK >= 1.4) return "month";
+  return "year";
+}
+
+function setBrushRange(startIso: string, endIso: string) {
+  applyBrushRange(new Date(startIso), new Date(endIso), { moveBrush: true, reason: "api" });
+}
+
+function applyBrushRange(start: Date, end: Date, options: { moveBrush: boolean; reason: "api" | "brush" }) {
+  activeBrushRange = start <= end ? [start, end] : [end, start];
+  metrics.brushRange = [dateFormat(activeBrushRange[0]), dateFormat(activeBrushRange[1])];
+  showSelectedRangeSummary(activeBrushRange);
+  statusLine.textContent =
+    options.reason === "api"
+      ? `Brush API locked ${dateFormat(activeBrushRange[0])} -> ${dateFormat(activeBrushRange[1])}`
+      : `Brush locked ${dateFormat(activeBrushRange[0])} -> ${dateFormat(activeBrushRange[1])}`;
+  if (options.moveBrush) {
+    moveBrushToRange(activeBrushRange);
+  }
+  pulseFeedback(selectionCrossesSignal(activeBrushRange));
+  syncMetrics();
+}
+
+function showSelectedRangeSummary(range: [Date, Date] | null) {
+  const summary = range ? buildSelectedRangeSummary(range) : null;
+  metrics.selectedRangeSummary = summary;
+  selectedRangeThemes.textContent = summary?.themes.join(" · ") || "No selected themes";
+  selectedRangeEvents.textContent = summary?.events.join(" · ") || "No selected events";
+  selectedRangeSignals.textContent = summary?.signals.join(" · ") || "No selected Black Hole / Proto-Star signals";
+}
+
+function buildSelectedRangeSummary(range: [Date, Date]): SelectedRangeSummary {
+  const selectedEvents = events.filter((event) => dateInRange(new Date(event.occurredAt), range));
+  const selectedLaneIds = new Set(selectedEvents.map((event) => event.laneId));
+  const selectedLanes = lanes.filter((lane) => selectedLaneIds.has(lane.id));
+  const signals = findSignalsInRange(range);
+  return {
+    themeCount: selectedLanes.length,
+    eventCount: selectedEvents.length,
+    signalCount: signals.length,
+    themes: selectedLanes.map((lane) => `${lane.label} (${TREND_LABELS[lane.trend]})`),
+    events: selectedEvents.map((event) => `${dateFormat(new Date(event.occurredAt))} ${event.label}`),
+    signals,
+  };
+}
+
+function findSignalsInRange(range: [Date, Date]) {
+  const bandSignals = bands
+    .filter((band) => new Date(band.startAt) <= range[1] && new Date(band.endAt) >= range[0])
+    .map((band) => `Black Hole: ${band.label}`);
+  const protoSignals = protoStars
+    .filter((marker) => dateInRange(new Date(marker.occurredAt), range))
+    .map((marker) => `Proto-Star: ${marker.label}`);
+  return [...bandSignals, ...protoSignals];
+}
+
+function dateInRange(date: Date, range: [Date, Date]) {
+  return date >= range[0] && date <= range[1];
+}
+
+function getDateScreenX(dateIso: string) {
+  return currentX(new Date(dateIso));
 }
 
 function laneSamples(lane: RiverLaneFixture) {
@@ -525,6 +690,17 @@ function laneById(laneId: string) {
     throw new Error(`Unknown lane id: ${laneId}`);
   }
   return lane;
+}
+
+function trendClass(lane: RiverLaneFixture) {
+  return lane.trend;
+}
+
+function trendColor(trend: RiverLaneFixture["trend"]) {
+  if (trend === "rising") return "#7ee8d4";
+  if (trend === "declining") return "#8aa0b8";
+  if (trend === "conflict") return "#ffb0b0";
+  return "#f7cf6b";
 }
 
 function monthDensity(month: Date) {
@@ -607,12 +783,27 @@ function clearHover() {
 }
 
 function syncMetrics() {
+  metrics.signalPositions = {
+    blackHoleBandCount: bands.length,
+    protoStarCount: protoStars.length,
+    positionedSignals: [
+      ...bands.map((band) => `${band.id}:${Math.round(currentX(new Date(band.startAt)))}-${Math.round(currentX(new Date(band.endAt)))}`),
+      ...protoStars.map((marker) => `${marker.id}:${Math.round(currentX(new Date(marker.occurredAt)))}`),
+    ],
+  };
   laneCountElement.textContent = String(metrics.laneCount);
   eventCountElement.textContent = String(metrics.eventCount);
   zoomReadoutElement.textContent = `${metrics.zoomK.toFixed(2)}x`;
   brushReadoutElement.textContent = metrics.brushRange ? `${metrics.brushRange[0]} -> ${metrics.brushRange[1]}` : "none";
+  timeLevelReadoutElement.textContent = metrics.activeTimeLevel;
   smokeStatus.textContent = JSON.stringify({
     ready: true,
+    stage5Phase2: {
+      taskId: "MA-V117-S5P02",
+      acceptanceId: "ACC-MA-V117-S5P02",
+      status: "phase_5_2_c3_river_spike_completed_pending_stage5_review",
+      spikeVersion: STAGE5_PHASE2_SPIKE_VERSION,
+    },
     metrics,
     sourceSafety: {
       rawPrivateDataIncluded: memoryRiverFixture.rawPrivateDataIncluded,

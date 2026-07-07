@@ -193,6 +193,47 @@ Boundaries:
 - No Stage 10 work.
 - No GitHub main upload.
 
+## v1.1.7 Stage 5 Phase 5.2 C3 River Spike
+
+- Task ID: `MA-V117-S5P02`
+- Acceptance ID: `ACC-MA-V117-S5P02`
+- Version: `memory_river_c3_spike.v1_1_7_stage5_phase2`
+- Status: `phase_5_2_c3_river_spike_completed_pending_stage5_review`
+- Validators: `validate:v1.1.7-stage5-phase2`,
+  `validate:memory-river-spike-browser`
+
+This phase upgrades the isolated C3 Memory River spike for v1.1.7 Stage 5
+without replacing the production Timeline. The prototype remains standalone at
+`apps/memory-atlas/src/experiments/memory-river-spike/` and is validated with a
+browser smoke run against `index.html?smoke=1`.
+
+Required Stage 5.2 runtime signals:
+
+1. `year_level`, `month_level`, `week_level` and `day_level` time scale
+   controls, backed by D3 UTC scale ticks.
+2. Zoom updates the current time scale level and keeps event placement stable.
+3. Brush selection produces `selected_range_summary` with selected themes,
+   events, Black Hole bands and Proto-Star markers.
+4. Theme lanes expose trends: `trend: rising`, `trend: declining`,
+   `trend: stable` and `trend: conflict`.
+5. Black Hole bands and Proto-Star markers remain positioned by date on the
+   time river.
+6. Reduced motion disables continuous animation while keeping zoom, brush and
+   hover usable.
+7. Hidden smoke metrics expose the task ID, acceptance ID, status, version,
+   selected summary and signal positions for browser validation.
+
+Safety boundary:
+
+- No production Timeline replacement.
+- No production route or navigation change.
+- No feature flag default switch.
+- No raw/private/cookie/session/secret data read.
+- No direct active-memory writeback.
+- No agent apply.
+- No Stage 5.3.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
 ## Rollback
 
 Delete `apps/memory-atlas/src/experiments/memory-river-spike/` and remove the

@@ -1,9 +1,13 @@
 export type RiverLaneLevel = "macro" | "meso" | "micro";
+export type RiverLaneTrend = "rising" | "declining" | "stable" | "conflict";
+export type RiverTimeLevel = "year" | "month" | "week" | "day";
 
 export type RiverLaneFixture = {
   id: string;
   label: string;
   level: RiverLaneLevel;
+  trend: RiverLaneTrend;
+  trendScore: number;
   summary: string;
   color: string;
   evidenceCount: number;
@@ -46,12 +50,29 @@ export type RiverMarkerFixture = {
 };
 
 export const memoryRiverFixture = {
-  schemaVersion: "memory_river_spike_fixture.v1",
+  schemaVersion: "memory_river_spike_fixture.v1_1_7_stage5_phase2",
+  legacySchemaVersion: "memory_river_spike_fixture.v1",
   source: "redacted derived temporal sample",
   rawPrivateDataIncluded: false,
   plaintextSecretsIncluded: false,
   localAbsolutePathsIncluded: false,
   writebackAllowed: false,
+  timeLevels: [
+    { id: "year", contractToken: "year_level", label: "Year", minimumZoom: 1, tickHint: "calendar years" },
+    { id: "month", contractToken: "month_level", label: "Month", minimumZoom: 1.4, tickHint: "calendar months" },
+    { id: "week", contractToken: "week_level", label: "Week", minimumZoom: 3.2, tickHint: "UTC weeks" },
+    { id: "day", contractToken: "day_level", label: "Day", minimumZoom: 6.8, tickHint: "UTC days" },
+  ] satisfies Array<{
+    id: RiverTimeLevel;
+    contractToken: string;
+    label: string;
+    minimumZoom: number;
+    tickHint: string;
+  }>,
+  selectedRangeDefault: {
+    startAt: "2026-03-01T00:00:00Z",
+    endAt: "2026-06-15T00:00:00Z",
+  },
   window: {
     startAt: "2026-01-01T00:00:00Z",
     endAt: "2026-06-30T00:00:00Z",
@@ -61,6 +82,8 @@ export const memoryRiverFixture = {
       id: "lane-memory-atlas",
       label: "Memory Atlas",
       level: "macro",
+      trend: "rising",
+      trendScore: 0.82,
       summary: "长期记忆、可视化、RAG 和 personalization 的主河道。",
       color: "#8fd3ff",
       evidenceCount: 142,
@@ -69,6 +92,8 @@ export const memoryRiverFixture = {
       id: "lane-codex-workflow",
       label: "Codex 工作流",
       level: "macro",
+      trend: "stable",
+      trendScore: 0.64,
       summary: "路径约束、Task Pack、验收证据、GitHub 同步持续增强。",
       color: "#7ee8d4",
       evidenceCount: 119,
@@ -77,6 +102,8 @@ export const memoryRiverFixture = {
       id: "lane-visual-system",
       label: "视觉系统",
       level: "meso",
+      trend: "rising",
+      trendScore: 0.78,
       summary: "星系、时间河、Universe State 的视觉语言逐步成形。",
       color: "#f7cf6b",
       evidenceCount: 68,
@@ -85,6 +112,8 @@ export const memoryRiverFixture = {
       id: "lane-governance",
       label: "治理与复审",
       level: "meso",
+      trend: "conflict",
+      trendScore: 0.58,
       summary: "单 phase、复审、回滚和证据登记成为稳定交付约束。",
       color: "#b9a8ff",
       evidenceCount: 51,
@@ -93,6 +122,8 @@ export const memoryRiverFixture = {
       id: "lane-import-hygiene",
       label: "导入边界",
       level: "micro",
+      trend: "declining",
+      trendScore: 0.41,
       summary: "旧电脑路径、standalone repo 和 raw session 数据被明确隔离。",
       color: "#8aa0b8",
       evidenceCount: 34,

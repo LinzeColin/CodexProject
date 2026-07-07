@@ -135,6 +135,57 @@ stage5_phase1_interaction_contract:
     - no_agent_apply
     - no_deploy
     - no_github_main_upload
+stage5_phase2_c3_river_spike:
+  task_id: MA-V117-S5P02
+  phase_label: Phase 5.2
+  acceptance_id: ACC-MA-V117-S5P02
+  status: phase_5_2_c3_river_spike_completed_pending_stage5_review
+  spike_version: memory_river_c3_spike.v1_1_7_stage5_phase2
+  required_validator: validate:v1.1.7-stage5-phase2
+  browser_validator: validate:memory-river-spike-browser
+  time_scale_levels:
+    - year
+    - month
+    - week
+    - day
+  required_runtime_controls:
+    - zoom
+    - brush_selection
+    - selected_range_summary
+    - theme_lanes
+    - black_hole_band
+    - proto_star_marker
+    - reduced_motion
+  required_theme_trends:
+    - rising
+    - declining
+    - stable
+    - conflict
+  data_boundary:
+    fixture: apps/memory-atlas/src/experiments/memory-river-spike/fixture.ts
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    writeback_allowed: false
+  browser_evidence:
+    url: /src/experiments/memory-river-spike/index.html?smoke=1
+    checks:
+      - year_month_week_day_levels
+      - zoom_scale_change
+      - selected_range_theme_events
+      - black_hole_proto_star_positioning
+      - reduced_motion
+      - screenshot
+  boundary_label: "No production Timeline replacement; No GitHub main upload"
+  boundaries:
+    - no_production_timeline_replacement
+    - no_production_route_or_navigation_change
+    - no_feature_flag_default_switch
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_stage5_3
+    - no_github_main_upload
 v1_1_7_stage1_phase1:
   task_id: MA-V117-S1P01
   acceptance_id: ACC-MA-V117-S1P01
