@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 6 Phase 6.2 Details & Editing
+
+- Added the production Data Guide `数据导图详情面板` with
+  `data_map_detail_panel.v1_1_7_stage6_phase2`.
+- Added the `数据导图 proposal 入口` with
+  `data_map_proposal_entry.v1_1_7_stage6_phase2`.
+- The detail panel exposes asset, theme, suggested action, importance and
+  priority for the selected node.
+- The proposal entry stays proposal-only and exports a proposal instead of
+  applying edits or writing active memory.
+- Added `validate:v1.1.7-stage6-phase2` and
+  `validate:data-map-detail-proposal-browser`.
+- Registered `MA-V117-S6P02` / `ACC-MA-V117-S6P02` with status
+  `phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`.
+
+Phase 6.2 Details & Editing only. No Stage 6 review, No GitHub main upload, No
+raw/private data read, No direct active-memory writeback, No agent apply or No
+deploy was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 6 Phase 6.1 Structure Model
 
 - Added `docs/product/data_map_iteration_contract.md` with the Stage 6 Phase

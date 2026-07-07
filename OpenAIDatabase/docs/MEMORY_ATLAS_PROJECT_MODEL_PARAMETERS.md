@@ -1,3 +1,44 @@
+## 93. Memory Atlas v1.1.7 Stage 6 Phase 6.2 Details & Editing
+
+状态：`phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`。
+
+验收 ID：`ACC-MA-V117-S6P02`。
+
+模型参数：
+
+- Detail Panel version 固定为 `data_map_detail_panel.v1_1_7_stage6_phase2`。
+- Proposal Entry version 固定为 `data_map_proposal_entry.v1_1_7_stage6_phase2`。
+- `validate:v1.1.7-stage6-phase2` 是本 phase 必跑 validator。
+- `validate:data-map-detail-proposal-browser` 是本 phase 浏览器 validator。
+- Phase 6.2 Details & Editing 覆盖 `数据导图详情面板` 和 `数据导图 proposal 入口`。
+- 详情字段：`asset`, `theme`, `suggested action`, `importance`, `priority`。
+- proposal-only。
+- No Stage 6 review。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_data_map_detail_proposal_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S6P02-001 stage6_phase2_status = phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`
+- `PARAM-MA-V117-S6P02-002 stage6_phase2_required_validator = validate:v1.1.7-stage6-phase2`
+- `PARAM-MA-V117-S6P02-003 stage6_phase2_browser_validator = validate:data-map-detail-proposal-browser`
+- `PARAM-MA-V117-S6P02-004 detail_panel_version = data_map_detail_panel.v1_1_7_stage6_phase2`
+- `PARAM-MA-V117-S6P02-005 proposal_entry_version = data_map_proposal_entry.v1_1_7_stage6_phase2`
+- `PARAM-MA-V117-S6P02-006 detail_fields = asset;theme;suggested action;importance;priority`
+
+验收信号：
+
+- Static validator checks Stage 6 Phase 6.1 continuity, Data Map contract, production runtime hooks, browser validator contract, records, canonical remote and no-upload boundary。
+- Browser validator checks node click, detail fields, proposal export, `window.__memoryAtlasStage6Phase2`, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Phase 6.2; Details & Editing; MA-V117-S6P02; ACC-MA-V117-S6P02; phase_6_2_data_map_detail_proposal_completed_pending_stage6_review; validate:v1.1.7-stage6-phase2; validate:data-map-detail-proposal-browser; data_map_detail_panel.v1_1_7_stage6_phase2; data_map_proposal_entry.v1_1_7_stage6_phase2; 数据导图详情面板; 数据导图 proposal 入口; proposal-only; No Stage 6 review; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
 ## 92. Memory Atlas v1.1.7 Stage 6 Phase 6.1 Structure Model
 
 状态：`phase_6_1_data_map_structure_model_completed_pending_stage6_review`。

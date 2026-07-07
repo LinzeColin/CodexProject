@@ -86,6 +86,8 @@ const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_sta
 const STARFIELD_INTEGRATION_VERSION = "memory_starfield_integration.v1_1_7_stage4_phase3" as const;
 const DATA_MAP_STRUCTURE_MODEL_VERSION = "data_map_structure_model.v1_1_7_stage6_phase1" as const;
 const DATA_MAP_RELATION_EXPLANATION_VERSION = "data_map_relation_explanation.v1_1_7_stage6_phase1" as const;
+const DATA_MAP_DETAIL_PANEL_VERSION = "data_map_detail_panel.v1_1_7_stage6_phase2" as const;
+const DATA_MAP_PROPOSAL_ENTRY_VERSION = "data_map_proposal_entry.v1_1_7_stage6_phase2" as const;
 
 declare global {
   interface Window {
@@ -134,6 +136,16 @@ declare global {
       rawPrivateDataIncluded: false;
       directActiveMemoryWriteback: false;
       proposalWrite: false;
+    };
+    __memoryAtlasStage6Phase2?: () => {
+      detailPanelVersion: typeof DATA_MAP_DETAIL_PANEL_VERSION;
+      proposalEntryVersion: typeof DATA_MAP_PROPOSAL_ENTRY_VERSION;
+      selectedNodeId: string | null;
+      selectedNodeKind: AtlasNode["kind"] | null;
+      detailFields: string[];
+      proposalOnly: true;
+      directActiveMemoryWriteback: false;
+      rawPrivateDataIncluded: false;
     };
   }
 }
@@ -1235,7 +1247,16 @@ function ViewRouter({
     );
   }
   if (activeView === "notion") {
-    return <DataGuideMap nodes={slice.graphNodes} edges={slice.graphEdges} selectedNode={selectedNode} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
+    return (
+      <DataGuideMap
+        nodes={slice.graphNodes}
+        edges={slice.graphEdges}
+        selectedNode={selectedNode}
+        deltaStats={slice.deltaStats}
+        parentSnapshotId={atlas.overview.generated_at || atlas.schema_version}
+        onSelectNode={onSelectNode}
+      />
+    );
   }
   if (activeView === "roi") {
     return <RoiDashboard atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
@@ -1827,12 +1848,14 @@ function DataGuideMap({
   edges,
   selectedNode,
   deltaStats,
+  parentSnapshotId,
   onSelectNode,
 }: {
   nodes: AtlasNode[];
   edges: AtlasEdge[];
   selectedNode: AtlasNode | null;
   deltaStats: DeltaStats;
+  parentSnapshotId: string;
   onSelectNode: (node: AtlasNode) => void;
 }) {
   const display = useMemo(() => buildDataGuideLayout(nodes, edges, 64), [nodes, edges]);
@@ -1860,6 +1883,22 @@ function DataGuideMap({
       delete window.__memoryAtlasStage6Phase1;
     };
   }, [display.edgeCount, display.visibleNodeCount, selectedDataMapRelationId]);
+
+  useEffect(() => {
+    window.__memoryAtlasStage6Phase2 = () => ({
+      detailPanelVersion: DATA_MAP_DETAIL_PANEL_VERSION,
+      proposalEntryVersion: DATA_MAP_PROPOSAL_ENTRY_VERSION,
+      selectedNodeId: selectedNode?.id ?? null,
+      selectedNodeKind: selectedNode?.kind ?? null,
+      detailFields: ["asset", "theme", "suggested_action", "importance", "priority"],
+      proposalOnly: true,
+      directActiveMemoryWriteback: false,
+      rawPrivateDataIncluded: false,
+    });
+    return () => {
+      delete window.__memoryAtlasStage6Phase2;
+    };
+  }, [selectedNode?.id, selectedNode?.kind]);
 
   return (
     <div
@@ -1976,6 +2015,7 @@ function DataGuideMap({
         <LegendItem color="#94a3b8" label="行动、机会、待整理" />
       </div>
       <DataMapRelationPanel relation={selectedRelation} />
+      <DataMapNodeDetailPanel node={selectedNode} edges={edges} parentSnapshotId={parentSnapshotId} />
     </div>
   );
 }
@@ -2024,6 +2064,89 @@ function DataMapRelationPanel({ relation }: { relation: DataGuideEdge | null }) 
       <p className="data-map-relation-safe-flags">
         No Phase 6.2 editing · proposalWrite: false · directActiveMemoryWriteback: false · rawPrivateDataIncluded: false
       </p>
+    </section>
+  );
+}
+
+function DataMapNodeDetailPanel({
+  node,
+  edges,
+  parentSnapshotId,
+}: {
+  node: AtlasNode | null;
+  edges: AtlasEdge[];
+  parentSnapshotId: string;
+}) {
+  const detail = useMemo(() => buildDataMapNodeDetail(node, edges), [edges, node]);
+  return (
+    <section
+      className={node ? "data-map-node-detail-panel active" : "data-map-node-detail-panel"}
+      aria-label="数据导图详情面板"
+      data-data-map-detail-panel={DATA_MAP_DETAIL_PANEL_VERSION}
+      data-selected-node-id={node?.id ?? ""}
+      data-node-kind={node?.kind ?? ""}
+      data-asset={detail.asset}
+      data-theme={detail.theme}
+      data-suggested-action={detail.suggestedAction}
+      data-importance={detail.importance}
+      data-priority={detail.priority}
+      data-evidence-count={detail.evidenceRefs.length}
+    >
+      <div className="panel-title-row">
+        <h2>数据导图详情面板</h2>
+        <span>{DATA_MAP_DETAIL_PANEL_VERSION}</span>
+      </div>
+      {node ? (
+        <>
+          <div className="data-map-node-detail-heading">
+            <span>{translateKind(node.kind)} / {detail.layerLabel}</span>
+            <h3>{humanNodeDisplayTitle(node)}</h3>
+            <p>{detail.summary}</p>
+          </div>
+          <dl className="data-map-node-detail-grid">
+            <div><dt>资产</dt><dd>{detail.asset}</dd></div>
+            <div><dt>主题</dt><dd>{detail.theme}</dd></div>
+            <div><dt>建议动作</dt><dd>{detail.suggestedAction}</dd></div>
+            <div><dt>重要性</dt><dd>{detail.importance}</dd></div>
+            <div><dt>优先级</dt><dd>{detail.priority}</dd></div>
+            <div><dt>状态</dt><dd>{detail.status}</dd></div>
+          </dl>
+          <section className="data-map-node-detail-section" aria-label="证据摘要">
+            <span>证据</span>
+            <ul className="data-map-node-evidence-list">
+              {detail.evidenceRefs.map((ref) => (
+                <li key={ref}>{ref}</li>
+              ))}
+            </ul>
+          </section>
+          <div className="data-map-detail-safety-strip" aria-label="Data Map Phase 6.2 safety">
+            <span>proposal-only</span>
+            <span>No direct active-memory writeback</span>
+            <span>No Stage 6 review</span>
+          </div>
+          <div
+            className="data-map-proposal-entry"
+            data-data-map-proposal-entry={DATA_MAP_PROPOSAL_ENTRY_VERSION}
+            data-proposal-mode="proposal_only"
+            data-proposal-only="true"
+            data-active-memory-mutation="false"
+            data-direct-active-memory-writeback="false"
+            data-source-surface="data_guide_detail_panel"
+          >
+            <div className="panel-title-row">
+              <h3>数据导图 proposal 入口</h3>
+              <span>{DATA_MAP_PROPOSAL_ENTRY_VERSION}</span>
+            </div>
+            <ProposalEditor
+              node={node}
+              parentSnapshotId={parentSnapshotId}
+              sourceSurface="data_guide_detail_panel"
+            />
+          </div>
+        </>
+      ) : (
+        <p className="data-map-node-detail-empty">点击数据导图节点查看资产、主题、建议动作、重要性和优先级；编辑入口只导出 proposal。</p>
+      )}
     </section>
   );
 }
@@ -4270,6 +4393,11 @@ function DataGuideSvgNode({
       aria-label={`${item.frameTitle} · ${item.typeLabel} · ${item.node.label}`}
       role="button"
       tabIndex={0}
+      data-data-map-node-detail-entry={DATA_MAP_DETAIL_PANEL_VERSION}
+      data-node-id={item.node.id}
+      data-node-kind={item.node.kind}
+      data-node-importance={item.node.importance ?? ""}
+      data-node-priority={dataMapPriorityForNode(item.node)}
       onClick={() => onSelectNode(item.node)}
       onKeyDown={(event) => {
         if (isActivationKey(event)) onSelectNode(item.node);
@@ -4429,6 +4557,18 @@ interface DataGuideRelationExplanation {
   evidence: string;
   time: string;
   reason: string;
+}
+
+interface DataMapNodeDetail {
+  asset: string;
+  theme: string;
+  suggestedAction: string;
+  importance: string;
+  priority: string;
+  status: string;
+  layerLabel: string;
+  summary: string;
+  evidenceRefs: string[];
 }
 
 function buildFilteredSlice(atlas: MemoryAtlas, filteredMemoryNodes: AtlasNode[], filters: AtlasFilters): FilteredAtlasSlice {
@@ -6488,6 +6628,72 @@ function dataGuideRelationStrength(weight: number): string {
 function dataGuideRelationTime(source: AtlasNode, target: AtlasNode): string {
   const dates = [source.date, target.date].filter((date): date is string => Boolean(date)).sort();
   return dates.at(-1)?.slice(0, 10) || "time unavailable";
+}
+
+function buildDataMapNodeDetail(node: AtlasNode | null, edges: AtlasEdge[]): DataMapNodeDetail {
+  if (!node) {
+    return {
+      asset: "未选择",
+      theme: "未选择",
+      suggestedAction: "未选择",
+      importance: "未选择",
+      priority: "未选择",
+      status: "默认折叠",
+      layerLabel: "默认折叠",
+      summary: "点击节点后显示资产、主题、建议动作、重要性和优先级。",
+      evidenceRefs: [],
+    };
+  }
+  const asset = dataMapAssetLabelForNode(node);
+  const theme = humanThemeLabel(node);
+  const suggestedAction = translateAction(node.metrics?.roi?.recommended_action);
+  const importance = node.importance || "未知";
+  const priority = dataMapPriorityForNode(node);
+  const status = [
+    normalizeMemoryTier(node.memory_tier),
+    humanCategoryLabel(node.category),
+    node.metrics?.roi?.staleness_status ? translateStaleness(node.metrics.roi.staleness_status) : "",
+  ].filter(Boolean).join(" / ") || translateKind(node.kind);
+  const layerLabel = DATA_MAP_STRUCTURE_LAYERS.find((layer) => layer.frameId === dataGuideFrameForNode(node))?.label ?? "未归层";
+  const evidenceRefs = dataMapEvidenceRefsForNode(node, edges);
+  return {
+    asset,
+    theme,
+    suggestedAction,
+    importance,
+    priority,
+    status,
+    layerLabel,
+    summary: `${asset} 位于 ${theme}，建议动作是 ${suggestedAction}；重要性 ${importance}，优先级 ${priority}。`,
+    evidenceRefs,
+  };
+}
+
+function dataMapAssetLabelForNode(node: AtlasNode): string {
+  if (node.kind === "theme") return "主题资产";
+  if (node.kind === "project") return "项目资产";
+  if (node.kind === "decision") return "决策资产";
+  const tier = normalizeMemoryTier(node.memory_tier);
+  const category = humanCategoryLabel(node.category);
+  return [tier, category].filter(Boolean).join(" · ") || translateKind(node.kind);
+}
+
+function dataMapPriorityForNode(node: AtlasNode): "watch" | "p3" | "p2" | "p1" | "p0" {
+  const leverage = node.metrics?.roi?.leverage_score ?? 0;
+  if (node.importance === "高" && leverage >= 0.75) return "p0";
+  if (node.importance === "高") return "p1";
+  if (leverage >= 0.6) return "p2";
+  if (node.metrics?.roi?.staleness_status === "stale" || node.validity === "stale" || node.category === "deprecated_info") return "watch";
+  return "p3";
+}
+
+function dataMapEvidenceRefsForNode(node: AtlasNode, edges: AtlasEdge[]): string[] {
+  const refs = edges
+    .filter((edge) => edge.source === node.id || edge.target === node.id)
+    .sort((a, b) => b.weight - a.weight || a.id.localeCompare(b.id))
+    .slice(0, 6)
+    .map((edge) => `${edge.kind || "related"}:${edge.id}:weight=${edge.weight.toFixed(2)}`);
+  return refs.length ? refs : [`node:${node.id}:derived_snapshot`];
 }
 
 function buildMapLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: number): { nodes: LayoutNode[]; edges: LayoutEdge[]; groups: LayoutGroup[] } {

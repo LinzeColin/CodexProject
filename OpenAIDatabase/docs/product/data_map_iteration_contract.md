@@ -60,3 +60,38 @@ The UI labels the panel as `关系解释` and explains why nodes connect. If evi
 - No GitHub main upload before the whole Stage 0-10 project is complete.
 
 Machine-readable boundary summary: Phase 6.1; Structure Model; Relation Explanation; MA-V117-S6P01; ACC-MA-V117-S6P01; phase_6_1_data_map_structure_model_completed_pending_stage6_review; validate:v1.1.7-stage6-phase1; validate:data-map-structure-browser; data_map_structure_model.v1_1_7_stage6_phase1; data_map_relation_explanation.v1_1_7_stage6_phase1; source_layer; profile_layer; project_decision_layer; action_opportunity_layer; default collapsed; No Phase 6.2; No proposal editing; No direct active-memory writeback; No GitHub main upload.
+
+## Memory Atlas v1.1.7 Stage 6 Phase 6.2 Details & Editing Addendum
+
+Task ID: `MA-V117-S6P02`.
+
+Acceptance ID: `ACC-MA-V117-S6P02`.
+
+Status: `phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`.
+
+Detail panel version: `data_map_detail_panel.v1_1_7_stage6_phase2`.
+
+Proposal entry version: `data_map_proposal_entry.v1_1_7_stage6_phase2`.
+
+Phase 6.2 adds the production Data Guide `数据导图详情面板` and `数据导图 proposal 入口`. It lets a selected node show `asset`, `theme`, `suggested action`, `importance`, and `priority`, then lets the operator adjust importance / priority through a proposal-only editor. The entry only exports proposal JSON; it does not apply edits and does not write the active memory database.
+
+Runtime requirements:
+
+- Node hitboxes expose a detail entry for click testing.
+- `数据导图详情面板` exposes selected-node detail fields for asset, theme, suggested action, importance and priority.
+- `数据导图 proposal 入口` uses `data_map_proposal_entry.v1_1_7_stage6_phase2` and remains proposal-only.
+- Browser debug hook: `window.__memoryAtlasStage6Phase2()`.
+
+Validation:
+
+- Static validator: `validate:v1.1.7-stage6-phase2`.
+- Browser validator: `validate:data-map-detail-proposal-browser`.
+
+Boundaries:
+
+- proposal-only.
+- No direct active-memory writeback.
+- No Stage 6 review.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: Phase 6.2; Details & Editing; MA-V117-S6P02; ACC-MA-V117-S6P02; phase_6_2_data_map_detail_proposal_completed_pending_stage6_review; validate:v1.1.7-stage6-phase2; validate:data-map-detail-proposal-browser; data_map_detail_panel.v1_1_7_stage6_phase2; data_map_proposal_entry.v1_1_7_stage6_phase2; 数据导图详情面板; 数据导图 proposal 入口; asset; theme; suggested action; importance; priority; proposal-only; No direct active-memory writeback; No Stage 6 review; No GitHub main upload.
