@@ -11925,3 +11925,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private intake outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior raw-refresh outputs."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh"
     completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh"
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-READINESS-AFTER-RAW-REFRESH-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-READINESS-AFTER-RAW-REFRESH"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh.py --require-private-readiness"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh.py"
+    test_results:
+      - "PASS: authorized source reference or exclusion application readiness validator and focused unit test passed; 48 private intake items were checked, zero application-ready records were found, all 48 remain blocked, and value consistency remains unverified"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH/human/residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH/machine/residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH/machine/residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh_matrix_public_safe.json"
+    risk: "Application readiness can be mistaken for authoritative binding; this phase records blockers only and keeps binding, value comparison, reconciliation, report, upload, reinstall and business execution closed."
+    rollback: "Remove current phase artifacts, metadata copies, private readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior intake outputs."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-readiness-after-raw-refresh"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-readiness-after-raw-refresh"

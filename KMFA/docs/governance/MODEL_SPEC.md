@@ -1614,3 +1614,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_refresh_item_count=48, still_blocked_after_raw_refresh_count=48, intake_item_count=48, source_reference_or_owner_exclusion_intake_count=40, formula_or_non_numeric_mapping_intake_count=8, active_authoritative_decision_count=0, binding_ready_after_intake_count=0 and comparison_retry_ready_after_intake_count=0 prove this is private intake preparation only.
 - gate: `NO_GO`; raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private intake active record, queue, diagnostic and report stay under ignored runtime and raw inbox remains untouched by this phase.
+
+## V014 Residual Difference Authorized Source Reference Or Exclusion Application Readiness After Raw Refresh
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-READINESS-AFTER-RAW-REFRESH-001`
+- parameter_ids: `PARAM-KMFA-1507`, `PARAM-KMFA-1508`, `PARAM-KMFA-1509`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-readiness-after-raw-refresh`
+- rule: source_intake_item_count=48, application_readiness_item_count=48, application_ready_item_count=0, application_blocker_item_count=48, source_reference_or_owner_exclusion_application_blocker_count=40, formula_or_non_numeric_mapping_application_blocker_count=8, active_authoritative_decision_count=0, binding_ready_after_application_readiness_count=0 and comparison_retry_ready_after_application_readiness_count=0 prove every private intake item remains blocked before application.
+- gate: `NO_GO`; authoritative_binding_application_ready=false, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private readiness diagnostic, ready queue, blocker queue and report stay under ignored runtime and raw inbox remains untouched by this phase.
