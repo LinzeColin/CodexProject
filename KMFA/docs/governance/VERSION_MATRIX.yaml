@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"
-product_version_status: "residual_difference_raw_to_processed_comparison_precheck_blocked_no_go"
-version_file_value: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"
+product_version: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
+product_version_status: "residual_difference_raw_candidate_alignment_blocked_no_go"
+version_file_value: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"
+  MOD-KMFA-GOV-001: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_residual_difference_raw_candidate_alignment_after_precheck: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
   kmfa_v014_residual_difference_raw_to_processed_comparison_precheck: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"
   kmfa_v014_residual_difference_private_resolution_materialization_replay: "0.1.4-residual-difference-private-resolution-materialization-replay"
   kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application"

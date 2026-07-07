@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-residual-difference-raw-to-processed-comparison-precheck`
+- version: `0.1.4-residual-difference-raw-candidate-alignment-after-precheck`
 - current_stage: `value-consistency`
-- current_phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK`
-- status: `completed_validated_local_only_residual_difference_raw_comparison_precheck_blocked_no_go`
-- current_blocker: `private_raw_candidate_alignment_required_before_formal_comparison`
-- next_required_input: `run_read_only_raw_candidate_alignment_for_72_residual_difference_records_before_comparison`
+- current_phase: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK`
+- status: `completed_validated_local_only_residual_difference_raw_candidate_alignment_blocked_no_go`
+- current_blocker: `owner_authorized_private_raw_candidate_anchors_required_before_formal_comparison`
+- next_required_input: `owner_or_authorized_delegate_confirms_private_raw_candidate_anchors_before_formal_comparison`
 - blocked_next_steps: `formal raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 residual difference raw candidate alignment after precheck completed local-only: source_precheck_blocker_count=72，source_raw_comparison_input_record_count=72，raw_numeric_candidate_count=351453，raw_unique_numeric_fingerprint_count=22453，owner_select_one_authoritative_candidate_count=24，provide_authoritative_source_reference_or_owner_exclusion_count=40，provide_formula_or_non_numeric_mapping_count=8，private_candidate_sample_item_count=24，owner_authorized_comparison_anchor_count=0，owner_review_required_item_count=72，alignment_ready_count=0，current Go/No-Go=NO_GO。This phase reads the authorized raw inbox read-only；public evidence is aggregate-only；raw inbox write/delete/move/rename/copy/normalize/mutation=false；private alignment/diagnostic/items/anchor draft/question list/raw scan runtime stay in ignored runtime；owner-authorized anchor selection=false；formal raw-to-processed comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_confirms_private_raw_candidate_anchors_before_formal_comparison`。
 
 - v0.1.4 residual difference raw-to-processed comparison precheck completed local-only: source_private_materialized_record_count=72，source_raw_comparison_input_record_count=72，comparison_ready_record_count=0，comparison_blocker_record_count=72，missing_private_comparison_anchor_count=72，open_residual_difference_count=72，closed_discrepancy_count=0，current Go/No-Go=NO_GO。This phase reads only prior public-safe materialization artifacts and ignored private materialization/raw-comparison input；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private precheck/diagnostic/ready records/blocker records/report stay in ignored runtime；formal raw-to-processed comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_read_only_raw_candidate_alignment_for_72_residual_difference_records_before_comparison`。
 

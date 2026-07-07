@@ -1,3 +1,14 @@
+## 2026-07-07｜v0.1.4 residual difference raw candidate alignment after precheck
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK`
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK-20260707`
+- 已完成：新增 residual-difference raw candidate alignment generator、validator、focused unit test、public-safe evidence packet、metadata copies、git-ignored private alignment/diagnostic/items/anchor draft/question list/raw scan runtime 和治理记录。
+- 当前结论：`source_precheck_blocker_count=72`、`source_raw_comparison_input_record_count=72`、`raw_numeric_candidate_count=351453`、`raw_unique_numeric_fingerprint_count=22453`、`owner_select_one_authoritative_candidate=24`、`provide_authoritative_source_reference_or_owner_exclusion=40`、`provide_formula_or_non_numeric_mapping=8`、`private_candidate_sample_item_count=24`、`owner_authorized_comparison_anchor_count=0`、`alignment_ready_count=0`、`go_no_go=NO_GO`。
+- 原始数据边界：本 phase 在授权范围内只读 raw inbox，执行 list/stat/hash-or-fingerprint/parse/field-header-read/value-extraction；raw write/delete/move/rename/overwrite/copy/normalize/mutation=false；所有 raw 文件名、字段、金额、明细、候选记录和私有 fingerprint 只写入 ignored private runtime。
+- 未执行：owner-authorized anchor selection、formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+- 验证入口：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_candidate_alignment_after_precheck.py --require-private-alignment`
+- 下一步建议：单 phase 继续 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT` 或 owner/authorized-delegate private anchor confirmation；不得做 Stage review 或 GitHub upload。
+
 ## 2026-07-07｜v0.1.4 residual difference raw-to-processed comparison precheck
 
 - phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK`

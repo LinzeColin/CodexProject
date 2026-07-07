@@ -1,0 +1,29 @@
+{
+  "acceptance_id": "ACC-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK",
+  "app_reinstall_performed": false,
+  "blocker_ids": [
+    "RESIDUAL_RAW_CANDIDATE_ALIGNMENT_NOT_OWNER_AUTHORIZED",
+    "DIRECT_RAW_CANDIDATE_RECORD_REF_COVERAGE_ZERO",
+    "OWNER_AUTHORIZED_ANCHOR_COVERAGE_ZERO",
+    "FORMAL_COMPARISON_STILL_BLOCKED"
+  ],
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "residual_difference_raw_candidate_alignment_requires_owner_authorized_anchor_selection",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "github_upload_performed": false,
+  "next_required_input": "owner_or_authorized_delegate_confirms_private_raw_candidate_anchors_before_formal_comparison",
+  "owner_authorized_comparison_anchor_count": 0,
+  "owner_review_required_item_count": 72,
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK",
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_ready": false,
+  "record_type": "v014_residual_difference_raw_candidate_alignment_go_no_go",
+  "schema_version": "kmfa.v014_residual_difference_raw_candidate_alignment_go_no_go.v1",
+  "source_precheck_blocker_count": 72,
+  "status": "completed_validated_local_only_residual_difference_raw_candidate_alignment_blocked_no_go",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK-20260707",
+  "version": "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
+}

@@ -1,3 +1,14 @@
+## 2026-07-07 - V014 residual difference raw candidate alignment after precheck
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK`
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK-20260707`
+- result: `completed_validated_local_only_residual_difference_raw_candidate_alignment_blocked_no_go` / `NO_GO`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK/machine/residual_difference_raw_candidate_alignment_after_precheck_manifest.json`
+- validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_candidate_alignment_after_precheck.py --require-private-alignment` and focused unit test passed.
+- boundary: authorized raw inbox read/list/stat/hash-or-fingerprint/parse/field-read/value-extraction=true; raw write/delete/move/rename/copy/normalize/mutation=false; private raw candidate anchor draft remains ignored; no owner-authorized anchor selection, formal raw comparison, GitHub upload, app reinstall or business execution.
+product_version: 0.1.4-residual-difference-raw-candidate-alignment-after-precheck
+version_matrix_product_version_reference: 0.1.4-residual-difference-raw-candidate-alignment-after-precheck
+
 ## 2026-07-07 - V014 residual difference raw-to-processed comparison precheck
 
 - phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK`
