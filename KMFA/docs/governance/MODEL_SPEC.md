@@ -1268,3 +1268,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_private_diagnostic_handoff_queue_item_count=72, private_diagnostic_response_template_item_count=72 and pending_diagnostic_response_count=72 prove all residual differences remain pending; valid_diagnostic_response_count=0 and actionable_resolution_count=0 prevent discrepancy closure.
 - gate: `NO_GO`; valid owner/agent response, discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private response template, pending queue, diagnostic and report stay under git-ignored runtime.
+
+## V014 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Readiness Recheck
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-READINESS-RECHECK-001`
+- parameter_ids: `PARAM-KMFA-1399`, `PARAM-KMFA-1400`, `PARAM-KMFA-1401`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK`
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-readiness-recheck`
+- rule: source_private_diagnostic_response_template_item_count=72, source_private_diagnostic_pending_queue_item_count=72, diagnostic_response_ready_count=0 and diagnostic_response_blocker_count=72 prove all residual differences remain blocked; valid_diagnostic_response_count=0 and actionable_resolution_count=0 prevent discrepancy closure and source-map correction.
+- gate: `NO_GO`; valid owner/agent response, discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private readiness diagnostic, blocker queue and report stay under git-ignored runtime.
