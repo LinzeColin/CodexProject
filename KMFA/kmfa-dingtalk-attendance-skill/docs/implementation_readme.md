@@ -142,6 +142,31 @@ python3 scripts/prepare_raw_replay_day_fact_bundle.py \
   --print-json
 ```
 
+Convert the private raw replay day-fact/linkage bundle into a Stage-2 source
+snapshot:
+
+```bash
+python3 scripts/prepare_stage2_source_from_raw_replay.py \
+  --raw-replay-day-fact-dir "$KMFA_PRIVATE_RUNTIME/raw_replay_day_fact/202607" \
+  --target-month 202607 \
+  --out-json "$KMFA_PRIVATE_RUNTIME/stage2_source/202607/source_snapshot.json" \
+  --print-json
+```
+
+The Stage-2 resolver can also materialize this source during an eligible
+evening run:
+
+```bash
+export KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact
+export KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR="$KMFA_PRIVATE_RUNTIME/raw_replay_day_fact/202607"
+KMFA_RUN_SLOT=evening KMFA_TODAY_OVERRIDE=2026-08-01 scripts/run_stage2_evening.sh
+```
+
+This bridge does not claim PostgreSQL commit/verification. Its Stage-2 source
+keeps `database_transaction_committed=false` and
+`database_transaction_verified=false`, so day-5 consensus remains fail-closed
+until an approved non-production database execution proof exists.
+
 The command writes private `attendance_day_fact.jsonl`,
 `raw_detail_linkage.jsonl`, a canonical replay snapshot, and a public-safe
 summary manifest. The summary must show every derived day fact links to raw
