@@ -38,6 +38,7 @@ scripts/integrity_leak_guard.py
 scripts/month_gate.py
 scripts/preflight.sh
 scripts/prepare_database_landing_bundle.py
+scripts/prepare_postgres_landing_loader.py
 scripts/render_stage2_certificate.py
 scripts/resolve_stage2_source.py
 scripts/run_stage2_evening.sh
