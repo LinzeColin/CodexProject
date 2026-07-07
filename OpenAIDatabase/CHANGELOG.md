@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S02 P1 Source Data Model
+
+- Added `机器治理/数据契约/source_data_model.v1_2_s02_p1.json`.
+- Added `docs/reviews/memory_atlas_v1_2_s02_p1_source_data_model.md`.
+- Added `validate:v1.2-s02-p1` for `MA-V12-S02P1` /
+  `ACC-MA-V12-S02P1`.
+- Registered status `phase_s02_p1_source_data_model_completed_pending_s02_p2`.
+- Marked S02 P1 as completed and pending S02 P2.
+- Defined source fields `source_id`, `source_type`, `agent_name`, `raw_root`,
+  `sync_mode`, `public_backup_mode` and `connector_capability`.
+- Defined source types `chatgpt`, `codex` and `other_agent`, plus the
+  transcript/credential boundary.
+- Preserved S02 P1 boundaries: No source registry file in this phase, No human
+  sync page in this phase, No connector implementation, No GitHub main upload in this phase and No raw archive change.
+
 ## Unreleased - Memory Atlas v1.2 S01 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s01_review.md`.

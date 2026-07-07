@@ -194,22 +194,31 @@ function validateS01PassGate() {
 
   ["人类可读/00_快速入口.md", "人类可读/01_v1.2四线14Stage升级总览.md", "README.md", "AGENTS.md"].forEach(validateTextFile);
 
-  assertCondition(
-    hasAll(quickEntry, [
+  const s01ReviewQuickEntry = hasAll(quickEntry, [
       "当前阶段是 S01 Review：S01 整体复审已通过",
       "不是跳转页",
       "旧隐私边界已被 v1.2 替换",
       "凭证不是 transcript",
       "下一步只允许进入 S02 P1",
       "No GitHub main upload in this review",
-    ]),
+  ]);
+  const s02p1QuickEntry = hasAll(quickEntry, [
+      "当前阶段是 S02 P1：数据源模型已定义",
+      "S01 Review 已通过",
+      "不是跳转页",
+      "旧隐私边界已被 v1.2 替换",
+      "凭证不是 transcript",
+      "下一步只允许进入 S02 P2",
+      "No GitHub main upload in this phase",
+  ]);
+  assertCondition(
+    s01ReviewQuickEntry || s02p1QuickEntry,
     "s01_review_human_quick_entry",
-    "Human quick entry is Chinese, not a jump page, and records S01 review result plus next S02 P1 gate",
-    "Human quick entry is missing S01 review status or next gate",
+    "Human quick entry is Chinese, not a jump page, and records S01 review result or later S02 P1 state",
+    "Human quick entry is missing S01 review or S02 P1 status",
   );
 
-  assertCondition(
-    hasAll(overview, [
+  const s01ReviewOverview = hasAll(overview, [
       "S01 整体复审已通过",
       "S01 P1",
       "S01 P2",
@@ -217,10 +226,22 @@ function validateS01PassGate() {
       "旧隐私边界替换为用户授权后的 raw/transcript 公开",
       "下一步是 S02 P1",
       "整体完成后才上传 GitHub main",
-    ]),
+  ]);
+  const s02p1Overview = hasAll(overview, [
+      "S01 整体复审已通过",
+      "S01 P1",
+      "S01 P2",
+      "S01 P3",
+      "S02 P1 已完成",
+      "旧隐私边界替换为用户授权后的 raw/transcript 公开",
+      "下一步是 S02 P2",
+      "整体完成后才上传 GitHub main",
+  ]);
+  assertCondition(
+    s01ReviewOverview || s02p1Overview,
     "s01_review_human_overview",
-    "Human overview records S01 review result, phase coverage and next S02 P1 gate",
-    "Human overview is missing S01 review result or phase coverage",
+    "Human overview records S01 review result, phase coverage and later gate state",
+    "Human overview is missing S01 review result, phase coverage or later S02 P1 state",
   );
 
   assertCondition(
@@ -280,30 +301,48 @@ function validateMachineGate() {
   const machineReadme = readRepoFile("机器治理/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
 
-  assertCondition(
-    hasAll(machineReadme, [
+  const s01ReviewMachineReadme = hasAll(machineReadme, [
       "当前为 S01 Review",
       "S01 整体复审已通过",
       "下一步是 S02 P1",
       "不替代 apps/scripts/tests/config/data/docs/governance",
-    ]),
+  ]);
+  const s02p1MachineReadme = hasAll(machineReadme, [
+      "当前为 S02 P1",
+      "S01 整体复审已通过",
+      "数据源模型已定义",
+      "下一步是 S02 P2",
+      "不替代 apps/scripts/tests/config/data/docs/governance",
+  ]);
+  assertCondition(
+    s01ReviewMachineReadme || s02p1MachineReadme,
     "s01_review_machine_readme",
-    "Machine README records S01 review result and next S02 P1 boundary",
-    "Machine README is missing S01 review result",
+    "Machine README records S01 review result or later S02 P1 state",
+    "Machine README is missing S01 review or S02 P1 result",
   );
 
-  assertCondition(
-    hasAll(runGateReadme, [
+  const s01ReviewRunGate = hasAll(runGateReadme, [
       "当前阶段是 S01 Review",
       taskId,
       acceptanceId,
       "validate:v1.2-s01-review",
       "下一步是 S02 P1",
       "No GitHub main upload in this review",
-    ]),
+  ]);
+  const s02p1RunGate = hasAll(runGateReadme, [
+      "当前阶段是 S02 P1",
+      taskId,
+      acceptanceId,
+      "validate:v1.2-s01-review",
+      "MA-V12-S02P1",
+      "下一步是 S02 P2",
+      "No GitHub main upload in this phase",
+  ]);
+  assertCondition(
+    s01ReviewRunGate || s02p1RunGate,
     "s01_review_run_gate_readme",
-    "Run gate README records S01 review validator, acceptance and next gate",
-    "Run gate README is missing S01 review gate status",
+    "Run gate README records S01 review validator, acceptance and later gate state",
+    "Run gate README is missing S01 review or S02 P1 gate status",
   );
 }
 
