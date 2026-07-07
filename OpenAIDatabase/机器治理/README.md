@@ -18,8 +18,12 @@
 
 ## 当前阶段
 
-当前为 S02 P1。S01 整体复审已通过，数据源模型已定义，文件为
-`数据契约/source_data_model.v1_2_s02_p1.json`。
+当前为 S02 P2。S01 整体复审已通过，数据源模型已定义，source registry 已建立。
+
+当前机器产物：
+
+- `数据契约/source_data_model.v1_2_s02_p1.json`
+- `同步与备份/sync_source_registry.json`
 
 `运行门禁/v1.2需求冻结清单.json` 继续固定：
 
@@ -29,4 +33,4 @@
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S02 P2；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S02 P3；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

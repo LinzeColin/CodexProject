@@ -1,3 +1,41 @@
+## v1.2 S02 P2 Source Registry
+
+状态：`phase_s02_p2_source_registry_completed_pending_s02_p3`。
+
+任务 ID：`MA-V12-S02P2`。
+
+验收 ID：`ACC-MA-V12-S02P2`。
+
+S02 P2 建立 `sync_source_registry.json`，注册 ChatGPT、Codex 和
+future_agent_template。该 phase 只建立 registry，不创建人类同步说明页，不实现 connector。
+
+涉及文件：
+
+- `机器治理/同步与备份/sync_source_registry.json`
+- `docs/reviews/memory_atlas_v1_2_s02_p2_source_registry.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s02-p2`
+- `ACC-MA-V12-S02P2`
+- S02 P2
+- `sync_source_registry.json`
+- `memory_atlas_v1_2_s02_p2_source_registry.md`
+- pending S02 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No human sync page in this phase.
+- No connector implementation.
+- No GitHub main upload in this phase.
+- No app reinstall.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P2 Source Registry; MA-V12-S02P2; ACC-MA-V12-S02P2; phase_s02_p2_source_registry_completed_pending_s02_p3; validate:v1.2-s02-p2; memory_atlas_v1_2_s02_p2_source_registry.md; sync_source_registry.json; S02 P2; pending S02 P3; No GitHub main upload in this phase; No human sync page in this phase; No connector implementation; No raw archive change.
+
 ## v1.2 S02 P1 Source Data Model
 
 状态：`phase_s02_p1_source_data_model_completed_pending_s02_p2`。

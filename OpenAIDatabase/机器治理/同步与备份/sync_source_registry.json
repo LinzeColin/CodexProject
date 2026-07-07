@@ -1,0 +1,170 @@
+{
+  "registry_id": "memory_atlas_sync_source_registry_v1_2_s02_p2",
+  "task_id": "MA-V12-S02P2",
+  "acceptance_id": "ACC-MA-V12-S02P2",
+  "status": "phase_s02_p2_source_registry_completed_pending_s02_p3",
+  "model_ref": "机器治理/数据契约/source_data_model.v1_2_s02_p1.json",
+  "purpose": "Register ChatGPT, Codex and future other agent sources for later public raw backup, without implementing connectors or writing raw data in S02 P2.",
+  "sources": [
+    {
+      "source_id": "chatgpt",
+      "source_type": "chatgpt",
+      "agent_name": "ChatGPT",
+      "connector_type": "browser_readonly_plus_export_fallback",
+      "raw_root": "data/public_raw/chatgpt",
+      "sync_mode": "manual",
+      "public_backup_mode": "plaintext_public",
+      "connector_capability": [
+        "browser_readonly",
+        "official_export_fallback"
+      ],
+      "transcript_boundary": {
+        "rule": "transcript_is_not_credential",
+        "allowed_content": [
+          "conversation_title",
+          "conversation_content",
+          "message_text",
+          "timestamp",
+          "speaker_role",
+          "metadata",
+          "tool_call_summary",
+          "attachment_reference"
+        ]
+      },
+      "credential_boundary": {
+        "rule": "credentials_not_transcript",
+        "forbidden_content": [
+          "cookies",
+          "session_tokens",
+          "passwords",
+          "api_keys",
+          "private_keys",
+          "oauth_tokens",
+          "browser_credential_store"
+        ]
+      },
+      "allowed_actions": [
+        "read_conversation",
+        "read_title",
+        "read_metadata",
+        "use_official_export_fallback",
+        "human_triggered_deep_explore_prefill_or_submit"
+      ],
+      "forbidden_actions": [
+        "capture_password",
+        "capture_cookie",
+        "capture_session_token",
+        "delete_conversation",
+        "archive_conversation",
+        "rename_conversation",
+        "send_message_without_human_trigger"
+      ]
+    },
+    {
+      "source_id": "codex",
+      "source_type": "codex",
+      "agent_name": "Codex",
+      "connector_type": "local_session_sync",
+      "raw_root": "data/public_raw/codex",
+      "sync_mode": "manual",
+      "public_backup_mode": "plaintext_public",
+      "connector_capability": [
+        "local_session_sync"
+      ],
+      "transcript_boundary": {
+        "rule": "transcript_is_not_credential",
+        "allowed_content": [
+          "conversation_title",
+          "conversation_content",
+          "message_text",
+          "timestamp",
+          "speaker_role",
+          "metadata",
+          "tool_call_summary",
+          "attachment_reference"
+        ]
+      },
+      "credential_boundary": {
+        "rule": "credentials_not_transcript",
+        "forbidden_content": [
+          "cookies",
+          "session_tokens",
+          "passwords",
+          "api_keys",
+          "private_keys",
+          "oauth_tokens",
+          "browser_credential_store"
+        ]
+      },
+      "allowed_actions": [
+        "read_local_logs",
+        "read_session_transcripts",
+        "derive_behavior_reports"
+      ],
+      "forbidden_actions": [
+        "capture_tokens",
+        "capture_api_keys",
+        "modify_raw_logs",
+        "delete_raw_logs"
+      ]
+    },
+    {
+      "source_id": "future_agent_template",
+      "source_type": "other_agent",
+      "agent_name": "Future Agent Template",
+      "connector_type": "future_agent_adapter",
+      "raw_root": "data/public_raw/agents/{agent_id}",
+      "sync_mode": "manual",
+      "public_backup_mode": "plaintext_public",
+      "connector_capability": [
+        "local_file",
+        "browser_readonly",
+        "api",
+        "manual_import"
+      ],
+      "transcript_boundary": {
+        "rule": "transcript_is_not_credential",
+        "allowed_content": [
+          "conversation_title",
+          "conversation_content",
+          "message_text",
+          "timestamp",
+          "speaker_role",
+          "metadata",
+          "tool_call_summary",
+          "attachment_reference"
+        ]
+      },
+      "credential_boundary": {
+        "rule": "credentials_not_transcript",
+        "forbidden_content": [
+          "cookies",
+          "session_tokens",
+          "passwords",
+          "api_keys",
+          "private_keys",
+          "oauth_tokens",
+          "browser_credential_store"
+        ]
+      },
+      "allowed_actions": [
+        "register_source",
+        "sync_raw",
+        "derive_facets",
+        "generate_personalization_prompt"
+      ],
+      "forbidden_actions": [
+        "capture_credentials",
+        "modify_existing_raw",
+        "delete_existing_raw"
+      ]
+    }
+  ],
+  "phase_boundary": {
+    "does_not_create_human_sync_page": true,
+    "does_not_touch_raw_archive": true,
+    "does_not_implement_connector": true,
+    "does_not_upload_github_main": true,
+    "next_phase": "S02 P3 human sync explanation"
+  }
+}

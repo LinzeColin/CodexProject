@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S02 P2 Source Registry
+
+- Added `机器治理/同步与备份/sync_source_registry.json`.
+- Added `docs/reviews/memory_atlas_v1_2_s02_p2_source_registry.md`.
+- Added `validate:v1.2-s02-p2` for `MA-V12-S02P2` /
+  `ACC-MA-V12-S02P2`.
+- Registered status `phase_s02_p2_source_registry_completed_pending_s02_p3`.
+- Added ChatGPT browser connector with official export fallback, Codex local
+  sync, and `future_agent_template` / `other_agent` future adapter coverage.
+- Marked S02 P2 as completed and pending S02 P3.
+- Preserved S02 P2 boundaries: No human sync page in this phase, No connector
+  implementation in this phase, No GitHub main upload in this phase and No raw
+  archive change.
+
 ## Unreleased - Memory Atlas v1.2 S02 P1 Source Data Model
 
 - Added `机器治理/数据契约/source_data_model.v1_2_s02_p1.json`.
