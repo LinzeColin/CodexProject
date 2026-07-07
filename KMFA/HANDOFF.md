@@ -63,3 +63,66 @@ Recommended next phase prompt:
 基于上一 phase 的 public-safe actionability blocker final threshold recheck 和 ignored private final threshold records，只生成 blocked handoff / owner action queue 的 public-safe 证据；不得读取或修改 raw inbox，不得做 authoritative binding、raw-to-processed value comparison、Stage review、GitHub upload、app reinstall 或 business execution。
 验收必须包含 focused test、validator、public-safe evidence、治理记录、raw/private scan 和 local commit。
 ```
+
+## 2026-07-08｜v0.1.4 generated diagnostic response blocked handoff after final threshold
+
+- canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`
+- branch: `codex/kmfa`
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD`
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-BLOCKED-HANDOFF-AFTER-FINAL-THRESHOLD-20260708`
+- status: `completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold_no_go`
+- decision: `NO_GO`
+- upload: not performed; upload remains deferred until the authorized full-scope review/upload gate.
+
+## Current Result
+
+- source_actionability_blocker_final_threshold_recheck_item_count: `48`
+- source_actionability_blocker_count: `48`
+- source_private_actionability_final_threshold_records_item_count: `48`
+- blocked_handoff_item_count: `48`
+- owner_action_item_count: `48`
+- goal_status_recommendation: `blocked`
+- actionability_blocked_audit_threshold_met: `true`
+- actionability_ready_count: `0`
+- actionability_blocker_count: `48`
+- valid_diagnostic_response_count: `48`
+- actionable_resolution_count: `0`
+- source_reference_or_owner_exclusion_owner_action_count: `40`
+- formula_or_non_numeric_mapping_owner_action_count: `8`
+- binding_ready_after_blocked_handoff_count: `0`
+- comparison_retry_ready_after_blocked_handoff_count: `0`
+- unresolved_difference_count: `72`
+
+## Boundary
+
+- Raw inbox was not read, listed, stat'ed, fingerprinted, parsed, copied, normalized, moved, renamed, overwritten, deleted or mutated by this phase.
+- Source public-safe final-threshold artifacts and ignored private final-threshold records were consumed read-only.
+- New private blocked-handoff diagnostic, records, owner-action queue and report stay in ignored runtime and must not be committed.
+- Owner/agent action completion, authoritative binding, raw-to-processed comparison, processed-data reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution all remain closed.
+
+## Evidence
+
+- manifest: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold_manifest.json`
+- summary: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold_summary.json`
+- go/no-go: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold_go_no_go_report.json`
+- validator: `KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py`
+- focused test: `KMFA/tests/test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py`
+
+## Verification
+
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py KMFA/tests/test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py --generated-at 2026-07-08T00:00:00+10:00`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py --require-private-blocked-handoff`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold`
+- Full governance/raw scans should be rerun before commit if this handoff is resumed mid-turn.
+
+## Next
+
+Recommended next prompt:
+
+```text
+继续 KMFA，只执行一个 phase：owner/authorized agent action readiness or external-action intake after blocked handoff。
+先确认 git root、branch、remote、HEAD、status。
+基于当前 public-safe blocked handoff evidence 和 ignored private owner-action queue，先判断是否已有 owner/授权代理提供的可执行 source reference、owner exclusion、formula mapping 或 non-numeric mapping；若没有，只输出 blocked 状态/问题清单，不得读取或修改 raw inbox，不得做 authoritative binding、raw-to-processed value comparison、Stage review、GitHub upload、app reinstall 或 business execution。
+验收必须包含 focused test、validator、public-safe evidence、治理记录、raw/private scan 和 local commit。
+```

@@ -2880,3 +2880,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_FINAL_THRESHOLD_RECHECK
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck.py
   scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response actionability blocker final threshold recheck only; records third blocker observation for all 48 non-actionable generated diagnostic responses, marks the blocked threshold true, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-blocked-handoff-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-BLOCKED-HANDOFF-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1555
+    - PARAM-KMFA-1556
+    - PARAM-KMFA-1557
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response blocked handoff after final threshold only; prepares 48 blocked handoff items and 48 owner-action items after final threshold, keeps goal recommendation blocked, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
