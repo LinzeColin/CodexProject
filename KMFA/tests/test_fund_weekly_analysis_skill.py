@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import csv
 import json
 import subprocess
 import sys
@@ -144,6 +145,104 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(manifest["status"], "SOURCE_MISSING")
             self.assertEqual(manifest["file_count"], 0)
             self.assertEqual(issues[0]["issue_type"], "SOURCE_MISSING")
+
+    def test_runner_reports_private_source_candidates_when_expected_folder_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            one_drive = Path(temp_dir) / "OneDrive-Personal"
+            missing_input = one_drive / "DWS_Outputs" / "付款请示群"
+            archive_candidate = one_drive / "DWS_Archive" / "付款请示群" / "files" / "0708"
+            archive_candidate.mkdir(parents=True)
+            (archive_candidate / "20260708113000_杨婷_abc_image_real.png").write_bytes(b"real-image-bytes")
+            (one_drive / "DWS_Outputs.zip").write_bytes(b"PK-real-placeholder")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(missing_input),
+                    "--run-id",
+                    "missing_with_candidates",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 2)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/missing_with_candidates"
+            manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["status"], "SOURCE_MISSING")
+            candidates = {item["kind"]: item for item in manifest["source_candidates"]}
+            self.assertTrue(candidates["dws_outputs_zip"]["exists"])
+            self.assertTrue(candidates["dws_archive_group"]["exists"])
+            self.assertEqual(candidates["dws_archive_group"]["file_count_limited"], 1)
+            self.assertIn("explicit materialization", manifest["data_quality_issues"][0]["action"])
+
+    def test_runner_emits_no_hallucination_package_when_input_folder_exists(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            (source_day / "20260708113000_杨婷_abc_image_real.png").write_bytes(b"real-image-bytes")
+            (source_day / "20260708113100_吴云霞_def_资金计划.xlsx").write_bytes(b"real-xlsx-placeholder")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "indexed_package_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/indexed_package_test"
+            manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["status"], "INDEXED_PENDING_EXTRACTION")
+            self.assertEqual(manifest["file_count"], 2)
+            self.assertEqual(manifest["source_summary"]["kind_counts"]["screenshot"], 1)
+            self.assertEqual(manifest["source_summary"]["kind_counts"]["tabular_finance_source"], 1)
+
+            required_outputs = [
+                "资金与税费管理母版_indexed_package_test.xlsx",
+                "evidence_index.csv",
+                "fund_ledger.csv",
+                "net_flow_ledger.csv",
+                "company_bank_matrix.csv",
+                "tax_loan_risk.csv",
+                "exception_tasks.csv",
+                "cross_review.json",
+                "audit_log.json",
+                "run_summary.md",
+            ]
+            for name in required_outputs:
+                self.assertTrue((run_dir / name).exists(), name)
+
+            with zipfile.ZipFile(run_dir / "资金与税费管理母版_indexed_package_test.xlsx") as workbook:
+                self.assertIn("xl/workbook.xml", workbook.namelist())
+
+            with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
+                rows = list(csv.DictReader(f))
+            self.assertEqual(len(rows), 2)
+            self.assertTrue(all(row["task_type"] == "PENDING_OCR_OR_REVIEW" for row in rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
 
 
 if __name__ == "__main__":

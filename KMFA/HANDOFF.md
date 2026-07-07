@@ -447,4 +447,5 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - 关键文件：`KMFA/fund-weekly-analysis-skill/`、`KMFA/tests/test_fund_weekly_analysis_skill.py`、`KMFA/metadata/fund_weekly_analysis/`、`KMFA/功能清单.md`、`KMFA/开发记录.md`、`KMFA/模型参数文件.md`。
 - 已验证：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_fund_weekly_analysis_skill -q`、`python3 KMFA/fund-weekly-analysis-skill/tools/validate_taskpack.py`、`python3 -m py_compile KMFA/fund-weekly-analysis-skill/tools/*.py`、`git diff --cached --check`、staged secret token scan。
 - 真实数据 smoke 已执行：`run_fund_weekly_analysis.py --repo-root /Users/linzezhang/CodexProject --run-id validator_smoke_20260708 --timezone Australia/Sydney` 返回 `SOURCE_MISSING`，因为目标 OneDrive 输入目录当前不存在；这是正确阻断状态。
+- 后续 runner 增强：目标输入目录缺失时仍返回 `SOURCE_MISSING`，但 ignored private runtime manifest 会列出同 OneDrive 下的 `DWS_Outputs.zip` 和 `DWS_Archive/付款请示群` 候选状态；目标输入目录存在时先输出 `INDEXED_PENDING_EXTRACTION` 无虚构包，包含当前 Excel 母版副本、证据索引、空事实 CSV、异常任务、cross review 和 audit log，但不生成金额、预测或管理结论。
 - 下一步：先补齐或确认 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 的真实数据目录，然后运行一次真实数据生成包；通过后再安装/加载 launchd 定时任务。

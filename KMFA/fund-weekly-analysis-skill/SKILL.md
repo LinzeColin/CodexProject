@@ -141,6 +141,12 @@ Required files:
 * `audit_log.json`
 * `run_summary.md`
 
+Current deterministic runner status contract:
+
+* Missing configured folder returns `SOURCE_MISSING`, writes fail-closed artifacts, and may list private source candidates such as sibling `DWS_Outputs.zip` or `DWS_Archive/<group>` for explicit materialization. It must not silently switch to those candidates.
+* Existing configured folder returns `INDEXED_PENDING_EXTRACTION`, hashes real files, copies the current native Excel mother template into the private run folder, writes the required CSV/JSON package, and creates exception tasks for every evidence item that still needs OCR/table extraction or human review.
+* `INDEXED_PENDING_EXTRACTION` is not a management conclusion. It means no amount was generated, inferred, forecast, or promoted into facts yet.
+
 The shipped editable workbook template is:
 
       templates/资金与税费管理母版_真实数据预览_v2.xlsx
