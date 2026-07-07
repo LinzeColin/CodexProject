@@ -124,7 +124,7 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         }
     )
     exemption_probe = build_notification_message(**exemption_probe_context, markdown=False)
-    if "今日异常人员 / 无考勤人员：张三、李四。" not in exemption_probe:
+    if "今日异常 / 无考勤\n张三（本月累计1次）\n李四（本月累计1次）" not in exemption_probe:
         errors.append("real anomaly names not rendered in user-visible notification template")
     if "张霖泽" in exemption_probe or "林全意" in exemption_probe:
         errors.append("exempt no-attendance names rendered as user-visible anomalies")
