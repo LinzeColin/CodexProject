@@ -1,5 +1,30 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 3 Phase 3.2
+
+- Added the versioned Home Detail Operations contract
+  `memory_overview_detail_operations.v1_1_7_stage3_phase2`.
+- Added explicit operation section versions for Top Actions Section
+  `top_actions_section.v1_1_7_stage3_phase2`, Level Assets Section
+  `level_assets_section.v1_1_7_stage3_phase2` and Theme Categories Section
+  `theme_categories_section.v1_1_7_stage3_phase2`.
+- Updated Memory Overview so each top action shows suggestion, reason,
+  priority, status, ROI, urgency, evidence count and next step before opening
+  `ActionDetailDrawer`.
+- Added home-level group chips for `core_profile`, `project`, `decision`,
+  `temporary` and `stale`, and clickable `AssetDetailPanel` entries.
+- Added theme category chips for `rising`, `declining`, `conflict`,
+  `opportunity` and `stable`, and clickable `ThemeDetailPanel` entries.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage3_phase2_home_detail_operations_acceptance.md`
+  and `validate:v1.1.7-stage3-phase2`.
+- Registered `MA-V117-S3P02` / `ACC-MA-V117-S3P02` with status
+  `phase_3_2_home_detail_operations_completed_pending_stage3_review`.
+
+No Stage 3 Review, Search 2.0 runtime, Review workflow runtime, Data Map 2.0
+runtime, raw/private data read, direct active-memory writeback, agent apply,
+production build, local app install, deploy or GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 3 Phase 3.1
 
 - Added the versioned Default Home Structure contract

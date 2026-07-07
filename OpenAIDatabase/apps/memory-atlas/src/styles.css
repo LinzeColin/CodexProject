@@ -1623,6 +1623,46 @@ h3 {
   padding: 12px 16px 10px;
 }
 
+.home-section-summary-row,
+.home-operation-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.home-section-summary-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.home-operation-chip {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.045);
+  padding: 7px 8px;
+}
+
+.home-operation-chip strong {
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-operation-chip small {
+  overflow: hidden;
+  color: #aaa49a;
+  font-size: 10px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .home-preview-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1776,7 +1816,7 @@ h3 {
 
 .home-action-meta-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 5px;
 }
 
@@ -1794,6 +1834,10 @@ h3 {
   padding: 5px 6px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.home-action-status {
+  color: #ffffff;
 }
 
 .home-action-next-step {
@@ -6301,6 +6345,8 @@ h3 {
   }
 
   .home-action-list,
+  .home-operation-chip-grid,
+  .home-section-summary-row,
   .home-inspector-link-list,
   .home-topic-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6677,6 +6723,8 @@ h3 {
   .home-status-grid,
   .home-preview-grid,
   .home-action-list,
+  .home-operation-chip-grid,
+  .home-section-summary-row,
   .home-inspector-link-list,
   .home-topic-strip {
     grid-template-columns: 1fr;

@@ -69,6 +69,10 @@ const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene").
 const uiCopy = zhCNCopy;
 const DEFAULT_MEMORY_ATLAS_VIEW: ViewKey = "home";
 const MEMORY_OVERVIEW_STRUCTURE_VERSION = "memory_overview_default_home.v1_1_7_stage3_phase1" as const;
+const MEMORY_OVERVIEW_OPERATION_VERSION = "memory_overview_detail_operations.v1_1_7_stage3_phase2" as const;
+const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
+const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
+const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
 
 const MEMORY_OVERVIEW_SECTION_ORDER = [
   { id: "status_summary", label: "状态摘要" },
@@ -79,6 +83,22 @@ const MEMORY_OVERVIEW_SECTION_ORDER = [
   { id: "assets", label: "层级资产" },
   { id: "themes", label: "主题结构" },
   { id: "entry_points", label: "探索入口" },
+] as const;
+
+const HOME_LEVEL_ASSET_GROUPS = [
+  { id: "core_profile", label: "核心画像" },
+  { id: "project", label: "项目" },
+  { id: "decision", label: "决策" },
+  { id: "temporary", label: "临时" },
+  { id: "stale", label: "过期" },
+] as const;
+
+const HOME_THEME_CATEGORY_STATES = [
+  { id: "rising", label: "上升" },
+  { id: "declining", label: "下降" },
+  { id: "conflict", label: "冲突" },
+  { id: "opportunity", label: "机会" },
+  { id: "stable", label: "稳定" },
 ] as const;
 
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
@@ -1220,6 +1240,9 @@ function HomeOverviewView({
     () => buildHomeOverviewModel(nodes, graphEdges, deltaStats),
     [deltaStats, graphEdges, nodes],
   );
+  const actionStatusChips = buildHomeActionStatusChips(model.actions);
+  const levelAssetGroupChips = buildLevelAssetGroupChips(model.tierAssets);
+  const themeCategoryChips = buildThemeCategoryChips(model.topicDetails);
 
   function runAction(action: HomeActionDetail) {
     const runtimeAction = model.actions.find((item) => item.action_id === action.action_id);
@@ -1278,6 +1301,7 @@ function HomeOverviewView({
   return (
     <div
       className="home-overview-view visual-workspace"
+      data-memory-overview-operations={MEMORY_OVERVIEW_OPERATION_VERSION}
       data-memory-overview-structure={MEMORY_OVERVIEW_STRUCTURE_VERSION}
       data-shared-state={sharedState.schema_version}
       data-shared-focus-node={sharedState.focus.home.nodeId ?? ""}
@@ -1391,16 +1415,43 @@ function HomeOverviewView({
           <small>{uiCopy.overview.riverPulseNote}</small>
         </button>
       </section>
-      <section className="home-action-panel" aria-label="下一步行动建议" data-home-section="suggested_actions">
+      <section
+        className="home-action-panel"
+        aria-label="下一步行动建议"
+        data-home-operation-mode="proposal_only"
+        data-home-operation-section="top_actions"
+        data-home-section="suggested_actions"
+        data-top-actions-section={HOME_ACTION_SECTION_VERSION}
+      >
         <div className="panel-title-row">
           <h3>{uiCopy.overview.nextBestActionsTitle}</h3>
           <span>{uiCopy.overview.proposalOnlyLabel}</span>
+        </div>
+        <div className="home-section-summary-row" aria-label="Top Actions Section fields">
+          <span className="home-operation-chip" data-top-actions-field="suggestion">
+            <strong>suggestion</strong>
+            <small>{model.actions.length.toLocaleString()} top actions</small>
+          </span>
+          <span className="home-operation-chip" data-top-actions-field="reason">
+            <strong>reason</strong>
+            <small>Universe State derived</small>
+          </span>
+          <span className="home-operation-chip" data-top-actions-field="priority">
+            <strong>priority</strong>
+            <small>{model.actions[0]?.priority ?? "none"}</small>
+          </span>
+          <span className="home-operation-chip" data-top-actions-field="status">
+            <strong>status</strong>
+            <small>{actionStatusChips.map((chip) => `${chip.label}:${chip.count}`).join(" / ")}</small>
+          </span>
         </div>
         <div className="home-action-list">
           {model.actions.map((action) => (
             <button
               data-next-action-card={action.action_id}
+              data-next-action-detail-entry="ActionDetailDrawer"
               data-next-action-roi={action.roi_score.toFixed(2)}
+              data-next-action-status={action.status}
               data-next-action-urgency={action.urgency}
               key={action.id}
               onClick={() => openActionDetail(action)}
@@ -1412,6 +1463,7 @@ function HomeOverviewView({
                 <i>ROI {formatScore(action.roi_score)}</i>
                 <i>{action.effort_cost}</i>
                 <i>{action.urgency}</i>
+                <i className="home-action-status">{action.status}</i>
                 <i>{action.evidence_count} 证据</i>
               </div>
               <small>{action.reason}</small>
@@ -1419,7 +1471,7 @@ function HomeOverviewView({
             </button>
           ))}
         </div>
-        <div data-action-detail-drawer-host="true">
+        <div data-action-detail-drawer-host="true" data-top-action-detail-host="ActionDetailDrawer">
           <ActionDetailDrawer action={selectedActionDetail} onClose={closeActionDetail} onOpenTarget={openActionTarget} />
         </div>
       </section>
@@ -1437,10 +1489,30 @@ function HomeOverviewView({
           ))}
         </div>
       </section>
-      <section className="home-tier-asset-panel" aria-label="层级资产明细" data-home-section="assets">
+      <section
+        className="home-tier-asset-panel"
+        aria-label="层级资产明细"
+        data-home-operation-mode="proposal_only"
+        data-home-operation-section="level_assets"
+        data-home-section="assets"
+        data-level-assets-section={HOME_LEVEL_ASSET_SECTION_VERSION}
+      >
         <div className="panel-title-row">
           <h3>层级资产明细</h3>
           <span>proposal-only</span>
+        </div>
+        <div className="home-operation-chip-grid" aria-label="Level Assets Section groups">
+          {levelAssetGroupChips.map((group) => (
+            <span
+              className="home-operation-chip"
+              data-level-asset-count={group.count}
+              data-level-asset-group={group.id}
+              key={group.id}
+            >
+              <strong>{group.label}</strong>
+              <small>{group.count.toLocaleString()} assets</small>
+            </span>
+          ))}
         </div>
         {model.tierAssets.length ? (
           <div className="home-tier-asset-grid">
@@ -1448,6 +1520,7 @@ function HomeOverviewView({
               <button
                 className="home-tier-asset-card"
                 data-tier-asset-card={asset.asset_id}
+                data-tier-asset-detail-entry="AssetDetailPanel"
                 data-tier-asset-staleness={asset.staleness_status}
                 data-tier-asset-value={asset.value_score.toFixed(2)}
                 key={asset.id}
@@ -1470,20 +1543,41 @@ function HomeOverviewView({
         ) : (
           <div className="home-tier-asset-empty">当前筛选下没有足够的层级资产明细；请放宽筛选或等待新的 redacted snapshot。</div>
         )}
-        <div data-asset-detail-panel-host="true">
+        <div data-asset-detail-host="AssetDetailPanel" data-asset-detail-panel-host="true">
           <AssetDetailPanel asset={selectedTierAsset} onClose={closeTierAsset} onOpenTarget={openTierAssetTarget} />
         </div>
       </section>
-      <section className="home-topic-detail-panel" aria-label="主题分类明细" data-home-section="themes">
+      <section
+        className="home-topic-detail-panel"
+        aria-label="主题分类明细"
+        data-home-operation-mode="proposal_only"
+        data-home-operation-section="theme_categories"
+        data-home-section="themes"
+        data-theme-categories-section={HOME_THEME_CATEGORY_SECTION_VERSION}
+      >
         <div className="panel-title-row">
           <h3>主题分类明细</h3>
           <span>proposal-only</span>
+        </div>
+        <div className="home-operation-chip-grid" aria-label="Theme Categories Section states">
+          {themeCategoryChips.map((state) => (
+            <span
+              className="home-operation-chip"
+              data-theme-category-count={state.count}
+              data-theme-category-state={state.id}
+              key={state.id}
+            >
+              <strong>{state.label}</strong>
+              <small>{state.count.toLocaleString()} themes</small>
+            </span>
+          ))}
         </div>
         {model.topicDetails.length ? (
           <div className="home-topic-detail-grid">
             {model.topicDetails.map((topic) => (
               <button
                 className="home-topic-detail-card"
+                data-theme-category-detail-entry="ThemeDetailPanel"
                 data-topic-detail-card={topic.topic_id}
                 data-topic-state={topic.topic_state}
                 data-topic-strength={topic.topic_strength.toFixed(2)}
@@ -1507,7 +1601,7 @@ function HomeOverviewView({
         ) : (
           <div className="home-tier-asset-empty">当前筛选下没有足够的主题分类明细；请放宽筛选或等待新的 redacted snapshot。</div>
         )}
-        <div data-theme-detail-panel-host="true">
+        <div data-theme-category-detail-host="ThemeDetailPanel" data-theme-detail-panel-host="true">
           <ThemeDetailPanel topic={selectedTopicDetail} onClose={closeTopicDetail} onOpenTarget={openTopicTarget} />
         </div>
       </section>
@@ -1518,6 +1612,50 @@ function HomeOverviewView({
       </section>
     </div>
   );
+}
+
+function buildHomeActionStatusChips(actions: HomeAction[]): Array<{ id: HomeActionDetail["status"]; label: string; count: number }> {
+  const statuses: HomeActionDetail["status"][] = ["proposed", "review", "blocked", "done_safe"];
+  return statuses.map((status) => ({
+    count: actions.filter((action) => action.status === status).length,
+    id: status,
+    label: status,
+  }));
+}
+
+type HomeLevelAssetGroupId = (typeof HOME_LEVEL_ASSET_GROUPS)[number]["id"];
+type HomeThemeCategoryStateId = (typeof HOME_THEME_CATEGORY_STATES)[number]["id"];
+
+function buildLevelAssetGroupChips(assets: HomeTierAsset[]): Array<{ id: HomeLevelAssetGroupId; label: string; count: number }> {
+  return HOME_LEVEL_ASSET_GROUPS.map((group) => ({
+    count: assets.filter((asset) => homeLevelAssetGroupFor(asset) === group.id).length,
+    id: group.id,
+    label: group.label,
+  }));
+}
+
+function homeLevelAssetGroupFor(asset: TierAssetDetail): HomeLevelAssetGroupId {
+  if (asset.asset_tier === "core_profile") return "core_profile";
+  if (asset.asset_tier === "project") return "project";
+  if (asset.asset_tier === "decision") return "decision";
+  if (asset.asset_tier === "stale" || asset.staleness_status === "stale") return "stale";
+  return "temporary";
+}
+
+function buildThemeCategoryChips(topics: HomeTopicDetail[]): Array<{ id: HomeThemeCategoryStateId; label: string; count: number }> {
+  return HOME_THEME_CATEGORY_STATES.map((state) => ({
+    count: topics.filter((topic) => homeThemeCategoryFor(topic) === state.id).length,
+    id: state.id,
+    label: state.label,
+  }));
+}
+
+function homeThemeCategoryFor(topic: TopicClassificationDetail): HomeThemeCategoryStateId {
+  if (topic.topic_state === "rising") return "rising";
+  if (topic.topic_state === "declining" || topic.topic_state === "stale" || topic.topic_state === "black_hole") return "declining";
+  if (topic.topic_state === "conflict") return "conflict";
+  if (topic.topic_state === "emerging" || (topic.roi_score >= 0.58 && topic.trend !== "down")) return "opportunity";
+  return "stable";
 }
 
 function GalaxyView({
