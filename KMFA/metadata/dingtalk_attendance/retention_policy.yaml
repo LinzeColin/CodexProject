@@ -1,0 +1,14 @@
+project_id: KMFA
+stage_id: S19
+automation_name: 每日早晚钉钉考勤检查
+operational_cache_retention_days: 3
+private_runtime_path: KMFA/metadata/dingtalk_attendance/private_runtime
+cleanup_required_each_run: true
+cleanup_actions:
+  - delete_expired_operational_rows
+  - delete_temp_files
+  - release_lock_files
+  - checkpoint_operational_database
+  - optimize_operational_database
+  - report_database_size
+public_repo_runtime_data_allowed: false

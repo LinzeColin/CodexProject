@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+"""Validate KMFA S19 DingTalk attendance public-safe file contract."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+from typing import Any
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT
+
+
+REQUIRED_METADATA_FILES = (
+    "README.md",
+    "attendance_database_manifest.json",
+    "attendance_schema.sql",
+    "retention_policy.yaml",
+    "report_policy.yaml",
+    "notification_policy.yaml",
+    "onedrive_storage_manifest.yaml",
+    "secrets_policy.md",
+    "codex_automation/morning_0835.prompt.md",
+    "codex_automation/evening_1815.prompt.md",
+    "codex_automation/manual_rerun.prompt.md",
+    "private_runtime/README.md",
+    "private_runtime/.gitkeep",
+)
+
+REQUIRED_TOOL_FILES = (
+    "__init__.py",
+    "run_attendance.py",
+    "dingtalk_client.py",
+    "roster_sync.py",
+    "attendance_collect.py",
+    "anomaly_rules.py",
+    "report_renderer.py",
+    "notifier_dingtalk.py",
+    "notifier_dingtalk_work_notification.py",
+    "notifier_wecom_optional.py",
+    "onedrive_archive.py",
+    "cleanup_runtime.py",
+    "healthcheck.py",
+    "secrets_loader.py",
+    "validate_no_sensitive_git.py",
+    "check_s19_dingtalk_attendance.py",
+)
+
+
+def validate_s19_files(root: Path) -> dict[str, Any]:
+    metadata_root = root / "metadata" / "dingtalk_attendance"
+    tool_root = root / "tools" / "dingtalk_attendance"
+    missing = [
+        f"metadata/dingtalk_attendance/{rel}"
+        for rel in REQUIRED_METADATA_FILES
+        if not (metadata_root / rel).exists()
+    ]
+    missing.extend(
+        f"tools/dingtalk_attendance/{rel}"
+        for rel in REQUIRED_TOOL_FILES
+        if not (tool_root / rel).exists()
+    )
+    if missing:
+        return {"status": "FAIL", "missing": missing}
+
+    manifest = json.loads((metadata_root / "attendance_database_manifest.json").read_text(encoding="utf-8"))
+    private_runtime_files = sorted(path.name for path in (metadata_root / "private_runtime").iterdir() if path.is_file())
+    prompt_files = sorted((metadata_root / "codex_automation").glob("*.prompt.md"))
+
+    errors: list[str] = []
+    if manifest.get("automation_name") != AUTOMATION_NAME:
+        errors.append("automation name drift")
+    if manifest.get("onedrive_root") != ONEDRIVE_ROOT:
+        errors.append("onedrive root drift")
+    if manifest.get("onedrive_month_folder_pattern") != "YYYYMM":
+        errors.append("onedrive month folder pattern drift")
+    if private_runtime_files != [".gitkeep", "README.md"]:
+        errors.append("private runtime must only contain README.md and .gitkeep")
+    if len(prompt_files) != 3:
+        errors.append("prompt count drift")
+
+    return {
+        "status": "PASS" if not errors else "FAIL",
+        "errors": errors,
+        "automation_name": manifest.get("automation_name"),
+        "onedrive_root": manifest.get("onedrive_root"),
+        "prompt_count": len(prompt_files),
+        "private_runtime_tracked_files": private_runtime_files,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Validate KMFA S19 DingTalk attendance file contract.")
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
+    args = parser.parse_args(argv)
+
+    result = validate_s19_files(args.root)
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if result["status"] == "PASS" else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

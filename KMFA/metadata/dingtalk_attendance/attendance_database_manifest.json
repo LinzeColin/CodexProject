@@ -1,0 +1,43 @@
+{
+  "archive_db_name": "dingtalk_attendance_archive.sqlite",
+  "automation_name": "每日早晚钉钉考勤检查",
+  "known_recipients": {
+    "boss": {
+      "dingtalk_user_id": "CONFIG_REQUIRED",
+      "name": "老板"
+    },
+    "zhang_linze": {
+      "dingtalk_user_id": "1iv-1t2oesv2yd",
+      "name": "张霖泽"
+    }
+  },
+  "live_only": true,
+  "onedrive_month_folder_pattern": "YYYYMM",
+  "onedrive_root": "/Users/linzezhang/OneDrive/dingtalk_attendance",
+  "operational_db": "KMFA/metadata/dingtalk_attendance/private_runtime/dingtalk_attendance_active.sqlite",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_committed": false,
+    "employee_plaintext_committed": false,
+    "raw_api_response_committed": false,
+    "report_body_committed": false,
+    "sqlite_committed": false
+  },
+  "schedule": {
+    "evening": "18:15",
+    "morning": "08:35",
+    "timezone": "Asia/Shanghai"
+  },
+  "stage_id": "S19",
+  "tables": [
+    "run_log",
+    "employee_snapshot",
+    "attendance_result_raw",
+    "attendance_record_raw",
+    "attendance_normalized",
+    "anomaly_event",
+    "report_dispatch",
+    "cleanup_audit",
+    "onedrive_archive_manifest"
+  ]
+}

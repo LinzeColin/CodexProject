@@ -1,0 +1,13 @@
+project_id: KMFA
+stage_id: S19
+automation_name: 每日早晚钉钉考勤检查
+recipient_policy:
+  zhang_linze_dingtalk_user_id: 1iv-1t2oesv2yd
+  boss_dingtalk_user_id: CONFIG_REQUIRED
+channel_priority:
+  - dingtalk_group_robot
+  - dws_chat_bot
+  - dingtalk_work_notification
+missing_config_status: NOTIFIER_CONFIG_MISSING
+report_loss_allowed_when_notification_missing: false
+public_repo_notification_payload_allowed: false
