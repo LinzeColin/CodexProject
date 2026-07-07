@@ -1,0 +1,71 @@
+{
+  "check_count": 14,
+  "check_fail_count": 0,
+  "check_pass_count": 14,
+  "checks": [
+    {
+      "check_code": "source_blocker_threshold_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_blocker_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_observation_2_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_strict_threshold_not_met",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_threshold_records_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "final_threshold_record_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "observation_count_recorded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "strict_threshold_met",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_retry_ready_after_final_threshold",
+      "status": "PASS"
+    },
+    {
+      "check_code": "final_threshold_outputs_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_value_comparison_claimed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "public_safe_aggregate_only",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION",
+  "project_id": "KMFA",
+  "record_type": "v014_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation_matrix_public_safe",
+  "schema_version": "kmfa.v014_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-20260707",
+  "version": "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-final-threshold-recheck-after-owner-anchor-confirmation"
+}

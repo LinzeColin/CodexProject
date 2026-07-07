@@ -11844,3 +11844,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private threshold outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior blocker audit outputs."
     target_version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-threshold-recheck-after-owner-anchor-confirmation"
     completed_version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-threshold-recheck-after-owner-anchor-confirmation"
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-20260707"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation.py --require-private-final-threshold"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation.py"
+    test_results:
+      - "PASS: fingerprint pair completion blocker final threshold recheck validator and focused unit test passed; observation 3 is recorded for all 48 missing-raw-candidate-fingerprint blockers, strict threshold is met, no comparison retry records are ready and value consistency remains unverified"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION/human/residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION/machine/residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION/machine/residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation_matrix_public_safe.json"
+    risk: "A final threshold recheck can be mistaken for a value comparison retry or release gate; this phase records blocked status only and keeps retry-ready count, value comparison, reconciliation, report, upload, reinstall and business execution closed."
+    rollback: "Remove current phase artifacts, metadata copies, private final threshold outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior threshold outputs."
+    target_version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-final-threshold-recheck-after-owner-anchor-confirmation"
+    completed_version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-final-threshold-recheck-after-owner-anchor-confirmation"
