@@ -115,6 +115,15 @@ Current status:
   coverage, and stable replay hashes before any database import. Record-only
   `s19_seed_*` raw files are isolated as supplemental seed evidence only when
   `--allow-seed-raw-without-manifest` is explicitly set.
+- `scripts/prepare_raw_replay_day_fact_bundle.py` materializes a private raw
+  replay day-fact/linkage bundle after archive inspection passes. It writes
+  `attendance_day_fact.jsonl`, `raw_detail_linkage.jsonl`, and a canonical
+  replay snapshot under private runtime while keeping stdout and summary
+  manifests public-safe.
+- Real private 202606 replay has produced an ignored private day-fact/linkage
+  bundle with raw count/hash parity, location threshold pass, every day fact
+  linked to raw detail IDs, and matching canonical replay hashes across two
+  local replays.
 - The dry-run uses no PostgreSQL connection, no database mutation, no private
   raw data, and no live DWS.
 
@@ -126,9 +135,9 @@ Remaining work:
 4. Add derived fact insertion.
 5. Review, statically validate, and pass the fail-closed execution guard for the generated PostgreSQL JSONB/COPY loader SQL.
 6. Run against an explicitly configured non-production PostgreSQL target.
-7. Run private raw archive inspection against one completed historical month,
-   including seed-raw isolation and an explicit location coverage threshold,
-   then keep only the public-safe readiness manifest in review evidence.
+7. Run private raw archive inspection and day-fact replay on future completed
+   months before import, including seed-raw isolation and an explicit location
+   coverage threshold; keep only public-safe summaries in review evidence.
 
 ### Task 4 - Enforce location and trajectory evidence
 

@@ -41,6 +41,7 @@ scripts/month_gate.py
 scripts/preflight.sh
 scripts/prepare_database_landing_bundle.py
 scripts/prepare_postgres_landing_loader.py
+scripts/prepare_raw_replay_day_fact_bundle.py
 scripts/render_stage2_certificate.py
 scripts/resolve_stage2_source.py
 scripts/run_stage2_evening.sh

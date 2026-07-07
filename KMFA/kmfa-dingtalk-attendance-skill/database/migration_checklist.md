@@ -38,11 +38,12 @@
 
 - [x] Provide a public-safe private raw archive month inspector for manifest/raw count parity, hash parity, location coverage, and stable replay hashes.
 - [x] Isolate record-only `s19_seed_*` raw files as supplemental seed evidence without treating missing formal run manifests as acceptable.
-- [ ] Load one completed historical month from OneDrive raw archive.
-- [ ] Verify raw counts match manifest.
-- [ ] Verify detail/location coverage.
-- [ ] Verify every derived day fact links to raw IDs.
-- [ ] Verify canonical hash is stable across two local replays.
+- [x] Materialize a private raw replay day-fact/linkage bundle with public-safe summary output and deterministic canonical replay hash.
+- [x] Load one completed historical month from OneDrive raw archive.
+- [x] Verify raw counts match manifest.
+- [x] Verify detail/location coverage.
+- [x] Verify every derived day fact links to raw IDs.
+- [x] Verify canonical hash is stable across two local replays.
 
 ## Phase 2 - Automation shadow payroll
 

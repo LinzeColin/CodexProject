@@ -129,6 +129,25 @@ paths. Use `--allow-seed-raw-without-manifest` only for record-only
 `s19_seed_*` monthly accumulation seed files; it must not mask missing manifests
 for formal full-flow runs.
 
+Materialize a private raw replay day-fact/linkage bundle after inspection
+passes:
+
+```bash
+python3 scripts/prepare_raw_replay_day_fact_bundle.py \
+  --archive-root /Users/linzezhang/OneDrive/dingtalk_attendance \
+  --target-month 202607 \
+  --allow-seed-raw-without-manifest \
+  --min-location-coverage-ratio 0.01 \
+  --out-dir "$KMFA_PRIVATE_RUNTIME/raw_replay_day_fact/202607" \
+  --print-json
+```
+
+The command writes private `attendance_day_fact.jsonl`,
+`raw_detail_linkage.jsonl`, a canonical replay snapshot, and a public-safe
+summary manifest. The summary must show every derived day fact links to raw
+detail IDs and that the canonical replay hash is stable. It does not open
+PostgreSQL, mutate a database, or call live DWS.
+
 ## Automation
 
 Use `automation/morning_prompt.md` for the morning automation and `automation/evening_prompt.md` for the evening automation. The evening prompt explicitly invokes `$kmfa-dingtalk-attendance-skill` and runs stage-2 only when eligible.
