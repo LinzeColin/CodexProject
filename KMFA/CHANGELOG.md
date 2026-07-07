@@ -1,3 +1,11 @@
+## 0.1.4-residual-difference-raw-to-processed-comparison-precheck - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK` 本地单 phase。
+- 基于上一 materialization replay public-safe artifacts 和 ignored private raw-comparison input，只执行 residual-difference raw-to-processed comparison readiness precheck；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source materialized records=72、raw-comparison input records=72、comparison-ready records=0、comparison blocker records=72、missing private comparison anchors=72、open residual differences=72、closed discrepancies=0、Go/No-Go=`NO_GO`。
+- 本 phase 不执行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private precheck/diagnostic/ready records/blocker records/report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
 ## 0.1.4-residual-difference-private-resolution-materialization-replay - 2026-07-07
 
 - 完成 `V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY` 本地单 phase。

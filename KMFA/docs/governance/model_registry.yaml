@@ -1,3 +1,18 @@
+kmfa_v014_residual_difference_raw_to_processed_comparison_precheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1435
+    - PARAM-KMFA-1436
+    - PARAM-KMFA-1437
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck.py
+  scope: Residual-difference raw-to-processed comparison precheck only; writes ignored private precheck blocker records while keeping raw inbox access, formal comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution closed.
+
 kmfa_v014_residual_difference_private_resolution_materialization_replay:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-residual-difference-private-resolution-materialization-replay"

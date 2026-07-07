@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-residual-difference-private-resolution-materialization-replay`
+- version: `0.1.4-residual-difference-raw-to-processed-comparison-precheck`
 - current_stage: `value-consistency`
-- current_phase: `V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY`
-- status: `completed_validated_local_only_residual_difference_private_resolution_materialization_replay_no_go`
-- current_blocker: `raw_to_processed_comparison_required_before_business_value_consistency`
-- next_required_input: `run_residual_difference_raw_to_processed_comparison_precheck`
+- current_phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK`
+- status: `completed_validated_local_only_residual_difference_raw_comparison_precheck_blocked_no_go`
+- current_blocker: `private_raw_candidate_alignment_required_before_formal_comparison`
+- next_required_input: `run_read_only_raw_candidate_alignment_for_72_residual_difference_records_before_comparison`
 - blocked_next_steps: `formal raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 residual difference raw-to-processed comparison precheck completed local-only: source_private_materialized_record_count=72，source_raw_comparison_input_record_count=72，comparison_ready_record_count=0，comparison_blocker_record_count=72，missing_private_comparison_anchor_count=72，open_residual_difference_count=72，closed_discrepancy_count=0，current Go/No-Go=NO_GO。This phase reads only prior public-safe materialization artifacts and ignored private materialization/raw-comparison input；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private precheck/diagnostic/ready records/blocker records/report stay in ignored runtime；formal raw-to-processed comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_read_only_raw_candidate_alignment_for_72_residual_difference_records_before_comparison`。
 
 - v0.1.4 residual difference private resolution materialization replay completed local-only: source_application_applied_record_count=72，source_application_blocker_count=0，source_materialization_input_record_count=72，private_materialized_record_count=72，private_materialization_blocker_count=0，raw_to_processed_value_comparison_ready=true，open_residual_difference_count=72，closed_discrepancy_count=0，current Go/No-Go=NO_GO。This phase reads only prior public-safe application artifacts and ignored private application/materialization input；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private materialization diagnostic/result/materialized records/raw-comparison input/report stay in ignored runtime；formal raw-to-processed comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`run_residual_difference_raw_to_processed_comparison_precheck`。
 

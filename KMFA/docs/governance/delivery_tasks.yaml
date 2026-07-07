@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "RDRCP01"
+    phase: "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK"
+    objective: "Precheck whether residual-difference materialized records can proceed to formal raw-to-processed comparison."
+    scope:
+      - "public-safe raw-to-processed comparison precheck evidence"
+      - "ignored private comparison-ready and blocker records"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox reads or mutation"
+      - "formal raw-to-processed comparison"
+      - "full reconciliation"
+      - "GitHub upload or app reinstall"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK/machine/residual_difference_raw_to_processed_comparison_precheck_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck.py --require-private-precheck"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_raw_to_processed_comparison_precheck"
+    test_results:
+      - "PASS: residual-difference raw-to-processed comparison precheck validator"
+      - "PASS: focused raw-to-processed comparison precheck unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK/machine/residual_difference_raw_to_processed_comparison_precheck_manifest.json"
+    risk: "Private materialized records can be misread as raw-to-processed consistency evidence; comparison readiness is explicitly blocked because private comparison anchors are absent."
+    rollback: "Remove this phase public artifacts and ignored private precheck outputs; keep prior materialization replay intact."
+    target_version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"
+
   - task_id: "RDMR01"
     phase: "V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY"
     objective: "Materialize private residual-difference resolution records in ignored runtime."
