@@ -1,3 +1,5 @@
+KMFA 当前版本 `0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck` 已完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK` 本地单 phase：Codex 在不读取、不修改 raw inbox 的前提下复核上一 source-map correction blocker threshold recheck 证据，并把 72 条 source-map correction blocker 锁定为第 3 次 observation。公开证据只显示 aggregate counts：valid diagnostic responses=72、missing-response blocker cleared=true、non-actionable diagnostic responses=72、source-map correction blockers=72、prior observation=2、current observation=3、blocked threshold met=true、goal status recommendation=blocked、open residual differences=72、closed discrepancies=0、source-map actionable responses=0。系统仍是 `NO_GO`，因为还没有 source-map correction 或 authoritative value resolution，不能进入正式 raw-to-processed 一致性验证。next_required_input=`source_map_correction_or_authoritative_value_resolution_required_before_full_raw_to_processed_comparison`。
+
 # KMFA Owner Status
 
 更新时间: 2026-07-07

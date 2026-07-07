@@ -11307,3 +11307,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private threshold outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-threshold-recheck"
     completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-threshold-recheck"
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-FINAL-THRESHOLD-RECHECK-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-FINAL-THRESHOLD-RECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck.py --require-private-final-threshold"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck"
+    test_results:
+      - "PASS: residual difference source-map correction blocker final threshold recheck validator and focused unit test passed; 72 valid responses remain non-actionable, observation count is 3, threshold is true, goal status is blocked, and raw inbox, discrepancy closure, source-map correction, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK/human/outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK/machine/outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK/machine/outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck_matrix_public_safe.json"
+    risk: "A third blocker observation can be mistaken for permission to correct source maps or close discrepancies; this phase marks only the blocker threshold and keeps all downstream gates closed."
+    rollback: "Remove current phase artifacts, metadata copies, private final threshold outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck"
+    completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck"
