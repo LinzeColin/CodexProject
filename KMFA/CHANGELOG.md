@@ -12,6 +12,7 @@
 - 新增 `--send-latest-report-only`，可只重发最新 OneDrive 私有报告对应的统一考勤通知、不重新调用 DWS；2026-07-07 已验证最新晚报统一考勤通知发送成功，cleanup 随后执行。
 - 统一用户可见模板 run type 展示：内部 `morning/evening` 仅保留作 CLI、run_id 和归档文件名，钉钉通知正文、automation `notification_template_text`、management/hr 报告标题均显示 `晨报/晚报`。
 - 修复 S19 resolved-channel/latest resend 通知模板回归：抽出 `notification_template.py` 作为群通知、个人通知、正常 run 和 latest resend 的唯一正文模板；通知里新增“需要休息的人员”板块，钉钉正文不包含 run_id、北京时间或 OneDrive 报告路径，这些机器追溯字段只保留在 dispatch receipt / manifest。
+- 调整 S19 需要休息口径：休息提醒从自然月第 23 个有效考勤日开始；丁春法、李永占只从“需要休息人员”和私有 ledger `rest_required_snapshots` 中排除，其他异常、连续异常、待审批/待补卡/待核查和月累计状态仍照常统计。
 - 修复 S19 考勤异常判定：张霖泽、林全意作为已知无需考勤人员只用于豁免自身，不再作为全局隐藏名单；`recordList=[]`、缺少上下班打卡、summary 当天 `缺卡/未打卡/旷工/迟到/早退` 均进入用户可见异常名单。
 - 已完成 2026-07-07 live 验证：当前可见组织 44 人，record 成功 44 人，summary 成功 44 人；summary 当天覆盖应考勤 41 人，当天缺卡异常 2 人；钉钉通知不再发送错误的“今天一切良好”，具体员工考勤姓名仅保留在私有 OneDrive 归档。
 - OneDrive 私有归档固定为 `/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`，当月目录下直接保存运行文件，不再展开深层目录。
