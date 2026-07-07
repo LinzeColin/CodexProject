@@ -11127,3 +11127,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private residual difference outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-residual-difference-report"
     completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-report"
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-DIAGNOSTIC-HANDOFF-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-DIAGNOSTIC-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff.py --require-private-handoff"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff"
+    test_results:
+      - "PASS: residual difference diagnostic handoff validator and focused unit test passed; 72 private residual differences remain open while raw inbox, discrepancy closure, source-map correction, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/human/outside_scope_candidate_review_residual_difference_diagnostic_handoff.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/machine/outside_scope_candidate_review_residual_difference_diagnostic_handoff_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/machine/outside_scope_candidate_review_residual_difference_diagnostic_handoff_matrix_public_safe.json"
+    risk: "The private diagnostic handoff can be mistaken for discrepancy closure; this phase only packages unresolved private differences and does not assert value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private diagnostic handoff outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-residual-difference-diagnostic-handoff"
+    completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-diagnostic-handoff"

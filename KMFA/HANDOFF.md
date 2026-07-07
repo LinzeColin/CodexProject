@@ -4,26 +4,26 @@
 
 ## 当前目标
 
-最近一个完成的 phase 是 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT`：基于上一 phase public-safe closure readiness summary 和 ignored private closure blocker queue，只做 blocker audit 和 private residual blocker queue。当前确认 `source_private_blocking_queue_item_count=72`、`residual_blocker_queue_item_count=72`、`open_closure_blocker_count=72`、`closed_discrepancy_count=0`、`safe_auto_closure_count=0`、`newly_actionable_closure_count=0`、`ambiguous_selection_required_count=24`、`authoritative_source_reference_required_count=40`、`formula_or_non_numeric_mapping_required_count=8`、Go/No-Go=`NO_GO`。本 phase 不读取 raw inbox、不关闭差异、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作；private blocker audit diagnostic、residual blocker queue 和 residual report 只保留在 ignored private runtime。下一步可单独执行 public-safe residual difference report；不得跳过 raw-to-processed verification、不得伪造一致性、不得 GitHub upload、不得重装 app、不得发布正式报告或业务动作。用户要求 raw 原始数据不得修改增删；后续如 full raw-to-processed comparison 和多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供 public-safe 差异报告。
+最近一个完成的 phase 是 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF`：基于上一 phase public-safe residual-difference report 和 ignored private residual difference queue，只做 private diagnostic handoff。当前确认 `source_private_residual_difference_queue_item_count=72`、`diagnostic_handoff_item_count=72`、`open_residual_difference_count=72`、`closed_discrepancy_count=0`、`safe_auto_resolution_count=0`、`ambiguous_selection_required_count=24`、`authoritative_source_reference_required_count=40`、`formula_or_non_numeric_mapping_required_count=8`、Go/No-Go=`NO_GO`。本 phase 不读取 raw inbox、不关闭差异、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作；private diagnostic handoff packet、queue 和 report 只保留在 ignored private runtime。下一步只能单独执行 owner/授权代理或外部 agent diagnostic intake；不得跳过 raw-to-processed verification、不得伪造一致性、不得 GitHub upload、不得重装 app、不得发布正式报告或业务动作。
 
 ## v0.1.4 当前续跑状态
 
 - 当前本地分支: `codex/kmfa`
-- 当前版本: `0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit`
-- 当前已完成: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT`
-- 证据目录: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/`
-- validator: `KMFA/tools/check_v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit.py --require-private-audit`
-- focused test: `KMFA/tests/test_v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit.py`
-- manifest: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_discrepancy_closure_blocker_audit_manifest.json`
-- go_no_go: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_discrepancy_closure_blocker_audit_go_no_go_report.json`
-- summary: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_discrepancy_closure_blocker_audit_summary.json`
-- metadata copies: `KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit_manifest.json`, `KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit_go_no_go_report.json`, `KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit_summary.json`, `KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit_matrix_public_safe.json`
-- current_gate: `NO_GO_OUTSIDE_SCOPE_DISCREPANCY_CLOSURE_BLOCKERS_OPEN_PRIVATE_RESIDUAL_QUEUE_AVAILABLE`
-- current_state: source_private_blocking_queue_item_count=`72`, residual_blocker_queue_item_count=`72`, open_closure_blocker_count=`72`, closed_discrepancy_count=`0`, safe_auto_closure_count=`0`, newly_actionable_closure_count=`0`, ambiguous_selection_required_count=`24`, authoritative_source_reference_required_count=`40`, formula_or_non_numeric_mapping_required_count=`8`, source_map_correction_ready=`false`, raw_to_processed_value_comparison_performed=`false`, full_raw_to_processed_value_comparison_complete=`false`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
-- raw boundary: 本 phase 不读取 raw inbox；只读取上一 phase public-safe closure summary/manifest 和 ignored private closure blocker queue/workpack；未写入、删除、移动、重命名、覆盖、复制、标准化或修改 raw inbox；private blocker audit diagnostic、residual blocker queue 和 residual report 只保留在 ignored runtime。用户要求原始数据不得修改增删；后续如 full raw-to-processed comparison 和多次交叉验证仍无法保持处理数据与原始数据一致，最终 goal closeout 必须提供差异报告。
+- 当前版本: `0.1.4-outside-scope-candidate-review-residual-difference-diagnostic-handoff`
+- 当前已完成: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF`
+- 证据目录: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/`
+- validator: `KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff.py --require-private-handoff`
+- focused test: `KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff.py`
+- manifest: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/machine/outside_scope_candidate_review_residual_difference_diagnostic_handoff_manifest.json`
+- go_no_go: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/machine/outside_scope_candidate_review_residual_difference_diagnostic_handoff_go_no_go_report.json`
+- summary: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/machine/outside_scope_candidate_review_residual_difference_diagnostic_handoff_summary.json`
+- metadata copies: `KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff_summary.json`, `KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff_manifest.json`, `KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff_go_no_go_report.json`, `KMFA/metadata/quality/v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff_matrix_public_safe.json`
+- current_gate: `NO_GO_OUTSIDE_SCOPE_RESIDUAL_DIFFERENCES_OPEN_PRIVATE_DIAGNOSTIC_HANDOFF_AVAILABLE`
+- current_state: diagnostic_handoff_item_count=`72`, open_residual_difference_count=`72`, closed_discrepancy_count=`0`, safe_auto_resolution_count=`0`, ambiguous_selection_required_count=`24`, authoritative_source_reference_required_count=`40`, formula_or_non_numeric_mapping_required_count=`8`, source_map_correction_ready=`false`, raw_to_processed_value_comparison_performed=`false`, full_raw_to_processed_value_comparison_complete=`false`, business_value_consistency_verified=`false`, Go/No-Go=`NO_GO`
+- raw boundary: 本 phase 不读取 raw inbox；只读取上一 phase public-safe residual difference artifacts 和 ignored private residual difference diagnostics；未写入、删除、移动、重命名、覆盖、复制、标准化或修改 raw inbox；private diagnostic handoff packet、queue 和 report 只保留在 ignored runtime。
 - upload policy: v1.4 不按单个 Stage 或补充 gate 上传；GitHub main upload 必须等 owner raw source identity、raw alignment application、lineage full check、formal report release、pending reconciliation 和 final gate 全部通过后才可单独执行。
-- 未完成/阻断: discrepancy closure blocker audit 已确认 72 条 outside-scope discrepancy closure blockers 仍全部 open，已写入 private residual blocker queue/report；source-map correction 尚未执行；正式 raw-to-processed comparison 尚未执行；full raw-to-processed comparison complete=false；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
-- 下一步: 单独执行 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT` 或等价 public-safe residual difference reporting phase；不得跳过 source-map/raw comparison 验证、不得自动 GitHub upload、不得重装 app、不得发布正式报告或执行业务动作。
+- 未完成/阻断: 72 条 outside-scope residual differences 仍全部 open；source-map correction 尚未执行；正式 raw-to-processed comparison 尚未执行；full raw-to-processed comparison complete=false；processed-data reconciliation=false；business value consistency verified=false；lineage full check complete=false；official report release allowed=false；GitHub upload=false；app reinstall=false；formal report=false；business execution=false。
+- 下一步: 单独执行 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE` 或等价 private diagnostic intake phase；不得直接执行 full reconciliation、formal report、GitHub upload、app reinstall 或业务动作。
 
 ## v0.1.3 历史状态
 
@@ -772,3 +772,13 @@ Next allowed step:
 - Single phase only: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF` or owner/authorized residual resolution.
 - Do not run discrepancy closure, source-map correction, formal raw-to-processed comparison, full reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
 - Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, goal closeout must include the private/public-safe discrepancy report boundary.
+
+## 2026-07-07｜v0.1.4 outside-scope candidate review residual difference diagnostic handoff
+
+- phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF`
+- task: `KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-DIAGNOSTIC-HANDOFF-20260707`
+- 已完成：新增 diagnostic handoff generator、validator、focused unit test、public-safe evidence packet、metadata copies、git-ignored private diagnostic handoff packet/queue/report 和治理记录。
+- 当前结论：`diagnostic_handoff_item_count=72`、`open_residual_difference_count=72`、`closed_discrepancy_count=0`、`safe_auto_resolution_count=0`、`ambiguous_selection_required_count=24`、`authoritative_source_reference_required_count=40`、`formula_or_non_numeric_mapping_required_count=8`、`go_no_go=NO_GO`。
+- 原始数据边界：本 phase 不读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；只读取上一 phase public-safe residual difference artifacts 和 ignored private residual difference diagnostics。
+- 未执行：discrepancy closure、source-map correction、formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+- 验证入口：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff.py --require-private-handoff`
