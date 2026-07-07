@@ -5,38 +5,37 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
 if __package__ in {None, ""}:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT, STAGE_ID, TIMEZONE
-
-
-REQUIRED_LIVE_ENV = (
-    "DINGTALK_APP_KEY",
-    "DINGTALK_APP_CREDENTIAL",
-    "DINGTALK_CORP_ID",
-    "DINGTALK_AGENT_ID",
-)
-
-OPTIONAL_NOTIFY_ENV = (
-    "DINGTALK_ROBOT_URL",
-    "DINGTALK_ROBOT_SIGNING_KEY",
-    "DINGTALK_BOSS_USER_ID",
-    "DINGTALK_CONVERSATION_ID",
-)
+from KMFA.tools.dingtalk_attendance.notifier_dingtalk import robot_notification_status
+from KMFA.tools.dingtalk_attendance.notifier_dingtalk_work_notification import work_notification_status
+from KMFA.tools.dingtalk_attendance.secrets_loader import DEFAULT_RUNTIME_ENV_PATH, merged_runtime_env
 
 
 def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
-    values = dict(os.environ if env is None else env)
-    missing = [name for name in REQUIRED_LIVE_ENV if not values.get(name)]
-    missing_notify = [name for name in OPTIONAL_NOTIFY_ENV if not values.get(name)]
-    status = "OK" if not missing else "CONFIG_MISSING"
+    values = merged_runtime_env() if env is None else dict(env)
+    group_robot = robot_notification_status(values)
+    work_notification = work_notification_status(values)
+    ready_channels = [
+        channel["channel"]
+        for channel in (group_robot, work_notification)
+        if channel["status"] == "READY"
+    ]
+    channel_aliases = {
+        "dingtalk_robot": "dingtalk_group_robot",
+        "dingtalk_work_notification": "dingtalk_work_notification",
+    }
+    ready_aliases = [channel_aliases.get(channel, channel) for channel in ready_channels]
+    active_notify_mode = values.get("DINGTALK_NOTIFY_MODE") or (ready_aliases[0] if ready_aliases else "CONFIG_REQUIRED")
+    notification_ready = bool(ready_aliases)
+    status = "READY" if notification_ready else "NOTIFIER_CONFIG_MISSING"
     return {
         "project_id": "KMFA",
         "stage_id": STAGE_ID,
@@ -44,11 +43,22 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
         "status": status,
         "timezone": TIMEZONE,
         "onedrive_root": ONEDRIVE_ROOT,
-        "live_collection_allowed": status == "OK",
+        "backend": "dws",
+        "live_collection_allowed": True,
         "uses_sample_data": False,
-        "missing": missing,
-        "notification_missing": missing_notify,
-        "notifier_configured": not missing_notify,
+        "missing": [] if notification_ready else sorted(set(group_robot["missing"] + work_notification["missing"])),
+        "notification_ready": notification_ready,
+        "notification_ready_channels": ready_aliases,
+        "active_notify_mode": active_notify_mode,
+        "notification_missing": [] if notification_ready else sorted(set(group_robot["missing"] + work_notification["missing"])),
+        "group_robot_missing": group_robot["missing"],
+        "work_notification_missing": work_notification["missing"],
+        "notifier_configured": notification_ready,
+        "notification_channels": {
+            "dingtalk_group_robot": group_robot,
+            "dingtalk_work_notification": work_notification,
+        },
+        "runtime_env_path": str(DEFAULT_RUNTIME_ENV_PATH),
         "private_runtime_expected": "KMFA/metadata/dingtalk_attendance/private_runtime",
         "public_repo_safety": {
             "employee_plaintext_committed": False,

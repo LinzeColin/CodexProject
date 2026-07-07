@@ -12,6 +12,19 @@
     }
   },
   "live_only": true,
+  "notification_backend": {
+    "current_mode": "dingtalk_group_robot",
+    "dispatch_status_enum": [
+      "SENT",
+      "FAILED",
+      "NOTIFIER_CONFIG_MISSING",
+      "DINGTALK_ROBOT_ERROR"
+    ],
+    "latest_report_only_supported": true,
+    "local_config_path": "KMFA/metadata/dingtalk_attendance/private_runtime/.env.local",
+    "local_config_tracked": false,
+    "required_message_keyword": "开明考勤"
+  },
   "onedrive_month_folder_pattern": "YYYYMM",
   "onedrive_root": "/Users/linzezhang/OneDrive/dingtalk_attendance",
   "private_archive_file_types": [

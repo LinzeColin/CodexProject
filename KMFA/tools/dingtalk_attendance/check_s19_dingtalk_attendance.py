@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 if __package__ in {None, ""}:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT
 
@@ -49,6 +49,8 @@ REQUIRED_TOOL_FILES = (
     "validate_no_sensitive_git.py",
     "check_s19_dingtalk_attendance.py",
 )
+ALLOWED_PRIVATE_RUNTIME_FILES = {".gitkeep", "README.md", ".env.local"}
+TRACKED_PRIVATE_RUNTIME_FILES = [".gitkeep", "README.md"]
 
 
 def validate_s19_files(root: Path) -> dict[str, Any]:
@@ -69,6 +71,9 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
 
     manifest = json.loads((metadata_root / "attendance_database_manifest.json").read_text(encoding="utf-8"))
     private_runtime_files = sorted(path.name for path in (metadata_root / "private_runtime").iterdir() if path.is_file())
+    unexpected_private_runtime_files = [
+        name for name in private_runtime_files if name not in ALLOWED_PRIVATE_RUNTIME_FILES
+    ]
     prompt_files = sorted((metadata_root / "codex_automation").glob("*.prompt.md"))
 
     errors: list[str] = []
@@ -78,8 +83,8 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         errors.append("onedrive root drift")
     if manifest.get("onedrive_month_folder_pattern") != "YYYYMM":
         errors.append("onedrive month folder pattern drift")
-    if private_runtime_files != [".gitkeep", "README.md"]:
-        errors.append("private runtime must only contain README.md and .gitkeep")
+    if unexpected_private_runtime_files:
+        errors.append("private runtime contains unexpected local files")
     if len(prompt_files) != 3:
         errors.append("prompt count drift")
 
@@ -89,7 +94,11 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         "automation_name": manifest.get("automation_name"),
         "onedrive_root": manifest.get("onedrive_root"),
         "prompt_count": len(prompt_files),
-        "private_runtime_tracked_files": private_runtime_files,
+        "private_runtime_tracked_files": TRACKED_PRIVATE_RUNTIME_FILES,
+        "private_runtime_local_files_allowed": sorted(
+            name for name in private_runtime_files if name in ALLOWED_PRIVATE_RUNTIME_FILES
+        ),
+        "private_runtime_unexpected_files": unexpected_private_runtime_files,
     }
 
 

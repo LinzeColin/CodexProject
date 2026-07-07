@@ -274,14 +274,6 @@ def write_private_outputs(
     Path(paths["management_report"]).write_text(management_report, encoding="utf-8")
     Path(paths["hr_report"]).write_text(hr_report, encoding="utf-8")
 
-    dispatch_receipt = {
-        "run_id": plan["run_id"],
-        "notification_status": "NOT_SENT_DWS_VALIDATION_MODE",
-        "management_report": paths["management_report"],
-        "hr_report": paths["hr_report"],
-    }
-    Path(paths["dispatch_receipt"]).write_text(json.dumps(dispatch_receipt, ensure_ascii=False, indent=2), encoding="utf-8")
-
     raw_hash = hashlib.sha256(raw_path.read_bytes()).hexdigest()
     manifest = {
         "run_id": plan["run_id"],
