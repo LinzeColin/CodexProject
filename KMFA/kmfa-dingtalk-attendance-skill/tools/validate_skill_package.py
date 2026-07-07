@@ -33,6 +33,7 @@ REQUIRED_FILES = [
     ROOT / "scripts" / "prepare_postgres_landing_loader.py",
     ROOT / "scripts" / "validate_postgres_load_plan.py",
     ROOT / "scripts" / "execute_postgres_load_plan.py",
+    ROOT / "scripts" / "verify_postgres_landing_state.py",
     ROOT / "scripts" / "apply_stage2_database_proof.py",
     ROOT / "scripts" / "inspect_raw_archive_month.py",
     ROOT / "scripts" / "prepare_raw_replay_day_fact_bundle.py",

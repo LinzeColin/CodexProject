@@ -209,15 +209,22 @@ python3 scripts/execute_postgres_load_plan.py \
   --execute \
   --acknowledge-nonprod-mutation \
   --print-json > "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607/postgres_execution_proof.json"
+
+python3 scripts/verify_postgres_landing_state.py \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607" \
+  --acknowledge-nonprod-read \
+  --print-json > "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607/postgres_state_verification.json"
 ```
 
-Apply the non-production execution proof to the Stage-2 source:
+Apply both the non-production execution proof and the post-load state
+verification proof to the Stage-2 source:
 
 ```bash
 python3 scripts/apply_stage2_database_proof.py \
   --source-json "$KMFA_PRIVATE_RUNTIME/stage2_source/202607/source_snapshot.json" \
   --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607" \
   --execution-proof-json "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607/postgres_execution_proof.json" \
+  --state-verification-json "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607/postgres_state_verification.json" \
   --out-json "$KMFA_PRIVATE_RUNTIME/stage2_source/202607/source_snapshot.db_verified.json" \
   --print-json
 ```
@@ -228,6 +235,9 @@ Only this DB-verified source may make Stage-2 run manifests carry
 The execution proof JSON is intentionally report-redacted: it may prove guard
 status, `psql` invocation, target environment, and return code, but it must not
 print the raw PostgreSQL DSN or absolute local bundle paths.
+The state verification proof is read-only and must show database row counts
+matching the private landing bundle before `database_transaction_verified` may
+be true.
 
 The command writes private `attendance_day_fact.jsonl`,
 `raw_detail_linkage.jsonl`, a canonical replay snapshot, and a public-safe

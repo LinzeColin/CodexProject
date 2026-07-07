@@ -134,6 +134,62 @@ def test_preconsensus_database_proof_promotes_stage2_database_gates_without_payr
         assert str(db_bundle) not in proof.stdout
         assert str(ROOT) not in proof.stdout
 
+        missing_state_proof = run(
+            [
+                sys.executable,
+                str(SCRIPT_DIR / "apply_stage2_database_proof.py"),
+                "--source-json",
+                str(source),
+                "--bundle-dir",
+                str(db_bundle),
+                "--execution-proof-json",
+                str(proof_path),
+                "--out-json",
+                str(verified_source),
+                "--print-json",
+            ],
+            check=False,
+        )
+        assert missing_state_proof.returncode != 0
+        assert "state verification proof" in missing_state_proof.stderr
+
+        verify_psql = Path(td) / "verify_psql.sh"
+        verify_log = Path(td) / "verify_psql_args.txt"
+        verify_psql.write_text(
+            "#!/bin/sh\n"
+            "printf '%s\\n' \"$@\" > \"$KMFA_FAKE_PSQL_LOG\"\n"
+            "printf '%s\\n' '{\"policy_version\":1,\"canonical_month_snapshot\":1,\"attendance_day_fact\":2}'\n",
+            encoding="utf-8",
+        )
+        verify_psql.chmod(0o755)
+        state_verification = run(
+            [
+                sys.executable,
+                str(SCRIPT_DIR / "verify_postgres_landing_state.py"),
+                "--bundle-dir",
+                str(db_bundle),
+                "--psql-bin",
+                str(verify_psql),
+                "--acknowledge-nonprod-read",
+                "--print-json",
+            ],
+            env=env,
+        )
+        state_verification_path = db_bundle / "postgres_state_verification.json"
+        state_verification_path.write_text(state_verification.stdout, encoding="utf-8")
+        state_data = json.loads(state_verification.stdout)
+        assert state_data["status"] == "pass"
+        assert state_data["expected_counts"] == {
+            "policy_version": 1,
+            "canonical_month_snapshot": 1,
+            "attendance_day_fact": 2,
+        }
+        assert state_data["observed_counts"] == state_data["expected_counts"]
+        assert state_data["database_mutation_performed"] is False
+        assert "postgresql://localhost" not in state_verification.stdout
+        assert str(db_bundle) not in state_verification.stdout
+        assert str(ROOT) not in state_verification.stdout
+
         apply_result = run([
             sys.executable,
             str(SCRIPT_DIR / "apply_stage2_database_proof.py"),
@@ -143,6 +199,8 @@ def test_preconsensus_database_proof_promotes_stage2_database_gates_without_payr
             str(db_bundle),
             "--execution-proof-json",
             str(proof_path),
+            "--state-verification-json",
+            str(state_verification_path),
             "--out-json",
             str(verified_source),
             "--print-json",

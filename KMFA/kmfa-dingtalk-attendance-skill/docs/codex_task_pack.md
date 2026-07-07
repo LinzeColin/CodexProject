@@ -133,11 +133,14 @@ Current status:
   landing bundle from a Stage-2 source before accepted payroll baseline. It
   loads only `policy_version`, `canonical_month_snapshot`, and
   `attendance_day_fact`.
-- `scripts/apply_stage2_database_proof.py` consumes a fail-closed
-  non-production PostgreSQL execution proof and writes a DB-verified Stage-2
-  source where `database_transaction_committed` and
-  `database_transaction_verified` are true. It does not itself connect to
-  PostgreSQL or mutate a database.
+- `scripts/verify_postgres_landing_state.py` performs a read-only
+  non-production PostgreSQL state check and verifies table row counts match the
+  private landing bundle without printing raw DSNs or absolute local paths.
+- `scripts/apply_stage2_database_proof.py` consumes both the fail-closed
+  non-production PostgreSQL execution proof and the post-load state
+  verification proof before writing a DB-verified Stage-2 source where
+  `database_transaction_committed` and `database_transaction_verified` are
+  true. It does not itself connect to PostgreSQL or mutate a database.
 - Real private 202606 replay has produced an ignored private day-fact/linkage
   bundle with raw count/hash parity, location threshold pass, every day fact
   linked to raw detail IDs, and matching canonical replay hashes across two
@@ -157,8 +160,9 @@ Remaining work:
    months before import, including seed-raw isolation and an explicit location
    coverage threshold; keep only public-safe summaries in review evidence.
 8. Run the pre-consensus PostgreSQL load plan against an explicitly approved
-   non-production target and apply the execution proof so Stage-2 day-5
-   consensus can satisfy database transaction gates instead of failing closed.
+   non-production target, verify the post-load row counts, and apply both
+   proofs so Stage-2 day-5 consensus can satisfy database transaction gates
+   instead of failing closed.
 
 ### Task 4 - Enforce location and trajectory evidence
 

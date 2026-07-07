@@ -25,4 +25,4 @@ The test suite verifies:
 10. Offline replay stage-2 artifacts fail closed on day 5 until database transaction commit and verification gates are explicitly true.
 11. Private raw archive replay can materialize day facts with raw detail linkage and a stable canonical replay hash without exposing names, DingTalk IDs, raw rows, or local paths in summary output.
 12. A private raw replay day-fact/linkage bundle can materialize a Stage-2 source snapshot and resolver source adapter without live DWS, database mutation, employee plaintext, or raw DingTalk IDs.
-13. Pre-consensus Stage-2 sources can generate a PostgreSQL landing bundle before payroll acceptance, and a fail-closed non-production execution proof can promote only the database gates used by Stage-2 consensus.
+13. Pre-consensus Stage-2 sources can generate a PostgreSQL landing bundle before payroll acceptance, and fail-closed non-production execution plus read-only state verification proofs can promote only the database gates used by Stage-2 consensus.

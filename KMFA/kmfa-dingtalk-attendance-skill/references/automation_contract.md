@@ -58,13 +58,15 @@ The current portable stage-2 runner is fail-closed:
   day-fact/linkage bundle, `scripts/resolve_stage2_source.py` materializes a
   Stage-2 source snapshot in the run folder without live DWS or database
   mutation. The resulting source keeps database commit/verification gates
-  false until an approved non-production PostgreSQL execution proof exists.
+  false until approved non-production PostgreSQL execution and state
+  verification proofs exist.
 - To satisfy the database gates, run
   `scripts/prepare_preconsensus_postgres_landing_bundle.py`, generate and
-  guard-execute the PostgreSQL load plan against a non-production target, then
-  run `scripts/apply_stage2_database_proof.py` to produce the DB-verified
-  Stage-2 source used by `scripts/write_stage2_run_artifacts.py`.
-- If no DB execution proof is available, keep
+  guard-execute the PostgreSQL load plan against a non-production target, run
+  `scripts/verify_postgres_landing_state.py` to confirm post-load row counts,
+  then run `scripts/apply_stage2_database_proof.py` to produce the
+  DB-verified Stage-2 source used by `scripts/write_stage2_run_artifacts.py`.
+- If no DB execution proof or state verification proof is available, keep
   `database_transaction_committed=false` and
   `database_transaction_verified=false`; day-5 consensus must fail closed.
 - `scripts/resolve_stage2_source.py` records `source_adapter_status.json` for
