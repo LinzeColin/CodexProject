@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "RDMR01"
+    phase: "V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY"
+    objective: "Materialize private residual-difference resolution records in ignored runtime."
+    scope:
+      - "public-safe materialization replay evidence"
+      - "ignored private materialized records"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox reads or mutation"
+      - "formal raw-to-processed comparison"
+      - "full reconciliation"
+      - "GitHub upload or app reinstall"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-private-resolution-materialization-replay"
+    dependencies:
+      - "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY/machine/residual_difference_private_resolution_materialization_replay_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_private_resolution_materialization_replay.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-PRIVATE-RESOLUTION-MATERIALIZATION-REPLAY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_private_resolution_materialization_replay.py --require-private-replay"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_private_resolution_materialization_replay"
+    test_results:
+      - "PASS: residual-difference private materialization replay validator"
+      - "PASS: focused materialization replay unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY/machine/residual_difference_private_resolution_materialization_replay_manifest.json"
+    risk: "Private materialization can be misread as verified raw-to-processed consistency; raw comparison and business consistency gates remain false."
+    rollback: "Remove this phase public artifacts and ignored private materialization outputs; keep prior application intact."
+    target_version: "0.1.4-residual-difference-private-resolution-materialization-replay"
+
   - task_id: "RDSMCA01"
     phase: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION"
     objective: "Apply private residual-difference source-map correction records in ignored runtime."

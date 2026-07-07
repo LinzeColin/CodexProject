@@ -1,0 +1,88 @@
+{
+  "business_value_consistency_verified": false,
+  "check_count": 10,
+  "check_fail_count": 0,
+  "check_pass_count": 10,
+  "checks": [
+    {
+      "check_code": "source_application_applied_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_application_blocker_count_zero",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_materialization_input_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "materialized_record_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "materialization_blocker_count_zero",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "track_counts_match_expected",
+      "observed_public_safe": {
+        "owner_select_one_authoritative_candidate": 24,
+        "provide_authoritative_source_reference_or_owner_exclusion": 40,
+        "provide_formula_or_non_numeric_mapping": 8
+      },
+      "required": {
+        "owner_select_one_authoritative_candidate": 24,
+        "provide_authoritative_source_reference_or_owner_exclusion": 40,
+        "provide_formula_or_non_numeric_mapping": 8
+      },
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_comparison_ready",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_comparison_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "business_consistency_not_verified",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "project_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY",
+  "private_materialization_blocker_count": 0,
+  "private_materialized_record_count": 72,
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "raw_to_processed_value_comparison_ready": true,
+  "record_type": "v014_residual_difference_private_resolution_materialization_replay_matrix_public_safe",
+  "schema_version": "kmfa.v014_residual_difference_private_resolution_materialization_replay_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-PRIVATE-RESOLUTION-MATERIALIZATION-REPLAY-20260707",
+  "version": "0.1.4-residual-difference-private-resolution-materialization-replay"
+}

@@ -1,3 +1,18 @@
+kmfa_v014_residual_difference_private_resolution_materialization_replay:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-private-resolution-materialization-replay"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-PRIVATE-RESOLUTION-MATERIALIZATION-REPLAY-001
+  parameter_refs:
+    - PARAM-KMFA-1432
+    - PARAM-KMFA-1433
+    - PARAM-KMFA-1434
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY
+  validator: KMFA/tools/check_v014_residual_difference_private_resolution_materialization_replay.py
+  scope: Residual-difference private resolution materialization replay only; writes ignored private materialized records and raw-comparison input while keeping formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution closed.
+
 kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application"

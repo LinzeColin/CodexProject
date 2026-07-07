@@ -1,3 +1,14 @@
+## 2026-07-07 - V014 residual difference private resolution materialization replay
+
+- phase: `V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY`
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-PRIVATE-RESOLUTION-MATERIALIZATION-REPLAY-20260707`
+- result: `completed_validated_local_only_residual_difference_private_resolution_materialization_replay_no_go` / `NO_GO`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY/machine/residual_difference_private_resolution_materialization_replay_manifest.json`
+- validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_private_resolution_materialization_replay.py --require-private-replay` and focused unit test passed.
+- boundary: raw inbox read/list/stat/hash/parse/write/delete/move/rename/copy/normalize/mutation=false; private materialization outputs remain ignored; no formal raw comparison, GitHub upload, app reinstall or business execution.
+product_version: 0.1.4-residual-difference-private-resolution-materialization-replay
+version_matrix_product_version_reference: 0.1.4-residual-difference-private-resolution-materialization-replay
+
 ## 2026-07-07 - V014 residual difference source-map correction application
 
 - phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION`
