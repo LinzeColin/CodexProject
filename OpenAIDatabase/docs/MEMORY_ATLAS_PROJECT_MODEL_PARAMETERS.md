@@ -1,3 +1,44 @@
+## 95. Memory Atlas v1.1.7 Stage 7 Phase 7.1 Search 2.0 Runtime
+
+状态：`phase_7_1_search_2_0_runtime_completed_pending_stage7_review`。
+
+验收 ID：`ACC-MA-V117-S7P01`。
+
+模型参数：
+
+- Runtime version 固定为 `search_2_0_runtime.v1_1_7_stage7_phase1`。
+- Session Summary version 固定为 `search_2_0_session_summary.v1_1_7_stage7_phase1`。
+- `validate:v1.1.7-stage7-phase1` 是本 phase 必跑 validator。
+- `validate:search-2-0-browser` 是本 phase 浏览器 validator。
+- Search 2.0 结果必须显示 `matched_reason` 和 `evidence_refs`。
+- Result actions 必须覆盖 `jump_to_starfield`, `jump_to_river`, `open_inspector`。
+- No Review / Summary / Iteration runtime。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_search_2_0_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S7P01-001 stage7_phase1_status = phase_7_1_search_2_0_runtime_completed_pending_stage7_review`
+- `PARAM-MA-V117-S7P01-002 stage7_phase1_required_validator = validate:v1.1.7-stage7-phase1`
+- `PARAM-MA-V117-S7P01-003 stage7_phase1_browser_validator = validate:search-2-0-browser`
+- `PARAM-MA-V117-S7P01-004 search_2_0_runtime_version = search_2_0_runtime.v1_1_7_stage7_phase1`
+- `PARAM-MA-V117-S7P01-005 search_2_0_session_summary_version = search_2_0_session_summary.v1_1_7_stage7_phase1`
+- `PARAM-MA-V117-S7P01-006 result_fields = matched_reason;evidence_refs;proposal_candidate`
+- `PARAM-MA-V117-S7P01-007 result_actions = jump_to_starfield;jump_to_river;open_inspector`
+
+验收信号：
+
+- Static validator checks Stage 6 continuity, Search 2.0 runtime hooks, browser validator contract, records, canonical remote and no-upload boundary。
+- Browser validator checks result fields, `window.__memoryAtlasStage7Phase1`, zero-result recovery, Starfield/River/Inspector jumps, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Phase 7.1; Search 2.0; MA-V117-S7P01; ACC-MA-V117-S7P01; phase_7_1_search_2_0_runtime_completed_pending_stage7_review; validate:v1.1.7-stage7-phase1; validate:search-2-0-browser; search_2_0_runtime.v1_1_7_stage7_phase1; search_2_0_session_summary.v1_1_7_stage7_phase1; matched_reason; evidence_refs; No Review / Summary / Iteration runtime; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
 ## 94. Memory Atlas v1.1.7 Stage 6 Review
 
 状态：`stage_6_review_passed_pending_stage7_no_github_main_upload`。

@@ -88,6 +88,8 @@ const DATA_MAP_STRUCTURE_MODEL_VERSION = "data_map_structure_model.v1_1_7_stage6
 const DATA_MAP_RELATION_EXPLANATION_VERSION = "data_map_relation_explanation.v1_1_7_stage6_phase1" as const;
 const DATA_MAP_DETAIL_PANEL_VERSION = "data_map_detail_panel.v1_1_7_stage6_phase2" as const;
 const DATA_MAP_PROPOSAL_ENTRY_VERSION = "data_map_proposal_entry.v1_1_7_stage6_phase2" as const;
+const SEARCH_2_0_RUNTIME_VERSION = "search_2_0_runtime.v1_1_7_stage7_phase1" as const;
+const SEARCH_2_0_SESSION_SUMMARY_VERSION = "search_2_0_session_summary.v1_1_7_stage7_phase1" as const;
 
 declare global {
   interface Window {
@@ -144,6 +146,19 @@ declare global {
       selectedNodeKind: AtlasNode["kind"] | null;
       detailFields: string[];
       proposalOnly: true;
+      directActiveMemoryWriteback: false;
+      rawPrivateDataIncluded: false;
+    };
+    __memoryAtlasStage7Phase1?: () => {
+      runtimeVersion: typeof SEARCH_2_0_RUNTIME_VERSION;
+      sessionSummaryVersion: typeof SEARCH_2_0_SESSION_SUMMARY_VERSION;
+      query: string;
+      resultCount: number;
+      hasMatchedReason: boolean;
+      hasEvidenceRefs: boolean;
+      jumpActions: Array<"starfield" | "river" | "inspector">;
+      zeroResultRecoveryVisible: boolean;
+      proposalCandidateCount: number;
       directActiveMemoryWriteback: false;
       rawPrivateDataIncluded: false;
     };
@@ -496,6 +511,49 @@ interface HomeInspectorLink {
   title: string;
   meta: string;
   node: AtlasNode | null;
+}
+
+type Search2TierFilter = "all" | "core_profile" | "project" | "decision" | "workflow" | "knowledge" | "opportunity" | "stale";
+type Search2RecencyFilter = "all" | "recent" | "active" | "stale" | "archival";
+type Search2ImportanceFilter = "all" | "low" | "medium" | "high" | "critical";
+
+interface Search2Filters {
+  query: string;
+  tier: Search2TierFilter;
+  topic: string;
+  recency: Search2RecencyFilter;
+  importance: Search2ImportanceFilter;
+  evidenceOnly: boolean;
+}
+
+interface Search2Result {
+  result_id: string;
+  title: string;
+  summary: string;
+  source: string;
+  tier: Exclude<Search2TierFilter, "all">;
+  topic: string;
+  recency: Exclude<Search2RecencyFilter, "all">;
+  importance: Exclude<Search2ImportanceFilter, "all">;
+  matched_reason: string;
+  evidence_refs: string[];
+  jump_to_starfield: string;
+  jump_to_river: string;
+  open_inspector: string;
+  proposal_candidate: boolean;
+  score: number;
+  node: AtlasNode;
+}
+
+interface Search2SessionSummary {
+  query: string;
+  result_count: number;
+  dominant_topics: string[];
+  high_importance_hits: string[];
+  stale_or_black_hole_hits: string[];
+  missing_evidence: string[];
+  next_step: string;
+  proposal_candidate: boolean;
 }
 
 interface SemanticInsight {
@@ -981,6 +1039,7 @@ export function App() {
             return (
               <button
                 className={activeView === view.key ? "nav-item active" : "nav-item"}
+                data-nav-view={view.key}
                 key={view.key}
                 onClick={() => switchView(view.key)}
                 title={view.label}
@@ -1296,7 +1355,16 @@ function ViewRouter({
   if (activeView === "summary") {
     return <SummaryIterationView atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} />;
   }
-  return <SearchReview atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
+  return (
+    <SearchReview
+      atlas={atlas}
+      filters={filters}
+      nodes={slice.memoryNodes}
+      deltaStats={slice.deltaStats}
+      onSelectNode={onSelectNode}
+      onSwitchView={onSwitchView}
+    />
+  );
 }
 
 function viewEmptyState(atlas: MemoryAtlas, slice: FilteredAtlasSlice): "empty-atlas" | "no-filtered-results" | null {
@@ -3473,25 +3541,166 @@ function withAlpha(color: string, alpha: number) {
 
 function SearchReview({
   atlas,
+  filters,
   nodes,
   deltaStats,
   onSelectNode,
+  onSwitchView,
 }: {
   atlas: MemoryAtlas;
+  filters: AtlasFilters;
   nodes: AtlasNode[];
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
+  onSwitchView: (view: ViewKey) => void;
 }) {
-  const displayNodes = useMemo(() => dedupeNodesForDisplay(nodes).slice(0, 150), [nodes]);
+  const [searchFilters, setSearchFilters] = useState<Search2Filters>(() => ({
+    query: filters.query,
+    tier: "all",
+    topic: "all",
+    recency: "all",
+    importance: "all",
+    evidenceOnly: true,
+  }));
+  useEffect(() => {
+    setSearchFilters((current) => (
+      current.query === filters.query ? current : { ...current, query: filters.query }
+    ));
+  }, [filters.query]);
   const searchVisualRows = useMemo(() => buildSearchVisualRows(nodes), [nodes]);
+  const topicOptions = useMemo(() => uniqueSorted(nodes.map((node) => humanThemeLabel(node))).slice(0, 24), [nodes]);
+  const searchResults = useMemo(() => buildSearch2Results(atlas, nodes, searchFilters), [atlas, nodes, searchFilters]);
+  const sessionSummary = useMemo(() => buildSearch2SessionSummary(searchResults, searchFilters.query), [searchFilters.query, searchResults]);
+  const visibleResults = searchResults.slice(0, 50);
+
+  useEffect(() => {
+    window.__memoryAtlasStage7Phase1 = () => ({
+      runtimeVersion: SEARCH_2_0_RUNTIME_VERSION,
+      sessionSummaryVersion: SEARCH_2_0_SESSION_SUMMARY_VERSION,
+      query: searchFilters.query,
+      resultCount: searchResults.length,
+      hasMatchedReason: searchResults.some((result) => result.matched_reason.length > 0),
+      hasEvidenceRefs: searchResults.some((result) => result.evidence_refs.length > 0),
+      jumpActions: ["starfield", "river", "inspector"],
+      zeroResultRecoveryVisible: searchResults.length === 0,
+      proposalCandidateCount: searchResults.filter((result) => result.proposal_candidate).length,
+      directActiveMemoryWriteback: false,
+      rawPrivateDataIncluded: false,
+    });
+    return () => {
+      delete window.__memoryAtlasStage7Phase1;
+    };
+  }, [searchFilters.query, searchResults]);
+
+  function updateSearchFilter(patch: Partial<Search2Filters>) {
+    setSearchFilters((current) => ({ ...current, ...patch }));
+  }
+
+  function resetSearchFilters() {
+    setSearchFilters({
+      query: "",
+      tier: "all",
+      topic: "all",
+      recency: "all",
+      importance: "all",
+      evidenceOnly: true,
+    });
+  }
+
+  function jumpToSearchTarget(result: Search2Result, target: "starfield" | "river" | "inspector") {
+    onSelectNode(result.node);
+    if (target === "starfield") onSwitchView("galaxy");
+    if (target === "river") onSwitchView("timeline");
+  }
+
   return (
-    <div className="search-review">
+    <div className="search-review search-2-runtime" data-search-2-0-runtime={SEARCH_2_0_RUNTIME_VERSION}>
       <DeltaStrip stats={deltaStats} compact />
       <HumanOverviewPanel nodes={nodes} deltaStats={deltaStats} />
+      <section className="search-2-controls" aria-label="Search 2.0 query_input">
+        <label className="search-2-query">
+          <span>query_input</span>
+          <div className="search-2-input-frame">
+            <Search size={16} />
+            <input
+              data-search-query-input="true"
+              value={searchFilters.query}
+              onChange={(event) => updateSearchFilter({ query: event.target.value })}
+              placeholder="搜索主题、层级、行动、证据"
+            />
+          </div>
+        </label>
+        <div className="search-2-filter-grid">
+          <label>
+            <span>tier</span>
+            <select value={searchFilters.tier} onChange={(event) => updateSearchFilter({ tier: event.target.value as Search2TierFilter })}>
+              <option value="all">all</option>
+              <option value="core_profile">core_profile</option>
+              <option value="project">project</option>
+              <option value="decision">decision</option>
+              <option value="workflow">workflow</option>
+              <option value="knowledge">knowledge</option>
+              <option value="opportunity">opportunity</option>
+              <option value="stale">stale</option>
+            </select>
+          </label>
+          <label>
+            <span>topic</span>
+            <select value={searchFilters.topic} onChange={(event) => updateSearchFilter({ topic: event.target.value })}>
+              <option value="all">all</option>
+              {topicOptions.map((topic) => (
+                <option key={topic} value={topic}>{topic}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>recency</span>
+            <select value={searchFilters.recency} onChange={(event) => updateSearchFilter({ recency: event.target.value as Search2RecencyFilter })}>
+              <option value="all">all</option>
+              <option value="recent">recent</option>
+              <option value="active">active</option>
+              <option value="stale">stale</option>
+              <option value="archival">archival</option>
+            </select>
+          </label>
+          <label>
+            <span>importance</span>
+            <select value={searchFilters.importance} onChange={(event) => updateSearchFilter({ importance: event.target.value as Search2ImportanceFilter })}>
+              <option value="all">all</option>
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="critical">critical</option>
+            </select>
+          </label>
+          <label className="search-2-checkbox">
+            <input
+              type="checkbox"
+              checked={searchFilters.evidenceOnly}
+              onChange={(event) => updateSearchFilter({ evidenceOnly: event.target.checked })}
+            />
+            <span>evidence only</span>
+          </label>
+          <button className="search-2-reset" onClick={resetSearchFilters} type="button">
+            <FilterX size={14} />
+            <span>reset</span>
+          </button>
+        </div>
+        <div
+          className="search-2-filter-state"
+          data-search-filter-state="search_2_0"
+          data-result-count={searchResults.length}
+          data-evidence-only={String(searchFilters.evidenceOnly)}
+        >
+          <span>filter_state</span>
+          <b>{searchResults.length.toLocaleString()} results</b>
+          <small>{search2FilterStateLabel(searchFilters)}</small>
+        </div>
+      </section>
       <section className="search-visual-summary" aria-label="搜索结果视觉摘要">
         <div className="panel-title-row">
           <h3>当前结果分布</h3>
-          <span>{nodes.length.toLocaleString()} 条</span>
+          <span>{searchResults.length.toLocaleString()} 条</span>
         </div>
         <div className="search-topic-bars">
           <MiniBarList title="高频主题" rows={searchVisualRows.topics} />
@@ -3499,20 +3708,105 @@ function SearchReview({
           <MiniBarList title="近期/决策" rows={searchVisualRows.signals} />
         </div>
       </section>
+      <section
+        className="search-2-session-summary"
+        data-search-session-summary={SEARCH_2_0_SESSION_SUMMARY_VERSION}
+        data-proposal-candidate={String(sessionSummary.proposal_candidate)}
+      >
+        <div className="panel-title-row">
+          <h3>search_session_summary</h3>
+          <span>{sessionSummary.result_count.toLocaleString()} hits</span>
+        </div>
+        <dl>
+          <div><dt>query</dt><dd>{sessionSummary.query || "all redacted memory"}</dd></div>
+          <div><dt>dominant_topics</dt><dd>{sessionSummary.dominant_topics.join(" / ") || "none"}</dd></div>
+          <div><dt>high_importance_hits</dt><dd>{sessionSummary.high_importance_hits.join(" / ") || "none"}</dd></div>
+          <div><dt>stale_or_black_hole_hits</dt><dd>{sessionSummary.stale_or_black_hole_hits.join(" / ") || "none"}</dd></div>
+          <div><dt>missing_evidence</dt><dd>{sessionSummary.missing_evidence.join(" / ") || "none"}</dd></div>
+          <div><dt>next_step</dt><dd>{sessionSummary.next_step}</dd></div>
+          <div><dt>proposal_candidate</dt><dd>{sessionSummary.proposal_candidate ? "true" : "false"}</dd></div>
+        </dl>
+      </section>
       <div className="writeback-banner">
         <strong>写回策略</strong>
-        <span>前端以后可以提交修改建议，但只能进入变更提案；受控写入层重新计算冲突、生成版本历史并支持回滚。</span>
+        <span>Search 2.0 只产生 proposal_candidate 判断和 Inspector 跳转；任何改动仍必须走 proposal-only handoff，不直接写 active memory。</span>
       </div>
-      {displayNodes.map(({ node, duplicateCount }) => {
-        const preview = buildSearchResultPreview(node, duplicateCount);
-        return (
-          <button key={node.id} onClick={() => onSelectNode(node)} type="button">
-            <strong>{preview.title}</strong>
-            <span>{preview.summary}</span>
-            <small>{preview.meta}</small>
-          </button>
-        );
-      })}
+      {visibleResults.length ? (
+        <section className="search-2-result-list" aria-label="Search 2.0 result_list">
+          {visibleResults.map((result) => (
+            <article
+              className="search-2-result-card"
+              data-search-result="true"
+              data-result-id={result.result_id}
+              data-result-tier={result.tier}
+              data-result-topic={result.topic}
+              data-result-recency={result.recency}
+              data-result-importance={result.importance}
+              data-matched-reason={result.matched_reason}
+              data-evidence-ref={result.evidence_refs.join(",")}
+              data-proposal-candidate={String(result.proposal_candidate)}
+              key={result.result_id}
+            >
+              <header>
+                <div>
+                  <strong>{result.title}</strong>
+                  <span>{result.source} / {result.tier} / {result.topic}</span>
+                </div>
+                <b>{result.importance}</b>
+              </header>
+              <p>{result.summary}</p>
+              <dl className="search-2-result-schema">
+                <div><dt>matched_reason</dt><dd>{result.matched_reason}</dd></div>
+                <div><dt>evidence_refs</dt><dd>{result.evidence_refs.join(" / ")}</dd></div>
+                <div><dt>proposal_candidate</dt><dd>{result.proposal_candidate ? "true" : "false"}</dd></div>
+              </dl>
+              <div className="search-2-result-actions" aria-label="result_action_bar">
+                <button
+                  data-search-jump="starfield"
+                  data-starfield-target={result.jump_to_starfield}
+                  onClick={() => jumpToSearchTarget(result, "starfield")}
+                  type="button"
+                >
+                  <Orbit size={14} />
+                  <span>jump_to_starfield</span>
+                </button>
+                <button
+                  data-search-jump="river"
+                  data-river-target={result.jump_to_river}
+                  onClick={() => jumpToSearchTarget(result, "river")}
+                  type="button"
+                >
+                  <CalendarDays size={14} />
+                  <span>jump_to_river</span>
+                </button>
+                <button
+                  data-search-jump="inspector"
+                  data-inspector-target={result.open_inspector}
+                  onClick={() => jumpToSearchTarget(result, "inspector")}
+                  type="button"
+                >
+                  <Crosshair size={14} />
+                  <span>open_inspector</span>
+                </button>
+              </div>
+            </article>
+          ))}
+        </section>
+      ) : (
+        <section className="search-2-zero-recovery" data-zero-result-recovery="search_2_0">
+          <div className="panel-title-row">
+            <h3>zero_result_recovery</h3>
+            <span>0 hits</span>
+          </div>
+          <ul>
+            <li>broaden query：减少关键词或改用主题词。</li>
+            <li>remove filter：放宽 tier、topic、recency、importance 或 evidence only。</li>
+            <li>related topic：回到 all topic 后查看相邻主题。</li>
+            <li>stale/archive：切换 stale/archive 查找过期或归档记忆。</li>
+            <li>later review hint：后续 Review / Summary / Iteration 只作为复盘入口，不在本 phase 运行。</li>
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
@@ -3535,6 +3829,216 @@ function MiniBarList({ title, rows }: { title: string; rows: Array<{ label: stri
       )}
     </div>
   );
+}
+
+function buildSearch2Results(atlas: MemoryAtlas, nodes: AtlasNode[], filters: Search2Filters): Search2Result[] {
+  const latest = maxNodeDate(nodes) ?? new Date();
+  const query = normalizeSearch2Text(filters.query);
+  return nodes
+    .map((node) => buildSearch2Result(atlas, node, latest, query))
+    .filter((result) => {
+      if (filters.tier !== "all" && result.tier !== filters.tier) return false;
+      if (filters.topic !== "all" && result.topic !== filters.topic) return false;
+      if (filters.recency !== "all" && result.recency !== filters.recency) return false;
+      if (filters.importance !== "all" && result.importance !== filters.importance) return false;
+      if (filters.evidenceOnly && result.evidence_refs.length === 0) return false;
+      if (!query) return true;
+      return search2CandidateFields(result, result.node).some((value) => normalizeSearch2Text(value).includes(query));
+    })
+    .map((result) => ({
+      ...result,
+      matched_reason: buildSearch2MatchedReason(result, query),
+      score: search2Score(result, query),
+    }))
+    .sort((a, b) => b.score - a.score || (b.node.date ?? "").localeCompare(a.node.date ?? "") || a.title.localeCompare(b.title, "zh-CN"));
+}
+
+function buildSearch2Result(atlas: MemoryAtlas, node: AtlasNode, latest: Date, query: string): Search2Result {
+  const duplicateCount = duplicateCountForNode(nodesForDuplicateCount(atlas), node);
+  const preview = buildSearchResultPreview(node, duplicateCount);
+  const topic = humanThemeLabel(node);
+  const evidenceRefs = buildSearch2EvidenceRefs(atlas, node);
+  const recency = search2RecencyForNode(node, latest);
+  const importance = search2ImportanceForNode(node);
+  const tier = search2TierForNode(node, recency);
+  return {
+    result_id: node.id,
+    title: preview.title,
+    summary: preview.summary,
+    source: node.source_label || node.data_source || atlas.source_contract.export_profile || "redacted snapshot",
+    tier,
+    topic,
+    recency,
+    importance,
+    matched_reason: query ? "matched_reason pending query scoring" : "matched_reason default ranking by importance, recency and evidence",
+    evidence_refs: evidenceRefs,
+    jump_to_starfield: node.visual?.cluster ? `cluster:${node.visual.cluster}` : node.id,
+    jump_to_river: node.date ? `date:${node.date}` : "no_river_event_ref",
+    open_inspector: node.id,
+    proposal_candidate: search2ProposalCandidate(node, importance, recency),
+    score: 0,
+    node,
+  };
+}
+
+function nodesForDuplicateCount(atlas: MemoryAtlas): AtlasNode[] {
+  return getMemoryNodes(atlas);
+}
+
+function duplicateCountForNode(nodes: AtlasNode[], node: AtlasNode): number {
+  const title = humanNodeDisplayTitle(node);
+  const summary = humanizeStatement(node.statement);
+  const key = normalizeDisplayKey(`${node.kind}|${node.category}|${title}|${summary || node.label}`);
+  return nodes.filter((candidate) => {
+    const candidateKey = normalizeDisplayKey(`${candidate.kind}|${candidate.category}|${humanNodeDisplayTitle(candidate)}|${humanizeStatement(candidate.statement) || candidate.label}`);
+    return candidateKey === key;
+  }).length || 1;
+}
+
+function buildSearch2EvidenceRefs(atlas: MemoryAtlas, node: AtlasNode): string[] {
+  const refs = atlas.edges
+    .filter((edge) => edge.source === node.id || edge.target === node.id)
+    .slice(0, 4)
+    .map((edge) => edge.id);
+  if (node.memory_id) refs.unshift(`memory:${node.memory_id}`);
+  return Array.from(new Set(refs.length ? refs : [`node:${node.id}`])).slice(0, 4);
+}
+
+function buildSearch2MatchedReason(result: Search2Result, query: string): string {
+  const matchedFields = search2CandidateFields(result, result.node)
+    .filter((value) => query && normalizeSearch2Text(value).includes(query))
+    .slice(0, 3);
+  if (matchedFields.length) {
+    return `query matched ${matchedFields.map((value) => truncate(value, 36)).join(" / ")}; ranked by ${result.importance} importance, ${result.recency} recency and ${result.evidence_refs.length} evidence_refs.`;
+  }
+  return `default workflow match: ${result.topic}; ranked by ${result.importance} importance, ${result.recency} recency and ${result.evidence_refs.length} evidence_refs.`;
+}
+
+function search2CandidateFields(result: Search2Result, node: AtlasNode): string[] {
+  return [
+    result.title,
+    result.summary,
+    result.source,
+    result.tier,
+    result.topic,
+    result.recency,
+    result.importance,
+    result.matched_reason,
+    node.label,
+    node.statement,
+    node.category,
+    node.memory_tier,
+    node.source_label,
+    node.data_source,
+    node.metrics?.roi?.recommended_action,
+  ].filter((value): value is string => Boolean(value));
+}
+
+function search2Score(result: Search2Result, query: string): number {
+  const queryScore = query
+    ? search2CandidateFields(result, result.node).some((value) => normalizeSearch2Text(value).includes(query)) ? 80 : 0
+    : 20;
+  const importanceWeight: Record<Search2Result["importance"], number> = {
+    critical: 50,
+    high: 40,
+    medium: 24,
+    low: 8,
+  };
+  const recencyWeight: Record<Search2Result["recency"], number> = {
+    recent: 28,
+    active: 20,
+    stale: 14,
+    archival: 8,
+  };
+  const evidenceScore = Math.min(18, result.evidence_refs.length * 6);
+  const proposalScore = result.proposal_candidate ? 10 : 0;
+  return queryScore + importanceWeight[result.importance] + recencyWeight[result.recency] + evidenceScore + proposalScore;
+}
+
+function buildSearch2SessionSummary(results: Search2Result[], query: string): Search2SessionSummary {
+  const dominantTopics = topRows(countBy(results, (result) => result.topic), 3).map((row) => row.label).filter((label) => label !== "暂无数据");
+  const highImportanceHits = results
+    .filter((result) => result.importance === "high" || result.importance === "critical")
+    .slice(0, 3)
+    .map((result) => result.title);
+  const staleHits = results
+    .filter((result) => result.recency === "stale" || result.tier === "stale")
+    .slice(0, 3)
+    .map((result) => result.title);
+  const missingEvidence = results
+    .filter((result) => result.evidence_refs.length === 0)
+    .slice(0, 3)
+    .map((result) => result.title);
+  return {
+    query,
+    result_count: results.length,
+    dominant_topics: dominantTopics,
+    high_importance_hits: highImportanceHits,
+    stale_or_black_hole_hits: staleHits,
+    missing_evidence: missingEvidence,
+    next_step: results.length
+      ? "Open Inspector for the strongest matched_reason, then use proposal-only handoff if a change is needed."
+      : "Use zero_result_recovery before opening a later review workflow hint.",
+    proposal_candidate: results.some((result) => result.proposal_candidate),
+  };
+}
+
+function search2FilterStateLabel(filters: Search2Filters): string {
+  return [
+    `query=${filters.query || "all"}`,
+    `tier=${filters.tier}`,
+    `topic=${filters.topic}`,
+    `recency=${filters.recency}`,
+    `importance=${filters.importance}`,
+    `evidence=${filters.evidenceOnly ? "required" : "optional"}`,
+  ].join(" / ");
+}
+
+function search2TierForNode(node: AtlasNode, recency: Search2Result["recency"]): Search2Result["tier"] {
+  const tier = normalizeMemoryTier(node.memory_tier);
+  if (node.category === "deprecated_info" || recency === "stale") return "stale";
+  if (tier.includes("核心") || node.category === "preference") return "core_profile";
+  if (node.category === "decision" || node.kind === "decision") return "decision";
+  if (node.category === "workflow") return "workflow";
+  if (node.category === "project_context" || node.kind === "project") return "project";
+  if (node.metrics?.roi?.recommended_action || /机会|opportunity/i.test(`${node.label} ${node.statement ?? ""}`)) return "opportunity";
+  return "knowledge";
+}
+
+function search2RecencyForNode(node: AtlasNode, latest: Date): Search2Result["recency"] {
+  if (node.category === "deprecated_info" || /过期|deprecated|stale/i.test(`${node.validity ?? ""} ${node.metrics?.roi?.staleness_status ?? ""}`)) {
+    return "stale";
+  }
+  const day = node.date ? new Date(node.date) : null;
+  if (!day || Number.isNaN(day.getTime())) return "archival";
+  if (isNodeBetween(node, addDays(latest, -30), latest)) return "recent";
+  if (isNodeBetween(node, addDays(latest, -180), latest)) return "active";
+  return "archival";
+}
+
+function search2ImportanceForNode(node: AtlasNode): Search2Result["importance"] {
+  const value = `${node.importance ?? ""} ${node.metrics?.weight_score ?? ""}`.toLowerCase();
+  if (/critical|最高|关键|紧急/.test(value)) return "critical";
+  if (/high|高/.test(value)) return "high";
+  if (/low|低/.test(value)) return "low";
+  return "medium";
+}
+
+function search2ProposalCandidate(
+  node: AtlasNode,
+  importance: Search2Result["importance"],
+  recency: Search2Result["recency"],
+): boolean {
+  const text = `${node.label} ${node.statement ?? ""} ${node.metrics?.roi?.recommended_action ?? ""}`;
+  return (
+    importance === "critical" ||
+    (importance === "high" && recency !== "archival") ||
+    /下一步|继续|需要|建议|todo|action|优化|修正|降权|隐藏|补充/i.test(text)
+  );
+}
+
+function normalizeSearch2Text(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, " ").trim();
 }
 
 function SummaryIterationView({

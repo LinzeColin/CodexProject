@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 7 Phase 7.1 Search 2.0 Runtime
+
+- Implemented the production Search 2.0 runtime slice with
+  `search_2_0_runtime.v1_1_7_stage7_phase1`.
+- Added `search_2_0_session_summary.v1_1_7_stage7_phase1` for query,
+  dominant topics, high-importance hits, stale/archive hits, missing evidence,
+  next step and `proposal_candidate`.
+- Search results now expose `matched_reason`, `evidence_refs`,
+  `proposal_candidate`, and actions for `jump_to_starfield`, `jump_to_river`
+  and `open_inspector`.
+- Added `zero_result_recovery` for broaden query, remove filter, related topic,
+  stale/archive and later review hint.
+- Added `validate:v1.1.7-stage7-phase1` and `validate:search-2-0-browser`.
+- Registered `MA-V117-S7P01` / `ACC-MA-V117-S7P01` with status
+  `phase_7_1_search_2_0_runtime_completed_pending_stage7_review`.
+
+Phase 7.1 Search 2.0 only. No Review / Summary / Iteration runtime, No
+raw/private data read, No direct active-memory writeback, No agent apply, No
+deploy or No GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 6 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage6_review.md` to pin the

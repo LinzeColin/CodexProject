@@ -67,6 +67,54 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+stage7_phase1_search_2_0_runtime:
+  task_id: MA-V117-S7P01
+  phase_label: Phase 7.1
+  feature_label: Search 2.0
+  acceptance_id: ACC-MA-V117-S7P01
+  status: phase_7_1_search_2_0_runtime_completed_pending_stage7_review
+  runtime_version: search_2_0_runtime.v1_1_7_stage7_phase1
+  session_summary_version: search_2_0_session_summary.v1_1_7_stage7_phase1
+  required_validator: validate:v1.1.7-stage7-phase1
+  browser_validator: validate:search-2-0-browser
+  runtime_hook: window.__memoryAtlasStage7Phase1
+  result_fields:
+    - matched_reason
+    - evidence_refs
+    - proposal_candidate
+  result_actions:
+    - jump_to_starfield
+    - jump_to_river
+    - open_inspector
+  workflow_surfaces:
+    - query_input
+    - filter_state
+    - result_list
+    - search_session_summary
+    - zero_result_recovery
+  browser_checks:
+    - result_fields
+    - debug_signal
+    - zero_result_recovery
+    - jump_to_starfield
+    - jump_to_river
+    - open_inspector
+    - screenshot
+    - console_safety
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No Review / Summary / Iteration runtime; No GitHub main upload"
+  boundaries:
+    - no_review_summary_iteration_runtime
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 stage6_phase1_data_map_structure:
   task_id: MA-V117-S6P01
   phase_label: Phase 6.1
