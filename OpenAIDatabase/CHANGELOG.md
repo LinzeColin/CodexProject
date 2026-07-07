@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S01 P1 Current State Audit
+
+- Added `docs/reviews/memory_atlas_v1_2_s01_p1_current_state_audit.md`.
+- Added `validate:v1.2-s01-p1` for `MA-V12-S01P1` /
+  `ACC-MA-V12-S01P1`.
+- Registered status `phase_s01_p1_current_state_audited_pending_s01_p2`.
+- Audited the current `OpenAIDatabase` structure, v1.2 TaskPack/Roadmap
+  inputs, root owner three files, Memory Atlas entry, missing double-plane
+  directories before S01 P2, and v1.1.x raw/private boundaries that v1.2 must
+  replace or bridge.
+- Preserved S01 P1 boundaries: No GitHub main upload in this phase, No S01 P2,
+  No S01 P3, No apps/scripts/tests/config move, No AGENTS taskpack dump and No
+  raw archive change.
+
 ## Unreleased - Memory Atlas v1.1.7 Final GitHub Main Upload
 
 - Added `docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`.
