@@ -330,6 +330,8 @@ def run_attendance(run_type: str, timezone: str) -> dict[str, Any]:
         "management_report_status": "GENERATED",
         "hr_report_status": "GENERATED",
         "notification_status": dispatch_receipt["notification_status"],
+        "notification_template_text": dispatch_receipt.get("notification_template_text", ""),
+        "notification_delivery_table": dispatch_receipt.get("notification_delivery_table", ""),
         "dispatch_receipt": dispatch_receipt,
         "onedrive_archive_status": output_status,
         "cleanup_status": cleanup_status,
@@ -388,6 +390,8 @@ def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
         "timezone": timezone,
         "manifest": str(manifest_path),
         "notification_status": dispatch_receipt["notification_status"],
+        "notification_template_text": dispatch_receipt.get("notification_template_text", ""),
+        "notification_delivery_table": dispatch_receipt.get("notification_delivery_table", ""),
         "dispatch_receipt": dispatch_receipt,
         "cleanup_status": cleanup_status,
     }

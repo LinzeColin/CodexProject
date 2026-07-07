@@ -235,7 +235,9 @@ def dispatch_reports_with_resolved_channel(
 
     channel = json.loads(resolved_path.read_text(encoding="utf-8"))
     channel_name = str(channel.get("channel") or "unknown")
+    target_label = str(channel.get("recipient_name") or "张霖泽")
     messages: list[dict[str, Any]] = []
+    notification_template_text = ""
     try:
         management_report = Path(str(output_status["management_report"]))
         hr_report = Path(str(output_status["hr_report"]))
@@ -247,6 +249,7 @@ def dispatch_reports_with_resolved_channel(
             **notification_context,
             markdown=channel_name == "dingtalk_group_robot",
         )
+        notification_template_text = text
         send_result = sender(channel=channel, title="开明考勤提醒", text=text, env=dict(env or {}))
     except (KeyError, OSError) as exc:
         send_result = {
@@ -258,6 +261,7 @@ def dispatch_reports_with_resolved_channel(
     messages.append(
         {
             "report": "attendance_notification",
+            "label": target_label,
             "management_report": str(output_status.get("management_report", "")),
             "hr_report": str(output_status.get("hr_report", "")),
             "status": send_result.get("status", "FAILED"),
@@ -269,6 +273,18 @@ def dispatch_reports_with_resolved_channel(
             "errmsg": send_result.get("errmsg"),
         }
     )
+    target_results = [
+        {
+            "label": target_label,
+            "type": str(channel.get("channel_type") or "personal"),
+            "channel": str(send_result.get("channel", channel_name)),
+            "management_status": str(send_result.get("status", "FAILED")),
+            "hr_status": str(send_result.get("status", "FAILED")),
+            "failure_reason": send_result.get("failure_reason"),
+            "trace_id": send_result.get("trace_id"),
+            "trace_id_present": bool(send_result.get("trace_id")),
+        }
+    ]
 
     notification_status = _summarize_status([str(message["status"]) for message in messages])
     receipt = _receipt(
@@ -276,6 +292,8 @@ def dispatch_reports_with_resolved_channel(
         channel=channel_name,
         output_status=output_status,
         messages=messages,
+        target_results=target_results,
+        notification_template_text=notification_template_text,
     )
     _write_receipt(receipt_path, receipt)
     return receipt
@@ -287,14 +305,23 @@ def _receipt(
     channel: str,
     output_status: Mapping[str, Any],
     messages: list[dict[str, Any]],
+    target_results: list[dict[str, Any]] | None = None,
+    notification_template_text: str = "",
     failure_reason: str | None = None,
 ) -> dict[str, Any]:
+    rows = target_results or []
     receipt = {
         "notification_status": status,
         "channel": channel,
         "messages": messages,
+        "target_results": rows,
+        "run_id": str(output_status.get("run_id", "")),
+        "run_type": str(output_status.get("run_type", "")),
+        "work_date": str(output_status.get("work_date", "")),
         "management_report": str(output_status.get("management_report", "")),
         "hr_report": str(output_status.get("hr_report", "")),
+        "notification_template_text": notification_template_text,
+        "notification_delivery_table": _build_notification_delivery_table(rows),
     }
     if failure_reason:
         receipt["failure_reason"] = failure_reason
@@ -314,6 +341,19 @@ def _summarize_status(statuses: list[str]) -> str:
     if statuses and any(status == "DINGTALK_ROBOT_ERROR" for status in statuses):
         return "DINGTALK_ROBOT_ERROR"
     return "FAILED"
+
+
+def _build_notification_delivery_table(target_results: list[Mapping[str, Any]]) -> str:
+    lines = ["| 发送对象 | 是否成功 |", "|---|---|"]
+    for result in target_results:
+        label = str(result.get("label") or "UNKNOWN")
+        statuses = [
+            str(result.get(key) or "")
+            for key in ("management_status", "hr_status")
+            if str(result.get(key) or "") != "SKIPPED"
+        ]
+        lines.append(f"| {label} | {'是' if statuses and all(status == 'SENT' for status in statuses) else '否'} |")
+    return "\n".join(lines)
 
 
 def _dws_result_to_status(result: Mapping[str, Any], *, channel: str) -> dict[str, Any]:

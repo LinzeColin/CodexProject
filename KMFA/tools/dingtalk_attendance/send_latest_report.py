@@ -118,6 +118,8 @@ def send_latest_report(
         "targets": targets,
         "manifest": str(manifest_path),
         "notification_status": dispatch_receipt["notification_status"],
+        "notification_template_text": dispatch_receipt.get("notification_template_text", ""),
+        "notification_delivery_table": dispatch_receipt.get("notification_delivery_table", ""),
         "dispatch_receipt": dispatch_receipt,
         "cleanup_status": cleanup_status,
     }
