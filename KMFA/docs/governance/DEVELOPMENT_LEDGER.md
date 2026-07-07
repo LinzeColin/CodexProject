@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Response Import Readiness Recheck
+
+- Product version: `0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK` only; recheck 72 valid diagnostic responses and preserve source-map correction blockers without closing discrepancies, correcting source maps or mutating raw data.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.py`.
+- gate_state: valid_diagnostic_responses=72, missing_response_blocker_cleared=true, pending_diagnostic_responses=0, diagnostic_response_blockers=0, non_actionable_diagnostic_responses=72, source_map_correction_blockers=72, open_residual_differences=72, closed_discrepancies=0, source_map_actionable_responses=0, source_map_correction_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Response Import
 
 - Product version: `0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import`.
