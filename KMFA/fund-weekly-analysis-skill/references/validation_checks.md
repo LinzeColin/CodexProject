@@ -2,6 +2,7 @@
 
 Blocking checks:
 
+* `check_source_readiness.py` returns `READY` before extraction or Excel production starts.
 * Required files and input directory exist.
 * Missing configured input folder returns `SOURCE_MISSING` and does not read alternate private sources unless a separate explicit materialization step is run.
 * Existing configured input folder with unreadable/cloud-only files returns `SOURCE_UNREADABLE` and does not write an Excel package.

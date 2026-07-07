@@ -17,6 +17,7 @@ REQUIRED = [
     "templates/excel_sheet_spec.yaml",
     "templates/fund_weekly_analysis_config.yaml",
     "automation/daily_1130_sydney.prompt.md",
+    "tools/check_source_readiness.py",
     "tools/run_fund_weekly_analysis.py",
     "tools/materialize_fund_source.py",
     "tools/install_to_kmfa_main.sh",
