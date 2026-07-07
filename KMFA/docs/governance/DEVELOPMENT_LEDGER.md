@@ -2041,3 +2041,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation.py`
 - boundary: this phase confirms private owner-authorized anchor handles only; it does not read raw inbox, run formal raw-to-processed comparison, reconcile values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `run_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation`
+
+## 2026-07-07 - V014 Raw-To-Processed Comparison Precheck After Owner Anchor Confirmation
+
+- task_id: `KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-20260707`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- product_version: `0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-owner-anchor-confirmation`
+- status: `completed_validated_local_only_raw_comparison_precheck_after_owner_anchor_confirmation_ready_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py --require-private-precheck`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py`
+- boundary: this phase prechecks confirmed private owner-authorized anchor handles only; it does not read raw inbox, run formal raw-to-processed comparison, reconcile values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `run_formal_raw_to_processed_comparison_after_owner_anchor_confirmation_precheck`
