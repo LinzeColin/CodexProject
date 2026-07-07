@@ -94,6 +94,22 @@ const REVIEW_SUMMARY_ITERATION_RUNTIME_VERSION = "review_summary_iteration_runti
 const REVIEW_SUMMARY_ITERATION_SCHEMA_VERSION = "memory_atlas_review_summary.v1_1_7_stage7_phase2" as const;
 const SUMMARY_ITERATION_CLOSURE_RUNTIME_VERSION = "summary_iteration_closure_runtime.v1_1_7_stage8_phase1" as const;
 const SUMMARY_ITERATION_CLOSURE_SCHEMA_VERSION = "memory_atlas_summary_closure.v1_1_7_stage8_phase1" as const;
+const CROSS_BOARD_SHARED_STATE_RUNTIME_VERSION = "cross_board_shared_state.v1_1_7_stage9_phase1" as const;
+const INSPECTOR_EXPLANATION_LAYER_VERSION = "inspector_explanation_layer.v1_1_7_stage9_phase1" as const;
+const CROSS_BOARD_SHARED_STATE_SURFACES = [
+  "home",
+  "galaxy",
+  "notion",
+  "roi",
+  "obsidian",
+  "timeline",
+  "contribution",
+  "wordcloud",
+  "search",
+  "summary",
+] as const;
+
+type CrossBoardSharedStateSurface = (typeof CROSS_BOARD_SHARED_STATE_SURFACES)[number];
 
 declare global {
   interface Window {
@@ -189,6 +205,33 @@ declare global {
       directActiveMemoryWriteback: false;
       rawPrivateDataIncluded: false;
       proposalWrite: false;
+    };
+    __memoryAtlasStage9Phase1?: () => {
+      runtimeVersion: typeof CROSS_BOARD_SHARED_STATE_RUNTIME_VERSION;
+      inspectorLayerVersion: typeof INSPECTOR_EXPLANATION_LAYER_VERSION;
+      sharedStateSchemaVersion: SharedAtlasState["schema_version"];
+      activeView: ViewKey;
+      surfaces: CrossBoardSharedStateSurface[];
+      surfaceCount: number;
+      synchronizedFilters: SharedAtlasState["filters"];
+      shared_state_filters: true;
+      synchronized_filters: true;
+      focus: SharedAtlasState["focus"];
+      sync: SharedAtlasState["sync"];
+      visibleNodeCount: number;
+      selectedNodeId: string | null;
+      inspector_explanation_layer: {
+        mounted: boolean;
+        formulaCount: number;
+        evidenceCount: number;
+        safetyNoteCount: number;
+        source: "redacted_derived_snapshot";
+      };
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalWrite: false;
+      };
     };
   }
 }
@@ -1195,12 +1238,53 @@ export function App() {
   const wideView = visualFocusViews.includes(activeView);
   const workspaceClassName = wideView ? `workspace visual-focus-workspace ${activeView}-workspace` : "workspace";
   const showSideInspector = activeView === "contribution" || !wideView;
+  const stage9InspectorExplanation = selectedNode
+    ? buildInspectorExplanation(selectedNode, edgeCountFor(selectedNode.id, scopedAtlas.edges), sharedState)
+    : null;
+
+  useEffect(() => {
+    window.__memoryAtlasStage9Phase1 = () => ({
+      runtimeVersion: CROSS_BOARD_SHARED_STATE_RUNTIME_VERSION,
+      inspectorLayerVersion: INSPECTOR_EXPLANATION_LAYER_VERSION,
+      sharedStateSchemaVersion: sharedState.schema_version,
+      activeView,
+      surfaces: [...CROSS_BOARD_SHARED_STATE_SURFACES],
+      surfaceCount: CROSS_BOARD_SHARED_STATE_SURFACES.length,
+      synchronizedFilters: sharedState.filters,
+      shared_state_filters: true,
+      synchronized_filters: true,
+      focus: sharedState.focus,
+      sync: sharedState.sync,
+      visibleNodeCount: slice.memoryNodes.length,
+      selectedNodeId: selectedNode?.id ?? null,
+      inspector_explanation_layer: {
+        mounted: Boolean(stage9InspectorExplanation),
+        formulaCount: stage9InspectorExplanation?.formulas.length ?? 0,
+        evidenceCount: stage9InspectorExplanation?.evidence.length ?? 0,
+        safetyNoteCount: stage9InspectorExplanation?.safetyNotes.length ?? 0,
+        source: "redacted_derived_snapshot",
+      },
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalWrite: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasStage9Phase1;
+    };
+  }, [activeView, selectedNode?.id, sharedState, slice.memoryNodes.length, stage9InspectorExplanation]);
 
   return (
     <div
       className="app-shell"
       data-default-route-view={DEFAULT_MEMORY_ATLAS_VIEW}
       data-memory-overview-default-route="true"
+      data-stage9-phase1-shared-state={CROSS_BOARD_SHARED_STATE_RUNTIME_VERSION}
+      data-stage9-inspector-explanation={INSPECTOR_EXPLANATION_LAYER_VERSION}
+      data-stage9-synchronized-filters="shared_state_filters synchronized_filters inspector_explanation_layer"
+      data-stage9-safety-boundary="No direct active-memory writeback; No proposal queue write"
+      data-stage9-surface-count={CROSS_BOARD_SHARED_STATE_SURFACES.length}
     >
       <aside className="sidebar" aria-label={uiCopy.app.navigationAria}>
         <div className="brand">
@@ -3485,6 +3569,8 @@ function InteractionLens({
       className="interaction-lens"
       aria-label="当前交互焦点"
       data-shared-state={sharedState.schema_version}
+      data-stage9-phase1-shared-state={CROSS_BOARD_SHARED_STATE_RUNTIME_VERSION}
+      data-stage9-synchronized-filters="shared_state_filters synchronized_filters"
       data-sync-revision={sharedState.sync.revision}
       data-sync-source={sharedState.sync.updatedBy}
       data-sync-action={sharedState.sync.lastAction}
@@ -5085,6 +5171,7 @@ function NodeInspector({
       <aside
         className="inspector"
         data-shared-state={sharedState.schema_version}
+        data-stage9-inspector-explanation={INSPECTOR_EXPLANATION_LAYER_VERSION}
         data-shared-focus-node=""
         data-shared-cluster=""
       >
@@ -5100,6 +5187,7 @@ function NodeInspector({
     <aside
       className="inspector"
       data-shared-state={sharedState.schema_version}
+      data-stage9-inspector-explanation={INSPECTOR_EXPLANATION_LAYER_VERSION}
       data-shared-focus-node={sharedState.focus.inspector.nodeId ?? ""}
       data-shared-cluster={sharedState.focus.inspector.clusterId ?? ""}
       data-shared-record={sharedState.focus.inspector.recordId ?? ""}
@@ -5197,7 +5285,13 @@ function NodeInspector({
 
 function InspectorExplanationPanel({ explanation }: { explanation: InspectorExplanation }) {
   return (
-    <section className="inspector-explanation-panel" data-raw-display="false" aria-label="解释面板">
+    <section
+      className="inspector-explanation-panel"
+      data-stage9-inspector-explanation={INSPECTOR_EXPLANATION_LAYER_VERSION}
+      data-inspector-layer-marker="inspector_explanation_layer"
+      data-raw-display="false"
+      aria-label="解释面板"
+    >
       <div className="panel-title-row">
         <h3>{uiCopy.inspector.explanationTitle}</h3>
         <span>{uiCopy.inspector.explanationMeta}</span>
