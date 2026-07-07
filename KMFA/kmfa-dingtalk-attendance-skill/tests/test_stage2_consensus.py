@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -79,7 +80,47 @@ def test_rejects_divergent():
         assert data["accepted"] is False
 
 
+def test_evening_replay_adapter_writes_five_run_artifacts_and_accepts_consensus():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td) / "private_runtime"
+        source = FIX / "minimal_snapshot_a.json"
+        env = os.environ.copy()
+        env.update({
+            "KMFA_REPO_ROOT": str(ROOT.parent),
+            "KMFA_PRIVATE_RUNTIME": str(runtime),
+            "KMFA_RUN_SLOT": "evening",
+            "KMFA_STAGE2_SOURCE_JSON": str(source),
+        })
+        for day in range(1, 6):
+            env["KMFA_TODAY_OVERRIDE"] = f"2026-08-{day:02d}"
+            p = subprocess.run(
+                [str(SCRIPT_DIR / "run_stage2_evening.sh")],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                env=env,
+            )
+            if p.returncode != 0:
+                print(p.stdout)
+                print(p.stderr, file=sys.stderr)
+                raise SystemExit(p.returncode)
+            run_dir = runtime / "stage2" / "202607" / f"run_{day:02d}"
+            for rel in [
+                "run_manifest.json",
+                "canonical_snapshot.json",
+                "canonical_snapshot.sha256",
+                "quality_report.json",
+                "exception_report.json",
+                "payroll_baseline_candidate.json",
+            ]:
+                assert (run_dir / rel).is_file(), f"missing {run_dir / rel}"
+        cert = json.loads((runtime / "stage2" / "202607" / "stage2_consensus_certificate.json").read_text())
+        assert cert["accepted"] is True
+        assert cert["stage2_status"] == "accepted"
+
+
 if __name__ == "__main__":
     test_accepts_identical()
     test_rejects_divergent()
+    test_evening_replay_adapter_writes_five_run_artifacts_and_accepts_consensus()
     print("stage2 consensus tests passed")

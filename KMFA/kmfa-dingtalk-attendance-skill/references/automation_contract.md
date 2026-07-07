@@ -46,8 +46,17 @@ Evening run may:
 - ingest database
 - run quality gates
 - write canonical snapshot
-- run stage-2 on eligible days
+- run `scripts/run_stage2_evening.sh` on eligible days
 - generate day-5 consensus certificate if all five runs match
+
+The current portable stage-2 runner is fail-closed:
+
+- If `KMFA_STAGE2_SOURCE_JSON` points to an approved replay snapshot, it writes
+  deterministic run artifacts without live DWS or database credentials.
+- If no approved source adapter is configured, it exits with
+  `STAGE2_ADAPTER_SOURCE_MISSING` and must be reported as a blocker.
+- A future live-safe adapter may replace the replay source only after explicit
+  authorization and validation.
 
 ## Required explicit skill invocation
 

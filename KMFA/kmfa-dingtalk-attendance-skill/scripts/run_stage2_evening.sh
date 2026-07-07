@@ -40,26 +40,17 @@ fi
 RUN_DIR="$PRIVATE_RUNTIME/stage2/$target_month/run_$(printf '%02d' "$run_index")"
 mkdir -p "$RUN_DIR"
 
-cat > "$RUN_DIR/README.TODO.txt" <<TXT
-This folder is reserved for stage-2 run $run_index of $target_month.
-The repo-specific adapter must write:
-  run_manifest.json
-  canonical_snapshot.json
-  canonical_snapshot.sha256
-  quality_report.json
-  exception_report.json
-  payroll_baseline_candidate.json
-TXT
+SOURCE_JSON="${KMFA_STAGE2_SOURCE_JSON:-}"
+if [[ -z "$SOURCE_JSON" ]]; then
+  echo "STAGE2_ADAPTER_SOURCE_MISSING: set KMFA_STAGE2_SOURCE_JSON to an approved replay snapshot or wire the live-safe repo adapter" >&2
+  exit 2
+fi
 
-# TODO: replace this adapter call with the actual KMFA command once wired in repo.
-# Example shape:
-#   python -m kmfa.dingtalk_attendance run-monthly-stage2 \
-#     --target-month "$target_month" \
-#     --run-index "$run_index" \
-#     --out-dir "$RUN_DIR" \
-#     --require-location-evidence \
-#     --write-db \
-#     --canonicalize
+python3 "$SKILL_DIR/scripts/write_stage2_run_artifacts.py" \
+  --source-json "$SOURCE_JSON" \
+  --out-dir "$RUN_DIR" \
+  --target-month "$target_month" \
+  --run-index "$run_index"
 
 if [[ "$run_index" == "5" ]]; then
   python3 "$SKILL_DIR/scripts/stage2_consensus_gate.py" \
