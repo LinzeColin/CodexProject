@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-RECHECK-001
+
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: Recheck 48 valid generated owner/agent diagnostic responses for actionability without reading raw inbox, applying authoritative bindings, running raw-to-processed comparison, reconciling values, uploading, reinstalling or executing business steps.
+- rule: actionability recheck is valid only when source valid responses=48, source non-actionable responses=48, private source response rows=48, private source non-actionable queue=48, actionability recheck items=48, actionability ready=0, actionability blockers=48, diagnostic blocker split=40/8, unresolved differences=72, and comparison/reconciliation/release/execution gates remain false.
+- public_safety: public artifacts contain aggregate counts, status flags and evidence refs only; private actionability diagnostic, blocker queue and report remain ignored and untracked.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_recheck.py --require-private-actionability`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_recheck_manifest.json`
+
 ## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-AUDIT-001
 
 - version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-audit`

@@ -2820,3 +2820,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_IMPORT_AFTER_BLOCKER_THRESHOLD
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_import_after_blocker_threshold.py
   scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response import after blocker threshold only; imports 48 authorized delegate generated private diagnostic responses while keeping actionable resolution, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1543
+    - PARAM-KMFA-1544
+    - PARAM-KMFA-1545
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_recheck.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response actionability recheck only; proves all 48 valid generated diagnostic responses remain non-actionable while keeping authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
