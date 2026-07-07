@@ -1467,3 +1467,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: owner_authorized_anchor_blocker_count=72, prior_owner_authorized_anchor_blocker_observation_count=1 and owner_authorized_anchor_blocker_observation_count=2 record the second blocker observation; owner_authorized_anchor_blocked_audit_threshold_met=false, owner_authorized_anchor_confirmation_count=0 and unresolved_difference_count=72 keep anchor confirmation and value consistency blocked.
 - gate: `NO_GO`; owner-authorized anchor confirmation, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private threshold diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Owner-Authorized Anchor Blocker Final Threshold Recheck
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-FINAL-THRESHOLD-RECHECK-001`
+- parameter_ids: `PARAM-KMFA-1465`, `PARAM-KMFA-1466`, `PARAM-KMFA-1467`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK`
+- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-final-threshold-recheck`
+- rule: owner_authorized_anchor_blocker_count=72, prior_owner_authorized_anchor_blocker_observation_count=2 and owner_authorized_anchor_blocker_observation_count=3 meet the strict blocked threshold; owner_authorized_anchor_confirmation_count=0 and unresolved_difference_count=72 keep anchor confirmation and value consistency blocked.
+- gate: `NO_GO`; goal_status_recommendation=`blocked`, while owner-authorized anchor confirmation, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private final threshold diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.

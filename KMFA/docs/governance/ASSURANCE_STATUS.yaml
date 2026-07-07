@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-THRESHOLD-RECHECK"
+as_of_event_id: "DEV-KMFA-20260707-V014-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-FINAL-THRESHOLD-RECHECK"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "914b41f9cf53502697c607484f4e4301fc9f707e"
+source_base_commit: "5c718dd24cf1a660abb442cf0f9c12348c781b1c"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-threshold-recheck"
+generator_version: "manual-0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-final-threshold-recheck"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1082
-    total_active_formulas: 201
+    total_active_parameters: 1085
+    total_active_formulas: 202
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -40,6 +40,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK/human/test_results.md"
       - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_threshold_recheck.py"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK/machine/residual_difference_owner_authorized_anchor_confirmation_blocker_threshold_recheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK/human/test_results.md"
+      - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_final_threshold_recheck.py"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK/machine/residual_difference_owner_authorized_anchor_confirmation_blocker_final_threshold_recheck_manifest.json"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT/human/test_results.md"
       - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_audit.py"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT/machine/residual_difference_owner_authorized_anchor_confirmation_blocker_audit_manifest.json"

@@ -412,3 +412,11 @@ KMFA 当前版本 `0.1.4-residual-difference-owner-authorized-anchor-confirmatio
 - private output: ignored owner-authorized anchor blocker threshold diagnostic, queue and report are available under project private runtime; they are not committed to GitHub.
 - Codex did not read, list, parse, fingerprint, modify, move, delete, overwrite, normalize or copy raw source files in this phase.
 - next allowed run is a single final threshold recheck or owner/authorized-delegate private anchor confirmation phase; no GitHub upload, app reinstall, formal report, raw comparison, reconciliation or business execution is allowed from this state.
+
+## 2026-07-07 Latest Owner Boundary - V014 Owner-Authorized Anchor Blocker Final Threshold Recheck
+
+- active phase completed locally: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK`
+- public-safe result: 72 residual differences still lack owner-authorized anchors; blocker observation count advanced from 2 to 3 and the strict blocked threshold is true.
+- private output: ignored owner-authorized anchor blocker final threshold diagnostic, queue and report are available under project private runtime; they are not committed to GitHub.
+- Codex did not read, list, parse, fingerprint, modify, move, delete, overwrite, normalize or copy raw source files in this phase.
+- next allowed run is only after owner/authorized-delegate private anchor confirmation or an explicit single blocked-state maintenance phase; no GitHub upload, app reinstall, formal report, raw comparison, reconciliation or business execution is allowed from this state.
