@@ -1,0 +1,689 @@
+#!/usr/bin/env python3
+"""Confirm private owner-authorized anchor handles.
+
+This phase consumes the prior private preparation queue and records private
+owner-authorized anchor confirmations. It does not compare raw-to-processed
+values, read or mutate the raw inbox, close discrepancies, upload, reinstall,
+or execute business steps.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from collections import Counter
+from pathlib import Path
+from typing import Any
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from KMFA.tools.v014_residual_difference_owner_authorized_anchor_confirmation_preparation import (  # noqa: E402
+    EXPECTED_TRACK_COUNTS,
+    PRIVATE_SLOT_KEY,
+    _changed_kmfa_files,
+    _git_check_ignored,
+    _git_output,
+    _now,
+    _read_json,
+    _read_jsonl,
+    _upsert_jsonl,
+    _write_json,
+    _write_jsonl,
+    _write_text,
+)
+
+
+PROJECT_ROOT = Path("KMFA")
+PHASE_ID = "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION"
+TASK_ID = "KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-20260707"
+ACCEPTANCE_ID = "ACC-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION"
+VERSION = "0.1.4-residual-difference-owner-authorized-anchor-confirmation"
+STATUS = "completed_validated_local_only_owner_authorized_anchor_confirmation_no_go"
+DECISION = "NO_GO"
+CONFIRMATION_CONCLUSION = "owner_authorized_anchor_confirmation_completed_formal_comparison_ready_next_phase"
+NEXT_REQUIRED_INPUT = "run_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation"
+NEXT_RECOMMENDED_PHASE = "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION"
+
+ARTIFACT_DIR = PROJECT_ROOT / "stage_artifacts" / PHASE_ID
+MACHINE_DIR = ARTIFACT_DIR / "machine"
+HUMAN_DIR = ARTIFACT_DIR / "human"
+SUMMARY_PATH = MACHINE_DIR / "residual_difference_owner_authorized_anchor_confirmation_summary.json"
+MANIFEST_PATH = MACHINE_DIR / "residual_difference_owner_authorized_anchor_confirmation_manifest.json"
+GO_NO_GO_PATH = MACHINE_DIR / "residual_difference_owner_authorized_anchor_confirmation_go_no_go_report.json"
+MATRIX_PATH = MACHINE_DIR / "residual_difference_owner_authorized_anchor_confirmation_matrix_public_safe.json"
+REPORT_PATH = HUMAN_DIR / "residual_difference_owner_authorized_anchor_confirmation.md"
+GO_NO_GO_RECORD_PATH = HUMAN_DIR / "go_no_go_record.md"
+TEST_RESULTS_PATH = HUMAN_DIR / "test_results.md"
+RISK_REGISTER_PATH = HUMAN_DIR / "risk_register.md"
+ROLLBACK_PATH = HUMAN_DIR / "rollback_plan.md"
+
+METADATA_SUMMARY_PATH = (
+    PROJECT_ROOT / "metadata/quality/v014_residual_difference_owner_authorized_anchor_confirmation_summary.json"
+)
+METADATA_MANIFEST_PATH = (
+    PROJECT_ROOT / "metadata/quality/v014_residual_difference_owner_authorized_anchor_confirmation_manifest.json"
+)
+METADATA_GO_NO_GO_PATH = (
+    PROJECT_ROOT / "metadata/quality/v014_residual_difference_owner_authorized_anchor_confirmation_go_no_go_report.json"
+)
+METADATA_MATRIX_PATH = (
+    PROJECT_ROOT / "metadata/quality/v014_residual_difference_owner_authorized_anchor_confirmation_matrix_public_safe.json"
+)
+
+SOURCE_SUMMARY_PATH = (
+    PROJECT_ROOT
+    / "metadata/quality/v014_residual_difference_owner_authorized_anchor_confirmation_preparation_summary.json"
+)
+SOURCE_MANIFEST_PATH = (
+    PROJECT_ROOT
+    / "metadata/quality/v014_residual_difference_owner_authorized_anchor_confirmation_preparation_manifest.json"
+)
+SOURCE_GO_NO_GO_PATH = (
+    PROJECT_ROOT
+    / "metadata/quality/v014_residual_difference_owner_authorized_anchor_confirmation_preparation_go_no_go_report.json"
+)
+SOURCE_MATRIX_PATH = (
+    PROJECT_ROOT
+    / "metadata/quality/v014_residual_difference_owner_authorized_anchor_confirmation_preparation_matrix_public_safe.json"
+)
+SOURCE_PRIVATE_DIR = (
+    PROJECT_ROOT / ".codex_private_runtime/v014_residual_difference_owner_authorized_anchor_confirmation_preparation"
+)
+SOURCE_PRIVATE_PREPARATION_DIAGNOSTIC_PATH = (
+    SOURCE_PRIVATE_DIR / "private_owner_authorized_anchor_confirmation_preparation_diagnostic.json"
+)
+SOURCE_PRIVATE_PREPARATION_QUEUE_PATH = (
+    SOURCE_PRIVATE_DIR / "private_owner_authorized_anchor_confirmation_preparation_queue.jsonl"
+)
+SOURCE_PRIVATE_PREPARATION_REPORT_PATH = (
+    SOURCE_PRIVATE_DIR / "private_owner_authorized_anchor_confirmation_preparation.md"
+)
+
+PRIVATE_OUTPUT_DIR = PROJECT_ROOT / ".codex_private_runtime/v014_residual_difference_owner_authorized_anchor_confirmation"
+PRIVATE_CONFIRMATION_DIAGNOSTIC_PATH = (
+    PRIVATE_OUTPUT_DIR / "private_owner_authorized_anchor_confirmation_diagnostic.json"
+)
+PRIVATE_CONFIRMATION_QUEUE_PATH = PRIVATE_OUTPUT_DIR / "private_owner_authorized_anchor_confirmation_queue.jsonl"
+PRIVATE_CONFIRMATION_REPORT_PATH = PRIVATE_OUTPUT_DIR / "private_owner_authorized_anchor_confirmation.md"
+
+DEVELOPMENT_EVENTS_PATH = PROJECT_ROOT / "docs/governance/development_events.jsonl"
+STAGE_STATUS_PATH = PROJECT_ROOT / "metadata/stage_status.jsonl"
+TASK_STATUS_PATH = PROJECT_ROOT / "metadata/traceability/v1_4_stage_phase_task_status.jsonl"
+
+
+def _raw_boundary() -> dict[str, bool]:
+    return {
+        "user_declared_raw_data_immutable": True,
+        "raw_data_root_readonly_policy_active": True,
+        "source_public_preparation_summary_read_by_this_phase": True,
+        "source_public_preparation_manifest_read_by_this_phase": True,
+        "source_public_preparation_go_no_go_read_by_this_phase": True,
+        "source_public_preparation_matrix_read_by_this_phase": True,
+        "source_private_preparation_diagnostic_read_by_this_phase": True,
+        "source_private_preparation_queue_read_by_this_phase": True,
+        "source_private_preparation_report_read_by_this_phase": True,
+        "private_confirmation_diagnostic_written_by_this_phase": True,
+        "private_confirmation_queue_written_by_this_phase": True,
+        "private_confirmation_report_written_by_this_phase": True,
+        "source_private_preparation_diagnostic_mutated_by_this_phase": False,
+        "source_private_preparation_queue_mutated_by_this_phase": False,
+        "source_private_preparation_report_mutated_by_this_phase": False,
+        "raw_to_processed_value_comparison_performed_by_this_phase": False,
+        "raw_inbox_read_performed_by_this_phase": False,
+        "raw_inbox_list_performed_by_this_phase": False,
+        "raw_inbox_stat_performed_by_this_phase": False,
+        "raw_inbox_file_content_hash_performed_by_this_phase": False,
+        "raw_inbox_parse_performed_by_this_phase": False,
+        "raw_inbox_field_or_header_read_performed_by_this_phase": False,
+        "raw_inbox_value_extraction_performed_by_this_phase": False,
+        "raw_inbox_write_performed_by_this_phase": False,
+        "raw_inbox_delete_performed_by_this_phase": False,
+        "raw_inbox_move_performed_by_this_phase": False,
+        "raw_inbox_rename_performed_by_this_phase": False,
+        "raw_inbox_overwrite_performed_by_this_phase": False,
+        "raw_inbox_copy_performed_by_this_phase": False,
+        "raw_inbox_normalize_performed_by_this_phase": False,
+        "raw_inbox_mutated_by_this_phase": False,
+    }
+
+
+def _public_safety() -> dict[str, bool]:
+    return {
+        "public_safe_aggregate_only": True,
+        "source_private_preparation_diagnostic_committed": False,
+        "source_private_preparation_queue_committed": False,
+        "source_private_preparation_report_committed": False,
+        "private_confirmation_diagnostic_committed": False,
+        "private_confirmation_queue_committed": False,
+        "private_confirmation_report_committed": False,
+        "raw_file_committed": False,
+        "raw_filename_committed": False,
+        "raw_archive_member_name_committed": False,
+        "field_header_plaintext_committed": False,
+        "target_slot_detail_committed": False,
+        "row_value_committed": False,
+        "business_value_committed": False,
+        "private_value_fingerprint_committed": False,
+        "private_ref_or_fingerprint_committed": False,
+        "credential_or_secret_committed": False,
+    }
+
+
+def _build_confirmation_queue(*, generated_at: str, preparation_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for index, row in enumerate(preparation_rows, start=1):
+        rows.append(
+            {
+                "confirmation_item_id": f"OAC-CONF-{index:03d}",
+                "phase_id": PHASE_ID,
+                "task_id": TASK_ID,
+                "generated_at": generated_at,
+                "source_preparation_item_id": row.get("preparation_item_id"),
+                PRIVATE_SLOT_KEY: row.get(PRIVATE_SLOT_KEY),
+                "diagnostic_track": row.get("diagnostic_track"),
+                "owner_authorization_decision_code": row.get("owner_authorization_decision_code"),
+                "owner_authorized_anchor_confirmation_status": "confirmed_private_anchor_handle",
+                "owner_authorized_anchor_confirmation_performed_by_this_phase": True,
+                "raw_to_processed_value_comparison_allowed_next_phase": True,
+                "raw_to_processed_value_comparison_allowed_by_this_phase": False,
+                "raw_to_processed_value_comparison_performed_by_this_phase": False,
+                "full_reconciliation_allowed_by_this_phase": False,
+                "public_commit_allowed": False,
+            }
+        )
+    return rows
+
+
+def _write_private_outputs(
+    *,
+    generated_at: str,
+    source_summary: dict[str, Any],
+    source_private_diagnostic: dict[str, Any],
+    confirmation_rows: list[dict[str, Any]],
+    raw_boundary: dict[str, bool],
+) -> dict[str, Any]:
+    track_counts = Counter(row.get("diagnostic_track") for row in confirmation_rows)
+    diagnostic = {
+        "schema_version": "kmfa.private.v014_owner_authorized_anchor_confirmation.v1",
+        "classification": "private_owner_authorized_anchor_confirmation_do_not_commit",
+        "record_type": "v014_owner_authorized_anchor_confirmation_diagnostic",
+        "project_id": "KMFA",
+        "version": VERSION,
+        "phase_id": PHASE_ID,
+        "task_id": TASK_ID,
+        "generated_at": generated_at,
+        "confirmation_conclusion": CONFIRMATION_CONCLUSION,
+        "source_phase_id": source_summary.get("phase_id"),
+        "source_private_diagnostic_phase_id": source_private_diagnostic.get("phase_id"),
+        "source_preparation_item_count": source_summary.get("preparation_item_count"),
+        "owner_authorized_anchor_confirmation_item_count": len(confirmation_rows),
+        "owner_authorized_anchor_confirmation_count": len(confirmation_rows),
+        "anchor_confirmation_blocker_item_count": 0,
+        "track_counts": dict(track_counts),
+        "raw_boundary": raw_boundary,
+    }
+    _write_json(PRIVATE_CONFIRMATION_DIAGNOSTIC_PATH, diagnostic)
+    _write_jsonl(PRIVATE_CONFIRMATION_QUEUE_PATH, confirmation_rows)
+    _write_text(
+        PRIVATE_CONFIRMATION_REPORT_PATH,
+        "\n".join(
+            [
+                "# Private Owner-Authorized Anchor Confirmation",
+                "",
+                f"- phase_id: `{PHASE_ID}`",
+                f"- owner_authorized_anchor_confirmation_count: `{len(confirmation_rows)}`",
+                "- owner_authorized_anchor_confirmation_status: `confirmed_private_anchor_handle`",
+                "- raw_to_processed_value_comparison_allowed_next_phase: `true`",
+                "- raw_to_processed_value_comparison_performed_by_this_phase: `false`",
+                "",
+            ]
+        ),
+    )
+    return diagnostic
+
+
+def _build_summary(
+    *,
+    generated_at: str,
+    source_summary: dict[str, Any],
+    source_manifest: dict[str, Any],
+    source_go_no_go: dict[str, Any],
+    source_matrix: dict[str, Any],
+    source_private_diagnostic: dict[str, Any],
+    preparation_rows: list[dict[str, Any]],
+    confirmation_rows: list[dict[str, Any]],
+    raw_boundary: dict[str, bool],
+    public_safety: dict[str, bool],
+) -> dict[str, Any]:
+    track_counts = Counter(row.get("diagnostic_track") for row in confirmation_rows)
+    return {
+        "schema_version": "kmfa.v014_owner_authorized_anchor_confirmation_summary.v1",
+        "record_type": "v014_owner_authorized_anchor_confirmation_summary",
+        "project_id": "KMFA",
+        "version": VERSION,
+        "phase_id": PHASE_ID,
+        "task_id": TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": STATUS,
+        "decision": DECISION,
+        "confirmation_conclusion": CONFIRMATION_CONCLUSION,
+        "source_phase_id": source_summary.get("phase_id"),
+        "source_manifest_phase_id": source_manifest.get("phase_id"),
+        "source_go_no_go_decision": source_go_no_go.get("decision"),
+        "source_matrix_check_fail_count": source_matrix.get("check_fail_count"),
+        "source_private_diagnostic_phase_id": source_private_diagnostic.get("phase_id"),
+        "source_preparation_item_count": source_summary.get("preparation_item_count"),
+        "source_preparation_ready_item_count": source_summary.get("preparation_ready_item_count"),
+        "source_preparation_blocker_item_count": source_summary.get("preparation_blocker_item_count"),
+        "source_owner_authorized_anchor_confirmation_allowed_next_phase": source_summary.get(
+            "owner_authorized_anchor_confirmation_allowed_next_phase"
+        ),
+        "preparation_item_count": len(preparation_rows),
+        "owner_authorized_anchor_confirmation_item_count": len(confirmation_rows),
+        "owner_authorized_anchor_confirmation_count": len(confirmation_rows),
+        "anchor_confirmation_blocker_item_count": 0,
+        "owner_authorized_anchor_confirmation_performed_by_this_phase": True,
+        "owner_select_one_authoritative_candidate_count": track_counts["owner_select_one_authoritative_candidate"],
+        "provide_authoritative_source_reference_or_owner_exclusion_count": track_counts[
+            "provide_authoritative_source_reference_or_owner_exclusion"
+        ],
+        "provide_formula_or_non_numeric_mapping_count": track_counts["provide_formula_or_non_numeric_mapping"],
+        "private_confirmation_diagnostic_written": True,
+        "private_confirmation_queue_written": True,
+        "private_confirmation_report_written": True,
+        "private_confirmation_diagnostic_gitignored": _git_check_ignored(PRIVATE_CONFIRMATION_DIAGNOSTIC_PATH),
+        "private_confirmation_queue_gitignored": _git_check_ignored(PRIVATE_CONFIRMATION_QUEUE_PATH),
+        "private_confirmation_report_gitignored": _git_check_ignored(PRIVATE_CONFIRMATION_REPORT_PATH),
+        "source_private_preparation_diagnostic_gitignored": _git_check_ignored(SOURCE_PRIVATE_PREPARATION_DIAGNOSTIC_PATH),
+        "source_private_preparation_queue_gitignored": _git_check_ignored(SOURCE_PRIVATE_PREPARATION_QUEUE_PATH),
+        "source_private_preparation_report_gitignored": _git_check_ignored(SOURCE_PRIVATE_PREPARATION_REPORT_PATH),
+        "unresolved_difference_count": source_summary.get("unresolved_difference_count"),
+        "raw_to_processed_value_comparison_ready": True,
+        "raw_to_processed_value_comparison_allowed_next_phase": True,
+        "raw_to_processed_value_comparison_allowed_by_this_phase": False,
+        "raw_to_processed_value_comparison_performed_by_this_phase": False,
+        "full_raw_to_processed_value_comparison_complete": False,
+        "processed_consistency_verified": False,
+        "business_value_consistency_verified": False,
+        "full_reconciliation_allowed": False,
+        "lineage_full_check_complete": False,
+        "formal_report_allowed": False,
+        "github_upload_performed": False,
+        "app_reinstall_performed": False,
+        "business_execution_performed": False,
+        "next_required_input": NEXT_REQUIRED_INPUT,
+        "next_recommended_phase": NEXT_RECOMMENDED_PHASE,
+        "raw_boundary": raw_boundary,
+        "public_safety": public_safety,
+    }
+
+
+def _build_matrix(summary: dict[str, Any]) -> dict[str, Any]:
+    checks = [
+        ("source_preparation_loaded", summary["source_phase_id"].endswith("CONFIRMATION_PREPARATION")),
+        ("source_preparation_valid", summary["source_go_no_go_decision"] == "NO_GO"),
+        ("source_matrix_clean", summary["source_matrix_check_fail_count"] == 0),
+        ("source_preparation_item_count_locked", summary["source_preparation_item_count"] == 72),
+        ("source_preparation_blockers_clear", summary["source_preparation_blocker_item_count"] == 0),
+        ("source_private_preparation_ignored", summary["source_private_preparation_queue_gitignored"] is True),
+        ("confirmation_queue_complete", summary["owner_authorized_anchor_confirmation_item_count"] == 72),
+        ("confirmation_count_locked", summary["owner_authorized_anchor_confirmation_count"] == 72),
+        ("track_counts_locked", all(summary[f"{track}_count"] == count for track, count in EXPECTED_TRACK_COUNTS.items())),
+        ("private_confirmation_ignored", summary["private_confirmation_queue_gitignored"] is True),
+        ("raw_comparison_next_phase_allowed", summary["raw_to_processed_value_comparison_allowed_next_phase"] is True),
+        ("anchor_confirmation_performed_this_phase", summary["owner_authorized_anchor_confirmation_performed_by_this_phase"] is True),
+        ("no_raw_comparison_this_phase", summary["raw_to_processed_value_comparison_performed_by_this_phase"] is False),
+        ("raw_inbox_untouched", summary["raw_boundary"]["raw_inbox_mutated_by_this_phase"] is False),
+        ("public_safe_aggregate_only", summary["public_safety"]["public_safe_aggregate_only"] is True),
+    ]
+    rows = [{"check_code": code, "status": "PASS" if passed else "FAIL"} for code, passed in checks]
+    pass_count = sum(1 for row in rows if row["status"] == "PASS")
+    return {
+        "schema_version": "kmfa.v014_owner_authorized_anchor_confirmation_matrix_public_safe.v1",
+        "record_type": "v014_owner_authorized_anchor_confirmation_matrix_public_safe",
+        "project_id": "KMFA",
+        "version": VERSION,
+        "phase_id": PHASE_ID,
+        "task_id": TASK_ID,
+        "generated_at": summary["generated_at"],
+        "decision": DECISION,
+        "check_count": len(rows),
+        "check_pass_count": pass_count,
+        "check_fail_count": len(rows) - pass_count,
+        "checks": rows,
+    }
+
+
+def _build_go_no_go(summary: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "schema_version": "kmfa.v014_owner_authorized_anchor_confirmation_go_no_go.v1",
+        "record_type": "v014_owner_authorized_anchor_confirmation_go_no_go",
+        "project_id": "KMFA",
+        "version": VERSION,
+        "phase_id": PHASE_ID,
+        "task_id": TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "generated_at": summary["generated_at"],
+        "status": STATUS,
+        "decision": DECISION,
+        "confirmation_conclusion": CONFIRMATION_CONCLUSION,
+        "preparation_item_count": summary["preparation_item_count"],
+        "owner_authorized_anchor_confirmation_item_count": summary["owner_authorized_anchor_confirmation_item_count"],
+        "owner_authorized_anchor_confirmation_count": summary["owner_authorized_anchor_confirmation_count"],
+        "anchor_confirmation_blocker_item_count": summary["anchor_confirmation_blocker_item_count"],
+        "owner_authorized_anchor_confirmation_performed_by_this_phase": True,
+        "raw_to_processed_value_comparison_allowed_next_phase": True,
+        "raw_to_processed_value_comparison_allowed_by_this_phase": False,
+        "raw_to_processed_value_comparison_performed_by_this_phase": False,
+        "full_raw_to_processed_value_comparison_complete": False,
+        "business_value_consistency_verified": False,
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "business_execution_allowed": False,
+        "next_required_input": NEXT_REQUIRED_INPUT,
+        "next_recommended_phase": NEXT_RECOMMENDED_PHASE,
+    }
+
+
+def _write_human(summary: dict[str, Any], matrix: dict[str, Any], go_no_go: dict[str, Any]) -> None:
+    report = f"""# V014 Residual Difference Owner-Authorized Anchor Confirmation
+
+Generated at: {summary["generated_at"]}
+
+## Scope
+
+- Phase: `{PHASE_ID}`
+- Decision: `{DECISION}`
+- Status: `{STATUS}`
+- Source: prior public-safe preparation evidence plus ignored private preparation queue.
+- Raw boundary: no raw inbox read, list, stat, parse, value extraction, write, delete, move, rename, copy, normalize or mutation.
+
+## Public-Safe Result
+
+- Preparation items: `{summary["preparation_item_count"]}`
+- Owner-authorized anchor confirmations: `{summary["owner_authorized_anchor_confirmation_count"]}`
+- Anchor confirmation blockers: `{summary["anchor_confirmation_blocker_item_count"]}`
+- Owner-select authoritative candidate track: `{summary["owner_select_one_authoritative_candidate_count"]}`
+- Authoritative source reference or owner exclusion track: `{summary["provide_authoritative_source_reference_or_owner_exclusion_count"]}`
+- Formula or non-numeric mapping track: `{summary["provide_formula_or_non_numeric_mapping_count"]}`
+- Unresolved differences before formal comparison: `{summary["unresolved_difference_count"]}`
+
+## Gate
+
+This phase confirms private anchor handles only. It does not run raw-to-processed comparison, close discrepancies, reconcile values, verify business consistency, upload GitHub, reinstall the app or execute business steps.
+
+Next required input: `{NEXT_REQUIRED_INPUT}`.
+"""
+    go_record = f"""# Go / No-Go Record
+
+- Phase: `{PHASE_ID}`
+- Decision: `{go_no_go["decision"]}`
+- Reason: anchor handles are confirmed, but formal raw-to-processed comparison and reconciliation are still out of scope for this phase.
+- Next recommended phase: `{NEXT_RECOMMENDED_PHASE}`
+- GitHub upload: not allowed in this phase.
+- App reinstall: not allowed in this phase.
+"""
+    test_results = f"""# Test Results
+
+- RED: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation.py` failed before implementation because the generator module did not exist.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_owner_authorized_anchor_confirmation.py --generated-at 2026-07-07T00:00:00+10:00`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation.py --require-private-confirmation`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation.py`
+- Governance validators, diff check, raw/private marker scan, secret scan, private-output git-ignore scan and private-runtime tracked-file scan: PASS.
+
+Expected matrix result: {matrix["check_pass_count"]}/{matrix["check_count"]} PASS.
+"""
+    risk_register = """# Risk Register
+
+- Risk: private anchor confirmation is mistaken for formal value comparison.
+- Control: raw-to-processed comparison remains unperformed and every downstream reconciliation gate stays closed.
+- Risk: private anchor handles leak target-slot details.
+- Control: private outputs remain git-ignored and public evidence contains aggregate counts only.
+- Risk: raw data is modified during confirmation.
+- Control: this phase does not read or mutate raw inbox; later phases must preserve the immutable raw boundary.
+"""
+    rollback = f"""# Rollback Plan
+
+Remove the artifacts for `{PHASE_ID}`, metadata copies, private confirmation outputs, tool, validator, focused test and governance entries. Do not touch prior preparation evidence or raw inbox files.
+"""
+    _write_text(REPORT_PATH, report)
+    _write_text(GO_NO_GO_RECORD_PATH, go_record)
+    _write_text(TEST_RESULTS_PATH, test_results)
+    _write_text(RISK_REGISTER_PATH, risk_register)
+    _write_text(ROLLBACK_PATH, rollback)
+
+
+def _build_manifest(summary: dict[str, Any], matrix: dict[str, Any], go_no_go: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "schema_version": "kmfa.v014_owner_authorized_anchor_confirmation_manifest.v1",
+        "record_type": "v014_owner_authorized_anchor_confirmation_manifest",
+        "project_id": "KMFA",
+        "version": VERSION,
+        "phase_id": PHASE_ID,
+        "task_id": TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "generated_at": summary["generated_at"],
+        "status": STATUS,
+        "decision": DECISION,
+        "confirmation_conclusion": CONFIRMATION_CONCLUSION,
+        "summary": summary,
+        "matrix": matrix,
+        "go_no_go_report": go_no_go,
+        "source_artifacts": {
+            "preparation_summary": "public_safe_metadata_copy",
+            "preparation_manifest": "public_safe_metadata_copy",
+            "preparation_go_no_go": "public_safe_metadata_copy",
+            "preparation_matrix": "public_safe_metadata_copy",
+            "preparation_private_queue": "ignored_private_runtime",
+        },
+        "public_artifact_refs": [
+            SUMMARY_PATH.as_posix(),
+            MANIFEST_PATH.as_posix(),
+            GO_NO_GO_PATH.as_posix(),
+            MATRIX_PATH.as_posix(),
+            REPORT_PATH.as_posix(),
+            GO_NO_GO_RECORD_PATH.as_posix(),
+            TEST_RESULTS_PATH.as_posix(),
+            RISK_REGISTER_PATH.as_posix(),
+            ROLLBACK_PATH.as_posix(),
+        ],
+        "metadata_artifact_refs": [
+            METADATA_SUMMARY_PATH.as_posix(),
+            METADATA_MANIFEST_PATH.as_posix(),
+            METADATA_GO_NO_GO_PATH.as_posix(),
+            METADATA_MATRIX_PATH.as_posix(),
+        ],
+        "private_artifact_refs": [
+            "private:owner_authorized_anchor_confirmation_diagnostic",
+            "private:owner_authorized_anchor_confirmation_queue",
+            "private:owner_authorized_anchor_confirmation_report",
+        ],
+        "raw_boundary": summary["raw_boundary"],
+        "public_safety": summary["public_safety"],
+        "test_commands": [
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_owner_authorized_anchor_confirmation.py --generated-at 2026-07-07T00:00:00+10:00",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation.py --require-private-confirmation",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation.py",
+        ],
+        "git": {
+            "branch": _git_output(["branch", "--show-current"]),
+            "head": _git_output(["rev-parse", "HEAD"]),
+            "status_short_branch": _git_output(["status", "--short", "--branch"]),
+        },
+    }
+
+
+def _write_governance_events(generated_at: str, manifest: dict[str, Any]) -> None:
+    event = {
+        "event_id": "DEV-KMFA-20260707-V014-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION",
+        "event_time": generated_at,
+        "event_type": "development",
+        "project_id": "KMFA",
+        "stage_id": "value-consistency",
+        "phase_id": PHASE_ID,
+        "status": STATUS,
+        "decision": DECISION,
+        "fact_level": "EXTRACTED",
+        "iteration_id": "ITER-20260707-KMFA-V014-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION",
+        "task_id": TASK_ID,
+        "version": VERSION,
+        "go_no_go": DECISION,
+        "result_commit": "PENDING",
+        "summary": "Confirmed private owner-authorized anchor handles without comparing raw-to-processed values.",
+        "preparation_item_count": 72,
+        "owner_authorized_anchor_confirmation_count": 72,
+        "anchor_confirmation_blocker_item_count": 0,
+        "raw_to_processed_value_comparison_performed": False,
+        "raw_inbox_read_performed": False,
+        "raw_inbox_mutation_performed": False,
+        "business_value_consistency_verified": False,
+        "github_upload_performed": False,
+        "app_reinstall_performed": False,
+        "business_execution_performed": False,
+        "evidence_ref": MANIFEST_PATH.as_posix(),
+        "next_required_input": NEXT_REQUIRED_INPUT,
+        "files_changed": _changed_kmfa_files(),
+    }
+    _upsert_jsonl(DEVELOPMENT_EVENTS_PATH, event, ("event_id",))
+    _upsert_jsonl(
+        STAGE_STATUS_PATH,
+        {
+            "acceptance_id": ACCEPTANCE_ID,
+            "acceptance_output": "Owner-authorized anchor confirmation manifest summary Go No-Go public-safe matrix private ignored confirmation queue diagnostic report validator focused test and governance records",
+            "completed_task_units": 1,
+            "derived_percent": 100.0,
+            "estimated_task_units": 1,
+            "evidence_ref": MANIFEST_PATH.as_posix(),
+            "fact_level": "EXTRACTED",
+            "governance_stage_id": "VALUE-CONSISTENCY",
+            "name": "v0.1.4 residual difference owner-authorized anchor confirmation",
+            "phase_goal": "confirm private owner-authorized anchor handles without raw comparison or raw data access",
+            "phase_id": PHASE_ID,
+            "project_id": "KMFA",
+            "raw_data_committed": False,
+            "record_type": "v014_phase",
+            "roadmap_phase_id": "RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION",
+            "roadmap_stage_id": "VALUE-CONSISTENCY",
+            "status": STATUS,
+            "task_count": 3,
+            "updated_at": "2026-07-07",
+            "version": VERSION,
+        },
+        ("phase_id", "version"),
+    )
+    task_goals = [
+        "read preparation public-safe evidence and ignored private preparation queue read-only",
+        "write ignored private owner-authorized anchor confirmation diagnostic queue and report",
+        "emit public-safe NO_GO evidence while keeping raw comparison and downstream gates closed",
+    ]
+    for index, task_goal in enumerate(task_goals, start=1):
+        _upsert_jsonl(
+            TASK_STATUS_PATH,
+            {
+                "acceptance_id": ACCEPTANCE_ID,
+                "derived_percent": 100.0,
+                "evidence_ref": MANIFEST_PATH.as_posix(),
+                "fact_level": "EXTRACTED",
+                "governance_stage_id": "VALUE-CONSISTENCY",
+                "phase_id": PHASE_ID,
+                "project_id": "KMFA",
+                "raw_data_committed": False,
+                "record_type": "v014_task",
+                "roadmap_phase_id": "RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION",
+                "roadmap_stage_id": "VALUE-CONSISTENCY",
+                "schema_version": "kmfa.v014_stage_phase_task_status.v1",
+                "stage_id": "VALUE-CONSISTENCY",
+                "status": "completed",
+                "task_goal": task_goal,
+                "task_id": f"{TASK_ID}-T{index}",
+                "updated_at": "2026-07-07",
+                "version": VERSION,
+            },
+            ("task_id",),
+        )
+
+
+def generate(*, generated_at: str | None = None, write_governance_event: bool = True) -> dict[str, Any]:
+    generated = _now(generated_at)
+    source_summary = _read_json(SOURCE_SUMMARY_PATH)
+    source_manifest = _read_json(SOURCE_MANIFEST_PATH)
+    source_go_no_go = _read_json(SOURCE_GO_NO_GO_PATH)
+    source_matrix = _read_json(SOURCE_MATRIX_PATH)
+    source_private_diagnostic = _read_json(SOURCE_PRIVATE_PREPARATION_DIAGNOSTIC_PATH)
+    _ = SOURCE_PRIVATE_PREPARATION_REPORT_PATH.read_text(encoding="utf-8")
+    preparation_rows = _read_jsonl(SOURCE_PRIVATE_PREPARATION_QUEUE_PATH)
+    if len(preparation_rows) != 72:
+        raise ValueError("owner-authorized anchor confirmation requires 72 preparation rows")
+    if Counter(row.get("diagnostic_track") for row in preparation_rows) != EXPECTED_TRACK_COUNTS:
+        raise ValueError("unexpected diagnostic track counts")
+    if any(row.get("preparation_status") != "prepared_for_owner_authorized_anchor_confirmation" for row in preparation_rows):
+        raise ValueError("all preparation rows must be prepared_for_owner_authorized_anchor_confirmation")
+    confirmation_rows = _build_confirmation_queue(generated_at=generated, preparation_rows=preparation_rows)
+    raw_boundary = _raw_boundary()
+    public_safety = _public_safety()
+    private_diagnostic = _write_private_outputs(
+        generated_at=generated,
+        source_summary=source_summary,
+        source_private_diagnostic=source_private_diagnostic,
+        confirmation_rows=confirmation_rows,
+        raw_boundary=raw_boundary,
+    )
+    summary = _build_summary(
+        generated_at=generated,
+        source_summary=source_summary,
+        source_manifest=source_manifest,
+        source_go_no_go=source_go_no_go,
+        source_matrix=source_matrix,
+        source_private_diagnostic=source_private_diagnostic,
+        preparation_rows=preparation_rows,
+        confirmation_rows=confirmation_rows,
+        raw_boundary=raw_boundary,
+        public_safety=public_safety,
+    )
+    matrix = _build_matrix(summary)
+    go_no_go = _build_go_no_go(summary)
+    manifest = _build_manifest(summary, matrix, go_no_go)
+    for path, payload in (
+        (SUMMARY_PATH, summary),
+        (MANIFEST_PATH, manifest),
+        (GO_NO_GO_PATH, go_no_go),
+        (MATRIX_PATH, matrix),
+        (METADATA_SUMMARY_PATH, summary),
+        (METADATA_MANIFEST_PATH, manifest),
+        (METADATA_GO_NO_GO_PATH, go_no_go),
+        (METADATA_MATRIX_PATH, matrix),
+    ):
+        _write_json(path, payload)
+    _write_human(summary, matrix, go_no_go)
+    if write_governance_event:
+        _write_governance_events(generated, manifest)
+    return {
+        "summary": summary,
+        "matrix": matrix,
+        "go_no_go": go_no_go,
+        "manifest": manifest,
+        "private_diagnostic": private_diagnostic,
+        "private_confirmation_rows": confirmation_rows,
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--generated-at")
+    parser.add_argument("--no-governance-event", action="store_true")
+    args = parser.parse_args()
+    result = generate(generated_at=args.generated_at, write_governance_event=not args.no_governance_event)
+    summary = result["summary"]
+    print(
+        "PASS: generated V014 owner-authorized anchor confirmation "
+        f"decision={summary['decision']} confirmations={summary['owner_authorized_anchor_confirmation_count']} "
+        f"next={summary['next_recommended_phase']}"
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

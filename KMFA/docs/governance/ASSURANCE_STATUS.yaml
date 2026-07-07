@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-PREPARATION"
+as_of_event_id: "DEV-KMFA-20260707-V014-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "afd2857947bfa3397a87cb75a46e0f893c3ec387"
+source_base_commit: "7a0184988197790e46b3d7ee294760b3a1db0f60"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-residual-difference-owner-authorized-anchor-confirmation-preparation"
+generator_version: "manual-0.1.4-residual-difference-owner-authorized-anchor-confirmation"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1094
-    total_active_formulas: 205
+    total_active_parameters: 1097
+    total_active_formulas: 206
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION/human/test_results.md"
+      - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation.py"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION/machine/residual_difference_owner_authorized_anchor_confirmation_manifest.json"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION/human/test_results.md"
       - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_preparation.py"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION/machine/residual_difference_owner_authorized_anchor_confirmation_preparation_manifest.json"
@@ -1020,6 +1023,44 @@ v014_residual_difference_owner_authorized_anchor_confirmation_preparation:
     anchor_confirmation_allowed_by_this_phase: false
     owner_authorized_anchor_confirmation_performed_by_this_phase: false
     raw_to_processed_value_comparison_performed: false
+    business_value_consistency_verified: false
+  forbidden_scope:
+    raw_inbox_read: false
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
+    processed_data_reconciliation: false
+    lineage_full_check: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
+v014_residual_difference_owner_authorized_anchor_confirmation:
+  status: completed_validated_local_only_owner_authorized_anchor_confirmation_no_go
+  phase: V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation.py
+  focused_test: KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    preparation_item_count: 72
+    owner_authorized_anchor_confirmation_item_count: 72
+    owner_authorized_anchor_confirmation_count: 72
+    anchor_confirmation_blocker_item_count: 0
+    unresolved_difference_count: 72
+    owner_select_one_authoritative_candidate_count: 24
+    provide_authoritative_source_reference_or_owner_exclusion_count: 40
+    provide_formula_or_non_numeric_mapping_count: 8
+  gates:
+    owner_authorized_anchor_confirmation_performed_by_this_phase: true
+    raw_to_processed_value_comparison_ready: true
+    raw_to_processed_value_comparison_allowed_next_phase: true
+    raw_to_processed_value_comparison_allowed_by_this_phase: false
+    raw_to_processed_value_comparison_performed_by_this_phase: false
+    full_raw_to_processed_value_comparison_complete: false
     business_value_consistency_verified: false
   forbidden_scope:
     raw_inbox_read: false
