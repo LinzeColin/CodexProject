@@ -94,6 +94,10 @@ Current status:
 - `scripts/validate_database_contract.py` performs an offline contract dry-run
   over required tables, enums, views, and the synthetic accepted stage-2 ->
   payroll baseline query path.
+- `scripts/prepare_database_landing_bundle.py` materializes an accepted
+  stage-2 artifact folder into a private PostgreSQL landing bundle: load order,
+  canonical snapshot row, stage-2 runs, accepted certificate, attendance day
+  facts, payroll baseline rows, and a SQL load manifest.
 - The dry-run uses no PostgreSQL connection, no database mutation, no private
   raw data, and no live DWS.
 
@@ -103,7 +107,7 @@ Remaining work:
 2. Add idempotent import batch logic.
 3. Add raw result/detail ingestion.
 4. Add derived fact insertion.
-5. Add stage-2 and payroll baseline insertion.
+5. Add an approved PostgreSQL JSONB/COPY loader for the landing bundle.
 6. Run against an explicitly configured non-production PostgreSQL target.
 
 ### Task 4 - Enforce location and trajectory evidence
@@ -126,7 +130,8 @@ Remaining work:
 1. Ensure evening automation writes `run_01` to `run_05` on next month days 1-5.
 2. Ensure morning automation never writes stage-2 artifacts.
 3. On day 5, call `stage2_consensus_gate.py`.
-4. If accepted, create DB certificate and payroll baseline table rows.
+4. If accepted, create DB landing bundle, then DB certificate and payroll
+   baseline table rows only through the approved loader.
 5. If failed, create divergence report.
 
 ### Task 7 - Tests

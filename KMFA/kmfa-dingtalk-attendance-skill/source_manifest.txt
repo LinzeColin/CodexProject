@@ -37,6 +37,7 @@ scripts/inspect_runtime.sh
 scripts/integrity_leak_guard.py
 scripts/month_gate.py
 scripts/preflight.sh
+scripts/prepare_database_landing_bundle.py
 scripts/render_stage2_certificate.py
 scripts/resolve_stage2_source.py
 scripts/run_stage2_evening.sh
@@ -57,5 +58,6 @@ tests/fixtures/minimal_snapshot_a.json
 tests/fixtures/minimal_snapshot_b_identical.json
 tests/fixtures/minimal_snapshot_c_diff.json
 tests/test_database_dry_run.py
+tests/test_database_landing_bundle.py
 tests/test_stage2_consensus.py
 tools/validate_skill_package.py

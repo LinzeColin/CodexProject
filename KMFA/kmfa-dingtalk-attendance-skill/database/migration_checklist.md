@@ -8,6 +8,14 @@
 - [x] Simulate `v_payroll_baseline_active`, `v_monthly_baseline_summary`, and `v_stage2_blockers` semantics.
 - [x] Confirm dry-run uses no PostgreSQL connection, no database mutation, and no live DWS.
 
+## Phase -0.5 - Offline landing bundle
+
+- [x] From accepted stage-2 artifacts, write a private `db_landing/YYYYMM/` bundle.
+- [x] Emit `load_order.json`, `canonical_month_snapshot.json`, `stage2_shadow_run.jsonl`, `stage2_consensus_certificate.json`, `attendance_day_fact.jsonl`, `payroll_baseline_attendance.jsonl`, and `postgres_copy_manifest.sql`.
+- [x] Confirm bundle generation uses no PostgreSQL connection, no database mutation, and no live DWS.
+- [ ] Build the approved PostgreSQL JSONB/COPY loader for the bundle.
+- [ ] Execute the loader only against an explicitly configured non-production PostgreSQL target.
+
 ## Phase 0 - Local verification
 
 - [ ] Create database `kmfa_attendance`.
