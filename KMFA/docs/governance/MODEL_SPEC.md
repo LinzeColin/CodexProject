@@ -1562,3 +1562,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_fingerprint_pair_completion_item_count=72, source_fingerprint_pair_completed_count=24 and source_fingerprint_pair_completion_blocker_count=48 preserve the prior pair-completion base; blocker_audit_item_count=48, missing_raw_candidate_fingerprint_blocker_count=48, missing_raw_candidate_record_ref_hash_blocker_count=48, missing_processed_fingerprint_blocker_count=0, actionable_private_pair_completion_ready_count=0 and comparison_retry_ready_after_blocker_audit_count=0 prove all remaining blockers still lack raw candidate fingerprints.
 - gate: `NO_GO`; raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private blocker audit diagnostic, records and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Raw-To-Processed Comparison Fingerprint Pair Completion Blocker Threshold Recheck After Owner Anchor Confirmation
+
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-001`
+- parameter_ids: `PARAM-KMFA-1492`, `PARAM-KMFA-1493`, `PARAM-KMFA-1494`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- version: `0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-threshold-recheck-after-owner-anchor-confirmation`
+- rule: source_blocker_audit_item_count=48, source_missing_raw_candidate_fingerprint_blocker_count=48, source_missing_raw_candidate_record_ref_hash_blocker_count=48, source_missing_processed_fingerprint_blocker_count=0, source_private_blocker_audit_record_count=48, prior_fingerprint_pair_completion_blocker_observation_count=1 and fingerprint_pair_completion_blocker_observation_count=2 prove this phase records the second blocker observation only.
+- gate: `NO_GO`; fingerprint_pair_completion_blocked_audit_threshold_met=false, comparison_retry_ready_after_threshold_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private threshold diagnostic, records and report stay under ignored runtime and raw inbox remains untouched.

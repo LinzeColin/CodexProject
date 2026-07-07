@@ -2565,3 +2565,18 @@ kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_AUDIT_AFTER_OWNER_ANCHOR_CONFIRMATION
   validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_audit_after_owner_anchor_confirmation.py
   scope: Residual difference raw-to-processed comparison fingerprint pair completion blocker audit after owner anchor confirmation only; confirms all 48 remaining pair-completion blockers are missing raw candidate fingerprints while value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
+
+kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker_threshold_recheck_after_owner_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-threshold-recheck-after-owner-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1492
+    - PARAM-KMFA-1493
+    - PARAM-KMFA-1494
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_threshold_recheck_after_owner_anchor_confirmation.py
+  scope: Residual difference raw-to-processed comparison fingerprint pair completion blocker threshold recheck after owner anchor confirmation only; records observation 2 for 48 missing-raw-candidate-fingerprint blockers while value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
