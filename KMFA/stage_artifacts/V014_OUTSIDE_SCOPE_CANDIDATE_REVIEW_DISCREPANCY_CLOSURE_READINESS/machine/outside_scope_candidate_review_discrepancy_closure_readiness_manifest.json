@@ -1,0 +1,249 @@
+{
+  "acceptance_id": "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS",
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "git": {
+    "branch": "codex/kmfa",
+    "head": "086a10d13e7b2206c2c048202c063e50978b1bf9",
+    "status_short_branch": "## codex/kmfa...origin/codex/kmfa [ahead 528, behind 8]\n M KMFA/CHANGELOG.md\n M KMFA/HANDOFF.md\n M KMFA/VERSION\n M KMFA/docs/governance/ASSURANCE_STATUS.yaml\n M KMFA/docs/governance/DEVELOPMENT_LEDGER.md\n M KMFA/docs/governance/MODEL_SPEC.md\n M KMFA/docs/governance/OWNER_STATUS.md\n M KMFA/docs/governance/STATUS.md\n M KMFA/docs/governance/TRACEABILITY_MATRIX.csv\n M KMFA/docs/governance/VERSION_MATRIX.yaml\n M KMFA/docs/governance/delivery_tasks.yaml\n M KMFA/docs/governance/development_events.jsonl\n M KMFA/docs/governance/formula_registry.yaml\n M KMFA/docs/governance/model_registry.yaml\n M KMFA/docs/governance/parameter_registry.csv\n M KMFA/metadata/stage_status.jsonl\n M KMFA/metadata/traceability/v1_4_stage_phase_task_status.jsonl\n M KMFA/功能清单.md\n M KMFA/开发记录.md\n M KMFA/模型参数文件.md\n?? KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_readiness_go_no_go_report.json\n?? KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_readiness_manifest.json\n?? KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_readiness_matrix_public_safe.json\n?? KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_readiness_summary.json\n?? KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/\n?? KMFA/tests/test_v014_outside_scope_candidate_review_discrepancy_closure_readiness.py\n?? KMFA/tools/check_v014_outside_scope_candidate_review_discrepancy_closure_readiness.py\n?? KMFA/tools/v014_outside_scope_candidate_review_discrepancy_closure_readiness.py"
+  },
+  "go_no_go_report": {
+    "acceptance_id": "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS",
+    "app_reinstall_allowed": false,
+    "business_execution_allowed": false,
+    "business_value_consistency_verified": false,
+    "closure_blocked_item_count": 72,
+    "closure_ready_item_count": 0,
+    "decision": "NO_GO",
+    "full_raw_to_processed_value_comparison_complete": false,
+    "generated_at": "2026-07-07T00:00:00+10:00",
+    "github_upload_allowed": false,
+    "next_required_input": "none_private_blocker_audit_can_continue_without_raw_mutation",
+    "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS",
+    "project_id": "KMFA",
+    "raw_to_processed_value_comparison_allowed": false,
+    "readiness_conclusion": "no_discrepancy_item_has_authoritative_closure_evidence_private_closure_workpack_written",
+    "record_type": "v014_outside_scope_candidate_review_discrepancy_closure_readiness_go_no_go",
+    "safe_auto_closure_count": 0,
+    "schema_version": "kmfa.v014_outside_scope_candidate_review_discrepancy_closure_readiness_go_no_go.v1",
+    "source_map_correction_ready": false,
+    "status": "completed_validated_local_only_discrepancy_closure_readiness_no_go",
+    "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS-20260707",
+    "version": "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
+  },
+  "matrix": {
+    "check_count": 9,
+    "check_fail_count": 0,
+    "check_pass_count": 9,
+    "checks": [
+      {
+        "check_code": "source_discrepancy_queue_loaded",
+        "status": "PASS"
+      },
+      {
+        "check_code": "all_discrepancy_items_classified_for_closure",
+        "status": "PASS"
+      },
+      {
+        "check_code": "no_safe_auto_closure_available",
+        "status": "PASS"
+      },
+      {
+        "check_code": "all_closure_items_blocked",
+        "status": "PASS"
+      },
+      {
+        "check_code": "ambiguous_tie_bucket_locked",
+        "status": "PASS"
+      },
+      {
+        "check_code": "no_context_bucket_locked",
+        "status": "PASS"
+      },
+      {
+        "check_code": "non_numeric_bucket_locked",
+        "status": "PASS"
+      },
+      {
+        "check_code": "raw_inbox_untouched",
+        "status": "PASS"
+      },
+      {
+        "check_code": "downstream_gates_closed",
+        "status": "PASS"
+      }
+    ],
+    "decision": "NO_GO",
+    "generated_at": "2026-07-07T00:00:00+10:00",
+    "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS",
+    "project_id": "KMFA",
+    "record_type": "v014_outside_scope_candidate_review_discrepancy_closure_readiness_matrix_public_safe",
+    "schema_version": "kmfa.v014_outside_scope_candidate_review_discrepancy_closure_readiness_matrix_public_safe.v1",
+    "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS-20260707",
+    "version": "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
+  },
+  "metadata_artifact_refs": [
+    "KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_readiness_summary.json",
+    "KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_readiness_manifest.json",
+    "KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_readiness_go_no_go_report.json",
+    "KMFA/metadata/quality/v014_outside_scope_candidate_review_discrepancy_closure_readiness_matrix_public_safe.json"
+  ],
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS",
+  "private_artifact_refs": [
+    "private:discrepancy_closure_readiness_record",
+    "private:discrepancy_closure_readiness_items",
+    "private:discrepancy_closure_blocking_queue",
+    "private:discrepancy_closure_readiness_diagnostic",
+    "private:discrepancy_closure_workpack"
+  ],
+  "project_id": "KMFA",
+  "public_artifact_refs": [
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/machine/outside_scope_candidate_review_discrepancy_closure_readiness_summary.json",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/machine/outside_scope_candidate_review_discrepancy_closure_readiness_manifest.json",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/machine/outside_scope_candidate_review_discrepancy_closure_readiness_go_no_go_report.json",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/machine/outside_scope_candidate_review_discrepancy_closure_readiness_matrix_public_safe.json",
+    "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/human/outside_scope_candidate_review_discrepancy_closure_readiness_report.md"
+  ],
+  "public_safety": {
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "field_header_plaintext_committed": false,
+    "private_closure_blocking_queue_committed": false,
+    "private_closure_readiness_record_committed": false,
+    "private_closure_workpack_committed": false,
+    "private_discrepancy_queue_committed": false,
+    "private_ref_or_fingerprint_committed": false,
+    "protected_archive_component_identifier_committed": false,
+    "public_safe_aggregate_only": true,
+    "raw_digest_committed": false,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "row_value_committed": false
+  },
+  "raw_boundary": {
+    "private_closure_blocking_queue_written_by_this_phase": true,
+    "private_closure_readiness_record_written_by_this_phase": true,
+    "private_closure_workpack_written_by_this_phase": true,
+    "protected_source_identifier_derivation_performed_by_this_phase": false,
+    "raw_data_root_readonly_policy_active": true,
+    "raw_inbox_copy_performed_by_this_phase": false,
+    "raw_inbox_delete_performed_by_this_phase": false,
+    "raw_inbox_field_or_header_read_performed_by_this_phase": false,
+    "raw_inbox_file_content_hash_performed_by_this_phase": false,
+    "raw_inbox_list_performed_by_this_phase": false,
+    "raw_inbox_move_performed_by_this_phase": false,
+    "raw_inbox_mutated_by_this_phase": false,
+    "raw_inbox_normalize_performed_by_this_phase": false,
+    "raw_inbox_overwrite_performed_by_this_phase": false,
+    "raw_inbox_parse_performed_by_this_phase": false,
+    "raw_inbox_read_performed_by_this_phase": false,
+    "raw_inbox_rename_performed_by_this_phase": false,
+    "raw_inbox_stat_performed_by_this_phase": false,
+    "raw_inbox_value_extraction_performed_by_this_phase": false,
+    "raw_inbox_write_performed_by_this_phase": false,
+    "source_private_discrepancy_queue_mutated_by_this_phase": false,
+    "source_private_discrepancy_queue_read_by_this_phase": true,
+    "source_public_discrepancy_summary_read_by_this_phase": true,
+    "user_declared_raw_data_immutable": true
+  },
+  "readiness_conclusion": "no_discrepancy_item_has_authoritative_closure_evidence_private_closure_workpack_written",
+  "record_type": "v014_outside_scope_candidate_review_discrepancy_closure_readiness_manifest",
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_discrepancy_closure_readiness_manifest.v1",
+  "source_artifacts": {
+    "source_private_discrepancy_queue": "ignored_private_runtime",
+    "source_public_summary": "public_safe_metadata_copy"
+  },
+  "status": "completed_validated_local_only_discrepancy_closure_readiness_no_go",
+  "summary": {
+    "acceptance_id": "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS",
+    "all_discrepancy_items_classified_for_closure": true,
+    "ambiguous_tie_closure_blocker_count": 24,
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "business_value_consistency_verified": false,
+    "closure_blocked_item_count": 72,
+    "closure_plan_item_count": 72,
+    "closure_readiness_assessed": true,
+    "closure_ready_item_count": 0,
+    "decision": "NO_GO",
+    "formal_report_allowed": false,
+    "full_raw_to_processed_value_comparison_complete": false,
+    "full_raw_to_processed_value_comparison_ready": false,
+    "full_reconciliation_allowed": false,
+    "generated_at": "2026-07-07T00:00:00+10:00",
+    "github_upload_performed": false,
+    "lineage_full_check_complete": false,
+    "next_recommended_phase": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT",
+    "next_required_input": "none_private_blocker_audit_can_continue_without_raw_mutation",
+    "no_context_candidate_closure_blocker_count": 40,
+    "non_numeric_or_calculation_closure_blocker_count": 8,
+    "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS",
+    "private_closure_blocking_queue_written": true,
+    "private_closure_readiness_record_written": true,
+    "private_closure_workpack_written": true,
+    "processed_consistency_verified": false,
+    "project_id": "KMFA",
+    "public_safety": {
+      "business_value_committed": false,
+      "credential_or_secret_committed": false,
+      "field_header_plaintext_committed": false,
+      "private_closure_blocking_queue_committed": false,
+      "private_closure_readiness_record_committed": false,
+      "private_closure_workpack_committed": false,
+      "private_discrepancy_queue_committed": false,
+      "private_ref_or_fingerprint_committed": false,
+      "protected_archive_component_identifier_committed": false,
+      "public_safe_aggregate_only": true,
+      "raw_digest_committed": false,
+      "raw_file_committed": false,
+      "raw_filename_committed": false,
+      "row_value_committed": false
+    },
+    "raw_boundary": {
+      "private_closure_blocking_queue_written_by_this_phase": true,
+      "private_closure_readiness_record_written_by_this_phase": true,
+      "private_closure_workpack_written_by_this_phase": true,
+      "protected_source_identifier_derivation_performed_by_this_phase": false,
+      "raw_data_root_readonly_policy_active": true,
+      "raw_inbox_copy_performed_by_this_phase": false,
+      "raw_inbox_delete_performed_by_this_phase": false,
+      "raw_inbox_field_or_header_read_performed_by_this_phase": false,
+      "raw_inbox_file_content_hash_performed_by_this_phase": false,
+      "raw_inbox_list_performed_by_this_phase": false,
+      "raw_inbox_move_performed_by_this_phase": false,
+      "raw_inbox_mutated_by_this_phase": false,
+      "raw_inbox_normalize_performed_by_this_phase": false,
+      "raw_inbox_overwrite_performed_by_this_phase": false,
+      "raw_inbox_parse_performed_by_this_phase": false,
+      "raw_inbox_read_performed_by_this_phase": false,
+      "raw_inbox_rename_performed_by_this_phase": false,
+      "raw_inbox_stat_performed_by_this_phase": false,
+      "raw_inbox_value_extraction_performed_by_this_phase": false,
+      "raw_inbox_write_performed_by_this_phase": false,
+      "source_private_discrepancy_queue_mutated_by_this_phase": false,
+      "source_private_discrepancy_queue_read_by_this_phase": true,
+      "source_public_discrepancy_summary_read_by_this_phase": true,
+      "user_declared_raw_data_immutable": true
+    },
+    "raw_to_processed_value_comparison_performed_by_this_phase": false,
+    "readiness_conclusion": "no_discrepancy_item_has_authoritative_closure_evidence_private_closure_workpack_written",
+    "record_type": "v014_outside_scope_candidate_review_discrepancy_closure_readiness_summary",
+    "safe_auto_closure_count": 0,
+    "schema_version": "kmfa.v014_outside_scope_candidate_review_discrepancy_closure_readiness_summary.v1",
+    "source_decision": "NO_GO",
+    "source_discrepancy_queue_item_count": 72,
+    "source_map_correction_ready": false,
+    "source_phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT",
+    "status": "completed_validated_local_only_discrepancy_closure_readiness_no_go",
+    "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS-20260707",
+    "unsupported_status_closure_blocker_count": 0,
+    "version": "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
+  },
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS-20260707",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_discrepancy_closure_readiness.py --generated-at 2026-07-07T00:00:00+10:00",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_discrepancy_closure_readiness.py --require-private-readiness",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_discrepancy_closure_readiness"
+  ],
+  "version": "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
+}

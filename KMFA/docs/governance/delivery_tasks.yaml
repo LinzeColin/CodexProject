@@ -11064,3 +11064,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private discrepancy report/queue, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report"
     completed_version: "0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_discrepancy_closure_readiness.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_discrepancy_closure_readiness.py --require-private-readiness"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_discrepancy_closure_readiness"
+    test_results:
+      - "PASS: discrepancy closure readiness validator and focused unit test passed; 72 unresolved discrepancy items remain blocked for closure while raw inbox, source-map correction, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/human/outside_scope_candidate_review_discrepancy_closure_readiness_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/machine/outside_scope_candidate_review_discrepancy_closure_readiness_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/machine/outside_scope_candidate_review_discrepancy_closure_readiness_matrix_public_safe.json"
+    risk: "The private closure workpack can be mistaken for discrepancy closure; this phase only classifies closure blockers and does not assert value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private closure readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
+    completed_version: "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
