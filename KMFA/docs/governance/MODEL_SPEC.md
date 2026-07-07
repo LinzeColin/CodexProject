@@ -1311,3 +1311,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source template=72, source owner-authorized report=72, target slot match=72 and valid diagnostic response count=72 clear the missing-response blocker; non-actionable diagnostic response count=72, source-map actionable response count=0 and closed discrepancy count=0 keep discrepancy closure and source-map correction blocked.
 - gate: `NO_GO`; source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private response import record/items/non-actionable queue/report stay under ignored runtime and raw inbox remains untouched.
+## V014 Outside-Scope Candidate Review Residual Difference Response Import Readiness Recheck
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK-001`
+- parameter_ids: `PARAM-KMFA-1411`, `PARAM-KMFA-1412`, `PARAM-KMFA-1413`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK`
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck`
+- rule: valid_diagnostic_response_count=72 and missing_response_blocker_cleared=true prove the response gap is closed; non_actionable_diagnostic_response_count=72, source_map_correction_blocker_count=72 and closed_discrepancy_count=0 keep source-map correction and value consistency blocked.
+- gate: `NO_GO`; source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private readiness diagnostic and source-map blocker queue stay under ignored runtime and raw inbox remains untouched.

@@ -11247,3 +11247,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private response import outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import"
     completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import"
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.py --require-private-readiness"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck"
+    test_results:
+      - "PASS: residual difference response-import readiness recheck validator and focused unit test passed; missing-response blocker is cleared but 72 source-map correction blockers keep downstream gates closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/human/outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/machine/outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK/machine/outside_scope_candidate_review_residual_difference_response_import_readiness_recheck_matrix_public_safe.json"
+    risk: "A cleared missing-response blocker can be mistaken for value-consistency readiness; this phase records source-map correction blockers and keeps downstream gates closed."
+    rollback: "Remove current phase artifacts, metadata copies, private readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
+    completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
