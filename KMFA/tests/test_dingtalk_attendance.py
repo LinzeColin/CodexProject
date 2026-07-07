@@ -345,24 +345,30 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 ).fetchone()[0]
             self.assertEqual(sync_run_audits, 1)
 
-    def test_attendance_ledger_rest_required_starts_from_25th_effective_day(self) -> None:
+    def test_attendance_ledger_rest_required_starts_from_23rd_effective_day_and_excludes_rest_exempt_people(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir) / "onedrive"
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
-            for day in range(1, 28):
+            for day in range(1, 24):
                 work_date = f"2026-06-{day:02d}"
                 _write_ledger_fixture_run(
                     root,
                     run_id=f"s19_evening_202606{day:02d}_181500",
                     work_date=work_date,
-                    employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()}],
+                    employees=[
+                        {"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()},
+                        {"name": "丁春法", "user_id": "u2", "punches": _fixture_punches()},
+                        {"name": "李永占", "user_id": "u3", "punches": _fixture_punches()},
+                    ],
                 )
 
             sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
 
-            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202606", employee="测试甲"), 27)
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202606", employee="测试甲"), 23)
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202606", employee="丁春法"), 23)
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202606", employee="李永占"), 23)
             rest_people = get_month_rest_required_people(db_path=db_path, month="202606")
-            self.assertEqual(rest_people, [{"name": "测试甲", "user_id": "u1", "first_work_date": "2026-06-25", "effective_attendance_days": 27}])
+            self.assertEqual(rest_people, [{"name": "测试甲", "user_id": "u1", "first_work_date": "2026-06-23", "effective_attendance_days": 23}])
 
     def test_attendance_ledger_requires_both_morning_and_evening_punches_for_effective_day(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1162,10 +1168,10 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertNotIn("#", plain)
         self.assertIn("今日异常 / 无考勤\n共 11 人，本月累计 Top10:", plain)
 
-    def test_monthly_rollups_count_current_month_and_rest_from_25th_effective_day(self) -> None:
+    def test_monthly_rollups_count_current_month_and_rest_from_23rd_effective_day(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
-            for day in range(1, 26):
+            for day in range(1, 24):
                 raw_path = month_dir / f"s19_evening_202607{day:02d}_181500.raw.jsonl.gz"
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
@@ -1188,7 +1194,31 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                         )
                         + "\n"
                     )
-            for day in (1, 25):
+            for exempt_name, exempt_user_id in (("丁春法", "u3"), ("李永占", "u4")):
+                for day in range(1, 24):
+                    raw_path = month_dir / f"s19_evening_{exempt_user_id}_202607{day:02d}_181500.raw.jsonl.gz"
+                    with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
+                        handle.write(
+                            json.dumps(
+                                {"type": "metadata", "run_plan": {"run_id": f"s19_evening_{exempt_user_id}_202607{day:02d}_181500"}},
+                                ensure_ascii=False,
+                            )
+                            + "\n"
+                        )
+                        handle.write(
+                            json.dumps(
+                                {
+                                    "type": "employee_attendance",
+                                    "member": {"name": exempt_name, "userId": exempt_user_id},
+                                    "work_date": f"2026-07-{day:02d}",
+                                    "record_list": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
+                                    "derived": {"record_success": True, "summary_success": True},
+                                },
+                                ensure_ascii=False,
+                            )
+                            + "\n"
+                        )
+            for day in (1, 23):
                 raw_path = month_dir / f"s19_morning_202607{day:02d}_083500.raw.jsonl.gz"
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
@@ -1217,13 +1247,48 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     )
 
             stats = build_stats_with_rest_required_people(
-                {"member_count": 2, "attendance_anomaly_names": ["李四"]},
+                {"member_count": 4, "attendance_anomaly_names": ["李四", "丁春法", "李永占"]},
                 month_dir=month_dir,
-                work_date="2026-07-25",
+                work_date="2026-07-23",
             )
 
-            self.assertEqual(stats["rest_required_people"], [{"name": "张三", "effective_attendance_days": 25, "latest_date": "2026-07-25"}])
-            self.assertEqual(stats["monthly_attendance_anomalies"], [{"name": "李四", "monthly_count": 2, "latest_date": "2026-07-25"}])
+            self.assertEqual(stats["rest_required_people"], [{"name": "张三", "effective_attendance_days": 23, "latest_date": "2026-07-23"}])
+            self.assertEqual(
+                stats["monthly_attendance_anomalies"],
+                [
+                    {"name": "李四", "monthly_count": 2, "latest_date": "2026-07-23"},
+                    {"name": "丁春法", "monthly_count": 1, "latest_date": "2026-07-23"},
+                    {"name": "李永占", "monthly_count": 1, "latest_date": "2026-07-23"},
+                ],
+            )
+
+    def test_rest_exempt_people_are_only_removed_from_rest_required_section(self) -> None:
+        markdown = build_notification_message(
+            work_date="2026-07-23",
+            run_type="evening",
+            current_time="18:15",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            monthly_attendance_anomalies=[
+                {"name": "丁春法", "monthly_count": 1, "latest_date": "2026-07-23"},
+                {"name": "李永占", "monthly_count": 1, "latest_date": "2026-07-23"},
+            ],
+            monthly_pending_actions=[
+                {"name": "丁春法", "monthly_count": 2, "latest_date": "2026-07-23"},
+            ],
+            rest_required_people=[
+                {"name": "张三", "effective_attendance_days": 23, "latest_date": "2026-07-23"},
+                {"name": "丁春法", "effective_attendance_days": 23, "latest_date": "2026-07-23"},
+                {"name": "李永占", "effective_attendance_days": 23, "latest_date": "2026-07-23"},
+            ],
+            markdown=True,
+        )
+
+        self.assertIn("## 今日异常 / 无考勤\n丁春法（本月累计1次）\n李永占（本月累计1次）", markdown)
+        self.assertIn("## 待审批 / 待补卡 / 待核查\n丁春法（本月累计2项）", markdown)
+        self.assertIn("## 需要休息\n张三（本月有效考勤23天）", markdown)
+        self.assertNotIn("丁春法（本月有效考勤23天）", markdown)
+        self.assertNotIn("李永占（本月有效考勤23天）", markdown)
 
     def test_notification_template_uses_chinese_fallback_for_unknown_run_type(self) -> None:
         message = build_notification_message(

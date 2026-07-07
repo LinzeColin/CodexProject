@@ -31,6 +31,7 @@ from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notification_targets import dispatch_reports_to_targets
 from KMFA.tools.dingtalk_attendance.notification_template import (
+    REST_REQUIRED_EXCLUDED_NAMES,
     REST_REQUIRED_THRESHOLD_DAYS,
     build_notification_message,
     build_personal_notification_message,
@@ -248,7 +249,7 @@ def build_monthly_notification_rollups(
             "latest_date": max(work_dates),
         }
         for user_id, work_dates in effective_dates_by_user.items()
-        if len(work_dates) >= threshold_days
+        if names_by_user[user_id] not in REST_REQUIRED_EXCLUDED_NAMES and len(work_dates) >= threshold_days
     ]
     return {
         "monthly_attendance_anomalies": _sort_monthly_people(monthly_attendance_anomalies, metric_key="monthly_count"),

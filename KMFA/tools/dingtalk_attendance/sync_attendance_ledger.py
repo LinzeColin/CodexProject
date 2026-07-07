@@ -23,7 +23,7 @@ from KMFA.tools.dingtalk_attendance.dws_attendance import (
     SUMMARY_TODAY_ANOMALY_TOKENS,
     _record_list_has_morning_and_evening,
 )
-from KMFA.tools.dingtalk_attendance.notification_template import REST_REQUIRED_THRESHOLD_DAYS
+from KMFA.tools.dingtalk_attendance.notification_template import REST_REQUIRED_EXCLUDED_NAMES, REST_REQUIRED_THRESHOLD_DAYS
 from KMFA.tools.dingtalk_attendance.secrets_loader import ROOT
 
 
@@ -666,9 +666,20 @@ def _rebuild_rest_required_snapshots(conn: sqlite3.Connection, month: str) -> No
         "select run_id, work_date from runs where month = ? and sync_status in ('SYNCED', 'HASH_MISMATCH') order by work_date, run_id",
         (month,),
     ).fetchall()
-    users = conn.execute("select user_id from daily_attendance where month = ? group by user_id", (month,)).fetchall()
+    users = conn.execute(
+        """
+        select da.user_id, e.name
+        from daily_attendance da
+        join employees e on e.user_id = da.user_id
+        where da.month = ?
+        group by da.user_id, e.name
+        """,
+        (month,),
+    ).fetchall()
     for run in runs:
         for user in users:
+            if str(user["name"] or "") in REST_REQUIRED_EXCLUDED_NAMES:
+                continue
             count = conn.execute(
                 """
                 select count(distinct work_date)
