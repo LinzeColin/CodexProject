@@ -34,6 +34,7 @@ schemas/payroll_baseline_certificate.schema.json
 schemas/stage2_run_manifest.schema.json
 scripts/canonicalize_attendance_snapshot.py
 scripts/execute_postgres_load_plan.py
+scripts/inspect_raw_archive_month.py
 scripts/inspect_runtime.sh
 scripts/integrity_leak_guard.py
 scripts/month_gate.py
@@ -62,5 +63,6 @@ tests/fixtures/minimal_snapshot_b_identical.json
 tests/fixtures/minimal_snapshot_c_diff.json
 tests/test_database_dry_run.py
 tests/test_database_landing_bundle.py
+tests/test_raw_archive_replay.py
 tests/test_stage2_consensus.py
 tools/validate_skill_package.py

@@ -16,6 +16,7 @@
 - [ ] Raw JSON is stored unchanged.
 - [ ] Raw batch hash exists.
 - [ ] Pagination/retry status is recorded.
+- [ ] Private monthly raw archive inspection verifies manifest/raw count parity, hash parity, location coverage, and stable replay hash without exposing raw rows or employee identifiers.
 
 ## Database acceptance
 
