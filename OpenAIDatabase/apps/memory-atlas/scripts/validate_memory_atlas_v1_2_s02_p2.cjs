@@ -319,8 +319,7 @@ function validateHumanAndMachineState() {
   const syncReadme = readRepoFile("机器治理/同步与备份/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
 
-  assertCondition(
-    hasAll(quickEntry, [
+  const s02p2QuickEntry = hasAll(quickEntry, [
       "当前阶段是 S02 P2：source registry 已建立",
       "S02 P1 数据源模型已完成",
       "ChatGPT browser connector",
@@ -329,14 +328,24 @@ function validateHumanAndMachineState() {
       "future_agent_template",
       "下一步只允许进入 S02 P3",
       "No GitHub main upload in this phase",
-    ]),
+  ]);
+  const s02p3QuickEntry = hasAll(quickEntry, [
+      "当前阶段是 S02 P3：人类同步说明已完成",
+      "S02 P1 数据源模型已完成",
+      "S02 P2 已把 ChatGPT、Codex",
+      "future_agent_template",
+      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
+      "下一步只允许进入 S02 Review",
+      "No GitHub main upload in this phase",
+  ]);
+  assertCondition(
+    s02p2QuickEntry || s02p3QuickEntry,
     "s02p2_human_quick_entry",
-    "Human quick entry records S02 P2 registry completion and next S02 P3 gate",
-    "Human quick entry is missing S02 P2 state or boundaries",
+    "Human quick entry records S02 P2 registry completion or later S02 P3 human explanation state",
+    "Human quick entry is missing S02 P2 or S02 P3 state boundaries",
   );
 
-  assertCondition(
-    hasAll(overview, [
+  const s02p2Overview = hasAll(overview, [
       "S02 P1 已完成",
       "S02 P2 已完成",
       "sync_source_registry.json",
@@ -346,26 +355,44 @@ function validateHumanAndMachineState() {
       "plaintext_public",
       "transcript/credential",
       "下一步是 S02 P3",
-    ]),
+  ]);
+  const s02p3Overview = hasAll(overview, [
+      "S02 P1 已完成",
+      "S02 P2 已完成",
+      "S02 P3 已完成",
+      "sync_source_registry.json",
+      "future_agent_template",
+      "transcript/credential",
+      "下一步是 S02 Review",
+  ]);
+  assertCondition(
+    s02p2Overview || s02p3Overview,
     "s02p2_human_overview",
-    "Human overview records S02 P2 registry sources and pending S02 P3",
-    "Human overview is missing S02 P2 registry details",
+    "Human overview records S02 P2 registry sources or later S02 P3 state",
+    "Human overview is missing S02 P2 or S02 P3 registry details",
   );
 
-  assertCondition(
-    hasAll(machineReadme, [
+  const s02p2MachineReadme = hasAll(machineReadme, [
       "当前为 S02 P2",
       "source registry 已建立",
       "下一步是 S02 P3",
       "不替代 apps/scripts/tests/config/data/docs/governance",
-    ]),
+  ]);
+  const s02p3MachineReadme = hasAll(machineReadme, [
+      "当前为 S02 P3",
+      "source registry 已建立",
+      "人类同步说明已完成",
+      "下一步是 S02 Review",
+      "不替代 apps/scripts/tests/config/data/docs/governance",
+  ]);
+  assertCondition(
+    s02p2MachineReadme || s02p3MachineReadme,
     "s02p2_machine_readme",
-    "Machine README records S02 P2 state and next S02 P3 boundary",
-    "Machine README is missing S02 P2 state",
+    "Machine README records S02 P2 state or later S02 P3 state",
+    "Machine README is missing S02 P2 or S02 P3 state",
   );
 
-  assertCondition(
-    hasAll(syncReadme, [
+  const s02p2SyncReadme = hasAll(syncReadme, [
       "当前 S02 P2",
       "sync_source_registry.json",
       "ChatGPT browser connector",
@@ -373,14 +400,21 @@ function validateHumanAndMachineState() {
       "Codex local sync",
       "future_agent_template",
       "S02 P3",
-    ]),
+  ]);
+  const s02p3SyncReadme = hasAll(syncReadme, [
+      "当前 S02 P3",
+      "sync_source_registry.json",
+      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
+      "下一步是 S02 Review",
+  ]);
+  assertCondition(
+    s02p2SyncReadme || s02p3SyncReadme,
     "s02p2_sync_readme",
-    "Sync README points to the S02 P2 source registry and next S02 P3",
-    "Sync README is missing S02 P2 registry reference",
+    "Sync README points to the S02 P2 source registry or later S02 P3 human page",
+    "Sync README is missing S02 P2 or S02 P3 registry reference",
   );
 
-  assertCondition(
-    hasAll(runGateReadme, [
+  const s02p2RunGateReadme = hasAll(runGateReadme, [
       "当前阶段是 S02 P2",
       taskId,
       acceptanceId,
@@ -389,10 +423,23 @@ function validateHumanAndMachineState() {
       "下一步是 S02 P3",
       "No GitHub main upload in this phase",
       "不创建人类同步说明页",
-    ]),
+  ]);
+  const s02p3RunGateReadme = hasAll(runGateReadme, [
+      "当前阶段是 S02 P3",
+      taskId,
+      acceptanceId,
+      validatorName,
+      "MA-V12-S02P3",
+      "validate:v1.2-s02-p3",
+      "人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md",
+      "下一步是 S02 Review",
+      "No GitHub main upload in this phase",
+  ]);
+  assertCondition(
+    s02p2RunGateReadme || s02p3RunGateReadme,
     "s02p2_run_gate_readme",
-    "Run gate README records S02 P2 validator, registry and next gate",
-    "Run gate README is missing S02 P2 status",
+    "Run gate README records S02 P2 validator, registry and later S02 P3 gate",
+    "Run gate README is missing S02 P2 or S02 P3 status",
   );
 }
 

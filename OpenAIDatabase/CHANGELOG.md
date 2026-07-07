@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S02 P3 Human Sync Explanation
+
+- Added `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s02_p3_human_sync_explanation.md`.
+- Added `validate:v1.2-s02-p3` for `MA-V12-S02P3` /
+  `ACC-MA-V12-S02P3`.
+- Registered status `phase_s02_p3_human_sync_explanation_completed_pending_s02_review`.
+- Marked S02 P3 as completed and pending S02 Review.
+- Explained that ChatGPT、Codex、后续其他 agent 数据备份进 GitHub through
+  source registry and later raw append-only gates.
+- Preserved S02 P3 boundaries: No connector implementation,
+  No GitHub main upload in this phase and No raw archive change.
+
 ## Unreleased - Memory Atlas v1.2 S02 P2 Source Registry
 
 - Added `机器治理/同步与备份/sync_source_registry.json`.
