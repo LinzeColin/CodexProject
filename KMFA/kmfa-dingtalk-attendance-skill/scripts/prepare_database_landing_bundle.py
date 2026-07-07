@@ -172,6 +172,10 @@ def build_day_and_payroll_rows(
     return day_rows, payroll_rows
 
 
+def first_day_of_month(target_month: str) -> str:
+    return f"{target_month[:4]}-{target_month[4:]}-01"
+
+
 def write_copy_manifest(path: Path, tables: list[str]) -> None:
     lines = [
         "-- Offline load manifest for KMFA attendance database landing.",
@@ -202,6 +206,8 @@ def main() -> int:
     canonical_hash = str(cert["canonical_snapshot_hash"])
     stage2_runs, snapshot = load_stage2_runs(stage2_root, args.target_month, canonical_hash)
     snapshot_id = stable_uuid("canonical_month_snapshot", args.target_month, canonical_hash)
+    policy_code = str(snapshot.get("policy_version") or "policy_v1")
+    policy_version_id = stable_uuid("policy_version", policy_code)
     stage2_certificate_id = stable_uuid("stage2_consensus_certificate", args.target_month, canonical_hash)
     day_rows, payroll_rows = build_day_and_payroll_rows(snapshot, args.target_month, canonical_hash, stage2_certificate_id)
     require(day_rows, "no attendance_day_fact rows materialized")
@@ -210,10 +216,18 @@ def main() -> int:
     canonical_snapshot_row = {
         "snapshot_id": snapshot_id,
         "target_month": args.target_month,
-        "policy_version_id": stable_uuid("policy_version", snapshot.get("policy_version") or "policy_v1"),
+        "policy_version_id": policy_version_id,
         "identity_version": snapshot.get("identity_version") or "identity_v1",
         "snapshot_json": snapshot,
         "canonical_hash": canonical_hash,
+    }
+    policy_version_row = {
+        "policy_version_id": policy_version_id,
+        "policy_code": policy_code,
+        "policy_name": f"KMFA attendance policy {policy_code}",
+        "effective_from": first_day_of_month(args.target_month),
+        "effective_to": None,
+        "description": "Materialized from accepted KMFA DingTalk attendance stage-2 landing bundle.",
     }
     certificate_row = {
         "stage2_certificate_id": stage2_certificate_id,
@@ -225,12 +239,14 @@ def main() -> int:
         "certificate_json": cert,
     }
     tables = [
+        "policy_version",
         "canonical_month_snapshot",
         "stage2_shadow_run",
         "stage2_consensus_certificate",
         "attendance_day_fact",
         "payroll_baseline_attendance",
     ]
+    write_json(out_dir / "policy_version.json", policy_version_row)
     write_json(out_dir / "canonical_month_snapshot.json", canonical_snapshot_row)
     write_jsonl(out_dir / "stage2_shadow_run.jsonl", stage2_runs)
     write_json(out_dir / "stage2_consensus_certificate.json", certificate_row)
@@ -246,6 +262,7 @@ def main() -> int:
         "stage2_accepted": True,
         "stage2_run_count": len(stage2_runs),
         "stage2_certificate_id": stage2_certificate_id,
+        "policy_version_id": policy_version_id,
         "canonical_snapshot_hash": canonical_hash,
         "attendance_day_fact_rows": len(day_rows),
         "payroll_baseline_rows": len(payroll_rows),

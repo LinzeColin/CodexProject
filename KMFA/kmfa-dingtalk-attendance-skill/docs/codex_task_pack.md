@@ -96,8 +96,11 @@ Current status:
   payroll baseline query path.
 - `scripts/prepare_database_landing_bundle.py` materializes an accepted
   stage-2 artifact folder into a private PostgreSQL landing bundle: load order,
-  canonical snapshot row, stage-2 runs, accepted certificate, attendance day
-  facts, payroll baseline rows, and a SQL load manifest.
+  policy version, canonical snapshot row, stage-2 runs, accepted certificate,
+  attendance day facts, payroll baseline rows, and a SQL load manifest.
+- `scripts/prepare_postgres_landing_loader.py` generates private normalized
+  JSONL load payloads plus `postgres_load_plan.sql` with JSONB staging tables
+  and idempotent `ON CONFLICT DO NOTHING` inserts.
 - The dry-run uses no PostgreSQL connection, no database mutation, no private
   raw data, and no live DWS.
 
@@ -107,7 +110,7 @@ Remaining work:
 2. Add idempotent import batch logic.
 3. Add raw result/detail ingestion.
 4. Add derived fact insertion.
-5. Add an approved PostgreSQL JSONB/COPY loader for the landing bundle.
+5. Review the generated PostgreSQL JSONB/COPY loader SQL.
 6. Run against an explicitly configured non-production PostgreSQL target.
 
 ### Task 4 - Enforce location and trajectory evidence

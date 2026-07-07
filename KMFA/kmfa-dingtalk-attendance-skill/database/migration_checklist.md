@@ -11,9 +11,10 @@
 ## Phase -0.5 - Offline landing bundle
 
 - [x] From accepted stage-2 artifacts, write a private `db_landing/YYYYMM/` bundle.
-- [x] Emit `load_order.json`, `canonical_month_snapshot.json`, `stage2_shadow_run.jsonl`, `stage2_consensus_certificate.json`, `attendance_day_fact.jsonl`, `payroll_baseline_attendance.jsonl`, and `postgres_copy_manifest.sql`.
+- [x] Emit `load_order.json`, `policy_version.json`, `canonical_month_snapshot.json`, `stage2_shadow_run.jsonl`, `stage2_consensus_certificate.json`, `attendance_day_fact.jsonl`, `payroll_baseline_attendance.jsonl`, and `postgres_copy_manifest.sql`.
 - [x] Confirm bundle generation uses no PostgreSQL connection, no database mutation, and no live DWS.
-- [ ] Build the approved PostgreSQL JSONB/COPY loader for the bundle.
+- [x] Build the approved offline PostgreSQL JSONB/COPY load plan generator for the bundle.
+- [x] Generate `postgres_load_payloads/*.jsonl`, `postgres_load_plan.sql`, and `postgres_load_plan_manifest.json` without opening PostgreSQL.
 - [ ] Execute the loader only against an explicitly configured non-production PostgreSQL target.
 
 ## Phase 0 - Local verification
@@ -21,6 +22,7 @@
 - [ ] Create database `kmfa_attendance`.
 - [ ] Apply `database/postgres_schema.sql`.
 - [ ] Apply `database/views_payroll_baseline.sql`.
+- [ ] Review and execute `postgres_load_plan.sql` only after confirming the target is non-production.
 - [ ] Confirm schema exists: `select schema_name from information_schema.schemata where schema_name='kmfa_attendance';`
 - [ ] Insert one synthetic import batch.
 - [ ] Insert one synthetic raw result and detail record with location fields.

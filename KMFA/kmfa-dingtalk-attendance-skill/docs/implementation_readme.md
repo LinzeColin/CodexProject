@@ -65,6 +65,17 @@ python3 scripts/prepare_database_landing_bundle.py \
 The bundle generator is offline only: no PostgreSQL connection, no database
 mutation, and no live DWS.
 
+Then generate the private PostgreSQL load plan:
+
+```bash
+python3 scripts/prepare_postgres_landing_loader.py \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing/202607" \
+  --print-json
+```
+
+Review `postgres_load_plan.sql` and run it only against an explicitly approved
+non-production PostgreSQL target.
+
 ## Automation
 
 Use `automation/morning_prompt.md` for the morning automation and `automation/evening_prompt.md` for the evening automation. The evening prompt explicitly invokes `$kmfa-dingtalk-attendance-skill` and runs stage-2 only when eligible.
