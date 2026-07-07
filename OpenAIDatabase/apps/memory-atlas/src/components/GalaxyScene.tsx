@@ -34,6 +34,7 @@ import {
 import type { GalaxyRendererMode } from "../config/visualFlags";
 import { normalizeMemoryTier } from "../data/atlas";
 import { zhCNCopy } from "../i18n/zh-CN";
+import type { StarfieldMappingResult, StarfieldParticleMapping } from "../models/starfieldMapping";
 import type { AtlasEdge, AtlasNode } from "../types";
 
 const uiCopy = zhCNCopy;
@@ -43,6 +44,7 @@ interface GalaxySceneProps {
   edges: AtlasEdge[];
   rendererMode: GalaxyRendererMode;
   selectedNode: AtlasNode | null;
+  starfieldMapping: StarfieldMappingResult;
   onSelectNode: (node: AtlasNode) => void;
 }
 
@@ -92,6 +94,10 @@ interface GalaxySignal {
   terrainFeatureCount: number;
   parameterSource: string;
   fallbackMode: "webgl" | "low-quality" | "legacy";
+  mappingVersion: StarfieldMappingResult["version"];
+  mappingSource: StarfieldMappingResult["source"];
+  mappedParticleCount: number;
+  snapshotMappedCount: number;
 }
 
 type AdaptiveQualityDecision = "hold" | "downgrade-to-mid" | "downgrade-to-low" | "upgrade-to-mid" | "upgrade-to-high";
@@ -314,7 +320,7 @@ function nextAdaptiveQualityDecision(
   return { decision: "hold", nextQuality: null };
 }
 
-export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelectNode }: GalaxySceneProps) {
+export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, starfieldMapping, onSelectNode }: GalaxySceneProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const nebulaCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const pointerRef = useRef<PointerState>({ dragging: false, moved: false, x: 0, y: 0 });
@@ -341,6 +347,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   const renderItems = useMemo<SceneNode[]>(
     () => renderNodes.map((node) => ({ node, position: galaxyPosition(node) })),
     [renderNodes],
+  );
+  const mappedParticleByNodeId = useMemo(
+    () => new Map(starfieldMapping.particles.map((particle) => [particle.nodeId, particle])),
+    [starfieldMapping],
   );
   const nodeById = useMemo(() => new Map(nodes.map((node) => [node.id, node])), [nodes]);
   const renderableNodeIds = useMemo(() => new Set(renderNodes.map((node) => node.id)), [renderNodes]);
@@ -453,6 +463,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     renderer.domElement.dataset.flowField = rendererMode === "memory-starfield" ? "enabled" : "legacy-off";
     renderer.domElement.dataset.flowFrozen = rendererMode === "memory-starfield" && flowPaused ? "true" : "false";
     renderer.domElement.dataset.starfieldMode = rendererMode === "memory-starfield" ? starfieldMode : "legacy";
+    renderer.domElement.dataset.starfieldMappingVersion = starfieldMapping.version;
+    renderer.domElement.dataset.starfieldMappingSource = starfieldMapping.source;
     containerElement.appendChild(renderer.domElement);
 
     const scene = new Scene();
@@ -522,7 +534,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     renderItems.forEach((item) => {
       const node = item.node;
       const position = item.position;
-      const attributes = memoryStarfieldParticleAttributes(node, degreeById, latestNodeTime);
+      const attributes = memoryStarfieldParticleAttributes(node, degreeById, latestNodeTime, mappedParticleByNodeId);
       const color = new Color(attributes.color);
       const brightness = attributes.brightness;
       positions.push(position.x, position.y, position.z);
@@ -532,7 +544,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     });
     const baseNodePositions = new Float32Array(positions);
     const flowPhases = renderItems.map((item) => stableUnit(item.node.id, "memory-starfield-flow-phase") * Math.PI * 2);
-    const flowMasses = renderItems.map((item) => memoryStarfieldMass(item.node, degreeById, latestNodeTime));
+    const flowMasses = renderItems.map((item) => memoryStarfieldMass(item.node, degreeById, latestNodeTime, mappedParticleByNodeId));
     geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
     geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
     geometry.setAttribute("size", new Float32BufferAttribute(sizes, 1));
@@ -567,8 +579,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         edgePositions.push(source.x, source.y, source.z, target.x, target.y, target.z);
         const sourceNode = renderItems.find((item) => item.node.id === edge.source)?.node;
         const targetNode = renderItems.find((item) => item.node.id === edge.target)?.node;
-        const sourceColor = new Color(sourceNode ? memoryStarfieldParticleAttributes(sourceNode, degreeById, latestNodeTime).color : "#8fd3ff");
-        const targetColor = new Color(targetNode ? memoryStarfieldParticleAttributes(targetNode, degreeById, latestNodeTime).color : "#8fd3ff");
+        const sourceColor = new Color(sourceNode ? memoryStarfieldParticleAttributes(sourceNode, degreeById, latestNodeTime, mappedParticleByNodeId).color : "#8fd3ff");
+        const targetColor = new Color(targetNode ? memoryStarfieldParticleAttributes(targetNode, degreeById, latestNodeTime, mappedParticleByNodeId).color : "#8fd3ff");
         const alpha = Math.max(0.018, Math.min(0.07, edge.weight * 0.08));
         edgeColors.push(sourceColor.r * alpha, sourceColor.g * alpha, sourceColor.b * alpha, targetColor.r * alpha, targetColor.g * alpha, targetColor.b * alpha);
       });
@@ -587,7 +599,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
 
     const flowTrailGeometry = new BufferGeometry();
     const flowTrailSegments = rendererMode === "memory-starfield"
-      ? createFlowTrailSegments(renderItems, degreeById, latestNodeTime, qualitySettings.flowTrailCount)
+      ? createFlowTrailSegments(renderItems, degreeById, latestNodeTime, qualitySettings.flowTrailCount, mappedParticleByNodeId)
       : { positions: [], colors: [] };
     flowTrailGeometry.setAttribute("position", new Float32BufferAttribute(flowTrailSegments.positions, 3));
     flowTrailGeometry.setAttribute("color", new Float32BufferAttribute(flowTrailSegments.colors, 3));
@@ -665,7 +677,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       const node = item.node;
       if (!isProminentBody(node, degreeById, latestNodeTime)) return;
       const position = item.position;
-      const attributes = memoryStarfieldParticleAttributes(node, degreeById, latestNodeTime);
+      const attributes = memoryStarfieldParticleAttributes(node, degreeById, latestNodeTime, mappedParticleByNodeId);
       const color = new Color(attributes.color);
       const materialForNode = new MeshBasicMaterial({
         color,
@@ -738,7 +750,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       renderItems
         .map((item) => ({
           item,
-          attributes: memoryStarfieldParticleAttributes(item.node, degreeById, latestNodeTime),
+          attributes: memoryStarfieldParticleAttributes(item.node, degreeById, latestNodeTime, mappedParticleByNodeId),
         }))
         .filter(({ attributes }) => Boolean(attributes.terrainType))
         .sort((a, b) => b.attributes.mass - a.attributes.mass)
@@ -872,6 +884,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         terrainFeatureCount: terrainSummary.total,
         parameterSource: MEMORY_STARFIELD_PARAMS.parameterSource,
         fallbackMode: rendererMode === "legacy" ? "legacy" : starfieldQuality === "low" ? "low-quality" : "webgl",
+        mappingVersion: starfieldMapping.version,
+        mappingSource: starfieldMapping.source,
+        mappedParticleCount: starfieldMapping.particleCount,
+        snapshotMappedCount: starfieldMapping.snapshotMappedCount,
       };
     }
 
@@ -918,7 +934,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       const source = renderItems[selectedIndex]?.position ?? { x: 0, y: 0, z: 0 };
       selectedMarker.position.set(source.x, source.y, source.z);
       const selectedAttributes = renderItems[selectedIndex]
-        ? memoryStarfieldParticleAttributes(renderItems[selectedIndex].node, degreeById, latestNodeTime)
+        ? memoryStarfieldParticleAttributes(renderItems[selectedIndex].node, degreeById, latestNodeTime, mappedParticleByNodeId)
         : null;
       selectedMarker.scale.setScalar(Math.max(6, (selectedAttributes?.size ?? 8) * 0.72));
     }
@@ -938,8 +954,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
             focusPositions.push(focusPosition.x, focusPosition.y, focusPosition.z, target.x, target.y, target.z);
             const focusNode = sceneItemById.get(focusId)?.node;
             const targetNode = sceneItemById.get(neighbor.id)?.node;
-            const sourceColor = new Color(focusNode ? memoryStarfieldParticleAttributes(focusNode, degreeById, latestNodeTime).color : "#8fd3ff");
-            const targetColor = new Color(targetNode ? memoryStarfieldParticleAttributes(targetNode, degreeById, latestNodeTime).color : "#8fd3ff");
+            const sourceColor = new Color(focusNode ? memoryStarfieldParticleAttributes(focusNode, degreeById, latestNodeTime, mappedParticleByNodeId).color : "#8fd3ff");
+            const targetColor = new Color(targetNode ? memoryStarfieldParticleAttributes(targetNode, degreeById, latestNodeTime, mappedParticleByNodeId).color : "#8fd3ff");
             const alpha = neighbor.layer === "primary" ? 0.96 : 0.42;
             focusColors.push(
               sourceColor.r * alpha,
@@ -987,7 +1003,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         const sceneItem = sceneItemById.get(target.id);
         if (!position || !sceneItem) continue;
         if (!target.selected) activeNeighborIds.add(target.id);
-        const color = target.selected ? new Color("#ffffff") : new Color(memoryStarfieldParticleAttributes(sceneItem.node, degreeById, latestNodeTime).color);
+        const color = target.selected ? new Color("#ffffff") : new Color(memoryStarfieldParticleAttributes(sceneItem.node, degreeById, latestNodeTime, mappedParticleByNodeId).color);
         const materialForPulse = new MeshBasicMaterial({
           color,
           transparent: true,
@@ -1311,7 +1327,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         delete window.__memoryAtlasGalaxyDebugTargets;
       }
     };
-  }, [degreeById, edges, latestNodeTime, onSelectNode, qualitySettings, renderItems, renderNodes, rendererMode, starfieldQuality, terrainSummary.total]);
+  }, [degreeById, edges, latestNodeTime, mappedParticleByNodeId, onSelectNode, qualitySettings, renderItems, renderNodes, rendererMode, starfieldMapping, starfieldQuality, terrainSummary.total]);
 
   function resetGalaxyView() {
     rotationRef.current = { x: -0.14, y: 0.42 };
@@ -1337,6 +1353,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       data-renderer-mode={rendererMode}
       data-starfield-mode={starfieldMode}
       data-starfield-quality={starfieldQuality}
+      data-starfield-mapping-version={starfieldMapping.version}
+      data-starfield-mapping-source={starfieldMapping.source}
       data-adaptive-quality={adaptiveQualityEnabled ? "enabled" : "manual"}
       data-galaxy-fps={performanceSnapshot.fps}
       ref={containerRef}
@@ -1474,14 +1492,18 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
             <strong><Layers size={14} /> Memory Terrain v2</strong>
             <span>{terrainSummary.total.toLocaleString()} mapped features · {terrainSummary.dominantLabel}</span>
           </div>
-          <div className="terrain-formula-grid" aria-label="Starfield formula summary">
+          <div className="terrain-formula-grid" data-starfield-formula-panel="stage4-phase3" aria-label="Starfield formula summary">
             <div>
               <b>mass</b>
-              <span>tier + kind + ROI + importance + recency + usage</span>
+              <span>universe_state mass_score + ROI + log evidence</span>
             </div>
             <div>
-              <b>particle</b>
-              <span>size / brightness / color = mass + recency + confidence</span>
+              <b>brightness / color</b>
+              <span>brightness = mass + roi + confidence; color = terrain</span>
+            </div>
+            <div>
+              <b>trail</b>
+              <span>trail = interaction density + growth + orbit stability</span>
             </div>
             <div>
               <b>flow</b>
@@ -1626,15 +1648,16 @@ function createFlowTrailSegments(
   degreeById: Map<string, number>,
   latestNodeTime: number,
   limit: number,
+  mappedParticleByNodeId?: Map<string, StarfieldParticleMapping>,
 ): { positions: number[]; colors: number[] } {
   const positions: number[] = [];
   const colors: number[] = [];
   const candidates = [...items]
-    .sort((a, b) => memoryStarfieldMass(b.node, degreeById, latestNodeTime) - memoryStarfieldMass(a.node, degreeById, latestNodeTime))
+    .sort((a, b) => memoryStarfieldMass(b.node, degreeById, latestNodeTime, mappedParticleByNodeId) - memoryStarfieldMass(a.node, degreeById, latestNodeTime, mappedParticleByNodeId))
     .slice(0, limit);
   for (const item of candidates) {
     const position = item.position;
-    const attributes = memoryStarfieldParticleAttributes(item.node, degreeById, latestNodeTime);
+    const attributes = memoryStarfieldParticleAttributes(item.node, degreeById, latestNodeTime, mappedParticleByNodeId);
     const phase = stableUnit(item.node.id, "flow-trail-phase") * Math.PI * 2;
     const flow = flowVectorFor(position, phase, attributes.mass * attributes.trailStrength);
     const sourceColor = new Color(attributes.color);
@@ -1661,7 +1684,14 @@ function flowVectorFor(position: { x: number; y: number; z: number }, phase: num
   };
 }
 
-function memoryStarfieldMass(node: AtlasNode, degreeById: Map<string, number>, latestNodeTime: number): number {
+function memoryStarfieldMass(
+  node: AtlasNode,
+  degreeById: Map<string, number>,
+  latestNodeTime: number,
+  mappedParticleByNodeId?: Map<string, StarfieldParticleMapping>,
+): number {
+  const mapped = mappedParticleByNodeId?.get(node.id);
+  if (mapped) return mapped.massScore;
   const params = MEMORY_STARFIELD_PARAMS.mapping.clusterMass;
   const tier = normalizeMemoryTier(node.memory_tier);
   const tierMass = tier === "核心画像" ? params.tierCore : tier === "一般" ? params.tierMid : params.tierOuter;
@@ -1677,7 +1707,22 @@ function memoryStarfieldParticleAttributes(
   node: AtlasNode,
   degreeById: Map<string, number>,
   latestNodeTime: number,
+  mappedParticleByNodeId?: Map<string, StarfieldParticleMapping>,
 ): MemoryStarfieldParticleAttributes {
+  const mapped = mappedParticleByNodeId?.get(node.id);
+  if (mapped) {
+    return {
+      mass: mapped.massScore,
+      size: mapped.size,
+      brightness: mapped.brightness,
+      color: mapped.color,
+      recencyScore: mapped.recencyScore,
+      confidenceScore: mapped.confidenceScore,
+      interactionScore: mapped.interactionScore,
+      trailStrength: mapped.trailStrength,
+      terrainType: mapped.terrainType,
+    };
+  }
   const params = MEMORY_STARFIELD_PARAMS.mapping.particleAttributes;
   const mass = memoryStarfieldMass(node, degreeById, latestNodeTime);
   const recencyScore = memoryStarfieldRecencyScore(node, latestNodeTime);

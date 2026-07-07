@@ -1,6 +1,7 @@
 export type GalaxyRendererMode = "memory-starfield" | "legacy";
 export type TimelineRendererMode = "memory-river" | "legacy";
 
+export const GALAXY_RENDERER_FEATURE_FLAG_VERSION = "memory_starfield_integration.v1_1_7_stage4_phase3";
 export const DEFAULT_GALAXY_RENDERER_MODE: GalaxyRendererMode = "memory-starfield";
 export const DEFAULT_TIMELINE_RENDERER_MODE: TimelineRendererMode = "memory-river";
 export const GALAXY_RENDERER_STORAGE_KEY = "memory-atlas.galaxy-renderer";
