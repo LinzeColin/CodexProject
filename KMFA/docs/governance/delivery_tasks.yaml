@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "RDSMCA01"
+    phase: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION"
+    objective: "Apply private residual-difference source-map correction records in ignored runtime."
+    scope:
+      - "public-safe application evidence"
+      - "ignored private application records"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox reads or mutation"
+      - "materialization replay"
+      - "formal raw-to-processed comparison"
+      - "GitHub upload or app reinstall"
+    status: "completed"
+    completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application"
+    dependencies:
+      - "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS"
+    required_files:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION/machine/outside_scope_candidate_review_residual_difference_source_map_correction_application_manifest.json"
+      - "KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application.py"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-APPLICATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application.py --require-private-application"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application"
+    test_results:
+      - "PASS: residual-difference source-map correction application validator"
+      - "PASS: focused application unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION/machine/outside_scope_candidate_review_residual_difference_source_map_correction_application_manifest.json"
+    risk: "Private application can be misread as raw-to-processed consistency; materialization replay and comparison gates remain false."
+    rollback: "Remove this phase public artifacts and ignored private application outputs; keep prior readiness intact."
+    target_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application"
+
   - task_id: "RDSMCAR01"
     phase: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS"
     objective: "Verify private residual-difference source-map correction application readiness."
