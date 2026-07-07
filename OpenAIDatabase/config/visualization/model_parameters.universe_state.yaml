@@ -67,6 +67,37 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+stage4_phase3_integration:
+  task_id: MA-V117-S4P03
+  acceptance_id: ACC-MA-V117-S4P03
+  status: phase_4_3_integration_completed_pending_stage4_review
+  integration_version: memory_starfield_integration.v1_1_7_stage4_phase3
+  mapping_version: memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3
+  required_validator: validate:v1.1.7-stage4-phase3
+  browser_validator: validate:memory-starfield-integration-browser
+  default_renderer_mode: memory-starfield
+  legacy_renderer_mode: legacy
+  mapping_source_priority:
+    - redacted_snapshot
+    - atlas_nodes_fallback
+  required_browser_proof:
+    - default_new_memory_starfield
+    - legacy_rollback
+    - snapshot_mapping
+    - formula_panel
+    - screenshot
+  data_boundary:
+    redacted_snapshot: src/fixtures/universe_state.sample.json
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    writeback_allowed: false
+  boundaries:
+    - no_stage5
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 v1_1_7_stage1_phase1:
   task_id: MA-V117-S1P01
   acceptance_id: ACC-MA-V117-S1P01

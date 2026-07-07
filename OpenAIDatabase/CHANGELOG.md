@@ -1,5 +1,28 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.3 Integration
+
+- Integrated production Galaxy with
+  `memory_starfield_integration.v1_1_7_stage4_phase3`.
+- Kept the `legacy` renderer as a feature flag rollback while preserving the
+  default `memory-starfield` entry.
+- Added `apps/memory-atlas/src/models/starfieldMapping.ts` with
+  `memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3`.
+- Mapped redacted `universe_state.sample.json` fields into mass, color,
+  brightness and trail formulas, with atlas-node fallback defaults.
+- Added runtime debug metadata through `window.__memoryAtlasStage4Phase3()` and
+  `window.__memoryAtlasGalaxySignal()`.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage4_phase3_integration_acceptance.md`.
+- Added `validate:v1.1.7-stage4-phase3` and
+  `validate:memory-starfield-integration-browser`.
+- Registered `MA-V117-S4P03` / `ACC-MA-V117-S4P03` with status
+  `phase_4_3_integration_completed_pending_stage4_review`.
+
+Feature Flag and Snapshot Mapping integration only. No Stage 5, raw/private
+data read, direct active-memory writeback, agent apply, deployment or GitHub
+main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.2
 
 - Upgraded the isolated Memory Starfield C3 Starfield Spike to

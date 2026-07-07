@@ -1,3 +1,45 @@
+## 86. Memory Atlas v1.1.7 Stage 4 Phase 4.3 Integration
+
+状态：`phase_4_3_integration_completed_pending_stage4_review`。
+
+验收 ID：`ACC-MA-V117-S4P03`。
+
+模型参数：
+
+- Production Galaxy Integration 固定为 `memory_starfield_integration.v1_1_7_stage4_phase3`。
+- Snapshot Mapping 固定为 `memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3`。
+- `validate:v1.1.7-stage4-phase3` 是本 phase 静态必跑 validator。
+- `validate:memory-starfield-integration-browser` 是本 phase 浏览器必跑 validator。
+- `default_renderer_mode = memory-starfield`。
+- `legacy_renderer_mode = legacy`。
+- `mapping_source_priority = redacted_snapshot -> atlas_nodes_fallback`。
+- No Stage 5。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/GalaxyScene.tsx`
+- `apps/memory-atlas/src/config/visualFlags.ts`
+- `apps/memory-atlas/src/models/starfieldMapping.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_starfield_integration_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S4P03-001 stage4_phase3_status = phase_4_3_integration_completed_pending_stage4_review`
+- `PARAM-MA-V117-S4P03-002 stage4_phase3_required_validator = validate:v1.1.7-stage4-phase3`
+- `PARAM-MA-V117-S4P03-003 stage4_phase3_browser_validator = validate:memory-starfield-integration-browser`
+- `PARAM-MA-V117-S4P03-004 integration_version = memory_starfield_integration.v1_1_7_stage4_phase3`
+- `PARAM-MA-V117-S4P03-005 mapping_version = memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3`
+- `PARAM-MA-V117-S4P03-006 renderer_modes = default=memory-starfield;rollback=legacy`
+
+验收信号：
+
+- Browser validator 证明默认 new memory-starfield、legacy rollback、snapshot mapping、formula panel 和 screenshot。
+- Static validator 检查 Stage 4.2 continuity、Feature Flag、Snapshot Mapping、records、package script 和 no-upload boundary。
+- Boundary includes No Stage 5, No GitHub main upload, No raw/private read, No direct active-memory writeback and No agent apply。
+
 ## 85. v1.1.7 Stage 4 Phase 4.2 C3 Starfield Spike
 
 状态：`phase_4_2_c3_starfield_spike_completed_pending_stage4_review`。

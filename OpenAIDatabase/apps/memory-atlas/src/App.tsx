@@ -62,6 +62,14 @@ import { ProposalEditor } from "./components/ProposalEditor";
 import { ThemeDetailPanel, type TopicClassificationDetail } from "./components/ThemeDetailPanel";
 import { MemoryAtlasHelpPanel } from "./components/help/MemoryAtlasHelpPanel";
 import { zhCNCopy } from "./i18n/zh-CN";
+import universeStateSample from "./fixtures/universe_state.sample.json";
+import {
+  mapAtlasNodesToStarfield,
+  mapUniverseStateSnapshotToStarfield,
+  STARFIELD_MAPPING_VERSION,
+  type StarfieldMappingResult,
+} from "./models/starfieldMapping";
+import type { UniverseStateSnapshot } from "./models/universeState";
 
 const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) => ({ default: module.GalaxyScene })));
 const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene").then((module) => ({ default: module.ObsidianGraphScene })));
@@ -73,6 +81,23 @@ const MEMORY_OVERVIEW_OPERATION_VERSION = "memory_overview_detail_operations.v1_
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
+const STARFIELD_INTEGRATION_VERSION = "memory_starfield_integration.v1_1_7_stage4_phase3" as const;
+
+declare global {
+  interface Window {
+    __memoryAtlasStage4Phase3?: () => {
+      integrationVersion: typeof STARFIELD_INTEGRATION_VERSION;
+      mappingVersion: typeof STARFIELD_MAPPING_VERSION;
+      rendererMode: GalaxyRendererMode;
+      mappingSource: StarfieldMappingResult["source"];
+      mappedParticleCount: number;
+      snapshotMappedCount: number;
+      fallbackCount: number;
+      safety: StarfieldMappingResult["safety"];
+      formulas: StarfieldMappingResult["formulas"];
+    };
+  }
+}
 
 const MEMORY_OVERVIEW_SECTION_ORDER = [
   { id: "status_summary", label: "状态摘要" },
@@ -123,6 +148,14 @@ const defaultFilters: AtlasFilters = {
   category: "all",
   theme: "all",
 };
+
+function buildGalaxyStarfieldMapping(nodes: AtlasNode[]): StarfieldMappingResult {
+  try {
+    return mapUniverseStateSnapshotToStarfield(universeStateSample as UniverseStateSnapshot, nodes); // source: "universe_state_snapshot"
+  } catch {
+    return mapAtlasNodesToStarfield(nodes); // source: "atlas_nodes"
+  }
+}
 
 type ContributionScale = "day" | "week" | "month" | "year";
 type WritebackAction = "update_statement" | "add_context" | "change_tier" | "flag_conflict" | "rollback_to_version";
@@ -1093,6 +1126,8 @@ function ViewRouter({
   onShowHelp: () => void;
   onSwitchView: (view: ViewKey) => void;
 }) {
+  const starfieldMapping = useMemo(() => buildGalaxyStarfieldMapping(slice.graphNodes), [slice.graphNodes]);
+
   if (loadState === "loading") {
     return <div className="galaxy-loading">{uiCopy.states.loadingGalaxy}</div>;
   }
@@ -1155,6 +1190,7 @@ function ViewRouter({
         sharedState={sharedState}
         deltaStats={slice.deltaStats}
         timelineTimeRange={timelineTimeRange}
+        starfieldMapping={starfieldMapping}
         onSelectNode={onSelectNode}
       />
     );
@@ -1666,6 +1702,7 @@ function GalaxyView({
   sharedState,
   deltaStats,
   timelineTimeRange,
+  starfieldMapping,
   onSelectNode,
 }: {
   graphNodes: AtlasNode[];
@@ -1675,6 +1712,7 @@ function GalaxyView({
   sharedState: SharedAtlasState;
   deltaStats: DeltaStats;
   timelineTimeRange: TimelineTimeRangeSelection | null;
+  starfieldMapping: StarfieldMappingResult;
   onSelectNode: (node: AtlasNode) => void;
 }) {
   const [galaxyRendererMode, setGalaxyRendererMode] = useState<GalaxyRendererMode>(() => getInitialGalaxyRendererMode());
@@ -1684,9 +1722,29 @@ function GalaxyView({
     persistGalaxyRendererMode(mode);
   }
 
+  useEffect(() => {
+    window.__memoryAtlasStage4Phase3 = () => ({
+      integrationVersion: STARFIELD_INTEGRATION_VERSION,
+      mappingVersion: STARFIELD_MAPPING_VERSION,
+      rendererMode: galaxyRendererMode,
+      mappingSource: starfieldMapping.source,
+      mappedParticleCount: starfieldMapping.particleCount,
+      snapshotMappedCount: starfieldMapping.snapshotMappedCount,
+      fallbackCount: starfieldMapping.fallbackCount,
+      safety: starfieldMapping.safety,
+      formulas: starfieldMapping.formulas,
+    });
+    return () => {
+      delete window.__memoryAtlasStage4Phase3;
+    };
+  }, [galaxyRendererMode, starfieldMapping]);
+
   return (
     <div
       className="galaxy-view"
+      data-stage4-phase3-integration={STARFIELD_INTEGRATION_VERSION}
+      data-starfield-mapping-version={starfieldMapping.version}
+      data-starfield-mapping-source={starfieldMapping.source}
       data-shared-state={sharedState.schema_version}
       data-shared-focus-node={sharedState.focus.galaxy.nodeId ?? ""}
       data-shared-cluster={sharedState.focus.galaxy.clusterId ?? ""}
@@ -1719,7 +1777,7 @@ function GalaxyView({
       </div>
       <DeltaStrip stats={deltaStats} />
       <Suspense fallback={<div className="galaxy-loading">正在载入 Three.js 银河...</div>}>
-        <GalaxyScene nodes={graphNodes} edges={graphEdges} rendererMode={galaxyRendererMode} selectedNode={selectedNode} onSelectNode={onSelectNode} />
+        <GalaxyScene nodes={graphNodes} edges={graphEdges} rendererMode={galaxyRendererMode} selectedNode={selectedNode} starfieldMapping={starfieldMapping} onSelectNode={onSelectNode} />
       </Suspense>
     </div>
   );
