@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+import zipfile
 from datetime import date, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -19,6 +20,21 @@ from KMFA.tools.daily_routine_check.main import (
 from KMFA.tools.daily_routine_check.models import RoutineRule, SourceMessage
 from KMFA.tools.daily_routine_check.rule_engine import evaluate_rule
 from KMFA.tools.daily_routine_check.schedule_rules import rules_for_trigger_window
+
+
+def write_dws_zip(path: Path) -> None:
+    with zipfile.ZipFile(path, "w") as zf:
+        for group, sender in (("付款请示群", "杨婷"), ("生产管理群", "黄婷")):
+            zf.writestr(
+                f"DWS_Outputs/{group}/chat_records/chat_records.csv",
+                "group_name,open_message_id,message_time,sender_name,content,resource_count,resource_types\n"
+                f"{group},{group}-m1,2026-07-07 10:00:00,{sender},资金账户明细表 可用资金合计 800000,0,\n",
+            )
+            zf.writestr(
+                f"DWS_Outputs/{group}/_manifest/manifest.csv",
+                "group_name,message_id,message_time,sender_name,resource_type,output_path,sha256,status\n"
+                f"{group},{group}-m1,2026-07-07 10:00:00,{sender},image,files/0707/{group}.png,sha-{group},downloaded\n",
+            )
 
 
 class TriggerWindowTests(unittest.TestCase):
@@ -377,7 +393,36 @@ class TriggerWindowTests(unittest.TestCase):
             stale = reader.inspect_group_sources("生产管理群", date(2026, 7, 7))
             self.assertEqual(stale[0]["issue_type"], "SOURCE_STALE")
 
-    def test_healthcheck_reports_zip_placeholder_as_not_direct_input_ready(self) -> None:
+    def test_reader_streams_messages_and_manifest_from_dws_zip(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            zip_path = base / "DWS_Outputs.zip"
+            write_dws_zip(zip_path)
+
+            reader = DwsArchiveReader(base / "DWS_Outputs")
+            issues = reader.inspect_group_sources("付款请示群", date(2026, 7, 7))
+            messages = reader.read_messages("付款请示群")
+            files = reader.read_files("付款请示群")
+
+        self.assertEqual(issues, [])
+        self.assertEqual(messages[0].message_id, "付款请示群-m1")
+        self.assertEqual(files[0].sha256, "sha-付款请示群")
+        self.assertTrue(files[0].absolute_path.startswith("zip://"))
+        self.assertIn("DWS_Outputs.zip!", files[0].absolute_path)
+
+    def test_healthcheck_accepts_readable_zip_as_primary_input(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            write_dws_zip(base / "DWS_Outputs.zip")
+            readiness = build_source_readiness(base / "DWS_Outputs")
+
+        self.assertFalse(readiness["direct_input_ready"])
+        self.assertTrue(readiness["zip_present"])
+        self.assertTrue(readiness["zip_input_ready"])
+        self.assertEqual(readiness["status"], "READY")
+        self.assertEqual(readiness["next_enable_conditions"], [])
+
+    def test_healthcheck_reports_unreadable_zip_without_requiring_direct_folder(self) -> None:
         with TemporaryDirectory() as tmp:
             base = Path(tmp)
             (base / "DWS_Outputs.zip").write_text("placeholder", encoding="utf-8")
@@ -386,10 +431,11 @@ class TriggerWindowTests(unittest.TestCase):
 
         self.assertFalse(readiness["direct_input_ready"])
         self.assertTrue(readiness["zip_present"])
+        self.assertFalse(readiness["zip_input_ready"])
         self.assertTrue(readiness["archive_present"])
-        self.assertEqual(readiness["status"], "SOURCE_INPUT_FOLDER_MISSING")
+        self.assertEqual(readiness["status"], "ZIP_INPUT_UNREADABLE")
         self.assertTrue(any(
-            item.endswith("DWS_Outputs/付款请示群/chat_records/chat_records.csv")
+            "DWS_Outputs.zip" in item and "readable" in item
             for item in readiness["next_enable_conditions"]
         ))
 

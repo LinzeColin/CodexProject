@@ -67,13 +67,19 @@ The user authorized cloud OCR/LLM/agent for this use case. Sending notifications
 
 ## Canonical Paths
 
-Input root:
+Primary input zip:
+
+```text
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+```
+
+Fallback input root:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs
 ```
 
-Input groups:
+Input groups inside either source:
 
 ```text
 付款请示群

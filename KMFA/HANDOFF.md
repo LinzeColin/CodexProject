@@ -1,6 +1,6 @@
 # KMFA Handoff
 
-更新时间: 2026-07-07
+更新时间: 2026-07-08
 
 ## S19 当前状态
 
@@ -18,7 +18,7 @@
 
 - `Dingtalk-routine-check / 钉钉工作检查` 是唯一 S20 automation，时间统一 `Asia/Shanghai`，窗口为 `11:35 -> morning_1135` 和 `17:05 -> evening_1705`。
 - 公开代码/规则/测试位于 `KMFA/daily_routine_check_skill/`、`KMFA/metadata/daily_routine_check/`、`KMFA/tools/daily_routine_check/`、`KMFA/tests/test_daily_routine_check.py`。
-- 运行输入只读 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 和 `.../生产管理群`；缺失或过期降级为 `SOURCE_MISSING` / `SOURCE_STALE`，不崩溃、不删除源数据。若当前 OneDrive 只有 `DWS_Outputs.zip` 或 `DWS_Archive/` 而没有直接 `DWS_Outputs/<群>/chat_records/chat_records.csv` 与 `_manifest/manifest.csv`，healthcheck 输出 `SOURCE_INPUT_FOLDER_MISSING` 和下一轮启用条件。
+- 运行输入主路径为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`；reader 流式读取 zip 内 `付款请示群` / `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`，不解压大包到本机。直接 `DWS_Outputs/` 群目录只作为兼容 fallback；zip 占位或损坏时 healthcheck 输出 `ZIP_INPUT_UNREADABLE`，缺失或过期数据降级为 `SOURCE_MISSING` / `SOURCE_STALE`，不崩溃、不删除源数据。
 - 例行异常类型固定为 `missing/late/review/wrong/merged`，提醒等级固定为 `P0/P1/P2`，通知事件包含 `abnormal_type`、`reminder_level`、matched message、confidence 和 reason。
 - `morning_1135` 生成杨婷现金 `cash_risk_result`；当前 public-safe 离线实现只从 DWS 消息文本按 `cash_monitor.public.yaml` 配置化金额锚点提取 `total_available_cash`，图片/附件候选无结构化金额时输出 `CASH_NEEDS_REVIEW`，不伪造 OCR。
 - SQLite 私有 ledger 写入 `run_log`、`routine_check_results`、`cash_risk_results`、`cash_account_snapshots`、`notification_events`、`data_quality_issues`；`--cleanup --apply` 执行 WAL checkpoint、VACUUM 并写 `cleanup_events`。

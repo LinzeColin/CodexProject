@@ -36,17 +36,13 @@ This skill powers one automation only:
 Dingtalk-routine-check / 钉钉工作检查
 ```
 
-It does not create, replace, or operate the upstream DWS archive job. It reads existing local OneDrive outputs:
+It does not create, replace, or operate the upstream DWS archive job. It reads the existing local OneDrive zip package as the primary input:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群/
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/生产管理群/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-`DWS_Outputs.zip` and `DWS_Archive/` are not enough for this checker because
-the checker needs the direct hot-folder contract with `chat_records.csv` and
-`_manifest/manifest.csv` for each target group. If healthcheck reports
-`SOURCE_INPUT_FOLDER_MISSING`, enable the upstream DWS archive so it materializes:
+The checker streams CSV entries from the zip and does not extract the package to local disk. A direct `DWS_Outputs/` folder is only a compatibility fallback. The zip must contain these members, with or without a top-level `DWS_Outputs/` prefix:
 
 ```text
 DWS_Outputs/付款请示群/chat_records/chat_records.csv
@@ -54,6 +50,8 @@ DWS_Outputs/付款请示群/_manifest/manifest.csv
 DWS_Outputs/生产管理群/chat_records/chat_records.csv
 DWS_Outputs/生产管理群/_manifest/manifest.csv
 ```
+
+If healthcheck reports `ZIP_INPUT_UNREADABLE`, hydrate or replace the OneDrive placeholder zip; do not unzip large packages into local scratch just to satisfy this checker.
 
 The automation performs:
 
