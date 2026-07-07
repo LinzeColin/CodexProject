@@ -1,5 +1,13 @@
 # Database Migration Checklist
 
+## Phase -1 - Offline contract dry-run
+
+- [x] Validate required PostgreSQL tables, enums, and payroll baseline views exist in repo SQL.
+- [x] Simulate one accepted five-run stage-2 certificate in memory.
+- [x] Simulate one active payroll baseline row backed by the accepted certificate.
+- [x] Simulate `v_payroll_baseline_active`, `v_monthly_baseline_summary`, and `v_stage2_blockers` semantics.
+- [x] Confirm dry-run uses no PostgreSQL connection, no database mutation, and no live DWS.
+
 ## Phase 0 - Local verification
 
 - [ ] Create database `kmfa_attendance`.
