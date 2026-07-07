@@ -1,0 +1,67 @@
+{
+  "check_count": 13,
+  "check_fail_count": 0,
+  "check_pass_count": 13,
+  "checks": [
+    {
+      "check_code": "source_threshold_recheck_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_threshold_recheck_valid",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_blockers_present",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_observation_count_two",
+      "status": "PASS"
+    },
+    {
+      "check_code": "prior_observation_count_two",
+      "status": "PASS"
+    },
+    {
+      "check_code": "current_observation_count_three",
+      "status": "PASS"
+    },
+    {
+      "check_code": "threshold_met_on_third_observation",
+      "status": "PASS"
+    },
+    {
+      "check_code": "anchor_confirmation_count_zero",
+      "status": "PASS"
+    },
+    {
+      "check_code": "unresolved_difference_count_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_track_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_outputs_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK",
+  "project_id": "KMFA",
+  "record_type": "v014_owner_authorized_anchor_confirmation_blocker_final_threshold_recheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_owner_authorized_anchor_confirmation_blocker_final_threshold_recheck_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-FINAL-THRESHOLD-RECHECK-20260707",
+  "version": "0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-final-threshold-recheck"
+}

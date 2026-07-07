@@ -491,3 +491,13 @@
 - locked counts: `owner_authorized_anchor_blocker_count=72`, `prior_owner_authorized_anchor_blocker_observation_count=1`, `owner_authorized_anchor_blocker_observation_count=2`, `owner_authorized_anchor_blocked_audit_threshold_met=false`, `owner_authorized_anchor_confirmation_count=0`, `unresolved_difference_count=72`
 - boundary: raw inbox access/mutation, owner-authorized anchor confirmation, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK`, one phase only; no Stage review or upload.
+
+## 2026-07-07 Latest - V014 Owner-Authorized Anchor Blocker Final Threshold Recheck
+
+- phase: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK`
+- status: `completed_validated_local_only_owner_authorized_anchor_confirmation_blocker_final_threshold_met_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_final_threshold_recheck.py --require-private-final-threshold`
+- locked counts: `owner_authorized_anchor_blocker_count=72`, `prior_owner_authorized_anchor_blocker_observation_count=2`, `owner_authorized_anchor_blocker_observation_count=3`, `owner_authorized_anchor_blocked_audit_threshold_met=true`, `goal_status_recommendation=blocked`, `owner_authorized_anchor_confirmation_count=0`, `unresolved_difference_count=72`
+- boundary: raw inbox access/mutation, owner-authorized anchor confirmation, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: owner/authorized-delegate private anchor confirmation is required before any formal comparison or downstream action; no Stage review or upload.
