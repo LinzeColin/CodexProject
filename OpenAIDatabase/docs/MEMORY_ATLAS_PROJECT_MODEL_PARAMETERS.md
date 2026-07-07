@@ -1,3 +1,43 @@
+## 85. v1.1.7 Stage 4 Phase 4.2 C3 Starfield Spike
+
+状态：`phase_4_2_c3_starfield_spike_completed_pending_stage4_review`。
+
+验收 ID：`ACC-MA-V117-S4P02`。
+
+模型参数：
+
+- C3 Starfield Spike 版本固定为 `memory_starfield_c3_spike.v1_1_7_stage4_phase2`。
+- `validate:v1.1.7-stage4-phase2` 是本 phase 静态必跑 validator。
+- `validate:memory-starfield-spike-browser` 是本 phase 浏览器必跑 validator。
+- 粒子下限：`>=10k particles`。
+- 桌面浏览器 FPS 下限：`>=30 FPS`。
+- 必备运行特征：GPU particle spike、Flow Field / Curl Noise、Cluster Gravity、Hover Cards B2、screenshot。
+- No production Galaxy replacement。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/main.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/shaders/flowField.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/fixture.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_starfield_spike_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S4P02-001 stage4_phase2_status = phase_4_2_c3_starfield_spike_completed_pending_stage4_review`
+- `PARAM-MA-V117-S4P02-002 stage4_phase2_required_validator = validate:v1.1.7-stage4-phase2`
+- `PARAM-MA-V117-S4P02-003 stage4_phase2_browser_validator = validate:memory-starfield-spike-browser`
+- `PARAM-MA-V117-S4P02-004 spike_version = memory_starfield_c3_spike.v1_1_7_stage4_phase2`
+- `PARAM-MA-V117-S4P02-005 runtime_thresholds = >=10k particles;>=30 FPS;trajectoryTrailCount>=256;gravitySourceCount>=6`
+- `PARAM-MA-V117-S4P02-006 required_runtime_features = GPU particle spike;Flow Field / Curl Noise;Cluster Gravity;Hover Cards B2;screenshot`
+
+验收信号：
+
+- Browser validator 证明 `>=10k particles`、`>=30 FPS`、`curl_noise_shader`、particle trails、gravity sources、Hover Cards B2 和 screenshot。
+- Static validator 检查 Stage 4.1 continuity、spike source、fixture safety、production isolation、records、package script 和 no-upload boundary。
+- Boundary includes No production Galaxy replacement, No production route/navigation change, No GitHub main upload, No raw/private read, No direct active-memory writeback and No agent apply。
+
 ## 84. v1.1.7 Stage 4 Phase 4.1 Visual Contract Update
 
 状态：`phase_4_1_visual_contract_update_completed_pending_stage4_review`。

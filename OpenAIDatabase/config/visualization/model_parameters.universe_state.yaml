@@ -478,3 +478,37 @@ v1_1_7_stage4_phase1:
   no_runtime_renderer_replacement: true
   no_direct_writeback: true
   no_agent_apply_in_phase: true
+v1_1_7_stage4_phase2:
+  task_id: MA-V117-S4P02
+  acceptance_id: ACC-MA-V117-S4P02
+  status: phase_4_2_c3_starfield_spike_completed_pending_stage4_review
+  required_validator: validate:v1.1.7-stage4-phase2
+  stage4_phase2_browser_validator: validate:memory-starfield-spike-browser
+  spike_version: memory_starfield_c3_spike.v1_1_7_stage4_phase2
+  stage4_phase2_particle_floor: 10000
+  stage4_phase2_desktop_min_fps: 30
+  stage4_phase2_required_runtime_features:
+    - GPU particle spike
+    - Flow Field / Curl Noise
+    - Cluster Gravity
+    - Hover Cards B2
+    - screenshot
+  stage4_phase2_browser_metrics:
+    - particleCount >= 10000
+    - fps >= 30
+    - flowFieldMode == curl_noise_shader
+    - trajectoryTrailCount >= 256
+    - gravitySourceCount >= 6
+    - hoverCardMode == B2
+  stage4_phase2_boundary:
+    - C3 Starfield Spike
+    - No production Galaxy replacement
+    - No production route/navigation change
+    - No feature flag default switch
+    - No raw/private read
+    - No direct active-memory writeback
+    - No agent apply
+    - No GitHub main upload
+  no_production_galaxy_replacement: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
