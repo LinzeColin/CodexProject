@@ -2715,3 +2715,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_resolution_attempt_after_final_threshold.py
   scope: Authorized source reference or owner exclusion application resolution attempt after final threshold only; finds zero active authoritative resolution applications for 48 ignored private blockers and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocked_handoff_after_resolution_attempt:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocked-handoff-after-resolution-attempt"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKED-HANDOFF-AFTER-RESOLUTION-ATTEMPT-001
+  parameter_refs:
+    - PARAM-KMFA-1522
+    - PARAM-KMFA-1523
+    - PARAM-KMFA-1524
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKED_HANDOFF_AFTER_RESOLUTION_ATTEMPT
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocked_handoff_after_resolution_attempt.py
+  scope: Authorized source reference or owner exclusion application blocked handoff after resolution attempt only; prepares ignored private owner-action handoff for 48 unresolved blockers and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
