@@ -1679,3 +1679,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_resolution_attempt_item_count=48, source_active_authoritative_resolution_application_count=0, source_auto_applied_authorized_resolution_count=0 and source_still_blocked_authorized_resolution_application_count=48 prove this phase starts from unresolved resolution-attempt evidence; blocked_handoff_item_count=48 and owner_action_item_count=48 prove every unresolved item is handed off without public details.
 - gate: `NO_GO`; binding_ready_after_blocked_handoff_count=0, comparison_retry_ready_after_blocked_handoff_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private blocked handoff diagnostic, records and packet stay under ignored runtime and raw inbox remains untouched by this phase.
+
+## V014 Residual Difference Authorized Source Reference Or Exclusion Application Diagnostic Packet After Blocked Handoff
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-DIAGNOSTIC-PACKET-AFTER-BLOCKED-HANDOFF-001`
+- parameter_ids: `PARAM-KMFA-1525`, `PARAM-KMFA-1526`, `PARAM-KMFA-1527`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_DIAGNOSTIC_PACKET_AFTER_BLOCKED_HANDOFF`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-diagnostic-packet-after-blocked-handoff`
+- rule: source_blocked_handoff_item_count=48 and source_owner_action_item_count=48 prove this phase starts from the unresolved blocked-handoff state; diagnostic_packet_item_count=48 and external_agent_private_packet_item_count=48 prove every unresolved item has a private diagnostic packet entry without public details.
+- gate: `NO_GO`; safe_auto_resolution_available_count=0, binding_ready_after_diagnostic_packet_count=0, comparison_retry_ready_after_diagnostic_packet_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private diagnostic packet, queue and report stay under ignored runtime and raw inbox remains untouched by this phase.
