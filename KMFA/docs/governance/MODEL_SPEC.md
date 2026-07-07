@@ -1279,3 +1279,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_private_diagnostic_response_template_item_count=72, source_private_diagnostic_pending_queue_item_count=72, diagnostic_response_ready_count=0 and diagnostic_response_blocker_count=72 prove all residual differences remain blocked; valid_diagnostic_response_count=0 and actionable_resolution_count=0 prevent discrepancy closure and source-map correction.
 - gate: `NO_GO`; valid owner/agent response, discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private readiness diagnostic, blocker queue and report stay under git-ignored runtime.
+
+## V014 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Blocker Audit
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-BLOCKER-AUDIT-001`
+- parameter_ids: `PARAM-KMFA-1402`, `PARAM-KMFA-1403`, `PARAM-KMFA-1404`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_AUDIT`
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-blocker-audit`
+- rule: prior_diagnostic_blocker_observation_count=1 and diagnostic_blocker_observation_count=2 record the second blocker observation; diagnostic_blocked_audit_threshold_met=false, valid_diagnostic_response_count=0 and open_residual_difference_count=72 keep discrepancy closure and source-map correction blocked.
+- gate: `NO_GO`; valid owner/agent response, discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private audit diagnostic stays under git-ignored runtime and raw inbox remains untouched.

@@ -2161,3 +2161,18 @@ kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diag
   evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK
   validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_readiness_recheck.py
   scope: Outside-scope candidate review residual-difference owner or agent diagnostic readiness recheck only; confirms 72 residual differences still lack valid diagnostic responses and all remain blocked; public evidence aggregate-only; no raw inbox access, valid response intake, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_blocker_audit:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-blocker-audit"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-BLOCKER-AUDIT-001
+  parameter_refs:
+    - PARAM-KMFA-1402
+    - PARAM-KMFA-1403
+    - PARAM-KMFA-1404
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_AUDIT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_blocker_audit.py
+  scope: Outside-scope candidate review residual-difference owner or agent diagnostic blocker audit only; records the second diagnostic blocker observation after readiness recheck while 72 residual differences remain blocked; public evidence aggregate-only; no raw inbox access, valid diagnostic response, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
