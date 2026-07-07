@@ -46,6 +46,19 @@ owner 可读的功能摘要、Roadmap/任务、模型/参数、证据状态、�
 它们不是跳转页，也不是第二套可编辑机器事实源。机器真相仍以
 `docs/governance/` 下的 Lean v2 文件为准。
 
+## v1.2 S01 P3 Requirements Freeze Bridge
+
+旧的 raw/private 默认不入 GitHub 边界被 v1.2 替换。用户授权后，ChatGPT、Codex、后续其他 agent 的 raw data / transcript 可以明文公开进 GitHub。
+
+这个替换只覆盖 transcript/raw archive 的公开备份边界，不覆盖账户控制凭证。
+raw 只读、只追加、不覆盖、不增删改；每次导入需要 manifest/hash 证明。
+凭证不是 transcript，cookies、session tokens、passwords、API keys、private keys、
+OAuth tokens 和 browser credential store 永远不能提交。
+
+v1.2 运行规则：每次 run 最多只完成一个 phase；一个 Stage 的全部 phase 完成后先做
+Stage 复审并修复问题；整体复审并修复后才上传 GitHub main；GitHub main 同步后才重装
+app 入口。
+
 ## Personal Context Architecture
 
 OpenAIDatabase exposes a structured agent-personalization layer:
@@ -62,8 +75,10 @@ OpenAIDatabase exposes a structured agent-personalization layer:
 Future agents that update or sync profile, preference, taste, history, or
 pattern information must update the mapped source files, regenerate
 `data/derived/agent_context/*` and `data/derived/personalization/*`, run the
-evaluation harness, and append a redacted run log. Raw exports, plaintext
-secrets, cookies, browser state, and full transcripts must not be committed.
+evaluation harness, and append a redacted run log. Plaintext secrets, cookies,
+browser state, and credentials must not be committed. Under the v1.2 S01 P3
+freeze, user-authorized raw data / transcript can be committed only through the
+public raw, append-only, manifest/hash path.
 
 It contains the `openai-memory-analysis` skill and a minimal vault layout. It
 ingests manually downloaded OpenAI export ZIPs, generates redacted pending
@@ -77,7 +92,9 @@ value loops, discover future opportunities, and decide what to do next.
 ## Hard Boundaries
 
 - Do not automate ChatGPT login, export download, browser profiles, cookies, or saved-memory writes.
-- Do not commit raw `OpenAI-export.zip` or unredacted raw messages.
+- Do not commit credentials, cookies, browser state, or plaintext secrets.
+  User-authorized raw data / transcript may enter GitHub only under the v1.2
+  public raw, append-only, manifest/hash gate.
 - Do not commit `.local_keys/`, secrets, tokens, passwords, private keys, or cookies.
 - Do not upload plaintext high-risk secrets to GitHub. Finance/trading agents should use committed `secret_ref` metadata only to request authorized local secret access.
 - Generated memory candidates stay `pending` until manually reviewed.
@@ -199,9 +216,10 @@ sources remain registry-only until the selector is explicitly expanded. They
 must not create fake records or appear as empty homepage options. A future
 ingestor should emit canonical redacted derived events with `source_id`,
 `record_id`, `occurred_at`, `record_type`, `summary`, `sensitivity`,
-`memory_tier`, `importance`, `confidence`, and `dedupe_key`. Raw platform
-exports, full messages, media, credentials, cookies, sessions, and plaintext
-high-risk secrets must stay out of GitHub.
+`memory_tier`, `importance`, `confidence`, and `dedupe_key`. Credentials,
+cookies, sessions, browser state, and plaintext high-risk secrets must stay out
+of GitHub. User-authorized raw data / transcript can enter GitHub only through
+the v1.2 public raw, append-only, manifest/hash path.
 
 The app consumes the redacted, derived snapshot
 `data/derived/visualization/memory_atlas.json` through runtime fetch at
@@ -337,11 +355,12 @@ Real Codex local data sync:
   - `data/derived/visualization/memory_atlas.json`: merged redacted snapshot
     consumed by Memory Atlas; select `codex` as the analysis source to isolate
     Codex usage data.
-- The sync output is GitHub-safe by design: no raw transcript, cookies,
-  sessions, local absolute paths, private keys, API keys, broker credentials,
-  or plaintext high-risk secrets. Finance/trading agents discover credentials
-  through `secret_ref` metadata and controlled local resolvers, not GitHub
-  plaintext.
+- The sync output is GitHub-safe by design: no cookies, sessions, local
+  absolute paths, private keys, API keys, broker credentials, or plaintext
+  high-risk secrets. User-authorized raw data / transcript is allowed only under
+  the v1.2 public raw, append-only, manifest/hash gate. Finance/trading agents
+  discover credentials through `secret_ref` metadata and controlled local
+  resolvers, not GitHub plaintext.
 - `scripts/install_codex_weekly_sync.py --load` installs a macOS LaunchAgent
   that runs every Monday, Wednesday, and Friday 03:00 local time, rebuilds the
   Atlas snapshot, exports numeric token usage on every run, exports a session
@@ -542,11 +561,13 @@ separate defaults:
 - Context layer: `context/`, `config/context_sources/`, and
   `data/derived/agent_context/` provide routeable context packs. Agents should
   use `scripts/route_agent_resources.py` and repository-relative entries.
-- Private export layer: raw OpenAI exports, private imports, cookies, sessions,
-  and plaintext secrets are external-first. Local copies must be encrypted,
-  ignored, or kept under ignored paths such as `data/raw/`,
-  `data/raw_encrypted/`, `data/private_imports/`, `private_exports/`,
-  `exports/private/`, and `data/private/`.
+- Raw and private export layer: before v1.2 public raw gates, raw OpenAI exports
+  and private imports are external-first. Under v1.2, user-authorized raw data /
+  transcript can be committed only as append-only public raw with manifest/hash.
+  Cookies, sessions, browser state and plaintext secrets remain external,
+  encrypted, ignored, or kept under ignored paths such as `data/raw_encrypted/`,
+  `data/private_imports/`, `private_exports/`, `exports/private/`, and
+  `data/private/`.
 
 S5PBT02 does not move tracked personal-memory evidence. It binds the current
 paths to Review9 Wave 2 checksum evidence and keeps private values out of the

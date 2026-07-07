@@ -50,11 +50,20 @@ pattern information must:
 If the update target is unclear, log it as `UNKNOWN` with a follow-up task.
 Do not silently drop memory-affecting changes.
 
+## v1.2 S01 P3 Bridge
+
+不要把 taskpack 大段写入 AGENTS.md；这里只保留可执行边界。用户授权后 raw/transcript 可公开进入 GitHub，但必须走 public raw、append-only、manifest/hash gate。
+
+raw 只读、只追加、不覆盖、不增删改。cookies、session tokens、passwords、API keys、private keys、OAuth tokens 和浏览器凭证库不是 transcript，永远不能提交。
+
+每次 run 最多只完成一个 phase。S01 P3 完成后下一步是 S01 复审，不自动进入 S02，不上传 GitHub main，不重装 app 入口。
+
 ## Hard Boundaries
 
-- Do not commit raw OpenAI exports, full transcripts, cookies, browser state,
-  `.local_keys/`, `.env`, plaintext secrets, private keys, or local absolute
-  paths.
+- Do not commit cookies, browser state, `.local_keys/`, `.env`, plaintext
+  secrets, private keys, or local absolute paths. User-authorized raw data /
+  transcript may enter GitHub only through the v1.2 public raw, append-only,
+  manifest/hash gate.
 - Do not automate ChatGPT login, UI scraping, export download, or saved-memory
   writes.
 - Generated memory candidates remain pending until reviewed.
@@ -73,10 +82,12 @@ Do not silently drop memory-affecting changes.
 - `context/` and `config/context_sources/` hold routing and source-context
   contracts; default startup must use route-specific reads instead of broad
   data scans.
-- Private exports are external-first: raw exports and private imports stay
-  outside git, or under ignored/encrypted local paths such as `data/raw/`,
-  `data/raw_encrypted/`, `data/private_imports/`, `private_exports/`,
-  `exports/private/`, and `data/private/`.
+- Raw and private exports are external-first until v1.2 public raw gates are
+  implemented. User-authorized raw data / transcript may be committed only as
+  append-only public raw with manifest/hash. Credentials, cookies, browser
+  state and plaintext secrets stay outside git, encrypted, or under ignored
+  local paths such as `data/raw_encrypted/`, `data/private_imports/`,
+  `private_exports/`, `exports/private/`, and `data/private/`.
 - Default entries must be repository-relative (`AGENTS.md`, route scripts, and
   redacted derived context packs). Local absolute paths are examples only and
   are never default entry points.

@@ -57,9 +57,11 @@ function run(command, args, options = {}) {
     encoding: "utf8",
     stdio: "pipe",
     maxBuffer: 64 * 1024 * 1024,
+    timeout: options.timeout || 0,
   });
   if (result.status !== 0) {
-    const error = new Error(`${command} ${args.join(" ")} failed with ${result.status}`);
+    const reason = result.error?.code === "ETIMEDOUT" ? " timed out" : "";
+    const error = new Error(`${command} ${args.join(" ")} failed${reason} with ${result.status}`);
     error.stdout = result.stdout;
     error.stderr = result.stderr;
     throw error;
@@ -194,17 +196,29 @@ function validateCurrentRepoFacts() {
 
   const agents = readRepoFile("AGENTS.md");
   const readme = readRepoFile("README.md");
+  const agentsOldBoundary = hasAll(agents, ["Do not commit raw OpenAI exports", "Do not automate ChatGPT login"]);
+  const agentsV12Bridge = hasAll(agents, [
+    "v1.2 S01 P3 Bridge",
+    "用户授权后 raw/transcript 可公开进入 GitHub",
+    "cookies、session tokens、passwords、API keys、private keys、OAuth tokens",
+  ]);
+  const readmeOldBoundary = hasAll(readme, ["Do not automate ChatGPT login", "Do not commit raw", "full transcripts must not be committed"]);
+  const readmeV12Bridge = hasAll(readme, [
+    "v1.2 S01 P3 Requirements Freeze Bridge",
+    "用户授权后，ChatGPT、Codex、后续其他 agent 的 raw data / transcript 可以明文公开进 GitHub",
+    "凭证不是 transcript",
+  ]);
   assertCondition(
-    hasAll(agents, ["Do not commit raw OpenAI exports", "Do not automate ChatGPT login"]),
+    agentsOldBoundary || agentsV12Bridge,
     "s01p1_existing_agents_boundary_identified",
-    "AGENTS.md still contains v1.1.x raw/private and ChatGPT automation boundaries that S01 P3 must bridge",
-    "AGENTS.md no longer contains the expected old boundary markers",
+    "AGENTS.md contains either the audited v1.1.x boundary markers or the later S01 P3 bridge that replaced them",
+    "AGENTS.md contains neither the original old-boundary markers nor the S01 P3 bridge",
   );
   assertCondition(
-    hasAll(readme, ["Do not automate ChatGPT login", "Do not commit raw", "full transcripts must not be committed"]),
+    readmeOldBoundary || readmeV12Bridge,
     "s01p1_existing_readme_boundary_identified",
-    "README.md still contains v1.1.x raw/private and ChatGPT automation boundaries that S01 P3 must bridge",
-    "README.md no longer contains the expected old boundary markers",
+    "README.md contains either the audited v1.1.x boundary markers or the later S01 P3 bridge that replaced them",
+    "README.md contains neither the original old-boundary markers nor the S01 P3 bridge",
   );
 }
 
@@ -256,7 +270,10 @@ function validateGitBoundary() {
     { branch, branchName },
   );
 
-  const remoteDev = run("git", ["ls-remote", "--heads", "origin", branchName], { cwd: worktreeRoot }).stdout.trim();
+  const remoteDev = run("git", ["ls-remote", "--heads", "origin", branchName], {
+    cwd: worktreeRoot,
+    timeout: 60000,
+  }).stdout.trim();
   assertCondition(
     remoteDev === "",
     "s01p1_no_remote_development_branch",

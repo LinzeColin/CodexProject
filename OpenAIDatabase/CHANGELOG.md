@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S01 P3 Requirements Freeze
+
+- Added `机器治理/运行门禁/v1.2需求冻结清单.json` for the v1.2 four-line /
+  14-stage requirements freeze.
+- Added `docs/reviews/memory_atlas_v1_2_s01_p3_requirements_freeze.md`.
+- Added `validate:v1.2-s01-p3` for `MA-V12-S01P3` / `ACC-MA-V12-S01P3`.
+- Registered status `phase_s01_p3_requirements_freeze_completed_pending_s01_review`.
+- Bridged README, AGENTS, human entry and run-gate docs so old raw/private
+  boundaries are replaced by user-authorized raw/transcript public GitHub
+  backup, raw append-only rules and credential exclusion.
+- Preserved S01 P3 boundaries: No GitHub main upload in this phase, No S01
+  review, No S02, No app reinstall, No apps/scripts/tests/config move and No
+  raw archive change.
+
 ## Unreleased - Memory Atlas v1.2 S01 P2 Double Plane Creation
 
 - Added `OpenAIDatabase/人类可读/` with `00_快速入口.md` and
