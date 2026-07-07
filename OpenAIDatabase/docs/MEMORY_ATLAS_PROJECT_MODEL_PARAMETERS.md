@@ -1,3 +1,38 @@
+## 91. Memory Atlas v1.1.7 Stage 5 Review
+
+状态：`stage_5_review_passed_pending_stage6_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S5-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage5` 是 Stage 5 review 必跑 validator。
+- Review 覆盖 Phase 5.1、Phase 5.2、Phase 5.3。
+- Phase 5.1 固定 `memory_river_interaction_contract.v1_1_7_stage5_phase1` 和 `memory_river_feedback_contract.v1_1_7_stage5_phase1`。
+- Phase 5.2 固定 `memory_river_c3_spike.v1_1_7_stage5_phase2`。
+- Phase 5.3 固定 `memory_river_integration.v1_1_7_stage5_phase3`、default memory-river 和 legacy rollback。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage5_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S5-REVIEW-001 stage5_review_status = stage_5_review_passed_pending_stage6_no_github_main_upload`
+- `PARAM-MA-V117-S5-REVIEW-002 stage5_review_required_validator = validate:v1.1.7-stage5`
+- `PARAM-MA-V117-S5-REVIEW-003 stage5_review_phase_coverage = Phase 5.1;Phase 5.2;Phase 5.3`
+- `PARAM-MA-V117-S5-REVIEW-004 stage5_review_next_gate = pending Stage 6`
+
+验收信号：
+
+- Stage validator checks Stage 4 review continuity, Phase 5.1 / Phase 5.2 / Phase 5.3 validators, review artifact, records, canonical remote and no-upload boundary。
+- Browser evidence remains covered by `validate:memory-river-spike-browser` and `validate:memory-river-integration-browser`。
+
+Machine-readable boundary summary: Stage 5 Review; MA-V117-S5-REVIEW; ACC-MA-V117-S5-REVIEW; stage_5_review_passed_pending_stage6_no_github_main_upload; validate:v1.1.7-stage5; Phase 5.1; Phase 5.2; Phase 5.3; pending Stage 6; No GitHub main upload; No Stage 6 work; No Data Map work.
+
 ## 90. Memory Atlas v1.1.7 Stage 5 Phase 5.3 Timeline Integration
 
 状态：`phase_5_3_timeline_integration_completed_pending_stage5_review`。

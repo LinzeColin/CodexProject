@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 5 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage5_review.md` to pin the
+  completed Stage 5 review gate.
+- Added `validate:v1.1.7-stage5` to validate Stage 4 continuity, Phase 5.1
+  Interaction Contract, Phase 5.2 C3 River Spike, Phase 5.3 Timeline
+  Integration, records, package script and no-upload boundary.
+- Registered `MA-V117-S5-REVIEW` / `ACC-MA-V117-S5-REVIEW` with status
+  `stage_5_review_passed_pending_stage6_no_github_main_upload`.
+- Marked Stage 5 as review-passed and pending Stage 6 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 6 work, Data Map work, raw/private data read, direct active-memory
+writeback, agent apply, local app install, deploy or GitHub main upload was
+added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.3 Timeline Integration
 
 - Integrated the production Timeline board with
