@@ -1,3 +1,44 @@
+## v1.1.7 Stage 9 Phase 9.1：Cross-board Shared State
+
+状态：`phase_9_1_cross_board_shared_state_completed_pending_stage9_review`。
+
+任务 ID：`MA-V117-S9P01`。
+
+验收 ID：`ACC-MA-V117-S9P01`。
+
+本 phase 将 Cross-board shared state、synchronized filters 和 Inspector
+explanation layer 固定为 production runtime 的可验收接口。Runtime version 为
+`cross_board_shared_state.v1_1_7_stage9_phase1`，Inspector layer version 为
+`inspector_explanation_layer.v1_1_7_stage9_phase1`。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage9_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_cross_board_shared_state_browser.cjs`
+- `docs/product/memory_atlas_v1_1_7_stage9_phase1_cross_board_shared_state_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage9_phase1_cross_board_shared_state_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage9-phase1`
+- `validate:cross-board-shared-state-browser`
+- `ACC-MA-V117-S9P01`
+- Browser gate 覆盖 app root marker、Interaction Lens marker、`window.__memoryAtlasStage9Phase1()`、shared_state_filters、synchronized_filters、Inspector explanation layer、screenshot 和 console safety。
+
+边界：
+
+- No Stage 9 review.
+- No Stage 10.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: Phase 9.1; Cross-board shared state; MA-V117-S9P01; ACC-MA-V117-S9P01; phase_9_1_cross_board_shared_state_completed_pending_stage9_review; validate:v1.1.7-stage9-phase1; validate:cross-board-shared-state-browser; cross_board_shared_state.v1_1_7_stage9_phase1; inspector_explanation_layer.v1_1_7_stage9_phase1; shared_state_filters; synchronized_filters; inspector_explanation_layer; Inspector explanation layer; No Stage 9 review; No Stage 10; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No proposal queue write; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 8 Review：Summary Closure Gate
 
 状态：`stage_8_review_passed_pending_stage9_no_github_main_upload`。

@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 9 Phase 9.1 Cross-board Shared State
+
+- Implemented the Stage 9.1 cross-board shared-state runtime marker with
+  `cross_board_shared_state.v1_1_7_stage9_phase1`.
+- Exposed the Inspector explanation layer marker
+  `inspector_explanation_layer.v1_1_7_stage9_phase1`.
+- This phase covers Cross-board shared state, synchronized filters and
+  Inspector explanation layer only.
+- Added `window.__memoryAtlasStage9Phase1()` to report shared surfaces,
+  `shared_state_filters`, `synchronized_filters`, focus state, Inspector
+  explanation coverage and no-write safety flags.
+- Added `validate:v1.1.7-stage9-phase1` and
+  `validate:cross-board-shared-state-browser`.
+- Registered `MA-V117-S9P01` / `ACC-MA-V117-S9P01` with status
+  `phase_9_1_cross_board_shared_state_completed_pending_stage9_review`.
+
+Stage 9 Phase 9.1 Cross-board shared state only. No Stage 9 review, No Stage
+10, No raw/private data read, No direct active-memory writeback, No proposal
+queue write, No agent apply, No deploy or No GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 8 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage8_review.md` to pin the

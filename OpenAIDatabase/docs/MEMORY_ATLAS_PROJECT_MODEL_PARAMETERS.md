@@ -1,3 +1,43 @@
+## 100. Memory Atlas v1.1.7 Stage 9 Phase 9.1 Cross-board Shared State
+
+状态：`phase_9_1_cross_board_shared_state_completed_pending_stage9_review`。
+
+验收 ID：`ACC-MA-V117-S9P01`。
+
+模型参数：
+
+- Runtime version 固定为 `cross_board_shared_state.v1_1_7_stage9_phase1`。
+- Inspector layer version 固定为 `inspector_explanation_layer.v1_1_7_stage9_phase1`。
+- `validate:v1.1.7-stage9-phase1` 是本 phase 必跑 validator。
+- `validate:cross-board-shared-state-browser` 是本 phase 浏览器 validator。
+- Cross-board shared state 必须覆盖 home、galaxy、notion、roi、obsidian、timeline、contribution、wordcloud、search、summary。
+- synchronized filters 必须包含 `shared_state_filters`、`synchronized_filters` 和 `inspector_explanation_layer`。
+- No Stage 9 review。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage9_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_cross_board_shared_state_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S9P01-001 stage9_phase1_status = phase_9_1_cross_board_shared_state_completed_pending_stage9_review`
+- `PARAM-MA-V117-S9P01-002 stage9_phase1_required_validator = validate:v1.1.7-stage9-phase1`
+- `PARAM-MA-V117-S9P01-003 stage9_phase1_browser_validator = validate:cross-board-shared-state-browser`
+- `PARAM-MA-V117-S9P01-004 shared_state_runtime_version = cross_board_shared_state.v1_1_7_stage9_phase1`
+- `PARAM-MA-V117-S9P01-005 inspector_layer_version = inspector_explanation_layer.v1_1_7_stage9_phase1`
+- `PARAM-MA-V117-S9P01-006 synchronized_outputs = shared_state_filters;synchronized_filters;inspector_explanation_layer`
+- `PARAM-MA-V117-S9P01-007 boundary = No Stage 9 review;No Stage 10;No GitHub main upload;No raw/private read;No direct active-memory writeback;No proposal queue write`
+
+验收信号：
+
+- `window.__memoryAtlasStage9Phase1` reports runtime version, Inspector layer version, surfaces, shared_state_filters, synchronized_filters, focus, revision, Inspector explanation coverage and safety flags.
+- Browser screenshot validates the production runtime after synchronized filter board switching.
+
+Machine-readable boundary summary: Phase 9.1; Cross-board shared state; MA-V117-S9P01; ACC-MA-V117-S9P01; phase_9_1_cross_board_shared_state_completed_pending_stage9_review; validate:v1.1.7-stage9-phase1; validate:cross-board-shared-state-browser; cross_board_shared_state.v1_1_7_stage9_phase1; inspector_explanation_layer.v1_1_7_stage9_phase1; shared_state_filters; synchronized_filters; inspector_explanation_layer; Inspector explanation layer; No Stage 9 review; No Stage 10; No GitHub main upload; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
 ## 99. Memory Atlas v1.1.7 Stage 8 Review
 
 状态：`stage_8_review_passed_pending_stage9_no_github_main_upload`。
