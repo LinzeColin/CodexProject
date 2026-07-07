@@ -1,3 +1,40 @@
+## 114. Memory Atlas v1.2 S03 P2 Credential Exclusion Parameters
+
+状态：`phase_s03_p2_credential_exclusion_completed_pending_s03_p3`。
+
+验收 ID：`ACC-MA-V12-S03P2`。
+
+S03 P2 固定以下参数：
+
+- `MA-V12-S03P2`
+- `validate:v1.2-s03-p2`
+- `memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+- `credential_exclusion_policy.v1_2_s03_p2.json`
+- credential is not memory。
+- `credentials_not_transcript`。
+- credential categories：cookies、session_tokens、passwords、api_keys、private_keys、oauth_tokens、browser_credential_store。
+- S03 P2 完成后下一步为 pending S03 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S03P2-001 phase_status = phase_s03_p2_credential_exclusion_completed_pending_s03_p3`
+- `PARAM-MA-V12-S03P2-002 validator = validate:v1.2-s03-p2`
+- `PARAM-MA-V12-S03P2-003 credential_policy = credential_exclusion_policy.v1_2_s03_p2.json`
+- `PARAM-MA-V12-S03P2-004 scanner_surface = credential_exclusion_hits;assert_no_credentials;redact_credentials_in_text`
+- `PARAM-MA-V12-S03P2-005 credential_boundary = credential is not memory;credentials_not_transcript`
+- `PARAM-MA-V12-S03P2-006 next_gate = pending S03 P3`
+- `PARAM-MA-V12-S03P2-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s03-p2` checks S03 P1 continuity, credential policy,
+  privacy guard runtime, sync/audit integration, ordinary transcript false-positive
+  guard, records, canonical remote, no-upload/no-ui/no-manifest/no-connector/no-raw
+  boundaries and current repo credential scan.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P2 Credential Exclusion; MA-V12-S03P2; ACC-MA-V12-S03P2; phase_s03_p2_credential_exclusion_completed_pending_s03_p3; validate:v1.2-s03-p2; memory_atlas_v1_2_s03_p2_credential_exclusion.md; credential_exclusion_policy.v1_2_s03_p2.json; credential is not memory; S03 P2; pending S03 P3; No GitHub main upload in this phase; No S03 P3 manifest generation; No connector implementation; No complex UI; No real transcript ingestion; No public raw file mutation.
+
 ## 113. Memory Atlas v1.2 S03 P1 Public Raw Path Parameters
 
 状态：`phase_s03_p1_public_raw_path_defined_pending_s03_p2`。

@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S03 P1。任务 ID 为 `MA-V12-S03P1`，验收 ID 为
-`ACC-MA-V12-S03P1`，validator 为 `validate:v1.2-s03-p1`。
+当前阶段是 S03 P2。任务 ID 为 `MA-V12-S03P2`，验收 ID 为
+`ACC-MA-V12-S03P2`，validator 为 `validate:v1.2-s03-p2`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -62,6 +62,24 @@ S03 P1 gate：
 - hash drift fail 规则已定义。
 
 No GitHub main upload in this phase。
-不实现 connector，不导入真实 transcript，不实现 S03 P2 credential gate，不生成 S03 P3 manifest ledger。
+不实现 connector，不导入真实 transcript，不生成 S03 P3 manifest ledger。
 
-下一步是 S03 P2；本 phase 不重装 app。
+前置 S03 P1 已通过：`MA-V12-S03P1` / `ACC-MA-V12-S03P1` /
+`validate:v1.2-s03-p1`。
+
+S03 P2 产物：
+
+- `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
+- `scripts/privacy_guard.py`
+- `scripts/sync_codex_memory_data.py`
+- `人类可读/07_凭证排除说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+
+S03 P2 gate：
+
+- credential is not memory。
+- `credentials_not_transcript` 已接入同步与审计。
+- 普通 transcript 不被凭证门禁拦截。
+- 凭证 pattern 导致 gate fail。
+
+下一步是 S03 P3；本 phase 不重装 app。

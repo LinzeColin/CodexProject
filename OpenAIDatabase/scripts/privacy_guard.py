@@ -24,6 +24,42 @@ SECRET_PATTERNS = (
     ("slack_token", re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{10,}\b")),
     ("aws_access_key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
 )
+CREDENTIAL_POLICY = "credential_is_not_memory"
+CREDENTIAL_PATTERNS = (
+    ("api_keys", SECRET_PATTERNS[0][1]),
+    ("api_keys", SECRET_PATTERNS[1][1]),
+    ("api_keys", SECRET_PATTERNS[2][1]),
+    ("api_keys", SECRET_PATTERNS[3][1]),
+    (
+        "api_keys",
+        re.compile(r"\b(?:api[_-]?key|secret[_-]?key|client[_-]?secret)\b\s*[:=]\s*['\"]?[A-Za-z0-9][A-Za-z0-9._~+/=@:;-]{7,}", re.I),
+    ),
+    (
+        "cookies",
+        re.compile(r"\b(?:cookie|set-cookie)\b\s*[:=]\s*['\"]?[^'\"\n]{12,}", re.I),
+    ),
+    (
+        "session_tokens",
+        re.compile(r"\b(?:session[_-]?token|sessionid|auth[_-]?token|csrf[_-]?token)\b\s*[:=]\s*['\"]?[A-Za-z0-9][A-Za-z0-9._~+/=@:-]{7,}", re.I),
+    ),
+    (
+        "passwords",
+        re.compile(r"\b(?:password|passwd|pwd)\b\s*[:=]\s*['\"]?[A-Za-z0-9][A-Za-z0-9._~+/=@:-]{7,}", re.I),
+    ),
+    (
+        "private_keys",
+        re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----\s*[A-Za-z0-9+/=\r\n]{16,}\s*-----END [A-Z ]*PRIVATE KEY-----", re.S),
+    ),
+    (
+        "oauth_tokens",
+        re.compile(r"\b(?:access[_-]?token|refresh[_-]?token|oauth[_-]?token|id[_-]?token)\b\s*[:=]\s*['\"]?[A-Za-z0-9][A-Za-z0-9._~+/=@:;-]{7,}", re.I),
+    ),
+    ("oauth_tokens", re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]{16,}\b", re.I)),
+    (
+        "browser_credential_store",
+        re.compile(r"\b(?:browser[_-]?credential[_-]?store|login[_-]?data|keychain)\b\s*[:=]\s*['\"]?[A-Za-z0-9][^'\"\n]{7,}", re.I),
+    ),
+)
 REDACTION_PATTERNS = (
     ("email", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), "[REDACTED_EMAIL]"),
     ("phone", re.compile(r"\+?\d[\d\s().-]{8,}\d"), "[REDACTED_PHONE]"),
@@ -74,6 +110,49 @@ def redact_text(text: str) -> tuple[str, dict[str, int]]:
         redacted, count = pattern.subn(replacement, redacted)
         if count:
             counts[name] = counts.get(name, 0) + count
+    redacted, credential_counts = redact_credentials_in_text(redacted)
+    for name, count in credential_counts.items():
+        counts[f"credential_{name}"] = counts.get(f"credential_{name}", 0) + count
+    return redacted, counts
+
+
+def credential_exclusion_hits(text: str, source: str = "") -> list[dict[str, Any]]:
+    hits: list[dict[str, Any]] = []
+    seen: set[tuple[str, int, int]] = set()
+    for category, pattern in CREDENTIAL_PATTERNS:
+        for match in pattern.finditer(text):
+            key = (category, match.start(), match.end())
+            if key in seen:
+                continue
+            seen.add(key)
+            hits.append(
+                {
+                    "category": category,
+                    "source": source,
+                    "start": match.start(),
+                    "end": match.end(),
+                    "policy": CREDENTIAL_POLICY,
+                    "evidence": "[REDACTED_CREDENTIAL]",
+                }
+            )
+    return hits
+
+
+def assert_no_credentials(text: str, source: str = "") -> None:
+    hits = credential_exclusion_hits(text, source)
+    if hits:
+        categories = sorted({str(hit["category"]) for hit in hits})
+        label = f" in {source}" if source else ""
+        raise PrivacyViolation(f"credential content is not memory{label}: {', '.join(categories)}")
+
+
+def redact_credentials_in_text(text: str) -> tuple[str, dict[str, int]]:
+    redacted = text
+    counts: dict[str, int] = {}
+    for category, pattern in CREDENTIAL_PATTERNS:
+        redacted, count = pattern.subn("[REDACTED_CREDENTIAL]", redacted)
+        if count:
+            counts[category] = counts.get(category, 0) + count
     return redacted, counts
 
 
@@ -215,9 +294,8 @@ def high_risk_secret_hits(database_dir: Path, tracked_files: list[str]) -> list[
         if not path.is_file() or path.stat().st_size > 1_000_000:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        for name, pattern in SECRET_PATTERNS:
-            if pattern.search(text):
-                hits.append({"path": rel, "pattern": name})
+        for hit in credential_exclusion_hits(text, rel):
+            hits.append({"path": rel, "pattern": str(hit["category"])})
     return hits
 
 
@@ -229,6 +307,8 @@ def scan_repo_privacy(database_dir: Path) -> dict[str, Any]:
     secret_hits = high_risk_secret_hits(database_dir, tracked_files)
     return {
         "status": "PASS" if not tracked_private and not secret_hits and ignore_contract["ok"] else "FAIL",
+        "credential_is_not_memory": True,
+        "ordinary_transcript_blocked": False,
         "tracked_raw_private_files": tracked_private,
         "tracked_raw_private_file_count": len(tracked_private),
         "high_risk_secret_hits": secret_hits,

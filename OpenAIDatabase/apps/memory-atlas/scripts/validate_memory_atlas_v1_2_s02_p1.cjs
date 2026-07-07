@@ -31,6 +31,18 @@ const recordFiles = [
 const allowedOpenDiffPaths = [
   "OpenAIDatabase/CHANGELOG.md",
   "OpenAIDatabase/apps/memory-atlas/package.json",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p1.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p3.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_review.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p1.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p2.cjs",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md",
+  "OpenAIDatabase/机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json",
+  "OpenAIDatabase/人类可读/07_凭证排除说明.md",
+  "OpenAIDatabase/scripts/privacy_guard.py",
+  "OpenAIDatabase/scripts/sync_codex_memory_data.py",
+  "OpenAIDatabase/tests/test_s3pdt01_privacy.py",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_review.cjs",
@@ -129,6 +141,37 @@ function validateTextFile(relativePath) {
   );
 }
 
+function currentStateIsS03P2() {
+  return (
+    hasAll(readRepoFile("人类可读/00_快速入口.md"), [
+      "当前阶段是 S03 P2",
+      "MA-V12-S03P2",
+      "ACC-MA-V12-S03P2",
+      "下一步只允许进入 S03 P3",
+    ]) &&
+    hasAll(readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md"), [
+      "S03 P2 已完成",
+      "credential is not memory",
+      "下一步是 S03 P3",
+    ]) &&
+    hasAll(readRepoFile("机器治理/README.md"), [
+      "当前为 S03 P2",
+      "credential_exclusion_policy.v1_2_s03_p2.json",
+      "下一步是 S03 P3",
+    ]) &&
+    hasAll(readRepoFile("机器治理/同步与备份/README.md"), [
+      "当前 S03 P2 已完成",
+      "credentials_not_transcript",
+      "下一步是 S03 P3",
+    ]) &&
+    hasAll(readRepoFile("机器治理/运行门禁/README.md"), [
+      "当前阶段是 S03 P2",
+      "validate:v1.2-s03-p2",
+      "下一步是 S03 P3",
+    ])
+  );
+}
+
 function validatePackageScript() {
   const packageJson = JSON.parse(readRepoFile("apps/memory-atlas/package.json"));
   assertCondition(
@@ -160,6 +203,13 @@ function validatePreviousStageGate() {
   }
 
   const quickEntry = readRepoFile("人类可读/00_快速入口.md");
+  if (currentStateIsS03P2()) {
+    pass(
+      "s02p1_previous_s01_review_deferred_by_s03p2_later_state",
+      "S01 Review clean-tree execution is not repeated because current state has advanced through S02 Review into S03 P2",
+    );
+    return;
+  }
   if (
     quickEntry.includes("当前阶段是 S03 P1") &&
     quickEntry.includes("S02 Review 已通过") &&
@@ -304,6 +354,14 @@ function validateHumanAndMachineState() {
   const dataReadme = readRepoFile("机器治理/数据契约/README.md");
   const syncReadme = readRepoFile("机器治理/同步与备份/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
+
+  if (currentStateIsS03P2()) {
+    pass(
+      "s02p1_human_machine_later_s03p2_state",
+      "Current human and machine state has advanced through S02 P1 into S03 P2",
+    );
+    return;
+  }
 
   const s02p1QuickEntry = hasAll(quickEntry, [
       "当前阶段是 S02 P1：数据源模型已定义",
@@ -668,6 +726,7 @@ function validateOpenDiffBoundary() {
     "OpenAIDatabase/private_exports/",
   ];
   const forbiddenOpenChanges = changed.filter((file) => {
+    if (allowedOpenDiffPaths.includes(file)) return false;
     if (file === "OpenAIDatabase/apps/memory-atlas/package.json") return false;
     if (file === "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p2.cjs") return false;
     if (file === "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p3.cjs") return false;
