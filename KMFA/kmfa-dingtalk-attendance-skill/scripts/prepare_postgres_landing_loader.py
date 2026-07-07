@@ -17,6 +17,7 @@ TABLES = [
     "attendance_day_fact",
     "payroll_baseline_attendance",
 ]
+SUPPORTED_TABLES = set(TABLES)
 
 SINGLE_ROW_FILES = {
     "policy_version": "policy_version.json",
@@ -199,10 +200,10 @@ ON CONFLICT (target_month, employee_internal_id, work_date, baseline_version) DO
     raise SystemExit(f"unsupported table: {table}")
 
 
-def write_payloads(bundle_dir: Path, payload_dir: Path) -> dict[str, dict[str, Any]]:
+def write_payloads(bundle_dir: Path, payload_dir: Path, tables: list[str]) -> dict[str, dict[str, Any]]:
     payload_dir.mkdir(parents=True, exist_ok=True)
     result: dict[str, dict[str, Any]] = {}
-    for table in TABLES:
+    for table in tables:
         rows = load_table_rows(bundle_dir, table)
         if not rows:
             raise SystemExit(f"{table} has no rows")
@@ -214,7 +215,7 @@ def write_payloads(bundle_dir: Path, payload_dir: Path) -> dict[str, dict[str, A
     return result
 
 
-def write_sql(path: Path, payload_info: dict[str, dict[str, Any]]) -> None:
+def write_sql(path: Path, payload_info: dict[str, dict[str, Any]], tables: list[str]) -> None:
     lines = [
         "-- KMFA attendance PostgreSQL load plan generated offline.",
         "-- Review and run only against an explicitly approved PostgreSQL target.",
@@ -224,7 +225,7 @@ def write_sql(path: Path, payload_info: dict[str, dict[str, Any]]) -> None:
         "SET search_path TO kmfa_attendance, public;",
         "",
     ]
-    for table in TABLES:
+    for table in tables:
         temp = temp_name(table)
         payload_path = Path(str(payload_info[table]["path"])).resolve()
         lines.extend([
@@ -253,16 +254,21 @@ def main() -> int:
     if manifest.get("database_mutation_performed") is not False or manifest.get("postgres_connection_used") is not False:
         raise SystemExit("landing bundle must be offline before generating a load plan")
     load_order = load_json(bundle_dir / "load_order.json")
-    if load_order.get("tables") != TABLES:
-        raise SystemExit("load_order.json does not match approved loader order")
+    tables = load_order.get("tables")
+    if not isinstance(tables, list) or not tables:
+        raise SystemExit("load_order.json must contain a non-empty tables list")
+    if any(table not in SUPPORTED_TABLES for table in tables):
+        raise SystemExit("load_order.json contains unsupported tables")
+    if tables != [table for table in TABLES if table in tables]:
+        raise SystemExit("load_order.json does not follow approved loader order")
 
-    payload_info = write_payloads(bundle_dir, out_dir / "postgres_load_payloads")
+    payload_info = write_payloads(bundle_dir, out_dir / "postgres_load_payloads", tables)
     sql_path = out_dir / "postgres_load_plan.sql"
-    write_sql(sql_path, payload_info)
+    write_sql(sql_path, payload_info, tables)
     result = {
         "status": "READY",
         "mode": "offline_postgres_load_plan",
-        "tables": TABLES,
+        "tables": tables,
         "bundle_dir": str(bundle_dir),
         "postgres_load_plan_sql": str(sql_path),
         "payloads": payload_info,

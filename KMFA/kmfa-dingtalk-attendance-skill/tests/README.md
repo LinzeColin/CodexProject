@@ -8,6 +8,7 @@ python3 tests/test_database_dry_run.py
 python3 tests/test_database_landing_bundle.py
 python3 tests/test_raw_archive_replay.py
 python3 tests/test_stage2_source_from_raw_replay.py
+PYTHONPATH=tests:scripts:. python3 tests/test_preconsensus_database_proof.py
 ```
 
 The test suite verifies:
@@ -24,3 +25,4 @@ The test suite verifies:
 10. Offline replay stage-2 artifacts fail closed on day 5 until database transaction commit and verification gates are explicitly true.
 11. Private raw archive replay can materialize day facts with raw detail linkage and a stable canonical replay hash without exposing names, DingTalk IDs, raw rows, or local paths in summary output.
 12. A private raw replay day-fact/linkage bundle can materialize a Stage-2 source snapshot and resolver source adapter without live DWS, database mutation, employee plaintext, or raw DingTalk IDs.
+13. Pre-consensus Stage-2 sources can generate a PostgreSQL landing bundle before payroll acceptance, and a fail-closed non-production execution proof can promote only the database gates used by Stage-2 consensus.

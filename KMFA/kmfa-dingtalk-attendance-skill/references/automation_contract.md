@@ -59,6 +59,14 @@ The current portable stage-2 runner is fail-closed:
   Stage-2 source snapshot in the run folder without live DWS or database
   mutation. The resulting source keeps database commit/verification gates
   false until an approved non-production PostgreSQL execution proof exists.
+- To satisfy the database gates, run
+  `scripts/prepare_preconsensus_postgres_landing_bundle.py`, generate and
+  guard-execute the PostgreSQL load plan against a non-production target, then
+  run `scripts/apply_stage2_database_proof.py` to produce the DB-verified
+  Stage-2 source used by `scripts/write_stage2_run_artifacts.py`.
+- If no DB execution proof is available, keep
+  `database_transaction_committed=false` and
+  `database_transaction_verified=false`; day-5 consensus must fail closed.
 - `scripts/resolve_stage2_source.py` records `source_adapter_status.json` for
   each eligible run, including fail-closed DWS safety status.
 - If `KMFA_STAGE2_SOURCE_MODE=dws_live` is set but `KMFA_S19_ALLOW_DWS_COMMANDS`

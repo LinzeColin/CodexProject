@@ -96,6 +96,8 @@ Current offline bridge:
 - `scripts/prepare_stage2_source_from_raw_replay.py` converts that private day-fact bundle into a Stage-2 source snapshot.
 - `scripts/resolve_stage2_source.py` can use `KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact` and `KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR` during eligible evening runs.
 - This bridge does not prove PostgreSQL mutation: `database_transaction_committed` and `database_transaction_verified` remain false until an approved non-production PostgreSQL execution proof exists.
+- To break the acceptance/DB-proof loop, `scripts/prepare_preconsensus_postgres_landing_bundle.py` can build a pre-consensus PostgreSQL landing bundle from a Stage-2 source before payroll acceptance.
+- After the fail-closed PostgreSQL execution guard produces a non-production proof, `scripts/apply_stage2_database_proof.py` can write a DB-verified Stage-2 source whose database gates are true. Only then may `scripts/write_stage2_run_artifacts.py` produce a run manifest that can pass day-5 consensus DB gates.
 
 SQLite remains a private transition ledger/cache, not the final payroll database.
 

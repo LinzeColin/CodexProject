@@ -167,6 +167,68 @@ keeps `database_transaction_committed=false` and
 `database_transaction_verified=false`, so day-5 consensus remains fail-closed
 until an approved non-production database execution proof exists.
 
+Generate a pre-consensus PostgreSQL landing bundle from that Stage-2 source:
+
+```bash
+python3 scripts/prepare_preconsensus_postgres_landing_bundle.py \
+  --source-json "$KMFA_PRIVATE_RUNTIME/stage2_source/202607/source_snapshot.json" \
+  --target-month 202607 \
+  --out-dir "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607" \
+  --print-json
+```
+
+This bundle intentionally contains only the pre-consensus tables needed to
+prove database landing before payroll acceptance:
+
+```text
+policy_version
+canonical_month_snapshot
+attendance_day_fact
+```
+
+It does not create `stage2_consensus_certificate` or
+`payroll_baseline_attendance` rows.
+
+Generate, validate, and guard-execute its PostgreSQL load plan the same way as
+the accepted bundle, but only against an approved non-production target:
+
+```bash
+python3 scripts/prepare_postgres_landing_loader.py \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607" \
+  --print-json
+
+python3 scripts/validate_postgres_load_plan.py \
+  --schema database/postgres_schema.sql \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607" \
+  --print-json
+
+python3 scripts/execute_postgres_load_plan.py \
+  --schema database/postgres_schema.sql \
+  --views database/views_payroll_baseline.sql \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607" \
+  --execute \
+  --acknowledge-nonprod-mutation \
+  --print-json > "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607/postgres_execution_proof.json"
+```
+
+Apply the non-production execution proof to the Stage-2 source:
+
+```bash
+python3 scripts/apply_stage2_database_proof.py \
+  --source-json "$KMFA_PRIVATE_RUNTIME/stage2_source/202607/source_snapshot.json" \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607" \
+  --execution-proof-json "$KMFA_PRIVATE_RUNTIME/db_landing_preconsensus/202607/postgres_execution_proof.json" \
+  --out-json "$KMFA_PRIVATE_RUNTIME/stage2_source/202607/source_snapshot.db_verified.json" \
+  --print-json
+```
+
+Only this DB-verified source may make Stage-2 run manifests carry
+`database_transaction_committed=true` and
+`database_transaction_verified=true`.
+The execution proof JSON is intentionally report-redacted: it may prove guard
+status, `psql` invocation, target environment, and return code, but it must not
+print the raw PostgreSQL DSN or absolute local bundle paths.
+
 The command writes private `attendance_day_fact.jsonl`,
 `raw_detail_linkage.jsonl`, a canonical replay snapshot, and a public-safe
 summary manifest. The summary must show every derived day fact links to raw

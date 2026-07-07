@@ -120,7 +120,11 @@ def main() -> int:
     grade = quality_grade(location_count, trajectory_count, unresolved)
     gates = quality_gates(snapshot, location_count)
     source_hash = "sha256:" + hashlib.sha256(source.read_bytes()).hexdigest()
-    marker = args.database_transaction_marker or f"offline-replay:{digest.removeprefix('sha256:')[:16]}"
+    marker = (
+        args.database_transaction_marker
+        or str(snapshot.get("database_transaction_marker") or "")
+        or f"offline-replay:{digest.removeprefix('sha256:')[:16]}"
+    )
 
     manifest = {
         "run_id": f"{args.target_month}-stage2-run-{args.run_index:02d}",

@@ -32,6 +32,7 @@ schemas/canonical_snapshot.schema.json
 schemas/kmfa_attendance_config.schema.json
 schemas/payroll_baseline_certificate.schema.json
 schemas/stage2_run_manifest.schema.json
+scripts/apply_stage2_database_proof.py
 scripts/canonicalize_attendance_snapshot.py
 scripts/execute_postgres_load_plan.py
 scripts/inspect_raw_archive_month.py
@@ -41,6 +42,7 @@ scripts/month_gate.py
 scripts/preflight.sh
 scripts/prepare_database_landing_bundle.py
 scripts/prepare_postgres_landing_loader.py
+scripts/prepare_preconsensus_postgres_landing_bundle.py
 scripts/prepare_raw_replay_day_fact_bundle.py
 scripts/prepare_stage2_source_from_raw_replay.py
 scripts/render_stage2_certificate.py
@@ -65,6 +67,7 @@ tests/fixtures/minimal_snapshot_b_identical.json
 tests/fixtures/minimal_snapshot_c_diff.json
 tests/test_database_dry_run.py
 tests/test_database_landing_bundle.py
+tests/test_preconsensus_database_proof.py
 tests/test_raw_archive_replay.py
 tests/test_stage2_consensus.py
 tests/test_stage2_source_from_raw_replay.py
