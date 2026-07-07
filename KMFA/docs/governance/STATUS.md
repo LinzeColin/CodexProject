@@ -644,3 +644,15 @@
 - result: all 48 application blockers remain unresolved because no authorized source reference, owner exclusion, formula mapping or non-numeric mapping has been applied; no raw-to-processed value consistency is claimed.
 - boundary: raw inbox access/mutation, authoritative binding, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_THRESHOLD_RECHECK_AFTER_RAW_REFRESH`, one phase only; no Stage review or upload.
+
+## 2026-07-08 Latest - V014 Authorized Source Reference Or Exclusion Application Blocker Threshold Recheck After Raw Refresh
+
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_THRESHOLD_RECHECK_AFTER_RAW_REFRESH`
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-threshold-recheck-after-raw-refresh`
+- status: `completed_validated_local_only_authorized_source_reference_or_exclusion_application_blocker_threshold_recheck_after_raw_refresh_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_THRESHOLD_RECHECK_AFTER_RAW_REFRESH/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_threshold_recheck_after_raw_refresh.py --require-private-threshold`
+- locked counts: `source_application_blocker_audit_item_count=48`, `source_private_application_blocker_audit_record_count=48`, `prior_application_blocker_observation_count=1`, `application_blocker_observation_count=2`, `application_blocked_audit_threshold_met=false`, `application_blocker_threshold_recheck_item_count=48`, `source_reference_or_owner_exclusion_threshold_blocker_count=40`, `formula_or_non_numeric_mapping_threshold_blocker_count=8`, `comparison_retry_ready_after_threshold_recheck_count=0`, `unresolved_difference_count=72`
+- result: observation 2 is recorded for all 48 private application blockers; strict blocked threshold is not met and no binding or comparison retry records are ready.
+- boundary: raw inbox access/mutation, authoritative binding, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_RAW_REFRESH`, one phase only; no Stage review or upload.

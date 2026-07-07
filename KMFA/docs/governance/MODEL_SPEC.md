@@ -1635,3 +1635,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_application_readiness_item_count=48, source_application_ready_item_count=0, source_application_blocker_item_count=48, application_blocker_audit_item_count=48, application_blocker_audit_ready_item_count=0, source_reference_or_owner_exclusion_audit_blocker_count=40, formula_or_non_numeric_mapping_audit_blocker_count=8, active_authoritative_decision_count=0, binding_ready_after_application_blocker_audit_count=0 and comparison_retry_ready_after_application_blocker_audit_count=0 prove all private application blockers remain unresolved.
 - gate: `NO_GO`; authoritative_binding_application_ready=false, raw_to_processed_value_comparison_ready=false, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private audit diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.
+
+## V014 Residual Difference Authorized Source Reference Or Exclusion Application Blocker Threshold Recheck After Raw Refresh
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKER-THRESHOLD-RECHECK-AFTER-RAW-REFRESH-001`
+- parameter_ids: `PARAM-KMFA-1513`, `PARAM-KMFA-1514`, `PARAM-KMFA-1515`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_THRESHOLD_RECHECK_AFTER_RAW_REFRESH`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-threshold-recheck-after-raw-refresh`
+- rule: source_application_blocker_audit_item_count=48, source_application_blocker_audit_ready_item_count=0, source_private_application_blocker_audit_record_count=48, prior_application_blocker_observation_count=1 and application_blocker_observation_count=2 prove this phase records the second blocker observation only.
+- gate: `NO_GO`; application_blocked_audit_threshold_met=false, binding_ready_after_threshold_recheck_count=0, comparison_retry_ready_after_threshold_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private threshold diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.
