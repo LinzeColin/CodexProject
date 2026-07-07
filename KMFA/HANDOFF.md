@@ -401,3 +401,15 @@ git diff --check -- README.md governance/projects.yaml KMFA
 ## 下一步
 
 下一步只能另起 run work 执行 `v0.1.3 S10-P3 report export replay` 或用户明确指定的单一 phase；GitHub main upload 必须等 v1.3 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。本轮 S10-P2 未上传 GitHub；不得把旧 Stage 4/5/6/7/8/9/10 upload gate 作为 active next step，也不得推进 Stage 10 review、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行。
+
+## S19 更新 - 2026-07-07
+
+- 当前目标新增为 `S19｜每日早晚钉钉考勤检查`。
+- 自动化名称固定：`每日早晚钉钉考勤检查`。
+- 运行时间：每天北京时间 `08:35` 晨报、`18:15` 晚报。
+- 私有归档根目录：`/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`，只保留年月一级目录，文件直接落在当月目录下。
+- 张霖泽 DingTalk userId：`1iv-1t2oesv2yd`；老板 userId 或小群配置仍需本机私有配置。
+- GitHub 仅保存代码、schema、policy、prompt、manifest、validator 和 public-safe evidence；真实员工考勤明文、SQLite、raw API response、报告正文和凭据材料不得提交。
+- 缺真实钉钉权限时，`healthcheck.py --config-only` 和 `run_attendance.py` 必须返回 `CONFIG_MISSING`，不得生成样例员工或假打卡。
+- 关键文件：`KMFA/tools/dingtalk_attendance/`、`KMFA/metadata/dingtalk_attendance/`、`KMFA/tests/test_dingtalk_attendance.py`、`KMFA/stage_artifacts/S19_DINGTALK_ATTENDANCE/`。
+- 下一步：若本轮全部验证、泄密扫描、open PR/open issue、branch/status/worktree 检查通过，才允许一次性 commit 并 push GitHub main；不得留下 PR、issue、branch 或 worktree。

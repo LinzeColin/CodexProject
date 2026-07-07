@@ -18,3 +18,7 @@ data/raw/
 *.m4v
 *.zip
 **/90_用户原始上传数据_仅本地私有_禁止提交GitHub/
+*.env.local
+metadata/dingtalk_attendance/private_runtime/*
+!metadata/dingtalk_attendance/private_runtime/README.md
+!metadata/dingtalk_attendance/private_runtime/.gitkeep
