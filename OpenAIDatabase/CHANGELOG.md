@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 6 Phase 6.1 Structure Model
+
+- Added `docs/product/data_map_iteration_contract.md` with the Stage 6 Phase
+  6.1 Data Map Structure Model contract.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage6_phase1_data_map_structure_acceptance.md`.
+- Integrated the production Data Guide with
+  `data_map_structure_model.v1_1_7_stage6_phase1` and
+  `data_map_relation_explanation.v1_1_7_stage6_phase1`.
+- Reframed the Data Guide into four layers: `source_layer`, `profile_layer`,
+  `project_decision_layer` and `action_opportunity_layer`.
+- Added clickable relation explanation UI for source, strength, evidence and
+  time, with `window.__memoryAtlasStage6Phase1()` safety metadata.
+- Added `validate:v1.1.7-stage6-phase1` and
+  `validate:data-map-structure-browser`.
+- Registered `MA-V117-S6P01` / `ACC-MA-V117-S6P01` with status
+  `phase_6_1_data_map_structure_model_completed_pending_stage6_review`.
+
+Phase 6.1 Structure Model and Relation Explanation only. No Phase 6.2, No
+proposal editing, No raw/private data read, No direct active-memory writeback,
+No agent apply, No deploy or No GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 5 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage5_review.md` to pin the

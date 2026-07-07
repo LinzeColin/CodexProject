@@ -1,3 +1,45 @@
+## 92. Memory Atlas v1.1.7 Stage 6 Phase 6.1 Structure Model
+
+状态：`phase_6_1_data_map_structure_model_completed_pending_stage6_review`。
+
+验收 ID：`ACC-MA-V117-S6P01`。
+
+模型参数：
+
+- Structure Model version 固定为 `data_map_structure_model.v1_1_7_stage6_phase1`。
+- Relation Explanation version 固定为 `data_map_relation_explanation.v1_1_7_stage6_phase1`。
+- `validate:v1.1.7-stage6-phase1` 是本 phase 必跑 validator。
+- `validate:data-map-structure-browser` 是本 phase 浏览器 validator。
+- 四层结构：`source_layer`, `profile_layer`, `project_decision_layer`, `action_opportunity_layer`。
+- 每层必须声明 node types、fields、interaction、detail entry。
+- Relation fields: `source`, `strength`, `evidence`, `time`。
+- No Phase 6.2。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_data_map_structure_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S6P01-001 stage6_phase1_status = phase_6_1_data_map_structure_model_completed_pending_stage6_review`
+- `PARAM-MA-V117-S6P01-002 stage6_phase1_required_validator = validate:v1.1.7-stage6-phase1`
+- `PARAM-MA-V117-S6P01-003 stage6_phase1_browser_validator = validate:data-map-structure-browser`
+- `PARAM-MA-V117-S6P01-004 structure_model_version = data_map_structure_model.v1_1_7_stage6_phase1`
+- `PARAM-MA-V117-S6P01-005 relation_explanation_version = data_map_relation_explanation.v1_1_7_stage6_phase1`
+- `PARAM-MA-V117-S6P01-006 structure_layers = source_layer;profile_layer;project_decision_layer;action_opportunity_layer`
+- `PARAM-MA-V117-S6P01-007 relation_fields = source;strength;evidence;time`
+
+验收信号：
+
+- Static validator checks Stage 5 review continuity, Data Map contract, production runtime hooks, browser validator contract, records, canonical remote and no-upload boundary。
+- Browser validator checks four layers, relation click explanation, `window.__memoryAtlasStage6Phase1`, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Phase 6.1; Structure Model; Relation Explanation; MA-V117-S6P01; ACC-MA-V117-S6P01; phase_6_1_data_map_structure_model_completed_pending_stage6_review; validate:v1.1.7-stage6-phase1; validate:data-map-structure-browser; data_map_structure_model.v1_1_7_stage6_phase1; data_map_relation_explanation.v1_1_7_stage6_phase1; source_layer; profile_layer; project_decision_layer; action_opportunity_layer; No Phase 6.2; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
 ## 91. Memory Atlas v1.1.7 Stage 5 Review
 
 状态：`stage_5_review_passed_pending_stage6_no_github_main_upload`。

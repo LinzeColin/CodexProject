@@ -1,3 +1,37 @@
+## v1.1.7 Stage 6 Phase 6.1：Data Map Structure Model
+
+状态：`phase_6_1_data_map_structure_model_completed_pending_stage6_review`。
+
+任务 ID：`MA-V117-S6P01`。
+
+验收 ID：`ACC-MA-V117-S6P01`。
+
+本 phase 将 production Data Guide 固定为
+`data_map_structure_model.v1_1_7_stage6_phase1`，并加入
+`data_map_relation_explanation.v1_1_7_stage6_phase1`。四层结构为
+`source_layer`、`profile_layer`、`project_decision_layer`、
+`action_opportunity_layer`。每层记录 node types、fields、interaction 和
+detail entry。Relation Explanation 支持点击关系后展示 source、strength、
+evidence、time，并保持 default collapsed fallback。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_data_map_structure_browser.cjs`
+- `docs/product/data_map_iteration_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage6_phase1_data_map_structure_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage6-phase1`
+- `validate:data-map-structure-browser`
+- `ACC-MA-V117-S6P01`
+- Browser gate 覆盖四层结构、relation click、debug signal、screenshot 和 console safety。
+
+Machine-readable boundary summary: Phase 6.1; Structure Model; Relation Explanation; MA-V117-S6P01; ACC-MA-V117-S6P01; phase_6_1_data_map_structure_model_completed_pending_stage6_review; validate:v1.1.7-stage6-phase1; validate:data-map-structure-browser; data_map_structure_model.v1_1_7_stage6_phase1; data_map_relation_explanation.v1_1_7_stage6_phase1; source_layer; profile_layer; project_decision_layer; action_opportunity_layer; No Phase 6.2; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 5 Review：Memory River Gate
 
 状态：`stage_5_review_passed_pending_stage6_no_github_main_upload`。

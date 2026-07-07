@@ -84,6 +84,8 @@ const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" a
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
 const STARFIELD_INTEGRATION_VERSION = "memory_starfield_integration.v1_1_7_stage4_phase3" as const;
+const DATA_MAP_STRUCTURE_MODEL_VERSION = "data_map_structure_model.v1_1_7_stage6_phase1" as const;
+const DATA_MAP_RELATION_EXPLANATION_VERSION = "data_map_relation_explanation.v1_1_7_stage6_phase1" as const;
 
 declare global {
   interface Window {
@@ -119,6 +121,19 @@ declare global {
         directActiveMemoryWriteback: false;
         proposalWrite: false;
       };
+    };
+    __memoryAtlasStage6Phase1?: () => {
+      structureModelVersion: typeof DATA_MAP_STRUCTURE_MODEL_VERSION;
+      relationExplanationVersion: typeof DATA_MAP_RELATION_EXPLANATION_VERSION;
+      layers: DataMapStructureLayerId[];
+      visibleNodeCount: number;
+      relationCount: number;
+      selectedRelationId: string | null;
+      defaultCollapsed: true;
+      boundary: "No Phase 6.2 editing";
+      rawPrivateDataIncluded: false;
+      directActiveMemoryWriteback: false;
+      proposalWrite: false;
     };
   }
 }
@@ -1821,8 +1836,42 @@ function DataGuideMap({
   onSelectNode: (node: AtlasNode) => void;
 }) {
   const display = useMemo(() => buildDataGuideLayout(nodes, edges, 64), [nodes, edges]);
+  const [selectedDataMapRelationId, setSelectedDataMapRelationId] = useState<string | null>(null);
+  const selectedRelation = useMemo(
+    () => display.edges.find((edge) => edge.id === selectedDataMapRelationId) ?? null,
+    [display.edges, selectedDataMapRelationId],
+  );
+
+  useEffect(() => {
+    window.__memoryAtlasStage6Phase1 = () => ({
+      structureModelVersion: DATA_MAP_STRUCTURE_MODEL_VERSION,
+      relationExplanationVersion: DATA_MAP_RELATION_EXPLANATION_VERSION,
+      layers: DATA_MAP_STRUCTURE_LAYERS.map((layer) => layer.id),
+      visibleNodeCount: display.visibleNodeCount,
+      relationCount: display.edgeCount,
+      selectedRelationId: selectedDataMapRelationId,
+      defaultCollapsed: true,
+      boundary: "No Phase 6.2 editing",
+      rawPrivateDataIncluded: false,
+      directActiveMemoryWriteback: false,
+      proposalWrite: false,
+    });
+    return () => {
+      delete window.__memoryAtlasStage6Phase1;
+    };
+  }, [display.edgeCount, display.visibleNodeCount, selectedDataMapRelationId]);
+
   return (
-    <div className="visual-workspace data-guide-map">
+    <div
+      className="visual-workspace data-guide-map"
+      data-data-map-structure-model={DATA_MAP_STRUCTURE_MODEL_VERSION}
+      data-data-map-relation-version={DATA_MAP_RELATION_EXPLANATION_VERSION}
+      data-default-collapsed="true"
+      data-no-phase-6-2="No Phase 6.2 editing"
+      data-proposal-write="false"
+      data-direct-active-memory-writeback="false"
+      data-raw-private-data-included="false"
+    >
       <div className="surface-heading compact">
         <div>
           <p className="eyebrow">数据导图 / 框架关系 / 行动入口</p>
@@ -1834,9 +1883,17 @@ function DataGuideMap({
         items={[
           { label: "读法", value: "从左到右" },
           { label: "框架", value: "来源 → 画像 → 项目 → 行动" },
-          { label: "点击卡片", value: "同步右侧详情" },
+          { label: "点击关系", value: "解释为什么连接" },
         ]}
       />
+      <div className="data-map-layer-strip" aria-label="Stage 6 Phase 6.1 四层结构">
+        {DATA_MAP_STRUCTURE_LAYERS.map((layer) => (
+          <span key={layer.id} data-data-map-layer={layer.id}>
+            <b>{layer.label}</b>
+            <em>{layer.nodeTypes.join(" / ")}</em>
+          </span>
+        ))}
+      </div>
       <DeltaStrip stats={deltaStats} compact />
       <svg className="data-guide-canvas" viewBox="0 0 1000 620" role="img" aria-label="数据导图框架">
         <defs>
@@ -1853,7 +1910,15 @@ function DataGuideMap({
         </defs>
         <path className="data-guide-flow" d="M78 76 C260 46 420 46 594 76 S824 108 930 78" />
         {display.frames.map((frame) => (
-          <g className="data-guide-frame" key={frame.id}>
+          <g
+            className="data-guide-frame"
+            key={frame.id}
+            data-data-map-layer={frame.structureLayerId}
+            data-node-types={frame.nodeTypes.join(",")}
+            data-fields={frame.fields.join(",")}
+            data-interaction={frame.interaction}
+            data-detail-entry={frame.detailEntry}
+          >
             <rect x={frame.x} y={frame.y} width={frame.w} height={frame.h} rx="14" fill={frame.color} opacity="0.035" />
             <rect x={frame.x} y={frame.y} width={frame.w} height={frame.h} rx="14" fill="none" stroke={frame.color} opacity="0.34" />
             <text x={frame.x + 18} y={frame.y + 30} className="data-guide-frame-title">{frame.title}</text>
@@ -1862,14 +1927,38 @@ function DataGuideMap({
           </g>
         ))}
         <g className="data-guide-links">
-          {display.edges.map((edge) => (
-            <path
-              key={edge.id}
-              d={edge.path}
-              stroke={edge.color}
-              strokeWidth={edge.strokeWidth}
-            />
-          ))}
+          {display.edges.map((edge) => {
+            const selected = edge.id === selectedDataMapRelationId;
+            return (
+              <g key={edge.id}>
+                <path
+                  className={selected ? "data-guide-link selected" : "data-guide-link"}
+                  d={edge.path}
+                  stroke={edge.color}
+                  strokeWidth={edge.strokeWidth}
+                />
+                <path
+                  className="data-guide-relation-hitbox"
+                  d={edge.path}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`关系解释：${edge.explanation.sourceLabel} 到 ${edge.explanation.targetLabel}`}
+                  data-data-map-relation-explanation={DATA_MAP_RELATION_EXPLANATION_VERSION}
+                  data-selected={selected ? "true" : "false"}
+                  data-relation-source={edge.explanation.source}
+                  data-relation-strength={edge.explanation.strength}
+                  data-relation-evidence={edge.explanation.evidence}
+                  data-relation-time={edge.explanation.time}
+                  onClick={() => setSelectedDataMapRelationId(edge.id)}
+                  onKeyDown={(event) => {
+                    if (isActivationKey(event)) setSelectedDataMapRelationId(edge.id);
+                  }}
+                >
+                  <title>{edge.explanation.reason}</title>
+                </path>
+              </g>
+            );
+          })}
         </g>
         {display.nodes.map((item) => (
           <DataGuideSvgNode
@@ -1886,7 +1975,56 @@ function DataGuideMap({
         <LegendItem color="#f48fb1" label="项目、决策、规则" />
         <LegendItem color="#94a3b8" label="行动、机会、待整理" />
       </div>
+      <DataMapRelationPanel relation={selectedRelation} />
     </div>
+  );
+}
+
+function DataMapRelationPanel({ relation }: { relation: DataGuideEdge | null }) {
+  const explanation = relation?.explanation;
+  return (
+    <section
+      className={relation ? "data-map-relation-panel active" : "data-map-relation-panel"}
+      aria-label="关系解释"
+      data-selected-relation-id={relation?.id ?? ""}
+      data-relation-source={explanation?.source ?? "默认折叠"}
+      data-relation-strength={explanation?.strength ?? "默认折叠"}
+      data-relation-evidence={explanation?.evidence ?? "默认折叠"}
+      data-relation-time={explanation?.time ?? "默认折叠"}
+    >
+      <div className="panel-title-row">
+        <h2>关系解释</h2>
+        <span>为什么连接 / source / strength / evidence / time</span>
+      </div>
+      {explanation ? (
+        <>
+          <p className="data-map-relation-reason">{explanation.reason}</p>
+          <div className="data-map-relation-grid">
+            <span>
+              <b>来源</b>
+              <em>{explanation.source}</em>
+            </span>
+            <span>
+              <b>强度</b>
+              <em>{explanation.strength}</em>
+            </span>
+            <span>
+              <b>证据</b>
+              <em>{explanation.evidence}</em>
+            </span>
+            <span>
+              <b>时间</b>
+              <em>{explanation.time}</em>
+            </span>
+          </div>
+        </>
+      ) : (
+        <p className="data-map-relation-reason">默认折叠。点击任意关系线查看为什么连接、来源、强度、证据和时间。</p>
+      )}
+      <p className="data-map-relation-safe-flags">
+        No Phase 6.2 editing · proposalWrite: false · directActiveMemoryWriteback: false · rawPrivateDataIncluded: false
+      </p>
+    </section>
   );
 }
 
@@ -4176,11 +4314,79 @@ interface LayoutGroup {
 }
 
 type DataGuideFrameId = "source" | "profile" | "project" | "action";
+type DataMapStructureLayerId = "source_layer" | "profile_layer" | "project_decision_layer" | "action_opportunity_layer";
+
+const DATA_MAP_STRUCTURE_LAYERS: Array<{
+  id: DataMapStructureLayerId;
+  frameId: DataGuideFrameId;
+  label: string;
+  title: string;
+  subtitle: string;
+  nodeTypes: string[];
+  fields: string[];
+  interaction: string;
+  detailEntry: string;
+  defaultCollapsed: true;
+}> = [
+  {
+    id: "source_layer",
+    frameId: "source",
+    label: "来源层",
+    title: "来源层",
+    subtitle: "来源 / 主题簇 / 分类索引",
+    nodeTypes: ["theme", "tier", "category"],
+    fields: ["data_source", "source_label", "category", "date"],
+    interaction: "select_source_or_topic_node",
+    detailEntry: "open_source_or_topic_detail",
+    defaultCollapsed: true,
+  },
+  {
+    id: "profile_layer",
+    frameId: "profile",
+    label: "画像层",
+    title: "画像层",
+    subtitle: "核心画像 / taste / 规则",
+    nodeTypes: ["memory:preference", "memory:answering_rule", "memory:security_boundary"],
+    fields: ["memory_tier", "category", "importance", "confidence"],
+    interaction: "select_profile_node",
+    detailEntry: "open_profile_detail",
+    defaultCollapsed: true,
+  },
+  {
+    id: "project_decision_layer",
+    frameId: "project",
+    label: "项目决策层",
+    title: "项目决策层",
+    subtitle: "项目背景 / 决策 / 工作流",
+    nodeTypes: ["project", "decision", "memory:project_context", "memory:workflow"],
+    fields: ["project", "decision", "validity", "importance"],
+    interaction: "select_project_decision_node",
+    detailEntry: "open_project_decision_detail",
+    defaultCollapsed: true,
+  },
+  {
+    id: "action_opportunity_layer",
+    frameId: "action",
+    label: "行动机会层",
+    title: "行动机会层",
+    subtitle: "行动 / 机会 / 待整理",
+    nodeTypes: ["memory:temporary", "memory:recommended_action", "memory:roi_opportunity"],
+    fields: ["recommended_action", "leverage_score", "staleness_status", "date"],
+    interaction: "select_action_opportunity_node",
+    detailEntry: "open_action_opportunity_detail",
+    defaultCollapsed: true,
+  },
+];
 
 interface DataGuideFrame {
   id: DataGuideFrameId;
+  structureLayerId: DataMapStructureLayerId;
   title: string;
   subtitle: string;
+  nodeTypes: string[];
+  fields: string[];
+  interaction: string;
+  detailEntry: string;
   x: number;
   y: number;
   w: number;
@@ -4212,6 +4418,17 @@ interface DataGuideEdge {
   path: string;
   color: string;
   strokeWidth: number;
+  explanation: DataGuideRelationExplanation;
+}
+
+interface DataGuideRelationExplanation {
+  source: string;
+  sourceLabel: string;
+  targetLabel: string;
+  strength: string;
+  evidence: string;
+  time: string;
+  reason: string;
 }
 
 function buildFilteredSlice(atlas: MemoryAtlas, filteredMemoryNodes: AtlasNode[], filters: AtlasFilters): FilteredAtlasSlice {
@@ -6071,10 +6288,10 @@ function buildDataGuideLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: num
 } {
   const degree = degreeMap(edges);
   const frameTemplates: Array<Omit<DataGuideFrame, "count">> = [
-    { id: "source", title: "数据源与主题", subtitle: "来源 / 主题簇 / 分类索引", x: 36, y: 92, w: 214, h: 448, color: "#8fd3ff" },
-    { id: "profile", title: "画像与偏好", subtitle: "核心画像 / taste / 规则", x: 276, y: 92, w: 214, h: 448, color: "#7ee8d4" },
-    { id: "project", title: "项目与决策", subtitle: "项目背景 / 决策 / 工作流", x: 516, y: 92, w: 214, h: 448, color: "#f48fb1" },
-    { id: "action", title: "行动与机会", subtitle: "待整理 / ROI / 下一步", x: 756, y: 92, w: 214, h: 448, color: "#94a3b8" },
+    buildDataGuideFrameTemplate("source", 36, 92, "#8fd3ff"),
+    buildDataGuideFrameTemplate("profile", 276, 92, "#7ee8d4"),
+    buildDataGuideFrameTemplate("project", 516, 92, "#f48fb1"),
+    buildDataGuideFrameTemplate("action", 756, 92, "#94a3b8"),
   ];
   const framesById = new Map(frameTemplates.map((frame) => [frame.id, frame]));
   const frameBuckets = new Map<DataGuideFrameId, AtlasNode[]>();
@@ -6135,6 +6352,7 @@ function buildDataGuideLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: num
         path: dataGuideEdgePath(left, right),
         color: right.color,
         strokeWidth: Math.max(0.9, Math.min(3.2, 0.8 + edge.weight * 1.4)),
+        explanation: dataGuideRelationExplanation(edge, source, target),
       };
     })
     .filter((edge): edge is DataGuideEdge => Boolean(edge))
@@ -6148,6 +6366,31 @@ function buildDataGuideLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: num
     edges: layoutEdges,
     visibleNodeCount: layoutNodes.length,
     edgeCount: layoutEdges.length,
+  };
+}
+
+function buildDataGuideFrameTemplate(
+  frameId: DataGuideFrameId,
+  x: number,
+  y: number,
+  color: string,
+): Omit<DataGuideFrame, "count"> {
+  const layer = DATA_MAP_STRUCTURE_LAYERS.find((item) => item.frameId === frameId);
+  if (!layer) throw new Error(`Unknown data guide frame: ${frameId}`);
+  return {
+    id: frameId,
+    structureLayerId: layer.id,
+    title: layer.title,
+    subtitle: layer.subtitle,
+    nodeTypes: layer.nodeTypes,
+    fields: layer.fields,
+    interaction: layer.interaction,
+    detailEntry: layer.detailEntry,
+    x,
+    y,
+    w: 214,
+    h: 448,
+    color,
   };
 }
 
@@ -6204,6 +6447,47 @@ function dataGuideEdgePath(left: DataGuideNode, right: DataGuideNode): string {
   const y2 = right.y + right.h / 2;
   const dx = Math.max(54, (x2 - x1) * 0.45);
   return `M${x1} ${y1} C${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`;
+}
+
+function dataGuideRelationExplanation(edge: AtlasEdge, source: DataGuideNode, target: DataGuideNode): DataGuideRelationExplanation {
+  const sourceNode = source.node;
+  const targetNode = target.node;
+  const strength = dataGuideRelationStrength(edge.weight);
+  const time = dataGuideRelationTime(sourceNode, targetNode);
+  const evidence = [
+    `edge:${edge.id}`,
+    `kind:${edge.kind || "related"}`,
+    `weight:${edge.weight.toFixed(2)}`,
+    `nodes:${sourceNode.id},${targetNode.id}`,
+  ].join(" | ");
+  const sourceLabel = shortNodeLabel(sourceNode, 18);
+  const targetLabel = shortNodeLabel(targetNode, 18);
+  const sourceDetail = [
+    source.frameTitle,
+    sourceNode.source_label || sourceNode.data_source || translateKind(sourceNode.kind),
+    edge.kind || "related",
+  ].filter(Boolean).join(" / ");
+
+  return {
+    source: sourceDetail,
+    sourceLabel,
+    targetLabel,
+    strength,
+    evidence,
+    time,
+    reason: `${source.frameTitle}「${sourceLabel}」连接到${target.frameTitle}「${targetLabel}」：${edge.kind || "related"} 关系，强度 ${strength}，证据来自当前 atlas edge 和两端节点。`,
+  };
+}
+
+function dataGuideRelationStrength(weight: number): string {
+  if (weight >= 0.78) return "高";
+  if (weight >= 0.48) return "中";
+  return "低";
+}
+
+function dataGuideRelationTime(source: AtlasNode, target: AtlasNode): string {
+  const dates = [source.date, target.date].filter((date): date is string => Boolean(date)).sort();
+  return dates.at(-1)?.slice(0, 10) || "time unavailable";
 }
 
 function buildMapLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: number): { nodes: LayoutNode[]; edges: LayoutEdge[]; groups: LayoutGroup[] } {
