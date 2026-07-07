@@ -18,15 +18,22 @@
 
 ## 当前阶段
 
-当前为 S02 Review。S01 整体复审已通过，数据源模型已定义，source registry 已建立，
-人类同步说明已完成，S02 整体复审已通过。
+当前为 S03 P1。S01 整体复审已通过，S02 整体复审已通过，公开 raw 路径、
+manifest/hash 文件合同、append-only 规则和 hash drift fail 规则已定义。
 
 当前机器产物：
 
 - `数据契约/source_data_model.v1_2_s02_p1.json`
 - `同步与备份/sync_source_registry.json`
+- `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
+- `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `../人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- `../人类可读/06_Raw明文公开与只读归档说明.md`
+- `../data/public_raw/README.md`
+- `人类可读/06_Raw明文公开与只读归档说明.md`
+- `data/public_raw/README.md`
 - `../docs/reviews/memory_atlas_v1_2_s02_review.md`
+- `../docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`
 
 `运行门禁/v1.2需求冻结清单.json` 继续固定：
 
@@ -36,4 +43,4 @@
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S03 P1；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S03 P2；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

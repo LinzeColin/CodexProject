@@ -1,3 +1,45 @@
+## v1.2 S03 P1 Public Raw Path
+
+状态：`phase_s03_p1_public_raw_path_defined_pending_s03_p2`。
+
+任务 ID：`MA-V12-S03P1`。
+
+验收 ID：`ACC-MA-V12-S03P1`。
+
+S03 P1 定义 Memory Atlas v1.2 的 public raw archive path、raw manifest/hash file、
+append-only rule 和 hash drift fail rule。该 phase 不导入真实 transcript，不实现
+credential gate，不生成 manifest ledger，不实现 connector。
+
+涉及文件：
+
+- `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
+- `data/public_raw/README.md`
+- `人类可读/06_Raw明文公开与只读归档说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s03-p1`
+- `ACC-MA-V12-S03P1`
+- S03 P1
+- `memory_atlas_v1_2_s03_p1_public_raw_path.md`
+- `raw_public_archive_policy.v1_2_s03_p1.json`
+- `data/public_raw/README.md`
+- pending S03 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No S03 P2 credential gate.
+- No S03 P3 manifest generation.
+- No connector implementation.
+- No transcript ingestion in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P1 Public Raw Path; MA-V12-S03P1; ACC-MA-V12-S03P1; phase_s03_p1_public_raw_path_defined_pending_s03_p2; validate:v1.2-s03-p1; memory_atlas_v1_2_s03_p1_public_raw_path.md; raw_public_archive_policy.v1_2_s03_p1.json; data/public_raw/README.md; S03 P1; pending S03 P2; No GitHub main upload in this phase; No S03 P2 credential gate; No S03 P3 manifest generation; No connector implementation; No transcript ingestion in this phase.
+
 ## v1.2 S02 Review
 
 状态：`stage_s02_review_passed_pending_s03_no_github_main_upload`。

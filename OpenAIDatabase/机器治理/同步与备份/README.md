@@ -16,4 +16,14 @@ raw append-only 规则和 credential boundary。
 public backup mode、transcript/credential boundary 和 credential exclusion。
 
 S02 整体复审已通过，复审证据为 `docs/reviews/memory_atlas_v1_2_s02_review.md`。
-下一步是 S03 P1。当前阶段不实现 connector，不写 raw archive，不上传 GitHub main。
+
+当前 S03 P1 已完成，并新增：
+
+- `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
+- `data/public_raw/README.md`
+- `人类可读/06_Raw明文公开与只读归档说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`
+
+S03 P1 定义 `data/public_raw/`、manifest/hash 文件合同、append-only 规则和
+hash drift fail 规则。下一步是 S03 P2。当前阶段不实现 connector，不导入真实
+transcript，不生成 manifest ledger，不上传 GitHub main。

@@ -347,11 +347,20 @@ function validateHumanAndMachineState() {
       "下一步只允许进入 S03 P1",
       "No GitHub main upload in this review",
   ]);
+  const s03p1QuickEntry = hasAll(quickEntry, [
+      "当前阶段是 S03 P1",
+      "已完成：S02 P1 数据源模型",
+      "已完成：S02 P2 source registry",
+      "future_agent_template",
+      "已完成：S02 Review",
+      "MA-V12-S03P1",
+      "下一步只允许进入 S03 P2",
+  ]);
   assertCondition(
-    s02p2QuickEntry || s02p3QuickEntry || s02ReviewQuickEntry,
+    s02p2QuickEntry || s02p3QuickEntry || s02ReviewQuickEntry || s03p1QuickEntry,
     "s02p2_human_quick_entry",
-    "Human quick entry records S02 P2 registry completion or later S02 P3/S02 Review state",
-    "Human quick entry is missing S02 P2, S02 P3 or S02 Review state boundaries",
+    "Human quick entry records S02 P2 registry completion or later S02 P3/S02 Review/S03 P1 state",
+    "Human quick entry is missing S02 P2, S02 P3, S02 Review or S03 P1 state boundaries",
   );
 
   const s02p2Overview = hasAll(overview, [
@@ -384,11 +393,19 @@ function validateHumanAndMachineState() {
       "transcript/credential",
       "下一步是 S03 P1",
   ]);
+  const s03p1Overview = hasAll(overview, [
+      "S02 Review 已通过",
+      "S03 P1 已完成",
+      "sync_source_registry.json",
+      "future_agent_template",
+      "transcript/credential",
+      "下一步是 S03 P2",
+  ]);
   assertCondition(
-    s02p2Overview || s02p3Overview || s02ReviewOverview,
+    s02p2Overview || s02p3Overview || s02ReviewOverview || s03p1Overview,
     "s02p2_human_overview",
-    "Human overview records S02 P2 registry sources or later S02 P3/S02 Review state",
-    "Human overview is missing S02 P2, S02 P3 or S02 Review registry details",
+    "Human overview records S02 P2 registry sources or later S02 P3/S02 Review/S03 P1 state",
+    "Human overview is missing S02 P2, S02 P3, S02 Review or S03 P1 registry details",
   );
 
   const s02p2MachineReadme = hasAll(machineReadme, [
@@ -412,11 +429,18 @@ function validateHumanAndMachineState() {
       "下一步是 S03 P1",
       "不替代 apps/scripts/tests/config/data/docs/governance",
   ]);
+  const s03p1MachineReadme = hasAll(machineReadme, [
+      "当前为 S03 P1",
+      "S02 整体复审已通过",
+      "raw_public_archive_policy.v1_2_s03_p1.json",
+      "下一步是 S03 P2",
+      "不替代 apps/scripts/tests/config/data/docs/governance",
+  ]);
   assertCondition(
-    s02p2MachineReadme || s02p3MachineReadme || s02ReviewMachineReadme,
+    s02p2MachineReadme || s02p3MachineReadme || s02ReviewMachineReadme || s03p1MachineReadme,
     "s02p2_machine_readme",
-    "Machine README records S02 P2 state or later S02 P3/S02 Review state",
-    "Machine README is missing S02 P2, S02 P3 or S02 Review state",
+    "Machine README records S02 P2 state or later S02 P3/S02 Review/S03 P1 state",
+    "Machine README is missing S02 P2, S02 P3, S02 Review or S03 P1 state",
   );
 
   const s02p2SyncReadme = hasAll(syncReadme, [
@@ -440,11 +464,18 @@ function validateHumanAndMachineState() {
       "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
       "下一步是 S03 P1",
   ]);
+  const s03p1SyncReadme = hasAll(syncReadme, [
+      "当前 S03 P1 已完成",
+      "sync_source_registry.json",
+      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
+      "raw_public_archive_policy.v1_2_s03_p1.json",
+      "下一步是 S03 P2",
+  ]);
   assertCondition(
-    s02p2SyncReadme || s02p3SyncReadme || s02ReviewSyncReadme,
+    s02p2SyncReadme || s02p3SyncReadme || s02ReviewSyncReadme || s03p1SyncReadme,
     "s02p2_sync_readme",
-    "Sync README points to the S02 P2 source registry or later S02 P3/S02 Review state",
-    "Sync README is missing S02 P2, S02 P3 or S02 Review registry reference",
+    "Sync README points to the S02 P2 source registry or later S02 P3/S02 Review/S03 P1 state",
+    "Sync README is missing S02 P2, S02 P3, S02 Review or S03 P1 registry reference",
   );
 
   const s02p2RunGateReadme = hasAll(runGateReadme, [
@@ -479,11 +510,20 @@ function validateHumanAndMachineState() {
       "下一步是 S03 P1",
       "No GitHub main upload in this review",
   ]);
+  const s03p1RunGateReadme = hasAll(runGateReadme, [
+      "当前阶段是 S03 P1",
+      "MA-V12-S03P1",
+      "ACC-MA-V12-S03P1",
+      "validate:v1.2-s03-p1",
+      "前置 S02 Review 已通过",
+      "下一步是 S03 P2",
+      "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    s02p2RunGateReadme || s02p3RunGateReadme || s02ReviewRunGateReadme,
+    s02p2RunGateReadme || s02p3RunGateReadme || s02ReviewRunGateReadme || s03p1RunGateReadme,
     "s02p2_run_gate_readme",
-    "Run gate README records S02 P2 validator, registry and later S02 P3/S02 Review gate",
-    "Run gate README is missing S02 P2, S02 P3 or S02 Review status",
+    "Run gate README records S02 P2 validator, registry and later S02 P3/S02 Review/S03 P1 gate",
+    "Run gate README is missing S02 P2, S02 P3, S02 Review or S03 P1 status",
   );
 }
 
