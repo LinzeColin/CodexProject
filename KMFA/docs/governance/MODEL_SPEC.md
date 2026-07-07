@@ -1321,3 +1321,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: valid_diagnostic_response_count=72 and missing_response_blocker_cleared=true prove the response gap is closed; non_actionable_diagnostic_response_count=72, source_map_correction_blocker_count=72 and closed_discrepancy_count=0 keep source-map correction and value consistency blocked.
 - gate: `NO_GO`; source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private readiness diagnostic and source-map blocker queue stay under ignored runtime and raw inbox remains untouched.
+## V014 Outside-Scope Candidate Review Residual Difference Source-Map Correction Blocker Audit
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-AUDIT-001`
+- parameter_ids: `PARAM-KMFA-1414`, `PARAM-KMFA-1415`, `PARAM-KMFA-1416`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT`
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-audit`
+- rule: valid_diagnostic_response_count=72 and missing_response_blocker_cleared=true preserve response availability; non_actionable_diagnostic_response_count=72, source_map_correction_blocker_count=72, source_map_correction_blocker_observation_count=1 and closed_discrepancy_count=0 prove source-map correction remains blocked.
+- gate: `NO_GO`; source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private source-map correction blocker audit diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.
