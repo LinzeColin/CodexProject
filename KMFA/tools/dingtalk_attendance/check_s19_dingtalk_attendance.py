@@ -73,8 +73,51 @@ ALLOWED_PRIVATE_RUNTIME_FILES = {
     "notification_targets.local.json",
     "notification_targets_resolved.json",
     "attendance_ledger.sqlite",
+    "offline_validate_manifest.json",
+    "runtime_capability_manifest.json",
 }
 TRACKED_PRIVATE_RUNTIME_FILES = [".gitkeep", "README.md"]
+
+PROMPT_CONTRACT_NEEDLES = {
+    "calls_skill": ("$kmfa-dingtalk-attendance-skill",),
+    "uses_beijing_time": ("Asia/Shanghai",),
+    "preserves_github_sync": ("HEAD == origin/main", "GitHub `main`"),
+    "fails_closed_for_dws": ("DWS_AUTH_REQUIRED", "Do not fabricate data"),
+    "protects_private_runtime": (".env.local", "SQLite", "raw JSON", "report bodies"),
+}
+
+
+def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any], list[str]]:
+    by_file: dict[str, dict[str, bool]] = {}
+    aggregate = {
+        "all_prompts_call_skill": True,
+        "all_prompts_use_beijing_time": True,
+        "all_prompts_preserve_github_sync": True,
+        "all_prompts_fail_closed_for_dws": True,
+        "all_prompts_protect_private_runtime": True,
+    }
+    errors: list[str] = []
+    aggregate_key_by_contract = {
+        "calls_skill": "all_prompts_call_skill",
+        "uses_beijing_time": "all_prompts_use_beijing_time",
+        "preserves_github_sync": "all_prompts_preserve_github_sync",
+        "fails_closed_for_dws": "all_prompts_fail_closed_for_dws",
+        "protects_private_runtime": "all_prompts_protect_private_runtime",
+    }
+    for path in prompt_files:
+        text = path.read_text(encoding="utf-8")
+        rel = path.name
+        checks: dict[str, bool] = {}
+        for contract_key, needles in PROMPT_CONTRACT_NEEDLES.items():
+            passed = all(needle in text for needle in needles)
+            checks[contract_key] = passed
+            aggregate[aggregate_key_by_contract[contract_key]] = (
+                aggregate[aggregate_key_by_contract[contract_key]] and passed
+            )
+            if not passed:
+                errors.append(f"automation prompt contract drift:{rel}:{contract_key}")
+        by_file[rel] = checks
+    return {**aggregate, "by_file": by_file}, errors
 
 
 def validate_s19_files(root: Path) -> dict[str, Any]:
@@ -111,6 +154,8 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         errors.append("private runtime contains unexpected local files")
     if len(prompt_files) != 3:
         errors.append("prompt count drift")
+    prompt_contracts, prompt_errors = validate_prompt_contracts(prompt_files)
+    errors.extend(prompt_errors)
     exemption_probe_context = notification_context_from_output_status(
         {
             "run_id": "s19_morning_20260707_083500",
@@ -137,6 +182,7 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         "automation_name": manifest.get("automation_name"),
         "onedrive_root": manifest.get("onedrive_root"),
         "prompt_count": len(prompt_files),
+        "automation_prompt_contracts": prompt_contracts,
         "private_runtime_tracked_files": TRACKED_PRIVATE_RUNTIME_FILES,
         "private_runtime_local_files_allowed": sorted(
             name for name in private_runtime_files if name in ALLOWED_PRIVATE_RUNTIME_FILES
