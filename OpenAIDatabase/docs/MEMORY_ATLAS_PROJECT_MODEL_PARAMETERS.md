@@ -1,3 +1,43 @@
+## 76. v1.1.7 Stage 1 Phase 1.4 Topic Classification Detail
+
+状态：`phase_1_4_topic_classification_detail_completed_pending_stage1_review`。
+
+验收 ID：`ACC-MA-V117-S1P04`。
+
+模型参数：
+
+- Topic Classification 只从已筛选的 redacted atlas nodes、graph edges、Next Action map 和 Level Asset map 派生。
+- ThemeDetailPanel 是只读解释层；任何主题、优先级、状态或 proposal 调整仍必须进入后续 Stage 2 proposal-only editor。
+- `topic_state` 支持 dominant、rising、declining、emerging、conflict、black_hole、stale。
+- `topic_strength` 使用主题记录数占比、ROI 和 recent_count 派生。
+- `matched_reason` 必须说明主题为何重要或为何需要复盘。
+- `starfield_handoff` 和 `river_handoff` 必须只传递 derived topic focus，不传 raw/private 数据。
+
+运行时文件：
+
+- `docs/architecture/theme_category_model.md`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/ThemeDetailPanel.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase4.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S1P04-001 stage1_phase4_status = phase_1_4_topic_classification_detail_completed_pending_stage1_review`
+- `PARAM-MA-V117-S1P04-002 stage1_phase4_required_validator = validate:v1.1.7-stage1-phase4`
+- `PARAM-MA-V117-S1P04-003 topic_required_fields = topic_id;topic_label;parent_topic;category;topic_state;topic_strength;trend;roi_score;conflict_score;confidence;record_count;recent_count;representative_record_ids;evidence_refs;matched_reason;linked_asset_ids;linked_action_ids;starfield_handoff;river_handoff;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P04-004 topic_classification_sort_weights = strength_weight=0.38;trend_weight=0.24;confidence_weight=0.22;conflict_penalty_weight=0.16`
+- `PARAM-MA-V117-S1P04-005 topic_top_limit = Top 10`
+- `PARAM-MA-V117-S1P04-006 theme_detail_panel_fields = topic_state;topic_strength;trend;roi_score;conflict_score;confidence;record_count;recent_count;representative_record_ids;evidence_refs;matched_reason;linked_asset_ids;linked_action_ids;starfield_handoff;river_handoff;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P04-007 stage1_phase4_deferred_work = Stage 1 review;Stage 2 proposal editor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Topic Classification model contract。
+- ThemeDetailPanel runtime component。
+- Home Overview Topic Classification cards。
+- `validate:v1.1.7-stage1-phase4` 检查模型、实现、样式、记录和改动范围。
+
 # Memory Atlas Project Model Parameters
 
 更新时间：2026-07-01
