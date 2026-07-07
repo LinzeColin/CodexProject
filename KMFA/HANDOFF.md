@@ -1,3 +1,14 @@
+## 2026-07-07｜v0.1.4 residual difference private resolution materialization replay
+
+- phase: `V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY`
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-PRIVATE-RESOLUTION-MATERIALIZATION-REPLAY-20260707`
+- 已完成：新增 private residual-difference materialization replay generator、validator、focused unit test、public-safe evidence packet、metadata copies、git-ignored private replay diagnostic/result/materialized records/raw-comparison input/report 和治理记录。
+- 当前结论：`source_application_applied_record_count=72`、`source_application_blocker_count=0`、`source_materialization_input_record_count=72`、`materialization_replay_performed_by_this_phase=true`、`private_materialized_record_count=72`、`private_materialization_blocker_count=0`、`raw_to_processed_value_comparison_ready=true`、`raw_to_processed_value_comparison_performed_by_this_phase=false`、`open_residual_difference_count=72`、`closed_discrepancy_count=0`、`go_no_go=NO_GO`。
+- 原始数据边界：本 phase 不读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；只读取上一 application public-safe artifacts 和 ignored private application/materialization input；不修改源 private application inputs。
+- 未执行：formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+- 验证入口：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_private_resolution_materialization_replay.py --require-private-replay`
+- 下一步建议：单 phase 继续 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK`；不得做 Stage review 或 GitHub upload。
+
 ## 2026-07-07｜v0.1.4 outside-scope candidate review residual difference source-map correction application
 
 - phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION`

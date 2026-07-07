@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-PRIVATE-RESOLUTION-MATERIALIZATION-REPLAY-001
+
+- version: `0.1.4-residual-difference-private-resolution-materialization-replay`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: Materialize residual-difference private resolution records without reading raw inbox, running formal raw-to-processed comparison, reconciling values, uploading, reinstalling or executing business steps.
+- rule: materialization replay is valid only when source application records=72, source application blockers=0, source materialization input records=72, private materialized records=72, materialization blockers=0, raw-to-processed comparison ready=true, and raw-comparison/reconciliation/release/execution gates remain false.
+- public_safety: public artifacts contain aggregate counts, status flags and evidence refs only; private materialization outputs remain ignored and untracked.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_private_resolution_materialization_replay.py --require-private-replay`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY/machine/residual_difference_private_resolution_materialization_replay_manifest.json`
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-APPLICATION-001
 
 - version: `0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application`
