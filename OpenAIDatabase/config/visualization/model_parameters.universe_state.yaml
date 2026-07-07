@@ -67,6 +67,38 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+stage8_review:
+  task_id: MA-V117-S8-REVIEW
+  acceptance_id: ACC-MA-V117-S8-REVIEW
+  status: stage_8_review_passed_pending_stage9_no_github_main_upload
+  required_validator: validate:v1.1.7-stage8
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage8_review.md
+  phase_coverage:
+    - Phase 8.1
+    - Summary and iteration closure
+  phase_validators:
+    - validate:v1.1.7-stage8-phase1
+  browser_validators:
+    - validate:summary-iteration-closure-browser
+  runtime_versions:
+    - summary_iteration_closure_runtime.v1_1_7_stage8_phase1
+  closure_schema_version: memory_atlas_summary_closure.v1_1_7_stage8_phase1
+  next_gate: pending Stage 9
+  boundary_label: "No Stage 9 work; No GitHub main upload"
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_stage9_work
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 stage8_phase1_summary_iteration_closure:
   task_id: MA-V117-S8P01
   phase_label: Phase 8.1
