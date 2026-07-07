@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-BLOCKER-AUDIT"
+as_of_event_id: "DEV-KMFA-20260707-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-REPORT"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "e8b1349110b80a21849f58663397e8d37e73e225"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit"
+generator_version: "manual-0.1.4-outside-scope-candidate-review-residual-difference-report"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1016
-    total_active_formulas: 179
+    total_active_parameters: 1019
+    total_active_formulas: 180
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT/human/test_results.md"
+      - "KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_report.py"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT/machine/outside_scope_candidate_review_residual_difference_report_manifest.json"
       - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/human/test_results.md"
       - "KMFA/tools/check_v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit.py"
       - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_discrepancy_closure_blocker_audit_manifest.json"

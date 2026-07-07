@@ -424,3 +424,12 @@
 - boundary: raw data remains immutable for Codex; this phase did not read, list, fingerprint, parse, write, delete, move, rename, overwrite, normalize or copy raw sources.
 - gate: owner-exclusion resolution application is applied in ignored private runtime, but source-map mutation, materialization replay, raw-to-processed comparison, full reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - next required input: `run_post_resolution_source_map_readiness_recheck`
+## 2026-07-07 - V014 Outside-Scope Candidate Review Residual Difference Report
+
+- phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT`
+- status: `completed_validated_local_only_residual_difference_report_no_go`
+- evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_report.py --require-private-report`
+- locked counts: `source_private_residual_queue_item_count=72`, `residual_difference_report_item_count=72`, `open_residual_difference_count=72`, `closed_discrepancy_count=0`, `ambiguous_selection_required_count=24`, `authoritative_source_reference_required_count=40`, `formula_or_non_numeric_mapping_required_count=8`
+- boundary: raw inbox access/mutation, discrepancy closure, source-map correction, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF` or owner/authorized resolution, one phase only.

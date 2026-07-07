@@ -1236,3 +1236,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: private_authorized_extension_template_item_count=72 and valid_authorized_extension_record_count=0 prove application readiness is not met; source_map_extension_blocker_count=72 keeps source-map application and full comparison blocked.
 - gate: `NO_GO`; source-map application, full raw-to-processed comparison, processed-data reconciliation, business value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private readiness diagnostic, blocker queue and report stay under git-ignored runtime.
+## V014 Outside-Scope Candidate Review Residual Difference Report
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-REPORT-001`
+- parameter_ids: `PARAM-KMFA-1390`, `PARAM-KMFA-1391`, `PARAM-KMFA-1392`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT`
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-report`
+- rule: source_private_residual_queue_item_count=72 and residual_difference_report_item_count=72 produce an ignored private residual difference report; closed_discrepancy_count remains 0 and all downstream gates remain closed.
+- gate: `NO_GO`; discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private residual difference diagnostic, queue and report stay under git-ignored runtime.

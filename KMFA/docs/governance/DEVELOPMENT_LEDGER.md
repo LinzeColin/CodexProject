@@ -1735,3 +1735,14 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_authorized_source_map_extension_readiness_recheck`
 - boundary: this phase rereads the private authorized extension template and confirms source-map application readiness is still false; it does not read raw inbox, mutate the private template, write source-map extensions, complete raw-to-processed comparison, reconcile values, verify business consistency, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `owner_or_authorized_delegate_fills_private_authorized_source_map_extension_template_for_72_slots`
+## 2026-07-07 - V014 Outside-Scope Candidate Review Residual Difference Report
+
+- task_id: `KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-REPORT-20260707`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT`
+- product_version: `0.1.4-outside-scope-candidate-review-residual-difference-report`
+- status: `completed_validated_local_only_residual_difference_report_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_report.py --require-private-report`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_report`
+- boundary: this phase reports 72 private residual differences in ignored runtime; it does not read raw inbox, close discrepancies, correct source maps, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `private_residual_difference_report_available_for_diagnosis_no_raw_mutation`
