@@ -2131,3 +2131,18 @@ kmfa_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff:
   evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF
   validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff.py
   scope: Outside-scope candidate review residual-difference diagnostic handoff only; packages 72 unresolved private residual differences for owner or authorized diagnostic input; public evidence aggregate-only; no raw inbox access, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_intake:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-intake"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-INTAKE-001
+  parameter_refs:
+    - PARAM-KMFA-1396
+    - PARAM-KMFA-1397
+    - PARAM-KMFA-1398
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_intake.py
+  scope: Outside-scope candidate review residual-difference owner or agent diagnostic intake only; prepares ignored private response template and pending queue for 72 residual differences; public evidence aggregate-only; no raw inbox access, valid diagnostic response, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
