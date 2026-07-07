@@ -42,6 +42,7 @@ scripts/preflight.sh
 scripts/prepare_database_landing_bundle.py
 scripts/prepare_postgres_landing_loader.py
 scripts/prepare_raw_replay_day_fact_bundle.py
+scripts/prepare_stage2_source_from_raw_replay.py
 scripts/render_stage2_certificate.py
 scripts/resolve_stage2_source.py
 scripts/run_stage2_evening.sh
@@ -66,4 +67,5 @@ tests/test_database_dry_run.py
 tests/test_database_landing_bundle.py
 tests/test_raw_archive_replay.py
 tests/test_stage2_consensus.py
+tests/test_stage2_source_from_raw_replay.py
 tools/validate_skill_package.py

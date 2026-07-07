@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -30,6 +31,7 @@ def main() -> int:
     parser.add_argument("--repo-root", required=True)
     parser.add_argument("--source-mode", default=os.environ.get("KMFA_STAGE2_SOURCE_MODE", "auto"))
     parser.add_argument("--source-json", default=os.environ.get("KMFA_STAGE2_SOURCE_JSON", ""))
+    parser.add_argument("--raw-replay-day-fact-dir", default=os.environ.get("KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR", ""))
     parser.add_argument("--print-json", action="store_true")
     args = parser.parse_args()
 
@@ -61,6 +63,69 @@ def main() -> int:
         write_json(status_path, status)
         print(json.dumps(status, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
+
+    raw_replay_day_fact_dir = str(args.raw_replay_day_fact_dir or "").strip()
+    if not raw_replay_day_fact_dir and source_mode == "auto":
+        inferred_private_runtime = run_dir.parents[2] if len(run_dir.parents) >= 3 else None
+        if inferred_private_runtime is not None:
+            inferred = inferred_private_runtime / "raw_replay_day_fact" / args.target_month
+            if inferred.is_dir():
+                raw_replay_day_fact_dir = str(inferred)
+    if source_mode in {"auto", "raw_replay_day_fact"} and raw_replay_day_fact_dir:
+        source_out = run_dir / "stage2_source_snapshot.json"
+        cmd = [
+            sys.executable,
+            str(Path(__file__).resolve().parent / "prepare_stage2_source_from_raw_replay.py"),
+            "--raw-replay-day-fact-dir",
+            raw_replay_day_fact_dir,
+            "--target-month",
+            args.target_month,
+            "--out-json",
+            str(source_out),
+            "--print-json",
+        ]
+        p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if p.returncode != 0:
+            status = {
+                "status": "STAGE2_ADAPTER_SOURCE_MISSING",
+                "source_mode": "raw_replay_day_fact",
+                "target_month": args.target_month,
+                "stage2_run_index": args.run_index,
+                "live_dws_performed": False,
+                "database_mutation_performed": False,
+                "failure_reason": (p.stderr or p.stdout or "raw replay day-fact source materialization failed").strip(),
+            }
+            write_json(status_path, status)
+            print(json.dumps(status, ensure_ascii=False, indent=2, sort_keys=True))
+            return 2
+        adapter_summary = json.loads(p.stdout) if p.stdout.strip() else {}
+        status = {
+            "status": "READY",
+            "source_mode": "raw_replay_day_fact",
+            "source_json": str(source_out),
+            "target_month": args.target_month,
+            "stage2_run_index": args.run_index,
+            "adapter_summary": adapter_summary,
+            "live_dws_performed": False,
+            "database_mutation_performed": False,
+        }
+        write_json(status_path, status)
+        print(json.dumps(status, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+
+    if source_mode == "raw_replay_day_fact":
+        status = {
+            "status": "STAGE2_ADAPTER_SOURCE_MISSING",
+            "source_mode": "raw_replay_day_fact",
+            "target_month": args.target_month,
+            "stage2_run_index": args.run_index,
+            "live_dws_performed": False,
+            "database_mutation_performed": False,
+            "failure_reason": "Set KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR or place raw_replay_day_fact/YYYYMM under private_runtime.",
+        }
+        write_json(status_path, status)
+        print(json.dumps(status, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
 
     if source_mode == "dws_live":
         safety = dws_safety_status(repo_root)

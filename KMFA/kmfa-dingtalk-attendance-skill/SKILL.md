@@ -90,6 +90,13 @@ The v0.3 task pack extends the current S19 system toward database and shadow pay
 6. Accept stage-2 only when all five canonical hashes match exactly, quality can reach the Q5 target, and there are no unresolved P0/P1 issues.
 7. Generate payroll baseline candidates only after accepted stage-2 consensus.
 
+Current offline bridge:
+
+- `scripts/prepare_raw_replay_day_fact_bundle.py` converts private OneDrive raw archive replay into private day facts and raw-detail linkage.
+- `scripts/prepare_stage2_source_from_raw_replay.py` converts that private day-fact bundle into a Stage-2 source snapshot.
+- `scripts/resolve_stage2_source.py` can use `KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact` and `KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR` during eligible evening runs.
+- This bridge does not prove PostgreSQL mutation: `database_transaction_committed` and `database_transaction_verified` remain false until an approved non-production PostgreSQL execution proof exists.
+
 SQLite remains a private transition ledger/cache, not the final payroll database.
 
 ## Portable Package

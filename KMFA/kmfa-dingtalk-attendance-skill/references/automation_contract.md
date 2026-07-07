@@ -53,6 +53,12 @@ The current portable stage-2 runner is fail-closed:
 
 - If `KMFA_STAGE2_SOURCE_JSON` points to an approved replay snapshot, it writes
   deterministic run artifacts without live DWS or database credentials.
+- If `KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact` and
+  `KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR` points to a private raw replay
+  day-fact/linkage bundle, `scripts/resolve_stage2_source.py` materializes a
+  Stage-2 source snapshot in the run folder without live DWS or database
+  mutation. The resulting source keeps database commit/verification gates
+  false until an approved non-production PostgreSQL execution proof exists.
 - `scripts/resolve_stage2_source.py` records `source_adapter_status.json` for
   each eligible run, including fail-closed DWS safety status.
 - If `KMFA_STAGE2_SOURCE_MODE=dws_live` is set but `KMFA_S19_ALLOW_DWS_COMMANDS`

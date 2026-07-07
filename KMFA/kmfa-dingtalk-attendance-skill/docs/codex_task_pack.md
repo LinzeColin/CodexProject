@@ -120,6 +120,14 @@ Current status:
   `attendance_day_fact.jsonl`, `raw_detail_linkage.jsonl`, and a canonical
   replay snapshot under private runtime while keeping stdout and summary
   manifests public-safe.
+- `scripts/prepare_stage2_source_from_raw_replay.py` converts a private raw
+  replay day-fact/linkage bundle into a Stage-2 source snapshot with
+  employee-key hashes, day facts, payroll baseline candidates, raw-detail
+  lineage references, and fail-closed database commit/verification gates.
+- `scripts/resolve_stage2_source.py` can now use
+  `KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact` plus
+  `KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR` so eligible evening automation can
+  materialize that Stage-2 source without live DWS or database mutation.
 - Real private 202606 replay has produced an ignored private day-fact/linkage
   bundle with raw count/hash parity, location threshold pass, every day fact
   linked to raw detail IDs, and matching canonical replay hashes across two
@@ -138,6 +146,8 @@ Remaining work:
 7. Run private raw archive inspection and day-fact replay on future completed
    months before import, including seed-raw isolation and an explicit location
    coverage threshold; keep only public-safe summaries in review evidence.
+8. Add approved non-production PostgreSQL execution proof so Stage-2 day-5
+   consensus can satisfy database transaction gates instead of failing closed.
 
 ### Task 4 - Enforce location and trajectory evidence
 

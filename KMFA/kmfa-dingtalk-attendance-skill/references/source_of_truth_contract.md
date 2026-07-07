@@ -60,3 +60,19 @@ raw payloads + employee map + policy version + rule config snapshot
   -> canonical snapshot
   -> payroll baseline candidate
 ```
+
+Current offline implementation path:
+
+1. `scripts/inspect_raw_archive_month.py` validates private OneDrive archive
+   manifest/raw count parity, raw SHA-256 parity, seed-raw isolation, and
+   location evidence coverage.
+2. `scripts/prepare_raw_replay_day_fact_bundle.py` materializes private day
+   facts and raw-detail linkage from that replay.
+3. `scripts/prepare_stage2_source_from_raw_replay.py` converts the private day
+   facts into a Stage-2 source snapshot using hashed employee identifiers.
+4. `scripts/resolve_stage2_source.py` can call that bridge during eligible
+   evening automation when `KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact`.
+
+This path proves replay and raw-to-derived linkage only. Database commit and
+verification gates remain false until the approved PostgreSQL execution guard
+has actually run against a non-production target.
