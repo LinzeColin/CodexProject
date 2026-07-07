@@ -44,6 +44,7 @@ REQUIRED_TOOL_FILES = (
     "notifier_dws_personal_chat.py",
     "notifier_dingtalk_work_notification.py",
     "notifier_wecom_optional.py",
+    "notification_template.py",
     "onedrive_archive.py",
     "cleanup_runtime.py",
     "healthcheck.py",

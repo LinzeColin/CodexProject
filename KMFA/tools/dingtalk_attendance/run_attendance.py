@@ -28,13 +28,19 @@ from KMFA.tools.dingtalk_attendance.dws_attendance import DwsAttendanceError, co
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import dispatch_reports_with_resolved_channel
+from KMFA.tools.dingtalk_attendance.notification_template import (
+    REST_REQUIRED_THRESHOLD_DAYS,
+    build_notification_message,
+    build_personal_notification_message,
+    notification_context_from_output_status,
+    work_date_from_run_id,
+)
 from KMFA.tools.dingtalk_attendance.onedrive_archive import archive_paths_for_run
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
 RUN_TYPES = ("morning", "evening")
 SCHEDULE = {"morning": "08:35", "evening": "18:15"}
-REST_REQUIRED_THRESHOLD_DAYS = 27
 
 
 def build_run_plan(run_type: str, timezone: str = TIMEZONE, run_id: str | None = None) -> dict[str, Any]:
@@ -75,44 +81,6 @@ def build_run_plan(run_type: str, timezone: str = TIMEZONE, run_id: str | None =
     }
 
 
-def build_notification_message(
-    *,
-    work_date: str,
-    run_type: str,
-    current_time: str,
-    unexpected_empty_record_names: list[str],
-    known_no_record_names: list[str],
-    consecutive_anomaly_summary: list[str] | str | None = None,
-    pending_hr_actions: list[str] | str | None = None,
-    rest_required_people: list[dict[str, Any]] | None = None,
-    markdown: bool = True,
-) -> str:
-    title = f"开明考勤提醒｜{work_date}｜{run_type}"
-    lines = [f"# {title}" if markdown else title, "", f"截止 {current_time}", ""]
-    abnormal_names = _dedupe_nonempty([*unexpected_empty_record_names, *known_no_record_names])
-    consecutive_lines = _coerce_message_lines(consecutive_anomaly_summary)
-    pending_lines = _coerce_message_lines(pending_hr_actions)
-    rest_required_lines = _format_rest_required_people(rest_required_people)
-
-    if abnormal_names:
-        lines.extend([f"今日异常人员 / 无考勤人员：{_join_names(abnormal_names)}。", ""])
-    if consecutive_lines:
-        lines.extend(["连续异常人员：", *consecutive_lines, ""])
-    if pending_lines:
-        lines.extend(["待审批/待补卡/待核查：", *pending_lines, ""])
-    if rest_required_lines:
-        lines.extend(["需要休息的人员：", *rest_required_lines, ""])
-    if not abnormal_names and not consecutive_lines and not pending_lines and not rest_required_lines:
-        lines.append("今天一切良好")
-
-    return "\n".join(lines).rstrip() + "\n"
-
-
-def build_personal_notification_message(**kwargs: Any) -> str:
-    kwargs.pop("markdown", None)
-    return build_notification_message(**kwargs, markdown=False)
-
-
 def dispatch_reports_to_robot(
     *,
     output_status: Mapping[str, Any],
@@ -134,7 +102,7 @@ def dispatch_reports_to_robot(
         receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
         return receipt
 
-    notification_context = _notification_context_from_output_status(output_status)
+    notification_context = notification_context_from_output_status(output_status)
     markdown_text = build_notification_message(**notification_context, markdown=True)
     send_result = sender(title="开明考勤提醒", markdown_text=markdown_text, env=values)
     messages.append(
@@ -158,45 +126,6 @@ def dispatch_reports_to_robot(
     }
     receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
     return receipt
-
-
-def _notification_context_from_output_status(output_status: Mapping[str, Any]) -> dict[str, Any]:
-    stats = output_status.get("stats", {})
-    if not isinstance(stats, Mapping):
-        stats = {}
-    return {
-        "work_date": str(
-            output_status.get("work_date") or _work_date_from_run_id(str(output_status.get("run_id", ""))) or "UNKNOWN_DATE"
-        ),
-        "run_type": str(output_status.get("run_type") or _run_type_from_run_id(str(output_status.get("run_id", ""))) or "unknown"),
-        "current_time": str(output_status.get("current_time") or datetime.now(ZoneInfo(TIMEZONE)).strftime("%H:%M")),
-        "unexpected_empty_record_names": _coerce_message_lines(stats.get("unexpected_empty_record_names")),
-        "known_no_record_names": _coerce_message_lines(stats.get("known_no_record_names")),
-        "consecutive_anomaly_summary": _coerce_message_lines(output_status.get("consecutive_anomaly_summary")),
-        "pending_hr_actions": _coerce_message_lines(output_status.get("pending_hr_actions")),
-        "rest_required_people": _coerce_rest_required_people(stats.get("rest_required_people")),
-    }
-
-
-def _coerce_message_lines(value: Any) -> list[str]:
-    if value is None:
-        return []
-    if isinstance(value, str):
-        stripped = value.strip()
-        return [stripped] if stripped and stripped != "无" else []
-    if isinstance(value, list):
-        return [str(item).strip() for item in value if str(item).strip() and str(item).strip() != "无"]
-    return []
-
-
-def _dedupe_nonempty(values: list[str]) -> list[str]:
-    seen: set[str] = set()
-    result: list[str] = []
-    for value in values:
-        if value and value not in seen:
-            seen.add(value)
-            result.append(value)
-    return result
 
 
 def build_monthly_rest_required_people(
@@ -245,7 +174,7 @@ def build_stats_with_rest_required_people(
 def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     for raw_path in sorted(month_dir.glob("s19_*.raw.jsonl.gz")):
-        work_date = _work_date_from_run_id(raw_path.name)
+        work_date = work_date_from_run_id(raw_path.name)
         try:
             with gzip.open(raw_path, "rt", encoding="utf-8") as handle:
                 for line in handle:
@@ -257,7 +186,7 @@ def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
                     if payload.get("type") == "metadata":
                         run_plan = payload.get("run_plan", {})
                         if isinstance(run_plan, Mapping):
-                            work_date = _work_date_from_run_id(str(run_plan.get("run_id") or raw_path.name))
+                            work_date = work_date_from_run_id(str(run_plan.get("run_id") or raw_path.name))
                         continue
                     if payload.get("type") != "employee_attendance":
                         continue
@@ -267,33 +196,6 @@ def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
         except (OSError, EOFError, json.JSONDecodeError):
             continue
     return records
-
-
-def _format_rest_required_people(people: list[dict[str, Any]] | None) -> list[str]:
-    lines: list[str] = []
-    for person in _coerce_rest_required_people(people):
-        name = person["name"]
-        days = person["effective_attendance_days"]
-        if days >= REST_REQUIRED_THRESHOLD_DAYS:
-            lines.append(f"{name}（已考勤{days}天）")
-    return lines
-
-
-def _coerce_rest_required_people(value: Any) -> list[dict[str, Any]]:
-    if not isinstance(value, list):
-        return []
-    people: list[dict[str, Any]] = []
-    for item in value:
-        if not isinstance(item, Mapping):
-            continue
-        name = str(item.get("name") or "").strip()
-        try:
-            days = int(item.get("effective_attendance_days"))
-        except (TypeError, ValueError):
-            continue
-        if name:
-            people.append({"name": name, "effective_attendance_days": days})
-    return people
 
 
 def _record_list_from_attendance_record(record: Mapping[str, Any]) -> list[Any]:
@@ -329,24 +231,6 @@ def _record_list_has_morning_and_evening(record_list: list[Any]) -> bool:
         has_morning = has_morning or "上班" in values or "OnDuty" in values
         has_evening = has_evening or "下班" in values or "OffDuty" in values
     return has_morning and has_evening
-
-
-def _join_names(names: list[str]) -> str:
-    return "、".join(names)
-
-
-def _work_date_from_run_id(run_id: str) -> str | None:
-    parts = run_id.split("_")
-    if len(parts) >= 3 and len(parts[2]) == 8 and parts[2].isdigit():
-        return f"{parts[2][:4]}-{parts[2][4:6]}-{parts[2][6:8]}"
-    return None
-
-
-def _run_type_from_run_id(run_id: str) -> str | None:
-    parts = run_id.split("_")
-    if len(parts) >= 2 and parts[1] in RUN_TYPES:
-        return parts[1]
-    return None
 
 
 def _summarize_notification_status(statuses: list[str]) -> str:
@@ -479,7 +363,7 @@ def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
     output_status = {
         "run_id": manifest["run_id"],
         "run_type": run_type,
-        "work_date": _work_date_from_run_id(str(manifest["run_id"])),
+        "work_date": work_date_from_run_id(str(manifest["run_id"])),
         "current_time": datetime.now(ZoneInfo(timezone)).strftime("%H:%M"),
         "stats": build_stats_with_rest_required_people(
             manifest.get("stats", {}),
