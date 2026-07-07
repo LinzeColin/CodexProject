@@ -166,8 +166,7 @@ function validateHumanPlane() {
   const quickEntry = readRepoFile("人类可读/00_快速入口.md");
   const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
 
-  assertCondition(
-    hasAll(quickEntry, [
+  const p2QuickEntry = hasAll(quickEntry, [
       "结论",
       "当前阶段",
       "S01 P2",
@@ -177,10 +176,21 @@ function validateHumanPlane() {
       "ChatGPT、Codex、后续其他 agent",
       "凭证不是 transcript",
       "No GitHub main upload in this phase",
-    ]),
+  ]);
+  const s02ReviewQuickEntry = hasAll(quickEntry, [
+      "结论",
+      "当前阶段是 S02 Review：S02 整体复审已通过",
+      "下一步只允许进入 S03 P1",
+      "不是跳转页",
+      "ChatGPT、Codex、后续其他 agent",
+      "凭证不是 transcript",
+      "No GitHub main upload in this review",
+  ]);
+  assertCondition(
+    p2QuickEntry || s02ReviewQuickEntry,
     "s01p2_human_quick_entry",
-    "Human quick entry is Chinese, conclusion-first and independently useful",
-    "Human quick entry is missing S01 P2 required content",
+    "Human quick entry is Chinese, conclusion-first and independently useful in S01 P2 or later S02 Review state",
+    "Human quick entry is missing S01 P2 or S02 Review required content",
   );
 
   assertCondition(
@@ -265,11 +275,18 @@ function validateMachinePlane() {
     "下一步是 S02 Review",
     "No GitHub main upload in this phase",
   ]);
+  const s02ReviewCompletion = hasAll(runGateReadme, [
+    "当前阶段是 S02 Review",
+    "v1.2需求冻结清单",
+    "MA-V12-S02-REVIEW",
+    "下一步是 S03 P1",
+    "No GitHub main upload in this review",
+  ]);
   assertCondition(
-    p2Deferral || p3Completion || reviewCompletion || s02p1Completion || s02p2Completion || s02p3Completion,
+    p2Deferral || p3Completion || reviewCompletion || s02p1Completion || s02p2Completion || s02p3Completion || s02ReviewCompletion,
     "s01p2_machine_run_gate_readme",
-    "Run gate README records the original S01 P2 deferral, later S01 P3 freeze completion, S01 review pass state, S02 P1 state, S02 P2 state, or S02 P3 state",
-    "Run gate README is missing S01 P2 deferral, S01 P3 completion, S01 review, S02 P1, S02 P2 and S02 P3 markers",
+    "Run gate README records the original S01 P2 deferral, later S01 P3 freeze completion, S01 review pass state, S02 P1 state, S02 P2 state, S02 P3 state, or S02 Review state",
+    "Run gate README is missing S01 P2 deferral, S01 P3 completion, S01 review, S02 P1, S02 P2, S02 P3 and S02 Review markers",
   );
 
   const freezeConfig = path.join(repoRoot, "机器治理/运行门禁/v1.2需求冻结清单.json");
