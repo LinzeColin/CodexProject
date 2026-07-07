@@ -149,6 +149,8 @@ def test_postgres_landing_load_plan_is_generated_without_database_connection():
         assert "INSERT INTO policy_version" in sql
         assert "ON CONFLICT" in sql
         assert "DO NOTHING" in sql
+        assert "to_timestamp((payload->>'first_in_time')::double precision / 1000.0)" in sql
+        assert "to_timestamp((payload->>'last_out_time')::double precision / 1000.0)" in sql
         assert "psql" not in data
 
 

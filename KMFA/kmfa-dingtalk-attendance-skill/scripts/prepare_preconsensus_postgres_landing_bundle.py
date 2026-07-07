@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-NAMESPACE = uuid.uuid5(uuid.NAMESPACE_URL, "kmfa-dingtalk-attendance-skill/preconsensus-db-landing")
+NAMESPACE = uuid.uuid5(uuid.NAMESPACE_URL, "kmfa-dingtalk-attendance-skill/database-landing")
 TABLES = ["policy_version", "canonical_month_snapshot", "attendance_day_fact"]
 
 

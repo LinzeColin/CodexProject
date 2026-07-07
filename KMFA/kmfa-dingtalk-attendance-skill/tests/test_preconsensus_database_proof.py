@@ -236,6 +236,130 @@ def test_preconsensus_database_proof_promotes_stage2_database_gates_without_payr
         assert str(db_bundle) not in apply_result.stdout
 
 
+def test_preconsensus_and_accepted_landing_use_same_attendance_day_fact_ids():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td) / "private_runtime"
+        raw_bundle = runtime / "raw_replay_day_fact" / "202607"
+        source = runtime / "stage2_source" / "202607" / "source_snapshot.json"
+        db_bundle = runtime / "db_landing_preconsensus" / "202607"
+        verified_source = runtime / "stage2_source" / "202607" / "source_snapshot.db_verified.json"
+        accepted_root = runtime / "accepted_from_db_verified"
+        write_raw_replay_day_fact_bundle(raw_bundle)
+
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_stage2_source_from_raw_replay.py"),
+            "--raw-replay-day-fact-dir",
+            str(raw_bundle),
+            "--target-month",
+            "202607",
+            "--out-json",
+            str(source),
+        ])
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_preconsensus_postgres_landing_bundle.py"),
+            "--source-json",
+            str(source),
+            "--target-month",
+            "202607",
+            "--out-dir",
+            str(db_bundle),
+        ])
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_postgres_landing_loader.py"),
+            "--bundle-dir",
+            str(db_bundle),
+        ])
+
+        execution_proof = {
+            "status": "pass",
+            "mode": "postgres_load_plan_execution_guard",
+            "execute_requested": True,
+            "acknowledge_nonprod_mutation": True,
+            "psql_invoked": True,
+            "postgres_connection_used": True,
+            "database_mutation_attempted": True,
+            "database_mutation_performed": True,
+            "live_dws_performed": False,
+            "target_env": "local",
+            "psql_returncode": 0,
+            "checks": {
+                "static_validation_passed": True,
+                "target_env_nonproduction": True,
+                "database_url_not_production_like": True,
+                "execution_guard_satisfied": True,
+            },
+        }
+        state_verification = {
+            "status": "pass",
+            "mode": "postgres_landing_state_verification",
+            "bundle_source_hash": json.loads((db_bundle / "db_landing_manifest.json").read_text(encoding="utf-8"))["source_snapshot_hash"],
+            "psql_invoked": True,
+            "postgres_connection_used": True,
+            "database_mutation_attempted": False,
+            "database_mutation_performed": False,
+            "live_dws_performed": False,
+            "tables_checked": json.loads((db_bundle / "load_order.json").read_text(encoding="utf-8"))["tables"],
+            "checks": {
+                "target_env_nonproduction": True,
+                "database_url_not_production_like": True,
+                "counts_match": True,
+            },
+        }
+        execution_proof_path = db_bundle / "postgres_execution_proof.json"
+        state_verification_path = db_bundle / "postgres_state_verification.json"
+        execution_proof_path.write_text(json.dumps(execution_proof, ensure_ascii=False), encoding="utf-8")
+        state_verification_path.write_text(json.dumps(state_verification, ensure_ascii=False), encoding="utf-8")
+
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "apply_stage2_database_proof.py"),
+            "--source-json",
+            str(source),
+            "--bundle-dir",
+            str(db_bundle),
+            "--execution-proof-json",
+            str(execution_proof_path),
+            "--state-verification-json",
+            str(state_verification_path),
+            "--out-json",
+            str(verified_source),
+        ])
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "run_stage2_accepted_rehearsal.py"),
+            "--source-json",
+            str(verified_source),
+            "--target-month",
+            "202607",
+            "--out-root",
+            str(accepted_root),
+        ])
+
+        preconsensus_rows = [
+            json.loads(line)
+            for line in (db_bundle / "attendance_day_fact.jsonl").read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        accepted_rows = [
+            json.loads(line)
+            for line in (accepted_root / "db_landing" / "202607" / "attendance_day_fact.jsonl").read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        preconsensus_ids = {
+            (row["employee_internal_id"], row["work_date"]): row["day_fact_id"]
+            for row in preconsensus_rows
+        }
+        accepted_ids = {
+            (row["employee_internal_id"], row["work_date"]): row["day_fact_id"]
+            for row in accepted_rows
+        }
+        assert accepted_ids == preconsensus_ids
+
+
 if __name__ == "__main__":
     test_preconsensus_database_proof_promotes_stage2_database_gates_without_payroll_acceptance()
+    test_preconsensus_and_accepted_landing_use_same_attendance_day_fact_ids()
     print("preconsensus database proof tests passed")
