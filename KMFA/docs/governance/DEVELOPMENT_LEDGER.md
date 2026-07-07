@@ -2136,3 +2136,13 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - result: raw evidence was refreshed read-only, but no deterministic authoritative fingerprint-pair binding was produced for the 48 blockers. No raw-to-processed value consistency is claimed.
 - boundary: raw inbox mutation, value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH`, one phase only; no Stage review or upload.
+## 2026-07-08 - V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH
+
+- event_id: `DEV-KMFA-20260708-V014-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-INTAKE-AFTER-RAW-REFRESH`
+- task_id: `KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-INTAKE-AFTER-RAW-REFRESH-20260708`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh`
+- status: `completed_validated_local_only_authorized_source_reference_or_exclusion_intake_after_raw_refresh_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH/machine/residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh_manifest.json`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh.py --require-private-intake`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh.py`
+- governance boundary: aggregate-only public evidence; ignored private intake only; no raw inbox access or mutation, no value-comparison claim, no upload, no reinstall and no business execution.

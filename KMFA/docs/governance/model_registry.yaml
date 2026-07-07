@@ -2625,3 +2625,18 @@ kmfa_v014_residual_difference_raw_candidate_fingerprint_evidence_refresh_after_f
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD
   validator: KMFA/tools/check_v014_residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold.py
   scope: Residual difference raw candidate fingerprint evidence refresh after final threshold only; refreshes authorized read-only raw numeric fingerprint evidence, leaves 48 blockers unbound, and keeps value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-INTAKE-AFTER-RAW-REFRESH-001
+  parameter_refs:
+    - PARAM-KMFA-1504
+    - PARAM-KMFA-1505
+    - PARAM-KMFA-1506
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh.py
+  scope: Authorized source reference or owner exclusion intake after raw refresh only; prepares ignored private intake for 48 still-blocked raw candidate fingerprint items, applies zero authoritative bindings, produces zero comparison-ready records, and keeps value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.

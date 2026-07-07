@@ -1603,3 +1603,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_still_blocked_raw_candidate_fingerprint_count=48, refresh_item_count=48, raw_numeric_candidate_count=351453, raw_unique_numeric_fingerprint_count=22453, deterministic_raw_candidate_fingerprint_match_count=0 and still_blocked_after_raw_refresh_count=48 prove the raw evidence pool was refreshed read-only but still cannot bind the 48 blockers to authoritative fingerprint pairs.
 - gate: `NO_GO`; comparison_retry_ready_after_raw_refresh_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private raw index, refresh diagnostic, records and report stay under ignored runtime. Raw inbox is read-only and not mutated.
+
+## V014 Residual Difference Authorized Source Reference Or Exclusion Intake After Raw Refresh
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-INTAKE-AFTER-RAW-REFRESH-001`
+- parameter_ids: `PARAM-KMFA-1504`, `PARAM-KMFA-1505`, `PARAM-KMFA-1506`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh`
+- rule: source_refresh_item_count=48, still_blocked_after_raw_refresh_count=48, intake_item_count=48, source_reference_or_owner_exclusion_intake_count=40, formula_or_non_numeric_mapping_intake_count=8, active_authoritative_decision_count=0, binding_ready_after_intake_count=0 and comparison_retry_ready_after_intake_count=0 prove this is private intake preparation only.
+- gate: `NO_GO`; raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private intake active record, queue, diagnostic and report stay under ignored runtime and raw inbox remains untouched by this phase.

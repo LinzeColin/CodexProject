@@ -11904,3 +11904,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private raw index/refresh outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior resolution outputs."
     target_version: "0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold"
     completed_version: "0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold"
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-INTAKE-AFTER-RAW-REFRESH-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-INTAKE-AFTER-RAW-REFRESH"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh.py --require-private-intake"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh.py"
+    test_results:
+      - "PASS: authorized source reference or exclusion intake validator and focused unit test passed; 48 private intake items were prepared, zero authoritative bindings were applied, zero comparison retry records are ready and value consistency remains unverified"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH/human/residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH/machine/residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH/machine/residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh_matrix_public_safe.json"
+    risk: "An intake queue can be mistaken for authoritative source binding; this phase records private intake only and keeps binding, value comparison, reconciliation, report, upload, reinstall and business execution closed."
+    rollback: "Remove current phase artifacts, metadata copies, private intake outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior raw-refresh outputs."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh"
