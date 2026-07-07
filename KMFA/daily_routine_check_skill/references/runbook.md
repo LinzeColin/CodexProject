@@ -43,6 +43,18 @@ It does not create, replace, or operate the upstream DWS archive job. It reads e
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/生产管理群/
 ```
 
+`DWS_Outputs.zip` and `DWS_Archive/` are not enough for this checker because
+the checker needs the direct hot-folder contract with `chat_records.csv` and
+`_manifest/manifest.csv` for each target group. If healthcheck reports
+`SOURCE_INPUT_FOLDER_MISSING`, enable the upstream DWS archive so it materializes:
+
+```text
+DWS_Outputs/付款请示群/chat_records/chat_records.csv
+DWS_Outputs/付款请示群/_manifest/manifest.csv
+DWS_Outputs/生产管理群/chat_records/chat_records.csv
+DWS_Outputs/生产管理群/_manifest/manifest.csv
+```
+
 The automation performs:
 
 1. Load DWS group manifests and chat records.

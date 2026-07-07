@@ -38,6 +38,7 @@ Responsibilities:
 6. Log `run_at_beijing`, `check_date`, `trigger_window`, `rules_evaluated`, and `rules_skipped`.
 7. Include `cash_risk_result` for `morning_1135`.
 8. Record `SOURCE_MISSING` or `SOURCE_STALE` if upstream OneDrive DWS output is missing or stale.
+8a. If healthcheck reports `SOURCE_INPUT_FOLDER_MISSING`, report the direct-folder enable conditions instead of treating `DWS_Outputs.zip` or `DWS_Archive/` as sufficient input.
 9. Notify 张霖泽 only for missing, late, low-confidence, P0, P1, NO_DATA, NEEDS_REVIEW, SOURCE_MISSING, or SOURCE_STALE.
 10. Run cleanup only through `--cleanup --apply`, which performs SQLite WAL checkpoint/VACUUM and `cleanup_events`; never delete DWS input.
 11. Do not generate Excel.
