@@ -11,6 +11,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, TIMEZONE, ZHANG_LINZE_USER_ID
+from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notification_template import (
     build_notification_message,
     notification_context_from_output_status,
@@ -134,6 +135,16 @@ def probe_notification_targets(
 ) -> dict[str, Any]:
     values = merged_runtime_env() if env is None else dict(env)
     current = now or datetime.now(ZoneInfo(TIMEZONE))
+    if dws_runner is run_dws_command and help_provider is get_dws_help:
+        dws_safety = dws_command_safety_status(env=values)
+        if dws_safety["status"] != "READY":
+            return {
+                "status": "DWS_AUTH_REQUIRED",
+                "target_results": [],
+                "targets_resolved": str(targets_resolved_path),
+                "dws_command_safety": dws_safety,
+                "failure_reason": dws_safety["failure_reason"],
+            }
     config = ensure_targets_config(targets_config_path=targets_config_path)
     targets = _selected_targets(config.get("targets", []), target_filter=target_filter, label_filter=label_filter)
     resolved_targets: list[dict[str, Any]] = []

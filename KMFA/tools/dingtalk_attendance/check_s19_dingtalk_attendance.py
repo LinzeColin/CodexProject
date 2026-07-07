@@ -13,6 +13,10 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT
+from KMFA.tools.dingtalk_attendance.notification_template import (
+    build_notification_message,
+    notification_context_from_output_status,
+)
 
 
 REQUIRED_METADATA_FILES = (
@@ -35,6 +39,7 @@ REQUIRED_METADATA_FILES = (
 REQUIRED_TOOL_FILES = (
     "__init__.py",
     "run_attendance.py",
+    "dws_auth_guard.py",
     "dws_attendance.py",
     "dingtalk_client.py",
     "roster_sync.py",
@@ -103,6 +108,25 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         errors.append("private runtime contains unexpected local files")
     if len(prompt_files) != 3:
         errors.append("prompt count drift")
+    exemption_probe_context = notification_context_from_output_status(
+        {
+            "run_id": "s19_morning_20260707_083500",
+            "run_type": "morning",
+            "work_date": "2026-07-07",
+            "current_time": "08:35",
+            "stats": {
+                "attendance_anomaly_names": ["张三", "李四"],
+                "known_no_record_names": ["张霖泽", "林全意"],
+            },
+        }
+    )
+    exemption_probe = build_notification_message(**exemption_probe_context, markdown=False)
+    if "今日异常人员 / 无考勤人员：张三、李四。" not in exemption_probe:
+        errors.append("real anomaly names not rendered in user-visible notification template")
+    if "张霖泽" in exemption_probe or "林全意" in exemption_probe:
+        errors.append("exempt no-attendance names rendered as user-visible anomalies")
+    if "morning" in exemption_probe or "evening" in exemption_probe:
+        errors.append("English run type rendered in user-visible notification template")
 
     return {
         "status": "PASS" if not errors else "FAIL",

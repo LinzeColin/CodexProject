@@ -16,6 +16,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, TIMEZONE, ZHANG_LINZE_USER_ID
+from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
     PRIVATE_RUNTIME_DIR,
@@ -48,6 +49,17 @@ def probe_notification_channels(
 ) -> dict[str, Any]:
     values = merged_runtime_env() if env is None else dict(env)
     current = now or datetime.now(ZoneInfo(TIMEZONE))
+    if dws_runner is run_dws_command and help_provider is get_dws_help:
+        dws_safety = dws_command_safety_status(env=values)
+        if dws_safety["status"] != "READY":
+            return {
+                "status": "DWS_AUTH_REQUIRED",
+                "successful_channel": None,
+                "recipient_user_id": recipient,
+                "attempts": [],
+                "dws_command_safety": dws_safety,
+                "failure_reason": dws_safety["failure_reason"],
+            }
     title = "开明考勤个人通知验证"
     text = "\n".join(
         [

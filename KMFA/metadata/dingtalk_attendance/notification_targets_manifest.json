@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "automation_name": "每日早晚钉钉考勤检查",
-  "updated_at": "2026-07-07T12:02:35.107869+08:00",
+  "updated_at": "2026-07-07T12:16:22.855905+08:00",
   "sensitive_values_committed": false,
   "targets": [
     {
@@ -15,6 +15,19 @@
       "resolved_channel": "dws_open_dingtalk_id_chat",
       "last_probe_status": "SENT",
       "last_probe_at": "2026-07-07T12:02:35.107869+08:00",
+      "sensitive_values_committed": false
+    },
+    {
+      "label": "林全意",
+      "type": "personal",
+      "enabled": true,
+      "reports": [
+        "management",
+        "hr"
+      ],
+      "resolved_channel": "dws_open_dingtalk_id_chat",
+      "last_probe_status": "SENT",
+      "last_probe_at": "2026-07-07T12:16:22.855905+08:00",
       "sensitive_values_committed": false
     }
   ]

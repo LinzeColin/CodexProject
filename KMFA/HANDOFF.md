@@ -422,5 +422,6 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - 张霖泽 DingTalk userId：`1iv-1t2oesv2yd`；老板 userId 或小群配置仍需本机私有配置。
 - GitHub 仅保存代码、schema、policy、prompt、manifest、validator 和 public-safe evidence；真实员工考勤明文、SQLite、raw API response、报告正文和凭据材料不得提交。
 - 缺真实钉钉权限时，`healthcheck.py --config-only` 和 `run_attendance.py` 必须返回 `CONFIG_MISSING`，不得生成样例员工或假打卡。
+- S19 考勤异常判定规则：张霖泽、林全意是已知无需考勤人员，仅豁免自身；真实异常不得因豁免名单被隐藏。`recordList=[]`、缺少上下班打卡、summary 当天缺卡/未打卡/旷工/迟到/早退均进入用户可见异常名单；2026-07-07 live 验证应考勤 41 人、当天缺卡异常 2 人。
 - 关键文件：`KMFA/tools/dingtalk_attendance/`、`KMFA/metadata/dingtalk_attendance/`、`KMFA/tests/test_dingtalk_attendance.py`、`KMFA/stage_artifacts/S19_DINGTALK_ATTENDANCE/`。
 - 下一步：若本轮全部验证、泄密扫描、open PR/open issue、branch/status/worktree 检查通过，才允许一次性 commit 并 push GitHub main；不得留下 PR、issue、branch 或 worktree。

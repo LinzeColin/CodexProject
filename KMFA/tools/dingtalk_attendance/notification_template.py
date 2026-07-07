@@ -12,6 +12,11 @@ from KMFA.tools.dingtalk_attendance import TIMEZONE
 
 
 REST_REQUIRED_THRESHOLD_DAYS = 27
+NOTIFICATION_HIDDEN_NAMES = frozenset()
+RUN_TYPE_DISPLAY_LABELS = {
+    "morning": "晨报",
+    "evening": "晚报",
+}
 
 
 def build_notification_message(
@@ -29,11 +34,11 @@ def build_notification_message(
     report_paths: Mapping[str, Any] | None = None,
     markdown: bool = True,
 ) -> str:
-    title = f"开明考勤提醒｜{work_date}｜{run_type}"
+    title = f"开明考勤提醒｜{work_date}｜{display_run_type(run_type)}"
     lines = [f"# {title}" if markdown else title, "", f"截止 {current_time}", ""]
-    abnormal_names = _dedupe_nonempty([*unexpected_empty_record_names, *known_no_record_names])
-    consecutive_lines = coerce_message_lines(consecutive_anomaly_summary)
-    pending_lines = coerce_message_lines(pending_hr_actions)
+    abnormal_names = _filter_hidden_names(_dedupe_nonempty([*unexpected_empty_record_names, *known_no_record_names]))
+    consecutive_lines = _filter_hidden_lines(coerce_message_lines(consecutive_anomaly_summary))
+    pending_lines = _filter_hidden_lines(coerce_message_lines(pending_hr_actions))
     rest_required_lines = _format_rest_required_people(rest_required_people)
 
     if abnormal_names:
@@ -61,14 +66,22 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
         stats = {}
     current_time = str(output_status.get("current_time") or datetime.now(ZoneInfo(TIMEZONE)).strftime("%H:%M"))
     run_id = str(output_status.get("run_id") or "")
+    pending_actions = coerce_message_lines(output_status.get("pending_hr_actions"))
+    pending_actions.extend(system_issue_lines_from_stats(stats))
+    anomaly_names = coerce_message_lines(stats.get("attendance_anomaly_names"))
+    if not anomaly_names:
+        anomaly_names = [
+            *coerce_message_lines(stats.get("unexpected_empty_record_names")),
+            *coerce_message_lines(stats.get("incomplete_record_names")),
+        ]
     return {
         "work_date": str(output_status.get("work_date") or work_date_from_run_id(run_id) or "UNKNOWN_DATE"),
         "run_type": str(output_status.get("run_type") or run_type_from_run_id(run_id) or "unknown"),
         "current_time": current_time,
-        "unexpected_empty_record_names": coerce_message_lines(stats.get("unexpected_empty_record_names")),
-        "known_no_record_names": coerce_message_lines(stats.get("known_no_record_names")),
+        "unexpected_empty_record_names": _filter_hidden_names(_dedupe_nonempty(anomaly_names)),
+        "known_no_record_names": [],
         "consecutive_anomaly_summary": coerce_message_lines(output_status.get("consecutive_anomaly_summary")),
-        "pending_hr_actions": coerce_message_lines(output_status.get("pending_hr_actions")),
+        "pending_hr_actions": pending_actions,
         "rest_required_people": coerce_rest_required_people(stats.get("rest_required_people")),
         "run_id": run_id or None,
         "beijing_time": str(output_status.get("beijing_time") or current_time),
@@ -78,6 +91,27 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
             if output_status.get(key)
         },
     }
+
+
+def system_issue_lines_from_stats(stats: Mapping[str, Any]) -> list[str]:
+    lines: list[str] = []
+    member_count = _coerce_nonnegative_int(stats.get("member_count"))
+    record_successes = _coerce_nonnegative_int(stats.get("record_success_count"))
+    summary_successes = _coerce_nonnegative_int(stats.get("summary_success_count"))
+    record_failures = _coerce_nonnegative_int(stats.get("record_failure_count"))
+    summary_failures = _coerce_nonnegative_int(stats.get("summary_failure_count"))
+    command_failures = _coerce_nonnegative_int(stats.get("command_failure_count"))
+    if record_failures:
+        lines.append(f"DWS record 取数失败 {record_failures} 人，需核查 attendance.record:get 权限。")
+    elif member_count and record_successes != member_count:
+        lines.append(f"DWS record 取数未覆盖全部人员：成功 {record_successes}/{member_count}，不得判定为正常。")
+    if summary_failures:
+        lines.append(f"DWS summary 取数失败 {summary_failures} 人，需核查 attendance:summary 权限。")
+    elif member_count and summary_successes != member_count:
+        lines.append(f"DWS summary 取数未覆盖全部人员：成功 {summary_successes}/{member_count}，不得判定为正常。")
+    if command_failures and not record_failures and not summary_failures:
+        lines.append(f"DWS 取数命令失败 {command_failures} 次，需核查权限或接口状态。")
+    return lines
 
 
 def coerce_message_lines(value: Any) -> list[str]:
@@ -108,6 +142,14 @@ def coerce_rest_required_people(value: Any) -> list[dict[str, Any]]:
     return people
 
 
+def _coerce_nonnegative_int(value: Any) -> int:
+    try:
+        result = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return max(result, 0)
+
+
 def work_date_from_run_id(run_id: str) -> str | None:
     parts = run_id.split("_")
     if len(parts) >= 3 and len(parts[2]) == 8 and parts[2].isdigit():
@@ -122,14 +164,26 @@ def run_type_from_run_id(run_id: str) -> str | None:
     return None
 
 
+def display_run_type(run_type: str) -> str:
+    return RUN_TYPE_DISPLAY_LABELS.get(str(run_type), "未知报次")
+
+
 def _format_rest_required_people(people: list[dict[str, Any]] | None) -> list[str]:
     lines: list[str] = []
     for person in coerce_rest_required_people(people):
         name = person["name"]
         days = person["effective_attendance_days"]
-        if days >= REST_REQUIRED_THRESHOLD_DAYS:
+        if days >= REST_REQUIRED_THRESHOLD_DAYS and name not in NOTIFICATION_HIDDEN_NAMES:
             lines.append(f"{name}（已考勤{days}天）")
     return lines
+
+
+def _filter_hidden_names(names: list[str]) -> list[str]:
+    return [name for name in names if name not in NOTIFICATION_HIDDEN_NAMES]
+
+
+def _filter_hidden_lines(lines: list[str]) -> list[str]:
+    return [line for line in lines if not any(name in line for name in NOTIFICATION_HIDDEN_NAMES)]
 
 
 def _dedupe_nonempty(values: list[str]) -> list[str]:

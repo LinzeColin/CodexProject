@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import os
 import sys
 from collections.abc import Callable, Mapping
 from datetime import datetime
@@ -24,6 +25,7 @@ from KMFA.tools.dingtalk_attendance import (
     ZHANG_LINZE_USER_ID,
 )
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
+from KMFA.tools.dingtalk_attendance.dws_auth_guard import DWS_COMMAND_ALLOW_ENV, dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.dws_attendance import DwsAttendanceError, collect_org_attendance, write_private_outputs
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
@@ -249,19 +251,48 @@ def _write_cleanup_audit(output_status: Mapping[str, Any], cleanup_status: Mappi
         Path(str(cleanup_path)).write_text(json.dumps(cleanup_status, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def run_attendance(run_type: str, timezone: str) -> dict[str, Any]:
+def run_attendance(
+    run_type: str,
+    timezone: str,
+    *,
+    allow_dws_commands: bool = False,
+    env: Mapping[str, str] | None = None,
+    collector: Callable[..., dict[str, Any]] = collect_org_attendance,
+    cleanup: Callable[[], dict[str, Any]] = cleanup_runtime,
+) -> dict[str, Any]:
     plan = build_run_plan(run_type=run_type, timezone=timezone)
     notification_config_status = build_config_status()
     cleanup_status: dict[str, Any] = {"status": "NOT_RUN"}
     work_date = datetime.now(ZoneInfo(timezone)).strftime("%Y-%m-%d")
     summary_datetime = f"{work_date} {SCHEDULE[run_type]}:00"
+    dws_safety = dws_command_safety_status(env=env, allow_override=allow_dws_commands)
+    if dws_safety["status"] != "READY":
+        cleanup_status.update(cleanup())
+        return {
+            "status": "DWS_AUTH_REQUIRED",
+            "run_plan": plan,
+            "config_status": {
+                "status": "DWS_AUTH_REQUIRED",
+                "backend": "dws",
+                "notification_config_status": notification_config_status,
+            },
+            "dws_command_safety": dws_safety,
+            "collection_status": "SKIPPED_DWS_AUTH_REQUIRED",
+            "anomaly_count": None,
+            "management_report_status": "NOT_GENERATED",
+            "hr_report_status": "NOT_GENERATED",
+            "notification_status": "NOT_SENT_DWS_AUTH_REQUIRED",
+            "onedrive_archive_status": "NOT_WRITTEN_DWS_AUTH_REQUIRED",
+            "cleanup_status": cleanup_status,
+        }
+    os.environ[DWS_COMMAND_ALLOW_ENV] = "1"
     try:
-        collection = collect_org_attendance(
+        collection = collector(
             work_date=work_date,
             summary_datetime=summary_datetime,
         )
     except (DwsAttendanceError, FileNotFoundError, TimeoutError) as exc:
-        cleanup_status.update(cleanup_runtime())
+        cleanup_status.update(cleanup())
         return {
             "status": "DWS_UNAVAILABLE",
             "run_plan": plan,
@@ -303,7 +334,7 @@ def run_attendance(run_type: str, timezone: str) -> dict[str, Any]:
     try:
         dispatch_receipt = dispatch_reports_to_targets(output_status=output_status)
     finally:
-        cleanup_status.update(cleanup_runtime())
+        cleanup_status.update(cleanup())
         _write_cleanup_audit(output_status, cleanup_status)
 
     run_status = "COMPLETED" if collection["stats"]["command_failure_count"] == 0 else "PARTIAL"
@@ -326,7 +357,7 @@ def run_attendance(run_type: str, timezone: str) -> dict[str, Any]:
         "summary_datetime": summary_datetime,
         "collection_status": "DWS_LIVE_COLLECTION_WRITTEN",
         "collection_stats": collection["stats"],
-        "anomaly_count": collection["stats"]["unexpected_empty_record_count"],
+        "anomaly_count": collection["stats"].get("attendance_anomaly_count", collection["stats"]["unexpected_empty_record_count"]),
         "management_report_status": "GENERATED",
         "hr_report_status": "GENERATED",
         "notification_status": dispatch_receipt["notification_status"],
@@ -402,12 +433,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--run-type", required=True, choices=RUN_TYPES)
     parser.add_argument("--timezone", default=TIMEZONE)
     parser.add_argument("--send-latest-report-only", action="store_true", help="Send the latest private reports without DWS collection.")
+    parser.add_argument(
+        "--allow-dws-commands",
+        action="store_true",
+        help=f"Explicitly allow DWS subprocess calls for this run. Without this or {DWS_COMMAND_ALLOW_ENV}=1, live collection fails closed.",
+    )
     args = parser.parse_args(argv)
+    if args.allow_dws_commands:
+        os.environ[DWS_COMMAND_ALLOW_ENV] = "1"
 
     if args.send_latest_report_only:
         result = send_latest_report_only(run_type=args.run_type, timezone=args.timezone)
     else:
-        result = run_attendance(run_type=args.run_type, timezone=args.timezone)
+        result = run_attendance(run_type=args.run_type, timezone=args.timezone, allow_dws_commands=args.allow_dws_commands)
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 
