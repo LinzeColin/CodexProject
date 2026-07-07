@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 7 Phase 7.2 Review Summary Iteration Runtime
+
+- Implemented the production Review / Summary / Iteration runtime slice with
+  `review_summary_iteration_runtime.v1_1_7_stage7_phase2`.
+- Added `memory_atlas_review_summary.v1_1_7_stage7_phase2` for the visible
+  schema output, eight review questions, `proposal_candidate`, `evidence_refs`
+  and `iteration_backlog`.
+- Added a review period selector, theme change, opportunity, low-value loop,
+  decision change, next action, proposal decision and iteration backlog panels.
+- Added `validate:v1.1.7-stage7-phase2` and
+  `validate:review-summary-iteration-browser`.
+- Registered `MA-V117-S7P02` / `ACC-MA-V117-S7P02` with status
+  `phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`.
+
+Phase 7.2 Review / Summary / Iteration only. No Stage 8 summary closure,
+No raw/private data read, No direct active-memory writeback, No proposal queue
+write, No agent apply, No deploy or No GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 7 Phase 7.1 Search 2.0 Runtime
 
 - Implemented the production Search 2.0 runtime slice with

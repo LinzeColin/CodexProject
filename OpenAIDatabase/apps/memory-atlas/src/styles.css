@@ -1127,6 +1127,155 @@ h3 {
   line-height: 1.4;
 }
 
+.review-summary-runtime {
+  gap: 0;
+  overflow: auto;
+}
+
+.review-period-selector,
+.review-session-output,
+.review-question-grid,
+.review-runtime-panels {
+  margin: 0 16px 10px;
+}
+
+.review-period-selector {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.35fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 12px;
+  border: 1px solid rgba(126, 232, 212, 0.22);
+  border-radius: 8px;
+  background: rgba(126, 232, 212, 0.055);
+  padding: 10px;
+}
+
+.review-period-selector label {
+  display: grid;
+  gap: 6px;
+  color: #b6b1a6;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.review-period-selector select {
+  min-height: 34px;
+  border: 1px solid rgba(244, 241, 232, 0.16);
+  border-radius: 8px;
+  background: #15171d;
+  color: #f4f1e8;
+  font: inherit;
+  padding: 0 10px;
+}
+
+.review-period-selector p {
+  margin: 0;
+  color: #d9d4ca;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.review-session-output,
+.proposal-decision-panel,
+.iteration-backlog {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(143, 211, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(143, 211, 255, 0.05);
+  padding: 12px;
+}
+
+.review-schema-line {
+  margin: 0;
+  color: #d9d4ca;
+  font-family: "SFMono-Regular", "Cascadia Code", "Roboto Mono", monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.review-output-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.review-output-grid span {
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 8px;
+  background: rgba(16, 16, 20, 0.38);
+  color: #b6b1a6;
+  font-size: 11px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  padding: 8px;
+}
+
+.review-question-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.review-question-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 168px;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: rgba(244, 241, 232, 0.055);
+  padding: 10px;
+}
+
+.review-question-card strong,
+.proposal-decision-panel strong,
+.iteration-backlog strong {
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.review-question-card p,
+.proposal-decision-panel p,
+.iteration-backlog p {
+  margin: 0;
+  color: #d9d4ca;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.review-question-card small,
+.proposal-decision-panel small,
+.iteration-backlog small {
+  color: #b6b1a6;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.review-runtime-panels {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+  gap: 10px;
+}
+
+.iteration-backlog ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.iteration-backlog li {
+  color: #d9d4ca;
+  padding-left: 2px;
+}
+
 .iteration-panels,
 .config-memory-panel {
   display: grid;
@@ -1139,7 +1288,7 @@ h3 {
   flex: 1 1 auto;
   grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
   align-items: stretch;
-  overflow: hidden;
+  overflow: visible;
   padding: 0 16px 16px;
 }
 
@@ -6809,6 +6958,10 @@ h3 {
 
   .summary-signal-grid,
   .config-memory-grid,
+  .review-period-selector,
+  .review-output-grid,
+  .review-question-grid,
+  .review-runtime-panels,
   .roi-mini-bars,
   .search-topic-bars {
     grid-template-columns: 1fr;
@@ -6824,6 +6977,13 @@ h3 {
 
   .iteration-panels {
     padding-inline: 6px;
+  }
+
+  .review-period-selector,
+  .review-session-output,
+  .review-question-grid,
+  .review-runtime-panels {
+    margin-inline: 6px;
   }
 
   .timeline-map .timeline-canvas {
