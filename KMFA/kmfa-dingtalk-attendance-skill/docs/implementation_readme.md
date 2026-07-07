@@ -85,6 +85,32 @@ python3 scripts/validate_postgres_load_plan.py \
   --print-json
 ```
 
+Run the PostgreSQL execution guard in dry-run mode:
+
+```bash
+python3 scripts/execute_postgres_load_plan.py \
+  --schema database/postgres_schema.sql \
+  --views database/views_payroll_baseline.sql \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing/202607" \
+  --print-json
+```
+
+Actual execution is fail-closed and requires all of the following:
+
+```bash
+export KMFA_ALLOW_NONPROD_POSTGRES_EXECUTION=1
+export KMFA_POSTGRES_TARGET_ENV=local
+export KMFA_ATTENDANCE_POSTGRES_DSN='postgresql://localhost/kmfa_attendance_local'
+
+python3 scripts/execute_postgres_load_plan.py \
+  --schema database/postgres_schema.sql \
+  --views database/views_payroll_baseline.sql \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing/202607" \
+  --execute \
+  --acknowledge-nonprod-mutation \
+  --print-json
+```
+
 ## Automation
 
 Use `automation/morning_prompt.md` for the morning automation and `automation/evening_prompt.md` for the evening automation. The evening prompt explicitly invokes `$kmfa-dingtalk-attendance-skill` and runs stage-2 only when eligible.

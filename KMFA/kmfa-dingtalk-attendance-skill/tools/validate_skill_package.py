@@ -31,6 +31,7 @@ REQUIRED_FILES = [
     ROOT / "scripts" / "prepare_database_landing_bundle.py",
     ROOT / "scripts" / "prepare_postgres_landing_loader.py",
     ROOT / "scripts" / "validate_postgres_load_plan.py",
+    ROOT / "scripts" / "execute_postgres_load_plan.py",
     ROOT / "templates" / "env.local.example",
     ROOT / "templates" / "notification_targets.local.example.json",
     ROOT / "templates" / "codex-startup-prompt.md",

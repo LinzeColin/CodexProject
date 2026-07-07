@@ -16,6 +16,7 @@
 - [x] Build the approved offline PostgreSQL JSONB/COPY load plan generator for the bundle.
 - [x] Generate `postgres_load_payloads/*.jsonl`, `postgres_load_plan.sql`, and `postgres_load_plan_manifest.json` without opening PostgreSQL.
 - [x] Statically validate generated load plans against repo schema columns, load order, payload files, and `ON CONFLICT` targets.
+- [x] Provide a fail-closed PostgreSQL execution guard that refuses `psql` unless the target is explicitly marked non-production.
 - [ ] Execute the loader only against an explicitly configured non-production PostgreSQL target.
 
 ## Phase 0 - Local verification

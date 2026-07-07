@@ -17,3 +17,4 @@ The test suite verifies:
 5. Accepted stage-2 artifacts can generate an offline private DB landing bundle without database mutation or live DWS.
 6. The private DB landing bundle is FK-complete and can generate a PostgreSQL JSONB/COPY load plan without opening PostgreSQL.
 7. The generated PostgreSQL load plan is statically validated against schema columns, load order, payload files, and schema-backed `ON CONFLICT` targets.
+8. The PostgreSQL load plan executor fail-closes unless non-production execution is explicitly authorized and acknowledged.
