@@ -251,3 +251,63 @@ v1_1_7_stage1_phase4:
     - browser_screenshot_acceptance
     - final_app_reinstall
     - github_main_upload
+v1_1_7_stage2_phase1:
+  task_id: MA-V117-S2P01
+  acceptance_id: ACC-MA-V117-S2P01
+  status: phase_2_1_editable_draft_model_completed_pending_stage2_review
+  required_validator: validate:v1.1.7-stage2-phase1
+  draft_schema_version: memory_atlas_proposal_draft.v1
+  draft_store_key: memory-atlas.proposal-drafts.v1
+  editable_field_whitelist:
+    - importance
+    - priority
+    - status
+    - theme_override
+    - action_state
+    - note
+  draft_target_types:
+    - memory_node
+    - suggested_action
+    - tier_asset
+    - topic_classification
+  draft_status_values:
+    - draft_local
+    - needs_review
+    - ready_for_agent_apply
+    - reverted
+  required_draft_fields:
+    - draft_id
+    - schema_version
+    - parent_snapshot_id
+    - source_surface
+    - target_type
+    - target_id
+    - field
+    - old_value
+    - proposed_value
+    - reason
+    - evidence_refs
+    - confidence
+    - status
+    - created_at
+    - updated_at
+    - proposal_only
+    - requires_conflict_check
+    - requires_agent_or_human_apply
+    - rollback_hint
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+  no_proposal_ui_in_phase: true
+  refresh_warning_required: true
+  undo_draft_change_required: true
+  deferred_to_later_phases:
+    - proposal_ui
+    - proposal_diff_preview
+    - proposal_json_export
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload

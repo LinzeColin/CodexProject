@@ -1,3 +1,42 @@
+## 78. v1.1.7 Stage 2 Phase 2.1 Editable Draft Model
+
+状态：`phase_2_1_editable_draft_model_completed_pending_stage2_review`。
+
+验收 ID：`ACC-MA-V117-S2P01`。
+
+模型参数：
+
+- Stage 2 Phase 2.1 只建立 Editable Draft Model 和 Draft State Store，不进入 Proposal UI。
+- 可编辑字段白名单固定为 `importance`、`priority`、`status`、`theme_override`、`action_state`、`note`。
+- Draft schema version 固定为 `memory_atlas_proposal_draft.v1`。
+- Draft store key 固定为 `memory-atlas.proposal-drafts.v1`。
+- Draft Store 必须支持 refresh warning 和 undo draft change。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/architecture/proposal_edit_model.md`
+- `apps/memory-atlas/src/state/proposalDraftStore.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2_phase1.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+参数记录：
+
+- `PARAM-MA-V117-S2P01-001 stage2_phase1_status = phase_2_1_editable_draft_model_completed_pending_stage2_review`
+- `PARAM-MA-V117-S2P01-002 stage2_phase1_required_validator = validate:v1.1.7-stage2-phase1`
+- `PARAM-MA-V117-S2P01-003 editable_field_whitelist = importance;priority;status;theme_override;action_state;note`
+- `PARAM-MA-V117-S2P01-004 draft_schema_version = memory_atlas_proposal_draft.v1`
+- `PARAM-MA-V117-S2P01-005 draft_store_key = memory-atlas.proposal-drafts.v1`
+- `PARAM-MA-V117-S2P01-006 draft_required_behaviors = refresh warning;undo draft change;serialize;parse;load;save;clear`
+- `PARAM-MA-V117-S2P01-007 stage2_phase1_deferred_work = Phase 2.2 Proposal UI;Proposal Diff Preview;proposal JSON export;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Proposal edit model contract。
+- Draft State Store implementation。
+- `validate:v1.1.7-stage2-phase1` 检查模型、store、参数、记录和改动范围。
+- Boundary includes No Proposal UI, No GitHub main upload, No raw/private read, No direct writeback, No agent apply and No build/deploy/app install。
+
 ## 77. v1.1.7 Stage 1 Review Gate
 
 状态：`stage_1_review_passed_pending_stage2_no_github_main_upload`。
