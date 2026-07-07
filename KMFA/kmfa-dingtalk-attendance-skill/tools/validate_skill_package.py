@@ -61,12 +61,12 @@ FORBIDDEN_FILE_PATTERNS = [
     ".raw.jsonl.gz",
 ]
 
-_ACCESS_TOKEN_QUERY = "access" + "_token="
+_DINGTALK_QUERY_KEY = "access" + "_token="
 _KNOWN_PRIVATE_USER_ID = "1iv-" + "1t2oesv2yd"
 
 FORBIDDEN_CONTENT_PATTERNS = [
-    re.compile(re.escape(_ACCESS_TOKEN_QUERY), re.IGNORECASE),
-    re.compile(r"https://oapi\.dingtalk\.com/robot/send\?" + re.escape(_ACCESS_TOKEN_QUERY), re.IGNORECASE),
+    re.compile(re.escape(_DINGTALK_QUERY_KEY), re.IGNORECASE),
+    re.compile(r"https://oapi\.dingtalk\.com/robot/send\?" + re.escape(_DINGTALK_QUERY_KEY), re.IGNORECASE),
     re.compile(re.escape(_KNOWN_PRIVATE_USER_ID)),
     re.compile(r"cid[A-Za-z0-9+/=]{10,}"),
     re.compile(r"(?:secret|token|password|credential)\s*=\s*(?!<)[A-Za-z0-9_./+=-]{12,}", re.IGNORECASE),

@@ -6,8 +6,8 @@ Work from repo root and stay on `main`. Do not create branches, PRs, issues, or 
 
 Read first:
 
-1. `kmfa-dingtalk-attendance-skill/SKILL.md`
-2. `kmfa-dingtalk-attendance-skill/references/runbook.md`
+1. `KMFA/kmfa-dingtalk-attendance-skill/SKILL.md`
+2. `KMFA/kmfa-dingtalk-attendance-skill/references/runbook.md`
 3. `KMFA/HANDOFF.md`
 4. `KMFA/metadata/dingtalk_attendance/README.md`
 
@@ -25,7 +25,7 @@ Current critical rules:
 Run safe validation before claiming completion:
 
 ```bash
-python3 kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
+python3 KMFA/kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
 python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only
 python3 KMFA/tools/dingtalk_attendance/validate_no_sensitive_git.py
 python3 KMFA/tools/dingtalk_attendance/check_s19_dingtalk_attendance.py
