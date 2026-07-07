@@ -6,6 +6,61 @@
 - Status: interaction contract only; no production UI implementation
 - Last updated: 2026-06-30
 
+## v1.1.7 Stage 5 Phase 5.1 Interaction Contract Addendum
+
+- Contract version: `memory_river_interaction_contract.v1_1_7_stage5_phase1`
+- Feedback contract version: `memory_river_feedback_contract.v1_1_7_stage5_phase1`
+- Task ID: `MA-V117-S5P01`
+- Acceptance ID: `ACC-MA-V117-S5P01`
+- Status: `phase_5_1_interaction_contract_completed_pending_stage5_review`
+- Validator: `validate:v1.1.7-stage5-phase1`
+
+This addendum upgrades the earlier Memory River interaction contract to the
+v1.1.7 Stage 5.1 roadmap boundary. It defines the required interaction and
+feedback behavior before any C3 River Spike, Timeline replacement or production
+integration work.
+
+Stage 5.1 must keep Memory River clearly `not a date list`, `not a table` and
+`not a static scatter`. The required interaction vocabulary is:
+
+1. `zoom`: inspect year / month / week / day scale windows without shifting
+   UTC event dates.
+2. `brush`: select a time range and expose readable start/end date state.
+3. `theme_lanes`: show theme, project, opportunity, conflict and asset
+   trajectories as lanes rather than a flat list.
+4. `event_points`: mark dated events, decisions, bursts and milestones with
+   redacted summaries.
+5. `status_bands`: show black-hole / proto-star / stale lifecycle intervals as
+   candidate bands, not final claims.
+6. `detail_panel`: open or synchronize a redacted detail panel / Inspector view
+   for selected lane, event point or status band evidence.
+
+The required feedback vocabulary is:
+
+1. `visual_feedback`: highlight hover, lock, brush and density threshold states.
+2. `optional_audio`: audio may exist only as an optional future setting.
+3. `audio_default_off`: audio must be disabled by default.
+4. `pseudo_haptic`: tactile feel may only be simulated through visual/timing
+   feedback.
+5. `vibration_not_required`: real platform vibration must never be required.
+6. `reduced_motion`: reduced motion must disable continuous animation and
+   suppress optional pseudo-haptic/audio effects.
+7. `feedback_disable_control`: users must be able to disable dynamic feedback.
+
+Boundary for this v1.1.7 phase:
+
+- No C3 River Spike.
+- No Timeline replacement.
+- No Stage 5.2.
+- No runtime UI implementation.
+- No CSS change.
+- No browser screenshot run in this phase.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No agent apply.
+- No deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
 ## Purpose
 
 “记忆时间河”是现有 Timeline 的目标升级形态。它必须把主题、项目、机会、冲突、低价值循环和行为变化随时间的形成、增强、衰退和迁移呈现为动态时间河，也就是 dynamic time river，而不是 table、list 或 static scatter。

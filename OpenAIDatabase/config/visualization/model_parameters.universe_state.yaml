@@ -98,6 +98,43 @@ stage4_phase3_integration:
     - no_agent_apply
     - no_deploy
     - no_github_main_upload
+stage5_phase1_interaction_contract:
+  task_id: MA-V117-S5P01
+  acceptance_id: ACC-MA-V117-S5P01
+  status: phase_5_1_interaction_contract_completed_pending_stage5_review
+  interaction_contract_version: memory_river_interaction_contract.v1_1_7_stage5_phase1
+  feedback_contract_version: memory_river_feedback_contract.v1_1_7_stage5_phase1
+  required_validator: validate:v1.1.7-stage5-phase1
+  required_interactions:
+    - zoom
+    - brush
+    - theme_lanes
+    - event_points
+    - status_bands
+    - detail_panel
+  required_feedback_controls:
+    - visual_feedback
+    - optional_audio
+    - pseudo_haptic
+    - reduced_motion
+    - feedback_disable_control
+    - audio_default_off
+    - vibration_not_required
+  anti_regression:
+    - not_date_list
+    - not_table
+    - not_static_scatter
+  boundaries:
+    - no_c3_river_spike
+    - no_timeline_replacement
+    - no_stage5_2
+    - no_runtime_ui
+    - no_css_change
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 v1_1_7_stage1_phase1:
   task_id: MA-V117-S1P01
   acceptance_id: ACC-MA-V117-S1P01

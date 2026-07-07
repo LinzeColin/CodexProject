@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.1
+
+- Added the v1.1.7 Stage 5 Phase 5.1 Interaction Contract addendum to
+  `docs/product/memory_river_interaction_contract.md`.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage5_phase1_interaction_contract_acceptance.md`.
+- Added `validate:v1.1.7-stage5-phase1`.
+- Registered `MA-V117-S5P01` / `ACC-MA-V117-S5P01` with status
+  `phase_5_1_interaction_contract_completed_pending_stage5_review`.
+- Interaction contract version:
+  `memory_river_interaction_contract.v1_1_7_stage5_phase1`.
+- Feedback contract version:
+  `memory_river_feedback_contract.v1_1_7_stage5_phase1`.
+
+Interaction Contract only. No C3 River Spike, Timeline replacement, Stage 5.2,
+runtime UI, CSS change, browser screenshot, raw/private data read, direct
+active-memory writeback, agent apply, deploy or GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 4 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage4_review.md` to pin the
