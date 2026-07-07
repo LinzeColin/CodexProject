@@ -17,6 +17,7 @@
 - [ ] Raw batch hash exists.
 - [ ] Pagination/retry status is recorded.
 - [ ] Private monthly raw archive inspection verifies manifest/raw count parity, hash parity, location coverage, and stable replay hash without exposing raw rows or employee identifiers.
+- [ ] Private raw replay day-fact bundle verifies every derived day fact links to raw detail IDs and the canonical replay hash is stable without exposing raw rows or employee identifiers in summary output.
 
 ## Database acceptance
 

@@ -134,6 +134,32 @@ def write_seed_record_only_raw(month_dir: Path, *, run_id: str, work_date: str) 
             f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
 
 
+def write_seed_raw_with_empty_record_row(month_dir: Path, *, run_id: str, work_date: str) -> None:
+    month_dir.mkdir(parents=True, exist_ok=True)
+    rows = [
+        {"type": "metadata", "run_plan": {"run_id": run_id, "run_type": "seed"}},
+        {
+            "type": "employee_attendance",
+            "member": {"name": "员工甲", "userId": "u-secret-1"},
+            "work_date": work_date,
+            "record_list": [],
+        },
+        {
+            "type": "employee_attendance",
+            "member": {"name": "员工乙", "userId": "u-secret-2"},
+            "work_date": work_date,
+            "record_list": [
+                {"checkTypeDesc": "上班", "userCheckTime": f"{work_date} 08:29:00", "locationText": "private"},
+                {"checkTypeDesc": "下班", "userCheckTime": f"{work_date} 18:34:00", "locationText": "private"},
+            ],
+        },
+    ]
+    raw_path = month_dir / f"{run_id}.raw.jsonl.gz"
+    with gzip.open(raw_path, "wt", encoding="utf-8") as f:
+        for row in rows:
+            f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+
+
 def test_raw_archive_month_replay_manifest_is_public_safe_and_stable():
     with tempfile.TemporaryDirectory() as td:
         archive_root = Path(td) / "private_onedrive"
@@ -252,8 +278,100 @@ def test_raw_archive_month_replay_can_index_seed_raw_separately_and_enforce_loca
         assert location_data["live_dws_performed"] is False
 
 
+def test_raw_archive_replay_materializes_day_facts_with_raw_linkage_public_safe():
+    with tempfile.TemporaryDirectory() as td:
+        archive_root = Path(td) / "private_onedrive"
+        month_dir = archive_root / "202607"
+        out_dir = Path(td) / "private_runtime" / "raw_replay_day_fact" / "202607"
+        write_archive_run(month_dir, run_id="s19_evening_20260701_181500", work_date="2026-07-01")
+        write_archive_run(month_dir, run_id="s19_evening_20260702_181500", work_date="2026-07-02")
+        write_seed_record_only_raw(month_dir, run_id="s19_seed_20260703_000000", work_date="2026-07-03")
+
+        p = run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_raw_replay_day_fact_bundle.py"),
+            "--archive-root",
+            str(archive_root),
+            "--target-month",
+            "202607",
+            "--allow-seed-raw-without-manifest",
+            "--min-location-coverage-ratio",
+            "0.01",
+            "--out-dir",
+            str(out_dir),
+            "--print-json",
+        ])
+        data = json.loads(p.stdout)
+        assert data["status"] == "READY"
+        assert data["mode"] == "offline_raw_replay_day_fact_bundle"
+        assert data["target_month"] == "202607"
+        assert data["raw_replay_status"] == "pass"
+        assert data["attendance_day_fact_rows"] == 6
+        assert data["raw_detail_linkage_rows"] == 12
+        assert data["checks"]["every_day_fact_links_to_raw_ids"] is True
+        assert data["checks"]["canonical_hash_stable"] is True
+        assert data["checks"]["public_safe_output"] is True
+        assert data["postgres_connection_used"] is False
+        assert data["database_mutation_performed"] is False
+        assert data["live_dws_performed"] is False
+        for rel in [
+            "raw_replay_day_fact_manifest.json",
+            "raw_replay_manifest.json",
+            "attendance_day_fact.jsonl",
+            "raw_detail_linkage.jsonl",
+            "canonical_replay_snapshot.json",
+            "canonical_replay_snapshot.sha256",
+        ]:
+            assert (out_dir / rel).is_file(), f"missing {out_dir / rel}"
+
+        day_rows = [json.loads(line) for line in (out_dir / "attendance_day_fact.jsonl").read_text(encoding="utf-8").splitlines()]
+        assert all(row["source_detail_ids"] for row in day_rows)
+        assert all(row["employee_key_hash"].startswith("sha256:") for row in day_rows)
+        assert len({row["derivation_hash"] for row in day_rows}) == 6
+        payload = p.stdout + (out_dir / "raw_replay_day_fact_manifest.json").read_text(encoding="utf-8")
+        private_payload = (out_dir / "attendance_day_fact.jsonl").read_text(encoding="utf-8") + (out_dir / "raw_detail_linkage.jsonl").read_text(encoding="utf-8")
+        assert "员工甲" not in payload
+        assert "员工乙" not in payload
+        assert "u-secret" not in payload
+        assert str(archive_root) not in payload
+        assert "员工甲" not in private_payload
+        assert "u-secret" not in private_payload
+
+
+def test_raw_archive_replay_skips_empty_record_rows_without_unlinked_day_facts():
+    with tempfile.TemporaryDirectory() as td:
+        archive_root = Path(td) / "private_onedrive"
+        month_dir = archive_root / "202607"
+        out_dir = Path(td) / "private_runtime" / "raw_replay_day_fact" / "202607"
+        write_archive_run(month_dir, run_id="s19_evening_20260701_181500", work_date="2026-07-01")
+        write_seed_raw_with_empty_record_row(month_dir, run_id="s19_seed_20260702_000000", work_date="2026-07-02")
+
+        p = run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_raw_replay_day_fact_bundle.py"),
+            "--archive-root",
+            str(archive_root),
+            "--target-month",
+            "202607",
+            "--allow-seed-raw-without-manifest",
+            "--min-location-coverage-ratio",
+            "0.01",
+            "--out-dir",
+            str(out_dir),
+            "--print-json",
+        ])
+        data = json.loads(p.stdout)
+        assert data["status"] == "READY"
+        assert data["attendance_day_fact_rows"] == 3
+        assert data["raw_employee_rows_without_punches"] == 1
+        assert data["checks"]["every_day_fact_links_to_raw_ids"] is True
+        assert "day_fact_without_raw_detail_link" not in data["failures"]
+
+
 if __name__ == "__main__":
     test_raw_archive_month_replay_manifest_is_public_safe_and_stable()
     test_raw_archive_month_replay_manifest_fails_on_manifest_count_mismatch()
     test_raw_archive_month_replay_can_index_seed_raw_separately_and_enforce_location_gate()
+    test_raw_archive_replay_materializes_day_facts_with_raw_linkage_public_safe()
+    test_raw_archive_replay_skips_empty_record_rows_without_unlinked_day_facts()
     print("raw archive replay tests passed")

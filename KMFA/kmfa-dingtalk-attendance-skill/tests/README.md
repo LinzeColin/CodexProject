@@ -21,3 +21,4 @@ The test suite verifies:
 8. The PostgreSQL load plan executor fail-closes unless non-production execution is explicitly authorized and acknowledged.
 9. Private raw archive month replay inspection validates manifest/raw parity, seed raw isolation, location coverage thresholds, and stable replay hashes without exposing names, DingTalk IDs, raw rows, or local paths.
 10. Offline replay stage-2 artifacts fail closed on day 5 until database transaction commit and verification gates are explicitly true.
+11. Private raw archive replay can materialize day facts with raw detail linkage and a stable canonical replay hash without exposing names, DingTalk IDs, raw rows, or local paths in summary output.

@@ -33,6 +33,7 @@ REQUIRED_FILES = [
     ROOT / "scripts" / "validate_postgres_load_plan.py",
     ROOT / "scripts" / "execute_postgres_load_plan.py",
     ROOT / "scripts" / "inspect_raw_archive_month.py",
+    ROOT / "scripts" / "prepare_raw_replay_day_fact_bundle.py",
     ROOT / "templates" / "env.local.example",
     ROOT / "templates" / "notification_targets.local.example.json",
     ROOT / "templates" / "codex-startup-prompt.md",
