@@ -1,3 +1,31 @@
+## v1.1.7 Stage 6 Review：Data Map Gate
+
+状态：`stage_6_review_passed_pending_stage7_no_github_main_upload`。
+
+任务 ID：`MA-V117-S6-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S6-REVIEW`。
+
+Stage 6 is review-passed and pending Stage 7. 本 review 固定两个已完成
+phase：
+
+1. Phase 6.1：Structure Model。
+2. Phase 6.2：Details & Editing。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage6_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage6`
+- `ACC-MA-V117-S6-REVIEW`
+- Clean-tree gate 覆盖 Stage 5 continuity、Phase 6.1、Phase 6.2、records、canonical remote 和 no-upload boundary。
+
+Machine-readable boundary summary: Stage 6 Review; MA-V117-S6-REVIEW; ACC-MA-V117-S6-REVIEW; stage_6_review_passed_pending_stage7_no_github_main_upload; validate:v1.1.7-stage6; Phase 6.1; Phase 6.2; pending Stage 7; No Stage 7 work; No Search 2.0 work; No Review / Summary / Iteration runtime work; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 6 Phase 6.2：Details & Editing
 
 状态：`phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`。

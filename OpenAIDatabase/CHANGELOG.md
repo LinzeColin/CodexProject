@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 6 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage6_review.md` to pin the
+  completed Stage 6 review gate.
+- Added `validate:v1.1.7-stage6` to validate Stage 5 continuity, Phase 6.1
+  Structure Model, Phase 6.2 Details & Editing, records, package script and
+  no-upload boundary.
+- Hardened the Stage 6.1 Data Guide browser gate and CSS click surface so
+  relation paths are clicked at actual SVG geometry points instead of being
+  overlapped by the detail panels.
+- Registered `MA-V117-S6-REVIEW` / `ACC-MA-V117-S6-REVIEW` with status
+  `stage_6_review_passed_pending_stage7_no_github_main_upload`.
+- Marked Stage 6 as review-passed and pending Stage 7 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 7 work, Search 2.0 work, Review / Summary / Iteration runtime work,
+raw/private data read, direct active-memory writeback, agent apply, local app
+install, deploy or GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 6 Phase 6.2 Details & Editing
 
 - Added the production Data Guide `数据导图详情面板` with

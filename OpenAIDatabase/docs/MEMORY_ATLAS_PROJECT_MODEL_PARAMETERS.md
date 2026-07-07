@@ -1,3 +1,37 @@
+## 94. Memory Atlas v1.1.7 Stage 6 Review
+
+状态：`stage_6_review_passed_pending_stage7_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S6-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage6` 是 Stage 6 review 必跑 validator。
+- Review 覆盖 Phase 6.1、Phase 6.2。
+- Phase 6.1 固定 `data_map_structure_model.v1_1_7_stage6_phase1` 和 `data_map_relation_explanation.v1_1_7_stage6_phase1`。
+- Phase 6.2 固定 `data_map_detail_panel.v1_1_7_stage6_phase2` 和 `data_map_proposal_entry.v1_1_7_stage6_phase2`。
+- Next gate 是 pending Stage 7。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage6_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S6-REVIEW-001 stage6_review_status = stage_6_review_passed_pending_stage7_no_github_main_upload`
+- `PARAM-MA-V117-S6-REVIEW-002 stage6_review_required_validator = validate:v1.1.7-stage6`
+- `PARAM-MA-V117-S6-REVIEW-003 stage6_review_phase_coverage = Phase 6.1;Phase 6.2`
+- `PARAM-MA-V117-S6-REVIEW-004 stage6_review_next_gate = pending Stage 7`
+- `PARAM-MA-V117-S6-REVIEW-005 stage6_review_boundary = No GitHub main upload`
+
+验收信号：
+
+- Static validator checks Stage 5 review continuity, Phase 6.1/6.2 validators, Stage 6 review artifact, records, canonical remote and no-upload boundary。
+
+Machine-readable boundary summary: Stage 6 Review; MA-V117-S6-REVIEW; ACC-MA-V117-S6-REVIEW; stage_6_review_passed_pending_stage7_no_github_main_upload; validate:v1.1.7-stage6; Phase 6.1; Phase 6.2; pending Stage 7; No Stage 7 work; No Search 2.0 work; No Review / Summary / Iteration runtime work; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
 ## 93. Memory Atlas v1.1.7 Stage 6 Phase 6.2 Details & Editing
 
 状态：`phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`。
