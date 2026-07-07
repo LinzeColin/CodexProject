@@ -58,6 +58,7 @@ import { EmptyState } from "./components/EmptyState";
 import { ErrorState } from "./components/ErrorState";
 import { ActionDetailDrawer, type HomeActionDetail } from "./components/ActionDetailDrawer";
 import { AssetDetailPanel, type TierAssetDetail } from "./components/AssetDetailPanel";
+import { ProposalEditor } from "./components/ProposalEditor";
 import { ThemeDetailPanel, type TopicClassificationDetail } from "./components/ThemeDetailPanel";
 import { MemoryAtlasHelpPanel } from "./components/help/MemoryAtlasHelpPanel";
 import { zhCNCopy } from "./i18n/zh-CN";
@@ -3545,6 +3546,11 @@ function WritebackProposalPanel({ atlas, node }: { atlas: MemoryAtlas; node: Atl
         <span>{uiCopy.proposal.safetyNoDirectMutation}</span>
         <span>{uiCopy.proposal.safetyNeedsApply}</span>
       </div>
+      <ProposalEditor
+        node={node}
+        parentSnapshotId={atlas.overview.generated_at || atlas.schema_version}
+        sourceSurface="inspector_writeback_panel"
+      />
       {!editable ? (
         <ErrorState
           compact
