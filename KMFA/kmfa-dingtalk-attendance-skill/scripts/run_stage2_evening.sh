@@ -40,9 +40,34 @@ fi
 RUN_DIR="$PRIVATE_RUNTIME/stage2/$target_month/run_$(printf '%02d' "$run_index")"
 mkdir -p "$RUN_DIR"
 
-SOURCE_JSON="${KMFA_STAGE2_SOURCE_JSON:-}"
-if [[ -z "$SOURCE_JSON" ]]; then
-  echo "STAGE2_ADAPTER_SOURCE_MISSING: set KMFA_STAGE2_SOURCE_JSON to an approved replay snapshot or wire the live-safe repo adapter" >&2
+set +e
+SOURCE_STATUS_JSON="$(python3 "$SKILL_DIR/scripts/resolve_stage2_source.py" \
+  --target-month "$target_month" \
+  --run-index "$run_index" \
+  --run-dir "$RUN_DIR" \
+  --repo-root "$REPO_ROOT" \
+  --source-mode "${KMFA_STAGE2_SOURCE_MODE:-auto}" \
+  --source-json "${KMFA_STAGE2_SOURCE_JSON:-}" \
+  --print-json)"
+SOURCE_STATUS_CODE=$?
+set -e
+SOURCE_STATUS="$(python3 - <<'PY' "$SOURCE_STATUS_JSON"
+import json, sys
+print(json.loads(sys.argv[1]).get("status", ""))
+PY
+)"
+SOURCE_JSON="$(python3 - <<'PY' "$SOURCE_STATUS_JSON"
+import json, sys
+print(json.loads(sys.argv[1]).get("source_json", ""))
+PY
+)"
+
+if [[ "$SOURCE_STATUS_CODE" != "0" || "$SOURCE_STATUS" != "READY" ]]; then
+  echo "STAGE2_ADAPTER_SOURCE_MISSING: $(python3 - <<'PY' "$SOURCE_STATUS_JSON"
+import json, sys
+print(json.loads(sys.argv[1]).get("failure_reason", "stage-2 source unavailable"))
+PY
+)" >&2
   exit 2
 fi
 

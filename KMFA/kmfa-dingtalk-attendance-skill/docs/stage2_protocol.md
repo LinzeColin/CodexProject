@@ -30,6 +30,7 @@ private_runtime/stage2/YYYYMM/run_05/
 Each run writes:
 
 ```text
+source_adapter_status.json
 run_manifest.json
 raw_batch_hashes.json
 normalized_counts.json
@@ -77,6 +78,7 @@ stage2_divergence_report.md
 |---|---|
 | day 1 missing | stage2 failed |
 | morning run tries stage2 | ignored / not eligible |
+| dws_live source not explicitly authorized | stage2 source missing / fail closed |
 | any P0/P1 unresolved | stage2 failed |
 | canonical hash mismatch | stage2 failed |
 | location evidence below threshold | stage2 failed |
