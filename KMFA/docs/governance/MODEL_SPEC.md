@@ -1511,3 +1511,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: authorization_readiness_item_count=72, preparation_item_count=72, preparation_ready_item_count=72, preparation_blocker_item_count=0 and owner_authorized_anchor_confirmation_preparation_performed_by_this_phase=true confirm a private preparation queue is ready for the next owner-authorized anchor confirmation phase; owner_authorized_anchor_confirmation_count=0 and unresolved_difference_count=72 keep value consistency blocked.
 - gate: `NO_GO`; anchor confirmation, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private preparation diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Owner-Authorized Anchor Confirmation
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-001`
+- parameter_ids: `PARAM-KMFA-1477`, `PARAM-KMFA-1478`, `PARAM-KMFA-1479`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION`
+- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation`
+- rule: preparation_item_count=72, owner_authorized_anchor_confirmation_item_count=72, owner_authorized_anchor_confirmation_count=72 and anchor_confirmation_blocker_item_count=0 confirm private anchor handles; unresolved_difference_count=72 and full_raw_to_processed_value_comparison_complete=false keep value consistency unverified until a later formal comparison precheck.
+- gate: `NO_GO`; raw-to-processed comparison is allowed only for the next phase, while reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private confirmation diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.

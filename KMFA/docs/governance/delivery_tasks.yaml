@@ -11724,3 +11724,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private preparation outputs, tool, validator, focused test and governance entries; do not modify raw inbox or prior authorization-readiness outputs."
     target_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-preparation"
     completed_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-preparation"
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-20260707"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_owner_authorized_anchor_confirmation.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation.py --require-private-confirmation"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation.py"
+    test_results:
+      - "PASS: owner-authorized anchor confirmation validator and focused unit test passed; 72 private anchor handles were confirmed, formal raw-to-processed comparison is allowed only for a later precheck phase, and raw inbox, reconciliation and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION/human/residual_difference_owner_authorized_anchor_confirmation.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION/machine/residual_difference_owner_authorized_anchor_confirmation_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION/machine/residual_difference_owner_authorized_anchor_confirmation_matrix_public_safe.json"
+    risk: "Private anchor confirmation can be mistaken for completed value consistency; this phase records anchor handles only and keeps formal comparison, reconciliation, upload, reinstall and business execution closed."
+    rollback: "Remove current phase artifacts, metadata copies, private confirmation outputs, tool, validator, focused test and governance entries; do not modify raw inbox or prior preparation outputs."
+    target_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation"
+    completed_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation"

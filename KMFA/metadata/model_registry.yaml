@@ -677,3 +677,18 @@ kmfa_v014_residual_difference_owner_authorized_anchor_confirmation_preparation:
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION
   validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_preparation.py
   scope: Residual difference owner-authorized anchor confirmation preparation only; prepares the ignored private confirmation queue for a later owner-authorized anchor confirmation phase while 72 residual differences remain unresolved; public evidence aggregate-only; no raw inbox access, anchor confirmation, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_owner_authorized_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1477
+    - PARAM-KMFA-1478
+    - PARAM-KMFA-1479
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation.py
+  scope: Residual difference owner-authorized anchor confirmation only; converts 72 ignored private preparation items into confirmed private anchor handles and records readiness for a later raw-to-processed comparison precheck while 72 residual differences remain unresolved; public evidence aggregate-only; no raw inbox access, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
