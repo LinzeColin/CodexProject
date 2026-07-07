@@ -2597,3 +2597,12 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 这不是 raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check、formal report 或 release gate；下一步必须先解决或授权 48 个 raw candidate fingerprint blocker。
 - 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 final threshold diagnostic、records 和 report 只保留在 ignored runtime。
 - 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD` 本地单 phase。
+- 基于上一 phase public-safe final-threshold artifacts、ignored private final threshold records、ignored residual raw candidate alignment 和 ignored outside-scope alignment，生成 ignored private resolution diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_fingerprint_pair_completion_blocker_count=48、source_fingerprint_pair_completion_blocker_observation_count=3、source_fingerprint_pair_completion_blocked_audit_threshold_met=true、resolution_attempt_item_count=48、auto_resolved_raw_candidate_fingerprint_count=0、still_blocked_raw_candidate_fingerprint_count=48、residual_anchor_candidate_available_for_blockers_count=0、outside_scope_candidate_available_for_blockers_count=0、comparison_retry_ready_after_resolution_attempt_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check、formal report 或 release gate；当前 private evidence 无法自动恢复 48 个 raw candidate fingerprint blocker。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 resolution diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。

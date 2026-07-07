@@ -597,3 +597,15 @@
 - result: observation 2 is recorded for all 48 missing-raw-candidate-fingerprint blockers; the strict blocked threshold is not met and no comparison retry records are ready.
 - boundary: raw inbox access/mutation, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION`, one phase only; no Stage review or upload.
+
+## 2026-07-07 Latest - V014 Raw Candidate Fingerprint Resolution Attempt After Final Threshold
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD`
+- product_version: `0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold`
+- status: `completed_validated_local_only_raw_candidate_fingerprint_resolution_attempt_still_blocked_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_candidate_fingerprint_resolution_attempt_after_final_threshold.py --require-private-resolution`
+- locked counts: `source_fingerprint_pair_completion_blocker_count=48`, `source_fingerprint_pair_completion_blocker_observation_count=3`, `source_fingerprint_pair_completion_blocked_audit_threshold_met=true`, `resolution_attempt_item_count=48`, `auto_resolved_raw_candidate_fingerprint_count=0`, `still_blocked_raw_candidate_fingerprint_count=48`, `residual_anchor_candidate_available_for_blockers_count=0`, `outside_scope_candidate_available_for_blockers_count=0`, `comparison_retry_ready_after_resolution_attempt_count=0`, `unresolved_difference_count=72`
+- result: current ignored private evidence cannot recover any of the 48 missing raw candidate fingerprints; no comparison retry records are ready and no raw-to-processed value consistency is claimed.
+- boundary: raw inbox access/mutation, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: single phase only, private evidence refresh or owner-authorized source-reference/exclusion intake; no Stage review or upload from this phase.

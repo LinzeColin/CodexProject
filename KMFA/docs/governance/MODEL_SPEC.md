@@ -1582,3 +1582,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_fingerprint_pair_completion_blocker_count=48, source_fingerprint_pair_completion_blocker_observation_count=2, source_fingerprint_pair_completion_blocked_audit_threshold_met=false, source_private_blocker_threshold_record_count=48, prior_fingerprint_pair_completion_blocker_observation_count=2 and fingerprint_pair_completion_blocker_observation_count=3 prove this phase records the third blocker observation and strict threshold.
 - gate: `NO_GO`; fingerprint_pair_completion_blocked_audit_threshold_met=true, goal_status_recommendation=blocked, comparison_retry_ready_after_final_threshold_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private final threshold diagnostic, records and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Raw Candidate Fingerprint Resolution Attempt After Final Threshold
+
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-RESOLUTION-ATTEMPT-AFTER-FINAL-THRESHOLD-001`
+- parameter_ids: `PARAM-KMFA-1498`, `PARAM-KMFA-1499`, `PARAM-KMFA-1500`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD`
+- version: `0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold`
+- rule: source_fingerprint_pair_completion_blocker_count=48, source_fingerprint_pair_completion_blocker_observation_count=3, source_fingerprint_pair_completion_blocked_audit_threshold_met=true, resolution_attempt_item_count=48, auto_resolved_raw_candidate_fingerprint_count=0 and still_blocked_raw_candidate_fingerprint_count=48 prove current private evidence cannot recover the missing raw candidate fingerprints.
+- gate: `NO_GO`; comparison_retry_ready_after_resolution_attempt_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private resolution diagnostic, records and report stay under ignored runtime and raw inbox remains untouched.

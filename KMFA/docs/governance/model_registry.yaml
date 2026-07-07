@@ -2595,3 +2595,18 @@ kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION
   validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation.py
   scope: Residual difference raw-to-processed comparison fingerprint pair completion blocker final threshold recheck after owner anchor confirmation only; records observation 3 and strict threshold met for 48 missing-raw-candidate-fingerprint blockers while comparison retry, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
+
+kmfa_v014_residual_difference_raw_candidate_fingerprint_resolution_attempt_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-RESOLUTION-ATTEMPT-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1498
+    - PARAM-KMFA-1499
+    - PARAM-KMFA-1500
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_raw_candidate_fingerprint_resolution_attempt_after_final_threshold.py
+  scope: Residual difference raw candidate fingerprint resolution attempt after final threshold only; current ignored private candidate evidence recovers zero of 48 missing raw candidate fingerprints, keeps 48 blockers open, and keeps value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
