@@ -1096,3 +1096,17 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_READINESS_AFTER_BLOCKED_HANDOFF
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_readiness_after_blocked_handoff.py
   scope: Authorized source reference or owner exclusion application owner/agent action readiness after blocked handoff only; checks 48 owner-action items, records all 48 as blocked, writes ignored private blocker records and question list, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_after_blocked_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-after-blocked-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-AFTER-BLOCKED-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1561
+    - PARAM-KMFA-1562
+    - PARAM-KMFA-1563
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_AFTER_BLOCKED_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_after_blocked_handoff.py
+  scope: Authorized source reference or owner exclusion application owner/agent action intake after blocked handoff only; consumes prior action-readiness evidence and ignored private readiness blocker records, records all 48 items as blocked with no executable owner/authorized-agent action, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
