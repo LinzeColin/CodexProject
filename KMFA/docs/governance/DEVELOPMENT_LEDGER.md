@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Owner-Authorized Discrepancy Report
+
+- Product version: `0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT` only; consume existing ignored private review/alignment diagnostics under owner authorization and write a private discrepancy queue instead of inventing unsafe matches.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_owner_authorized_discrepancy_report.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_owner_authorized_discrepancy_report.py`.
+- gate_state: source_review_items=72, direct_exact_private_match=0, safe_auto_resolution=0, discrepancy_queue_items=72, ambiguous_tied_candidates=24, auto_unmatched_items=40, non_numeric_or_calculation_items=8, selected_private_candidates=0, corrected_source_map_references=0, source_map_correction_ready=false, full_raw_to_processed_comparison_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Intake Blocker Threshold Recheck
 
 - Product version: `0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck`.

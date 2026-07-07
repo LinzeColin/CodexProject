@@ -1,3 +1,14 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-OWNER-AUTHORIZED-DISCREPANCY-REPORT-001
+
+- version: `0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report`
+- model_id: `MOD-KMFA-GOV-001`
+- purpose: deterministic public-safe gate for recording an owner-authorized automatic conservative resolution attempt and reporting unresolved private discrepancies without mutating raw data or inventing value matches.
+- expression: `owner_authorized_discrepancy_report_valid = source_review_item_count == 72 AND direct_exact_private_match_count == 0 AND safe_auto_resolution_count == 0 AND discrepancy_queue_item_count == 72 AND ambiguous_tied_candidate_item_count == 24 AND auto_unmatched_item_count == 40 AND non_numeric_or_calculation_item_count == 8 AND source_map_correction_ready == false AND full_raw_to_processed_value_comparison_complete == false AND business_value_consistency_verified == false AND downstream_allowed == false AND decision == NO_GO`.
+- inputs: owner latest authorization, prior threshold recheck public-safe summary, ignored private review packet items, ignored private alignment items and raw immutable boundary.
+- missing_policy: missing discrepancy report manifest, Go/No-Go report, summary, matrix, private discrepancy queue, validator, focused test, governance row or raw-boundary flag fails validation.
+- outputs: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT/machine/outside_scope_candidate_review_owner_authorized_discrepancy_report_manifest.json` and paired public-safe summary/Go-No-Go/matrix evidence.
+- forbidden_scope: raw inbox read/list/stat/fingerprint/parse/write/delete/move/copy/normalize/overwrite, prior private review/alignment mutation, public raw source name, field/header plaintext, row/cell coordinate, private fingerprint, target-slot detail, private candidate selection claim, source-map correction claim, business content, formal raw-to-processed comparison claim, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution.
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-THRESHOLD-RECHECK-001
 
 - version: `0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck`

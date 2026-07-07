@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_candidate_review_owner_authorized_discrepancy_report:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-OWNER-AUTHORIZED-DISCREPANCY-REPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1381
+    - PARAM-KMFA-1382
+    - PARAM-KMFA-1383
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_owner_authorized_discrepancy_report.py
+  scope: Owner-authorized discrepancy report only; reads ignored private review/alignment diagnostics, writes ignored private discrepancy report/queue, public evidence aggregate-only; no raw inbox access, raw mutation, source-map correction, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_candidate_review_intake_blocker_threshold_recheck:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck"
