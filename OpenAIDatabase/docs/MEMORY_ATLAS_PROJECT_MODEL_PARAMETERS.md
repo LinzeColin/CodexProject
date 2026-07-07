@@ -1,3 +1,22 @@
+## 106. Memory Atlas v1.2 S01 P2 Double Plane Creation Parameters
+
+状态：`phase_s01_p2_double_plane_created_pending_s01_p3`。
+
+验收 ID：`ACC-MA-V12-S01P2`。
+
+S01 P2 固定以下参数：
+
+- `MA-V12-S01P2`
+- `validate:v1.2-s01-p2`
+- `memory_atlas_v1_2_s01_p2_double_plane_creation.md`
+- `人类可读/00_快速入口.md`
+- `机器治理/README.md`
+- S01 P2 只做双平面创建，下一 phase 为 S01 P3。
+- No GitHub main upload in this phase。
+- No S01 P3、No v1.2 requirements freeze config in this phase、No apps/scripts/tests/config move、No raw archive change。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P2 Double Plane Creation; MA-V12-S01P2; ACC-MA-V12-S01P2; phase_s01_p2_double_plane_created_pending_s01_p3; validate:v1.2-s01-p2; memory_atlas_v1_2_s01_p2_double_plane_creation.md; S01 P2; No GitHub main upload in this phase; No S01 P3; No v1.2 requirements freeze config in this phase; No apps/scripts/tests/config move; No raw archive change.
+
 ## 105. Memory Atlas v1.2 S01 P1 Current State Audit Parameters
 
 状态：`phase_s01_p1_current_state_audited_pending_s01_p2`。
