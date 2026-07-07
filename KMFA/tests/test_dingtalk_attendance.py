@@ -1,3 +1,4 @@
+import gzip
 import json
 import tempfile
 import unittest
@@ -14,7 +15,14 @@ from KMFA.tools.dingtalk_attendance.report_renderer import (
     HR_REPORT_SECTIONS,
 )
 from KMFA.tools.dingtalk_attendance.dws_attendance import collect_org_attendance
-from KMFA.tools.dingtalk_attendance.run_attendance import build_run_plan, dispatch_reports_to_robot
+from KMFA.tools.dingtalk_attendance.run_attendance import (
+    build_monthly_rest_required_people,
+    build_notification_message,
+    build_personal_notification_message,
+    build_run_plan,
+    build_stats_with_rest_required_people,
+    dispatch_reports_to_robot,
+)
 from KMFA.tools.dingtalk_attendance.check_s19_dingtalk_attendance import validate_s19_files
 from KMFA.tools.dingtalk_attendance.validate_no_sensitive_git import scan_payload_for_sensitive_text
 
@@ -267,6 +275,14 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             result = dispatch_reports_to_robot(
                 output_status={
+                    "run_id": "s19_evening_20260707_181500",
+                    "run_type": "evening",
+                    "work_date": "2026-07-07",
+                    "current_time": "18:15",
+                    "stats": {
+                        "unexpected_empty_record_names": ["张三"],
+                        "known_no_record_names": ["张霖泽"],
+                    },
                     "management_report": str(management),
                     "hr_report": str(hr),
                     "dispatch_receipt": str(receipt),
@@ -282,12 +298,166 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
             self.assertEqual(result["notification_status"], "SENT")
             self.assertEqual(receipt_payload["notification_status"], "SENT")
-            self.assertEqual(sent_titles, ["开明考勤管理报告", "开明考勤 HR 报告"])
-            self.assertEqual(len(receipt_payload["messages"]), 2)
-            self.assertIn("## 一、总体情况", sent_bodies[0])
-            self.assertIn("## 一、异常明细", sent_bodies[1])
-            self.assertEqual(receipt_payload["messages"][0]["report"], "management_report")
-            self.assertEqual(receipt_payload["messages"][1]["report"], "hr_report")
+            self.assertEqual(sent_titles, ["开明考勤提醒"])
+            self.assertEqual(len(receipt_payload["messages"]), 1)
+            self.assertIn("开明考勤提醒｜2026-07-07｜evening", sent_bodies[0])
+            self.assertIn("截止 18:15", sent_bodies[0])
+            self.assertIn("今日异常人员 / 无考勤人员：张三、张霖泽。", sent_bodies[0])
+            self.assertNotIn("## 一、总体情况", sent_bodies[0])
+            self.assertNotIn("## 一、异常明细", sent_bodies[0])
+            self.assertEqual(receipt_payload["messages"][0]["report"], "combined_attendance_notification")
+
+    def test_notification_template_hides_empty_sections_and_shows_all_clear(self) -> None:
+        message = build_notification_message(
+            work_date="2026-07-07",
+            run_type="morning",
+            current_time="08:35",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            consecutive_anomaly_summary=[],
+            pending_hr_actions=[],
+        )
+
+        self.assertEqual(
+            message,
+            "# 开明考勤提醒｜2026-07-07｜morning\n\n截止 08:35\n\n今天一切良好\n",
+        )
+        self.assertNotIn("今日异常人员", message)
+        self.assertNotIn("连续异常人员", message)
+        self.assertNotIn("待审批/待补卡/待核查", message)
+
+    def test_notification_template_keeps_group_and_personal_content_consistent(self) -> None:
+        markdown = build_notification_message(
+            work_date="2026-07-07",
+            run_type="evening",
+            current_time="18:15",
+            unexpected_empty_record_names=["张三"],
+            known_no_record_names=[],
+            consecutive_anomaly_summary=["李四连续 2 天异常"],
+            pending_hr_actions=["王五待补卡"],
+            markdown=True,
+        )
+        plain = build_personal_notification_message(
+            work_date="2026-07-07",
+            run_type="evening",
+            current_time="18:15",
+            unexpected_empty_record_names=["张三"],
+            known_no_record_names=[],
+            consecutive_anomaly_summary=["李四连续 2 天异常"],
+            pending_hr_actions=["王五待补卡"],
+            markdown=False,
+        )
+
+        self.assertEqual(markdown.replace("# ", "", 1), plain)
+        self.assertIn("今日异常人员 / 无考勤人员：张三。", plain)
+        self.assertIn("连续异常人员：\n李四连续 2 天异常", plain)
+        self.assertIn("待审批/待补卡/待核查：\n王五待补卡", plain)
+
+    def test_attendance_notification_template_shows_rest_required_people(self) -> None:
+        markdown = build_notification_message(
+            work_date="2026-07-27",
+            run_type="evening",
+            current_time="18:15",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            consecutive_anomaly_summary=[],
+            pending_hr_actions=[],
+            rest_required_people=[
+                {"name": "张三", "effective_attendance_days": 27},
+                {"name": "李四", "effective_attendance_days": 28},
+            ],
+            markdown=True,
+        )
+        plain = build_personal_notification_message(
+            work_date="2026-07-27",
+            run_type="evening",
+            current_time="18:15",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            consecutive_anomaly_summary=[],
+            pending_hr_actions=[],
+            rest_required_people=[
+                {"name": "张三", "effective_attendance_days": 27},
+                {"name": "李四", "effective_attendance_days": 28},
+            ],
+            markdown=False,
+        )
+
+        self.assertEqual(markdown.replace("# ", "", 1), plain)
+        self.assertIn("需要休息的人员：\n张三（已考勤27天）\n李四（已考勤28天）", markdown)
+        self.assertNotIn("今天一切良好", markdown)
+
+    def test_rest_required_people_count_only_full_morning_and_evening_attendance_days(self) -> None:
+        records = [
+            {
+                "member": {"name": "张三", "userId": "u1"},
+                "work_date": "2026-07-01",
+                "record_list": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
+            },
+            {
+                "member": {"name": "张三", "userId": "u1"},
+                "work_date": "2026-07-02",
+                "record_list": [{"checkTypeDesc": "上班"}],
+            },
+            {
+                "member": {"name": "张三", "userId": "u1"},
+                "work_date": "2026-07-03",
+                "record_list": [{"checkType": "OnDuty"}, {"checkType": "OffDuty"}],
+            },
+            {
+                "member": {"name": "张三", "userId": "u1"},
+                "work_date": "2026-07-03",
+                "record_list": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
+            },
+            {
+                "member": {"name": "李四", "userId": "u2"},
+                "work_date": "2026-07-01",
+                "record_list": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
+            },
+        ]
+
+        self.assertEqual(
+            build_monthly_rest_required_people(records, threshold_days=2),
+            [{"name": "张三", "effective_attendance_days": 2}],
+        )
+
+    def test_rest_required_people_can_be_built_from_monthly_private_archive(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            month_dir = Path(tmpdir)
+            for day in ("20260701", "20260702", "20260703"):
+                raw_path = month_dir / f"s19_evening_{day}_181500.raw.jsonl.gz"
+                record_list = [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}]
+                if day == "20260702":
+                    record_list = [{"checkTypeDesc": "上班"}]
+                with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
+                    handle.write(
+                        json.dumps(
+                            {"type": "metadata", "run_plan": {"run_id": f"s19_evening_{day}_181500"}},
+                            ensure_ascii=False,
+                        )
+                        + "\n"
+                    )
+                    handle.write(
+                        json.dumps(
+                            {
+                                "type": "employee_attendance",
+                                "member": {"name": "张三", "userId": "u1"},
+                                "record": {
+                                    "final": {
+                                        "payload": {
+                                            "result": {"recordList": record_list},
+                                        }
+                                    }
+                                },
+                            },
+                            ensure_ascii=False,
+                        )
+                        + "\n"
+                    )
+
+            stats = build_stats_with_rest_required_people({}, month_dir=month_dir, threshold_days=2)
+
+            self.assertEqual(stats["rest_required_people"], [{"name": "张三", "effective_attendance_days": 2}])
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import sys
 from collections.abc import Callable, Mapping
@@ -32,10 +33,7 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 RUN_TYPES = ("morning", "evening")
 SCHEDULE = {"morning": "08:35", "evening": "18:15"}
-REPORT_MESSAGES = (
-    ("management_report", "开明考勤管理报告"),
-    ("hr_report", "开明考勤 HR 报告"),
-)
+REST_REQUIRED_THRESHOLD_DAYS = 27
 
 
 def build_run_plan(run_type: str, timezone: str = TIMEZONE, run_id: str | None = None) -> dict[str, Any]:
@@ -76,6 +74,44 @@ def build_run_plan(run_type: str, timezone: str = TIMEZONE, run_id: str | None =
     }
 
 
+def build_notification_message(
+    *,
+    work_date: str,
+    run_type: str,
+    current_time: str,
+    unexpected_empty_record_names: list[str],
+    known_no_record_names: list[str],
+    consecutive_anomaly_summary: list[str] | str | None = None,
+    pending_hr_actions: list[str] | str | None = None,
+    rest_required_people: list[dict[str, Any]] | None = None,
+    markdown: bool = True,
+) -> str:
+    title = f"开明考勤提醒｜{work_date}｜{run_type}"
+    lines = [f"# {title}" if markdown else title, "", f"截止 {current_time}", ""]
+    abnormal_names = _dedupe_nonempty([*unexpected_empty_record_names, *known_no_record_names])
+    consecutive_lines = _coerce_message_lines(consecutive_anomaly_summary)
+    pending_lines = _coerce_message_lines(pending_hr_actions)
+    rest_required_lines = _format_rest_required_people(rest_required_people)
+
+    if abnormal_names:
+        lines.extend([f"今日异常人员 / 无考勤人员：{_join_names(abnormal_names)}。", ""])
+    if consecutive_lines:
+        lines.extend(["连续异常人员：", *consecutive_lines, ""])
+    if pending_lines:
+        lines.extend(["待审批/待补卡/待核查：", *pending_lines, ""])
+    if rest_required_lines:
+        lines.extend(["需要休息的人员：", *rest_required_lines, ""])
+    if not abnormal_names and not consecutive_lines and not pending_lines and not rest_required_lines:
+        lines.append("今天一切良好")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def build_personal_notification_message(**kwargs: Any) -> str:
+    kwargs.pop("markdown", None)
+    return build_notification_message(**kwargs, markdown=False)
+
+
 def dispatch_reports_to_robot(
     *,
     output_status: Mapping[str, Any],
@@ -97,28 +133,19 @@ def dispatch_reports_to_robot(
         receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
         return receipt
 
-    for report_key, title in REPORT_MESSAGES:
-        report_path = Path(str(output_status[report_key]))
-        try:
-            markdown_text = report_path.read_text(encoding="utf-8")
-            send_result = sender(title=title, markdown_text=markdown_text, env=values)
-        except OSError as exc:
-            send_result = {
-                "status": "FAILED",
-                "channel": "dingtalk_group_robot",
-                "error_type": exc.__class__.__name__,
-            }
-        messages.append(
-            {
-                "report": report_key,
-                "report_path": str(report_path),
-                "status": send_result.get("status", "FAILED"),
-                "channel": send_result.get("channel", "dingtalk_group_robot"),
-                "http_status": send_result.get("http_status"),
-                "errcode": send_result.get("errcode"),
-                "error_type": send_result.get("error_type"),
-            }
-        )
+    notification_context = _notification_context_from_output_status(output_status)
+    markdown_text = build_notification_message(**notification_context, markdown=True)
+    send_result = sender(title="开明考勤提醒", markdown_text=markdown_text, env=values)
+    messages.append(
+        {
+            "report": "combined_attendance_notification",
+            "status": send_result.get("status", "FAILED"),
+            "channel": send_result.get("channel", "dingtalk_group_robot"),
+            "http_status": send_result.get("http_status"),
+            "errcode": send_result.get("errcode"),
+            "error_type": send_result.get("error_type"),
+        }
+    )
 
     notification_status = _summarize_notification_status([str(message["status"]) for message in messages])
     receipt = {
@@ -132,10 +159,192 @@ def dispatch_reports_to_robot(
     return receipt
 
 
+def _notification_context_from_output_status(output_status: Mapping[str, Any]) -> dict[str, Any]:
+    stats = output_status.get("stats", {})
+    if not isinstance(stats, Mapping):
+        stats = {}
+    return {
+        "work_date": str(
+            output_status.get("work_date") or _work_date_from_run_id(str(output_status.get("run_id", ""))) or "UNKNOWN_DATE"
+        ),
+        "run_type": str(output_status.get("run_type") or _run_type_from_run_id(str(output_status.get("run_id", ""))) or "unknown"),
+        "current_time": str(output_status.get("current_time") or datetime.now(ZoneInfo(TIMEZONE)).strftime("%H:%M")),
+        "unexpected_empty_record_names": _coerce_message_lines(stats.get("unexpected_empty_record_names")),
+        "known_no_record_names": _coerce_message_lines(stats.get("known_no_record_names")),
+        "consecutive_anomaly_summary": _coerce_message_lines(output_status.get("consecutive_anomaly_summary")),
+        "pending_hr_actions": _coerce_message_lines(output_status.get("pending_hr_actions")),
+        "rest_required_people": _coerce_rest_required_people(stats.get("rest_required_people")),
+    }
+
+
+def _coerce_message_lines(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        stripped = value.strip()
+        return [stripped] if stripped and stripped != "无" else []
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip() and str(item).strip() != "无"]
+    return []
+
+
+def _dedupe_nonempty(values: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for value in values:
+        if value and value not in seen:
+            seen.add(value)
+            result.append(value)
+    return result
+
+
+def build_monthly_rest_required_people(
+    records: list[Mapping[str, Any]],
+    *,
+    threshold_days: int = REST_REQUIRED_THRESHOLD_DAYS,
+) -> list[dict[str, Any]]:
+    effective_dates_by_user: dict[str, set[str]] = {}
+    names_by_user: dict[str, str] = {}
+    for record in records:
+        member = record.get("member", {})
+        if not isinstance(member, Mapping):
+            continue
+        name = str(member.get("name") or "").strip()
+        user_id = str(member.get("userId") or name).strip()
+        work_date = str(record.get("work_date") or "").strip()
+        if not name or not user_id or not work_date:
+            continue
+        if not _record_list_has_morning_and_evening(_record_list_from_attendance_record(record)):
+            continue
+        names_by_user[user_id] = name
+        effective_dates_by_user.setdefault(user_id, set()).add(work_date)
+
+    people = [
+        {"name": names_by_user[user_id], "effective_attendance_days": len(work_dates)}
+        for user_id, work_dates in effective_dates_by_user.items()
+        if len(work_dates) >= threshold_days
+    ]
+    return sorted(people, key=lambda item: (-int(item["effective_attendance_days"]), str(item["name"])))
+
+
+def build_stats_with_rest_required_people(
+    stats: Mapping[str, Any],
+    *,
+    month_dir: Path,
+    threshold_days: int = REST_REQUIRED_THRESHOLD_DAYS,
+) -> dict[str, Any]:
+    enriched = dict(stats)
+    enriched["rest_required_people"] = build_monthly_rest_required_people(
+        _monthly_attendance_records(month_dir),
+        threshold_days=threshold_days,
+    )
+    return enriched
+
+
+def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for raw_path in sorted(month_dir.glob("s19_*.raw.jsonl.gz")):
+        work_date = _work_date_from_run_id(raw_path.name)
+        try:
+            with gzip.open(raw_path, "rt", encoding="utf-8") as handle:
+                for line in handle:
+                    if not line.strip():
+                        continue
+                    payload = json.loads(line)
+                    if not isinstance(payload, dict):
+                        continue
+                    if payload.get("type") == "metadata":
+                        run_plan = payload.get("run_plan", {})
+                        if isinstance(run_plan, Mapping):
+                            work_date = _work_date_from_run_id(str(run_plan.get("run_id") or raw_path.name))
+                        continue
+                    if payload.get("type") != "employee_attendance":
+                        continue
+                    row = dict(payload)
+                    row["work_date"] = str(row.get("work_date") or work_date or "")
+                    records.append(row)
+        except (OSError, EOFError, json.JSONDecodeError):
+            continue
+    return records
+
+
+def _format_rest_required_people(people: list[dict[str, Any]] | None) -> list[str]:
+    lines: list[str] = []
+    for person in _coerce_rest_required_people(people):
+        name = person["name"]
+        days = person["effective_attendance_days"]
+        if days >= REST_REQUIRED_THRESHOLD_DAYS:
+            lines.append(f"{name}（已考勤{days}天）")
+    return lines
+
+
+def _coerce_rest_required_people(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    people: list[dict[str, Any]] = []
+    for item in value:
+        if not isinstance(item, Mapping):
+            continue
+        name = str(item.get("name") or "").strip()
+        try:
+            days = int(item.get("effective_attendance_days"))
+        except (TypeError, ValueError):
+            continue
+        if name:
+            people.append({"name": name, "effective_attendance_days": days})
+    return people
+
+
+def _record_list_from_attendance_record(record: Mapping[str, Any]) -> list[Any]:
+    direct_record_list = record.get("record_list")
+    if isinstance(direct_record_list, list):
+        return direct_record_list
+    record_payload = record.get("record", {})
+    if not isinstance(record_payload, Mapping):
+        return []
+    final = record_payload.get("final", {})
+    if not isinstance(final, Mapping):
+        return []
+    payload = final.get("payload", {})
+    if not isinstance(payload, Mapping):
+        return []
+    result = payload.get("result", {})
+    if not isinstance(result, Mapping):
+        return []
+    record_list = result.get("recordList", [])
+    return record_list if isinstance(record_list, list) else []
+
+
+def _record_list_has_morning_and_evening(record_list: list[Any]) -> bool:
+    has_morning = False
+    has_evening = False
+    for item in record_list:
+        if not isinstance(item, Mapping):
+            continue
+        values = " ".join(
+            str(item.get(key) or "")
+            for key in ("checkTypeDesc", "checkType", "timeResult", "sourceType")
+        )
+        has_morning = has_morning or "上班" in values or "OnDuty" in values
+        has_evening = has_evening or "下班" in values or "OffDuty" in values
+    return has_morning and has_evening
+
+
+def _join_names(names: list[str]) -> str:
+    return "、".join(names)
+
+
 def _work_date_from_run_id(run_id: str) -> str | None:
     parts = run_id.split("_")
     if len(parts) >= 3 and len(parts[2]) == 8 and parts[2].isdigit():
         return f"{parts[2][:4]}-{parts[2][4:6]}-{parts[2][6:8]}"
+    return None
+
+
+def _run_type_from_run_id(run_id: str) -> str | None:
+    parts = run_id.split("_")
+    if len(parts) >= 2 and parts[1] in RUN_TYPES:
+        return parts[1]
     return None
 
 
@@ -193,13 +402,17 @@ def run_attendance(run_type: str, timezone: str) -> dict[str, Any]:
         collection=collection,
         cleanup_status={"status": "PENDING_AFTER_NOTIFICATION"},
     )
+    notification_stats = build_stats_with_rest_required_people(
+        collection["stats"],
+        month_dir=Path(str(output_status["month_dir"])),
+    )
     output_status.update(
         {
             "run_id": plan["run_id"],
             "run_type": run_type,
             "work_date": work_date,
             "current_time": datetime.now(ZoneInfo(timezone)).strftime("%H:%M"),
-            "stats": collection["stats"],
+            "stats": notification_stats,
         }
     )
     try:
@@ -267,7 +480,10 @@ def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
         "run_type": run_type,
         "work_date": _work_date_from_run_id(str(manifest["run_id"])),
         "current_time": datetime.now(ZoneInfo(timezone)).strftime("%H:%M"),
-        "stats": manifest.get("stats", {}),
+        "stats": build_stats_with_rest_required_people(
+            manifest.get("stats", {}),
+            month_dir=manifest_path.parent,
+        ),
         "management_report": manifest["management_report"],
         "hr_report": manifest["hr_report"],
         "dispatch_receipt": manifest["dispatch_receipt"],
