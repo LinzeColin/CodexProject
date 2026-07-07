@@ -450,4 +450,5 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - 后续 runner 增强：目标输入目录缺失时仍返回 `SOURCE_MISSING`，但 ignored private runtime manifest 会列出同 OneDrive 下的 `DWS_Outputs.zip` 和 `DWS_Archive/付款请示群` 候选状态；目标输入目录存在时先输出 `INDEXED_PENDING_EXTRACTION` 无虚构包，包含当前 Excel 母版副本、证据索引、空事实 CSV、异常任务、cross review 和 audit log，但不生成金额、预测或管理结论。
 - 后续 materializer 增强：`KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py` 可从已验证私有候选源显式复制到目标 `DWS_Outputs/付款请示群`；默认 dry-run，`--apply` 才复制，同 hash 跳过，不同 hash 冲突失败，manifest/CSV 写入 ignored private runtime。
 - 当前真实 dry-run 发现 OneDrive 外部阻塞：`DWS_Archive/付款请示群` 共 621 个文件，其中 608 个为 macOS `compressed,dataless` cloud-only 文件；`DWS_Outputs.zip` 也是 `compressed,dataless`。materialize 已正确返回 `SOURCE_UNREADABLE`，因此未执行 apply。
+- 后续 runner 增强：即使目标 `DWS_Outputs/付款请示群` 未来存在，只要其中有不可读或 `dataless` 文件，runner 也会返回 `SOURCE_UNREADABLE`，不生成 Excel 包，避免部分数据被误当作完整真实输入。
 - 下一步：先补齐或确认 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 的真实数据目录，然后运行一次真实数据生成包；通过后再安装/加载 launchd 定时任务。

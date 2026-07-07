@@ -16,6 +16,8 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 from typing import Iterable
 from zoneinfo import ZoneInfo
@@ -55,6 +57,36 @@ def classify_file(path: Path) -> str:
 
 def iso_from_timestamp(timestamp: float) -> str:
     return dt.datetime.fromtimestamp(timestamp).isoformat()
+
+
+def macos_file_flags(path: Path) -> str:
+    if sys.platform != "darwin":
+        return ""
+    try:
+        result = subprocess.run(
+            ["/usr/bin/stat", "-f", "%Sf", str(path)],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=2,
+        )
+    except Exception:
+        return ""
+    return result.stdout.strip()
+
+
+def unreadable_record(input_dir: Path, path: Path, error_type: str, error: str) -> dict:
+    return {
+        "relative_path": str(path.relative_to(input_dir)),
+        "suffix": path.suffix.lower(),
+        "kind": classify_file(path),
+        "size_bytes": path.stat().st_size,
+        "sha256": "",
+        "mtime_iso": dt.datetime.fromtimestamp(path.stat().st_mtime).isoformat(),
+        "public_safe_to_commit": False,
+        "error_type": error_type,
+        "error": error,
+    }
 
 
 def summarize_tree(path: Path, limit: int = 5000) -> dict:
@@ -121,18 +153,56 @@ def source_summary(files: list[dict]) -> dict:
 
 def build_manifest(input_dir: Path, run_dir: Path, timezone: str) -> dict:
     files = []
+    unreadable = []
     for p in sorted(iter_files(input_dir)):
         rel = str(p.relative_to(input_dir))
+        flag_text = macos_file_flags(p)
+        if "dataless" in flag_text:
+            unreadable.append(unreadable_record(
+                input_dir,
+                p,
+                "DatalessFile",
+                f"macOS file flags indicate cloud-only content: {flag_text}",
+            ))
+            continue
+        try:
+            file_hash = sha256_file(p)
+        except OSError as exc:
+            unreadable.append(unreadable_record(input_dir, p, type(exc).__name__, str(exc)))
+            continue
         files.append({
             "relative_path": rel,
             "suffix": p.suffix.lower(),
             "kind": classify_file(p),
             "size_bytes": p.stat().st_size,
-            "sha256": sha256_file(p),
+            "sha256": file_hash,
             "mtime_iso": dt.datetime.fromtimestamp(p.stat().st_mtime).isoformat(),
             "public_safe_to_commit": False if p.suffix.lower() in PRIVATE_EXTENSIONS else False,
         })
     now = dt.datetime.now(ZoneInfo(timezone))
+    if unreadable:
+        issue = {
+            "issue_type": "SOURCE_UNREADABLE",
+            "severity": "blocking",
+            "observed_at": now.isoformat(),
+            "action": "Make all configured DWS_Outputs/付款请示群 source files available offline/readable, then rerun. Do not generate a partial financial package.",
+        }
+        return {
+            "project_id": "KMFA",
+            "skill_name": "fund-weekly-analysis-skill",
+            "run_id": run_dir.name,
+            "timezone": timezone,
+            "input_dir": str(input_dir),
+            "generated_at": now.isoformat(),
+            "status": "SOURCE_UNREADABLE",
+            "generation_mode": "fail_closed_before_index_package",
+            "file_count": len(files),
+            "files": files,
+            "unreadable_count": len(unreadable),
+            "unreadable": unreadable,
+            "source_summary": source_summary(files),
+            "data_quality_issues": [issue],
+        }
     manifest = {
         "project_id": "KMFA",
         "skill_name": "fund-weekly-analysis-skill",
@@ -323,6 +393,26 @@ def write_source_missing_artifacts(input_dir: Path, run_dir: Path, timezone: str
     )
 
 
+def write_source_unreadable_artifacts(manifest: dict, run_dir: Path) -> None:
+    (run_dir / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    (run_dir / "data_quality_issues.json").write_text(
+        json.dumps(manifest["data_quality_issues"], ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    (run_dir / "evidence_index.csv").write_text(
+        "evidence_id,relative_path,kind,sha256,size_bytes,review_status\n",
+        encoding="utf-8-sig",
+    )
+    (run_dir / "run_summary.md").write_text(
+        f"# Fund weekly analysis run {manifest['run_id']}\n\n"
+        "Status: SOURCE_UNREADABLE\n\n"
+        f"Readable indexed file count: {manifest['file_count']}\n\n"
+        f"Unreadable source file count: {manifest['unreadable_count']}\n\n"
+        "No Excel package, extraction, financial conclusion, or forecast was produced. This is a fail-closed run.\n",
+        encoding="utf-8",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-dir", default="/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群")
@@ -344,6 +434,10 @@ def main() -> int:
         return 2
 
     manifest = build_manifest(input_dir, run_dir, args.timezone)
+    if manifest["status"] == "SOURCE_UNREADABLE":
+        write_source_unreadable_artifacts(manifest, run_dir)
+        print(json.dumps({"run_id": run_id, "run_dir": str(run_dir), "status": "SOURCE_UNREADABLE", "unreadable_count": manifest["unreadable_count"]}, ensure_ascii=False))
+        return 5
     (run_dir / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     write_no_hallucination_outputs(manifest, run_dir)
     (run_dir / "run_summary.md").write_text(

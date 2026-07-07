@@ -10,20 +10,21 @@ The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operat
 4. Scan input directory recursively.
 5. Build file manifest with SHA256 and size.
 6. If the configured folder is missing, write `SOURCE_MISSING` plus private source candidates; do not silently fall back to zip/archive sources.
-7. If a private candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
-8. Build evidence index for screenshots and finance files.
-9. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, empty fact ledgers, exception tasks, cross-review JSON, audit log, and run summary.
-10. Extract only real values with source trace.
-11. Put low-confidence OCR/vision rows into review queue.
-12. Build funds ledger and net-flow ledger.
-13. Apply internal-transfer pairing before management rollups.
-14. Build daily balance continuity and company-bank matrix.
-15. Build tax/loan/wealth-management/deposit risk tables.
-16. Promote reviewed facts into Excel with exact sheet order and style spec.
-17. Hide audit/review sheets.
-18. Run validation checks.
-19. Write run summary.
-20. Commit/push skill or automation changes to GitHub main only after validation passes.
+7. If the configured folder exists but contains unreadable/cloud-only files, write `SOURCE_UNREADABLE`; do not generate a partial Excel package.
+8. If a private candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
+9. Build evidence index for screenshots and finance files.
+10. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, empty fact ledgers, exception tasks, cross-review JSON, audit log, and run summary.
+11. Extract only real values with source trace.
+12. Put low-confidence OCR/vision rows into review queue.
+13. Build funds ledger and net-flow ledger.
+14. Apply internal-transfer pairing before management rollups.
+15. Build daily balance continuity and company-bank matrix.
+16. Build tax/loan/wealth-management/deposit risk tables.
+17. Promote reviewed facts into Excel with exact sheet order and style spec.
+18. Hide audit/review sheets.
+19. Run validation checks.
+20. Write run summary.
+21. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
 
