@@ -1,5 +1,44 @@
 # Memory Atlas 记忆星系 C3 隔离原型合同
 
+## v1.1.7 Stage 4 Phase 4.2 Runtime Spike Contract
+
+- Version: v1.1.7 Stage 4 Phase 4.2
+- Contract ID: `memory_starfield_c3_spike_contract`
+- Spike version: `memory_starfield_c3_spike.v1_1_7_stage4_phase2`
+- Linked visual contract: `memory_starfield_visual_contract.v1_1_7_stage4_phase1`
+- Task ID: `MA-V117-S4P02`
+- Acceptance ID: `ACC-MA-V117-S4P02`
+- Status: `phase_4_2_c3_starfield_spike_completed_pending_stage4_review`
+- Static validator: `validate:v1.1.7-stage4-phase2`
+- Browser validator: `validate:memory-starfield-spike-browser`
+
+Stage 4 Phase 4.2 turns the Stage 4.1 visual contract into an isolated browser
+prototype. This is a C3 Starfield Spike only: it upgrades the standalone
+experiment page and keeps production Galaxy unchanged.
+
+Required runtime tasks:
+
+1. GPU particle spike: default quality renders at least `10000` WebGL particles
+   with a `ShaderMaterial` and reports `>=30 FPS` in browser validation.
+2. Flow Field / Curl Noise: flow must use the `curl_noise_shader` contract and
+   expose visible plumes or trajectories.
+3. Cluster Gravity: clusters must act as gravity sources with damping and a
+   minimum-distance clamp to avoid particle collapse.
+4. Hover Cards B2: hover cards must avoid blocking the main visual and expose
+   topic, redacted summary, importance and priority.
+
+Browser validation must capture a screenshot and validate metrics from
+`window.__memoryStarfieldSpike`. Static validation must prove the spike remains
+isolated from production source files.
+
+Boundary: No production Galaxy replacement, No production route or navigation
+change, No feature flag default switch, No raw/private/cookie/session/secret
+data read, No direct writeback, No direct active-memory writeback, No agent
+apply, No Stage 4 review and No GitHub main upload before the whole Stage 0-10
+project is complete.
+
+Machine-readable v1.1.7 boundary tokens: No production Galaxy replacement; No GitHub main upload before the whole Stage 0-10 project is complete.
+
 - Version: v1.1.6 Stage 9 Phase 1
 - Contract ID: `memory_starfield_c3_spike_contract`
 - Task ID: `MA-V116-S9P01`

@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.2
+
+- Upgraded the isolated Memory Starfield C3 Starfield Spike to
+  `memory_starfield_c3_spike.v1_1_7_stage4_phase2`.
+- Added `apps/memory-atlas/src/experiments/memory-starfield-spike/shaders/flowField.ts`
+  for the `curl_noise_shader` Flow Field / Curl Noise contract.
+- Switched the isolated spike particles to a WebGL `ShaderMaterial`, preserved
+  the default `mid=10000` particle path and added visible particle trails.
+- Added Cluster Gravity damping/minimum-distance behavior and Hover Cards B2
+  fields for topic, redacted summary, importance and priority.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage4_phase2_c3_starfield_spike_acceptance.md`.
+- Added `validate:v1.1.7-stage4-phase2` and
+  `validate:memory-starfield-spike-browser`.
+- Registered `MA-V117-S4P02` / `ACC-MA-V117-S4P02` with status
+  `phase_4_2_c3_starfield_spike_completed_pending_stage4_review`.
+
+C3 Starfield Spike only. No production Galaxy replacement, production route,
+feature flag default switch, raw/private data read, direct active-memory
+writeback, agent apply, Stage 4 review or GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.1
 
 - Added the v1.1.7 Stage 4 Phase 4.1 Visual Contract Update to

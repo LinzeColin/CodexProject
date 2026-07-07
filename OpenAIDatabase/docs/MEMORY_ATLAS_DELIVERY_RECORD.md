@@ -1,3 +1,34 @@
+## v1.1.7 Stage 4 Phase 4.2：C3 Starfield Spike
+
+状态：`phase_4_2_c3_starfield_spike_completed_pending_stage4_review`。
+
+任务 ID：`MA-V117-S4P02`。
+
+验收 ID：`ACC-MA-V117-S4P02`。
+
+本 phase 固定 `memory_starfield_c3_spike.v1_1_7_stage4_phase2`。C3
+Starfield Spike 在 isolated experiment 内覆盖 GPU particle spike、Flow Field /
+Curl Noise、Cluster Gravity、Hover Cards B2、浏览器 FPS 和 screenshot gate。
+生产 Galaxy 未替换，生产 route/navigation/feature flag default 未改。
+
+涉及文件：
+
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/main.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/shaders/flowField.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/fixture.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_starfield_spike_browser.cjs`
+- `docs/acceptance/memory_atlas_v1_1_7_stage4_phase2_c3_starfield_spike_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage4-phase2`
+- `validate:memory-starfield-spike-browser`
+- `ACC-MA-V117-S4P02`
+- Browser validator 必须证明 `>=10k particles`、`>=30 FPS`、`curl_noise_shader`、particle trails、gravity sources、Hover Cards B2 和 screenshot。
+
+Machine-readable boundary summary: C3 Starfield Spike; memory_starfield_c3_spike.v1_1_7_stage4_phase2; No production Galaxy replacement; No production route/navigation change; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 4 Phase 4.1：Visual Contract Update
 
 状态：`phase_4_1_visual_contract_update_completed_pending_stage4_review`。
