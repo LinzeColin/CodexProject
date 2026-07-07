@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-RESPONSE-IMPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1408
+    - PARAM-KMFA-1409
+    - PARAM-KMFA-1410
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py
+  scope: Outside-scope candidate review residual-difference owner or agent diagnostic response import only; imports 72 valid diagnostic responses from existing ignored private owner-authorized discrepancy report while all responses remain non-actionable; public evidence aggregate-only; no raw inbox access, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_candidate_review_residual_difference_report:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-candidate-review-residual-difference-report"

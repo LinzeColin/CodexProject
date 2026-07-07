@@ -1301,3 +1301,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: prior_diagnostic_blocker_observation_count=2 and diagnostic_blocker_observation_count=3 meet the blocked audit threshold; valid_diagnostic_response_count=0 and open_residual_difference_count=72 keep discrepancy closure and source-map correction blocked.
 - gate: `NO_GO`; valid owner/agent response, discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private threshold diagnostic stays under git-ignored runtime and raw inbox remains untouched.
+## V014 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Response Import
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-RESPONSE-IMPORT-001`
+- parameter_ids: `PARAM-KMFA-1408`, `PARAM-KMFA-1409`, `PARAM-KMFA-1410`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT`
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import`
+- rule: source template=72, source owner-authorized report=72, target slot match=72 and valid diagnostic response count=72 clear the missing-response blocker; non-actionable diagnostic response count=72, source-map actionable response count=0 and closed discrepancy count=0 keep discrepancy closure and source-map correction blocked.
+- gate: `NO_GO`; source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private response import record/items/non-actionable queue/report stay under ignored runtime and raw inbox remains untouched.
