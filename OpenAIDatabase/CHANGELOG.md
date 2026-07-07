@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 1 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage1_review.md` to pin the
+  completed Stage 1 review gate.
+- Added `validate:v1.1.7-stage1` to validate Stage 0 review continuity, Phase
+  1.1 Universe State, Phase 1.2 Next Action, Phase 1.3 Level Asset, Phase 1.4
+  Topic Classification, records, package script and no-upload boundary.
+- Registered `MA-V117-S1-REVIEW` / `ACC-MA-V117-S1-REVIEW` with status
+  `stage_1_review_passed_pending_stage2_no_github_main_upload`.
+- Marked Stage 1 as review-passed and pending Stage 2 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 2 work, proposal editor, Search 2.0 runtime, Review workflow runtime,
+Data Map 2.0 runtime, raw/private data read, direct writeback, proposal write,
+agent apply, production build, local app install, browser screenshot, deploy or
+GitHub main upload was added.
+
 ## Unreleased - Memory Atlas Phase 1 Live URL Readiness Repair
 
 - Added the `validate:stage8-local-app-packaging` alias for the canonical local app packaging gate.
