@@ -1,3 +1,18 @@
+kmfa_v014_residual_difference_owner_authorized_anchor_confirmation_readiness:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-readiness"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-READINESS-001
+  parameter_refs:
+    - PARAM-KMFA-1453
+    - PARAM-KMFA-1454
+    - PARAM-KMFA-1455
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_READINESS
+  validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_readiness.py
+  scope: Residual-difference owner-authorized anchor confirmation readiness only; confirms 72 post-alignment residual records still lack complete owner-authorized private anchors; public evidence aggregate-only; no raw inbox access, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_residual_difference_raw_comparison_after_alignment_precheck:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment"
