@@ -1,0 +1,30 @@
+version: 0.2.0
+input_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs
+private_output_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check
+active_sqlite_local_path: KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite
+
+monthly_layout:
+  root_pattern: "{private_output_root}/{YYYYMM}"
+  files:
+    - run_log_{YYYYMM}.jsonl
+    - routine_check_results_{YYYYMM}.jsonl
+    - ocr_jobs_{YYYYMM}.jsonl
+    - ocr_extractions_{YYYYMM}.jsonl
+    - cash_account_snapshots_{YYYYMM}.jsonl
+    - cash_flow_entries_{YYYYMM}.jsonl
+    - cash_risk_results_{YYYYMM}.jsonl
+    - notification_events_{YYYYMM}.jsonl
+    - data_quality_issues_{YYYYMM}.jsonl
+  folders:
+    - db_snapshots
+    - cleanup
+    - ocr_cache
+    - diagnostics
+
+policy:
+  source_dws_outputs_read_only: true
+  do_not_delete_source_dws_outputs: true
+  active_sqlite_in_onedrive: false
+  mirror_sqlite_to_onedrive: true
+  compress_old_jsonl: true
+  write_cleanup_report: true

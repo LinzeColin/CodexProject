@@ -1,0 +1,74 @@
+{
+  "version": "0.2.0",
+  "database_name": "daily_routine_check.sqlite",
+  "active_local_path": "KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite",
+  "salary_basis_allowed": false,
+  "excel_summary_required": false,
+  "tables": [
+    {
+      "name": "source_runs",
+      "purpose": "one row per DWS output ingestion/check run"
+    },
+    {
+      "name": "source_messages",
+      "purpose": "normalized chat messages from DWS output"
+    },
+    {
+      "name": "source_files",
+      "purpose": "normalized media/file resources from DWS output"
+    },
+    {
+      "name": "document_candidates",
+      "purpose": "OCR/classification candidates and scores"
+    },
+    {
+      "name": "routine_rules_snapshot",
+      "purpose": "rule snapshot used by each run"
+    },
+    {
+      "name": "routine_check_results",
+      "purpose": "expected routine item result per rule/date"
+    },
+    {
+      "name": "ocr_jobs",
+      "purpose": "OCR/LLM job lifecycle"
+    },
+    {
+      "name": "ocr_extractions",
+      "purpose": "structured extraction result with provider/model/version/confidence"
+    },
+    {
+      "name": "cash_account_snapshots",
+      "purpose": "structured funding account statement snapshots"
+    },
+    {
+      "name": "cash_flow_entries",
+      "purpose": "structured flow detail rows"
+    },
+    {
+      "name": "cash_risk_results",
+      "purpose": "P0/P1/P2/NO_DATA/NEEDS_REVIEW cash risk results"
+    },
+    {
+      "name": "notification_events",
+      "purpose": "notification idempotency and delivery log"
+    },
+    {
+      "name": "data_quality_issues",
+      "purpose": "missing source, parser conflict, low confidence, duplicate data"
+    },
+    {
+      "name": "run_log",
+      "purpose": "runtime logs including run_at_beijing, check_date, trigger_window, rules_evaluated, rules_skipped"
+    },
+    {
+      "name": "git_sync_events",
+      "purpose": "local governance autosync evidence"
+    },
+    {
+      "name": "cleanup_events",
+      "purpose": "retention and cleanup evidence"
+    }
+  ],
+  "public_repo_policy": "no raw DWS, no raw OCR body, no SQLite, no credentials, no screenshots"
+}
