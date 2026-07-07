@@ -2643,6 +2643,15 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 application blocker audit diagnostic、records 和 report 只保留在 ignored runtime。
 - 未执行：authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
 
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-final-threshold-recheck-after-raw-refresh - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_RAW_REFRESH` 本地单 phase。
+- 基于上一 phase 的 public-safe application blocker threshold evidence 和 ignored private threshold records，生成 ignored private application blocker final threshold diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_application_blocker_threshold_recheck_item_count=48、source_application_blocker_observation_count=2、source_application_blocked_audit_threshold_met=false、source_private_application_blocker_threshold_record_count=48、prior_application_blocker_observation_count=2、application_blocker_observation_count=3、application_blocked_audit_threshold_met=true、goal_status_recommendation=blocked、application_blocker_final_threshold_recheck_item_count=48、source_reference_or_owner_exclusion_final_threshold_blocker_count=40、formula_or_non_numeric_mapping_final_threshold_blocker_count=8、binding_ready_after_final_threshold_recheck_count=0、comparison_retry_ready_after_final_threshold_recheck_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；当前 strict threshold 已命中，后续必须先由 owner 或授权代理实际应用 source reference、owner exclusion、formula mapping 或 non-numeric mapping。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 final threshold diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
 ## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-threshold-recheck-after-raw-refresh - 2026-07-08
 
 - 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_THRESHOLD_RECHECK_AFTER_RAW_REFRESH` 本地单 phase。
