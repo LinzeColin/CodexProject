@@ -11624,3 +11624,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox or source alignment/precheck outputs."
     target_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-readiness"
     completed_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-readiness"
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-THRESHOLD-RECHECK-20260707"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-THRESHOLD-RECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_owner_authorized_anchor_confirmation_blocker_threshold_recheck.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_threshold_recheck.py --require-private-threshold"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation_blocker_threshold_recheck.py"
+    test_results:
+      - "PASS: owner-authorized anchor blocker threshold recheck validator and focused unit test passed; 72 residual differences remain blocked, observation count is 2, threshold is false, and raw inbox, anchor confirmation, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK/human/residual_difference_owner_authorized_anchor_confirmation_blocker_threshold_recheck.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK/machine/residual_difference_owner_authorized_anchor_confirmation_blocker_threshold_recheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK/machine/residual_difference_owner_authorized_anchor_confirmation_blocker_threshold_recheck_matrix_public_safe.json"
+    risk: "A second blocker observation can be mistaken for blocked-goal status; this phase keeps threshold=false and does not confirm anchors or compare values."
+    rollback: "Remove current phase artifacts, metadata copies, private threshold outputs, tool, validator, focused test and governance entries; do not modify raw inbox or prior blocker audit outputs."
+    target_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-threshold-recheck"
+    completed_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-threshold-recheck"

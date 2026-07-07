@@ -1456,3 +1456,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: valid_diagnostic_response_count=72 and missing_response_blocker_cleared=true preserve response availability; non_actionable_diagnostic_response_count=72, source_map_correction_blocker_count=72, source_map_correction_blocker_observation_count=1 and closed_discrepancy_count=0 prove source-map correction remains blocked.
 - gate: `NO_GO`; source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private source-map correction blocker audit diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Owner-Authorized Anchor Blocker Threshold Recheck
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-THRESHOLD-RECHECK-001`
+- parameter_ids: `PARAM-KMFA-1462`, `PARAM-KMFA-1463`, `PARAM-KMFA-1464`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK`
+- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-threshold-recheck`
+- rule: owner_authorized_anchor_blocker_count=72, prior_owner_authorized_anchor_blocker_observation_count=1 and owner_authorized_anchor_blocker_observation_count=2 record the second blocker observation; owner_authorized_anchor_blocked_audit_threshold_met=false, owner_authorized_anchor_confirmation_count=0 and unresolved_difference_count=72 keep anchor confirmation and value consistency blocked.
+- gate: `NO_GO`; owner-authorized anchor confirmation, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private threshold diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.
