@@ -83,12 +83,23 @@ to the repo-specific command that:
 
 ### Task 3 - Add PostgreSQL schema
 
-1. Add `database/postgres_schema.sql` and `database/views_payroll_baseline.sql`.
-2. Add migration runner according to the repo's migration pattern.
-3. Add idempotent import batch logic.
-4. Add raw result/detail ingestion.
-5. Add derived fact insertion.
-6. Add stage-2 and payroll baseline insertion.
+Current status:
+
+- `database/postgres_schema.sql` and `database/views_payroll_baseline.sql` exist.
+- `scripts/validate_database_contract.py` performs an offline contract dry-run
+  over required tables, enums, views, and the synthetic accepted stage-2 ->
+  payroll baseline query path.
+- The dry-run uses no PostgreSQL connection, no database mutation, no private
+  raw data, and no live DWS.
+
+Remaining work:
+
+1. Add migration runner according to the repo's migration pattern.
+2. Add idempotent import batch logic.
+3. Add raw result/detail ingestion.
+4. Add derived fact insertion.
+5. Add stage-2 and payroll baseline insertion.
+6. Run against an explicitly configured non-production PostgreSQL target.
 
 ### Task 4 - Enforce location and trajectory evidence
 

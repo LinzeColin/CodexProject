@@ -25,6 +25,7 @@ REQUIRED_FILES = [
     ROOT / "scripts" / "month_gate.py",
     ROOT / "scripts" / "stage2_consensus_gate.py",
     ROOT / "scripts" / "write_stage2_run_artifacts.py",
+    ROOT / "scripts" / "validate_database_contract.py",
     ROOT / "templates" / "env.local.example",
     ROOT / "templates" / "notification_targets.local.example.json",
     ROOT / "templates" / "codex-startup-prompt.md",

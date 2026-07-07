@@ -18,6 +18,22 @@ SQLite can remain as local transition ledger/cache. The durable payroll-facing d
 | Payroll baseline | Baseline candidate rows derive only from accepted stage-2 state. |
 | Auditability | Every stage-2 run and consensus certificate is recorded. |
 
+## Current validation level
+
+The repo includes an offline contract dry-run validator:
+
+```bash
+python3 KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_database_contract.py \
+  --schema KMFA/kmfa-dingtalk-attendance-skill/database/postgres_schema.sql \
+  --views KMFA/kmfa-dingtalk-attendance-skill/database/views_payroll_baseline.sql \
+  --print-json
+```
+
+This validator checks required PostgreSQL objects and simulates the accepted
+stage-2 certificate -> payroll baseline query path in memory. It does not open
+a PostgreSQL connection, mutate a database, read private raw data, or call live
+DWS. Real PostgreSQL migration and ingest remain separate gated work.
+
 ## Core entities
 
 ```text
