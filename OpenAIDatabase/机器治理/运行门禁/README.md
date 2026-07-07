@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S02 P2。任务 ID 为 `MA-V12-S02P2`，验收 ID 为 `ACC-MA-V12-S02P2`，
-validator 为 `validate:v1.2-s02-p2`。
+当前阶段是 S02 P3。任务 ID 为 `MA-V12-S02P3`，验收 ID 为 `ACC-MA-V12-S02P3`，
+validator 为 `validate:v1.2-s02-p3`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -11,10 +11,15 @@ validator 为 `validate:v1.2-s02-p2`。
 前置 S02 P1 已通过：`MA-V12-S02P1` / `ACC-MA-V12-S02P1` /
 `validate:v1.2-s02-p1`。
 
-S02 P2 产物：
+前置 S02 P2 已通过：`MA-V12-S02P2` / `ACC-MA-V12-S02P2` /
+`validate:v1.2-s02-p2`。
+
+S02 P3 产物：
 
 - `机器治理/同步与备份/sync_source_registry.json`
 - `docs/reviews/memory_atlas_v1_2_s02_p2_source_registry.md`
+- `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- `docs/reviews/memory_atlas_v1_2_s02_p3_human_sync_explanation.md`
 
 source registry 必须包含：
 
@@ -33,7 +38,7 @@ source registry 必须包含：
 - 后续其他 agent 的 source registry 扩展规则。
 
 No GitHub main upload in this phase。
-不创建人类同步说明页；S02 P3 才能创建对应人类说明。
 不实现 connector，不修改 raw archive。
+不进入 S02 Review；S02 Review 是下一轮。
 
-下一步是 S02 P3；本 phase 不重装 app。
+下一步是 S02 Review；本 phase 不重装 app。

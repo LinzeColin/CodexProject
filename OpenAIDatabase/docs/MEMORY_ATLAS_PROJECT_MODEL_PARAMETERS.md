@@ -1,3 +1,37 @@
+## 111. Memory Atlas v1.2 S02 P3 Human Sync Explanation Parameters
+
+状态：`phase_s02_p3_human_sync_explanation_completed_pending_s02_review`。
+
+验收 ID：`ACC-MA-V12-S02P3`。
+
+S02 P3 固定以下参数：
+
+- `MA-V12-S02P3`
+- `validate:v1.2-s02-p3`
+- `memory_atlas_v1_2_s02_p3_human_sync_explanation.md`
+- `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- 人类说明必须写明 ChatGPT、Codex、后续其他 agent 数据备份进 GitHub。
+- 人类说明必须写明 future_agent_template、future_agent_adapter、transcript/credential 和 credentials_not_transcript。
+- S02 P3 完成后下一步为 pending S02 Review。
+- No GitHub main upload in this phase。
+- No connector implementation、No raw archive change。
+
+参数记录：
+
+- `PARAM-MA-V12-S02P3-001 phase_status = phase_s02_p3_human_sync_explanation_completed_pending_s02_review`
+- `PARAM-MA-V12-S02P3-002 validator = validate:v1.2-s02-p3`
+- `PARAM-MA-V12-S02P3-003 human_page = 人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- `PARAM-MA-V12-S02P3-004 github_backup_sources = ChatGPT;Codex;future_other_agent`
+- `PARAM-MA-V12-S02P3-005 credential_boundary = credentials_not_transcript`
+- `PARAM-MA-V12-S02P3-006 next_gate = pending S02 Review`
+- `PARAM-MA-V12-S02P3-007 upload_boundary = No GitHub main upload in this phase`
+
+验收信号：
+
+- `validate:v1.2-s02-p3` checks S02 P2 continuity, source registry coverage, human sync page, future agent adapter explanation, transcript/credential boundary, records, canonical remote and no-upload/no-connector/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P3 Human Sync Explanation; MA-V12-S02P3; ACC-MA-V12-S02P3; phase_s02_p3_human_sync_explanation_completed_pending_s02_review; validate:v1.2-s02-p3; memory_atlas_v1_2_s02_p3_human_sync_explanation.md; 人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md; S02 P3; pending S02 Review; No GitHub main upload in this phase; No connector implementation; No raw archive change.
+
 ## 110. Memory Atlas v1.2 S02 P2 Source Registry Parameters
 
 状态：`phase_s02_p2_source_registry_completed_pending_s02_p3`。

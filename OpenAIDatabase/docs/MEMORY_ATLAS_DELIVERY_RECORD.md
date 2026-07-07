@@ -1,3 +1,41 @@
+## v1.2 S02 P3 Human Sync Explanation
+
+状态：`phase_s02_p3_human_sync_explanation_completed_pending_s02_review`。
+
+任务 ID：`MA-V12-S02P3`。
+
+验收 ID：`ACC-MA-V12-S02P3`。
+
+S02 P3 创建 `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`，明确
+ChatGPT、Codex、后续其他 agent 数据备份进 GitHub。该 phase 只创建人类说明页，
+不实现 connector，不写 raw archive。
+
+涉及文件：
+
+- `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- `docs/reviews/memory_atlas_v1_2_s02_p3_human_sync_explanation.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s02-p3`
+- `ACC-MA-V12-S02P3`
+- S02 P3
+- `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- `memory_atlas_v1_2_s02_p3_human_sync_explanation.md`
+- pending S02 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No connector implementation.
+- No GitHub main upload in this phase.
+- No app reinstall.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P3 Human Sync Explanation; MA-V12-S02P3; ACC-MA-V12-S02P3; phase_s02_p3_human_sync_explanation_completed_pending_s02_review; validate:v1.2-s02-p3; memory_atlas_v1_2_s02_p3_human_sync_explanation.md; 人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md; S02 P3; pending S02 Review; No GitHub main upload in this phase; No connector implementation; No raw archive change.
+
 ## v1.2 S02 P2 Source Registry
 
 状态：`phase_s02_p2_source_registry_completed_pending_s02_p3`。

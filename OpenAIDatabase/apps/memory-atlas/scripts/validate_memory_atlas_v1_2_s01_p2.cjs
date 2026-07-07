@@ -258,11 +258,18 @@ function validateMachinePlane() {
     "下一步是 S02 P3",
     "No GitHub main upload in this phase",
   ]);
+  const s02p3Completion = hasAll(runGateReadme, [
+    "当前阶段是 S02 P3",
+    "v1.2需求冻结清单",
+    "MA-V12-S02P3",
+    "下一步是 S02 Review",
+    "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    p2Deferral || p3Completion || reviewCompletion || s02p1Completion || s02p2Completion,
+    p2Deferral || p3Completion || reviewCompletion || s02p1Completion || s02p2Completion || s02p3Completion,
     "s01p2_machine_run_gate_readme",
-    "Run gate README records the original S01 P2 deferral, later S01 P3 freeze completion, S01 review pass state, S02 P1 state, or S02 P2 state",
-    "Run gate README is missing S01 P2 deferral, S01 P3 completion, S01 review, S02 P1 and S02 P2 markers",
+    "Run gate README records the original S01 P2 deferral, later S01 P3 freeze completion, S01 review pass state, S02 P1 state, S02 P2 state, or S02 P3 state",
+    "Run gate README is missing S01 P2 deferral, S01 P3 completion, S01 review, S02 P1, S02 P2 and S02 P3 markers",
   );
 
   const freezeConfig = path.join(repoRoot, "机器治理/运行门禁/v1.2需求冻结清单.json");
