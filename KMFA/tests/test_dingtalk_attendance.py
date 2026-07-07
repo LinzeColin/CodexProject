@@ -600,21 +600,24 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             self.assertEqual(result["notification_status"], "SENT")
             self.assertEqual([title for title, _ in sent], ["开明考勤提醒"])
-            self.assertIn("run_id：s19_evening_20260707_181500", sent[0][1])
-            self.assertIn("北京时间：18:15", sent[0][1])
             self.assertIn("开明考勤提醒｜2026-07-07｜evening", sent[0][1])
             self.assertIn("今日异常人员 / 无考勤人员：张三、张霖泽。", sent[0][1])
             self.assertIn("需要休息的人员：\n李四（已考勤27天）", sent[0][1])
-            self.assertIn("OneDrive 报告路径：", sent[0][1])
-            self.assertIn(f"管理报告：{management}", sent[0][1])
-            self.assertIn(f"HR 报告：{hr}", sent[0][1])
-            self.assertIn(str(management), sent[0][1])
+            self.assertNotIn("run_id：s19_evening_20260707_181500", sent[0][1])
+            self.assertNotIn("北京时间：18:15", sent[0][1])
+            self.assertNotIn("OneDrive 报告路径：", sent[0][1])
+            self.assertNotIn(f"管理报告：{management}", sent[0][1])
+            self.assertNotIn(f"HR 报告：{hr}", sent[0][1])
+            self.assertNotIn(str(management), sent[0][1])
             self.assertNotIn("# 开明考勤管理报告", sent[0][1])
             self.assertNotIn("# 开明考勤 HR 报告", sent[0][1])
             self.assertNotIn("## 一、总体情况", sent[0][1])
             self.assertNotIn("长" * 100, sent[0][1])
             receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
             self.assertEqual([message["report"] for message in receipt_payload["messages"]], ["attendance_notification"])
+            self.assertEqual(receipt_payload["run_id"], "s19_evening_20260707_181500")
+            self.assertEqual(receipt_payload["management_report"], str(management))
+            self.assertEqual(receipt_payload["hr_report"], str(hr))
 
     def test_send_latest_report_uses_latest_manifest_without_collection(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -668,6 +671,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 channel="auto",
                 onedrive_root=root,
                 resolved_path=runtime_dir / "notification_channel_resolved.json",
+                targets_resolved_path=runtime_dir / "notification_targets_resolved.json",
+                public_targets_manifest_path=runtime_dir / "notification_targets_manifest.json",
                 env={},
                 sender=fake_sender,
             )
@@ -675,7 +680,14 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual(result["status"], "SENT")
             self.assertEqual(result["manifest"], str(manifest))
             self.assertEqual([item["title"] for item in sent], ["开明考勤提醒"])
-            self.assertIn("OneDrive 报告路径：", str(sent[0]["text"]))
+            self.assertEqual(result["notification_template_text"], sent[0]["text"])
+            self.assertIn("开明考勤提醒｜2026-07-07｜evening", result["notification_template_text"])
+            self.assertNotIn("run_id：", str(sent[0]["text"]))
+            self.assertNotIn("北京时间：", str(sent[0]["text"]))
+            self.assertNotIn("OneDrive 报告路径：", str(sent[0]["text"]))
+            self.assertNotIn(str(management), str(sent[0]["text"]))
+            self.assertNotIn(str(hr), str(sent[0]["text"]))
+            self.assertEqual(result["notification_delivery_table"], "| 发送对象 | 是否成功 |\n|---|---|\n| 张霖泽 | 是 |")
             self.assertNotIn("# 开明考勤管理报告", str(sent[0]["text"]))
             self.assertNotIn("# 开明考勤 HR 报告", str(sent[0]["text"]))
             self.assertTrue(receipt.exists())
@@ -787,14 +799,22 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual([item[0] for item in sent], ["dws_userid_chat", "dws_group_chat"])
             for _, _, body in sent:
                 self.assertIn("开明考勤提醒｜2026-07-07｜evening", body)
+                self.assertNotIn("run_id：", body)
+                self.assertNotIn("北京时间：", body)
+                self.assertNotIn("OneDrive 报告路径：", body)
+                self.assertNotIn(str(management), body)
+                self.assertNotIn(str(hr), body)
                 self.assertNotIn("# 开明考勤管理报告", body)
                 self.assertNotIn("# 开明考勤 HR 报告", body)
                 self.assertNotIn("## 一、总体情况", body)
                 self.assertNotIn("## 一、异常明细", body)
-            self.assertIn(f"管理报告：{management}", sent[0][2])
-            self.assertNotIn(f"HR 报告：{hr}", sent[0][2])
-            self.assertIn(f"HR 报告：{hr}", sent[1][2])
+            self.assertEqual(result["notification_template_text"], sent[0][2])
+            self.assertEqual(
+                result["notification_delivery_table"],
+                "| 发送对象 | 是否成功 |\n|---|---|\n| 张霖泽 | 是 |\n| 考勤小群 | 是 |",
+            )
             receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
+            self.assertEqual(receipt_payload["run_id"], "s19_evening_20260707_181500")
             self.assertEqual(receipt_payload["target_results"][0]["management_status"], "SENT")
             self.assertEqual(receipt_payload["target_results"][0]["hr_status"], "SKIPPED")
             self.assertEqual(receipt_payload["target_results"][1]["management_status"], "SKIPPED")

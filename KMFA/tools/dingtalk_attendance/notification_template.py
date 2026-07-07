@@ -35,7 +35,6 @@ def build_notification_message(
     consecutive_lines = coerce_message_lines(consecutive_anomaly_summary)
     pending_lines = coerce_message_lines(pending_hr_actions)
     rest_required_lines = _format_rest_required_people(rest_required_people)
-    report_path_lines = _format_report_path_lines(report_paths)
 
     if abnormal_names:
         lines.extend([f"今日异常人员 / 无考勤人员：{_join_names(abnormal_names)}。", ""])
@@ -47,10 +46,6 @@ def build_notification_message(
         lines.extend(["需要休息的人员：", *rest_required_lines, ""])
     if not abnormal_names and not consecutive_lines and not pending_lines and not rest_required_lines:
         lines.extend(["今天一切良好", ""])
-
-    meta_lines = _format_report_meta_lines(run_id=run_id, beijing_time=beijing_time, report_path_lines=report_path_lines)
-    if meta_lines:
-        lines.extend(meta_lines)
 
     return "\n".join(lines).rstrip() + "\n"
 
@@ -134,40 +129,6 @@ def _format_rest_required_people(people: list[dict[str, Any]] | None) -> list[st
         days = person["effective_attendance_days"]
         if days >= REST_REQUIRED_THRESHOLD_DAYS:
             lines.append(f"{name}（已考勤{days}天）")
-    return lines
-
-
-def _format_report_path_lines(report_paths: Mapping[str, Any] | None) -> list[str]:
-    if not isinstance(report_paths, Mapping):
-        return []
-    labels = {
-        "management_report": "管理报告",
-        "hr_report": "HR 报告",
-    }
-    lines: list[str] = []
-    for key, label in labels.items():
-        path = str(report_paths.get(key) or "").strip()
-        if path:
-            lines.append(f"{label}：{path}")
-    return lines
-
-
-def _format_report_meta_lines(
-    *,
-    run_id: str | None,
-    beijing_time: str | None,
-    report_path_lines: list[str],
-) -> list[str]:
-    lines: list[str] = []
-    if run_id:
-        lines.append(f"run_id：{run_id}")
-    if beijing_time:
-        lines.append(f"北京时间：{beijing_time}")
-    if report_path_lines:
-        lines.append("OneDrive 报告路径：")
-        lines.extend(report_path_lines)
-    if lines:
-        lines.append("")
     return lines
 
 

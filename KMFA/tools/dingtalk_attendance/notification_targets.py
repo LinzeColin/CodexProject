@@ -207,6 +207,7 @@ def dispatch_reports_to_targets(
     values = merged_runtime_env() if env is None else dict(env)
     target_results: list[dict[str, Any]] = []
     messages: list[dict[str, Any]] = []
+    notification_template_text = ""
 
     for target in targets:
         if not isinstance(target, Mapping) or not target.get("enabled", True):
@@ -218,7 +219,9 @@ def dispatch_reports_to_targets(
         try:
             _assert_selected_report_files_exist(output_status, reports)
             channel = _channel_payload_from_target(target)
-            text = _build_target_notification_text(output_status=output_status, reports=reports, markdown=_is_markdown_channel(channel))
+            text = _build_target_notification_text(output_status=output_status, reports=reports, markdown=_target_uses_markdown(target, channel))
+            if not notification_template_text:
+                notification_template_text = text
             send_result = sender(channel=channel, title="开明考勤提醒", text=text, env=values)
         except (KeyError, OSError) as exc:
             send_result = {
@@ -239,7 +242,13 @@ def dispatch_reports_to_targets(
         )
 
     status = _summarize_dispatch_status(target_results)
-    receipt = _targets_receipt(status=status, output_status=output_status, target_results=target_results, messages=messages)
+    receipt = _targets_receipt(
+        status=status,
+        output_status=output_status,
+        target_results=target_results,
+        messages=messages,
+        notification_template_text=notification_template_text,
+    )
     _write_json(receipt_path, receipt)
     return receipt
 
@@ -639,6 +648,7 @@ def _target_send_result(
         "management_status": management_status,
         "hr_status": hr_status,
         "failure_reason": failure_reason or result.get("failure_reason"),
+        "trace_id": result.get("trace_id"),
         "trace_id_present": bool(result.get("trace_id")),
     }
 
@@ -649,6 +659,7 @@ def _targets_receipt(
     output_status: Mapping[str, Any],
     target_results: list[dict[str, Any]],
     messages: list[dict[str, Any]] | None = None,
+    notification_template_text: str = "",
     failure_reason: str | None = None,
 ) -> dict[str, Any]:
     receipt = {
@@ -656,8 +667,13 @@ def _targets_receipt(
         "channel": "multi_target",
         "target_results": target_results,
         "messages": messages or [],
+        "run_id": str(output_status.get("run_id", "")),
+        "run_type": str(output_status.get("run_type", "")),
+        "work_date": str(output_status.get("work_date", "")),
         "management_report": str(output_status.get("management_report", "")),
         "hr_report": str(output_status.get("hr_report", "")),
+        "notification_template_text": notification_template_text,
+        "notification_delivery_table": _build_notification_delivery_table(target_results),
     }
     if failure_reason:
         receipt["failure_reason"] = failure_reason
@@ -747,8 +763,11 @@ def _assert_selected_report_files_exist(output_status: Mapping[str, Any], report
             raise FileNotFoundError(str(path))
 
 
-def _is_markdown_channel(channel: Mapping[str, Any]) -> bool:
-    return str(channel.get("channel") or "") in {"dingtalk_group_robot", "dingtalk_group_robot_env"}
+def _target_uses_markdown(target: Mapping[str, Any], channel: Mapping[str, Any]) -> bool:
+    return str(target.get("type") or "") == "group" or str(channel.get("channel") or "") in {
+        "dingtalk_group_robot",
+        "dingtalk_group_robot_env",
+    }
 
 
 def _probe_message(*, label: str, now: datetime, channel_hint: str) -> tuple[str, str]:
@@ -786,6 +805,23 @@ def _summarize_dispatch_status(target_results: list[Mapping[str, Any]]) -> str:
     if statuses and all(status == "NOTIFIER_CONFIG_MISSING" for status in statuses):
         return "NOTIFIER_CONFIG_MISSING"
     return "FAILED"
+
+
+def _build_notification_delivery_table(target_results: list[Mapping[str, Any]]) -> str:
+    lines = ["| 发送对象 | 是否成功 |", "|---|---|"]
+    for result in target_results:
+        label = str(result.get("label") or "UNKNOWN")
+        lines.append(f"| {label} | {'是' if _target_delivery_succeeded(result) else '否'} |")
+    return "\n".join(lines)
+
+
+def _target_delivery_succeeded(result: Mapping[str, Any]) -> bool:
+    statuses = [
+        str(result.get(key) or "")
+        for key in ("management_status", "hr_status")
+        if str(result.get(key) or "") != "SKIPPED"
+    ]
+    return bool(statuses) and all(status == "SENT" for status in statuses)
 
 
 def _last_failure_reason(results: list[Mapping[str, Any]]) -> str:
