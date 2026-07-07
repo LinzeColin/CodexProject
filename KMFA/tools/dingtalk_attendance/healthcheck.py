@@ -15,6 +15,7 @@ if __package__ in {None, ""}:
 
 from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT, STAGE_ID, TIMEZONE
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import robot_notification_status
+from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import RESOLVED_CHANNEL_PATH
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk_work_notification import work_notification_status
 from KMFA.tools.dingtalk_attendance.secrets_loader import DEFAULT_RUNTIME_ENV_PATH, merged_runtime_env
 
@@ -23,9 +24,10 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
     values = merged_runtime_env() if env is None else dict(env)
     group_robot = robot_notification_status(values)
     work_notification = work_notification_status(values)
+    resolved_personal = _resolved_personal_status() if env is None else _missing_resolved_personal_status()
     ready_channels = [
         channel["channel"]
-        for channel in (group_robot, work_notification)
+        for channel in (resolved_personal, group_robot, work_notification)
         if channel["status"] == "READY"
     ]
     channel_aliases = {
@@ -33,7 +35,7 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
         "dingtalk_work_notification": "dingtalk_work_notification",
     }
     ready_aliases = [channel_aliases.get(channel, channel) for channel in ready_channels]
-    active_notify_mode = values.get("DINGTALK_NOTIFY_MODE") or (ready_aliases[0] if ready_aliases else "CONFIG_REQUIRED")
+    active_notify_mode = ready_aliases[0] if ready_aliases else values.get("DINGTALK_NOTIFY_MODE", "CONFIG_REQUIRED")
     notification_ready = bool(ready_aliases)
     status = "READY" if notification_ready else "NOTIFIER_CONFIG_MISSING"
     return {
@@ -55,6 +57,7 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
         "work_notification_missing": work_notification["missing"],
         "notifier_configured": notification_ready,
         "notification_channels": {
+            "resolved_personal": resolved_personal,
             "dingtalk_group_robot": group_robot,
             "dingtalk_work_notification": work_notification,
         },
@@ -67,6 +70,38 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
             "raw_api_response_committed": False,
             "report_body_committed": False,
         },
+    }
+
+
+def _resolved_personal_status() -> dict[str, Any]:
+    if not RESOLVED_CHANNEL_PATH.exists():
+        return _missing_resolved_personal_status()
+    try:
+        payload = json.loads(RESOLVED_CHANNEL_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {
+            "channel": "resolved_personal",
+            "configured": False,
+            "status": "NOTIFIER_CONFIG_MISSING",
+            "missing": ["notification_channel_resolved.json"],
+        }
+    channel = str(payload.get("channel") or "")
+    ready = payload.get("status") == "SENT" and bool(channel)
+    return {
+        "channel": channel or "resolved_personal",
+        "configured": ready,
+        "status": "READY" if ready else "NOTIFIER_CONFIG_MISSING",
+        "missing": [] if ready else ["notification_channel_resolved.json"],
+        "channel_type": payload.get("channel_type"),
+    }
+
+
+def _missing_resolved_personal_status() -> dict[str, Any]:
+    return {
+        "channel": "resolved_personal",
+        "configured": False,
+        "status": "NOTIFIER_CONFIG_MISSING",
+        "missing": ["notification_channel_resolved.json"],
     }
 
 

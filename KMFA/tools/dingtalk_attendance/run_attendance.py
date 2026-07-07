@@ -27,6 +27,7 @@ from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
 from KMFA.tools.dingtalk_attendance.dws_attendance import DwsAttendanceError, collect_org_attendance, write_private_outputs
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
+from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import dispatch_reports_with_resolved_channel
 from KMFA.tools.dingtalk_attendance.onedrive_archive import archive_paths_for_run
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
@@ -416,7 +417,7 @@ def run_attendance(run_type: str, timezone: str) -> dict[str, Any]:
         }
     )
     try:
-        dispatch_receipt = dispatch_reports_to_robot(output_status=output_status)
+        dispatch_receipt = dispatch_reports_with_resolved_channel(output_status=output_status)
     finally:
         cleanup_status.update(cleanup_runtime())
         _write_cleanup_audit(output_status, cleanup_status)
@@ -491,7 +492,7 @@ def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
     }
     dispatch_receipt: dict[str, Any] = {"notification_status": "FAILED"}
     try:
-        dispatch_receipt = dispatch_reports_to_robot(output_status=output_status)
+        dispatch_receipt = dispatch_reports_with_resolved_channel(output_status=output_status)
     finally:
         cleanup_status.update(cleanup_runtime())
         _write_cleanup_audit(output_status, cleanup_status)

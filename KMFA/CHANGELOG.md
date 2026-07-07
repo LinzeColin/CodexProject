@@ -3,6 +3,8 @@
 ## 0.1.4-s19-dingtalk-attendance - 2026-07-07
 
 - 新增 `S19｜每日早晚钉钉考勤检查` public-safe 自动化结构，固定每日北京时间 08:35 晨报和 18:15 晚报。
+- 新增 S19 钉钉个人通知通道探针：按 DWS userId 单聊、openDingTalkId 单聊、DING、工作通知、群机器人顺序自动 fallback；当前 userId 单聊失败原因记录为 `chat/business_error/系统错误`，openDingTalkId 单聊已验证 `SENT`。
+- 新增 `send_latest_report.py --channel auto`：不重新取考勤，读取最新 OneDrive manifest，用 ignored `notification_channel_resolved.json` 中的成功通道依次发送管理报告和 HR 报告；HR 正文超过 4800 字时发送摘要和 OneDrive 路径。
 - 新增 `KMFA/tools/dingtalk_attendance/` 与 `KMFA/metadata/dingtalk_attendance/`，覆盖 DWS live-only 运行、管理报告/HR 报告模板、OneDrive 月度私有归档和三天 operational cache 清理。
 - 新增 DWS 考勤后端：递归枚举组织部门成员，逐人调用 `dws attendance record get` 和 `dws attendance summary`，遇到 transient attendance error 仅 verbose 重试一次。
 - 启用本地钉钉小群机器人通知补丁：从 ignored `private_runtime/.env.local` 读取通知配置，按 HmacSHA256 + Base64 + URL encode 加签发送 markdown；报告写入 OneDrive 后发送管理报告和 HR 报告，dispatch receipt 写真实发送状态。
