@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.1
+
+- Added the v1.1.7 Stage 4 Phase 4.1 Visual Contract Update to
+  `docs/product/memory_starfield_visual_contract.md`.
+- Added `docs/architecture/memory_terrain_layer.md` with
+  `memory_terrain_layer.v1_1_7_stage4_phase1` and terrain semantic registry.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage4_phase1_visual_contract_acceptance.md`.
+- Added `validate:v1.1.7-stage4-phase1`.
+- Registered `MA-V117-S4P01` / `ACC-MA-V117-S4P01` with status
+  `phase_4_1_visual_contract_update_completed_pending_stage4_review`.
+- Visual contract version:
+  `memory_starfield_visual_contract.v1_1_7_stage4_phase1`.
+- Terrain contract version: `memory_terrain_layer.v1_1_7_stage4_phase1`.
+
+Visual Contract Update only. No Phase 4.2, runtime renderer replacement,
+browser screenshot, production build, raw/private data read, direct
+active-memory writeback, agent apply or GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 3 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage3_review.md` to pin the

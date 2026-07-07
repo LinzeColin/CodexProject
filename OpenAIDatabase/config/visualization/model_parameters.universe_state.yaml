@@ -434,3 +434,47 @@ v1_1_7_stage3_phase2:
     - browser_screenshot_acceptance
     - final_app_reinstall
     - github_main_upload
+v1_1_7_stage4_phase1:
+  task_id: MA-V117-S4P01
+  acceptance_id: ACC-MA-V117-S4P01
+  status: phase_4_1_visual_contract_update_completed_pending_stage4_review
+  required_validator: validate:v1.1.7-stage4-phase1
+  visual_contract_version: memory_starfield_visual_contract.v1_1_7_stage4_phase1
+  terrain_contract_version: memory_terrain_layer.v1_1_7_stage4_phase1
+  stage4_phase1_required_visual_primitives:
+    - nebula_field
+    - flow_field
+    - particle_trails
+    - gravity_sources
+    - black_hole_core
+    - proto_star_cloud
+    - memory_terrain_layer
+  stage4_phase1_required_terrain_classes:
+    - long_term_theme
+    - growth_band
+    - migration_flow
+    - relic
+    - black_hole
+    - opportunity
+  stage4_phase1_forbidden_visual_regressions:
+    - dots_only
+    - node_link_only
+    - plain_scatterplot
+    - obsidian_like_graph
+    - blank_canvas_fallback
+    - chart_like_network
+  stage4_phase1_boundary:
+    - Visual Contract Update
+    - No Phase 4.2
+    - No runtime renderer replacement
+    - No browser screenshot
+    - No production build
+    - No raw/private read
+    - No direct active-memory writeback
+    - No agent apply
+    - No GitHub main upload
+  future_proving_ground: C3 Starfield Spike
+  no_phase4_phase2_in_phase: true
+  no_runtime_renderer_replacement: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true

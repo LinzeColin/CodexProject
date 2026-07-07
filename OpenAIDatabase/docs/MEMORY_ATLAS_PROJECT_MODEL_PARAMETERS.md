@@ -1,3 +1,42 @@
+## 84. v1.1.7 Stage 4 Phase 4.1 Visual Contract Update
+
+状态：`phase_4_1_visual_contract_update_completed_pending_stage4_review`。
+
+验收 ID：`ACC-MA-V117-S4P01`。
+
+模型参数：
+
+- Visual Contract Update 固定 `memory_starfield_visual_contract.v1_1_7_stage4_phase1`。
+- Memory Terrain Layer 固定 `memory_terrain_layer.v1_1_7_stage4_phase1`。
+- `validate:v1.1.7-stage4-phase1` 是本 phase 必跑 validator。
+- 必备视觉原语：`nebula_field`, `flow_field`, `particle_trails`, `gravity_sources`, `black_hole_core`, `proto_star_cloud`, `memory_terrain_layer`。
+- 必备地形语义：`long_term_theme`, `growth_band`, `migration_flow`, `relic`, `black_hole`, `opportunity`。
+- C3 Starfield Spike 是未来生产 renderer replacement 前的验证路径。
+- No Phase 4.2。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/product/memory_starfield_visual_contract.md`
+- `docs/architecture/memory_terrain_layer.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage4_phase1_visual_contract_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase1.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S4P01-001 stage4_phase1_status = phase_4_1_visual_contract_update_completed_pending_stage4_review`
+- `PARAM-MA-V117-S4P01-002 stage4_phase1_required_validator = validate:v1.1.7-stage4-phase1`
+- `PARAM-MA-V117-S4P01-003 visual_contract_version = memory_starfield_visual_contract.v1_1_7_stage4_phase1`
+- `PARAM-MA-V117-S4P01-004 terrain_contract_version = memory_terrain_layer.v1_1_7_stage4_phase1`
+- `PARAM-MA-V117-S4P01-005 required_visual_primitives = nebula_field;flow_field;particle_trails;gravity_sources;black_hole_core;proto_star_cloud;memory_terrain_layer`
+- `PARAM-MA-V117-S4P01-006 required_terrain_classes = long_term_theme;growth_band;migration_flow;relic;black_hole;opportunity`
+
+验收信号：
+
+- Visual Contract Update product contract。
+- `validate:v1.1.7-stage4-phase1` 检查 Stage 3 continuity、visual contract、terrain layer、records、package script 和 no-upload boundary。
+- Boundary includes No Phase 4.2, No runtime renderer replacement, No GitHub main upload, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
 ## 83. v1.1.7 Stage 3 Review Gate
 
 状态：`stage_3_review_passed_pending_stage4_no_github_main_upload`。
