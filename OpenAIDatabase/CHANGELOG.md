@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S02 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s02_review.md`.
+- Added `validate:v1.2-s02-review` for `MA-V12-S02-REVIEW` /
+  `ACC-MA-V12-S02-REVIEW`.
+- Registered status `stage_s02_review_passed_pending_s03_no_github_main_upload`.
+- Marked S02 Review as passed after covering S02 P1, S02 P2 and S02 P3.
+- Confirmed the source registry is not only ChatGPT/Codex hardcoded and includes
+  `future_agent_template`, `public_backup_mode` and transcript/credential
+  boundary coverage.
+- Marked the next gate as pending S03 P1.
+- Preserved S02 Review boundaries: No GitHub main upload in this review,
+  No connector implementation and No raw archive change.
+
 ## Unreleased - Memory Atlas v1.2 S02 P3 Human Sync Explanation
 
 - Added `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`.

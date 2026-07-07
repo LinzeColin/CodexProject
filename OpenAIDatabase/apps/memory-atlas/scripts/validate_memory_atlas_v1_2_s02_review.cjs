@@ -10,14 +10,15 @@ const repoRoot = path.resolve(appRoot, "../..");
 const worktreeRoot = path.resolve(repoRoot, "..");
 const checks = [];
 
-const taskId = "MA-V12-S02P3";
-const acceptanceId = "ACC-MA-V12-S02P3";
-const status = "phase_s02_p3_human_sync_explanation_completed_pending_s02_review";
-const validatorName = "validate:v1.2-s02-p3";
-const scriptName = "validate_memory_atlas_v1_2_s02_p3.cjs";
+const taskId = "MA-V12-S02-REVIEW";
+const acceptanceId = "ACC-MA-V12-S02-REVIEW";
+const status = "stage_s02_review_passed_pending_s03_no_github_main_upload";
+const validatorName = "validate:v1.2-s02-review";
+const scriptName = "validate_memory_atlas_v1_2_s02_review.cjs";
+const reviewPath = "docs/reviews/memory_atlas_v1_2_s02_review.md";
+const modelPath = "机器治理/数据契约/source_data_model.v1_2_s02_p1.json";
 const registryPath = "机器治理/同步与备份/sync_source_registry.json";
 const humanPagePath = "人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md";
-const artifactPath = "docs/reviews/memory_atlas_v1_2_s02_p3_human_sync_explanation.md";
 const branchName = "codex/memory-atlas-v12-stage0-14-local";
 
 const recordFiles = [
@@ -37,9 +38,9 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_review.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p3.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
-  `OpenAIDatabase/${humanPagePath}`,
-  `OpenAIDatabase/${artifactPath}`,
+  `OpenAIDatabase/${reviewPath}`,
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -132,9 +133,9 @@ function validatePackageScript() {
   const packageJson = JSON.parse(readRepoFile("apps/memory-atlas/package.json"));
   assertCondition(
     packageJson.scripts?.[validatorName] === `node scripts/${scriptName}`,
-    "s02p3_package_script",
-    "package.json exposes the v1.2 S02 P3 validator",
-    "package.json is missing the v1.2 S02 P3 validator",
+    "s02_review_package_script",
+    "package.json exposes the v1.2 S02 review validator",
+    "package.json is missing the v1.2 S02 review validator",
     { script: packageJson.scripts?.[validatorName] },
   );
 }
@@ -145,48 +146,71 @@ function validatePreviousPhaseGate() {
   if (changed.length > 0) {
     assertCondition(
       outside.length === 0,
-      "s02p3_previous_phase_deferred_scope",
-      "S02 P2 execution is deferred only because open diff is limited to S02 P3 files and later-state validator compatibility",
-      "S02 P2 execution cannot be deferred with unrelated OpenAIDatabase changes",
+      "s02_review_previous_phase_deferred_scope",
+      "S02 P3 execution is deferred only because open diff is limited to S02 Review files and later-state validator compatibility",
+      "S02 P3 execution cannot be deferred with unrelated OpenAIDatabase changes",
       { changed, outside, allowedOpenDiffPaths },
     );
     pass(
-      "s02p3_previous_phase_deferred_until_clean_tree",
-      "S02 P2 validator will run on a clean tree after S02 P3 commit",
+      "s02_review_previous_phase_deferred_until_clean_tree",
+      "S02 P3 validator will run on a clean tree after S02 Review commit",
       { changed },
     );
     return;
   }
 
-  const result = run("node", ["scripts/validate_memory_atlas_v1_2_s02_p2.cjs"], {
+  const result = run("node", ["scripts/validate_memory_atlas_v1_2_s02_p3.cjs"], {
     cwd: appRoot,
-    timeout: 180000,
+    timeout: 240000,
   });
   const parsed = JSON.parse(result.stdout.trim().slice(result.stdout.indexOf("{")));
   assertCondition(
-    parsed.status === "PASS" && parsed.acceptance_id === "ACC-MA-V12-S02P2",
-    "s02p3_previous_s02p2",
-    "S02 P2 validator returns PASS before accepting S02 P3",
-    "S02 P2 validator did not return PASS",
+    parsed.status === "PASS" && parsed.acceptance_id === "ACC-MA-V12-S02P3",
+    "s02_review_previous_s02p3",
+    "S02 P3 validator returns PASS before accepting S02 Review",
+    "S02 P3 validator did not return PASS",
     { status: parsed.status, acceptance_id: parsed.acceptance_id },
   );
 }
 
-function validateRegistryStillCoversStage() {
-  validateTextFile(registryPath);
+function validateStageArtifacts() {
+  [modelPath, registryPath, humanPagePath].forEach(validateTextFile);
+  const model = JSON.parse(readRepoFile(modelPath));
   const registry = JSON.parse(readRepoFile(registryPath));
-  const byId = Object.fromEntries((registry.sources || []).map((source) => [source.source_id, source]));
-  const requiredSources = ["chatgpt", "codex", "future_agent_template"];
-  const missing = requiredSources.filter((sourceId) => !byId[sourceId]);
+  const humanPage = readRepoFile(humanPagePath);
 
   assertCondition(
-    missing.length === 0 &&
+    model.source_type_enum?.includes("chatgpt") &&
+      model.source_type_enum?.includes("codex") &&
+      model.source_type_enum?.includes("other_agent") &&
+      model.required_fields?.includes("source_id") &&
+      model.required_fields?.includes("public_backup_mode") &&
+      model.required_fields?.includes("connector_capability") &&
+      model.transcript_boundary?.rule === "transcript_is_not_credential" &&
+      model.credential_boundary?.rule === "credentials_not_transcript",
+    "s02_review_p1_source_model",
+    "S02 P1 source model supports ChatGPT, Codex, other_agent and transcript/credential boundary",
+    "S02 P1 source model is incomplete",
+    {
+      source_type_enum: model.source_type_enum,
+      required_fields: model.required_fields,
+      transcript_boundary: model.transcript_boundary,
+      credential_boundary: model.credential_boundary,
+    },
+  );
+
+  const byId = Object.fromEntries((registry.sources || []).map((source) => [source.source_id, source]));
+  const requiredSourceIds = ["chatgpt", "codex", "future_agent_template"];
+  const missingSources = requiredSourceIds.filter((sourceId) => !byId[sourceId]);
+  assertCondition(
+    missingSources.length === 0 &&
+      registry.sources?.length >= 3 &&
       byId.future_agent_template?.source_type === "other_agent" &&
       byId.future_agent_template?.connector_type === "future_agent_adapter",
-    "s02p3_registry_future_agent",
-    "Source registry still contains chatgpt, codex and future_agent_template for S02 P3 human explanation",
-    "Source registry is missing required S02 sources",
-    { missing, sources: Object.keys(byId) },
+    "s02_review_p2_registry_sources",
+    "S02 P2 source registry is not hardcoded to ChatGPT/Codex and includes future_agent_template",
+    "S02 P2 source registry is missing future-agent coverage",
+    { missingSources, sources: registry.sources?.map((source) => source.source_id) },
   );
 
   const boundaryFailures = (registry.sources || []).filter((source) => (
@@ -194,119 +218,68 @@ function validateRegistryStillCoversStage() {
     source.transcript_boundary?.rule !== "transcript_is_not_credential" ||
     source.credential_boundary?.rule !== "credentials_not_transcript" ||
     !source.credential_boundary?.forbidden_content?.includes("cookies") ||
-    !source.credential_boundary?.forbidden_content?.includes("session_tokens")
+    !source.credential_boundary?.forbidden_content?.includes("session_tokens") ||
+    !source.credential_boundary?.forbidden_content?.includes("api_keys")
   ));
   assertCondition(
     boundaryFailures.length === 0,
-    "s02p3_registry_public_backup_and_boundaries",
-    "Every registered source retains plaintext public backup mode and transcript/credential boundaries",
-    "A registered source is missing public backup mode or transcript/credential boundary",
+    "s02_review_registry_boundaries",
+    "Every S02 source has plaintext public backup mode and transcript/credential boundary",
+    "A S02 source lacks public backup mode or credential boundary",
     { boundaryFailures },
   );
-}
-
-function validateHumanSyncPage() {
-  validateTextFile(humanPagePath);
-  const source = readRepoFile(humanPagePath);
 
   assertCondition(
-    hasAll(source, [
+    hasAll(humanPage, [
       "ChatGPT 与 Codex 及其他 Agent 自动同步说明",
-      taskId,
-      acceptanceId,
-      status,
-      registryPath,
-      "S02 P3",
-      "pending S02 Review",
-    ]),
-    "s02p3_human_page_identity",
-    "Human sync page records S02 P3 identity, registry reference and next review gate",
-    "Human sync page is missing S02 P3 identity or next gate",
-  );
-
-  assertCondition(
-    hasAll(source, [
-      "ChatGPT",
-      "ChatGPT browser connector",
-      "official export fallback",
-      "Codex",
-      "Codex local sync",
-      "后续其他 agent",
+      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
       "future_agent_template",
       "future_agent_adapter",
-      "other_agent",
-      "数据备份进 GitHub",
-    ]),
-    "s02p3_human_page_sources",
-    "Human sync page explicitly explains ChatGPT, Codex and future other-agent GitHub backup",
-    "Human sync page is missing source coverage or GitHub backup wording",
-  );
-
-  assertCondition(
-    hasAll(source, [
       "data/public_raw/chatgpt",
       "data/public_raw/codex",
       "data/public_raw/agents/{agent_id}",
-      "conversation_title",
-      "message_text",
-      "timestamp",
-      "speaker_role",
-      "metadata",
-      "tool_call_summary",
-      "attachment_reference",
       "plaintext_public",
-      "public_backup_mode",
-    ]),
-    "s02p3_human_page_github_payloads",
-    "Human sync page explains which transcript data and raw roots can enter GitHub",
-    "Human sync page does not explain which data enters GitHub",
-  );
-
-  assertCondition(
-    hasAll(source, [
       "transcript/credential",
       "credentials_not_transcript",
-      "cookies",
-      "session tokens",
-      "passwords",
-      "API keys",
-      "private keys",
-      "OAuth tokens",
-      "browser_credential_store",
       "永远不能提交",
-    ]),
-    "s02p3_human_page_credential_boundary",
-    "Human sync page separates transcript from credential data and blocks credential submission",
-    "Human sync page is missing credential boundary",
-  );
-
-  assertCondition(
-    hasAll(source, [
-      "source_id",
-      "source_type",
-      "agent_name",
-      "raw_root",
-      "sync_mode",
-      "connector_capability",
-      "register_source",
-      "capture_credentials",
-    ]),
-    "s02p3_human_page_future_agent_adapter",
-    "Human sync page explains how future agents join the registry",
-    "Human sync page is missing future-agent adapter instructions",
-  );
-
-  assertCondition(
-    hasAll(source, [
-      "No GitHub main upload in this phase",
       "No connector implementation",
       "No raw archive change",
-      "No app reinstall",
-      "本页不是 connector 实现",
     ]),
-    "s02p3_human_page_phase_boundary",
-    "Human sync page records phase boundaries and avoids connector/raw/GitHub upload work",
-    "Human sync page is missing S02 P3 boundaries",
+    "s02_review_p3_human_page",
+    "S02 P3 human page explains source scope, future-agent access, GitHub payloads and credential exclusions",
+    "S02 P3 human page is incomplete",
+  );
+}
+
+function validateReviewArtifact() {
+  validateTextFile(reviewPath);
+  const source = readRepoFile(reviewPath);
+  assertCondition(
+    hasAll(source, [
+      "Memory Atlas v1.2 S02 Review",
+      taskId,
+      acceptanceId,
+      status,
+      validatorName,
+      "S02 P1",
+      "S02 P2",
+      "S02 P3",
+      modelPath,
+      registryPath,
+      humanPagePath,
+      "source registry 不是仅 chatgpt/codex 硬编码",
+      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
+      "transcript/credential",
+      "public_backup_mode",
+      "future_agent_template",
+      "No GitHub main upload in this review",
+      "No connector implementation",
+      "No raw archive change",
+      "pending S03 P1",
+    ]),
+    "s02_review_artifact",
+    "S02 Review artifact records phase coverage, acceptance, stop-condition audit and next S03 gate",
+    "S02 Review artifact is incomplete",
   );
 }
 
@@ -325,158 +298,77 @@ function validateHumanAndMachineState() {
   const syncReadme = readRepoFile("机器治理/同步与备份/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
 
-  const s02p3QuickEntry = hasAll(quickEntry, [
-      "当前阶段是 S02 P3：人类同步说明已完成",
-      humanPagePath,
-      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
-      "已完成：S02 P3 人类同步说明",
-      "下一步只允许进入 S02 Review",
-      "No GitHub main upload in this phase",
-      "不实现 connector",
-      "不修改 raw archive",
-  ]);
-  const s02ReviewQuickEntry = hasAll(quickEntry, [
+  assertCondition(
+    hasAll(quickEntry, [
       "当前阶段是 S02 Review：S02 整体复审已通过",
-      humanPagePath,
-      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
       "已完成：S02 Review",
       "下一步只允许进入 S03 P1",
       "No GitHub main upload in this review",
       "不实现 connector",
       "不修改 raw archive",
-  ]);
-  assertCondition(
-    s02p3QuickEntry || s02ReviewQuickEntry,
-    "s02p3_human_quick_entry",
-    "Human quick entry records S02 P3 completion or later S02 Review pass state",
-    "Human quick entry is missing S02 P3 or S02 Review state or boundaries",
+    ]),
+    "s02_review_human_quick_entry",
+    "Human quick entry records S02 Review pass state and pending S03 P1",
+    "Human quick entry is missing S02 Review state",
   );
 
-  const s02p3Overview = hasAll(overview, [
-      "S02 P3 已完成",
-      humanPagePath,
-      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
-      "future_agent_template",
-      "transcript/credential",
-      "credentials_not_transcript",
-      "下一步是 S02 Review",
-  ]);
-  const s02ReviewOverview = hasAll(overview, [
+  assertCondition(
+    hasAll(overview, [
       "S02 Review 已通过",
-      "S02 P3 已完成",
-      humanPagePath,
-      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
+      "S02 P1",
+      "S02 P2",
+      "S02 P3",
+      "source registry",
       "future_agent_template",
       "transcript/credential",
-      "credentials_not_transcript",
       "下一步是 S03 P1",
-  ]);
-  assertCondition(
-    s02p3Overview || s02ReviewOverview,
-    "s02p3_human_overview",
-    "Human overview records S02 P3 human explanation or later S02 Review pass state",
-    "Human overview is missing S02 P3 or S02 Review details",
+      "整体完成后才上传 GitHub main",
+    ]),
+    "s02_review_human_overview",
+    "Human overview records S02 Review pass state and next S03 P1",
+    "Human overview is missing S02 Review state",
   );
 
-  const s02p3MachineReadme = hasAll(machineReadme, [
-      "当前为 S02 P3",
-      "人类同步说明已完成",
-      "下一步是 S02 Review",
-      "不替代 apps/scripts/tests/config/data/docs/governance",
-  ]);
-  const s02ReviewMachineReadme = hasAll(machineReadme, [
+  assertCondition(
+    hasAll(machineReadme, [
       "当前为 S02 Review",
-      "人类同步说明已完成",
       "S02 整体复审已通过",
       "下一步是 S03 P1",
       "不替代 apps/scripts/tests/config/data/docs/governance",
-  ]);
-  assertCondition(
-    s02p3MachineReadme || s02ReviewMachineReadme,
-    "s02p3_machine_readme",
-    "Machine README records S02 P3 state or later S02 Review pass state",
-    "Machine README is missing S02 P3 or S02 Review state",
+    ]),
+    "s02_review_machine_readme",
+    "Machine README records S02 Review pass state and next S03 P1",
+    "Machine README is missing S02 Review state",
   );
 
-  const s02p3SyncReadme = hasAll(syncReadme, [
-      "当前 S02 P3",
-      "sync_source_registry.json",
-      humanPagePath,
-      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
-      "下一步是 S02 Review",
-  ]);
-  const s02ReviewSyncReadme = hasAll(syncReadme, [
+  assertCondition(
+    hasAll(syncReadme, [
       "当前 S02 Review",
+      "S02 整体复审已通过",
       "sync_source_registry.json",
       humanPagePath,
-      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
       "下一步是 S03 P1",
-  ]);
-  assertCondition(
-    s02p3SyncReadme || s02ReviewSyncReadme,
-    "s02p3_sync_readme",
-    "Sync README points to the S02 P3 human page or later S02 Review state",
-    "Sync README is missing S02 P3 or S02 Review human sync page reference",
+    ]),
+    "s02_review_sync_readme",
+    "Sync README records S02 Review state and keeps S02 artifacts discoverable",
+    "Sync README is missing S02 Review state",
   );
 
-  const s02p3RunGateReadme = hasAll(runGateReadme, [
-      "当前阶段是 S02 P3",
-      taskId,
-      acceptanceId,
-      validatorName,
-      humanPagePath,
-      artifactPath,
-      "前置 S02 P2 已通过",
-      "下一步是 S02 Review",
-      "No GitHub main upload in this phase",
-      "不实现 connector",
-      "不修改 raw archive",
-  ]);
-  const s02ReviewRunGateReadme = hasAll(runGateReadme, [
+  assertCondition(
+    hasAll(runGateReadme, [
       "当前阶段是 S02 Review",
       taskId,
       acceptanceId,
       validatorName,
-      humanPagePath,
-      artifactPath,
+      reviewPath,
       "前置 S02 P3 已通过",
       "下一步是 S03 P1",
       "No GitHub main upload in this review",
-      "不实现 connector",
-      "不修改 raw archive",
-  ]);
-  assertCondition(
-    s02p3RunGateReadme || s02ReviewRunGateReadme,
-    "s02p3_run_gate_readme",
-    "Run gate README records S02 P3 validator or later S02 Review gate",
-    "Run gate README is missing S02 P3 or S02 Review status",
-  );
-}
-
-function validateArtifact() {
-  validateTextFile(artifactPath);
-  const source = readRepoFile(artifactPath);
-  assertCondition(
-    hasAll(source, [
-      "Memory Atlas v1.2 S02 P3 Human Sync Explanation",
-      taskId,
-      acceptanceId,
-      status,
-      validatorName,
-      humanPagePath,
-      registryPath,
-      "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
-      "future_agent_template",
-      "transcript/credential",
-      "credentials_not_transcript",
-      "No connector implementation",
-      "No GitHub main upload in this phase",
-      "No raw archive change",
-      "pending S02 Review",
+      "不进入 S03",
     ]),
-    "s02p3_artifact",
-    "S02 P3 artifact records human page, boundaries and next review gate",
-    "S02 P3 artifact is incomplete",
+    "s02_review_run_gate_readme",
+    "Run gate README records S02 Review validator, review artifact and next S03 P1 gate",
+    "Run gate README is missing S02 Review state",
   );
 }
 
@@ -490,15 +382,14 @@ function validateRecords() {
         acceptanceId,
         status,
         validatorName,
-        "memory_atlas_v1_2_s02_p3_human_sync_explanation.md",
-        humanPagePath,
-        "S02 P3",
-        "pending S02 Review",
-        "No GitHub main upload in this phase",
+        "memory_atlas_v1_2_s02_review.md",
+        "S02 Review",
+        "pending S03 P1",
+        "No GitHub main upload in this review",
       ]),
-      `s02p3_records_${name}`,
-      `${name} records S02 P3 status, acceptance, validator and no-upload boundary`,
-      `${name} is missing S02 P3 record fragments`,
+      `s02_review_records_${name}`,
+      `${name} records S02 Review status, acceptance, validator and no-upload boundary`,
+      `${name} is missing S02 Review record fragments`,
     );
   });
 }
@@ -507,7 +398,7 @@ function validateGitBoundary() {
   const remote = run("git", ["remote", "get-url", "origin"], { cwd: worktreeRoot }).stdout.trim();
   assertCondition(
     remote === "git@github.com:LinzeColin/CodexProject.git",
-    "s02p3_canonical_remote",
+    "s02_review_canonical_remote",
     "origin points at LinzeColin/CodexProject",
     "origin remote is not canonical LinzeColin/CodexProject",
     { remote },
@@ -516,9 +407,9 @@ function validateGitBoundary() {
   const branch = run("git", ["branch", "--show-current"], { cwd: worktreeRoot }).stdout.trim();
   assertCondition(
     branch === branchName || branch === "main",
-    "s02p3_local_branch",
+    "s02_review_local_branch",
     "Current branch is either the local v1.2 work branch or main for final reconciliation",
-    "Current branch is not an approved S02 P3 branch",
+    "Current branch is not an approved S02 Review branch",
     { branch, branchName },
   );
 
@@ -528,7 +419,7 @@ function validateGitBoundary() {
   }).stdout.trim();
   assertCondition(
     remoteDev === "",
-    "s02p3_no_remote_development_branch",
+    "s02_review_no_remote_development_branch",
     "No remote v1.2 development branch exists",
     "Remote v1.2 development branch exists",
     { branchName, remoteDev },
@@ -538,11 +429,7 @@ function validateGitBoundary() {
 function validateOpenDiffBoundary() {
   const changed = getOpenChangedPaths();
   const outside = changed.filter((file) => !allowedOpenDiffPaths.includes(file));
-  const forbiddenExact = [
-    "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s02_review.md",
-  ];
   const forbiddenPrefixes = [
-    "OpenAIDatabase/apps/",
     "OpenAIDatabase/scripts/",
     "OpenAIDatabase/tests/",
     "OpenAIDatabase/config/",
@@ -557,27 +444,28 @@ function validateOpenDiffBoundary() {
     "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_review.cjs",
     "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p1.cjs",
     "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p2.cjs",
+    "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p3.cjs",
     `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   ]);
   const forbiddenOpenChanges = changed.filter((file) => {
     if (allowedAppFiles.has(file)) return false;
-    if (forbiddenExact.includes(file)) return true;
+    if (file.startsWith("OpenAIDatabase/apps/")) return true;
     return forbiddenPrefixes.some((prefix) => file.startsWith(prefix));
   });
 
   assertCondition(
     outside.length === 0,
-    "s02p3_open_diff_scope",
-    "Open diff is limited to S02 P3 human explanation, validator, state docs and governance records",
-    "Open diff contains files outside S02 P3 allowed scope",
+    "s02_review_open_diff_scope",
+    "Open diff is limited to S02 Review artifact, validator, state docs and governance records",
+    "Open diff contains files outside S02 Review allowed scope",
     { changed, outside, allowedOpenDiffPaths },
   );
 
   assertCondition(
     forbiddenOpenChanges.length === 0,
-    "s02p3_no_review_runtime_or_raw_open_changes",
-    "S02 P3 open diff does not create S02 Review, runtime changes or raw changes",
-    "S02 P3 open diff includes review/runtime/raw changes",
+    "s02_review_no_runtime_or_raw_open_changes",
+    "S02 Review open diff does not enter S03, runtime connector work or raw archive changes",
+    "S02 Review open diff includes runtime/raw changes",
     { changed, forbiddenOpenChanges },
   );
 }
@@ -585,16 +473,15 @@ function validateOpenDiffBoundary() {
 function main() {
   validatePackageScript();
   validatePreviousPhaseGate();
-  validateRegistryStillCoversStage();
-  validateHumanSyncPage();
+  validateStageArtifacts();
+  validateReviewArtifact();
   validateHumanAndMachineState();
-  validateArtifact();
   validateRecords();
   validateGitBoundary();
   validateOpenDiffBoundary();
   console.log(JSON.stringify({
     status: "PASS",
-    validator: "validate_memory_atlas_v1_2_s02_p3",
+    validator: "validate_memory_atlas_v1_2_s02_review",
     task_id: taskId,
     acceptance_id: acceptanceId,
     checks,
@@ -606,7 +493,7 @@ try {
 } catch (error) {
   console.error(JSON.stringify({
     status: "FAIL",
-    validator: "validate_memory_atlas_v1_2_s02_p3",
+    validator: "validate_memory_atlas_v1_2_s02_review",
     task_id: taskId,
     acceptance_id: acceptanceId,
     error: error.message,
