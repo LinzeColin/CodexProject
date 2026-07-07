@@ -7,12 +7,62 @@ from KMFA.tools.dingtalk_attendance.report_renderer import (
     MANAGEMENT_REPORT_SECTIONS,
     HR_REPORT_SECTIONS,
 )
+from KMFA.tools.dingtalk_attendance.dws_attendance import collect_org_attendance
 from KMFA.tools.dingtalk_attendance.run_attendance import build_run_plan
 from KMFA.tools.dingtalk_attendance.check_s19_dingtalk_attendance import validate_s19_files
 from KMFA.tools.dingtalk_attendance.validate_no_sensitive_git import scan_payload_for_sensitive_text
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class FakeDwsRunner:
+    def __init__(self, *, fail_first_record_for: str | None = None) -> None:
+        self.calls: list[tuple[tuple[str, ...], bool]] = []
+        self.fail_first_record_for = fail_first_record_for
+        self.failed_once = False
+
+    def __call__(self, args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+        self.calls.append((tuple(args), verbose))
+        if args == ["contact", "dept", "list-children", "--dept", "1"]:
+            return {"returncode": 0, "payload": {"success": True, "result": [{"deptId": 100, "deptName": "生产部"}]}}
+        if args == ["contact", "dept", "list-children", "--dept", "100"]:
+            return {"returncode": 0, "payload": {"success": True, "result": []}}
+        if args == ["contact", "dept", "list-members", "--depts", "1,100"]:
+            return {
+                "returncode": 0,
+                "payload": {
+                    "success": True,
+                    "deptUserList": [
+                        {"userInfo": {"name": "张霖泽", "userId": "zhang-dws-id"}},
+                        {"userInfo": {"name": "林全意", "userId": "lin-dws-id"}},
+                        {"userInfo": {"name": "李同林", "userId": "li-dws-id"}},
+                    ],
+                },
+            }
+        if args[:4] == ["attendance", "record", "get", "--user"]:
+            user_id = args[4]
+            if self.fail_first_record_for == user_id and not self.failed_once:
+                self.failed_once = True
+                return {"returncode": 1, "payload": {"error": {"server_error_code": "PAT_AUTH_CALL_FAILED"}}}
+            record_list = [] if user_id in {"zhang-dws-id", "lin-dws-id"} else [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}]
+            return {
+                "returncode": 0,
+                "payload": {"success": True, "code": "0", "result": {"recordList": record_list, "isHasSchedule": True, "isRest": False}},
+            }
+        if args[:3] == ["attendance", "summary", "--user"]:
+            return {
+                "returncode": 0,
+                "payload": {
+                    "success": True,
+                    "code": "0",
+                    "result": {
+                        "abnormalCount": 0,
+                        "items": [{"id": "RealAttend_Y", "name": "出勤天数", "remark": "1天"}],
+                    },
+                },
+            }
+        raise AssertionError(f"unexpected dws args: {args}")
 
 
 class DingTalkAttendanceContractTests(unittest.TestCase):
@@ -76,6 +126,43 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["onedrive_root"], "/Users/linzezhang/OneDrive/dingtalk_attendance")
         self.assertEqual(result["prompt_count"], 3)
         self.assertEqual(result["private_runtime_tracked_files"], [".gitkeep", "README.md"])
+
+    def test_dws_attendance_collects_org_records_and_summaries_without_mock_data(self) -> None:
+        runner = FakeDwsRunner()
+
+        result = collect_org_attendance(
+            work_date="2026-07-07",
+            summary_datetime="2026-07-07 18:15:00",
+            runner=runner,
+        )
+
+        self.assertTrue(result["dws_live"])
+        self.assertFalse(result["uses_mock_data"])
+        self.assertEqual(result["stats"]["member_count"], 3)
+        self.assertEqual(result["stats"]["record_success_count"], 3)
+        self.assertEqual(result["stats"]["summary_success_count"], 3)
+        self.assertEqual(result["stats"]["record_nonempty_count"], 1)
+        self.assertEqual(result["stats"]["known_no_record_count"], 2)
+        self.assertEqual(result["stats"]["unexpected_empty_record_count"], 0)
+        self.assertNotIn("--mock", json.dumps(runner.calls, ensure_ascii=False))
+
+    def test_dws_attendance_retries_transient_attendance_error_once(self) -> None:
+        runner = FakeDwsRunner(fail_first_record_for="li-dws-id")
+
+        result = collect_org_attendance(
+            work_date="2026-07-07",
+            summary_datetime="2026-07-07 18:15:00",
+            runner=runner,
+        )
+
+        li_record_calls = [
+            call
+            for call in runner.calls
+            if call[0] == ("attendance", "record", "get", "--user", "li-dws-id", "--date", "2026-07-07")
+        ]
+        self.assertEqual(len(li_record_calls), 2)
+        self.assertTrue(li_record_calls[1][1])
+        self.assertEqual(result["stats"]["record_success_count"], 3)
 
 
 if __name__ == "__main__":

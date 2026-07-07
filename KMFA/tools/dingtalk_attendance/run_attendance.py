@@ -22,6 +22,7 @@ from KMFA.tools.dingtalk_attendance import (
     ZHANG_LINZE_USER_ID,
 )
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
+from KMFA.tools.dingtalk_attendance.dws_attendance import DwsAttendanceError, collect_org_attendance, write_private_outputs
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.onedrive_archive import archive_paths_for_run
 
@@ -70,36 +71,68 @@ def build_run_plan(run_type: str, timezone: str = TIMEZONE, run_id: str | None =
 
 def run_attendance(run_type: str, timezone: str) -> dict[str, Any]:
     plan = build_run_plan(run_type=run_type, timezone=timezone)
-    config_status = build_config_status()
+    openapi_config_status = build_config_status()
     cleanup_status: dict[str, Any] = {"status": "NOT_RUN"}
+    work_date = datetime.now(ZoneInfo(timezone)).strftime("%Y-%m-%d")
+    summary_datetime = f"{work_date} {SCHEDULE[run_type]}:00"
     try:
-        if config_status["status"] != "OK":
-            return {
-                "status": "CONFIG_MISSING",
-                "run_plan": plan,
-                "config_status": config_status,
-                "collection_status": "SKIPPED_CONFIG_MISSING",
-                "anomaly_count": None,
-                "management_report_status": "NOT_GENERATED",
-                "hr_report_status": "NOT_GENERATED",
-                "notification_status": "NOT_SENT_CONFIG_MISSING",
-                "onedrive_archive_status": "NOT_WRITTEN_CONFIG_MISSING",
-                "cleanup_status": cleanup_status,
-            }
+        collection = collect_org_attendance(
+            work_date=work_date,
+            summary_datetime=summary_datetime,
+        )
+    except (DwsAttendanceError, FileNotFoundError, TimeoutError) as exc:
+        cleanup_status.update(cleanup_runtime())
         return {
-            "status": "READY_FOR_LIVE_RUN",
+            "status": "DWS_UNAVAILABLE",
             "run_plan": plan,
-            "config_status": config_status,
-            "collection_status": "LIVE_CONNECTOR_READY",
+            "config_status": {
+                "status": "DWS_UNAVAILABLE",
+                "backend": "dws",
+                "openapi_env_status": openapi_config_status,
+            },
+            "dws_error": str(exc),
+            "collection_status": "SKIPPED_DWS_UNAVAILABLE",
             "anomaly_count": None,
-            "management_report_status": "PENDING_LIVE_DATA",
-            "hr_report_status": "PENDING_LIVE_DATA",
-            "notification_status": "PENDING_LIVE_DATA",
-            "onedrive_archive_status": "PENDING_LIVE_DATA",
+            "management_report_status": "NOT_GENERATED",
+            "hr_report_status": "NOT_GENERATED",
+            "notification_status": "NOT_SENT_DWS_UNAVAILABLE",
+            "onedrive_archive_status": "NOT_WRITTEN_DWS_UNAVAILABLE",
             "cleanup_status": cleanup_status,
         }
-    finally:
-        cleanup_status.update(cleanup_runtime())
+
+    cleanup_status.update(cleanup_runtime())
+    output_status = write_private_outputs(
+        plan=plan,
+        collection=collection,
+        cleanup_status=cleanup_status,
+    )
+    run_status = "COMPLETED" if collection["stats"]["command_failure_count"] == 0 else "PARTIAL"
+    return {
+        "status": run_status,
+        "run_plan": plan,
+        "config_status": {
+            "status": "OK",
+            "backend": "dws",
+            "uses_sample_data": False,
+            "openapi_env_status": openapi_config_status["status"],
+            "openapi_missing": openapi_config_status["missing"],
+            "notifier_configured": openapi_config_status["notifier_configured"],
+            "notification_missing": openapi_config_status["notification_missing"],
+        },
+        "backend": "dws",
+        "dws_live": True,
+        "uses_mock_data": False,
+        "work_date": work_date,
+        "summary_datetime": summary_datetime,
+        "collection_status": "DWS_LIVE_COLLECTION_WRITTEN",
+        "collection_stats": collection["stats"],
+        "anomaly_count": collection["stats"]["unexpected_empty_record_count"],
+        "management_report_status": "GENERATED",
+        "hr_report_status": "GENERATED",
+        "notification_status": "NOT_SENT_DWS_VALIDATION_MODE",
+        "onedrive_archive_status": output_status,
+        "cleanup_status": cleanup_status,
+    }
 
 
 def main(argv: list[str] | None = None) -> int:

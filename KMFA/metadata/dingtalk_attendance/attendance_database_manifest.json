@@ -1,6 +1,6 @@
 {
-  "archive_db_name": "dingtalk_attendance_archive.sqlite",
   "automation_name": "每日早晚钉钉考勤检查",
+  "backend": "dws",
   "known_recipients": {
     "boss": {
       "dingtalk_user_id": "CONFIG_REQUIRED",
@@ -14,7 +14,15 @@
   "live_only": true,
   "onedrive_month_folder_pattern": "YYYYMM",
   "onedrive_root": "/Users/linzezhang/OneDrive/dingtalk_attendance",
-  "operational_db": "KMFA/metadata/dingtalk_attendance/private_runtime/dingtalk_attendance_active.sqlite",
+  "private_archive_file_types": [
+    "raw.jsonl.gz",
+    "management.md",
+    "hr.md",
+    "dispatch.json",
+    "manifest.json",
+    "cleanup.json"
+  ],
+  "private_runtime_sqlite": false,
   "project_id": "KMFA",
   "public_repo_safety": {
     "credential_committed": false,
@@ -29,15 +37,5 @@
     "timezone": "Asia/Shanghai"
   },
   "stage_id": "S19",
-  "tables": [
-    "run_log",
-    "employee_snapshot",
-    "attendance_result_raw",
-    "attendance_record_raw",
-    "attendance_normalized",
-    "anomaly_event",
-    "report_dispatch",
-    "cleanup_audit",
-    "onedrive_archive_manifest"
-  ]
+  "sqlite_committed": false
 }

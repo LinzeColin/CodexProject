@@ -23,6 +23,4 @@ def archive_paths_for_run(run_id: str, value: datetime) -> dict[str, str]:
         "dispatch_receipt": str(month_dir / f"{run_id}.dispatch.json"),
         "archive_manifest": str(month_dir / f"{run_id}.manifest.json"),
         "cleanup_audit": str(month_dir / f"{run_id}.cleanup.json"),
-        "archive_db": str(month_dir / "dingtalk_attendance_archive.sqlite"),
-        "archive_db_hash": str(month_dir / "dingtalk_attendance_archive.sqlite.sha256"),
     }

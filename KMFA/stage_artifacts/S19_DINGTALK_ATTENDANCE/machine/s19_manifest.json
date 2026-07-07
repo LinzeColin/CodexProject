@@ -3,10 +3,26 @@
   "evidence_refs": [
     "KMFA/tests/test_dingtalk_attendance.py",
     "KMFA/tools/dingtalk_attendance/check_s19_dingtalk_attendance.py",
-    "KMFA/tools/dingtalk_attendance/validate_no_sensitive_git.py"
+    "KMFA/tools/dingtalk_attendance/validate_no_sensitive_git.py",
+    "KMFA/stage_artifacts/S19_DINGTALK_ATTENDANCE/human/test_results.md"
   ],
   "github_upload_allowed_after_full_validation_only": true,
   "live_only": true,
+  "live_validation": {
+    "backend": "dws",
+    "known_no_record_names": [
+      "张霖泽",
+      "林全意"
+    ],
+    "member_count": 44,
+    "raw_jsonl_gz_sha256": "aabfb6415d95f55d76890d74ef60d3430785f404210679631be470eb47f3a811",
+    "record_nonempty_count": 42,
+    "record_success_count": 44,
+    "run_id": "s19_evening_20260707_095119",
+    "summary_success_count": 44,
+    "unexpected_empty_record_count": 0,
+    "work_date": "2026-07-07"
+  },
   "onedrive_root": "/Users/linzezhang/OneDrive/dingtalk_attendance",
   "private_runtime_tracked_files": [
     "README.md",
@@ -19,5 +35,5 @@
     "timezone": "Asia/Shanghai"
   },
   "stage_id": "S19",
-  "status": "implemented_public_safe_config_missing_until_live_credentials"
+  "status": "implemented_public_safe_dws_live_validated"
 }

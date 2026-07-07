@@ -18,7 +18,6 @@ from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT
 REQUIRED_METADATA_FILES = (
     "README.md",
     "attendance_database_manifest.json",
-    "attendance_schema.sql",
     "retention_policy.yaml",
     "report_policy.yaml",
     "notification_policy.yaml",
@@ -34,6 +33,7 @@ REQUIRED_METADATA_FILES = (
 REQUIRED_TOOL_FILES = (
     "__init__.py",
     "run_attendance.py",
+    "dws_attendance.py",
     "dingtalk_client.py",
     "roster_sync.py",
     "attendance_collect.py",
