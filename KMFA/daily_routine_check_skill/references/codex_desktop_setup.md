@@ -32,10 +32,10 @@ KMFA/tests/test_daily_routine_check.py
 ## OneDrive Input
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-The automation should treat this as read-only upstream data.
+The automation should treat this as read-only upstream data, stream required CSV entries from the zip, and avoid local extraction. `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/` is only a compatibility fallback.
 
 ## Recommended Automation Commands
 

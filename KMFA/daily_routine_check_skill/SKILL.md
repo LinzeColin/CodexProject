@@ -73,17 +73,16 @@ daily 17:05 Asia/Shanghai -> trigger_window=evening_1705
 
 Do not create one automation per rule. `due_time` may remain in YAML as a business reference, but actual evaluation is controlled by the two trigger windows.
 
-Canonical input root:
+Canonical primary input:
+
+```text
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+```
+
+The reader streams required CSV entries from the zip and does not extract the package to local disk. Direct group folders remain a compatibility fallback:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
-```
-
-Required upstream group folders under the input root:
-
-```text
-付款请示群/
-生产管理群/
 ```
 
 This skill must not create or manage the upstream DWS archive automation. The upstream archive already exists and is treated as a producer.
@@ -155,7 +154,7 @@ Weekly Friday:
 Private input:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
 Private OneDrive routine-check archive:

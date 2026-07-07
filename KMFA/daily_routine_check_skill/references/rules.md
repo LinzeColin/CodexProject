@@ -23,9 +23,10 @@ Dingtalk-routine-check / 钉钉工作检查
 输入：
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/生产管理群
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
+
+zip 内需包含 `付款请示群` 和 `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`；直接 `DWS_Outputs/` 群目录只作为 fallback。
 
 输出：
 

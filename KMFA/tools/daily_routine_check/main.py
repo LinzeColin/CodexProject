@@ -367,7 +367,8 @@ def main() -> int:
     check_date = parse_date(args.date, tz)
     raw_rules, rules = load_rules(Path(args.rules))
     cash_config = load_yaml(Path(args.cash_config))
-    input_root = Path(args.input_root or raw_rules.get("input_root_default")).expanduser()
+    default_input = raw_rules.get("input_zip_default") or raw_rules.get("input_root_default")
+    input_root = Path(args.input_root or default_input).expanduser()
     trigger_window = args.trigger_window or infer_trigger_window(now)
     rules_to_evaluate, rules_skipped = rules_for_trigger_window(rules, check_date, trigger_window)
 
@@ -409,6 +410,7 @@ def main() -> int:
         "automation_name": raw_rules.get("automation_name"),
         "chinese_name": raw_rules.get("chinese_name"),
         "input_root": str(input_root),
+        "input_mode": "zip" if input_root.suffix.lower() == ".zip" else "folder_or_sibling_zip",
         "dry_run": args.dry_run,
         "send": args.send,
         **run_summary,

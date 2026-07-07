@@ -2,16 +2,16 @@
 
 Public-safe metadata for `Dingtalk-routine-check / 钉钉工作检查`.
 
-This metadata controls a local skill that reads existing DWS output from OneDrive:
+This metadata controls a local skill that reads existing DWS output from OneDrive. The primary input is the zip package:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
+The checker streams required CSV entries from the zip and does not extract the package to local disk. A direct `DWS_Outputs/` folder with the same group structure remains a compatibility fallback.
+
 It does not create the upstream DWS archive automation.
-If only `DWS_Outputs.zip` or `DWS_Archive/` exists, healthcheck reports
-`SOURCE_INPUT_FOLDER_MISSING`; the checker requires direct group folders with
-`chat_records/chat_records.csv` and `_manifest/manifest.csv`.
+If `DWS_Outputs.zip` is a OneDrive dataless placeholder or a corrupt zip, healthcheck reports `ZIP_INPUT_UNREADABLE` and asks for a readable hydrated zip.
 
 Scheduler contract:
 

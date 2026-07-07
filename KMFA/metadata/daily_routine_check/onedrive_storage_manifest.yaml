@@ -1,4 +1,5 @@
 version: 0.2.0
+input_zip: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 input_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs
 private_output_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check
 active_sqlite_local_path: KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite
@@ -23,6 +24,8 @@ monthly_layout:
 
 policy:
   source_dws_outputs_read_only: true
+  prefer_zip_input: true
+  stream_zip_without_extracting: true
   do_not_delete_source_dws_outputs: true
   active_sqlite_in_onedrive: false
   mirror_sqlite_to_onedrive: true

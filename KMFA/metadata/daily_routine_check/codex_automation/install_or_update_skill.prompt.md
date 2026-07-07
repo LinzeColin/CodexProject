@@ -28,7 +28,7 @@ Task:
 5. Create/update `KMFA/tests/test_daily_routine_check.py`.
 6. Do not modify the existing DWS archive automation.
 7. Do not create any Automation 1. This skill only reads existing OneDrive DWS outputs.
-8. Input root must default to `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs`.
+8. Input must default to `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`, with `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs` only as a compatibility fallback.
 9. Implement independent checks for `资金账户明细表` and `资金流水明细/资金明细`.
 10. Do not generate summary Excel. Implement SQLite + JSONL logs.
 11. Keep exactly one `Dingtalk-routine-check / 钉钉工作检查` automation with two Beijing triggers: `11:35 -> morning_1135` and `17:05 -> evening_1705`.
