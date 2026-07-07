@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S01 P2 Double Plane Creation
+
+- Added `OpenAIDatabase/人类可读/` with `00_快速入口.md` and
+  `01_v1.2四线14Stage升级总览.md`.
+- Added `OpenAIDatabase/机器治理/` with machine-plane README files for
+  parameters/formulas, data contracts, sync/backup, visualization config,
+  behavioral intelligence models, run gates, tests/acceptance and evidence/logs.
+- Added `docs/reviews/memory_atlas_v1_2_s01_p2_double_plane_creation.md`.
+- Added `validate:v1.2-s01-p2` for `MA-V12-S01P2` / `ACC-MA-V12-S01P2`.
+- Registered status `phase_s01_p2_double_plane_created_pending_s01_p3`.
+- Preserved S01 P2 boundaries: No GitHub main upload in this phase, No S01 P3,
+  No v1.2 requirements freeze config in this phase, No apps/scripts/tests/config
+  move and No raw archive change.
+
 ## Unreleased - Memory Atlas v1.2 S01 P1 Current State Audit
 
 - Added `docs/reviews/memory_atlas_v1_2_s01_p1_current_state_audit.md`.
