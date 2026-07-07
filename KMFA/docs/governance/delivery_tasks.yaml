@@ -11884,3 +11884,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private resolution outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior final-threshold outputs."
     target_version: "0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold"
     completed_version: "0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold"
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-EVIDENCE-REFRESH-AFTER-FINAL-THRESHOLD-20260707"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-EVIDENCE-REFRESH-AFTER-FINAL-THRESHOLD"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold.py --require-private-refresh"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold.py"
+    test_results:
+      - "PASS: raw candidate fingerprint evidence refresh validator and focused unit test passed; raw numeric fingerprint pool refreshed read-only, deterministic match count remains 0, and 48 blockers remain closed to comparison retry"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD/human/residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD/machine/residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD/machine/residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold_matrix_public_safe.json"
+    risk: "A raw evidence refresh can be mistaken for value comparison; this phase records raw fingerprint pool availability only and keeps retry-ready count, value comparison, reconciliation, report, upload, reinstall and business execution closed."
+    rollback: "Remove current phase artifacts, metadata copies, private raw index/refresh outputs, tool, validator, focused test and governance entries; do not modify raw inbox, source private artifacts or prior resolution outputs."
+    target_version: "0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold"
+    completed_version: "0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold"

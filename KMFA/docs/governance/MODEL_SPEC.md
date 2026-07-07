@@ -1592,3 +1592,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_fingerprint_pair_completion_blocker_count=48, source_fingerprint_pair_completion_blocker_observation_count=3, source_fingerprint_pair_completion_blocked_audit_threshold_met=true, resolution_attempt_item_count=48, auto_resolved_raw_candidate_fingerprint_count=0 and still_blocked_raw_candidate_fingerprint_count=48 prove current private evidence cannot recover the missing raw candidate fingerprints.
 - gate: `NO_GO`; comparison_retry_ready_after_resolution_attempt_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private resolution diagnostic, records and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Raw Candidate Fingerprint Evidence Refresh After Final Threshold
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-EVIDENCE-REFRESH-AFTER-FINAL-THRESHOLD-001`
+- parameter_ids: `PARAM-KMFA-1501`, `PARAM-KMFA-1502`, `PARAM-KMFA-1503`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD`
+- version: `0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold`
+- rule: source_still_blocked_raw_candidate_fingerprint_count=48, refresh_item_count=48, raw_numeric_candidate_count=351453, raw_unique_numeric_fingerprint_count=22453, deterministic_raw_candidate_fingerprint_match_count=0 and still_blocked_after_raw_refresh_count=48 prove the raw evidence pool was refreshed read-only but still cannot bind the 48 blockers to authoritative fingerprint pairs.
+- gate: `NO_GO`; comparison_retry_ready_after_raw_refresh_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private raw index, refresh diagnostic, records and report stay under ignored runtime. Raw inbox is read-only and not mutated.
