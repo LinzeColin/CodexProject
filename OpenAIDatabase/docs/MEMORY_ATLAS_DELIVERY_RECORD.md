@@ -1,3 +1,33 @@
+## v1.1.7 Stage 5 Review：Memory River Gate
+
+状态：`stage_5_review_passed_pending_stage6_no_github_main_upload`。
+
+任务 ID：`MA-V117-S5-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S5-REVIEW`。
+
+Stage 5 is review-passed and pending Stage 6. 本 review 固定三个已完成
+phase：
+
+1. Phase 5.1：Interaction Contract。
+2. Phase 5.2：C3 River Spike。
+3. Phase 5.3：Timeline Integration。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage5_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage5`
+- `ACC-MA-V117-S5-REVIEW`
+- Stage 4 review continuity、Phase 5.1 / Phase 5.2 / Phase 5.3 validators、records、package script 和 no-upload boundary 均需通过。
+- Browser evidence remains `validate:memory-river-spike-browser` and `validate:memory-river-integration-browser`。
+
+Machine-readable boundary summary: Stage 5 Review; MA-V117-S5-REVIEW; ACC-MA-V117-S5-REVIEW; stage_5_review_passed_pending_stage6_no_github_main_upload; validate:v1.1.7-stage5; Phase 5.1; Phase 5.2; Phase 5.3; pending Stage 6; No Stage 6 work; No Data Map work; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 5 Phase 5.3：Timeline Integration
 
 状态：`phase_5_3_timeline_integration_completed_pending_stage5_review`。
