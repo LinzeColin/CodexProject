@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Discrepancy Closure Blocker Audit
+
+- Product version: `0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT` only; audit prior ignored private closure blockers and write a private residual blocker queue/report without closing discrepancies or mutating raw data.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit.py`.
+- gate_state: source_private_blocking_queue_items=72, residual_blocker_queue_items=72, open_closure_blockers=72, closed_discrepancies=0, safe_auto_closure=0, newly_actionable_closure=0, ambiguous_selection_required=24, authoritative_source_reference_required=40, formula_or_non_numeric_mapping_required=8, discrepancy_closure_complete=false, source_map_correction_ready=false, full_raw_to_processed_comparison_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Discrepancy Closure Readiness
 
 - Product version: `0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness`.
