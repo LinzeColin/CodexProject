@@ -1257,3 +1257,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_private_residual_difference_queue_item_count=72 and diagnostic_handoff_item_count=72 package all unresolved residual differences into ignored private diagnostic handoff artifacts; closed_discrepancy_count remains 0 and safe_auto_resolution_count remains 0.
 - gate: `NO_GO`; discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private diagnostic handoff packet, queue and report stay under git-ignored runtime.
+
+## V014 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Intake
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-INTAKE-001`
+- parameter_ids: `PARAM-KMFA-1396`, `PARAM-KMFA-1397`, `PARAM-KMFA-1398`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE`
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-intake`
+- rule: source_private_diagnostic_handoff_queue_item_count=72, private_diagnostic_response_template_item_count=72 and pending_diagnostic_response_count=72 prove all residual differences remain pending; valid_diagnostic_response_count=0 and actionable_resolution_count=0 prevent discrepancy closure.
+- gate: `NO_GO`; valid owner/agent response, discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private response template, pending queue, diagnostic and report stay under git-ignored runtime.

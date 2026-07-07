@@ -8,6 +8,16 @@
 product_version: 0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit
 version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit
 
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Intake
+
+- Product version: `0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-intake`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE` only; prepare ignored private response template and pending queue for 72 residual differences without receiving a valid diagnostic response, closing discrepancies or mutating raw data.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_intake.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_intake.py`.
+- gate_state: source_private_handoff_queue_items=72, response_template_items=72, pending_diagnostic_responses=72, valid_diagnostic_responses=0, actionable_resolutions=0, open_residual_differences=72, closed_discrepancies=0, safe_auto_resolution=0, owner_select_track=24, authoritative_source_or_exclusion_track=40, formula_or_non_numeric_track=8, source_map_correction_ready=false, full_raw_to_processed_comparison_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-intake
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-intake
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Discrepancy Closure Readiness
 
 - Product version: `0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness`.
