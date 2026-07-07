@@ -1,3 +1,41 @@
+## 81. v1.1.7 Stage 3 Phase 3.1 Default Home Structure
+
+状态：`phase_3_1_default_home_structure_completed_pending_stage3_review`。
+
+验收 ID：`ACC-MA-V117-S3P01`。
+
+模型参数：
+
+- Stage 3 Phase 3.1 固定 Default Home Structure，不进入 No Stage 3 Phase 3.2。
+- `validate:v1.1.7-stage3-phase1` 是本 phase 必跑 validator。
+- Structure version 固定为 `memory_overview_default_home.v1_1_7_stage3_phase1`。
+- 默认 route 固定为 `home`。
+- Required sections: `status_summary`, `suggested_actions`, `weather`, `black_holes`, `proto_stars`, `assets`, `themes`, `entry_points`。
+- Rollback core 4 sections: `status_summary`, `suggested_actions`, `weather`, `entry_points`。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_overview_product_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage3_phase1_default_home_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3_phase1.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S3P01-001 stage3_phase1_status = phase_3_1_default_home_structure_completed_pending_stage3_review`
+- `PARAM-MA-V117-S3P01-002 stage3_phase1_required_validator = validate:v1.1.7-stage3-phase1`
+- `PARAM-MA-V117-S3P01-003 default_home_structure_version = memory_overview_default_home.v1_1_7_stage3_phase1`
+- `PARAM-MA-V117-S3P01-004 default_home_sections = status_summary;suggested_actions;weather;black_holes;proto_stars;assets;themes;entry_points`
+- `PARAM-MA-V117-S3P01-005 stage3_phase1_deferred_work = No Stage 3 Phase 3.2;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Default Home Structure product contract。
+- `validate:v1.1.7-stage3-phase1` 检查默认 route、8 个 section marker、records、package script 和 no-upload boundary。
+- Boundary includes No Stage 3 Phase 3.2, No GitHub main upload, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
 ## 80. v1.1.7 Stage 2 Review Gate
 
 状态：`stage_2_review_passed_pending_stage3_no_github_main_upload`。

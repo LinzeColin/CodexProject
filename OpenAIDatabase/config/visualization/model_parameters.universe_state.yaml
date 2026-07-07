@@ -350,3 +350,36 @@ v1_1_7_stage2_phase2:
     - browser_screenshot_acceptance
     - final_app_reinstall
     - github_main_upload
+v1_1_7_stage3_phase1:
+  task_id: MA-V117-S3P01
+  acceptance_id: ACC-MA-V117-S3P01
+  status: phase_3_1_default_home_structure_completed_pending_stage3_review
+  required_validator: validate:v1.1.7-stage3-phase1
+  default_home_structure: memory_overview_default_home.v1_1_7_stage3_phase1
+  default_view: home
+  structure_sections:
+    - status_summary
+    - suggested_actions
+    - weather
+    - black_holes
+    - proto_stars
+    - assets
+    - themes
+    - entry_points
+  rollback_core_sections:
+    - status_summary
+    - suggested_actions
+    - weather
+    - entry_points
+  ux_rule: not a pile of cards
+  no_stage3_phase2_in_phase: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+  deferred_to_later_phases:
+    - Stage 3 Phase 3.2
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload

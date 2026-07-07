@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 3 Phase 3.1
+
+- Added the versioned Default Home Structure contract
+  `memory_overview_default_home.v1_1_7_stage3_phase1`.
+- Made the default Memory Atlas route explicit through
+  `DEFAULT_MEMORY_ATLAS_VIEW = "home"` and machine-readable default-route
+  markers.
+- Added a compact Memory Overview structure rail covering status summary,
+  suggested actions, weather, black holes, proto-stars, assets, themes and
+  entry points without turning the page into a pile of cards.
+- Added `docs/product/memory_overview_product_contract.md`,
+  `docs/acceptance/memory_atlas_v1_1_7_stage3_phase1_default_home_acceptance.md`
+  and `validate:v1.1.7-stage3-phase1`.
+- Registered `MA-V117-S3P01` / `ACC-MA-V117-S3P01` with status
+  `phase_3_1_default_home_structure_completed_pending_stage3_review`.
+
+No Stage 3 Phase 3.2, Search 2.0 runtime, Review workflow runtime, Data Map
+2.0 runtime, raw/private data read, direct active-memory writeback, agent apply,
+production build, local app install, deploy or GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 2 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage2_review.md` to pin the
