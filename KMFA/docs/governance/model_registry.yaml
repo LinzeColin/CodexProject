@@ -2850,3 +2850,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_AUDIT
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_audit.py
   scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response actionability blocker audit only; records first blocker observation for all 48 non-actionable generated diagnostic responses while keeping authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_threshold_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-threshold-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-BLOCKER-THRESHOLD-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1549
+    - PARAM-KMFA-1550
+    - PARAM-KMFA-1551
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_THRESHOLD_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_threshold_recheck.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response actionability blocker threshold recheck only; records second blocker observation for all 48 non-actionable generated diagnostic responses, keeps the blocked threshold false, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
