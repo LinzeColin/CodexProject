@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_candidate_review_residual_difference_report:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-report"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-REPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1390
+    - PARAM-KMFA-1391
+    - PARAM-KMFA-1392
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_report.py
+  scope: Residual difference report only; reads prior public-safe blocker audit summary/manifest and ignored private residual queue/report, writes ignored private residual difference diagnostic/queue/report, public evidence aggregate-only; no raw inbox access, raw mutation, discrepancy closure, source-map correction, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit"

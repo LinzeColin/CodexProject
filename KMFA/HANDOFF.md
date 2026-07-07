@@ -734,3 +734,41 @@ Next allowed step:
 - Owner/authorized delegate must replace pending group decision codes before any active completion template or source-map application phase.
 - Do not run source-map reapplication, materialization replay, raw-to-processed comparison, processed-data reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
 - Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, final goal closeout must include a discrepancy report.
+## 2026-07-07 Latest Handoff - V014 Outside-Scope Candidate Review Residual Difference Report
+
+Current phase completed locally: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT`.
+
+Current state:
+- `source_private_residual_queue_item_count=72`
+- `residual_difference_report_item_count=72`
+- `open_residual_difference_count=72`
+- `closed_discrepancy_count=0`
+- `safe_auto_closure_count=0`
+- `newly_actionable_closure_count=0`
+- `ambiguous_selection_required_count=24`
+- `authoritative_source_reference_required_count=40`
+- `formula_or_non_numeric_mapping_required_count=8`
+- `private_diagnostic_handoff_ready=true`
+- `go_no_go=NO_GO`
+- `github_upload_performed=false`
+- `app_reinstall_performed=false`
+- raw inbox was not read, listed, parsed, fingerprinted, copied, moved, renamed, deleted, overwritten, normalized or written by this phase.
+
+Private output:
+- Private residual difference diagnostic, queue and report are under the project ignored private runtime directory for this phase.
+- These private outputs must not be committed to GitHub.
+
+Evidence:
+- `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT/machine/outside_scope_candidate_review_residual_difference_report_manifest.json`
+- `KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_report.py`
+- `KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_report.py`
+
+Verified:
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile KMFA/tools/v014_outside_scope_candidate_review_residual_difference_report.py KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_report.py KMFA/tests/test_v014_outside_scope_candidate_review_residual_difference_report.py`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_report.py --require-private-report`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_report`
+
+Next allowed step:
+- Single phase only: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF` or owner/authorized residual resolution.
+- Do not run discrepancy closure, source-map correction, formal raw-to-processed comparison, full reconciliation, lineage full check, formal report, GitHub upload, app reinstall, live connector or business execution from this state.
+- Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, goal closeout must include the private/public-safe discrepancy report boundary.

@@ -347,3 +347,10 @@ KMFA 当前版本 `0.1.4-outside-scope-candidate-review-discrepancy-closure-bloc
 - public-safe result: `owner_exclusion_resolution_applied_count=36`, `corrected_source_resolution_applied_count=0`, `source_map_records_applied_count=0`, `decision=NO_GO`.
 - Codex did not apply source-map records, did not write partial authorization, did not touch raw source files, did not perform raw-to-processed comparison, and did not claim business consistency.
 - next allowed run is a single post-resolution source-map readiness recheck; no GitHub upload, app reinstall, formal report, raw comparison or business execution is allowed from this state.
+## 2026-07-07 Latest - V014 Outside-Scope Candidate Review Residual Difference Report
+
+- active phase completed locally: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT`
+- public-safe result: 72 private residual differences remain open; no discrepancy was closed and no business consistency claim was made.
+- private output: ignored residual difference diagnostic, queue and report are available under project private runtime for diagnosis; they are not committed to GitHub.
+- Codex did not read, list, parse, fingerprint, modify, move, delete, overwrite, normalize or copy raw source files in this phase.
+- next allowed run is a single private diagnostic handoff or owner/authorized resolution phase; no GitHub upload, app reinstall, formal report, raw comparison, source-map correction or business execution is allowed from this state.

@@ -1,0 +1,55 @@
+{
+  "check_count": 10,
+  "check_fail_count": 0,
+  "check_pass_count": 10,
+  "checks": [
+    {
+      "check_code": "source_blocker_audit_summary_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_open_closure_blocker_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_residual_queue_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_residual_difference_report_written",
+      "status": "PASS"
+    },
+    {
+      "check_code": "residual_difference_report_items_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_discrepancy_closed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_newly_actionable_closure",
+      "status": "PASS"
+    },
+    {
+      "check_code": "residual_bucket_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_residual_difference_report_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_residual_difference_report_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-REPORT-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-residual-difference-report"
+}
