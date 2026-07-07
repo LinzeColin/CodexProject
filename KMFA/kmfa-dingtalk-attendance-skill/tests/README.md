@@ -6,6 +6,7 @@ Run:
 python3 tests/test_stage2_consensus.py
 python3 tests/test_database_dry_run.py
 python3 tests/test_database_landing_bundle.py
+python3 tests/test_raw_archive_replay.py
 ```
 
 The test suite verifies:
@@ -18,3 +19,4 @@ The test suite verifies:
 6. The private DB landing bundle is FK-complete and can generate a PostgreSQL JSONB/COPY load plan without opening PostgreSQL.
 7. The generated PostgreSQL load plan is statically validated against schema columns, load order, payload files, and schema-backed `ON CONFLICT` targets.
 8. The PostgreSQL load plan executor fail-closes unless non-production execution is explicitly authorized and acknowledged.
+9. Private raw archive month replay inspection validates manifest/raw parity, location coverage, and stable replay hashes without exposing names, DingTalk IDs, raw rows, or local paths.

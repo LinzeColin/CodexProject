@@ -111,6 +111,20 @@ python3 scripts/execute_postgres_load_plan.py \
   --print-json
 ```
 
+Inspect a private OneDrive-style raw archive month before replay/import:
+
+```bash
+python3 scripts/inspect_raw_archive_month.py \
+  --archive-root /Users/linzezhang/OneDrive/dingtalk_attendance \
+  --target-month 202607 \
+  --out "$KMFA_PRIVATE_RUNTIME/raw_replay/202607/readiness_manifest.json" \
+  --print-json
+```
+
+The output is public-safe by design: it includes counts, coverage ratios, and
+hashes, but not employee names, DingTalk IDs, raw row bodies, or local raw file
+paths.
+
 ## Automation
 
 Use `automation/morning_prompt.md` for the morning automation and `automation/evening_prompt.md` for the evening automation. The evening prompt explicitly invokes `$kmfa-dingtalk-attendance-skill` and runs stage-2 only when eligible.

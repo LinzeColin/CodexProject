@@ -36,6 +36,7 @@
 
 ## Phase 1 - Replay from OneDrive raw
 
+- [x] Provide a public-safe private raw archive month inspector for manifest/raw count parity, hash parity, location coverage, and stable replay hashes.
 - [ ] Load one completed historical month from OneDrive raw archive.
 - [ ] Verify raw counts match manifest.
 - [ ] Verify detail/location coverage.
