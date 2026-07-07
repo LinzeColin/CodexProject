@@ -58,6 +58,8 @@ REQUIRED_TOOL_FILES = (
     "notification_probe.py",
     "manage_notification_targets.py",
     "send_latest_report.py",
+    "sync_attendance_ledger.py",
+    "query_attendance_ledger.py",
     "secrets_loader.py",
     "validate_no_sensitive_git.py",
     "check_s19_dingtalk_attendance.py",
@@ -70,6 +72,7 @@ ALLOWED_PRIVATE_RUNTIME_FILES = {
     "notification_probe_diagnostic.json",
     "notification_targets.local.json",
     "notification_targets_resolved.json",
+    "attendance_ledger.sqlite",
 }
 TRACKED_PRIVATE_RUNTIME_FILES = [".gitkeep", "README.md"]
 
