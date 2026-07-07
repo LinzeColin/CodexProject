@@ -28,8 +28,8 @@ KMFA/metadata/dingtalk_attendance/private_runtime/
 Use templates from this package:
 
 ```text
-kmfa-dingtalk-attendance-skill/templates/env.local.example
-kmfa-dingtalk-attendance-skill/templates/notification_targets.local.example.json
+KMFA/kmfa-dingtalk-attendance-skill/templates/env.local.example
+KMFA/kmfa-dingtalk-attendance-skill/templates/notification_targets.local.example.json
 ```
 
 Copying these templates into private runtime is a machine-local setup action and should not be committed.

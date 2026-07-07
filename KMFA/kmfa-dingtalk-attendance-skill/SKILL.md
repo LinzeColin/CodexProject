@@ -21,7 +21,7 @@ Before acting, read:
 ## Hard Boundaries
 
 - Do not create branches, PRs, issues, or worktrees unless the user explicitly changes this rule.
-- Do not commit `.env.local`, webhook URLs, signing keys, AppSecret, access tokens, DWS resolved IDs, SQLite, raw JSON/JSONL/GZ, employee attendance plaintext, report bodies, or OneDrive raw archives.
+- Do not commit `.env.local`, webhook URLs, signing keys, app secrets, token values, DWS resolved IDs, SQLite, raw JSON/JSONL/GZ, employee attendance plaintext, report bodies, or OneDrive raw archives.
 - Do not run DWS live commands or send DingTalk messages without explicit user authorization in the current thread.
 - Live DWS gate env: `KMFA_S19_ALLOW_DWS_COMMANDS`.
 - Use `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only` before any live consideration.
@@ -53,5 +53,5 @@ Before acting, read:
 Run the package validator from repo root:
 
 ```bash
-python3 kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
+python3 KMFA/kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
 ```

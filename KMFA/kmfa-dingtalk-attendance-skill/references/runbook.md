@@ -37,7 +37,7 @@ Never commit:
 
 - `.env.local`
 - Webhook URLs or signing keys
-- AppSecret, access tokens, passwords, DWS credentials
+- app secrets, token values, passwords, DWS credential material
 - DWS `open_dingtalk_id`, group conversation IDs, or resolved private channel values
 - SQLite, raw JSON, raw JSONL, raw JSONL.gz
 - employee attendance plaintext
@@ -80,7 +80,7 @@ python3 KMFA/tools/dingtalk_attendance/validate_no_sensitive_git.py
 python3 KMFA/tools/dingtalk_attendance/check_s19_dingtalk_attendance.py
 python -m py_compile KMFA/tools/dingtalk_attendance/*.py
 python3 -m unittest KMFA.tests.test_dingtalk_attendance -q
-python3 kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
+python3 KMFA/kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
 git diff --check
 git status --porcelain
 ```
@@ -147,7 +147,7 @@ For behavior changes, add or update tests first. Watch the targeted test fail, i
 For documentation-only changes, run at least:
 
 ```bash
-python3 kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
+python3 KMFA/kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
 python3 KMFA/tools/dingtalk_attendance/validate_no_sensitive_git.py
 git diff --check
 ```
