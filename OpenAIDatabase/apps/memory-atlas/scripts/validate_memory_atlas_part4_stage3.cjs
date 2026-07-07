@@ -145,9 +145,11 @@ function validateHomeRuntime() {
     app.includes('{ key: "home", label: "记忆总览", icon: Home }') ||
     (app.includes('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }') &&
       i18n.includes('home: "记忆总览"'));
+  const defaultHomeStateReady = app.includes("createSharedAtlasState({ activeView: \"home\"")
+    || (app.includes("const DEFAULT_MEMORY_ATLAS_VIEW: ViewKey = \"home\"")
+      && app.includes("createSharedAtlasState({ activeView: DEFAULT_MEMORY_ATLAS_VIEW"));
   assertCondition(
-    homeNavigationReady && hasAll(app, [
-      "createSharedAtlasState({ activeView: \"home\"",
+    homeNavigationReady && defaultHomeStateReady && hasAll(app, [
       "function HomeOverviewView",
       "buildHomeOverviewModel",
       "model.actions.map",
@@ -175,6 +177,7 @@ function validateHomeRuntime() {
     "part4_home_runtime_contract",
     "Current Home runtime exposes default Home view, weather/risk/opportunity cards, proposal-only actions, preview widgets, focus-preserving deep links and CSS surfaces",
     "Home runtime contract is incomplete",
+    { defaultHomeStateReady },
   );
 }
 

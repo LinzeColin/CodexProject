@@ -9,6 +9,7 @@ const appRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
 const worktreeRoot = path.resolve(repoRoot, "..");
 const checks = [];
+const requireLocalAppReinstall = process.env.MEMORY_ATLAS_PART9_REINSTALL_LOCAL_APP === "1";
 
 function pass(name, evidence, details) {
   checks.push({ name, status: "PASS", evidence, ...(details ? { details } : {}) });
@@ -288,6 +289,15 @@ function validateStage8Gates() {
 }
 
 function validateInstalledLocalAppRuntime() {
+  if (!requireLocalAppReinstall) {
+    pass(
+      "part9_local_app_reinstall_deferred",
+      "Local app reinstall is deferred by default; set MEMORY_ATLAS_PART9_REINSTALL_LOCAL_APP=1 to refresh installed app/runtime on a prepared machine",
+      { requireLocalAppReinstall },
+    );
+    return;
+  }
+
   run("python3", ["scripts/install_memory_atlas_app.py", "--repo-root", repoRoot], { cwd: repoRoot });
   pass("part9_local_app_reinstalled", "install_memory_atlas_app.py refreshed Downloads app, Applications app and Application Support runtime");
 

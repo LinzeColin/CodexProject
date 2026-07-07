@@ -8,6 +8,14 @@ const { spawnSync } = require("node:child_process");
 const appRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
 const checks = [];
+const starfieldFixtureSchemaVersions = new Set([
+  "memory_starfield_spike_fixture.v1",
+  "memory_starfield_spike_fixture.v1_1_7_stage4_phase2",
+]);
+const riverFixtureSchemaVersions = new Set([
+  "memory_river_spike_fixture.v1",
+  "memory_river_spike_fixture.v1_1_7_stage5_phase2",
+]);
 
 function pass(name, evidence, details) {
   checks.push({ name, status: "PASS", evidence, ...(details ? { details } : {}) });
@@ -106,7 +114,7 @@ function validateStarfieldSpike() {
   );
 
   assertCondition(
-    fixtureSummary.schemaVersion === "memory_starfield_spike_fixture.v1"
+    starfieldFixtureSchemaVersions.has(fixtureSummary.schemaVersion)
       && fixtureSummary.clusterCount >= 8
       && fixtureSummary.minEvidenceCount > 0
       && ["black_hole", "declining", "dominant", "proto_star", "rising", "terrain"].every((kind) => fixtureSummary.kinds.includes(kind))
@@ -116,7 +124,7 @@ function validateStarfieldSpike() {
     "part2_phase_1_1_starfield_fixture",
     "Memory Starfield fixture imports successfully with required semantic kinds and false safety flags",
     "Memory Starfield fixture is incomplete or unsafe",
-    fixtureSummary,
+    { ...fixtureSummary, allowedSchemaVersions: [...starfieldFixtureSchemaVersions] },
   );
   assertCondition(
     hasAll(readme, [
@@ -187,7 +195,7 @@ function validateRiverSpike() {
   );
 
   assertCondition(
-    fixtureSummary.schemaVersion === "memory_river_spike_fixture.v1"
+    riverFixtureSchemaVersions.has(fixtureSummary.schemaVersion)
       && fixtureSummary.laneCount >= 5
       && fixtureSummary.eventCount >= 9
       && fixtureSummary.blackHoleBandCount >= 1
@@ -200,7 +208,7 @@ function validateRiverSpike() {
     "part2_phase_1_2_river_fixture",
     "Memory River fixture imports successfully with macro/meso/micro lanes, events, risk/opportunity signals and false safety flags",
     "Memory River fixture is incomplete or unsafe",
-    fixtureSummary,
+    { ...fixtureSummary, allowedSchemaVersions: [...riverFixtureSchemaVersions] },
   );
   assertCondition(
     hasAll(readme, [
@@ -339,12 +347,12 @@ function validateProductionIsolation() {
     "memory-starfield-spike",
     "memory-river-spike",
     "universe-state-generator-spike",
-    "../models/universeState",
-    "../utils/universeStateScores",
-    "./models/universeState",
-    "./utils/universeStateScores",
     "universe_state.input.fixture",
-    "universe_state.sample",
+  ];
+  const allowedPromotedRuntimeRefs = [
+    "src/models/universeState.ts",
+    "src/utils/universeStateScores.ts",
+    "src/fixtures/universe_state.sample.json",
   ];
   for (const filePath of productionFiles) {
     const relative = path.relative(appRoot, filePath);
@@ -365,7 +373,7 @@ function validateProductionIsolation() {
     "part2_production_isolation",
     "Production src files do not import or reference isolated Stage 1 spike/generator workspaces",
     "Production source references isolated Stage 1 spikes or generator",
-    { offendingRefs },
+    { offendingRefs, allowedPromotedRuntimeRefs },
   );
 }
 
